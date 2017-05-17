@@ -64,6 +64,7 @@ public class ManageMeasureDetailView
 	/** The meas scoring input. */
 	private ListBoxMVP  measScoringInput = new ListBoxMVP();
 	
+	/** The patient based input. */
 	private ListBox patientBasedInput = new ListBox();
 	
 	/** The button bar. */
@@ -72,14 +73,10 @@ public class ManageMeasureDetailView
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/**
-	 * The yes patient based radio button
-	 */
+	/** The yes patient based radio button. */
 	private RadioButton radioBtnYes;
 	
-	/**
-	 * The no patient based radio button
-	 */
+	/** The no patient based radio button. */
 	private RadioButton radioBtnNo;
 	
 	/** The instructions. */
@@ -87,7 +84,7 @@ public class ManageMeasureDetailView
 	//User Story # 1391 Sprint 11
 	/** The caution msg str. */
 	private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Measure Scoring' will have the following impacts:<br/>" +
-								   "<img src='images/bullet.png'/> Populations in the Clause Workspace that do not apply to the 'Measure Scoring' selected will be deleted.<br/>" +
+								   "<img src='images/bullet.png'/> Populations in the Population Workspace that do not apply to the 'Measure Scoring' selected will be deleted.<br/>" +
                                    "<img src='images/bullet.png'/> Existing Groupings in the Measure Packager will be deleted.</div>";
 	
     /** The caution msg place holder. */
@@ -99,17 +96,36 @@ public class ManageMeasureDetailView
     /** The patient based measure. */
     protected Label patientBasedMeasure = new Label();
     
+    /** The invisible radio yes. */
     Label invisibleRadioYes; 
     
+    /** The invisible radio no. */
     Label invisibleRadioNo;
     
+    /** The measure name group. */
     private FormGroup measureNameGroup = new FormGroup();
+	
+	/** The short name group. */
 	private FormGroup shortNameGroup = new FormGroup();
+	
+	/** The scoring group. */
 	private FormGroup scoringGroup = new FormGroup();
+	
+	/** The message form grp. */
 	private FormGroup messageFormGrp = new FormGroup();
+	
+	/** The patient based form grp. */
 	private FormGroup patientBasedFormGrp = new FormGroup();
+	
+	/** The help block. */
 	private HelpBlock helpBlock = new HelpBlock();
 
+	/** The caution patientbased msg str. */
+	private String cautionPatientbasedMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the Measure Scoring type will "
+			+ "reset the Patient-based Indicator to its default setting.<br/>";
+
+	/** The caution patientbased msg place holder. */
+	protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
 	
 	/**
 	 * Instantiates a new manage measure detail view.
@@ -185,10 +201,6 @@ public class ManageMeasureDetailView
 		hp.add(cautionMsgPlaceHolder);
 		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");
 		scoringGroup.add(hp);
-		/*scoringGroup.add(measScoringInput);
-		scoringGroup.add(new HTML("&nbsp;"));
-		scoringGroup.add(cautionMsgPlaceHolder);
-		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");*/
 		
 		FormLabel patientBasedLabel = new FormLabel();
 		patientBasedLabel.setText("Patient Based Measure");
@@ -201,7 +213,12 @@ public class ManageMeasureDetailView
 		patientBasedInput.setVisibleItemCount(1);
 		patientBasedInput.setWidth("18em");
 		patientBasedFormGrp.add(patientBasedLabel);
-		patientBasedFormGrp.add(patientBasedInput);
+		HorizontalPanel msgPanel = new HorizontalPanel();
+		msgPanel.add(patientBasedInput);
+		msgPanel.add(new HTML("&nbsp;"));
+		msgPanel.add(cautionPatientbasedMsgPlaceHolder);
+		cautionPatientbasedMsgPlaceHolder.getElement().setId("cautionPatientbasedMsgPlaceHolder_HTML");
+		patientBasedFormGrp.add(msgPanel);
 		
 		FormGroup buttonFormGroup = new FormGroup();
 		buttonBar.getSaveButton().setText("Save and Continue");
@@ -213,7 +230,6 @@ public class ManageMeasureDetailView
 		messageFormGrp.add(helpBlock);
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		
-		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(measureNameGroup);
 		formFieldSet.add(shortNameGroup);
@@ -224,55 +240,7 @@ public class ManageMeasureDetailView
 		createMeasureForm.add(messageFormGrp);
 		fPanel.add(createMeasureForm);
 		mainPanel.add(fPanel);
-		
-		/*
-		FlowPanel leftPanel = new FlowPanel();
-		leftPanel.getElement().setId("leftPanel_FlowPanel");
-		fPanel.add(leftPanel);*/
-		
-		/*leftPanel.add(LabelBuilder.buildLabel(name, nameLabel));
-		leftPanel.add(name);
-		name.getElement().setId("name_TextAreaWithMaxLength");
-		leftPanel.add(new SpacerWidget());
-		*/
-		//leftPanel.add(LabelBuilder.buildLabel(shortName, shortNameLabel));
-		//leftPanel.add(shortName);
-		/*shortName.getElement().setId("shortName_TextBox");
-		shortName.setWidth("18em");*/
-		/*leftPanel.add(new SpacerWidget());
-		//US 195 Adding Static Caution Message
-		HorizontalPanel hp = new HorizontalPanel();
-		leftPanel.getElement().setId("hp_HorizontalPanel");
-		*/
-		/*measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
-		measScoringInput.setStyleName("form-control");
-		measScoringInput.setVisibleItemCount(1);
-		measScoringInput.setWidth("18em");
-		*/
-		/*hp.add(measScoringInput);
-		hp.add(new HTML("&nbsp;"));
-		hp.add(cautionMsgPlaceHolder);
-		cautionMsgPlaceHolder.getElement().setId("cautionMsgPlaceHolder_HTML");
-		
-		//US 421. Measure scoring choice is now part of measure creation process.
-		//leftPanel.add(LabelBuilder.buildLabel(measScoringInput, scoringLabel));
-		leftPanel.add(hp);
-		leftPanel.add(new SpacerWidget());
-			
-		leftPanel.add(buildPatientBasedMeasurePanel());
-*/
-		//SimplePanel buttonPanel = new SimplePanel();
-		//buttonPanel.getElement().setId("buttonPanel_SimplePanel");
-		/*buttonBar.getSaveButton().setText("Save and Continue");
-		buttonBar.getSaveButton().setTitle("Save and Continue");
-		buttonBar.getCancelButton().setTitle("Cancel");
-		buttonBar.getElement().setId("buttonBar_SaveCancelButtonBar");
-		buttonPanel.add(buttonBar);
-		buttonPanel.setWidth("100%");
-		fPanel.add(buttonPanel);*/
-		//shortName.setWidth("192px");
-		
-		
+				
 	}
 
 	/*@Override
@@ -300,52 +268,6 @@ public class ManageMeasureDetailView
 		return patientBasedFormGrp;
 	}*/
 
-
-	/**
-	 * Builds the patient based measure panel.
-	 *
-	 * @return the vertical panel
-	 */
-	/*public VerticalPanel buildPatientBasedMeasurePanel(){
-		VerticalPanel patientBasedMeasurePanel = new VerticalPanel();
-		patientBasedMeasurePanel.getElement().setId("patientBasedMeasure_VerticalPanel");
-		HorizontalPanel radionButtonPanel = new HorizontalPanel();
-		radionButtonPanel.getElement().setId("patientBasedMeasure_HorizontalPanel");
-		Label patientBasedMeasureLabel = (Label) LabelBuilder.buildLabel(patientBasedMeasure, "Patient Based Measure");
-		patientBasedMeasurePanel.add(patientBasedMeasureLabel);
-		
-		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
-		patientBasedInput.setStyleName("form-control");
-		patientBasedInput.setVisibleItemCount(1);
-		patientBasedInput.setWidth("18em");
-		
-		patientBasedMeasurePanel.add(patientBasedInput);
-		patientBasedInput.addItem("No");
-		patientBasedInput.addItem("Yes");
-		
-//		invisibleRadioYes = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoYes", "PatientBasedIndicatorchangedtoYes.");
-//		invisibleRadioNo = (Label) LabelBuilder.buildInvisibleLabel("PatientBasedIndicatorchangedtoNo", "PatientBasedIndicatorchangedtoNo.");
-//		
-//		patientBasedMeasure.getElement().setId("patientBasedMeasure_Label");
-//		radioBtnYes = new RadioButton("patientBasedGroup", "Yes");
-//		radioBtnNo = new RadioButton("patientBasedGroup", "No");
-//		radioBtnYes.getElement().setId("RadioBtn_Yes");
-//		radioBtnNo.getElement().setId("RadioBtn_No");
-//		
-//		radioBtnYes.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoYes");
-//		radioBtnNo.getElement().setAttribute("aria-describedby", "PatientBasedIndicatorchangedtoNo");
-//		
-		// Check 'No' by default.
-//		radioBtnNo.setValue(true);
-//		radionButtonPanel.add(radioBtnNo);
-//		radionButtonPanel.add(radioBtnYes);
-//		radionButtonPanel.setStyleName("myAccountButtonLayout");
-//		patientBasedMeasurePanel.add(radionButtonPanel);
-//		patientBasedMeasurePanel.add(invisibleRadioNo);
-//		patientBasedMeasurePanel.add(invisibleRadioYes);
-		patientBasedMeasurePanel.add(new SpacerWidget());
-		return patientBasedMeasurePanel;
-	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setMeasureName(java.lang.String)
@@ -497,14 +419,18 @@ public class ManageMeasureDetailView
 	public void showCautionMsg(boolean show) {
 		if(show){
 			cautionMsgPlaceHolder.setHTML(cautionMsgStr);
+			cautionPatientbasedMsgPlaceHolder.setHTML(cautionPatientbasedMsgStr);
 		}else{
 			cautionMsgPlaceHolder.setHTML("");
+			cautionPatientbasedMsgPlaceHolder.setHTML("");
 		}
 	}
 
 
 	/**
-	 * Gets the yes patient based radio button
+	 * Gets the yes patient based radio button.
+	 *
+	 * @return the invisible radio alert yes
 	 */
 	/*@Override
 	public RadioButton getPatientBasedYesRadioButton() {
@@ -525,30 +451,52 @@ public class ManageMeasureDetailView
 		return invisibleRadioYes;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getInvisibleRadioAlertNo()
+	 */
 	@Override
 	public Label getInvisibleRadioAlertNo() {
 		return invisibleRadioNo;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getPatientBasedInput()
+	 */
 	@Override
 	public ListBox getPatientBasedInput() {
 		return patientBasedInput;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setPatientBasedInput(com.google.gwt.user.client.ui.ListBox)
+	 */
 	@Override
 	public void setPatientBasedInput(ListBox patientBasedInput) {
 		this.patientBasedInput = patientBasedInput;
 	}
-@Override
+
+	/* (non-Javadoc)
+	 *  * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getHelpBlock()
+	 */
+	@Override
 	public HelpBlock getHelpBlock() {
 		return helpBlock;
 	}
 
+	/**
+	 * Sets the help block.
+	 *
+	 * @param helpBlock the new help block
+	 */
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMessageFormGrp()
+	 */
 	@Override
 	public FormGroup getMessageFormGrp() {
 		return messageFormGrp;

@@ -942,7 +942,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createDatatypesJsArrayString() {
-		List<String> dataTypeList = MatContext.get().dataTypeList;
+		List<String> dataTypeList = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		
 		for(String string: dataTypeList) {
@@ -1024,7 +1024,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	}
 	
 	private static JsArrayString createAttributesJsArrayString() {
-		List<String> funcsList = MatContext.get().allAttributeList;
+		List<String> funcsList = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		for (String string : funcsList) {
 			jsArray.push(convertToCamelCase(string));

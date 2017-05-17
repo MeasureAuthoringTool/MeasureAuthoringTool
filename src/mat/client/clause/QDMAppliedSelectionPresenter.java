@@ -454,7 +454,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	public QDMAppliedSelectionPresenter(SearchDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
-		MatContext.get().getAllDataType();
 		addAllHandlers();
 	}
 	

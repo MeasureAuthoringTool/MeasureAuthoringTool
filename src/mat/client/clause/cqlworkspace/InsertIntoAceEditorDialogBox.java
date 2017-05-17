@@ -66,19 +66,15 @@ public class InsertIntoAceEditorDialogBox {
 	
 	/** The all data types. */
 	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
-	
-	private static List<String> allQdmDataTypes = MatContext.get().getCqlConstantContainer().getQdmDatatypeList();
-	
+		
 	/** The all attributes. */
 	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 		
 	/**
 	 * allCqlUnits map in the format of <UnitName, CQLUnit>
 	 */
-	private static Map<String, String> allCqlUnits = MatContext.get().getAllCQLUnits();
-	
-	private static Map<String,String> cqlUnitMap = new LinkedHashMap<String,String>();
-	
+	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
+		
 	private static HashSet<String> nonQuoteUnits = new HashSet<String>();
 	
 	/** The attribute service. */
@@ -99,7 +95,7 @@ public class InsertIntoAceEditorDialogBox {
 	/**
 	 * List of cqlFunctionsList.
 	 */
-	private static List<String> cqlFunctionsList = MatContext.get().getCqlGrammarDataType().getCqlFunctionsList();
+	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	
 	/** The Constant INSERT_AT_END. */
 	private static final int INSERT_AT_END = -1;
@@ -1202,13 +1198,12 @@ public class InsertIntoAceEditorDialogBox {
 	 */
 	private static String attributeStringBuilder(){
 		nonQuoteUnits = getNonQuotesUnits();
-		cqlUnitMap = getCqlUnitMap();
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = "";
 		String selectedMode = "";
 		String selectedMDetailsItem = "";
 		String selectedQuantity = QuantityTextBox.getText();
-		String selectedUnit = cqlUnitMap.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
+		String selectedUnit = allCqlUnits.get(UnitslistBox.getItemText(UnitslistBox.getSelectedIndex()));
 		
 		if(AttriblistBox.getSelectedIndex()>0){
 			selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
@@ -1245,10 +1240,6 @@ public class InsertIntoAceEditorDialogBox {
 		
 	}
 	
-	private static Map<String, String> getCqlUnitMap() {
-		return allCqlUnits;
-	}
-
 	private static HashSet<String> getNonQuotesUnits(){
 		 HashSet<String> hset = 
 	               new HashSet<String>();

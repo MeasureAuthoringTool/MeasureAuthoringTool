@@ -82,8 +82,9 @@ public class AddFunctionArgumentDialogBox {
 	 */
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
 			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final boolean isEditable) {
-		List<String> allCqlDataType = MatContext.get().getCqlGrammarDataType().getCqlDataTypeList();
-		final List<String> allDataTypes = MatContext.get().getDataTypeList();
+		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
+		final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+		allDataTypes.add(0, MatContext.PLEASE_SELECT);
 		//final ListBox attributeListBox = new ListBox(false);
 		final TextArea otherTypeTextArea = new TextArea();
 		otherTypeTextArea.setEnabled(false);

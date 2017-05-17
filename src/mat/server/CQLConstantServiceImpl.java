@@ -1,6 +1,7 @@
 package mat.server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlconstant.service.CQLConstantService;
 import mat.client.shared.CQLConstantContainer;
+import mat.client.shared.MatContext;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
@@ -29,10 +31,15 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		
 		// get the unit map in the form of <UnitName, CQLUnit>
 		Map<String, String> unitMap = new LinkedHashMap<String, String>(); 
+		unitMap.put(MatContext.get().PLEASE_SELECT, MatContext.get().PLEASE_SELECT);
 		for(UnitDTO unit : unitDTOList) {
 			unitMap.put(unit.getUnit(), unit.getCqlunit());
 		}
-		cqlConstantContainer.setCqlAttributeList(getAttributeDAO().getAllAttributes());
+		cqlConstantContainer.setCqlUnitMap(unitMap);
+		
+		List<String> cqlAttributesList = getAttributeDAO().getAllAttributes();
+		Collections.sort(cqlAttributesList);
+		cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
 		
 		// get the datatypes
 		List<? extends HasListBox> dataTypeListBoxList = getCodeListService().getAllDataTypes();
@@ -42,6 +49,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		}
 				
 		List<String> qdmDatatypeList = new ArrayList<String>(); 
+		Collections.sort(datatypeList);
 		qdmDatatypeList.addAll(datatypeList);
 		datatypeList.remove("attribute");
 		
@@ -51,7 +59,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		// get keywords
 		CQLKeywords keywordList = getMeasureLibraryService().getCQLKeywordsLists(); 
 		cqlConstantContainer.setCqlKeywordList(keywordList);
-		
 		return cqlConstantContainer;
 	}
 	

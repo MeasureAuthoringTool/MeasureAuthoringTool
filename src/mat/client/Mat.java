@@ -549,7 +549,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			MatContext.get().getCQLConstants();
-			MatContext.get().setCQLUnits();
 			/*codeListController = new CodeListController();
 			title = ClientConstants.TITLE_VALUE_SET_LIB;
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));

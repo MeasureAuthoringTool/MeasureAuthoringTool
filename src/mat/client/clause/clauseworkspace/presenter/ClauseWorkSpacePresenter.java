@@ -56,28 +56,9 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
 		MatContext.get().getAllOperators();
-		JSONAttributeModeUtility.getAllAttrModeList();
-		loadAllUnits();
-		
+		JSONAttributeModeUtility.getAllAttrModeList();		
 	}
-	/**
-	 * Load all units.
-	 */
-	private void loadAllUnits() {
-		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
-		codeListServiceAsync.getAllUnits(new AsyncCallback<List<String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("Unable to Load Units ");
-			}
-			
-			@Override
-			public void onSuccess(List<String> result) {
-				PopulationWorkSpaceConstants.units = (ArrayList<String>) result;
-			}
-		});
-	}	
-	
+
 	/**
 	 * Load measure xml.
 	 */

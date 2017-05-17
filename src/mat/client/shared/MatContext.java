@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,7 +23,9 @@ import com.google.gwt.user.client.ui.Widget;
 //import mat.client.measure.AdminManageMeasureSearchView;
 
 import mat.DTO.OperatorDTO;
+import mat.DTO.UnitDTO;
 import mat.client.Enableable;
+import mat.client.Mat;
 import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
@@ -38,6 +41,8 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
+import mat.client.cqlconstant.service.CQLConstantService;
+import mat.client.cqlconstant.service.CQLConstantServiceAsync;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -267,8 +272,8 @@ public class MatContext implements IsSerializable {
 	/** The all units list. */
 	public List<String> allUnitsList = new ArrayList<String>();
 	
-	/** The all CQL units list. */
-	private List<String> allCQLUnitsList = new ArrayList<String>();
+	/** The all CQL units map, it is in the form of <UnitName, CQLUnit>. */
+	private Map<String, String> allCQLUnitsList = new LinkedHashMap<String, String>();
 	
 	private List<String> includedDefNames = new ArrayList<String>();
 	private List<String> includedFuncNames = new ArrayList<String>();
@@ -276,6 +281,7 @@ public class MatContext implements IsSerializable {
 	private List<String> includedParamNames = new ArrayList<String>();
 	private List<String> includedCodeNames = new ArrayList<String>();
 	
+	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 	
 	//private GlobalCopyPaste copyPaste;
 	
@@ -1676,48 +1682,21 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
-	
-	/**
- * Gets of all of the units and updates the all units list.
- *
- * @return the all units
- */
-	public void getAllUnits() {
-		
-		listBoxCodeProvider.getUnitList(new AsyncCallback<List<? extends HasListBox>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {				
-			}
-
-			@Override
-			public void onSuccess(List<? extends HasListBox> result) {
-				if(result != null){
-					allUnitsList.clear();
-					allUnitsList.add(MatContext.PLEASE_SELECT);
-					for(HasListBox listBoxContent : result) {
-						allUnitsList.add(listBoxContent.getItem());
-					}
-				}
-			}
-		}); 
-	}
-	
 	/**
 	 * Gets of all of the units and updates the all units list. 
-	 * @return all cql list.
+	 * @return Returns a map of the units in the form of <UnitName, CQLUnit>.
 	 */
-	public List<String> getAllCQLUnits() {
+	public Map<String, String> getAllCQLUnits() {
 		return allCQLUnitsList;
 		
 	}
 
 
 	/**
-	 * 
+	 * Creates a map of <UnitName, CQLUnit> 
 	 */
 	public void setCQLUnits() {
-		getCodeListService().getAllCqlUnits(new AsyncCallback<List<String>> (){
+		getCodeListService().getAllCqlUnits(new AsyncCallback<List<UnitDTO>> (){
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1725,13 +1704,14 @@ public class MatContext implements IsSerializable {
 			}
 
 			@Override
-			public void onSuccess(List<String> result) {
+			public void onSuccess(List<UnitDTO> result) {
 				if(result != null){
 					allCQLUnitsList.clear();
-					allCQLUnitsList.add(MatContext.PLEASE_SELECT);
-					for(String listBoxContent : result) {
-						allCQLUnitsList.add(listBoxContent);
+					allCQLUnitsList.put(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+					for(UnitDTO unitDTO : result) {
+						allCQLUnitsList.put(unitDTO.getUnit(), unitDTO.getCqlunit());
 					}
+					
 				}
 			}
 		});
@@ -2171,7 +2151,7 @@ public class MatContext implements IsSerializable {
 	public void setAllAttributeList(List<String> allAttributeList) {
 		this.allAttributeList = allAttributeList;
 	}	
-	
+		
 	/**
 	 * Gets the list of all of the units.
 	 *
@@ -2195,7 +2175,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the list of all of the cql units
 	 */
-	public List<String> getAllCQLUnitsList() {
+	public Map<String, String> getAllCQLUnitsList() {
 		return this.allCQLUnitsList;
 	}
 	
@@ -2204,11 +2184,10 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param allCQLUnitsList the new all CQL units list
 	 */
-	public void setAllCQLUnitsList(List<String> allCQLUnitsList) {
+	public void setAllCQLUnitsList(Map<String, String> allCQLUnitsList) {
 		this.allCQLUnitsList = allCQLUnitsList;
 	}
-
-
+	
 	/**
 	 * Gets the includes.
 	 *
@@ -2397,6 +2376,35 @@ public class MatContext implements IsSerializable {
 
 	public void setIncludedCodeNames(List<String> includedCodeNames) {
 		this.includedCodeNames = includedCodeNames;
+	}
+	
+	public void getCQLConstants() {
+		CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
+
+		cqlConstantService.getAllCQLConstants(new AsyncCallback<CQLConstantContainer>() {
+		
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				
+			}
+
+			@Override
+			public void onSuccess(CQLConstantContainer result) {
+				cqlConstantContainer = result; 
+			}
+			
+		});
+	}
+
+
+	public CQLConstantContainer getCqlConstantContainer() {
+		return cqlConstantContainer;
+	}
+
+
+	public void setCqlConstantContainer(CQLConstantContainer cqlConstantContainer) {
+		this.cqlConstantContainer = cqlConstantContainer;
 	}
 
 	/*public GlobalCopyPaste getCopyPaste() {

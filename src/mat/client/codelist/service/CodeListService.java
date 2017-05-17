@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import mat.DTO.OperatorDTO;
+import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
@@ -397,15 +398,6 @@ public interface CodeListService extends RemoteService {
 	List<OperatorDTO> getAllOperators();
 	
 	/**
-	 * Gets the all units.
-	 * 
-	 * @return the all units
-	 */
-	List<String> getAllUnits();
-	
-
-	
-	/**
 	 * Gets the list box data.
 	 * 
 	 * @return the list box data
@@ -462,9 +454,9 @@ public interface CodeListService extends RemoteService {
 	 */
 	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
 	
-	
-	
-	List<String> getAllCqlUnits();
-	
-	
+	/**
+	 * Gets all of the cql units
+	 * @return a list of the cql unit dtos
+	 */
+	List<UnitDTO> getAllCqlUnits();	
 }

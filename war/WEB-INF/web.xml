@@ -94,6 +94,7 @@
     <servlet-name>codelistServiceImpl</servlet-name>
     <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
   </servlet>
+
   <!-- <servlet>
     <servlet-name>clauseServiceImpl</servlet-name>
     <servlet-class>mat.server.clause.ClauseServiceImpl</servlet-class>
@@ -133,6 +134,10 @@
    <servlet>
     <servlet-name>vsacAPIServiceImpl</servlet-name>
     <servlet-class>mat.server.VSACAPIServiceImpl</servlet-class>
+  </servlet>
+    <servlet>
+      <servlet-name>cqlConstantService</servlet-name>
+      <servlet-class>mat.server.CQLConstantServiceImpl</servlet-class>
   </servlet>
   
  <!--  <servlet-mapping>
@@ -176,6 +181,10 @@
     <servlet-name>codelistServiceImpl</servlet-name>
     <url-pattern>/mat/codelist</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>cqlConstantService</servlet-name>
+      <url-pattern>/mat/cqlconstant</url-pattern>
+  </servlet-mapping>
  <!--  <servlet-mapping>
     <servlet-name>clauseServiceImpl</servlet-name>
     <url-pattern>/mat/clause</url-pattern>
@@ -208,10 +217,14 @@
     <servlet-name>vsacAPIServiceImpl</servlet-name>
     <url-pattern>/mat/vsacapi</url-pattern>
   </servlet-mapping> 
-   <session-config>
+   <servlet-mapping>
+      <servlet-name>cqlConstantService</servlet-name>
+      <url-pattern>/mat/cqlConstantService</url-pattern>
+  </servlet-mapping>
+  <session-config>
         <session-timeout>70</session-timeout>
         <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
-         <cookie-config>
+        <cookie-config>
            <http-only>true</http-only>
             <secure>true</secure>
         </cookie-config>

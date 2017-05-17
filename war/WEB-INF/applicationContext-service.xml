@@ -87,6 +87,8 @@
     
     <bean id="cqlLibraryService" class="mat.server.CQLLibraryService">
     </bean>
+    
+    <bean id="cqlConstantService" class="mat.server.CQLConstantServiceImpl"></bean>
    
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
@@ -102,6 +104,5 @@
     <bean id="matPropertiesService" class="mat.server.util.MATPropertiesService">
         <property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
         <property name="qmdVersion" value="${mat.measure.current.qdm.version}"/>
-    </bean>
-    
+    </bean>    
 </beans>

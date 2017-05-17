@@ -3,7 +3,9 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,26 +47,8 @@ implements mat.client.codelist.service.CodeListService {
 	@Override
 	public List<OperatorDTO> getAllOperators() {
 		return getCodeListService().getAllOperators();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.codelist.service.CodeListService#getAllUnits()
-	 */
-	@Override
-	public List<String> getAllUnits() {
+	}	
 		
-		logger.info("getAllUnits");
-		List<String> units = new ArrayList<String>();
-		List<UnitDTO> data =  getCodeListService().getAllUnits();
-		for(int i=0;i<data.size();i++){
-			units.add(data.get(i).getUnit());
-			
-		}
-		return units;
-	}
-	
-	
-	
 	/**
 	 * Gets the code list service.
 	 * 
@@ -213,14 +197,11 @@ implements mat.client.codelist.service.CodeListService {
 	}*/
 
 	@Override
-	public List<String> getAllCqlUnits() {
+	public List<UnitDTO> getAllCqlUnits() {
 		logger.info("getAllCqlUnits");
-		List<String> cqlUnits = new ArrayList<String>();
+		Map<String, String> cqlUnits = new LinkedHashMap<String, String>();
 		List<UnitDTO> data =  getCodeListService().getAllUnits();
-		for(int i=0;i<data.size();i++){
-			cqlUnits.add(data.get(i).getCqlunit());
-			
-		}
-		return cqlUnits;
+		
+		return data;
 	}
 }

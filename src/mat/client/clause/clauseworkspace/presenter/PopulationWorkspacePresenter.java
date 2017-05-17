@@ -70,25 +70,6 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
 		//MatContext.get().getAllOperators();
-		//loadAllUnits();
-	}
-	
-	/**
-	 * Load all units.
-	 */
-	private void loadAllUnits() {
-		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
-		codeListServiceAsync.getAllUnits(new AsyncCallback<List<String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert("Unable to Load Units ");
-			}
-			
-			@Override
-			public void onSuccess(List<String> result) {
-				PopulationWorkSpaceConstants.units = (ArrayList<String>) result;
-			}
-		});
 	}
 	
 	/**

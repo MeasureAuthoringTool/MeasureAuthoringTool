@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import mat.DTO.OperatorDTO;
+import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
@@ -35,7 +36,7 @@ public interface CodeListServiceAsync {
 	 * @return the all operators
 	 */
 	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
-	
+
 	/**
 	 * Gets the all units.
 	 * 
@@ -43,16 +44,7 @@ public interface CodeListServiceAsync {
 	 *            the callback
 	 * @return the all units
 	 */
-	void getAllUnits(AsyncCallback<List<String>> callback);
-	
-	/**
-	 * Gets the all units.
-	 * 
-	 * @param callback
-	 *            the callback
-	 * @return the all units
-	 */
-	void getAllCqlUnits(AsyncCallback<List<String>> callback);
+	void getAllCqlUnits(AsyncCallback<List<UnitDTO>> callback);
 	
 	
 	

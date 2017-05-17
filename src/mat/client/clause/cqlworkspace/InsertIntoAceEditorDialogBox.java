@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Button;
@@ -65,16 +66,17 @@ public class InsertIntoAceEditorDialogBox {
 	private static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
 	
 	/** The all data types. */
-	private static List<String> allDataTypes = MatContext.get().getDataTypeList();
+	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 	
-	private static List<String> allQdmDataTypes = MatContext.get().getQdmDataTypeList();
+	private static List<String> allQdmDataTypes = MatContext.get().getCqlConstantContainer().getQdmDatatypeList();
 	
 	/** The all attributes. */
-	private static List<String> allAttributes = MatContext.get().getAllAttributeList();
-	
-	private static List<String> allUnits = MatContext.get().getAllUnitsList(); 
-	
-	private static List<String> allCqlUnits = MatContext.get().getAllCQLUnits();
+	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+		
+	/**
+	 * allCqlUnits map in the format of <UnitName, CQLUnit>
+	 */
+	private static Map<String, String> allCqlUnits = MatContext.get().getAllCQLUnits();
 	
 	private static Map<String,String> cqlUnitMap = new LinkedHashMap<String,String>();
 	
@@ -1245,13 +1247,7 @@ public class InsertIntoAceEditorDialogBox {
 	}
 	
 	private static Map<String, String> getCqlUnitMap() {
-		 Map<String, String> map = new LinkedHashMap<String,String>(); ;
-		Iterator<String> i1 = allUnits.iterator();
-		Iterator<String> i2 = allCqlUnits.iterator();
-		while (i1.hasNext() && i2.hasNext()) {
-			map.put(i1.next(), i2.next());
-		}
-		return map;
+		return allCqlUnits;
 	}
 
 	private static HashSet<String> getNonQuotesUnits(){
@@ -1434,6 +1430,8 @@ private static void defaultFrmGrpValidations(){
 		UnitslistBox.setWidth("18em");
 		UnitslistBox.setVisibleItemCount(10);
 		UnitslistBox.getElement().setId("Units_listBox");
+		
+		Set<String> allUnits = allCqlUnits.keySet();
 		for(String unit : allUnits) {
 			UnitslistBox.addItem(unit, unit);
 		}

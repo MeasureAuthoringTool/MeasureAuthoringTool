@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -44,16 +43,16 @@ public class ManageMeasureDetailView
 	/** The measure name label. */
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
-	/** The name label. */
+/*	*//** The name label. *//*
 	private String nameLabel = "Name";
 	
-	/** The short name label. */
+	*//** The short name label. *//*
 	private String shortNameLabel = "Abbreviated Name";
 	
 	//US 421. Measure scoring choice is now part of measure creation process.
-	/** The scoring label. */
+	*//** The scoring label. *//*
 	private String scoringLabel = "Measure Scoring";
-	
+	*/
 	/** The name. */
 	private TextAreaWithMaxLength name = new TextAreaWithMaxLength();
 	
@@ -73,11 +72,11 @@ public class ManageMeasureDetailView
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/** The yes patient based radio button. */
+	/** The yes patient based radio button. *//*
 	private RadioButton radioBtnYes;
 	
-	/** The no patient based radio button. */
-	private RadioButton radioBtnNo;
+	*//** The no patient based radio button. *//*
+	private RadioButton radioBtnNo;*/
 	
 	/** The instructions. */
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
@@ -166,6 +165,7 @@ public class ManageMeasureDetailView
 		measureNameLabel.setShowRequiredIndicator(true);
 		measureNameLabel.setId("NameTextArea_Id");
 		name.getElement().setId("name_TextAreaWithMaxLength");
+		name.setTitle("Enter Measure Name.");
 		name.setWidth("400px");
 		name.setHeight("50px");
 		name.setMaxLength(500);
@@ -179,6 +179,7 @@ public class ManageMeasureDetailView
 		shortNameLabel.setShowRequiredIndicator(true);
 		shortNameLabel.setId("ShortNameTextBox_Id");
 		shortName.getElement().setId("shortName_TextBox");
+		shortName.setTitle("Enter Abbreviated name.");;
 		shortName.setWidth("18em");
 		shortName.setMaxLength(32);
 		shortNameGroup.add(shortNameLabel);
@@ -191,6 +192,7 @@ public class ManageMeasureDetailView
 		scoringLabel.setShowRequiredIndicator(true);
 		scoringLabel.setId("MeasureScoringListBox");
 		measScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
+		measScoringInput.setTitle("Measure Scoring.");
 		measScoringInput.setStyleName("form-control");
 		measScoringInput.setVisibleItemCount(1);
 		measScoringInput.setWidth("18em");
@@ -209,6 +211,7 @@ public class ManageMeasureDetailView
 		patientBasedLabel.setShowRequiredIndicator(true);
 		patientBasedLabel.setId("PatientBasedMeasureListBox_Id");
 		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
+		patientBasedInput.setTitle("Patient Based Indicator.");
 		patientBasedInput.setStyleName("form-control");
 		patientBasedInput.setVisibleItemCount(1);
 		patientBasedInput.setWidth("18em");
@@ -446,20 +449,7 @@ public class ManageMeasureDetailView
 		return radioBtnNo;
 	}*/
 	
-	@Override
-	public Label getInvisibleRadioAlertYes() {
-		return invisibleRadioYes;
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getInvisibleRadioAlertNo()
-	 */
-	@Override
-	public Label getInvisibleRadioAlertNo() {
-		return invisibleRadioNo;
-	}
-
-
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getPatientBasedInput()
 	 */

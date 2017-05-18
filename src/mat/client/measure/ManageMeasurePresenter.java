@@ -201,10 +201,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public void showMeasureName(boolean show);
 
-		Label getInvisibleRadioAlertYes();
-
-		Label getInvisibleRadioAlertNo();
-
+		
 		ListBox getPatientBasedInput();
 
 		
@@ -1117,6 +1114,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						resetPatientBasedInput(); 
 						
 						// default the selected index to be 1, which is yes.  
+						
 						detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 						detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
 						detailDisplay.getHelpBlock().setColor("transparent");

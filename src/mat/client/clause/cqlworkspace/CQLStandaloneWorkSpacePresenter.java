@@ -433,6 +433,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 						}
+						getUsedArtifacts();
 						showSearchingBusy(false);
 					}
 				});
@@ -3134,14 +3135,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
                                           }
                                    }
                             	}
-                                   searchDisplay.buildAppliedQDM();
-                                   setExpansionProfilePanelValues();
-                       			boolean isEditable = MatContext.get().getLibraryLockService().checkForEditPermission();
-                       			
-                       			searchDisplay.getValueSetView().buildAppliedValueSetCellTable(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(),
-                       					isEditable);
-                       			searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
-                       				searchDisplay.getValueSetView().setWidgetsReadOnly(isEditable);
+                            		
+                            	if(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList().size() > 0) {
+                                	searchDisplay.getValueSetView().getCelltable().redraw();
+                                	searchDisplay.getValueSetView().getListDataProvider().refresh();
+                            	}
                                    
                             }
                             
@@ -3869,6 +3867,7 @@ private void addCodeSearchPanelHandlers() {
 			if (!CheckNameInValueSetList(displayName)) {
 				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
 			}
+			getUsedArtifacts();
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getMODIFY_VALUE_SET_SELECT_ATLEAST_ONE());
@@ -4076,6 +4075,7 @@ private void addCodeSearchPanelHandlers() {
 									}
 								}
 							}
+							getUsedArtifacts();
 							showSearchingBusy(false);
 						}
 					});
@@ -4144,6 +4144,7 @@ private void addCodeSearchPanelHandlers() {
 											}
 										}
 									}
+									getUsedArtifacts();
 									showSearchingBusy(false);
 								}
 							});
@@ -4244,6 +4245,7 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 				}
 			}
+			getUsedArtifacts();
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
@@ -4341,9 +4343,25 @@ private void addCodeSearchPanelHandlers() {
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
-			getUsedArtifacts();
+			buildAppliedQDMTable();
 		}
 
+	}
+	
+	private void buildAppliedQDMTable() {
+		searchDisplay.buildAppliedQDM();
+        setExpansionProfilePanelValues();
+		boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		
+		// initialize the valuesets to be used, getUsedArtifacts() will update with the proper value
+		for(CQLQualityDataSetDTO valuset : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()) {
+			valuset.setUsed(true);
+		}
+		
+		searchDisplay.getValueSetView().buildAppliedValueSetCellTable(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(), isEditable);
+		searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
+		searchDisplay.getValueSetView().setWidgetsReadOnly(isEditable);
+		getUsedArtifacts();
 	}
 	
 	/**

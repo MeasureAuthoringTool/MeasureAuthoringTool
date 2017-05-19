@@ -3522,7 +3522,8 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService()
 							.checkForEditPermission());
 					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-					//getAppliedCodeList();
+					//Temporary fix to update codes for insert Icon.
+					getAppliedValueSetList();
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
 					if(result.getFailureReason()==result.getDuplicateCode()){

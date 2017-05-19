@@ -3902,6 +3902,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCodesView().buildCodesCellTable(
 							appliedCodeTableList,
 							MatContext.get().getMeasureLockService().checkForEditPermission());
+					//Temporary fix to update codes for insert Icon.
+					getAppliedValueSetList();
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clear();
 					if(result.getFailureReason()==result.getDuplicateCode()){

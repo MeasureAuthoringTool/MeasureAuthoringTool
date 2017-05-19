@@ -903,10 +903,6 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	private static JsArrayString createValueSetJsArrayString() {
 		List<String> valueSetList = new ArrayList<String>();
 		valueSetList.addAll(MatContext.get().getValuesets());
-		valueSetList.add("SDE Ethnicity");
-		valueSetList.add("SDE Race");
-		valueSetList.add("SDE Sex");
-		valueSetList.add("SDE Payer");
 		valueSetList.addAll(MatContext.get().getIncludedValueSetNames());
 		
 		Collections.sort(valueSetList, new Comparator() {

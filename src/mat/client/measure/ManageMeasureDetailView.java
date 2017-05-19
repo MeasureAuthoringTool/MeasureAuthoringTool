@@ -164,7 +164,8 @@ public class ManageMeasureDetailView
 		measureNameLabel.setFor("NameTextArea");
 		measureNameLabel.setShowRequiredIndicator(true);
 		measureNameLabel.setId("NameTextArea_Id");
-		name.getElement().setId("name_TextAreaWithMaxLength");
+		name.setId("NameTextArea");
+		
 		name.setTitle("Enter Measure Name.");
 		name.setWidth("400px");
 		name.setHeight("50px");
@@ -178,7 +179,7 @@ public class ManageMeasureDetailView
 		shortNameLabel.setFor("ShortNameTextBox");
 		shortNameLabel.setShowRequiredIndicator(true);
 		shortNameLabel.setId("ShortNameTextBox_Id");
-		shortName.getElement().setId("shortName_TextBox");
+		shortName.setId("ShortNameTextBox");
 		shortName.setTitle("Enter Abbreviated name.");;
 		shortName.setWidth("18em");
 		shortName.setMaxLength(32);

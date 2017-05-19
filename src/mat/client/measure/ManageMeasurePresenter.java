@@ -1160,6 +1160,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
+		detailDisplay.showCautionMsg(true);
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
 		
 		// set the patient based indicators, yes is index 1, no is index 0

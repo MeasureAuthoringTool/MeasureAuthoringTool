@@ -121,7 +121,7 @@ public class ManageMeasureDetailView
 
 	/** The caution patientbased msg str. */
 	private String cautionPatientbasedMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the Measure Scoring type will "
-			+ "reset the Patient-based Indicator to its default setting.<br/>";
+			+ "reset the Patient-based Measure to its default setting.<br/>";
 
 	/** The caution patientbased msg place holder. */
 	protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
@@ -206,8 +206,8 @@ public class ManageMeasureDetailView
 		scoringGroup.add(hp);
 		
 		FormLabel patientBasedLabel = new FormLabel();
-		patientBasedLabel.setText("Patient Based Measure");
-		patientBasedLabel.setTitle("Patient Based Measure");
+		patientBasedLabel.setText("Patient-based Measure");
+		patientBasedLabel.setTitle("Patient-based Measure");
 		patientBasedLabel.setFor("PatientBasedMeasureListBox");
 		patientBasedLabel.setShowRequiredIndicator(true);
 		patientBasedLabel.setId("PatientBasedMeasureListBox_Id");

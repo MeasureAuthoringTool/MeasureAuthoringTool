@@ -512,7 +512,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalPanel.add(new SpacerWidget());
 		
 		// MAT-8616 Add patient based measure field to Measure Details > General Information Section
-		Label patientBasedLabel = (Label) LabelBuilder.buildLabel(patientBasedInput, "Patient Based Measure");
+		Label patientBasedLabel = (Label) LabelBuilder.buildLabel(patientBasedInput, "Patient-based Measure");
 		patientBasedLabel.setStyleName("marginLeft20pxBold");
 		patientBasedLabel.setTitle(patientBasedLabel.getText());
 		generalPanel.add(patientBasedLabel);

@@ -123,7 +123,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		FormGroup passwordGroup = new FormGroup();
 		
 		
-		firstNameTextBox.setPlaceholder("First Name");
+		firstNameTextBox.setPlaceholder("Enter First Name");
 		firstNameTextBox.setTitle("FirstName");
 		firstNameTextBox.setId("FirstNameTextBox");
 		firstNameTextBox.setMaxLength(100);
@@ -137,7 +137,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		firstNameGroup.add(firstNameLabel);
 		firstNameGroup.add(firstNameTextBox);
 	
-		middleNameTextBox.setPlaceholder("M.I.");
+		//middleNameTextBox.setPlaceholder("M.I.");
 		middleNameTextBox.setTitle("MiddleName");
 		middleNameTextBox.setId("MiddleNameTextBox");
 		middleNameTextBox.setWidth("32px");
@@ -152,7 +152,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		middleNameGroup.add(middleNameLabel);
 		middleNameGroup.add(middleNameTextBox);
 		
-		lastNameTextBox.setPlaceholder("Last Name");
+		lastNameTextBox.setPlaceholder("Enter Last Name");
 		lastNameTextBox.setTitle("LastName");
 		lastNameTextBox.setId("LastNameTextBox");
 		lastNameTextBox.setMaxLength(100);
@@ -175,7 +175,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		titleLabel.setId("titleLabel");
 		titleLabel.setFor("titleTextBox");
 		titleLabel.setText("Title");
-		title.setPlaceholder("Title");
+		title.setPlaceholder("Enter Title");
 		title.setTitle("Title");
 		title.setId("titleTextBox");
 		title.setMaxLength(32);
@@ -217,7 +217,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		emailAddressLabel.setFor("emailTextBox");
 		emailAddressLabel.setShowRequiredIndicator(true);	
 		emailAddressLabel.setText("E-mail Address");
-		emailAddress.setPlaceholder("example@example.com");
+		emailAddress.setPlaceholder("Enter E-mail Address");
 		emailAddress.setTitle("Email Address");
 		emailAddress.setId("emailTextBox");
 		emailAddress.setWidth("250px");

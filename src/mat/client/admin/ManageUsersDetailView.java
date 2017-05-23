@@ -354,7 +354,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		FormGroup phoneNumberGroup = new FormGroup();
 		
 		
-		firstNameTextBox.setPlaceholder("First Name");
+		firstNameTextBox.setPlaceholder("Enter First Name");
 		firstNameTextBox.setTitle("FirstName");
 		firstNameTextBox.setId("FirstNameTextBox");
 		firstNameTextBox.setMaxLength(100);
@@ -368,7 +368,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		firstNameGroup.add(firstNameLabel);
 		firstNameGroup.add(firstNameTextBox);
 	
-		middleNameTextBox.setPlaceholder("M.I.");
+		//middleNameTextBox.setPlaceholder("M.I.");
 		middleNameTextBox.setTitle("MiddleName");
 		middleNameTextBox.setId("MiddleNameTextBox");
 		middleNameTextBox.setWidth("32px");
@@ -383,7 +383,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		middleNameGroup.add(middleNameLabel);
 		middleNameGroup.add(middleNameTextBox);
 		
-		lastNameTextBox.setPlaceholder("Last Name");
+		lastNameTextBox.setPlaceholder("Enter Last Name");
 		lastNameTextBox.setTitle("LastName");
 		lastNameTextBox.setId("LastNameTextBox");
 		lastNameTextBox.setMaxLength(100);
@@ -407,7 +407,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		titleLabel.setFor("titleTextBox");
 		//titleLabel.setShowRequiredIndicator(true);	
 		titleLabel.setText("Title");
-		title.setPlaceholder("Title");
+		title.setPlaceholder("Enter Title");
 		title.setTitle("Title");
 		title.setId("titleTextBox");
 		
@@ -423,7 +423,7 @@ implements ManageUsersPresenter.DetailDisplay {
 		emailAddressLabel.setFor("emailTextBox");
 		emailAddressLabel.setShowRequiredIndicator(true);	
 		emailAddressLabel.setText("E-mail Address");
-		emailAddress.setPlaceholder("example@example.com");
+		emailAddress.setPlaceholder("Enter E-mail Address");
 		emailAddress.setTitle("Email Address");
 		emailAddress.setId("emailTextBox");
 		emailAddress.setWidth("250px");

@@ -891,8 +891,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		measureDeletion = false;
 		isClone = false;
 		isLoading = false;
-		detailDisplay.getMessageFormGrp().setValidationState(ValidationState.NONE);
-		detailDisplay.getHelpBlock().setText("");
+		if(detailDisplay != null){
+			detailDisplay.getMessageFormGrp().setValidationState(ValidationState.NONE);
+			detailDisplay.getHelpBlock().setText("");
+		}
+		
 	}
 
 	/*

@@ -5,25 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.DTO.UserAuditLogDTO;
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.admin.ManageOrganizationSearchModel.Result;
-import mat.client.admin.ManageUsersSearchView.Observer;
-import mat.client.admin.service.SaveUpdateUserResult;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.CustomTextAreaWithMaxLength;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.InformationMessageDisplayInterface;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.SearchResultUpdate;
-import mat.client.shared.search.SearchResults;
-import mat.client.util.ClientConstants;
-import mat.shared.AdminManageUserModelValidator;
-import mat.shared.InCorrectUserRoleException;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -41,6 +22,23 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.DTO.UserAuditLogDTO;
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
+import mat.client.admin.ManageUsersSearchView.Observer;
+import mat.client.admin.service.SaveUpdateUserResult;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.CustomTextAreaWithMaxLength;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.search.SearchResultUpdate;
+import mat.client.shared.search.SearchResults;
+import mat.client.util.ClientConstants;
+import mat.shared.AdminManageUserModelValidator;
+import mat.shared.InCorrectUserRoleException;
 
 /**
  * The Class ManageUsersPresenter.
@@ -254,14 +252,14 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * 
 		 * @return the error message display
 		 */
-		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		MessageAlert getErrorMessageDisplay();
 
 		/**
 		 * Gets the success message display.
 		 * 
 		 * @return the success message display
 		 */
-		SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		MessageAlert getSuccessMessageDisplay();
 
 		/**
 		 * Sets the user is active editable.
@@ -313,7 +311,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
 		// Label getExpLabel();
 
-		InformationMessageDisplayInterface getInformationMessageDisplay();
+		MessageAlert getInformationMessageDisplay();
 
 		Label getRevokeDate();
 
@@ -489,7 +487,7 @@ public class ManageUsersPresenter implements MatPresenter {
 											public void onSuccess(Void result) {
 												detailDisplay
 														.getSuccessMessageDisplay()
-														.setMessage(
+														.createAlert(
 																"Temporary Password E-mail has been sent.");
 												List<String> event = new ArrayList<String>();
 												event.add("Reset Password");
@@ -507,7 +505,7 @@ public class ManageUsersPresenter implements MatPresenter {
 													Throwable caught) {
 												detailDisplay
 														.getErrorMessageDisplay()
-														.setMessage(
+														.createAlert(
 																MatContext
 																		.get()
 																		.getMessageDelegate()
@@ -594,8 +592,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		resetMessages();
 		updateUserDetailsFromView();
 		isUserDetailsModified();
-		detailDisplay.getErrorMessageDisplay().clear();
-		detailDisplay.getSuccessMessageDisplay().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		detailDisplay.getSuccessMessageDisplay().clearAlert();
 		
 		if (isValid(updatedDetails)) {
 			MatContext
@@ -669,7 +667,7 @@ public class ManageUsersPresenter implements MatPresenter {
 											 
 											detailDisplay
 											.getSuccessMessageDisplay()
-											.setMessage(
+											.createAlert(
 													MatContext
 															.get()
 															.getMessageDelegate()
@@ -726,7 +724,7 @@ public class ManageUsersPresenter implements MatPresenter {
 															result.getFailureReason()));
 										}
 										detailDisplay.getErrorMessageDisplay()
-												.setMessages(messages);
+												.createAlert(messages);
 									}
 
 								}
@@ -735,7 +733,7 @@ public class ManageUsersPresenter implements MatPresenter {
 								public void onFailure(Throwable caught) {
 									detailDisplay
 											.getErrorMessageDisplay()
-											.setMessage(
+											.createAlert(
 													caught.getLocalizedMessage());
 								}
 							});
@@ -755,7 +753,7 @@ public class ManageUsersPresenter implements MatPresenter {
 				displayDetail();
 				detailDisplay
 				.getSuccessMessageDisplay()
-				.setMessage(
+				.createAlert(
 						MatContext
 								.get()
 								.getMessageDelegate()
@@ -812,8 +810,8 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * Reset messages.
 	 */
 	private void resetMessages() {
-		detailDisplay.getErrorMessageDisplay().clear();
-		detailDisplay.getSuccessMessageDisplay().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		detailDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 
 	/**
@@ -821,7 +819,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
-		detailDisplay.getInformationMessageDisplay().clear();
+		detailDisplay.getInformationMessageDisplay().clearAlert();
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
 	}
@@ -855,7 +853,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						detailDisplay.getErrorMessageDisplay().setMessage(
+						detailDisplay.getErrorMessageDisplay().createAlert(
 								MatContext.get().getMessageDelegate()
 										.getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(
@@ -893,7 +891,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						detailDisplay.getErrorMessageDisplay().setMessage(
+						detailDisplay.getErrorMessageDisplay().createAlert(
 								MatContext.get().getMessageDelegate()
 										.getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(
@@ -1010,7 +1008,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		messages.add(currentDetails.getLastSuccessFullLoginDateTimeMessage());
 
 		if (currentDetails.getLoginId() != null) {
-			detailDisplay.getInformationMessageDisplay().setMessages(messages);
+			detailDisplay.getInformationMessageDisplay().createAlert(messages);
+			detailDisplay.getInformationMessageDisplay().setWidth("800px");
 		}
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if (!currentDetails.isActive()) {
@@ -1148,9 +1147,9 @@ public class ManageUsersPresenter implements MatPresenter {
 
 		boolean valid = message.size() == 0;
 		if (!valid) {
-			detailDisplay.getErrorMessageDisplay().setMessages(message);
+			detailDisplay.getErrorMessageDisplay().createAlert(message);
 		} else {
-			detailDisplay.getErrorMessageDisplay().clear();
+			detailDisplay.getErrorMessageDisplay().clearAlert();
 		}
 		return valid;
 	}

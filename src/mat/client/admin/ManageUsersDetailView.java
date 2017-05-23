@@ -3,27 +3,7 @@ package mat.client.admin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mat.client.ImageResources;
-import mat.client.admin.ManageOrganizationSearchModel.Result;
-import mat.client.shared.InformationMessageDisplayInterface;
-import mat.client.shared.InformationMessageDisplay;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.EmailAddressTextBox;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableImageButton;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.CustomTextAreaWithMaxLength;
-import mat.client.shared.PhoneNumberWidget;
-import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.UserNameWidget;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -36,9 +16,28 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.ImageResources;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.CustomTextAreaWithMaxLength;
+import mat.client.shared.EmailAddressTextBox;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.FocusableImageButton;
+import mat.client.shared.InformationMessageAlert;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.PhoneNumberWidget;
+import mat.client.shared.RequiredIndicator;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SecondaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.UserNameWidget;
 
 /**
  * The Class ManageUsersDetailView.
@@ -63,7 +62,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	
 	//private SecondaryButton deleteButton = new SecondaryButton("Delete User");
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The lock. */
 	private FocusableImageButton lock = new FocusableImageButton(ImageResources.INSTANCE.g_lock(), "Account Locked");
@@ -126,7 +125,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The status label. */
 	private String statusLabel = "Status";
 	/** The success messages. */
-	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	private MessageAlert successMessages = new SuccessMessageAlert();
 	
 	/** The title. */
 	private TextBox title = new TextBox();
@@ -146,7 +145,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	
 	//Label expLabel = new Label("Expires");
 	
-	InformationMessageDisplay informationMessage = new InformationMessageDisplay();
+	MessageAlert informationMessage = new InformationMessageAlert();
 
 
 	/**
@@ -364,7 +363,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
@@ -531,13 +530,13 @@ implements ManageUsersPresenter.DetailDisplay {
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getSuccessMessageDisplay()
 	 */
 	@Override
-	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
+	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
 	
 	@Override
-	public InformationMessageDisplayInterface getInformationMessageDisplay(){
+	public MessageAlert getInformationMessageDisplay(){
 		return informationMessage;
 	}
 	

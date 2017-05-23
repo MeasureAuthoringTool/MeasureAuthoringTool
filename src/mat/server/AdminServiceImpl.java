@@ -8,6 +8,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
@@ -25,9 +30,6 @@ import mat.server.service.UserService;
 import mat.shared.AdminManageOrganizationModelValidator;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -112,9 +114,30 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		model.setRevokeDate(getUserRevokeDate(user));
 		model.setCurrentUserCanUnlock(v);
 		model.setPasswordExpirationMsg(getUserPwdCreationMsg(user.getLoginId()));
+		model.setLastSuccessFullLoginDateTimeMessage(getUserSuccessfulLogonMsg(user.getSignInDate()));
 		return model;
 	}
-	
+	/**
+	 * This method is used to generate message for user last successful 
+	 * sign in date time. In case if no sign in date is set for user (new user),
+	 * no message is returned.
+	 * 
+	 * @param Date signInDate - User object signInDate.
+	 * 
+	 * @return String - Message.
+	 * 
+	 * **/
+	private String getUserSuccessfulLogonMsg(Date signInDate) {
+		if(signInDate != null) {
+			SimpleDateFormat isoFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+			String date = isoFormat.format(signInDate);
+			String message ="Last Successful logon : " + date + " CDT";
+			return message;
+		} else {
+			return "";
+		}
+		
+	}
 	private String getUserRevokeDate(User user) {
 		String revokedDate = null;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");

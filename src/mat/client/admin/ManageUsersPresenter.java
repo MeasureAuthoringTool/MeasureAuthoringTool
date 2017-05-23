@@ -1007,6 +1007,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		List<String> messages = new ArrayList<String>();
 		messages.add("User ID : " + currentDetails.getLoginId());
 		messages.add(currentDetails.getPasswordExpirationMsg());
+		messages.add(currentDetails.getLastSuccessFullLoginDateTimeMessage());
 
 		if (currentDetails.getLoginId() != null) {
 			detailDisplay.getInformationMessageDisplay().setMessages(messages);

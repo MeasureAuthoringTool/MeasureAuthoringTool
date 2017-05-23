@@ -64,6 +64,8 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	/** The password expiration msg. */
 	private String passwordExpirationMsg;
 	
+	private String lastSuccessFullLoginDateTimeMessage;
+	
 	/** The revoke date. */
 	private String revokeDate;
 	
@@ -544,5 +546,13 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 			this.setAdditionalInfo(noMarkupText);
 		}
 		
+	}
+
+	public String getLastSuccessFullLoginDateTimeMessage() {
+		return lastSuccessFullLoginDateTimeMessage;
+	}
+
+	public void setLastSuccessFullLoginDateTimeMessage(String lastSuccessFullLoginDateTimeMessage) {
+		this.lastSuccessFullLoginDateTimeMessage = lastSuccessFullLoginDateTimeMessage;
 	}
 }

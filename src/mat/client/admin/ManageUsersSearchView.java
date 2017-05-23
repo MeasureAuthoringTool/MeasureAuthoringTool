@@ -3,20 +3,7 @@ package mat.client.admin;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.CustomPager;
-import mat.client.admin.ManageUsersSearchModel.Result;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatButtonCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.search.SearchResults;
-import mat.client.util.CellTableUtility;
-import mat.model.UserAuditLog;
-import mat.shared.ClickableSafeHtmlCell;
+import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -36,15 +23,29 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.Button;
+/*import com.google.gwt.user.client.ui.Button;*/
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+
+import mat.client.CustomPager;
+import mat.client.admin.ManageUsersSearchModel.Result;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatButtonCell;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.SearchWidgetBootStrap;
+/*import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;*/
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.search.SearchResults;
+import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 
 /**ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay.**/
 public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay, HasSelectionHandlers<ManageUsersSearchModel.Result> {
@@ -57,7 +58,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	/** The create new button. */
-	private Button createNewButton = new PrimaryButton("Add New User", "primaryGreyButton");
+	private Button createNewButton = new Button("Add New User");
 	/** The generate csv file button. */
 	//private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	/** The handler manager. */
@@ -65,11 +66,13 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	/** The search text. */
-	private TextBox search = new TextBox();
+	//private TextBox search = new TextBox();
 	/** The search button. */
-	private Button searchButton = new SecondaryButton("Search");
+	//private Button searchButton = new Button("Search");
+	
+	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	/** The search label. */
-	private Widget searchLabel = LabelBuilder.buildLabel(search, "Search for a User");
+	//private Widget searchLabel = LabelBuilder.buildLabel(search, "Search for a User");
 	private Observer observer;
 	
 	
@@ -80,7 +83,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	
 	/**Constructor.**/
 	public ManageUsersSearchView() {
-		search.setWidth("256px");
+		//search.setWidth("256px");
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
@@ -89,12 +92,12 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		buttonPanel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(buttonPanel);
 		mainPanel.add(new SpacerWidget());
-		searchLabel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-		mainPanel.add(searchLabel);
-		search.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-		mainPanel.add(search);
-		searchButton.addStyleName("userSearchButton");
-		mainPanel.add(searchButton);
+		//searchLabel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
+		//mainPanel.add(searchLabel);
+		//search.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
+		//mainPanel.add(search);
+		//searchButton.addStyleName("userSearchButton");
+		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
 		mainPanel.add(new SpacerWidget());
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		mainPanel.add(cellTablePanel);
@@ -248,14 +251,14 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
-		return searchButton;
+		return searchWidgetBootStrap.getGo();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#getSearchString()
 	 */
 	@Override
 	public HasValue<String> getSearchString() {
-		return search;
+		return searchWidgetBootStrap.getSearchBox();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getSelectIdForEditTool()

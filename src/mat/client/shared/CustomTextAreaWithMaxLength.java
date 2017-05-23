@@ -1,5 +1,7 @@
 package mat.client.shared;
 
+import org.gwtbootstrap3.client.ui.TextArea;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
@@ -8,7 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
+
 
 public class CustomTextAreaWithMaxLength extends TextArea  {
 
@@ -27,7 +29,7 @@ public class CustomTextAreaWithMaxLength extends TextArea  {
 		
 		super(Document.get().createTextAreaElement());
 		maxLength = maxLen;
-		setStyleName("gwt-TextArea");
+		//setStyleName("gwt-TextArea");
 		sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
 		
 		CustomTextAreaWithMaxLength.this

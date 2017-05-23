@@ -4,46 +4,54 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CustomTextAreaWithMaxLength;
-import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.InformationMessageAlert;
-import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.UserNameWidget;
 
 /**
  * The Class ManageUsersDetailView.
  */
 public class ManageUsersDetailView
 implements ManageUsersPresenter.DetailDisplay {
+	
+	private TextBox firstNameTextBox = new TextBox();
+	private TextBox middleNameTextBox = new TextBox();
+	private TextBox lastNameTextBox = new TextBox();
+	private FormGroup additionalInfoGroup = new FormGroup();
 	
 	/** The active status. */
 	private RadioButton activeStatus = new RadioButton("status", "Active");
@@ -55,12 +63,9 @@ implements ManageUsersPresenter.DetailDisplay {
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	
 	/** The email address. */
-	private TextBox emailAddress = new EmailAddressTextBox();
+	private TextBox emailAddress = new TextBox();
 	
-	/** The email address label. */
-	private String emailAddressLabel = "E-mail Address";
 	
-	//private SecondaryButton deleteButton = new SecondaryButton("Delete User");
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
@@ -75,22 +80,17 @@ implements ManageUsersPresenter.DetailDisplay {
 	
 	/** The main panel. */
 	private SimplePanel mainPanel = new SimplePanel();
-	
-	/** The name widget. */
-	private UserNameWidget nameWidget = new UserNameWidget();
+
 	
 	/** The oid. */
 	private TextBox oid = new TextBox();
 	
-	/** The oid label. */
-	private String oidLabel = "Organization OID";
-	//private String rootOidLabel = "Root OID";
+	
 	
 	/** The org admin radio. */
 	private RadioButton orgAdminRadio = new RadioButton("role", "Top Level Administrator");
 	
-	/** The organization label. */
-	private String organizationLabel = "Organization";
+
 	
 	/** The organization. */
 	private ListBoxMVP organizationListBox = new ListBoxMVP();
@@ -103,7 +103,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The org user radio. */
 	private RadioButton orgUserRadio = new RadioButton("role", "User");
 	
-	//private TextBox rootOid = new TextBox();
+	
 	/** The phone widget. */
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
 	
@@ -111,7 +111,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	private HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 	
 	/** The reset password. */
-	private SecondaryButton resetPassword = new SecondaryButton("Reset Password");
+	private Button resetPassword = new Button("Reset Password");
 	
 	/** The revoked status. */
 	private RadioButton revokedStatus = new RadioButton("status", "Revoked");
@@ -119,33 +119,17 @@ implements ManageUsersPresenter.DetailDisplay {
 	/* The revoked date, past or future */
 	private Label revokeDate = new Label();
 	
-	/** The role label. */
-	private String roleLabel = "Role";
-	
-	/** The status label. */
-	private String statusLabel = "Status";
 	/** The success messages. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
 	
 	/** The title. */
 	private TextBox title = new TextBox();
 	
-	/** The title label. */
-	private String titleLabel = "Title";
-	
-//	private String addInfoLabel = "Additional Information";
-	
-	
 	private static final int ADD_INFO_MAX_LENGTH = 2000;
 	
 	private CustomTextAreaWithMaxLength addInfoArea = new CustomTextAreaWithMaxLength(ADD_INFO_MAX_LENGTH);
 	
-	
-	private Label addInfoLabel = new Label("Notes");
-	
-	//Label expLabel = new Label("Expires");
-	
-	MessageAlert informationMessage = new InformationMessageAlert();
+	private MessageAlert informationMessage = new InformationMessageAlert();
 
 
 	/**
@@ -162,9 +146,6 @@ implements ManageUsersPresenter.DetailDisplay {
 		fPanel.add(required);
 		fPanel.add(new SpacerWidget());
 		HorizontalPanel hPanel = new HorizontalPanel();
-		HTML userId = new HTML("&nbsp; User ID :&nbsp; ");
-//		hPanel.add(userId);
-//		hPanel.add(loginId);
 		hPanel.add(informationMessage);
 		fPanel.add(hPanel);
 		fPanel.add(new SpacerWidget());
@@ -184,56 +165,134 @@ implements ManageUsersPresenter.DetailDisplay {
 		clearPanel.addStyleName("clearBoth");
 		fPanel.add(clearPanel);
 		
-		leftPanel.add(nameWidget);
+		Form leftSideForm = buildLeftSideForm();
+		
+		leftPanel.add(leftSideForm);
 		leftPanel.add(new SpacerWidget());
 		
-		leftPanel.add(LabelBuilder.buildLabel(title, titleLabel));
-		title.setTitle("Title");
-		leftPanel.add(title);
-		leftPanel.add(new SpacerWidget());
-		
-		emailAddress.setTitle("Email Address");
-		leftPanel.add(LabelBuilder.buildRequiredLabel(emailAddress, emailAddressLabel));
-		leftPanel.add(emailAddress);
-		leftPanel.add(new SpacerWidget());
-		
-		leftPanel.add(phoneWidget);
-		leftPanel.add(new SpacerWidget());
-		
-		addInfoArea.getElement().setAttribute("maxlength", "250");
-		addInfoArea.setText("");
-		addInfoArea.setHeight("80px");
-		addInfoArea.setWidth("250px");
-		addInfoLabel.getElement().setId("Admin_AddtionalInfo_Label");
-		leftPanel.add(addInfoLabel);
-		addInfoArea.setTitle("Notes");
-		leftPanel.add(addInfoArea);
-		leftPanel.add(new SpacerWidget());
-		
+				
 		lockedLabel.addStyleName("floatRight");
 		lockedLabel.addStyleName("bold");
 		lockedLabel.add(lock);
 		lockedLabel.add(new Label("Account Locked"));
 		rightPanel.add(lockedLabel);
+		
+		Form rightSideForm = buildRightSideForm();
+		
+		rightPanel.add(rightSideForm);
+		rightPanel.add(new SpacerWidget());
+		SimplePanel buttonPanel = new SimplePanel();
+		buttonPanel.add(buttonBar);
+		buttonPanel.setWidth("100%");
+		fPanel.add(buttonPanel);
+		mainPanel.add(fPanel);
+		containerPanel.setContent(mainPanel);
+		
+		addEventHandlers();
+	}
+	
+	
+	private Form buildRightSideForm(){
+		Form rightSideForm = new Form();
+		FormGroup roleGroup = new FormGroup();
+		FormGroup organizationGroup = new FormGroup();
+		FormGroup oidGroup = new FormGroup();
+		FormGroup statusGroup = new FormGroup();
+		FormGroup resetButtonGroup = new FormGroup();
+		
+		FormLabel roleLabel = new FormLabel();
+		roleLabel.setText("Role");
+		roleLabel.setShowRequiredIndicator(true);
+		roleLabel.setId("roleLabel");
+		roleLabel.setFor("roleRadioPanel");
 		FlowPanel roleRadioPanel = new FlowPanel();
-		
-		rightPanel.add(LabelBuilder.buildRequiredLabel(roleRadioPanel, roleLabel));
-		
 		SimplePanel radioPanel1 = new SimplePanel();
 		SimplePanel radioPanel2 = new SimplePanel();
 		SimplePanel radioPanel3 = new SimplePanel();
+		orgUserRadio.setTitle("User");
 		radioPanel1.add(orgUserRadio);
+		orgSuperUserRadio.setTitle("Top Level User");
+		orgAdminRadio.setTitle("Top Level Administrator");
 		radioPanel2.add(orgSuperUserRadio);
 		radioPanel3.add(orgAdminRadio);
 		roleRadioPanel.add(radioPanel1);
 		roleRadioPanel.add(radioPanel2);
 		roleRadioPanel.add(radioPanel3);
-		rightPanel.add(roleRadioPanel);
-		rightPanel.add(new SpacerWidget());
+		roleRadioPanel.getElement().setAttribute("id", "roleRadioPanel");
 		
-		rightPanel.add(LabelBuilder.buildLabel(organizationListBox, organizationLabel));
-		rightPanel.add(organizationListBox);
-		rightPanel.add(new SpacerWidget());
+		roleGroup.add(roleLabel);
+		roleGroup.add(roleRadioPanel);
+		
+		FormLabel organizationLabel = new FormLabel();
+		organizationLabel.setText("Organization");
+		organizationLabel.setTitle("Organization");
+		organizationLabel.setId("OrganizationLabel");
+		organizationLabel.setFor("OrganizationListBox");
+		organizationLabel.setShowRequiredIndicator(true);
+		organizationListBox.getElement().setAttribute("id", "OrganizationListBox");
+		organizationGroup.add(organizationLabel);
+		organizationGroup.add(organizationListBox);
+		
+		FormLabel oidLabel = new FormLabel();
+		Label invisibleLabel = new Label();
+		invisibleLabel.setText("OrganizationOidUpdated");
+		invisibleLabel.getElement().setAttribute("id", "OrganizationOidUpdated");
+		invisibleLabel.getElement().setAttribute("for", "OrganizationOidUpdated");
+		invisibleLabel.setVisible(false);
+		oidLabel.setText("Organization OID");
+		oidLabel.setTitle("Organization OID");
+		oidLabel.setId("OIDLabel");
+		oidLabel.setFor("OIDTextBox");
+		oidLabel.setShowRequiredIndicator(true);
+		oid.setWidth("196px");
+		oid.setEnabled(false);
+		oidGroup.add(oidLabel);
+		oidGroup.add(invisibleLabel);
+		oidGroup.add(oid);
+		
+		FormLabel statusLabel = new FormLabel();
+		statusLabel.setText("Status");
+		statusLabel.setTitle("Status");
+		statusLabel.setId("statusLabel");
+		statusLabel.setFor("StatusGroupPanel");
+		
+		
+		HorizontalPanel hzPanel = new HorizontalPanel();
+		hzPanel.getElement().setId("HorizontalPanel_UserExpiryDate");
+		
+		activeStatus.addStyleName("userStatus");
+		revokedStatus.addStyleName("userStatus");
+		revokeDate.addStyleName("revokeDate");
+		hzPanel.add(activeStatus);
+		
+		HorizontalPanel hzRevokePanel = new HorizontalPanel();
+		hzRevokePanel.add(revokedStatus);
+		hzRevokePanel.add(revokeDate);
+		
+		statusGroup.add(statusLabel);
+		statusGroup.add(hzPanel);
+		statusGroup.add(hzRevokePanel);
+		
+		resetPassword.setTitle("Reset Password");
+		//resetPassword.setType(ButtonType.INFO);
+		resetButtonGroup.add(resetPassword);
+		
+		FieldSet fieldSet = new FieldSet();
+		fieldSet.add(roleGroup);
+		fieldSet.add(organizationGroup);
+		fieldSet.add(oidGroup);
+		fieldSet.add(statusGroup);
+		fieldSet.add(resetButtonGroup);
+		
+		rightSideForm.add(fieldSet);
+		return rightSideForm;
+	}
+
+
+	/**
+	 * 
+	 */
+	private void addEventHandlers() {
 		organizationListBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -256,47 +315,6 @@ implements ManageUsersPresenter.DetailDisplay {
 			}
 		});
 		
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("OrganizationOidUpdated"),
-				"OrganizationOidUpdated");
-		rightPanel.add(invisibleLabel);
-		rightPanel.add(LabelBuilder.buildLabel(oid, oidLabel));
-		rightPanel.add(oid);
-		rightPanel.add(new SpacerWidget());
-		
-		/*rightPanel.add(LabelBuilder.buildRequiredLabel(rootOid, rootOidLabel));
-		rightPanel.add(rootOid);
-		rightPanel.add(new SpacerWidget());*/
-		HorizontalPanel hzPanel = new HorizontalPanel();
-		hzPanel.getElement().setId("HorizontalPanel_UserExpiryDate");
-		//expLabel.getElement().setId("UserPasswordExpiry_Label");
-		rightPanel.add(LabelBuilder.buildLabel(activeStatus, statusLabel));
-		activeStatus.addStyleName("userStatus");
-		revokedStatus.addStyleName("userStatus");
-		revokeDate.addStyleName("revokeDate");
-		SimplePanel sPanel = new SimplePanel();
-		sPanel.setWidth("5px");
-		hzPanel.add(activeStatus);
-		hzPanel.add(sPanel);
-		//hzPanel.add(expLabel);
-		hzPanel.addStyleName("inline");
-		rightPanel.add(hzPanel);
-		
-		HorizontalPanel hzRevokePanel = new HorizontalPanel();
-		hzRevokePanel.add(revokedStatus);
-		hzRevokePanel.add(sPanel);
-		//hzRevokePanel.setWidth("35%");
-		//hzPanel.addStyleName("inline");
-		hzRevokePanel.add(revokeDate);
-		rightPanel.add(hzRevokePanel);
-		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(event.getValue()) {
-					organizationListBox.setEnabled(true);
-					oid.setEnabled(true);
-				}
-			}
-		});
 		
 		revokedStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			
@@ -312,28 +330,148 @@ implements ManageUsersPresenter.DetailDisplay {
 			}
 		});
 		
-		rightPanel.add(new SpacerWidget());
-		
-		rightPanel.add(resetPassword);
-		SimplePanel buttonPanel = new SimplePanel();
-		buttonPanel.add(buttonBar);
-		buttonPanel.setWidth("100%");
-		//deleteButton.addStyleName("floatRight");
-		//fPanel.add(deleteButton);
-		fPanel.add(buttonPanel);
-		mainPanel.add(fPanel);
-		containerPanel.setContent(mainPanel);
-		//containerPanel.setEmbeddedLink("Manage Users");
-		title.setWidth("196px");
-		//organization.setWidth("196px");
-		oid.setWidth("196px");
-		//rootOid.setWidth("196px");
-		oid.setEnabled(false);
-		//oid.setMaxLength(50);
-		//rootOid.setMaxLength(50);
-		title.setMaxLength(32);
-		//organization.setMaxLength(80);
+		activeStatus.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				if(event.getValue()) {
+					organizationListBox.setEnabled(true);
+					oid.setEnabled(true);
+				}
+			}
+		});
 	}
+	
+	
+	private Form buildLeftSideForm(){
+		
+		Form userNameForm = new Form();
+		FormGroup firstNameGroup = new FormGroup();
+		FormGroup middleNameGroup = new FormGroup();
+		FormGroup lastNameGroup = new FormGroup();
+		
+		FormGroup titleGroup = new FormGroup();
+		FormGroup emailAddressGroup = new FormGroup();
+		FormGroup phoneNumberGroup = new FormGroup();
+		
+		
+		firstNameTextBox.setPlaceholder("First Name");
+		firstNameTextBox.setTitle("FirstName");
+		firstNameTextBox.setId("FirstNameTextBox");
+		firstNameTextBox.setMaxLength(100);
+		
+		FormLabel firstNameLabel = new FormLabel();
+		firstNameLabel.setId("firstNameLabel");
+		firstNameLabel.setFor("FirstNameTextBox");
+		firstNameLabel.setShowRequiredIndicator(true);	
+		firstNameLabel.setText("First Name");
+		
+		firstNameGroup.add(firstNameLabel);
+		firstNameGroup.add(firstNameTextBox);
+	
+		middleNameTextBox.setPlaceholder("M.I.");
+		middleNameTextBox.setTitle("MiddleName");
+		middleNameTextBox.setId("MiddleNameTextBox");
+		middleNameTextBox.setWidth("32px");
+		middleNameTextBox.setMaxLength(1);
+		
+		FormLabel middleNameLabel = new FormLabel();
+		middleNameLabel.setId("MiddleNameLabel");
+		middleNameLabel.setFor("MiddleNameTextBox");
+		middleNameLabel.setText("M.I.");
+		
+		
+		middleNameGroup.add(middleNameLabel);
+		middleNameGroup.add(middleNameTextBox);
+		
+		lastNameTextBox.setPlaceholder("Last Name");
+		lastNameTextBox.setTitle("LastName");
+		lastNameTextBox.setId("LastNameTextBox");
+		lastNameTextBox.setMaxLength(100);
+		
+		FormLabel lastNameLabel = new FormLabel();
+		lastNameLabel.setId("LastNameLabel");
+		lastNameLabel.setFor("LastNameTextBox");
+		lastNameLabel.setShowRequiredIndicator(true);	
+		lastNameLabel.setText("Last Name");
+		
+		lastNameGroup.add(lastNameLabel);
+		lastNameGroup.add(lastNameTextBox);
+		
+		Grid nameGrid = new Grid(1,3);
+		nameGrid.setWidget(0, 0, firstNameGroup);
+		nameGrid.setWidget(0, 1, middleNameGroup);
+		nameGrid.setWidget(0, 2, lastNameGroup);
+		
+		FormLabel titleLabel = new FormLabel();
+		titleLabel.setId("titleLabel");
+		titleLabel.setFor("titleTextBox");
+		//titleLabel.setShowRequiredIndicator(true);	
+		titleLabel.setText("Title");
+		title.setPlaceholder("Title");
+		title.setTitle("Title");
+		title.setId("titleTextBox");
+		
+		title.setWidth("196px");
+		title.setMaxLength(32);
+		
+		titleGroup.add(titleLabel);
+		titleGroup.add(title);
+		
+		
+		FormLabel emailAddressLabel = new FormLabel();
+		emailAddressLabel.setId("emailAddressLabel");
+		emailAddressLabel.setFor("emailTextBox");
+		emailAddressLabel.setShowRequiredIndicator(true);	
+		emailAddressLabel.setText("E-mail Address");
+		emailAddress.setPlaceholder("example@example.com");
+		emailAddress.setTitle("Email Address");
+		emailAddress.setId("emailTextBox");
+		emailAddress.setWidth("250px");
+		emailAddress.setMaxLength(254);
+		emailAddressGroup.add(emailAddressLabel);
+		emailAddressGroup.add(emailAddress);
+		
+		
+		FormLabel phoneNumberLabel = new FormLabel();
+		phoneNumberLabel.setId("phoneNumberLabel");
+		phoneNumberLabel.setFor("phoneNumber_TextBox");
+		phoneNumberLabel.setShowRequiredIndicator(true);	
+		phoneNumberLabel.setText("Phone Number");
+		phoneWidget.setTitle("Phone Number");
+		
+		
+		phoneNumberGroup.add(phoneNumberLabel);
+		phoneNumberGroup.add(phoneWidget);
+		
+		
+		FormLabel additionaInfoLabel = new FormLabel();
+		additionaInfoLabel.setId("addInfoLabel");
+		additionaInfoLabel.setFor("addInfoContent");
+		additionaInfoLabel.setText("Notes");
+		addInfoArea.getElement().setAttribute("maxlength", "250");
+		addInfoArea.getElement().setAttribute("id", "addInfoContent");
+		addInfoArea.setText("");
+		addInfoArea.setHeight("80px");
+		addInfoArea.setWidth("250px");
+		
+		additionalInfoGroup.add(additionaInfoLabel);
+		additionalInfoGroup.add(addInfoArea);
+		
+		
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(nameGrid);
+		formFieldSet.add(titleGroup);
+		formFieldSet.add(emailAddressGroup);
+		formFieldSet.add(phoneNumberGroup);
+		formFieldSet.add(additionalInfoGroup);
+		
+		
+		userNameForm.add(formFieldSet);
+		return userNameForm;
+	}
+	
+	
+
 	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#asWidget()
@@ -373,7 +511,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	 */
 	@Override
 	public HasValue<String> getFirstName() {
-		return nameWidget.getFirstName();
+		return firstNameTextBox;
 	}
 	
 	/* (non-Javadoc)
@@ -405,7 +543,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	 */
 	@Override
 	public HasValue<String> getLastName() {
-		return nameWidget.getLastName();
+		return lastNameTextBox;
 	}
 	
 	/* (non-Javadoc)
@@ -421,7 +559,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	 */
 	@Override
 	public HasValue<String> getMiddleInitial() {
-		return nameWidget.getMiddleInitial();
+		return middleNameTextBox;
 	}
 	
 	/* (non-Javadoc)
@@ -602,16 +740,6 @@ implements ManageUsersPresenter.DetailDisplay {
 		MatContext.get().setVisible(revokedStatus, b);
 	}
 	
-	//@Override
-	//public HasClickHandlers getDeleteUserButton() {
-	//	return deleteButton;
-	//}
-	
-	//@Override
-	//public void setUserIsDeletable(boolean b) {
-	//	MatContext.get().setVisible(deleteButton,b);
-	//}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#setShowUnlockOption(boolean)
 	 */
@@ -666,13 +794,6 @@ implements ManageUsersPresenter.DetailDisplay {
 	
 	@Override
 	public void setShowAdminNotes(boolean b) {
-		MatContext.get().setVisible(addInfoLabel, b);
-		MatContext.get().setVisible(addInfoArea, b);
+		additionalInfoGroup.setVisible(b);
 	}
-
-
-//	@Override
-//	public Label getExpLabel() {
-//		return expLabel;
-//	}
 }

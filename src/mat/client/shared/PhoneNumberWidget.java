@@ -1,12 +1,14 @@
 package mat.client.shared;
 
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+
 
 /**
  * The Class PhoneNumberWidget.
@@ -68,10 +70,10 @@ public class PhoneNumberWidget extends Composite {
 		phoneNumber.setMaxLength(12);
 		Grid phoneLayout = new Grid(2,2);
 		phoneLayout.addStyleName("leftAligned");
-		phoneLayout.setWidget(0,0, LabelBuilder.buildRequiredLabel(phoneNumber, "Phone Number"));
-		phoneLayout.setWidget(1,0, phoneNumber);
+		//phoneLayout.setWidget(0,0, LabelBuilder.buildRequiredLabel(phoneNumber, "Phone Number"));
+		phoneLayout.setWidget(0,0, phoneNumber);
 		Label phoneFormat = new Label("(555-555-1234)");
-		phoneLayout.setWidget(1, 1, phoneFormat);
+		phoneLayout.setWidget(0, 1, phoneFormat);
 		
 		phoneNumber.setWidth("90px");
 		initWidget(phoneLayout);

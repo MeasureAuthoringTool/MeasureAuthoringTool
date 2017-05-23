@@ -4,17 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.admin.service.SaveUpdateUserResult;
-import mat.client.login.service.LoginServiceAsync;
-import mat.client.myAccount.service.SaveMyAccountResult;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
-import mat.client.shared.PasswordEditInfoWidget;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.util.ClientConstants;
-import mat.shared.MyAccountModelValidator;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,8 +17,16 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.login.service.LoginServiceAsync;
+import mat.client.myAccount.service.SaveMyAccountResult;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.util.ClientConstants;
+import mat.shared.MyAccountModelValidator;
 
 /**
  * The Class PersonalInformationPresenter.
@@ -139,21 +138,23 @@ public class PersonalInformationPresenter implements MatPresenter {
 		 * 
 		 * @return the error message display
 		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * Gets the success message display.
 		 * 
 		 * @return the success message display
 		 */
-		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		public MessageAlert getSuccessMessageDisplay();
+
+		Input getPasswordInput();
 		
 		/**
 		 * Gets the password edit info widget.
 		 * 
 		 * @return the password edit info widget
 		 */
-		PasswordEditInfoWidget getPasswordEditInfoWidget();
+		//PasswordEditInfoWidget getPasswordEditInfoWidget();
 	}
 	
 	/** The submit on enter handler. */
@@ -211,7 +212,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		});
 		
 		// if the user enters the "Enter" key on the password field, do a save.
-		display.getPasswordEditInfoWidget().getPassword().addKeyDownHandler(submitOnEnterHandler);
+		display.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
 		
 		
 	}
@@ -223,8 +224,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 	 *            the password
 	 */
 	private void savePersonalInformation(String password) {
-		display.getErrorMessageDisplay().clear();
-		display.getSuccessMessageDisplay().clear();
+		display.getErrorMessageDisplay().clearAlert();
+		display.getSuccessMessageDisplay().clearAlert();
 		
 		loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String, String>>(){
 			@Override
@@ -242,8 +243,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 							@Override
 							public void onSuccess(SaveMyAccountResult result) {
 								if (result.isSuccess()) {
-									display.getErrorMessageDisplay().clear();
-									display.getSuccessMessageDisplay().setMessage(MatContext.get()
+									display.getErrorMessageDisplay().clearAlert();
+									display.getSuccessMessageDisplay().createAlert(MatContext.get()
 											.getMessageDelegate().getPersonalInfoUpdatedMessage());
 									display.getFirstName().setValue(currentModel.getFirstName());
 									display.getMiddleInitial().setValue(currentModel
@@ -268,19 +269,19 @@ public class PersonalInformationPresenter implements MatPresenter {
 											messages.add(MatContext.get().getMessageDelegate().
 													getUnknownErrorMessage(result.getFailureReason()));
 									}
-									display.getErrorMessageDisplay().setMessages(messages);
+									display.getErrorMessageDisplay().createAlert(messages);
 								}
 							}
 						});
 					}
 				} else {
-					display.getErrorMessageDisplay().clear();
-					display.getSuccessMessageDisplay().clear();
+					display.getErrorMessageDisplay().clearAlert();
+					display.getSuccessMessageDisplay().clearAlert();
 					String displayErrorMsg = resultMap.get("message");
 					if (displayErrorMsg.equals("REDIRECT")) {
 						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 					} else {
-						display.getErrorMessageDisplay().setMessage(displayErrorMsg);
+						display.getErrorMessageDisplay().createAlert(displayErrorMsg);
 					}
 					
 				}
@@ -303,8 +304,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 	@Override
 	public void beforeDisplay() {
 		
-		display.getErrorMessageDisplay().clear();
-		display.getSuccessMessageDisplay().clear();
+		display.getErrorMessageDisplay().clearAlert();
+		display.getSuccessMessageDisplay().clearAlert();
 		MatContext.get().getMyAccountService().getMyAccount(new AsyncCallback<MyAccountModel>() {
 			
 			@Override
@@ -315,7 +316,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
 		});
@@ -403,10 +404,10 @@ public class PersonalInformationPresenter implements MatPresenter {
 		
 		boolean valid = message.size() == 0;
 		if(!valid) {
-			display.getErrorMessageDisplay().setMessages(message);
+			display.getErrorMessageDisplay().createAlert(message);
 		}
 		else {
-			display.getErrorMessageDisplay().clear();
+			display.getErrorMessageDisplay().clearAlert();
 		}
 		return valid;
 	}

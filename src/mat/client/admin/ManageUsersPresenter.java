@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -16,11 +19,11 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+/*import com.google.gwt.user.client.ui.Button;*/
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
+
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.UserAuditLogDTO;
@@ -37,6 +40,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
+import mat.client.util.MatTextBox;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 
@@ -449,12 +453,12 @@ public class ManageUsersPresenter implements MatPresenter {
 				createNew();
 			}
 		});
-		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
+		MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) searchDisplay.getSearchButton()).click();
+					((Button)searchDisplay.getSearchButton()).click();
 				}
 			}
 		});
@@ -881,7 +885,7 @@ public class ManageUsersPresenter implements MatPresenter {
 					public void onSuccess(ManageUsersSearchModel result) {
 						SearchResultUpdate sru = new SearchResultUpdate();
 						sru.update(result,
-								(TextBox) searchDisplay.getSearchString(),
+								 (com.google.gwt.user.client.ui.TextBox)searchDisplay.getSearchString(),
 								lastSearchKey);
 						sru = null;
 						searchDisplay.buildDataTable(result);
@@ -955,7 +959,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			Mat.hideLoadingMessage();
 		}
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
+		((MatTextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 	}
 
 	/*

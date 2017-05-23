@@ -70,6 +70,13 @@ public class MessageAlert extends Alert implements MessageAlertInterface {
 		return msgHtml;
 	}
 
+	
+	protected HTML getMsgPanel( String message) {
+		
+		HTML msgHtml = new HTML(" <b>" + message + "</b>");
+		return msgHtml;
+	}
+	
 	public void createAlert() {
 		
 	}

@@ -129,7 +129,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * **/
 	private String getUserSuccessfulLogonMsg(Date signInDate) {
 		if(signInDate != null) {
-			SimpleDateFormat isoFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss a");
+			SimpleDateFormat isoFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 			String date = isoFormat.format(signInDate);
 			String message ="Last Successful logon : " + date + " CDT";
 			return message;

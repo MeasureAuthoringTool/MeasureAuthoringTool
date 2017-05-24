@@ -8,17 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import mat.client.MatPresenter;
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.codelist.service.CodeListServiceAsync;
-import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatTabLayoutPanel;
-import mat.client.shared.SpacerWidget;
-import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -30,6 +19,16 @@ import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
+
+import mat.client.MatPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatTabLayoutPanel;
+import mat.client.shared.SpacerWidget;
+import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -251,6 +250,27 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							//MAT-8571 :Filter Non Patient Context type Definitions and Functions.
 							if(!namedNodeMap.getNamedItem("context").getNodeValue().equalsIgnoreCase(PopulationWorkSpaceConstants.CONTEXT_PATIENT)){
 								continue;
+							} else {
+								NodeList childNodeList = cqlFunctionNode.getChildNodes();
+								boolean invalidArgList = false;
+								// CHECK IF NO AGRUMENTS ARE ADDED.
+								if(childNodeList.getLength() == 1 && childNodeList.item(0).getNodeName().equalsIgnoreCase("logic")){
+									invalidArgList = true;
+								} else { // CHECK IF ARGUMENTS ARE ADDED THEN ONLY SHOW FUNCTIONS WITH ONE AND ONLY ONE ARGUMENT.
+									for(int k=0; k < childNodeList.getLength();k++){
+										Node childNode = childNodeList.item(k);
+										if(childNode.getNodeName().equalsIgnoreCase("arguments")){
+											NodeList argumentNodeList = childNode.getChildNodes();
+											if(argumentNodeList!= null && (argumentNodeList.getLength() !=1)){
+												invalidArgList = true;
+												break;
+											}
+										} 
+									}
+								}
+								if(invalidArgList){
+									continue;
+								}
 							}
 							String functionName = namedNodeMap.getNamedItem("name").getNodeValue().trim();
 							String uuid = namedNodeMap.getNamedItem("id").getNodeValue().trim();

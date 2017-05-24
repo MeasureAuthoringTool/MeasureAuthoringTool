@@ -45,6 +45,8 @@ public class CQLExpressionObject implements IsSerializable {
     private List<String> usedCodes = new ArrayList<String>();
     private Map<String, List<String>> valueSetDataTypeMap = new HashMap<String,List<String>>();
     
+    private List<CQLExpressionOprandObject> oprandList = new ArrayList<CQLExpressionOprandObject>();
+    
     public CQLExpressionObject(String type, String name) {
 		// TODO Auto-generated constructor stub
 		this.type = type;
@@ -155,5 +157,19 @@ public class CQLExpressionObject implements IsSerializable {
 
 	public void setReturnType(String returnType) {
 		this.returnType = returnType;
+	}
+
+	/**
+	 * @return the oprandList
+	 */
+	public List<CQLExpressionOprandObject> getOprandList() {
+		return oprandList;
+	}
+
+	/**
+	 * @param oprandList the oprandList to set
+	 */
+	public void setOprandList(List<CQLExpressionOprandObject> oprandList) {
+		this.oprandList = oprandList;
 	}
 }

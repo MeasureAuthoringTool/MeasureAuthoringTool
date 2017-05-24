@@ -7,11 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLModel;
-import mat.shared.CQLExpressionObject;
-import mat.shared.CQLObject;
-
 import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
 import org.cqframework.cql.elm.tracking.ClassType;
@@ -45,6 +40,7 @@ import org.hl7.elm.r1.Last;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.NaryExpression;
+import org.hl7.elm.r1.OperandDef;
 import org.hl7.elm.r1.ParameterDef;
 import org.hl7.elm.r1.ParameterRef;
 import org.hl7.elm.r1.PositionOf;
@@ -62,6 +58,12 @@ import org.hl7.elm.r1.ValueSetRef;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.ProfileInfo;
 import org.hl7.elm_modelinfo.r1.TypeInfo;
+
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
+import mat.shared.CQLExpressionObject;
+import mat.shared.CQLExpressionOprandObject;
+import mat.shared.CQLObject;
 
 /**
  *
@@ -286,6 +288,16 @@ public class CQLFilter {
 
         else if(expression.getClass().equals(FunctionDef.class)) {
         	CQLExpressionObject funcObject = new CQLExpressionObject("Function",expression.getName());
+        	
+        	FunctionDef functionRef = (FunctionDef) expression;
+        	// Populate Function Argument name and return type.
+        	for(OperandDef expressionDef : functionRef.getOperand()){
+        		CQLExpressionOprandObject cqlExpressionOprandObject = new CQLExpressionOprandObject();
+        		cqlExpressionOprandObject.setName(expressionDef.getName());
+        		cqlExpressionOprandObject.setReturnType(expressionDef.getResultType().toString());
+        		funcObject.getOprandList().add(cqlExpressionOprandObject);
+        	}
+        	
         	funcObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
         	funcObject.getUsedCodes().addAll(this.getUsedCodes());
         	funcObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
@@ -618,6 +630,8 @@ public class CQLFilter {
         
         LibraryHolder existingLibrary = null;
         String finalExpressionName = expressionName;
+       
+       
         
     	if(includedLibraryAlias != null){
     		LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);

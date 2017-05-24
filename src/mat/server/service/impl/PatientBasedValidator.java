@@ -14,6 +14,7 @@ import mat.server.CQLUtilityClass;
 import mat.server.util.CQLUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLExpressionObject;
+import mat.shared.CQLExpressionOprandObject;
 import mat.shared.SaveUpdateCQLResult;
 
 import org.apache.commons.logging.Log;
@@ -157,6 +158,12 @@ public class PatientBasedValidator {
 					functionsToBeChecked.add(cqlExpressionObject);
 				}
 			}
+			//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
+			List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked);
+			if(moArgumentMessage.size() > 0){
+				errorMessages.addAll(moArgumentMessage);
+			}
+			
 			List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC);
 			if(messages.size() > 0){
 				errorMessages.addAll(messages);
@@ -165,6 +172,18 @@ public class PatientBasedValidator {
 		}
 		
 		return errorMessages;
+	}
+	//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
+	private static List<String> checkForMOFunctionArgumentCount(List<CQLExpressionObject> functionsToBeChecked) {
+		List<String> returnMessages = new ArrayList<String>();
+		for(CQLExpressionObject cqlExpressionObject : functionsToBeChecked){
+			List<CQLExpressionOprandObject> argumentList =  cqlExpressionObject.getOprandList();
+			if(argumentList.isEmpty() || argumentList.size() > 1){
+				returnMessages.add("For an added measure observation, the user-defined function "+ cqlExpressionObject.getName()+" must have exactly 1 argument in the argument list.");
+			}
+			
+		}
+		return returnMessages;
 	}
 
 	private static List<String> checkSimilarReturnTypes(

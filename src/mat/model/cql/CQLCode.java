@@ -32,6 +32,8 @@ public class CQLCode implements IsSerializable {
 
 	private boolean isUsed;
 	
+	private boolean readOnly; 
+	
 	/**
 	 * Gets the id.
 	 *
@@ -148,6 +150,14 @@ public class CQLCode implements IsSerializable {
 
 	public void setCodeSystemOID(String codeSystemOID) {
 		this.codeSystemOID = codeSystemOID;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	

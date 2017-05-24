@@ -32,6 +32,11 @@
 					<field name="codeOID" type="java.lang.String">
 						<bind-xml name="codeOID" node="attribute" />
 					</field>
+					
+					<field name="readOnly" type="java.lang.Boolean">
+					    <bind-xml name="readOnly" node="attribute"></bind-xml>
+					</field>
+					
 					<field name="codeIdentifier" type="java.lang.String">
 						<bind-xml name="codeIdentifier" node="attribute" />
 					</field>

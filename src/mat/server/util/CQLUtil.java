@@ -571,11 +571,11 @@ public class CQLUtil {
 			String xml = libHolderObject.getMeasureXML();
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);
 			
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/definitions/definition/@name", cqlModel.getIncludedDefNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/definitions/definition[@supplDataElement=\"false\"]/@name", cqlModel.getIncludedDefNames());
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/functions/function/@name", cqlModel.getIncludedFuncNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset/@name", cqlModel.getIncludedValueSetNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset[@supplDataElement=\"false\"]/@name", cqlModel.getIncludedValueSetNames());
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/parameters/parameter/@name", cqlModel.getIncludedParamNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@codeName", cqlModel.getIncludedCodeNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code[@readOnly=\"false\"]/@codeName", cqlModel.getIncludedCodeNames());
 			
 		}
 		

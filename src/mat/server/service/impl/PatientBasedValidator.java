@@ -22,6 +22,8 @@ import org.w3c.dom.Node;
 
 public class PatientBasedValidator {
 	
+	private static final String SCORING_RATIO = "Ratio";
+
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(PatientBasedValidator.class);
 	
@@ -73,14 +75,14 @@ public class PatientBasedValidator {
 			String populationUUID = measurePackageClauseDetail.getId();
 			String type = measurePackageClauseDetail.getType();
 			//ignore "stratification" nodes.
-			if(type.equals("stratification")){
+			if(type.equalsIgnoreCase("stratification")){
 				continue;
 			}
 			
 			Node clauseNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//clause[@uuid='"+populationUUID+"']");
 					
 			if(type.equals(MEASURE_OBSERVATION)){
-			
+				
 				//find the cqlfunction here
 				Node firstChildNode = clauseNode.getFirstChild();
 				
@@ -92,7 +94,6 @@ public class PatientBasedValidator {
 					}
 				}				
 				msrObsFunctionList.add(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
-				
 			}else{
 				
 				//find cqldefinition here
@@ -129,6 +130,11 @@ public class PatientBasedValidator {
 			if(messages.size() > 0){
 				errorMessages.addAll(messages);
 			}
+			//Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
+			if(msrObsFunctionList.size() >0 && scoringType.equalsIgnoreCase(SCORING_RATIO) ){
+				String message ="For Ratio Measure, Measure Observation can only be added to grouping if the measure is not Patient-based.";
+				errorMessages.add(message);
+			}
 			
 		}else{
 			
@@ -139,21 +145,23 @@ public class PatientBasedValidator {
 			}
 			
 		}
-		
 		//check for MAT-8627 validations for functions attached to Measure Observations.
-		List<CQLExpressionObject> functions = cqlResult.getCqlObject().getCqlFunctionObjectList();
-		List<CQLExpressionObject> functionsToBeChecked = new ArrayList<CQLExpressionObject>();
-		
-		for(CQLExpressionObject cqlExpressionObject : functions){
-			String name = cqlExpressionObject.getName();
-		
-			if(msrObsFunctionList.contains(name)){
-				functionsToBeChecked.add(cqlExpressionObject);
+		if(!isPatientBasedIndicator || !scoringType.equalsIgnoreCase(SCORING_RATIO)){
+			List<CQLExpressionObject> functions = cqlResult.getCqlObject().getCqlFunctionObjectList();
+			List<CQLExpressionObject> functionsToBeChecked = new ArrayList<CQLExpressionObject>();
+			
+			for(CQLExpressionObject cqlExpressionObject : functions){
+				String name = cqlExpressionObject.getName();
+			
+				if(msrObsFunctionList.contains(name)){
+					functionsToBeChecked.add(cqlExpressionObject);
+				}
 			}
-		}
-		List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC);
-		if(messages.size() > 0){
-			errorMessages.addAll(messages);
+			List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC);
+			if(messages.size() > 0){
+				errorMessages.addAll(messages);
+			}
+			
 		}
 		
 		return errorMessages;

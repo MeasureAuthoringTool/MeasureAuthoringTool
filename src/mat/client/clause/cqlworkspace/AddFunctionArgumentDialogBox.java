@@ -64,7 +64,7 @@ public class AddFunctionArgumentDialogBox {
 	/**
 	 * Constant - SELECT
 	 */
-	private static final String SELECT = "Select";
+//	private static final String SELECT = "Select";
 	
 	/**
 	 * List of Attributes.
@@ -84,8 +84,7 @@ public class AddFunctionArgumentDialogBox {
 			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final boolean isEditable) {
 		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
-		allDataTypes.add(0, MatContext.PLEASE_SELECT);
-		//final ListBox attributeListBox = new ListBox(false);
+		
 		final TextArea otherTypeTextArea = new TextArea();
 		otherTypeTextArea.setEnabled(false);
 		String saveButtonText = "Add";
@@ -286,13 +285,13 @@ public class AddFunctionArgumentDialogBox {
 				if (selectedIndex != -1) {
 					itemValue = listSelectItem.getItemText(selectedIndex);
 				}
-				if (!itemValue.contains(SELECT)) {
+				/*if (!itemValue.contains(SELECT)) {
 					//getAttributesForDataType(itemValue, attributeListBox);
 					//attributeListBox.setEnabled(true);
 				} else {
 					//	attributeListBox.setEnabled(false);
 					//attributeListBox.clear();
-				}
+				}*/
 			}
 		});
 		//Argument Text Area click handler
@@ -441,6 +440,7 @@ public class AddFunctionArgumentDialogBox {
 	 */
 	private static void populateAllDataType(final ListBoxMVP listDataType, List<String> allDataTypeList) {
 		listDataType.clear();
+		listDataType.addItem(MatContext.PLEASE_SELECT);
 		for (String dataType : allDataTypeList) {
 			listDataType.addItem(dataType);
 		}

@@ -2,19 +2,9 @@ package mat.client.admin;
 
 import java.util.ArrayList;
 import java.util.List;
-import mat.client.CustomPager;
-import mat.client.admin.ManageOrganizationSearchModel.Result;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.search.SearchResults;
-import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
+
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -32,15 +22,30 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.Button;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+
+import mat.client.CustomPager;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SearchWidgetBootStrap;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.search.SearchResults;
+import mat.client.util.CellTableUtility;
+import mat.shared.ClickableSafeHtmlCell;
 
 /** ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay. **/
 public class ManageOrganizationView implements ManageOrganizationPresenter.SearchDisplay,
@@ -49,6 +54,8 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	public static interface Observer {
 		void onDeleteClicked(ManageOrganizationSearchModel.Result result);
 	}
+	
+	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
 	/** Cell Table Columns width - 50% each. */
 	private static final double CELLTABLE_COLUMN_WIDTH = 50.0;
@@ -61,7 +68,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	/** The create new button. */
-	private Button createNewButton = new PrimaryButton("Add New Organization", "primaryGreyButton");
+	private Button createNewButton = new Button("Add New Organization");
 	/** The generate csv file button. */
 	//private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	/** The handler manager. */
@@ -69,24 +76,24 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	/** The search button. */
-	private Button searchButton = new SecondaryButton("Search");
+//	private Button searchButton = new SecondaryButton("Search");
 	/** The search text. */
-	private TextBox searchText = new TextBox();
+//	private TextBox searchText = new TextBox();
 	/** The search label. */
-	private Widget searchTextLabel = LabelBuilder.buildLabel(searchText, "Search for a Organization");
+	//private Widget searchTextLabel = LabelBuilder.buildLabel(searchText, "Search for a Organization");
 	/** The observer. */
 	private Observer observer;
 	/**
 	 * The Success Message Display.
 	 */
-	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
 	/**
 	 * The Erro Message Display.
 	 */
-	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
+	private MessageAlert errorMessageDisplay = new ErrorMessageAlert();
 	/** Constructor. **/
 	public ManageOrganizationView() {
-		searchText.setWidth("256px");
+		//searchText.setWidth("256px");
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
@@ -95,12 +102,12 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		buttonPanel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(buttonPanel);
 		mainPanel.add(new SpacerWidget());
-		searchTextLabel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-		mainPanel.add(searchTextLabel);
-		searchText.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-		mainPanel.add(searchText);
-		searchButton.addStyleName("userSearchButton");
-		mainPanel.add(searchButton);
+		//searchTextLabel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
+	//	mainPanel.add(searchTextLabel);
+	//	searchText.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
+		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
+	//	searchButton.addStyleName("userSearchButton");
+//		mainPanel.add(searchButton);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessageDisplay);
 		mainPanel.add(errorMessageDisplay);
@@ -261,14 +268,14 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
-		return searchButton;
+		return searchWidgetBootStrap.getGo();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#getSearchString()
 	 */
 	@Override
 	public HasValue<String> getSearchString() {
-		return searchText;
+		return searchWidgetBootStrap.getSearchBox();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageOrganizationPresenter.SearchDisplay#getSelectIdForEditTool()
@@ -294,26 +301,26 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	 * @return the successMessageDisplay
 	 */
 	@Override
-	public SuccessMessageDisplay getSuccessMessageDisplay() {
+	public MessageAlert getSuccessMessageDisplay() {
 		return successMessageDisplay;
 	}
 	/**
 	 * @param successMessageDisplay the successMessageDisplay to set
 	 */
-	public void setSuccessMessageDisplay(SuccessMessageDisplay successMessageDisplay) {
+	public void setSuccessMessageDisplay(MessageAlert successMessageDisplay) {
 		this.successMessageDisplay = successMessageDisplay;
 	}
 	/**
 	 * @return the errorMessageDisplay
 	 */
 	@Override
-	public ErrorMessageDisplay getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessageDisplay;
 	}
 	/**
 	 * @param errorMessageDisplay the errorMessageDisplay to set
 	 */
-	public void setErrorMessageDisplay(ErrorMessageDisplay errorMessageDisplay) {
+	public void setErrorMessageDisplay(MessageAlert errorMessageDisplay) {
 		this.errorMessageDisplay = errorMessageDisplay;
 	}
 }

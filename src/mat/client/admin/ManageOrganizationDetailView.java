@@ -1,22 +1,25 @@
 package mat.client.admin;
 
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.RequiredIndicator;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 
 /** The Class ManageUsersDetailView. */
 public class ManageOrganizationDetailView
@@ -32,10 +35,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	
 	// private SecondaryButton deleteButton = new SecondaryButton("Delete User");
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	
-	/** The login id. */
-	private Label loginId = new Label();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The main panel. */
 	private SimplePanel mainPanel = new SimplePanel();
@@ -44,23 +44,16 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	/** The oid. */
 	private TextBox oid = new TextBox();
 	
-	/** The oid label. */
-	private String oidLabel = "Organization OID";
-	// private String rootOidLabel = "Root OID";
-	
 	/** The organization. */
 	private TextBox organization = new TextBox();
-	
-	/** The organization label. */
-	private String organizationLabel = "Organization";
 	
 	/** The required. */
 	private HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 	
 	/** The success messages. */
-	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	private MessageAlert successMessages = new SuccessMessageAlert();
 	/** The title. */
-	private TextBox title = new TextBox();
+	//private TextBox title = new TextBox();
 	
 	
 	/** Instantiates a new manage users detail view. */
@@ -90,14 +83,48 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		SimplePanel clearPanel = new SimplePanel();
 		clearPanel.addStyleName("clearBoth");
 		fPanel.add(clearPanel);
-		rightPanel.add(LabelBuilder.buildRequiredLabel(organization, organizationLabel));
-		rightPanel.add(organization);
-		organization.setTitle("Organization");
-		rightPanel.add(new SpacerWidget());
 		
-		rightPanel.add(LabelBuilder.buildRequiredLabel(oid, oidLabel));
-		rightPanel.add(oid);
+		
+		Form form = new Form();
+		
+		FormGroup organizationGroup = new FormGroup();
+		FormGroup orgOidGroup = new FormGroup();
+		
+		FormLabel organizationLabel = new FormLabel();
+		organizationLabel.setId("organizationLabel");
+		organizationLabel.setFor("organizationTextBox");
+		organizationLabel.setText("Organization");
+		organizationLabel.setShowRequiredIndicator(true);
+		
+		organization.setId("organizationTextBox");
+		organization.setWidth("196px");
+		organization.setMaxLength(150);
+		organization.setTitle("Organization");
+		organization.setPlaceholder("Enter Organization Name");
+		
+		organizationGroup.add(organizationLabel);
+		organizationGroup.add(organization);
+		
+		FormLabel organizationOidLabel = new FormLabel();
+		organizationOidLabel.setId("organizationOidLabel");
+		organizationOidLabel.setFor("organizationOidTextBox");
+		organizationOidLabel.setText("Organization OID");
+		organizationOidLabel.setShowRequiredIndicator(true);
+		
+		oid.setId("organizationTextBox");
 		oid.setTitle("Organization OID");
+		oid.setWidth("196px");
+		oid.setMaxLength(50);
+		oid.setPlaceholder("Enter Organization OID");
+		orgOidGroup.add(organizationOidLabel);
+		orgOidGroup.add(oid);
+		
+		FieldSet fieldSet = new FieldSet();
+		fieldSet.add(organizationGroup);
+		fieldSet.add(orgOidGroup);
+		form.add(fieldSet);
+		
+		rightPanel.add(form);
 		rightPanel.add(new SpacerWidget());
 		rightPanel.add(new SpacerWidget());
 		
@@ -108,16 +135,6 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		fPanel.add(new SpacerWidget());
 		mainPanel.add(fPanel);
 		containerPanel.setContent(mainPanel);
-		
-		title.setWidth("196px");
-		organization.setWidth("196px");
-		oid.setWidth("196px");
-		// rootOid.setWidth("196px");
-		
-		oid.setMaxLength(50);
-		// rootOid.setMaxLength(50);
-		title.setMaxLength(32);
-		organization.setMaxLength(150);
 	}
 	
 	/* (non-Javadoc)
@@ -144,7 +161,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
@@ -188,7 +205,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getSuccessMessageDisplay()
 	 */
 	@Override
-	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
+	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	

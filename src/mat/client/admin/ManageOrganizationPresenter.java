@@ -2,19 +2,9 @@ package mat.client.admin;
 
 import java.util.ArrayList;
 import java.util.List;
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.admin.ManageOrganizationSearchModel.Result;
-import mat.client.admin.ManageOrganizationView.Observer;
-import mat.client.admin.service.SaveUpdateOrganizationResult;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.SearchResultUpdate;
-import mat.client.shared.search.SearchResults;
-import mat.shared.AdminManageOrganizationModelValidator;
+
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -25,13 +15,23 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
+import mat.client.admin.ManageOrganizationView.Observer;
+import mat.client.admin.service.SaveUpdateOrganizationResult;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.search.SearchResultUpdate;
+import mat.client.shared.search.SearchResults;
+import mat.client.util.MatTextBox;
+import mat.shared.AdminManageOrganizationModelValidator;
 
 /** The Class ManageOrganizationPresenter. */
 public class ManageOrganizationPresenter implements MatPresenter {
@@ -45,7 +45,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		HasClickHandlers getCancelButton();
 		/** Gets the error message display.
 		 * @return the error message display */
-		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		MessageAlert getErrorMessageDisplay();
 		/** Gets the oid.
 		 * @return the oid */
 		HasValue<String> getOid();
@@ -57,7 +57,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		HasClickHandlers getSaveButton();
 		/** Gets the success message display.
 		 * @return the success message display */
-		SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		MessageAlert getSuccessMessageDisplay();
 		/** Sets the title.
 		 * @param title the new title */
 		void setTitle(String title);
@@ -93,8 +93,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
 		//Button getGenerateCSVFileButton();
 		void setObserver(Observer observer);
-		SuccessMessageDisplay getSuccessMessageDisplay();
-		ErrorMessageDisplay getErrorMessageDisplay();
+		MessageAlert getSuccessMessageDisplay();
+		MessageAlert getErrorMessageDisplay();
 	}
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
@@ -120,8 +120,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMessageDisplay().clear();
-				searchDisplay.getSuccessMessageDisplay().clear();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				createNew();
 			}
 		});
@@ -134,12 +134,12 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				generateCSVForActiveOids();
 			}
 		});*/
-		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
+		MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				searchDisplay.getErrorMessageDisplay().clear();
-				searchDisplay.getSuccessMessageDisplay().clear();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					((Button) searchDisplay.getSearchButton()).click();
 				}
@@ -148,24 +148,24 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMessageDisplay().clear();
-				searchDisplay.getSuccessMessageDisplay().clear();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				update();
 			}
 		});
 		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMessageDisplay().clear();
-				searchDisplay.getSuccessMessageDisplay().clear();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				displaySearch();
 			}
 		});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMessageDisplay().clear();
-				searchDisplay.getSuccessMessageDisplay().clear();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				String key = searchDisplay.getSearchString().getValue();
 				search(key);
 			}
@@ -173,8 +173,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageOrganizationSearchModel.Result>() {
 			@Override
 			public void onSelection(SelectionEvent<ManageOrganizationSearchModel.Result> event) {
-				searchDisplay.getErrorMessageDisplay().clear();
-				searchDisplay.getSuccessMessageDisplay().clear();
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				edit(event.getSelectedItem().getOid());
 			}
 		});
@@ -213,8 +213,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
-		searchDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getSuccessMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		search("");
 	}
 	/**
@@ -233,7 +233,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				detailDisplay.getErrorMessageDisplay()
-				.setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null,
 						null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 			}
@@ -274,16 +274,16 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		List<String> message = adminManageOrganizationModelValidator.isValidOrganizationDetail(model);
 		boolean valid = message.size() == 0;
 		if (!valid) {
-			detailDisplay.getErrorMessageDisplay().setMessages(message);
+			detailDisplay.getErrorMessageDisplay().createAlert(message);
 		} else {
-			detailDisplay.getErrorMessageDisplay().clear();
+			detailDisplay.getErrorMessageDisplay().clearAlert();
 		}
 		return valid;
 	}
 	/** Reset messages. */
 	private void resetMessages() {
-		detailDisplay.getErrorMessageDisplay().clear();
-		detailDisplay.getSuccessMessageDisplay().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		detailDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 	/** Search.
 	 * @param key the key
@@ -295,7 +295,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				detailDisplay.getErrorMessageDisplay()
-				.setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null,
 						null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
@@ -303,7 +303,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ManageOrganizationSearchModel result) {
 				SearchResultUpdate sru = new SearchResultUpdate();
-				sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchKey);
+				sru.update(result, (MatTextBox) searchDisplay.getSearchString(), lastSearchKey);
 				sru = null;
 				searchDisplay.setObserver(new Observer() {
 					@Override
@@ -326,12 +326,12 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage("Organization cannot be deleted.");
+				searchDisplay.getErrorMessageDisplay().createAlert("Organization cannot be deleted.");
 			}
 			@Override
 			public void onSuccess(Void result) {
 				displaySearch();
-				searchDisplay.getSuccessMessageDisplay().setMessage("Organization successfully deleted.");
+				searchDisplay.getSuccessMessageDisplay().createAlert("Organization successfully deleted.");
 			}
 		});
 		
@@ -350,21 +350,21 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			Mat.hideLoadingMessage();
 		}
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
+		((MatTextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 	}
 	/** Update. */
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
 		//isOrganizationDetailModified();
-		detailDisplay.getErrorMessageDisplay().clear();
-		detailDisplay.getSuccessMessageDisplay().clear();
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		detailDisplay.getSuccessMessageDisplay().clearAlert();
 		if (isValid(updatedDetails)) {
 			MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
 					new AsyncCallback<SaveUpdateOrganizationResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
+					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 					currentDetails = updatedDetails;
 					currentDetails.setExistingOrg(true);
 				}
@@ -374,7 +374,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					currentDetails.setExistingOrg(true);
 					if (result.isSuccess()) {
 						//displaySearch();
-						detailDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+						detailDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 						detailDisplay.getOid().setValue(currentDetails.getOid());
 						detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
@@ -399,7 +399,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 								messages.add(MatContext.get().getMessageDelegate()
 										.getUnknownErrorMessage(result.getFailureReason()));
 						}
-						detailDisplay.getErrorMessageDisplay().setMessages(messages);
+						detailDisplay.getErrorMessageDisplay().createAlert(messages);
 						
 //						List<String> event = new ArrayList<String>();
 //						event.add("Oraganization Modified");

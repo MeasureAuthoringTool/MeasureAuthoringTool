@@ -39,4 +39,6 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 		List<CQLLibraryShare> getLibraryShareInforForLibrary(String libId);
 
 		void refresh(CQLLibrary libObject);
+
+		CQLLibrary getLibraryByMeasureId(String measureId);
 }

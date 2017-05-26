@@ -838,5 +838,16 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	public void refresh(CQLLibrary libObject){
 		getSessionFactory().getCurrentSession().refresh(libObject);
 	}
+	
+	@Override
+	public CQLLibrary getLibraryByMeasureId(String measureId){
+		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
+		mCriteria.add(Restrictions.eq("measureId", measureId));
+		List<CQLLibrary> resultCqlLibrary = mCriteria.list();
+		if(resultCqlLibrary!=null && resultCqlLibrary.size()>0){
+			return resultCqlLibrary.get(0);
+		}
+		return null;
+	}
 
 }

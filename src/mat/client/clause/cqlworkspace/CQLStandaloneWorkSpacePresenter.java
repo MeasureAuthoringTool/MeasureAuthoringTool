@@ -4352,7 +4352,7 @@ private void addCodeSearchPanelHandlers() {
 	private void buildAppliedQDMTable() {
 		searchDisplay.buildAppliedQDM();
         setExpansionProfilePanelValues();
-		boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		boolean isEditable = MatContext.get().getLibraryLockService().checkForEditPermission();
 		
 		// initialize the valuesets to be used, getUsedArtifacts() will update with the proper value
 		for(CQLQualityDataSetDTO valuset : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()) {

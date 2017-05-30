@@ -23,6 +23,8 @@ import org.w3c.dom.Node;
 
 public class PatientBasedValidator {
 	
+	private static final String SCORING_CONTINUOUS_VARIABLE = "Continuous Variable";
+
 	private static final String SCORING_RATIO = "Ratio";
 
 	/** The Constant logger. */
@@ -69,7 +71,7 @@ public class PatientBasedValidator {
 		
 		List<String> exprList = new ArrayList<String>();
 		List<String> msrObsFunctionList = new ArrayList<String>();
-		
+		List<String> moAssociatedPopUsedExpression = new ArrayList<String>();
 		List<MeasurePackageClauseDetail> packageClauses =  detail.getPackageClauses();
 		
 		for(MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses){
@@ -95,6 +97,17 @@ public class PatientBasedValidator {
 					}
 				}				
 				msrObsFunctionList.add(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+				String associatedClauseNodeUUID  = null;
+				if(scoringType.equalsIgnoreCase(SCORING_CONTINUOUS_VARIABLE)){
+					associatedClauseNodeUUID = findMeasurePopInGrouping(packageClauses);
+				} else if(scoringType.equalsIgnoreCase(SCORING_RATIO)){
+					associatedClauseNodeUUID = measurePackageClauseDetail.getAssociatedPopulationUUID();
+				}
+				if(associatedClauseNodeUUID !=null){
+					Node associatedPopNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure//clause[@uuid='"+associatedClauseNodeUUID+"']");
+					String definitionName = associatedPopNode.getFirstChild().getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+					moAssociatedPopUsedExpression.add(definitionName);
+				}
 			}else{
 				
 				//find cqldefinition here
@@ -111,16 +124,23 @@ public class PatientBasedValidator {
 		List<String> usedExprList = new ArrayList<String>();
 		usedExprList.addAll(exprList);
 		usedExprList.addAll(msrObsFunctionList);
+		usedExprList.addAll(moAssociatedPopUsedExpression);
+		
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
 		
 		List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getCqlDefinitionObjectList();
 		List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<CQLExpressionObject>();
+		List<CQLExpressionObject> expressionsToBeCheckedForMO = new ArrayList<CQLExpressionObject>();
 		
 		for(CQLExpressionObject cqlExpressionObject : expressions){
 			String name = cqlExpressionObject.getName();
 			
 			if(exprList.contains(name)){
 				expressionsToBeChecked.add(cqlExpressionObject);
+			}
+			
+			if(moAssociatedPopUsedExpression.contains(name)) {
+				expressionsToBeCheckedForMO.add(cqlExpressionObject);
 			}
 		}
 		
@@ -159,7 +179,7 @@ public class PatientBasedValidator {
 				}
 			}
 			//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
-			List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked);
+			List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked, expressionsToBeCheckedForMO);
 			if(moArgumentMessage.size() > 0){
 				errorMessages.addAll(moArgumentMessage);
 			}
@@ -173,13 +193,34 @@ public class PatientBasedValidator {
 		
 		return errorMessages;
 	}
+	private static  String findMeasurePopInGrouping(List<MeasurePackageClauseDetail> packageClauses) {
+		String measurePopUUID = null;
+		for(MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses){
+			String type = measurePackageClauseDetail.getType();
+			if(type.equalsIgnoreCase("measurePopulation")){
+				measurePopUUID = measurePackageClauseDetail.getId();
+			}
+		}
+		return measurePopUUID;
+	}
 	//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
-	private static List<String> checkForMOFunctionArgumentCount(List<CQLExpressionObject> functionsToBeChecked) {
+	private static List<String> checkForMOFunctionArgumentCount(List<CQLExpressionObject> functionsToBeChecked , List<CQLExpressionObject> associatedPopExpressionTobeChecked) {
 		List<String> returnMessages = new ArrayList<String>();
 		for(CQLExpressionObject cqlExpressionObject : functionsToBeChecked){
 			List<CQLExpressionOprandObject> argumentList =  cqlExpressionObject.getOprandList();
 			if(argumentList.isEmpty() || argumentList.size() > 1){
 				returnMessages.add("For an added measure observation, the user-defined function "+ cqlExpressionObject.getName()+" must have exactly 1 argument in the argument list.");
+				returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
+						+ " of the definition directly applied to the Associated Population.");
+			} else {
+				String funcArgumentReturnType = argumentList.get(0).getReturnType();
+				for(CQLExpressionObject expressionObject : associatedPopExpressionTobeChecked){
+					if(!expressionObject.getReturnType().equalsIgnoreCase(funcArgumentReturnType)){
+						returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
+								+ " of the definition directly applied to the Associated Population.");
+						break;
+					}
+				}
 			}
 			
 		}

@@ -1,38 +1,56 @@
 package mat.client.umls;
 
-import mat.client.ImageResources;
-import mat.client.Mat;
-import mat.client.shared.EmailAddressTextBox;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableImageButton;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatContext;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelFooter;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.InputType;
+
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.ImageResources;
+import mat.client.Mat;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.FocusableImageButton;
+import mat.client.shared.MatContext;
+//import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SpacerWidget;
 
 
 /**
  * The Class UmlsLoginView.
  */
 public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
+	private Input userIdText = new Input(InputType.TEXT);
+	private Input passwordInput = new Input(InputType.PASSWORD);
 	
+	private FormGroup passwordGroup = new FormGroup();
+	private FormGroup userIdGroup = new FormGroup();
+	
+	private FormGroup messageFormGrp = new FormGroup();
+	private HelpBlock helpBlock = new HelpBlock();
+	
+	HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool.");
+	//private Panel successMessagePanel = new org.gwtbootstrap3.client.ui.Panel();
+	//private PanelBody successMessageBody = new PanelBody();
 	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
@@ -41,16 +59,11 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	private HTML infoMessage = new HTML();
 	
 	/** The info message panel. */
-	private Panel infoMessagePanel;
+	private SimplePanel infoMessagePanel;
 	
-	/** The userid. */
-	private TextBox userid;
-	
-	/** The password. */
-	private TextBox password;
 	
 	/** The submit button. */
-	private Button submitButton;
+	private Button submitButton = new Button("Sign In");
 	
 	/** The main panel. */
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -62,10 +75,12 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	Label success = new Label();
 	
 	/** The umls external link. */
-	Anchor umlsExternalLink;
+	Anchor umlsExternalLink ;//= new Anchor("Need a UMLS license?");
 	
 	/** The umls trouble logging. */
-	Anchor umlsTroubleLogging;
+	Anchor umlsTroubleLogging ;//= new Anchor("Trouble signing in?");
+	
+	
 	
 	/** The external link disclaimer. */
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
@@ -77,7 +92,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	 * Instantiates a new umls login view.
 	 */
 	public UmlsLoginView() {
-		mainPanel.setStyleName("umlscontentPanel");
+		/*mainPanel.setStyleName("umlscontentPanel");
 		mainPanel.getElement().setAttribute("id", "umlsContent");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -115,7 +130,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		loginPanel.add(password);
 		loginPanel.add(new SpacerWidget());
 		
-		submitButton = new PrimaryButton("Sign In","primaryButton");
+		submitButton = new Button("Sign In");
+		submitButton.setType(ButtonType.SUCCESS);
 		loginPanel.add(submitButton);
 		
 		loginPanel.setStylePrimaryName("loginContentPanel");
@@ -160,9 +176,137 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		externalLinkDisclaimer.addStyleName("disclaimer");
 		mainPanel.add(externalLinkDisclaimer);
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());*/
+		
+		buildUmlLoginView();
 	}
 	
+	
+	void buildUmlLoginView(){
+		
+		mainPanel.setStyleName("umlscontentPanel");
+		mainPanel.getElement().setAttribute("id", "umlsContent");
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
+		Grid infoGrid = new Grid(2,2);
+		FocusableImageButton focusableImageButton = new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success");
+		infoGrid.setWidget(0, 0, focusableImageButton);
+		Mat.removeInputBoxFromFocusPanel(focusableImageButton.getElement());
+		success.setStyleName("loginInfoMessageHeader");
+		infoGrid.setWidget(0, 1, success);
+		infoGrid.setWidget(1, 1, infoMessage);
+		SimplePanel infoMessage = new SimplePanel();
+		infoMessage.add(infoGrid);
+		infoMessage.setStyleName("loginInfoMessageContainer");
+		infoMessagePanel = wrapInSpacer(infoMessage);
+		mainPanel.add(infoMessagePanel);
+		
+		
+		//Login Panel.
+		Panel loginPanel = new Panel();
+		loginPanel.setWidth("300px");
+		loginPanel.setMarginLeft(300.00);
+		//Login Panel Header.
+		PanelHeader header = new PanelHeader();
+		header.setStyleName("loginNewBlueTitleHolder");
+		HTML loginText = new HTML("<strong>Please sign in to UMLS</strong>");
+		header.add(loginText);
+		//Login Panel Body.
+		PanelBody loginPanelBody = new PanelBody();
+		
+		Form loginForm = new Form();
+		messageFormGrp.add(helpBlock);
+		messageFormGrp.getElement().setAttribute("role", "alert");
+		loginForm.add(messageFormGrp);
+		
+		FormLabel userIdLabel = new FormLabel();
+		userIdLabel.setText("User Name");
+		userIdLabel.setTitle("User Name");
+		userIdLabel.setFor("inputUserId");
+		userIdText.setWidth("250px");
+		userIdText.setHeight("27px");
+		userIdText.setId("inputUserId");
+		userIdText.setPlaceholder("Enter User Name");
+		userIdText.setTitle("Enter User Name");
+		userIdGroup.add(userIdLabel);
+		userIdGroup.add(userIdText);
+		
+		FormLabel passwordLabel = new FormLabel();
+		passwordLabel.setText("Password");
+		passwordLabel.setTitle("Password");
+		passwordLabel.setFor("inputPwd");
+		passwordInput.setWidth("250px");
+		passwordInput.setHeight("27px");
+		passwordInput.setId("inputPwd");
+		passwordInput.setPlaceholder("Enter Password");
+		passwordInput.setTitle("Enter Password");
+		passwordInput.setValidateOnBlur(true);
+		passwordGroup.add(passwordLabel);
+		passwordGroup.add(passwordInput);
+		
+		FormGroup buttonFormGroup = new FormGroup();
+		submitButton.setType(ButtonType.SUCCESS);
+		submitButton.setTitle("Sign In");
+		buttonFormGroup.add(submitButton);
+		
+		
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(userIdGroup);
+		formFieldSet.add(passwordGroup);
+		
+		formFieldSet.add(buttonFormGroup);
+		loginForm.add(formFieldSet);
+		loginPanelBody.add(loginForm);
+		
+		
+		PanelFooter loginPanelFooter = new PanelFooter();
+		VerticalPanel vPanel = new VerticalPanel();
+		umlsExternalLink = new Anchor("Need a UMLS license?");
+		umlsTroubleLogging = new Anchor("Trouble signing in?");
+		umlsExternalLink.setTitle("Need UMLS license");
+		umlsExternalLink.getElement().setAttribute("alt", "Need UMLS license");
+		umlsTroubleLogging.setTitle("Trouble Logging in");
+		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble signing in");
+		
+		vPanel.add(umlsExternalLink);
+		vPanel.add(umlsTroubleLogging);
+		
+		loginPanelFooter.add(vPanel);
+		
+		loginPanel.add(header);
+		loginPanel.add(loginPanelBody);
+		loginPanel.add(loginPanelFooter);
+		
+		
+		simplePanel.add(loginPanel);
+		mainPanel.add(simplePanel);
+		
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
+		
+	
+		externalDisclamerText.getElement().setAttribute("id", "externalDisclamerText");
+		externalLinkDisclaimer.getElement().setAttribute("id", "ExternalLinkDisclaimer");
+		externalLinkDisclaimer.getElement().setAttribute("aria-role", "panel");
+		externalLinkDisclaimer.getElement().setAttribute("aria-labelledby", "externalDisclamerText");
+		externalLinkDisclaimer.getElement().setAttribute("aria-live", "assertive");
+		externalLinkDisclaimer.getElement().setAttribute("aria-atomic", "true");
+		externalLinkDisclaimer.getElement().setAttribute("aria-relevant", "all");
+		externalLinkDisclaimer.getElement().setAttribute("role", "alert");
+		buttonBar.getSaveButton().setText("I Agree");
+		buttonBar.getSaveButton().setTitle("I Agree");
+		buttonBar.getCancelButton().setText("I Disagree");
+		buttonBar.getCancelButton().setTitle("I Disagree");
+		externalLinkDisclaimer.add(externalDisclamerText);
+		externalLinkDisclaimer.add(new SpacerWidget());
+		externalLinkDisclaimer.add(buttonBar);
+		externalLinkDisclaimer.setVisible(false);
+		externalLinkDisclaimer.addStyleName("disclaimer");
+		mainPanel.add(externalLinkDisclaimer);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
+		
+	}
 	/**
 	 * Wrap in spacer.
 	 * 
@@ -181,25 +325,11 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getSubmit()
 	 */
 	@Override
-	public HasClickHandlers getSubmit() {
+	public Button getSubmit() {
 		return submitButton;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUserid()
-	 */
-	@Override
-	public HasValue<String> getUserid() {
-		return userid;
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getPassword()
-	 */
-	@Override
-	public HasValue<String> getPassword() {
-		return password;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#asWidget()
@@ -239,28 +369,14 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUseridField()
-	 */
-	@Override
-	public HasKeyDownHandlers getUseridField() {
-		return userid;
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getPasswordField()
-	 */
-	@Override
-	public HasKeyDownHandlers getPasswordField() {
-		return password;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#setInitialFocus()
 	 */
 	@Override
 	public void setInitialFocus() {
-		userid.setFocus(false);
+		userIdText.setFocus(false);
 	}
 	
 	/* (non-Javadoc)
@@ -303,6 +419,65 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	@Override
 	public SaveCancelButtonBar getButtonBar() {
 		return buttonBar;
+	}
+
+	@Override
+	public Input getUserIdText() {
+		return userIdText;
+	}
+
+
+	public void setUserIdText(Input userIdText) {
+		this.userIdText = userIdText;
+	}
+
+	@Override
+	public Input getPasswordInput() {
+		return passwordInput;
+	}
+
+
+	public void setPasswordInput(Input passwordInput) {
+		this.passwordInput = passwordInput;
+	}
+
+	@Override
+	public FormGroup getPasswordGroup() {
+		return passwordGroup;
+	}
+
+
+	public void setPasswordGroup(FormGroup passwordGroup) {
+		this.passwordGroup = passwordGroup;
+	}
+
+	@Override
+	public FormGroup getUserIdGroup() {
+		return userIdGroup;
+	}
+
+
+	public void setUserIdGroup(FormGroup userIdGroup) {
+		this.userIdGroup = userIdGroup;
+	}
+
+	@Override
+	public FormGroup getMessageFormGrp() {
+		return messageFormGrp;
+	}
+
+
+	public void setMessageFormGrp(FormGroup messageFormGrp) {
+		this.messageFormGrp = messageFormGrp;
+	}
+	@Override
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+
+
+	public void setHelpBlock(HelpBlock helpBlock) {
+		this.helpBlock = helpBlock;
 	}
 	
 }

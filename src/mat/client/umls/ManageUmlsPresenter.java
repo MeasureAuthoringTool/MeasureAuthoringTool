@@ -1,21 +1,14 @@
 package mat.client.umls;
 
-import mat.client.ImageResources;
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.MatContext;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.umls.service.VSACAPIServiceAsync;
-import mat.client.util.ClientConstants;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -25,11 +18,21 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.ImageResources;
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.HorizontalFlowPanel;
+import mat.client.shared.MatContext;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.util.ClientConstants;
 
 
 // TODO: Auto-generated Javadoc
@@ -101,26 +104,14 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 */
 		HasHTML getInfoMessage();
 		
-		/**
-		 * Gets the password.
-		 * 
-		 * @return the password
-		 */
-		HasValue<String> getPassword();
 		
-		/**
-		 * Gets the password field.
-		 * 
-		 * @return the password field
-		 */
-		HasKeyDownHandlers getPasswordField();
 		
 		/**
 		 * Gets the submit.
 		 * 
 		 * @return the submit
 		 */
-		HasClickHandlers getSubmit();
+		Button getSubmit();
 		
 		/**
 		 * Gets the umls external link.
@@ -136,19 +127,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 */
 		Anchor getUmlsTroubleLogging();
 		
-		/**
-		 * Gets the userid.
-		 * 
-		 * @return the userid
-		 */
-		HasValue<String> getUserid();
 		
-		/**
-		 * Gets the userid field.
-		 * 
-		 * @return the userid field
-		 */
-		HasKeyDownHandlers getUseridField();
 		
 		/**
 		 * Sets the info message visible.
@@ -162,6 +141,18 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 * Sets the initial focus.
 		 */
 		void setInitialFocus();
+
+		Input getUserIdText();
+
+		Input getPasswordInput();
+
+		FormGroup getPasswordGroup();
+
+		HelpBlock getHelpBlock();
+
+		FormGroup getMessageFormGrp();
+
+		FormGroup getUserIdGroup();
 	}
 	
 	/** The display. */
@@ -210,8 +201,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			
 			
 		});
-		display.getUseridField().addKeyDownHandler(submitOnEnterHandler);
-		display.getPasswordField().addKeyDownHandler(submitOnEnterHandler);
+		display.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
+		display.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
 		display.getUmlsExternalLink().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -349,8 +340,12 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
-		display.getPassword().setValue("");
-		display.getUserid().setValue("");
+		display.getPasswordInput().setText("");
+		display.getUserIdText().setText("");
+		display.getUserIdGroup().setValidationState(ValidationState.NONE);
+		display.getPasswordGroup().setValidationState(ValidationState.NONE);
+		display.getMessageFormGrp().setValidationState(ValidationState.NONE);
+		display.getHelpBlock().setText("");
 	}
 	
 	/** Private submit method - Calls to VSAC service.**/
@@ -359,15 +354,25 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
-		if (display.getUserid().getValue().isEmpty()) {
-			display.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
-		} else if (display.getPassword().getValue().isEmpty()) {
-			display.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
-		} else {
-			vsacapiService.validateVsacUser(display.getUserid().getValue(),
-					display.getPassword().getValue(), new AsyncCallback<Boolean>() {
+		
+		if (display.getUserIdText().getText().isEmpty()) {
+			display.getUserIdGroup().setValidationState(ValidationState.ERROR);
+			display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+			display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
+			display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+			display.getSubmit().setEnabled(true);
+		} else if (display.getPasswordInput().getText().isEmpty()) {
+			display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+			display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
+			display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+			display.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
+			display.getPasswordGroup().setValidationState(ValidationState.ERROR);
+			display.getSubmit().setEnabled(true);
+		}	else {
+			display.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
+			display.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
+			vsacapiService.validateVsacUser(display.getUserIdText().getText(),
+					display.getPasswordInput().getText(), new AsyncCallback<Boolean>() {
 				@Override
 				public void onFailure(final Throwable caught) {
 					display.getErrorMessageDisplay().setMessage(
@@ -377,20 +382,25 @@ public class ManageUmlsPresenter implements MatPresenter{
 				}
 				@Override
 				public void onSuccess(final Boolean result) {
+					display.getUserIdGroup().setValidationState(ValidationState.NONE);
+					display.getPasswordGroup().setValidationState(ValidationState.NONE);
 					if (result) {
+						display.getMessageFormGrp().setValidationState(ValidationState.NONE);
+						display.getHelpBlock().setText("");
 						Mat.showUMLSActive();
 						display.setInfoMessageVisible(true);
 						display.getInfoMessage().setText(
 								MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
-						display.getUserid().setValue("");
-						display.getPassword().setValue("");
+						display.getPasswordInput().setText("");
+						display.getUserIdText().setText("");
 						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
 						MatContext.get().setUMLSLoggedIn(true);
 						MatContext.get().getAllExpProfileList();
 					} else { //incorrect UMLS credential - no ticket is assigned.
-						display.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
+						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+						display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
 						Mat.hideUMLSActive();
 						MatContext.get().setUMLSLoggedIn(false);
 						invalidateVsacSession();

@@ -97,7 +97,7 @@ public class CQLBasedHQMFGenerator implements Generator {
 	 * @return the string
 	 */
 	private String removeXmlTagNamespace(String xmlString) {
-		xmlString = xmlString.replaceAll(" xmlns=\"\"", "").replaceAll("&#34;", "&quot;").replaceAll("ext-supplementalDataElement", "cql-ext:supplementalDataElement");
+		xmlString = xmlString.replaceAll(" xmlns=\"\"", "").replaceAll("&#34;", "&quot;");
 		return xmlString;
 	}
 }

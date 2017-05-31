@@ -490,7 +490,11 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		Element component = processor.getOriginalDoc().createElement("component"); 
 		component.setAttribute("typeCode", "COMP");
 		
-		Element stratifierCriteria = processor.getOriginalDoc().createElement("ext-supplementalDataElement");
+		Attr qdmNameSpaceAttr = processor.getOriginalDoc().createAttribute("xmlns:cql-ext");
+		qdmNameSpaceAttr.setNodeValue("urn:hhs-cql:hqmf-n1-extensions:v1");
+		component.setAttributeNodeNS(qdmNameSpaceAttr);
+		
+		Element stratifierCriteria = processor.getOriginalDoc().createElement("cql-ext:supplementalDataElement");
 		
 		String extensionStr = "";
 		String codeStr = "";

@@ -14,9 +14,9 @@ import mat.shared.CQLObject;
 
 import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
-import org.hl7.cql.model.ClassType;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.ListType;
+import org.cqframework.cql.elm.tracking.ClassType;
+import org.cqframework.cql.elm.tracking.DataType;
+import org.cqframework.cql.elm.tracking.ListType;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.BinaryExpression;

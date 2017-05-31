@@ -490,7 +490,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		Element component = processor.getOriginalDoc().createElement("component"); 
 		component.setAttribute("typeCode", "COMP");
 		
-		Element stratifierCriteria = processor.getOriginalDoc().createElement("cql-ext:supplementalDataElement");
+		Element stratifierCriteria = processor.getOriginalDoc().createElement("ext-supplementalDataElement");
 		
 		String extensionStr = "";
 		String codeStr = "";
@@ -527,32 +527,6 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		String extensionString = String.format("%s.\"%s\"", libraryName, riskAdjustmentDefName);
 		criteriaReferenceId.setAttribute("extension", extensionString);
 		criteriaReference.appendChild(criteriaReferenceId);
-		
-		Element innerComponent = processor.getOriginalDoc().createElement("component");
-		innerComponent.setAttribute("typeCode", "COMP");
-		stratifierCriteria.appendChild(innerComponent);
-		
-		/*Element measureAttribute = processor.getOriginalDoc().createElement("measureAttribute");
-		innerComponent.appendChild(measureAttribute); 
-		
-		Element measureAttributeCode = processor.getOriginalDoc().createElement("code");
-		measureAttributeCode.setAttribute("code", type);
-		measureAttributeCode.setAttribute("codeSystem", "2.16.840.1.113883.5.4");
-		measureAttributeCode.setAttribute("codeSystemName", "Act Code");
-		measureAttribute.appendChild(measureAttributeCode);
-		
-		String value="";
-		if(type.equalsIgnoreCase("MSRADJ")){
-			value = "Risk Adjustment";
-		} else {
-			value = "Supplemental Data Elements";
-		}
-		Element measureAttributeValue = processor.getOriginalDoc().createElement("value");
-		measureAttributeValue.setAttribute("mediaType", "text/plain");
-		measureAttributeValue.setAttribute("value", value);
-		measureAttributeValue.setAttribute("xsi:type", "ED");
-		measureAttribute.appendChild(measureAttributeValue);
-	*/	
 		component.appendChild(stratifierCriteria);
 	
 		return component;

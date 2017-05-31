@@ -524,7 +524,6 @@ public class MeasurePackageClauseCellListWidget {
 							}
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(denoAssociatedPopulationList);
-							disclosurePanelAssociations.setOpen(false);
 							disclosurePanelAssociations.setOpen(true);
 						} else if (selectedClauseCell.getType().equalsIgnoreCase(NUMERATOR)) {
 							for (MeasurePackageClauseDetail detail : numAssociatedPopulationList) {
@@ -536,7 +535,6 @@ public class MeasurePackageClauseCellListWidget {
 							}
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(numAssociatedPopulationList);
-							disclosurePanelAssociations.setOpen(false);
 							disclosurePanelAssociations.setOpen(true);
 						} else {
 							for (MeasurePackageClauseDetail detail : associatedPopulationList) {
@@ -548,7 +546,6 @@ public class MeasurePackageClauseCellListWidget {
 							}
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(associatedPopulationList);
-							disclosurePanelAssociations.setOpen(false);
 							disclosurePanelAssociations.setOpen(true);
 						}
 						addAssociationToClauses();
@@ -1033,7 +1030,7 @@ public class MeasurePackageClauseCellListWidget {
 								buildAddAssociationWidget(numAssociatedPopulationList);
 							}
 							disclosurePanelAssociations.setVisible(true);
-							disclosurePanelAssociations.setOpen(false);
+							disclosurePanelAssociations.setOpen(true);
 						} else  {
 							disclosurePanelAssociations.setVisible(false);
 							disclosurePanelAssociations.setOpen(false);
@@ -1043,7 +1040,7 @@ public class MeasurePackageClauseCellListWidget {
 							addPopulationForMeasureObservation(groupingPopulationList);
 							buildAddAssociationWidget(associatedPopulationList);
 							disclosurePanelAssociations.setVisible(true);
-							disclosurePanelAssociations.setOpen(false);
+							disclosurePanelAssociations.setOpen(true);
 						}
 						
 					} else {

@@ -7,11 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
+import mat.shared.CQLExpressionObject;
+import mat.shared.CQLObject;
+
 import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
-import org.cqframework.cql.elm.tracking.ClassType;
-import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.ListType;
+import org.hl7.cql.model.ClassType;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.BinaryExpression;
@@ -66,8 +71,8 @@ import mat.shared.CQLExpressionOprandObject;
 import mat.shared.CQLObject;
 
 /**
- *
- */
+*
+*/
 public class CQLFilter {
 
     /**
@@ -114,18 +119,21 @@ public class CQLFilter {
     
     private Map<String, List<String>> definitionToDefinitionMap = new HashMap<String, List<String>>();   
 
-	private Map<String, List<String>> definitionToFunctionMap = new HashMap<String, List<String>>();
+       private Map<String, List<String>> definitionToFunctionMap = new HashMap<String, List<String>>();
    
-	private Map<String, List<String>> functionToDefinitionMap = new HashMap<String, List<String>>();
+       private Map<String, List<String>> functionToDefinitionMap = new HashMap<String, List<String>>();
     
-	private Map<String, List<String>> functionToFunctionMap = new HashMap<String, List<String>>();
+       private Map<String, List<String>> functionToFunctionMap = new HashMap<String, List<String>>();
        
-  	/**
+       /**
      * The used codes list
      */
     private List<String> usedCodes = new ArrayList<String>();
+    
     private Map<String, List<String>> valueSetDataTypeMap;
 
+    private Map<String, List<String>> codeDataTypeMap; 
+    
     /**
      * Map for included Library objects
      */
@@ -142,16 +150,16 @@ public class CQLFilter {
     private CQLObject cqlObject = new CQLObject();
        
     
-	/**
+       /**
      * The cql filter
      * @param library the library of the CQL
      * @param populationList the lists of populations that are included in MAT
      */
     public CQLFilter(Library library, List<String> populationList, String parentFolderPath, CQLModel cqlModel) {
-    	
+       
         this.cqlFolderPath = parentFolderPath;
-    	this.library = library;
-    	this.cqlModel = cqlModel;
+       this.library = library;
+       this.cqlModel = cqlModel;
         this.currentLibraryHolder = new LibraryHolder(this.library, "", "","");
         this.populationList = populationList;
 
@@ -163,6 +171,7 @@ public class CQLFilter {
         this.usedCodes = new ArrayList<String>();
         this.includedLibraries = new HashMap<String, LibraryHolder>();
         this.valueSetDataTypeMap = new HashMap<String, List<String>>();
+        this.codeDataTypeMap = new HashMap<String, List<String>>();
     }
 
     /**
@@ -173,11 +182,11 @@ public class CQLFilter {
         // add all of the base populations into the used expressions list
         this.usedExpressions.addAll(this.populationList);
 
-        for(String expressionName : this.populationList) {
+       for(String expressionName : this.populationList) {
             //assuming that definitions/functions attached to populations will always come from the primary CQL library
-        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "","");
-        	
-        	checkForUsedStatements(expressionName);
+             this.currentLibraryHolder = new LibraryHolder(this.library, "", "","");
+             
+             checkForUsedStatements(expressionName);
         }
 
        // System.out.println(this.includedLibraries);
@@ -193,14 +202,14 @@ public class CQLFilter {
 
         for(String expressionName : this.populationList) {
             //assuming that definitions/functions attached to populations will always come from the primary CQL library
-        	this.currentLibraryHolder = new LibraryHolder(this.library, "", "", "");
-        	
-        	checkForUsedStatements(expressionName);
-        	
-        	ExpressionDef expression = findExpressionByName(expressionName);
-        	if(expression != null) {
-        		createCQLExpressionObject(expression);
-        	}
+             this.currentLibraryHolder = new LibraryHolder(this.library, "", "", "");
+             
+             checkForUsedStatements(expressionName);
+             
+             ExpressionDef expression = findExpressionByName(expressionName);
+             if(expression != null) {
+                    createCQLExpressionObject(expression);
+             }
         }
         collectUsed();
         //System.out.println(this.includedLibraries);
@@ -208,21 +217,22 @@ public class CQLFilter {
     
     // Combine All expressions used data for packaging and export.
     private void collectUsed() {
-		// TODO Auto-generated method stub
-		List<CQLExpressionObject> allExpressionList = cqlObject.getAllExpressionList();
-		for(CQLExpressionObject expressionObject : allExpressionList){
-			this.getUsedCodes().addAll(expressionObject.getUsedCodes());
-			this.getUsedCodeSystems().addAll(expressionObject.getUsedCodeSystems());
-			this.getUsedExpressions().addAll(expressionObject.getUsedExpressions());
-			this.getUsedFunctions().addAll(expressionObject.getUsedFunctions());
-			this.getUsedParameters().addAll(expressionObject.getUsedParameters());
-			this.getUsedValuesets().addAll(expressionObject.getUsedValuesets());
-			//this.getValueSetDataTypeMap().putAll(expressionObject.getValueSetDataTypeMap());
-			CQLExpressionObject.mergeValueSetMap(this.getValueSetDataTypeMap(), expressionObject.getValueSetDataTypeMap());
-		}
-	}
+              // TODO Auto-generated method stub
+              List<CQLExpressionObject> allExpressionList = cqlObject.getAllExpressionList();
+              for(CQLExpressionObject expressionObject : allExpressionList){
+                     this.getUsedCodes().addAll(expressionObject.getUsedCodes());
+                     this.getUsedCodeSystems().addAll(expressionObject.getUsedCodeSystems());
+                     this.getUsedExpressions().addAll(expressionObject.getUsedExpressions());
+                     this.getUsedFunctions().addAll(expressionObject.getUsedFunctions());
+                     this.getUsedParameters().addAll(expressionObject.getUsedParameters());
+                     this.getUsedValuesets().addAll(expressionObject.getUsedValuesets());
+                     //this.getValueSetDataTypeMap().putAll(expressionObject.getValueSetDataTypeMap());
+                     CQLExpressionObject.mergeValueSetMap(this.getValueSetDataTypeMap(), expressionObject.getValueSetDataTypeMap());
+                     CQLExpressionObject.mergeCodeMap(this.getCodeDataTypeMap(), expressionObject.getCodeDataTypeMap());
+              }
+       }
 
-	/**
+       /**
      * Entry point for getting used statements. This takes in an expression name, which is passed in to the Filter class.
      * This name should be associated with a population. Then, it finds the expression object associated with that name,
      * and then checks for the used statements on that object.
@@ -239,28 +249,28 @@ public class CQLFilter {
 //            try{
 //            throw new Exception("hiiiii");
 //            }catch(Exception e){
-//            	e.printStackTrace();
+//                  e.printStackTrace();
 //            }
             return;
         }
         
         String expressionNameWithLib = expressionName;
         if(this.currentLibraryHolder != null && this.currentLibraryHolder.getLibraryAlias().length() > 0){
-        	expressionNameWithLib = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + expressionName;
+             expressionNameWithLib = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + expressionName;
         }
         
         if(expression.getClass().equals(FunctionDef.class)) {
-        	this.currentFunctionName = expressionNameWithLib;
-        	this.currentDefinitionName = "";
-        	this.currentParameterName = "";
+             this.currentFunctionName = expressionNameWithLib;
+             this.currentDefinitionName = "";
+             this.currentParameterName = "";
         }else if(expression.getClass().equals(ParameterDef.class)){
-        	this.currentParameterName = expressionNameWithLib;
-        	this.currentFunctionName = "";
-        	this.currentDefinitionName = "";
+             this.currentParameterName = expressionNameWithLib;
+             this.currentFunctionName = "";
+             this.currentDefinitionName = "";
         }else if(expression.getClass().equals(ExpressionDef.class)){
-        	this.currentDefinitionName = expressionNameWithLib;
-        	this.currentParameterName = "";
-        	this.currentFunctionName = "";
+             this.currentDefinitionName = expressionNameWithLib;
+             this.currentParameterName = "";
+             this.currentFunctionName = "";
         }
         
         checkForUsedStatements(expression.getExpression());
@@ -269,8 +279,8 @@ public class CQLFilter {
     }
 
     private void createCQLExpressionObject(ExpressionDef expression) {
-    	
-    	if(expression.getClass().equals(ExpressionDef.class)) {
+       
+       if(expression.getClass().equals(ExpressionDef.class)) {
            CQLExpressionObject definitionObject = new CQLExpressionObject("Definition",expression.getName());
            definitionObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
            definitionObject.getUsedCodes().addAll(this.getUsedCodes());
@@ -280,6 +290,7 @@ public class CQLFilter {
            definitionObject.getUsedParameters().addAll(this.getUsedParameters());
            definitionObject.getUsedValuesets().addAll(this.getUsedValuesets());
            definitionObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
+           definitionObject.getCodeDataTypeMap().putAll(this.getCodeDataTypeMap());
            cqlObject.getCqlDefinitionObjectList().add(definitionObject);
            
            clearUsed();
@@ -287,63 +298,67 @@ public class CQLFilter {
         }
 
         else if(expression.getClass().equals(FunctionDef.class)) {
-        	CQLExpressionObject funcObject = new CQLExpressionObject("Function",expression.getName());
-        	
-        	FunctionDef functionRef = (FunctionDef) expression;
-        	// Populate Function Argument name and return type.
-        	for(OperandDef expressionDef : functionRef.getOperand()){
-        		CQLExpressionOprandObject cqlExpressionOprandObject = new CQLExpressionOprandObject();
-        		cqlExpressionOprandObject.setName(expressionDef.getName());
-        		cqlExpressionOprandObject.setReturnType(expressionDef.getResultType().toString());
-        		funcObject.getOprandList().add(cqlExpressionOprandObject);
-        	}
-        	
-        	funcObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
-        	funcObject.getUsedCodes().addAll(this.getUsedCodes());
-        	funcObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
-        	funcObject.getUsedExpressions().addAll(this.getUsedExpressions());
-        	funcObject.getUsedFunctions().addAll(this.getUsedFunctions());
-        	funcObject.getUsedParameters().addAll(this.getUsedParameters());
-        	funcObject.getUsedValuesets().addAll(this.getUsedValuesets());
-        	funcObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
-        	cqlObject.getCqlFunctionObjectList().add(funcObject);
-        	
-        	//System.out.println("Created Function object" + expression.getName() + " with used definitions as:"+funcObject.getUsedExpressions());
-        	
-        	clearUsed();
+             CQLExpressionObject funcObject = new CQLExpressionObject("Function",expression.getName());
+             
+             FunctionDef functionRef = (FunctionDef) expression;
+             // Populate Function Argument name and return type.
+             for(OperandDef expressionDef : functionRef.getOperand()){
+                    CQLExpressionOprandObject cqlExpressionOprandObject = new CQLExpressionOprandObject();
+                    cqlExpressionOprandObject.setName(expressionDef.getName());
+                    cqlExpressionOprandObject.setReturnType(expressionDef.getResultType().toString());
+                    funcObject.getOprandList().add(cqlExpressionOprandObject);
+             }
+             
+             funcObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
+             funcObject.getUsedCodes().addAll(this.getUsedCodes());
+             funcObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
+             funcObject.getUsedExpressions().addAll(this.getUsedExpressions());
+             funcObject.getUsedFunctions().addAll(this.getUsedFunctions());
+             funcObject.getUsedParameters().addAll(this.getUsedParameters());
+             funcObject.getUsedValuesets().addAll(this.getUsedValuesets());
+             funcObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
+             funcObject.getCodeDataTypeMap().putAll(this.getCodeDataTypeMap());
+
+             cqlObject.getCqlFunctionObjectList().add(funcObject);
+             
+             //System.out.println("Created Function object" + expression.getName() + " with used definitions as:"+funcObject.getUsedExpressions());
+             
+             clearUsed();
         }
 
         // check for parameters
         else if(expression.getClass().equals(ParameterDef.class)) {
-        	CQLExpressionObject paramObject = new CQLExpressionObject("Parameter",expression.getName());
-        	paramObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
-        	paramObject.getUsedCodes().addAll(this.getUsedCodes());
-        	paramObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
-        	paramObject.getUsedExpressions().addAll(this.getUsedExpressions());
-        	paramObject.getUsedFunctions().addAll(this.getUsedFunctions());
-        	paramObject.getUsedParameters().addAll(this.getUsedParameters());
-        	paramObject.getUsedValuesets().addAll(this.getUsedValuesets());
-        	paramObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
+             CQLExpressionObject paramObject = new CQLExpressionObject("Parameter",expression.getName());
+             paramObject.setReturnType((expression.getResultType() == null)?"":expression.getResultType().toString());
+             paramObject.getUsedCodes().addAll(this.getUsedCodes());
+             paramObject.getUsedCodeSystems().addAll(this.getUsedCodeSystems());
+             paramObject.getUsedExpressions().addAll(this.getUsedExpressions());
+             paramObject.getUsedFunctions().addAll(this.getUsedFunctions());
+             paramObject.getUsedParameters().addAll(this.getUsedParameters());
+             paramObject.getUsedValuesets().addAll(this.getUsedValuesets());
+             paramObject.getValueSetDataTypeMap().putAll(this.getValueSetDataTypeMap());
+             paramObject.getCodeDataTypeMap().putAll(this.getCodeDataTypeMap());
 
-        	cqlObject.getCqlParameterObjectList().add(paramObject);
-        	
-        	clearUsed();
-        }		
-	}
+             cqlObject.getCqlParameterObjectList().add(paramObject);
+             
+             clearUsed();
+        }           
+       }
 
-	private void clearUsed() {
-		this.getUsedCodes().clear();
-		this.getUsedCodeSystems().clear();
-		this.getUsedExpressions().clear();
-		this.getUsedFunctions().clear();
-		this.getUsedParameters().clear();
-		this.getUsedValuesets().clear();
-		this.getValueSetDataTypeMap().clear();
-	}
-	
-	
+       private void clearUsed() {
+              this.getUsedCodes().clear();
+              this.getUsedCodeSystems().clear();
+              this.getUsedExpressions().clear();
+              this.getUsedFunctions().clear();
+              this.getUsedParameters().clear();
+              this.getUsedValuesets().clear();
+              this.getValueSetDataTypeMap().clear();
+              this.getCodeDataTypeMap().clear();
+       }
+       
+       
 
-	/**
+       /**
      * Checks for the used statements for the given expression.
      * @param expression the expression
      */
@@ -398,7 +413,7 @@ public class CQLFilter {
         }
         
         else if(expression.getClass().equals(CodeRef.class)) {
-        	checkForCodeRef(expression);
+             checkForCodeRef(expression);
         }
 
         // check for property references
@@ -532,7 +547,7 @@ public class CQLFilter {
      * Checks for an expression references. If there is an expression references, recursively call
      * checkForUsedStatements on the expression so we can find any expressions inside it. Also, add the used expression
      * to the used expression list.
-     * @param expression the expression
+    * @param expression the expression
      */
     private void checkforExpressionRef(Expression expression) {
         ExpressionRef expressionRef = (ExpressionRef) expression;        
@@ -546,40 +561,40 @@ public class CQLFilter {
         String expressionName = expressionRef.getName();
         
         LibraryHolder existingLibrary = null;
-    	String finalExpressionName = expressionName;
-    	
+       String finalExpressionName = expressionName;
+       
         if(includedLibraryAlias != null){
-	        LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
-	        //System.out.println(this.includedLibraries);
-	        includedLibraryAlias = includedLibrary.getLibraryName()  + "-" + includedLibrary.getLibraryVersion() +  "|" + includedLibraryAlias;
-	      	existingLibrary = this.currentLibraryHolder; 
-	    	this.currentLibraryHolder = includedLibrary;
-	    	finalExpressionName = includedLibraryAlias + "|" + expressionRef.getName();
-	    	//this.addUsedExpression(includedLibraryAlias + "|" + expressionRef.getName());
-    	}else{
-    		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-    			
-    			finalExpressionName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
-    					+ this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName();
-    			
-//    			this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
-//    					+ this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName());
-    		}else{
-    			finalExpressionName = expressionRef.getName();
-    			//this.addUsedExpression(expressionRef.getName());
-    		}
-    	}
-    	
+               LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
+               //System.out.println(this.includedLibraries);
+               includedLibraryAlias = includedLibrary.getLibraryName()  + "-" + includedLibrary.getLibraryVersion() +  "|" + includedLibraryAlias;
+             existingLibrary = this.currentLibraryHolder; 
+              this.currentLibraryHolder = includedLibrary;
+              finalExpressionName = includedLibraryAlias + "|" + expressionRef.getName();
+              //this.addUsedExpression(includedLibraryAlias + "|" + expressionRef.getName());
+       }else{
+              if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+                    
+                    finalExpressionName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
+                                  + this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName();
+                    
+//                  this.addUsedExpression(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" 
+//                                + this.currentLibraryHolder.getLibraryAlias() + "|" + expressionRef.getName());
+              }else{
+                    finalExpressionName = expressionRef.getName();
+                    //this.addUsedExpression(expressionRef.getName());
+              }
+       }
+       
         this.addUsedExpression(finalExpressionName);
         
         if(!expressionName.equals("Patient")){
-        	//addToDirectRefDefMap(this.getUsedExpressions().get(this.getUsedExpressions().size() - 1));
-        	addToDirectRefDefMap(finalExpressionName);
-    	}        
+               //addToDirectRefDefMap(this.getUsedExpressions().get(this.getUsedExpressions().size() - 1));
+             addToDirectRefDefMap(finalExpressionName);
+       }        
         String tempCurrentDef = this.currentDefinitionName;
         String tempCurrentFunc = this.currentFunctionName;
         String tempCurrentParam = this.currentParameterName;
-        		
+                    
         checkForUsedStatements(expressionName);
         
         this.currentDefinitionName = tempCurrentDef;
@@ -588,35 +603,35 @@ public class CQLFilter {
         
         
         if(existingLibrary != null){
-        	this.currentLibraryHolder = existingLibrary;
+             this.currentLibraryHolder = existingLibrary;
         }
     }
 
     private void addToDirectRefDefMap(String expressionName) {
-    	
-    	if(this.currentDefinitionName.length() > 0){
-    		
-    		if(this.definitionToDefinitionMap.get(this.currentDefinitionName) == null){
-    			this.definitionToDefinitionMap.put(this.currentDefinitionName, new ArrayList<String>());
-    		}
-    		
-    		if(!this.definitionToDefinitionMap.get(this.currentDefinitionName).contains(expressionName)){
-    			this.definitionToDefinitionMap.get(this.currentDefinitionName).add(expressionName);
-    		}
-    		
-    	}else if(this.currentFunctionName.length() > 0){
-    		
-    		if(this.functionToDefinitionMap.get(this.currentFunctionName) == null){
-    			this.functionToDefinitionMap.put(this.currentFunctionName, new ArrayList<String>());
-    		}
-    		
-    		if(!this.functionToDefinitionMap.get(this.currentFunctionName).contains(expressionName)){
-    			this.functionToDefinitionMap.get(this.currentFunctionName).add(expressionName);
-    		}
-    		
-    	}
-		
-	}
+       
+       if(this.currentDefinitionName.length() > 0){
+              
+              if(this.definitionToDefinitionMap.get(this.currentDefinitionName) == null){
+                    this.definitionToDefinitionMap.put(this.currentDefinitionName, new ArrayList<String>());
+              }
+              
+           if(!this.definitionToDefinitionMap.get(this.currentDefinitionName).contains(expressionName)){
+                     this.definitionToDefinitionMap.get(this.currentDefinitionName).add(expressionName);
+              }
+              
+       }else if(this.currentFunctionName.length() > 0){
+              
+              if(this.functionToDefinitionMap.get(this.currentFunctionName) == null){
+                    this.functionToDefinitionMap.put(this.currentFunctionName, new ArrayList<String>());
+              }
+              
+              if(!this.functionToDefinitionMap.get(this.currentFunctionName).contains(expressionName)){
+                     this.functionToDefinitionMap.get(this.currentFunctionName).add(expressionName);
+              }
+              
+       }
+              
+       }
 
     private void checkForFunctionRef(Expression expression) {
         FunctionRef functionRef = (FunctionRef) expression;
@@ -633,30 +648,30 @@ public class CQLFilter {
        
        
         
-    	if(includedLibraryAlias != null){
-    		LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
-    		includedLibraryAlias = includedLibrary.getLibraryName() + "-" + includedLibrary.getLibraryVersion() + "|" + includedLibraryAlias;
-	      	existingLibrary = this.currentLibraryHolder;
-	    	this.currentLibraryHolder = includedLibrary;
-	    	finalExpressionName = includedLibraryAlias + "|" + functionRef.getName();
-	    	//this.addUsedFunction(includedLibraryAlias + "|" + functionRef.getName());
-    	}else{
-    		if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-    			finalExpressionName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName();
-    			//this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName());
-    		}else{
-    			finalExpressionName = functionRef.getName();
-    			//this.addUsedFunction(functionRef.getName());
-    		}
-    	}
-    	this.addUsedFunction(finalExpressionName);
-		//addToDirectRefFuncMap(this.getUsedFunctions().get(this.getUsedFunctions().size() - 1));    	
-    	addToDirectRefFuncMap(finalExpressionName);
-    	
-	    String tempCurrentDef = this.currentDefinitionName;
-	    String tempCurrentFunc = this.currentFunctionName;
-	    String tempCurrentParam = this.currentParameterName;
-    	
+       if(includedLibraryAlias != null){
+              LibraryHolder includedLibrary = getIncludedLibrary(includedLibraryAlias);
+              includedLibraryAlias = includedLibrary.getLibraryName() + "-" + includedLibrary.getLibraryVersion() + "|" + includedLibraryAlias;
+             existingLibrary = this.currentLibraryHolder;
+              this.currentLibraryHolder = includedLibrary;
+              finalExpressionName = includedLibraryAlias + "|" + functionRef.getName();
+              //this.addUsedFunction(includedLibraryAlias + "|" + functionRef.getName());
+       }else{
+              if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+                    finalExpressionName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName();
+                    //this.addUsedFunction(this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.libraryAlias + "|" + functionRef.getName());
+              }else{
+                    finalExpressionName = functionRef.getName();
+                    //this.addUsedFunction(functionRef.getName());
+              }
+       }
+       this.addUsedFunction(finalExpressionName);
+              //addToDirectRefFuncMap(this.getUsedFunctions().get(this.getUsedFunctions().size() - 1));       
+       addToDirectRefFuncMap(finalExpressionName);
+       
+           String tempCurrentDef = this.currentDefinitionName;
+           String tempCurrentFunc = this.currentFunctionName;
+           String tempCurrentParam = this.currentParameterName;
+       
         checkForUsedStatements(expressionName);
         
         this.currentDefinitionName = tempCurrentDef;
@@ -664,37 +679,37 @@ public class CQLFilter {
         this.currentParameterName = tempCurrentParam;
         
         if(existingLibrary != null){
-        	this.currentLibraryHolder = existingLibrary;
+             this.currentLibraryHolder = existingLibrary;
         }
     }
 
     private void addToDirectRefFuncMap(String expressionName) {
-		
-    	if(this.currentDefinitionName.length() > 0){
-    		
-    		if(this.definitionToFunctionMap.get(this.currentDefinitionName) == null){
-    			this.definitionToFunctionMap.put(this.currentDefinitionName, new ArrayList<String>());
-    		}
-    		
-    		if(!this.definitionToFunctionMap.get(this.currentDefinitionName).contains(expressionName)){
-    			this.definitionToFunctionMap.get(this.currentDefinitionName).add(expressionName);
-    		}
-    		
-    	}else if(this.currentFunctionName.length() > 0){
-    		
-    		if(this.functionToFunctionMap.get(this.currentFunctionName) == null){
-    			this.functionToFunctionMap.put(this.currentFunctionName, new ArrayList<String>());
-    		}
-    		
-    		if(!this.functionToFunctionMap.get(this.currentFunctionName).contains(expressionName)){
-    			this.functionToFunctionMap.get(this.currentFunctionName).add(expressionName);
-    		}
-    		
-    	}
-		
-	}
+              
+       if(this.currentDefinitionName.length() > 0){
+              
+              if(this.definitionToFunctionMap.get(this.currentDefinitionName) == null){
+                    this.definitionToFunctionMap.put(this.currentDefinitionName, new ArrayList<String>());
+              }
+              
+             if(!this.definitionToFunctionMap.get(this.currentDefinitionName).contains(expressionName)){
+                     this.definitionToFunctionMap.get(this.currentDefinitionName).add(expressionName);
+              }
+              
+       }else if(this.currentFunctionName.length() > 0){
+              
+              if(this.functionToFunctionMap.get(this.currentFunctionName) == null){
+                    this.functionToFunctionMap.put(this.currentFunctionName, new ArrayList<String>());
+              }
+              
+              if(!this.functionToFunctionMap.get(this.currentFunctionName).contains(expressionName)){
+                     this.functionToFunctionMap.get(this.currentFunctionName).add(expressionName);
+              }
+              
+       }
+              
+       }
 
-	/**
+       /**
      * Check for parameter references and add it to the used parameter reference list
      * @param expression the expression
      */
@@ -704,11 +719,11 @@ public class CQLFilter {
         String libraryAlias = parameterRef.getLibraryName();
         
         if(libraryAlias != null){
-        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
-        	name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+             LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+             name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
         }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-        	name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name; 
+             //name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+             name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name; 
         }
         
         this.addUsedParameter(name);
@@ -725,8 +740,8 @@ public class CQLFilter {
         String name = inValueSet.getValueset().getName();
         
         if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-        	name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
+             //name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+             name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "." + name;
         }
         
         this.addUsedValueset(name);
@@ -743,10 +758,10 @@ public class CQLFilter {
         String libraryAlias = valueSetRef.getLibraryName();
         
         if(libraryAlias != null){
-        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
-        	name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+             LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+             name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
         }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-        	name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
+             name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
         }
         
         this.addUsedValueset(name);
@@ -757,7 +772,7 @@ public class CQLFilter {
      * @param expression the expression
      */
     private void checkForCodeSystemRef(Expression expression) {
-        CodeSystemRef codeSystemRef = (CodeSystemRef) expression;
+        CodeSystemRef codeSystemRef = (CodeSystemRef) expression; 
         //System.out.println("\t" + codeSystemRef.getName());
         this.addUsedCodeSystem(codeSystemRef.getName());
     }
@@ -770,12 +785,12 @@ public class CQLFilter {
         String libraryAlias = codeRef.getLibraryName();
         
         if(libraryAlias != null){
-        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
-        	name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+             LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+             name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
         }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-        	//name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-        	name = this.currentLibraryHolder.getLibraryName()  + "-" + this.currentLibraryHolder.getLibraryVersion() 
-        			+  "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
+             //name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
+             name = this.currentLibraryHolder.getLibraryName()  + "-" + this.currentLibraryHolder.getLibraryVersion() 
+                           +  "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
         }
         
         this.addUsedCode(name);
@@ -1027,68 +1042,124 @@ public class CQLFilter {
     private void checkForRetrieveExpression(Expression expression) {
         Retrieve retrieve = (Retrieve) expression;
         checkForUsedStatements(retrieve.getCodes());
-        saveValueSet_DataType(retrieve);
+        saveValuesetOrCode(retrieve);
         checkForUsedStatements(retrieve.getDateRange());
     }
 
-    private void saveValueSet_DataType(Retrieve retrieve) {
-		
-    	Expression expr = retrieve.getCodes();
-    	if(expr == null){
-    		return;
-    	}
-    	
-    	String valueSetOrCodeName = "";
-    	String libraryAlias = "";
-    	
-    	if(expr instanceof CodeRef){
-    		CodeRef codeRef = (CodeRef) retrieve.getCodes();
-    		valueSetOrCodeName = codeRef.getName();
-    		libraryAlias = codeRef.getLibraryName();
-    	}else if(expr instanceof ValueSetRef){
-    		ValueSetRef valueSetRef = (ValueSetRef) retrieve.getCodes();
-    		valueSetOrCodeName = valueSetRef.getName();
-    		libraryAlias = valueSetRef.getLibraryName();
-    	}
-    			
-		String dataTypeTemplateId = retrieve.getTemplateId();
-		String dataTypeName = "";
-		
-		if(dataTypeTemplateId != null){
-			dataTypeName = getDataTypeName(dataTypeTemplateId);
-		}
-		else{
-			//If you can find the templateId for the datatype for the retrieve, try this.
-			DataType dataType = retrieve.getResultType();
-			if(dataType instanceof ListType){
-				ListType listType = (ListType)dataType;
-				if(listType.getElementType() instanceof ClassType){
-					dataTypeName = ((ClassType)listType.getElementType()).getLabel();
-				}
-			}
-		}
-		        
-        if(libraryAlias != null){
-        	LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
-        	valueSetOrCodeName = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + valueSetOrCodeName;
-        }else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
-	        valueSetOrCodeName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + valueSetOrCodeName;
-	    }
-		
-		if(dataTypeName != null && dataTypeName.length() > 0){
-			List<String> dataTypeList = this.valueSetDataTypeMap.get(valueSetOrCodeName);
-			if(dataTypeList == null){
-				dataTypeList = new ArrayList<String>();
-				this.valueSetDataTypeMap.put(valueSetOrCodeName, dataTypeList);
-			}
-			
-			if(!dataTypeList.contains(dataTypeName)){
-				dataTypeList.add(dataTypeName);
-			}
-		}
-	}
+    private void saveValuesetOrCode(Retrieve retrieve) {
+              
+       Expression expr = retrieve.getCodes();
+       if(expr == null){
+              return;
+       }
+       
+       if(expr instanceof CodeRef){
+              CodeRef codeRef = (CodeRef) retrieve.getCodes();           
+              saveCode(codeRef, retrieve);
+       } else if(expr instanceof ValueSetRef){
+              ValueSetRef valueSetRef = (ValueSetRef) retrieve.getCodes();            
+              saveValueSet(valueSetRef, retrieve);
+       }
+       }
+    
+    /**
+     * Save the valueset
+     * @param valueset the valuset to save
+     * @param retrieve the associated retrieve
+     */
+    private void saveValueSet(ValueSetRef valueset, Retrieve retrieve) {
+       String valueSetName = valueset.getName();
+       String libraryAlias = valueset.getLibraryName();
+       valueSetName = createLongName(valueSetName, libraryAlias);
 
-	/**
+       
+       String dataTypeName = findDataType(retrieve);
+       
+       if(dataTypeName != null && dataTypeName.length() > 0) {
+              List<String> dataTypeList = this.valueSetDataTypeMap.get(valueSetName);
+              if(dataTypeList == null) {
+                    dataTypeList = new ArrayList<String>();
+                    this.valueSetDataTypeMap.put(valueSetName, dataTypeList);
+              }
+              
+              if(!dataTypeList.contains(dataTypeName)) {
+                    dataTypeList.add(dataTypeName);
+              }
+       }
+    }
+    
+    /**
+     * save the code to the code/datatype map
+     * @param code the code to save
+     * @param retrieve the associated retrieve
+     */
+    private void saveCode(CodeRef code, Retrieve retrieve) {
+       String codeName = code.getName(); 
+       String libraryAlias = code.getLibraryName(); 
+       codeName = createLongName(codeName, libraryAlias);
+       
+       String dataTypeName = findDataType(retrieve);
+       
+       if(dataTypeName != null && dataTypeName.length() > 0) {
+              List<String> dataTypeList = this.codeDataTypeMap.get(codeName);
+              if(dataTypeList == null) {
+                    dataTypeList = new ArrayList<String>(); 
+                    this.codeDataTypeMap.put(codeName, dataTypeList);
+              }
+              
+              if(!dataTypeList.contains(dataTypeName)) {
+                    dataTypeList.add(dataTypeName);
+              }
+       }
+       
+    }
+    
+    /**
+     * Finds the datatype associated with the retieve
+     * @param retrieve the retrieve to find the datatype for
+     * @return the data type name
+     */
+    private String findDataType(Retrieve retrieve) {
+              String dataTypeTemplateId = retrieve.getTemplateId();
+              String dataTypeName = "";
+              
+              if(dataTypeTemplateId != null){
+                     dataTypeName = getDataTypeName(dataTypeTemplateId);
+              }
+              else{
+                     //If you can find the templateId for the datatype for the retrieve, try this.
+                     DataType dataType = retrieve.getResultType();
+                     if(dataType instanceof ListType){
+                           ListType listType = (ListType)dataType;
+                           if(listType.getElementType() instanceof ClassType){
+                                  dataTypeName = ((ClassType) listType.getElementType()).getLabel();
+                           }
+                     }
+              }
+              
+              return dataTypeName; 
+    }
+    
+    /**
+     * Creates a long name for the valueset/code.
+     * @param name the name of the code or valueset
+     * @param libraryAlias the library alias
+     * @return a string in the format of AliasName-vx.x.x|name
+     */
+    private String createLongName(String name, String libraryAlias) {
+       String longName = name;
+       
+        if(libraryAlias != null) {
+             LibraryHolder libHolder = getIncludedLibrary(libraryAlias);
+             longName = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+        } else if(this.currentLibraryHolder.getLibraryAlias().length() > 0){
+               longName = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
+           }
+        
+        return longName; 
+    }
+
+       /**
      * Check for query expression
      * @param expression the expression
      */
@@ -1102,7 +1173,7 @@ public class CQLFilter {
 
         List<RelationshipClause> relationships = query.getRelationship();
         for(RelationshipClause relationship : relationships) {
-        	
+             
             Expression relationshipExpression = relationship.getExpression();
             checkForUsedStatements(relationshipExpression);
             
@@ -1122,7 +1193,7 @@ public class CQLFilter {
      */
     private ExpressionDef findExpressionByName(String expressionName) {
         
-    	ExpressionDef expression = findExpression(expressionName, this.currentLibraryHolder);
+       ExpressionDef expression = findExpression(expressionName, this.currentLibraryHolder);
         
 //        String s = this.library.getIncludes().getDef().get(0).getLocalIdentifier();
 //        System.out.println("sssssssss:"+s);
@@ -1133,74 +1204,74 @@ public class CQLFilter {
 
     }
 
-	public ExpressionDef findExpression(String expressionName, LibraryHolder libraryHolder) {
-		if(libraryHolder.getLibrary() != null){
-			List<ExpressionDef> expressionDefs = libraryHolder.getLibrary().getStatements().getDef();
-	        
-	        for(ExpressionDef expressionDef : expressionDefs) {
-	        	//System.out.println(expressionDef.getName());
-	            if(expressionDef.getName().equals(expressionName)) {
-	               // return expressionDef.getExpression();
-	            	return expressionDef;
-	            }
-	        }
-		}
+       public ExpressionDef findExpression(String expressionName, LibraryHolder libraryHolder) {
+              if(libraryHolder.getLibrary() != null){
+                     List<ExpressionDef> expressionDefs = libraryHolder.getLibrary().getStatements().getDef();
+               
+               for(ExpressionDef expressionDef : expressionDefs) {
+                    //System.out.println(expressionDef.getName());
+                   if(expressionDef.getName().equals(expressionName)) {
+                      // return expressionDef.getExpression();
+                   return expressionDef;
+                   }
+               }
+              }
         return null;
-	}
+       }
 
     private LibraryHolder getIncludedLibrary(String libraryAliasName) {
-		
-    	LibraryHolder includedLibrary = null;
-    	
-    	List<IncludeDef> includeDefs = this.currentLibraryHolder.getLibrary().getIncludes().getDef();
-    	
-    	for(IncludeDef includeDef: includeDefs){
-    		//System.out.println("Include alias:"+includeDef.getLocalIdentifier());
-    		//System.out.println("Include library name:"+includeDef.getPath());
-    		
-    		if(includeDef.getLocalIdentifier().equals(libraryAliasName)){
-    			//System.out.println("includedLibraryName:"+this.currentLibraryHolder.library);
-    			includedLibrary = this.includedLibraries.get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" + libraryAliasName);
-    			
-    			if(includedLibrary == null){
-    				String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion();
-    				//System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
-    				try {
-    					
-    					libraryPathName = this.cqlFolderPath + File.separator + libraryPathName + ".cql";						
-						//System.out.println("Searching for:"+libraryPathName);
-    					File includedLibraryFile = new File(libraryPathName);
-						
-    					CQLtoELM includedCQLtoELM = new CQLtoELM(includedLibraryFile);
-						includedCQLtoELM.doTranslation(true, false, false);
-						
-						includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath(), includeDef.getVersion());
-						CQLIncludeLibrary cqlIncludeLibrary = this.cqlModel.getIncludedCQLLibXMLMap().
-								get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" + libraryAliasName).getCqlLibrary();
-						
-						includedLibrary.setCqlIncludeLibraryObject(cqlIncludeLibrary);
-												
-						this.includedLibraries.put(includeDef.getPath() + "-" + includeDef.getVersion() + "|" +libraryAliasName  , includedLibrary);
-						
-    				} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-    			}
-//    			else{
-//    				System.out.println("includedLibraryName:"+includedLibrary.library.getLocalId());
-//    			}
-    			
-    			break;
-    		}
-    		
-    	}
-    	
-    	return includedLibrary;
-		
-	}
+              
+       LibraryHolder includedLibrary = null;
+       
+       List<IncludeDef> includeDefs = this.currentLibraryHolder.getLibrary().getIncludes().getDef();
+       
+       for(IncludeDef includeDef: includeDefs){
+              //System.out.println("Include alias:"+includeDef.getLocalIdentifier());
+              //System.out.println("Include library name:"+includeDef.getPath());
+              
+              if(includeDef.getLocalIdentifier().equals(libraryAliasName)){
+                     //System.out.println("includedLibraryName:"+this.currentLibraryHolder.library);
+                    includedLibrary = this.includedLibraries.get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" + libraryAliasName);
+                    
+                    if(includedLibrary == null){
+                           String libraryPathName = includeDef.getPath() + "-" + includeDef.getVersion();
+                           //System.out.println("Trying to load library:"+libraryAliasName+"("+libraryPathName+")");
+                           try {
+                                  
+                                  libraryPathName = this.cqlFolderPath + File.separator + libraryPathName + ".cql";                                    
+                                         //System.out.println("Searching for:"+libraryPathName);
+                                  File includedLibraryFile = new File(libraryPathName);
+                                         
+                                  CQLtoELM includedCQLtoELM = new CQLtoELM(includedLibraryFile);
+                                         includedCQLtoELM.doTranslation(true, false, false);
+                                         
+                                         includedLibrary = new LibraryHolder(includedCQLtoELM.getLibrary(), libraryAliasName, includeDef.getPath(), includeDef.getVersion());
+                                         CQLIncludeLibrary cqlIncludeLibrary = this.cqlModel.getIncludedCQLLibXMLMap().
+                                                       get(includeDef.getPath() + "-" + includeDef.getVersion() + "|" + libraryAliasName).getCqlLibrary();
+                                         
+                                         includedLibrary.setCqlIncludeLibraryObject(cqlIncludeLibrary);
+                                                                                  
+                                         this.includedLibraries.put(includeDef.getPath() + "-" + includeDef.getVersion() + "|" +libraryAliasName  , includedLibrary);
+                                         
+                           } catch (IOException e) {
+                                         // TODO Auto-generated catch block
+                                         e.printStackTrace();
+                                  }
+                    }
+//                  else{
+//                         System.out.println("includedLibraryName:"+includedLibrary.library.getLocalId());
+//                  }
+                    
+                    break;
+              }
+              
+       }
+       
+       return includedLibrary;
+              
+       }
 
-	/**
+       /**
      * Add a used expression to the used expression list
      * @param expressionName the expression name to add
      */
@@ -1261,14 +1332,14 @@ public class CQLFilter {
     }
     
     public CQLObject getCqlObject() {
-		return cqlObject;
-	}
+              return cqlObject;
+       }
 
-	public void setCqlObject(CQLObject cqlObject) {
-		this.cqlObject = cqlObject;
-	}
-	
-	/**
+       public void setCqlObject(CQLObject cqlObject) {
+              this.cqlObject = cqlObject;
+       }
+       
+       /**
      * Gets used expressions
      * @return used expressions list
      */
@@ -1309,262 +1380,271 @@ public class CQLFilter {
     }
     
     public List<String> getUsedCodes() {
-		return usedCodes;
-	}
+              return usedCodes;
+       }
     
     public List<String> getUsedLibraries(){
-    	return new ArrayList<String>(this.includedLibraries.keySet());
+       return new ArrayList<String>(this.includedLibraries.keySet());
     }
     
     public Map<String, CQLIncludeLibrary> getUsedLibrariesMap(){
-    	Map<String, CQLIncludeLibrary> usedLibMap = new HashMap<String, CQLIncludeLibrary>();
-    	
-    	for(String libName:this.includedLibraries.keySet()){
-    		LibraryHolder libHolder = this.includedLibraries.get(libName);
-    		usedLibMap.put(libName, libHolder.getCqlIncludeLibraryObject());
-    	}
-    	
-    	return usedLibMap;
+       Map<String, CQLIncludeLibrary> usedLibMap = new HashMap<String, CQLIncludeLibrary>();
+       
+       for(String libName:this.includedLibraries.keySet()){
+              LibraryHolder libHolder = this.includedLibraries.get(libName);
+              usedLibMap.put(libName, libHolder.getCqlIncludeLibraryObject());
+       }
+       
+       return usedLibMap;
     }
     
     public Map<String, List<String>> getValueSetDataTypeMap() {
-		return valueSetDataTypeMap;
-	}
+              return valueSetDataTypeMap;
+       }
     
     public static String getDataTypeName(String dataTypeIdentifier){
-    	//load qdm info if blank
-    	if(qdmTypeInfoMap.size() == 0){
-    		
-    		QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
-	    	ModelInfo info = qdmModelInfoProvider.load();
-	    	
-	    	List<TypeInfo> typeInfos = info.getTypeInfo();
-	    	for(TypeInfo typeInfo : typeInfos) {
-	    		 if(typeInfo instanceof ProfileInfo) {
-	                 ProfileInfo profileInfo = (ProfileInfo) typeInfo;
-	                 //System.out.println(profileInfo.getIdentifier()  + " >>> " + profileInfo.getLabel());
-	                 qdmTypeInfoMap.put(profileInfo.getIdentifier(), profileInfo.getLabel());
-	             }
-	    	} 
-    	}
-    	
-    	String dataTypeName = qdmTypeInfoMap.get(dataTypeIdentifier);
-    	return dataTypeName;
+       //load qdm info if blank
+       if(qdmTypeInfoMap.size() == 0){
+              
+              QdmModelInfoProvider qdmModelInfoProvider = new QdmModelInfoProvider();
+              ModelInfo info = qdmModelInfoProvider.load();
+              
+              List<TypeInfo> typeInfos = info.getTypeInfo();
+              for(TypeInfo typeInfo : typeInfos) {
+                      if(typeInfo instanceof ProfileInfo) {
+                        ProfileInfo profileInfo = (ProfileInfo) typeInfo;
+                        //System.out.println(profileInfo.getIdentifier()  + " >>> " + profileInfo.getLabel());
+                        qdmTypeInfoMap.put(profileInfo.getIdentifier(), profileInfo.getLabel());
+                    }
+              } 
+       }
+       
+       String dataTypeName = qdmTypeInfoMap.get(dataTypeIdentifier);
+       return dataTypeName;
     }
     
     public Map<String, List<String>> getFunctionToFunctionMap() {
-		return functionToFunctionMap;
-	}
+              return functionToFunctionMap;
+       }
 
-	public Map<String, List<String>> getDefinitionToDefinitionMap() {
-		return definitionToDefinitionMap;
-	}
+       public Map<String, List<String>> getDefinitionToDefinitionMap() {
+              return definitionToDefinitionMap;
+       }
     
     public Map<String, List<String>> getDefinitionToFunctionMap() {
-		return definitionToFunctionMap;
-	}
+              return definitionToFunctionMap;
+       }
     
     public Map<String, List<String>> getFunctionToDefinitionMap() {
-		return functionToDefinitionMap;
-	}
+              return functionToDefinitionMap;
+       }
     
     public class LibraryHolder{
-    	private Library library;
-    	private String libraryAlias;
-    	private String libraryName;
-    	private String libraryVersion;
-    	private CQLIncludeLibrary cqlIncludeLibraryObject;
-    	
-    	
-    	public LibraryHolder(Library library, String alias, String libraryName, String libraryVer) {
-			this.setLibrary(library);
-			this.setLibraryAlias(alias);
-			this.setLibraryName(libraryName);
-			this.setLibraryVersion(libraryVer);
-		}
+       private Library library;
+       private String libraryAlias;
+       private String libraryName;
+       private String libraryVersion;
+       private CQLIncludeLibrary cqlIncludeLibraryObject;
+      
+       
+       public LibraryHolder(Library library, String alias, String libraryName, String libraryVer) {
+                     this.setLibrary(library);
+                     this.setLibraryAlias(alias);
+                     this.setLibraryName(libraryName);
+                     this.setLibraryVersion(libraryVer);
+              }
 
-		
+              
 
-		public Library getLibrary() {
-			return library;
-		}
+              public Library getLibrary() {
+                     return library;
+              }
 
-		public void setLibrary(Library library) {
-			this.library = library;
-		}
+              public void setLibrary(Library library) {
+                     this.library = library;
+              }
 
-		public String getLibraryAlias() {
-			return libraryAlias;
-		}
+              public String getLibraryAlias() {
+                     return libraryAlias;
+              }
 
-		public void setLibraryAlias(String libraryAlias) {
-			this.libraryAlias = libraryAlias;
-		}
+              public void setLibraryAlias(String libraryAlias) {
+                     this.libraryAlias = libraryAlias;
+              }
 
-		public String getLibraryName() {
-			return libraryName;
-		}
+              public String getLibraryName() {
+                     return libraryName;
+              }
 
-		public void setLibraryName(String libraryName) {
-			this.libraryName = libraryName;
-		}
+              public void setLibraryName(String libraryName) {
+                     this.libraryName = libraryName;
+              }
 
-		public String getLibraryVersion() {
-			return libraryVersion;
-		}
+              public String getLibraryVersion() {
+                     return libraryVersion;
+              }
 
-		public void setLibraryVersion(String libraryVersion) {
-			this.libraryVersion = libraryVersion;
-		}
+              public void setLibraryVersion(String libraryVersion) {
+                     this.libraryVersion = libraryVersion;
+              }
 
-		public CQLIncludeLibrary getCqlIncludeLibraryObject() {
-			return cqlIncludeLibraryObject;
-		}
-		
-		public void setCqlIncludeLibraryObject(CQLIncludeLibrary cqlIncludeLibraryObject) {
-			this.cqlIncludeLibraryObject = cqlIncludeLibraryObject;
-		}
+              public CQLIncludeLibrary getCqlIncludeLibraryObject() {
+                     return cqlIncludeLibraryObject;
+              }
+              
+              public void setCqlIncludeLibraryObject(CQLIncludeLibrary cqlIncludeLibraryObject) {
+                     this.cqlIncludeLibraryObject = cqlIncludeLibraryObject;
+              }
     }
     
 //    public static void main(String[] args) {
-//    	test2();
-//      	
-//	}
+//    test2();
+//           
+//     }
     
 //    public static void test2(){
-//    	try {
-//			//File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");
-//    		File f = new File("C:\\chinmay\\ANewMeasure-0.0.008.cql");
-//			CQLtoELM cqlToElm = new CQLtoELM(f);
-//			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
-//			cqlToElm.doTranslation(true, false, false);
-//			
-//			List<String> defList = new ArrayList<String>();
-//			defList.add("Anesthetic Procedures");
-////	    	defList.add("Union Diagnoses");
-////	    	defList.add("Depression Office Visit Encounter 1");
-////	    	defList.add("Depression Office Visit Encounter 2");
-////	    	defList.add("Depression Office Visit Encounter 3");
-////	    	defList.add("Depression Face to Face Encounter 1");
-////	    	defList.add("Depression Behavioral Health Encounter 1");
-//	    	    		    	
-//	    	if(cqlToElm.getErrors().size() == 0){
-//	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
-//	    		cqlFilter.filter();
-//	    		
-//	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
-//	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
-//	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
-//	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
-//	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
-//	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
-//	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
-//	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
-//	    	}else{
-//	    		System.out.println(cqlToElm.getErrors());
-//	    	}	    	
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
+//    try {
+//                  //File f = new File("C:\\chinmay\\stan_CQL_For_JSON.cql");
+//           File f = new File("C:\\chinmay\\ANewMeasure-0.0.008.cql");
+//                  CQLtoELM cqlToElm = new CQLtoELM(f);
+//                  //MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+//                  cqlToElm.doTranslation(true, false, false);
+//                  
+//                  List<String> defList = new ArrayList<String>();
+//                  defList.add("Anesthetic Procedures");
+////          defList.add("Union Diagnoses");
+////          defList.add("Depression Office Visit Encounter 1");
+////          defList.add("Depression Office Visit Encounter 2");
+////          defList.add("Depression Office Visit Encounter 3");
+////          defList.add("Depression Face to Face Encounter 1");
+////          defList.add("Depression Behavioral Health Encounter 1");
+//                                 
+//            if(cqlToElm.getErrors().size() == 0){
+//                   CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
+//                   cqlFilter.filter();
+//                   
+//                   System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+//                  System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+//                  System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+//                  System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+//                  System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+//                  System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+//                  System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+//                  System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
+//            }else{
+//                   System.out.println(cqlToElm.getErrors());
+//            }             
+//                  
+//            } catch (IOException e) {
+//                  // TODO Auto-generated catch block
+//                  e.printStackTrace();
+//            } 
 //    }
     
 //    public static void test1(){
-//    	try {
-//			File f = File.createTempFile("test", ".cql");
-//			FileWriter fw = new FileWriter(f);
-//			fw.write(getCQL());
-//			fw.close();
-//			
-//			CQLtoELM cqlToElm = new CQLtoELM(f);
-//			//MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
-//			cqlToElm.doTranslation(true, false, true);
-//	    	List<String> defList = new ArrayList<String>();
-//	    	defList.add("testInclude");
-//	    	defList.add("test");
-////	    	defList.add("birthdateDefn");
-////	    	defList.add("test1.teq");
-////	    	defList.add("SDE Race");
-//	    	defList.add("SDE Sex");
-////	    	defList.add("test2");
-////	    	defList.add("SDE Ethnicity");
-//	    	    		    	
-//	    	if(cqlToElm.getErrors().size() == 0){
-//	    		CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
-//	    		cqlFilter.filter();
-//	    		
-//	    		System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
-//	        	System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
-//	        	System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
-//	        	System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
-//	        	System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
-//	        	System.out.println("Used codes:"+cqlFilter.getUsedCodes());
-//	        	System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
-//	        	System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
-//	    	}else{
-//	    		System.out.println(cqlToElm.getErrors());
-//	    	}	    	
-//	    	
-//	    	f.delete();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
+//    try {
+//                  File f = File.createTempFile("test", ".cql");
+//                  FileWriter fw = new FileWriter(f);
+//                  fw.write(getCQL());
+//                  fw.close();
+//                  
+//                  CQLtoELM cqlToElm = new CQLtoELM(f);
+//                  //MyCQLtoELM cqlToElm = new MyCQLtoELM(f);
+//                  cqlToElm.doTranslation(true, false, true);
+//            List<String> defList = new ArrayList<String>();
+//            defList.add("testInclude");
+//            defList.add("test");
+////          defList.add("birthdateDefn");
+////          defList.add("test1.teq");
+////          defList.add("SDE Race");
+//            defList.add("SDE Sex");
+////          defList.add("test2");
+////          defList.add("SDE Ethnicity");
+//                                 
+//            if(cqlToElm.getErrors().size() == 0){
+//                   CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), defList, f.getParentFile().getAbsolutePath());
+//                   cqlFilter.filter();
+//                   
+//                   System.out.println("Used expressions:"+cqlFilter.getUsedExpressions());
+//                  System.out.println("Used functions:"+cqlFilter.getUsedFunctions());
+//                  System.out.println("Used valueSets:"+cqlFilter.getUsedValuesets());
+//                  System.out.println("Used codesystems:"+cqlFilter.getUsedCodeSystems());
+//                  System.out.println("Used parameters:"+cqlFilter.getUsedParameters());
+//                  System.out.println("Used codes:"+cqlFilter.getUsedCodes());
+//                  System.out.println("ValueSet - DataType map:"+cqlFilter.getValueSetDataTypeMap());
+//                  System.out.println("Included Libraries:"+cqlFilter.includedLibraries);
+//            }else{
+//                   System.out.println(cqlToElm.getErrors());
+//            }             
+//            
+//            f.delete();
+//            } catch (IOException e) {
+//                  // TODO Auto-generated catch block
+//                  e.printStackTrace();
+//            } 
 //    }    
 
-	public static String getCQL(){
-    	String s = "" 
-    			+ "library birthdate_Dead version '0.0.000' "
+       public static String getCQL(){
+       String s = "" 
+                    + "library birthdate_Dead version '0.0.000' "
 
-				+ "using QDM version '5.0' "
-				
-				//+ "include Sprint94TMMAT7204P2 version '0.1.000' called t1 "
-				
-				+ "codesystem \"LOINC:2.46\": 'urn:oid:2.16.840.1.113883.6.1' version 'urn:hl7:version:2.46' "
-				
-				+ "codesystem \"SNOMEDCT:2016-03\": 'urn:oid:2.16.840.1.113883.6.96' version 'urn:hl7:version:2016-03' "
-				
-				+ "valueset \"ONC Administrative Sex\": 'urn:oid:2.16.840.1.113762.1.4.1'  "
-				
-				+ "valueset \"Race\": 'urn:oid:2.16.840.1.114222.4.11.836' " 
-				
-				+ "valueset \"Ethnicity\": 'urn:oid:2.16.840.1.114222.4.11.837' " 
-				
-				+ "valueset \"Payer\": 'urn:oid:2.16.840.1.114222.4.11.3591' " 
-				
-				+ "code \"Birthdate\": '21112-8' from \"LOINC:2.46\" display 'Birthdate' "
-				
-				+ "code \"Dead\": '419099009' from \"SNOMEDCT:2016-03\" display 'Dead' "
-				
-				+ "parameter \"Measurement Period\" "
-				+ "		Interval<DateTime> "
-				
-				+ "context Patient "
-				
-				+ "define \"SDE Ethnicity\": [\"Patient Characteristic Ethnicity\": \"Ethnicity\"] "
-				
-				+ " define \"SDE Payer\": [\"Patient Characteristic Payer\": \"Payer\"] "
-				
-				+ " define \"SDE Race\": [\"Patient Characteristic Race\": \"Race\"] "
-				
-				+ " define \"SDE Sex\": [\"Patient Characteristic Sex\": \"ONC Administrative Sex\"] "
-				
-				+ " define \"birthdateDefn\": [\"Patient Characteristic Birthdate\": \"Birthdate\"] b where b.code in \"Race\""
-				
-				+ " define \"test\": \"birthdateDefn\" "
-				
-				+ " define \"test()\": \"birthdateDefn\" "
+                           + "using QDM version '5.0' "
+                           
+                           //+ "include Sprint94TMMAT7204P2 version '0.1.000' called t1 "
+                           
+                           + "codesystem \"LOINC:2.46\": 'urn:oid:2.16.840.1.113883.6.1' version 'urn:hl7:version:2.46' "
+                           
+                           + "codesystem \"SNOMEDCT:2016-03\": 'urn:oid:2.16.840.1.113883.6.96' version 'urn:hl7:version:2016-03' "
+                           
+                           + "valueset \"ONC Administrative Sex\": 'urn:oid:2.16.840.1.113762.1.4.1'  "
+                           
+                           + "valueset \"Race\": 'urn:oid:2.16.840.1.114222.4.11.836' " 
+                           
+                           + "valueset \"Ethnicity\": 'urn:oid:2.16.840.1.114222.4.11.837' " 
+                           
+                           + "valueset \"Payer\": 'urn:oid:2.16.840.1.114222.4.11.3591' " 
+                           
+                           + "code \"Birthdate\": '21112-8' from \"LOINC:2.46\" display 'Birthdate' "
+                           
+                           + "code \"Dead\": '419099009' from \"SNOMEDCT:2016-03\" display 'Dead' "
+                           
+                           + "parameter \"Measurement Period\" "
+                           + "           Interval<DateTime> "
+                           
+                           + "context Patient "
+                           
+                           + "define \"SDE Ethnicity\": [\"Patient Characteristic Ethnicity\": \"Ethnicity\"] "
+                           
+                           + " define \"SDE Payer\": [\"Patient Characteristic Payer\": \"Payer\"] "
+                           
+                           + " define \"SDE Race\": [\"Patient Characteristic Race\": \"Race\"] "
+                           
+                           + " define \"SDE Sex\": [\"Patient Characteristic Sex\": \"ONC Administrative Sex\"] "
+                           
+                           + " define \"birthdateDefn\": [\"Patient Characteristic Birthdate\": \"Birthdate\"] b where b.code in \"Race\""
+                           
+                           + " define \"test\": \"birthdateDefn\" "
+                           
+                           + " define \"test()\": \"birthdateDefn\" "
 
-				+ " define \"test1.teq\": (([\"Medication, Not Dispensed\"] b where b.recorder in \"Payer\")) "
-    		
-    			+ " define \"test1\": \"test1.teq\" "
-    			
-				+ " define \"test2\": \"Measurement Period\" "
-    	
-    			+ " define \"testInclude\": [\"Medication, Not Dispensed\": \"Birthdate\"] ";
-    	
-    	return s;
+                           + " define \"test1.teq\": (([\"Medication, Not Dispensed\"] b where b.recorder in \"Payer\")) "
+              
+                    + " define \"test1\": \"test1.teq\" "
+                    
+                           + " define \"test2\": \"Measurement Period\" "
+       
+                    + " define \"testInclude\": [\"Medication, Not Dispensed\": \"Birthdate\"] ";
+       
+       return s;
     }
 
+       public Map<String, List<String>> getCodeDataTypeMap() {
+              return codeDataTypeMap;
+       }
+
+       public void setCodeDataTypeMap(Map<String, List<String>> codeDataTypeMap) {
+              this.codeDataTypeMap = codeDataTypeMap;
+       }
+
 }
+

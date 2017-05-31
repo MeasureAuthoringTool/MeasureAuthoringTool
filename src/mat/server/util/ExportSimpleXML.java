@@ -301,7 +301,7 @@ public class ExportSimpleXML {
 			
 			// remove unused cql artifacts
 			removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
-			
+						
 			//addUUIDToFunctions(originalDoc);
 			//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
 			modifyHeaderStart_Stop_Dates(originalDoc);
@@ -335,7 +335,7 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedCQLDefinitions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLDefinitions()); 
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLFunctions());
 			CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
-			
+			CQLUtil.removeUnusedCodes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLcodes());			
 			resolveAllValueSets(originalDoc, result, cqlModel);
 			
 			CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);

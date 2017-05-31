@@ -490,15 +490,25 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		Element component = processor.getOriginalDoc().createElement("component"); 
 		component.setAttribute("typeCode", "COMP");
 		
-		Element stratifierCriteria = processor.getOriginalDoc().createElement("stratifierCriteria"); 
+		Element stratifierCriteria = processor.getOriginalDoc().createElement("cql-ext:supplementalDataElement");
+		
+		String extensionStr = "";
+		String codeStr = "";
+		if(type.equalsIgnoreCase("MSRADJ")){
+			extensionStr = "Risk Adjustment Variables";
+			codeStr = "MSRADJ";
+		} else {
+			extensionStr = "Supplemental Data Elements";
+			codeStr = "SDE";
+		}
 		
 		Element id = processor.getOriginalDoc().createElement("id");
-		id.setAttribute("extension", "Stratifiers");
+		id.setAttribute("extension", extensionStr);
 		id.setAttribute("root", UUIDUtilClient.uuid());
 		stratifierCriteria.appendChild(id); 
 		
 		Element code = processor.getOriginalDoc().createElement("code"); 
-		code.setAttribute("code", "STRAT");
+		code.setAttribute("code", codeStr);
 		code.setAttribute("codeSystem", "2.16.840.1.113883.5.4");
 		code.setAttribute("codeSystemName", "Act Code");
 		stratifierCriteria.appendChild(code);
@@ -522,7 +532,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		innerComponent.setAttribute("typeCode", "COMP");
 		stratifierCriteria.appendChild(innerComponent);
 		
-		Element measureAttribute = processor.getOriginalDoc().createElement("measureAttribute");
+		/*Element measureAttribute = processor.getOriginalDoc().createElement("measureAttribute");
 		innerComponent.appendChild(measureAttribute); 
 		
 		Element measureAttributeCode = processor.getOriginalDoc().createElement("code");
@@ -542,7 +552,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		measureAttributeValue.setAttribute("value", value);
 		measureAttributeValue.setAttribute("xsi:type", "ED");
 		measureAttribute.appendChild(measureAttributeValue);
-		
+	*/	
 		component.appendChild(stratifierCriteria);
 	
 		return component;

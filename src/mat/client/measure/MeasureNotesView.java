@@ -1,18 +1,11 @@
 package mat.client.measure;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.summernote.client.ui.Summernote;
-import org.gwtbootstrap3.extras.summernote.client.ui.base.Toolbar;
 
-import mat.DTO.MeasureNoteDTO;
-import mat.client.ImageResources;
-import mat.client.shared.CustomButton;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatContext;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
 //import mat.client.util.RichTextToolbar;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,7 +13,7 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Button;
+//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -31,9 +24,20 @@ import com.google.gwt.user.client.ui.Label;
 //import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
+//import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.DTO.MeasureNoteDTO;
+import mat.client.ImageResources;
+import mat.client.shared.CustomButton;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 
 /**
  * The Class MeasureNotesView.
@@ -56,19 +60,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private TextBox measureNoteTitle = new TextBox();
 	
 	/** The export button. */
-	private Button exportButton = new PrimaryButton("Export Notes","primaryButton");
+	private Button exportButton = new Button("Export Notes");
 	
-	/** The save button. */
-	private Button saveButton = new PrimaryButton("Save","primaryButton");
-	
-	/** The cancel button. */
-	private Button cancelButton = new SecondaryButton("Cancel");
+	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureNotes");
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The success message display. */
-	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	public MessageAlert successMessageDisplay = new SuccessMessageAlert();
 	
 	/** The notes result. */
 	MeasureNotesModel notesResult = new MeasureNotesModel();
@@ -135,7 +135,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
-		return saveButton;
+		return buttonBar.getSaveButton();
 	}
 	
 	/* (non-Javadoc)
@@ -143,7 +143,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
-		return cancelButton;
+		return buttonBar.getCancelButton();
 	}
 	
 	/* (non-Javadoc)
@@ -198,7 +198,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		containerPanel.setStyleName("contentPanel");
 		
 		simplePanel.getElement().setId("MeasureNotesView_simplePanel");
-		
+		exportButton.setMarginTop(5.00);
+		exportButton.setMarginLeft(5.00);
+		exportButton.setType(ButtonType.PRIMARY);
+		exportButton.setIcon(IconType.DOWNLOAD);
 		flowPanel.add(exportButton);
 		flowPanel.add(new SpacerWidget());
 		flowPanel.add(new SpacerWidget());
@@ -218,34 +221,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		
-		//String title = "Measure Notes List";
-		//HTML noteTitle = new HTML(title);
-		//noteTitle.setTitle(title);
-		//noteTitle.setWidth("100%");
-		//noteTitle.setStyleName("bold");
-		//noteTitle.getElement().setAttribute("tabIndex","0");
-		
-		//noteTitlePanel.add(noteTitle);
 		
 		fPanel.add(noteTitlePanel);
-		//fPanel.getElement().setAttribute("tabIndex","0");
 		
 		fPanel.add(buildDataTable(notesResult));
 		fPanel.add(new SpacerWidget());
-		/*Label invisibleLabel = new Label("In the following Recent Activity table, Measure Name is given in first column,"
-				
-								+ " Version in second column and Export in third column.");
-		invisibleLabel.getElement().setAttribute("id","measureNotesSummary");
-		invisibleLabel.setStyleName("invisible");
-		containerPanel.add(invisibleLabel);
-		fPanel.getElement().setAttribute("id", "NoteTableTitle");
-		fPanel.getElement().setAttribute("aria-label", "Measure Notes Table");
-		fPanel.getElement().setAttribute("aria-describedby", "measureNotesSummary");
-		fPanel.getElement().setAttribute("aria-role", "panel");
-		fPanel.getElement().setAttribute("aria-live", "assertive");
-		fPanel.getElement().setAttribute("aria-atomic", "true");
-		fPanel.getElement().setAttribute("aria-relevant", "all");
-		fPanel.getElement().setAttribute("role", "alert");*/
 		containerPanel.add(fPanel);
 		containerPanel.getElement().setId("MeasureNoteContainerPanel");
 	}
@@ -302,18 +282,19 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		composerPanel.add(new SpacerWidget());
 		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
 		composerPanel.add(new SpacerWidget());
-		bottomButtonPanel.add(saveButton);
-		cancelButton.setTitle("Cancel");
-		bottomButtonPanel.add(cancelButton);
-		bottomButtonPanel.setWidth("100px");
+		
+		bottomButtonPanel.add(buttonBar);
+		/*bottomButtonPanel.setWidth("100px");*/
 		bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		composerPanel.add(bottomButtonPanel);
 		composerPanel.add(new SpacerWidget());
 		
 		measureNoteTitle.setReadOnly(!editable);
 		//measureNoteComposer.setReadOnly(!editable);
-		saveButton.setEnabled(editable);
-		cancelButton.setEnabled(editable);
+		buttonBar.getSaveButton().setText("Save");
+		buttonBar.getSaveButton().setTitle("Save");
+		buttonBar.getSaveButton().setEnabled(editable);
+		buttonBar.getCancelButton().setEnabled(editable);
 		
 		return composerPanel;
 	}
@@ -331,7 +312,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplay getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
@@ -339,7 +320,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getSuccessMessageDisplay()
 	 */
 	@Override
-	public SuccessMessageDisplay getSuccessMessageDisplay() {
+	public MessageAlert getSuccessMessageDisplay() {
 		return successMessageDisplay;
 	}
 	
@@ -349,7 +330,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 * @param successMessageDisplay
 	 *            the new success message display
 	 */
-	public void setSuccessMessageDisplay(SuccessMessageDisplay successMessageDisplay) {
+	public void setSuccessMessageDisplay(MessageAlert successMessageDisplay) {
 		this.successMessageDisplay = successMessageDisplay;
 	}
 	
@@ -575,11 +556,13 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
 		
-		Button saveButton = new PrimaryButton("Save","primaryButton");
+		Button saveButton = new Button("Save");
+		saveButton.setType(ButtonType.PRIMARY);
 		setId(saveButton, "Save", result.getId());
 		saveButton.addClickHandler(clickHandler);
 		
-		Button cancelButton = new SecondaryButton("Cancel");
+		Button cancelButton = new Button("Cancel");
+		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 		cancelButton.getElement().setAttribute("id", result.getId());
 		cancelButton.addClickHandler(cancelClickHandler());
@@ -782,8 +765,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						}
 						else {
 							clearMessages();
-							errorMessages.setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
-							errorMessages.setFocus();
+							errorMessages.createAlert(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
+							/*errorMessages.setFocus();*/
 						}
 					}
 				}

@@ -2,7 +2,17 @@ package mat.client.measure;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.summernote.client.ui.Summernote;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+//import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.MeasureNoteDTO;
 import mat.client.Mat;
@@ -11,21 +21,11 @@ import mat.client.MeasureComposerPresenter;
 import mat.client.measure.MeasureNotesView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureNotesResult;
-import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ManageMeasureNotesModelValidator;
 import mat.client.shared.MatContext;
-import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.MessageAlert;
 import mat.shared.ConstantMessages;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -82,14 +82,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 		 * 
 		 * @return the success message display
 		 */
-		public SuccessMessageDisplay getSuccessMessageDisplay();
+		public MessageAlert getSuccessMessageDisplay();
 		
 		/**
 		 * Gets the error message display.
 		 * 
 		 * @return the error message display
 		 */
-		public ErrorMessageDisplay getErrorMessageDisplay();
+		public MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * Gets the measure note title.
@@ -196,14 +196,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 								@Override
 								public void onSuccess(Void result) {
 									clearMessages();
-									notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_SUCCESS_MESSAGE());
+									notesDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_SUCCESS_MESSAGE());
 									search();
 								}
 								@Override
 								public void onFailure(Throwable caught) {
 									showSearchingBusy(false);
 									clearMessages();
-									notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									notesDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 								}
 							});
 						}
@@ -216,13 +216,13 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								clearMessages();
-								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
+								notesDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
 								search();
 							}
 							@Override
 							public void onFailure(Throwable caught) {
 								clearMessages();
-								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								notesDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							}
 						});
 					}
@@ -231,7 +231,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 			@Override
 			public void onFailure(Throwable caught) {
 				clearMessages();
-				notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				notesDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 			
 		});
@@ -258,18 +258,18 @@ public class MeasureNotesPresenter implements MatPresenter{
 				public void onSuccess(SaveMeasureNotesResult result) {
 					if(result.isSuccess()) {
 						showSearchingBusy(false);
-						notesDisplay.getErrorMessageDisplay().clear();
-						notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
+						notesDisplay.getErrorMessageDisplay().clearAlert();
+						notesDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
 						notesDisplay.getToolBar().setCode("");
 						notesDisplay.getMeasureNoteTitle().setText("");
 						search();
 					} else {
 						if(result.getFailureReason() == SaveMeasureNotesResult.INVALID_DATA){
-							notesDisplay.getSuccessMessageDisplay().clear();
-							notesDisplay.getErrorMessageDisplay().setMessage("Invalid input data.");
+							notesDisplay.getSuccessMessageDisplay().clearAlert();
+							notesDisplay.getErrorMessageDisplay().createAlert("Invalid input data.");
 						} else {
-							notesDisplay.getSuccessMessageDisplay().clear();
-							notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							notesDisplay.getSuccessMessageDisplay().clearAlert();
+							notesDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
 					}
 				}
@@ -277,14 +277,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 				@Override
 				public void onFailure(Throwable caught) {
 					showSearchingBusy(false);
-					notesDisplay.getSuccessMessageDisplay().clear();
-					notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					notesDisplay.getSuccessMessageDisplay().clearAlert();
+					notesDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					
 				}
 			});
 		}else{
-			notesDisplay.getSuccessMessageDisplay().clear();
-			notesDisplay.getErrorMessageDisplay().setMessages(messageList);
+			notesDisplay.getSuccessMessageDisplay().clearAlert();
+			notesDisplay.getErrorMessageDisplay().createAlert(messageList);
 		}
 	}
 	
@@ -541,8 +541,8 @@ public class MeasureNotesPresenter implements MatPresenter{
 	 * Clearing Success Message and Error Message display.
 	 */
 	private void clearMessages() {
-		notesDisplay.getSuccessMessageDisplay().clear();
-		notesDisplay.getErrorMessageDisplay().clear();
+		notesDisplay.getSuccessMessageDisplay().clearAlert();
+		notesDisplay.getErrorMessageDisplay().clearAlert();
 	}
 	
 	/**

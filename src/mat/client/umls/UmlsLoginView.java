@@ -226,8 +226,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		userIdText.setWidth("250px");
 		userIdText.setHeight("27px");
 		userIdText.setId("inputUserId");
-		userIdText.setPlaceholder("Enter User Name");
-		userIdText.setTitle("Enter User Name");
+		userIdText.setPlaceholder("Enter UMLS User Name");
+		userIdText.setTitle("Enter UMLS User Name");
 		userIdGroup.add(userIdLabel);
 		userIdGroup.add(userIdText);
 		
@@ -238,8 +238,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		passwordInput.setWidth("250px");
 		passwordInput.setHeight("27px");
 		passwordInput.setId("inputPwd");
-		passwordInput.setPlaceholder("Enter Password");
-		passwordInput.setTitle("Enter Password");
+		passwordInput.setPlaceholder("Enter UMLS Password");
+		passwordInput.setTitle("Enter UMLS Password");
 		passwordInput.setValidateOnBlur(true);
 		passwordGroup.add(passwordLabel);
 		passwordGroup.add(passwordInput);

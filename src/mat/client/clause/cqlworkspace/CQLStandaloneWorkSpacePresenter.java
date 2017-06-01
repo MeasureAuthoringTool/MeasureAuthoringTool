@@ -5,36 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
@@ -73,6 +43,37 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+
+import org.gwtbootstrap3.client.ui.InlineRadio;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
@@ -3129,7 +3130,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
                             	else {
                                    for(CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()){
                                           if (result.getUsedCQLValueSets().contains(cqlDTo.getCodeListName())) {
-                                                 cqlDTo.setUsed(true);
+                                              cqlDTo.setUsed(true);
                                           } else{
                                         	  cqlDTo.setUsed(false);
                                           }
@@ -4389,6 +4390,44 @@ private void addCodeSearchPanelHandlers() {
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 			searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+			
+			MatContext.get().getLibraryService().getUsedCqlArtifacts(
+					MatContext.get().getCurrentCQLLibraryId(),
+                    new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+                           @Override
+                           public void onFailure(Throwable caught) {
+                                  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                  searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+                           }
+
+                           @Override
+                           public void onSuccess(GetUsedCQLArtifactsResult result) {
+                        	searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+                           	// if there are errors, set the codes to not used.
+                           	if(!result.getCqlErrors().isEmpty()) {
+                           		for(CQLCode cqlCode : appliedCodeTableList){
+                                     cqlCode.setUsed(false);
+                           		}
+                           	}                           	
+                           	// otherwise, check if the valueset is in the used valusets list
+                           	else {
+                                  for(CQLCode cqlCode : appliedCodeTableList){
+                                         if (result.getUsedCQLcodes().contains(cqlCode.getCodeName())) {
+                                                cqlCode.setUsed(true);
+                                         } else{
+                                       	  cqlCode.setUsed(false);
+                                         }
+                                  }
+                           	}
+                           	       
+                           	if(searchDisplay.getCqlLeftNavBarPanelView().getAppliedCodeTableList().size() > 0) {
+                               	searchDisplay.getCodesView().getCelltable().redraw();
+                               	searchDisplay.getCodesView().getListDataProvider().refresh();
+                           	}
+                           }
+                           
+                    });
 		}
 
 	}

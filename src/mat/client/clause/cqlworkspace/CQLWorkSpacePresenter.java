@@ -4,34 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-//import org.gwtbootstrap3.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.QDSAttributesService;
@@ -71,6 +43,35 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+//import org.gwtbootstrap3.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1777,7 +1778,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 				}
-				getUsedArtifacts();
+				getUsedValueSets();
 				showSearchingBusy(false);
 			}
 		});
@@ -2820,7 +2821,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().buildAppliedValueSetCellTable(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList(), isEditable);
 		searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 		searchDisplay.getValueSetView().setWidgetsReadOnly(isEditable);
-		getUsedArtifacts();
+		getUsedValueSets();
 	}
 
 	private void setExpansionProfilePanelValues() {
@@ -2859,9 +2860,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
-	private void getUsedArtifacts() {
+	private void getUsedValueSets() {
 		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
-        MatContext.get().getMeasureService().getUsedCQLArtifacts(
+		MatContext.get().getMeasureService().getUsedCQLArtifacts(
                      MatContext.get().getCurrentMeasureId(),
                      new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
@@ -2873,7 +2874,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
                             @Override
                             public void onSuccess(GetUsedCQLArtifactsResult result) {
-                            	searchDisplay.getValueSetView().showSearchingBusyOnQDM(false); 
+                            	searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
                             	// if there are errors, set the valuesets to not used.
                             	if(!result.getCqlErrors().isEmpty()) {
                             		for(CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList()){
@@ -2891,7 +2892,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
                                           }
                                    }
                             	}
-                                       
+                            	       
                             	if(searchDisplay.getCqlLeftNavBarPanelView().getAppliedQdmTableList().size() > 0) {
                                 	searchDisplay.getValueSetView().getCelltable().redraw();
                                 	searchDisplay.getValueSetView().getListDataProvider().refresh();
@@ -2966,7 +2967,47 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
-			searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+			
+			MatContext.get().getMeasureService().getUsedCQLArtifacts(
+                    MatContext.get().getCurrentMeasureId(),
+                    new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+                           @Override
+                           public void onFailure(Throwable caught) {
+                                  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+                                  searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+                           }
+
+                           @Override
+                           public void onSuccess(GetUsedCQLArtifactsResult result) {
+                        	searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+                           	// if there are errors, set the codes to not used.
+                           	if(!result.getCqlErrors().isEmpty()) {
+                           		for(CQLCode cqlCode : appliedCodeTableList){
+                                     cqlCode.setUsed(false);
+                           		}
+                           	}
+                           	
+                           	// otherwise, check if the valueset is in the used valusets list
+                           	else {
+                                  for(CQLCode cqlCode : appliedCodeTableList){
+                                         if (result.getUsedCQLcodes().contains(cqlCode.getCodeName())) {
+                                                cqlCode.setUsed(true);
+                                         } else{
+                                       	  cqlCode.setUsed(false);
+                                         }
+                                  }
+                           	}
+                           	       
+                           	if(searchDisplay.getCqlLeftNavBarPanelView().getAppliedCodeTableList().size() > 0) {
+                               	searchDisplay.getCodesView().getCelltable().redraw();
+                               	searchDisplay.getCodesView().getListDataProvider().refresh();
+                           	}
+                           }
+                           
+                    });
+			
+			
 		}
 
 	}	
@@ -3854,6 +3895,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								appliedCodeTableList.addAll(result.getCqlCodeList());
 								searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 								//searchDisplay.buildCodes();
+								System.out.println("in delete codes...Used codes:"+result.getUsedCQLArtifacts().getUsedCQLcodes());
 								searchDisplay.getCodesView().buildCodesCellTable(
 										appliedCodeTableList,
 										MatContext.get().getMeasureLockService().checkForEditPermission());
@@ -3877,8 +3919,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		MatCodeTransferObject transferObject = new MatCodeTransferObject();
 		CQLCode refCode = new CQLCode();
+		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
+		
 		refCode.setCodeOID(searchDisplay.getCodesView().getCodeInput().getValue());
-		refCode.setCodeName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
+		refCode.setCodeName(codeName);
 		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
@@ -3899,6 +3943,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					appliedCodeTableList.clear();
 					appliedCodeTableList.addAll(result.getCqlCodeList());
 					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
+					System.out.println("in addNewCodes...Used codes:"+result.getUsedCQLArtifacts().getUsedCQLcodes());
 					searchDisplay.getCodesView().buildCodesCellTable(
 							appliedCodeTableList,
 							MatContext.get().getMeasureLockService().checkForEditPermission());
@@ -4311,7 +4356,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									}
 								}
 							}
-							getUsedArtifacts();
+							getUsedValueSets();
 							showSearchingBusy(false);
 						}
 					});
@@ -4392,7 +4437,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										}
 									}
 									
-									getUsedArtifacts();
+									getUsedValueSets();
 									showSearchingBusy(false);
 								}
 							});
@@ -4459,7 +4504,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
 			}
 			
-			getUsedArtifacts();
+			getUsedValueSets();
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().
 					getMessageDelegate().getMODIFY_VALUE_SET_SELECT_ATLEAST_ONE());
@@ -4517,7 +4562,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 			
-			getUsedArtifacts();
+			getUsedValueSets();
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 					MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());

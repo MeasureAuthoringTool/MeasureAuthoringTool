@@ -23,6 +23,10 @@ import org.w3c.dom.Node;
 
 public class PatientBasedValidator {
 	
+	private static final String NEGATIVE = "Negative";
+
+	private static final String POSITIVE = "Positive";
+
 	private static final String SCORING_CONTINUOUS_VARIABLE = "Continuous Variable";
 
 	private static final String SCORING_RATIO = "Ratio";
@@ -214,8 +218,25 @@ public class PatientBasedValidator {
 						+ " of the definition directly applied to the Associated Population.");
 			} else {
 				String funcArgumentReturnType = argumentList.get(0).getReturnType();
+				// for now parser returns  positive with positive qdm data model and negative of positive for negative qdm data model for function argument return type.
+				// Definition dont return positive or negative. It return only qdm data model. For comparison we have to drop positive/negative if it is present in return type.
+				if(funcArgumentReturnType.contains(POSITIVE)){
+					funcArgumentReturnType = funcArgumentReturnType.replaceAll(POSITIVE, "");
+				} else if(funcArgumentReturnType.contains(NEGATIVE)){
+					funcArgumentReturnType = funcArgumentReturnType.replaceAll(NEGATIVE, "");
+				}
 				for(CQLExpressionObject expressionObject : associatedPopExpressionTobeChecked){
-					if(!expressionObject.getReturnType().equalsIgnoreCase(funcArgumentReturnType)){
+					String returnTypeOfExpression = expressionObject.getReturnType();
+					//in case list<qdm.{data Model}> , comparison had to be with only qdm.{data Model}. So dropping list and < ,> from definition return type if exists.
+					if(returnTypeOfExpression.contains("list")){
+						int startIndex = returnTypeOfExpression.indexOf("<");
+						int lastIndex = returnTypeOfExpression.indexOf(">");
+						if(startIndex > 0 && lastIndex < returnTypeOfExpression.length()){
+							returnTypeOfExpression = returnTypeOfExpression.substring(startIndex+1, lastIndex);
+							logger.info("returnTypeOfExpression ==========" + returnTypeOfExpression);
+						}
+					}
+					if(!returnTypeOfExpression.equalsIgnoreCase(funcArgumentReturnType)){
 						returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
 								+ " of the definition directly applied to the Associated Population.");
 						break;

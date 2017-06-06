@@ -452,8 +452,8 @@ public class ExportSimpleXML {
 			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
 			List<String> dataTypeUniqueList = new ArrayList<String>();
 			
-			Map<String,Node> sortedMapOfNewQDMNodes = new TreeMap<String, Node>(); 		
-			
+			Map<String,Node> sortedMapOfNewQDMNodes = new TreeMap<String, Node>(String.CASE_INSENSITIVE_ORDER);
+						
 			for(String valueSet_CodeName:usedValueSet_Code_Map.keySet()){
 				List<String> dataTypeList = usedValueSet_Code_Map.get(valueSet_CodeName);
 				
@@ -535,7 +535,7 @@ public class ExportSimpleXML {
 					
 					if(dataTypeUniqueList.contains(valueSet_CodeName+"|"+dataType+"|"+oid+"|"+version)){
 						continue;
-					}										
+					}		
 					
 					//add nodes in a Treemap with the name attribute as the key.
 					//This will sort all the nodes by name attribute

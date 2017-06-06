@@ -175,6 +175,32 @@
                 </responsibleParty>
             </verifier>
         </xsl:if>
+
+	 <xsl:for-each select="../elementLookUp/qdm[@code !='true']">
+		 <xsl:comment><xsl:value-of select="@name"/></xsl:comment>
+  		  <xsl:text>
+     	 </xsl:text>
+	    	<definition>
+				<valueSet classCode="OBS" moodCode="DEF">
+					<id root="{@oid}" /> <!-- {Value Set OID} -->
+					<title value="{@name}" /> <!-- {Value Set Name} -->
+				</valueSet>
+			</definition>  
+	</xsl:for-each>	
+     
+    
+  	<xsl:for-each select="../elementLookUp/qdm[@code ='true']">
+  	<xsl:comment><xsl:value-of select="@name"/> - <xsl:value-of select ="@codeIdentifier"/></xsl:comment>
+  	  <xsl:text>
+      </xsl:text>
+		<definition>
+			<cql-ext:code code="{@oid}" codeSystem="{@codeSystemOID}"
+				codeSystemName="{@taxonomy}" codeSystemVersion="{@codeSystemVersion}" xmlns:cql-ext="urn:hhs-cql:hqmf-n1-extensions:v1">
+				<displayName value="{@name}" />
+			</cql-ext:code>
+		</definition>
+	</xsl:for-each>
+     
         
 		<relatedDocument typeCode="COMP">
 	      <expressionDocument>

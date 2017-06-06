@@ -670,6 +670,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().getSelectedIndex(),
 					false);
 		}
+		searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(true);
+		searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(true);
 		searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setValue(true);
 		searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);

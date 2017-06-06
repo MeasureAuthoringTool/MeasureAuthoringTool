@@ -157,9 +157,9 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		//XPath String for only QDM's.
 		//String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
-		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@suppDataElement = 'false']";
+		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
 		//String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
-		String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
+		//String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
 		String xpathForMeasureGroupingItemCount = "/measure//itemCount/elementRef/@id";
 		
@@ -177,8 +177,8 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 //			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 //					qdmAttributeNodeList);
 			//generating QDM Entries for default Supplemental Data Elements
-			NodeList supplementalQDMNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForSupplementalQDMs);
-			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
+//			NodeList supplementalQDMNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForSupplementalQDMs);
+//			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
 			
 			//generating QDM Entries for other Supplemental Data Elements
 			NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),

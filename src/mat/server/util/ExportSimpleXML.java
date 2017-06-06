@@ -334,7 +334,7 @@ public class ExportSimpleXML {
 			CQLUtil.removeUnusedCQLFunctions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLFunctions());
 			CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
 				
-			resolveAllValueSets(originalDoc, result, cqlModel);
+			resolveAllValueSets_Codes(originalDoc, result, cqlModel);
 			
 			CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
 			CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
@@ -343,7 +343,7 @@ public class ExportSimpleXML {
 			System.out.println("All included libs:"+cqlModel.getIncludedCQLLibXMLMap().keySet());			
 		}
 		
-		private static void resolveAllValueSets(
+		private static void resolveAllValueSets_Codes(
 				Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
 			
 			String xPathForElementLookupNode = "//elementLookUp";
@@ -387,6 +387,11 @@ public class ExportSimpleXML {
 			
 			resolve_ValueSets_Codes_WithDataTypesUsed(originalDoc, dataCriteriaValueSetMap, cqlModel, isValueSet);
 			
+			System.out.println("Used Valuesets:");
+			System.out.println(result.getUsedCQLArtifacts().getUsedCQLValueSets());
+			
+			System.out.println("Used Codes:");
+			System.out.println(result.getUsedCQLArtifacts().getUsedCQLcodes());
 		}
 
 		/**
@@ -446,7 +451,8 @@ public class ExportSimpleXML {
 			
 			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
 			List<String> dataTypeUniqueList = new ArrayList<String>();
-					
+			
+			Map<String,Node> sortedMapOfNewQDMNodes = new TreeMap<String, Node>(); 		
 			
 			for(String valueSet_CodeName:usedValueSet_Code_Map.keySet()){
 				List<String> dataTypeList = usedValueSet_Code_Map.get(valueSet_CodeName);
@@ -529,16 +535,22 @@ public class ExportSimpleXML {
 					
 					if(dataTypeUniqueList.contains(valueSet_CodeName+"|"+dataType+"|"+oid+"|"+version)){
 						continue;
-					}
+					}										
 					
-					String xPathForElementLookupNode = "//elementLookUp";
-					Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
-					
-					Node importedNode = elementLookUpNode.getOwnerDocument().importNode(clonedValueSet_CodeNode, true);
-					elementLookUpNode.appendChild(importedNode);
+					//add nodes in a Treemap with the name attribute as the key.
+					//This will sort all the nodes by name attribute
+					sortedMapOfNewQDMNodes.put(clonedValueSet_CodeNode.getAttributes().getNamedItem("name").getNodeValue(), clonedValueSet_CodeNode);				
 
 					dataTypeUniqueList.add(valueSet_CodeName+"|"+dataType+"|"+oid+"|"+version);
 				}
+			}			
+			
+			String xPathForElementLookupNode = "//elementLookUp";
+			Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
+			
+			for(String name: sortedMapOfNewQDMNodes.keySet()){
+				Node importedNode = elementLookUpNode.getOwnerDocument().importNode(sortedMapOfNewQDMNodes.get(name), true);
+				elementLookUpNode.appendChild(importedNode);
 			}
 						
 		}
@@ -546,20 +558,16 @@ public class ExportSimpleXML {
 	private static Document findXMLProcessor(String valueSetName,
 				CQLModel cqlModel, Map<String, Document> includedXMLMap) {
 		
-		Document returnDoc = null;
-		System.out.println("valueSetName:"+valueSetName);
+		Document returnDoc = null;		
 		String[] nameSplitArr = valueSetName.split(Pattern.quote("|"));
-		System.out.println(nameSplitArr.length);
-		for(int i=0;i<nameSplitArr.length;i++){
-			System.out.println("----------------"+nameSplitArr[i]);
-		}
+		
 		if(nameSplitArr.length == 3){
 			String includedLibName = nameSplitArr[0];
-			System.out.println("includedLibName:"+includedLibName);			
+						
 			returnDoc = includedXMLMap.get(includedLibName);
 			if(returnDoc == null){
 				Map<String, mat.shared.LibHolderObject> cqlLibXMLMap = cqlModel.getIncludedCQLLibXMLMap();
-				System.out.println(cqlLibXMLMap.keySet());
+				
 				String xml = cqlLibXMLMap.get(includedLibName + "|" + nameSplitArr[1]).getMeasureXML();
 				if(xml != null){
 					XmlProcessor xmlProcessor = new XmlProcessor(xml);

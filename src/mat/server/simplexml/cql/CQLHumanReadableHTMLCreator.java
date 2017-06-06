@@ -206,12 +206,39 @@ public class CQLHumanReadableHTMLCreator {
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
 				simpleXMLProcessor, cqlModel,cqlResult);
+		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 		//generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateSupplementalDataVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
 				humanReadableHTMLDocument);
+	}
+	
+	/**
+	 * Generates the terminology section of the human readable export. 
+	 * @param humanReadableHTMLDocument the html document
+	 * @param simpleXMLProcessor the simple xml processor
+	 * @param cqlModel the cql model
+	 * @param cqlResult the cql result, which contains information about used artifacts
+	 * @throws XPathExpressionException 
+	 */
+	private static void generateTerminology(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult) throws XPathExpressionException {
+		definitionsOrFunctionsAlreadyDisplayed.clear();
+		Element bodyElement = humanReadableHTMLDocument.body(); 
+		bodyElement.append("<h3><a name=\"d1e555\" href=\"#toc\">Terminology</a></h3>");
+		
+		Element mainDivElement = bodyElement.appendElement("div"); 
+		Element mainListElement = mainDivElement.appendElement(HTML_UL); 
+		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm"); 	
+		if(elements.getLength() > 0) {
+		
+		}
+		
+		else {
+			mainListElement.appendElement(HTML_LI).appendText("None");
+		}
+		
 	}
 	
 	private static void generateSupplementalDataVariables(
@@ -295,6 +322,10 @@ public class CQLHumanReadableHTMLCreator {
 		Element populationCriteriaLI = tocULElement.appendElement(HTML_LI);
 		populationCriteriaLI
 		.append("<a href=\"#d1e405\">Population Criteria</a>");
+		
+		
+		Element terminologyLI = tocULElement.appendElement(HTML_LI); 
+		terminologyLI.append("<a href=\"#d1e555\">Terminology</a>"); 
 		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI

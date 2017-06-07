@@ -360,16 +360,16 @@ public class ExportSimpleXML {
 			}
 			
 			//resolve all value-sets
-			resolveValueSets_Codes(originalDoc, result, cqlModel, true);
+			resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, true);
 			//resolve all codes (direct reference codes)
-			resolveValueSets_Codes(originalDoc, result, cqlModel, false);
+			resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, false);
 						
 			CQLUtil.removeUnusedValuesets(originalDoc, result.getUsedCQLArtifacts().getUsedCQLValueSets());	
 			CQLUtil.removeUnusedCodes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLcodes());		
 		}
 
 		private static void resolveValueSets_Codes(Document originalDoc,
-				SaveUpdateCQLResult result, CQLModel cqlModel, boolean isValueSet) throws XPathExpressionException {
+				SaveUpdateCQLResult result, CQLModel cqlModel, Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
 			
 			Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
 			
@@ -385,7 +385,7 @@ public class ExportSimpleXML {
 			String riskAdjustmentDefinitionXPath = "/measure/riskAdjustmentVariables//cqldefinition";
 			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, riskAdjustmentDefinitionXPath, isValueSet);
 			
-			resolve_ValueSets_Codes_WithDataTypesUsed(originalDoc, dataCriteriaValueSetMap, cqlModel, isValueSet);
+			resolve_ValueSets_Codes_WithDataTypesUsed(originalDoc, dataCriteriaValueSetMap, cqlModel, elementLookUpNode, isValueSet);
 			
 			System.out.println("Used Valuesets:");
 			System.out.println(result.getUsedCQLArtifacts().getUsedCQLValueSets());
@@ -447,13 +447,11 @@ public class ExportSimpleXML {
 		}
 
 		private static void resolve_ValueSets_Codes_WithDataTypesUsed(
-				Document originalDoc, Map<String, List<String>> usedValueSet_Code_Map, CQLModel cqlModel, boolean isValueSet) throws XPathExpressionException {
+				Document originalDoc, Map<String, List<String>> usedValueSet_Code_Map, CQLModel cqlModel, Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
 			
 			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
 			List<String> dataTypeUniqueList = new ArrayList<String>();
-			
-			Map<String,Node> sortedMapOfNewQDMNodes = new TreeMap<String, Node>(String.CASE_INSENSITIVE_ORDER);
-						
+									
 			for(String valueSet_CodeName:usedValueSet_Code_Map.keySet()){
 				List<String> dataTypeList = usedValueSet_Code_Map.get(valueSet_CodeName);
 				
@@ -473,7 +471,7 @@ public class ExportSimpleXML {
 						valueSet_CodeName = arr[2];
 					}
 				}
-				
+								
 				for(String dataType:dataTypeList){
 					
 					String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name=\""+ valueSet_CodeName +"\"]";
@@ -536,22 +534,15 @@ public class ExportSimpleXML {
 					if(dataTypeUniqueList.contains(valueSet_CodeName+"|"+dataType+"|"+oid+"|"+version)){
 						continue;
 					}		
+										
+					Node importedNode = elementLookUpNode.getOwnerDocument().importNode(clonedValueSet_CodeNode, true);
+					elementLookUpNode.appendChild(importedNode);
 					
-					//add nodes in a Treemap with the name attribute as the key.
-					//This will sort all the nodes by name attribute
-					sortedMapOfNewQDMNodes.put(clonedValueSet_CodeNode.getAttributes().getNamedItem("name").getNodeValue(), clonedValueSet_CodeNode);				
-
 					dataTypeUniqueList.add(valueSet_CodeName+"|"+dataType+"|"+oid+"|"+version);
 				}
 			}			
 			
-			String xPathForElementLookupNode = "//elementLookUp";
-			Node elementLookUpNode = (Node) xPath.evaluate(xPathForElementLookupNode, originalDoc.getDocumentElement(), XPathConstants.NODE);
 			
-			for(String name: sortedMapOfNewQDMNodes.keySet()){
-				Node importedNode = elementLookUpNode.getOwnerDocument().importNode(sortedMapOfNewQDMNodes.get(name), true);
-				elementLookUpNode.appendChild(importedNode);
-			}
 						
 		}
 

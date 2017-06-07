@@ -402,10 +402,10 @@ public class CQLHumanReadableHTMLCreator {
 		try {
 			
 			NodeList qdmValuesetElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-														"/measure/elementLookUp/qdm[@code='false']");
+														"/measure/elementLookUp/qdm[@code='false'][@datatype]");
 			
 			NodeList qdmCodeElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-														"/measure/elementLookUp/qdm[@code='true']");
+														"/measure/elementLookUp/qdm[@code='true'][@datatype]");
 			
 			if((qdmValuesetElementList.getLength() + qdmCodeElementList.getLength()) == 0) {
 				String output = "None"; 

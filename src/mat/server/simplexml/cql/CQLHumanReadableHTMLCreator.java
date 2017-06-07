@@ -232,14 +232,100 @@ public class CQLHumanReadableHTMLCreator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL); 
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm"); 	
 		if(elements.getLength() > 0) {
-		
+			generateTerminologyCodeAndCodesystem(mainListElement, simpleXMLProcessor);
+			generateTerminologyValuesets(mainListElement, simpleXMLProcessor);
 		}
 		
 		else {
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
-		
 	}
+	
+	/**
+	 * Generates the valuesets for the terminology section
+	 * @param mainListElement the list element for the terminology section
+	 * @param simpleXMLProcessor the xml procsesor
+	 * @throws XPathExpressionException
+	 */
+	private static void generateTerminologyValuesets(Element mainListElement, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"false\"]");
+		ArrayList<String> valuesetStringList = new ArrayList<>(); 
+		
+		for(int i = 0; i < elements.getLength(); i++) {
+			Node current = elements.item(i);
+			String name = current.getAttributes().getNamedItem("name").getNodeValue();
+			String oid = current.getAttributes().getNamedItem("oid").getNodeValue();  
+			String version = current.getAttributes().getNamedItem("version").getNodeValue(); 
+			
+			String output = "";
+			if(version != null && !version.isEmpty() && !version.equalsIgnoreCase("1.0")) {
+				output = "valueset \"" + name + "\" using \"" + oid + ", version " + version + "\"";
+			} 
+			
+			else {
+				output = "valueset \"" + name + "\" using \"" + oid + "\"";
+			}
+			
+			// no duplicates should appear
+			if(!valuesetStringList.contains(output)) {
+				valuesetStringList.add(output);
+			}
+		}
+		
+		Collections.sort(valuesetStringList, String.CASE_INSENSITIVE_ORDER);
+		for(String listItem : valuesetStringList) {
+			mainListElement.appendElement(HTML_LI).append(listItem);
+		}
+	}
+	
+	/**
+	 * Generates the the code and codesystem parts of the terminology section
+	 * @param mainListElement the list element for the terminology section
+	 * @param simpleXMLProcessor the xml processor
+	 * @throws XPathExpressionException
+	 */
+	private static void generateTerminologyCodeAndCodesystem(Element mainListElement, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
+
+		ArrayList<String> codeStringList = new ArrayList<>(); 
+		ArrayList<String> codeSystemStringList = new ArrayList<>(); 
+		for(int i = 0; i < elements.getLength(); i++) {
+			Node current = elements.item(i);
+			String codeName = current.getAttributes().getNamedItem("name").getNodeValue(); 
+			String codeOID = current.getAttributes().getNamedItem("oid").getNodeValue();
+			String codeSystemName = current.getAttributes().getNamedItem("taxonomy").getNodeValue(); 
+			
+			String codeSystemOID = "";
+			if(current.getAttributes().getNamedItem("codeSystemOID") != null) {
+				codeSystemOID = current.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+			}
+			
+			String codeSystemVersion = current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+			String codeOutput = "code \"" + codeName + "\" using \"" + codeSystemName + " version " + codeSystemVersion + " Code (" + codeOID +")\"";
+			String codeSystemOutput = "codesystem \"" + codeSystemName + "\" using \"" + codeSystemOID + " version " + codeSystemVersion + "\"";
+			
+			// no duplicates should appear
+			if(!codeStringList.contains(codeOutput)) {
+				codeStringList.add(codeOutput);
+			}
+			
+			if(!codeSystemStringList.contains(codeSystemOutput)) {
+				codeSystemStringList.add(codeSystemOutput);
+			}
+		}
+		
+		Collections.sort(codeStringList, String.CASE_INSENSITIVE_ORDER);
+		Collections.sort(codeSystemStringList, String.CASE_INSENSITIVE_ORDER);
+		
+		for(String listItem : codeSystemStringList) {
+			mainListElement.appendElement(HTML_LI).append(listItem);
+		}
+		
+		for(String listItem : codeStringList) {
+			mainListElement.appendElement(HTML_LI).append(listItem);
+		}
+	}
+
 	
 	private static void generateSupplementalDataVariables(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult)

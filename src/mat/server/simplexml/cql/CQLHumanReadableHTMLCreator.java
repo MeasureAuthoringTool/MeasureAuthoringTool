@@ -401,40 +401,75 @@ public class CQLHumanReadableHTMLCreator {
 		
 		try {
 			
-			NodeList qdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-														"/measure/elementLookUp/qdm");
+			NodeList qdmValuesetElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+														"/measure/elementLookUp/qdm[@code='false']");
 			
-			if(qdmElementList.getLength() < 1) {
+			NodeList qdmCodeElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+														"/measure/elementLookUp/qdm[@code='true']");
+			
+			if((qdmValuesetElementList.getLength() + qdmCodeElementList.getLength()) == 0) {
 				String output = "None"; 
 				Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
 				qdmElementLI.append(output);
 			}
 			
 			else {
-				ArrayList<String> qdmElementStringList = new ArrayList<String>(); 				
+				ArrayList<String> qdmValueSetElementStringList = new ArrayList<String>();
+				ArrayList<String> qdmCodeElementStringList = new ArrayList<String>();
 
-				// make the output string from the qdm node information and add it to the string list.
-				for(int i = 0; i < qdmElementList.getLength(); i++) {
+				// make HTML output strings for qdm value-set nodes 
+				//Pattern: "{Datatype}: {value set name}" using "{value set name} ({value set OID} version {value set version*})"
+				for(int i = 0; i < qdmValuesetElementList.getLength(); i++) {
 					
-					String dataTypeName = qdmElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					String dataTypeName = qdmValuesetElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
 					if("attribute".equals(dataTypeName)){
 						dataTypeName = "Attribute";
 					}
-					//End Comment
-					String name = qdmElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
-					String oid = qdmElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
-					String taxonomy = qdmElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue(); 
 					
-					String output = String.format("\"%s: %s\" using \"%s %s Value Set (%s)\"", dataTypeName, name, name, taxonomy, oid); 
+					String name = qdmValuesetElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
+					String oid = qdmValuesetElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
+					String version = qdmValuesetElementList.item(i).getAttributes().getNamedItem("version").getNodeValue();
+										
+					String output = String.format("\"%s: %s\" using \"%s (%s)\"", dataTypeName, name, name, oid);
+					if(version != null){
+						output = String.format("\"%s: %s\" using \"%s (%s, version %s)\"", dataTypeName, name, name, oid, version);
+					}
 								
-					qdmElementStringList.add(output); 
+					qdmValueSetElementStringList.add(output); 
 				}
 				
-				// sort and append the qdm elements
-				Collections.sort(qdmElementStringList);
-				for(int i = 0; i < qdmElementStringList.size(); i++) {
+				// sort and append qdm value-set elements
+				Collections.sort(qdmValueSetElementStringList, String.CASE_INSENSITIVE_ORDER);
+				
+				for(String valueSetString:qdmValueSetElementStringList){
 					Element qdmElemtentLI = qdmElementUL.appendElement(HTML_LI);
-					qdmElemtentLI.append(qdmElementStringList.get(i));
+					qdmElemtentLI.append(valueSetString);
+				}
+				
+				//make HTML output strings for qdm code elements 
+				//Pattern: "{Datatype}: {code name}" using "{code name} ({code system name} version {code system version} Code {code})"
+				for(int i = 0; i < qdmCodeElementList.getLength(); i++) {
+					String dataTypeName = qdmCodeElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					if("attribute".equals(dataTypeName)){
+						dataTypeName = "Attribute";
+					}
+					
+					String name = qdmCodeElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
+					String oid = qdmCodeElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
+					String codeSystemVersion = qdmCodeElementList.item(i).getAttributes().getNamedItem("codeSystemVersion").getNodeValue();					
+					String codeSystemName = qdmCodeElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue();
+										
+					String output = String.format("\"%s: %s\" using \"%s (%s version %s Code %s)\"", dataTypeName, name, name, codeSystemName, codeSystemVersion, oid);
+													
+					qdmCodeElementStringList.add(output); 
+				}
+				
+				//sort and append qdm code elements
+				Collections.sort(qdmCodeElementStringList, String.CASE_INSENSITIVE_ORDER);
+				
+				for(String codeString:qdmCodeElementStringList){
+					Element qdmElemtentLI = qdmElementUL.appendElement(HTML_LI);
+					qdmElemtentLI.append(codeString.get(i));
 				}
 			}
 			

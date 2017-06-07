@@ -236,23 +236,23 @@
     <template oid="2.16.840.1.113883.10.20.28.3.67" class="PROC" mood="EVN" type="CAUS" inv="true">cause</template>-->
     
     <!-- data flow attributes -->
-    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" code="395676008" codeSystem="2.16.840.1.113883.6.96" valueType="CD">health record field</AttrTemplate>
+    <!-- <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.102" class="OBS" mood="EVN" type="REFR" code="395676008" codeSystem="2.16.840.1.113883.6.96" valueType="CD">health record field</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.103" class="OBS" mood="EVN" type="REFR" code="419358007" codeSystem="2.16.840.1.113883.6.96" valueType="CD">recorder</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.104" class="OBS" mood="EVN" type="REFR" code="260753009" codeSystem="2.16.840.1.113883.6.96" valueType="CD">source</AttrTemplate>
-    
+     -->
     <!-- status -->
-    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</AttrTemplate>
+    <!-- <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.94" class="OBS" mood="EVN" type="REFR" code="33999-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" displayNameValue="Status" valueType="CD">status</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.95" class="OBS" mood="EVN" type="REFR" >status active</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.96" class="OBS" mood="EVN" type="REFR" >status inactive</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.97" class="OBS" mood="EVN" type="REFR" >status resolved</AttrTemplate>
-    
+     -->
     <!-- facility -->
-    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location">facility location</AttrTemplate>
+    <!-- <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location">facility location</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location-ArrDeparture">facility location arrival datetime</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.92" class="OBS" mood="EVN" includeSubTemplate="facility-location-ArrDeparture">facility location departure datetime</AttrTemplate>
-    
+     -->
     <!-- misc -->
-    <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</AttrTemplate>
+    <!-- <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.100" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="261773006" codeSystem="2.16.840.1.113883.6.96" valueType="IVL_PQ">cumulative medication duration</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.99" class="OBS" mood="EVN" type="REFR" code="307430002" codeSystem="2.16.840.1.113883.6.96" valueType="CD" codeSystemName="SNOMED CT" displayNameValue="Frequency" addExtensionInTemplate="true">frequency</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.89" class="PROC" mood="EVN" type="REFR" status="COMPLETED" inv="false" code="34896006" codeSystem="2.16.840.1.113883.6.96" codeDisplayName="incision" includeSubTemplate="incision-dateTime">incision datetime</AttrTemplate>
     <AttrTemplate oid="2.16.840.1.113883.10.20.28.3.98" class="OBS" mood="EVN" type="REFR" status="COMPLETED" code="272741003" valueType="CD" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" displayNameValue="Laterality">laterality</AttrTemplate>
@@ -286,9 +286,9 @@
 	<AttrTemplate includeSubTemplate="reference-High-Range" addTagInValueSet="high">reference range high</AttrTemplate>
 	<AttrTemplate class="ACT" mood="EVN" type="REFR" code="52534-5" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" status="COMPLETED" codeDisplayName="Principal Diagnosis" includeSubTemplate="diagnosis-template">principal diagnosis</AttrTemplate>
 	<AttrTemplate class="ACT" mood="EVN" type="REFR" code="29308-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" status="COMPLETED" codeDisplayName="Diagnosis" includeSubTemplate="diagnosis-template">diagnosis</AttrTemplate>
- 
+  -->
     <subtemplates>
-    <diagnosis-template changeAttribute="id,value">
+   <!--  <diagnosis-template changeAttribute="id,value">
         <outboundRelationship typeCode="SUBJ">
              <observationCriteria classCode="OBS" moodCode="EVN">
                  <templateId>
@@ -303,7 +303,7 @@
                  <value/>
              </observationCriteria>
        </outboundRelationship>
-    </diagnosis-template>
+    </diagnosis-template> -->
 	<communication-FromPatient-ToProvider>
 		<participation typeCode="AUT">
 			<role classCode="PAT"></role>
@@ -418,129 +418,109 @@
 		</participation>
 	</transfer>
 	
-	<intervention-adverseEvent changeAttribute="code,displayName">
+	<intervention-adverseEvent changeAttribute="code">
 	    <outboundRelationship typeCode="CAUS" inversionInd="true">
 			<procedureCriteria classCode="PROC" moodCode="EVN">
-				<code valueSet="$QDMElementValueSetOID" >
-				    <displayName value="$displaynamevalue"/>
-				</code>
+				<code valueSet="$QDMElementValueSetOID" />
 			</procedureCriteria>
 		</outboundRelationship>
 	</intervention-adverseEvent>
 	
-	<intervention-intolerance changeAttribute="code,displayName,id,item">
+	<intervention-intolerance changeAttribute="code,id,item">
 		<outboundRelationship typeCode="CAUS" inversionInd="true">
 			<actCriteria classCode="ACT" moodCode="EVN">
 				<templateId>
 					<item root="2.16.840.1.113883.10.20.28.3.36" extension="2014-11-24"/>
 				</templateId>
 				<id root="$UUID" extension="$extensionUUID"/>
-				<code valueSet="{$QDMElementValueSetOID}" >
-				    <displayName value="$displaynamevalue"/>
-				</code>
+				<code valueSet="{$QDMElementValueSetOID}" />
 				<title value="Intervention, Performed"/>
 				<statusCode code="completed"/>
 			</actCriteria>
 		</outboundRelationship>
     </intervention-intolerance>
     
-	<medicationActive changeAttribute="code,displayName">
+	<medicationActive changeAttribute="code">
 		<participation typeCode="CSM">
 			<role classCode="MANU">
 				<playingMaterial classCode="MMAT" determinerCode="KIND">
-					<code valueSet="$valueSet" >
-					    <displayName value="$displaynamevalue"/>
-					</code>				    
+					<code valueSet="$valueSet" />
 				</playingMaterial>
 			</role>
 		</participation>
 	</medicationActive>
     
-	<medicationAdministered changeAttribute="code,displayName">
+	<medicationAdministered changeAttribute="code">
 		<participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueset" >
-		    <displayName value="$displaynamevalue"/>
-		</code>    	
+		<code valueSet="$valueset" />
 		</playingManufacturedMaterial>
 		</role>
 		</participation>
 	</medicationAdministered>
 	
-	<medicationAdverseEffects changeAttribute="code,displayName">
+	<medicationAdverseEffects changeAttribute="code">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID" >
-		    <displayName value="$displaynamevalue"/>
-		</code>
+		<code valueSet="$QDMElementValueSetOID" />
 		</playingEntity>
 		</role>
 	</participation>
 	</medicationAdverseEffects>
 	
-	<medicationAllergy changeAttribute="code,displayName">
+	<medicationAllergy changeAttribute="code">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingEntity classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" >
-		    <displayName value="$displaynamevalue"/>
-		</code>    
+		<code valueSet="$valueSet"/>
 		</playingEntity>
 		</role>
 		</participation>
 	</medicationAllergy>
 	
-	<medicationDischarge changeAttribute="code,displayName">
+	<medicationDischarge changeAttribute="code">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" >
-		    <displayName value="$displaynamevalue"/>
-		</code>    
+		<code valueSet="$valueSet"/>
 		</playingManufacturedMaterial>
 		</role>
 		</participation>
 	</medicationDischarge>
 	
-	<medicationDispensed changeAttribute="code,displayName">
+	<medicationDispensed changeAttribute="code">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$QDMElementValueSetOID" >
-		    <displayName value="$displaynamevalue"/>
-		</code>
+		<code valueSet="$QDMElementValueSetOID"/>
 		</playingMaterial>
 		</role>
 		</participation>
 	</medicationDispensed>
 	
-	<medicationIntolerance changeAttribute="code,displayName">
+	<medicationIntolerance changeAttribute="code">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" >
-		    <displayName value="$displaynamevalue"/>
-		</code>
+		<code valueSet="$valueSet"/>
 		</playingMaterial>
 		</role>
 		</participation>
 	</medicationIntolerance>
 	
-	<medicationOrder changeAttribute="code,displayName">
+	<medicationOrder changeAttribute="code">
 	    <participation typeCode="CSM">
 		<role classCode="MANU">
 		<playingMaterial classCode="MMAT" determinerCode="KIND">
-		<code valueSet="$valueSet" >
-		    <displayName value="$displaynamevalue"/>
-		</code>
+		<code valueSet="$valueSet"/>
 		</playingMaterial>
 		</role>
 		</participation>
 	</medicationOrder>
 	
-	<laboratory-test changeAttribute = "id,code,displayName,item">
+	<laboratory-test changeAttribute = "id,code,item">
 	<outboundRelationship typeCode="CAUS"
 		inversionInd="true">
 		<observationCriteria classCode="OBS" moodCode="EVN">
@@ -548,50 +528,42 @@
 				<item root="2.16.840.1.113883.10.20.28.3.42" extension="2014-11-24"/>
 			</templateId>
 			<id root="$UUID" extension="$extensionUUID"/>
-			<code valueSet="$QDMElementValueSetOID" >
-			    <displayName value="$displaynamevalue"/>
-			</code>
+			<code valueSet="$QDMElementValueSetOID"/>
 			<title value="Laboratory Test, Performed" />
 			<statusCode code="completed" />
 		</observationCriteria>
 	</outboundRelationship>
  </laboratory-test>
 
- <substance-participation changeAttribute="code,displayName">
+ <substance-participation changeAttribute="code">
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" >
-            <displayName value="$displaynamevalue"/>
-        </code>    
+        <code valueSet="$QDMElementValueSetOID"/>
     </playingMaterial>
     </role>
 </participation>
  </substance-participation>
- <substance-order changeAttribute="code,displayName">
+ <substance-order changeAttribute="code">
  <participation typeCode="CSM">
     <role classCode="ADMM">
         <playingMaterial classCode="MAT" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" >
-            <displayName value="$valueSetName"/>
-        </code>
+        <code valueSet="$QDMElementValueSetOID"/>
     </playingMaterial>
     </role>
 </participation>
  </substance-order>
- <provider-char changeAttribute="code,displayName">
+ <provider-char changeAttribute="code">
  <participation>
     <role classCode="ASSIGNED">
         <playingDevice classCode="DEV" determinerCode="KIND">
-        <code valueSet="$QDMElementValueSetOID" >
-            <displayName value="$valueSetName"/>
-        </code>
+        <code valueSet="$QDMElementValueSetOID"/>
     </playingDevice>
     </role>
 </participation>
  </provider-char>
 
- <facility-location changeAttribute="id,code">
+ <!-- <facility-location changeAttribute="id,code">
  <participation typeCode="LOC">
     <role classCode="SDLOC">
      <templateId>
@@ -643,9 +615,9 @@
         </id>
     </role>
 </participation>
- </facility-location-ArrDeparture-old>
+ </facility-location-ArrDeparture-old> -->
 
- <procedure changeAttribute="id,code,displayName,title,item">
+ <procedure changeAttribute="id,code,title,item">
  <outboundRelationship  typeCode="CAUS"
 	inversionInd="true">
 	<procedureCriteria classCode="PROC" moodCode="EVN">
@@ -653,9 +625,7 @@
 			<item root="2.16.840.1.113883.10.20.28.3.67" extension="2014-11-24"/>
 		</templateId>
 		<id root="$UUID" extension="$extensionUUID" />
-		<code valueSet="$QDMElementValueSetOID" >
-			<displayName value="$valueSetName" />
-		</code>
+		<code valueSet="$QDMElementValueSetOID"/>
 		<title value="$valuseSetDatatype" />
 		<statusCode code="completed" />
 	</procedureCriteria>
@@ -682,7 +652,7 @@
 </participation>	
 </device-allergy>
 
-<incision-dateTime changeAttribute="id">
+<!-- <incision-dateTime changeAttribute="id">
 <outboundRelationship typeCode="REFR">
    <procedureCriteria classCode="PROC" moodCode="EVN">
       <templateId>
@@ -705,7 +675,7 @@
        </id>
     </role>                            
 </participation>
-</order-dateTime>
+</order-dateTime> -->
 
 <diagnosticStudy-AdverseEvent changeAttribute="id,code,item">
 <outboundRelationship typeCode="CAUS">
@@ -735,7 +705,7 @@
 </outboundRelationship>
 </diagnosticStudy-Intolerance>
 
-<radiation-duration changeAttribute="id">
+<!-- <radiation-duration changeAttribute="id">
 <outboundRelationship typeCode="REFR">
 	<observationCriteria classCode="OBS" moodCode="EVN">
 		<templateId>
@@ -759,7 +729,7 @@
 		<statusCode code="completed" />
 	</observationCriteria>
 </outboundRelationship>
-</radiation-dosage>
+</radiation-dosage> 
 
 <relationShip changeAttribute="item,code">
         <participation typeCode="SBJ">
@@ -770,7 +740,7 @@
                 <code/>
             </role>
         </participation>
-    </relationShip>
+  </relationShip>
     
     <reference-Low-Range changeAttribute="id,value">
         <outboundRelationship typeCode="REFV">
@@ -799,63 +769,53 @@
             </observationCriteria>
         </outboundRelationship>
     </reference-High-Range>
-    
-    <immunization changeAttribute="code,displayName">
+   --> 
+    <immunization changeAttribute="code">
         <participation typeCode="CSM">
             <role classCode="MANU">
                 <playingManufacturedMaterial classCode="MMAT" determinerCode="KIND">
-                    <code valueSet="$QDMElementValueSetOID" >
-				      <displayName value="$displaynamevalue"/>
-				    </code>
+                    <code valueSet="$QDMElementValueSetOID"/>
                 </playingManufacturedMaterial>
             </role>
         </participation>
     </immunization>
     
     
-    <immunization-allergy changeAttribute="code,displayName">
+    <immunization-allergy changeAttribute="code">
         <participation typeCode="CSM">
             <role classCode="MANU">
                 <playingEntity classCode="MMAT" determinerCode="KIND">
-                    <code valueSet="$QDMElementValueSetOID" >
-				      <displayName value="$displaynamevalue"/>
-				    </code>
+                    <code valueSet="$QDMElementValueSetOID"/>
                 </playingEntity>
             </role>
         </participation>
     </immunization-allergy>
     
-    <immunization-intolerance changeAttribute="code,displayName">
+    <immunization-intolerance changeAttribute="code">
         <participation typeCode="CSM">
             <role classCode="MANU">
                 <playingMaterial classCode="MMAT" determinerCode="KIND">
-                    <code valueSet="$QDMElementValueSetOID" >
-				      <displayName value="$displaynamevalue"/>
-				    </code>
+                    <code valueSet="$QDMElementValueSetOID"/>
                 </playingMaterial>
             </role>
         </participation>
     </immunization-intolerance>
     
-   <adverseEvent changeAttribute="code,displayName">
+   <adverseEvent changeAttribute="code">
 	<participation typeCode="CSM">
 		<role classCode="MANU">
 			<playingEntity classCode="MMAT" determinerCode="KIND">
-				<code valueSet="$QDMElementValueSetOID">
-					<displayName value="$valuesetName" />
-				</code>
+				<code valueSet="$QDMElementValueSetOID"/>
 			</playingEntity>
 		</role>
 	</participation>
  </adverseEvent>
  
-   <allergy-Intolerance changeAttribute="code,displayName">
+   <allergy-Intolerance changeAttribute="code">
 	<participation typeCode="CSM">
 		<role classCode="MANU">
 			<playingEntity classCode="MMAT" determinerCode="KIND">
-				<code valueSet="$QDMElementValueSetOID">
-					<displayName value="$valuesetName" />
-				</code>
+				<code valueSet="$QDMElementValueSetOID"/>
 			</playingEntity>
 		</role>
 	</participation>
@@ -863,8 +823,8 @@
 
 
     </subtemplates>
-     <attributeMappings>
-        <!-- static attribute mappings -->
+    <!--  <attributeMappings>
+        static attribute mappings
         <attributeMapping qdmAttribute="active datetime" dotNotation="effectiveTime.low"/>
         <attributeMapping qdmAttribute="admission datetime" dotNotation="effectiveTime.low"/>
         <attributeMapping qdmAttribute="anatomical approach site" dotNotation="approachSiteCode"/>
@@ -909,7 +869,7 @@
         <attributeMapping qdmAttribute="diagnosis" dotNotation="reference.act.subject.observation.value"/>
         <attributeMapping qdmAttribute="principal diagnosis" dotNotation="reference.act.subject.observation.value"/>
 
-        <!-- datatype dependent .notation mappings-->
+        datatype dependent .notation mappings
         <attributeMapping qdmAttribute="start datetime" datatypes="care goal" dotNotation="effectiveTime.low"/>
         <attributeMapping qdmAttribute="start datetime" datatypes="patient care experience" dotNotation="effectiveTime.low"/>
         <attributeMapping qdmAttribute="start datetime" datatypes="provider care experience" dotNotation="effectiveTime.low"/>
@@ -1139,7 +1099,7 @@
         <attributeMapping qdmAttribute="result" datatypes="physical exam, order" dotNotation="value"/>
         <attributeMapping qdmAttribute="result" datatypes="procedure, order" dotNotation="value"/>
         <attributeMapping qdmAttribute="result" datatypes="substance, order" dotNotation="value"/>
-    </attributeMappings>
+    </attributeMappings> -->
     
     <!-- TODO: Provide Aggregate codes - in base standard -->
     <aggregates>

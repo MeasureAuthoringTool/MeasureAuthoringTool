@@ -469,7 +469,7 @@ public class CQLHumanReadableHTMLCreator {
 				
 				for(String codeString:qdmCodeElementStringList){
 					Element qdmElemtentLI = qdmElementUL.appendElement(HTML_LI);
-					qdmElemtentLI.append(codeString.get(i));
+					qdmElemtentLI.append(codeString);
 				}
 			}
 			

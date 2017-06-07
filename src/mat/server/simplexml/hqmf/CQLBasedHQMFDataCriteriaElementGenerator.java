@@ -110,7 +110,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		dataCriteriaElem.appendChild(templateId);
 		Element itemChild = outputProcessor.getOriginalDoc()
 				.createElement(ITEM);
-		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.2");
+		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.6");
 		itemChild.setAttribute("extension", getDataCriteriaExtValueBasedOnVersion(me));
 		templateId.appendChild(itemChild);
 		// creating Code Element for DataCriteria
@@ -695,7 +695,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		String xPathForTemplate = "/templates/template[text()='"
 				+ dataType.toLowerCase() + "']";
 		String actNodeStr = "";
@@ -1570,7 +1570,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		Node attrOID = attributeQDMNode.getAttributes().getNamedItem(OID);
 		/*Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");*/
 		//boolean isLengthOfStayValueSet = false;
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 				+ attrName.toLowerCase() + "']");
 		Node targetNode = templateNode.getAttributes().getNamedItem("target");
@@ -1690,7 +1690,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	protected void generateFacilityLocationTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 				+ attributeName.toLowerCase() + "']");
 		if(templateNode == null){
@@ -1716,7 +1716,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	protected void generateIncisionDateTimeTypeAttributes(Node qdmNode, Element dataCriteriaElem, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 				+ attributeName.toLowerCase() + "']");
 		if(templateNode == null){
@@ -1743,7 +1743,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) throws XPathExpressionException {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String attrName = (String)attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/template[text()='"
 				+ qdmName.toLowerCase() + "']");
 		if(templateNode == null){
@@ -1775,7 +1775,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 			String attribUUID = (String)attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 			
-			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+			XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 					+ attrName + "']");
 			logger.info("----------");
@@ -1865,7 +1865,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 				+ attrName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -2008,7 +2008,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 				|| "Functional Status, Performed".equalsIgnoreCase(qdmName)
 				|| "Risk Category Assessment".equalsIgnoreCase(qdmName));
 		
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/AttrTemplate[text()='"
 				+ attrName.toLowerCase() + "']");
 		boolean isRadiation = false;

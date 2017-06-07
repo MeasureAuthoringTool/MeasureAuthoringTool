@@ -38,8 +38,8 @@
         <typeId root="2.16.840.1.113883.1.3" extension="POQM_HD000001UV02" />
         <templateId>
               <xsl:choose>
-              	<xsl:when test="'5.0' = $qdmVersionNumber">
-						<item root="2.16.840.1.113883.10.20.28.1.1" extension="2016-12-01" />
+              	<xsl:when test="'5.0.2' = $qdmVersionNumber">
+						<item root="2.16.840.1.113883.10.20.28.1.2" extension="2017-05-01" />
 	       		</xsl:when>
 	       		<xsl:when test="'4.1.2' = $qdmVersionNumber">
 						<item root="2.16.840.1.113883.10.20.28.1.1" extension="2014-11-24" />

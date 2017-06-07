@@ -308,7 +308,7 @@ public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogi
 		popCriteriaElem.appendChild(templateId);
 		Element itemChild = outputProcessor.getOriginalDoc().createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.7");
-		itemChild.setAttribute("extension", POPULATION_CRITERIA_EXTENSION);
+		itemChild.setAttribute("extension", POPULATION_CRITERIA_EXTENSION_CQL);
 		templateId.appendChild(itemChild);
 		Element idElement = outputProcessor.getOriginalDoc()
 				.createElement(ID);

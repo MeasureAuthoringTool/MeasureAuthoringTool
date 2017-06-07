@@ -127,7 +127,11 @@ public interface Generator extends MatConstants {
 	
 	public static final String VERSION_PATIENT_CHARACTERISTIC_SEX="2014-11-24";
 	
-	public static final String POPULATION_CRITERIA_EXTENSION = "2017-05-01";
+	/** The Constant POPULATION_CRITERIA_EXTENSION. */
+	public static final String POPULATION_CRITERIA_EXTENSION = "2015-12-01";
+	
+	/** The Constant POPULATION_CRITERIA_EXTENSION_CQL. */
+	public static final String POPULATION_CRITERIA_EXTENSION_CQL = "2017-05-01";
 	
 	/** The Constant VALUE_SET. */
 	public static final String VALUE_SET = "Value Set";

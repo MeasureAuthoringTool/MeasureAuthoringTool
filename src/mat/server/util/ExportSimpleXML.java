@@ -385,13 +385,112 @@ public class ExportSimpleXML {
 			String riskAdjustmentDefinitionXPath = "/measure/riskAdjustmentVariables//cqldefinition";
 			getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, riskAdjustmentDefinitionXPath, isValueSet);
 			
-			resolve_ValueSets_Codes_WithDataTypesUsed(originalDoc, dataCriteriaValueSetMap, cqlModel, elementLookUpNode, isValueSet);
+			resolve_ValueSets_Codes_WithDataTypes(originalDoc, dataCriteriaValueSetMap, cqlModel, elementLookUpNode, isValueSet);
 			
-			System.out.println("Used Valuesets:");
-			System.out.println(result.getUsedCQLArtifacts().getUsedCQLValueSets());
+			List<String> usedValueSetsCodes_NotRetrieves = new ArrayList<String>();
+			if(isValueSet){
+				usedValueSetsCodes_NotRetrieves = new ArrayList<String>(result.getUsedCQLArtifacts().getUsedCQLValueSets());
+			}else{
+				usedValueSetsCodes_NotRetrieves = new ArrayList<String>(result.getUsedCQLArtifacts().getUsedCQLcodes());
+			}
 			
-			System.out.println("Used Codes:");
-			System.out.println(result.getUsedCQLArtifacts().getUsedCQLcodes());
+			//remove all the used value-sets/codes that are present in the retrieval list
+			usedValueSetsCodes_NotRetrieves.removeAll(dataCriteriaValueSetMap.keySet());
+			resolve_ValueSets_Codes_WithoutDataTypes(originalDoc, usedValueSetsCodes_NotRetrieves, cqlModel, elementLookUpNode, isValueSet);
+		
+		}
+
+		private static void resolve_ValueSets_Codes_WithoutDataTypes(
+				Document originalDoc, List<String> usedValueSetsCodes_NotRetrieves,
+				CQLModel cqlModel, Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
+			
+			Map<String, Document> includedXMLMap = new HashMap<String, Document>();
+			List<String> dataTypeUniqueList = new ArrayList<String>();
+			
+			for(String valueSet_CodeName:usedValueSetsCodes_NotRetrieves){
+				
+				/*
+				 * Find the Measure XML for this valueset/code.
+				 * This is necessary because we are trying to 
+				 * find used value-sets/codes even within 
+				 * included CQL Libraries (children & grand-children).
+				*/
+				Document xmlDoc = findXMLProcessor(valueSet_CodeName, cqlModel, includedXMLMap);
+				
+				if(xmlDoc == null){
+					xmlDoc = originalDoc;
+				}else{
+					String[] arr = valueSet_CodeName.split(Pattern.quote("|"));
+					if(arr.length == 3){
+						valueSet_CodeName = arr[2];
+					}
+				}
+				
+				String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name=\""+ valueSet_CodeName +"\"]";
+				
+				if(!isValueSet){
+					xPathForValueSetNode = "//cqlLookUp/codes/code[@codeName=\""+ valueSet_CodeName +"\"]";
+				}
+				
+				Node valueSet_CodeNode = (Node) xPath.evaluate(xPathForValueSetNode, xmlDoc.getDocumentElement(), 
+						XPathConstants.NODE);
+				
+				Node clonedValueSet_CodeNode = valueSet_CodeNode.cloneNode(true);
+				
+				if(clonedValueSet_CodeNode.getNodeName().equals("code")){
+					
+					//rename "codeOID" attribute to "oid"
+					Node codeOID = clonedValueSet_CodeNode.getAttributes().getNamedItem("codeOID");
+					if(codeOID != null){
+						((Element)clonedValueSet_CodeNode).setAttribute("oid", codeOID.getNodeValue());
+						clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeOID");
+					}
+					
+					//rename "codeSystemName" attribute to "taxonomy"
+					Node codeSystemName = clonedValueSet_CodeNode.getAttributes().getNamedItem("codeSystemName");
+					if(codeSystemName != null){
+						((Element)clonedValueSet_CodeNode).setAttribute("taxonomy", codeSystemName.getNodeValue());
+						clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeSystemName");
+					}
+					
+					
+					//rename "codeName" attribute to "name"
+					Node codeName = clonedValueSet_CodeNode.getAttributes().getNamedItem("codeName");
+					if(codeName != null){
+						((Element)clonedValueSet_CodeNode).setAttribute("name", codeName.getNodeValue());
+						clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeName");
+					}
+											
+					//set "uuid" attribute to new a UUID
+					Node uuid = clonedValueSet_CodeNode.getAttributes().getNamedItem("uuid");
+					if(uuid == null){
+						((Element)clonedValueSet_CodeNode).setAttribute("uuid", UUIDUtilClient.uuid());
+					}
+				}
+				
+				//rename node to "qdm"
+				xmlDoc.renameNode(clonedValueSet_CodeNode, null, "qdm");
+							
+				//set new attribute "code" to indicate if this is a Direct reference code or value-set.
+				((Element)clonedValueSet_CodeNode).setAttribute("code", String.valueOf(!isValueSet));
+				
+				String oid = clonedValueSet_CodeNode.getAttributes().getNamedItem("oid").getNodeValue();
+				String version = "";
+				if(clonedValueSet_CodeNode.getAttributes().getNamedItem("version") != null){
+					version = clonedValueSet_CodeNode.getAttributes().getNamedItem("version").getNodeValue();
+				}
+				
+				if(dataTypeUniqueList.contains(valueSet_CodeName+"|"+oid+"|"+version)){
+					continue;
+				}		
+									
+				Node importedNode = elementLookUpNode.getOwnerDocument().importNode(clonedValueSet_CodeNode, true);
+				elementLookUpNode.appendChild(importedNode);
+				
+				dataTypeUniqueList.add(valueSet_CodeName+"|"+oid+"|"+version);
+		
+			}
+			
 		}
 
 		/**
@@ -446,7 +545,7 @@ public class ExportSimpleXML {
 			}
 		}
 
-		private static void resolve_ValueSets_Codes_WithDataTypesUsed(
+		private static void resolve_ValueSets_Codes_WithDataTypes(
 				Document originalDoc, Map<String, List<String>> usedValueSet_Code_Map, CQLModel cqlModel, Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
 			
 			Map<String, Document> includedXMLMap = new HashMap<String, Document>();

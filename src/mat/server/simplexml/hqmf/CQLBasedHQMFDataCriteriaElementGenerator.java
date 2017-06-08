@@ -736,7 +736,6 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		}  else {
 			version = null;
 		}
-		System.out.println("valueSetVersionStringValue ::: version ======== " + version);
 		return version;
 	}
 	/**

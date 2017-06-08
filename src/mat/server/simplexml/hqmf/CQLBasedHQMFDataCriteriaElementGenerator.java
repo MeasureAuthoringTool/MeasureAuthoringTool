@@ -465,12 +465,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, oidValue);
 		if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
-			if(dataType.equalsIgnoreCase("Patient Characteristic Sex")){
-				itemChild.setAttribute("extension", VERSION_PATIENT_CHARACTERISTIC_SEX);
-			} else {
-				itemChild.setAttribute("extension", extensionValue);
-			}
-			
+			itemChild.setAttribute("extension", extensionValue);
 		}
 		templateId.appendChild(itemChild);
 		Element idElem = dataCriteriaXMLProcessor.getOriginalDoc()

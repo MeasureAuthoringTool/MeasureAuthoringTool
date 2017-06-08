@@ -852,10 +852,10 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 						codeSystemNameAttr.getNodeValue());
 			}
 			if(codeDisplayNameAttr !=null){
-				//Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
-				//		.createElement(DISPLAY_NAME);
-			//	displayNameElem.setAttribute(VALUE,codeDisplayNameAttr.getNodeValue() );
-			//	codeElement.appendChild(displayNameElem);
+				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc()
+						.createElement(DISPLAY_NAME);
+				displayNameElem.setAttribute(VALUE,codeDisplayNameAttr.getNodeValue() );
+				codeElement.appendChild(displayNameElem);
 			}
 		}
 		return codeElement;

@@ -1,20 +1,21 @@
 package mat.client.measure;
 
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MeasureNameLabel;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
 
 /**
  * The Class ManageMeasureExportView.
@@ -48,13 +49,13 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	private RadioButton cqlLibraryRadio = new RadioButton("format", "CQL Library");
 	
 	/** The save button. */
-	private PrimaryButton saveButton = new PrimaryButton("Save","primaryButton");
+	private Button saveButton = new Button("Save");
 	
 	/** The cancel button. */
-	private SecondaryButton cancelButton = new SecondaryButton("Cancel");
+	private Button cancelButton = new Button("Cancel");
 	
 	/** The open button. */
-	private SecondaryButton openButton = new SecondaryButton("Open");
+	private Button openButton = new Button("Open");
 	
 
 	/**
@@ -70,30 +71,41 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		content.add(measureNameLabel);
 		content.add(new Label("Select an export option"));
 		content.add(new SpacerWidget());
-
-		if(isTopLevelUser) {
-			content.add(wrapRadioButton(simpleXMLRadio));
-		}
+		VerticalPanel vp = new VerticalPanel();
 		
+		if(isTopLevelUser) {
+			vp.add(simpleXMLRadio);
+		}
+		vp.add(eMeasureRadio);
+		vp.add(cqlLibraryRadio);
+		vp.add(elmRadio);
+		vp.add(eMeasurePackageRadio);
+		content.add(vp);
 		eMeasurePackageRadio.setValue(true);
-		content.add(wrapRadioButton(eMeasureRadio));
+		/*content.add(wrapRadioButton(eMeasureRadio));
 		//content.add(wrapRadioButton(codeListRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));
 		content.add(wrapRadioButton(elmRadio));
-		content.add(wrapRadioButton(eMeasurePackageRadio));
+		content.add(wrapRadioButton(eMeasurePackageRadio));*/
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 
-		FlowPanel buttonPanel = new FlowPanel();
-		buttonPanel.addStyleName("measureExportButtonContainer");
+		/*FlowPanel buttonPanel = new FlowPanel();
+		buttonPanel.addStyleName("measureExportButtonContainer");*/
+		ButtonToolBar buttonPanel = new ButtonToolBar();
+		saveButton.setType(ButtonType.PRIMARY);
+		cancelButton.setType(ButtonType.DANGER);
+		//openButton.setStyleName("btn btn-gray");;
+		openButton.setType(ButtonType.PRIMARY);
 		saveButton.setTitle("Save");
 		cancelButton.setTitle("Cancel");
 		openButton.setTitle("Open");
 		buttonPanel.add(saveButton);
 		buttonPanel.add(openButton);
 		buttonPanel.add(cancelButton);
-		cancelButton.addStyleName("cancelButton");
+		//cancelButton.addStyleName("cancelButton");
 		content.add(buttonPanel);
+		content.add(new SpacerWidget());
 		
 	}
 	

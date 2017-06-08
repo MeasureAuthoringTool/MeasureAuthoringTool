@@ -140,7 +140,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		//XPath String for only QDM's.
 		//String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
 		//String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
-		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype]";
+		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype and @code ='false']";
 		//String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
 		//String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
@@ -563,24 +563,33 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		 * This is to be commented until we start getting value set versions from
 		 * VSAC.
 		 */
-		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
-		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
-			/*if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				valueSetVersion = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue().replaceAll(" ", "%20");
-				addVersionToValueTag = true;
-			} else {*/
+	//	if (qdmNode.getAttributes().getNamedItem("version") != null) {
+
+			String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+
+			if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
+				/*
+				 * if
+				 * (qdmNode.getAttributes().getNamedItem("expansionIdentifier")
+				 * != null) { valueSetVersion = "urn:hl7:profile:" +
+				 * qdmNode.getAttributes().getNamedItem("expansionIdentifier").
+				 * getNodeValue().replaceAll(" ", "%20"); addVersionToValueTag =
+				 * true; } else {
+				 */
 				addVersionToValueTag = false;
-			//}
-		} else {
-			//valueSetVersion = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll(" ", "%20");
-			valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
-			addVersionToValueTag = true;
-		}
-		if (addVersionToValueTag) {
-			System.out.println("addValueSetVersion :::: Adding ValueSetVersion ======== " + valueSetVersion);
-			valueElem.setAttribute("valueSetVersion", valueSetVersion);
-		}
+				// }
+			} else {
+				// valueSetVersion = "urn:hl7:version:" +
+				// qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll("
+				// ", "%20");
+				valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
+				addVersionToValueTag = true;
+			}
+			if (addVersionToValueTag) {
+				valueElem.setAttribute("valueSetVersion", valueSetVersion);
+			}
+		//}
 	}
 	
 	/**

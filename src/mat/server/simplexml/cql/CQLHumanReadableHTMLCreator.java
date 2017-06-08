@@ -514,10 +514,15 @@ public class CQLHumanReadableHTMLCreator {
 					
 					String name = qdmValuesetElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
 					String oid = qdmValuesetElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
-					String version = qdmValuesetElementList.item(i).getAttributes().getNamedItem("version").getNodeValue();
+
+					String version = null;
+					if(qdmValuesetElementList.item(i).getAttributes().getNamedItem("version") != null){
+						version = qdmValuesetElementList.item(i).getAttributes().getNamedItem("version").getNodeValue();
+					}
 										
 					String output = String.format("\"%s: %s\" using \"%s (%s)\"", dataTypeName, name, name, oid);
-					if(version != null){
+					
+					if(version != null && !version.equals("1.0") && !version.equals("1")){
 						output = String.format("\"%s: %s\" using \"%s (%s, version %s)\"", dataTypeName, name, name, oid, version);
 					}
 								

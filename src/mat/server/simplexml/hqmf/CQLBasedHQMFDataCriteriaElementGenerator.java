@@ -579,7 +579,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			//}
 		} else {
 			//valueSetVersion = "urn:hl7:version:" + qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll(" ", "%20");
-			valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll(" ", "%20");
+			valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 			addVersionToValueTag = true;
 		}
 		if (addVersionToValueTag) {
@@ -732,8 +732,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 				version = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue().replaceAll(" ", "%20");
 			}
 		} else {*/
-			version = /*"urn:hl7:version:" +*/ qdmNode.getAttributes().getNamedItem("version")
-					.getNodeValue().replaceAll(" ", "%20");
+			version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		}  else {
 			version = null;
 		}

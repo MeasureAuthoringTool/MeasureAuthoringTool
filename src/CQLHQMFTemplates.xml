@@ -60,10 +60,10 @@
     <!-- patient characteristic -->
     <template oid="2.16.840.1.113883.10.20.28.4.53" class="OBS" mood="EVN" status="COMPLETED" valueSetId ="valueSet" addValueTag="false" addCodeTag="true">patient characteristic</template>
     <template oid="2.16.840.1.113883.10.20.28.4.54" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="21112-8" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Birth Date" addValueTag="false" addCodeTag="true">patient characteristic birthdate</template>
-    <template oid="2.16.840.1.113883.10.20.28.4.56" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="54133-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Ethnicity" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">patient characteristic ethnicity</template>
+    <template oid="2.16.840.1.113883.10.20.28.4.56" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="54133-4" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Ethnicity" addValueTag="true" addCodeTag="true">patient characteristic ethnicity</template>
     <template oid="2.16.840.1.113883.10.20.28.4.57" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeDisplayName="Assertion" addValueTag="true" addCodeTag="true" valueCode="419099009" valueCodeSystem="2.16.840.1.113883.6.96" valueDisplayName="Dead">patient characteristic expired</template>
     <template oid="2.16.840.1.113883.10.20.28.4.58" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="48768-6" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Payer" addValueTag="true" addCodeTag="true">patient characteristic payer</template>    
-    <template oid="2.16.840.1.113883.10.20.28.4.59" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="32624-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Race" addValueTag="true" addCodeTag="true" addExtensionInTemplate="true">patient characteristic race</template>
+    <template oid="2.16.840.1.113883.10.20.28.4.59" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="32624-9" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC" codeDisplayName="Race" addValueTag="true" addCodeTag="true">patient characteristic race</template>
     <template oid="2.16.840.1.113883.10.20.28.4.55" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="263495000" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT" codeDisplayName="Gender" addValueTag="true" addCodeTag="true">patient characteristic sex</template>    
     <template oid="2.16.840.1.113883.10.20.28.4.6" class="OBS" mood="EVN" status="COMPLETED" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true">patient characteristic clinical trial participant</template>
     
@@ -151,10 +151,10 @@
     <!-- QDM 5.0 Datatypes -->
     
    <!-- Adverse Event DataType --> 
-    <template oid="2.16.840.1.113883.10.20.28.4.120" class="OBS" mood="EVN" status="COMPLETED" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueType="CD" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" addExtensionInTemplate="true" includeSubTemplate="adverseEvent">adverse event</template>
+    <template oid="2.16.840.1.113883.10.20.28.4.120" class="OBS" mood="EVN" status="COMPLETED" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" valueType="CD" valueCode="281647001" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" includeSubTemplate="adverseEvent">adverse event</template>
     
     <!-- Allergy/Intolerance -->
-    <template oid="2.16.840.1.113883.10.20.28.4.119" class="OBS" mood="EVN" status="COMPLETED" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" valueType="CD" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" addExtensionInTemplate="true" includeSubTemplate="allergy-Intolerance">allergy/intolerance</template>
+    <template oid="2.16.840.1.113883.10.20.28.4.119" class="OBS" mood="EVN" status="COMPLETED" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" codeSystemName="ActCode" valueType="CD" valueCode="106190000" valueCodeSystem="2.16.840.1.113883.6.96" addCodeTag="true" addValueTag="true" includeSubTemplate="allergy-Intolerance">allergy/intolerance</template>
     
     <!--  Non Negative Assessment Datatypes -->
     <template oid="2.16.840.1.113883.10.20.28.4.118" class="OBS" mood="INT" status="ACTIVE" addValueSetInCode="true" addCodeTag="true" addValueTag="false">assessment, recommended</template>

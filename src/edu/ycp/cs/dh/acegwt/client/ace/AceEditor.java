@@ -21,12 +21,11 @@
 package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 
-import mat.client.shared.MatContext;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsArrayString;
@@ -40,7 +39,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RequiresResize;
 
-import java.util.Collections;
+import mat.client.shared.MatContext;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -171,6 +170,113 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		editor.setTheme("ace/theme/" + themeName);
 	}-*/;
 	
+	
+	/*public native void lockEditor(int howManyRows, int lastCol)-{
+		var htmEditor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
+
+		var session = htmEditor.getSession(), Range = $wnd.ace
+				.require("ace/range").Range, range = new Range(0, 0, 26, 0), markerId = session
+				.addMarker(range, "readonly-highlight");
+
+		//session.setMode("ace/mode/html");    
+
+		range.start = session.doc.createAnchor(range.start);
+		range.end = session.doc.createAnchor(range.end);
+		range.end.$insertRight = true;
+
+		//htmEditor.getSession().setMode("ace/mode/html");
+		//htmEditor.setTheme("ace/theme/merbivore");
+		htmEditor.setOptions({
+			enableBasicAutocompletion : true,
+			enableSnippets : true
+		});
+
+		htmEditor.setShowPrintMargin(false);
+		htmEditor.setDisplayIndentGuides(false);
+		htmEditor.setHighlightActiveLine(false);
+
+		htmEditor.commands.on("afterExec", function(e) {
+			if (e.command.name == "insertstring" && /^[\<.]$/.test(e.args)) {
+				htmEditor.execCommand("startAutocomplete")
+			}
+		});
+		htmEditor.setShowPrintMargin(false);
+		htmEditor.setHighlightActiveLine(false);
+
+		htmEditor.keyBinding.addKeyboardHandler({
+			handleKeyboard : function(data, hash, keyString, keyCode, event) {
+
+				if (hash === -1 || (keyCode <= 40 && keyCode >= 37)) {
+					return false;
+				}
+				if (intersects(range)) {
+					return {
+						command : "null",
+						passEvent : false
+					};
+				}
+			}
+		});
+
+		htmEditor.commands.on("afterExec", function(e) {
+			// activate autocomplete when paren or .(dot) is typed
+			if (e.command.name == "insertstring" && /^[\\.\(.]$/.test(e.args)) {
+				//editor.execCommand("startAutocomplete");
+			}
+			if (e.command.name == "insertstring" && /^[\w\:.]$/.test(e.args)) {
+				//editor.execCommand("startAutocomplete");
+			}
+			if (e.command.name == "insertstring" && /^[\<.]$/.test(e.args)) {
+				//htmEditor.execCommand("startAutocomplete");
+			}
+		});
+
+		htmEditor.container.addEventListener("contextmenu", function(e) {
+			e.preventDefault();
+			return false;
+		}, false);
+
+		//To disable Cut Copy Paster on editor found this solution on Google Group.
+		//stop = function(e) {
+		//	e.stopPropagation();
+		//	e.preventDefault();
+		//	console.log(e)
+	//	}
+	//	document.querySelector(".ace_editor").addEventListener("copy", stop,
+	//			true)
+	//	document.querySelector(".ace_editor").addEventListener("cut", stop,
+	//			true)
+	//	document.querySelector(".ace_editor").addEventListener("paste", stop,
+	//			true)
+	//	// or
+	//	htmEditor.onCopy = htmEditor.onCut = htmEditor.onPaste = htmEditor.getCopyText = function() {
+	//		return ""
+	//	}
+
+		function before(obj, method, wrapper) {
+			var orig = obj[method];
+			obj[method] = function() {
+				var args = Array.prototype.slice.call(arguments);
+				return wrapper.apply(this, function() {
+					return orig.apply(obj, orig);
+				}, args);
+			}
+
+			return obj[method];
+		}
+
+		function intersects(range) {
+			//alert(htmEditor.getSelectionRange().intersects(range));
+			return htmEditor.getSelectionRange().intersects(range);
+		}
+
+		function preventReadonly(next) {
+			if (intersects(range))
+				return;
+			next();
+		}
+
+	}-;*/
 	/**
 	 * Set the mode.
 	 *

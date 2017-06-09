@@ -1018,7 +1018,7 @@ public class PackagerServiceImpl implements PackagerService {
 			MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
 			
 			try {
-				messages = PatientBasedValidator.checkPatientBasedValidations(measureXML, detail, cqlLibraryDAO);
+				messages = PatientBasedValidator.checkPatientBasedValidations(measureXML.getMeasureXMLAsString(), detail, cqlLibraryDAO);
 			} catch (XPathExpressionException e) {
 				messages.add("Unexpected error encountered while doing Group Validations. Please contact HelpDesk.");
 			}

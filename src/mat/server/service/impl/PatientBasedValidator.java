@@ -59,12 +59,12 @@ public class PatientBasedValidator {
 	private static final String CQL_RETURN_TYPE_BOOLEAN = "BOOLEAN";	
 	
 	
-	public static List<String> checkPatientBasedValidations(MeasureXML measureXML, MeasurePackageDetail detail, CQLLibraryDAO cqlLibraryDAO) throws XPathExpressionException {
+	public static List<String> checkPatientBasedValidations(String measureXmlL, MeasurePackageDetail detail, CQLLibraryDAO cqlLibraryDAO) throws XPathExpressionException {
 		
 		List<String> errorMessages = new ArrayList<String>();
 		
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML.getMeasureXMLAsString());
-		XmlProcessor xmlProcessor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXmlL);
+		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlL);
 
 		Node patientBasedIndicatorNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_FOR_PATIENT_BASED_INDICATOR);
 		String patientBasedIndicator = patientBasedIndicatorNode.getTextContent();

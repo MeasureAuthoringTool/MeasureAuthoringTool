@@ -44,6 +44,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -55,6 +56,7 @@ import mat.DTO.OperatorDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -67,6 +69,8 @@ import mat.client.measure.service.CQLService;
 import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.ManageMeasureNotesModelValidator;
 import mat.client.shared.MatContext;
@@ -104,7 +108,6 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -122,6 +125,7 @@ import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.service.impl.PatientBasedValidator;
 import mat.server.util.CQLUtil;
 import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
@@ -4106,6 +4110,35 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					if (isInvalid) {
 						result.setValid(false);
 						result.setValidationMessages(message);
+					} else {
+						Map<Integer, MeasurePackageDetail> seqDetailMap = checkTypeCheckValidationInGroupings(
+								measureXmlModel, xmlProcessor);
+						if(!seqDetailMap.isEmpty()){
+							List<String> typeCheckErrorMessage = new ArrayList<String>();
+							typeCheckErrorMessage.add(MatContext.get().getMessageDelegate().getCreatePackageTypeCheckError());
+							String allMessages = new String("Following grouping(s) are invalid : ");
+							boolean isTypeCheckInValid = false;
+							try {
+								for (Map.Entry<Integer, MeasurePackageDetail> entry : seqDetailMap.entrySet()) {
+									List<String> messages = PatientBasedValidator.checkPatientBasedValidations(xmlModel.getXml(), entry.getValue(), cqlLibraryDAO);
+									if(messages.size() >0){
+										allMessages = allMessages + "Grouping " + entry.getKey()+ ",";
+										isTypeCheckInValid = true;
+									}
+								}
+								if(isTypeCheckInValid){
+									result.setValid(false);
+									int position = allMessages.lastIndexOf(",");
+									if (position!=-1)
+										allMessages = allMessages.substring(0, position);
+									typeCheckErrorMessage.add(allMessages+".");
+									result.setValidationMessages(typeCheckErrorMessage);
+								}
+								
+							} catch (XPathExpressionException e) {
+								typeCheckErrorMessage.add("Unexpected error encountered while doing Group Validations. Please contact HelpDesk.");
+							}
+						}
 					}
 				}
 			} catch (XPathExpressionException e) {
@@ -4114,6 +4147,75 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		return result;
+	}
+
+	/**
+	 * @param measureXmlModel
+	 * @param xmlProcessor
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	public Map<Integer, MeasurePackageDetail> checkTypeCheckValidationInGroupings(MeasureXmlModel measureXmlModel,
+			XmlProcessor xmlProcessor) throws XPathExpressionException {
+		// XPath to get all measure Groupings
+		NodeList measureGroups = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(),
+				XmlProcessor.XPATH_MEASURE_GROUPING_GROUP); 
+		Map<Integer, MeasurePackageDetail> seqDetailMap = new HashMap<Integer, MeasurePackageDetail>();
+		// iterate through the measure groupings and get the sequence number
+		// attribute and insert in a map with sequence as key and
+		// MeasurePackageDetail as value.
+		if ((measureGroups != null) && (measureGroups.getLength() > 0)) {
+			for (int i = 0; i < measureGroups.getLength(); i++) {
+				NamedNodeMap groupAttrs = measureGroups.item(i).getAttributes();
+				Integer seq = Integer.parseInt(groupAttrs.getNamedItem("sequence").getNodeValue());
+				MeasurePackageDetail detail = seqDetailMap.get(seq);
+				if (detail == null) {
+					detail = new MeasurePackageDetail();
+					detail.setSequence(Integer.toString(seq));
+					detail.setMeasureId(measureXmlModel.getMeasureId());
+					seqDetailMap.put(seq, detail);
+				}
+				NodeList pkgClauses = measureGroups.item(i).getChildNodes();
+				// Iterate through the PACKAGECLAUSE nodes and
+				// convert it into MeasurePackageClauseDetail add it to the list
+				// in MeasurePackageDetail
+				for (int j = 0; j < pkgClauses.getLength(); j++) {
+
+					if (!PopulationWorkSpaceConstants.PACKAGE_CLAUSE_NODE
+							.equals(pkgClauses.item(j).getNodeName())) {
+						// group node can contain tab or new
+						// lines
+						// which can be counted as it's
+						// child.Those should
+						// be filtered.
+						continue;
+					}
+
+					NamedNodeMap pkgClauseMap = pkgClauses.item(j).getAttributes();
+					Node associatedClauseNode = pkgClauseMap.getNamedItem("associatedPopulationUUID");
+					String associatedClauseNodeUuid = null;
+					if (associatedClauseNode != null) {
+						associatedClauseNodeUuid = associatedClauseNode.getNodeValue();
+					}
+					detail.getPackageClauses().add(createMeasurePackageClauseDetail(
+							pkgClauseMap.getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue(),
+							pkgClauseMap.getNamedItem("name").getNodeValue(),
+							pkgClauseMap.getNamedItem(PopulationWorkSpaceConstants.TYPE).getNodeValue(),
+							associatedClauseNodeUuid));
+				}
+			}
+		}
+		return seqDetailMap;
+	}
+	
+	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type,
+			String associatedPopulationUUID) {
+		MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
+		detail.setId(id);
+		detail.setName(name);
+		detail.setType(type);
+		detail.setAssociatedPopulationUUID(associatedPopulationUUID);
+		return detail;
 	}
 
 	/**
@@ -6173,6 +6275,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		if (model != null && !StringUtils.isEmpty(model.getXml())) {
 			String xmlString = model.getXml();
+			/*CQLModel cqlModel = new CQLModel();
+			cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
+			result.setCqlModel(cqlModel);*/
 			result = cqlService.getCQLData(xmlString);
 			result.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(xmlString));
 			result.setSetId(measure.getMeasureSet().getId());

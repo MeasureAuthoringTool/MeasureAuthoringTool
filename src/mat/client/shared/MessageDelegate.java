@@ -314,6 +314,8 @@ public class MessageDelegate {
 	
 	/** The Constant NO_VERSION_CREATED. */
 	public static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";
+
+	private final String MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE = "Unable to create measure package. There is an incorrect return type. Please re-save your measure grouping(s) and try again.";
 	
 	/**
 	 * Gets the measure save server error message.
@@ -3253,5 +3255,9 @@ public class MessageDelegate {
 	 */
 	public String getUMLS_INVALID_CODE_IDENTIFIER() {
 		return UMLS_INVALID_CODE_IDENTIFIER;
+	}
+	
+	public String getCreatePackageTypeCheckError() {
+		return MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE;
 	}
 }

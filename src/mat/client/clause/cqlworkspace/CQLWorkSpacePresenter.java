@@ -4173,8 +4173,27 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 		
-		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+		//Code Identifier validation to check Identifier starts with "CODE:"
+		if(!url.startsWith(CQLWorkSpaceConstants.CQL_CODE)){
+			searchDisplay.getCodesView().getSaveButton().setEnabled(false);
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
+
+			return;
+		} else {
+			retrieveCodeReferences(url);
+		}
 		
+				
+	}
+
+	/**
+	 * Retrieve code references.
+	 *
+	 * @param url the url
+	 */
+	private void retrieveCodeReferences(String url){
+		
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 		
 		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
 
@@ -4204,9 +4223,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 			}
 		});
-		
-	}
 
+	}
 	
 	/**
 	 * Search value set in vsac.

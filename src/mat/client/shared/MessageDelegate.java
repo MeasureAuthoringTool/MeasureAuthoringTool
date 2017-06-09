@@ -64,10 +64,13 @@ public class MessageDelegate {
 	/** The Constant LOGIN_ID_REQUIRED. */
 	public static final String LOGIN_ID_REQUIRED = "User ID is required.";
 	
+	/** The Constant LIBRARY_NAME_REQUIRED. */
 	public static final String LIBRARY_NAME_REQUIRED = "Library Name is required.";
 	
+	/** The Constant CQL_STAND_ALONE_LIBRARY_NAME_ERROR. */
 	public static final String CQL_STAND_ALONE_LIBRARY_NAME_ERROR = "Invalid Library Name.Must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	
+	/** The Constant CQL_FUNCTION_ARGUMENT_NAME_ERROR. */
 	public static final String CQL_FUNCTION_ARGUMENT_NAME_ERROR = "Invalid argument name. Must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	/** The Constant EMAIL_ID_INCORRECT_FORMAT. */
 	public static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
@@ -85,8 +88,10 @@ public class MessageDelegate {
 	/** The Constant NO_MEASURES. */
 	public static final String NO_LIBRARUES = "No libraries returned. Please search again.";
 	
+	/** The Constant WARNING_BAD_DATA_TYPE_COMBINATION. */
 	public static final String WARNING_BAD_DATA_TYPE_COMBINATION ="Successfully saved with errors. You have an incorrect value set/code datatype combination.";
 	
+	/** The no includes. */
 	public  final String NO_INCLUDES = "No libraries returned.Please search again.";
 	
 	
@@ -121,6 +126,7 @@ public class MessageDelegate {
 	/** The Constant s_ERR_MEASURE_SCORE_REQUIRED. */
 	public static final String s_ERR_MEASURE_SCORE_REQUIRED = "Measure Scoring is required.";
 	
+	/** The Constant CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR. */
 	public static final String CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR = "Continous Variable measures must not be patient based.";
 	
 	// US 171
@@ -166,10 +172,13 @@ public class MessageDelegate {
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Initial Population, "
 			+ " Numerator and Denominator must contain one association.";
 	
+	/** The Constant RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED. */
 	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
 
+	/** The Constant ERROR_IN_SAVING_QDM_ELEMENTS. */
 	private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same valueset name.";
 
+	/** The Constant CQL_LIBRARY_LIMIT_WARNING. */
 	private static final String CQL_LIBRARY_LIMIT_WARNING = "You have reached the maximum number of selected CQL Libraries (10).";
 	
 	/** The vsac expansion profile selection. */
@@ -212,49 +221,98 @@ public class MessageDelegate {
 	public final String SUCCESSFULLY_MODIFIED_ALL_OIDS = "All QDM elements and/or attributes using the same value set OID have been modified " +
 			"to the selected Version and/or Expansion Identifier.";
 	
+	/** The view cql error message. */
 	public final String VIEW_CQL_ERROR_MESSAGE = "You are viewing CQL with few validation errors. Errors are marked with triangle sign on line number.";
+	
+	/** The view cql no errors message. */
 	public final String VIEW_CQL_NO_ERRORS_MESSAGE ="You are viewing CQL with no validation errors.";
+	
+	/** The view cql error message bad valueset datatype. */
 	public final String VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE ="CQL file with validation errors. You have an incorrect value set/code datatype combination.";
 	
+	/** The successful saved cql gen info. */
 	public final String SUCCESSFUL_SAVED_CQL_GEN_INFO  = "Successfully saved CQL general information.";
+	
+	/** The successful saved cql definition. */
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION  = "Successfully saved definition into CQL.";
+	
+	/** The successful saved cql functions. */
 	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS  = "Successfully saved function into CQL.";
+	
+	/** The successful saved cql parameter. */
 	public final String SUCCESSFUL_SAVED_CQL_PARAMETER  = "Successfully saved parameter into CQL.";
+	
+	/** The successful saved cql include library. */
 	public final String SUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY  = "Library Insert Alias Name Here successfully Included.";
+	
+	/** The error save cql definition. */
 	public final String ERROR_SAVE_CQL_DEFINITION  = "Please enter definition name.";
 	
+	/** The successful saved cql definition with errors. */
 	public final String SUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS  = "Successfully saved definition into CQL with errors.";
+	
+	/** The successful saved cql functions with errors. */
 	public final String SUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS  = "Successfully saved function into CQL  with errors.";
+	
+	/** The successful saved cql parameter with errors. */
 	public final String SUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS  = "Successfully saved parameter into CQL  with errors.";
 	
+	/** The error save cql parameter. */
 	public final String ERROR_SAVE_CQL_PARAMETER  = "Please enter parameter name.";
+	
+	/** The error save cql function. */
 	public final String ERROR_SAVE_CQL_FUNCTION  = "Please enter function name.";
+	
+	/** The error duplicate identifier name. */
 	public final String ERROR_DUPLICATE_IDENTIFIER_NAME  = "Name already exists.";
+	
+	/** The sucess definition modify. */
 	public final String SUCESS_DEFINITION_MODIFY  = "Successfully modified definition.";
+	
+	/** The sucess parameter modify. */
 	public final String SUCESS_PARAMETER_MODIFY  = "Successfully modified parameter.";
+	
+	/** The sucess function modify. */
 	public final String SUCESS_FUNCTION_MODIFY  = "Successfully modified function.";
 	
+	/** The sucess definition modify with errors. */
 	public final String SUCESS_DEFINITION_MODIFY_WITH_ERRORS  = "Successfully modified definition with errors.";
+	
+	/** The sucess parameter modify with errors. */
 	public final String SUCESS_PARAMETER_MODIFY_WITH_ERRORS  = "Successfully modified parameter with errors.";
+	
+	/** The sucess function modify with errors. */
 	public final String SUCESS_FUNCTION_MODIFY_WITH_ERRORS  = "Successfully modified function with errors.";
 	
+	/** The error parameter name no special char. */
 	public final String ERROR_PARAMETER_NAME_NO_SPECIAL_CHAR  = "Invalid Parameter name. " +
 			"Duplicate name or use of restricted character(s).";
+	
+	/** The error definition name no special char. */
 	public final String ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR  = "Invalid Definition name. " +
 			"Duplicate name or use of restricted character(s).";
+	
+	/** The error function name no special char. */
 	public final String ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR  = "Invalid Function and/or Argument name. " +
 			"Duplicate name or use of restricted character(s).";
+	
+	/** The error include alias name no special char. */
 	public final String ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR  = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
 	
+	/** The delete warning message. */
 	public final String DELETE_WARNING_MESSAGE = "You have selected to delete this expression. Do you want to permanently delete";
 	
+	/** The save include library valiation error. */
 	public final String SAVE_INCLUDE_LIBRARY_VALIATION_ERROR = "Alias name and CQL Library selection are required.";
 	
+	/** The modify cql library name. */
 	public final String MODIFY_CQL_LIBRARY_NAME = "Successfully modified CQL Library Name.";
 	
 	
+	/** The Constant NO_USERS_RETURNED. */
 	public static final String NO_USERS_RETURNED = "No Users returned. Please search again.";
 	
+	/** The Constant NO_VERSION_CREATED. */
 	public static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";
 	
 	/**
@@ -689,6 +747,10 @@ public class MessageDelegate {
 	/** The umls oid required. */
 	private final String UMLS_CODE_IDENTIFIER_REQUIRED = "Please enter a code identifier.";
 	
+	/** The umls invalid code identifier. */
+	private final String UMLS_INVALID_CODE_IDENTIFIER = "Invalid code identifier. "
+			+ "Please copy the complete URL for the code directly from VSAC and try again.";
+	
 	/** The umls successfull login. */
 	private final String UMLS_SUCCESSFULL_LOGIN = "Successfully logged into UMLS";
 	
@@ -754,44 +816,68 @@ public class MessageDelegate {
 	/** The measure observation validation for functions. */
 	private final String MEASURE_OBSERVATION_VALIDATION_FOR_FUNCTIONS = "Contents of the clause logic are not permitted for Measure Observations.";
 	
+	/** The only one child required. */
 	private final String ONLY_ONE_CHILD_REQUIRED = " Functions must contain only one child node.";
 	
+	/** The invalid logic measure packager. */
 	private final String INVALID_LOGIC_MEASURE_PACKAGER = "Populations or Measure Observations within a Measure Grouping must contain a valid Definition or Function.";
 	
+	/** The delete confirmation parameter. */
 	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter?";
 	
+	/** The delete confirmation definition. */
 	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
 	
+	/** The delete confirmation function. */
 	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
 	
+	/** The delete confirmation include. */
 	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
 	
+	/** The error library version. */
 	private final String ERROR_LIBRARY_VERSION ="Please select version type Major or Minor.";
 	
+	/** The error library draft. */
 	private final String ERROR_LIBRARY_DRAFT = "Please select a Library Version to create a draft.";
 	
+	/** The error select attribute name. */
 	private final String ERROR_SELECT_ATTRIBUTE_NAME = "Please select Attribute Name.";
 	
+	/** The error select item name. */
 	private final String ERROR_SELECT_ITEM_NAME = "Please select Item Name.";
 	
+	/** The error select item type. */
 	private final String ERROR_SELECT_ITEM_TYPE = "Please select Item Type.";
 	
+	/** The error select item name or data type. */
 	private final String ERROR_SELECT_ITEM_NAME_OR_DATA_TYPE = "Please select Item Name or Datatype.";
 	
+	/** The error invalid code data type. */
 	private final String ERROR_INVALID_CODE_DATA_TYPE = "Invalid code/datatype combination.";
 	
+	/** The error invalid quantity. */
 	private final String ERROR_INVALID_QUANTITY = "Please Enter valid Quantity.";
 	
+	/** The error invalid date time quantity. */
 	private final String ERROR_INVALID_DATE_TIME_QUANTITY = "You can not enter both DateTime and Quantity.";
 	
+	/** The error invalid mode details. */
 	private final String ERROR_INVALID_MODE_DETAILS = "Please Select valid Mode Details.";
 	
+	/** The error select attribute to insert. */
 	private final String ERROR_SELECT_ATTRIBUTE_TO_INSERT = "Please Select Attribute to insert into Editor";
 	
+	/** The error enter date time and quantity. */
 	private final String ERROR_ENTER_DATE_TIME_AND_QUANTITY = "Please enter DateTime or Quantity/units.";
 	
+	/** The error invalid date time. */
 	private final String ERROR_INVALID_DATE_TIME = "Please Enter a valid Date/Time.";
 	
+	/**
+	 * Gets the only one child required.
+	 *
+	 * @return the only one child required
+	 */
 	public String getONLY_ONE_CHILD_REQUIRED() {
 		return ONLY_ONE_CHILD_REQUIRED;
 	}
@@ -2617,242 +2703,555 @@ public class MessageDelegate {
 		return COMPARISON_DILOAG_BOX_UNIT_ERROR_DISPLAY;
 	}
 	
+	/**
+	 * Gets the successful saved cql gen info.
+	 *
+	 * @return the successful saved cql gen info
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_GEN_INFO() {
 		return SUCCESSFUL_SAVED_CQL_GEN_INFO;
 	}
 	
+	/**
+	 * Gets the successful saved cql definition.
+	 *
+	 * @return the successful saved cql definition
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_DEFINITION() {
 		return SUCCESSFUL_SAVED_CQL_DEFINITION;
 	}
 	
+	/**
+	 * Gets the successful saved cql parameter.
+	 *
+	 * @return the successful saved cql parameter
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_PARAMETER() {
 		return SUCCESSFUL_SAVED_CQL_PARAMETER;
 	}
 	
+	/**
+	 * Gets the error save cql definition.
+	 *
+	 * @return the error save cql definition
+	 */
 	public String getERROR_SAVE_CQL_DEFINITION() {
 		return ERROR_SAVE_CQL_DEFINITION;
 	}
 	
+	/**
+	 * Gets the error save cql parameter.
+	 *
+	 * @return the error save cql parameter
+	 */
 	public String getERROR_SAVE_CQL_PARAMETER() {
 		return ERROR_SAVE_CQL_PARAMETER;
 	}
 	
+	/**
+	 * Gets the error duplicate identifier name.
+	 *
+	 * @return the error duplicate identifier name
+	 */
 	public String getERROR_DUPLICATE_IDENTIFIER_NAME() {
 		return ERROR_DUPLICATE_IDENTIFIER_NAME;
 	}
 	
+	/**
+	 * Gets the sucess definition modify.
+	 *
+	 * @return the sucess definition modify
+	 */
 	public String getSUCESS_DEFINITION_MODIFY() {
 		return SUCESS_DEFINITION_MODIFY;
 	}
 	
+	/**
+	 * Gets the sucess parameter modify.
+	 *
+	 * @return the sucess parameter modify
+	 */
 	public String getSUCESS_PARAMETER_MODIFY() {
 		return SUCESS_PARAMETER_MODIFY;
 	}
+	
+	/**
+	 * Gets the successful saved cql functions.
+	 *
+	 * @return the successful saved cql functions
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS() {
 		return SUCCESSFUL_SAVED_CQL_FUNCTIONS;
 	}
 	
+	/**
+	 * Gets the error save cql function.
+	 *
+	 * @return the error save cql function
+	 */
 	public String getERROR_SAVE_CQL_FUNCTION() {
 		return ERROR_SAVE_CQL_FUNCTION;
 	}
 	
+	/**
+	 * Gets the sucess function modify.
+	 *
+	 * @return the sucess function modify
+	 */
 	public String getSUCESS_FUNCTION_MODIFY() {
 		return SUCESS_FUNCTION_MODIFY;
 	}
 	
+	/**
+	 * Gets the error parameter name no special char.
+	 *
+	 * @return the error parameter name no special char
+	 */
 	public String getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_PARAMETER_NAME_NO_SPECIAL_CHAR;
 	}
 	
+	/**
+	 * Gets the error definition name no special char.
+	 *
+	 * @return the error definition name no special char
+	 */
 	public String getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_DEFINITION_NAME_NO_SPECIAL_CHAR;
 	}
 	
+	/**
+	 * Gets the error function name no special char.
+	 *
+	 * @return the error function name no special char
+	 */
 	public String getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_FUNCTION_NAME_NO_SPECIAL_CHAR;
 	}
 	
+	/**
+	 * Gets the successful saved cql definition with errors.
+	 *
+	 * @return the successful saved cql definition with errors
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS() {
 		return SUCCESSFUL_SAVED_CQL_DEFINITION_WITH_ERRORS;
 	}
 
+	/**
+	 * Gets the successful saved cql functions with errors.
+	 *
+	 * @return the successful saved cql functions with errors
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS() {
 		return SUCCESSFUL_SAVED_CQL_FUNCTIONS_WITH_ERRORS;
 	}
 
+	/**
+	 * Gets the successful saved cql parameter with errors.
+	 *
+	 * @return the successful saved cql parameter with errors
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS() {
 		return SUCCESSFUL_SAVED_CQL_PARAMETER_WITH_ERRORS;
 	}
 	
+	/**
+	 * Gets the sucess definition modify with errors.
+	 *
+	 * @return the sucess definition modify with errors
+	 */
 	public String getSUCESS_DEFINITION_MODIFY_WITH_ERRORS() {
 		return SUCESS_DEFINITION_MODIFY_WITH_ERRORS;
 	}
 
+	/**
+	 * Gets the sucess parameter modify with errors.
+	 *
+	 * @return the sucess parameter modify with errors
+	 */
 	public String getSUCESS_PARAMETER_MODIFY_WITH_ERRORS() {
 		return SUCESS_PARAMETER_MODIFY_WITH_ERRORS;
 	}
 
+	/**
+	 * Gets the sucess function modify with errors.
+	 *
+	 * @return the sucess function modify with errors
+	 */
 	public String getSUCESS_FUNCTION_MODIFY_WITH_ERRORS() {
 		return SUCESS_FUNCTION_MODIFY_WITH_ERRORS;
 	}
 
+	/**
+	 * Gets the invalid logic measure packager.
+	 *
+	 * @return the invalid logic measure packager
+	 */
 	public String getINVALID_LOGIC_MEASURE_PACKAGER() {
 		return INVALID_LOGIC_MEASURE_PACKAGER;
 	}
 	
+	/**
+	 * Gets the delete warning message.
+	 *
+	 * @return the delete warning message
+	 */
 	public String getDELETE_WARNING_MESSAGE() {
 		return DELETE_WARNING_MESSAGE; 
 	}
 
+	/**
+	 * Gets the view cql error message.
+	 *
+	 * @return the view cql error message
+	 */
 	public String getVIEW_CQL_ERROR_MESSAGE() {
 		return VIEW_CQL_ERROR_MESSAGE;
 	}
 
+	/**
+	 * Gets the view cql no errors message.
+	 *
+	 * @return the view cql no errors message
+	 */
 	public String getVIEW_CQL_NO_ERRORS_MESSAGE() {
 		return VIEW_CQL_NO_ERRORS_MESSAGE;
 	}
 
+	/**
+	 * Gets the delete confirmation parameter.
+	 *
+	 * @return the delete confirmation parameter
+	 */
 	public String getDELETE_CONFIRMATION_PARAMETER() {
 		return DELETE_CONFIRMATION_PARAMETER;
 	}
 
+	/**
+	 * Gets the delete confirmation definition.
+	 *
+	 * @return the delete confirmation definition
+	 */
 	public String getDELETE_CONFIRMATION_DEFINITION() {
 		return DELETE_CONFIRMATION_DEFINITION;
 	}
 
+	/**
+	 * Gets the delete confirmation function.
+	 *
+	 * @return the delete confirmation function
+	 */
 	public String getDELETE_CONFIRMATION_FUNCTION() {
 		return DELETE_CONFIRMATION_FUNCTION;
 	}
 	
+	/**
+	 * Gets the delete confirmation include.
+	 *
+	 * @return the delete confirmation include
+	 */
 	public String getDELETE_CONFIRMATION_INCLUDE() {
 		return DELETE_CONFIRMATION_INCLUDE;
 	}
 
+	/**
+	 * Gets the valueset success message.
+	 *
+	 * @param codeListName the code list name
+	 * @return the valueset success message
+	 */
 	public String getValuesetSuccessMessage(String codeListName) {
 		return "Value set " + codeListName + " has been applied successfully.";
 	}
 
+	/**
+	 * Gets the error include alias name no special char.
+	 *
+	 * @return the error include alias name no special char
+	 */
 	public String getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR() {
 		return ERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR;
 	}
 
+	/**
+	 * Gets the successful saved cql include library.
+	 *
+	 * @return the successful saved cql include library
+	 */
 	public String getSUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY() {
 		return SUCCESSFUL_SAVED_CQL_INCLUDE_LIBRARY;
 	}
 
+	/**
+	 * Gets the include library success message.
+	 *
+	 * @param aliasName the alias name
+	 * @return the include library success message
+	 */
 	public String getIncludeLibrarySuccessMessage(String aliasName) {
 		return " Library " + aliasName + " successfully included.";
 	}
 
+	/**
+	 * Gets the save include library valiation error.
+	 *
+	 * @return the save include library valiation error
+	 */
 	public String getSAVE_INCLUDE_LIBRARY_VALIATION_ERROR() {
 		return SAVE_INCLUDE_LIBRARY_VALIATION_ERROR;
 	}
 
+	/**
+	 * Gets the no includes.
+	 *
+	 * @return the no includes
+	 */
 	public  String getNoIncludes() {
 		return NO_INCLUDES;
 	}
 
+	/**
+	 * Gets the library name required.
+	 *
+	 * @return the library name required
+	 */
 	public String getLibraryNameRequired() {
 		return LIBRARY_NAME_REQUIRED;
 	}
 
+	/**
+	 * Gets the cql stand alone library name error.
+	 *
+	 * @return the cql stand alone library name error
+	 */
 	public String getCqlStandAloneLibraryNameError() {
 		return CQL_STAND_ALONE_LIBRARY_NAME_ERROR;
 	}
 
+	/**
+	 * Gets the no librarues.
+	 *
+	 * @return the no librarues
+	 */
 	public String getNoLibrarues() {
 		return NO_LIBRARUES;
 	}
 
+	/**
+	 * Gets the error library version.
+	 *
+	 * @return the error library version
+	 */
 	public String getERROR_LIBRARY_VERSION() {
 		return ERROR_LIBRARY_VERSION;
 	}
 
+	/**
+	 * Gets the modify cql library name.
+	 *
+	 * @return the modify cql library name
+	 */
 	public String getMODIFY_CQL_LIBRARY_NAME() {
 		return MODIFY_CQL_LIBRARY_NAME;
 	}
 
+	/**
+	 * Gets the error library draft.
+	 *
+	 * @return the error library draft
+	 */
 	public String getERROR_LIBRARY_DRAFT() {
 		return ERROR_LIBRARY_DRAFT;
 	}
 
+	/**
+	 * Gets the cql limit warning message.
+	 *
+	 * @return the cql limit warning message
+	 */
 	public String getCqlLimitWarningMessage() {
 		return CQL_LIBRARY_LIMIT_WARNING;
 	}
 
+	/**
+	 * Gets the no users returned.
+	 *
+	 * @return the no users returned
+	 */
 	public static String getNoUsersReturned() {
 		return NO_USERS_RETURNED;
 	}
 
+	/**
+	 * Gets the no version created.
+	 *
+	 * @return the no version created
+	 */
 	public String getNoVersionCreated() {
 		return NO_VERSION_CREATED;
 	}
 
+	/**
+	 * Gets the warning bad data type combination.
+	 *
+	 * @return the warning bad data type combination
+	 */
 	public String getWarningBadDataTypeCombination() {
 		return WARNING_BAD_DATA_TYPE_COMBINATION;
 	}
 
+	/**
+	 * Gets the view cql error message bad valueset datatype.
+	 *
+	 * @return the view cql error message bad valueset datatype
+	 */
 	public String getVIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE() {
 		return VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE;
 	}
 
+	/**
+	 * Gets the error select attribute name.
+	 *
+	 * @return the error select attribute name
+	 */
 	public String getERROR_SELECT_ATTRIBUTE_NAME() {
 		return ERROR_SELECT_ATTRIBUTE_NAME;
 	}
 
+	/**
+	 * Gets the error select item name.
+	 *
+	 * @return the error select item name
+	 */
 	public String getERROR_SELECT_ITEM_NAME() {
 		return ERROR_SELECT_ITEM_NAME;
 	}
 
+	/**
+	 * Gets the error select item type.
+	 *
+	 * @return the error select item type
+	 */
 	public String getERROR_SELECT_ITEM_TYPE() {
 		return ERROR_SELECT_ITEM_TYPE;
 	}
 
+	/**
+	 * Gets the error select item name or data type.
+	 *
+	 * @return the error select item name or data type
+	 */
 	public String getERROR_SELECT_ITEM_NAME_OR_DATA_TYPE() {
 		return ERROR_SELECT_ITEM_NAME_OR_DATA_TYPE;
 	}
 
+	/**
+	 * Gets the error invalid code data type.
+	 *
+	 * @return the error invalid code data type
+	 */
 	public String getERROR_INVALID_CODE_DATA_TYPE() {
 		return ERROR_INVALID_CODE_DATA_TYPE;
 	}
 
+	/**
+	 * Gets the error invalid quantity.
+	 *
+	 * @return the error invalid quantity
+	 */
 	public String getERROR_INVALID_QUANTITY() {
 		return ERROR_INVALID_QUANTITY;
 	}
 
+	/**
+	 * Gets the error invalid date time quantity.
+	 *
+	 * @return the error invalid date time quantity
+	 */
 	public String getERROR_INVALID_DATE_TIME_QUANTITY() {
 		return ERROR_INVALID_DATE_TIME_QUANTITY;
 	}
 
+	/**
+	 * Gets the error invalid mode details.
+	 *
+	 * @return the error invalid mode details
+	 */
 	public String getERROR_INVALID_MODE_DETAILS() {
 		return ERROR_INVALID_MODE_DETAILS;
 	}
 
+	/**
+	 * Gets the error select attribute to insert.
+	 *
+	 * @return the error select attribute to insert
+	 */
 	public String getERROR_SELECT_ATTRIBUTE_TO_INSERT() {
 		return ERROR_SELECT_ATTRIBUTE_TO_INSERT;
 	}
 
+	/**
+	 * Gets the error enter date time and quantity.
+	 *
+	 * @return the error enter date time and quantity
+	 */
 	public String getERROR_ENTER_DATE_TIME_AND_QUANTITY() {
 		return ERROR_ENTER_DATE_TIME_AND_QUANTITY;
 	}
 
+	/**
+	 * Gets the error invalid date time.
+	 *
+	 * @return the error invalid date time
+	 */
 	public String getERROR_INVALID_DATE_TIME() {
 		return ERROR_INVALID_DATE_TIME;
 	}
 
+	/**
+	 * Gets the cql function argument name error.
+	 *
+	 * @return the cql function argument name error
+	 */
 	public String getCqlFunctionArgumentNameError() {
 		return CQL_FUNCTION_ARGUMENT_NAME_ERROR;
 	}
 
+	/**
+	 * Gets the transfer checkbox error cql library.
+	 *
+	 * @return the transfer checkbox error cql library
+	 */
 	public String getTRANSFER_CHECKBOX_ERROR_CQL_LIBRARY() {
 		return TRANSFER_CHECKBOX_ERROR_CQL_LIBRARY;
 	}
 	
+	/**
+	 * Gets the code success message.
+	 *
+	 * @param codeName the code name
+	 * @return the code success message
+	 */
 	public String getCodeSuccessMessage(String codeName) {
 		return "Code "+ codeName + " has been applied successfully.";
 	}
 
+	/**
+	 * Gets the umls code identifier required.
+	 *
+	 * @return the umls code identifier required
+	 */
 	public String getUMLS_CODE_IDENTIFIER_REQUIRED() {
 		return UMLS_CODE_IDENTIFIER_REQUIRED;
+	}
+
+	/**
+	 * Gets the umls invalid code identifier.
+	 *
+	 * @return the umls invalid code identifier
+	 */
+	public String getUMLS_INVALID_CODE_IDENTIFIER() {
+		return UMLS_INVALID_CODE_IDENTIFIER;
 	}
 }

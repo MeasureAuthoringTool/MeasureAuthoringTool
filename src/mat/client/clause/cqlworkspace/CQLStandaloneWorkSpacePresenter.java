@@ -75,6 +75,10 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CQLStandaloneWorkSpacePresenter.
+ */
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	/** The panel. */
@@ -89,6 +93,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	/** The is measure details loaded. */
 	private boolean isCQLWorkSpaceLoaded = false;
 
+	/** The current section. */
 	private String currentSection = "general";
 	/** The next clicked menu. */
 	private String nextSection = "general";
@@ -96,8 +101,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	/** The applied QDM list. */
 	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
 
+	/** The validator. */
 	CQLModelValidator validator = new CQLModelValidator();
 
+	/** The cql library name. */
 	private String cqlLibraryName;
 
 	/** The exp profile to all qdm. */
@@ -122,6 +129,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 
+	/** The cur ace editor. */
 	private AceEditor curAceEditor;
 
 	/** The vsacapi service. */
@@ -133,6 +141,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	/** The current mat value set. */
 	private MatValueSet currentMatValueSet;
 	
+	/** The applied code table list. */
 	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
 
 	/**
@@ -173,105 +182,315 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		 */
 		void buildView();
 
+		/**
+		 * Gets the clicked menu.
+		 *
+		 * @return the clicked menu
+		 */
 		String getClickedMenu();
 
+		/**
+		 * Sets the clicked menu.
+		 *
+		 * @param clickedMenu the new clicked menu
+		 */
 		void setClickedMenu(String clickedMenu);
 
+		/**
+		 * Gets the next clicked menu.
+		 *
+		 * @return the next clicked menu
+		 */
 		String getNextClickedMenu();
 
+		/**
+		 * Sets the next clicked menu.
+		 *
+		 * @param nextClickedMenu the new next clicked menu
+		 */
 		void setNextClickedMenu(String nextClickedMenu);
 
+		/**
+		 * Gets the cql left nav bar panel view.
+		 *
+		 * @return the cql left nav bar panel view
+		 */
 		CQLLeftNavBarPanelView getCqlLeftNavBarPanelView();
 
+		/**
+		 * Reset message display.
+		 */
 		void resetMessageDisplay();
 
+		/**
+		 * Hide ace editor auto complete pop up.
+		 */
 		void hideAceEditorAutoCompletePopUp();
 
+		/**
+		 * Gets the CQL parameters view.
+		 *
+		 * @return the CQL parameters view
+		 */
 		CQLParametersView getCQLParametersView();
 
+		/**
+		 * Gets the CQL definitions view.
+		 *
+		 * @return the CQL definitions view
+		 */
 		CQlDefinitionsView getCQLDefinitionsView();
 
+		/**
+		 * Gets the CQL functions view.
+		 *
+		 * @return the CQL functions view
+		 */
 		CQLFunctionsView getCQLFunctionsView();
 
+		/**
+		 * Gets the cql include library view.
+		 *
+		 * @return the cql include library view
+		 */
 		CQLIncludeLibraryView getCqlIncludeLibraryView();
 
+		/**
+		 * Builds the CQL file view.
+		 */
 		void buildCQLFileView();
 
+		/**
+		 * Gets the cql ace editor.
+		 *
+		 * @return the cql ace editor
+		 */
 		AceEditor getCqlAceEditor();
 
+		/**
+		 * Builds the general information.
+		 */
 		void buildGeneralInformation();
 
+		/**
+		 * Gets the cql general information view.
+		 *
+		 * @return the cql general information view
+		 */
 		CQLGeneralInformationView getCqlGeneralInformationView();
 
+		/**
+		 * Gets the include view.
+		 *
+		 * @return the include view
+		 */
 		CQLIncludeLibraryView getIncludeView();
 
+		/**
+		 * Gets the alias name txt area.
+		 *
+		 * @return the alias name txt area
+		 */
 		TextBox getAliasNameTxtArea();
 
+		/**
+		 * Gets the view CQL editor.
+		 *
+		 * @return the view CQL editor
+		 */
 		AceEditor getViewCQLEditor();
 
+		/**
+		 * Gets the owner name text box.
+		 *
+		 * @return the owner name text box
+		 */
 		TextBox getOwnerNameTextBox();
 
+		/**
+		 * Builds the includes view.
+		 */
 		void buildIncludesView();
 
+		/**
+		 * Reset all.
+		 */
 		void resetAll();
 
+		/**
+		 * Builds the parameter library view.
+		 */
 		void buildParameterLibraryView();
 
+		/**
+		 * Builds the definition library view.
+		 */
 		void buildDefinitionLibraryView();
 
+		/**
+		 * Builds the function library view.
+		 */
 		void buildFunctionLibraryView();
 
+		/**
+		 * Creates the add argument view for functions.
+		 *
+		 * @param argumentList the argument list
+		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 
+		/**
+		 * Gets the parameter button bar.
+		 *
+		 * @return the parameter button bar
+		 */
 		CQLButtonToolBar getParameterButtonBar();
 
+		/**
+		 * Gets the define button bar.
+		 *
+		 * @return the define button bar
+		 */
 		CQLButtonToolBar getDefineButtonBar();
 
+		/**
+		 * Gets the function button bar.
+		 *
+		 * @return the function button bar
+		 */
 		CQLButtonToolBar getFunctionButtonBar();
 
 		/* void buildInfoPanel(Widget sourceWidget); */
 
+		/**
+		 * Gets the define name txt area.
+		 *
+		 * @return the define name txt area
+		 */
 		TextBox getDefineNameTxtArea();
 
+		/**
+		 * Gets the define ace editor.
+		 *
+		 * @return the define ace editor
+		 */
 		AceEditor getDefineAceEditor();
 
+		/**
+		 * Gets the context define PAT radio btn.
+		 *
+		 * @return the context define PAT radio btn
+		 */
 		InlineRadio getContextDefinePATRadioBtn();
 
+		/**
+		 * Gets the context define POP radio btn.
+		 *
+		 * @return the context define POP radio btn
+		 */
 		InlineRadio getContextDefinePOPRadioBtn();
 
+		/**
+		 * Gets the func name txt area.
+		 *
+		 * @return the func name txt area
+		 */
 		TextBox getFuncNameTxtArea();
 
+		/**
+		 * Gets the function body ace editor.
+		 *
+		 * @return the function body ace editor
+		 */
 		AceEditor getFunctionBodyAceEditor();
 
+		/**
+		 * Gets the context func PAT radio btn.
+		 *
+		 * @return the context func PAT radio btn
+		 */
 		InlineRadio getContextFuncPATRadioBtn();
 
+		/**
+		 * Gets the context func POP radio btn.
+		 *
+		 * @return the context func POP radio btn
+		 */
 		InlineRadio getContextFuncPOPRadioBtn();
 
+		/**
+		 * Gets the function argument list.
+		 *
+		 * @return the function argument list
+		 */
 		List<CQLFunctionArgument> getFunctionArgumentList();
 
+		/**
+		 * Gets the parameter name txt area.
+		 *
+		 * @return the parameter name txt area
+		 */
 		TextBox getParameterNameTxtArea();
 
+		/**
+		 * Gets the parameter ace editor.
+		 *
+		 * @return the parameter ace editor
+		 */
 		AceEditor getParameterAceEditor();
 
+		/**
+		 * Gets the function arg name map.
+		 *
+		 * @return the function arg name map
+		 */
 		Map<String, CQLFunctionArgument> getFunctionArgNameMap();
 
+		/**
+		 * Creates the add argument view for functions.
+		 *
+		 * @param argumentList the argument list
+		 * @param isEditable the is editable
+		 */
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList, boolean isEditable);
 
+		/**
+		 * Gets the value set view.
+		 *
+		 * @return the value set view
+		 */
 		CQLAppliedValueSetView getValueSetView();
 		
+		/**
+		 * Gets the codes view.
+		 *
+		 * @return the codes view
+		 */
 		CQLCodesView getCodesView();
 
+		/**
+		 * Builds the applied QDM.
+		 */
 		void buildAppliedQDM();
 
+		/**
+		 * Builds the codes.
+		 */
 		void buildCodes();
 
+		/**
+		 * Gets the locked button V panel.
+		 *
+		 * @return the locked button V panel
+		 */
 		HorizontalPanel getLockedButtonVPanel();
 
 	}
 
 	/**
-	 * Instantiates a new CQL presenter
+	 * Instantiates a new CQL presenter.
 	 *
+	 * @param srchDisplay the srch display
 	 */
 	public CQLStandaloneWorkSpacePresenter(final ViewDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
@@ -279,6 +498,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		addEventHandlers();
 	}
 
+	/**
+	 * Adds the event handlers.
+	 */
 	private void addEventHandlers() {
 		MatContext.get().getEventBus().addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
 
@@ -395,6 +617,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getSaveButton().setEnabled(isUserDefined);
 	}
 
+	/**
+	 * Gets the exp profile value.
+	 *
+	 * @return the exp profile value
+	 */
 	private String getExpProfileValue() {
 		int selectedindex = searchDisplay.getValueSetView().getVSACExpansionProfileListBox().getSelectedIndex();
 		String result = searchDisplay.getValueSetView().getVSACExpansionProfileListBox().getValue(selectedindex);
@@ -539,6 +766,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Adds the parameter event handlers.
+	 */
 	private void addParameterEventHandlers() {
 
 		/*
@@ -716,6 +946,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	/**
+	 * Adds the new parameter.
+	 */
 	private void addNewParameter() {
 
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
@@ -743,6 +977,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 	}
+	
+	/**
+	 * Adds the define event handlers.
+	 */
 	private void addDefineEventHandlers() {
 		searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox()
 		.addDoubleClickHandler(new DoubleClickHandler() {
@@ -911,6 +1149,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		});
 	}
 	
+	/**
+	 * Adds the new definition.
+	 */
 	private void addNewDefinition() {
 
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
@@ -946,6 +1187,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
 		
 	}
+	
+	/**
+	 * Adds the function event handlers.
+	 */
 	private void addFunctionEventHandlers() {
 
 		searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
@@ -1171,6 +1416,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	/**
+	 * Adds the new function.
+	 */
 	private void addNewFunction() {
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
 		searchDisplay.getCQLFunctionsView().getFunctionArgumentList().clear();
@@ -1196,6 +1445,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 	}
+	
+	/**
+	 * Adds the warning alert handlers.
+	 */
 	private void addWarningAlertHandlers() {
 
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationYesButton().addClickHandler(new ClickHandler() {
@@ -1236,6 +1489,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Adds the general info event handlers.
+	 */
 	private void addGeneralInfoEventHandlers() {
 
 		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(new ClickHandler() {
@@ -1319,6 +1575,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Adds the event handlers on context radio buttons.
+	 */
 	private void addEventHandlersOnContextRadioButtons() {
 		searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn()
 				.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -1379,6 +1638,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				});
 	}
 
+	/**
+	 * Adds the include CQL library handlers.
+	 */
 	private void addIncludeCQLLibraryHandlers() {
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
 				.addDoubleClickHandler(new DoubleClickHandler() {
@@ -2301,6 +2563,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 	}
 
+	/**
+	 * Builds the insert pop up.
+	 */
 	/*
 	 * Build Insert Pop up.
 	 */
@@ -2311,6 +2576,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 	}
 
+	/**
+	 * Delete definition.
+	 */
 	protected void deleteDefinition() {
 		searchDisplay.resetMessageDisplay();
 		final String definitionName = searchDisplay.getDefineNameTxtArea().getText();
@@ -2583,6 +2851,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Delete include.
+	 */
 	protected void deleteInclude() {
 
 		searchDisplay.resetMessageDisplay();
@@ -2680,6 +2951,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Save CQL general information.
+	 */
 	private void saveCQLGeneralInformation() {
 
 		String libraryId = MatContext.get().getCurrentCQLLibraryId();
@@ -2714,6 +2988,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Log recent activity.
+	 */
 	private void logRecentActivity() {
 		MatContext.get().getCQLLibraryService().isLibraryAvailableAndLogRecentActivity(
 				MatContext.get().getCurrentCQLLibraryId(), MatContext.get().getLoggedinUserId(),
@@ -2734,6 +3011,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Display CQL view.
+	 */
 	private void displayCQLView() {
 		panel.clear();
 
@@ -2745,6 +3025,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		panel.add(searchDisplay.asWidget());
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
@@ -2782,6 +3065,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		MatContext.get().getValuesets().clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 
@@ -2810,6 +3096,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Gets the CQL data.
+	 *
+	 * @return the CQL data
+	 */
 	private void getCQLData() {
 		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().getCQLData(MatContext.get().getCurrentCQLLibraryId(),
@@ -2948,6 +3239,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				});
 	}
 
+	/**
+	 * Adds the left nav event handler.
+	 */
 	private void addLeftNavEventHandler() {
 
 		searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().addClickHandler(new ClickHandler() {
@@ -3067,6 +3361,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Sets the expansion profile panel values.
+	 */
 	private void setExpansionProfilePanelValues() {
 		//if UMLS is not logged in
 		if (!MatContext.get().isUMLSLoggedIn()) {
@@ -3103,6 +3400,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	}
 	
+	/**
+	 * Gets the used artifacts.
+	 *
+	 * @return the used artifacts
+	 */
 	private void getUsedArtifacts() {
 		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
         MatContext.get().getLibraryService().getUsedCqlArtifacts(
@@ -3415,6 +3717,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	}
 	
 	
+/**
+ * Adds the code search panel handlers.
+ */
 private void addCodeSearchPanelHandlers() {
 		
 		
@@ -3495,6 +3800,9 @@ private void addCodeSearchPanelHandlers() {
 		});
 	}
 	
+	/**
+	 * Adds the new codes.
+	 */
 	private void addNewCodes() {
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		MatCodeTransferObject transferObject = new MatCodeTransferObject();
@@ -3543,6 +3851,11 @@ private void addCodeSearchPanelHandlers() {
 		});
 	}
 	
+	/**
+	 * Gets the applied code list.
+	 *
+	 * @return the applied code list
+	 */
 	private void getAppliedCodeList() {
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		if ((cqlLibraryId != null) && !cqlLibraryId.equals("")) {
@@ -3765,6 +4078,9 @@ private void addCodeSearchPanelHandlers() {
 	}
 	
 	
+	/**
+	 * Search CQL codes in vsac.
+	 */
 	private void searchCQLCodesInVsac() {
 
 		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue();
@@ -3775,15 +4091,34 @@ private void addCodeSearchPanelHandlers() {
 			return;
 		}
 		
-		// OID validation.
+		// Code Identifier validation.
 		if ((url == null) || url.trim().isEmpty()) {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED());
 			
 			return;
 		}
 		
-		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+		// Code Identifier validation to check Identifier starts with "CODE:"
+		if(!url.startsWith(CQLWorkSpaceConstants.CQL_CODE)){
+			searchDisplay.getCodesView().getSaveButton().setEnabled(false);
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
+			
+			return;
+		} else {
+			retrieveCodeReferences(url);
+		}
 		
+	}
+
+	
+	/**
+	 * Retrieve code references.
+	 *
+	 * @param url the url
+	 */
+	private void retrieveCodeReferences(String url){
+		
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 		
 		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
 
@@ -3813,9 +4148,7 @@ private void addCodeSearchPanelHandlers() {
 				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 			}
 		});
-		
 	}
-
 
 
 	/**
@@ -4350,6 +4683,9 @@ private void addCodeSearchPanelHandlers() {
 
 	}
 	
+	/**
+	 * Builds the applied QDM table.
+	 */
 	private void buildAppliedQDMTable() {
 		searchDisplay.buildAppliedQDM();
         setExpansionProfilePanelValues();
@@ -4609,6 +4945,11 @@ private void addCodeSearchPanelHandlers() {
 
 	}
 
+	/**
+	 * Unset active menu item.
+	 *
+	 * @param menuClickedBefore the menu clicked before
+	 */
 	private void unsetActiveMenuItem(String menuClickedBefore) {
 		if (!searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
 			searchDisplay.resetMessageDisplay();
@@ -4713,6 +5054,11 @@ private void addCodeSearchPanelHandlers() {
 
 	}
 
+	/**
+	 * Show searching busy.
+	 *
+	 * @param busy the busy
+	 */
 	public void showSearchingBusy(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -4849,10 +5195,6 @@ private void addCodeSearchPanelHandlers() {
 	/**
 	 * Gets the ace editor based on current section.
 	 *
-	 * @param searchDisplay
-	 *            the search display
-	 * @param currentSection
-	 *            the current section
 	 * @return the ace editor based on current section
 	 */
 	/*
@@ -5113,6 +5455,9 @@ private void addCodeSearchPanelHandlers() {
 		panel.add(emptyWidget);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		panel.setStyleName("contentPanel");

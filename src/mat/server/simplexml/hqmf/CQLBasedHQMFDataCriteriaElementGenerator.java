@@ -155,6 +155,9 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			NodeList qdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMNoAttribs);
 			generateCQLQDMNodeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmNoAttributeNodeList);
+			
+			CQLBasedHQMFDataCriteriaElementGeneratorForCodes cqlBasedHQMFDataCriteriaElementGeneratorForCodes = new CQLBasedHQMFDataCriteriaElementGeneratorForCodes();
+			cqlBasedHQMFDataCriteriaElementGeneratorForCodes.createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
 						
 //			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
 //			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
@@ -778,19 +781,40 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").
 					setNodeValue(UUIDUtilClient.uuid());
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
-					attributedToBeChangedInNode.item(0).getAttributes().
-					getNamedItem("valueSet").setNodeValue(qdmOidValue);
+					/*attributedToBeChangedInNode.item(0).getAttributes().
+					getNamedItem("valueSet").setNodeValue(qdmOidValue);*/
+					if (attributedToBeChangedInNode.item(0).getAttributes()
+							.getNamedItem("code") != null) {
+						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("code");
+					}
+
+					if (attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("codeSystem") != null) {
+						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("codeSystem");
+					}
+					
+					if (attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("codeSystemName") != null) {
+						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("codeSystemName");
+					}
+					
+					if (attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("codeSystemVersion") != null) {
+						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("codeSystemVersion");
+					}
+
+					if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
+						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
+					}
+					
+					Attr attrNodeValueSet = attributedToBeChangedInNode.item(0).getOwnerDocument()
+							.createAttribute("valueSet");
+					attrNodeValueSet.setNodeValue(qdmOidValue);
+					attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNodeValueSet);
 					String valueSetVersion = valueSetVersionStringValue(qdmNode);
 					
 					if (valueSetVersion!=null) {
 						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
 						attrNode.setNodeValue(valueSetVersion);
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNode);
-					} else {
-						if(attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("valueSetVersion") != null) {
-							attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
-						}
-					}
+					} 
 					
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("value").

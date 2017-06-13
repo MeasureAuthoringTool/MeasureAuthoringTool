@@ -57,8 +57,9 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	 * @param me
 	 *            the me
 	 * @return the HQMF xml string
+	 * @throws Exception 
 	 */
-	private String getHQMFXmlString(MeasureExport me) {
+	private String getHQMFXmlString(MeasureExport me) throws Exception {
 		getExtensionValueBasedOnVersion(me);
 		XmlProcessor dataCriteriaXMLProcessor = createDateCriteriaTemplate(me);
 		me.setHQMFXmlProcessor(dataCriteriaXMLProcessor);
@@ -135,8 +136,9 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	 * @param dataCriteriaXMLProcessor the data criteria xml processor
 	 * @param simpleXmlprocessor the simple xmlprocessor
 	 * @return the string
+	 * @throws Exception 
 	 */
-	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
+	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) throws Exception {
 		//XPath String for only QDM's.
 		//String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
 		//String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
@@ -157,7 +159,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 					qdmNoAttributeNodeList);
 			
 			CQLBasedHQMFDataCriteriaElementGeneratorForCodes cqlBasedHQMFDataCriteriaElementGeneratorForCodes = new CQLBasedHQMFDataCriteriaElementGeneratorForCodes();
-			cqlBasedHQMFDataCriteriaElementGeneratorForCodes.createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
+			cqlBasedHQMFDataCriteriaElementGeneratorForCodes.generate(me);
 						
 //			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
 //			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,

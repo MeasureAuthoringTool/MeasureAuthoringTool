@@ -40,10 +40,35 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 	public String generate(MeasureExport me) throws Exception {
 
 		String dataCriteria = "";
-		// dataCriteria = getHQMFXmlString(me);
+		 dataCriteria = getHQMFXmlString(me);
 		return dataCriteria;
 	}
 
+	
+	/**
+	 * Gets the HQMF xml string.
+	 * 
+	 * @param me
+	 *            the me
+	 * @return the HQMF xml string
+	 */
+	private String getHQMFXmlString(MeasureExport me) {
+		getExtensionValueBasedOnVersion(me);
+		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
+		//me.setHQMFXmlProcessor(dataCriteriaXMLProcessor);
+		
+		/*String simpleXMLStr = me.getSimpleXML();
+		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
+		me.setSimpleXMLProcessor(simpleXmlprocessor);*/
+		
+	//	prepHQMF(me);
+		
+		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor());
+	//	addDataCriteriaComment(dataCriteriaXMLProcessor);
+		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
+	}
+	
+	
 	private String getDataCriteriaExtValueBasedOnVersion(MeasureExport me) {
 		if (me != null) {
 			String releaseVersion = me.getMeasure().getReleaseVersion();
@@ -69,7 +94,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 	 *            the simple xmlprocessor
 	 * @return the string
 	 */
-	public void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor,
+	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor,
 			XmlProcessor simpleXmlprocessor) {
 
 		String xPathForDirectReferenceCodes = "/measure/elementLookUp/qdm[@datatype and @code ='true']";
@@ -227,7 +252,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 		idElem.setAttribute("extension", qdmLocalVariableName);
 		dataCriteriaElem.appendChild(idElem);
 
-		boolean appendEntryElem = false;
+		//boolean appendEntryElem = false;
 
 		String isAddCodeTag = templateNode.getAttributes().getNamedItem("addCodeTag").getNodeValue();
 		if ("true".equalsIgnoreCase(isAddCodeTag)) { // Add Code Element to
@@ -277,12 +302,12 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 				appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,
 						qdmNode);
 			}
-			appendEntryElem = true;
+			/*appendEntryElem = true;*/
 		}
-		if (appendEntryElem) {
+		/*if (appendEntryElem) {*/
 			dataCriteriaSectionElem.appendChild(entryElem);
 
-		}
+		//}
 
 	}
 

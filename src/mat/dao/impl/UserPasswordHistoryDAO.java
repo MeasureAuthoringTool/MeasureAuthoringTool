@@ -36,7 +36,7 @@ public class UserPasswordHistoryDAO extends GenericDAO<UserPasswordHistory, Stri
 	 */
 	@Override
 	public void addByUpdateUserPasswordHistory(User user) {
-		String userPasswordHistoryId = getOldPasswordHistoryIdByCreationDate();
+		String userPasswordHistoryId = getOldPasswordHistoryIdByCreationDate(user.getId());
 		Session session = getSessionFactory().openSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
@@ -62,10 +62,11 @@ public class UserPasswordHistoryDAO extends GenericDAO<UserPasswordHistory, Stri
 	 *
 	 * @return the old password history id by creation date
 	 */
-	private String getOldPasswordHistoryIdByCreationDate() {
+	private String getOldPasswordHistoryIdByCreationDate(String userId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(UserPasswordHistory.class);
 		criteria.addOrder(Order.asc("createdDate"));
+		criteria.add(Restrictions.eq("user.id", userId));
 		criteria.setProjection(Projections.property("id"));
 	    String id = (String)criteria.list().get(0);
 		return id;

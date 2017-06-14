@@ -3839,6 +3839,7 @@ private void addCodeSearchPanelHandlers() {
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Code "+ searchDisplay.getCodesView().getCodeInput().getText() +" already exists.");
 					}
 				}
+				getUsedCodes();
 			}
 			
 			@Override
@@ -4717,7 +4718,7 @@ private void addCodeSearchPanelHandlers() {
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_CODES;
-			searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+			//searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 			searchDisplay.buildCodes();
 			searchDisplay.getCodesView().buildCodesCellTable(
 					appliedCodeTableList,
@@ -4725,47 +4726,54 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
-			searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
-			
-			MatContext.get().getLibraryService().getUsedCqlArtifacts(
-					MatContext.get().getCurrentCQLLibraryId(),
-                    new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-                           @Override
-                           public void onFailure(Throwable caught) {
-                                  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-                                  searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
-                           }
-
-                           @Override
-                           public void onSuccess(GetUsedCQLArtifactsResult result) {
-                        	searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
-                           	// if there are errors, set the codes to not used.
-                           	if(!result.getCqlErrors().isEmpty()) {
-                           		for(CQLCode cqlCode : appliedCodeTableList){
-                                     cqlCode.setUsed(false);
-                           		}
-                           	}                           	
-                           	// otherwise, check if the valueset is in the used valusets list
-                           	else {
-                                  for(CQLCode cqlCode : appliedCodeTableList){
-                                         if (result.getUsedCQLcodes().contains(cqlCode.getCodeName())) {
-                                                cqlCode.setUsed(true);
-                                         } else{
-                                       	  cqlCode.setUsed(false);
-                                         }
-                                  }
-                           	}
-                           	       
-                           	if(searchDisplay.getCqlLeftNavBarPanelView().getAppliedCodeTableList().size() > 0) {
-                               	searchDisplay.getCodesView().getCelltable().redraw();
-                               	searchDisplay.getCodesView().getListDataProvider().refresh();
-                           	}
-                           }
-                           
-                    });
+			getUsedCodes();
 		}
 
+	}
+
+	/**
+	 * Method to find used codes for delete button state.
+	 */
+	private void getUsedCodes() {
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+		
+		MatContext.get().getLibraryService().getUsedCqlArtifacts(
+				MatContext.get().getCurrentCQLLibraryId(),
+		        new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+		               @Override
+		               public void onFailure(Throwable caught) {
+		                      Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		                      searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+		               }
+
+		               @Override
+		               public void onSuccess(GetUsedCQLArtifactsResult result) {
+		            	searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+		               	// if there are errors, set the codes to not used.
+		               	if(!result.getCqlErrors().isEmpty()) {
+		               		for(CQLCode cqlCode : appliedCodeTableList){
+		                         cqlCode.setUsed(false);
+		               		}
+		               	}                           	
+		               	// otherwise, check if the valueset is in the used valusets list
+		               	else {
+		                      for(CQLCode cqlCode : appliedCodeTableList){
+		                             if (result.getUsedCQLcodes().contains(cqlCode.getCodeName())) {
+		                                    cqlCode.setUsed(true);
+		                             } else{
+		                           	  cqlCode.setUsed(false);
+		                             }
+		                      }
+		               	}
+		               	       
+		               	if(searchDisplay.getCqlLeftNavBarPanelView().getAppliedCodeTableList().size() > 0) {
+		                   	searchDisplay.getCodesView().getCelltable().redraw();
+		                   	searchDisplay.getCodesView().getListDataProvider().refresh();
+		               	}
+		               }
+		               
+		        });
 	}
 
 	/**

@@ -3009,7 +3009,7 @@ public class CQLServiceImpl implements CQLService {
                            GetUsedCQLArtifactsResult artifactsResult = parsedResult.getUsedCQLArtifacts();
                            List<String> usedCodes = artifactsResult.getUsedCQLcodes();
                            for(CQLCode code : allCodes){
-                                  if(usedCodes.contains(code.getId())){
+                                  if(usedCodes.contains(code.getCodeName())){
                                          code.setUsed(true);
                                   }
                            }

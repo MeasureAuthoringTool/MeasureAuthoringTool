@@ -341,7 +341,10 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 				|| "Intervention, Not Recommended".equalsIgnoreCase(dataType));
 		if (isAddValueSetInCodeTrue) {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(CODE);
-			
+			Node valueTypeAttr = templateNode.getAttributes().getNamedItem("valueType");
+			if (valueTypeAttr != null) {
+				codeElem.setAttribute(XSI_TYPE, valueTypeAttr.getNodeValue());
+			}
 			String codeOID = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 			String codeSystemOID = qdmNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
 			String codeSystemName = qdmNode.getAttributes().getNamedItem("taxonomy").getNodeValue();

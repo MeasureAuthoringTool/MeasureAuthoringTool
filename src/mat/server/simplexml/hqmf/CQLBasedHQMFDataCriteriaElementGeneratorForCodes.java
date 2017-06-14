@@ -298,11 +298,12 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 
 			dataCriteriaElem.appendChild(valueElem);
 
-			if (templateNode.getAttributes().getNamedItem("includeSubTemplate") != null) {
-				appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,
-						qdmNode);
-			}
+			
 			/*appendEntryElem = true;*/
+		}
+		if (templateNode.getAttributes().getNamedItem("includeSubTemplate") != null) {
+			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,
+					qdmNode);
 		}
 		/*if (appendEntryElem) {*/
 			dataCriteriaSectionElem.appendChild(entryElem);

@@ -438,7 +438,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     }
 
     item.setWordWrap(false);
-    insertTabWidget(item, beforeIndex);
+    insertTabWidget(item, beforeIndex, text);
   }
 
   /**
@@ -458,7 +458,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param beforeIndex the index before which this tab will be inserted
    */
   public void insertTab(Widget widget, int beforeIndex) {
-    insertTabWidget(widget, beforeIndex);
+    insertTabWidget(widget, beforeIndex, null);
   }
 
   /**
@@ -674,14 +674,17 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param widget widget to be used in the new tab
    * @param beforeIndex the index before which this tab will be inserted
    */
-  protected void insertTabWidget(Widget widget, int beforeIndex) {
+  protected void insertTabWidget(Widget widget, int beforeIndex, String text) {
     checkInsertBeforeTabIndex(beforeIndex);
 
     ClickDelegatePanel delWidget = new ClickDelegatePanel(widget);
     delWidget.setStyleName(STYLENAME_DEFAULT);
-
+   
     // Add a11y role "tab"
     SimplePanel focusablePanel = delWidget.getFocusablePanel();
+    if(text != null){
+    	delWidget.getFocusablePanel().getElement().setAttribute("id", text);
+    }
     Accessibility.setRole(focusablePanel.getElement(), Accessibility.ROLE_TAB);
 
     panel.insert(delWidget, beforeIndex + 1);

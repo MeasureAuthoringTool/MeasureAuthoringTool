@@ -17,6 +17,13 @@ public class CQLModelValidator {
 	private final RegExp regExp = RegExp.compile(REGEX_EXPRESSION);
 	/*private final RegExp regAliasExp = RegExp.compile(REGEX_ALIAS_EXPRESSION);*/
 	
+	/** The code regex expression. */
+	private final String CODE_REGEX_EXPRESSION = "^(CODE:/CodeSystem/)(.+)"
+			+ "(/Version/)(.+)(/Code/)(.+)(/Info)$";
+	
+	/** The code reg exp. */
+	private final RegExp codeRegExp = RegExp.compile(CODE_REGEX_EXPRESSION);
+	
 	/**
 	 * Validate for special character in CQL 
 	 * Identifier Names.
@@ -65,6 +72,17 @@ public class CQLModelValidator {
 		}
 
 		return bool;
+	}
+	
+	/**
+	 * Validate for code identifier.
+	 *
+	 * @param url the url
+	 * @return true, if successful
+	 */
+	public boolean validateForCodeIdentifier(String url){
+		boolean isValidCodeIdentifier = codeRegExp.test(url);
+		return !isValidCodeIdentifier;
 	}
 	
 }

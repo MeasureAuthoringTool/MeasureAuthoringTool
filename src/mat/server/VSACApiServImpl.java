@@ -37,6 +37,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
+import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 
 
@@ -861,8 +862,15 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final VsacApiResult getDirectReferenceCode (String url, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
-		
 		VsacApiResult result = new VsacApiResult();
+		CQLModelValidator validator = new CQLModelValidator();
+		
+		if(validator.validateForCodeIdentifier(url)){
+			result.setSuccess(false);
+			result.setFailureReason(result.INVALID_CODE_URL);
+			return result;
+		}  
+		
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
 		if (eightHourTicket != null) {
 			if ((url != null) && StringUtils.isNotEmpty(url) && StringUtils.isNotBlank(url)) {

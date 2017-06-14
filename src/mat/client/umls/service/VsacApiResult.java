@@ -31,6 +31,8 @@ public class VsacApiResult implements IsSerializable {
 	/** The Constant VSAC REQUEST TIMED OUT. */
 	public  final static int VSAC_REQUEST_TIMEOUT = 3;
 	
+	public  final static int INVALID_CODE_URL = 5;
+	
 	/** The failure reason. */
 	private int failureReason;
 	

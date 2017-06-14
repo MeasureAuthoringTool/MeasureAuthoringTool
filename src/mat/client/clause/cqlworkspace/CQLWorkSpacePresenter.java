@@ -4200,7 +4200,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		
 		//Code Identifier validation to check Identifier starts with "CODE:"
-		if(!url.startsWith(CQLWorkSpaceConstants.CQL_CODE)){
+		if(validator.validateForCodeIdentifier(url)){
 			searchDisplay.getCodesView().getSaveButton().setEnabled(false);
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
 
@@ -4243,9 +4243,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
 					
-				} else {
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				}
+			 } else if (result.getFailureReason() == 5) { 
+				 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
+				 
+			 } else {
+				 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+			 }
 				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 			}
 		});

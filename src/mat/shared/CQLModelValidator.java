@@ -19,7 +19,7 @@ public class CQLModelValidator {
 	
 	/** The code regex expression. */
 	private final String CODE_REGEX_EXPRESSION = "^(CODE:/CodeSystem/)([a-zA-Z]+)"
-			+ "(/Version/)([_A-Za-z0-9-\\.]+)(/Code/)([a-zA-Z0-9-]+)(/Info)$";
+			+ "(/Version/)([_A-Za-z0-9-\\.]+)(/Code/)([_A-Za-z0-9-\\.]+)(/Info)$";
 	
 	/** The code reg exp. */
 	private final RegExp codeRegExp = RegExp.compile(CODE_REGEX_EXPRESSION);

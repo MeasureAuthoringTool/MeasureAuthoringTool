@@ -93,10 +93,10 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 		
 		FormGroup buttonFormGroup = new FormGroup();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		submitButton.setType(ButtonType.SUCCESS);
+		submitButton.setType(ButtonType.PRIMARY);
 		submitButton.setTitle("Submit");
 		
-		resetButton.setType(ButtonType.PRIMARY);
+		resetButton.setType(ButtonType.DANGER);
 		resetButton.setTitle("Cancel");
 		buttonToolBar.add(submitButton);
 		buttonToolBar.add(resetButton);

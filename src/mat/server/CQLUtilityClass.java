@@ -174,7 +174,12 @@ public class CQLUtilityClass {
 						+ "\""+parameter.getParameterName()+ "\"";
 				
 				
-				
+					String commentString = parameter.getCommentString();
+					if(commentString != null && commentString.trim().length() > 0){
+						commentString = "/*" + commentString + "*/" + "\n";
+						cqlStr.append(commentString);
+					}
+					
 					cqlStr = cqlStr.append(param + " "
 							+ parameter.getParameterLogic());
 					cqlStr = cqlStr.append("\n\n");

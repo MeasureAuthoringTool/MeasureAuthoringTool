@@ -827,8 +827,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 * Clear messages.
 	 */
 	private void clearMessages() {
-		successMessageDisplay.clear();
-		errorMessages.clear();
+		successMessageDisplay.clearAlert();
+		errorMessages.clearAlert();
 	}
 	
 	/**

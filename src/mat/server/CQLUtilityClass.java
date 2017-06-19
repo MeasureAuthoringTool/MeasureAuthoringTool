@@ -7,35 +7,26 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.xml.xpath.XPathExpressionException;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLCodeSystem;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.util.ResourceLoader;
+import mat.server.util.XmlProcessor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
-import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
-
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
-import mat.model.cql.CQLCode;
-import mat.model.cql.CQLCodeSystem;
-import mat.model.cql.CQLCodeSystemWrapper;
-import mat.model.cql.CQLCodeWrapper;
-import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLDefinitionsWrapper;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
-import mat.model.cql.CQLFunctionsWrapper;
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLIncludeLibraryWrapper;
-import mat.model.cql.CQLModel;
-import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLParametersWrapper;
-import mat.model.cql.CQLQualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.server.util.ResourceLoader;
-import mat.server.util.XmlProcessor;
 
 public class CQLUtilityClass {
 	
@@ -310,8 +301,14 @@ public class CQLUtilityClass {
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
 		for (CQLDefinition definition : definitionList) {
 			
+				String definitionComment = definition.getCommentString();
+				if(definitionComment != null && definitionComment.trim().length() > 0){
+					definitionComment = "/*" + definitionComment + "*/" + "\n";
+					cqlStr = cqlStr.append(definitionComment);
+				}
+				
 				String def = "define " + "\""+ definition.getDefinitionName() + "\"";
-			
+				
 				cqlStr = cqlStr.append(def + ": ");
 				cqlStr = cqlStr.append(definition.getDefinitionLogic());
 				cqlStr = cqlStr.append("\n\n");	
@@ -326,10 +323,17 @@ public class CQLUtilityClass {
 		}
 		
 		for (CQLFunctions function : functionsList) {
+			
+			String functionComment = function.getCommentString();
+			if(functionComment != null && functionComment.trim().length() > 0){
+				functionComment = "/*" + functionComment + "*/" + "\n";
+				cqlStr = cqlStr.append(functionComment);
+			}
+			
 				String func = "define function "
 						+ "\""+ function.getFunctionName() + "\"";
 			
-			
+				
 				cqlStr = cqlStr.append(func + "(");
 				if(function.getArgumentList()!=null) {
 				for (CQLFunctionArgument argument : function.getArgumentList()) {

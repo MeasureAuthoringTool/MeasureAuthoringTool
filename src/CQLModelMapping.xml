@@ -129,7 +129,11 @@
 					<field name="readOnly" type="java.lang.Boolean">
 						<bind-xml name="readOnly" node="attribute" />
 					</field>
-
+					
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
+					</field>
+					
 					<field name="parameterLogic" type="java.lang.String">
 						<bind-xml name="logic" node="element" />
 					</field>
@@ -168,6 +172,10 @@
 					<field name="popDefinition" type="java.lang.Boolean">
 						<bind-xml name="popDefinition" node="attribute" />
 					</field>
+					
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
+					</field>
 
 				</class>
 			</bind-xml>
@@ -187,6 +195,9 @@
 					</field>
 					<field name="functionLogic" type="java.lang.String">
 						<bind-xml name="logic" node="element" />
+					</field>
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
 					</field>
 					<field name="context" type="java.lang.String">
 						<bind-xml name="context" node="attribute" />

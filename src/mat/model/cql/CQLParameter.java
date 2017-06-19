@@ -10,6 +10,8 @@ public class CQLParameter implements IsSerializable{
 	private String parameterLogic;
 	private String id;
 	private boolean readOnly;
+	private String commentString = "";
+	
 	
 	public String getParameterName() {
 		return parameterName.trim();
@@ -46,6 +48,12 @@ public class CQLParameter implements IsSerializable{
 	}
 	public void setReadOnly(boolean isReadOnly) {
 		this.readOnly = isReadOnly;
+	}
+	public String getCommentString() {
+		return commentString;
+	}
+	public void setCommentString(String commentString) {
+		this.commentString = commentString;
 	}
 	
 	

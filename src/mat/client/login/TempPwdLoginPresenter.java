@@ -3,6 +3,9 @@ package mat.client.login;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.gwtbootstrap3.client.ui.Input;
+
 import mat.client.Mat;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
@@ -11,6 +14,7 @@ import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.model.SecurityQuestions;
@@ -105,28 +109,28 @@ public class TempPwdLoginPresenter {
 		 * 
 		 * @return the password
 		 */
-		public HasValue<String> getPassword();
+		public Input getPassword();
 		
 		/**
 		 * Gets the confirm password.
 		 * 
 		 * @return the confirm password
 		 */
-		public HasValue<String> getConfirmPassword();
+		public Input getConfirmPassword();
 		
 		/**
 		 * Gets the password error message display.
 		 * 
 		 * @return the password error message display
 		 */
-		public ErrorMessageDisplayInterface getPasswordErrorMessageDisplay();
+		public MessageAlert getPasswordErrorMessageDisplay();
 		
 		/**
 		 * Gets the security error message display.
 		 * 
 		 * @return the security error message display
 		 */
-		public ErrorMessageDisplayInterface getSecurityErrorMessageDisplay();
+		public MessageAlert getSecurityErrorMessageDisplay();
 		
 		/**
 		 * Adds the security question texts.
@@ -283,21 +287,21 @@ public class TempPwdLoginPresenter {
 				
 				PasswordVerifier verifier = null;
 				String markupRegExp = "<[^>]+>";
-				String noMarkupTextPwd = display.getPassword().getValue().trim().replaceAll(markupRegExp, "");
-				display.getPassword().setValue(noMarkupTextPwd);
+				String noMarkupTextPwd = display.getPassword().getText().trim().replaceAll(markupRegExp, "");
+				display.getPassword().setText(noMarkupTextPwd);
 				
-				String noMarkupTextConfirm = display.getConfirmPassword().getValue().trim().replaceAll(markupRegExp, "");
-				display.getConfirmPassword().setValue(noMarkupTextConfirm);
+				String noMarkupTextConfirm = display.getConfirmPassword().getText().trim().replaceAll(markupRegExp, "");
+				display.getConfirmPassword().setText(noMarkupTextConfirm);
 				verifier = new PasswordVerifier(
 						MatContext.get().getLoggedinLoginId(),
-						display.getPassword().getValue(),
-						display.getConfirmPassword().getValue());
+						display.getPassword().getText(),
+						display.getConfirmPassword().getText());
 				
 				
 				if(!verifier.isValid()) {
-					display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
+					display.getPasswordErrorMessageDisplay().createAlert(verifier.getMessages());
 				}else{
-					display.getPasswordErrorMessageDisplay().clear();
+					display.getPasswordErrorMessageDisplay().clearAlert();
 				}
 				SecurityQuestionsModel model = new SecurityQuestionsModel(display.getQuestion1Text().getValue(),
 						display.getAnswerText1(),
@@ -314,9 +318,9 @@ public class TempPwdLoginPresenter {
 								model.getQuestion3(),
 								model.getQuestion3Answer());
 				if(!sverifier.isValid()) {
-					display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
+					display.getSecurityErrorMessageDisplay().createAlert(sverifier.getMessages());
 				}else{
-					display.getSecurityErrorMessageDisplay().clear();
+					display.getSecurityErrorMessageDisplay().clearAlert();
 				}
 				
 				ValidateChangedPassword(verifier,sverifier);
@@ -343,12 +347,12 @@ public class TempPwdLoginPresenter {
 	 */
 	public void ValidateChangedPassword(final PasswordVerifier verifier,final SecurityQuestionVerifier sverifier){
 		
-		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(),
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getText(),
 				new AsyncCallback<HashMap<String,String>>(){
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getPasswordErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
 			
@@ -357,7 +361,7 @@ public class TempPwdLoginPresenter {
 				
 				String result = resultMap.get("result");
 				if(result.equals("SUCCESS")){
-					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+					display.getPasswordErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
 							.getIS_NOT_PREVIOUS_PASSWORD());
 				}
 				else{
@@ -380,7 +384,7 @@ public class TempPwdLoginPresenter {
 			MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<LoginResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
-					display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					display.getSecurityErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 				@Override
 				public void onSuccess(LoginResult result) {
@@ -389,17 +393,17 @@ public class TempPwdLoginPresenter {
 					}else {
 						switch(result.getFailureReason()) {
 							case LoginResult.SERVER_SIDE_VALIDATION_SECURITY_QUESTIONS:
-								display.getPasswordErrorMessageDisplay().setMessages(result.getMessages());
+								display.getPasswordErrorMessageDisplay().createAlert(result.getMessages());
 								break;
 							case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
-								display.getSecurityErrorMessageDisplay().setMessages(result.getMessages());
+								display.getSecurityErrorMessageDisplay().createAlert(result.getMessages());
 								break;
 							case LoginResult.DICTIONARY_EXCEPTION:
-								display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+								display.getPasswordErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
 										.getMustNotContainDictionaryWordMessage());
 								break;
 							default:
-								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+								display.getSecurityErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate()
 										.getUnknownErrorMessage(result.getFailureReason()));
 						}
 						
@@ -450,15 +454,13 @@ public class TempPwdLoginPresenter {
 	 * Reset.
 	 */
 	private void reset() {
-		display.getPasswordErrorMessageDisplay().clear();
-		display.getSecurityErrorMessageDisplay().clear();
-		display.getPassword().setValue("");
-		display.getConfirmPassword().setValue("");
+		display.getPasswordErrorMessageDisplay().clearAlert();
+		display.getSecurityErrorMessageDisplay().clearAlert();
+		display.getPassword().setText("");
+		display.getConfirmPassword().setText("");
 		display.getQuestion1Answer().setValue("");
 		display.getQuestion2Answer().setValue("");
 		display.getQuestion3Answer().setValue("");
-		display.getPasswordErrorMessageDisplay().clear();
-		display.getSecurityErrorMessageDisplay().clear();
 	}
 	
 	/**
@@ -471,7 +473,7 @@ public class TempPwdLoginPresenter {
 		model.setUserId(MatContext.get().getLoggedinUserId());
 		model.setEmail(MatContext.get().getLoggedInUserEmail());
 		model.setLoginId(MatContext.get().getLoggedinLoginId());
-		model.setPassword(display.getPassword().getValue());
+		model.setPassword(display.getPassword().getText());
 		model.setQuestion1(display.getSecurityQuestionsWidget().getSecurityQuestion1().getValue());
 		model.setQuestion1Answer(display.getSecurityQuestionsWidget().getAnswerText1());
 		model.setQuestion2(display.getSecurityQuestionsWidget().getSecurityQuestion2().getValue());
@@ -504,8 +506,8 @@ public class TempPwdLoginPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				display.getSecurityErrorMessageDisplay().clear();
-				display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getSecurityErrorMessageDisplay().clearAlert();
+				display.getSecurityErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
 			

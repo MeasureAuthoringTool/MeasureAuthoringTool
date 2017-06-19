@@ -4,16 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.login.service.LoginServiceAsync;
-import mat.client.myAccount.service.SaveMyAccountResult;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
-import mat.client.shared.PasswordEditInfoWidget;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.util.ClientConstants;
-import mat.shared.PasswordVerifier;
+
+import org.gwtbootstrap3.client.ui.Input;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -22,8 +15,17 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.login.service.LoginServiceAsync;
+import mat.client.myAccount.service.SaveMyAccountResult;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.PasswordEditInfoWidget;
+import mat.client.util.ClientConstants;
+import mat.shared.PasswordVerifier;
 
 /**
  * The Class ChangePasswordPresenter.
@@ -44,14 +46,14 @@ public class ChangePasswordPresenter implements MatPresenter {
 		 * 
 		 * @return the password
 		 */
-		public HasValue<String> getPassword();
+		public Input getPassword();
 		
 		/**
 		 * Gets the confirm password.
 		 * 
 		 * @return the confirm password
 		 */
-		public HasValue<String> getConfirmPassword();
+		public Input getConfirmPassword();
 		
 		/**
 		 * Gets the submit.
@@ -72,14 +74,14 @@ public class ChangePasswordPresenter implements MatPresenter {
 		 * 
 		 * @return the error message display
 		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * Gets the success message display.
 		 * 
 		 * @return the success message display
 		 */
-		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		public MessageAlert getSuccessMessageDisplay();
 		
 		/**
 		 * As widget.
@@ -93,7 +95,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 		 * 
 		 * @return the current password
 		 */
-		HasValue<String> getCurrentPassword();
+		Input getCurrentPassword();
 		
 		/**
 		 * Gets the current password widget.
@@ -110,7 +112,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				saveChangedPassword(display.getCurrentPassword().getValue());
+				saveChangedPassword(display.getCurrentPassword().getText());
 			}
 		}
 	};
@@ -143,17 +145,17 @@ public class ChangePasswordPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				String newPassword = display.getPassword().getValue();
-				String confirmPassword = display.getConfirmPassword().getValue();
+				String newPassword = display.getPassword().getText();
+				String confirmPassword = display.getConfirmPassword().getText();
 				if ((newPassword == null) || newPassword.equals("") || (confirmPassword == null)
 						|| confirmPassword.equals("")) {
-					display.getErrorMessageDisplay().clear();
-					display.getSuccessMessageDisplay().clear();
-					display.getErrorMessageDisplay().setMessage(
+					display.getErrorMessageDisplay().clearAlert();
+					display.getSuccessMessageDisplay().clearAlert();
+					display.getErrorMessageDisplay().createAlert(
 							MatContext.get().getMessageDelegate().getAllPasswordFieldsRequired());
 				} else {
-					saveChangedPassword(display.getCurrentPassword().getValue());
-					display.getCurrentPassword().setValue("");
+					saveChangedPassword(display.getCurrentPassword().getText());
+					display.getCurrentPassword().setText("");
 				}
 			}
 		});
@@ -194,7 +196,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+ caught.getLocalizedMessage(), 0);
 			}
 		});
@@ -218,11 +220,11 @@ public class ChangePasswordPresenter implements MatPresenter {
 	 * Clear values.
 	 */
 	private void clearValues() {
-		display.getPassword().setValue("");
-		display.getConfirmPassword().setValue("");
-		display.getCurrentPassword().setValue("");
-		display.getErrorMessageDisplay().clear();
-		display.getSuccessMessageDisplay().clear();
+		display.getPassword().setText("");
+		display.getConfirmPassword().setText("");
+		display.getCurrentPassword().setText("");
+		display.getErrorMessageDisplay().clearAlert();
+		display.getSuccessMessageDisplay().clearAlert();
 	}
 	
 	/**
@@ -243,13 +245,13 @@ public class ChangePasswordPresenter implements MatPresenter {
 						e.printStackTrace();
 					}
 				}else{
-					display.getErrorMessageDisplay().clear();
-					display.getSuccessMessageDisplay().clear();
+					display.getErrorMessageDisplay().clearAlert();
+					display.getSuccessMessageDisplay().clearAlert();
 					String displayErrorMsg= resultMap.get("message");
 					if(displayErrorMsg.equals("REDIRECT")){
 						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 					}else{
-						display.getErrorMessageDisplay().setMessage(displayErrorMsg);
+						display.getErrorMessageDisplay().createAlert(displayErrorMsg);
 					}
 				}
 			}
@@ -270,13 +272,13 @@ public class ChangePasswordPresenter implements MatPresenter {
 	 */
 	private void submitChangePassword() throws IOException {
 		
-		display.getErrorMessageDisplay().clear();
-		MatContext.get().getMyAccountService().changePassword(display.getPassword().getValue(),
+		display.getErrorMessageDisplay().clearAlert();
+		MatContext.get().getMyAccountService().changePassword(display.getPassword().getText(),
 				new AsyncCallback<SaveMyAccountResult>() {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
 			
@@ -284,7 +286,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 			public void onSuccess(SaveMyAccountResult result) {
 				if(result.isSuccess()){
 					clearValues();
-					display.getSuccessMessageDisplay().setMessage( MatContext.get().getMessageDelegate().getPasswordSavedMessage());
+					display.getSuccessMessageDisplay().createAlert( MatContext.get().getMessageDelegate().getPasswordSavedMessage());
 				}else{
 					List<String> messages = new ArrayList<String>();
 					switch(result.getFailureReason()) {
@@ -297,7 +299,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 						default:
 							messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
 					}
-					display.getErrorMessageDisplay().setMessages(messages);
+					display.getErrorMessageDisplay().createAlert(messages);
 					
 				}
 			}
@@ -311,21 +313,21 @@ public class ChangePasswordPresenter implements MatPresenter {
 	 */
 	public void ValidateChangedPassword() throws IOException{
 		String markupRegExp = "<[^>]+>";
-		String noMarkupTextPwd = display.getPassword().getValue().trim().replaceAll(markupRegExp, "");
-		display.getPassword().setValue(noMarkupTextPwd);
+		String noMarkupTextPwd = display.getPassword().getText().trim().replaceAll(markupRegExp, "");
+		display.getPassword().setText(noMarkupTextPwd);
 		
-		String noMarkupTextConfirm = display.getConfirmPassword().getValue().trim().replaceAll(markupRegExp, "");
-		display.getConfirmPassword().setValue(noMarkupTextConfirm);
+		String noMarkupTextConfirm = display.getConfirmPassword().getText().trim().replaceAll(markupRegExp, "");
+		display.getConfirmPassword().setText(noMarkupTextConfirm);
 		
 		PasswordVerifier verifier = new PasswordVerifier(
 				myAccountModel.getLoginId(),
-				display.getPassword().getValue(),
-				display.getConfirmPassword().getValue());
+				display.getPassword().getText(),
+				display.getConfirmPassword().getText());
 		
 		if(!verifier.isValid()) {
-			display.getErrorMessageDisplay().setMessages(verifier.getMessages());
+			display.getErrorMessageDisplay().createAlert(verifier.getMessages());
 		}else{
-			loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), new AsyncCallback<HashMap<String,String>>(){
+			loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getText(), new AsyncCallback<HashMap<String,String>>(){
 				
 				
 				/* (non-Javadoc)
@@ -333,7 +335,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 				 */
 				@Override
 				public void onFailure(Throwable caught) {
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 				}
 				
@@ -346,8 +348,8 @@ public class ChangePasswordPresenter implements MatPresenter {
 				public void onSuccess(HashMap<String, String> resultMap) {
 					String result = resultMap.get("result");
 					if(result.equals("SUCCESS")){
-						display.getSuccessMessageDisplay().clear();
-						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_CURRENT_PASSWORD());
+						display.getSuccessMessageDisplay().clearAlert();
+						display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getIS_NOT_CURRENT_PASSWORD());
 					}
 					else{
 						try {
@@ -374,7 +376,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 			}
 			
@@ -388,8 +390,8 @@ public class ChangePasswordPresenter implements MatPresenter {
 				
 				String result = resultMap.get("result");
 				if(result.equals("SUCCESS")){
-					display.getSuccessMessageDisplay().clear();
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCHANGE_OLD_PASSWORD());
+					display.getSuccessMessageDisplay().clearAlert();
+					display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getCHANGE_OLD_PASSWORD());
 				}
 				else{
 					try {

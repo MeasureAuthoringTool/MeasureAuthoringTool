@@ -2,15 +2,23 @@ package mat.client.myAccount;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 
@@ -30,13 +38,13 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	private FlowPanel container = new FlowPanel();
 	
 	/** The password. */
-	private PasswordTextBox password = new PasswordTextBox();
+	//private PasswordTextBox password = new PasswordTextBox();
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The success messages. */
-	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	private MessageAlert successMessages = new SuccessMessageAlert();
 	
 	/** The heading panel. */
 	private ContentWithHeadingWidget headingPanel;
@@ -61,13 +69,25 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		container.add(errorMessages);
 		container.add(successMessages);
 		
-		container.add(securityQuestionsWidget);
+		Form formSecurityQuestionAnswer = new Form();
+		FieldSet fieldSetQnA = new FieldSet();
+		fieldSetQnA.add(securityQuestionsWidget.getRulesGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns1FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns2FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns3FormGroup());
+		
+		fieldSetQnA.add(passwordEditInfoWidget.getPasswordExistingGroup());
+		
+		formSecurityQuestionAnswer.add(fieldSetQnA);
+		
+		
+		container.add(formSecurityQuestionAnswer);
 		container.add(new SpacerWidget());
-		password.getElement().setId("password_ExistingPasswordTextBox");
+		/*password.getElement().setId("password_ExistingPasswordTextBox");
 		container.add(LabelBuilder.buildRequiredLabel(password, "Enter existing password to confirm changes"));
 		container.add(new SpacerWidget());
 		container.add (password);
-		container.add(new SpacerWidget());
+		container.add(new SpacerWidget());*/
 		buttons.getCancelButton().setText("Undo");
 		buttons.getCancelButton().setTitle("Undo");
 		buttons.getSaveButton().setTitle("Save");
@@ -125,7 +145,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer1()
 	 */
 	@Override
-	public HasValue<String> getAnswer1() {
+	public TextBox getAnswer1() {
 		return securityQuestionsWidget.getAnswer1();
 	}
 	
@@ -141,7 +161,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer2()
 	 */
 	@Override
-	public HasValue<String> getAnswer2() {
+	public TextBox getAnswer2() {
 		return securityQuestionsWidget.getAnswer2();
 	}
 	
@@ -157,7 +177,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer3()
 	 */
 	@Override
-	public HasValue<String> getAnswer3() {
+	public TextBox getAnswer3() {
 		return securityQuestionsWidget.getAnswer3();
 	}
 	
@@ -181,7 +201,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
@@ -189,7 +209,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getSuccessMessageDisplay()
 	 */
 	@Override
-	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
+	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
@@ -214,8 +234,8 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getPassword()
 	 */
 	@Override
-	public HasValue<String> getPassword() {
-		return password;
+	public Input getPassword() {
+		return passwordEditInfoWidget.getPassword();
 	}
 	
 	/* (non-Javadoc)

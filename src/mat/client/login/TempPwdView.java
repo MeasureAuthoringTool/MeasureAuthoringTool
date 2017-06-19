@@ -2,9 +2,15 @@ package mat.client.login;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.Input;
+
 import mat.client.shared.ChangePasswordWidget;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
@@ -42,10 +48,10 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("tempPwd");
 	
 	/** The pwd error messages. */
-	private ErrorMessageDisplay pwdErrorMessages = new ErrorMessageDisplay();
+	private MessageAlert pwdErrorMessages = new ErrorMessageAlert();
 	
 	/** The sec error messages. */
-	private ErrorMessageDisplay secErrorMessages = new ErrorMessageDisplay();
+	private MessageAlert secErrorMessages = new ErrorMessageAlert();
 	
 	/** The welcome panel. */
 	private Panel welcomePanel;
@@ -87,8 +93,13 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		bluePanel.add(buildInstructions("Change Password"));
-		hPanel.add(changePasswordWidget);
-		
+		//hPanel.add(changePasswordWidget);
+		Form form = new Form();
+		FieldSet fieldSet = new FieldSet();
+		fieldSet.add(changePasswordWidget.getPasswordGroup());
+		fieldSet.add(changePasswordWidget.getConfirmPasswordGroup());
+		form.add(fieldSet);
+		hPanel.add(form);
 		PasswordRules rules = new PasswordRules();
 		rules.addStyleName("leftAligned_small_text");
 		rules.addStyleName("myAccountPasswordRules");
@@ -101,7 +112,17 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		FocusPanel securityInstructionsFocusPanel = new FocusPanel(buildInstructions("Security Questions &amp; Answers"));
 		securityInstructionsFocusPanel.setTitle("Security Questions and Answers.");
 		bluePanel.add(securityInstructionsFocusPanel);
-		bluePanel.add(securityQuestionsWidget);
+		Form formSecurityQuestionAnswer = new Form();
+		FieldSet fieldSetQnA = new FieldSet();
+		fieldSetQnA.add(securityQuestionsWidget.getRulesGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns1FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns2FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns3FormGroup());
+		formSecurityQuestionAnswer.add(fieldSetQnA);
+		
+		
+		
+		bluePanel.add(formSecurityQuestionAnswer);
 		buttonBar.getSaveButton().setText("Submit");
 		bluePanel.add(buttonBar);
 		
@@ -212,7 +233,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 	 * @see mat.client.login.TempPwdLoginPresenter.Display#getPasswordErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getPasswordErrorMessageDisplay() {
+	public MessageAlert getPasswordErrorMessageDisplay() {
 		return pwdErrorMessages;
 	}
 	
@@ -220,7 +241,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 	 * @see mat.client.login.TempPwdLoginPresenter.Display#getSecurityErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getSecurityErrorMessageDisplay() {
+	public MessageAlert getSecurityErrorMessageDisplay() {
 		return secErrorMessages;
 	}
 	
@@ -228,7 +249,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 	 * @see mat.client.login.TempPwdLoginPresenter.Display#getPassword()
 	 */
 	@Override
-	public HasValue<String> getPassword() {
+	public Input getPassword() {
 		return changePasswordWidget.getPassword();
 	}
 
@@ -236,7 +257,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 	 * @see mat.client.login.TempPwdLoginPresenter.Display#getConfirmPassword()
 	 */
 	@Override
-	public HasValue<String> getConfirmPassword() {
+	public Input getConfirmPassword() {
 		return changePasswordWidget.getConfirmPassword();
 	}
 	

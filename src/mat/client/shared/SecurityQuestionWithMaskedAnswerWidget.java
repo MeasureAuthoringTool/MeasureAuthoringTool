@@ -1,12 +1,13 @@
 package mat.client.shared;
 
 
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Class SecurityQuestionWithMaskedAnswerWidget.
@@ -40,34 +41,30 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	/** The answer text3. */
 	private String answerText3;
 	
+	FormGroup rulesGroup = new FormGroup();
+	FormGroup QuestionAns1FormGroup = new FormGroup();
+	FormGroup QuestionAns2FormGroup = new FormGroup();
+	FormGroup QuestionAns3FormGroup = new FormGroup();
+	
 	/**
 	 * Instantiates a new security question with masked answer widget.
 	 */
 	public SecurityQuestionWithMaskedAnswerWidget() {
-		answer1.getElement().setId("answer1_TextBox");
-		answer2.getElement().setId("answer2_TextBox");
-		answer3.getElement().setId("answer3_TextBox");
-		securityQuestion1.getElement().setId("securityQuestion1_ListBoxMVP");
-		securityQuestion2.getElement().setId("securityQuestion2_ListBoxMVP");
-		securityQuestion3.getElement().setId("securityQuestion3_ListBoxMVP");
-		
+		answer1.getElement().setId("answer1TextBox");
+		answer2.getElement().setId("answer2TextBox");
+		answer3.getElement().setId("answer3TextBox");
+		securityQuestion1.getElement().setId("securityQuestion1ListBoxMVP");
+		securityQuestion2.getElement().setId("securityQuestion2ListBoxMVP");
+		securityQuestion3.getElement().setId("securityQuestion3ListBoxMVP");
+		/*
 		FlowPanel container = new FlowPanel();
 		container.getElement().setId("container_FlowPanel");
-		FlowPanel fp = new FlowPanel();
-		fp.getElement().setId("fp_FlowPanel");
-		
-		HTML b1 = new HTML("<img src='images/bullet.png'/><span style='font-size:1.5 em;'> You must select three questions and enter an answer for each question.</span>");
-		HTML b2 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> You cannot use the same question more than once.</span>");
-		HTML b3 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> Answers are NOT case sensitive (caps or no caps are OK).</span>");
-		
-		fp.add(b1);
-		fp.add(b2);
-		fp.add(b3);
+		FlowPanel fp = addSecurityQuestionAnsertRules();
 		container.add(fp);
 		
-		container.add(new SpacerWidget());
+		container.add(new SpacerWidget());*/
 		
-		container.add(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));
+		/*container.add(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));
 		container.add(wrap(securityQuestion1));
 		container.add(LabelBuilder.buildLabel(answer1, "Security Answer 1"));
 		container.add(wrap(answer1));
@@ -87,21 +84,113 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		container.add(LabelBuilder.buildLabel(answer3, "Security Answer 3"));
 		
 		container.add(wrap(answer3));
-		answer3.setFocus(false);
-		container.add(new SpacerWidget());
+		answer3.setFocus(false);*/
+		
+		rulesGroup.add(addSecurityQuestionAnsertRules());
+		
+		FormLabel labelQns1 = new FormLabel();
+		labelQns1.setText("Security Question 1");
+		labelQns1.setTitle("Security Question 1");
+		labelQns1.setId("SecurityQnsLabel1");
+		labelQns1.setFor("securityQuestion1ListBoxMVP");
+		labelQns1.setShowRequiredIndicator(true);
+		
+		FormLabel labelQns2 = new FormLabel();
+		labelQns2.setText("Security Question 2");
+		labelQns2.setTitle("Security Question 2");
+		labelQns2.setId("SecurityQnsLabel2");
+		labelQns2.setFor("securityQuestion2ListBoxMVP");
+		labelQns2.setShowRequiredIndicator(true);
+		
+		FormLabel labelQns3 = new FormLabel();
+		labelQns3.setText("Security Question 3");
+		labelQns3.setTitle("Security Question 3");
+		labelQns3.setId("SecurityQnsLabel3");
+		labelQns3.setFor("securityQuestion3ListBoxMVP");
+		labelQns3.setShowRequiredIndicator(true);
+		
+		
+		
+		FormLabel labelAnswer1 = new FormLabel();
+		labelAnswer1.setText("Security Answer 1");
+		labelAnswer1.setTitle("Security Answer 1");
+		labelAnswer1.setId("SecurityAnswerLabel1");
+		labelAnswer1.setFor("answer1TextBox");
+		labelAnswer1.setShowRequiredIndicator(true);
+		
+		FormLabel labelAnswer2 = new FormLabel();
+		labelAnswer2.setText("Security Answer 2");
+		labelAnswer2.setTitle("Security Answer 2");
+		labelAnswer2.setId("SecurityAnswerLabel2");
+		labelAnswer2.setFor("answer2TextBox");
+		labelAnswer2.setShowRequiredIndicator(true);
+		
+		
+		
+		FormLabel labelAnswer3 = new FormLabel();
+		labelAnswer3.setText("Security Answer 3");
+		labelAnswer3.setTitle("Security Answer 3");
+		labelAnswer3.setId("SecurityAnswerLabel3");
+		labelAnswer3.setFor("answer3TextBox");
+		labelAnswer3.setShowRequiredIndicator(true);
 		
 		securityQuestion1.setWidth("320px");
 		securityQuestion2.setWidth("320px");
 		securityQuestion3.setWidth("320px");
+		answer1.setPlaceholder("Enter Answer 1 here.");
 		answer1.setWidth("320px");
-		answer2.setWidth("320px");
-		answer3.setWidth("320px");
-		
 		answer1.setMaxLength(100);
+		answer2.setWidth("320px");
 		answer2.setMaxLength(100);
+		answer2.setPlaceholder("Enter Answer 2 here.");
+		answer3.setWidth("320px");
 		answer3.setMaxLength(100);
+		answer3.setPlaceholder("Enter Answer 3 here.");
+		
+		QuestionAns1FormGroup.add(labelQns1);
+		QuestionAns1FormGroup.add(securityQuestion1);
+		labelAnswer1.setMarginTop(10.00);
+		QuestionAns1FormGroup.add(labelAnswer1);
+		QuestionAns1FormGroup.add(answer1);
+		
+		
+		QuestionAns2FormGroup.add(labelQns2);
+		QuestionAns2FormGroup.add(securityQuestion2);
+		labelAnswer2.setMarginTop(10.00);
+		QuestionAns2FormGroup.add(labelAnswer2);
+		QuestionAns2FormGroup.add(answer2);
+		
+		QuestionAns3FormGroup.add(labelQns3);
+		QuestionAns3FormGroup.add(securityQuestion3);
+		labelAnswer3.setMarginTop(10.00);
+		QuestionAns3FormGroup.add(labelAnswer3);
+		QuestionAns3FormGroup.add(answer3);
+		
+		
+		
+		
+		/*container.add(new SpacerWidget());
+		
+		
 		container.setStyleName("securityQuestions");
-		initWidget(container);
+		initWidget(container);*/
+	}
+
+	/**
+	 * @return
+	 */
+	public FlowPanel addSecurityQuestionAnsertRules() {
+		FlowPanel fp = new FlowPanel();
+		fp.getElement().setId("fp_FlowPanel");
+		
+		HTML b1 = new HTML("<img src='images/bullet.png'/><span style='font-size:1.5 em;'> You must select three questions and enter an answer for each question.</span>");
+		HTML b2 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> You cannot use the same question more than once.</span>");
+		HTML b3 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> Answers are NOT case sensitive (caps or no caps are OK).</span>");
+		
+		fp.add(b1);
+		fp.add(b2);
+		fp.add(b3);
+		return fp;
 	}
 	
 	/**
@@ -111,12 +200,12 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 *            the widget
 	 * @return the simple panel
 	 */
-	private SimplePanel wrap(Widget widget) {
+	/*private SimplePanel wrap(Widget widget) {
 		SimplePanel p = new SimplePanel();
 		p.getElement().setId("p_SimplePanel");
 		p.add(widget);
 		return p;
-	}
+	}*/
 	
 	/**
 	 * Gets the security question1.
@@ -302,5 +391,20 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 			maskedAnswer=maskedAnswer.concat("*");
 		}
 		return maskedAnswer;
+	}
+
+	public FormGroup getQuestionAns1FormGroup() {
+		return QuestionAns1FormGroup;
+	}
+
+	public FormGroup getQuestionAns2FormGroup() {
+		return QuestionAns2FormGroup;
+	}
+
+	public FormGroup getQuestionAns3FormGroup() {
+		return QuestionAns3FormGroup;
 	}	
+	public FormGroup getRulesGroup() {
+		return rulesGroup;
+	}
 }

@@ -1,8 +1,11 @@
 package mat.client.shared;
 
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.constants.InputType;
+
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -12,23 +15,37 @@ import com.google.gwt.user.client.ui.Widget;
 public class PasswordEditInfoWidget extends Composite {
 	
 	/** The password. */
-	private PasswordTextBox password = new PasswordTextBox();
+	//private PasswordTextBox password = new PasswordTextBox();
+	private Input password = new Input(InputType.PASSWORD);
+	FormGroup passwordExistingGroup = new FormGroup();
 	
 	/**
 	 * Instantiates a new password edit info widget.
 	 */
 	public PasswordEditInfoWidget() {
-		FlowPanel container = new FlowPanel();
+		
+		
+		FormLabel label = new FormLabel();
+		label.setText("Enter existing password to confirm changes");
+		label.setTitle("Enter existing password to confirm changes");
+		label.setId("existingPasswordLabel");
+		label.setFor("exisitingPasswordInput");
+		label.setShowRequiredIndicator(true);
+		
+		password.setWidth("200px");
+		password.setTitle("Enter existing password to confirm changes");
+		password.setId("exisitingPasswordInput");
+		passwordExistingGroup.add(label);
+		passwordExistingGroup.add(password);
+		
+		/*FlowPanel container = new FlowPanel();
 		container.getElement().setId("container_FlowPanel_passwordEditInfo");
 		password.getElement().setId("password_ExistingPasswordTextBox");
-		password.setTitle("Enter existing password to confirm changes");
+		
 		container.add(LabelBuilder.buildRequiredLabel(password, "Enter existing password to confirm changes"));
 		container.add(new SpacerWidget());
 		container.add(wrap(password));
-		container.add(new SpacerWidget());
-		
-		password.setWidth("100px");
-		initWidget(container);
+		container.add(new SpacerWidget());*/
 	}
 	
 	/**
@@ -50,7 +67,7 @@ public class PasswordEditInfoWidget extends Composite {
 	 * 
 	 * @return the password
 	 */
-	public PasswordTextBox getPassword() {
+	public Input getPassword() {
 		return password;
 	}
 	
@@ -60,8 +77,12 @@ public class PasswordEditInfoWidget extends Composite {
 	 * @param password
 	 *            the new password
 	 */
-	public void setPassword(PasswordTextBox password) {
+	public void setPassword(Input password) {
 		this.password = password ;
+	}
+	
+	public FormGroup getPasswordExistingGroup() {
+		return passwordExistingGroup;
 	}
 	
 }

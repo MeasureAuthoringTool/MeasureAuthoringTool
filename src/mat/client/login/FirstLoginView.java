@@ -2,9 +2,15 @@ package mat.client.login;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.Input;
+
 import mat.client.shared.ChangePasswordWidget;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
@@ -43,10 +49,10 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("firstLogin");
 	
 	/** The pwd error messages. */
-	private ErrorMessageDisplay pwdErrorMessages = new ErrorMessageDisplay();
+	private MessageAlert pwdErrorMessages = new ErrorMessageAlert();
 	
 	/** The sec error messages. */
-	private ErrorMessageDisplay secErrorMessages = new ErrorMessageDisplay();
+	private MessageAlert secErrorMessages = new ErrorMessageAlert();
 	
 	/** The welcome panel. */
 	private Panel welcomePanel;
@@ -85,8 +91,16 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
-		bluePanel.add(buildInstructions("Change Password"));
-		hPanel.add(changePasswordWidget);
+		Form formPassword = new Form();
+		FieldSet fieldSet = new FieldSet();
+		fieldSet.add(changePasswordWidget.getPasswordGroup());
+		fieldSet.add(changePasswordWidget.getConfirmPasswordGroup());
+		formPassword.add(fieldSet);
+		hPanel.add(formPassword);
+		//bluePanel.add(buildInstructions("Change Password"));
+		
+		//hPanel.add(changePasswordWidget);
+		
 		
 		PasswordRules rules = new PasswordRules();
 		rules.addStyleName("leftAligned_small_text");
@@ -100,7 +114,18 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		FocusPanel securityInstructionsFocusPanel = new FocusPanel(buildInstructions("Security Questions &amp; Answers"));
 		securityInstructionsFocusPanel.setTitle("Security Questions and Answers.");
 		bluePanel.add(securityInstructionsFocusPanel);
-		bluePanel.add(securityQuestionsWidget);
+		
+		Form formSecurityQuestionAnswer = new Form();
+		FieldSet fieldSetQnA = new FieldSet();
+		fieldSetQnA.add(securityQuestionsWidget.getRulesGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns1FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns2FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns3FormGroup());
+		formSecurityQuestionAnswer.add(fieldSetQnA);
+		
+		
+		
+		bluePanel.add(formSecurityQuestionAnswer);
 		buttonBar.getSaveButton().setText("Submit");
 		bluePanel.add(buttonBar);
 		
@@ -211,7 +236,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 * @see mat.client.login.FirstLoginPresenter.Display#getPasswordErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getPasswordErrorMessageDisplay() {
+	public MessageAlert getPasswordErrorMessageDisplay() {
 		return pwdErrorMessages;
 	}
 	
@@ -219,7 +244,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 * @see mat.client.login.FirstLoginPresenter.Display#getSecurityErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getSecurityErrorMessageDisplay() {
+	public MessageAlert getSecurityErrorMessageDisplay() {
 		return secErrorMessages;
 	}
 	
@@ -227,7 +252,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 * @see mat.client.login.FirstLoginPresenter.Display#getPassword()
 	 */
 	@Override
-	public HasValue<String> getPassword() {
+	public Input getPassword() {
 		return changePasswordWidget.getPassword();
 	}
 
@@ -235,7 +260,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 * @see mat.client.login.FirstLoginPresenter.Display#getConfirmPassword()
 	 */
 	@Override
-	public HasValue<String> getConfirmPassword() {
+	public Input getConfirmPassword() {
 		return changePasswordWidget.getConfirmPassword();
 	}
 	

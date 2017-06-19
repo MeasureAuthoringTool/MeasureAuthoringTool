@@ -245,8 +245,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		transferOwnershipView.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				transferOwnershipView.getErrorMessageDisplay().clear();
-				transferOwnershipView.getSuccessMessageDisplay().clear();
+				transferOwnershipView.getErrorMessageDisplay().clearAlert();
+				transferOwnershipView.getSuccessMessageDisplay().clearAlert();
 				boolean userSelected = false;
 				for (int i = 0; i < model.getData().size(); i = i + 1) {
 					if (model.getData().get(i).isSelected()) {
@@ -288,8 +288,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				cqlLibraryAdminView.getSelectedLibraries().clear();
 				cqlLibraryAdminView.getSelectedId().clear();
-				transferOwnershipView.getSuccessMessageDisplay().clear();
-				transferOwnershipView.getErrorMessageDisplay().clear();
+				transferOwnershipView.getSuccessMessageDisplay().clearAlert();
+				transferOwnershipView.getErrorMessageDisplay().clearAlert();
 				displaySearch();
 			}
 		});
@@ -297,7 +297,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		transferOwnershipView.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				transferOwnershipView.getSuccessMessageDisplay().clear();
+				transferOwnershipView.getSuccessMessageDisplay().clearAlert();
 				displayTransferView(transferOwnershipView.getSearchString().getValue(), 1, Integer.MAX_VALUE);
 
 			}

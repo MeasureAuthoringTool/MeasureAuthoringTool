@@ -1,11 +1,15 @@
 package mat.client.login;
 
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
+
+import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -19,7 +23,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -44,7 +48,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("forgotPwd");
 	
 	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/** The security question ans panel. */
 	private VerticalPanel securityQuestionAnsPanel = new  VerticalPanel();
@@ -90,11 +94,12 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		bluePanel.add(horizontalPanel);
 		bluePanel.add(new SpacerWidget());
 		
-		loginId = new TextBox();
+		/*loginId = new TextBox();*/
 		loginId.setTitle("Enter User ID");
+		loginId.setPlaceholder("Enter User ID");
 		loginId.setEnabled(true);
 		loginId.setWidth("170px");
-		loginId.setHeight("15px");
+		//loginId.setHeight("15px");
 		
 		bluePanel.add(loginId);
 		bluePanel.add(new SpacerWidget());
@@ -163,7 +168,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 

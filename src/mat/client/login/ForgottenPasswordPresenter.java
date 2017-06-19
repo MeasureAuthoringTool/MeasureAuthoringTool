@@ -4,14 +4,17 @@ import mat.client.event.PasswordEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 import mat.shared.ForgottenPasswordResult;
+
+import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.TextBox;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -64,7 +67,7 @@ public class ForgottenPasswordPresenter {
 		 * 
 		 * @return the error message display
 		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * Sets the security question answer enabled.
@@ -124,9 +127,9 @@ public class ForgottenPasswordPresenter {
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				if(ForgottenPasswordView.isUserIdSubmit){
-					display.getErrorMessageDisplay().clear();
+					display.getErrorMessageDisplay().clearAlert();
 					if(null == display.getLoginId().getValue() || display.getLoginId().getValue().trim().isEmpty()){
-						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+						display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 						return;
 					}
 					display.getLoginId().setEnabled(false);
@@ -154,7 +157,7 @@ public class ForgottenPasswordPresenter {
 		display.getLoginId().setEnabled(true);
 		display.getLoginId().setValue("");
 		display.setSecurityQuestionAnswerEnabled(false);
-		display.getErrorMessageDisplay().clear();
+		display.getErrorMessageDisplay().clearAlert();
 		display.getLoginId().setFocus(true); 
 		invalidUserCounter = 0;
 		ForgottenPasswordView.isUserIdSubmit = true;
@@ -180,7 +183,7 @@ public class ForgottenPasswordPresenter {
 
 						@Override
 						public void onFailure(Throwable exc) {
-							display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
 
 						@Override
@@ -215,7 +218,7 @@ public class ForgottenPasswordPresenter {
 							MatContext.get().getEventBus().fireEvent(new PasswordEmailSentEvent());	
 						}else{
 							String message = convertMessage(result.getFailureReason());
-							display.getErrorMessageDisplay().setMessage(message);
+							display.getErrorMessageDisplay().createAlert(message);
 						}
 						//invalidUserCounter = result.getCounter();
 						//MatContext.get().recordUserEvent(display.getLoginId().getValue(), "Forgot Password", "", false);
@@ -223,7 +226,7 @@ public class ForgottenPasswordPresenter {
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						display.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 					}
 				});

@@ -2288,6 +2288,17 @@ padding: 2px;
     text-align: left;
 }
 
+.CqlWorkSpaceTableHeader{
+	background-color: #337ab7;
+	font-size: small;
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    text-align: left;
+}
+
+
+
 .measureGroupPackageName{
 	font-weight:bold;
 	margin-left:15px;

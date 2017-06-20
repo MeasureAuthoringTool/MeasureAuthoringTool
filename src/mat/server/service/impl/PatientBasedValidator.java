@@ -214,6 +214,7 @@ public class PatientBasedValidator {
 			List<CQLExpressionOprandObject> argumentList =  cqlExpressionObject.getOprandList();
 			if(argumentList.isEmpty() || argumentList.size() > 1){
 				returnMessages.add("For an added measure observation, the user-defined function "+ cqlExpressionObject.getName()+" must have exactly 1 argument in the argument list.");
+				//This is commented as Sridhar and Gayathri thinks if illegal number of arguments are passed then this check should not be made.
 				/*returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
 						+ " of the definition directly applied to the Associated Population.");*/
 			} else {

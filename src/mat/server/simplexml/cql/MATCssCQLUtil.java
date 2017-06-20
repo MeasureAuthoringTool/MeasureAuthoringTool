@@ -197,7 +197,7 @@ public class MATCssCQLUtil {
 			"\r\n" + 
 			".treeview input[type=checkbox] ~ ul {\r\n" + 
 			"  max-height: 100%;\r\n" + 
-			"  max-width: 80%;\r\n" + 
+			"  max-width: 90%;\r\n" + 
 			"  opacity: 1;  \r\n" + 
 			"}\r\n" + 
 			"\r\n" + 

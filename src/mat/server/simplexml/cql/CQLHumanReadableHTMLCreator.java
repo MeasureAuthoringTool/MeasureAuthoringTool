@@ -463,12 +463,34 @@ public class CQLHumanReadableHTMLCreator {
 	
 		for (Integer key : groupMap.keySet()) {
 			if (groupMap.size() > 1) {
-				mainListElement.append("<li style=\"list-style: none;\"><br><b>------ Population Criteria "
-						+ (key.toString()) + " ------</b><br><br></li>");
+				
+				Element mainElement = mainListElement.appendElement("li");
+				mainElement.attr("class", "list-unstyled");
+				
+				Element divElement = mainElement.appendElement("div");
+				divElement.attr("class", "treeview hover p-l-10");
+				
+				Element checkBoxElement = divElement.appendElement("input");
+				checkBoxElement.attr("type", "checkbox");
+				String id = "test-Population Criteria" + (key.toString()) + "_"
+						+ (int) (Math.random() * 1000);
+				checkBoxElement.attr("id", id);
+				
+				Element labelElement = divElement.appendElement("label");
+				labelElement.attr("for", id);
+				labelElement.attr("class", "list-header");
+				labelElement.append("<b>Population Criteria "
+						+ (key.toString()) + "</b> (click to expand/collapse)");
+								
+				NodeList clauseNodeList = groupMap.get(key).getChildNodes();
+				generatePopulationNodes(clauseNodeList, divElement.appendElement(HTML_UL),
+						groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);
+								
+			}else{
+				NodeList clauseNodeList = groupMap.get(key).getChildNodes();
+				generatePopulationNodes(clauseNodeList, mainListElement,
+						groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);
 			}
-			NodeList clauseNodeList = groupMap.get(key).getChildNodes();
-			generatePopulationNodes(clauseNodeList, mainListElement,
-					groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);
 		}
 	}
 	

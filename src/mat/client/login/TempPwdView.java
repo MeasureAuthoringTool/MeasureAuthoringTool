@@ -116,8 +116,11 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		FieldSet fieldSetQnA = new FieldSet();
 		fieldSetQnA.add(securityQuestionsWidget.getRulesGroup());
 		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns1FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getAns1FormGroup());
 		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns2FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getAns2FormGroup());
 		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns3FormGroup());
+		fieldSetQnA.add(securityQuestionsWidget.getAns3FormGroup());
 		formSecurityQuestionAnswer.add(fieldSetQnA);
 		
 		

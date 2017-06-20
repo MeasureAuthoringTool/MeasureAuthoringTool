@@ -42,9 +42,12 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	private String answerText3;
 	
 	FormGroup rulesGroup = new FormGroup();
-	FormGroup QuestionAns1FormGroup = new FormGroup();
-	FormGroup QuestionAns2FormGroup = new FormGroup();
-	FormGroup QuestionAns3FormGroup = new FormGroup();
+	FormGroup Question1FormGroup = new FormGroup();
+	FormGroup Ans1FormGroup = new FormGroup();
+	FormGroup Question2FormGroup = new FormGroup();
+	FormGroup Ans2FormGroup = new FormGroup();
+	FormGroup Question3FormGroup = new FormGroup();
+	FormGroup Ans3FormGroup = new FormGroup();
 	
 	/**
 	 * Instantiates a new security question with masked answer widget.
@@ -147,24 +150,24 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		answer3.setMaxLength(100);
 		answer3.setPlaceholder("Enter Answer 3 here.");
 		
-		QuestionAns1FormGroup.add(labelQns1);
-		QuestionAns1FormGroup.add(securityQuestion1);
+		Question1FormGroup.add(labelQns1);
+		Question1FormGroup.add(securityQuestion1);
 		labelAnswer1.setMarginTop(10.00);
-		QuestionAns1FormGroup.add(labelAnswer1);
-		QuestionAns1FormGroup.add(answer1);
+		Ans1FormGroup.add(labelAnswer1);
+		Ans1FormGroup.add(answer1);
 		
 		
-		QuestionAns2FormGroup.add(labelQns2);
-		QuestionAns2FormGroup.add(securityQuestion2);
+		Question2FormGroup.add(labelQns2);
+		Question2FormGroup.add(securityQuestion2);
 		labelAnswer2.setMarginTop(10.00);
-		QuestionAns2FormGroup.add(labelAnswer2);
-		QuestionAns2FormGroup.add(answer2);
+		Ans2FormGroup.add(labelAnswer2);
+		Ans2FormGroup.add(answer2);
 		
-		QuestionAns3FormGroup.add(labelQns3);
-		QuestionAns3FormGroup.add(securityQuestion3);
+		Question3FormGroup.add(labelQns3);
+		Question3FormGroup.add(securityQuestion3);
 		labelAnswer3.setMarginTop(10.00);
-		QuestionAns3FormGroup.add(labelAnswer3);
-		QuestionAns3FormGroup.add(answer3);
+		Ans3FormGroup.add(labelAnswer3);
+		Ans3FormGroup.add(answer3);
 		
 		
 		
@@ -394,16 +397,28 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	}
 
 	public FormGroup getQuestionAns1FormGroup() {
-		return QuestionAns1FormGroup;
+		return Question1FormGroup;
 	}
 
 	public FormGroup getQuestionAns2FormGroup() {
-		return QuestionAns2FormGroup;
+		return Question2FormGroup;
 	}
 
 	public FormGroup getQuestionAns3FormGroup() {
-		return QuestionAns3FormGroup;
+		return Question3FormGroup;
 	}	
+	public FormGroup getAns1FormGroup() {
+		return Ans1FormGroup;
+	}
+
+	public FormGroup getAns2FormGroup() {
+		return Ans2FormGroup;
+	}
+
+	public FormGroup getAns3FormGroup() {
+		return Ans3FormGroup;
+	}
+
 	public FormGroup getRulesGroup() {
 		return rulesGroup;
 	}

@@ -295,7 +295,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		PanelHeader expProfileHeader = new PanelHeader();//new Label("QDM Elements");
 		expProfileHeader.getElement().setId("searchHeader_Label");
-		expProfileHeader.setStyleName("measureGroupingTableHeader");
+		expProfileHeader.setStyleName("CqlWorkSpaceTableHeader");
 		expProfileHeader.getElement().setAttribute("tabIndex", "0");
 		
 		HTML searchHeaderText = new HTML("<strong>Apply Expansion Profile</strong>");
@@ -370,7 +370,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 		
-		searchHeader.setStyleName("measureGroupingTableHeader");
+		searchHeader.setStyleName("CqlWorkSpaceTableHeader");
 		
 		
 		searchPanel.add(searchHeader);
@@ -472,7 +472,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		cellTablePanel.setStyleName("cellTablePanel");
 		PanelHeader qdmElementsHeader = new PanelHeader();//new Label("QDM Elements");
 		qdmElementsHeader.getElement().setId("searchHeader_Label");
-		qdmElementsHeader.setStyleName("measureGroupingTableHeader");
+		qdmElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
 		qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
 		
 		HTML searchHeaderText = new HTML("<strong>Applied Value Sets</strong>");

@@ -9,18 +9,25 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.PanelGroup;
+import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -29,8 +36,8 @@ import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -141,6 +148,9 @@ public class CQLFunctionsView {
 	/** The is editable. */
 	boolean isEditable = false;
 	
+	private PanelCollapse panelViewCQLCollapse = new PanelCollapse();
+	private AceEditor viewCQLAceEditor = new AceEditor();
+	private Anchor viewCQLAnchor = new Anchor();
 
 	/**
 	 * Instantiates a new CQL functions view.
@@ -149,6 +159,13 @@ public class CQLFunctionsView {
 		// TODO Auto-generated constructor stub
 		mainFunctionVerticalPanel.clear();
 		functionBodyAceEditor.startEditor();
+		
+		viewCQLAceEditor.startEditor();
+		viewCQLAnchor.setDataToggle(Toggle.COLLAPSE);
+		viewCQLAnchor.setDataParent("#panelGroup");
+		viewCQLAnchor.setHref("#panelCollapse");
+		viewCQLAnchor.setText("Click to View CQL");
+		viewCQLAnchor.setColor("White");
 	}
 
 	/**
@@ -156,6 +173,7 @@ public class CQLFunctionsView {
 	 */
 	@SuppressWarnings("static-access")
 	private void buildView(boolean isEditable) {
+		panelViewCQLCollapse.clear();
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 		HorizontalPanel funcHP = new HorizontalPanel();
@@ -179,13 +197,18 @@ public class CQLFunctionsView {
 
 		funcHP.add(queryGrid);
 
+		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
+		PanelHeader header = new PanelHeader();
+		header.setText("Build CQL Expression.");
+		PanelBody body = new PanelBody();
+		
 		SimplePanel funcAceEditorPanel = new SimplePanel();
-		funcAceEditorPanel.setSize("685", "510");
+		funcAceEditorPanel.setSize("650", "200");
 		functionBodyAceEditor.setText("");
 		functionBodyAceEditor.setMode(AceEditorMode.CQL);
 		functionBodyAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		functionBodyAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		functionBodyAceEditor.setSize("675px", "500px");
+		functionBodyAceEditor.setSize("650px", "200px");
 		functionBodyAceEditor.setAutocompleteEnabled(true);
 		functionBodyAceEditor.addAutoCompletions();
 		functionBodyAceEditor.setUseWrapMode(true);
@@ -195,7 +218,10 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");
-		funcAceEditorPanel.setStyleName("cqlRightContainer");
+		//funcAceEditorPanel.setStyleName("cqlRightContainer");
+		body.add(funcAceEditorPanel);
+		aceEditorPanel.add(header);
+		aceEditorPanel.add(body);
 
 		addNewArgument.setType(ButtonType.LINK);
 		addNewArgument.getElement().setId("addArgument_Button");
@@ -236,7 +262,9 @@ public class CQLFunctionsView {
 		funcVP.add(cellTablePanel);
 		funcVP.add(functionButtonBar);
 		funcVP.add(new SpacerWidget());
-		funcVP.add(funcAceEditorPanel);
+		funcVP.add(aceEditorPanel);
+		funcVP.add(new SpacerWidget());
+		funcVP.add(buildViewCQLCollapsiblePanel());
 		funcVP.add(new SpacerWidget());
 		funcVP.setStyleName("topping");
 		funcFP.add(funcVP);
@@ -253,6 +281,48 @@ public class CQLFunctionsView {
 		mainFunctionVerticalPanel.setHeight("675px");
 	}
 	
+	
+	
+	/**
+	 * Method to build collapsible View CQL Panel with Ace Editor.
+	 * 
+	 * @return PanelGroup
+	 */
+	PanelGroup buildViewCQLCollapsiblePanel() {
+		PanelGroup panelGroup = new PanelGroup();
+		panelGroup.setId("panelGroup");
+		Panel panel = new Panel(PanelType.PRIMARY);
+		PanelHeader header = new PanelHeader();
+
+		header.add(viewCQLAnchor);
+
+		panelViewCQLCollapse.setId("panelCollapse");
+		PanelBody body = new PanelBody();
+
+		viewCQLAceEditor.setMode(AceEditorMode.CQL);
+		viewCQLAceEditor.setTheme(AceEditorTheme.ECLIPSE);
+		viewCQLAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		viewCQLAceEditor.setSize("655px", "200px");
+		viewCQLAceEditor.setAutocompleteEnabled(true);
+		viewCQLAceEditor.addAutoCompletions();
+		viewCQLAceEditor.setUseWrapMode(true);
+		viewCQLAceEditor.removeAllMarkers();
+		viewCQLAceEditor.clearAnnotations();
+		viewCQLAceEditor.redisplay();
+		viewCQLAceEditor.getElement().setAttribute("id", "Define_ViewAceEditorID");
+		viewCQLAceEditor.setReadOnly(true);
+
+		body.add(viewCQLAceEditor);
+		panelViewCQLCollapse.add(body);
+
+		panel.add(header);
+		panel.add(panelViewCQLCollapse);
+
+		panelGroup.add(panel);
+
+		return panelGroup;
+
+	}
 	
 	/**
 	 * Gets the view.
@@ -272,6 +342,17 @@ public class CQLFunctionsView {
 	public void resetAll() {
 		getFuncNameTxtArea().setText("");
 		getFunctionBodyAceEditor().setText("");
+		
+		getViewCQLAceEditor().setText("");
+		panelViewCQLCollapse.getElement().setClassName("panel-collapse collapse");
+	}
+	
+	public PanelCollapse getPanelViewCQLCollapse() {
+		return panelViewCQLCollapse;
+	}
+
+	public AceEditor getViewCQLAceEditor() {
+		return viewCQLAceEditor;
 	}
 	
 	/**
@@ -313,7 +394,7 @@ public class CQLFunctionsView {
 			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label(
 					"Added Arguments List");
 			tableHeader.getElement().setId("tableHeader_Label");
-			tableHeader.setStyleName("measureGroupingTableHeader");
+			tableHeader.setStyleName("CqlWorkSpaceTableHeader");
 			tableHeader.getElement().setAttribute("tabIndex", "0");
 			HTML desc = new HTML("<p> No Arguments Added.</p>");
 			cellTablePanel.add(tableHeader);

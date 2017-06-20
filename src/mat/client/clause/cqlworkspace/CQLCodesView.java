@@ -237,7 +237,7 @@ public class CQLCodesView {
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 
-		searchHeader.setStyleName("measureGroupingTableHeader");
+		searchHeader.setStyleName("CqlWorkSpaceTableHeader");
 
 
 		searchPanel.add(searchHeader);
@@ -662,7 +662,7 @@ public class CQLCodesView {
 		cellTablePanel.setWidth("100%");
 		PanelHeader codesElementsHeader = new PanelHeader();
 		codesElementsHeader.getElement().setId("searchHeader_Label");
-		codesElementsHeader.setStyleName("measureGroupingTableHeader");
+		codesElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
 		codesElementsHeader.getElement().setAttribute("tabIndex", "0");
 		
 		HTML searchHeaderText = new HTML("<strong>Applied Codes</strong>");

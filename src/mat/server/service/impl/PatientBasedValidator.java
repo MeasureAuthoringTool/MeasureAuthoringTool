@@ -214,8 +214,8 @@ public class PatientBasedValidator {
 			List<CQLExpressionOprandObject> argumentList =  cqlExpressionObject.getOprandList();
 			if(argumentList.isEmpty() || argumentList.size() > 1){
 				returnMessages.add("For an added measure observation, the user-defined function "+ cqlExpressionObject.getName()+" must have exactly 1 argument in the argument list.");
-				returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
-						+ " of the definition directly applied to the Associated Population.");
+				/*returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
+						+ " of the definition directly applied to the Associated Population.");*/
 			} else {
 				String funcArgumentReturnType = argumentList.get(0).getReturnType();
 				// for now parser returns  positive with positive qdm data model and negative of positive for negative qdm data model for function argument return type.

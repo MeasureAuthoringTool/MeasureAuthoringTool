@@ -63,7 +63,7 @@ public class InsertTimingExpressionIntoAceEditor {
 	private static DropDownSubMenu dateTimePrecisionSubMenu; 
 	
 	/** The primary timing list. */
-	private static List<String> primaryTimingList =  CQLWorkSpaceConstants.getPrimaryTimings();
+	private static List<String> primaryTimingList = MatContext.get().getCqlConstantContainer().getCqlTimingList();
 	
 	/** The timing precision list. */
 	private static List<String> timingPrecisionList =  CQLWorkSpaceConstants.getTimingPrecisions();
@@ -261,7 +261,7 @@ public class InsertTimingExpressionIntoAceEditor {
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 					anchorButton.setFocus(true);
 					/*dropDown.setStyleName("dropdown-error");*/
-				} else if( CQLWorkSpaceConstants.getWithinTimingExp().contains(mainButton.getText())){
+				} else if(primaryTimingList.contains(mainButton.getText())){
 					helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 					helpBlock.setText("QuantityOffset is required for the following CQL Timing Expression");
 					messageFormgroup.setValidationState(ValidationState.ERROR);
@@ -492,7 +492,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		final ListBoxMVP relativeQualifier = new ListBoxMVP();
 		relativeQualifier.getElement().setId("ListBox_relativeQualifier");
 		relativeQualifier.clear();
-		List<String> relativeQualifierList = CQLWorkSpaceConstants.getRelativeQualifiers();
+		List<String> relativeQualifierList = primaryTimingList;
 		relativeQualifier.addItem(MatContext.get().PLEASE_SELECT);
 		for(int i=0;i< relativeQualifierList.size();i++){
 			relativeQualifier.addItem(relativeQualifierList.get(i));

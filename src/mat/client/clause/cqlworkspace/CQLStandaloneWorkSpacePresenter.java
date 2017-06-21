@@ -1004,7 +1004,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										int line = error.getErrorInLine();
 										int column = error.getErrorAtOffeset();
 										aceEditor.addAnnotation(line - 1, column,
-												error.getErrorMessage(), AceAnnotationType.WARNING);
+												error.getErrorMessage(), AceAnnotationType.ERROR);
 									}
 									aceEditor.setText(result.getCqlString());
 									//searchDisplay.getCqlAceEditor().lockEditor(0, 0);
@@ -1017,13 +1017,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 							}
 
 						}
-						showSearchingBusy(false);
+						//showSearchingBusy(false);
 					}
 
 					@Override
 					public void onFailure(Throwable caught) {
 						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						showSearchingBusy(false);
+					//	showSearchingBusy(false);
 					}
 				});
 	}

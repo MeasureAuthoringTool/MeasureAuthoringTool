@@ -1003,7 +1003,20 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	  
 	  $wnd.valueSetList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createValueSetJsArrayString();
 	  
+	  $wnd.timingList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createTimingJsArrayString(); 
+	  
 	}-*/;
+	
+	private static JsArrayString createTimingJsArrayString() {
+		List<String> timingList = MatContext.get().getCqlConstantContainer().getCqlTimingList();
+		
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray(); 
+		for (String string : timingList) {
+			jsArray.push(string);
+		}
+		
+		return jsArray; 
+	}
 	
 	@SuppressWarnings("unchecked")
 	private static JsArrayString createValueSetJsArrayString() {

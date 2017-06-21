@@ -69,6 +69,8 @@ public class InsertIntoAceEditorDialogBox {
 		
 	/** The all attributes. */
 	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+	
+	private static List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
 		
 	/**
 	 * allCqlUnits map in the format of <UnitName, CQLUnit>
@@ -887,25 +889,7 @@ public class InsertIntoAceEditorDialogBox {
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
 						for (int i = 0; i < cqlNavBarView.getAppliedQdmList().size(); i++) {
-							/*if(!searchDisplay.getAppliedQdmList().get(i)
-									.getDataType().equalsIgnoreCase("attribute")){
-								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
-										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
-							}
-							if(searchDisplay.getAppliedQdmList().get(i).getDataType() != null
-									&& !searchDisplay.getAppliedQdmList().get(i)
-									.getDataType().equalsIgnoreCase("attribute")){
-								listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getCodeListName()
-										+ "." + searchDisplay.getAppliedQdmList().get(i).getDataType());
-							} else if(searchDisplay.getAppliedQdmList().get(i).getDataType() == null){*/
-								/*if(searchDisplay.getAppliedQdmList().get(i).getDisplayName() != null){
-									listAllItemNames.addItem(searchDisplay.getAppliedQdmList().get(i).getDisplayName());
-								} else {*/
-									listAllItemNames.addItem(cqlNavBarView.getAppliedQdmList().get(i).getCodeListName());
-								//}
-								
-							//}
-							
+							listAllItemNames.addItem(cqlNavBarView.getAppliedQdmList().get(i).getCodeListName());							
 						}
 						for (int j = 0; j < MatContext.get().getIncludedValueSetNames().size(); j++) {
 							listAllItemNames.addItem(MatContext.get().getIncludedValueSetNames().get(j));
@@ -924,12 +908,16 @@ public class InsertIntoAceEditorDialogBox {
 						addAvailableItems(availableAttributesToInsert, allAttributes);
 						
 					} else if (itemTypeSelected.equalsIgnoreCase("Timing")) {
-						//open new popup/dialogBox
-						dialogModal.clear();
-						dialogModal.hide();
-						//searchDisplay.resetMessageDisplay();
-						InsertTimingExpressionIntoAceEditor.showTimingExpressionDialogBox(cqlNavBarView, curEditor);
-						cqlNavBarView.setIsPageDirty(true);
+						listAllItemNames.clear();
+						availableDatatypes.clear();
+						availableAttributesToInsert.clear();
+						listAllItemNames.setEnabled(true);
+						availableDatatypes.setEnabled(false);
+						availableAttributesToInsert.setEnabled(false);
+						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						for(int i = 0; i < allTimings.size(); i++) {
+							listAllItemNames.addItem(allTimings.get(i));
+						}
 					}else {
 						listAllItemNames.clear();
 						availableDatatypes.clear();

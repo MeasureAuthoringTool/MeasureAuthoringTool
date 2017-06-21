@@ -59,7 +59,14 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		// get keywords
 		CQLKeywords keywordList = getMeasureLibraryService().getCQLKeywordsLists(); 
 		cqlConstantContainer.setCqlKeywordList(keywordList);
+		
+		// get timings
+		List<String> timings = keywordList.getCqlTimingList();
+		Collections.sort(timings);
+		cqlConstantContainer.setCqlTimingList(timings);
+		
 		return cqlConstantContainer;
+		
 	}
 	
 	/**

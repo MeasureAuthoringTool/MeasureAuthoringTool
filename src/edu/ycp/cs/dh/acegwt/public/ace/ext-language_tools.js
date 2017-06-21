@@ -1520,18 +1520,7 @@ var Autocomplete = function() {
             
             var keyString = this.editor.keyString;
           //  alert("keyString:"+keyString);
-            var timingKeywords = ["after","after end","after start","before","before end","before start","during","ends","ends after","ends after end","ends after start",
-                                  "ends before","ends before end","ends before start","ends during","ends properly during","ends properly within","ends properly within end",
-                                  "ends properly within start","ends same as","ends same as end","ends same as start","ends same or after","ends same or after end",
-                                  "ends same or after start","ends same or before","ends same or before end","ends same or before start","ends within","ends within end",
-                                  "ends within start","included in","includes","includes end","includes start","meets","meets after","meets before","overlaps","overlaps after",
-                                  "overlaps after","overlaps before","overlaps before","properly during","properly included in","properly includes","properly includes end",
-                                  "properly includes start","properly within","properly within end","properly within start","same as","same as","same as end","same as start",
-                                  "same or after","same or after end","same or after start","same or before","same or before end","same or before start","starts","starts after",
-                                  "starts after end","starts after start","starts before","starts before end","starts before start","starts during","starts properly during",
-                                  "starts properly within","starts properly within end","starts properly within start","starts same as","starts same as end","starts same as start",
-                                  "starts same or after","starts same or after end","starts same or after start","starts same or before","starts same or before end",
-                                  "starts same or before start","starts within","starts within end","starts within start","within"];
+            var timingKeywords = window.timingList();
             
             var functionKeywords = ["Abs","AgeInDays","AgeInDaysAt","AgeInHours","AgeInHoursAt","AgeInMinutes","AgeInMinutesAt","AgeInMonths","AgeInMonthsAt",
                                     "AgeInSeconds","AgeInSecondsAt","AgeInYears","AgeInYearsAt","AllTrue","AnyTrue","Avg","CalculateAgeInDays","CalculateAgeInDaysAt",

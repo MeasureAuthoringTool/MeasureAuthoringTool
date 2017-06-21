@@ -19,6 +19,8 @@ public class CQLConstantContainer implements IsSerializable {
 		
 	private List<UnitDTO> cqlUnitDTOList; 
 	
+	private List<String> cqlTimingList; 
+	
 	private Map<String, String> cqlUnitMap;
 	
 	private CQLKeywords cqlKeywordList; 
@@ -69,8 +71,13 @@ public class CQLConstantContainer implements IsSerializable {
 
 	public void setCqlKeywordList(CQLKeywords keywordList) {
 		this.cqlKeywordList = keywordList;
-	} 
-	
-	
+	}
 
+	public List<String> getCqlTimingList() {
+		return cqlTimingList;
+	}
+
+	public void setCqlTimingList(List<String> cqlTimingList) {
+		this.cqlTimingList = cqlTimingList;
+	} 
 }

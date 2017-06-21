@@ -57,6 +57,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
@@ -148,9 +149,7 @@ public class CQLFunctionsView {
 	/** The is editable. */
 	boolean isEditable = false;
 	
-	private PanelCollapse panelViewCQLCollapse = new PanelCollapse();
-	private AceEditor viewCQLAceEditor = new AceEditor();
-	private Anchor viewCQLAnchor = new Anchor();
+	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 
 	/**
 	 * Instantiates a new CQL functions view.
@@ -160,12 +159,12 @@ public class CQLFunctionsView {
 		mainFunctionVerticalPanel.clear();
 		functionBodyAceEditor.startEditor();
 		
-		viewCQLAceEditor.startEditor();
-		viewCQLAnchor.setDataToggle(Toggle.COLLAPSE);
-		viewCQLAnchor.setDataParent("#panelGroup");
-		viewCQLAnchor.setHref("#panelCollapse");
-		viewCQLAnchor.setText("Click to View CQL");
-		viewCQLAnchor.setColor("White");
+		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
+		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
+		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataParent("#panelGroup");
+		collapsibleCQLPanelWidget.getViewCQLAnchor().setHref("#panelCollapse");
+		collapsibleCQLPanelWidget.getViewCQLAnchor().setText("Click to View CQL");
+		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
 	/**
@@ -173,7 +172,7 @@ public class CQLFunctionsView {
 	 */
 	@SuppressWarnings("static-access")
 	private void buildView(boolean isEditable) {
-		panelViewCQLCollapse.clear();
+		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 		HorizontalPanel funcHP = new HorizontalPanel();
@@ -264,7 +263,7 @@ public class CQLFunctionsView {
 		funcVP.add(new SpacerWidget());
 		funcVP.add(aceEditorPanel);
 		funcVP.add(new SpacerWidget());
-		funcVP.add(buildViewCQLCollapsiblePanel());
+		funcVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
 		funcVP.add(new SpacerWidget());
 		funcVP.setStyleName("topping");
 		funcFP.add(funcVP);
@@ -279,49 +278,6 @@ public class CQLFunctionsView {
 		mainFunctionVerticalPanel.clear();
 		mainFunctionVerticalPanel.add(funcFP);
 		mainFunctionVerticalPanel.setHeight("675px");
-	}
-	
-	
-	
-	/**
-	 * Method to build collapsible View CQL Panel with Ace Editor.
-	 * 
-	 * @return PanelGroup
-	 */
-	PanelGroup buildViewCQLCollapsiblePanel() {
-		PanelGroup panelGroup = new PanelGroup();
-		panelGroup.setId("panelGroup");
-		Panel panel = new Panel(PanelType.PRIMARY);
-		PanelHeader header = new PanelHeader();
-
-		header.add(viewCQLAnchor);
-
-		panelViewCQLCollapse.setId("panelCollapse");
-		PanelBody body = new PanelBody();
-
-		viewCQLAceEditor.setMode(AceEditorMode.CQL);
-		viewCQLAceEditor.setTheme(AceEditorTheme.ECLIPSE);
-		viewCQLAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		viewCQLAceEditor.setSize("655px", "200px");
-		viewCQLAceEditor.setAutocompleteEnabled(true);
-		viewCQLAceEditor.addAutoCompletions();
-		viewCQLAceEditor.setUseWrapMode(true);
-		viewCQLAceEditor.removeAllMarkers();
-		viewCQLAceEditor.clearAnnotations();
-		viewCQLAceEditor.redisplay();
-		viewCQLAceEditor.getElement().setAttribute("id", "Define_ViewAceEditorID");
-		viewCQLAceEditor.setReadOnly(true);
-
-		body.add(viewCQLAceEditor);
-		panelViewCQLCollapse.add(body);
-
-		panel.add(header);
-		panel.add(panelViewCQLCollapse);
-
-		panelGroup.add(panel);
-
-		return panelGroup;
-
 	}
 	
 	/**
@@ -344,15 +300,15 @@ public class CQLFunctionsView {
 		getFunctionBodyAceEditor().setText("");
 		
 		getViewCQLAceEditor().setText("");
-		panelViewCQLCollapse.getElement().setClassName("panel-collapse collapse");
+		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
 	
 	public PanelCollapse getPanelViewCQLCollapse() {
-		return panelViewCQLCollapse;
+		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
 	}
 
 	public AceEditor getViewCQLAceEditor() {
-		return viewCQLAceEditor;
+		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
 	}
 	
 	/**

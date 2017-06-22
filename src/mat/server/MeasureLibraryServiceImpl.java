@@ -4131,7 +4131,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 									int position = allMessages.lastIndexOf(",");
 									if (position!=-1)
 										allMessages = allMessages.substring(0, position);
-									typeCheckErrorMessage.add(allMessages+" Please re-save your measure grouping(s) for additional information.");
+									typeCheckErrorMessage.add(allMessages+". Please re-save your measure grouping(s) for additional information.");
 									result.setValidationMessages(typeCheckErrorMessage);
 								}
 								

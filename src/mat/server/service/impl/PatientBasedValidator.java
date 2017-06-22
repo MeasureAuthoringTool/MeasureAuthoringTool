@@ -267,9 +267,9 @@ public class PatientBasedValidator {
 				
 			}else {
 				if(!isList){
-					returnMessages.add("For Episodic Measures, the return type for all definitions in a population must be the same and must also return a list.");
+					returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
 				}else if(!returnType.equals(expressionReturnType)){
-					returnMessages.add("For Episodic Measures, the return type for all definitions in a population must be the same and must also return a list.");
+					returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
 				}
 			}
 		}

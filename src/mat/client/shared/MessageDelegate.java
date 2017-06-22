@@ -315,7 +315,7 @@ public class MessageDelegate {
 	/** The Constant NO_VERSION_CREATED. */
 	public static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";
 
-	private final String MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE = "Unable to create measure package. There is an incorrect return type. Please re-save your measure grouping(s) and try again.";
+	private final String MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE = "Unable to create measure package. There is an incorrect return type in the following grouping(s): ";
 	
 	/**
 	 * Gets the measure save server error message.

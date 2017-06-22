@@ -4116,13 +4116,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if(!seqDetailMap.isEmpty()){
 							List<String> typeCheckErrorMessage = new ArrayList<String>();
 							typeCheckErrorMessage.add(MatContext.get().getMessageDelegate().getCreatePackageTypeCheckError());
-							String allMessages = new String("Following grouping(s) are invalid : ");
+							String allMessages = new String("");
 							boolean isTypeCheckInValid = false;
 							try {
 								for (Map.Entry<Integer, MeasurePackageDetail> entry : seqDetailMap.entrySet()) {
 									List<String> messages = PatientBasedValidator.checkPatientBasedValidations(xmlModel.getXml(), entry.getValue(), cqlLibraryDAO);
 									if(messages.size() >0){
-										allMessages = allMessages + "Grouping " + entry.getKey()+ ",";
+										allMessages = allMessages +"Grouping " + entry.getKey()+ ", ";
 										isTypeCheckInValid = true;
 									}
 								}
@@ -4131,7 +4131,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 									int position = allMessages.lastIndexOf(",");
 									if (position!=-1)
 										allMessages = allMessages.substring(0, position);
-									typeCheckErrorMessage.add(allMessages+".");
+									typeCheckErrorMessage.add(allMessages+" Please re-save your measure grouping(s) for additional information.");
 									result.setValidationMessages(typeCheckErrorMessage);
 								}
 								

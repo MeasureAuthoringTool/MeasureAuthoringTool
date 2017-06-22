@@ -260,11 +260,17 @@ public class PatientBasedValidator {
 			
 			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
 			String expressionReturnType = cqlExpressionObject.getReturnType();
+			boolean isList = expressionReturnType.toLowerCase().startsWith("list".toLowerCase());
 			
 			if(returnType == null){
 				returnType = expressionReturnType;
-			}else if(!returnType.equals(expressionReturnType)){
-				returnMessages.add("Return types for all definitions in a group should be similar.");
+				
+			}else {
+				if(!isList){
+					returnMessages.add("Return types for all Definitions in a group should be list and similar.");
+				}else if(!returnType.equals(expressionReturnType)){
+					returnMessages.add("Return types for all Definitions in a group should be list and similar.");
+				}
 			}
 		}
 		

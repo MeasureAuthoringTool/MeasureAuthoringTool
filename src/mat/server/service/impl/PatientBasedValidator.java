@@ -257,17 +257,16 @@ public class PatientBasedValidator {
 		String returnType = null;
 		
 		for(CQLExpressionObject cqlExpressionObject : expressionsToBeChecked){
-			
+
 			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
 			String expressionReturnType = cqlExpressionObject.getReturnType();
 			boolean isList = expressionReturnType.toLowerCase().startsWith("list".toLowerCase());
 			
-			if(returnType == null){
-				returnType = expressionReturnType;
-				
-			}else {
-				if(!isList){
-					returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
+			if(!isList){
+				returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
+			}else{
+				if(returnType == null){
+					returnType = expressionReturnType;
 				}else if(!returnType.equals(expressionReturnType)){
 					returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
 				}

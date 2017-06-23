@@ -223,7 +223,7 @@
 		<relatedDocument typeCode="COMP">
 	      <expressionDocument>
 	         <id root="{cqlUUID}"/>
-	         <text mediaType="application/cql">
+	         <text mediaType="text/cql">
 	            <reference value="{../cqlLookUp/library}-{../cqlLookUp/version}.cql"/>
 	            <translation mediaType="application/elm+xml">
 		               <reference value="{../cqlLookUp/library}-{../cqlLookUp/version}.xml"/>
@@ -236,7 +236,7 @@
 	    	<relatedDocument typeCode="COMP">
 	      		<expressionDocument>
 	         		<id root="{@id}"/>
-	    			 <text mediaType="application/cql">
+	    			 <text mediaType="text/cql">
 	    			 	<reference value="{@name}-{@version}.cql"/>
 			            <translation mediaType="application/elm+xml">
 				               <reference value="{@name}-{@version}.xml"/>

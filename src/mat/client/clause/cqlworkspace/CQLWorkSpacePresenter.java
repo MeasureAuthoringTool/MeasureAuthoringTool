@@ -5090,7 +5090,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	
 	/**
-	 * 
+	 * Get CQL from Server and display in Collpsible Panel in read Only Mode.
 	 */
 	private void showCompleteCQL(final AceEditor aceEditor) {
 		MatContext.get().getMeasureService().getMeasureCQLFileData(MatContext.get().getCurrentMeasureId(),
@@ -5117,10 +5117,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									aceEditor.setText(result.getCqlString());
 									//searchDisplay.getCqlAceEditor().lockEditor(0, 0);
 									aceEditor.setAnnotations();
+									aceEditor.gotoLine(1);
 									aceEditor.redisplay();
 								} else {
 									
 									aceEditor.setText(result.getCqlString());
+									aceEditor.gotoLine(1);
 								}
 							}
 

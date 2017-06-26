@@ -22,6 +22,9 @@
 					<field name="context" type="java.lang.String">
 						<bind-xml name="context" node="attribute" />
 					</field>
+					<field name="commentString" type="java.lang.String">
+						<bind-xml name="comment" node="element" />
+					</field>
 					<field name="argument" type="mat.model.cql.CQLFunctionArgument"
 						get-method="getArgumentList" set-method="setArgumentList"
 						collection="arraylist">

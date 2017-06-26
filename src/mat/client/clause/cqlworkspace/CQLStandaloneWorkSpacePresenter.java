@@ -982,7 +982,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	}
 	
 	/**
-	 * 
+	 * Get Complete CQL And add it to Collapsible Panel in read Only Mode.
 	 */
 	private void showCompleteCQL(final AceEditor aceEditor) {
 		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(),
@@ -1009,10 +1009,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									aceEditor.setText(result.getCqlString());
 									//searchDisplay.getCqlAceEditor().lockEditor(0, 0);
 									aceEditor.setAnnotations();
+									aceEditor.gotoLine(1);
 									aceEditor.redisplay();
 								} else {
 									
 									aceEditor.setText(result.getCqlString());
+									aceEditor.gotoLine(1);
 								}
 							}
 

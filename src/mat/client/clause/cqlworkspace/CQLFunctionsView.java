@@ -58,6 +58,7 @@ import mat.client.CustomPager;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
+import mat.client.shared.CommentTextAreaWithMaxLength;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
@@ -150,6 +151,8 @@ public class CQLFunctionsView {
 	boolean isEditable = false;
 	
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
+	
+	private CommentTextAreaWithMaxLength funcCommentTextArea = new CommentTextAreaWithMaxLength(250);
 
 	/**
 	 * Instantiates a new CQL functions view.
@@ -191,10 +194,10 @@ public class CQLFunctionsView {
 		funcFormGroup.add(functionNameLabel);
 		funcFormGroup.add(addNewButtonBar);
 		
-		Grid queryGrid = new Grid(1,1);
+		/*Grid queryGrid = new Grid(1,1);
 		queryGrid.setWidget(0, 0, funcFormGroup);
 
-		funcHP.add(queryGrid);
+		funcHP.add(queryGrid);*/
 
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -246,6 +249,24 @@ public class CQLFunctionsView {
 		contextGroup.add(contextFuncPATRadioBtn);
 		contextGroup.add(contextFuncPOPRadioBtn);
 		contextGroup.setStyleName("contextToggleSwitch");
+		
+		Label funcCommentLabel = new Label(LabelType.INFO, "Comment");
+		funcCommentLabel.setId("definComment_Label");
+		
+		funcCommentTextArea.setId("DefineCommentTextArea_Id");
+		funcCommentTextArea.setSize("260px", "80px");
+		funcCommentTextArea.setText("");
+		funcCommentTextArea.setName("Function Comment");
+		
+		Grid queryGrid = new Grid(4, 2);
+		queryGrid.setWidget(0, 0, funcFormGroup);
+		queryGrid.setWidget(0, 1, funcNameTxtArea);
+		queryGrid.setWidget(1, 0, funcContextLabel);
+		queryGrid.setWidget(1, 1, contextGroup);
+		queryGrid.setWidget(2, 0, new SpacerWidget());
+		queryGrid.setWidget(3, 0, funcCommentLabel);
+		queryGrid.setWidget(3, 1, funcCommentTextArea);
+		
 
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcHP);
@@ -883,5 +904,13 @@ public class CQLFunctionsView {
 		getContextFuncPOPRadioBtn().setEnabled(isEditable);
 		getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 
+	}
+
+	public CommentTextAreaWithMaxLength getFunctionCommentTextArea() {
+		return funcCommentTextArea;
+	}
+
+	public void setFunctionCommentTextArea(CommentTextAreaWithMaxLength functionCommentTextArea) {
+		this.funcCommentTextArea = functionCommentTextArea;
 	}
 }

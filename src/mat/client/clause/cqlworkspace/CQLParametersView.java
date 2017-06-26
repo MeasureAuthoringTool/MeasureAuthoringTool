@@ -3,13 +3,11 @@
  */
 package mat.client.clause.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
@@ -27,6 +25,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
+import mat.client.shared.CommentTextAreaWithMaxLength;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
@@ -52,6 +51,8 @@ public class CQLParametersView {
 	VerticalPanel mainParamViewVerticalPanel = new VerticalPanel();
 
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
+	
+	private CommentTextAreaWithMaxLength parameterCommentTextArea = new CommentTextAreaWithMaxLength(250);
 
 	public CQLParametersView() {
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
@@ -84,10 +85,10 @@ public class CQLParametersView {
 		parameterFormGroup.add(parameterLabel);
 		parameterFormGroup.add(addNewButtonBar);
 
-		Grid queryGrid = new Grid(1, 1);
+		/*Grid queryGrid = new Grid(1, 1);
 		queryGrid.setWidget(0, 0, parameterFormGroup);
 
-		parameterHP.add(queryGrid);
+		parameterHP.add(queryGrid);*/
 		
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -122,10 +123,28 @@ public class CQLParametersView {
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterButtonBar.getCloseButton().setVisible(false);
+		
+		Label parameterCommentLabel = new Label(LabelType.INFO, "Comment");
+		parameterCommentLabel.setId("definComment_Label");
+		
+		parameterCommentTextArea.setId("DefineCommentTextArea_Id");
+		parameterCommentTextArea.setSize("260px", "80px");
+		parameterCommentTextArea.setText("");
+		parameterCommentTextArea.setName("Parameter Comment");
+		
+		Grid queryGrid = new Grid(3, 2);
+		queryGrid.setWidget(0, 0, parameterFormGroup);
+		queryGrid.setWidget(0, 1, parameterNameTxtArea);
+		queryGrid.setWidget(1, 0, new SpacerWidget());
+		queryGrid.setWidget(2, 0, parameterCommentLabel);
+		queryGrid.setWidget(2, 1, parameterCommentTextArea);
+		
 		parameterVP.add(new SpacerWidget());
-		parameterVP.add(parameterHP);
+		/*parameterVP.add(parameterHP);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterNameTxtArea);
+		*/
+		parameterVP.add(queryGrid);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterButtonBar);
 		parameterVP.add(aceEditorPanel);
@@ -213,5 +232,13 @@ public class CQLParametersView {
 
 	public void hideAceEditorAutoCompletePopUp() {
 		getParameterAceEditor().detach();
+	}
+
+	public CommentTextAreaWithMaxLength getParameterCommentTextArea() {
+		return parameterCommentTextArea;
+	}
+
+	public void setParameterCommentTextArea(CommentTextAreaWithMaxLength parameterCommentTextArea) {
+		this.parameterCommentTextArea = parameterCommentTextArea;
 	}
 }

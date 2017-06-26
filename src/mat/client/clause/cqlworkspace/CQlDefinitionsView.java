@@ -28,6 +28,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
+import mat.client.shared.CommentTextAreaWithMaxLength;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
@@ -57,6 +58,8 @@ public class CQlDefinitionsView {
 	private VerticalPanel mainDefineViewVerticalPanel = new VerticalPanel();
 
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
+	
+	private CommentTextAreaWithMaxLength defineCommentTextArea = new CommentTextAreaWithMaxLength(250);
 	
 	
 	public CQlDefinitionsView() {
@@ -93,10 +96,11 @@ public class CQlDefinitionsView {
 		definitionFormGroup.add(defineLabel);
 		definitionFormGroup.add(addNewButtonBar);
 
-		Grid queryGrid = new Grid(1, 1);
+		/*Grid queryGrid = new Grid(3, 2);
 		queryGrid.setWidget(0, 0, definitionFormGroup);
+		queryGrid.setWidget(0,1, defineNameTxtArea)*/
 
-		definitionHP.add(queryGrid);
+		//definitionHP.add(queryGrid);
 
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -142,14 +146,33 @@ public class CQlDefinitionsView {
 		defineButtonBar.getCloseButton().setVisible(false);
 		defineContextPanel.add(contextGroup);
 		defineContextPanel.setStyleName("contextToggleSwitch");
-		definitionVP.add(new SpacerWidget());
+		
+		Label defineCommentLabel = new Label(LabelType.INFO, "Comment");
+		defineCommentLabel.setId("definComment_Label");
+		
+		defineCommentTextArea.setId("DefineCommentTextArea_Id");
+		defineCommentTextArea.setSize("260px", "80px");
+		defineCommentTextArea.setText("");
+		defineCommentTextArea.setName("Definition Comment");
+		
+		Grid queryGrid = new Grid(4, 2);
+		queryGrid.setWidget(0, 0, definitionFormGroup);
+		queryGrid.setWidget(0, 1, defineNameTxtArea);
+		queryGrid.setWidget(1, 0, defineContextLabel);
+		queryGrid.setWidget(1, 1, defineContextPanel);
+		queryGrid.setWidget(2, 0, new SpacerWidget());
+		queryGrid.setWidget(3, 0, defineCommentLabel);
+		queryGrid.setWidget(3, 1, defineCommentTextArea);
+		
+		/*definitionVP.add(new SpacerWidget());
 		definitionVP.add(definitionHP);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineNameTxtArea);
 		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineContextLabel);
+		definitionVP.add(defineContextLabel);*/
+		definitionVP.add(queryGrid);
 		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineContextPanel);
+		//definitionVP.add(defineContextPanel);
 		definitionVP.add(defineButtonBar);
 		/*definitionVP.add(new SpacerWidget());
 		
@@ -274,6 +297,14 @@ public class CQlDefinitionsView {
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getTimingExpButton().setEnabled(isEditable);
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
+	}
+
+	public CommentTextAreaWithMaxLength getDefineCommentTextArea() {
+		return defineCommentTextArea;
+	}
+
+	public void setDefineCommentTextArea(CommentTextAreaWithMaxLength commentTextArea) {
+		this.defineCommentTextArea = commentTextArea;
 	}
 
 }

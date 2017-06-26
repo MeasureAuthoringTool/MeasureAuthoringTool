@@ -827,6 +827,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCQLParametersView().getParameterAceEditor()
 								.setText(searchDisplay.getCqlLeftNavBarPanelView().getParameterMap()
 										.get(selectedParamID).getParameterLogic());
+								searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText(searchDisplay.getCqlLeftNavBarPanelView()
+										.getParameterMap().get(selectedParamID).getCommentString());
 								System.out.println("In Parameter DoubleClickHandler, doing setText()");
 								// disable parameterName and Logic
 								// fields
@@ -962,6 +964,18 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCQLParametersView().getParameterCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+
 
 		// Parameter Add New Functionality
 		searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
@@ -1062,6 +1076,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLParametersView().getParameterNameTxtArea() != null)) {
 			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText("");
 		}
+		
+		if ((searchDisplay.getCQLParametersView().getParameterCommentTextArea() != null)) {
+			searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText("");
+		}
 
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 			searchDisplay.getCQLParametersView()
@@ -1117,6 +1135,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCQLDefinitionsView().getDefineAceEditor()
 								.setText(searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap()
 										.get(selectedDefinitionID).getDefinitionLogic());
+								searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea()
+								.setText(searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getCommentString());
 								if (searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap()
 										.get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")) {
 									searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn()
@@ -1270,6 +1290,18 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
+		searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+
+		
 		// Definition Add New Functionality
 		searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
@@ -1305,6 +1337,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		}
 		if ((searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea() != null)) {
 			searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea().setText("");
+		}
+		
+		if ((searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea()!= null)) {
+			searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().setText("");
 		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -1367,6 +1403,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor()
 										.setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap()
 												.get(selectedFunctionId).getFunctionLogic());
+								searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText(
+										searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getCommentString());
 								if (searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId)
 										.getContext().equalsIgnoreCase("patient")) {
 									searchDisplay.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
@@ -1568,6 +1606,18 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
+
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+		
 
 		// Function Add New Functionality
 		searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
@@ -1603,6 +1653,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLFunctionsView().getFuncNameTxtArea() != null)) {
 			searchDisplay.getCQLFunctionsView().getFuncNameTxtArea().setText("");
 		}
+		
+		if ((searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea()!= null)) {
+			searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText("");
+		}
+		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
@@ -2054,6 +2109,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		final String functionName = searchDisplay.getCQLFunctionsView().getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().getText();
+		String functionComment = searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().getText();
 		String funcContext = "";
 		if (searchDisplay.getCQLFunctionsView().getContextFuncPATRadioBtn().getValue()) {
 			funcContext = "Patient";
@@ -2066,6 +2122,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
 				function.setFunctionName(functionName);
+				function.setCommentString(functionComment);
 				function.setArgumentList(searchDisplay.getCQLFunctionsView().getFunctionArgumentList());
 				function.setContext(funcContext);
 				CQLFunctions toBeModifiedParamObj = null;
@@ -2216,6 +2273,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		final String parameterName = searchDisplay.getCQLParametersView().getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getCQLParametersView().getParameterAceEditor().getText();
+		String parameterComment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
 		if (!parameterName.isEmpty()) {
 
 			if (!validator.validateForSpecialChar(parameterName.trim())) {
@@ -2223,6 +2281,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				CQLParameter parameter = new CQLParameter();
 				parameter.setParameterLogic(parameterLogic);
 				parameter.setParameterName(parameterName);
+				parameter.setCommentString(parameterComment);
 				CQLParameter toBeModifiedParamObj = null;
 
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId() != null) {
@@ -2350,6 +2409,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		final String definitionName = searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getCQLDefinitionsView().getDefineAceEditor().getText();
+		String definitionComment = searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().getText();
 		String defineContext = "";
 		if (searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn().getValue()) {
 			defineContext = "Patient";
@@ -2363,6 +2423,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);
 				define.setDefinitionLogic(definitionLogic);
+				define.setCommentString(definitionComment);
 				define.setContext(defineContext);
 				CQLDefinition toBeModifiedObj = null;
 
@@ -2650,6 +2711,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText("");
 		}
 
+		if ((searchDisplay.getCQLParametersView().getParameterCommentTextArea() != null)) {
+			searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText("");
+		}
+		
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 			searchDisplay.getCQLParametersView()
 					.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
@@ -2680,6 +2745,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea() != null)) {
 			searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea().setText("");
 		}
+		if ((searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea() != null)) {
+			searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().setText("");
+		}
+		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
@@ -2720,6 +2789,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLFunctionsView().getFuncNameTxtArea() != null)) {
 			searchDisplay.getCQLFunctionsView().getFuncNameTxtArea().setText("");
 		}
+		if ((searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea() != null)) {
+			searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText("");
+		}
+		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");

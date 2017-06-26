@@ -537,6 +537,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCQLParametersView().getParameterCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+		
 		// Parameter Add New Functionality
 		searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
@@ -564,6 +576,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if ((searchDisplay.getCQLParametersView().getParameterNameTxtArea() != null)) {
 			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText("");
+		}
+		
+		if ((searchDisplay.getCQLParametersView().getParameterCommentTextArea() != null)) {
+			searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText("");
 		}
 
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -689,6 +705,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+		
 		// Function Add New Functionality
 		searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
@@ -722,6 +750,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if ((searchDisplay.getCqlFunctionsView().getFuncNameTxtArea() != null)) {
 			searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText("");
+		}
+		
+		if ((searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea()!= null)) {
+			searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().setText("");
 		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -881,6 +913,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+				}
+			}
+		});
+		
 		// Definition Add New Functionality
 				searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
 
@@ -910,6 +954,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea() != null)) {
 			searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText("");
 		}
+		
+		if ((searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea()!= null)) {
+			searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().setText("");
+		}
+		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
@@ -969,6 +1018,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									.setText(searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID).getParameterName());
 							searchDisplay.getCQLParametersView().getParameterAceEditor().setText(searchDisplay.getCqlLeftNavBarPanelView()
 									.getParameterMap().get(selectedParamID).getParameterLogic());
+							searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText(searchDisplay.getCqlLeftNavBarPanelView()
+									.getParameterMap().get(selectedParamID).getCommentString());
 							System.out.println("In Parameter DoubleClickHandler, doing setText()");
 							// disable parameterName and Logic fields for
 							// Default Parameter
@@ -1051,6 +1102,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						if (searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID) != null) {
 							searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea()
 									.setText(searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getDefinitionName());
+							searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea()
+							.setText(searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getCommentString());
 							searchDisplay.getCQlDefinitionsView().getDefineAceEditor()
 									.setText(searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getDefinitionLogic());
 							if (searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")) {
@@ -1143,6 +1196,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(selectedFunctionId);
 						if (searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId) != null) {
 							searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getFunctionName());
+							searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getCommentString());
 							searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getFunctionLogic());
 							if (searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getContext().equalsIgnoreCase("patient")) {
 								searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setValue(true);
@@ -2018,6 +2072,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLParametersView().getParameterNameTxtArea() != null)) {
 			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText("");
 		}
+		
+		if ((searchDisplay.getCQLParametersView().getParameterCommentTextArea() != null)) {
+			searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText("");
+		}
 
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			searchDisplay.getCQLParametersView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
@@ -2047,6 +2105,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if ((searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea() != null)) {
 			searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText("");
+		}
+		if ((searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea() != null)) {
+			searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().setText("");
 		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -2088,6 +2149,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCqlFunctionsView().getFuncNameTxtArea() != null)) {
 			searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText("");
 		}
+		if ((searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea() != null)) {
+			searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().setText("");
+		}
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
@@ -2110,6 +2174,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		final String functionName = searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().getText();
 		String functionBody = searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().getText();
+		String funcComment = searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().getText();
 		String funcContext = "";
 		if (searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().getValue()) {
 			funcContext = "Patient";
@@ -2122,6 +2187,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
 				function.setFunctionName(functionName);
+				function.setCommentString(funcComment);
 				function.setArgumentList(searchDisplay.getCqlFunctionsView().getFunctionArgumentList());
 				function.setContext(funcContext);
 				CQLFunctions toBeModifiedParamObj = null;
@@ -2257,6 +2323,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		final String parameterName = searchDisplay.getCQLParametersView().getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getCQLParametersView().getParameterAceEditor().getText();
+		String parameterComment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
 		if (!parameterName.isEmpty()) {
 
 			if (!validator.validateForSpecialChar(parameterName.trim())) {
@@ -2264,6 +2331,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				CQLParameter parameter = new CQLParameter();
 				parameter.setParameterLogic(parameterLogic);
 				parameter.setParameterName(parameterName);
+				parameter.setCommentString(parameterComment);
 				CQLParameter toBeModifiedParamObj = null;
 				
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId() != null) {
@@ -2376,6 +2444,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		final String definitionName = searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().getText();
 		String definitionLogic = searchDisplay.getCQlDefinitionsView().getDefineAceEditor().getText();
+		String definitionComment = searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().getText();
 		String defineContext = "";
 		if (searchDisplay.getCQlDefinitionsView().getContextDefinePATRadioBtn().getValue()) {
 			defineContext = "Patient";
@@ -2389,6 +2458,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);
 				define.setDefinitionLogic(definitionLogic);
+				define.setCommentString(definitionComment);
 				define.setContext(defineContext);
 				CQLDefinition toBeModifiedObj = null;
 				

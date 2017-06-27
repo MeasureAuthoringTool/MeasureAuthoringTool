@@ -71,20 +71,23 @@ public class CQLParametersView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-		HorizontalPanel parameterHP = new HorizontalPanel();
-		FormGroup parameterFormGroup = new FormGroup();
+		//FormGroup parameterFormGroup = new FormGroup();
 		Label parameterLabel = new Label(LabelType.INFO, "Parameter Name");
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
 		parameterLabel.setText("Parameter Name");
 		parameterNameTxtArea.setText("");
-		parameterNameTxtArea.setSize("260px", "25px");
+		parameterNameTxtArea.setSize("550px", "25px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
-		parameterFormGroup.clear();
+		SimplePanel parameterNamePanel = new SimplePanel();
+		parameterNamePanel.getElement().setId("ParameterName_SimplePanel");
+		parameterNamePanel.setStyleName("marginLeft20px");
+		parameterNamePanel.add(parameterNameTxtArea);
+		/*parameterFormGroup.clear();
 		parameterFormGroup.add(parameterLabel);
 		parameterFormGroup.add(addNewButtonBar);
-
+*/
 		/*Grid queryGrid = new Grid(1, 1);
 		queryGrid.setWidget(0, 0, parameterFormGroup);
 
@@ -118,7 +121,7 @@ public class CQLParametersView {
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
 
-		parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
+		//parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
 
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
@@ -128,18 +131,23 @@ public class CQLParametersView {
 		parameterCommentLabel.setId("definComment_Label");
 		
 		parameterCommentTextArea.setId("DefineCommentTextArea_Id");
-		parameterCommentTextArea.setSize("260px", "80px");
+		parameterCommentTextArea.setSize("550px", "40px");
 		parameterCommentTextArea.setText("");
 		parameterCommentTextArea.setName("Parameter Comment");
+		SimplePanel parameterCommentPanel = new SimplePanel();
+		parameterCommentPanel.getElement().setId("ParameterComment_SimplePanel");
+		parameterCommentPanel.setStyleName("topping marginLeft20px");
+		parameterCommentPanel.add(parameterCommentTextArea);
 		
 		Grid queryGrid = new Grid(3, 2);
-		queryGrid.setWidget(0, 0, parameterFormGroup);
-		queryGrid.setWidget(0, 1, parameterNameTxtArea);
-		queryGrid.setWidget(1, 0, new SpacerWidget());
+		queryGrid.setWidget(0, 0, addNewButtonBar);
+		queryGrid.setWidget(1, 0, parameterLabel);
+		queryGrid.setWidget(1, 1, parameterNamePanel);
+		//queryGrid.setWidget(2, 0, new SpacerWidget());
 		queryGrid.setWidget(2, 0, parameterCommentLabel);
-		queryGrid.setWidget(2, 1, parameterCommentTextArea);
+		queryGrid.setWidget(2, 1, parameterCommentPanel);
 		
-		parameterVP.add(new SpacerWidget());
+		//parameterVP.add(new SpacerWidget());
 		/*parameterVP.add(parameterHP);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterNameTxtArea);
@@ -162,7 +170,7 @@ public class CQLParametersView {
 		mainParamViewVerticalPanel.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
-		mainParamViewVerticalPanel.add(new SpacerWidget());
+		/*mainParamViewVerticalPanel.add(new SpacerWidget());*/
 		mainParamViewVerticalPanel.add(parameterFP);
 		mainParamViewVerticalPanel.setHeight("675px");
 	}
@@ -220,6 +228,7 @@ public class CQLParametersView {
 	public void setWidgetReadOnly(boolean isEditable) {
 
 		getParameterNameTxtArea().setEnabled(isEditable);
+		getParameterCommentTextArea().setEnabled(isEditable);
 		getParameterAceEditor().setReadOnly(!isEditable);
 		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		System.out.println(

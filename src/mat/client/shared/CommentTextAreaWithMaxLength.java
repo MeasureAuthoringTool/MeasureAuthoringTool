@@ -11,7 +11,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Label;
 
 
 public class CommentTextAreaWithMaxLength extends TextArea  {
@@ -29,7 +28,6 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 		
 		super(Document.get().createTextAreaElement());
 		maxLength = maxLen;
-		//setStyleName("gwt-TextArea");
 		sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
 		
 		CommentTextAreaWithMaxLength.this
@@ -39,13 +37,8 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 			public void onValueChange(ValueChangeEvent<String> event) {
 				if (!CommentTextAreaWithMaxLength.this.isReadOnly()) {
 					String commentAreaUpdatedText = getRestrictedString(event.getValue());
-					int pos = getCursorPos();
 					CommentTextAreaWithMaxLength.this.setText(commentAreaUpdatedText);
-					/*try {
-						commentAreaUpdatedText = CommentTextAreaWithMaxLength.this.getText();
-					} catch (Exception e) {
-						commentAreaUpdatedText = "";
-					}*/
+	
 					if (commentAreaUpdatedText.length() >= maxLength) {
 						String subStringText = commentAreaUpdatedText.substring(0,
 								maxLength);

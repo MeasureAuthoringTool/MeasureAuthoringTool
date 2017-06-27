@@ -179,21 +179,25 @@ public class CQLFunctionsView {
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 		HorizontalPanel funcHP = new HorizontalPanel();
-		FormGroup funcFormGroup = new FormGroup();
+		//FormGroup funcFormGroup = new FormGroup();
 		Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
 		functionNameLabel.setMarginTop(5);
 		functionNameLabel.setId("Function_Label");
 		funcNameTxtArea.setText("");
 		// funcNameTxtArea.setPlaceholder("Enter Function Name here.");
-		funcNameTxtArea.setSize("260px", "25px");
+		funcNameTxtArea.setSize("550px", "25px");
 		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
+		SimplePanel funcNamePanel = new SimplePanel();
+		funcNamePanel.setStyleName("marginLeft20px");
+		funcNamePanel.getElement().setId("FuncName_SimplePanel");
+		funcNamePanel.add(funcNameTxtArea);
 		functionNameLabel.setText("Function Name");
 		
-		funcFormGroup.clear();
+		/*funcFormGroup.clear();
 		funcFormGroup.add(functionNameLabel);
 		funcFormGroup.add(addNewButtonBar);
-		
+		*/
 		/*Grid queryGrid = new Grid(1,1);
 		queryGrid.setWidget(0, 0, funcFormGroup);
 
@@ -248,27 +252,34 @@ public class CQLFunctionsView {
 		functionButtonBar.getCloseButton().setVisible(false);
 		contextGroup.add(contextFuncPATRadioBtn);
 		contextGroup.add(contextFuncPOPRadioBtn);
-		contextGroup.setStyleName("contextToggleSwitch");
+		contextGroup.setStyleName("contextToggleSwitch marginLeft20px");
 		
 		Label funcCommentLabel = new Label(LabelType.INFO, "Comment");
 		funcCommentLabel.setId("definComment_Label");
 		
 		funcCommentTextArea.setId("DefineCommentTextArea_Id");
-		funcCommentTextArea.setSize("260px", "80px");
+		funcCommentTextArea.setSize("550px", "40px");
 		funcCommentTextArea.setText("");
 		funcCommentTextArea.setName("Function Comment");
+		SimplePanel funcCommentPanel = new SimplePanel();
+		funcCommentPanel.getElement().setId("FunctionComment_SimplePanel");
+		funcCommentPanel.setStyleName("topping marginLeft20px");
+		funcCommentPanel.add(funcCommentTextArea);
 		
-		Grid queryGrid = new Grid(4, 2);
-		queryGrid.setWidget(0, 0, funcFormGroup);
-		queryGrid.setWidget(0, 1, funcNameTxtArea);
-		queryGrid.setWidget(1, 0, funcContextLabel);
-		queryGrid.setWidget(1, 1, contextGroup);
+		
+		Grid queryGrid = new Grid(5, 2);
+		queryGrid.setWidget(0, 0, addNewButtonBar);
+		queryGrid.setWidget(1, 0, functionNameLabel);
+		queryGrid.setWidget(1, 1, funcNamePanel);
 		queryGrid.setWidget(2, 0, new SpacerWidget());
-		queryGrid.setWidget(3, 0, funcCommentLabel);
-		queryGrid.setWidget(3, 1, funcCommentTextArea);
+		queryGrid.setWidget(3, 0, funcContextLabel);
+		queryGrid.setWidget(3, 1, contextGroup);
+		//queryGrid.setWidget(4, 0, new SpacerWidget());
+		queryGrid.setWidget(4, 0, funcCommentLabel);
+		queryGrid.setWidget(4, 1, funcCommentPanel);
 		
 
-		funcVP.add(new SpacerWidget());
+		/*funcVP.add(new SpacerWidget());
 		funcVP.add(funcHP);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(funcNameTxtArea);
@@ -276,6 +287,8 @@ public class CQLFunctionsView {
 		funcVP.add(funcContextLabel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(contextGroup);
+		*/
+		funcVP.add(queryGrid);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
@@ -896,6 +909,7 @@ public class CQLFunctionsView {
 	public void setWidgetReadOnly(boolean isEditable) {
 
 		getFuncNameTxtArea().setEnabled(isEditable);
+		getFunctionCommentTextArea().setEnabled(isEditable);
 		getFunctionBodyAceEditor().setReadOnly(!isEditable);
 		getFunctionButtonBar().setEnabled(isEditable);
 		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);

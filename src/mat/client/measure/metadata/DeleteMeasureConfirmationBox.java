@@ -45,7 +45,7 @@ public class DeleteMeasureConfirmationBox {
 	}
 
 	/** The confirm. */
-	public static Button confirm = new Button("Confirm");
+	public static Button confirm;
 	
 	/** The password entered. */
 	public static String passwordEntered;
@@ -96,6 +96,7 @@ public class DeleteMeasureConfirmationBox {
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Warning");
+		confirm = new Button("Confirm");
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");

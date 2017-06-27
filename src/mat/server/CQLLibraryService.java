@@ -26,6 +26,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -55,6 +57,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibrarySet;
+import mat.model.clause.Measure;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
@@ -69,6 +72,7 @@ import mat.model.cql.CQLLibraryShareDTO;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
@@ -1488,6 +1492,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		dataObject.setOwnerFirstName(user.getFirstName());
 		dataObject.setOwnerLastName(user.getLastName());
 		dataObject.setSharable(isOwner || isSuperUser);
+		dataObject.setDeletable(isOwner && dto.isDraft());
 		dataObject.setCqlSetId(dto.getCqlLibrarySetId());
 		dataObject.setEditable(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(
 				cqlLibraryDAO, dto.getCqlLibraryId()));
@@ -1767,4 +1772,24 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         return cqlLibraryOwnerReports; 
  
     }
+    
+    @Override
+    public final void deleteCQLLibrary(final String cqllibId, String loginUserId) {
+		logger.info("CQLLibraryService: DeleteCQLLibrary start : cqlLibId:: " + cqllibId);
+		CQLLibrary cqlLib = cqlLibraryDAO.find(cqllibId);
+		SecurityContext sc = SecurityContextHolder.getContext();
+		MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
+		if (cqlLib.getOwnerId().getId().equalsIgnoreCase(details.getId())) {
+			logger.info("CQL Library Deletion Started for cql library Id :: " + cqllibId);
+			try {
+				cqlLibraryDAO.delete(cqlLib);
+				logger.info("CQL Library Deleted Successfully :: " + cqllibId);
+			} catch (Exception e) {
+				logger.info("CQL Libraray not deleted.Something went wrong for cql Library Id :: " + cqllibId);
+			}
+		}
+
+		logger.info("CQLLibraryService: DeleteCQLLibrary End : cqlLibraryId:: " + cqllibId);
+	}
+
 }

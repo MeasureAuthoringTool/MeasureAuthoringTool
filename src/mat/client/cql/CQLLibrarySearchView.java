@@ -42,6 +42,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.clause.cqlworkspace.DeleteCQLLibraryConfirmDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
@@ -99,6 +100,9 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private MultiSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	/** The selected list. */
 	List<CQLLibraryDataSetObject> selectedList;
+	
+	/** The delete CQL library confirm dialog box. */
+	private DeleteCQLLibraryConfirmDialogBox deleteCQLLibraryConfirmDialogBox = new DeleteCQLLibraryConfirmDialogBox();
 
 	/**
 	 * The Interface Observer.
@@ -121,7 +125,19 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		 */
 		void onHistoryClicked(CQLLibraryDataSetObject result);
 		
+		/**
+		 * On create clicked.
+		 *
+		 * @param object the object
+		 */
 		void onCreateClicked(CQLLibraryDataSetObject object);
+		
+		/**
+		 * On delete clicked.
+		 *
+		 * @param object the object
+		 */
+		void onDeleteClicked(CQLLibraryDataSetObject object);
 
 	}
 
@@ -138,6 +154,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		 */
 		void onHistoryClicked(CQLLibraryDataSetObject result);
 
+		/**
+		 * This method is called when information about an Admin
+		 * which was previously requested using an asynchronous
+		 * interface becomes available.
+		 *
+		 * @param result the result
+		 */
 		void onTransferSelectedClicked(CQLLibraryDataSetObject result);
 
 	}
@@ -161,10 +184,9 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	/**
 	 * Builds the cell table.
 	 *
-	 * @param result
-	 *            the result
-	 * @param searchText
-	 *            the search text
+	 * @param result            the result
+	 * @param searchText            the search text
+	 * @param filter the filter
 	 */
 	public void buildCellTable(SaveCQLLibraryResult result, final String searchText, final int filter) {
 		cellTablePanel.clear();
@@ -476,6 +498,49 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		
 		table.addColumn(draftOrVersionCol,
 				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
+		
+		//Delete Column
+		ButtonCell deleteButtonCell = new ButtonCell(ButtonType.LINK);
+		Column<CQLLibraryDataSetObject,String> deleteColumn = new Column<CQLLibraryDataSetObject, String>(deleteButtonCell) {
+
+			@Override
+			public String getValue(CQLLibraryDataSetObject object) {
+				return object.getCqlName();
+			}
+			
+			@Override
+			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
+				if (object.isDeletable()) {
+					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to delete library\" tabindex=\"0\">");
+					sb.appendHtmlConstant("<i class=\"fa fa-trash fa-lg\" style=\"margin-left: 15px;\"></i>");
+					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
+					sb.appendHtmlConstant("</button>");
+				}
+			}
+			@Override
+			public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
+					NativeEvent event) {
+				String type = event.getType();
+				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
+					if(!object.isDeletable()){
+						event.preventDefault();
+					} else {
+						observer.onDeleteClicked(object);
+					}
+				} else {
+					if(!object.isDeletable()){
+						event.preventDefault();
+					}
+				}
+			}
+			
+		};
+		
+		table.addColumn(deleteColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
+
+		
+		
 		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
@@ -710,31 +775,84 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		return cellTablePanel;
 	}
 
+	/**
+	 * Gets the observer.
+	 *
+	 * @return the observer
+	 */
 	public Observer getObserver() {
 		return observer;
 	}
 
+	/**
+	 * Sets the observer.
+	 *
+	 * @param observer the new observer
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
 
+	/**
+	 * Gets the admin observer.
+	 *
+	 * @return the admin observer
+	 */
 	public AdminObserver getAdminObserver() {
 		return adminObserver;
 	}
 
+	/**
+	 * Sets the admin observer.
+	 *
+	 * @param adminObserver the new admin observer
+	 */
 	public void setAdminObserver(AdminObserver adminObserver) {
 		this.adminObserver = adminObserver;
 	}
 
+	/**
+	 * Gets the available libraries list.
+	 *
+	 * @return the available libraries list
+	 */
 	public List<CQLLibraryDataSetObject> getAvailableLibrariesList() {
 		return availableLibrariesList;
 	}
 
+	/**
+	 * Gets the table.
+	 *
+	 * @return the table
+	 */
 	public CellTable<CQLLibraryDataSetObject> getTable() {
 		return table;
 	}
 
+	/**
+	 * Sets the available libraries list.
+	 *
+	 * @param availableLibrariesList the new available libraries list
+	 */
 	public void setAvailableLibrariesList(List<CQLLibraryDataSetObject> availableLibrariesList) {
 		this.availableLibrariesList = availableLibrariesList;
+	}
+
+	/**
+	 * Gets the delete CQL library confirm dialog box.
+	 *
+	 * @return the delete CQL library confirm dialog box
+	 */
+	public DeleteCQLLibraryConfirmDialogBox getDeleteCQLLibraryConfirmDialogBox() {
+		return deleteCQLLibraryConfirmDialogBox;
+	}
+
+	/**
+	 * Sets the delete CQL library confirm dialog box.
+	 *
+	 * @param deleteCQLLibraryConfirmDialogBox the new delete CQL library confirm dialog box
+	 */
+	public void setDeleteCQLLibraryConfirmDialogBox(DeleteCQLLibraryConfirmDialogBox deleteCQLLibraryConfirmDialogBox) {
+		this.deleteCQLLibraryConfirmDialogBox = deleteCQLLibraryConfirmDialogBox;
 	}
 }

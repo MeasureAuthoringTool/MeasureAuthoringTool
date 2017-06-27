@@ -501,6 +501,7 @@ public class CQLServiceImpl implements CQLService {
               CQLParametersWrapper wrapper = new CQLParametersWrapper();
               CQLModelValidator validtor = new CQLModelValidator();
               boolean isDuplicate = false;
+              String XPATH_EXPRESSION_PARAMETERS = "//cqlLookUp/parameters";
               if (xml != null && !xml.isEmpty()) {
 
                      XmlProcessor processor = new XmlProcessor(xml);
@@ -532,19 +533,30 @@ public class CQLServiceImpl implements CQLService {
                                                        XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
 
                                          if (nodeParameter != null) {
-                                                nodeParameter.getAttributes().getNamedItem("name")
+                                                /*nodeParameter.getAttributes().getNamedItem("name")
                                                               .setNodeValue(currentObj.getParameterName());
 
                                                 Node logicNode = nodeParameter.getFirstChild();
                                                 logicNode.setTextContent(currentObj.getParameterLogic());
+                                                Node commentNode = nodeParameter.getLastChild();
+                                                commentNode.setTextContent(currentObj.getCommentString());
                                                 String finalUpdatedString = processor.transform(processor.getOriginalDoc());
+                                                
+                                                */
+                                        	 
+                                        	 String cqlString = createParametersXML(currentObj);
+                                             processor.removeFromParent(nodeParameter);
+                                             processor.appendNode(cqlString, "parameter", XPATH_EXPRESSION_PARAMETERS);
 
+                                             String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
+
+                                             
                                                 String cqlExpressionName = "parameter" + " \"" + currentObj.getParameterName() + "\"";
 
-                                                result.setXml(finalUpdatedString);
+                                                result.setXml(finalUpdatedXmlString);
                                                 cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
 
-                                                parseCQLExpressionForErrors(result, finalUpdatedString, cqlExpressionName,
+                                                parseCQLExpressionForErrors(result, finalUpdatedXmlString, cqlExpressionName,
                                                               currentObj.getParameterLogic(), currentObj.getParameterName(), "Parameter");
 
                                                 wrapper = modfiyCQLParameterList(toBeModifiedObj, currentObj, parameterList);
@@ -558,7 +570,13 @@ public class CQLServiceImpl implements CQLService {
                                          result.setSuccess(false);
                                          e.printStackTrace();
 
-                                  }
+                                  } catch (SAXException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
                                   logger.debug(" CQLServiceImpl: saveAndModifyParameters End :  ");
 
                            } else {
@@ -582,7 +600,6 @@ public class CQLServiceImpl implements CQLService {
                            if (!isDuplicate) {
 
                                   String cqlString = createParametersXML(currentObj);
-                                  String XPATH_EXPRESSION_PARAMETERS = "//cqlLookUp/parameters";
 
                                   try {
                                          Node nodeParameters = processor.findNode(processor.getOriginalDoc(),
@@ -652,6 +669,7 @@ public class CQLServiceImpl implements CQLService {
               CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
               CQLModelValidator validator = new CQLModelValidator();
               boolean isDuplicate = false;
+              String XPATH_EXPRESSION_DEFINTIONS = "//cqlLookUp/definitions";
               if (xml != null && !xml.isEmpty()) {
 
                      XmlProcessor processor = new XmlProcessor(xml);
@@ -697,14 +715,23 @@ public class CQLServiceImpl implements CQLService {
                                                        }
                                                        
                                                 } 
-                                                nodeDefinition.getAttributes().getNamedItem("context")
+                                                /*nodeDefinition.getAttributes().getNamedItem("context")
                                                               .setNodeValue(currentObj.getContext());
                                                 nodeDefinition.getAttributes().getNamedItem("name")
                                                               .setNodeValue(currentObj.getDefinitionName());
                                                 Node logicNode = nodeDefinition.getFirstChild();
                                                 logicNode.setTextContent(currentObj.getDefinitionLogic());
+                                                Node commentNode = nodeDefinition.getLastChild();
+                                                commentNode.setTextContent(currentObj.getCommentString());*/
+                                                
+                                                
                                                 // to update Definition Name on RiskAdjusment
                                                 // Variable Section
+                                                
+                                                String cqlString = createDefinitionsXML(currentObj);
+                                                processor.removeFromParent(nodeDefinition);
+                                                processor.appendNode(cqlString, "definition", XPATH_EXPRESSION_DEFINTIONS);
+                                                
                                                 updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
                                                 String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
 
@@ -725,7 +752,13 @@ public class CQLServiceImpl implements CQLService {
                                    } catch (XPathExpressionException e) {
                                          result.setSuccess(false);
                                          e.printStackTrace();
-                                  }
+                                  } catch (SAXException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
                                   logger.debug(" CQLServiceImpl: saveAndModifyDefinitions End :  ");
                            } else {
                                   result.setSuccess(false);
@@ -747,7 +780,7 @@ public class CQLServiceImpl implements CQLService {
                            isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), xml);
                            if (!isDuplicate) {
                                   String cqlString = createDefinitionsXML(currentObj);
-                                  String XPATH_EXPRESSION_DEFINTIONS = "//cqlLookUp/definitions";
+                                  
                                   try {
                                          Node nodeDefinitions = processor.findNode(processor.getOriginalDoc(),
                                                        XPATH_EXPRESSION_DEFINTIONS);

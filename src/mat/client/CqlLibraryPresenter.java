@@ -31,11 +31,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
+import mat.client.clause.cqlworkspace.DeleteCQLLibraryConfirmDialogBox;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
+import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.SaveCQLLibraryResult;
@@ -111,6 +113,15 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	/** The history display. */
 	CQLLibraryHistoryView historyDisplay;
+	
+	/** The cqlLibrary deletion. */
+	private boolean cqlLibraryDeletion = false;
+
+	/** The cqlLibrary deletion message. */
+	private String cqlLibraryDelMessage;
+	
+	private boolean isCqlLibraryDeleted = false;
+	
 	
 	/**
 	 * The Interface ViewDisplay.
@@ -235,6 +246,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		VerticalPanel getCellTablePanel();
 
 		Button getCreateNewLibraryButton();
+
+		MessageAlert getSuccessMessageAlert();
 
 	}
 
@@ -508,6 +521,34 @@ public class CqlLibraryPresenter implements MatPresenter {
 		addShareDisplayViewHandlers();
 		addHistoryDisplayHandlers();
 		addObserverHandlers();
+		addDeleteEventHandler();
+	}
+
+	private void addDeleteEventHandler() {
+		
+		MatContext.get().getEventBus().addHandler(CQLLibraryDeleteEvent.TYPE, new CQLLibraryDeleteEvent.Handler() {
+
+			@Override
+			public void onDeletion(CQLLibraryDeleteEvent event) {
+				displaySearch();
+				if (event.isDeleted()) {
+
+					isCqlLibraryDeleted = true;
+					cqlLibraryDeletion = true;
+					cqlLibraryDelMessage = event.getMessage();
+					System.out.println("Event - is Deleted : " + isCqlLibraryDeleted + cqlLibraryDeletion);
+					System.out.println("Event - message : " + cqlLibraryDelMessage);
+				} else {
+					
+					isCqlLibraryDeleted = false;
+					cqlLibraryDeletion = true;
+					cqlLibraryDelMessage = event.getMessage();
+					System.out.println("Event - is NOT Deleted : " + isCqlLibraryDeleted + cqlLibraryDeletion);
+					System.out.println("Event - message : " + cqlLibraryDelMessage);
+				}
+			}
+		});
+		
 	}
 
 	/**
@@ -532,6 +573,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onShareClicked(CQLLibraryDataSetObject result) {
 				cqlSharedDataSetObject = result;
+				cqlLibraryDeletion = false;
+				isCqlLibraryDeleted = false;
 				displayShare();
 			}
 			
@@ -539,6 +582,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onHistoryClicked(CQLLibraryDataSetObject result) {
 				historyDisplay
 				.setReturnToLinkText("<< Return to CQL Library");
+				cqlLibraryDeletion = false;
+				isCqlLibraryDeleted = false;
 				displayHistory(
 						result.getId(),
 						result.getCqlName());
@@ -557,6 +602,26 @@ public class CqlLibraryPresenter implements MatPresenter {
 				} 
 				
 			}
+
+			@Override
+			public void onDeleteClicked(CQLLibraryDataSetObject object) {
+				final String cqlLibraryId = object.getId();
+				
+				DeleteCQLLibraryConfirmDialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate()
+						.getWARNING_DELETION_CQL_LIBRARY());
+				
+				DeleteCQLLibraryConfirmDialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						
+						checkPasswordForCQLLibraryDeletion(DeleteCQLLibraryConfirmDialogBox.getPasswordEntered(), 
+								cqlLibraryId);
+						
+					}
+				});
+				
+			}
 			
 		});
 		
@@ -571,6 +636,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				cqlLibraryView.getSuccessMessageAlert().clearAlert();
 				shareDisplay.getErrorMessageDisplay().clearAlert();
 				isSearchVisibleOnVersion = !isSearchVisibleOnVersion;
 				shareDisplay.getSearchWidget().setVisible(isSearchVisibleOnVersion);
@@ -656,6 +722,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	protected void saveDraftFromVersion(CQLLibraryDataSetObject selectedLibrary) {
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		cqlLibraryView.getSuccessMessageAlert().clearAlert();
 		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().saveDraftFromVersion(selectedLibrary.getId(), new AsyncCallback<SaveCQLLibraryResult>() {
 
@@ -979,12 +1046,13 @@ public class CqlLibraryPresenter implements MatPresenter {
 			String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName) {
 		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId,lockedUserEmail,lockedUserName);
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		cqlLibraryView.getSuccessMessageAlert().clearAlert();
 		detailDisplay.getErrorMessage().clearAlert();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 	
 	/**
-	 * Fire measure edit event.
+	 * Fire CQL Library edit event.
 	 */
 	private void fireCqlLibraryEditEvent() {
 		CQLLibraryEditEvent evt = new CQLLibraryEditEvent();
@@ -1063,7 +1131,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				int startIndex = 1;
+				cqlLibraryDeletion = false;
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				cqlLibraryView.getSuccessMessageAlert().clearAlert();
 				int filter = cqlLibraryView.getSelectedFilter();
 				search(cqlLibraryView.getSearchString().getValue(),filter, startIndex,Integer.MAX_VALUE);
 			}
@@ -1078,6 +1148,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		
 		versionDisplay.getErrorMessages().clearAlert();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		cqlLibraryView.getSuccessMessageAlert().clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Create CQL Library Version of Draft", "CQLLibrary");
 		panel.setContent(versionDisplay.asWidget());
@@ -1217,6 +1288,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	private void displaySearch() {
 		cqlLibraryView.getCellTablePanel().clear();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		cqlLibraryView.getSuccessMessageAlert().clearAlert();
 		String heading = "CQL Library";
 		panel.setHeading(heading, "CQLLibrary");
 		setSubSkipEmbeddedLink("CQLSearchView_mainPanel");
@@ -1277,7 +1349,23 @@ public class CqlLibraryPresenter implements MatPresenter {
 						if ((result.getResultsTotal() == 0)
 								&& !lastSearchText.isEmpty()) {
 							cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
-						} 
+						} else {
+							cqlLibraryView.getErrorMessageAlert().clearAlert();
+							if (cqlLibraryDeletion) {
+								if (isCqlLibraryDeleted) {
+									cqlLibraryView.getSuccessMessageAlert().createAlert(cqlLibraryDelMessage);
+								} else {
+									if (cqlLibraryDelMessage != null) {
+										cqlLibraryView.getErrorMessageAlert().createAlert(cqlLibraryDelMessage);
+									}
+								}
+
+							} else {
+								cqlLibraryView.getSuccessMessageAlert().clearAlert();
+								cqlLibraryView.getErrorMessageAlert().clearAlert();
+							}
+						}
+
 						SearchResultUpdate sru = new SearchResultUpdate();
 						sru.update(result, (TextBox) cqlLibraryView.getSearchString(), lastSearchText);
 						cqlLibraryView.buildCellTable(result, lastSearchText,filter);
@@ -1335,8 +1423,12 @@ public class CqlLibraryPresenter implements MatPresenter {
 	@Override
 	public void beforeClosingDisplay() {
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
+		cqlLibraryView.getSuccessMessageAlert().clearAlert();
 		shareDisplay.getSearchWidget().getSearchInput().setText("");
 		isLoading = false;
+		isCqlLibraryDeleted = false;
+		cqlLibraryDeletion = false;
+		
 	}
 
 	/* (non-Javadoc)
@@ -1363,6 +1455,65 @@ public class CqlLibraryPresenter implements MatPresenter {
 		}
 
 	}
+	
+	private void checkPasswordForCQLLibraryDeletion(final String password, final String cqlLibraryId) {
+
+		MatContext.get().getLoginService().isValidPassword(MatContext.get().getLoggedinLoginId(), password,
+				new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						fireSuccessfullDeletionEvent(false, null);
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						if (result) {
+							deleteCQLLibrary(cqlLibraryId);
+						} else {
+							fireSuccessfullDeletionEvent(false,
+									MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
+						}
+					}
+				});
+	}
+	
+	
+	/**
+	 * Delete CQL library.
+	 *
+	 * @param cqlLibraryId the cql library id
+	 */
+	private void deleteCQLLibrary(final String cqlLibraryId) {
+
+		MatContext.get().getCQLLibraryService().deleteCQLLibrary(cqlLibraryId,
+				MatContext.get().getLoggedinLoginId(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						fireSuccessfullDeletionEvent(false, null);
+					}
+
+					/* (non-Javadoc)
+					 * @see com.google.gwt.user.client.rpc.AsyncCallback#onSuccess(java.lang.Object)
+					 */
+					@Override
+					public void onSuccess(Void result) {
+						MatContext.get().recordTransactionEvent(cqlLibraryId, null,
+								"CQLLibrary_DELETE_EVENT", "CQLLibrary Successfully Deleted", ConstantMessages.DB_LOG);
+						fireSuccessfullDeletionEvent(true,
+								MatContext.get().getMessageDelegate().getCQL_LIBRARY_DELETION_SUCCESS_MSG());
+					}
+
+				});	
+
+	}
+	
+	private void fireSuccessfullDeletionEvent(boolean isSuccess, String message){
+		CQLLibraryDeleteEvent deleteEvent = new CQLLibraryDeleteEvent(isSuccess, message);
+		MatContext.get().getEventBus().fireEvent(deleteEvent);
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()

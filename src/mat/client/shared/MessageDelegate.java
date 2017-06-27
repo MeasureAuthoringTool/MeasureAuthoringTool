@@ -875,6 +875,12 @@ public class MessageDelegate {
 	/** The error invalid date time. */
 	private final String ERROR_INVALID_DATE_TIME = "Please Enter a valid Date/Time.";
 	
+	private final String WARNING_DELETION_CQL_LIBRARY = "Deleting a draft of a library will permanently remove the designated "
+			+ "library draft from the Measure Authoring Tool. Deleted libraries cannot be recovered.";
+	
+	/** The cql library deletion success msg. */
+	private final String CQL_LIBRARY_DELETION_SUCCESS_MSG = "CQL Library successfully deleted.";
+	
 	/**
 	 * Gets the only one child required.
 	 *
@@ -3259,5 +3265,13 @@ public class MessageDelegate {
 	
 	public String getCreatePackageTypeCheckError() {
 		return MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE;
+	}
+
+	public String getWARNING_DELETION_CQL_LIBRARY() {
+		return WARNING_DELETION_CQL_LIBRARY;
+	}
+
+	public String getCQL_LIBRARY_DELETION_SUCCESS_MSG() {
+		return CQL_LIBRARY_DELETION_SUCCESS_MSG;
 	}
 }

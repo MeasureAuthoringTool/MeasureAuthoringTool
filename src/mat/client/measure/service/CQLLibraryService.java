@@ -95,4 +95,6 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
+
+	void deleteCQLLibrary(String cqllibId, String loginUserId);
 }

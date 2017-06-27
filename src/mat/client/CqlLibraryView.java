@@ -20,6 +20,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentCQLLibraryWidget;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 /**
@@ -57,6 +58,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	
 	
 	private MostRecentCQLLibraryWidget mostRecentLibraryWidget = new MostRecentCQLLibraryWidget();
+	
+	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 
 	@Override
 	public VerticalPanel getWidgetVP() {
@@ -92,6 +95,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainPanel.clear();
 		widgetVP.clear();
 		errorMessageAlert.clearAlert();
+		successMessageAlert.clearAlert();
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel_CQL");
 		mainPanel.getElement().setId("CQLLibrary_MainPanel");
@@ -105,6 +109,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainHorizontalPanel.add(widgetVP);
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageAlert);
 		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
@@ -228,5 +233,14 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	public void setMostRecentLibraryWidget(MostRecentCQLLibraryWidget mostRecentLibraryWidget) {
 		this.mostRecentLibraryWidget = mostRecentLibraryWidget;
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageAlert() {
+		return successMessageAlert;
+	}
+
+	public void setSuccessMessageAlert(MessageAlert successMessageAlert) {
+		this.successMessageAlert = successMessageAlert;
 	}
 }

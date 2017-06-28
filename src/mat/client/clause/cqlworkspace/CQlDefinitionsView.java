@@ -4,7 +4,6 @@
 package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -79,7 +78,6 @@ public class CQlDefinitionsView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
-		//FormGroup definitionFormGroup = new FormGroup();
 
 		Label defineNameLabel = new Label(LabelType.INFO, "Definition Name");
 		defineNameLabel.setMarginTop(5);
@@ -94,15 +92,6 @@ public class CQlDefinitionsView {
 		defineNamePanel.setStyleName("marginLeft20px");
 		defineNamePanel.getElement().setId("DefinitionName_SimplePanel");
 		defineNamePanel.add(defineNameTxtArea);
-		/*definitionFormGroup.clear();
-		definitionFormGroup.add(defineLabel);
-		definitionFormGroup.add(defineNameTxtArea);*/
-
-		/*Grid queryGrid = new Grid(3, 2);
-		queryGrid.setWidget(0, 0, definitionFormGroup);
-		queryGrid.setWidget(0,1, defineNameTxtArea)*/
-
-		//definitionHP.add(queryGrid);
 
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -156,6 +145,7 @@ public class CQlDefinitionsView {
 		defineCommentTextArea.setSize("550px", "40px");
 		defineCommentTextArea.setText("");
 		defineCommentTextArea.setName("Definition Comment");
+		defineCommentTextArea.getElement().setAttribute("style", "resize:none");
 		SimplePanel defineCommentPanel = new SimplePanel();
 		defineCommentPanel.setStyleName("topping marginLeft20px");
 		defineCommentPanel.getElement().setId("definitionComment_simplePanel");
@@ -168,26 +158,12 @@ public class CQlDefinitionsView {
 		queryGrid.setWidget(2, 0, new SpacerWidget());
 		queryGrid.setWidget(3, 0, defineContextLabel);
 		queryGrid.setWidget(3, 1, defineContextPanel);
-		//queryGrid.setWidget(4, 0, new SpacerWidget());
 		queryGrid.setWidget(4, 0, defineCommentLabel);
 		queryGrid.setWidget(4, 1, defineCommentPanel);
 		
-		/*definitionVP.add(new SpacerWidget());
-		definitionVP.add(definitionHP);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineNameTxtArea);
-		definitionVP.add(new SpacerWidget());
-		definitionVP.add(defineContextLabel);*/
 		definitionVP.add(queryGrid);
 		definitionVP.add(new SpacerWidget());
-		//definitionVP.add(defineContextPanel);
 		definitionVP.add(defineButtonBar);
-		/*definitionVP.add(new SpacerWidget());
-		
-		
-		definitionVP.add(defineComment);
-		definitionVP.add(new SpacerWidget());*/
-		//definitionVP.add(commentBox);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(aceEditorPanel);
 		definitionVP.add(new SpacerWidget());
@@ -202,8 +178,7 @@ public class CQlDefinitionsView {
 		mainDefineViewVerticalPanel.setHeight("500px");
 		definitionFP.setWidth("700px");
 		definitionFP.setStyleName("marginLeft15px");
-
-		/*mainDefineViewVerticalPanel.add(new SpacerWidget());*/
+		
 		mainDefineViewVerticalPanel.add(definitionFP);
 		mainDefineViewVerticalPanel.setHeight("675px");
 	}

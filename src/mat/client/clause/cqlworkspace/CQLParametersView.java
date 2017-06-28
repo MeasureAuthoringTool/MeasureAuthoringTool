@@ -3,7 +3,6 @@
  */
 package mat.client.clause.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -71,7 +70,6 @@ public class CQLParametersView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-		//FormGroup parameterFormGroup = new FormGroup();
 		Label parameterLabel = new Label(LabelType.INFO, "Parameter Name");
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
@@ -84,14 +82,6 @@ public class CQLParametersView {
 		parameterNamePanel.getElement().setId("ParameterName_SimplePanel");
 		parameterNamePanel.setStyleName("marginLeft20px");
 		parameterNamePanel.add(parameterNameTxtArea);
-		/*parameterFormGroup.clear();
-		parameterFormGroup.add(parameterLabel);
-		parameterFormGroup.add(addNewButtonBar);
-*/
-		/*Grid queryGrid = new Grid(1, 1);
-		queryGrid.setWidget(0, 0, parameterFormGroup);
-
-		parameterHP.add(queryGrid);*/
 		
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -121,8 +111,6 @@ public class CQLParametersView {
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
 
-		//parameterNameTxtArea.getElement().setAttribute("style", "width:250px;height:25px;margin-top:5px;");
-
 		parameterButtonBar.getInsertButton().setVisible(false);
 		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterButtonBar.getCloseButton().setVisible(false);
@@ -134,6 +122,8 @@ public class CQLParametersView {
 		parameterCommentTextArea.setSize("550px", "40px");
 		parameterCommentTextArea.setText("");
 		parameterCommentTextArea.setName("Parameter Comment");
+		parameterCommentTextArea.getElement().setAttribute("style", "resize:none");
+
 		SimplePanel parameterCommentPanel = new SimplePanel();
 		parameterCommentPanel.getElement().setId("ParameterComment_SimplePanel");
 		parameterCommentPanel.setStyleName("topping marginLeft20px");
@@ -143,15 +133,9 @@ public class CQLParametersView {
 		queryGrid.setWidget(0, 0, addNewButtonBar);
 		queryGrid.setWidget(1, 0, parameterLabel);
 		queryGrid.setWidget(1, 1, parameterNamePanel);
-		//queryGrid.setWidget(2, 0, new SpacerWidget());
 		queryGrid.setWidget(2, 0, parameterCommentLabel);
 		queryGrid.setWidget(2, 1, parameterCommentPanel);
 		
-		//parameterVP.add(new SpacerWidget());
-		/*parameterVP.add(parameterHP);
-		parameterVP.add(new SpacerWidget());
-		parameterVP.add(parameterNameTxtArea);
-		*/
 		parameterVP.add(queryGrid);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterButtonBar);
@@ -170,7 +154,6 @@ public class CQLParametersView {
 		mainParamViewVerticalPanel.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
-		/*mainParamViewVerticalPanel.add(new SpacerWidget());*/
 		mainParamViewVerticalPanel.add(parameterFP);
 		mainParamViewVerticalPanel.setHeight("675px");
 	}

@@ -9,16 +9,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -178,8 +175,6 @@ public class CQLFunctionsView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
-		HorizontalPanel funcHP = new HorizontalPanel();
-		//FormGroup funcFormGroup = new FormGroup();
 		Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
 		functionNameLabel.setMarginTop(5);
 		functionNameLabel.setId("Function_Label");
@@ -193,15 +188,6 @@ public class CQLFunctionsView {
 		funcNamePanel.getElement().setId("FuncName_SimplePanel");
 		funcNamePanel.add(funcNameTxtArea);
 		functionNameLabel.setText("Function Name");
-		
-		/*funcFormGroup.clear();
-		funcFormGroup.add(functionNameLabel);
-		funcFormGroup.add(addNewButtonBar);
-		*/
-		/*Grid queryGrid = new Grid(1,1);
-		queryGrid.setWidget(0, 0, funcFormGroup);
-
-		funcHP.add(queryGrid);*/
 
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -261,6 +247,8 @@ public class CQLFunctionsView {
 		funcCommentTextArea.setSize("550px", "40px");
 		funcCommentTextArea.setText("");
 		funcCommentTextArea.setName("Function Comment");
+		funcCommentTextArea.getElement().setAttribute("style", "resize:none");
+		
 		SimplePanel funcCommentPanel = new SimplePanel();
 		funcCommentPanel.getElement().setId("FunctionComment_SimplePanel");
 		funcCommentPanel.setStyleName("topping marginLeft20px");
@@ -274,20 +262,9 @@ public class CQLFunctionsView {
 		queryGrid.setWidget(2, 0, new SpacerWidget());
 		queryGrid.setWidget(3, 0, funcContextLabel);
 		queryGrid.setWidget(3, 1, contextGroup);
-		//queryGrid.setWidget(4, 0, new SpacerWidget());
 		queryGrid.setWidget(4, 0, funcCommentLabel);
 		queryGrid.setWidget(4, 1, funcCommentPanel);
-		
 
-		/*funcVP.add(new SpacerWidget());
-		funcVP.add(funcHP);
-		funcVP.add(new SpacerWidget());
-		funcVP.add(funcNameTxtArea);
-		funcVP.add(new SpacerWidget());
-		funcVP.add(funcContextLabel);
-		funcVP.add(new SpacerWidget());
-		funcVP.add(contextGroup);
-		*/
 		funcVP.add(queryGrid);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);

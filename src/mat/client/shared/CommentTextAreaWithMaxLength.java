@@ -13,9 +13,14 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Event;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CommentTextAreaWithMaxLength.
+ */
 public class CommentTextAreaWithMaxLength extends TextArea  {
 
 	
+	/** The max length. */
 	private int maxLength;
 	
 	
@@ -37,23 +42,25 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 			public void onValueChange(ValueChangeEvent<String> event) {
 				if (!CommentTextAreaWithMaxLength.this.isReadOnly()) {
 					String commentAreaUpdatedText = getRestrictedString(event.getValue());
-					CommentTextAreaWithMaxLength.this.setText(commentAreaUpdatedText);
-	
+					
 					if (commentAreaUpdatedText.length() >= maxLength) {
-						String subStringText = commentAreaUpdatedText.substring(0,
+						commentAreaUpdatedText = commentAreaUpdatedText.substring(0,
 								maxLength);
-						CommentTextAreaWithMaxLength.this.setValue(subStringText);
-						setCursorPos(maxLength);
-					} else {
-						CommentTextAreaWithMaxLength.this.setValue(commentAreaUpdatedText);
-						setCursorPos(commentAreaUpdatedText.length());
-					}
+					} 
+					CommentTextAreaWithMaxLength.this.setValue(commentAreaUpdatedText);
+					setCursorPos(commentAreaUpdatedText.length());
 					
 				}
 			}
 		});
 	}
 	
+	/**
+	 * Gets the restricted string.
+	 *
+	 * @param str the str
+	 * @return the restricted string
+	 */
 	private String getRestrictedString(String str) {
 		StringBuilder sb = new StringBuilder();
 		char prev = 0;
@@ -105,6 +112,8 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 		if ((event.getTypeInt() == Event.ONKEYDOWN)
 				&& (commentAreaContent.length() > maxLength)
 				&& (event.getKeyCode() != KeyCodes.KEY_LEFT)
+				&& (event.getKeyCode() != KeyCodes.KEY_UP)
+				&& (event.getKeyCode() != KeyCodes.KEY_DOWN)
 				&& (event.getKeyCode() != KeyCodes.KEY_TAB)
 				&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
 				&& (event.getKeyCode() != KeyCodes.KEY_DELETE)
@@ -116,6 +125,8 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 				&& (commentAreaContent.length() <= maxLength)) {
 			if ((event.getKeyCode() != KeyCodes.KEY_LEFT)
 					&& (event.getKeyCode() != KeyCodes.KEY_TAB)
+					&& (event.getKeyCode() != KeyCodes.KEY_UP)
+					&& (event.getKeyCode() != KeyCodes.KEY_DOWN)
 					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
 					&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
 				if (!event.getCtrlKey()) {

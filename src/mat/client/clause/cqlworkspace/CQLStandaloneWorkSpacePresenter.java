@@ -862,10 +862,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												public void onSuccess(GetUsedCQLArtifactsResult result) {
 
 													CQLParameter currentParameter = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID);
-
-													// if there are cql errors or the parameter is not in use, enable the delete button
-													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getParameterName())) {
-														searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+													// if it is not a default parameter, check if the delete button needs to be enabled 
+													if(!currentParameter.isReadOnly()) {
+														// if there are cql errors or the parameter is not in use, enable the delete button
+														if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getParameterName())) {
+															searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+														}
 													}
 												}
 

@@ -1283,14 +1283,17 @@ public class CQLFilter {
 		// in a sort, you can actually sort by expressions, below handles
 		// that situation. it loops through the sort by items, checks
 		// if its ByExprsesion, and if it is, checks for used statements in it.
-		List<SortByItem> items = query.getSort().getBy();
-		for(SortByItem item : items) {
-			if(item.getClass().equals(ByExpression.class)) {
-				ByExpression byExpression = (ByExpression) item; 
-				checkForUsedStatements(byExpression.getExpression());
+		//List<SortByItem> items = query.getSort().getBy();
+		//List<SortByItem> items = query.getSort();
+		if(query.getSort() != null){
+			List<SortByItem> items = query.getSort().getBy();
+			for(SortByItem item : items) {
+				if(item.getClass().equals(ByExpression.class)) {
+					ByExpression byExpression = (ByExpression) item; 
+					checkForUsedStatements(byExpression.getExpression());
+				}
 			}
 		}
-				
 		Expression whereExpression = query.getWhere();
 		checkForUsedStatements(whereExpression);
 	}

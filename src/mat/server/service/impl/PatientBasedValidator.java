@@ -219,13 +219,14 @@ public class PatientBasedValidator {
 						+ " of the definition directly applied to the Associated Population.");*/
 			} else {
 				String funcArgumentReturnType = argumentList.get(0).getReturnType();
+				logger.info("funcArgumentReturnType Start ==========" + funcArgumentReturnType);
 				// for now parser returns  positive with positive qdm data model and negative of positive for negative qdm data model for function argument return type.
 				// Definition dont return positive or negative. It return only qdm data model. For comparison we have to drop positive/negative if it is present in return type.
-				if(funcArgumentReturnType.contains(POSITIVE)){
+				/*if(funcArgumentReturnType.contains(POSITIVE)){
 					funcArgumentReturnType = funcArgumentReturnType.replaceAll(POSITIVE, "");
 				} else if(funcArgumentReturnType.contains(NEGATIVE)){
 					funcArgumentReturnType = funcArgumentReturnType.replaceAll(NEGATIVE, "");
-				}
+				}*/
 				for(CQLExpressionObject expressionObject : associatedPopExpressionTobeChecked){
 					String returnTypeOfExpression = expressionObject.getReturnType();
 					//in case list<qdm.{data Model}> , comparison had to be with only qdm.{data Model}. So dropping list and < ,> from definition return type if exists.
@@ -237,6 +238,7 @@ public class PatientBasedValidator {
 							logger.info("returnTypeOfExpression ==========" + returnTypeOfExpression);
 						}
 					}
+					logger.info("funcArgumentReturnType ==========" + funcArgumentReturnType);
 					if(!returnTypeOfExpression.equalsIgnoreCase(funcArgumentReturnType)){
 						returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
 								+ " of the definition directly applied to the Associated Population.");

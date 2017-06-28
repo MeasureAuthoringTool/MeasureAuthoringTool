@@ -369,11 +369,6 @@ public class CQLFilter {
 			return;
 		}
 		
-		if(expression != null) {
-			System.out.println(expression);
-			System.out.println(expression.getClass());
-		}
-
 		// check for parameter, definition, function, valueset references,
 		// codesystems //
 		// check for expression references

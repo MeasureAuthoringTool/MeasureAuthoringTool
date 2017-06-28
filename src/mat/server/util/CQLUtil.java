@@ -149,9 +149,7 @@ public class CQLUtil {
 		// than then Patient Characteristic Birthdate datatype
 		if (name.equalsIgnoreCase(BIRTHDATE)) {
 			for (String dataType : dataTypeList) {
-				System.out.println("HERE");
 				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
-					System.out.println("HERE????");
 					return false;
 				}
 			}

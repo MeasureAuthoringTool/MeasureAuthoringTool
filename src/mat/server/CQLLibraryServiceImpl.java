@@ -215,4 +215,9 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId);
 	}
 	
+	@Override
+	public SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText) {
+		return this.getCQLLibraryService().searchForStandaloneIncludes(setId, searchText);
+	}
+	
 }

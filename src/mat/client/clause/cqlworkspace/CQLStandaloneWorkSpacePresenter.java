@@ -5267,7 +5267,7 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 		showSearchingBusy(true);
 
-		MatContext.get().getCQLLibraryService().searchForIncludes(setId, searchText,
+		MatContext.get().getCQLLibraryService().searchForStandaloneIncludes(setId, searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

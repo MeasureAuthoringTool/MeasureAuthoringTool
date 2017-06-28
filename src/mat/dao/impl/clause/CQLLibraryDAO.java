@@ -161,6 +161,59 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 
 	}
 
+	@Override
+	public List<CQLLibrary> searchForStandaloneIncludes(String setId, String searchText) {
+		String searchString = searchText.toLowerCase().trim();
+		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
+		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		cCriteria.add(Restrictions.eq("draft", false));
+		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
+		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
+		cCriteria.setFirstResult(0);
+
+		List<CQLLibrary> libraryResultList = cCriteria.list();
+
+		List<CQLLibrary> orderedCQlLibList = null;
+		if (libraryResultList != null) {
+			orderedCQlLibList = sortLibraryList(libraryResultList);
+		} else {
+			orderedCQlLibList = new ArrayList<CQLLibrary>();
+		}
+
+		StringUtility su = new StringUtility();
+		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
+
+		Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
+
+		while (orderedCQlLibListIte.hasNext()) {
+			CQLLibrary cqlLibrary = orderedCQlLibListIte.next();
+			String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId() : cqlLibrary.getId();
+			int associationCount = cqlLibraryAssociationDAO.findAssociationCount(asociationId);
+
+			// Adding logic to get rid of libraries with child. If there are no child's check for same family includes.
+			if (associationCount > 0){
+				orderedCQlLibListIte.remove();
+			}else if (associationCount == 0) {
+				if (setId != null && asociationId != null) {
+					if (setId.equalsIgnoreCase(getSetIdForCQLLibrary(asociationId))) {
+						orderedCQlLibListIte.remove();
+					}
+				}
+			} 
+		}
+
+		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
+
+			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su, cqlLibrary);
+			if (matchesSearch) {
+				orderedList.add(cqlLibrary);
+			}
+		}
+
+		return orderedList;
+
+	}
+	
 	private void printAllID(List<CQLLibrary> orderedCQlLibList) {
 		StringBuilder idString = new StringBuilder();
 		for (CQLLibrary library : orderedCQlLibList) {

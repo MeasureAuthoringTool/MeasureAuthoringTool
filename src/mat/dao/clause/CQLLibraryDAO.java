@@ -41,4 +41,6 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 		void refresh(CQLLibrary libObject);
 
 		CQLLibrary getLibraryByMeasureId(String measureId);
+
+		List<CQLLibrary> searchForStandaloneIncludes(String setId, String searchText);
 }

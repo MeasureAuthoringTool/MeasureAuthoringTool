@@ -113,4 +113,7 @@ public interface CQLLibraryServiceAsync {
 	void deleteCode(String toBeDeletedId, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId, AsyncCallback<Void> callback);
+
+	void searchForStandaloneIncludes(String setId, String searchText,
+			AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 }

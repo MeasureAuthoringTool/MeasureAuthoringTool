@@ -48,6 +48,8 @@ public interface CQLLibraryService extends RemoteService {
 
 	SaveCQLLibraryResult searchForIncludes(String setId, String searchText);
 	
+	SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText);
+	
 	void updateUsersShare(SaveCQLLibraryResult result);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,

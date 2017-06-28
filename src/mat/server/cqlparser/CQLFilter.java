@@ -748,7 +748,8 @@ public class CQLFilter {
 
 		if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
 			// name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
-			name = this.currentLibraryHolder.getLibraryName() + "." + this.currentLibraryHolder.getLibraryAlias() + "."
+			name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + 
+					"|" + this.currentLibraryHolder.getLibraryAlias() + "|"
 					+ name;
 		}
 
@@ -819,8 +820,16 @@ public class CQLFilter {
 	 */
 	private void checkForInCodeSystem(Expression expression) {
 		InCodeSystem inCodeSystem = (InCodeSystem) expression;
-		// System.out.println("\t" + inCodeSystem.getCodesystem().getName());
-		this.addUsedCodeSystem(inCodeSystem.getCodesystem().getName());
+		
+		String name = inCodeSystem.getCodesystem().getName();
+
+		if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
+			name =  this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + 
+					"|" + this.currentLibraryHolder.getLibraryAlias() + "|"
+					+ name;
+		}
+
+		this.addUsedCodeSystem(name);
 	}
 
 	/**

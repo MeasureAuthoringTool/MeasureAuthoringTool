@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -175,9 +176,16 @@ public class CQLFunctionsView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
-		Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
+		/*Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
 		functionNameLabel.setMarginTop(5);
-		functionNameLabel.setId("Function_Label");
+		functionNameLabel.setId("Function_Label");*/
+		
+		FormLabel functionNameLabel = new FormLabel();
+		functionNameLabel.setText("Function Name");
+		functionNameLabel.setTitle("Function Name");
+		functionNameLabel.setMarginTop(5);
+		functionNameLabel.setId("FunctionName_Label");
+		
 		funcNameTxtArea.setText("");
 		// funcNameTxtArea.setPlaceholder("Enter Function Name here.");
 		funcNameTxtArea.setSize("550px", "25px");
@@ -226,7 +234,13 @@ public class CQLFunctionsView {
 
 		addNewArgument.setPull(Pull.RIGHT);
 
-		Label funcContextLabel = new Label(LabelType.INFO, "Context");
+		/*Label funcContextLabel = new Label(LabelType.INFO, "Context");*/
+		
+		FormLabel funcContextLabel = new FormLabel();
+		funcContextLabel.setText("Context");
+		funcContextLabel.setTitle("Context");
+		funcContextLabel.setMarginTop(5);
+		funcContextLabel.setId("FunctionContext_Label");
 
 		contextFuncPATRadioBtn.setValue(true);
 		contextFuncPATRadioBtn.setText("Patient");
@@ -240,10 +254,16 @@ public class CQLFunctionsView {
 		contextGroup.add(contextFuncPOPRadioBtn);
 		contextGroup.setStyleName("contextToggleSwitch marginLeft20px");
 		
-		Label funcCommentLabel = new Label(LabelType.INFO, "Comment");
+		/*Label funcCommentLabel = new Label(LabelType.INFO, "Comment");
 		funcCommentLabel.setId("definComment_Label");
+		*/
+		FormLabel funcCommentLabel = new FormLabel();
+		funcCommentLabel.setText("Comment");
+		funcCommentLabel.setTitle("Comment");
+		funcCommentLabel.setMarginTop(5);
+		funcCommentLabel.setId("FunctionComment_Label");
 		
-		funcCommentTextArea.setId("DefineCommentTextArea_Id");
+		funcCommentTextArea.setId("FunctionCommentTextArea_Id");
 		funcCommentTextArea.setSize("550px", "40px");
 		funcCommentTextArea.setText("");
 		funcCommentTextArea.setName("Function Comment");
@@ -255,15 +275,14 @@ public class CQLFunctionsView {
 		funcCommentPanel.add(funcCommentTextArea);
 		
 		
-		Grid queryGrid = new Grid(5, 2);
+		Grid queryGrid = new Grid(4, 2);
 		queryGrid.setWidget(0, 0, addNewButtonBar);
 		queryGrid.setWidget(1, 0, functionNameLabel);
 		queryGrid.setWidget(1, 1, funcNamePanel);
-		queryGrid.setWidget(2, 0, new SpacerWidget());
-		queryGrid.setWidget(3, 0, funcContextLabel);
-		queryGrid.setWidget(3, 1, contextGroup);
-		queryGrid.setWidget(4, 0, funcCommentLabel);
-		queryGrid.setWidget(4, 1, funcCommentPanel);
+		queryGrid.setWidget(2, 0, funcContextLabel);
+		queryGrid.setWidget(2, 1, contextGroup);
+		queryGrid.setWidget(3, 0, funcCommentLabel);
+		queryGrid.setWidget(3, 1, funcCommentPanel);
 
 		funcVP.add(queryGrid);
 		funcVP.add(new SpacerWidget());

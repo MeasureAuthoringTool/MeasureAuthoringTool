@@ -4,6 +4,7 @@
 package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -79,9 +80,13 @@ public class CQlDefinitionsView {
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
 
-		Label defineNameLabel = new Label(LabelType.INFO, "Definition Name");
-		defineNameLabel.setMarginTop(5);
-		defineNameLabel.setId("Definition_Label");
+		//Label defineNameLabel = new Label(LabelType.INFO, "Definition Name");
+		FormLabel defineNameLabel = new FormLabel();
+		defineNameLabel.setText("Definition Name");
+		defineNameLabel.setTitle("Definition Name");
+		//defineNameLabel.setMarginTop(5);
+		defineNameLabel.setId("DefinitionName_Label");
+		
 		defineNameTxtArea.setText("");
 		// defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
 		defineNameTxtArea.setSize("550px", "25px");
@@ -120,9 +125,16 @@ public class CQlDefinitionsView {
 		aceEditorPanel.add(body);
 		
 
-		Label defineContextLabel = new Label(LabelType.INFO, "Context");
+		/*Label defineContextLabel = new Label(LabelType.INFO, "Context");*/
+		FormLabel defineContextLabel = new FormLabel();
+		defineContextLabel.setText("Context");
+		defineContextLabel.setTitle("Context");
+		//defineContextLabel.setMarginTop(5);
+		defineContextLabel.setId("DefinitionContext_Label");
+		
+		
 		FlowPanel defineContextPanel = new FlowPanel();
-
+		
 		contextDefinePATRadioBtn.setValue(true);
 		contextDefinePATRadioBtn.setText("Patient");
 		contextDefinePATRadioBtn.setId("context_PatientRadioButton");
@@ -138,8 +150,12 @@ public class CQlDefinitionsView {
 		defineContextPanel.add(contextGroup);
 		defineContextPanel.setStyleName("contextToggleSwitch marginLeft20px");
 		
-		Label defineCommentLabel = new Label(LabelType.INFO, "Comment");
-		defineCommentLabel.setId("definComment_Label");
+		/*Label defineCommentLabel = new Label(LabelType.INFO, "Comment");*/
+		FormLabel defineCommentLabel = new FormLabel();
+		defineCommentLabel.setText("Comment");
+		defineCommentLabel.setTitle("Comment");
+		//defineCommentLabel.setMarginTop(5);
+		defineCommentLabel.setId("DefinitionComment_Label");
 		
 		defineCommentTextArea.setId("DefineCommentTextArea_Id");
 		defineCommentTextArea.setSize("550px", "40px");

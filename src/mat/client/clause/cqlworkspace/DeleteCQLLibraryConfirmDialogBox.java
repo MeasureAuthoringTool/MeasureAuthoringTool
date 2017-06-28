@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
@@ -8,6 +9,7 @@ import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
@@ -16,7 +18,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.ErrorMessageAlert;
@@ -48,6 +49,7 @@ public class DeleteCQLLibraryConfirmDialogBox {
 
 	    panel = new Modal();
 	    confirmButton = new Button("Confirm");
+	    passwordEntered = "";
 		ModalBody modalBody = new ModalBody();
 		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
@@ -71,19 +73,24 @@ public class DeleteCQLLibraryConfirmDialogBox {
 		VerticalPanel passwordPanel = new VerticalPanel();
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
 		final HTML passwordText = new HTML(
-				"To confirm deletion enter your password below:");
-		final PasswordTextBox password = new PasswordTextBox();
+				"<h4>To confirm deletion enter your password below:<h4>");
+		final Input password = new Input(InputType.PASSWORD);
 		
-		password.getElement().setId("password_PasswordTextBox");
+		password.setId("password_PasswordTextBox");
+		password.setPlaceholder("Enter Password");
+		password.setTitle("Enter Password");
+		password.setValidateOnBlur(true);
+		
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get());
 		hp.add(password);
 		hp.add(required);
+		passwordPanel.add(new SpacerWidget());
 		passwordPanel.add(passwordText);
 		passwordPanel.add(new SpacerWidget());
 		passwordPanel.add(hp);
-		password.setStylePrimaryName("form-control");
+		
 		password.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
@@ -103,7 +110,7 @@ public class DeleteCQLLibraryConfirmDialogBox {
 		ModalFooter modalFooter = new ModalFooter();
 
 		confirmButton.setType(ButtonType.PRIMARY);
-		//confirmButton.setSize(ButtonSize.SMALL);
+		confirmButton.setSize(ButtonSize.DEFAULT);
 		confirmButton.setDataDismiss(ButtonDismiss.MODAL);
 		confirmButton.setEnabled(false);
 

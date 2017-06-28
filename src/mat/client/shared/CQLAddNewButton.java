@@ -27,7 +27,7 @@ public class CQLAddNewButton extends Composite {
 		
 		addNewButton.setType(ButtonType.LINK);
 		addNewButton.getElement().setId("addNewButton_"+sectionName);
-
+		addNewButton.getElement().setAttribute("style", "margin-left:-12px");
 		addNewButton.setTitle("Add New");
 		addNewButton.setText("Add New");
 		addNewButton.setId("Add_New_ID");

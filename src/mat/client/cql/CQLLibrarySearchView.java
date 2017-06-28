@@ -498,48 +498,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		
 		table.addColumn(draftOrVersionCol,
 				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
-		
-		//Delete Column
-		ButtonCell deleteButtonCell = new ButtonCell(ButtonType.LINK);
-		Column<CQLLibraryDataSetObject,String> deleteColumn = new Column<CQLLibraryDataSetObject, String>(deleteButtonCell) {
-
-			@Override
-			public String getValue(CQLLibraryDataSetObject object) {
-				return object.getCqlName();
-			}
-			
-			@Override
-			public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
-				if (object.isDeletable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to delete library\" tabindex=\"0\">");
-					sb.appendHtmlConstant("<i class=\"fa fa-trash fa-lg\" style=\"margin-left: 15px;\"></i>");
-					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
-					sb.appendHtmlConstant("</button>");
-				}
-			}
-			@Override
-			public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
-					NativeEvent event) {
-				String type = event.getType();
-				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
-					if(!object.isDeletable()){
-						event.preventDefault();
-					} else {
-						observer.onDeleteClicked(object);
-					}
-				} else {
-					if(!object.isDeletable()){
-						event.preventDefault();
-					}
-				}
-			}
-			
-		};
-		
-		table.addColumn(deleteColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
-
-		
+				
 		
 		// History
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
@@ -575,6 +534,49 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			}
 		});
 		table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
+		
+		//Delete Column
+				ButtonCell deleteButtonCell = new ButtonCell(ButtonType.LINK);
+				Column<CQLLibraryDataSetObject,String> deleteColumn = new Column<CQLLibraryDataSetObject, String>(deleteButtonCell) {
+
+					@Override
+					public String getValue(CQLLibraryDataSetObject object) {
+						return object.getCqlName();
+					}
+					
+					@Override
+					public void render(Context context, CQLLibraryDataSetObject object, SafeHtmlBuilder sb) {
+						if (object.isDeletable()) {
+							sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to delete library\" tabindex=\"0\">");
+							sb.appendHtmlConstant("<i class=\"fa fa-trash fa-lg\" style=\"margin-left: 5px;\"></i>");
+							sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Delete CQL Library</span>");
+							sb.appendHtmlConstant("</button>");
+						}
+					}
+					@Override
+					public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
+							NativeEvent event) {
+						String type = event.getType();
+						if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
+							if(!object.isDeletable()){
+								event.preventDefault();
+							} else {
+								observer.onDeleteClicked(object);
+							}
+						} else {
+							if(!object.isDeletable()){
+								event.preventDefault();
+							}
+						}
+					}
+					
+				};
+				
+				table.addColumn(deleteColumn,
+						SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
+
+
+		
 
 		return table;
 	}

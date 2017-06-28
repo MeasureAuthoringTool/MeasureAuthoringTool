@@ -119,7 +119,11 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 				&& (event.getKeyCode() != KeyCodes.KEY_DELETE)
 				&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE)
 				&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)
-				&& (event.getKeyCode() != KeyCodes.KEY_CTRL)) {
+				&& (event.getKeyCode() != KeyCodes.KEY_CTRL)
+				&& (event.getKeyCode() != KeyCodes.KEY_PAGEUP)
+				&& (event.getKeyCode() != KeyCodes.KEY_PAGEDOWN)
+				&& (event.getKeyCode() != KeyCodes.KEY_HOME)
+				&& (event.getKeyCode() != KeyCodes.KEY_END)) {
 			event.preventDefault();
 		} else if ((event.getTypeInt() == Event.ONKEYDOWN)
 				&& (commentAreaContent.length() <= maxLength)) {
@@ -128,7 +132,11 @@ public class CommentTextAreaWithMaxLength extends TextArea  {
 					&& (event.getKeyCode() != KeyCodes.KEY_UP)
 					&& (event.getKeyCode() != KeyCodes.KEY_DOWN)
 					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
-					&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
+					&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)
+					&& (event.getKeyCode() != KeyCodes.KEY_PAGEUP)
+					&& (event.getKeyCode() != KeyCodes.KEY_PAGEDOWN)
+					&& (event.getKeyCode() != KeyCodes.KEY_HOME)
+					&& (event.getKeyCode() != KeyCodes.KEY_END)) {
 				if (!event.getCtrlKey()) {
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 						@Override

@@ -3,6 +3,7 @@
  */
 package mat.client.clause.cqlworkspace;
 
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -70,10 +71,18 @@ public class CQLParametersView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-		Label parameterLabel = new Label(LabelType.INFO, "Parameter Name");
+		/*Label parameterLabel = new Label(LabelType.INFO, "Parameter Name");
 		parameterLabel.setMarginTop(5);
 		parameterLabel.setId("Parameter_Label");
 		parameterLabel.setText("Parameter Name");
+		*/
+		FormLabel parameterLabel = new FormLabel();
+		parameterLabel.setText("Parameter Name");
+		parameterLabel.setTitle("Parameter Name");
+		parameterLabel.setMarginTop(5);
+		parameterLabel.setId("ParameterName_Label");
+		
+		
 		parameterNameTxtArea.setText("");
 		parameterNameTxtArea.setSize("550px", "25px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
@@ -115,10 +124,18 @@ public class CQLParametersView {
 		parameterButtonBar.getTimingExpButton().setVisible(false);
 		parameterButtonBar.getCloseButton().setVisible(false);
 		
-		Label parameterCommentLabel = new Label(LabelType.INFO, "Comment");
+		/*Label parameterCommentLabel = new Label(LabelType.INFO, "Comment");
 		parameterCommentLabel.setId("definComment_Label");
+		*/
 		
-		parameterCommentTextArea.setId("DefineCommentTextArea_Id");
+		FormLabel parameterCommentLabel = new FormLabel();
+		parameterCommentLabel.setText("Comment");
+		parameterCommentLabel.setTitle("Comment");
+		//parameterCommentLabel.setMarginTop(5);
+		parameterCommentLabel.setId("ParameterComment_Label");
+		
+		
+		parameterCommentTextArea.setId("ParameterCommentTextArea_Id");
 		parameterCommentTextArea.setSize("550px", "40px");
 		parameterCommentTextArea.setText("");
 		parameterCommentTextArea.setName("Parameter Comment");

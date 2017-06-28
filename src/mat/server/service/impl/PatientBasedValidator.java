@@ -260,7 +260,7 @@ public class PatientBasedValidator {
 
 			logger.info("Return type for "+cqlExpressionObject.getName()+" is "+cqlExpressionObject.getReturnType());
 			String expressionReturnType = cqlExpressionObject.getReturnType();
-			boolean isList = expressionReturnType.toLowerCase().startsWith("list".toLowerCase());
+			boolean isList = expressionReturnType.toLowerCase().startsWith("list");
 			
 			if(!isList){
 				returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");

@@ -1342,7 +1342,7 @@ public class CQLServiceImpl implements CQLService {
                      parsedCQL.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
             	  	 setUsedValuesets(parsedCQL, cqlModel);
             	  	 setUsedCodes(parsedCQL, cqlModel);
-                     boolean isValid = isValidDataTypeUsed(parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(), 
+                     boolean isValid = CQLUtil.isValidDataTypeUsed(parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(), 
                     		 parsedCQL.getUsedCQLArtifacts().getCodeDataTypeMap());;
                      parsedCQL.setDatatypeUsedCorrectly(isValid);
               }
@@ -2157,76 +2157,13 @@ public class CQLServiceImpl implements CQLService {
               CQLExpressionObject cqlExpressionObject = findExpressionObject(expressionName, expressionList);
               boolean isValid = true;
               if (cqlExpressionObject != null) {
-                     isValid = isValidDataTypeUsed(cqlExpressionObject.getValueSetDataTypeMap(), cqlExpressionObject.getCodeDataTypeMap());
+                     isValid = CQLUtil.isValidDataTypeUsed(cqlExpressionObject.getValueSetDataTypeMap(), cqlExpressionObject.getCodeDataTypeMap());
               }
               return isValid;
        }
 
        // @Override
-       public boolean isValidDataTypeUsed(Map<String, List<String>> valueSetDataTypeMap, Map<String, List<String>> codeDataTypeMap) {
-              if (valueSetDataTypeMap != null && !valueSetDataTypeMap.isEmpty()) {
-                     for (String valueSetName : valueSetDataTypeMap.keySet()) {
-                           List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
-                           String[] valueSetNameArray = valueSetName.split(Pattern.quote("|"));
-                           if (valueSetNameArray.length == 3) {
-                                  valueSetName = valueSetNameArray[2];
-                           }
-                           
-                           if(!isValidDataTypeCombination(valueSetName, dataTypeList)) {
-                                  return false;   
-                           }
-                     }
-              }
-              
-              if(codeDataTypeMap != null && !codeDataTypeMap.isEmpty()) {
-                     for (String codeName : codeDataTypeMap.keySet()) {
-                           List<String> dataTypeList = codeDataTypeMap.get(codeName);
-                           String[] codeNameArray = codeName.split(Pattern.quote("|"));
-                           if (codeNameArray.length == 3) {
-                                  codeName = codeNameArray[2];
-                           }
-                           
-                           if(!isValidDataTypeCombination(codeName, dataTypeList)) {
-                                  return false;   
-                           }
-                     }
-              }
-              
-              return true;
-       }
-       
-       /**
-       * Checks if the valueset/code has a valid datatype combination. 
-        * @return true if it valid, false if it is not.
-       */
-       private boolean isValidDataTypeCombination(String name, List<String> dataTypeList) {
-              boolean isValid = true; 
-              
-              // check if the birthdate valueset is being used with something other than then Patient Characteristic Birthdate datatype
-              if (name.equalsIgnoreCase(BIRTHDATE)) {
-                 for (String dataType : dataTypeList) {
-                       if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
-                              return false; 
-                       }
-                 }
-              } 
-              
-              // check if the dead valueset is being used with something other than the Patient Characteristic Expired datatype
-              else if (name.equalsIgnoreCase(DEAD)) {
-                 for (String dataType : dataTypeList) {
-                       if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
-                              return false; 
-                       }
-                 }
-              } 
-              
-              // if not birthdate or dead, check if the datatype list contains Patient Characteristic Birthdate or Dead, any non Birthdate or Dead code cannot use these datatypes. 
-              else if(dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE) || dataTypeList.contains(PATIENT_CHARACTERSTICS_EXPIRED)) {
-            	  return false; 
-              }
-              
-          return true; 
-       }
+
 
        private CQLExpressionObject findExpressionObject(String expressionName, List<CQLExpressionObject> expressionList) {
               CQLExpressionObject cqlExpressionObject = null;
@@ -2354,45 +2291,45 @@ public class CQLServiceImpl implements CQLService {
        */
        @Override
        public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
-              SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-              List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
-              List<CQLErrors> errors = new ArrayList<CQLErrors>();
-              if (!StringUtils.isBlank(cqlFileString)) {
-
-                     CQLtoELM cqlToElm = new CQLtoELM(cqlFileString);
-                     try {
-                           cqlToElm.doTranslation(true, false, false);
-                     } catch (IOException e) {
-                           // TODO Auto-generated catch block
-                           e.printStackTrace();
-                     }
-
-                     if (cqlToElm.getErrors() != null) {
-                           cqlErrorsList.addAll(cqlToElm.getErrors());
-                     }
-              }
-
-              for (CqlTranslatorException cte : cqlErrorsList) {
-
-                     CQLErrors cqlErrors = new CQLErrors();
-
-                     cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-
-                     cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-                     cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-
-                     cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-                     cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-
-                     cqlErrors.setErrorMessage(cte.getMessage());
-                     errors.add(cqlErrors);
-                     System.out.println(cte.getMessage());
-
-              }
-
-              result.setCqlErrors(errors);
-
-              return result;
+//              SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+//              List<CqlTranslatorException> cqlErrorsList = new ArrayList<CqlTranslatorException>();
+//              List<CQLErrors> errors = new ArrayList<CQLErrors>();
+//              if (!StringUtils.isBlank(cqlFileString)) {
+//
+//                     CQLtoELM cqlToElm = new CQLtoELM(cqlFileString);
+//                     try {
+//                           cqlToElm.doTranslation(true, false, false);
+//                     } catch (IOException e) {
+//                           // TODO Auto-generated catch block
+//                           e.printStackTrace();
+//                     }
+//
+//                     if (cqlToElm.getErrors() != null) {
+//                           cqlErrorsList.addAll(cqlToElm.getErrors());
+//                     }
+//              }
+//
+//              for (CqlTranslatorException cte : cqlErrorsList) {
+//
+//                     CQLErrors cqlErrors = new CQLErrors();
+//
+//                     cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
+//
+//                     cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+//                     cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+//
+//                     cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
+//                     cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
+//
+//                     cqlErrors.setErrorMessage(cte.getMessage());
+//                     errors.add(cqlErrors);
+//                     System.out.println(cte.getMessage());
+//
+//              }
+//
+//              result.setCqlErrors(errors);
+//
+              return null;
        }
 
        /**

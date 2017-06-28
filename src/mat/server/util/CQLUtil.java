@@ -27,7 +27,6 @@ import mat.shared.CQLObject;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
-import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,6 +48,14 @@ public class CQLUtil {
 
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtil.class);
+	
+    public static final String PATIENT_CHARACTERSTICS_EXPIRED = "Patient Characteristic Expired";
+
+    public static final String DEAD = "Dead";
+
+    public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
+
+    public static final String BIRTHDATE = "Birthdate";
 
 
 	/**
@@ -94,6 +101,81 @@ public class CQLUtil {
 		}
 
 		return cqlArtifactHolder;
+	}
+	
+	public static boolean isValidDataTypeUsed(Map<String, List<String>> valueSetDataTypeMap,
+			Map<String, List<String>> codeDataTypeMap) {
+		if (valueSetDataTypeMap != null && !valueSetDataTypeMap.isEmpty()) {
+			for (String valueSetName : valueSetDataTypeMap.keySet()) {
+				List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
+				String[] valueSetNameArray = valueSetName.split(Pattern.quote("|"));
+				if (valueSetNameArray.length == 3) {
+					valueSetName = valueSetNameArray[2];
+				}
+
+				if (!isValidDataTypeCombination(valueSetName, dataTypeList)) {
+					return false;
+				}
+			}
+		}
+
+		if (codeDataTypeMap != null && !codeDataTypeMap.isEmpty()) {
+			for (String codeName : codeDataTypeMap.keySet()) {
+				
+				List<String> dataTypeList = codeDataTypeMap.get(codeName);
+				String[] codeNameArray = codeName.split(Pattern.quote("|"));
+				if (codeNameArray.length == 3) {
+					codeName = codeNameArray[2];
+				}
+
+				if (!isValidDataTypeCombination(codeName, dataTypeList)) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks if the valueset/code has a valid datatype combination.
+	 * 
+	 * @return true if it valid, false if it is not.
+	 */
+	private static boolean isValidDataTypeCombination(String name, List<String> dataTypeList) {
+		boolean isValid = true;
+
+		// check if the birthdate valueset is being used with something other
+		// than then Patient Characteristic Birthdate datatype
+		if (name.equalsIgnoreCase(BIRTHDATE)) {
+			for (String dataType : dataTypeList) {
+				System.out.println("HERE");
+				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
+					System.out.println("HERE????");
+					return false;
+				}
+			}
+		}
+
+		// check if the dead valueset is being used with something other than
+		// the Patient Characteristic Expired datatype
+		else if (name.equalsIgnoreCase(DEAD)) {
+			for (String dataType : dataTypeList) {
+				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
+					return false;
+				}
+			}
+		}
+
+		// if not birthdate or dead, check if the datatype list contains Patient
+		// Characteristic Birthdate or Dead, any non Birthdate or Dead code
+		// cannot use these datatypes.
+		else if (dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE)
+				|| dataTypeList.contains(PATIENT_CHARACTERSTICS_EXPIRED)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -411,61 +493,36 @@ public class CQLUtil {
 	private static void validateCQLWithIncludes(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
 			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM) {
 
-		List<File> fileList = new ArrayList<File>();
 		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
-
-		try {
-			File test = File.createTempFile(UUIDUtilClient.uuid(), null);
-			File tempDir = test.getParentFile();
-
-			File folder = new File(tempDir.getAbsolutePath() + File.separator + UUIDUtilClient.uuid());
-			folder.mkdir();
-			File mainCQLFile = createCQLTempFile(cqlFileString, UUIDUtilClient.uuid(), folder);
-			fileList.add(mainCQLFile);
-
-			for (String cqlLibName : cqlLibNameMap.keySet()) {
-
-				CQLModel includeCqlModel = CQLUtilityClass
-						.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
-
-				LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
-
-				String cqlString = CQLUtilityClass.getCqlString(includeCqlModel, "").toString();
-				System.out.println("Creating file:"+libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion());
-				File cqlIncludedFile = createCQLTempFile(cqlString, libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), folder);
-				fileList.add(cqlIncludedFile);
-
-			}
-
-			CQLtoELM cqlToElm = new CQLtoELM(mainCQLFile);
-			cqlToElm.doTranslation(!generateELM, false, generateELM);
-
-			if (generateELM) {
-				String elmString = cqlToElm.getElmString();
-				parsedCQL.setElmString(elmString);
-			}
-
-			cqlTranslatorExceptions = cqlToElm.getErrors();
-
-			fileList.add(test);
-			fileList.add(folder);
-
-			if(exprList != null){
-
-				filterCQLArtifacts(cqlModel, parsedCQL, folder, cqlToElm, exprList);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			for (File file : fileList) {
-				file.delete();
-			}
+		Map<String, String> libraryMap = new HashMap<>(); 
+		
+		// get the strings for parsing
+		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+		libraryMap.put(cqlModel.getName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
+		for (String cqlLibName : cqlLibNameMap.keySet()) {
+			CQLModel includedCQLModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
+			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
+			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();			
+			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
 		}
 
+		// do the parsing
+		CQLtoELM cqlToELM = new CQLtoELM(parentCQLString, libraryMap);
+		cqlToELM.doTranslation(true);
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		cqlTranslatorExceptions.addAll(cqlToELM.getErrors());
+		
+		// do the filtering
+		if(exprList != null){
+			filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList);
+		}
+		
+		// set the elm string
+		if(generateELM) {
+			parsedCQL.setElmString(cqlToELM.getElmString());
+		}
 
+		// add in the errors, if any
 		for (CqlTranslatorException cte : cqlTranslatorExceptions) {
 			CQLErrors cqlErrors = new CQLErrors();
 
@@ -494,11 +551,10 @@ public class CQLUtil {
 	 * @param exprList the expr list
 	 */
 
-	private static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, File folder,
-			CQLtoELM cqlToElm, List<String> exprList) {
+	private static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
 		if (cqlToElm != null) {
 
-			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, folder.getAbsolutePath(), cqlModel);
+			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, cqlToElm.getLibraryHolderMap(), cqlModel);
 			cqlFilter.findUsedExpressions();
 			CQLObject cqlObject = cqlFilter.getCqlObject();
 			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
@@ -515,16 +571,9 @@ public class CQLUtil {
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 			parsedCQL.setCqlObject(cqlObject);
 
-			//                  System.out.println("Def to Def:"+cqlFilter.getDefinitionToDefinitionMap());
 			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
-
-			//                  System.out.println("Def to Func:"+cqlFilter.getDefinitionToFunctionMap());
 			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
-
-			//                  System.out.println("Func to Def:"+cqlFilter.getFunctionToDefinitionMap());
 			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
-
-			//                  System.out.println("Func to Func:"+cqlFilter.getFunctionToFunctionMap());
 			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
 		}
 	}

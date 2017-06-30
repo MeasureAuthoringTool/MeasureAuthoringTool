@@ -108,7 +108,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							new ClickableSafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(Result object) {
-					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					/*SafeHtmlBuilder sb = new SafeHtmlBuilder();
 					String title;
 					String cssClass;
 					if (object.isEditable()) {
@@ -127,7 +127,35 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 						cssClass = "customReadOnlyButton";
 						sb.appendHtmlConstant("<button type=\"button\" title='"
 								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Read-Only</button>");
+					}*/
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					String title;
+					String cssClass = "btn btn-link";
+					String iconCss;
+					if (object.isEditable()) {
+						if (object.isMeasureLocked()) {
+							String emailAddress = object.getLockedUserInfo().getEmailAddress();
+							title = "Measure in use by " + emailAddress;
+							//cssClass = "customLockedButton";
+							iconCss = "fa fa-lock fa-lg";
+						} else {
+							title = "Edit";
+							//cssClass = "customEditButton";
+							iconCss = "fa fa-pencil fa-lg";
+							
+						}
+						sb.appendHtmlConstant("<button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+						//<span class=\"invisibleButtonText\">Edit</span>
+					} else {
+						title = "Read-Only";
+						//cssClass = "customReadOnlyButton";
+						iconCss = "fa fa-newspaper-o fa-lg";
+						sb.appendHtmlConstant("<button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
+						//<span class=\"invisibleButtonText\">Read-Only</span>
 					}
+					
 					return sb.toSafeHtml();
 				}
 			};
@@ -147,7 +175,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 
 				@Override
 				public SafeHtml getValue(Result object) {
-					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					/*SafeHtmlBuilder sb = new SafeHtmlBuilder();
 					String title = "";
 					String cssClass = "";
 					if ((object != null) && object.isExportable() && (object.getHqmfReleaseVersion() != null)) {
@@ -162,6 +190,25 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							sb.appendHtmlConstant(
 									"<button  type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
 											+ "\">Export MAT " + object.getHqmfReleaseVersion() + "</button>");
+						}
+					}*/
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					String title = "";
+					String cssClass = "btn btn-link";
+					String iconClass = "fa fa-download fa-lg";
+					if((object != null) && object.isExportable() && (object.getHqmfReleaseVersion() != null)) {
+						if(object.getHqmfReleaseVersion().equalsIgnoreCase("v3")){
+							//cssClass = "customExportButton";
+							title = "Click to Export MAT v3";
+							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: gray;\"/> <i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">Export MAT v3 </span></button>");	
+							//<span class=\"invisibleButtonText\">Export MAT v3</span>
+						} else {
+							//cssClass = "customExportButtonRed";
+							title = "Click to Export MAT " +  object.getHqmfReleaseVersion();
+							sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\" ><i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">"+"Export MAT "+object.getHqmfReleaseVersion()+"</span></button>");
+							//<span class=\"invisibleButtonText\">Export MAT "+object.getHqmfReleaseVersion()+"</span>
 						}
 					}
 					return sb.toSafeHtml();

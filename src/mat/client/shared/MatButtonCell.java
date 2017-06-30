@@ -41,6 +41,10 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
    
    /** The css class. */
    String cssClass="";
+   
+   String iconClass = "";
+   
+   String invisibleButtonText ="";
   
   /**
    * Construct a new ButtonCell that will use a {@link SimpleSafeHtmlRenderer}.
@@ -61,6 +65,14 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
 	    this(SimpleSafeHtmlRenderer.getInstance());
 	    this.ButtonTitle=ButtonTitle;
 	    this.cssClass = cssString;
+	  }
+  
+  public MatButtonCell(String ButtonTitle , String cssString, String iconCss, String invisibleButtonText) {
+	    this(SimpleSafeHtmlRenderer.getInstance());
+	    this.ButtonTitle=ButtonTitle;
+	    this.cssClass = cssString;
+	    this.iconClass = iconCss;
+	    this.invisibleButtonText = invisibleButtonText;
 	  }
   
   /**
@@ -98,9 +110,13 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
   public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
 	  
 	  sb.appendHtmlConstant("<button type=\"button\" title=\" " + ButtonTitle + "\" tabindex=\"0\" class=\" "+cssClass+"\">");
+	  if(cssClass.equalsIgnoreCase("btn btn-link")){
+		 sb.appendHtmlConstant("<i class=\" "+iconClass+"\"></i>");
+		 sb.appendHtmlConstant("<span style=\"font-size:0;\">"+invisibleButtonText+"</span>");
+	  }
 	  if (data != null) {
 		  sb.append(data);
-		  }
+	}
 	  sb.appendHtmlConstant("</button>");
   }
 

@@ -1,6 +1,5 @@
 package mat.client.measure;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -311,12 +310,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 						+ "</span>"));*/
 		
 		//History
-		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
+		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
 		Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, 
 				String>(historyButton) {
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
-				return "History";
+				return "";
 			}
 				};
 				historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
@@ -437,23 +436,30 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private SafeHtml getEditColumnToolTip(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
-		String cssClass;
+		String cssClass = "btn btn-link";
+		String iconCss;
 		if (object.isEditable()) {
 			if (object.isMeasureLocked()) {
 				String emailAddress = object.getLockedUserInfo().getEmailAddress();
 				title = "Measure in use by " + emailAddress;
-				cssClass = "customLockedButton";
+				//cssClass = "customLockedButton";
+				iconCss = "fa fa-lock fa-lg";
 			} else {
 				title = "Edit";
-				cssClass = "customEditButton";
+				//cssClass = "customEditButton";
+				iconCss = "fa fa-pencil fa-lg";
+				
 			}
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Edit</button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+			//<span class=\"invisibleButtonText\">Edit</span>
 		} else {
 			title = "Read-Only";
-			cssClass = "customReadOnlyButton";
+			//cssClass = "customReadOnlyButton";
+			iconCss = "fa fa-newspaper-o fa-lg";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Read-Only</button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
+			//<span class=\"invisibleButtonText\">Read-Only</span>
 		}
 		
 		return sb.toSafeHtml();
@@ -468,17 +474,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private SafeHtml getShareColumnToolTip(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
-		String cssClass;
+		String cssClass = "btn btn-link";
+		String iconCss = "fa fa-share-square fa-lg";
 		if (object.isSharable()) {
 			title = "Shareable";
-			cssClass = "customShareButton";
+			//cssClass = "customShareButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Shareable</button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
+			//<span class=\"invisibleButtonText\">Shareable</span>
 		} else {
 			title = "Shareable";
-			cssClass = "customGrayedShareButton";
+			//cssClass = "customGrayedShareButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Shareable</button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Shareable</span></button>");
 		}
 		
 		return sb.toSafeHtml();
@@ -493,18 +501,20 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private SafeHtml getCloneColumnToolTip(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
-		String cssClass;
-		
+		String cssClass = "btn btn-link";
+		String iconCss = "fa fa-clone fa-lg";
 		if (object.isClonable()) {
 			title = "Clonable";
-			cssClass = "customCloneButton"; 
+			//cssClass = "customCloneButton"; 
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Clonable</button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Clonable</span> </button>");
+			//<span class=\"invisibleButtonText\">Clonable</span>
 		} else {
 			title = "Clonable";
-			cssClass = "customGrayedCloneButton";
+			//cssClass = "customGrayedCloneButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled>Clonable</button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Clonable</span></button>");
+			//<span class=\"invisibleButtonText\">Clonable</span>
 		}
 		
 		return sb.toSafeHtml();
@@ -602,18 +612,21 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			public SafeHtml getValue(Result object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "";
-				String cssClass = "";
+				String cssClass = "btn btn-link";
+				String iconClass = "fa fa-download fa-lg";
 				if((object != null) && (object.getHqmfReleaseVersion() != null)) {
 					if(object.getHqmfReleaseVersion().equalsIgnoreCase("v3")){
-						cssClass = "customExportButton";
+						//cssClass = "customExportButton";
 						title = "Click to Export MAT v3";
 						sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-								+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>Export MAT v3</button>");		
+								+ "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: gray;\"/> <i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">Export MAT v3 </span></button>");	
+						//<span class=\"invisibleButtonText\">Export MAT v3</span>
 					} else {
-						cssClass = "customExportButtonRed";
+						//cssClass = "customExportButtonRed";
 						title = "Click to Export MAT " +  object.getHqmfReleaseVersion();
 						sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
-								+ "' tabindex=\"0\" class=\" " + cssClass + "\">Export MAT "+object.getHqmfReleaseVersion()+"</button>");	
+								+ "' tabindex=\"0\" class=\" " + cssClass + "\" ><i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">"+"Export MAT "+object.getHqmfReleaseVersion()+"</span></button>");
+						//<span class=\"invisibleButtonText\">Export MAT "+object.getHqmfReleaseVersion()+"</span>
 					}
 				}
 				return sb.toSafeHtml();
@@ -1100,30 +1113,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		this.measureListLabel = measureListLabel;
 	}
 	
-	/**
-	 * Convert timestamp to string.
-	 *
-	 * @param ts - Timestamp.
-	 * @return String.
-	 */
-	private String convertTimestampToString(Timestamp ts) {
-		String tsStr;
-		if (ts == null) {
-			tsStr = "";
-		} else {
-			int hours = ts.getHours();
-			String ap = hours < 12 ? "AM" : "PM";
-			int modhours = hours % 12;
-			String mins = ts.getMinutes() + "";
-			if (mins.length() == 1) {
-				mins = "0" + mins;
-			}
-			String hoursStr = modhours == 0 ? "12" : modhours+"";
-			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + (ts.getYear() + 1900) + " "
-					+ hoursStr + ":" + mins + " "+ap;
-		}
-		return tsStr;
-	}
 	
 	/**
 	 * Sets the admin observer.

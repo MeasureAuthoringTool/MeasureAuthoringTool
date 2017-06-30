@@ -1,6 +1,5 @@
 package mat.client.cql;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -501,12 +500,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				
 		
 		// History
-		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
+		/*Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");*/
+		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
 				historyButton) {
 			@Override
 			public String getValue(CQLLibraryDataSetObject object) {
-				return "History";
+				return "";
 			}
 		};
 		historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
@@ -589,7 +589,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * @return the history column tool tip
 	 */
 	private SafeHtml getShareColumnToolTip(CQLLibraryDataSetObject object) {
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		/*SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
 		String cssClass;
 		if (object.isSharable()) {
@@ -604,6 +604,24 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 					+ "\" disabled>Shareable</button>");
 		}
 
+		return sb.toSafeHtml();*/
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title;
+		String cssClass = "btn btn-link";
+		String iconCss = "fa fa-share-square fa-lg";
+		if (object.isSharable()) {
+			title = "Shareable";
+			//cssClass = "customShareButton";
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
+			//<span class=\"invisibleButtonText\">Shareable</span>
+		} else {
+			title = "Shareable";
+			//cssClass = "customGrayedShareButton";
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Shareable</span></button>");
+		}
+		
 		return sb.toSafeHtml();
 	}
 
@@ -691,32 +709,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		return sb.toSafeHtml();
 	}
 
-	/**
-	 * Convert timestamp to string.
-	 *
-	 * @param ts
-	 *            - Timestamp.
-	 * @return String.
-	 */
-	private String convertTimestampToString(Timestamp ts) {
-		String tsStr;
-		if (ts == null) {
-			tsStr = "";
-		} else {
-			int hours = ts.getHours();
-			String ap = hours < 12 ? "AM" : "PM";
-			int modhours = hours % 12;
-			String mins = ts.getMinutes() + "";
-			if (mins.length() == 1) {
-				mins = "0" + mins;
-			}
-			String hoursStr = modhours == 0 ? "12" : modhours + "";
-			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + (ts.getYear() + 1900) + " " + hoursStr + ":" + mins
-					+ " " + ap;
-		}
-		return tsStr;
-	}
-
+	
 	/**
 	 * Gets the cql Library List Label.
 	 *

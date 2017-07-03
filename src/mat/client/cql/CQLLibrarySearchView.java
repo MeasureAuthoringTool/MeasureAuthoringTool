@@ -613,7 +613,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			title = "Shareable";
 			//cssClass = "customShareButton";
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkseagreen;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
 			//<span class=\"invisibleButtonText\">Shareable</span>
 		} else {
 			title = "Shareable";

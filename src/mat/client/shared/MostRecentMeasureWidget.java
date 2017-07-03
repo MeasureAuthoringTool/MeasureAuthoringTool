@@ -145,15 +145,16 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 							
 						}
 						sb.appendHtmlConstant("<button type=\"button\" title='"
-								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
 						//<span class=\"invisibleButtonText\">Edit</span>
 					} else {
 						title = "Read-Only";
 						//cssClass = "customReadOnlyButton";
 						iconCss = "fa fa-newspaper-o fa-lg";
 						sb.appendHtmlConstant("<button type=\"button\" title='"
-								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
 						//<span class=\"invisibleButtonText\">Read-Only</span>
+						//
 					}
 					
 					return sb.toSafeHtml();

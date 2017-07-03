@@ -4,20 +4,20 @@
 package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -28,19 +28,23 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
-import mat.client.shared.CommentTextAreaWithMaxLength;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
+// TODO: Auto-generated Javadoc
 /**
- * @author jnarang
+ * The Class CQlDefinitionsView.
  *
+ * @author jnarang
  */
 public class CQlDefinitionsView {
+	
+	/** The define name txt area. */
 	private MatTextBox defineNameTxtArea = new MatTextBox();
 	/** The define ace editor. */
 	private AceEditor defineAceEditor = new AceEditor();
 
+	/** The context group. */
 	private ButtonGroup contextGroup = new ButtonGroup();
 
 	/** The context pat toggle switch. */
@@ -55,15 +59,29 @@ public class CQlDefinitionsView {
 	/** The define add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("definition");
 
+	/** The main define view vertical panel. */
 	private VerticalPanel mainDefineViewVerticalPanel = new VerticalPanel();
 
+	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	
-	private CommentTextAreaWithMaxLength defineCommentTextArea = new CommentTextAreaWithMaxLength(250);
+	/** The define comment text area. */
+	private TextArea defineCommentTextArea = new TextArea();
 	
+	/** The define name group. */
+	private FormGroup defineNameGroup = new FormGroup();
 	
+	/** The define comment group. */
+	private FormGroup defineCommentGroup = new FormGroup();
+	
+	/** The define context group. */
+	private FormGroup defineContextGroup = new FormGroup();
+	
+	/**
+	 * Instantiates a new c ql definitions view.
+	 */
 	public CQlDefinitionsView() {
-		// TODO Auto-generated constructor stub
+
 		defineAceEditor.startEditor();
 		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
 		
@@ -74,30 +92,36 @@ public class CQlDefinitionsView {
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
+	/**
+	 * Builds the view.
+	 */
 	@SuppressWarnings("static-access")
 	private void buildView() {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
+		defineNameGroup.clear();
+		defineCommentGroup.clear();
+		defineContextGroup.clear();
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
 
-		//Label defineNameLabel = new Label(LabelType.INFO, "Definition Name");
 		FormLabel defineNameLabel = new FormLabel();
 		defineNameLabel.setText("Definition Name");
 		defineNameLabel.setTitle("Definition Name");
-		//defineNameLabel.setMarginTop(5);
+		defineNameLabel.setMarginRight(15);
 		defineNameLabel.setId("DefinitionName_Label");
 		
 		defineNameTxtArea.setText("");
-		// defineNameTxtArea.setPlaceholder("Enter Definition Name here.");
 		defineNameTxtArea.setSize("550px", "25px");
 		defineNameTxtArea.getElement().setId("defineNameField");
 		defineNameTxtArea.setName("defineName");
-		defineNameLabel.setText("Definition Name");
-		SimplePanel defineNamePanel = new SimplePanel();
-		defineNamePanel.setStyleName("marginLeft20px");
-		defineNamePanel.getElement().setId("DefinitionName_SimplePanel");
-		defineNamePanel.add(defineNameTxtArea);
-
+		
+		HorizontalPanel defineNameHPanel = new HorizontalPanel();
+		defineNameHPanel.add(defineNameLabel);
+		defineNameHPanel.add(defineNameTxtArea);
+		defineNameHPanel.setWidth("700px");
+		
+		defineNameGroup.add(defineNameHPanel);
+		
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
 		header.setText("Build CQL Expression");
@@ -119,17 +143,14 @@ public class CQlDefinitionsView {
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		defAceEditorPanel.add(defineAceEditor);
 		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
-		//defAceEditorPanel.setStyleName("cqlRightContainer");
 		body.add(defAceEditorPanel);
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
 		
 
-		/*Label defineContextLabel = new Label(LabelType.INFO, "Context");*/
 		FormLabel defineContextLabel = new FormLabel();
 		defineContextLabel.setText("Context");
 		defineContextLabel.setTitle("Context");
-		//defineContextLabel.setMarginTop(5);
 		defineContextLabel.setId("DefinitionContext_Label");
 		
 		
@@ -148,36 +169,38 @@ public class CQlDefinitionsView {
 		defineButtonBar.getTimingExpButton().setVisible(false);
 		defineButtonBar.getCloseButton().setVisible(false);
 		defineContextPanel.add(contextGroup);
-		defineContextPanel.setStyleName("contextToggleSwitch marginLeft20px");
 		
-		/*Label defineCommentLabel = new Label(LabelType.INFO, "Comment");*/
+		HorizontalPanel defineContextHPanel = new HorizontalPanel();
+		defineContextHPanel.add(defineContextLabel);
+		defineContextHPanel.add(defineContextPanel);
+		defineContextHPanel.setWidth("500px");
+		
+		defineContextGroup.add(defineContextHPanel);
+	
 		FormLabel defineCommentLabel = new FormLabel();
 		defineCommentLabel.setText("Comment");
 		defineCommentLabel.setTitle("Comment");
-		//defineCommentLabel.setMarginTop(5);
+		defineCommentLabel.setMarginRight(53);
 		defineCommentLabel.setId("DefinitionComment_Label");
 		
 		defineCommentTextArea.setId("DefineCommentTextArea_Id");
 		defineCommentTextArea.setSize("550px", "40px");
 		defineCommentTextArea.setText("");
 		defineCommentTextArea.setName("Definition Comment");
-		defineCommentTextArea.getElement().setAttribute("style", "resize:none");
-		SimplePanel defineCommentPanel = new SimplePanel();
-		defineCommentPanel.setStyleName("topping marginLeft20px");
-		defineCommentPanel.getElement().setId("definitionComment_simplePanel");
-		defineCommentPanel.add(defineCommentTextArea);
 		
-		Grid queryGrid = new Grid(5, 2);
-		queryGrid.setWidget(0, 0, addNewButtonBar);
-		queryGrid.setWidget(1, 0, defineNameLabel);
-		queryGrid.setWidget(1, 1, defineNamePanel);
-		queryGrid.setWidget(2, 0, new SpacerWidget());
-		queryGrid.setWidget(3, 0, defineContextLabel);
-		queryGrid.setWidget(3, 1, defineContextPanel);
-		queryGrid.setWidget(4, 0, defineCommentLabel);
-		queryGrid.setWidget(4, 1, defineCommentPanel);
 		
-		definitionVP.add(queryGrid);
+		HorizontalPanel defineCommenttHPanel = new HorizontalPanel();
+		defineCommenttHPanel.add(defineCommentLabel);
+		defineCommenttHPanel.add(defineCommentTextArea);
+		defineCommenttHPanel.setWidth("700px");
+		
+		defineCommentGroup.add(defineCommenttHPanel);
+		
+		definitionVP.add(addNewButtonBar);
+		definitionVP.add(defineNameGroup);
+		definitionVP.add(defineContextGroup);
+		definitionVP.add(defineCommentGroup);
+		
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(defineButtonBar);
 		definitionVP.add(new SpacerWidget());
@@ -200,6 +223,11 @@ public class CQlDefinitionsView {
 	}
 
 
+	/**
+	 * Gets the view.
+	 *
+	 * @return the view
+	 */
 	public VerticalPanel getView() {
 		mainDefineViewVerticalPanel.clear();
 		resetAll();
@@ -207,62 +235,135 @@ public class CQlDefinitionsView {
 		return mainDefineViewVerticalPanel;
 	}
 
+	/**
+	 * Gets the define name txt area.
+	 *
+	 * @return the define name txt area
+	 */
 	public MatTextBox getDefineNameTxtArea() {
 		return defineNameTxtArea;
 	}
 
+	/**
+	 * Sets the define name txt area.
+	 *
+	 * @param defineNameTxtArea the new define name txt area
+	 */
 	public void setDefineNameTxtArea(MatTextBox defineNameTxtArea) {
 		this.defineNameTxtArea = defineNameTxtArea;
 	}
 
+	/**
+	 * Gets the define ace editor.
+	 *
+	 * @return the define ace editor
+	 */
 	public AceEditor getDefineAceEditor() {
 		return defineAceEditor;
 	}
 
+	/**
+	 * Sets the define ace editor.
+	 *
+	 * @param defineAceEditor the new define ace editor
+	 */
 	public void setDefineAceEditor(AceEditor defineAceEditor) {
 		this.defineAceEditor = defineAceEditor;
 	}
 
+	/**
+	 * Gets the context group.
+	 *
+	 * @return the context group
+	 */
 	public ButtonGroup getContextGroup() {
 		return contextGroup;
 	}
 
+	/**
+	 * Sets the context group.
+	 *
+	 * @param contextGroup the new context group
+	 */
 	public void setContextGroup(ButtonGroup contextGroup) {
 		this.contextGroup = contextGroup;
 	}
 
+	/**
+	 * Gets the context define PAT radio btn.
+	 *
+	 * @return the context define PAT radio btn
+	 */
 	public InlineRadio getContextDefinePATRadioBtn() {
 		return contextDefinePATRadioBtn;
 	}
 
+	/**
+	 * Sets the context define PAT radio btn.
+	 *
+	 * @param contextDefinePATRadioBtn the new context define PAT radio btn
+	 */
 	public void setContextDefinePATRadioBtn(InlineRadio contextDefinePATRadioBtn) {
 		this.contextDefinePATRadioBtn = contextDefinePATRadioBtn;
 	}
 
+	/**
+	 * Gets the context define POP radio btn.
+	 *
+	 * @return the context define POP radio btn
+	 */
 	public InlineRadio getContextDefinePOPRadioBtn() {
 		return contextDefinePOPRadioBtn;
 	}
 
+	/**
+	 * Sets the context define POP radio btn.
+	 *
+	 * @param contextDefinePOPRadioBtn the new context define POP radio btn
+	 */
 	public void setContextDefinePOPRadioBtn(InlineRadio contextDefinePOPRadioBtn) {
 		this.contextDefinePOPRadioBtn = contextDefinePOPRadioBtn;
 	}
 
+	/**
+	 * Gets the define button bar.
+	 *
+	 * @return the define button bar
+	 */
 	public CQLButtonToolBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
 
+	/**
+	 * Sets the define button bar.
+	 *
+	 * @param defineButtonBar the new define button bar
+	 */
 	public void setDefineButtonBar(CQLButtonToolBar defineButtonBar) {
 		this.defineButtonBar = defineButtonBar;
 	}
 
+	/**
+	 * Gets the adds the new button bar.
+	 *
+	 * @return the adds the new button bar
+	 */
 	public CQLAddNewButton getAddNewButtonBar() {
 		return addNewButtonBar;
 	}
 
+	/**
+	 * Sets the adds the new button bar.
+	 *
+	 * @param addNewButtonBar the new adds the new button bar
+	 */
 	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
 		this.addNewButtonBar = addNewButtonBar;
 	}
 
+	/**
+	 * Reset all.
+	 */
 	public void resetAll() {
 		getDefineNameTxtArea().setText("");
 		getDefineAceEditor().setText("");
@@ -270,18 +371,36 @@ public class CQlDefinitionsView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
 
+	/**
+	 * Gets the panel view CQL collapse.
+	 *
+	 * @return the panel view CQL collapse
+	 */
 	public PanelCollapse getPanelViewCQLCollapse() {
 		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
 	}
 
+	/**
+	 * Gets the view CQL ace editor.
+	 *
+	 * @return the view CQL ace editor
+	 */
 	public AceEditor getViewCQLAceEditor() {
 		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
 	}
 
+	/**
+	 * Hide ace editor auto complete pop up.
+	 */
 	public void hideAceEditorAutoCompletePopUp() {
 		getDefineAceEditor().detach();
 	}
 
+	/**
+	 * Sets the widget read only.
+	 *
+	 * @param isEditable the new widget read only
+	 */
 	public void setWidgetReadOnly(boolean isEditable) {
 
 		getDefineNameTxtArea().setEnabled(isEditable);
@@ -299,12 +418,85 @@ public class CQlDefinitionsView {
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 
-	public CommentTextAreaWithMaxLength getDefineCommentTextArea() {
+	
+	/**
+	 * Gets the define comment text area.
+	 *
+	 * @return the define comment text area
+	 */
+	public TextArea getDefineCommentTextArea() {
 		return defineCommentTextArea;
 	}
 
-	public void setDefineCommentTextArea(CommentTextAreaWithMaxLength commentTextArea) {
+	/**
+	 * Sets the define comment text area.
+	 *
+	 * @param commentTextArea the new define comment text area
+	 */
+	public void setDefineCommentTextArea(TextArea commentTextArea) {
 		this.defineCommentTextArea = commentTextArea;
+	}
+
+	/**
+	 * Gets the define name group.
+	 *
+	 * @return the define name group
+	 */
+	public FormGroup getDefineNameGroup() {
+		return defineNameGroup;
+	}
+
+	/**
+	 * Sets the define name group.
+	 *
+	 * @param defineNameGroup the new define name group
+	 */
+	public void setDefineNameGroup(FormGroup defineNameGroup) {
+		this.defineNameGroup = defineNameGroup;
+	}
+
+	/**
+	 * Gets the define comment group.
+	 *
+	 * @return the define comment group
+	 */
+	public FormGroup getDefineCommentGroup() {
+		return defineCommentGroup;
+	}
+
+	/**
+	 * Sets the define comment group.
+	 *
+	 * @param defineCommentGroup the new define comment group
+	 */
+	public void setDefineCommentGroup(FormGroup defineCommentGroup) {
+		this.defineCommentGroup = defineCommentGroup;
+	}
+
+	/**
+	 * Gets the define context group.
+	 *
+	 * @return the define context group
+	 */
+	public FormGroup getDefineContextGroup() {
+		return defineContextGroup;
+	}
+
+	/**
+	 * Sets the define context group.
+	 *
+	 * @param defineContextGroup the new define context group
+	 */
+	public void setDefineContextGroup(FormGroup defineContextGroup) {
+		this.defineContextGroup = defineContextGroup;
+	}
+	
+	/**
+	 * Reset define form group.
+	 */
+	public void resetDefineFormGroup(){
+		getDefineCommentGroup().setValidationState(ValidationState.NONE);
+		getDefineNameGroup().setValidationState(ValidationState.NONE);
 	}
 
 }

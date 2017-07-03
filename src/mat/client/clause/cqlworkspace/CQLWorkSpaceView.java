@@ -2,9 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PopupPanel;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -522,11 +520,20 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
 		//cqlLeftNavBarPanelView.getDeleteConfirmationMessgeAlert().clearAlert();
 		hideAceEditorAutoCompletePopUp();
-
+		resetFormGroups();
 	}
 
 	
 	
+	private void resetFormGroups() {
+		cqlDefinitionsView.resetDefineFormGroup();
+		cqlParametersView.resetParamFormGroup();
+		cqlFunctionsView.resetFuncFormGroup();
+		generalInformationView.resetFormGroup();
+		inclView.resetFromGroup();
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlLeftNavBarPanelView()
 	 */

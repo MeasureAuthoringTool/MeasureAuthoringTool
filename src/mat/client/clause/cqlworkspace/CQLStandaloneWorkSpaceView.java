@@ -247,9 +247,18 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
 	//	cqlLeftNavBarPanelView.getDeleteConfirmationMessgeAlert().clearAlert();
 		hideAceEditorAutoCompletePopUp();
-
+		resetFormGroups();
 	}
 	
+	private void resetFormGroups() {
+		cqlDefinitionsView.resetDefineFormGroup();
+		cqlParametersView.resetParamFormGroup();
+		cqlFunctionsView.resetFuncFormGroup();
+		generalInformationView.resetFormGroup();
+		inclView.resetFromGroup();
+	}
+
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#hideAceEditorAutoCompletePopUp()
 	 */

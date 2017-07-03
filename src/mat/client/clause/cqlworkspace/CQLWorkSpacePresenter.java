@@ -49,9 +49,12 @@ import org.gwtbootstrap3.client.shared.event.HideHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -565,6 +568,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCQLParametersView().getParameterCommentTextArea().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.NONE);
+				String comment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
+				if(validator.validateForCommentTextArea(comment)){
+					searchDisplay.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+							MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+				}
+			}
+		});
 	}
 	
 	private void addNewParameter() {
@@ -734,6 +752,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				searchDisplay.resetMessageDisplay();
+				searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.NONE);
+				String comment = searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().getText();
+				if(validator.validateForCommentTextArea(comment)){
+					searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+							MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+				}
+			}
+		});
+		
 		addFunctionSectionObserverHandlers();
 
 	}
@@ -942,6 +976,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						}
 					}
 				});		
+				
+				searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().addBlurHandler(new BlurHandler() {
+					
+					@Override
+					public void onBlur(BlurEvent event) {
+						searchDisplay.resetMessageDisplay();
+						searchDisplay.getCQlDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.NONE);
+						String comment = searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().getText();
+						if(validator.validateForCommentTextArea(comment)){
+							searchDisplay.getCQlDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
+							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+									MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+						}
+					}
+				});
 	}
 	
 	private void addNewDefinition() {
@@ -1566,6 +1615,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			
 			} else {
+				searchDisplay.getIncludeView().getAliasNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 				.createAlert(MatContext.get().getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
 				searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
@@ -1573,6 +1623,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			
 		} else {
+			searchDisplay.getIncludeView().getAliasNameGroup().setValidationState(ValidationState.ERROR);
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 					MatContext.get().getMessageDelegate().getSAVE_INCLUDE_LIBRARY_VALIATION_ERROR());
 		}
@@ -2182,8 +2233,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			funcContext = "Population";
 		}
 		if (!functionName.isEmpty()) {
-			if (!validator.validateForSpecialChar(functionName.trim())) {
-
+			if (validator.validateForSpecialChar(functionName.trim())) {
+				searchDisplay.getCqlFunctionsView().getFuncNameGroup().setValidationState(ValidationState.ERROR);
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR());
+				searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText(functionName.trim());
+			} else if(validator.validateForCommentTextArea(funcComment)){
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+				searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
+			}else {
 				CQLFunctions function = new CQLFunctions();
 				function.setFunctionLogic(functionBody);
 				function.setFunctionName(functionName);
@@ -2302,10 +2361,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								}
 							});
 				
-			} else {
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR());
-				searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText(functionName.trim());
+
 			}
 
 		} else {
@@ -2326,8 +2382,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		String parameterComment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
 		if (!parameterName.isEmpty()) {
 
-			if (!validator.validateForSpecialChar(parameterName.trim())) {
-
+			if (validator.validateForSpecialChar(parameterName.trim())) {
+				searchDisplay.getCQLParametersView().getParamNameGroup().setValidationState(ValidationState.ERROR);
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
+				searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
+				
+			} else if(validator.validateForCommentTextArea(parameterComment)){
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+				searchDisplay.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
+				
+			} else {
 				CQLParameter parameter = new CQLParameter();
 				parameter.setParameterLogic(parameterLogic);
 				parameter.setParameterName(parameterName);
@@ -2420,12 +2486,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									}
 								}
 							});
-				
 
-			} else {
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
-				searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 			}
 
 		} else {
@@ -2453,8 +2514,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		if (!definitionName.isEmpty()) {
 
-			if (!validator.validateForSpecialChar(definitionName.trim())) {
-
+			if (validator.validateForSpecialChar(definitionName.trim())) {
+				searchDisplay.getCQlDefinitionsView().getDefineNameGroup().setValidationState(ValidationState.ERROR);
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
+				searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
+			} else if (validator.validateForCommentTextArea(definitionComment)){
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+				searchDisplay.getCQlDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
+				
+			} else {
 				final CQLDefinition define = new CQLDefinition();
 				define.setDefinitionName(definitionName);
 				define.setDefinitionLogic(definitionLogic);
@@ -2558,10 +2628,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									}
 																	}
 							});
-			} else {
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
-				searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
+
 			}
 
 		} else {

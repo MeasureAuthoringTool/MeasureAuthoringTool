@@ -317,6 +317,8 @@ public class MessageDelegate {
 
 	private final String MSG_TYPE_CHECK_VALIDATION_MEASURE_PACKAGE = "Unable to create measure package. There is an incorrect return type in the following grouping(s): ";
 	
+	private final String ERROR_VALIDATION_COMMENT_AREA = "Comment cannot exceed 250 characters. ";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -3273,5 +3275,9 @@ public class MessageDelegate {
 
 	public String getCQL_LIBRARY_DELETION_SUCCESS_MSG() {
 		return CQL_LIBRARY_DELETION_SUCCESS_MSG;
+	}
+
+	public String getERROR_VALIDATION_COMMENT_AREA() {
+		return ERROR_VALIDATION_COMMENT_AREA;
 	}
 }

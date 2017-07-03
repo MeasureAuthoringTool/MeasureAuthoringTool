@@ -11,20 +11,21 @@ import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.InlineRadio;
-import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 
 import com.google.gwt.cell.client.Cell;
@@ -56,7 +57,6 @@ import mat.client.CustomPager;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
-import mat.client.shared.CommentTextAreaWithMaxLength;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
@@ -112,6 +112,7 @@ public class CQLFunctionsView {
 	/** The function button bar. */
 	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar("function");
 	
+	/** The context group. */
 	private ButtonGroup contextGroup = new ButtonGroup();
 	
 	/** The context pat toggle switch. */
@@ -148,9 +149,21 @@ public class CQLFunctionsView {
 	/** The is editable. */
 	boolean isEditable = false;
 	
+	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	
-	private CommentTextAreaWithMaxLength funcCommentTextArea = new CommentTextAreaWithMaxLength(250);
+	/** The func comment text area. */
+	private TextArea funcCommentTextArea = new TextArea();
+	
+	/** The func name group. */
+	private FormGroup funcNameGroup = new FormGroup();
+	
+	/** The func comment group. */
+	private FormGroup funcCommentGroup = new FormGroup();
+	
+	/** The func context group. */
+	private FormGroup funcContextGroup = new FormGroup();
+	
 
 	/**
 	 * Instantiates a new CQL functions view.
@@ -170,20 +183,22 @@ public class CQLFunctionsView {
 
 	/**
 	 * Builds the view.
+	 *
+	 * @param isEditable the is editable
 	 */
 	@SuppressWarnings("static-access")
 	private void buildView(boolean isEditable) {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
+		funcNameGroup.clear();
+		funcCommentGroup.clear();
+		funcContextGroup.clear();
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
-		/*Label functionNameLabel = new Label(LabelType.INFO, "Function Name");
-		functionNameLabel.setMarginTop(5);
-		functionNameLabel.setId("Function_Label");*/
 		
 		FormLabel functionNameLabel = new FormLabel();
 		functionNameLabel.setText("Function Name");
 		functionNameLabel.setTitle("Function Name");
-		functionNameLabel.setMarginTop(5);
+		functionNameLabel.setMarginRight(15);
 		functionNameLabel.setId("FunctionName_Label");
 		
 		funcNameTxtArea.setText("");
@@ -191,12 +206,14 @@ public class CQLFunctionsView {
 		funcNameTxtArea.setSize("550px", "25px");
 		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
-		SimplePanel funcNamePanel = new SimplePanel();
-		funcNamePanel.setStyleName("marginLeft20px");
-		funcNamePanel.getElement().setId("FuncName_SimplePanel");
-		funcNamePanel.add(funcNameTxtArea);
-		functionNameLabel.setText("Function Name");
-
+		
+		HorizontalPanel funcNameHPanel = new HorizontalPanel();
+		funcNameHPanel.add(functionNameLabel);
+		funcNameHPanel.add(funcNameTxtArea);
+		funcNameHPanel.setWidth("700px");
+		
+		funcNameGroup.add(funcNameHPanel);
+		
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
 		header.setText("Build CQL Expression.");
@@ -218,7 +235,6 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");
-		//funcAceEditorPanel.setStyleName("cqlRightContainer");
 		body.add(funcAceEditorPanel);
 		aceEditorPanel.add(header);
 		aceEditorPanel.add(body);
@@ -233,13 +249,11 @@ public class CQLFunctionsView {
 		addNewArgument.setSize(ButtonSize.SMALL);
 
 		addNewArgument.setPull(Pull.RIGHT);
-
-		/*Label funcContextLabel = new Label(LabelType.INFO, "Context");*/
 		
 		FormLabel funcContextLabel = new FormLabel();
 		funcContextLabel.setText("Context");
 		funcContextLabel.setTitle("Context");
-		funcContextLabel.setMarginTop(5);
+		/*funcContextLabel.setMarginRight(5);*/
 		funcContextLabel.setId("FunctionContext_Label");
 
 		contextFuncPATRadioBtn.setValue(true);
@@ -252,38 +266,39 @@ public class CQLFunctionsView {
 		functionButtonBar.getCloseButton().setVisible(false);
 		contextGroup.add(contextFuncPATRadioBtn);
 		contextGroup.add(contextFuncPOPRadioBtn);
-		contextGroup.setStyleName("contextToggleSwitch marginLeft20px");
+		contextGroup.setStyleName("contextToggleSwitch");
 		
-		/*Label funcCommentLabel = new Label(LabelType.INFO, "Comment");
-		funcCommentLabel.setId("definComment_Label");
-		*/
+		HorizontalPanel funcContextHPanel = new HorizontalPanel();
+		funcContextHPanel.add(funcContextLabel);
+		funcContextHPanel.add(contextGroup);
+		funcContextHPanel.setWidth("500px");
+		
+		funcContextGroup.add(funcContextHPanel);
+		
 		FormLabel funcCommentLabel = new FormLabel();
 		funcCommentLabel.setText("Comment");
 		funcCommentLabel.setTitle("Comment");
-		funcCommentLabel.setMarginTop(5);
+		funcCommentLabel.setMarginRight(50);
 		funcCommentLabel.setId("FunctionComment_Label");
 		
 		funcCommentTextArea.setId("FunctionCommentTextArea_Id");
 		funcCommentTextArea.setSize("550px", "40px");
 		funcCommentTextArea.setText("");
 		funcCommentTextArea.setName("Function Comment");
-		funcCommentTextArea.getElement().setAttribute("style", "resize:none");
 		
-		SimplePanel funcCommentPanel = new SimplePanel();
-		funcCommentPanel.getElement().setId("FunctionComment_SimplePanel");
-		funcCommentPanel.setStyleName("topping marginLeft20px");
-		funcCommentPanel.add(funcCommentTextArea);
+		HorizontalPanel funcCommentHPanel = new HorizontalPanel();
+		funcCommentHPanel.add(funcCommentLabel);
+		funcCommentHPanel.add(funcCommentTextArea);
+		funcCommentHPanel.setWidth("700px");
 		
+		funcCommentGroup.add(funcCommentHPanel);
 		
-		Grid queryGrid = new Grid(4, 2);
+		Grid queryGrid = new Grid(4, 1);
 		queryGrid.setWidget(0, 0, addNewButtonBar);
-		queryGrid.setWidget(1, 0, functionNameLabel);
-		queryGrid.setWidget(1, 1, funcNamePanel);
-		queryGrid.setWidget(2, 0, funcContextLabel);
-		queryGrid.setWidget(2, 1, contextGroup);
-		queryGrid.setWidget(3, 0, funcCommentLabel);
-		queryGrid.setWidget(3, 1, funcCommentPanel);
-
+		queryGrid.setWidget(1, 0, funcNameGroup);
+		queryGrid.setWidget(2, 0, funcContextGroup);
+		queryGrid.setWidget(3, 0, funcCommentGroup);
+		
 		funcVP.add(queryGrid);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
@@ -313,6 +328,7 @@ public class CQLFunctionsView {
 	/**
 	 * Gets the view.
 	 *
+	 * @param isEditable the is editable
 	 * @return the view
 	 */
 	public VerticalPanel getView(boolean isEditable) {
@@ -333,10 +349,20 @@ public class CQLFunctionsView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
 	
+	/**
+	 * Gets the panel view CQL collapse.
+	 *
+	 * @return the panel view CQL collapse
+	 */
 	public PanelCollapse getPanelViewCQLCollapse() {
 		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
 	}
 
+	/**
+	 * Gets the view CQL ace editor.
+	 *
+	 * @return the view CQL ace editor
+	 */
 	public AceEditor getViewCQLAceEditor() {
 		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
 	}
@@ -345,6 +371,7 @@ public class CQLFunctionsView {
 	 * Creates the add argument view for functions.
 	 *
 	 * @param argumentList the argument list
+	 * @param isEditable the is editable
 	 */
 	public void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList, boolean isEditable) {
 		cellTablePanel.clear();
@@ -764,6 +791,8 @@ public class CQLFunctionsView {
 	}
 
 	/**
+	 * Gets the context group.
+	 *
 	 * @return the contextGroup
 	 */
 	public ButtonGroup getContextGroup() {
@@ -771,6 +800,8 @@ public class CQLFunctionsView {
 	}
 
 	/**
+	 * Sets the context group.
+	 *
 	 * @param contextGroup the contextGroup to set
 	 */
 	public void setContextGroup(ButtonGroup contextGroup) {
@@ -884,6 +915,8 @@ public class CQLFunctionsView {
 	}
 	
 	/**
+	 * Gets the adds the new button bar.
+	 *
 	 * @return the addNewButtonBar
 	 */
 	public CQLAddNewButton getAddNewButtonBar() {
@@ -891,6 +924,8 @@ public class CQLFunctionsView {
 	}
 
 	/**
+	 * Sets the adds the new button bar.
+	 *
 	 * @param addNewButtonBar the addNewButtonBar to set
 	 */
 	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
@@ -915,12 +950,92 @@ public class CQLFunctionsView {
 		getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 
 	}
+	
+	/**
+	 * Reseet form group.
+	 */
+	public void reseetFormGroup(){
+		getFuncCommentGroup().setValidationState(ValidationState.NONE);
+	}
 
-	public CommentTextAreaWithMaxLength getFunctionCommentTextArea() {
+	/**
+	 * Gets the function comment text area.
+	 *
+	 * @return the function comment text area
+	 */
+	public TextArea getFunctionCommentTextArea() {
 		return funcCommentTextArea;
 	}
 
-	public void setFunctionCommentTextArea(CommentTextAreaWithMaxLength functionCommentTextArea) {
+	/**
+	 * Sets the function comment text area.
+	 *
+	 * @param functionCommentTextArea the new function comment text area
+	 */
+	public void setFunctionCommentTextArea(TextArea functionCommentTextArea) {
 		this.funcCommentTextArea = functionCommentTextArea;
 	}
+
+	/**
+	 * Gets the func name group.
+	 *
+	 * @return the func name group
+	 */
+	public FormGroup getFuncNameGroup() {
+		return funcNameGroup;
+	}
+
+	/**
+	 * Sets the func name group.
+	 *
+	 * @param funcNameGroup the new func name group
+	 */
+	public void setFuncNameGroup(FormGroup funcNameGroup) {
+		this.funcNameGroup = funcNameGroup;
+	}
+
+	/**
+	 * Gets the func comment group.
+	 *
+	 * @return the func comment group
+	 */
+	public FormGroup getFuncCommentGroup() {
+		return funcCommentGroup;
+	}
+
+	/**
+	 * Sets the func comment group.
+	 *
+	 * @param funcCommentGroup the new func comment group
+	 */
+	public void setFuncCommentGroup(FormGroup funcCommentGroup) {
+		this.funcCommentGroup = funcCommentGroup;
+	}
+
+	/**
+	 * Gets the func context group.
+	 *
+	 * @return the func context group
+	 */
+	public FormGroup getFuncContextGroup() {
+		return funcContextGroup;
+	}
+
+	/**
+	 * Sets the func context group.
+	 *
+	 * @param funcContextGroup the new func context group
+	 */
+	public void setFuncContextGroup(FormGroup funcContextGroup) {
+		this.funcContextGroup = funcContextGroup;
+	}
+	
+	/**
+	 * Reset func form group.
+	 */
+	public void resetFuncFormGroup(){
+		getFuncNameGroup().setValidationState(ValidationState.NONE);
+		getFuncCommentGroup().setValidationState(ValidationState.NONE);
+	}
+
 }

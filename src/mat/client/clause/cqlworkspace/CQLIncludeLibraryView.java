@@ -5,11 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -53,12 +56,18 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
+import sun.security.action.GetLongAction;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CQLIncludeLibraryView.
+ */
 public class CQLIncludeLibraryView {
 	
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
 	
+	/** The search widget focus panel. */
 	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
 	
 	/** The cell table panel. */
@@ -101,6 +110,7 @@ public class CQLIncludeLibraryView {
 	/** The owner name text box. */
 	private MatTextBox ownerNameTextBox = new MatTextBox();
 	
+	/** The cql library name text box. */
 	private MatTextBox cqlLibraryNameTextBox = new MatTextBox();
 	
 	/** The selected list. */
@@ -118,8 +128,15 @@ public class CQLIncludeLibraryView {
 	/** The owner textbox panel. */
 	private VerticalPanel ownerTextboxPanel = new VerticalPanel();
 	
+	/** The observer. */
 	private Observer observer;
 	
+	/** The alias name group. */
+	private FormGroup aliasNameGroup = new FormGroup();
+	
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
 		/**
 		 * On edit clicked.
@@ -136,6 +153,7 @@ public class CQLIncludeLibraryView {
 	 */
 	public CQLIncludeLibraryView(){
 	
+		aliasNameGroup.clear();
 		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -144,19 +162,29 @@ public class CQLIncludeLibraryView {
 		
 		VerticalPanel aliasNameVP = new VerticalPanel();
 		HorizontalPanel aliasLabelHP = new HorizontalPanel();
-		Label aliasLabel = new Label(LabelType.INFO, "Alias Name");
+		
+		//Label aliasLabel = new Label(LabelType.INFO, "Alias Name");
+		FormLabel aliasLabel = new FormLabel();
 		aliasLabel.setMarginTop(5);
 		aliasLabel.setId("Alias_Label");
+		//aliasLabel.setText("Alias Name");
+		aliasLabel.setTitle("Alias Name");
+		aliasLabel.setText("Library Alias");
+		
 		aliasNameTxtBox.setText("");
 		aliasNameTxtBox.setSize("260px", "25px");
 		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
 		aliasNameTxtBox.setName("aliasName");
-		aliasLabel.setText("Library Alias");
+		
+		aliasNameGroup.add(aliasLabel);
+		aliasNameGroup.add(new SpacerWidget());
+		aliasNameGroup.add(aliasNameTxtBox);
 		
 		VerticalPanel aliasLabelVP = new VerticalPanel();
-		aliasLabelVP.add(aliasLabel);
-		aliasLabelVP.add(new SpacerWidget());
-		aliasLabelVP.add(aliasNameTxtBox);
+		//aliasLabelVP.add(aliasLabel);
+		//aliasLabelVP.add(new SpacerWidget());
+		//aliasLabelVP.add(aliasNameTxtBox);
+		aliasLabelVP.add(aliasNameGroup);
 		aliasLabelVP.setWidth("580px");
 		aliasLabelVP.setStylePrimaryName("margintop20px");
 		
@@ -334,6 +362,11 @@ public class CQLIncludeLibraryView {
 		return includesButtonBar;
 	}
 	
+	/**
+	 * Creates the read only view includes button bar.
+	 *
+	 * @return the CQL button tool bar
+	 */
 	private CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
 		includesButtonBar.getDeleteButton().setVisible(true);
 		includesButtonBar.getDeleteButton().setEnabled(false);
@@ -600,6 +633,7 @@ public class CQLIncludeLibraryView {
 	/**
 	 * Gets the check box cell.
 	 *
+	 * @param isUsed the is used
 	 * @return the check box cell
 	 */
 	private HasCell<CQLLibraryDataSetObject, Boolean> getCheckBoxCell(final boolean isUsed){
@@ -703,6 +737,9 @@ public class CQLIncludeLibraryView {
 		return this.includesButtonBar;
 	}
 	
+	/**
+	 * Reset to default.
+	 */
 	public void resetToDefault(){
 		cellTablePanel.clear();
 		//aliasNameTxtBox.setText("");
@@ -711,6 +748,9 @@ public class CQLIncludeLibraryView {
 		//warningMessageAlert.clearAlert();
 	}
 
+	/**
+	 * Reset ace editor.
+	 */
 	private void resetAceEditor() {
 		cqlAceEditor.clearAnnotations();
 		cqlAceEditor.removeAllMarkers();
@@ -718,7 +758,19 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setText("");
 	}
 	
+	/**
+	 * Reset from group.
+	 */
+	public void resetFromGroup(){
+		getAliasNameGroup().setValidationState(ValidationState.NONE);
+	}
+	
 
+	/**
+	 * Sets the includes button bar.
+	 *
+	 * @param includesButtonBar the new includes button bar
+	 */
 	public void setIncludesButtonBar(CQLButtonToolBar includesButtonBar) {
 		this.includesButtonBar = includesButtonBar;
 	}
@@ -751,6 +803,11 @@ public class CQLIncludeLibraryView {
 	}
 	
 	
+	/**
+	 * Gets the close button.
+	 *
+	 * @return the close button
+	 */
 	public Button getCloseButton(){
 		return getIncludesButtonBar().getCloseButton();
 	}
@@ -848,7 +905,7 @@ public class CQLIncludeLibraryView {
 	 * This method enable/disable's search button
 	 * and hide/show loading please wait message.
 	 *
-	 * @param busy the busy
+	 * @return the search cell table panel
 	 */
 	/*public void showSearchingBusy(final boolean busy) {
 		if (busy) {
@@ -879,18 +936,38 @@ public class CQLIncludeLibraryView {
 		return ownerTextboxPanel;
 	}
 
+	/**
+	 * Gets the owner name text box.
+	 *
+	 * @return the owner name text box
+	 */
 	public MatTextBox getOwnerNameTextBox() {
 		return ownerNameTextBox;
 	}
 
+	/**
+	 * Gets the cql library name text box.
+	 *
+	 * @return the cql library name text box
+	 */
 	public MatTextBox getCqlLibraryNameTextBox() {
 		return cqlLibraryNameTextBox;
 	}
 
+	/**
+	 * Gets the observer.
+	 *
+	 * @return the observer
+	 */
 	public Observer getObserver() {
 		return observer;
 	}
 
+	/**
+	 * Sets the observer.
+	 *
+	 * @param observer the new observer
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
@@ -905,6 +982,26 @@ public class CQLIncludeLibraryView {
 		getAliasNameTxtArea().setEnabled(isEditable);
 		getIncludesButtonBar().getSaveButton().setEnabled(isEditable);
 		getIncludesButtonBar().getEraseButton().setEnabled(isEditable);
+	}
+
+
+	/**
+	 * Gets the alias name group.
+	 *
+	 * @return the alias name group
+	 */
+	public FormGroup getAliasNameGroup() {
+		return aliasNameGroup;
+	}
+
+
+	/**
+	 * Sets the alias name group.
+	 *
+	 * @param aliasNameGroup the new alias name group
+	 */
+	public void setAliasNameGroup(FormGroup aliasNameGroup) {
+		this.aliasNameGroup = aliasNameGroup;
 	}
 	
 	

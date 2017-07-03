@@ -85,4 +85,13 @@ public class CQLModelValidator {
 		return !isValidCodeIdentifier;
 	}
 	
+	public boolean validateForCommentTextArea(String comment) {
+		boolean isInValid = false;
+
+		if (comment.length() > 250 || comment.contains("*/") || comment.contains("/*")) {
+			isInValid = true;
+		}
+		return isInValid;
+	}
+	
 }

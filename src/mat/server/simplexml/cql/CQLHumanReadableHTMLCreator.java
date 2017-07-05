@@ -318,11 +318,15 @@ public class CQLHumanReadableHTMLCreator {
 		Collections.sort(codeSystemStringList, String.CASE_INSENSITIVE_ORDER);
 		
 		for(String listItem : codeSystemStringList) {
-			mainListElement.appendElement(HTML_LI).append(listItem);
+			Element codeSystemLIelement = mainListElement.appendElement(HTML_LI);
+			codeSystemLIelement.attr("style", "width:80%");		
+			codeSystemLIelement.append(listItem);
 		}
 		
 		for(String listItem : codeStringList) {
-			mainListElement.appendElement(HTML_LI).append(listItem);
+			Element codeLIelement = mainListElement.appendElement(HTML_LI);
+			codeLIelement.attr("style", "width:80%");	
+			codeLIelement.append(listItem);
 		}
 	}
 
@@ -518,6 +522,7 @@ public class CQLHumanReadableHTMLCreator {
 			if((qdmValuesetElementList.getLength() + qdmCodeElementList.getLength()) == 0) {
 				String output = "None"; 
 				Element qdmElementLI = qdmElementUL.appendElement(HTML_LI);   
+				qdmElementLI.attr("style", "width:80%");
 				qdmElementLI.append(output);
 			}
 			
@@ -556,6 +561,7 @@ public class CQLHumanReadableHTMLCreator {
 				
 				for(String valueSetString:qdmValueSetElementStringList){
 					Element qdmElemtentLI = qdmElementUL.appendElement(HTML_LI);
+					qdmElemtentLI.attr("style", "width:80%");
 					qdmElemtentLI.append(valueSetString);
 				}
 				
@@ -582,6 +588,7 @@ public class CQLHumanReadableHTMLCreator {
 				
 				for(String codeString:qdmCodeElementStringList){
 					Element qdmElemtentLI = qdmElementUL.appendElement(HTML_LI);
+					qdmElemtentLI.attr("style", "width:80%");
 					qdmElemtentLI.append(codeString);
 				}
 			}

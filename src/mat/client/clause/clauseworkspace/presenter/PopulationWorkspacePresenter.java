@@ -254,7 +254,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 								NodeList childNodeList = cqlFunctionNode.getChildNodes();
 								boolean invalidArgList = false;
 								// CHECK IF NO AGRUMENTS ARE ADDED.
-								if(childNodeList.getLength() == 1 && childNodeList.item(0).getNodeName().equalsIgnoreCase("logic")){
+								if(childNodeList.getLength() == 2 && childNodeList.item(0).getNodeName().equalsIgnoreCase("logic")){
 									invalidArgList = true;
 								} else { // CHECK IF ARGUMENTS ARE ADDED THEN ONLY SHOW FUNCTIONS WITH ONE AND ONLY ONE ARGUMENT.
 									for(int k=0; k < childNodeList.getLength();k++){

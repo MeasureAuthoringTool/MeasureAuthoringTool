@@ -25,7 +25,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -341,7 +340,8 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		
+		mainListElement.attr("style", "list-style:none;padding-left:0px;");
+				
 		NodeList elements = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
 				"/measure/supplementalDataElements/cqldefinition");
@@ -373,6 +373,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		mainListElement.attr("style", "list-style:none;padding-left:0px;");
 		
 		NodeList elements = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
@@ -452,7 +453,8 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		
+		mainListElement.attr("style","list-style:none;padding-left:0;");
+				
 		NodeList groupNodeList = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
 				"/measure/measureGrouping/group");
@@ -470,6 +472,7 @@ public class CQLHumanReadableHTMLCreator {
 				
 				Element mainElement = mainListElement.appendElement("li");
 				mainElement.attr("class", "list-unstyled");
+				mainElement.attr("style","list-style:none;padding-left:0;");
 				
 				Element divElement = mainElement.appendElement("div");
 				divElement.attr("class", "treeview hover p-l-10");
@@ -652,6 +655,7 @@ public class CQLHumanReadableHTMLCreator {
 			Element populationListElement = mainListElement
 					.appendElement(HTML_LI);
 			populationListElement.attr("class", "list-unstyled");
+			populationListElement.attr("style", "list-style:none;padding-left:0px;");
 			//Element boldNameElement = populationListElement.appendElement("b");
 			//String populationName = getPopulationName(populationType, true);
 			
@@ -690,6 +694,7 @@ public class CQLHumanReadableHTMLCreator {
 			Element populationListElement = mainListElement
 					.appendElement(HTML_LI);
 			populationListElement.attr("class", "list-unstyled");
+			populationListElement.attr("style", "list-style:none;padding-left:0px;");
 			//Element boldNameElement = populationListElement.appendElement("b");
 			String populationName = getPopulationName(populationType);
 			
@@ -802,56 +807,6 @@ public class CQLHumanReadableHTMLCreator {
 		}
 	}
 	
-	/**
-	 * Generate supplemental data.
-	 *
-	 * @param humanReadableHTMLDocument the human readable html document
-	 * @param simpleXMLProcessor the simple xml processor
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private static void generateSupplementalData(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor)
-					throws XPathExpressionException {
-		Element bodyElement = humanReadableHTMLDocument.body();
-		bodyElement
-		.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
-		
-		Element mainDivElement = bodyElement.appendElement("div");
-		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		
-		NodeList supplementalQdmElementList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				"/measure/elementLookUp/qdm[@suppDataElement='true']");
-				
-		if(supplementalQdmElementList != null && supplementalQdmElementList.getLength()>0){
-			ArrayList<String> suppQdmStringList = new ArrayList<String>(); 
-			
-			// make output string from sde node and add it to the string list
-			for(int i = 0; i < supplementalQdmElementList.getLength(); i++) {
-				Node suppNode = supplementalQdmElementList.item(i);
-				NamedNodeMap suppNodeAttribMap = suppNode.getAttributes();
-				String output = "\"" + suppNodeAttribMap.getNamedItem("datatype").getNodeValue() + ": "
-						+ suppNodeAttribMap.getNamedItem("name").getNodeValue()
-						+ "\" using \""
-						+ suppNodeAttribMap.getNamedItem("name").getNodeValue() + " "
-						+ suppNodeAttribMap.getNamedItem("taxonomy").getNodeValue()
-						+ " Value Set ("
-						+ suppNodeAttribMap.getNamedItem("oid").getNodeValue() + ")\"";
-				suppQdmStringList.add(output);			
-			}
-			
-			// sort and append sde string
-			Collections.sort(suppQdmStringList);
-			for(int i = 0; i < suppQdmStringList.size(); i++) {
-				Element listItem = mainListElement.appendElement(HTML_LI);
-				listItem.append(suppQdmStringList.get(i));
-			}
-			
-		}
-		else{
-			mainListElement.appendElement(HTML_LI).appendText("None");
-		}
-	}
-		
 	/**
 	 * Gets the item count text.
 	 *

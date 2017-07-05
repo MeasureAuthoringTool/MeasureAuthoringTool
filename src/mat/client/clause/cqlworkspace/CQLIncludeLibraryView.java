@@ -56,7 +56,6 @@ import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
-import sun.security.action.GetLongAction;
 
 // TODO: Auto-generated Javadoc
 /**

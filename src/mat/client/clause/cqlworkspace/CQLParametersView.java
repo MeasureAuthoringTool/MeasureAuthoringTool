@@ -160,12 +160,9 @@ public class CQLParametersView {
 		paramCommentHPanel.setWidth("700px");
 		paramCommentGroup.add(paramCommentHPanel);
 		
-		Grid queryGrid = new Grid(3, 2);
-		queryGrid.setWidget(0, 0, addNewButtonBar);
-		queryGrid.setWidget(1, 0, paramNameGroup);
-		queryGrid.setWidget(2, 0, paramCommentGroup);
-		
-		parameterVP.add(queryGrid);
+		parameterVP.add(addNewButtonBar);
+		parameterVP.add(paramNameGroup);
+		parameterVP.add(paramCommentGroup);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterButtonBar);
 		parameterVP.add(aceEditorPanel);

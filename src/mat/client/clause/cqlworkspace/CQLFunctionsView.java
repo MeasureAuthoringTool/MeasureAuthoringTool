@@ -293,13 +293,10 @@ public class CQLFunctionsView {
 		
 		funcCommentGroup.add(funcCommentHPanel);
 		
-		Grid queryGrid = new Grid(4, 1);
-		queryGrid.setWidget(0, 0, addNewButtonBar);
-		queryGrid.setWidget(1, 0, funcNameGroup);
-		queryGrid.setWidget(2, 0, funcContextGroup);
-		queryGrid.setWidget(3, 0, funcCommentGroup);
-		
-		funcVP.add(queryGrid);
+		funcVP.add(addNewButtonBar);
+		funcVP.add(funcNameGroup);
+		funcVP.add(funcContextGroup);
+		funcVP.add(funcCommentGroup);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);

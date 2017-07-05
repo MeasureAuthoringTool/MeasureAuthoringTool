@@ -3252,9 +3252,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCodesView().buildCodesCellTable(
 					appliedCodeTableList,
 					MatContext.get().getMeasureLockService().checkForEditPermission());
+			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 			
 			getUsedCodes();
 			

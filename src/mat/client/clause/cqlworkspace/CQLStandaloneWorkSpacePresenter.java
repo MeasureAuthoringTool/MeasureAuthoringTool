@@ -5047,9 +5047,9 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCodesView().buildCodesCellTable(
 					appliedCodeTableList,
 					MatContext.get().getLibraryLockService().checkForEditPermission());
+			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-			searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 			getUsedCodes();
 		}
 

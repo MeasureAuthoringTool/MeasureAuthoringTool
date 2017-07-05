@@ -416,6 +416,24 @@ public class MessageDelegate {
 	/** The clause empty. */
 	private final String CLAUSE_EMPTY = "Clause must contain logic.";
 	
+	//MAT-8606 validations.	
+	private final String PATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE = "For Patient-based Measures, all definitions directly added to populations must return a Boolean.";
+	
+	//MAT-8608 validations.	
+	private final String EPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE = "For Episode-based Measures, all definitions directly added to populations must return a list of the same type.";
+		
+	//MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
+	private final String EPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE = "Measure Observations can only be added to a measure grouping in a Ratio measure, if the measure is Episode-based.";
+			
+	//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
+	private final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping may only contain a user-defined function that has exactly 1 argument in the argument list.";
+	
+	//MAT-8626 validations for Argument Type for Measure Observation Function Must Match Return Type of Associated Population.	
+	private final String MEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must have an argument that returns the same type as the definition directly applied to the Measure Population associated with the Measure Observation.";
+		
+	//MAT-8627 validations for functions attached to Measure Observations.
+	private final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must contain a user-defined function that returns an integer, a decimal, or a quantity.";
+	
 	/**
 	 * Gets the population work space validation error.
 	 *
@@ -3280,4 +3298,47 @@ public class MessageDelegate {
 	public String getERROR_VALIDATION_COMMENT_AREA() {
 		return ERROR_VALIDATION_COMMENT_AREA;
 	}
+
+	/**
+	 * @return the pATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE
+	 */
+	public String getPATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE() {
+		return PATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE;
+	}
+
+	/**
+	 * @return the ePISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE
+	 */
+	public String getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE() {
+		return EPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE;
+	}
+
+	/**
+	 * @return the ePISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE
+	 */
+	public String getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE() {
+		return EPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE;
+	}
+
+	/**
+	 * @return the mEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE
+	 */
+	public String getMEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE() {
+		return MEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE;
+	}
+
+	/**
+	 * @return the mEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE
+	 */
+	public String getMEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE() {
+		return MEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE;
+	}
+
+	/**
+	 * @return the mEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE
+	 */
+	public String getMEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE() {
+		return MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE;
+	}
+
 }

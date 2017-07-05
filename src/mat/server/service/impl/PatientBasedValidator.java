@@ -7,8 +7,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
-import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.util.CQLUtil;
@@ -157,7 +157,7 @@ public class PatientBasedValidator {
 			}
 			//Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
 			if(msrObsFunctionList.size() >0 && scoringType.equalsIgnoreCase(SCORING_RATIO) ){
-				String message ="For Ratio Measure, Measure Observation can only be added to grouping if the measure is not Patient-based.";
+				String message = MatContext.get().getMessageDelegate().getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE();
 				errorMessages.add(message);
 			}
 			
@@ -213,7 +213,7 @@ public class PatientBasedValidator {
 		for(CQLExpressionObject cqlExpressionObject : functionsToBeChecked){
 			List<CQLExpressionOprandObject> argumentList =  cqlExpressionObject.getOprandList();
 			if(argumentList.isEmpty() || argumentList.size() > 1){
-				returnMessages.add("For an added measure observation, the user-defined function "+ cqlExpressionObject.getName()+" must have exactly 1 argument in the argument list.");
+				returnMessages.add(MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE());
 				//This is commented as Sridhar and Gayathri thinks if illegal number of arguments are passed then this check should not be made.
 				/*returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
 						+ " of the definition directly applied to the Associated Population.");*/
@@ -240,8 +240,7 @@ public class PatientBasedValidator {
 					}
 					logger.info("funcArgumentReturnType ==========" + funcArgumentReturnType);
 					if(!returnTypeOfExpression.equalsIgnoreCase(funcArgumentReturnType)){
-						returnMessages.add("For an added measure observation, the argument in the user-defined function must match the return type"
-								+ " of the definition directly applied to the Associated Population.");
+						returnMessages.add(MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE());
 						break;
 					}
 				}
@@ -265,12 +264,12 @@ public class PatientBasedValidator {
 			boolean isList = expressionReturnType.toLowerCase().startsWith("list");
 			
 			if(!isList){
-				returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
+				returnMessages.add(MatContext.get().getMessageDelegate().getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE());
 			}else{
 				if(returnType == null){
 					returnType = expressionReturnType;
 				}else if(!returnType.equals(expressionReturnType)){
-					returnMessages.add("For Episode Measures, the return type for all definitions in a population must be the same and must also return a list.");
+					returnMessages.add(MatContext.get().getMessageDelegate().getEPISODE_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE());
 				}
 			}
 		}
@@ -297,7 +296,7 @@ public class PatientBasedValidator {
 			if(returnTypeCheck.equals(CQL_RETURN_TYPE_BOOLEAN)){
 				
 				if(!cqlExpressionObject.getReturnType().equals(SYSTEM_BOOLEAN)){
-					returnMessages.add("CQL "+cqlExpressionObject.getType() + " " +cqlExpressionObject.getName() + " has return type as "+returnType+ ". Must be System.Boolean.");
+					returnMessages.add(MatContext.get().getMessageDelegate().getPATIENT_BASED_DEFINITIONS_SAVE_GROUPING_VALIDATION_MESSAGE());
 				}
 				
 			}else if(returnTypeCheck.equals(CQL_RETURN_TYPE_NUMERIC)){
@@ -307,7 +306,7 @@ public class PatientBasedValidator {
 						!exprReturnType.equals(SYSTEM_DECIMAL) && 
 							!exprReturnType.equals(SYSTEM_QUANTITY)){
 					
-					returnMessages.add("CQL "+cqlExpressionObject.getType() + " " +cqlExpressionObject.getName() + " has return type as "+returnType+ ". Must be System.Integer or System.Decimal or System.Quantity.");
+					returnMessages.add(MatContext.get().getMessageDelegate().getMEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE());
 				}
 			}
 		}		

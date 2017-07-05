@@ -219,8 +219,6 @@ public class CQLIncludeLibraryView {
 		viewCQLVP.add(cqlAceEditor);
 		
 		verticalPanel.add(aliasNameVP);
-		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(ownerTextboxPanel);
 		verticalPanel.add(searchCellTablePanel);
 		
@@ -246,20 +244,24 @@ public class CQLIncludeLibraryView {
 		searchCellTablePanel.clear();
 		aliasNameTxtBox.setEnabled(false);
 		
-		Label ownerLabel = new Label(LabelType.INFO, "Owner Name");
+		//Label ownerLabel = new Label(LabelType.INFO, "Owner Name");
+		FormLabel ownerLabel = new FormLabel();
 		ownerLabel.setMarginTop(5);
 		ownerLabel.setId("ownerName_Label");
 		ownerLabel.setText("Owner Name");
+		ownerLabel.setTitle("Owner Name");
 		ownerNameTextBox.setText("");
 		ownerNameTextBox.setSize("260px", "25px");
 		ownerNameTextBox.getElement().setId("ownerNameField_IncludeSection");
 		ownerNameTextBox.setName("aliasName");
 		ownerNameTextBox.setEnabled(false);
 		
-		Label cqlLibNameLabel = new Label(LabelType.INFO, "CQL Library Name");
+		//Label cqlLibNameLabel = new Label(LabelType.INFO, "CQL Library Name");
+		FormLabel cqlLibNameLabel = new FormLabel();
 		cqlLibNameLabel.setMarginTop(5);
 		cqlLibNameLabel.setId("cqlLibraryName_Label");
 		cqlLibNameLabel.setText("CQL Library Name");
+		cqlLibNameLabel.setTitle("CQL Library Name");
 		cqlLibraryNameTextBox.setText("");
 		cqlLibraryNameTextBox.setSize("260px", "25px");
 		cqlLibraryNameTextBox.getElement().setId("cqlLibraryNameField_IncludeSection");

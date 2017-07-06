@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.google.gwt.core.client.GWT;
@@ -111,6 +113,7 @@ public class MatContext implements IsSerializable {
 	/** The measure service. */
 	private MeasureServiceAsync measureService;
 	
+	/** The cql constant service. */
 	private CQLConstantServiceAsync cqlConstantService; 
 	
 	/** The cql library service. */
@@ -146,6 +149,7 @@ public class MatContext implements IsSerializable {
 	/** The current measure info. */
 	private MeasureSelectedEvent currentMeasureInfo;
 	
+	/** The current library info. */
 	private CQLLibrarySelectedEvent currentLibraryInfo;
 	
 	/** The is measure deleted. */
@@ -245,8 +249,10 @@ public class MatContext implements IsSerializable {
 	private GlobalCopyPasteObject globalCopyPaste;
 	
 	
+	/** The valuesets. */
 	public List<String> valuesets = new ArrayList<String>();
 	
+	/** The value set code quality data set list. */
 	public List<CQLQualityDataSetDTO> valueSetCodeQualityDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 	
 	/** The definitions. */
@@ -261,12 +267,25 @@ public class MatContext implements IsSerializable {
 	/** The includes. */
 	public List<String> includes = new ArrayList<String>();
 		
+	/** The included def names. */
 	private List<String> includedDefNames = new ArrayList<String>();
+	
+	/** The included func names. */
 	private List<String> includedFuncNames = new ArrayList<String>();
+	
+	/** The included value set names. */
 	private List<String> includedValueSetNames = new ArrayList<String>();
+	
+	/** The included param names. */
 	private List<String> includedParamNames = new ArrayList<String>();
+	
+	/** The included code names. */
 	private List<String> includedCodeNames = new ArrayList<String>();
 	
+	/** The units list. */
+	private List<String> unitsList = new ArrayList<String>();
+	
+	/** The cql constant container. */
 	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 	
 	//private GlobalCopyPaste copyPaste;
@@ -579,6 +598,11 @@ public class MatContext implements IsSerializable {
 		return sessionService;
 	}
 	
+	/**
+	 * Gets the CQL contant service.
+	 *
+	 * @return the CQL contant service
+	 */
 	public CQLConstantServiceAsync getCQLContantService() {
 		
 		if(cqlConstantService == null) {
@@ -1069,11 +1093,21 @@ public class MatContext implements IsSerializable {
 		return currentMeasureInfo;
 	}
 	
+	/**
+	 * Gets the current library info.
+	 *
+	 * @return the current library info
+	 */
 	public CQLLibrarySelectedEvent getCurrentLibraryInfo() {
 		return currentLibraryInfo;
 	}
 
 
+	/**
+	 * Sets the current library info.
+	 *
+	 * @param currentLibraryInfo the new current library info
+	 */
 	public void setCurrentLibraryInfo(CQLLibrarySelectedEvent currentLibraryInfo) {
 		this.currentLibraryInfo = currentLibraryInfo;
 	}
@@ -1508,7 +1542,8 @@ public class MatContext implements IsSerializable {
 	/**
 	 * Sets the manage code list search view.
 	 *
-	 * @param manageCodeListSearchModel the new manage code list searc model
+	 * @param activityType the activity type
+	 * @param isRedirect the is redirect
 	 */
 	//	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
 	//		this.manageCodeListSearchView = manageCodeListSearchView;
@@ -1823,7 +1858,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * Gets the valuesets
+	 * Gets the valuesets.
+	 *
 	 * @return the valuests
 	 */
 	public List<String> getValuesets() {
@@ -1831,7 +1867,8 @@ public class MatContext implements IsSerializable {
 	}
 	
 	/**
-	 * Sets the valuesets
+	 * Sets the valuesets.
+	 *
 	 * @param valuesets the valuesets
 	 */
 	public void setValuesets(List<CQLQualityDataSetDTO> valuesets) {
@@ -2047,6 +2084,11 @@ public class MatContext implements IsSerializable {
 		}
 	}
 
+	/**
+	 * Gets the library service.
+	 *
+	 * @return the library service
+	 */
 	public CQLLibraryServiceAsync getLibraryService() {
 		if(cqlLibraryService == null){
 			cqlLibraryService = (CQLLibraryServiceAsync) GWT.create(CQLLibraryService.class);
@@ -2073,55 +2115,110 @@ public class MatContext implements IsSerializable {
 	}
 
 
+	/**
+	 * Gets the included def names.
+	 *
+	 * @return the included def names
+	 */
 	public List<String> getIncludedDefNames() {
 		return includedDefNames;
 	}
 
 
+	/**
+	 * Sets the included def names.
+	 *
+	 * @param includedDefNames the new included def names
+	 */
 	public void setIncludedDefNames(List<String> includedDefNames) {
 		this.includedDefNames = includedDefNames;
 	}
 
 
+	/**
+	 * Gets the included func names.
+	 *
+	 * @return the included func names
+	 */
 	public List<String> getIncludedFuncNames() {
 		return includedFuncNames;
 	}
 
 
+	/**
+	 * Sets the included func names.
+	 *
+	 * @param includedFuncNames the new included func names
+	 */
 	public void setIncludedFuncNames(List<String> includedFuncNames) {
 		this.includedFuncNames = includedFuncNames;
 	}
 
 
+	/**
+	 * Gets the included value set names.
+	 *
+	 * @return the included value set names
+	 */
 	public List<String> getIncludedValueSetNames() {
 		return includedValueSetNames;
 	}
 
 
+	/**
+	 * Sets the included value set names.
+	 *
+	 * @param includedValueSetNames the new included value set names
+	 */
 	public void setIncludedValueSetNames(List<String> includedValueSetNames) {
 		this.includedValueSetNames = includedValueSetNames;
 	}
 
 
+	/**
+	 * Gets the included param names.
+	 *
+	 * @return the included param names
+	 */
 	public List<String> getIncludedParamNames() {
 		return includedParamNames;
 	}
 
 
+	/**
+	 * Sets the included param names.
+	 *
+	 * @param includedParamNames the new included param names
+	 */
 	public void setIncludedParamNames(List<String> includedParamNames) {
 		this.includedParamNames = includedParamNames;
 	}
 
 
+	/**
+	 * Gets the included code names.
+	 *
+	 * @return the included code names
+	 */
 	public List<String> getIncludedCodeNames() {
 		return includedCodeNames;
 	}
 
 
+	/**
+	 * Sets the included code names.
+	 *
+	 * @param includedCodeNames the new included code names
+	 */
 	public void setIncludedCodeNames(List<String> includedCodeNames) {
 		this.includedCodeNames = includedCodeNames;
 	}
 	
+	/**
+	 * Gets the CQL constants.
+	 *
+	 * @return the CQL constants
+	 */
 	public void getCQLConstants() {
 		CQLConstantServiceAsync cqlConstantService = (CQLConstantServiceAsync) GWT.create(CQLConstantService.class);
 
@@ -2139,20 +2236,93 @@ public class MatContext implements IsSerializable {
 			
 		});
 	}
+	
+	
+	/**
+	 * Gets the non quotes units.
+	 *
+	 * @return the non quotes units
+	 */
+	public HashSet<String> getNonQuotesUnits(){
+		 HashSet<String> hset = 
+	               new HashSet<String>();
+		hset.add("millisecond");
+		hset.add("milliseconds");
+		hset.add("second");
+		hset.add("seconds");
+		hset.add("minute");
+		hset.add("minutes");
+		hset.add("hour");
+		hset.add("hours");
+		hset.add("day");
+		hset.add("days");
+		hset.add("week");
+		hset.add("weeks");
+		hset.add("month");
+		hset.add("months");
+		hset.add("year");
+		hset.add("years");
+		
+		return hset;
+	}
 
 
+	/**
+	 * Gets the cql constant container.
+	 *
+	 * @return the cql constant container
+	 */
 	public CQLConstantContainer getCqlConstantContainer() {
 		return cqlConstantContainer;
 	}
 
 
+	/**
+	 * Sets the cql constant container.
+	 *
+	 * @param cqlConstantContainer the new cql constant container
+	 */
 	public void setCqlConstantContainer(CQLConstantContainer cqlConstantContainer) {
 		this.cqlConstantContainer = cqlConstantContainer;
 	}
 
 
+	/**
+	 * Gets the value set code quality data set list.
+	 *
+	 * @return the value set code quality data set list
+	 */
 	public List<CQLQualityDataSetDTO> getValueSetCodeQualityDataSetList() {
 		return valueSetCodeQualityDataSetList;
+	}
+
+
+	/**
+	 * Gets the units list.
+	 *
+	 * @return the units list
+	 */
+	public List<String> getUnitsList() {
+		
+	   Set<String> allUnits = cqlConstantContainer.getCqlUnitMap().keySet();
+	   for(String unit : allUnits){
+		   if(!getNonQuotesUnits().contains(unit)){
+			   unitsList.add("'"+unit+"'");
+		   } else {
+			   unitsList.add(unit);
+		   }
+	   }
+		return unitsList;
+	}
+
+
+	/**
+	 * Sets the units list.
+	 *
+	 * @param unitsList the new units list
+	 */
+	public void setUnitsList(List<String> unitsList) {
+		this.unitsList = unitsList;
 	}
 
 	/*public GlobalCopyPaste getCopyPaste() {

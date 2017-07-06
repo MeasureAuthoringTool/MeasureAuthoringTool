@@ -80,7 +80,7 @@ public class InsertIntoAceEditorDialogBox {
 	 */
 	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 		
-	private static HashSet<String> nonQuoteUnits = new HashSet<String>();
+	private static HashSet<String> nonQuoteUnits = MatContext.get().getNonQuotesUnits();
 	
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
@@ -1200,7 +1200,6 @@ public class InsertIntoAceEditorDialogBox {
 	 * @return the string
 	 */
 	private static String attributeStringBuilder(){
-		nonQuoteUnits = getNonQuotesUnits();
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = "";
 		String selectedMode = "";
@@ -1261,28 +1260,6 @@ public class InsertIntoAceEditorDialogBox {
 		
 	}
 	
-	private static HashSet<String> getNonQuotesUnits(){
-		 HashSet<String> hset = 
-	               new HashSet<String>();
-		hset.add("millisecond");
-		hset.add("milliseconds");
-		hset.add("second");
-		hset.add("seconds");
-		hset.add("minute");
-		hset.add("minutes");
-		hset.add("hour");
-		hset.add("hours");
-		hset.add("day");
-		hset.add("days");
-		hset.add("week");
-		hset.add("weeks");
-		hset.add("month");
-		hset.add("months");
-		hset.add("year");
-		hset.add("years");
-		
-		return hset;
-	}
 	/**
 	 * Builds the date time string.
 	 *

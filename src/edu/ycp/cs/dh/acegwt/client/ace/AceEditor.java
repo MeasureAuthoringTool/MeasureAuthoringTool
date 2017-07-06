@@ -1005,6 +1005,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	  
 	  $wnd.timingList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createTimingJsArrayString(); 
 	  
+	  $wnd.unitsList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createUnitsJsArrayString();
+	  
 	}-*/;
 	
 	private static JsArrayString createTimingJsArrayString() {
@@ -1162,5 +1164,16 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
         }
         return result.replaceAll(" ", "");
 	}
+	
+	private static JsArrayString createUnitsJsArrayString(){
+		List<String> unitsList = MatContext.get().getUnitsList();
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		for (String string : unitsList) {
+			jsArray.push(string);
+		}
+		
+		return jsArray;
+	}
+	
 	
 }

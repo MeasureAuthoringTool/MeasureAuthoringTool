@@ -1226,20 +1226,28 @@ public class InsertIntoAceEditorDialogBox {
 		}else if(selectedMode.equalsIgnoreCase(NULLABLE)){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
 		}else if(selectedMode.equalsIgnoreCase(VALUE_SETS_CODES)){
-			if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT)
-					|| selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
-				if(ModeDetailslistBox.getValue().equalsIgnoreCase("valueset")) { // For Value Set
-					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE_IN).append("\"").append(selectedMDetailsItem).append("\"");
-				} else { // For Code 
-					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE).append("\"").append(selectedMDetailsItem).append("\"");
-				}
-			}else{
-				if(ModeDetailslistBox.getValue().equalsIgnoreCase("valueset")) { // For Value Set
-					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append("\"").append(selectedMDetailsItem).append("\"");
-				} else { // For Code
-					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_EQUALS).append("\"").append(selectedMDetailsItem).append("\"");
+			String valueArray[] = ModeDetailslistBox.getValue().split(":");
+			String type="";
+			String value = "";
+			if(valueArray.length > 0){
+				type = valueArray[0];
+				value = valueArray[1];
+				if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT)
+						|| selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
+					if(type.equalsIgnoreCase("valueset")) { // For Value Set
+						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE_IN).append("\"").append(value).append("\"");
+					} else { // For Code 
+						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE).append("\"").append(value).append("\"");
+					}
+				}else{
+					if(type.equalsIgnoreCase("valueset")) { // For Value Set
+						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append("\"").append(value).append("\"");
+					} else { // For Code
+						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_EQUALS).append("\"").append(value).append("\"");
+					}
 				}
 			}
+			
 		}else if(QuantityTextBox.isEnabled()){
 			
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem).append(" ").append(selectedQuantity).append(" ");

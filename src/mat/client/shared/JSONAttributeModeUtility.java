@@ -172,9 +172,9 @@ public class JSONAttributeModeUtility {
 								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
 									mode.setModeValue(valSets.getCodeListName());
 									if(valSets.getType()!= null)
-										mode.setModeName(valSets.getType());
+										mode.setModeName(valSets.getType()+":" +valSets.getCodeListName());
 									else 
-										mode.setModeName("valueset");
+										mode.setModeName("valueset:"+valSets.getCodeListName());
 									modeDetailsList.add(mode);
 								}
 							}

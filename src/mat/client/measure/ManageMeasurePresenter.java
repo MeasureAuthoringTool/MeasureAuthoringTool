@@ -202,14 +202,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void showMeasureName(boolean show);
 
 		
-		ListBox getPatientBasedInput();
+		ListBoxMVP getPatientBasedInput();
 
-		
 		HelpBlock getHelpBlock();
 
 		FormGroup getMessageFormGrp();
 
-		void setPatientBasedInput(ListBox patientBasedInput);
+		void setPatientBasedInput(ListBoxMVP patientBasedInput);
 	}
 
 	/**
@@ -1216,8 +1215,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void resetPatientBasedInput() {
 		detailDisplay.getPatientBasedInput().clear();
-		detailDisplay.getPatientBasedInput().addItem("No");
-		detailDisplay.getPatientBasedInput().addItem("Yes");
+		detailDisplay.getPatientBasedInput().addItem("No", "No");
+		detailDisplay.getPatientBasedInput().addItem("Yes", "Yes");
 		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 

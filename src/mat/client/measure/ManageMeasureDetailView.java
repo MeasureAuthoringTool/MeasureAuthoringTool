@@ -64,7 +64,7 @@ public class ManageMeasureDetailView
 	private ListBoxMVP  measScoringInput = new ListBoxMVP();
 	
 	/** The patient based input. */
-	private ListBox patientBasedInput = new ListBox();
+	private ListBoxMVP patientBasedInput = new ListBoxMVP();
 	
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
@@ -401,7 +401,7 @@ public class ManageMeasureDetailView
 		listBox.addItem(defaultOption,"");
 		if(itemList != null){
 			for(HasListBox listBoxContent : itemList){
-				listBox.addItem(listBoxContent.getItem(),"" +listBoxContent.getValue());
+				listBox.addItem(listBoxContent.getItem(), listBoxContent.getItem());
 			}
 		}
 	}
@@ -455,7 +455,7 @@ public class ManageMeasureDetailView
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getPatientBasedInput()
 	 */
 	@Override
-	public ListBox getPatientBasedInput() {
+	public ListBoxMVP getPatientBasedInput() {
 		return patientBasedInput;
 	}
 
@@ -464,7 +464,7 @@ public class ManageMeasureDetailView
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setPatientBasedInput(com.google.gwt.user.client.ui.ListBox)
 	 */
 	@Override
-	public void setPatientBasedInput(ListBox patientBasedInput) {
+	public void setPatientBasedInput(ListBoxMVP patientBasedInput) {
 		this.patientBasedInput = patientBasedInput;
 	}
 

@@ -1226,14 +1226,19 @@ public class InsertIntoAceEditorDialogBox {
 		}else if(selectedMode.equalsIgnoreCase(NULLABLE)){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
 		}else if(selectedMode.equalsIgnoreCase(VALUE_SETS_CODES)){
-			if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT) || selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
+			if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT)
+					|| selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
 				if(ModeDetailslistBox.getValue().equalsIgnoreCase("valueset")) { // For Value Set
 					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE_IN).append("\"").append(selectedMDetailsItem).append("\"");
 				} else { // For Code 
 					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE).append("\"").append(selectedMDetailsItem).append("\"");
 				}
 			}else{
-				sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append("\"").append(selectedMDetailsItem).append("\"");
+				if(ModeDetailslistBox.getValue().equalsIgnoreCase("valueset")) { // For Value Set
+					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append("\"").append(selectedMDetailsItem).append("\"");
+				} else { // For Code
+					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_EQUALS).append("\"").append(selectedMDetailsItem).append("\"");
+				}
 			}
 		}else if(QuantityTextBox.isEnabled()){
 			

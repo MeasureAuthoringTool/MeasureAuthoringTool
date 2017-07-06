@@ -3,8 +3,6 @@ package mat.client.clause.cqlworkspace;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,7 +42,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
 import mat.client.shared.CustomDateTimeTextBox;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.JSONAttributeModeUtility;
@@ -52,7 +49,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
 import mat.model.ModeDetailModel;
-import mat.model.SecurityQuestions;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -1221,8 +1217,8 @@ public class InsertIntoAceEditorDialogBox {
 		}
 		
 		if(ModeDetailslistBox.getSelectedIndex()>0){
-			//selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
-			selectedMDetailsItem = ModeDetailslistBox.getSelectedItemText();
+			selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+			//selectedMDetailsItem = ModeDetailslistBox.getSelectedItemText();
 		}
 		 
 		if(selectedMode.isEmpty() && selectedMDetailsItem.isEmpty()){

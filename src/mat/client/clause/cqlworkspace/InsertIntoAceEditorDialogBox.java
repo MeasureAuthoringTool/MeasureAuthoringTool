@@ -50,6 +50,9 @@ import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.NameValuePair;
+import mat.model.ModeDetailModel;
+import mat.model.SecurityQuestions;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -59,6 +62,10 @@ import mat.model.cql.CQLFunctions;
  * The Class InsertIntoAceEditorDialogBox.
  */
 public class InsertIntoAceEditorDialogBox {
+	private static final String VALUE_SETS_CODES = "Value Sets/Codes";
+
+	private static final String NULLABLE = "Nullable";
+
 	/**
 	 * List of availableInsertItemList.
 	 */
@@ -613,6 +620,7 @@ public class InsertIntoAceEditorDialogBox {
 				if (selectedIndex != 0) {
 					String modeSelected = ModelistBox.getItemText(selectedIndex);
 					ModeDetailslistBox.setEnabled(true);
+					
 					addModeDetailslist(ModeDetailslistBox,JSONAttributeModeUtility.getModeDetailsList(modeSelected)); 
 					ModeDetailslistBox.setSelectedIndex(0);
 				} else {
@@ -1071,13 +1079,24 @@ public class InsertIntoAceEditorDialogBox {
 		}
 	}
 	
-	private static void addModeDetailslist(ListBoxMVP availableItemToInsert, List<String> modeDetailsList) {
-		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
-		for (int i = 0; i < modeDetailsList.size(); i++) {
-			if(!modeDetailsList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-				availableItemToInsert.addItem(modeDetailsList.get(i));
+	private static void addModeDetailslist(ListBoxMVP availableItemToInsert, List<ModeDetailModel> list) {
+		/*availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < list.size(); i++) {
+			if(!list.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				availableItemToInsert.addItem(list.get(i));
 			}
+		}*/
+		
+		List<NameValuePair> retList = new ArrayList<NameValuePair>();
+		for(int i=0; i < list.size();i++){
+			ModeDetailModel mode = list.get(i);
+			NameValuePair nvp = new NameValuePair();
+			nvp.setName(mode.getModeName());
+			nvp.setValue(mode.getModeValue());
+			retList.add(nvp);
 		}
+		availableItemToInsert.setDropdownOptions(retList,true);
+		
 	}
 	
 	/**
@@ -1202,16 +1221,21 @@ public class InsertIntoAceEditorDialogBox {
 		}
 		
 		if(ModeDetailslistBox.getSelectedIndex()>0){
-			selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+			//selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
+			selectedMDetailsItem = ModeDetailslistBox.getSelectedItemText();
 		}
 		 
 		if(selectedMode.isEmpty() && selectedMDetailsItem.isEmpty()){
 			sb.append(".").append(selectedAttrItem);
-		}else if(selectedMode.equalsIgnoreCase("Nullable")){
+		}else if(selectedMode.equalsIgnoreCase(NULLABLE)){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
-		}else if(selectedMode.equalsIgnoreCase("Value Sets")){
+		}else if(selectedMode.equalsIgnoreCase(VALUE_SETS_CODES)){
 			if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT) || selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
-				sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE).append("\"").append(selectedMDetailsItem).append("\"");
+				if(ModeDetailslistBox.getValue().equalsIgnoreCase("valueset")) { // For Value Set
+					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE_IN).append("\"").append(selectedMDetailsItem).append("\"");
+				} else { // For Code 
+					sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE).append("\"").append(selectedMDetailsItem).append("\"");
+				}
 			}else{
 				sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append("\"").append(selectedMDetailsItem).append("\"");
 			}

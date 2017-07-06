@@ -9,6 +9,8 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.model.ModeDetailModel;
+import mat.model.cql.CQLQualityDataSetDTO;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -45,7 +47,7 @@ public class JSONAttributeModeUtility {
 	private static final String NULLABLE = "Nullable";
 	
 	/** The Constant VALUE_SET. */
-	private static final String VALUE_SET = "Value Sets";
+	private static final String VALUE_SET = "Value Sets/Codes";
 	
 	/** The Constant DATATYPE. */
 	static final String DATATYPE = "datatype";
@@ -148,13 +150,14 @@ public class JSONAttributeModeUtility {
 	 * @param modeName the mode name
 	 * @return the mode details list
 	 */
-	public static List<String> getModeDetailsList(String modeName) {
-		List<String> modeDetailsList = new ArrayList<String>();
+	public static List<ModeDetailModel> getModeDetailsList(String modeName) {
+		List<ModeDetailModel> modeDetailsList = new ArrayList<ModeDetailModel>();
 		if ((modeName != null) && (modeName != "")) {
 			if (jsonModeDetailsMap.get("mode").isArray() != null) {
 				JSONArray arrayObject = jsonModeDetailsMap.get("mode")
 						.isArray();
 				for (int i = 0; i < arrayObject.size(); i++) {
+					
 					JSONObject attrJSONObject = (JSONObject) arrayObject
 							.get(i);
 					JSONString attrObject = attrJSONObject.get(
@@ -163,13 +166,19 @@ public class JSONAttributeModeUtility {
 					String mName = attrObject.toString();
 					mName = mName.replace("\"", "");
 					if (modeName.equalsIgnoreCase(mName)) {
-						if(modeName.equalsIgnoreCase("Value Sets")){
-							for(String valSets : MatContext.get().getValuesets()){
-								if(!valSets.equalsIgnoreCase("Birthdate") && !valSets.equalsIgnoreCase("Dead"))
-									modeDetailsList.add(valSets);
+						if(modeName.equalsIgnoreCase("Value Sets/Codes")){
+							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
+								ModeDetailModel mode = new ModeDetailModel();
+								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
+									mode.setModeValue(valSets.getCodeListName());
+									if(valSets.getType()!= null)
+										mode.setModeName(valSets.getType());
+									else 
+										mode.setModeName("valueset");
+									modeDetailsList.add(mode);
+								}
 							}
-						}
-						else{
+						} else{
 							if (attrJSONObject.get("details").isArray() != null) {
 								JSONArray attrModeObject = attrJSONObject.get("details").isArray();
 								for (int j = 0; j < attrModeObject.size(); j++) {
@@ -178,9 +187,12 @@ public class JSONAttributeModeUtility {
 											"@detail").isString();
 									String modeDetail = modeStrObject.toString();
 									modeDetail = modeDetail.replace("\"", "");
-									modeDetailsList.add(modeDetail);
+									ModeDetailModel mode = new ModeDetailModel();
+									mode.setModeName(modeDetail);
+									mode.setModeValue(modeDetail);
+									modeDetailsList.add(mode);
 								}
-							} else if (attrJSONObject.get("details").isObject() != null) {
+							} /*else if (attrJSONObject.get("details").isObject() != null) {
 								JSONObject modeObject = attrJSONObject.get("details")
 										.isObject();
 								JSONString modeStrObject = modeObject.get(
@@ -188,7 +200,7 @@ public class JSONAttributeModeUtility {
 								String modeDetail = modeStrObject.toString();
 								modeDetail = modeDetail.replace("\"", "");
 								modeDetailsList.add(modeDetail);
-							}
+							}*/
 						}
 						
 					}
@@ -343,7 +355,7 @@ public class JSONAttributeModeUtility {
 			attrMode = COMPUTATIVE;
 		} else if(mode.equals("Nullable")){
 			attrMode = NULLABLE;
-		} else if(mode.equals("ValueSets")){
+		} else if(mode.equals("ValueSets/Codes")){
 			attrMode = VALUE_SET;
 		}
 		
@@ -362,4 +374,6 @@ public class JSONAttributeModeUtility {
 		}
 		return qdsAttributesService;
 	}
+	
+	
 }

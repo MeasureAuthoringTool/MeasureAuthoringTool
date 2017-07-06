@@ -5244,7 +5244,7 @@ private void addCodeSearchPanelHandlers() {
 										int line = error.getErrorInLine();
 										int column = error.getErrorAtOffeset();
 										searchDisplay.getCqlAceEditor().addAnnotation(line - 1, column,
-												error.getErrorMessage(), AceAnnotationType.WARNING);
+												error.getErrorMessage(), AceAnnotationType.ERROR);
 									}
 									searchDisplay.getCqlAceEditor().setText(result.getCqlString());
 									//searchDisplay.getCqlAceEditor().lockEditor(0, 0);
@@ -5514,7 +5514,7 @@ private void addCodeSearchPanelHandlers() {
 			for (CQLErrors error : result.getCqlErrors()) {
 				int startLine = error.getStartErrorInLine();
 				int startColumn = error.getStartErrorAtOffset();
-				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
+				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
 				if (!isInvalid) {
 					isInvalid = true;
 				}

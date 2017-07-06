@@ -222,7 +222,7 @@ public class MessageDelegate {
 			"to the selected Version and/or Expansion Identifier.";
 	
 	/** The view cql error message. */
-	public final String VIEW_CQL_ERROR_MESSAGE = "You are viewing CQL with few validation errors. Errors are marked with triangle sign on line number.";
+	public final String VIEW_CQL_ERROR_MESSAGE = "You are viewing CQL with validation errors. Errors are marked with a red square on the line number.";
 	
 	/** The view cql no errors message. */
 	public final String VIEW_CQL_NO_ERRORS_MESSAGE ="You are viewing CQL with no validation errors.";

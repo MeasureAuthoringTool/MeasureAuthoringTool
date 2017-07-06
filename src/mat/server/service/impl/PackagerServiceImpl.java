@@ -111,6 +111,8 @@ public class PackagerServiceImpl implements PackagerService {
 
 	/** The Constant UUID. */
 	private static final String UUID_STRING = "uuid";
+	
+	private static final String MEASURE_OBSERVATION = "measureObservation";
 
 	/** The measure xmldao. */
 	@Autowired
@@ -190,6 +192,15 @@ public class PackagerServiceImpl implements PackagerService {
 									displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION, associatedClauseUUID,
 									qdmSelectedList));
 						}
+						
+					} else if (typeNode == null || typeNode.getNodeValue().equalsIgnoreCase(MEASURE_OBSERVATION)) {
+						boolean isUserDefineFuncAdded = checkIfMeasureObeservationIsValid(measureClauses.item(i));
+						if(isUserDefineFuncAdded){
+							clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
+									displayNameNode.getNodeValue(), MEASURE_OBSERVATION, associatedClauseUUID,
+									qdmSelectedList));
+						}
+						
 					} else if (allowedPopulationsInPackage.contains(typeNode.getNodeValue())) {// filter
 																								// unAllowed
 																								// populations
@@ -310,6 +321,20 @@ public class PackagerServiceImpl implements PackagerService {
 			logger.info("Exception while trying to check CQLLookupTag: " + e.getMessage());
 		}
 		return overview;
+	}
+
+	private boolean checkIfMeasureObeservationIsValid(Node measureObeservationNode) {
+		boolean isUserDefineFunc = true;
+		if(measureObeservationNode.hasChildNodes()){
+			Node childNode = measureObeservationNode.getFirstChild();
+			if (childNode.getNodeName().equalsIgnoreCase("cqlaggfunction")) {
+				if (!childNode.hasChildNodes()) {
+					isUserDefineFunc = false;
+				}
+			}
+		}
+		
+		return isUserDefineFunc;
 	}
 
 	/**

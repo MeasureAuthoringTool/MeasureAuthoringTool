@@ -851,10 +851,16 @@ public class MessageDelegate {
 	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
 	
 	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
+	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this Argument. Please confirm that you want to remove this Argument?";
 	
 	/** The delete confirmation include. */
 	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
+	
+	/** The delete confirmation valueset. */
+	private final String DELETE_CONFIRMATION_VALUESET = "You have selected to delete this Value Set. Please confirm that you want to remove this Value Set?";
+	
+	/** The delete confirmation codes. */
+	private final String DELETE_CONFIRMATION_CODES = "You have selected to delete this Code. Please confirm that you want to remove this Code?";
 	
 	/** The error library version. */
 	private final String ERROR_LIBRARY_VERSION ="Please select version type Major or Minor.";
@@ -3339,6 +3345,20 @@ public class MessageDelegate {
 	 */
 	public String getMEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE() {
 		return MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE;
+	}
+
+	/**
+	 * @return the dELETE_CONFIRMATION_CODES
+	 */
+	public String getDELETE_CONFIRMATION_CODES() {
+		return DELETE_CONFIRMATION_CODES;
+	}
+
+	/**
+	 * @return the dELETE_CONFIRMATION_VALUESET
+	 */
+	public String getDELETE_CONFIRMATION_VALUESET() {
+		return DELETE_CONFIRMATION_VALUESET;
 	}
 
 }

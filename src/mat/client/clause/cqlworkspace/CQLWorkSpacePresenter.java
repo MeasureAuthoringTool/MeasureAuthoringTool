@@ -413,6 +413,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else if(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() != null){
 					deleteInclude();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
+				}  else if(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedValueSetObjId() != null){
+					checkAndDeleteValueSet();
+					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
+				} else if(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedCodesObjId() != null){
+					deleteCode();
+					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
 				}
 			}
 		});
@@ -1920,49 +1926,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				String measureId = MatContext.get().getCurrentMeasureId();
 				if ((measureId != null) && !measureId.equals("")) {
 					showSearchingBusy(true);
-					MatContext.get().getMeasureService().getCQLAppliedQDMFromMeasureXml(measureId, false,
-							new AsyncCallback<CQLQualityDataModelWrapper>() {
-						
-						@Override
-						public void onSuccess(final CQLQualityDataModelWrapper result) {
-							appliedValueSetTableList.clear();
-							if (result.getQualityDataDTO() != null) {
-								for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
-									if(dto.isSuppDataElement())
-										continue;
-									appliedValueSetTableList.add(dto);
-								}
-								
-								if (appliedValueSetTableList.size() > 0) {
-									Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
-									while (iterator.hasNext()) {
-										CQLQualityDataSetDTO dataSetDTO = iterator
-												.next();
-										if(dataSetDTO
-												.getUuid() != null){
-											if (dataSetDTO
-													.getUuid()
-													.equals(searchDisplay.getValueSetView()
-															.getSelectedElementToRemove()
-															.getUuid())) {
-												if(!dataSetDTO.isUsed()){
-													deleteValueSet(dataSetDTO.getId());
-													iterator.remove();
-												}
-											}
-										}
-									}
-								}
-							}
-							showSearchingBusy(false);
-						}
-						
-						@Override
-						public void onFailure(Throwable caught) {
-							showSearchingBusy(false);
-							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						}
-					});
+					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
+					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
+							MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET());
 				}
 			}
 			
@@ -3460,7 +3426,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										int line = error.getErrorInLine();
 										int column = error.getErrorAtOffeset();
 										searchDisplay.getViewCQLView().getCqlAceEditor().addAnnotation(line - 1, column, error.getErrorMessage(),
-												AceAnnotationType.ERROR);
+												AceAnnotationType.WARNING);
 									}
 									searchDisplay.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
 									searchDisplay.getViewCQLView().getCqlAceEditor().setAnnotations();
@@ -3606,7 +3572,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			for (CQLErrors error : result.getCqlErrors()) {
 				int startLine = error.getStartErrorInLine();
 				int startColumn = error.getStartErrorAtOffset();
-				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
 				if (!isInvalid) {
 					isInvalid = true;
 				}
@@ -3991,7 +3957,90 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	
+	private void deleteCode(){
+		MatContext.get().getMeasureService().deleteCode(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedCodesObjId(), MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
+				if(result.isSuccess()){
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code has been removed successfully.");
+					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+					appliedCodeTableList.clear();
+					appliedCodeTableList.addAll(result.getCqlCodeList());
+					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
+					//searchDisplay.buildCodes();
+					System.out.println("in delete codes...Used codes:"+result.getUsedCQLArtifacts().getUsedCQLcodes());
+					searchDisplay.getCodesView().buildCodesCellTable(
+							appliedCodeTableList,
+							MatContext.get().getMeasureLockService().checkForEditPermission());
+					//getAppliedCodeList();
+				} else {
+					
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to delete.");
+					
+				}
+			}
+		});
+	}
+
+	private void checkAndDeleteValueSet(){
+		MatContext.get().getMeasureService().getCQLAppliedQDMFromMeasureXml(MatContext.get().getCurrentMeasureId(), false,
+				new AsyncCallback<CQLQualityDataModelWrapper>() {
+			
+			@Override
+			public void onSuccess(final CQLQualityDataModelWrapper result) {
+				appliedValueSetTableList.clear();
+				if (result.getQualityDataDTO() != null) {
+					for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
+						if(dto.isSuppDataElement())
+							continue;
+						appliedValueSetTableList.add(dto);
+					}
+					
+					if (appliedValueSetTableList.size() > 0) {
+						Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
+						while (iterator.hasNext()) {
+							CQLQualityDataSetDTO dataSetDTO = iterator
+									.next();
+							if(dataSetDTO
+									.getUuid() != null){
+								if (dataSetDTO
+										.getUuid()
+										.equals(searchDisplay.getValueSetView()
+												.getSelectedElementToRemove()
+												.getUuid())) {
+									if(!dataSetDTO.isUsed()){
+										deleteValueSet(dataSetDTO.getId());
+										iterator.remove();
+									}
+								}
+							}
+						}
+					}
+				}
+				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(null);
+				showSearchingBusy(false);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(null);
+				showSearchingBusy(false);
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+		});
+	}
+	
 	/**
 	 * Adds the QDM Search Panel event Handlers.
 	 */
@@ -4175,36 +4224,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 				if(result != null){
 					searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
-					MatContext.get().getMeasureService().deleteCode(result.getId(), MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
-
-						@Override
-						public void onFailure(Throwable caught) {
-							searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
-							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						}
-
-						@Override
-						public void onSuccess(SaveUpdateCQLResult result) {
-							searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
-							if(result.isSuccess()){
-								searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code has been removed successfully.");
-								searchDisplay.getCodesView().resetCQLCodesSearchPanel();
-								appliedCodeTableList.clear();
-								appliedCodeTableList.addAll(result.getCqlCodeList());
-								searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-								//searchDisplay.buildCodes();
-								System.out.println("in delete codes...Used codes:"+result.getUsedCQLArtifacts().getUsedCQLcodes());
-								searchDisplay.getCodesView().buildCodesCellTable(
-										appliedCodeTableList,
-										MatContext.get().getMeasureLockService().checkForEditPermission());
-								//getAppliedCodeList();
-							} else {
-								
-								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to delete.");
-								
-							}
-						}
-					});
+					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
+					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox()
+					.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES());
 				}
 				
 			}

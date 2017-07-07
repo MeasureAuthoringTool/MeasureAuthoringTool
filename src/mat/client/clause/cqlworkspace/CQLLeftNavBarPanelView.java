@@ -296,6 +296,12 @@ public class CQLLeftNavBarPanelView {
 	/** The current selected inc library obj id. */
 	private String currentSelectedIncLibraryObjId = null;
 	
+	/** The current selected valueset obj id. */
+	private String currentSelectedValueSetObjId = null;
+	
+	/** The current selected codes obj id. */
+	private String currentSelectedCodesObjId = null;
+	
 	/** The available QDS attribute list. */
 	private List<QDSAttributes> availableQDSAttributeList;
 
@@ -2503,5 +2509,37 @@ public class CQLLeftNavBarPanelView {
 
 	public void setAppliedCodeTableList(List<CQLCode> appliedCodeTableList) {
 		this.appliedCodeTableList = appliedCodeTableList;
+	}
+
+
+	/**
+	 * @return the currentSelectedCodesObjId
+	 */
+	public String getCurrentSelectedCodesObjId() {
+		return currentSelectedCodesObjId;
+	}
+
+
+	/**
+	 * @param currentSelectedCodesObjId the currentSelectedCodesObjId to set
+	 */
+	public void setCurrentSelectedCodesObjId(String currentSelectedCodesObjId) {
+		this.currentSelectedCodesObjId = currentSelectedCodesObjId;
+	}
+
+
+	/**
+	 * @return the currentSelectedValueSetObjId
+	 */
+	public String getCurrentSelectedValueSetObjId() {
+		return currentSelectedValueSetObjId;
+	}
+
+
+	/**
+	 * @param currentSelectedValueSetObjId the currentSelectedValueSetObjId to set
+	 */
+	public void setCurrentSelectedValueSetObjId(String currentSelectedValueSetObjId) {
+		this.currentSelectedValueSetObjId = currentSelectedValueSetObjId;
 	}
 }

@@ -4492,7 +4492,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	private void searchCQLCodesInVsac() {
 
-		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue();
+		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue().trim();
+		searchDisplay.getCodesView().getCodeSearchInput().setText(url);
+		
 		if (!MatContext.get().isUMLSLoggedIn()) {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);

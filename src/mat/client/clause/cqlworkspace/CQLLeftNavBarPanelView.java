@@ -2464,8 +2464,8 @@ public class CQLLeftNavBarPanelView {
 		HTML html6 = new HTML("Ctrl-Alt-p: parameters");
 		HTML html7 = new HTML("Ctrl-Alt-t: timings");
 		HTML html8 = new HTML("Ctrl-Alt-v: value sets & codes");
-		
-		HTML html9 = new HTML("Ctrl-Space: all");
+		HTML html9 = new HTML("Ctrl-Alt-u: units");
+		HTML html10 = new HTML("Ctrl-Space: all");
 
 		dialogContents.add(html1);
 		dialogContents.add(html2);
@@ -2476,6 +2476,7 @@ public class CQLLeftNavBarPanelView {
 		dialogContents.add(html7);
 		dialogContents.add(html8);
 		dialogContents.add(html9);
+		dialogContents.add(html10);
 		panel.show();
 	}
 

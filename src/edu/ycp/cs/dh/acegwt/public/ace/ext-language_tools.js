@@ -1585,7 +1585,7 @@ var Autocomplete = function() {
             	this.getSpecificKeyWords(Keywords, matches, "keywords");
 
             } else if(keyString == "u") {
-            	alert("keyString:"+this.editor.keyString);
+            	/*alert("keyString:"+this.editor.keyString);*/
             	matches = []; 
             	this.getSpecificKeyWords(unitsKeywords, matches, "units");
 

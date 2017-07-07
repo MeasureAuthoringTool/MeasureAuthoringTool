@@ -283,7 +283,7 @@ public class MatContext implements IsSerializable {
 	private List<String> includedCodeNames = new ArrayList<String>();
 	
 	/** The units list. */
-	private List<String> unitsList = new ArrayList<String>();
+	private List<String> shorcutKeyUnits = new ArrayList<String>();
 	
 	/** The cql constant container. */
 	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
@@ -2232,6 +2232,7 @@ public class MatContext implements IsSerializable {
 			@Override
 			public void onSuccess(CQLConstantContainer result) {
 				cqlConstantContainer = result; 
+				setShortCutKeyUnits();
 			}
 			
 		});
@@ -2298,31 +2299,31 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * Gets the units list.
-	 *
-	 * @return the units list
+	 * Sets the units list.
 	 */
-	public List<String> getUnitsList() {
-		
-	   Set<String> allUnits = cqlConstantContainer.getCqlUnitMap().keySet();
-	   for(String unit : allUnits){
-		   if(!getNonQuotesUnits().contains(unit)){
-			   unitsList.add("'"+unit+"'");
-		   } else {
-			   unitsList.add(unit);
-		   }
-	   }
-		return unitsList;
+	public void setShortCutKeyUnits() {
+		shorcutKeyUnits.clear();
+		for(Map.Entry<String,String> unitsMap : cqlConstantContainer.getCqlUnitMap().entrySet()){
+			
+			MatContext.get();
+			if (!unitsMap.getValue().equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				if (!getNonQuotesUnits().contains(unitsMap.getValue())) {
+					shorcutKeyUnits.add("'" + unitsMap.getValue() + "'");
+				} else {
+					shorcutKeyUnits.add(unitsMap.getValue());
+				}
+			}
+		}
 	}
 
 
 	/**
-	 * Sets the units list.
+	 * Gets the units list.
 	 *
-	 * @param unitsList the new units list
+	 * @return the units list
 	 */
-	public void setUnitsList(List<String> unitsList) {
-		this.unitsList = unitsList;
+	public List<String> getShorcutKeyUnits() {
+		return shorcutKeyUnits;
 	}
 
 	/*public GlobalCopyPaste getCopyPaste() {

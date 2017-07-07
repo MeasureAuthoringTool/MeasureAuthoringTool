@@ -1133,6 +1133,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
 					searchDisplay.getCQLDefinitionsView().getDefineAceEditor().redisplay();
 					
+					searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+					
 					resetAceEditor(searchDisplay.getCQLDefinitionsView().getViewCQLAceEditor());
 					resetViewCQLCollapsiblePanel(searchDisplay.getCQLDefinitionsView().getPanelViewCQLCollapse());
 					
@@ -1169,6 +1171,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn()
 									.setValue(false);
 								}
+								
 								// disable definitionName and fields for
 								// Supplemental data definitions
 								boolean isReadOnly = searchDisplay.getCqlLeftNavBarPanelView()
@@ -1203,7 +1206,17 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 													// if there are cql errors or the definition is not in use, enable the delete button
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
 														searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+														searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+													} 
+													
+													if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
+														searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
+																.get(currentDefinition.getDefinitionName()));
+											
+													} else {
+														searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
 													}
+													
 												}
 
 											});
@@ -1378,6 +1391,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea()!= null)) {
 			searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().setText("");
 		}
+		searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
@@ -1420,6 +1434,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(true);
 					searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 					resetAceEditor(searchDisplay.getCQLFunctionsView().getViewCQLAceEditor());
+					searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
 					resetViewCQLCollapsiblePanel(searchDisplay.getCQLFunctionsView().getPanelViewCQLCollapse());
 					if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
 						searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
@@ -1450,6 +1465,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
 								}
 
+								searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().
+										get(selectedFunctionId).getReturnType());
 								if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 									searchDisplay.getCQLFunctionsView().setWidgetReadOnly(true);
 									//Checks if Draft
@@ -1476,6 +1493,14 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 													
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {
 														searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+													}
+													
+													if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
+														searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
+																.get(currentFunction.getFunctionName()));
+											
+													} else {
+														searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
 													}
 												}
 
@@ -1709,6 +1734,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea()!= null)) {
 			searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText("");
 		}
+		searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
 		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -2543,7 +2569,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
 										searchDisplay.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
 										searchDisplay.getCQLDefinitionsView().getDefineAceEditor().redisplay();
-
+										searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
 										if (validateCQLArtifact(result, currentSection)) {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()

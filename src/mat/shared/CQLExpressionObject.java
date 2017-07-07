@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLExpressionObject implements IsSerializable {
        
-       private String type;
+    private String type;
     private String name;
     private String returnType;
        

@@ -36,6 +36,8 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
        
        private Map<String, List<String>> functionToFunctionMap = new HashMap<String, List<String>>();
        
+       private Map<String,String> expressionReturnTypeMap = new HashMap<String, String>();
+       
        private Map<String, List<String>> valueSetDataTypeMap;
        
        private Map<String, List<String>> codeDataTypeMap; 
@@ -168,6 +170,14 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
        public void setCodeDataTypeMap(Map<String, List<String>> codeDataTypeMap) {
               this.codeDataTypeMap = codeDataTypeMap;
        }
+
+	public Map<String, String> getExpressionReturnTypeMap() {
+		return expressionReturnTypeMap;
+	}
+
+	public void setExpressionReturnTypeMap(Map<String, String> expressionReturnTypeMap) {
+		this.expressionReturnTypeMap = expressionReturnTypeMap;
+	}
 
 }
 

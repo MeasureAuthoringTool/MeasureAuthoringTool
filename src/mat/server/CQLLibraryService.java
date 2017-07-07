@@ -1284,7 +1284,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						String newXml= appendAndSaveNode(cqlLibrary, nodeName, result.getXml(), parentNode);
 						cqlLibraryDAO.refresh(cqlLibrary);
 						System.out.println("newXml ::: " + newXml);
-						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
+						
 						
 						CQLCodeSystem codeSystem = new CQLCodeSystem();
 						codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
@@ -1292,8 +1292,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
 						SaveUpdateCQLResult updatedResult = cqlService.saveCQLCodeSystem(newXml, codeSystem);
 						if(updatedResult.isSuccess()) {
-							saveCQLCodeSystemInLibrary(cqlLibrary, updatedResult);
+							newXml = saveCQLCodeSystemInLibrary(cqlLibrary, updatedResult);
+							System.out.println("Updated newXml ::: " + newXml);
 						}
+						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
 					}
 				}
 			}
@@ -1305,10 +1307,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @param cqlLibrary
 	 * @param updatedResult
 	 */
-	private void saveCQLCodeSystemInLibrary(CQLLibrary cqlLibrary, SaveUpdateCQLResult updatedResult) {
+	private String saveCQLCodeSystemInLibrary(CQLLibrary cqlLibrary, SaveUpdateCQLResult updatedResult) {
 		String nodeName = "codeSystem";
 		String parentNode = "//cqlLookUp/codeSystems";
-		 appendAndSaveNode(cqlLibrary, nodeName, updatedResult.getXml(), parentNode);
+		 return appendAndSaveNode(cqlLibrary, nodeName, updatedResult.getXml(), parentNode);
 	}
 	
 	

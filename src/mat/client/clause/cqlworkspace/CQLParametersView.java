@@ -15,7 +15,6 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -66,7 +65,6 @@ public class CQLParametersView {
 	/** The param comment group. */
 	private FormGroup paramCommentGroup = new FormGroup();
 	
-
 	/**
 	 * Instantiates a new CQL parameters view.
 	 */
@@ -90,7 +88,6 @@ public class CQLParametersView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		paramNameGroup.clear();
 		paramCommentGroup.clear();
-		
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
 		
@@ -101,7 +98,7 @@ public class CQLParametersView {
 		parameterLabel.setId("ParameterName_Label");
 		
 		parameterNameTxtArea.setText("");
-		parameterNameTxtArea.setSize("550px", "25px");
+		parameterNameTxtArea.setSize("550px", "32px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
 		
@@ -119,7 +116,7 @@ public class CQLParametersView {
 		SimplePanel paramAceEditorPanel = new SimplePanel();
 		paramAceEditorPanel.setSize("650px", "200px");
 		parameterAceEditor.setText("");
-		System.out.println("In buildParameterLibraryView setText to ace editor.");
+		
 		parameterAceEditor.setMode(AceEditorMode.CQL);
 		parameterAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 		parameterAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
@@ -160,10 +157,11 @@ public class CQLParametersView {
 		paramCommentHPanel.setWidth("700px");
 		paramCommentGroup.add(paramCommentHPanel);
 		
+		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:550px;");
+			
 		parameterVP.add(addNewButtonBar);
 		parameterVP.add(paramNameGroup);
 		parameterVP.add(paramCommentGroup);
-		parameterVP.add(new SpacerWidget());
 		parameterVP.add(parameterButtonBar);
 		parameterVP.add(aceEditorPanel);
 		parameterVP.add(new SpacerWidget());

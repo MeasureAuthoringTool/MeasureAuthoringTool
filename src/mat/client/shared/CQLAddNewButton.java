@@ -4,7 +4,10 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
+
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 
 // TODO: Auto-generated Javadoc
@@ -22,19 +25,21 @@ public class CQLAddNewButton extends Composite {
 	 * @param sectionName the section name
 	 */
 	public CQLAddNewButton(String sectionName) {
-		
+		VerticalPanel vp = new VerticalPanel();
 		addNewButton = new Button();
 		
 		addNewButton.setType(ButtonType.LINK);
 		addNewButton.getElement().setId("addNewButton_"+sectionName);
-		addNewButton.getElement().setAttribute("style", "margin-left:-12px");
+		//addNewButton.getElement().setAttribute("style", "padding-left:600px");
 		addNewButton.setTitle("Add New");
 		addNewButton.setText("Add New");
 		addNewButton.setId("Add_New_ID");
 		addNewButton.setIcon(IconType.PLUS);
 		addNewButton.setSize(ButtonSize.SMALL);
-
-		initWidget(addNewButton);
+		addNewButton.setPull(Pull.RIGHT);
+		vp.add(addNewButton);
+		vp.setWidth("95%");
+		initWidget(vp);
 		
 	}
 	

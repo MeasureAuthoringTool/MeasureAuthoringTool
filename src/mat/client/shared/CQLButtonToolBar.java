@@ -46,9 +46,8 @@ public class CQLButtonToolBar extends Composite {
 	 */
 	public CQLButtonToolBar(String sectionName) {
 		
-		
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
-		buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
+		//buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
 		
 		insertButton.setType(ButtonType.LINK);
 		insertButton.getElement().setId("insertButton_"+sectionName);

@@ -19,6 +19,7 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -42,7 +43,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -164,6 +164,8 @@ public class CQLFunctionsView {
 	/** The func context group. */
 	private FormGroup funcContextGroup = new FormGroup();
 	
+	private TextBox returnTypeTextBox = new TextBox();
+	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
 
 	/**
 	 * Instantiates a new CQL functions view.
@@ -192,6 +194,7 @@ public class CQLFunctionsView {
 		funcNameGroup.clear();
 		funcCommentGroup.clear();
 		funcContextGroup.clear();
+		returnTypeAndButtonPanelGroup.clear();
 		VerticalPanel funcVP = new VerticalPanel();
 		HorizontalPanel funcFP = new HorizontalPanel();
 		
@@ -203,7 +206,7 @@ public class CQLFunctionsView {
 		
 		funcNameTxtArea.setText("");
 		// funcNameTxtArea.setPlaceholder("Enter Function Name here.");
-		funcNameTxtArea.setSize("550px", "25px");
+		funcNameTxtArea.setSize("550px", "32px");
 		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
 		
@@ -293,16 +296,38 @@ public class CQLFunctionsView {
 		
 		funcCommentGroup.add(funcCommentHPanel);
 		
+		// Build Return Type form Group
+		FormLabel returnTypeLabel = new FormLabel();
+		returnTypeLabel.setText("Return Type");
+		returnTypeLabel.setTitle("Return Type");
+		returnTypeLabel.setMarginRight(42);
+		returnTypeLabel.setId("returnType_Label");
+		returnTypeLabel.setFor("returnTypeTextArea_Id");
+
+		returnTypeTextBox.setId("returnTypeTextArea_Id");
+		returnTypeTextBox.setTitle("Return Type of CQL Expression");
+		returnTypeTextBox.setReadOnly(true);
+		returnTypeTextBox.setWidth("380px");
+		addNewArgument.getElement().setAttribute("style", "margin-left:65px");
+		HorizontalPanel returnTypeHP = new HorizontalPanel();
+		returnTypeHP.add(returnTypeLabel);
+		returnTypeHP.add(returnTypeTextBox);
+		returnTypeHP.add(addNewArgument);
+
+		returnTypeAndButtonPanelGroup.add(returnTypeHP);
+		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:520px;");
+		
 		funcVP.add(addNewButtonBar);
 		funcVP.add(funcNameGroup);
 		funcVP.add(funcContextGroup);
 		funcVP.add(funcCommentGroup);
-		funcVP.add(new SpacerWidget());
-		funcVP.add(addNewArgument);
+		funcVP.add(returnTypeAndButtonPanelGroup);
+		//funcVP.add(new SpacerWidget());
+	//	funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
 		funcVP.add(cellTablePanel);
 		funcVP.add(functionButtonBar);
-		funcVP.add(new SpacerWidget());
+	//	funcVP.add(new SpacerWidget());
 		funcVP.add(aceEditorPanel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
@@ -341,7 +366,7 @@ public class CQLFunctionsView {
 	public void resetAll() {
 		getFuncNameTxtArea().setText("");
 		getFunctionBodyAceEditor().setText("");
-		
+		getReturnTypeTextBox().setText("");
 		getViewCQLAceEditor().setText("");
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
@@ -1035,4 +1060,7 @@ public class CQLFunctionsView {
 		getFuncCommentGroup().setValidationState(ValidationState.NONE);
 	}
 
+	public TextBox getReturnTypeTextBox() {
+		return returnTypeTextBox;
+	}
 }

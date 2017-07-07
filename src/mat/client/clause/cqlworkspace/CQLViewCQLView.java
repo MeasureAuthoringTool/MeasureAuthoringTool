@@ -1,16 +1,16 @@
 package mat.client.clause.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.shared.SpacerWidget;
 
 public class CQLViewCQLView {
 	
@@ -24,25 +24,38 @@ public class CQLViewCQLView {
 	
 	public SimplePanel buildView(){
 		cqlViewSimpleP.clear();
-		VerticalPanel cqlViewVP = new VerticalPanel();
-		cqlViewSimpleP.getElement().setId("ViewCQl_SimplePanel");
-		cqlViewVP.getElement().setId("ViewCQl_VPanel");
+		//VerticalPanel cqlViewVP = new VerticalPanel();
+		//cqlViewSimpleP.getElement().setId("ViewCQl_SimplePanel");
+		//cqlViewVP.getElement().setId("ViewCQl_VPanel");
 		
+		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
+		viewCQLPanel.setMarginTop(20);
+		viewCQLPanel.setId("ViewCQLPanel_Id");
+		
+		PanelHeader viewCQLHeader = new PanelHeader();
+		viewCQLHeader.setText("View CQL file here");
+		viewCQLHeader.setTitle("View CQL file here");
+		viewCQLHeader.setId("ViewCQLPanelHeader_id");
+		
+		PanelBody viewCQLBody = new PanelBody();
+		viewCQLBody.setId("ViewCQLPanelBody");
+		viewCQLBody.add(cqlAceEditor);
 		
 		cqlAceEditor.setMode(AceEditorMode.CQL);
 		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
 
 		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
-		cqlAceEditor.setSize("675px", "500px");
+		cqlAceEditor.setSize("650px", "500px");
 		cqlAceEditor.setAutocompleteEnabled(true);
 		cqlAceEditor.setReadOnly(true);
 		cqlAceEditor.setUseWrapMode(true);
 		cqlAceEditor.clearAnnotations();
 		cqlAceEditor.redisplay();
-		Label viewCQlFileLabel = new Label(LabelType.INFO);
+		/*Label viewCQlFileLabel = new Label(LabelType.INFO);
 		viewCQlFileLabel.setId("viewCQl_Lbl");
 		viewCQlFileLabel.setText("View CQL file here");
 		viewCQlFileLabel.setTitle("View CQL file here");
+		
 		cqlViewVP.add(new SpacerWidget());
 		cqlViewVP.add(new SpacerWidget());
 		
@@ -50,7 +63,11 @@ public class CQLViewCQLView {
 		cqlViewVP.add(new SpacerWidget());
 		cqlViewVP.add(new SpacerWidget());
 		cqlViewVP.add(cqlAceEditor);
-		cqlViewSimpleP.add(cqlViewVP);
+		*/
+		
+		viewCQLPanel.add(viewCQLHeader);
+		viewCQLPanel.add(viewCQLBody);
+		cqlViewSimpleP.add(viewCQLPanel);
 		cqlViewSimpleP.setStyleName("cqlRightContainer");
 		cqlViewSimpleP.setWidth("700px");
 		cqlViewSimpleP.setStyleName("marginLeft15px");

@@ -27,6 +27,8 @@ public class CQLFunctions implements IsSerializable {
 	
 	private String commentString = "";
 	
+	private String returnType;
+	
 	/**
 	 * Gets the function name.
 	 *
@@ -123,5 +125,13 @@ public class CQLFunctions implements IsSerializable {
 
 	public void setCommentString(String commentString) {
 		this.commentString = commentString;
+	}
+
+	public String getReturnType() {
+		return returnType;
+	}
+
+	public void setReturnType(String returnType) {
+		this.returnType = returnType;
 	}
 }

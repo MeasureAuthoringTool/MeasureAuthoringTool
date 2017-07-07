@@ -74,6 +74,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private static final int DUPLICATE_CODE=7;
 	
+	public static final int COMMEENT_INVALID = 8;
+	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
 	

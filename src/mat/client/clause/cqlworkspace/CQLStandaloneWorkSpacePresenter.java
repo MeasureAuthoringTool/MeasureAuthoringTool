@@ -2315,6 +2315,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
 												.getMessageDelegate().getCqlFunctionArgumentNameError());
+									} else if (result.getFailureReason() == 8) {
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
+												.getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 									}
 
 								}
@@ -2459,6 +2462,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 														.getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
 										searchDisplay.getCQLParametersView().getParameterNameTxtArea()
 												.setText(parameterName.trim());
+									} else if (result.getFailureReason() == 8) {
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
+												.getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 									}
 								}
 								showSearchingBusy(false);
@@ -2607,6 +2613,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															.getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
 											searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea()
 													.setText(definitionName.trim());
+										} else if (result.getFailureReason() == 8) {
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
+													.getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 										}
 									}
 

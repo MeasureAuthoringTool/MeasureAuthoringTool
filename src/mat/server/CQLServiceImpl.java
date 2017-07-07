@@ -319,6 +319,15 @@ public class CQLServiceImpl implements CQLService {
 					}
 					isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), xml);
 				}
+				
+				//validating function comment string
+				isDuplicate = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					return result;
+				}
 
 				if (!isDuplicate) {
 					boolean isValidArgumentName = true;
@@ -423,6 +432,16 @@ public class CQLServiceImpl implements CQLService {
 					return result;
 				}
 				isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), xml);
+				
+				//validating function comment string
+				isDuplicate = validator.validateForCommentTextArea(currentObj.getCommentString());
+				
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					return result;
+				}
+				
 				if (!isDuplicate) {
 
 					boolean isValidArgumentName = true;
@@ -540,6 +559,15 @@ public class CQLServiceImpl implements CQLService {
 					}
 					isDuplicate = isDuplicateIdentifierName(currentObj.getParameterName(), xml);
 				}
+				
+				//validating parameter comment
+				isDuplicate = validtor.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					return result;
+				}
 
 				if (!isDuplicate) {
 
@@ -619,6 +647,15 @@ public class CQLServiceImpl implements CQLService {
 				}
 				isDuplicate = isDuplicateIdentifierName(currentObj.getParameterName(), xml);
 
+				//validating parameter comment String
+				isDuplicate = validtor.validateForCommentTextArea(currentObj.getCommentString());
+				
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					return result;
+				}
+				
 				if (!isDuplicate) {
 
 					String cqlString = createParametersXML(currentObj);
@@ -713,6 +750,15 @@ public class CQLServiceImpl implements CQLService {
 					isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), xml);
 				}
 
+				//validate definition comment string
+				isDuplicate = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					return result;
+				}
+				
 				if (!isDuplicate) {
 
 					logger.debug(" CQLServiceImpl: saveAndModifyDefinitions Start :  ");
@@ -818,6 +864,15 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), xml);
+				
+				//validating definition Comment 
+				isDuplicate = validator.validateForCommentTextArea(currentObj.getCommentString());
+				
+				if (isDuplicate) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					return result;
+				}
 				if (!isDuplicate) {
 					String cqlString = createDefinitionsXML(currentObj);
 

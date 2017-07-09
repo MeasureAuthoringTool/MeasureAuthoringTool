@@ -3,6 +3,7 @@ package mat.client.measurepackage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -28,9 +29,9 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
-import mat.server.util.MATPropertiesService;
 import mat.shared.MeasurePackageClauseValidator;
-import org.gwtbootstrap3.client.ui.CheckBox;
+import mat.shared.SaveUpdateCQLResult;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -725,9 +726,43 @@ public class MeasurePackagePresenter implements MatPresenter {
 		clearMessages();
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
-			getMeasure(MatContext.get().getCurrentMeasureId());
-			view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-			//view.getIncludeVSACData().setValue(false);
+			
+			MatContext.get().getMeasureService().getMeasureCQLFileData(MatContext.get().getCurrentMeasureId(),
+					new AsyncCallback<SaveUpdateCQLResult>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+														
+							if(result.getCqlErrors().size() == 0){
+//								view = new MeasurePackagerView();
+//								addAllHandlers();
+								getMeasure(MatContext.get().getCurrentMeasureId());
+								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+							}else{
+								panel.clear();
+//								FlowPanel flowPanel = (FlowPanel) view.asWidget();
+//								flowPanel.clear();
+//								flowPanel.add((ErrorMessageDisplay)view.getMeasureErrorMessageDisplay());
+//								panel.add(view.asWidget());
+//								view.getMeasureErrorMessageDisplay().setMessage("Your CQL file contains validation errors. <br>Errors must be corrected before proceeding to measure packaging. <br>Please return to the CQL Workspace to make corrections.");
+								
+								ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
+								panel.add(errorMessageDisplay);
+								errorMessageDisplay.setMessage("Your CQL file contains validation errors. <br>Errors must be corrected before proceeding to measure packaging. <br>Please return to the CQL Workspace to make corrections.");
+								
+								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+							}
+							
+						}
+				
+			});
+			
+			
 		} else {
 			displayEmpty();
 		}

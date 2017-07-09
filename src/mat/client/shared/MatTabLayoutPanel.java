@@ -5,15 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.CqlComposerPresenter;
 import mat.client.Enableable;
 import mat.client.MatPresenter;
@@ -29,6 +20,15 @@ import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.shared.ui.MATTabPanel;
 import mat.shared.ConstantMessages;
 import mat.shared.DynamicTabBarFormatter;
+
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -653,6 +653,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 * @return true, if is measure package details same
 	 */
 	private boolean isMeasurePackageDetailsSame(MeasurePackagePresenter measurePackagePresenter){
+		
+		if(measurePackagePresenter.getCurrentDetail() == null){
+			return true;
+		}
 		
 		MeasurePackageDetail pageData = new MeasurePackageDetail();
 		measurePackagePresenter.updateDetailsFromView(pageData);

@@ -748,17 +748,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 								panel.clear();
 								ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();
 								panel.add(errorMessageAlert);
-								
-								List<String> errorMessageList = new ArrayList<String>();
-								errorMessageList.add("Your CQL file contains validation errors.");
-								errorMessageList.add("Errors must be corrected before proceeding to measure packaging.");
-								errorMessageList.add("Please return to the CQL Workspace to make corrections");
-								
-								errorMessageAlert.createAlert(errorMessageList);
 																
+								errorMessageAlert.createAlert(MatContext.get().getMessageDelegate().getPACKAGER_CQL_ERROR());
+																								
 								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-							}
-							
+							}							
 						}
 				
 			});

@@ -14,6 +14,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackagerView.Observer;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
@@ -724,6 +725,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	public void beforeDisplay() {
 		Mat.hideLoadingMessage();
 		clearMessages();
+		//panel.clear();
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			
@@ -739,22 +741,21 @@ public class MeasurePackagePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 														
 							if(result.getCqlErrors().size() == 0){
-//								view = new MeasurePackagerView();
-//								addAllHandlers();
+								//panel.add(view.asWidget());
 								getMeasure(MatContext.get().getCurrentMeasureId());
 								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 							}else{
 								panel.clear();
-//								FlowPanel flowPanel = (FlowPanel) view.asWidget();
-//								flowPanel.clear();
-//								flowPanel.add((ErrorMessageDisplay)view.getMeasureErrorMessageDisplay());
-//								panel.add(view.asWidget());
-//								view.getMeasureErrorMessageDisplay().setMessage("Your CQL file contains validation errors. <br>Errors must be corrected before proceeding to measure packaging. <br>Please return to the CQL Workspace to make corrections.");
+								ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();
+								panel.add(errorMessageAlert);
 								
-								ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
-								panel.add(errorMessageDisplay);
-								errorMessageDisplay.setMessage("Your CQL file contains validation errors. <br>Errors must be corrected before proceeding to measure packaging. <br>Please return to the CQL Workspace to make corrections.");
+								List<String> errorMessageList = new ArrayList<String>();
+								errorMessageList.add("Your CQL file contains validation errors.");
+								errorMessageList.add("Errors must be corrected before proceeding to measure packaging.");
+								errorMessageList.add("Please return to the CQL Workspace to make corrections");
 								
+								errorMessageAlert.createAlert(errorMessageList);
+																
 								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 							}
 							

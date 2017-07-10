@@ -18,8 +18,8 @@ public class CQLModelValidator {
 	/*private final RegExp regAliasExp = RegExp.compile(REGEX_ALIAS_EXPRESSION);*/
 	
 	/** The code regex expression. */
-	private final String CODE_REGEX_EXPRESSION = "^(CODE:/CodeSystem/)(.*)" +
-	        "(/Version/)(.*)(/Code/)(.*)(/Info)$";
+	private final String CODE_REGEX_EXPRESSION = "^(CODE:/CodeSystem/)([^/]*)" +
+	        "(/Version/)([^/]*)(/Code/)([^/]*)(/Info)$";
 	
 	/** The code reg exp. */
 	private final RegExp codeRegExp = RegExp.compile(CODE_REGEX_EXPRESSION);

@@ -12,6 +12,7 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.cell.client.Cell;
@@ -205,24 +206,41 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setUseWrapMode(true);
 		cqlAceEditor.clearAnnotations();
 		cqlAceEditor.redisplay();
+		
 		Label viewCQlFileLabel = new Label(LabelType.INFO);
 		viewCQlFileLabel.setText("View CQL file here");
 		viewCQlFileLabel.setTitle("View CQL file here");
 		
-		VerticalPanel viewCQLVP = new VerticalPanel();
+		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
+		viewCQLPanel.setMarginTop(20);
+		viewCQLPanel.setId("IncludeCQLViewPanel_Id");
+		
+		PanelHeader viewCQLHeader = new PanelHeader();
+		viewCQLHeader.setText("View CQL file here");
+		viewCQLHeader.setTitle("View CQL file here");
+		viewCQLHeader.setId("IncludeCQLViewPanelHeader_id");
+		
+		PanelBody viewCQLBody = new PanelBody();
+		viewCQLBody.setId("IncludeCQLViewBody_Id");
+		viewCQLBody.add(cqlAceEditor);
+		
+		viewCQLPanel.add(viewCQLHeader);
+		viewCQLPanel.add(viewCQLBody);
+		
+		/*VerticalPanel viewCQLVP = new VerticalPanel();
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(new SpacerWidget());
 		
 		viewCQLVP.add(viewCQlFileLabel);
 		viewCQLVP.add(new SpacerWidget());
 		viewCQLVP.add(cqlAceEditor);
-		
+		*/
 		verticalPanel.add(aliasNameVP);
 		verticalPanel.add(ownerTextboxPanel);
 		verticalPanel.add(searchCellTablePanel);
 		
 		verticalPanel.add(new SpacerWidget());
-		verticalPanel.add(viewCQLVP);
+		verticalPanel.add(viewCQLPanel);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.setWidth("700px");
 		containerPanel.getElement().setAttribute("id",

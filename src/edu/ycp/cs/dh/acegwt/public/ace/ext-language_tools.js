@@ -1590,7 +1590,8 @@ var Autocomplete = function() {
             	this.getSpecificKeyWords(unitsKeywords, matches, "units");
 
             } else if(keyString == "space"){
-            	this.getSpecificKeyWords(valueSetKeywords, matches, "value sets/codes");
+            	this.getSpecificKeyWords(unitsKeywords, matches, "units");
+                this.getSpecificKeyWords(valueSetKeywords, matches, "value sets/codes");
             	this.getSpecificKeyWords(dataTypeKeywords, matches, "datatypes");
             	this.getSpecificKeyWords(timingKeywords,matches, "timings");
             	
@@ -1606,8 +1607,7 @@ var Autocomplete = function() {
             	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
             	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
             	this.getSpecificKeyWords(attributesKeywords, matches, "attributes");
-            	this.getSpecificKeyWords(unitsKeywords, matches, "units");
-            	
+            		
             }
             this.completions = new FilteredList(matches);
             this.completions.setFilter(prefix);

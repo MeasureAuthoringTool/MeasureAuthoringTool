@@ -63,7 +63,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	private CQLFunctionsView cqlFunctionsView;
 	
 	/** The cql view CQL view. */
-	private CQLViewCQLView cqlViewCQLView;
+	private CQLView cqlViewCQLView;
 	
 	/** The cql left nav bar panel view. */
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
@@ -79,7 +79,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
-		cqlViewCQLView = new CQLViewCQLView();
+		cqlViewCQLView = new CQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
 		
 		resetAll();
@@ -596,7 +596,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * @return the view CQL view
 	 */
 	@Override
-	public CQLViewCQLView getViewCQLView(){
+	public CQLView getViewCQLView(){
 		return cqlViewCQLView;
 	}
 

@@ -309,7 +309,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 *
 		 * @return the view CQL view
 		 */
-		CQLViewCQLView getViewCQLView();
+		CQLView getViewCQLView();
 		
 		/**
 		 * Reset message display.

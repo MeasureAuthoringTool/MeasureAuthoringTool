@@ -12,12 +12,12 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 
-public class CQLViewCQLView {
+public class CQLView {
 	
 	SimplePanel cqlViewSimpleP = new SimplePanel();
 	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();
-	public CQLViewCQLView(){
+	public CQLView(){
 		cqlViewSimpleP.clear();
 		cqlAceEditor.startEditor();
 	}

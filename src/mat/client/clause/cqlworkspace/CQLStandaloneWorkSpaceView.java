@@ -61,7 +61,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	private CQLFunctionsView cqlFunctionsView;
 	
 	/** The cql view CQL view. */
-	private CQLViewCQLView cqlViewCQLView;
+	private CQLView cqlViewCQLView;
 	
 	/** The cql left nav bar panel view. */
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
@@ -85,7 +85,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
 		inclView = new CQLIncludeLibraryView();
-		cqlViewCQLView = new CQLViewCQLView();
+		cqlViewCQLView = new CQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
 		
 		resetAll();

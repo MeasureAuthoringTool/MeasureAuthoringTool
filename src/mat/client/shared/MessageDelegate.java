@@ -319,6 +319,8 @@ public class MessageDelegate {
 	
 	private final String ERROR_VALIDATION_COMMENT_AREA = "Comment cannot exceed 250 characters. ";
 	
+	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -3369,6 +3371,13 @@ public class MessageDelegate {
 	 */
 	public String getDELETE_CONFIRMATION_FUNCTION_ARGUMENT() {
 		return DELETE_CONFIRMATION_FUNCTION_ARGUMENT;
+	}
+	
+	/**
+	 * @return the PACKAGER_CQL_ERROR
+	 */
+	public static String getPACKAGER_CQL_ERROR() {
+		return PACKAGER_CQL_ERROR;
 	}
 
 }

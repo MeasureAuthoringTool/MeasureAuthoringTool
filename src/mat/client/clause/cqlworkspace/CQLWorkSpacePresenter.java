@@ -2595,16 +2595,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
 												searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
-												searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+												searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 											}  else if (!result.isDatatypeUsedCorrectly()) {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 												if(result.isValidCQLWhileSavingExpression()){
 													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
-													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+ result.getDefinition().getReturnType());
+													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+ result.getDefinition().getReturnType());
 												} else {
 													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
-													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 												}
 												
 											} else {
@@ -2612,10 +2612,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
 												if(result.isValidCQLWhileSavingExpression()){
 													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
-													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+ result.getDefinition().getReturnType());
+													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+ result.getDefinition().getReturnType());
 												} else {
 													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
-													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 												}
 											}
 											

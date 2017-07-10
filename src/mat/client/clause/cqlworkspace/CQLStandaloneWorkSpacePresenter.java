@@ -1228,9 +1228,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
 													searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
 															.get(currentDefinition.getDefinitionName()));
+													searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getExpressionReturnTypeMap()
+															.get(currentDefinition.getDefinitionName()) );
 										
 												} else {
 													searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+													searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+													
 												}
 												
 											}

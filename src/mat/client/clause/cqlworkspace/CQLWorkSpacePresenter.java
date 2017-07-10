@@ -1928,7 +1928,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				String measureId = MatContext.get().getCurrentMeasureId();
 				if ((measureId != null) && !measureId.equals("")) {
-					showSearchingBusy(true);
 					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
 							MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET());

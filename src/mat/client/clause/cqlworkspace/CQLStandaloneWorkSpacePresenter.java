@@ -4186,7 +4186,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				}
 				String libraryId = MatContext.get().getCurrentCQLLibraryId();
 				if ((libraryId != null) && !libraryId.equals("")) {
-					showSearchingBusy(true);
 					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox()
 					.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET());

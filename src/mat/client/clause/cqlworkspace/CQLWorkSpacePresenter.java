@@ -404,10 +404,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
 					deleteDefinition();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				} else if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {
+				} else if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null
+						&& searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() == null) {
 					deleteFunction();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-				} else if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId() != null) {
+				} else if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() != null) {
+					deleteFunctionArgument();
+					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
+				}else if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId() != null) {
 					deleteParameter();
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
 				} else if(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() != null){
@@ -780,6 +784,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	private void addNewFunction() {
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
 		searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
 		searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
@@ -838,22 +844,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
-				Iterator<CQLFunctionArgument> iterator = searchDisplay.getCqlFunctionsView().getFunctionArgumentList()
-						.iterator();
-				searchDisplay.getCqlFunctionsView().getFunctionArgNameMap()
-						.remove(result.getArgumentName().toLowerCase());
-				while (iterator.hasNext()) {
-					CQLFunctionArgument cqlFunArgument = iterator.next();
-					if (cqlFunArgument.getId().equals(result.getId())) {
-
-						iterator.remove();
-						searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(
-								searchDisplay.getCqlFunctionsView().getFunctionArgumentList(),
-								MatContext.get().getMeasureLockService().checkForEditPermission());
-						break;
-					}
-				}
-
+				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(result.getId());
+				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(result.getArgumentName());
+				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox()
+				.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION_ARGUMENT());
 			}
 		});
 			
@@ -2186,6 +2180,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void clearFunction() {
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
 		searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
 		searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
@@ -2260,6 +2256,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								@Override
 								public void onFailure(Throwable caught) {
 									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
 									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 											MatContext.get().getMessageDelegate().getGenericErrorMessage());
 									showSearchingBusy(false);
@@ -2317,7 +2315,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setText("");
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 												}
-												
 											}
 											
 											
@@ -2695,6 +2692,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
 		searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
 		searchDisplay.getValueSetView().clearCellTableMainPanel();
 		searchDisplay.getCodesView().clearCellTableMainPanel();
@@ -3786,7 +3785,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 										searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText("");
 										searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setText("");
+										searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
+										searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
+										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
 										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
+										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
 										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 										searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
 										searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
@@ -3822,6 +3826,31 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	protected void deleteFunctionArgument(){
+
+		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+		Iterator<CQLFunctionArgument> iterator = searchDisplay.getCqlFunctionsView().getFunctionArgumentList()
+				.iterator();
+		searchDisplay.getCqlFunctionsView().getFunctionArgNameMap()
+		.remove(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionArgumentName().toLowerCase());
+		while (iterator.hasNext()) {
+			CQLFunctionArgument cqlFunArgument = iterator.next();
+			if (cqlFunArgument.getId().equals(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId())) {
+
+				iterator.remove();
+				searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(
+						searchDisplay.getCqlFunctionsView().getFunctionArgumentList(),
+						MatContext.get().getMeasureLockService().checkForEditPermission());
+				break;
+			}
+		}
+
+		//resetting name and id
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
+		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+
+	}
+	
 	/**
 	 * Delete parameter.
 	 */
@@ -3990,6 +4019,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	
 	private void deleteCode(){
+		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 		MatContext.get().getMeasureService().deleteCode(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedCodesObjId(), MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
 			@Override
@@ -4254,7 +4284,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 				if(result != null){
-					searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
 					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox()
 					.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES());

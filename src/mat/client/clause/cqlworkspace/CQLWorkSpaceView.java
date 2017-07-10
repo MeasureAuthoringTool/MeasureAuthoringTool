@@ -497,6 +497,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
 		cqlLeftNavBarPanelView.setCurrentSelectedParamerterObjId(null);
 		cqlLeftNavBarPanelView.setCurrentSelectedFunctionObjId(null);
+		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentObjId(null);
+		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentName(null);
 		cqlLeftNavBarPanelView.setCurrentSelectedIncLibraryObjId(null);
 		cqlFunctionsView.getFunctionArgNameMap().clear();
 		if (cqlFunctionsView.getFunctionArgumentList().size() > 0) {

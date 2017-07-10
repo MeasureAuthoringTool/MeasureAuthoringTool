@@ -851,7 +851,10 @@ public class MessageDelegate {
 	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
 	
 	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this Argument. Please confirm that you want to remove this Argument?";
+	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
+	
+	/** The delete confirmation function. */
+	private final String DELETE_CONFIRMATION_FUNCTION_ARGUMENT = "You have selected to delete this Argument. Please confirm that you want to remove this Argument?";
 	
 	/** The delete confirmation include. */
 	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
@@ -3359,6 +3362,13 @@ public class MessageDelegate {
 	 */
 	public String getDELETE_CONFIRMATION_VALUESET() {
 		return DELETE_CONFIRMATION_VALUESET;
+	}
+
+	/**
+	 * @return the dELETE_CONFIRMATION_FUNCTION_ARGUMENT
+	 */
+	public String getDELETE_CONFIRMATION_FUNCTION_ARGUMENT() {
+		return DELETE_CONFIRMATION_FUNCTION_ARGUMENT;
 	}
 
 }

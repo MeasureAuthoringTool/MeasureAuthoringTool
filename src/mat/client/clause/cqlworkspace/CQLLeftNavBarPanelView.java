@@ -292,6 +292,12 @@ public class CQLLeftNavBarPanelView {
 
 	/** The current selected function obj id. */
 	private String currentSelectedFunctionObjId = null;
+	
+	/** The current selected function argument obj id. */
+	private String currentSelectedFunctionArgumentObjId = null;
+	
+	/** The current selected function argument name. */
+	private String currentSelectedFunctionArgumentName = null;
 
 	/** The current selected inc library obj id. */
 	private String currentSelectedIncLibraryObjId = null;
@@ -2283,6 +2289,38 @@ public class CQLLeftNavBarPanelView {
 	 */
 	public void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId) {
 		this.currentSelectedFunctionObjId = currentSelectedFunctionObjId;
+	}
+
+
+	/**
+	 * @return the currentSelectedFunctionArgumentObjId
+	 */
+	public String getCurrentSelectedFunctionArgumentObjId() {
+		return currentSelectedFunctionArgumentObjId;
+	}
+
+
+	/**
+	 * @param currentSelectedFunctionArgumentObjId the currentSelectedFunctionArgumentObjId to set
+	 */
+	public void setCurrentSelectedFunctionArgumentObjId(String currentSelectedFunctionArgumentObjId) {
+		this.currentSelectedFunctionArgumentObjId = currentSelectedFunctionArgumentObjId;
+	}
+
+
+	/**
+	 * @return the currentSelectedFunctionArgumentName
+	 */
+	public String getCurrentSelectedFunctionArgumentName() {
+		return currentSelectedFunctionArgumentName;
+	}
+
+
+	/**
+	 * @param currentSelectedFunctionArgumentName the currentSelectedFunctionArgumentName to set
+	 */
+	public void setCurrentSelectedFunctionArgumentName(String currentSelectedFunctionArgumentName) {
+		this.currentSelectedFunctionArgumentName = currentSelectedFunctionArgumentName;
 	}
 
 

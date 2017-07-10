@@ -90,6 +90,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private boolean isDatatypeUsedCorrectly = true;
 	
+	private boolean isValidCQLWhileSavingExpression = true;
+	
 	/**
 	 * Gets the cql string.
 	 *
@@ -362,6 +364,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public int getDuplicateCode() {
 		return DUPLICATE_CODE;
+	}
+
+	public boolean isValidCQLWhileSavingExpression() {
+		return isValidCQLWhileSavingExpression;
+	}
+
+	public void setValidCQLWhileSavingExpression(boolean isValidCQLWhileSavingExpression) {
+		this.isValidCQLWhileSavingExpression = isValidCQLWhileSavingExpression;
 	}
 	
 }

@@ -2271,6 +2271,9 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 		parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
+		if(!parsedCQL.getCqlErrors().isEmpty()){
+			result.setValidCQLWhileSavingExpression(false);
+		}
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();

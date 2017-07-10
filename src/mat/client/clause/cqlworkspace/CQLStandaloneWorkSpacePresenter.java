@@ -1139,8 +1139,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
 					searchDisplay.getCQLDefinitionsView().getDefineAceEditor().redisplay();
 					
-					searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
-					
 					resetAceEditor(searchDisplay.getCQLDefinitionsView().getViewCQLAceEditor());
 					resetViewCQLCollapsiblePanel(searchDisplay.getCQLDefinitionsView().getPanelViewCQLCollapse());
 					
@@ -1155,6 +1153,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									.getDefineNameListBox().getValue(selectedIndex);
 							searchDisplay.getCqlLeftNavBarPanelView()
 							.setCurrentSelectedDefinitionObjId(selectedDefinitionID);
+							
 							if (searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap()
 									.get(selectedDefinitionID) != null) {
 								searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea()
@@ -1165,6 +1164,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										.get(selectedDefinitionID).getDefinitionLogic());
 								searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea()
 								.setText(searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getCommentString());
+								
 								if (searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap()
 										.get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")) {
 									searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn()
@@ -1184,6 +1184,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										.getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
 								searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton()
 								.setTitle("Delete");
+								
+								searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 
 								if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 									searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(!isReadOnly);
@@ -1192,42 +1194,45 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 									}
 									
-									searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-									// load most recent used cql artifacts
-									MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-											MatContext.get().getCurrentCQLLibraryId(),
-											new AsyncCallback<GetUsedCQLArtifactsResult>() {
+									
+								}
+								
+								// load most recent used cql artifacts
+								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
+										MatContext.get().getCurrentCQLLibraryId(),
+										new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
-												@Override
-												public void onFailure(Throwable caught) {
-													Window.alert(MatContext.get().getMessageDelegate()
-															.getGenericErrorMessage());
-												}
+											@Override
+											public void onFailure(Throwable caught) {
+												Window.alert(MatContext.get().getMessageDelegate()
+														.getGenericErrorMessage());
+											}
 
-												@Override
-												public void onSuccess(GetUsedCQLArtifactsResult result) {
+											@Override
+											public void onSuccess(GetUsedCQLArtifactsResult result) {
 
-													CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
-
+												CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
+												
+												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 													// if there are cql errors or the definition is not in use, enable the delete button
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
 														searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-														searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
 													} 
-													
-													if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
-														searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
-																.get(currentDefinition.getDefinitionName()));
-											
-													} else {
-														searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
-													}
-													
 												}
+												
+												
+												
+												if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
+													searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
+															.get(currentDefinition.getDefinitionName()));
+										
+												} else {
+													searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+												}
+												
+											}
 
-											});
-								}
-
+										});
 								
 							}
 						}
@@ -1452,6 +1457,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									.getFuncNameListBox().getValue(selectedIndex);
 							searchDisplay.getCqlLeftNavBarPanelView()
 									.setCurrentSelectedFunctionObjId(selectedFunctionId);
+							
 							if (searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap()
 									.get(selectedFunctionId) != null) {
 								searchDisplay.getCQLFunctionsView().getFuncNameTxtArea()
@@ -1462,6 +1468,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												.get(selectedFunctionId).getFunctionLogic());
 								searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText(
 										searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getCommentString());
+								
 								if (searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId)
 										.getContext().equalsIgnoreCase("patient")) {
 									searchDisplay.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
@@ -1471,48 +1478,49 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
 								}
 
-								searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().
-										get(selectedFunctionId).getReturnType());
+								searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+								
 								if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 									searchDisplay.getCQLFunctionsView().setWidgetReadOnly(true);
 									//Checks if Draft
 									if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
 										searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 									}
-									
-									searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-									// load most recent used cql artifacts
-									MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-											MatContext.get().getCurrentCQLLibraryId(),
-											new AsyncCallback<GetUsedCQLArtifactsResult>() {
+								}
 
-												@Override
-												public void onFailure(Throwable caught) {
-													Window.alert(
-															MatContext.get().getMessageDelegate().getGenericErrorMessage());
-												}
+								// load most recent used cql artifacts
+								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
+										MatContext.get().getCurrentCQLLibraryId(),
+										new AsyncCallback<GetUsedCQLArtifactsResult>() {
 
-												@Override
-												public void onSuccess(GetUsedCQLArtifactsResult result) {
+											@Override
+											public void onFailure(Throwable caught) {
+												Window.alert(
+														MatContext.get().getMessageDelegate().getGenericErrorMessage());
+											}
 
-													CQLFunctions currentFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
-													
+											@Override
+											public void onSuccess(GetUsedCQLArtifactsResult result) {
+
+												CQLFunctions currentFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
+												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {
 														searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
 													}
-													
-													if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
-														searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
-																.get(currentFunction.getFunctionName()));
-											
-													} else {
-														searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
-													}
 												}
+												if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
+													searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
+															.get(currentFunction.getFunctionName()));
+													searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getExpressionReturnTypeMap()
+															.get(currentFunction.getFunctionName()));
+										
+												} else {
+													searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
+													searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+												}
+											}
 
-											});
-								}
-
+										});
 								
 							}
 						}
@@ -2275,6 +2283,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
 															.getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
+											searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
+											searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 
 										} else if (!result.isDatatypeUsedCorrectly()) {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
@@ -2282,12 +2292,26 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
 															.getWarningBadDataTypeCombination());
+											if(result.isValidCQLWhileSavingExpression()){
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getFunction().getReturnType());
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is " + result.getFunction().getReturnType());
+											} else {
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+											}
 										} else {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.clearAlert();
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
 															.getSUCESS_FUNCTION_MODIFY());
+											if(result.isValidCQLWhileSavingExpression()){
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getFunction().getReturnType());
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is " + result.getFunction().getReturnType());
+											} else {
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
+												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+											}
 										}
 
 										searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().setAnnotations();
@@ -2586,16 +2610,34 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
 															.getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
+											searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+											searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 										} else if (!result.isDatatypeUsedCorrectly()) {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.clearAlert();
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
 															.getWarningBadDataTypeCombination());
+											if(result.isValidCQLWhileSavingExpression()){
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getDefinition().getReturnType());
+											} else {
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+											}
+											
 										} else {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
 															.getSUCESS_DEFINITION_MODIFY());
+											if(result.isValidCQLWhileSavingExpression()){
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getDefinition().getReturnType());
+											} else {
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
+												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+												
+											}
 										}
 
 										searchDisplay.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();

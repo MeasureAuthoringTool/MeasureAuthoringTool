@@ -1577,7 +1577,7 @@ var Autocomplete = function() {
             	this.getSpecificKeyWords(dataTypeKeywords, matches, "datatypes");
             } else if(keyString == "v") {
             	matches = []; 
-            	this.getSpecificKeyWords(valueSetKeywords, matches, "valuesets");
+            	this.getSpecificKeyWords(valueSetKeywords, matches, "value sets/codes");
 
             } else if(keyString == "k") {
             	/*alert("keyString:"+this.editor.keyString);*/
@@ -1590,7 +1590,7 @@ var Autocomplete = function() {
             	this.getSpecificKeyWords(unitsKeywords, matches, "units");
 
             } else if(keyString == "space"){
-            	this.getSpecificKeyWords(valueSetKeywords, matches, "valuesets");
+            	this.getSpecificKeyWords(valueSetKeywords, matches, "value sets/codes");
             	this.getSpecificKeyWords(dataTypeKeywords, matches, "datatypes");
             	this.getSpecificKeyWords(timingKeywords,matches, "timings");
             	

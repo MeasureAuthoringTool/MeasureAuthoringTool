@@ -4,9 +4,9 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 
 
 // TODO: Auto-generated Javadoc
@@ -53,63 +53,73 @@ public class CQLButtonToolBar extends Composite {
 		insertButton.getElement().setId("insertButton_"+sectionName);
 		insertButton.setMarginTop(10);
 		insertButton.setTitle("Insert");
+		insertButton.setText("Insert");
 		insertButton.setIcon(IconType.PLUS_SQUARE);
 		insertButton.setIconSize(IconSize.LARGE);
 		insertButton.setColor("#0964A2");
-		insertButton.setSize("30px", "30px");
+		insertButton.setSize("70px", "30px");
 		insertButton.getElement().setAttribute("aria-label", "Insert");
+		
 		
 		saveButton.setType(ButtonType.LINK);
 		saveButton.getElement().setId("saveButton_"+sectionName);
 		saveButton.setMarginTop(10);
 		saveButton.setTitle("Save");
+		saveButton.setText("Save");
 		saveButton.setIcon(IconType.SAVE);
 		saveButton.setIconSize(IconSize.LARGE);
 		saveButton.setColor("#0964A2");
-		saveButton.setSize("30px", "30px");
+		saveButton.setSize("70px", "30px");
 		saveButton.getElement().setAttribute("aria-label", "Save");
 		
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_"+sectionName);
 		deleteButton.setMarginTop(10);
 		deleteButton.setTitle("Delete");
+		deleteButton.setText("Delete");
 		// MAT-7737, Use the trash.png image instead of the IconType.TRASH
-		Image trash = new Image("images/trash.png");
-		deleteButton.getElement().appendChild(trash.getElement());
-		deleteButton.setSize("30px", "30px");
+		/*Image trash = new Image("images/trash.png");
+		deleteButton.getElement().appendChild(trash.getElement());*/
+		deleteButton.setSize("70px", "30px");
 		deleteButton.getElement().setAttribute("aria-label", "Delete");
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.setIconSize(IconSize.LARGE);
+		deleteButton.setColor("#0964A2");
 		
 		eraseButton.setType(ButtonType.LINK);
 		eraseButton.getElement().setId("eraseButton_"+sectionName);
 		eraseButton.setMarginTop(10);
 		eraseButton.setTitle("Erase");
+		eraseButton.setText("Erase");
 		eraseButton.setIcon(IconType.ERASER);
 		eraseButton.setIconSize(IconSize.LARGE);
 		eraseButton.setColor("#0964A2");
-		eraseButton.setSize("30px", "30px");
+		eraseButton.setSize("70px", "30px");
 		eraseButton.getElement().setAttribute("aria-label", "Erase");
 		
 		closeButton.setType(ButtonType.LINK);
 		closeButton.getElement().setId("closeButton_"+sectionName);
 		closeButton.setMarginTop(10);
 		closeButton.setTitle("Cancel");
+		closeButton.setText("Cancel");
 		closeButton.setIcon(IconType.CLOSE);
 		closeButton.setIconSize(IconSize.LARGE);
 		closeButton.setColor("#0964A2");
-		closeButton.setSize("30px", "30px");
+		closeButton.setSize("70px", "30px");
 		closeButton.getElement().setAttribute("aria-label", "Cancel");
 		
 		infoButton.setType(ButtonType.LINK);
 		infoButton.getElement().setId("infoButton_"+sectionName);
 		infoButton.setMarginTop(10);
 		infoButton.setTitle("Information");
+		infoButton.setText("Info");
 		infoButton.setIcon(IconType.INFO_CIRCLE);
 		infoButton.setIconSize(IconSize.LARGE);
 		infoButton.setColor("#0964A2");
-		infoButton.setSize("30px", "30px");
+		infoButton.setSize("70px", "30px");
 		infoButton.getElement().setAttribute("aria-label", "Information");
 		
-		timingExpIcon.setType(ButtonType.LINK);
+		/*timingExpIcon.setType(ButtonType.LINK);
 		timingExpIcon.getElement().setId("timingExpButton_"+sectionName);
 		timingExpIcon.setMarginTop(10);
 		timingExpIcon.setTitle("Timing Expression");
@@ -117,12 +127,12 @@ public class CQLButtonToolBar extends Composite {
 		timingExpIcon.setIconSize(IconSize.LARGE);
 		timingExpIcon.setColor("#0964A2");
 		timingExpIcon.setSize("30px", "30px");
-		timingExpIcon.getElement().setAttribute("aria-label", "Timing Expression");
+		timingExpIcon.getElement().setAttribute("aria-label", "Timing Expression");*/
 		
 		buttonLayout.add(saveButton);
 		buttonLayout.add(eraseButton);
 		buttonLayout.add(insertButton);
-		buttonLayout.add(timingExpIcon);
+		//buttonLayout.add(timingExpIcon);
 		buttonLayout.add(infoButton);
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(closeButton);

@@ -158,7 +158,7 @@ public class CQLParametersView {
 		paramCommentHPanel.setWidth("700px");
 		paramCommentGroup.add(paramCommentHPanel);
 		
-		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:550px;");
+		setMarginInButtonBar();
 			
 		parameterVP.add(addNewButtonBar);
 		parameterVP.add(paramNameGroup);
@@ -181,6 +181,15 @@ public class CQLParametersView {
 		parameterFP.setStyleName("marginLeft15px");
 		mainParamViewVerticalPanel.add(parameterFP);
 		mainParamViewVerticalPanel.setHeight("675px");
+	}
+
+	/**
+	 * 
+	 */
+	public void setMarginInButtonBar() {
+		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:440px;");
+		parameterButtonBar.getSaveButton().setMarginRight(-15.00);
+		parameterButtonBar.getDeleteButton().setMarginLeft(-17.00);
 	}
 
 	

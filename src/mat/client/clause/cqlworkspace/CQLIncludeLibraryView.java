@@ -180,6 +180,8 @@ public class CQLIncludeLibraryView {
 		aliasNameGroup.add(new SpacerWidget());
 		aliasNameGroup.add(aliasNameTxtBox);
 		
+		setMarginInButtonBar();
+		
 		VerticalPanel aliasLabelVP = new VerticalPanel();
 		//aliasLabelVP.add(aliasLabel);
 		//aliasLabelVP.add(new SpacerWidget());
@@ -253,6 +255,13 @@ public class CQLIncludeLibraryView {
 	}
 	
 	
+	private void setMarginInButtonBar() {
+
+		includesButtonBar.getSaveButton().setMarginLeft(-30.00);
+		includesButtonBar.getEraseButton().setMarginLeft(-10.00);
+
+	}
+
 	/**
 	 * Builds the owner text box widget.
 	 */
@@ -388,6 +397,7 @@ public class CQLIncludeLibraryView {
 	 */
 	private CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
 		includesButtonBar.getDeleteButton().setVisible(true);
+		includesButtonBar.getDeleteButton().setMarginLeft(-40.00);
 		includesButtonBar.getDeleteButton().setEnabled(false);
 		includesButtonBar.getCloseButton().setVisible(true);;
 		includesButtonBar.getSaveButton().setVisible(false);

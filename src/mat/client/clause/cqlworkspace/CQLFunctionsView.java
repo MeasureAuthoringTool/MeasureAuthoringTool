@@ -251,7 +251,7 @@ public class CQLFunctionsView {
 		addNewArgument.setIcon(IconType.PLUS);
 		addNewArgument.setSize(ButtonSize.SMALL);
 
-		addNewArgument.setPull(Pull.RIGHT);
+		/*addNewArgument.setPull(Pull.RIGHT);*/
 		
 		FormLabel funcContextLabel = new FormLabel();
 		funcContextLabel.setText("Context");
@@ -309,15 +309,18 @@ public class CQLFunctionsView {
 		returnTypeTextBox.setId("returnTypeTextArea_Id");
 		returnTypeTextBox.setTitle("Return Type of CQL Expression");
 		returnTypeTextBox.setReadOnly(true);
-		returnTypeTextBox.setWidth("380px");
-		addNewArgument.getElement().setAttribute("style", "margin-left:65px");
+		returnTypeTextBox.setWidth("550px");
+		
+		
+		addNewArgument.setMarginLeft(580.00);
+		addNewArgument.setMarginBottom(-10.00);
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
-		returnTypeHP.add(addNewArgument);
+		//returnTypeHP.add(addNewArgument);
 
 		returnTypeAndButtonPanelGroup.add(returnTypeHP);
-		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:520px;");
+		setMarginInButtonBar();
 		
 		funcVP.add(addNewButtonBar);
 		funcVP.add(funcNameGroup);
@@ -325,7 +328,7 @@ public class CQLFunctionsView {
 		funcVP.add(funcCommentGroup);
 		funcVP.add(returnTypeAndButtonPanelGroup);
 		//funcVP.add(new SpacerWidget());
-	//	funcVP.add(addNewArgument);
+		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
 		funcVP.add(cellTablePanel);
 		funcVP.add(functionButtonBar);
@@ -347,6 +350,16 @@ public class CQLFunctionsView {
 		mainFunctionVerticalPanel.clear();
 		mainFunctionVerticalPanel.add(funcFP);
 		mainFunctionVerticalPanel.setHeight("675px");
+	}
+
+	/**
+	 * 
+	 */
+	public void setMarginInButtonBar() {
+		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:380px;");
+		functionButtonBar.getSaveButton().setMarginRight(-15.00);
+		functionButtonBar.getInfoButton().setMarginLeft(-10.00);
+		functionButtonBar.getDeleteButton().setMarginLeft(-17.00);
 	}
 	
 	/**

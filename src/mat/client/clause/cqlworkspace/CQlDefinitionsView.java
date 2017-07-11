@@ -165,7 +165,6 @@ public class CQlDefinitionsView {
 		defineCommentLabel.setMarginRight(53);
 		defineCommentLabel.setId("DefinitionComment_Label");
 		defineCommentLabel.setFor("DefineCommentTextArea_Id");
-
 		
 		defineCommentTextArea.setId("DefineCommentTextArea_Id");
 		defineCommentTextArea.setSize("550px", "40px");
@@ -191,13 +190,13 @@ public class CQlDefinitionsView {
 		returnTypeTextBox.setId("returnTypeTextArea_Id");
 		returnTypeTextBox.setTitle("Return Type of CQL Expression");
 		returnTypeTextBox.setReadOnly(true);
-		returnTypeTextBox.setWidth("380px");
-		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:20px");
+		returnTypeTextBox.setWidth("550px");
+		setMarginInButtonBar();
 		
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
-		returnTypeHP.add(defineButtonBar);
+		//returnTypeHP.add(defineButtonBar);
 		
 		returnTypeAndButtonPanelGroup.add(returnTypeHP);
 		
@@ -217,6 +216,7 @@ public class CQlDefinitionsView {
 		
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(returnTypeAndButtonPanelGroup);
+		definitionVP.add(defineButtonBar);
 	//	definitionVP.add(new SpacerWidget());
 		definitionVP.add(aceEditorPanel);
 		definitionVP.add(new SpacerWidget());
@@ -235,6 +235,17 @@ public class CQlDefinitionsView {
 		
 		mainDefineViewVerticalPanel.add(definitionFP);
 		mainDefineViewVerticalPanel.setHeight("675px");
+	}
+
+	/**
+	 * 
+	 */
+	public void setMarginInButtonBar() {
+		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:380px;");
+		defineButtonBar.getSaveButton().setMarginRight(-15.00);
+		defineButtonBar.getInfoButton().setMarginLeft(-10.00);
+		defineButtonBar.getDeleteButton().setMarginLeft(-17.00);
+		
 	}
 
 	/**

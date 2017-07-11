@@ -3,7 +3,6 @@ package mat.client.clause.cqlworkspace;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -77,12 +76,12 @@ public class CQLGeneralInformationView {
 		libraryNameLabel.setWidth("150px");
 		libraryNameLabel.setId("libraryNameLabel_Label");
 		
-		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:32px;");
+		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
 		//libraryNameValue.setText(createCQLLibraryName(MatContext.get().getCurrentMeasureName()));
 		libraryNameValue.getElement().setId("libraryNameValue_TextBox");
 		
 		libNameGroup.add(libraryNameLabel);
-		libNameGroup.add(new SpacerWidget());
+		//libNameGroup.add(new SpacerWidget());
 		libNameGroup.add(libraryNameValue);
 		
 		//Label libraryVersionLabel = new Label(LabelType.INFO, "Version");
@@ -93,12 +92,12 @@ public class CQLGeneralInformationView {
 		libraryVersionLabel.setWidth("150px");
 		libraryVersionLabel.setId("libraryVersionLabel_Label");
 		
-		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:32px;");
+		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
 		libraryVersionValue.getElement().setId("libraryVersionValue_TextBox");
 		libraryVersionValue.setReadOnly(true);
 		
 	     libVersionGroup.add(libraryVersionLabel);
-	     libVersionGroup.add(new SpacerWidget());
+	   //  libVersionGroup.add(new SpacerWidget());
 	     libVersionGroup.add(libraryVersionValue);
 		
 		//Label usingModeLabel = new Label(LabelType.INFO, "Using Model");
@@ -109,12 +108,12 @@ public class CQLGeneralInformationView {
 		usingModeLabel.setId("usingModeLabel_Label");
 		usingModeLabel.setWidth("150px");
 		
-		usingModelValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:32px;");
+		usingModelValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
 		usingModelValue.getElement().setId("usingModelValue_TextBox");
 		usingModelValue.setReadOnly(true);
 		
 		usingModelGroup.add(usingModeLabel);
-		usingModelGroup.add(new SpacerWidget());
+		//usingModelGroup.add(new SpacerWidget());
 		usingModelGroup.add(usingModelValue);
 		
 		//Label modelVersionLabel = new Label(LabelType.INFO, "Version");
@@ -130,7 +129,7 @@ public class CQLGeneralInformationView {
 		modelVersionValue.setReadOnly(true);
 		
 		modelVersionGroup.add(modelVersionLabel);
-		modelVersionGroup.add(new SpacerWidget());
+		//modelVersionGroup.add(new SpacerWidget());
 		modelVersionGroup.add(modelVersionValue);
 		
 		generalInfoTopPanel.add(new SpacerWidget());

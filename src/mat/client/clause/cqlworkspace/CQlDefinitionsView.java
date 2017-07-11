@@ -165,11 +165,13 @@ public class CQlDefinitionsView {
 		defineCommentLabel.setMarginRight(53);
 		defineCommentLabel.setId("DefinitionComment_Label");
 		defineCommentLabel.setFor("DefineCommentTextArea_Id");
+
 		
 		defineCommentTextArea.setId("DefineCommentTextArea_Id");
 		defineCommentTextArea.setSize("550px", "40px");
 		defineCommentTextArea.setText("");
 		defineCommentTextArea.setName("Definition Comment");
+		defineCommentTextArea.setTitle("Enter Comment");
 		
 		HorizontalPanel defineCommenttHPanel = new HorizontalPanel();
 		defineCommenttHPanel.add(defineCommentLabel);

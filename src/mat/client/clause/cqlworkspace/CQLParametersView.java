@@ -144,12 +144,13 @@ public class CQLParametersView {
 		parameterCommentLabel.setTitle("Comment");
 		parameterCommentLabel.setMarginRight(60);
 		parameterCommentLabel.setId("ParameterComment_Label");
-		
+		parameterCommentLabel.setFor("ParameterCommentTextArea_Id");
 		
 		parameterCommentTextArea.setId("ParameterCommentTextArea_Id");
 		parameterCommentTextArea.setSize("550px", "40px");
 		parameterCommentTextArea.setText("");
 		parameterCommentTextArea.setName("Parameter Comment");
+		parameterCommentTextArea.setTitle("Enter Comment");
 
 		HorizontalPanel paramCommentHPanel = new HorizontalPanel();
 		paramCommentHPanel.add(parameterCommentLabel);

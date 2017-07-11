@@ -283,11 +283,13 @@ public class CQLFunctionsView {
 		funcCommentLabel.setTitle("Comment");
 		funcCommentLabel.setMarginRight(50);
 		funcCommentLabel.setId("FunctionComment_Label");
+		funcCommentLabel.setFor("FunctionCommentTextArea_Id");
 		
 		funcCommentTextArea.setId("FunctionCommentTextArea_Id");
 		funcCommentTextArea.setSize("550px", "40px");
 		funcCommentTextArea.setText("");
 		funcCommentTextArea.setName("Function Comment");
+		funcCommentTextArea.setTitle("Enter Comment");
 		
 		HorizontalPanel funcCommentHPanel = new HorizontalPanel();
 		funcCommentHPanel.add(funcCommentLabel);

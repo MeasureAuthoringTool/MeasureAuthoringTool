@@ -2507,8 +2507,8 @@ public class CQLLeftNavBarPanelView {
 		HTML html5 = new HTML("Ctrl-Alt-k: keywords");
 		HTML html6 = new HTML("Ctrl-Alt-p: parameters");
 		HTML html7 = new HTML("Ctrl-Alt-t: timings");
-		HTML html8 = new HTML("Ctrl-Alt-v: value sets & codes");
-		HTML html9 = new HTML("Ctrl-Alt-u: units");
+		HTML html8 = new HTML("Ctrl-Alt-u: units");
+		HTML html9 = new HTML("Ctrl-Alt-v: value sets & codes");
 		HTML html10 = new HTML("Ctrl-Space: all");
 
 		dialogContents.add(html1);

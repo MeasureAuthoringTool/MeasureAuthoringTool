@@ -9,7 +9,10 @@ import mat.client.CqlComposerPresenter;
 import mat.client.Enableable;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.presenter.MeasureObsClausePresenter;
+import mat.client.clause.clauseworkspace.presenter.PopulationClausePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
+import mat.client.clause.clauseworkspace.presenter.StratificationClausePresenter;
 import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
 import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
@@ -377,7 +380,16 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if ((selectedIndex == 2) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
 			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) previousPresenter;
 			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
-		} else if (previousPresenter instanceof MeasurePackagePresenter) {
+		} else if (previousPresenter instanceof PopulationClausePresenter) {
+			PopulationClausePresenter clauseWorkspacePresenter = (PopulationClausePresenter) previousPresenter;
+			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
+		}else if (previousPresenter instanceof StratificationClausePresenter) {
+			StratificationClausePresenter clauseWorkspacePresenter = (StratificationClausePresenter) previousPresenter;
+			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
+		}else if (previousPresenter instanceof MeasureObsClausePresenter) {
+			MeasureObsClausePresenter clauseWorkspacePresenter = (MeasureObsClausePresenter) previousPresenter;
+			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
+		}else if (previousPresenter instanceof MeasurePackagePresenter) {
 			MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) previousPresenter;
 			validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);
 		} else if((selectedIndex ==3) && previousPresenter instanceof CqlComposerPresenter){
@@ -512,6 +524,37 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 					xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay(),auditMessage);
 		} else {
 			isUnsavedData = false;
+		}
+	}
+	
+	/**
+	 * Validate population workspace sub tabs.
+	 * 
+	 * @param map
+	 *            the xml tree presenter
+	 * @param selectedIndex
+	 *            the selected index
+	 */
+	private void validatePopWorkspaceSubTabs(Map<Integer, MatPresenter> map, int selectedIndex) {
+		if(!map.isEmpty() && map != null){
+			XmlTreePresenter xmlTreePresenter = (XmlTreePresenter)map.get(selectedIndex);
+
+			if (null ==	xmlTreePresenter.getXmlTreeDisplay()) {// this will happen when there is any errors on Clause Workspace Tabs
+				return;
+			}
+			xmlTreePresenter.getXmlTreeDisplay().clearMessages();
+			if (xmlTreePresenter.getXmlTreeDisplay().isDirty()
+					|| xmlTreePresenter.getXmlTreeDisplay().isQdmVariableDirty()) {
+				isUnsavedData = true;
+				saveButton = xmlTreePresenter.getXmlTreeDisplay().getSaveButton();
+				showErrorMessage(xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay());
+				xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons().get(0).setFocus(true);
+				String auditMessage = xmlTreePresenter.getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
+				handleClickEventsOnUnsavedErrorMsg(selectedIndex, xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons(),
+						xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay(),auditMessage);
+			} else {
+				isUnsavedData = false;
+			}
 		}
 	}
 

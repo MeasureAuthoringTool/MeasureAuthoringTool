@@ -126,6 +126,9 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							setMeasureElementsMap(xml);
 							populationWorkspaceTabs.selectTab(populationClausePresenter);
 							populationClausePresenter.beforeDisplay();
+							populationClausePresenter.setSelectedTreeMap(populationWorkspaceTabs.getPresenterMap());
+							measureObsClausePresenter.setSelectedTreeMap(populationWorkspaceTabs.getPresenterMap());
+							stratificationClausePresenter.setSelectedTreeMap(populationWorkspaceTabs.getPresenterMap());
 						} else {
 							clearPanelAndShowError("Measure Scoring missing in Measure Xml "
 									+ currentMeasureId);

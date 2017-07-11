@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import mat.client.MatPresenter;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
+import java.util.Map;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -19,6 +20,10 @@ public class PopulationClausePresenter extends XmlTreePresenter implements MatPr
 	
 	/** The panel. {@link SimplePanel} Instance. */
 	private SimplePanel panel = new SimplePanel();
+	
+	/** The Map of presenters. */
+	private Map<Integer, MatPresenter> selectedTreeMap;
+	
 	/**
 	 * MeasureService Instance.
 	 */
@@ -51,4 +56,17 @@ public class PopulationClausePresenter extends XmlTreePresenter implements MatPr
 	public Widget getWidget() {
 		return panel;
 	}
+	/**
+	 * @return the selectedTreeMap
+	 */
+	public Map<Integer, MatPresenter> getSelectedTreeMap() {
+		return selectedTreeMap;
+	}
+	/**
+	 * @param selectedTreeMap the selectedTreeMap to set
+	 */
+	public void setSelectedTreeMap(Map<Integer, MatPresenter> selectedTreeMap) {
+		this.selectedTreeMap = selectedTreeMap;
+	}
+	
 }

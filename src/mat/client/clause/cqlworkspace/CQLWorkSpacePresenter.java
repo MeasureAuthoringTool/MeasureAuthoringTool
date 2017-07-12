@@ -1170,7 +1170,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							// Supplemental data definitions
 							boolean isReadOnly = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
 							searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
-							searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+							
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(!isReadOnly);
 								//Checks if Draft
@@ -1181,7 +1181,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCQlDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(false);
 							}
 
-							
+							searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(
 									MatContext.get().getCurrentMeasureId(),
@@ -1272,7 +1272,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							/*searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setText(searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().
 									get(selectedFunctionId).getReturnType());*/
-							searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+						
 							
 							if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 								searchDisplay.getCqlFunctionsView().setWidgetReadOnly(true);
@@ -1284,6 +1284,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlFunctionsView().getContextFuncPATRadioBtn().setEnabled(false);
 								searchDisplay.getCqlFunctionsView().getContextFuncPOPRadioBtn().setEnabled(false);
 							}
+							searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 							// load most recent used cql artifacts
 							MatContext.get().getMeasureService().getUsedCQLArtifacts(
 									MatContext.get().getCurrentMeasureId(),

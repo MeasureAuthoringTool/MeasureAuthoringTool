@@ -3233,64 +3233,73 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId() != null) {
 				CQLParameter toBeModifiedParamObj = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap()
 						.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId());
-				showSearchingBusy(true);
-				MatContext.get().getCQLLibraryService().deleteParameter(MatContext.get().getCurrentCQLLibraryId(),
-						toBeModifiedParamObj, parameter,
-						searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList(),
-						new AsyncCallback<SaveUpdateCQLResult>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-										.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								showSearchingBusy(false);
-							}
-
-							@Override
-							public void onSuccess(SaveUpdateCQLResult result) {
-								if (result != null) {
-									if (result.isSuccess()) {
-										searchDisplay.getCqlLeftNavBarPanelView()
-												.setViewParameterList((result.getCqlModel().getCqlParameters()));
-										MatContext.get().setParameters(
-												getParamaterList(result.getCqlModel().getCqlParameters()));
-										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
-										searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
-										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-												.setVisible(true);
-
-										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestParamTextBox()
-												.setText("");
-										searchDisplay.getParameterNameTxtArea().setText("");
-										searchDisplay.getParameterAceEditor().setText("");
-										searchDisplay.getCqlLeftNavBarPanelView()
-												.setCurrentSelectedParamerterObjId(null);
-										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-										searchDisplay.getParameterAceEditor().clearAnnotations();
-										searchDisplay.getParameterAceEditor().removeAllMarkers();
-										searchDisplay.getParameterAceEditor().redisplay();
-										searchDisplay.getParameterAceEditor().setAnnotations();
-										searchDisplay.getParameterAceEditor().redisplay();
-										searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-												.createAlert("This Parameter has been deleted successfully.");
-									} else if (result.getFailureReason() == 2) {
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-												.createAlert("Unable to find Node to modify.");
-										searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
-									}else if (result.getFailureReason() == 4) {
-										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-												.createAlert("Unauthorized delete operation.");
-										searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
-									}
+				
+				if(toBeModifiedParamObj.isReadOnly()){
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+							.createAlert("Unauthorized delete operation.");
+					searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+					
+				} else {
+					showSearchingBusy(true);
+					MatContext.get().getCQLLibraryService().deleteParameter(MatContext.get().getCurrentCQLLibraryId(),
+							toBeModifiedParamObj, parameter,
+							searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList(),
+							new AsyncCallback<SaveUpdateCQLResult>() {
+	
+								@Override
+								public void onFailure(Throwable caught) {
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+											.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									showSearchingBusy(false);
 								}
-								showSearchingBusy(false);
-							}
-						});
-			} else {
+	
+								@Override
+								public void onSuccess(SaveUpdateCQLResult result) {
+									if (result != null) {
+										if (result.isSuccess()) {
+											searchDisplay.getCqlLeftNavBarPanelView()
+													.setViewParameterList((result.getCqlModel().getCqlParameters()));
+											MatContext.get().setParameters(
+													getParamaterList(result.getCqlModel().getCqlParameters()));
+											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
+											searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+													.setVisible(true);
+	
+											searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestParamTextBox()
+													.setText("");
+											searchDisplay.getParameterNameTxtArea().setText("");
+											searchDisplay.getParameterAceEditor().setText("");
+											searchDisplay.getCqlLeftNavBarPanelView()
+													.setCurrentSelectedParamerterObjId(null);
+											searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+											searchDisplay.getParameterAceEditor().clearAnnotations();
+											searchDisplay.getParameterAceEditor().removeAllMarkers();
+											searchDisplay.getParameterAceEditor().redisplay();
+											searchDisplay.getParameterAceEditor().setAnnotations();
+											searchDisplay.getParameterAceEditor().redisplay();
+											searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+													.createAlert("This Parameter has been deleted successfully.");
+										} else if (result.getFailureReason() == 2) {
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+													.createAlert("Unable to find Node to modify.");
+											searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+										}else if (result.getFailureReason() == 4) {
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+													.createAlert("Unauthorized delete operation.");
+											searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+										}
+									}
+									showSearchingBusy(false);
+								}
+							});
+				} 
+			}else {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert("Please select parameter to delete.");

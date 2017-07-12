@@ -3128,11 +3128,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										MatContext.get()
 												.setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
-										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 										searchDisplay.getCQLFunctionsView().getFunctionArgNameMap().clear();
 										searchDisplay.getCQLFunctionsView().getFunctionArgumentList().clear();
-										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-
 										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox()
 												.setText("");
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
@@ -3160,7 +3158,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 									if (result.getFunction() != null) {
 										searchDisplay.createAddArgumentViewForFunctions(
-												result.getFunction().getArgumentList());
+												new ArrayList<CQLFunctionArgument>());
 									}
 								}
 								showSearchingBusy(false);

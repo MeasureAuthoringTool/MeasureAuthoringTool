@@ -3777,7 +3777,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().setViewFunctions(result.getCqlModel().getCqlFunctions());
 										MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
-										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 
 										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
@@ -3786,7 +3785,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setText("");
 										searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
 										searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
-										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
 										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
 										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
 										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
@@ -3806,7 +3804,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									}
 									
 									if (result.getFunction() != null) {
-										searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(result.getFunction().getArgumentList(), 
+										searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>(), 
 												MatContext.get().getMeasureLockService().checkForEditPermission());
 									}
 								}

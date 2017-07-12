@@ -22,9 +22,6 @@ public class MeasureObsClausePresenter extends XmlTreePresenter implements MatPr
 	 */
 	private SimplePanel panel = new SimplePanel();
 	
-	/** The Map of presenters. */
-	private Map<Integer, MatPresenter> selectedTreeMap;
-	
 	/**
 	 * MeasureService Instance.
 	 */
@@ -58,18 +55,5 @@ public class MeasureObsClausePresenter extends XmlTreePresenter implements MatPr
 	public Widget getWidget() {
 		return panel;
 	}
-	/**
-	 * @return the selectedTreeMap
-	 */
-	public Map<Integer, MatPresenter> getSelectedTreeMap() {
-		return selectedTreeMap;
-	}
-	/**
-	 * @param selectedTreeMap the selectedTreeMap to set
-	 */
-	public void setSelectedTreeMap(Map<Integer, MatPresenter> selectedTreeMap) {
-		this.selectedTreeMap = selectedTreeMap;
-	}
-	
 	
 }

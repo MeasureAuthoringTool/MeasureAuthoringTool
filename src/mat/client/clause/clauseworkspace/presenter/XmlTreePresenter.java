@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import mat.client.Mat;
+import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
@@ -68,6 +69,10 @@ public class XmlTreePresenter {
 	 * Pop up Panel for Right Context Menu.
 	 */
 	private PopupPanel popupPanel = new PopupPanel(true, false);
+	
+	/** The Map of presenters. */
+	private Map<Integer, MatPresenter> selectedTreeMap;
+	
 	/**
 	 * The Interface TreeResources.
 	 */
@@ -997,5 +1002,18 @@ public class XmlTreePresenter {
 		} else {
 			xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(false);
 		}
+	}
+	
+	/**
+	 * @return the selectedTreeMap
+	 */
+	public Map<Integer, MatPresenter> getSelectedTreeMap() {
+		return selectedTreeMap;
+	}
+	/**
+	 * @param selectedTreeMap the selectedTreeMap to set
+	 */
+	public void setSelectedTreeMap(Map<Integer, MatPresenter> selectedTreeMap) {
+		this.selectedTreeMap = selectedTreeMap;
 	}
 }

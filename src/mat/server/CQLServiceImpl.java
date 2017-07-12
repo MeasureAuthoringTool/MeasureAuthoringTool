@@ -1146,6 +1146,12 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
 		
+		if(toBeDeletedObj.isSupplDataElement()){
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
+			return result;
+		}
+		
 		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
 		if (artifactsResult.getCqlErrors().isEmpty()
 				&& artifactsResult.getUsedCQLDefinitions().contains(toBeDeletedObj.getDefinitionName())) {
@@ -1342,6 +1348,13 @@ public class CQLServiceImpl implements CQLService {
 		// getService().getMeasureXmlForMeasure(measureId);
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
+		
+		if(toBeDeletedObj.isReadOnly()){
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
+			return result;
+		}
+		
 		
 		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
 		if (artifactsResult.getCqlErrors().isEmpty()

@@ -3059,6 +3059,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 													.createAlert("Unable to find Node to modify.");
 											searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
+										} else if (result.getFailureReason() == 4) {
+											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+													.clearAlert();
+											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+													.createAlert("Unauthorized delete operation.");
+											searchDisplay.getDefineNameTxtArea().setText(definitionName.trim());
 										}
 									}
 									showSearchingBusy(false);
@@ -3149,17 +3155,25 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 												.createAlert("This Function has been deleted successfully.");
+										
+										if (result.getFunction() != null) {
+											searchDisplay.createAddArgumentViewForFunctions(
+													new ArrayList<CQLFunctionArgument>());
+										}
+										
 									} else if (result.getFailureReason() == 2) {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 												.createAlert("Unable to find Node to modify.");
 										searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
+									} else if (result.getFailureReason() == 4) {
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+												.createAlert("Unauthorized delete operation.");
+										searchDisplay.getFuncNameTxtArea().setText(functionName.trim());
 									}
 
-									if (result.getFunction() != null) {
-										searchDisplay.createAddArgumentViewForFunctions(
-												new ArrayList<CQLFunctionArgument>());
-									}
+									
 								}
 								showSearchingBusy(false);
 							}
@@ -3265,6 +3279,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 												.createAlert("Unable to find Node to modify.");
+										searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
+									}else if (result.getFailureReason() == 4) {
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+												.createAlert("Unauthorized delete operation.");
 										searchDisplay.getParameterNameTxtArea().setText(parameterName.trim());
 									}
 								}

@@ -1145,40 +1145,47 @@ public class CQLServiceImpl implements CQLService {
 
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		XmlProcessor processor = new XmlProcessor(xml);
+		
+		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
+		if (artifactsResult.getCqlErrors().isEmpty()
+				&& artifactsResult.getUsedCQLDefinitions().contains(toBeDeletedObj.getDefinitionName())) {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
+		} else {
+			XmlProcessor processor = new XmlProcessor(xml);
 
-		if (xml != null && !xml.isEmpty()) {
-			String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "//cqlLookUp//definition[@id='" + toBeDeletedObj.getId()
-					+ "']";
-			try {
-				Node definitionNode = processor.findNode(processor.getOriginalDoc(),
-						XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
+			if (xml != null && !xml.isEmpty()) {
+				String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "//cqlLookUp//definition[@id='" + toBeDeletedObj.getId()
+						+ "']";
+				try {
+					Node definitionNode = processor.findNode(processor.getOriginalDoc(),
+							XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
 
-				if (definitionNode != null) {
-					// remove from xml
-					definitionNode.getParentNode().removeChild(definitionNode);
-					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-					result.setXml(processor.getOriginalXml());
+					if (definitionNode != null) {
+						// remove from xml
+						definitionNode.getParentNode().removeChild(definitionNode);
+						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+						result.setXml(processor.getOriginalXml());
 
-					// remove from definition list
-					definitionList.remove(toBeDeletedObj);
-					wrapper.setCqlDefinitions(definitionList);
-					result.setSuccess(true);
-					result.setDefinition(toBeDeletedObj);
-				}
+						// remove from definition list
+						definitionList.remove(toBeDeletedObj);
+						wrapper.setCqlDefinitions(definitionList);
+						result.setSuccess(true);
+						result.setDefinition(toBeDeletedObj);
+					}
 
-				else {
+					else {
+						result.setSuccess(false);
+						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					}
+
+				} catch (XPathExpressionException e) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					e.printStackTrace();
 				}
 
-			} catch (XPathExpressionException e) {
-				result.setSuccess(false);
-				e.printStackTrace();
 			}
-
 		}
-
 		if (result.isSuccess() && (wrapper.getCqlDefinitions().size() > 0)) {
 			result.getCqlModel().setDefinitionList(sortDefinitionsList(wrapper.getCqlDefinitions()));
 		}
@@ -1266,42 +1273,51 @@ public class CQLServiceImpl implements CQLService {
 
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		XmlProcessor processor = new XmlProcessor(xml);
+		
 
-		if (xml != null && !xml.isEmpty()) {
-			String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='" + toBeDeletedObj.getId() + "']";
-			try {
-				Node functionNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
-
-				if (functionNode != null) {
-
-					// remove from xml
-					functionNode.getParentNode().removeChild(functionNode);
-					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-					result.setXml(processor.getOriginalXml());
-					/*
-					 * xmlModel.setXml(processor.getOriginalXml());
-					 * getService().saveMeasureXml(xmlModel);
-					 */
-
-					// remove from function list
-					functionsList.remove(toBeDeletedObj);
-					wrapper.setCqlFunctionsList(functionsList);
-					result.setSuccess(true);
-					result.setFunction(toBeDeletedObj);
-				}
-
-				else {
+		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
+		if (artifactsResult.getCqlErrors().isEmpty()
+				&& artifactsResult.getUsedCQLFunctions().contains(toBeDeletedObj.getFunctionName())) {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
+		} else {
+		
+			XmlProcessor processor = new XmlProcessor(xml);
+	
+			if (xml != null && !xml.isEmpty()) {
+				String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='" + toBeDeletedObj.getId() + "']";
+				try {
+					Node functionNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+	
+					if (functionNode != null) {
+	
+						// remove from xml
+						functionNode.getParentNode().removeChild(functionNode);
+						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+						result.setXml(processor.getOriginalXml());
+						/*
+						 * xmlModel.setXml(processor.getOriginalXml());
+						 * getService().saveMeasureXml(xmlModel);
+						 */
+	
+						// remove from function list
+						functionsList.remove(toBeDeletedObj);
+						wrapper.setCqlFunctionsList(functionsList);
+						result.setSuccess(true);
+						result.setFunction(toBeDeletedObj);
+					}
+	
+					else {
+						result.setSuccess(false);
+						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					}
+	
+				} catch (XPathExpressionException e) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					e.printStackTrace();
 				}
-
-			} catch (XPathExpressionException e) {
-				result.setSuccess(false);
-				e.printStackTrace();
 			}
 		}
-
 		if (result.isSuccess() && (wrapper.getCqlFunctionsList().size() > 0)) {
 			result.getCqlModel().setCqlFunctions(sortFunctionssList(wrapper.getCqlFunctionsList()));
 		}
@@ -1326,45 +1342,52 @@ public class CQLServiceImpl implements CQLService {
 		// getService().getMeasureXmlForMeasure(measureId);
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		XmlProcessor processor = new XmlProcessor(xml);
-
-		if (xml != null) {
-			String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='" + toBeDeletedObj.getId()
-					+ "']";
-			try {
-				Node parameterNode = processor.findNode(processor.getOriginalDoc(),
-						XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
-
-				if (parameterNode != null) {
-
-					// remove from xml
-					parameterNode.getParentNode().removeChild(parameterNode);
-					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-					result.setXml(processor.getOriginalXml());
-					/*
-					 * xmlModel.setXml(processor.getOriginalXml());
-					 * getService().saveMeasureXml(xmlModel);
-					 */
-
-					// remove from parameter list
-					parameterList.remove(toBeDeletedObj);
-					wrapper.setCqlParameterList(parameterList);
-					result.setSuccess(true);
-					result.setParameter(toBeDeletedObj);
-				}
-
-				else {
+		
+		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
+		if (artifactsResult.getCqlErrors().isEmpty()
+				&& artifactsResult.getUsedCQLParameters().contains(toBeDeletedObj.getParameterName())) {
+			result.setSuccess(false);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
+		} else {
+			XmlProcessor processor = new XmlProcessor(xml);
+	
+			if (xml != null) {
+				String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='" + toBeDeletedObj.getId()
+						+ "']";
+				try {
+					Node parameterNode = processor.findNode(processor.getOriginalDoc(),
+							XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
+	
+					if (parameterNode != null) {
+	
+						// remove from xml
+						parameterNode.getParentNode().removeChild(parameterNode);
+						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+						result.setXml(processor.getOriginalXml());
+						/*
+						 * xmlModel.setXml(processor.getOriginalXml());
+						 * getService().saveMeasureXml(xmlModel);
+						 */
+	
+						// remove from parameter list
+						parameterList.remove(toBeDeletedObj);
+						wrapper.setCqlParameterList(parameterList);
+						result.setSuccess(true);
+						result.setParameter(toBeDeletedObj);
+					}
+	
+					else {
+						result.setSuccess(false);
+						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					}
+	
+				} catch (XPathExpressionException e) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					e.printStackTrace();
 				}
-
-			} catch (XPathExpressionException e) {
-				result.setSuccess(false);
-				e.printStackTrace();
+	
 			}
-
 		}
-
 		if (result.isSuccess() && (wrapper.getCqlParameterList().size() > 0)) {
 			result.getCqlModel().setCqlParameters(sortParametersList(wrapper.getCqlParameterList()));
 		}
@@ -2199,62 +2222,7 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-	/**
-	 * Parses the CQL def for errors.
-	 *
-	 * @param result
-	 *            the result
-	 * @param id
-	 *            the measure id
-	 * @param name
-	 *            the name
-	 * @param logic
-	 *            the logic
-	 * @return the save update CQL result
-	 *//*
-		 * private SaveUpdateCQLResult
-		 * parseCQLExpressionForErrors(SaveUpdateCQLResult result,
-		 * MeasureXmlModel measureXMLModel, String name, String logic) {
-		 * 
-		 * CQLModel cqlModel =
-		 * CQLUtilityClass.getCQLStringFromXML(measureXMLModel.getXml()); String
-		 * cqlFileString = CQLUtilityClass.getCqlString(cqlModel,
-		 * name).toString();
-		 * 
-		 * cqlModel.setLines(countLines(cqlFileString));
-		 * result.setCqlModel(cqlModel);
-		 * 
-		 * String wholeDef = name + " " + logic;
-		 * 
-		 * int endLine = CQLUtilityClass.getSize(); int size =
-		 * countLines(wholeDef); int startLine = endLine - size + 1;
-		 * 
-		 * result.setStartLine(startLine); result.setEndLine(endLine);
-		 * 
-		 * List<String> expressionList =
-		 * getExpressionListFromCqlModel(cqlModel); SaveUpdateCQLResult
-		 * parsedCQL = new SaveUpdateCQLResult(); parsedCQL =
-		 * CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO,
-		 * expressionList);
-		 * 
-		 * List<CQLErrors> errors = new ArrayList<CQLErrors>(); for(CQLErrors
-		 * cqlError : parsedCQL.getCqlErrors()){ int errorStartLine =
-		 * cqlError.getStartErrorInLine();
-		 * 
-		 * if((errorStartLine >= startLine && errorStartLine <= endLine)) {
-		 * cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() -
-		 * startLine); cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() -
-		 * startLine); cqlError.setErrorMessage(cqlError.getErrorMessage());
-		 * errors.add(cqlError); } }
-		 * 
-		 * result.setCqlErrors(errors);
-		 * result.setUsedCQLArtifacts(parsedCQL.getUsedCQLArtifacts());
-		 * 
-		 * 
-		 * return result; }
-		 */
-
-	public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
+		public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
 			String cqlExpressionName, String logic, String expressionName, String expressionType) {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);

@@ -3669,60 +3669,68 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
 					CQLDefinition toBeModifiedObj = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap()
 							.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedDefinitionObjId());
-					showSearchingBusy(true);
-					MatContext.get().getMeasureService().deleteDefinition(MatContext.get().getCurrentMeasureId(),
-							toBeModifiedObj, define, searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions(),
-							new AsyncCallback<SaveUpdateCQLResult>() {
+					if(toBeModifiedObj.isSupplDataElement()) {
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+								.createAlert("Unauthorized delete operation.");
+						searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
+					} else {
+						showSearchingBusy(true);
+						MatContext.get().getMeasureService().deleteDefinition(MatContext.get().getCurrentMeasureId(),
+								toBeModifiedObj, define, searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions(),
+								new AsyncCallback<SaveUpdateCQLResult>() {
 
-								@Override
-								public void onFailure(Throwable caught) {
-									searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-											MatContext.get().getMessageDelegate().getGenericErrorMessage());
-									showSearchingBusy(false);
-								}
-
-								@Override
-								public void onSuccess(SaveUpdateCQLResult result) {
-									if(result != null){
-										if (result.isSuccess()) {
-											searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
-											MatContext.get().setDefinitions(
-													getDefinitionList(result.getCqlModel().getDefinitionList()));
-											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
-											searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
-
-											searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
-											searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText("");
-											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setText("");
-											searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
-											searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().clearAnnotations();
-											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().removeAllMarkers();
-											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().redisplay();
-											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setAnnotations();
-											searchDisplay.getCQlDefinitionsView().getDefineAceEditor().redisplay();
-											searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-													.createAlert("This Definition has been deleted successfully.");
-
-										} else if (result.getFailureReason() == 2) {
-											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert("Unable to find Node to modify.");
-											searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
-										} else if (result.getFailureReason() == 4) {
-											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert("Unauthorized delete operation.");
-											searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
-										}
+									@Override
+									public void onFailure(Throwable caught) {
+										searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+												MatContext.get().getMessageDelegate().getGenericErrorMessage());
+										showSearchingBusy(false);
 									}
-									showSearchingBusy(false);
-								}
-							});
+
+									@Override
+									public void onSuccess(SaveUpdateCQLResult result) {
+										if(result != null){
+											if (result.isSuccess()) {
+												searchDisplay.getCqlLeftNavBarPanelView().setViewDefinitions(result.getCqlModel().getDefinitionList());
+												MatContext.get().setDefinitions(
+														getDefinitionList(result.getCqlModel().getDefinitionList()));
+												searchDisplay.getCqlLeftNavBarPanelView().clearAndAddDefinitionNamesToListBox();
+												searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+
+												searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
+												searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText("");
+												searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setText("");
+												searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
+												searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+												searchDisplay.getCQlDefinitionsView().getDefineAceEditor().clearAnnotations();
+												searchDisplay.getCQlDefinitionsView().getDefineAceEditor().removeAllMarkers();
+												searchDisplay.getCQlDefinitionsView().getDefineAceEditor().redisplay();
+												searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setAnnotations();
+												searchDisplay.getCQlDefinitionsView().getDefineAceEditor().redisplay();
+												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+														.createAlert("This Definition has been deleted successfully.");
+
+											} else if (result.getFailureReason() == 2) {
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+														.createAlert("Unable to find Node to modify.");
+												searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
+											} else if (result.getFailureReason() == 4) {
+												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+														.createAlert("Unauthorized delete operation.");
+												searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
+											}
+										}
+										showSearchingBusy(false);
+									}
+								});
+					}
+					
 				} else {
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select a definition to delete.");
@@ -3874,6 +3882,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId() != null) {
 				CQLParameter toBeModifiedParamObj = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap()
 						.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedParamerterObjId());
+				if(toBeModifiedParamObj.isReadOnly()){
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unauthorized delete operation.");
+					searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
+				} else {
 				showSearchingBusy(true);
 				MatContext.get().getMeasureService().deleteParameter(MatContext.get().getCurrentMeasureId(),
 						toBeModifiedParamObj, parameter, searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList(),
@@ -3924,7 +3937,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								showSearchingBusy(false);
 							}
 						});
-			} else {
+			}
+			}else {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Please select parameter to delete.");
 				searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());

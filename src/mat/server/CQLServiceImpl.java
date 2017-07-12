@@ -303,6 +303,8 @@ public class CQLServiceImpl implements CQLService {
 		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
 		CQLModelValidator validator = new CQLModelValidator();
 		boolean isDuplicate = false;
+		boolean isCommentInvalid = false;
+		
 		String XPATH_EXPRESSION_FUNCTIONS = "//cqlLookUp/functions";
 		if (xml != null && !xml.isEmpty()) {
 
@@ -321,9 +323,9 @@ public class CQLServiceImpl implements CQLService {
 				}
 				
 				//validating function comment string
-				isDuplicate = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				isCommentInvalid = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
 				
-				if (isDuplicate) {
+				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
@@ -434,9 +436,9 @@ public class CQLServiceImpl implements CQLService {
 				isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), xml);
 				
 				//validating function comment string
-				isDuplicate = validator.validateForCommentTextArea(currentObj.getCommentString());
+				isCommentInvalid = validator.validateForCommentTextArea(currentObj.getCommentString());
 				
-				if (isDuplicate) {
+				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
@@ -539,6 +541,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLParametersWrapper wrapper = new CQLParametersWrapper();
 		CQLModelValidator validtor = new CQLModelValidator();
 		boolean isDuplicate = false;
+		boolean isCommentInvalid = false;
 		String XPATH_EXPRESSION_PARAMETERS = "//cqlLookUp/parameters";
 		if (xml != null && !xml.isEmpty()) {
 
@@ -561,9 +564,9 @@ public class CQLServiceImpl implements CQLService {
 				}
 				
 				//validating parameter comment
-				isDuplicate = validtor.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				isCommentInvalid = validtor.validateForCommentTextArea(toBeModifiedObj.getCommentString());
 				
-				if (isDuplicate) {
+				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
@@ -648,9 +651,9 @@ public class CQLServiceImpl implements CQLService {
 				isDuplicate = isDuplicateIdentifierName(currentObj.getParameterName(), xml);
 
 				//validating parameter comment String
-				isDuplicate = validtor.validateForCommentTextArea(currentObj.getCommentString());
+				isCommentInvalid = validtor.validateForCommentTextArea(currentObj.getCommentString());
 				
-				if (isDuplicate) {
+				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
@@ -728,6 +731,8 @@ public class CQLServiceImpl implements CQLService {
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		CQLModelValidator validator = new CQLModelValidator();
 		boolean isDuplicate = false;
+		boolean isCommentInvalid = false;
+		
 		String XPATH_EXPRESSION_DEFINTIONS = "//cqlLookUp/definitions";
 		if (xml != null && !xml.isEmpty()) {
 
@@ -751,9 +756,9 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				//validate definition comment string
-				isDuplicate = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				isCommentInvalid = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
 				
-				if (isDuplicate) {
+				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
@@ -866,9 +871,9 @@ public class CQLServiceImpl implements CQLService {
 				isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), xml);
 				
 				//validating definition Comment 
-				isDuplicate = validator.validateForCommentTextArea(currentObj.getCommentString());
+				isCommentInvalid = validator.validateForCommentTextArea(currentObj.getCommentString());
 				
-				if (isDuplicate) {
+				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;

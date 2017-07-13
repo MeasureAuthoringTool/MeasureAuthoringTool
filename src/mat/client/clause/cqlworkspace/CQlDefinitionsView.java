@@ -122,6 +122,7 @@ public class CQlDefinitionsView {
 		defineNameTxtArea.setSize("550px", "32px");
 		defineNameTxtArea.getElement().setId("defineNameField");
 		defineNameTxtArea.setName("defineName");
+		defineNameTxtArea.setTitle("Enter Definition Name");
 		
 		HorizontalPanel defineNameHPanel = new HorizontalPanel();
 		defineNameHPanel.add(defineNameLabel);

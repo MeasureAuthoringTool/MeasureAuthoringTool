@@ -96,11 +96,13 @@ public class CQLParametersView {
 		parameterLabel.setTitle("Parameter Name");
 		parameterLabel.setMarginRight(15);
 		parameterLabel.setId("ParameterName_Label");
+		parameterLabel.setFor("parameterNameField");
 		
 		parameterNameTxtArea.setText("");
 		parameterNameTxtArea.setSize("550px", "32px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
+		parameterNameTxtArea.setTitle("Enter Parameter Name");
 		
 		HorizontalPanel paramNameHPanel = new HorizontalPanel();
 		paramNameHPanel.add(parameterLabel);
@@ -183,6 +185,7 @@ public class CQLParametersView {
 		mainParamViewVerticalPanel.setHeight("675px");
 	}
 
+	
 	/**
 	 * 
 	 */
@@ -192,7 +195,6 @@ public class CQLParametersView {
 		parameterButtonBar.getDeleteButton().setMarginLeft(-17.00);
 	}
 
-	
 
 	/**
 	 * Gets the parameter name txt area.

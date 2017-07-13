@@ -203,12 +203,14 @@ public class CQLFunctionsView {
 		functionNameLabel.setTitle("Function Name");
 		functionNameLabel.setMarginRight(15);
 		functionNameLabel.setId("FunctionName_Label");
+		functionNameLabel.setFor("FunctionNameField");
 		
 		funcNameTxtArea.setText("");
 		// funcNameTxtArea.setPlaceholder("Enter Function Name here.");
 		funcNameTxtArea.setSize("550px", "32px");
 		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
+		funcNameTxtArea.setTitle("Enter Function Name");
 		
 		HorizontalPanel funcNameHPanel = new HorizontalPanel();
 		funcNameHPanel.add(functionNameLabel);

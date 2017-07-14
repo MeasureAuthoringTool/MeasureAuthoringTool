@@ -3052,6 +3052,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.createAlert("This Definition has been deleted successfully.");
+											searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
 
 										} else if (result.getFailureReason() == 2) {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
@@ -3155,6 +3156,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 												.createAlert("This Function has been deleted successfully.");
+										
+										searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
 										
 										if (result.getFunction() != null) {
 											searchDisplay.createAddArgumentViewForFunctions(

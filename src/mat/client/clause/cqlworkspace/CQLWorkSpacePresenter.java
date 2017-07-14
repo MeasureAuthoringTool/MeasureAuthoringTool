@@ -3460,7 +3460,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										int line = error.getErrorInLine();
 										int column = error.getErrorAtOffeset();
 										searchDisplay.getViewCQLView().getCqlAceEditor().addAnnotation(line - 1, column, error.getErrorMessage(),
-												AceAnnotationType.WARNING);
+												AceAnnotationType.ERROR);
 									}
 									searchDisplay.getViewCQLView().getCqlAceEditor().setText(result.getCqlString());
 									searchDisplay.getViewCQLView().getCqlAceEditor().setAnnotations();
@@ -3606,7 +3606,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			for (CQLErrors error : result.getCqlErrors()) {
 				int startLine = error.getStartErrorInLine();
 				int startColumn = error.getStartErrorAtOffset();
-				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.WARNING);
+				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
 				if (!isInvalid) {
 					isInvalid = true;
 				}

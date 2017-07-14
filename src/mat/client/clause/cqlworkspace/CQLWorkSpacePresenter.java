@@ -2972,7 +2972,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getValueSetView().getOIDInput().setFocus(true);
 			}
 		});
-		
+
 		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().addClickHandler(new ClickHandler() {
 
 			@Override
@@ -3715,7 +3715,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 														.createAlert("This Definition has been deleted successfully.");
-
+												searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
+												
 											} else if (result.getFailureReason() == 2) {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -3813,6 +3814,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 												.createAlert("This Function has been deleted successfully.");
+										searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setText("");
 										if (result.getFunction() != null) {
 											searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>(), 
 													MatContext.get().getMeasureLockService().checkForEditPermission());

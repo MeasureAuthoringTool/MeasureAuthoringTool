@@ -2910,6 +2910,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea() != null)) {
 			searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().setText("");
 		}
+		searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
 		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
@@ -2956,6 +2957,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea() != null)) {
 			searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText("");
 		}
+		
+		searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
 		
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.

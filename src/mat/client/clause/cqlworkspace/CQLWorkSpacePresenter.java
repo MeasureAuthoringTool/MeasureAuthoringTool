@@ -2151,6 +2151,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea() != null)) {
 			searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().setText("");
 		}
+		searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
@@ -2196,6 +2197,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if ((searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea() != null)) {
 			searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().setText("");
 		}
+		searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setText("");
 		// Below lines are to clear search suggestion textbox and listbox
 		// selection after erase.
 		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");

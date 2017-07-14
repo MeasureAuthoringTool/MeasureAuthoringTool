@@ -3837,7 +3837,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				appliedQDMEvent();
-
+				//508 : Shift focus to search panel.
+				searchDisplay.getValueSetView().getOIDInput().setFocus(true);
 			}
 		});
 		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().addClickHandler(new ClickHandler() {

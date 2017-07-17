@@ -847,25 +847,25 @@ public class MessageDelegate {
 	private final String INVALID_LOGIC_MEASURE_PACKAGER = "Populations or Measure Observations within a Measure Grouping must contain a valid Definition or Function.";
 	
 	/** The delete confirmation parameter. */
-	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter?";
+	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter.";
 	
 	/** The delete confirmation definition. */
-	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
+	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition.";
 	
 	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
+	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function.";
 	
 	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION_ARGUMENT = "You have selected to delete this Argument. Please confirm that you want to remove this Argument?";
+	private final String DELETE_CONFIRMATION_FUNCTION_ARGUMENT = "You have selected to delete this Argument. Please confirm that you want to remove this Argument.";
 	
 	/** The delete confirmation include. */
-	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
+	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias.";
 	
 	/** The delete confirmation valueset. */
-	private final String DELETE_CONFIRMATION_VALUESET = "You have selected to delete this Value Set. Please confirm that you want to remove this Value Set?";
+	private final String DELETE_CONFIRMATION_VALUESET = "You have selected to delete this Value Set. Please confirm that you want to remove this Value Set.";
 	
 	/** The delete confirmation codes. */
-	private final String DELETE_CONFIRMATION_CODES = "You have selected to delete this Code. Please confirm that you want to remove this Code?";
+	private final String DELETE_CONFIRMATION_CODES = "You have selected to delete this Code. Please confirm that you want to remove this Code.";
 	
 	/** The error library version. */
 	private final String ERROR_LIBRARY_VERSION ="Please select version type Major or Minor.";

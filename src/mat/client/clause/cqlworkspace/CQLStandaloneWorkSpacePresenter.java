@@ -3138,6 +3138,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										MatContext.get()
 												.setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
+										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 										searchDisplay.getCQLFunctionsView().getFunctionArgNameMap().clear();
 										searchDisplay.getCQLFunctionsView().getFunctionArgumentList().clear();

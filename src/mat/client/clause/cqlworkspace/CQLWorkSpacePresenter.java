@@ -3797,7 +3797,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										MatContext.get().setFuncs(getFunctionList(result.getCqlModel().getCqlFunctions()));
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddFunctionsNamesToListBox();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-
+										searchDisplay.getCqlLeftNavBarPanelView().updateFunctionMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 										searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText("");

@@ -847,19 +847,19 @@ public class MessageDelegate {
 	private final String INVALID_LOGIC_MEASURE_PACKAGER = "Populations or Measure Observations within a Measure Grouping must contain a valid Definition or Function.";
 	
 	/** The delete confirmation parameter. */
-	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter.";
+	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter?";
 	
 	/** The delete confirmation definition. */
-	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition.";
+	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
 	
 	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function.";
+	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
 	
 	/** The delete confirmation function. */
 	private final String DELETE_CONFIRMATION_FUNCTION_ARGUMENT = "You have selected to delete this Argument. Please confirm that you want to remove this Argument.";
 	
 	/** The delete confirmation include. */
-	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias.";
+	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
 	
 	/** The delete confirmation valueset. */
 	private final String DELETE_CONFIRMATION_VALUESET = "You have selected to delete this Value Set. Please confirm that you want to remove this Value Set.";

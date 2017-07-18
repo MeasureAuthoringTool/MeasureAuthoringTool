@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -30,11 +31,11 @@ public class CQLModel implements IsSerializable{
 	/**
 	 * The following 5 may not be populated all the times.	 * 
 	 */
-	private List<String> includedDefNames = new ArrayList<String>();
-	private List<String> includedFuncNames = new ArrayList<String>();
-	private List<String> includedValueSetNames = new ArrayList<String>();
-	private List<String> includedParamNames = new ArrayList<String>();
-	private List<String> includedCodeNames = new ArrayList<String>();
+	private List<CQLIdentifierObject> includedDefNames = new ArrayList<CQLIdentifierObject>();
+	private List<CQLIdentifierObject> includedFuncNames = new ArrayList<CQLIdentifierObject>();
+	private List<CQLIdentifierObject> includedValueSetNames = new ArrayList<CQLIdentifierObject>();
+	private List<CQLIdentifierObject> includedParamNames = new ArrayList<CQLIdentifierObject>();
+	private List<CQLIdentifierObject> includedCodeNames = new ArrayList<CQLIdentifierObject>();
 	
 	/**
 	 * This member is set programatically from some class and isnt populated by Hibernate.
@@ -154,34 +155,34 @@ public class CQLModel implements IsSerializable{
 	public void setIncludedCQLLibXMLMap(Map<String, mat.shared.LibHolderObject> includedCQLLibXMLMap) {
 		this.includedCQLLibXMLMap = includedCQLLibXMLMap;
 	}
-	public List<String> getIncludedDefNames() {
+	public List<CQLIdentifierObject> getIncludedDefNames() {
 		return includedDefNames;
 	}
-	public void setIncludedDefNames(List<String> includedDefNames) {
+	public void setIncludedDefNames(List<CQLIdentifierObject> includedDefNames) {
 		this.includedDefNames = includedDefNames;
 	}
-	public List<String> getIncludedFuncNames() {
+	public List<CQLIdentifierObject> getIncludedFuncNames() {
 		return includedFuncNames;
 	}
-	public void setIncludedFuncNames(List<String> includedFuncNames) {
+	public void setIncludedFuncNames(List<CQLIdentifierObject> includedFuncNames) {
 		this.includedFuncNames = includedFuncNames;
 	}
-	public List<String> getIncludedValueSetNames() {
+	public List<CQLIdentifierObject> getIncludedValueSetNames() {
 		return includedValueSetNames;
 	}
-	public void setIncludedValueSetNames(List<String> includedValueSetNames) {
+	public void setIncludedValueSetNames(List<CQLIdentifierObject> includedValueSetNames) {
 		this.includedValueSetNames = includedValueSetNames;
 	}
-	public List<String> getIncludedParamNames() {
+	public List<CQLIdentifierObject> getIncludedParamNames() {
 		return includedParamNames;
 	}
-	public void setIncludedParamNames(List<String> includedParamNames) {
+	public void setIncludedParamNames(List<CQLIdentifierObject> includedParamNames) {
 		this.includedParamNames = includedParamNames;
 	}
-	public List<String> getIncludedCodeNames() {
+	public List<CQLIdentifierObject> getIncludedCodeNames() {
 		return includedCodeNames;
 	}
-	public void setIncludedCodeNames(List<String> includedCodeNames) {
+	public void setIncludedCodeNames(List<CQLIdentifierObject> includedCodeNames) {
 		this.includedCodeNames = includedCodeNames;
 	}
 	

@@ -39,6 +39,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLErrors;
+import mat.shared.CQLIdentifierObject;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -3523,12 +3524,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 *            the definition list
 	 * @return the definition list
 	 */
-	private List<String> getDefinitionList(List<CQLDefinition> definitionList) {
+	private List<CQLIdentifierObject> getDefinitionList(List<CQLDefinition> definitionList) {
 
-		List<String> defineList = new ArrayList<String>();
+		List<CQLIdentifierObject> defineList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < definitionList.size(); i++) {
-			defineList.add(definitionList.get(i).getDefinitionName());
+			CQLIdentifierObject definition = new CQLIdentifierObject(null, definitionList.get(i).getDefinitionName());
+			defineList.add(definition);
 		}
 		return defineList;
 	}
@@ -3540,12 +3542,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 *            the parameter list
 	 * @return the paramater list
 	 */
-	private List<String> getParamaterList(List<CQLParameter> parameterList) {
+	private List<CQLIdentifierObject> getParamaterList(List<CQLParameter> parameterList) {
 
-		List<String> paramList = new ArrayList<String>();
+		List<CQLIdentifierObject> paramList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < parameterList.size(); i++) {
-			paramList.add(parameterList.get(i).getParameterName());
+			CQLIdentifierObject parameter = new CQLIdentifierObject(null, parameterList.get(i).getParameterName());
+			paramList.add(parameter);
 		}
 		return paramList;
 	}
@@ -3557,12 +3560,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 *            the function list
 	 * @return the function list
 	 */
-	private List<String> getFunctionList(List<CQLFunctions> functionList) {
+	private List<CQLIdentifierObject> getFunctionList(List<CQLFunctions> functionList) {
 
-		List<String> funcList = new ArrayList<String>();
+		List<CQLIdentifierObject> funcList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < functionList.size(); i++) {
-			funcList.add(functionList.get(i).getFunctionName());
+			CQLIdentifierObject function = new CQLIdentifierObject(null, functionList.get(i).getFunctionName());
+			funcList.add(function);
 		}
 		return funcList;
 	}

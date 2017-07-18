@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.RequiresResize;
 
 import mat.client.shared.MatContext;
+import mat.shared.CQLIdentifierObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -1032,7 +1033,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 */
 	@SuppressWarnings("unchecked")
 	private static JsArrayString createValueSetJsArrayString() {
-		List<String> valueSetList = new ArrayList<String>();
+		List<CQLIdentifierObject> valueSetList = new ArrayList<CQLIdentifierObject>();
 		valueSetList.addAll(MatContext.get().getValuesets());
 		valueSetList.addAll(MatContext.get().getIncludedValueSetNames());
 		
@@ -1040,22 +1041,16 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 
 			@Override
 			public int compare(Object o1, Object o2) {
-				String string1 = (String) o1; 
-				String string2 = (String) o2; 
+				String string1 = o1.toString(); 
+				String string2 = o2.toString(); 
 				return string1.toLowerCase().compareTo(string2.toLowerCase());
 			}
 			
 		});
 		
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray(); 
-		for (String string : valueSetList) {
-			String str[] = string.split("\\.");
-			if(str.length>1){
-				string = str[0] + "." + "\"" + str[1] + "\"";
-			} else {
-				string = '"'+string+'"';
-			}
-			jsArray.push(string);
+		for (CQLIdentifierObject valueset : valueSetList) {
+			jsArray.push(valueset.toString());
 		}
 
 		
@@ -1087,19 +1082,13 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createDefinitionsJsArrayString() {
-		List<String> defineList = new ArrayList<String>();
+		List<CQLIdentifierObject> defineList = new ArrayList<CQLIdentifierObject>();
 		defineList.addAll(MatContext.get().getDefinitions());
 		defineList.addAll(MatContext.get().getIncludedDefNames());
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
 		
-		for (String string : defineList) {
-			String str[] = string.split("\\.");
-			if(str.length>1){
-				string = str[0] + "." + "\"" + str[1] + "\"";
-			} else {
-				string = '"'+string+'"';
-			}
-			jsArray.push(string);
+		for (CQLIdentifierObject definition : defineList) {
+			jsArray.push(definition.toString());
 		}
 		
 		return jsArray;
@@ -1111,18 +1100,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createParamsJsArrayString() {
-		List<String> paramList = new ArrayList<String>();
+		List<CQLIdentifierObject> paramList = new ArrayList<CQLIdentifierObject>();
 		paramList.addAll(MatContext.get().getParameters());
 		paramList.addAll(MatContext.get().getIncludedParamNames());
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-		for (String string : paramList) {
-			String str[] = string.split("\\.");
-			if(str.length>1){
-				string = str[0] + "." + "\"" + str[1] + "\"";
-			} else {
-				string = '"'+string+'"';
-			}
-			jsArray.push(string);
+		for (CQLIdentifierObject parameter : paramList) {
+			jsArray.push(parameter.toString());
 		}
 		return jsArray;
 	}
@@ -1133,18 +1116,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createfuncsJsArrayString() {
-		List<String> funcsList = new ArrayList<String>();
+		List<CQLIdentifierObject> funcsList = new ArrayList<CQLIdentifierObject>();
 		funcsList.addAll(MatContext.get().getFuncs());
 		funcsList.addAll(MatContext.get().getIncludedFuncNames());
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-		for (String string : funcsList) {
-			String str[] = string.split("\\.");
-			if(str.length>1){
-				string = str[0] + "." + "\"" + str[1] + "\"" + "()";
-			} else {
-				string = '"'+string+'"' +"()";
-			}
-			jsArray.push(string);
+		for (CQLIdentifierObject function : funcsList) {
+			jsArray.push(function.toString() + "()");
 		}
 		return jsArray;
 	}

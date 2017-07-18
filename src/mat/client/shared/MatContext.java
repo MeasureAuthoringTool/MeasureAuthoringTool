@@ -72,6 +72,7 @@ import mat.model.GlobalCopyPasteObject;
 import mat.model.VSACExpansionProfile;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
@@ -250,37 +251,37 @@ public class MatContext implements IsSerializable {
 	
 	
 	/** The valuesets. */
-	public List<String> valuesets = new ArrayList<String>();
+	public List<CQLIdentifierObject> valuesets = new ArrayList<CQLIdentifierObject>();
 	
 	/** The value set code quality data set list. */
 	public List<CQLQualityDataSetDTO> valueSetCodeQualityDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 	
 	/** The definitions. */
-	public List<String> definitions = new ArrayList<String>(); 
+	public List<CQLIdentifierObject> definitions = new ArrayList<CQLIdentifierObject>(); 
 	
 	/** The parameters. */
-	public List<String> parameters = new ArrayList<String>();
+	public List<CQLIdentifierObject> parameters = new ArrayList<CQLIdentifierObject>();
 		
 	/** The funcs. */
-	public List<String> funcs = new ArrayList<String>();
+	public List<CQLIdentifierObject> funcs = new ArrayList<CQLIdentifierObject>();
 	
 	/** The includes. */
 	public List<String> includes = new ArrayList<String>();
 		
 	/** The included def names. */
-	private List<String> includedDefNames = new ArrayList<String>();
+	private List<CQLIdentifierObject> includedDefNames = new ArrayList<CQLIdentifierObject>();
 	
 	/** The included func names. */
-	private List<String> includedFuncNames = new ArrayList<String>();
+	private List<CQLIdentifierObject> includedFuncNames = new ArrayList<CQLIdentifierObject>();
 	
 	/** The included value set names. */
-	private List<String> includedValueSetNames = new ArrayList<String>();
+	private List<CQLIdentifierObject> includedValueSetNames = new ArrayList<CQLIdentifierObject>();
 	
 	/** The included param names. */
-	private List<String> includedParamNames = new ArrayList<String>();
+	private List<CQLIdentifierObject> includedParamNames = new ArrayList<CQLIdentifierObject>();
 	
 	/** The included code names. */
-	private List<String> includedCodeNames = new ArrayList<String>();
+	private List<CQLIdentifierObject> includedCodeNames = new ArrayList<CQLIdentifierObject>();
 	
 	/** The units list. */
 	private List<String> shorcutKeyUnits = new ArrayList<String>();
@@ -1862,7 +1863,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the valuests
 	 */
-	public List<String> getValuesets() {
+	public List<CQLIdentifierObject> getValuesets() {
 		return this.valuesets;
 	}
 	
@@ -1873,15 +1874,16 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setValuesets(List<CQLQualityDataSetDTO> valuesets) {
 		
-		List<String> valuesetNames = new ArrayList<>(); 
+		List<CQLIdentifierObject> valuesetIdentifiers = new ArrayList<>(); 
 		
 		for(int i = 0; i < valuesets.size(); i++) {
-			valuesetNames.add(valuesets.get(i).getCodeListName());
+			CQLIdentifierObject valuesetIdentifier = new CQLIdentifierObject(null, valuesets.get(i).getCodeListName());
+			valuesetIdentifiers.add(valuesetIdentifier);
 		}
 		
 		this.valueSetCodeQualityDataSetList = valuesets;
 		
-		this.valuesets = valuesetNames;
+		this.valuesets = valuesetIdentifiers;
 	}
 	
 	
@@ -1890,7 +1892,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the definitions
 	 */
-	public List<String> getDefinitions() {
+	public List<CQLIdentifierObject> getDefinitions() {
 		return definitions;
 	}
 
@@ -1900,7 +1902,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param definitions the new definitions
 	 */
-	public void setDefinitions(List<String> definitions) {
+	public void setDefinitions(List<CQLIdentifierObject> definitions) {
 		this.definitions = definitions;
 	}
 
@@ -1910,7 +1912,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the parameters
 	 */
-	public List<String> getParameters() {
+	public List<CQLIdentifierObject> getParameters() {
 		return parameters;
 	}
 
@@ -1920,7 +1922,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param parameters the new parameters
 	 */
-	public void setParameters(List<String> parameters) {
+	public void setParameters(List<CQLIdentifierObject> parameters) {
 		this.parameters = parameters;
 	}
 
@@ -1930,7 +1932,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the funcs
 	 */
-	public List<String> getFuncs() {
+	public List<CQLIdentifierObject> getFuncs() {
 		return funcs;
 	}
 
@@ -1940,7 +1942,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param funcs the new funcs
 	 */
-	public void setFuncs(List<String> funcs) {
+	public void setFuncs(List<CQLIdentifierObject> funcs) {
 		this.funcs = funcs;
 	}
 
@@ -2120,7 +2122,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the included def names
 	 */
-	public List<String> getIncludedDefNames() {
+	public List<CQLIdentifierObject> getIncludedDefNames() {
 		return includedDefNames;
 	}
 
@@ -2130,7 +2132,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param includedDefNames the new included def names
 	 */
-	public void setIncludedDefNames(List<String> includedDefNames) {
+	public void setIncludedDefNames(List<CQLIdentifierObject> includedDefNames) {
 		this.includedDefNames = includedDefNames;
 	}
 
@@ -2140,7 +2142,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the included func names
 	 */
-	public List<String> getIncludedFuncNames() {
+	public List<CQLIdentifierObject> getIncludedFuncNames() {
 		return includedFuncNames;
 	}
 
@@ -2150,7 +2152,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param includedFuncNames the new included func names
 	 */
-	public void setIncludedFuncNames(List<String> includedFuncNames) {
+	public void setIncludedFuncNames(List<CQLIdentifierObject> includedFuncNames) {
 		this.includedFuncNames = includedFuncNames;
 	}
 
@@ -2160,7 +2162,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the included value set names
 	 */
-	public List<String> getIncludedValueSetNames() {
+	public List<CQLIdentifierObject> getIncludedValueSetNames() {
 		return includedValueSetNames;
 	}
 
@@ -2170,7 +2172,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param includedValueSetNames the new included value set names
 	 */
-	public void setIncludedValueSetNames(List<String> includedValueSetNames) {
+	public void setIncludedValueSetNames(List<CQLIdentifierObject> includedValueSetNames) {
 		this.includedValueSetNames = includedValueSetNames;
 	}
 
@@ -2180,7 +2182,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the included param names
 	 */
-	public List<String> getIncludedParamNames() {
+	public List<CQLIdentifierObject> getIncludedParamNames() {
 		return includedParamNames;
 	}
 
@@ -2190,7 +2192,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param includedParamNames the new included param names
 	 */
-	public void setIncludedParamNames(List<String> includedParamNames) {
+	public void setIncludedParamNames(List<CQLIdentifierObject> includedParamNames) {
 		this.includedParamNames = includedParamNames;
 	}
 
@@ -2200,7 +2202,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @return the included code names
 	 */
-	public List<String> getIncludedCodeNames() {
+	public List<CQLIdentifierObject> getIncludedCodeNames() {
 		return includedCodeNames;
 	}
 
@@ -2210,7 +2212,7 @@ public class MatContext implements IsSerializable {
 	 *
 	 * @param includedCodeNames the new included code names
 	 */
-	public void setIncludedCodeNames(List<String> includedCodeNames) {
+	public void setIncludedCodeNames(List<CQLIdentifierObject> includedCodeNames) {
 		this.includedCodeNames = includedCodeNames;
 	}
 	

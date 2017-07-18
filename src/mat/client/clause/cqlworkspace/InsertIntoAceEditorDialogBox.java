@@ -52,6 +52,7 @@ import mat.model.ModeDetailModel;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
+import mat.shared.CQLIdentifierObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -271,14 +272,9 @@ public class InsertIntoAceEditorDialogBox {
 												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
 											}
 										}
-										String[] str = itemNameToBeInserted.toString().split("\\.");
+
 										StringBuilder sb = new StringBuilder();
 										boolean isNotValidCode = false;
-										String aliasStr = "";
-										if(str.length>1){
-											aliasStr = str[0];
-											itemNameToBeInserted = str[1];
-										} 
 										if(dataType != null){
 											if(itemNameToBeInserted.equalsIgnoreCase(DEAD) 
 													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
@@ -299,49 +295,22 @@ public class InsertIntoAceEditorDialogBox {
 												messageFormgroup.setValidationState(ValidationState.ERROR);
 												itemNameToBeInserted = "";
 											} else {
-												
 												sb = sb.append("[\"" + dataType + "\"");
-												sb = sb.append(": ");
-												if(!aliasStr.isEmpty()){
-													sb = sb.append(aliasStr).append(".");
-												}
-												sb= sb.append("\"").append(itemNameToBeInserted).append("\"]");
+												sb= sb.append(itemNameToBeInserted).append("]");
 												itemNameToBeInserted = sb.toString();
 											}
 										
 										} else {
-											
-											if(!aliasStr.isEmpty()){
-												sb = sb.append(aliasStr).append(".");
-											}
-											sb= sb.append("\"").append(itemNameToBeInserted).append("\"");
+											sb= sb.append(itemNameToBeInserted);
 											itemNameToBeInserted = sb.toString();	
 										}
 										
-									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters")) {
+									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters") ||
+											itemTypeName.equalsIgnoreCase("functions")) {
 										StringBuilder sb = new StringBuilder(); 
-										String[] str = itemNameToBeInserted.toString().split("\\.");
-										if(str.length>1){
-											sb = sb.append(str[0]).append(".");
-										    itemNameToBeInserted = str[1];		
-										} 
-										sb = sb.append("\"").append(itemNameToBeInserted).append("\"");
+										sb.append(itemNameToBeInserted);
 										itemNameToBeInserted = sb.toString(); 
-									} else if(itemTypeName.equalsIgnoreCase("functions")) {
-										StringBuilder sb = new StringBuilder(); 
-										String[] str = itemNameToBeInserted.toString().split("\\.");
-										if(str.length>1){
-											sb = sb.append(str[0]).append(".");
-											itemNameToBeInserted = str[1];		
-										} 
-										sb = sb.append("\""); 
-										itemNameToBeInserted = itemNameToBeInserted.substring(0, 
-												itemNameToBeInserted.indexOf("("));
-										sb = sb.append(itemNameToBeInserted); 
-										sb = sb.append("\"()");
-										itemNameToBeInserted = sb.toString(); 
-									}
-									if(!itemNameToBeInserted.isEmpty()){
+									} if(!itemNameToBeInserted.isEmpty()){
 										editor.insertAtCursor(itemNameToBeInserted);
 										editor.focus();
 										dialogModal.hide();
@@ -438,15 +407,15 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
+						
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < cqlNavBarView.getViewParameterList().size(); i++) {
-							listAllItemNames.addItem(cqlNavBarView.getViewParameterList().get(i)
-									.getParameterName());
+						List<CQLIdentifierObject> parameters = new ArrayList<>(); 
+						parameters.addAll(MatContext.get().getParameters());
+						parameters.addAll(MatContext.get().getIncludedParamNames());
+						for (CQLIdentifierObject parameter : parameters) {
+							listAllItemNames.addItem(parameter.toString().replaceAll("\"", ""), parameter.toString());
 						}
 						
-						for (int j = 0; j < MatContext.get().getIncludedParamNames().size(); j++) {
-							listAllItemNames.addItem(MatContext.get().getIncludedParamNames().get(j));
-						}
 					} else if (itemTypeSelected.equalsIgnoreCase("functions")) {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
@@ -454,17 +423,17 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
+						
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < cqlNavBarView.getViewFunctions().size(); i++) {
-							CQLFunctions functions = cqlNavBarView.getViewFunctions().get(i);
-							String funcArg = getFunctionArgumentValueBuilder(functions);
-							String funcArgToolTip = getFunctionArgumentToolTipBuilder(functions);
-							listAllItemNames.insertItem(funcArg, funcArg, funcArgToolTip, INSERT_AT_END);
+						List<CQLIdentifierObject> functions = new ArrayList<>(); 
+						functions.addAll(MatContext.get().getFuncs());
+						functions.addAll(MatContext.get().getIncludedFuncNames());
+						for(CQLIdentifierObject function : functions) {
+							listAllItemNames.addItem(function.toString().replace("\"", ""), function.toString() + "()");
 						}
 						
-						for (int j = 0; j < MatContext.get().getIncludedFuncNames().size(); j++) {
-							listAllItemNames.addItem(MatContext.get().getIncludedFuncNames().get(j)+"()");
-						}
+						
+						
 					} else if (itemTypeSelected.equalsIgnoreCase("definitions")) {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
@@ -472,24 +441,16 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
+						
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < cqlNavBarView.getViewDefinitions().size(); i++) {
-							listAllItemNames.addItem(cqlNavBarView.getViewDefinitions().get(i)
-									.getDefinitionName());
+						ArrayList<CQLIdentifierObject> definitions = new ArrayList<>(); 
+						definitions.addAll(MatContext.get().getDefinitions());
+						definitions.addAll(MatContext.get().getIncludedDefNames());
+						for(CQLIdentifierObject definition : definitions) {
+							listAllItemNames.addItem(definition.toString().replaceAll("\"", ""), definition.toString());
 						}
 						
-						for (int j = 0; j < MatContext.get().getIncludedDefNames().size(); j++) {
-							listAllItemNames.addItem(MatContext.get().getIncludedDefNames().get(j));
-						}
-						
-					} /*else if (itemTypeSelected.equalsIgnoreCase("timing")) {
-						listAllItemNames.clear();
-						listAllItemNames.setEnabled(true);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < timingList.size(); i++) {
-							listAllItemNames.addItem(timingList.get(i));
-						}
-					}*/ else if (itemTypeSelected.equalsIgnoreCase("Pre-Defined Functions")) {
+					} else if (itemTypeSelected.equalsIgnoreCase("Pre-Defined Functions")) {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();
@@ -510,12 +471,16 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
-						for (int i = 0; i < cqlNavBarView.getAppliedQdmList().size(); i++) {
-							listAllItemNames.addItem(cqlNavBarView.getAppliedQdmList().get(i).getCodeListName());							
+						
+						List<CQLIdentifierObject> terminologies = new ArrayList<>(); 
+						terminologies.addAll(MatContext.get().getValuesets());
+						terminologies.addAll(MatContext.get().getIncludedValueSetNames());
+						terminologies.addAll(MatContext.get().getIncludedCodeNames());
+						
+						for(CQLIdentifierObject terminology : terminologies) {
+							listAllItemNames.addItem(terminology.toString().replaceAll("\"", ""), terminology.toString());
 						}
-						for (int j = 0; j < MatContext.get().getIncludedValueSetNames().size(); j++) {
-							listAllItemNames.addItem(MatContext.get().getIncludedValueSetNames().get(j));
-						}
+						
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
 						//open new popup/dialogBox
 						dialogModal.clear();

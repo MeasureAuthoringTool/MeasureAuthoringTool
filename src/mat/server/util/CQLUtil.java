@@ -23,6 +23,7 @@ import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.cqlparser.CQLFilter;
 import mat.shared.CQLErrors;
+import mat.shared.CQLIdentifierObject;
 import mat.shared.CQLObject;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
@@ -640,19 +641,18 @@ public class CQLUtil {
 	 * @param listToAddTo the list to add to
 	 */
 	private static void addNamesToList(String alias,
-			XmlProcessor xmlProcessor, String xPathForFetch, List<String> listToAddTo) {
+			XmlProcessor xmlProcessor, String xPathForFetch, List<CQLIdentifierObject> listToAddTo) {
 		try {
 
 			NodeList exprList = (NodeList) xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForFetch);
 
 			if(exprList != null){
 
-				List<String> exprNameList = new ArrayList<String>();
 				for(int i=0; i < exprList.getLength(); i++){
-					exprNameList.add(alias + "." + exprList.item(i).getNodeValue());
-				}
-				listToAddTo.addAll(exprNameList);
-			}                    
+					CQLIdentifierObject identifier = new CQLIdentifierObject(alias, exprList.item(i).getNodeValue());
+					listToAddTo.add(identifier);
+					
+				}			}                    
 
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block

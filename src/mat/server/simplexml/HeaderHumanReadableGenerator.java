@@ -129,22 +129,22 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void createDocumentGeneral(XmlProcessor processor,
 			Element table) throws DOMException, XPathExpressionException {
-		// eMeasure Title
-		createRowAndColumns(table, "eMeasure Title");
+		// eCQM Title
+		createRowAndColumns(table, "eCQM Title");
 		
 		column.append("<h1 style=\"font-size:10px\">" + getShortTitle(processor) +"</h1>");
 		
-		// eMeasure Identifier and Version number
+		// eCQM Identifier and Version number
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
 		setTDHeaderAttributes(column, TWENTY_PERCENT);
-		createSpan("eMeasure Identifier\n" + "(Measure Authoring Tool)", column);
+		createSpan("eCQM Identifier\n" + "(Measure Authoring Tool)", column);
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column, "30%", "");
 		column.appendText(getInfo(processor, "emeasureid"));
 		column = row.appendElement(HTML_TD);
 		setTDHeaderAttributes(column, TWENTY_PERCENT);
-		createSpan("eMeasure Version number", column);
+		createSpan("eCQM Version number", column);
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column, "30%", "");
 		column.appendText(getInfo(processor, "version"));

@@ -43,61 +43,6 @@ public class CQLHumanReadableHTMLCreator {
 
 	private static final String CQLDEFINITION = "cqldefinition";
 
-	/** The Constant keyWordListArray. */
-	private static final String[] keyWordListArray = 		{"-", "!", "(", ")", "*", ",", ".", "/", ":", "[", "]", "^", "{", "}", "~", "+", "<", "=", ">",
-															 "after", "all", "and", "as", "asc", "ascending", "before", "between", "begins", "begun", 
-															 "between", "Boolean", "by", "called", "case", "cast", "Code", "codesystem", "codesystems", "collapse", 
-															 "Concept", "contains", "context", "convert", "date", "DateTime", "day", "days", "Decimal", "defeault", 
-															 "define", "desc", "descending", "difference", "display", "distinct", "div", "duration", "during", 
-															 "else", "end", "ends", "except", "exists", "false", "flatten", "from", "function", "hour", "hours", 
-															 "if", "in", "include", "included in", "includes", "Integer", "intersect", "Interval", "is", 
-															 "less", "let", "library", "List", "maximum", "meets", "millisecond", "milliseconds", "minimum", 
-															 "minute", "minutes", "mod", "month", "months", "more", "not", "null", "occurs", "of", "or", "or after",
-															 "or before", "or less", "or more", "overlaps", "parameter", "predecessor", "predecessor of", "private", 
-															 "properly", "properly included in", "properly includes", "public", "QDM", "Quantity", "return", "same", 
-															 "second", "seconds", "singleton", "singleton from", "sort", "sort by", "start", "starts", "String", "successor", 
-															 "such", "such that", "Sum", "that", "then", "Time", "time", "timezone", "to", "true", "Tuple", "union", 
-															 "using", "valueset", "version", "week", "weeks", "when", "where", "width", "with", "within", "without", "xor", 
-															 "year", "years"};
-
-	/** The Constant cqlFunctionsListArray. */
-	private static final String[] cqlFunctionsListArray = 	{"Abs", "AgeInDays", "AgeInDaysAt", "AgeInHours", "AgeInHoursAt",
-															"AgeInMinutes", "AgeInMinutesAt", "AgeInMonths", "AgeInMonthsAt", 
-															"AgeInSeconds", "AgeInSecondsAt", "AgeInYears", "AgeInYearsAt",
-															"AllTrue", "AnyTrue", "Avg", "CalculateAgeInDays", "CalculateAgeInDaysAt", 
-															"CalculateAgeInHours", "CalculateAgeInHoursAt", "CalculateAgeInMinutes", "CalculateAgeInMinutesAt", 
-															"CalcualteAgeInMonths", "CalculateAgeInMonthsAt", "CalculateAgeInSeconds", "CalculateAgeInSecondsAt", 
-															"CalculateAgeInYears", "CalculateAgeInYearsAt", "Ceiling", "Coalesce", 
-															"Count", "DateTime", "Exp", "First", "Floor", "IndexOf", "Last", "Length", 
-															"Ln", "Log", "Max", "Median", "Min", "Mode", "Now", "PopulationStdDev", "PopulationVariance", 
-															"Round", "StdDev", "Sum", "Time", "TimeOfDay", "Today", "Truncate", "Variance"};
-	
-	
-	/** complete timing list */
-//	private static final String[] cqlTimingListArray   =	{"after", "after end", "after start", "before", "before end", "before start", "during", "ends", "ends after",
-//															 "ends after end", "ends after start", "ends before", "ends before end", "ends before start", "ends during", 
-//															 "ends properly during", "ends properly within", "ends properly within end", "ends properly within start", 
-//															 "ends same as", "ends same as end", "ends same as start", "ends same or after", "ends same or after end", 
-//															 "ends same or after start", "ends same or before", "ends same or before end", "ends same or before start", 
-//															 "ends within", "ends within end", "ends within start", "included in", "includes", "includes end", "includes start", 
-//															 "meets", "meets after", "meets before", "overlaps", "overlaps after", "overlaps before", "properly during", 
-//															 "properly included in", "properly includes", "properly includes end", "properly includes start", "properly within", 
-//															 "properly within end", "properly within start", "same as", "same as end", "same as satrt", "same or after", 
-//															 "same or after end", "same or after start", "same or before", "same or before end", "same or before start", 
-//															 "starts during", "starts properly during", "starts properly within", "starts properly within end", "starts properly within start",
-//															 "starts same as", "starts same as end", "starts same as start", "starts same or after", "starts same or after end", 
-//															 "starts same or after start", "starts same or before", "starts same or before end", "starts same or before start", "starts within",
-//															 "starts within end", "starts within start", "within"};
-	
-	
-	private static final String[] cqlAttributeListArray = 	{"activeDatetime", "admissionSource", "anatomicalApproachSite", "anatomicalLocationSite", "authorDatetime", "authorTime", "birthDatetime", 
-															 "cause", "code", "diagnosis", "dischargeDisposition", "dosage", "expiredDatetime", "facilityLocation", "frequency", "id", 
-															 "incisionDatetime", "lengthOfStay", "locationPeriod", "method", "negationRationale", "ordinality", "prevalencePeriod", 
-															 "principalDiagnosis", "radiationDosage", "radiationDuration", "reason", "recorder", "referenceRange", "refills", "relatedTo", 
-															 "relationship", "relevantPeriod", "reporter", "result", "resultDatetime", "route", "severity", "status", "supply", "targetOutcome",
-															 "type"};
-	
-	
 	/** The definitions or functions already displayed. */
 	private static List<String> definitionsOrFunctionsAlreadyDisplayed = new ArrayList<String>();
 	
@@ -207,7 +152,6 @@ public class CQLHumanReadableHTMLCreator {
 				simpleXMLProcessor, cqlModel,cqlResult);
 		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
-		//generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateSupplementalDataVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor,
@@ -354,7 +298,7 @@ public class CQLHumanReadableHTMLCreator {
 				Node defineNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(),
 						xpathforSubTree);
 				String defineNodeName = defineNode.getAttributes().getNamedItem("name").getNodeValue();
-				defineNodeName = "\"" + defineNodeName + "\"";
+				//defineNodeName = "\"" + defineNodeName + "\"";
 				generatePopulationCriteria(mainListElement, cqlModel, childNode, defineNodeName, defineNodeName, cqlResult, simpleXMLProcessor);
 				
 			}
@@ -936,16 +880,6 @@ public class CQLHumanReadableHTMLCreator {
 	 */
 	private static void generatePopulationCriteria(Element bodyElement,
 			CQLModel cqlModel, Node cqlNode, String populationName, String populationDisplayName, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor) {
-
-		/*
-		 * bodyElement.append(
-		 * "<p id=\"nn-text\">Non-normative Example - Only CQL Logic.</p>");
-		 * bodyElement.append(
-		 * "<div><span id=\"d1e521\" class=\"section\">Population Criteria</span>\r\n"
-		 * +
-		 * "      <a href=\"#toc\" style=\"margin-top:-10px;\">Table of Contents</a></div>"
-		 * );
-		 */
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		mainDivElement.attr("class", "treeview hover p-l-10");
@@ -960,26 +894,17 @@ public class CQLHumanReadableHTMLCreator {
 				+ cqlName);
 
 		if (CQLDEFINITION.equals(cqlNodeType)) {
-			//cqlName = "\"" + cqlName + "\"";
-
+			
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
 					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType,"");
 		} else if (CQLFUNCTION.equals(cqlNodeType)){
-			//cqlName = "\"" + cqlName + "\"";
-			//System.out.println("Functions map:"+cqlModel.getFunctionsMap());
+			
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
 					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType,"");
 		} else if(CQLAGGFUNCTION.equals(cqlNodeType)){
-//			CQLAggregateFunction cqlAggregateFunction = new CQLHumanReadableHTMLCreator().new CQLAggregateFunction();
-//			cqlAggregateFunction.setIdentifier(cqlName + " of:");
-			
+
 			Node childCQLNode = cqlNode.getChildNodes().item(0);
 			String childCQLName = childCQLNode.getAttributes().getNamedItem("displayName").getNodeValue();
-			//childCQLName = "\"" + childCQLName + "\"";
-//			CQLFunctionModelObject cqlFunctionModelObject = cqlModel.getFunctionsMap().get(childCQLName);
-//			
-//			cqlAggregateFunction.getReferredToFunctions().add(cqlFunctionModelObject);
-			
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
 					populationName, populationDisplayName, childCQLName, populationOrSubtreeXMLProcessor, CQLFUNCTION, (cqlName + " of:"));
 		} else {
@@ -1140,8 +1065,6 @@ public class CQLHumanReadableHTMLCreator {
 		}
 		strongElement.appendText(strongText);
 				
-		//defnOrFuncLabelElement.appendText(" (click to expand/collapse)");
-
 		Element subULElement = mainDivElement.appendElement("ul");
 		Element subLiElement = subULElement.appendElement("li");
 		subLiElement.attr("style","padding-left: 0px;");
@@ -1287,18 +1210,6 @@ public class CQLHumanReadableHTMLCreator {
 		return lineList;
 	}
 
-	private static String colorize(String escapedLine) {
-		String coloredLine = escapedLine;
-		
-		String[] lineTokens = coloredLine.split(" ");
-		
-		for(int i=0;i<lineTokens.length;i++){
-			System.out.println(lineTokens[i]+"|");
-		}
-		
-		return coloredLine;
-	}
-
 	private static String getLogicStringFromXML(String cqlName, String cqlType,
 			XmlProcessor simpleXMLProcessor) {
 		
@@ -1315,9 +1226,6 @@ public class CQLHumanReadableHTMLCreator {
 			Node logicNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), xPath);
 			if(logicNode != null){
 				logic = logicNode.getTextContent();
-//				System.out.println();
-//				System.out.println("Found logic as:");
-//				System.out.println(logic);
 			}
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -1327,50 +1235,6 @@ public class CQLHumanReadableHTMLCreator {
 		return logic;
 	}
 	
-	/**
-	 * Wrap with css class.
-	 *
-	 * @param string the string
-	 * @return the string
-	 */
-	private static String wrapWithCssClass(String string) {
-
-		String cssClass = "";
-		if (string.trim().startsWith("\"") && string.endsWith("\"")) {
-			cssClass = "cql_string";
-		} else if (string.trim().length() == 1) {
-			cssClass = "cql_identifier";
-		} else if (contains(keyWordListArray, string.trim())) {
-			cssClass = "cql_keyword";
-		} else if (contains(cqlFunctionsListArray, string.trim())) {
-			cssClass = "cql_function";
-		} else if(contains(cqlAttributeListArray, string.trim())) {
-			cssClass = "cql_attribute"; 
-		} else if (cqlObjects.contains(string)) {
-			cssClass = "cql-object";
-		}
-
-		string = "<span class=\"" + cssClass + "\">" + string + "</span>";
-		return string;
-	}
-
-	/**
-	 * Contains.
-	 *
-	 * @param stringArray the string array
-	 * @param tokenString the token string
-	 * @return true, if successful
-	 */
-	private static boolean contains(String[] stringArray, String tokenString) {
-
-		for (int i = 0; i < stringArray.length; i++) {
-			if (tokenString.equals(stringArray[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * Gets the span element with class.
 	 *

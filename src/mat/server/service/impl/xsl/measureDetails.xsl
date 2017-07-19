@@ -304,7 +304,7 @@
      <subjectOf>
         <measureAttribute>
            <code nullFlavor="OTH">
-              <originalText>eMeasure Identifier</originalText>
+              <originalText>eCQM Identifier</originalText>
            </code>
            <value xsi:type="ED" mediaType="text/plain">
               <xsl:call-template name="trim">

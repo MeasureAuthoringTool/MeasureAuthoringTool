@@ -72,7 +72,7 @@ public class ZipPackager {
 			}
 			System.out.println("Release version zip " + releaseVersion);
 			parentPath = fnu.getParentPath(emeasureName + releaseVersion);
-			emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
+			emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eCQM.xsl";
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + releaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + releaseVersion);
 			//codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + releaseVersion,packageDate);

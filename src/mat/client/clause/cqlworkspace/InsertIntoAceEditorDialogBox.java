@@ -295,7 +295,7 @@ public class InsertIntoAceEditorDialogBox {
 												messageFormgroup.setValidationState(ValidationState.ERROR);
 												itemNameToBeInserted = "";
 											} else {
-												sb = sb.append("[\"" + dataType + "\"");
+												sb = sb.append("[\"" + dataType + "\": ");
 												sb= sb.append(itemNameToBeInserted).append("]");
 												itemNameToBeInserted = sb.toString();
 											}

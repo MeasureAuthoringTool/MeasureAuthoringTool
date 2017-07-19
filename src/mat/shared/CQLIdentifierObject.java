@@ -27,6 +27,9 @@ public class CQLIdentifierObject implements IsSerializable {
 		this.identifier = identifier;
 	}
 
+	public CQLIdentifierObject() {
+		
+	}
 
 	public String getAliasName() {
 		return aliasName;

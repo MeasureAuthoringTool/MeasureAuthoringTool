@@ -1591,10 +1591,10 @@ var Autocomplete = function() {
 
             } else if(keyString == "space"){
             	
-            	this.getSpecificKeyWords(valueSetKeywords, matches, "value sets/codes");
-                this.getSpecificKeyWords(unitsKeywords, matches, "units")
-            	this.getSpecificKeyWords(timingKeywords,matches, "timings");
-            	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
+            	matches = [];
+            	this.getSpecificKeyWords(attributesKeywords, matches, "attributes");
+            	this.getSpecificKeyWords(dataTypeKeywords, matches, "datatypes");
+            	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
             	
             	var fk1 = [];
             	for(var i=0;i<funcsKeywords.length;i++){
@@ -1603,12 +1603,14 @@ var Autocomplete = function() {
             	for(var i=0;i<functionKeywords.length;i++){
             		fk1.push(functionKeywords[i]+'()');	
             	}
-            	//alert(fk1);
+            	
             	this.getSpecificKeyWords(fk1,matches, "functions");
-            	this.getSpecificKeyWords(defineKeywords,matches, "definitions");
-            	this.getSpecificKeyWords(dataTypeKeywords, matches, "datatypes");
-            	this.getSpecificKeyWords(attributesKeywords, matches, "attributes");
-    	
+            	this.getSpecificKeyWords(Keywords, matches, "keywords");
+            	this.getSpecificKeyWords(paramKeywords,matches, "parameters");
+            	this.getSpecificKeyWords(timingKeywords,matches, "timings");
+            	this.getSpecificKeyWords(unitsKeywords, matches, "units")
+            	this.getSpecificKeyWords(valueSetKeywords, matches, "value sets/codes");
+            	
             }
             this.completions = new FilteredList(matches);
             this.completions.setFilter(prefix);

@@ -1,5 +1,10 @@
 package mat.client.measure;
 
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SpacerWidget;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -11,11 +16,6 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MeasureNameLabel;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SpacerWidget;
 
 /**
  * The Class ManageMeasureExportView.
@@ -35,13 +35,13 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	private RadioButton simpleXMLRadio = new RadioButton("format", "SimpleXML");
 	
 	/** The e measure radio. */
-	private RadioButton eMeasureRadio = new RadioButton("format", "eMeasure");
+	private RadioButton eCQMRadio = new RadioButton("format", "eCQM");
 	
 	/** The code list radio. */
 	//private RadioButton codeListRadio = new RadioButton("format", "Measure Value Set");
 	
 	/** The e measure package radio. */
-	private RadioButton eMeasurePackageRadio = new RadioButton("format", "eMeasure Package");
+	private RadioButton eCQMPackageRadio = new RadioButton("format", "eCQM Package");
 	
 	/** The ELM radio */
 	private RadioButton elmRadio = new RadioButton("format", "ELM"); 
@@ -76,12 +76,12 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		if(isTopLevelUser) {
 			vp.add(simpleXMLRadio);
 		}
-		vp.add(eMeasureRadio);
+		vp.add(eCQMRadio);
 		vp.add(cqlLibraryRadio);
 		vp.add(elmRadio);
-		vp.add(eMeasurePackageRadio);
+		vp.add(eCQMPackageRadio);
 		content.add(vp);
-		eMeasurePackageRadio.setValue(true);
+		eCQMPackageRadio.setValue(true);
 		/*content.add(wrapRadioButton(eMeasureRadio));
 		//content.add(wrapRadioButton(codeListRadio));
 		content.add(wrapRadioButton(cqlLibraryRadio));
@@ -183,7 +183,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	 */
 	@Override
 	public boolean isEMeasure() {
-		return eMeasureRadio.getValue();
+		return eCQMRadio.getValue();
 	}
 	
 	/* (non-Javadoc
@@ -206,7 +206,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	 */
 	@Override
 	public boolean isEMeasurePackage() {
-		return eMeasurePackageRadio.getValue();
+		return eCQMPackageRadio.getValue();
 	}
 	
 	@Override

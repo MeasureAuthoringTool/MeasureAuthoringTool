@@ -4,6 +4,32 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.ImageResources;
+import mat.client.clause.QDSAppliedListModel;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.HorizontalFlowPanel;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.RadioButtonCell;
+import mat.client.shared.SecondaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.TextAreaWithMaxLength;
+import mat.client.util.CellTableUtility;
+import mat.model.Author;
+import mat.model.MeasureSteward;
+import mat.model.MeasureType;
+import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
+
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
@@ -49,32 +75,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
-
-import mat.client.ImageResources;
-import mat.client.clause.QDSAppliedListModel;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SecondaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.TextAreaWithMaxLength;
-import mat.client.util.CellTableUtility;
-import mat.model.Author;
-import mat.model.MeasureSteward;
-import mat.model.MeasureType;
-import mat.model.QualityDataSetDTO;
-import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -522,7 +522,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalPanel.add(patientBasedInput);
 		generalPanel.add(new SpacerWidget());
 		
-		Label abbrInputLabel =  (Label) LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title");
+		Label abbrInputLabel =  (Label) LabelBuilder.buildLabel(abbrInput, "eCQM Abbreviated Title");
 		abbrInputLabel.setStyleName("marginLeft20pxBold");
 		abbrInputLabel.setTitle(abbrInputLabel.getText());
 		generalPanel.add(abbrInputLabel);
@@ -552,7 +552,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalPanel.add(eMeasureIdentifier);
 		generalPanel.add(new SpacerWidget());
 		
-		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eMeasure Version Number");
+		Label versionInputLabel = (Label) LabelBuilder.buildLabel(versionInput, "eCQM Version Number");
 		versionInputLabel.setStyleName("marginLeft20pxBold");
 		versionInputLabel.setTitle(versionInputLabel.getText());
 		generalPanel.add(versionInputLabel);
@@ -571,7 +571,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
-		Label eMeasureIdentifierInputLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifierInput, "eMeasure Identifier (Measure Authoring Tool)");
+		Label eMeasureIdentifierInputLabel = (Label) LabelBuilder.buildLabel(eMeasureIdentifierInput, "eCQM Identifier (Measure Authoring Tool)");
 		eMeasureIdentifierInputLabel.setStyleName("bold");
 		topLeftSidePanel.add(new SpacerWidget());
 		topLeftSidePanel.add(eMeasureIdentifierInputLabel);
@@ -978,7 +978,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		eMeasureIdentifierInput.setReadOnly(true);
 		eMeasureIdentifierInput.setMaxLength(6);
 		generateeMeasureIDButton.setEnabled(true);
-		String emeasureIdMSG = "Once an eMeasure Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
+		String emeasureIdMSG = "Once an eCQM Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
 		generateeMeasureIDButton.setTitle(emeasureIdMSG);
 		eMeasureIdentifierInput.setTitle(emeasureIdMSG);
 		

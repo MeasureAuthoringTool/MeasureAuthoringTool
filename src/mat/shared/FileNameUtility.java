@@ -10,24 +10,24 @@ package mat.shared;
 public class FileNameUtility {
 	
 	/**
-	 * Gets the emeasure xml name.
+	 * Gets the eCQM xml name.
 	 * 
 	 * @param name
 	 *            the name
-	 * @return the emeasure xml name
+	 * @return the eCQM xml name
 	 */
 	public String getEmeasureXMLName(String name) {
-		return name.replaceAll("\\W","") + "_eMeasure.xml";
+		return name.replaceAll("\\W","") + "_eCQM.xml";
 	}
 	
 	/**
-	 * Gets the emeasure xls name.
+	 * Gets the eCQM xls name.
 	 * 
 	 * @param name
 	 *            the name
 	 * @param packageDate
 	 *            the package date
-	 * @return the emeasure xls name
+	 * @return the eCQM xls name
 	 */
 	public String getEmeasureXLSName(String name, String packageDate) {	
 		packageDate = packageDate.replace(':', '.');
@@ -46,14 +46,14 @@ public class FileNameUtility {
 	}
 	
 	/**
-	 * Gets the emeasure html name.
+	 * Gets the eCQM html name.
 	 * 
 	 * @param name
 	 *            the name
-	 * @return the emeasure html name
+	 * @return the eCQM html name
 	 */
 	public String getEmeasureHTMLName(String name) {
-		return name.replaceAll("\\W","") + "_eMeasure.html";
+		return name.replaceAll("\\W","") + "_eCQM.html";
 	}
 	
 	/**
@@ -79,11 +79,11 @@ public class FileNameUtility {
 	}
 	
 	/**
-	 * Gets the emeasure human readable name.
+	 * Gets the eCQM human readable name.
 	 * 
 	 * @param name
 	 *            the name
-	 * @return the emeasure human readable name
+	 * @return the eCQM human readable name
 	 */
 	public String getEmeasureHumanReadableName(String name) {
 		return name.replaceAll("\\W","") + "_HumanReadable.html";

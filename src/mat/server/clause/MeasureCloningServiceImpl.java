@@ -424,7 +424,6 @@ implements MeasureCloningService {
 				String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 				String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
 				String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-				String qdmAppliedVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 				if(oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
 					//expiredtimingQDMNode = qdmNode;
 					qdmNodeList.add(qdmNode);
@@ -453,6 +452,7 @@ implements MeasureCloningService {
 				}
 				if(isClonable){
 					//MAT-8729 : Drafting of non-CQL to CQL measures - force version to be 1.0 if its value is 1.
+					String qdmAppliedVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 					if(qdmAppliedVersion.equalsIgnoreCase("1")){
 						qdmNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
 					}

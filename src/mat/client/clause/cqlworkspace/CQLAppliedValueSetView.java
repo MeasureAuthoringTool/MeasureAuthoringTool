@@ -30,7 +30,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -410,7 +409,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("400px");
+		sWidget.setSearchBoxWidth("350px");
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 

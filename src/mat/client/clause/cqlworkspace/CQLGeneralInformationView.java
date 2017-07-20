@@ -19,6 +19,11 @@ import mat.client.util.MatTextBox;
  */
 public class CQLGeneralInformationView {
 	
+	private String version = new String();
+	private String libraryName = new String();
+	private String modelUsed = new String();
+	private String qdmVersionUsed = new String();
+	
 	/** The general info main V panel. */
 	private HorizontalPanel generalInfoMainHPanel = new HorizontalPanel();
 	
@@ -428,6 +433,25 @@ public class CQLGeneralInformationView {
 	 */
 	public void setModelVersionGroup(FormGroup modelVersionGroup) {
 		this.modelVersionGroup = modelVersionGroup;
+	}
+
+	public void setGeneralInfoOfLibrary(String libraryName, String version, String qdmVersion , String modelUsed) {
+		this.libraryName = libraryName;
+		this.modelUsed = modelUsed;
+		this.version = version;
+		this.qdmVersionUsed = qdmVersion;
+		getLibraryVersionValue().setText(version);
+		getUsingModelValue().setText(modelUsed);
+		getModelVersionValue().setText(qdmVersion);
+		getLibraryNameValue().setText(libraryName);
+		
+	}
+	
+	public void clearAllGeneralInfoOfLibrary(){
+		this.libraryName = "";
+		this.modelUsed = "";
+		this.version = "";
+		this.qdmVersionUsed = "";
 	}
 
 }

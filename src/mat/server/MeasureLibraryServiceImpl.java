@@ -1615,10 +1615,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		// add expansion Profile if existing
-		String expProfilestr = getDefaultExpansionIdentifier(measureId);
+		/*String expProfilestr = getDefaultExpansionIdentifier(measureId);
 		if (expProfilestr != null) {
 			details.setVsacExpIdentifier(expProfilestr);
-		}
+		}*/
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
 		if (details != null) {
 			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
@@ -3685,7 +3685,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			for (int i = 0; i < nodesElementLookUp.getLength(); i++) {
 				Node newNode = nodesElementLookUp.item(i);
 				newNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
-				if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
+			/*	if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
 					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
 						newNode.getAttributes().getNamedItem("expansionIdentifier").setNodeValue(expansionIdentifier);
 					} else {
@@ -3698,7 +3698,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						expansionIdentifierAttr.setNodeValue(expansionIdentifier);
 						newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
 					}
-				}
+				}*/
 			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -5669,8 +5669,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            the measure id
 	 * @return the default expansion identifier
 	 */
-	@Override
-	public String getDefaultExpansionIdentifier(String measureId) {
+	//@Override
+	/*public String getDefaultExpansionIdentifier(String measureId) {
 		String defaultExpId = null;
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
 		if (model != null) {
@@ -5690,7 +5690,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		return defaultExpId;
-	}
+	}*/
 
 	/**
 	 * Validate stratum for atleast one clause. This validation is performed at
@@ -6069,10 +6069,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public CQLQualityDataModelWrapper getCQLValusets(String measureID) {
 		CQLQualityDataModelWrapper cqlQualityDataModelWrapper = new CQLQualityDataModelWrapper();
-		String expProfilestr = getDefaultExpansionIdentifier(measureID);
+		/*String expProfilestr = getDefaultExpansionIdentifier(measureID);
 		if (expProfilestr != null) {
 			cqlQualityDataModelWrapper.setVsacExpIdentifier(expProfilestr);
-		}
+		}*/
 
 		return this.getCqlService().getCQLValusets(measureID, cqlQualityDataModelWrapper);
 	}
@@ -6279,7 +6279,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 			result.setCqlModel(cqlModel);*/
 			result = cqlService.getCQLData(xmlString);
-			result.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(xmlString));
+			//result.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(xmlString));
 			result.setSetId(measure.getMeasureSet().getId());
 			result.setSuccess(true);
 		} else {

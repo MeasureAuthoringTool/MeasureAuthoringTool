@@ -748,7 +748,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 		if(str != null) {
 			cqlResult = cqlService.getCQLData(str);
-			cqlResult.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(str));
+			//cqlResult.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(str));
 			cqlResult.setSetId(cqlLibrary.getSet_id());
 			cqlResult.setSuccess(true);
 		}
@@ -1579,8 +1579,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	}
 
 
-	@Override
-	public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String libraryId,
+	//@Override
+	/*public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String libraryId,
 			String expansionProfile) {
 		logger.debug(" CQLLibraryService: updateLibraryXMLForExpansionIdentifier Start : Library Id :: "
 				+ libraryId);
@@ -1621,9 +1621,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			cqlLibraryDAO.save(cqlLibrary);
 		}
 	}
+*/
 
-
-	private void updateCQLLibraryXmlForQDM(CQLQualityDataSetDTO dto, XmlProcessor processor, String expansionProfile) {
+	/*private void updateCQLLibraryXmlForQDM(CQLQualityDataSetDTO dto, XmlProcessor processor, String expansionProfile) {
 			String XPATH_EXPRESSION_ELEMENTLOOKUP = "/cqlLookUp/valuesets/valueset[@uuid='"
 					+ dto.getUuid() + "']";
 			NodeList nodesElementLookUp;
@@ -1652,7 +1652,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 
 	public void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,

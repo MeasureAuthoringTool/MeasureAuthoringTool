@@ -1,9 +1,8 @@
 package mat.model.cql;
 
 import java.util.List;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.model.RiskAdjustmentDTO;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class CQLQualityDataSetDTO.
@@ -14,7 +13,7 @@ public class CQLQualityDataModelWrapper implements IsSerializable{
 	private List<CQLQualityDataSetDTO> qualityDataDTOList;
 	
 	/** The vsac profile. */
-	private String vsacExpIdentifier;
+	//private String vsacExpIdentifier;
 	/**
 	 * Gets the quality data dto.
 	 * 
@@ -39,17 +38,17 @@ public class CQLQualityDataModelWrapper implements IsSerializable{
 	 *
 	 * @return the vsac profile
 	 */
-	public String getVsacExpIdentifier() {
+	/*public String getVsacExpIdentifier() {
 		return vsacExpIdentifier;
-	}
+	}*/
 
 	/**
 	 * Sets the vsac identifier.
 	 *
 	 * @param vsac Identifier the new vsac profile
 	 */
-	public void setVsacExpIdentifier(String vsacExpIdentifier) {
+	/*public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;
-	}
+	}*/
 
 }

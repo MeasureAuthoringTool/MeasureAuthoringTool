@@ -203,7 +203,7 @@ public interface CQLService {
 
 	List<CQLLibraryAssociation> getAssociations(String id);
 
-	String getDefaultExpansionIdentifier(String xml);
+	//String getDefaultExpansionIdentifier(String xml);
 
 	SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject);
 

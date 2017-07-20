@@ -325,7 +325,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final VsacApiResult updateAllVSACValueSetsAtPackage(final String measureId, String sessionId) {
 		VsacApiResult result = new VsacApiResult();
-		String defaultExpId = getMeasureLibraryService().getDefaultExpansionIdentifier(measureId);
+	//	String defaultExpId = getMeasureLibraryService().getDefaultExpansionIdentifier(measureId);
 		if (isAlreadySignedIn(sessionId)) {
 			String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
 			//ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
@@ -703,10 +703,10 @@ public class VSACApiServImpl implements VSACApiService{
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(sessionId));
-						if(cqlQualityDataSetDTO.getExpansionIdentifier() != null){
+						/*if(cqlQualityDataSetDTO.getExpansionIdentifier() != null){
 							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(cqlQualityDataSetDTO.getOid(),
 									cqlQualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
-						} else  {
+						} else  {*/
 							if (!(cqlQualityDataSetDTO.getVersion().equals("1.0")
 									|| cqlQualityDataSetDTO.getVersion().equals("1"))) {
 								vsacResponseResult = vGroovyClient.
@@ -716,7 +716,7 @@ public class VSACApiServImpl implements VSACApiService{
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 										cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
 							}
-						}
+						//}
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
 								+ "VSAC for OID :" + cqlQualityDataSetDTO.getOid() + " with Data Type : "
@@ -1171,10 +1171,10 @@ public class VSACApiServImpl implements VSACApiService{
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(sessionId));
-						if(cqlQualityDataSetDTO.getExpansionIdentifier() != null){
+						/*if(cqlQualityDataSetDTO.getExpansionIdentifier() != null){
 							vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndProfile(cqlQualityDataSetDTO.getOid(),
 									cqlQualityDataSetDTO.getExpansionIdentifier(), fiveMinuteServiceTicket);
-						} else  {
+						} else  {*/
 							if (!(cqlQualityDataSetDTO.getVersion().equals("1.0")
 									|| cqlQualityDataSetDTO.getVersion().equals("1"))) {
 								vsacResponseResult = vGroovyClient.
@@ -1184,7 +1184,7 @@ public class VSACApiServImpl implements VSACApiService{
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 										cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
 							}
-						}
+						//}
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
 								+ "VSAC for OID :" + cqlQualityDataSetDTO.getOid() + " with Data Type : "

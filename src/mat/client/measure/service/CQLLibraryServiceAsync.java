@@ -7,14 +7,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -91,9 +89,6 @@ public interface CQLLibraryServiceAsync {
 	
 	void deleteValueSet(String toBeDeletedValueSetId, String currentMeasureId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
-
-	void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifiedCqlQDMList, String libraryId,
-			String expProfileToAllValueSet, AsyncCallback<Void> asyncCallback);
 
 	void saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);

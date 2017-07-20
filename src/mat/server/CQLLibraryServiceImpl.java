@@ -177,11 +177,11 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 			List<CQLParameter> parameterList) {
 		return this.getCQLLibraryService().deleteParameter(libraryId, toBeDeletedObj, currentObj, parameterList);
 	}
-	@Override
-	public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
+	//@Override
+	/*public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
 			String expansionProfile) {
 		this.getCQLLibraryService().updateCQLLibraryXMLForExpansionProfile(modifyWithDTO, measureId, expansionProfile);
-	}
+	}*/
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		return this.getCQLLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject);

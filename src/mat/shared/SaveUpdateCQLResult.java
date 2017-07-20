@@ -23,7 +23,7 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private CQLObject cqlObject;
 	
-	private String expIdentifier;
+	//private String expIdentifier;
 	
 	private String setId;
 	
@@ -324,13 +324,13 @@ public class SaveUpdateCQLResult extends GenericResult{
 		this.elmString = elmString;
 	}
 
-	public String getExpIdentifier() {
+	/*public String getExpIdentifier() {
 		return expIdentifier;
 	}
 
 	public void setExpIdentifier(String expIdentifier) {
 		this.expIdentifier = expIdentifier;
-	}
+	}*/
 
 	/**
 	 * @return the setId

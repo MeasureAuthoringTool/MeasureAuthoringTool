@@ -572,7 +572,7 @@ public interface MeasureLibraryService {
 	 * @param measureId the measure id
 	 * @return the default expansion identifier
 	 */
-	String getDefaultExpansionIdentifier(String measureId);
+	//String getDefaultExpansionIdentifier(String measureId);
 	
 	/**
 	 * Gets the current release version.

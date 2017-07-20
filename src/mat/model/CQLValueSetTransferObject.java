@@ -33,7 +33,7 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	String userDefinedText;
 	
 	/** The is expansion profile. */
-	boolean isExpansionProfile;
+	//boolean isExpansionProfile;
 	
 	/** The is version. */
 	boolean isVersion;
@@ -151,19 +151,19 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	 *
 	 * @return true, if is expansion profile
 	 */
-	public boolean isExpansionProfile() {
+	/*public boolean isExpansionProfile() {
 		return isExpansionProfile;
-	}
+	}*/
 
 	/**
 	 * Sets the expansion profile.
 	 *
 	 * @param isExpansionProfile the new expansion profile
 	 */
-	public void setExpansionProfile(boolean isExpansionProfile) {
+	/*public void setExpansionProfile(boolean isExpansionProfile) {
 		this.isExpansionProfile = isExpansionProfile;
 	}
-
+*/
 	/**
 	 * Checks if is version.
 	 *

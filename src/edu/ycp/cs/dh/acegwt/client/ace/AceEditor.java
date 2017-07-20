@@ -1008,6 +1008,8 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	  
 	  $wnd.unitsList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createUnitsJsArrayString();
 	  
+	  $wnd.keywordsList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createKeywordsJsArrayString();
+	  
 	}-*/;
 	
 	/**
@@ -1123,6 +1125,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		for (CQLIdentifierObject function : funcsList) {
 			jsArray.push(function.toString() + "()");
 		}
+		
+		List<String> preDefFuncsList = new ArrayList<String>();
+		preDefFuncsList.addAll(MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList());
+		for (String func : preDefFuncsList) {
+			jsArray.push(func);
+		}
 		return jsArray;
 	}
 	
@@ -1132,10 +1140,24 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 * @return the js array string
 	 */
 	private static JsArrayString createAttributesJsArrayString() {
-		List<String> funcsList = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+		List<String> attrList = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
-		for (String string : funcsList) {
+		for (String string : attrList) {
 			jsArray.push(convertToCamelCase(string));
+		}
+		return jsArray;
+	}
+	
+	/**
+	 * Creates the keywords js array string.
+	 *
+	 * @return the js array string
+	 */
+	private static JsArrayString createKeywordsJsArrayString() {
+		List<String> keywordsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList();
+		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray();
+		for (String string : keywordsList) {
+			jsArray.push(string);
 		}
 		return jsArray;
 	}

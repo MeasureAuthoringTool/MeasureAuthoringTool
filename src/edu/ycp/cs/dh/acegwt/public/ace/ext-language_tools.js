@@ -1522,7 +1522,7 @@ var Autocomplete = function() {
           //  alert("keyString:"+keyString);
             var timingKeywords = window.timingList();
             
-            var functionKeywords = ["Abs","AgeInDays","AgeInDaysAt","AgeInHours","AgeInHoursAt","AgeInMinutes","AgeInMinutesAt","AgeInMonths","AgeInMonthsAt",
+            /*var functionKeywords = ["Abs","AgeInDays","AgeInDaysAt","AgeInHours","AgeInHoursAt","AgeInMinutes","AgeInMinutesAt","AgeInMonths","AgeInMonthsAt",
                                     "AgeInSeconds","AgeInSecondsAt","AgeInYears","AgeInYearsAt","AllTrue","AnyTrue","Avg","CalculateAgeInDays","CalculateAgeInDaysAt",
                                     "CalculateAgeInHours","CalculateAgeInHoursAt","CalculateAgeInMinutes","CalculateAgeInMinutesAt","CalculateAgeInMonths",
                                     "CalculateAgeInMonthsAt","CalculateAgeInSeconds","CalculateAgeInSecondsAt","CalculateAgeInYears","CalculateAgeInYearsAt","Ceiling",
@@ -1536,7 +1536,8 @@ var Autocomplete = function() {
                             "not","null","occurs","of","or","or after","or before","or less","or more","overlaps","parameter","predecessor","private","properly","public","return",
                             "same","singleton","second","seconds","start","starts","sort","successor","such that","then","time","timezone","to","true",
                             "Tuple","union","using","valueset","version","week","weeks","where","when","width","with","within","without","xor","year","years"];
-            
+            */
+            var keywords = window.keywordsList();
        	    var defineKeywords = window.definitioList();
         	var funcsKeywords = window.funcsList();
         	var paramKeywords = window.paramList();
@@ -1557,9 +1558,9 @@ var Autocomplete = function() {
             	for(var i=0;i<funcsKeywords.length;i++){
             		fk.push(funcsKeywords[i]);	
             	}
-            	for(var i=0;i<functionKeywords.length;i++){
+            	/*for(var i=0;i<functionKeywords.length;i++){
             		fk.push(functionKeywords[i]+'()');	
-            	}
+            	}*/
             	this.getSpecificKeyWords(fk,matches, "functions");
             } else if(keyString == "d"){
             	//alert("keyString:"+this.editor.keyString);
@@ -1600,9 +1601,9 @@ var Autocomplete = function() {
             	for(var i=0;i<funcsKeywords.length;i++){
             		fk1.push(funcsKeywords[i]);	
             	}
-            	for(var i=0;i<functionKeywords.length;i++){
+            	/*for(var i=0;i<functionKeywords.length;i++){
             		fk1.push(functionKeywords[i]+'()');	
-            	}
+            	}*/
             	
             	this.getSpecificKeyWords(fk1,matches, "functions");
             	this.getSpecificKeyWords(Keywords, matches, "keywords");

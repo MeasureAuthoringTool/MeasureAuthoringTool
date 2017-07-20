@@ -50,7 +50,7 @@ var SqlHighlightRules = function() {
 	    	'"Device, Not Applied"|"Device, Not Ordered"|"Device, Order"|"Device, Not Recommeded"|"Device, Recommeded"|"Diagnositic Study, Order"|"Diagnositic Study, Not Ordered"|' +
 	    	'"Diagnositic Study, Performed"|"Diagnositic Study, Not Performed"|"Diagnositic Study, Recommended"|"Diagnositic Study, Not Recommended"|"Encounter, Active"|"Encounter, Order"|' +
 	    	'"Encounter, Not Ordered"|"Encounter, Performed"|"Encounter, Not Performed"|"Encounter, Recommended"|"Encounter, Not Recommended"|"Family History"|"Immunization, Administered"|' +
-	    	'"Immunization, Not Administered"|"Immunization, Order"|"Immunization, Not Ordered"|"Patient Characteristic"|"Patient Characteristic Birthdate"|' +
+	    	'"Immunization, Not Administered"|"Immunization, Order"|"Immunization, Not Ordered"|"Participation"|"Patient Characteristic"|"Patient Characteristic Birthdate"|' +
 	    	'"Patient Characteristic Clinical Trial Participant"|"Patient Characteristic Ethnicity"|"Patient Characteristic Expired"|"Patient Characteristic Payer"|"Patient Characteristic Race"|' +
 	    	'"Patient Characteristic Sex"|"Provider Characteristic"|"Intervention, Not Ordered"|"Intervention, Order"|"Intervention, Not Performed"|"Intervention, Performed"|' +
 	    	'"Intervention, Not Recommended"|"Intervention, Recommended"|"Laboratory Test, Order"|"Laboratory Test, Not Ordered"|"Laboratory Test, Performed"|"Laboratory Test, Not Performed"|' +
@@ -62,8 +62,8 @@ var SqlHighlightRules = function() {
 	        
 	        //data type attribute constants
 	        'activeDatetime|admissionSource|anatomicalApproachSite|anatomicalLocationSite|authorDatetime|birthDatetime|cause|code|diagnosis|dischargeDisposition|dosage|expiredDatetime|' +
-	        'facilityLocation|frequency|id|incisionDatetime|lengthOfStay|locationPeriod|method|negationRationale|ordinality|prevalencePeriod|principalDiagnosis|radiationDosage|' +
-	        'radiationDuration|reason|recorder|referenceRange|refills|relatedTo|relationship|relevantPeriod|reporter|result|resultDatetime|route|severity|status|supply|targetOutcome|type'
+	        'facilityLocation|frequency|id|incisionDatetime|lengthOfStay|locationPeriod|method|negationRationale|ordinality|participationPeriod|prevalencePeriod|principalDiagnosis|' +
+	        'reason|recorder|referenceRange|refills|relatedTo|relationship|relevantPeriod|reporter|result|resultDatetime|route|severity|status|supply|targetOutcome|type'
 	        
 	    );
 

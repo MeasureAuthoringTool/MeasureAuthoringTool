@@ -4552,7 +4552,7 @@ private void addCodeSearchPanelHandlers() {
 				//	}
 					showSearchingBusy(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
+					.createAlert("Value set "+matValueSets.get(0).getDisplayName()+" successfully retrieved from VSAC.");
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
 				} else {
@@ -4633,6 +4633,7 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
 					
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code "+result.getDirectReferenceCode().getCode()+" successfully retrieved from VSAC.");
 				} else if (result.getFailureReason() == 5) { 
 					 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
 					 

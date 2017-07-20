@@ -4585,7 +4585,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		final String url = searchDisplay.getCodesView().getCodeSearchInput().getValue().trim();
 		searchDisplay.getCodesView().getCodeSearchInput().setText(url);
-		
+		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 		if (!MatContext.get().isUMLSLoggedIn()) {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
@@ -4643,6 +4643,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
 					searchDisplay.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code "+result.getDirectReferenceCode().getCode()+" successfully retrieved from VSAC.");
 					
 			 } else if (result.getFailureReason() == 5) { 
 				 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
@@ -4738,7 +4739,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					//}
 					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
+							.createAlert("Value set "+matValueSets.get(0).getDisplayName()+" successfully retrieved from VSAC.");
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
 				} else {

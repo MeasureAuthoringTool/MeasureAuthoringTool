@@ -25,8 +25,11 @@ public class MeasureType implements IsSerializable{
 	/** The id. */
 	private String id;
 	
-	/** The abbr desc. */
-	private String abbrDesc;//Added for XML conversion.
+	/** The description. */
+	private String description;
+	
+	/** The abbr name. */
+	private String abbrName;//Added for XML conversion.
 	
 	/**
 	 * Gets the id.
@@ -46,10 +49,7 @@ public class MeasureType implements IsSerializable{
 	public void setId(String id) {
 		this.id = id.trim();
 	}
-
-	/** The description. */
-	private String description;
-
+	
 	/**
 	 * Gets the description.
 	 * 
@@ -87,8 +87,8 @@ public class MeasureType implements IsSerializable{
 	 * 
 	 * @return the abbrDesc
 	 */
-	public String getAbbrDesc() {
-		return abbrDesc;
+	public String getAbbrName() {
+		return abbrName;
 	}
 
 	/**
@@ -97,8 +97,8 @@ public class MeasureType implements IsSerializable{
 	 * @param abbrDesc
 	 *            the abbrDesc to set
 	 */
-	public void setAbbrDesc(String abbrDesc) {
-		this.abbrDesc = abbrDesc;
+	public void setAbbrName(String abbrName) {
+		this.abbrName = abbrName;
 	}
 
 }

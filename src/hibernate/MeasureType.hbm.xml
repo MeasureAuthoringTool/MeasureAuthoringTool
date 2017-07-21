@@ -8,5 +8,6 @@
 	<cache usage="read-only"/>
 	<id name="id" column="ID"/>	
 	<property name="description" column="NAME"/>	
+	<property name="abbrName" column="ABBR_NAME"/>
   </class>
 </hibernate-mapping>

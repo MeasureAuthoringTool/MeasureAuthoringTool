@@ -16,6 +16,8 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 	/** The Name. */
 	private String Name;
 	
+	private String abbrName;
+	
 	/**
 	 * Instantiates a new measure type dto.
 	 */
@@ -77,6 +79,22 @@ public class MeasureTypeDTO implements IsSerializable, HasListBox {
 		Name = name;
 	}
 	
+	/**
+	 * Gets the abbreviated name
+	 * @return the abbreviated name
+	 */
+	public String getAbbrName() {
+		return abbrName;
+	}
+
+	/**
+	 * Sets the abbreviated name
+	 * @param abbrName the abbreviated name
+	 */
+	public void setAbbrName(String abbrName) {
+		this.abbrName = abbrName;
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getSortOrder()
 	 */

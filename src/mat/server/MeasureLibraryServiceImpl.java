@@ -3108,7 +3108,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		// MAT-4898
 		// setOrgIdInAuthor(measureDetailModel.getAuthorSelectedList());
-		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeSelectedList());
 		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
 
 		if ((measureDetailModel.getEndorseByNQF() != null) && measureDetailModel.getEndorseByNQF()) {
@@ -3146,21 +3145,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	public final void setMeasurePackageService(final MeasurePackageService measurePackagerService) {
 	}
-
-	/**
-	 * Sets the measure type abbreviation.
-	 * 
-	 * @param measureTypeList
-	 *            the new measure type abbreviation
-	 */
-	private void setMeasureTypeAbbreviation(final List<MeasureType> measureTypeList) {
-		if (measureTypeList != null) {
-			for (MeasureType measureType : measureTypeList) {
-				measureType.setAbbrDesc(MeasureDetailsUtil.getMeasureTypeAbbr(measureType.getDescription()));
-			}
-		}
-	}
-
+	
 	/**
 	 * Sets the scoring abbreviation.
 	 * 
@@ -5362,7 +5347,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		for (MeasureTypeDTO measureTypeDTO : measureTypeDTOList) {
 			MeasureType measureType = new MeasureType();
 			measureType.setDescription(measureTypeDTO.getName());
-			measureType.setAbbrDesc(MeasureDetailsUtil.getMeasureTypeAbbr(measureTypeDTO.getName()));
+			measureType.setAbbrName(measureTypeDTO.getAbbrName());
 			measureTypeList.add(measureType);
 		}
 		return measureTypeList;

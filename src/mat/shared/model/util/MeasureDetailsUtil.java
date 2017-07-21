@@ -9,32 +9,32 @@ import mat.shared.ConstantMessages;
  */
 public class MeasureDetailsUtil {
 	
-	/**
-	 * Gets the measure type abbr.
-	 * 
-	 * @param measureType
-	 *            the measure type
-	 * @return the measure type abbr
-	 */
-	public static String getMeasureTypeAbbr(String measureType){
-		String abbr = "";
-		if(measureType.equalsIgnoreCase("Composite")){
-			abbr = "COMPOSITE";
-		}else if(measureType.equalsIgnoreCase("Cost/Resource Use")){
-			abbr = "COSTRESOURCEUSE";
-		}else if(measureType.equalsIgnoreCase("Efficiency")){
-			abbr = "EFFICIENCY";
-		}else if(measureType.equalsIgnoreCase("Outcome")){
-			abbr = "OUTCOME";
-		}else if(measureType.equalsIgnoreCase("Structure")){
-			abbr = "STRUCTURE";
-		}else if(measureType.equalsIgnoreCase("Patient Engagement/Experience")){
-			abbr = "PATENGEXP";
-		}else if(measureType.equalsIgnoreCase("Process")){
-			abbr = "PROCESS";
-		}
-		return abbr;
-	}
+//	/**
+//	 * Gets the measure type abbr.
+//	 * 
+//	 * @param measureType
+//	 *            the measure type
+//	 * @return the measure type abbr
+//	 */
+//	public static String getMeasureTypeAbbr(String measureType){
+//		String abbr = "";
+//		if(measureType.equalsIgnoreCase("Composite")){
+//			abbr = "COMPOSITE";
+//		}else if(measureType.equalsIgnoreCase("Cost/Resource Use")){
+//			abbr = "COSTRESOURCEUSE";
+//		}else if(measureType.equalsIgnoreCase("Efficiency")){
+//			abbr = "EFFICIENCY";
+//		}else if(measureType.equalsIgnoreCase("Outcome")){
+//			abbr = "OUTCOME";
+//		}else if(measureType.equalsIgnoreCase("Structure")){
+//			abbr = "STRUCTURE";
+//		}else if(measureType.equalsIgnoreCase("Patient Engagement/Experience")){
+//			abbr = "PATENGEXP";
+//		}else if(measureType.equalsIgnoreCase("Process")){
+//			abbr = "PROCESS";
+//		}
+//		return abbr;
+//	}
 	
 	/**
 	 * Gets the scoring abbr.

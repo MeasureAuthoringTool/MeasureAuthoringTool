@@ -152,7 +152,7 @@
            collection="arraylist">
       <bind-xml name="type" location="types">
       	<class name="mat.model.MeasureType">
-		    <field name="abbrDesc"
+		    <field name="abbrName"
 		           type="java.lang.String" >
 		      <bind-xml name="id" node="attribute"/>
 		    </field>    

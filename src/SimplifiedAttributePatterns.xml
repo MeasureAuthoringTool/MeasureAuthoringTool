@@ -165,7 +165,7 @@
  <attribute attribName="reporter">
   <mode mode="ValueSets/Codes" />
  </attribute>
- <attribute attribName="◦participationPeriod">
+ <attribute attribName="participationPeriod">
   <mode mode="Nullable" />
  </attribute>
 </matattributes>

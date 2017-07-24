@@ -255,7 +255,7 @@ public class InsertIntoAceEditorDialogBox {
 						} else {
 							int selectedIndex = listAllItemNames.getSelectedIndex();
 							if (selectedIndex != 0) {
-								String itemNameToBeInserted = listAllItemNames.getValue(selectedIndex).replaceAll("\"", "");
+								String itemNameToBeInserted = listAllItemNames.getValue(selectedIndex);
 								if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 									selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
@@ -269,24 +269,25 @@ public class InsertIntoAceEditorDialogBox {
 										String dataType =null;
 										if (selectedDatatypeIndex != 0) {
 											if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex).replaceAll("\"", "");
+												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
 											}
 										}
 
 										StringBuilder sb = new StringBuilder();
 										boolean isNotValidCode = false;
 										if(dataType != null){
-											if(itemNameToBeInserted.equalsIgnoreCase(DEAD) 
+											String modifiedItemNameToBeInserted = modifyQuotesInString(itemNameToBeInserted);
+											if(modifiedItemNameToBeInserted.equalsIgnoreCase(DEAD) 
 													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
 												isNotValidCode = true;											
-											} else if(itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE) 
+											} else if(modifiedItemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE) 
 													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
 												isNotValidCode = true;
 											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)
-												&& !itemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
+												&& !modifiedItemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
 												isNotValidCode = true;
 											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)
-												&& !itemNameToBeInserted.equalsIgnoreCase(DEAD)){
+												&& !modifiedItemNameToBeInserted.equalsIgnoreCase(DEAD)){
 												isNotValidCode = true;
 											}
 											if(isNotValidCode){
@@ -359,11 +360,14 @@ public class InsertIntoAceEditorDialogBox {
 					messageFormgroup.setValidationState(ValidationState.ERROR);
 				}
 			}
+
 		});
 		dialogModal.show();
 	}
 	
-	
+	private static String modifyQuotesInString(String textToBeModified) {
+		return textToBeModified.replaceAll("\"", "");
+	}
 	
 	
 	/**

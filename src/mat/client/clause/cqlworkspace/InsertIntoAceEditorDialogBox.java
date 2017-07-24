@@ -255,7 +255,7 @@ public class InsertIntoAceEditorDialogBox {
 						} else {
 							int selectedIndex = listAllItemNames.getSelectedIndex();
 							if (selectedIndex != 0) {
-								String itemNameToBeInserted = listAllItemNames.getValue(selectedIndex);
+								String itemNameToBeInserted = listAllItemNames.getValue(selectedIndex).replaceAll("\"", "");
 								if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
 									selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
@@ -269,7 +269,7 @@ public class InsertIntoAceEditorDialogBox {
 										String dataType =null;
 										if (selectedDatatypeIndex != 0) {
 											if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
-												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
+												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex).replaceAll("\"", "");
 											}
 										}
 

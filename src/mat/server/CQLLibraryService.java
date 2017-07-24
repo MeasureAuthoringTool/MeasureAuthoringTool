@@ -210,6 +210,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
 	@Override
 	public void save(CQLLibrary library) {
+		library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 		this.cqlLibraryDAO.save(library);
 		
 		
@@ -339,7 +340,19 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
 			newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			newLibraryObject.setQdmVersion(MATPropertiesService.get().getQmdVersion());
-			newLibraryObject.setCQLByteArray(existingLibrary.getCQLByteArray());
+		// Update QDM Version to latest QDM Version.
+			String versionLibraryXml = getCQLLibraryXml(existingLibrary);
+			if(versionLibraryXml != null){
+				XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
+				try {
+					processor.updateLatestQDMVersion();
+					versionLibraryXml = processor.transform(processor.getOriginalDoc());
+				} catch (XPathExpressionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			newLibraryObject.setCQLByteArray(versionLibraryXml.getBytes());
 			newLibraryObject.setVersion(existingLibrary.getVersion());
 			newLibraryObject.setRevisionNumber("000");
 			save(newLibraryObject);

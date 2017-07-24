@@ -1555,6 +1555,19 @@ public class XmlProcessor {
 	}
 	
 	/**
+	 * Method to set latest QDM Version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
+	 * 
+	 * **/
+	public void updateLatestQDMVersion() throws XPathExpressionException {
+
+		Node cqlLibraryQdmVersionNode = findNode(originalDoc, "//cqlLookUp/usingModelVersion");
+
+		if (cqlLibraryQdmVersionNode != null) {
+			cqlLibraryQdmVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
+		}
+	}
+	
+	/**
 	 * This method will take a String and remove all non-alphabet/non-numeric characters 
 	 * except underscore ("_") characters.
 	 * @param originalString

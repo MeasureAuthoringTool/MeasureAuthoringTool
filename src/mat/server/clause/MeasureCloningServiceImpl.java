@@ -307,6 +307,8 @@ implements MeasureCloningService {
 				//create the default 4 CMS supplemental definitions
 				appendSupplementalDefinitions(xmlProcessor, false);
 				xmlProcessor.updateCQLLibraryName();
+				// Always set latest QDM Version.
+				xmlProcessor.updateLatestQDMVersion();
 			}
 			
 			clonedXml.setMeasureXMLAsByteArray(xmlProcessor

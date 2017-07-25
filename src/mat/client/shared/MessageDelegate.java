@@ -3378,14 +3378,14 @@ public class MessageDelegate {
 	 * @return the valueset success message
 	 */
 	public String getValuesetSuccessMessage(String codeListName) {
-		if(codeListName.length() > 60){
+		if(codeListName.length() >= 60){
 			codeListName = codeListName.substring(0, 59);
 		}
 		return "Value set " + codeListName + " has been applied successfully.";
 	}
 	
 	public String getValuesetSuccessfulReterivalMessage(String codeListName) {
-		if(codeListName.length() > 60){
+		if(codeListName.length() >= 60){
 			codeListName = codeListName.substring(0, 59);
 		}
 		return "Value set " + codeListName + " successfully retrieved from VSAC.";

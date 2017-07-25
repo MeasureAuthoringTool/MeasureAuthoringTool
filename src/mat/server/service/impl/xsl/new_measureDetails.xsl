@@ -189,7 +189,7 @@
         <subjectOf>
             <measureAttribute>
                 <code nullFlavor="OTH">
-                    <originalText value="eMeasure Identifier (Measure Authoring Tool)" />
+                    <originalText value="eCQM Identifier (Measure Authoring Tool)" />
                 </code>
                 <value xsi:type="ED" mediaType="text/plain">
                     <xsl:attribute name="value">

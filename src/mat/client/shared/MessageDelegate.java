@@ -2994,16 +2994,7 @@ public class MessageDelegate {
 		return DELETE_CONFIRMATION_INCLUDE;
 	}
 
-	/**
-	 * Gets the valueset success message.
-	 *
-	 * @param codeListName the code list name
-	 * @return the valueset success message
-	 */
-	public String getValuesetSuccessMessage(String codeListName) {
-		return "Value set " + codeListName + " has been applied successfully.";
-	}
-
+	
 	/**
 	 * Gets the error include alias name no special char.
 	 *
@@ -3379,5 +3370,26 @@ public class MessageDelegate {
 	public static String getPACKAGER_CQL_ERROR() {
 		return PACKAGER_CQL_ERROR;
 	}
+	
+	/**
+	 * Gets the valueset success message.
+	 *
+	 * @param codeListName the code list name
+	 * @return the valueset success message
+	 */
+	public String getValuesetSuccessMessage(String codeListName) {
+		if(codeListName.length() > 60){
+			codeListName = codeListName.substring(0, 59);
+		}
+		return "Value set " + codeListName + " has been applied successfully.";
+	}
+	
+	public String getValuesetSuccessfulReterivalMessage(String codeListName) {
+		if(codeListName.length() > 60){
+			codeListName = codeListName.substring(0, 59);
+		}
+		return "Value set " + codeListName + " successfully retrieved from VSAC.";
+	}
+	
 
 }

@@ -4552,7 +4552,7 @@ private void addCodeSearchPanelHandlers() {
 				//	}
 					showSearchingBusy(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-					.createAlert("Value set "+oid+" successfully retrieved from VSAC.");
+					.createAlert(MatContext.get().getMessageDelegate().getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
 				} else {

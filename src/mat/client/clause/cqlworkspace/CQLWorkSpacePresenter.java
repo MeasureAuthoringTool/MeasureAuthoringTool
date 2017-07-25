@@ -4716,9 +4716,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						MatValueSet matValueSet = matValueSets.get(0);
 						currentMatValueSet = matValueSet;
 					}
+					String valueSetName = matValueSets.get(0).getDisplayName();
 					searchDisplay.getValueSetView().getOIDInput().setTitle(oid);
-					searchDisplay.getValueSetView().getUserDefinedInput().setValue(matValueSets.get(0).getDisplayName());
-					searchDisplay.getValueSetView().getUserDefinedInput().setTitle(matValueSets.get(0).getDisplayName());
+					searchDisplay.getValueSetView().getUserDefinedInput().setValue(valueSetName);
+					searchDisplay.getValueSetView().getUserDefinedInput().setTitle(valueSetName);
 				//	searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
 					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 
@@ -4737,10 +4738,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						//searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
 						searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 					//}
-					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
-					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-							.createAlert("Value set "+oid+" successfully retrieved from VSAC.");
-					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
+					
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 
 				} else {
 					String message = searchDisplay.getValueSetView().convertMessage(result.getFailureReason());

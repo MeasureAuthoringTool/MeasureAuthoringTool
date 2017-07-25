@@ -4738,7 +4738,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						//searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
 						searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 					//}
-					
+						searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
 						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
 						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);

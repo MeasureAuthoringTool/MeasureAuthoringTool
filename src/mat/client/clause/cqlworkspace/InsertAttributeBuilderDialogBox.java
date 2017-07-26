@@ -506,6 +506,7 @@ private static void clearAllFormGroups() {
 		UnitsLabel.setText("Units");
 		UnitsLabel.setTitle("Select Units");
 		UnitsLabel.setStyleName("attr-Label");
+		UnitsLabel.setFor("Units");
 		
 		unitFormGroup.clear();
 		unitFormGroup.add(UnitsLabel);
@@ -530,6 +531,7 @@ private static void clearAllFormGroups() {
 		QuantityLabel.setText("Quantity");
 		QuantityLabel.setTitle("Select Quantity");
 		QuantityLabel.setStyleName("attr-Label");
+		QuantityLabel.setFor("Quantity");
 		
 		quantityFormGroup.clear();
 		quantityFormGroup.add(QuantityLabel);
@@ -559,6 +561,7 @@ private static void clearAllFormGroups() {
 		AttrDataTypeLabel.setText("Attributes By DataType");
 		AttrDataTypeLabel.setTitle("Select Attributes By DataType");
 		AttrDataTypeLabel.setStyleName("attr-Label");
+		AttrDataTypeLabel.setFor("ListAttributesByDataType");
 
 		dtFormGroup.clear();
 		dtFormGroup.add(AttrDataTypeLabel);
@@ -588,6 +591,7 @@ private static void clearAllFormGroups() {
 		AttributeLabel.setText("Attributes");
 		AttributeLabel.setTitle("Select Attributes");
 		AttributeLabel.setStyleName("attr-Label");
+		AttributeLabel.setFor("SelectAttributes");
 
 		attrFormGroup.clear();
 		attrFormGroup.add(AttributeLabel);
@@ -620,6 +624,7 @@ private static void clearAllFormGroups() {
 		ModeLabel.setText("Mode");
 		ModeLabel.setTitle("Select Mode");
 		ModeLabel.setStyleName("attr-Label");
+		ModeLabel.setFor("SelectMode");
 		
 		modeFormGroup.clear();
 		modeFormGroup.add(ModeLabel);
@@ -652,6 +657,7 @@ private static void clearAllFormGroups() {
 		ModeDetailsLabel.setText("Mode Details");
 		ModeDetailsLabel.setTitle("Select Mode Details");
 		ModeDetailsLabel.setStyleName("attr-Label");
+		ModeDetailsLabel.setFor("SelectModeDetails");
 		
 		modeDetailsFormGroup.clear();
 		modeDetailsFormGroup.add(ModeDetailsLabel);
@@ -744,16 +750,19 @@ private static void clearAllFormGroups() {
 		yearFormLabel.setText("YYYY");
 		yearFormLabel.setTitle("Year");
 		yearFormLabel.setStyleName("year-Label");
+		yearFormLabel.setFor("Year");
 		
 		final FormLabel monthFormLabel = new FormLabel();
 		monthFormLabel.setText("MM");
 		monthFormLabel.setTitle("Month");
 		monthFormLabel.setStyleName("month-Label");
+		monthFormLabel.setFor("Month");
 		
 		final FormLabel dayFormLabel = new FormLabel();
 		dayFormLabel.setText("DD");
 		dayFormLabel.setTitle("Day");
 		dayFormLabel.setStyleName("day-Label");
+		dayFormLabel.setFor("Day");
 		
 		/*datePanel.add(yearFormGroup);
 		datePanel.add(mmFormGroup);
@@ -946,21 +955,25 @@ private static void clearAllFormGroups() {
 		hourFormLabel.setText("hh");
 		hourFormLabel.setTitle("Hour(s)");
 		hourFormLabel.setStyleName("hour-Label");
+		hourFormLabel.setFor("Hours");
 		
 		final FormLabel minutesFormLabel = new FormLabel();
 		minutesFormLabel.setText("mm");
 		minutesFormLabel.setTitle("Minute(s)");
 		minutesFormLabel.setStyleName("minute-Label");
+		minutesFormLabel.setFor("Minutes");
 		
 		final FormLabel secondsFormLabel = new FormLabel();
 		secondsFormLabel.setText("ss");
 		secondsFormLabel.setTitle("Second(s)");
 		secondsFormLabel.setStyleName("seconds-Label");
+		secondsFormLabel.setFor("Seconds");
 		
 		final FormLabel millisecFormLabel = new FormLabel();
 		millisecFormLabel.setText("fff");
 		millisecFormLabel.setTitle("Millisecond(s)");
 		millisecFormLabel.setStyleName("millisec-Label");
+		millisecFormLabel.setFor("Milliseconds");
 		
 		/*datePanel.add(yearFormGroup);
 		datePanel.add(mmFormGroup);

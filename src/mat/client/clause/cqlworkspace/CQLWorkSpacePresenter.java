@@ -1905,6 +1905,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				isModified = true;
 				modifyValueSetDTO = result;
 				String displayName = result.getCodeListName();
+				// Substring at 60th character length.
+				if(displayName.length() >=60){
+					displayName = displayName.substring(0, 59);
+				}
 				HTML searchHeaderText = new HTML("<strong>Modify value set ( "+displayName +")</strong>");
 				searchDisplay.getValueSetView().getSearchHeader().clear();
 				searchDisplay.getValueSetView().getSearchHeader().add(searchHeaderText);

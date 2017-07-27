@@ -2979,8 +2979,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	 */
 	private void buildInsertPopUp() {
 		searchDisplay.resetMessageDisplay();
-		InsertIntoAceEditorDialogBox
-				.showListOfItemAvailableForInsertDialogBox(searchDisplay.getCqlLeftNavBarPanelView(), curAceEditor);
+		InsertIntoAceEditorDialogBox AceEditorDBox = new InsertIntoAceEditorDialogBox();
+		AceEditorDBox.showListOfItemAvailableForInsertDialogBox(searchDisplay.getCqlLeftNavBarPanelView(), curAceEditor);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 	}
 

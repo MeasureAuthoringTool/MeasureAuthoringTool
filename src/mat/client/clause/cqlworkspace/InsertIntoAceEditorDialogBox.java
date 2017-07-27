@@ -63,20 +63,20 @@ public class InsertIntoAceEditorDialogBox {
 	/**
 	 * List of availableInsertItemList.
 	 */
-	private static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
+	private  List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
 	
 	/** The all data types. */
-	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+	private  List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 		
 	/** The all attributes. */
-	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+	private  List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 	
-	private static List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
+	private  List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
 
 
 	
 	/** The attribute service. */
-	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+	private  QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
 
@@ -85,28 +85,28 @@ public class InsertIntoAceEditorDialogBox {
 	/**
 	 * List of timingList.
 	 */
-	//private static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
+	//private  List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
 	/**
 	 * List of cqlFunctionsList.
 	 */
-	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
+	private  List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	
 	/** The Constant INSERT_AT_END. */
-	private static final int INSERT_AT_END = -1;
+	private  final int INSERT_AT_END = -1;
 	
-	private static AceEditor curEditor; 
+	private  AceEditor curEditor; 
 	
-	private static final String BIRTH_DATE = "Birthdate";
-	private static final String DEAD = "Dead";
-	private static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-	private static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
+	private  final String BIRTH_DATE = "Birthdate";
+	private  final String DEAD = "Dead";
+	private  final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
+	private  final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
 
 	/**
-	 * Public static method to build Pop up for Insert into Ace Editor.
+	 * Public  method to build Pop up for Insert into Ace Editor.
 	 * @param searchDisplay - ViewDisplay.
 	 * @param currentSection - String.
 	 */
-	public static  void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
+	public   void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Insert Item into CQL Editor");
 		dialogModal.setClosable(true);
@@ -365,7 +365,7 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.show();
 	}
 	
-	private static String modifyQuotesInString(String textToBeModified) {
+	private  String modifyQuotesInString(String textToBeModified) {
 		return textToBeModified.replaceAll("\"", "");
 	}
 	
@@ -384,7 +384,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param availableItemTypeFormGroup - FormGroup.
 	 * @param selectItemListFormGroup - FormGroup.
 	 */
-	private static void addChangeHandlerIntoLists(final Modal dialogModal, final CQLLeftNavBarPanelView cqlNavBarView,
+	private  void addChangeHandlerIntoLists(final Modal dialogModal, final CQLLeftNavBarPanelView cqlNavBarView,
 			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
 			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
@@ -489,7 +489,8 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						InsertAttributeBuilderDialogBox.showAttributesDialogBox(cqlNavBarView,curEditor);
+						InsertAttributeBuilderDialogBox AttrBuildBox = new InsertAttributeBuilderDialogBox();
+						AttrBuildBox.showAttributesDialogBox(cqlNavBarView,curEditor);
 						listAllItemNames.setEnabled(false);
 						availableDatatypes.setEnabled(true);
 						availableAttributesToInsert.setEnabled(true);
@@ -585,7 +586,7 @@ public class InsertIntoAceEditorDialogBox {
 		
 		
 	}
-private static void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
+private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
 		
 		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
 			
@@ -613,7 +614,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @param currentSection - String.
 	 * @return AceEditor.
 	 *//*
-	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
+	private  AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
 		AceEditor editor = null;
 		switch(currentSection) {
 			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
@@ -635,7 +636,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @param availableItemToInsert - ListBoxMVP
 	 * @param availableInsertItemList the available insert item list
 	 */
-	private static void addAvailableItems(ListBoxMVP availableItemToInsert, 
+	private  void addAvailableItems(ListBoxMVP availableItemToInsert, 
 			List<String> availableInsertItemList) {
 		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < availableInsertItemList.size(); i++) {
@@ -654,7 +655,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @param functions the functions
 	 * @return the function argument value builder
 	 */
-	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
+	private  String getFunctionArgumentValueBuilder(CQLFunctions functions){
 		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
 		functionNameBuilder.append("(");
 		StringBuilder argumentType = new StringBuilder();
@@ -677,7 +678,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @param functions the functions
 	 * @return the function argument tool tip builder
 	 */
-	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
+	private  String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
 		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
 		functionNameBuilder.append("(");
 		StringBuilder argumentType = new StringBuilder();
@@ -709,7 +710,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @param str the str
 	 * @return the string
 	 */
-	private static String convertToCamelCase(String str){
+	private  String convertToCamelCase(String str){
         String result = "";
         char firstChar = str.charAt(0);
         result = result + Character.toLowerCase(firstChar);

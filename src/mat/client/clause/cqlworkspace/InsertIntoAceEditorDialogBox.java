@@ -98,6 +98,8 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertItemToAceEditor_Modal");
 		dialogModal.setSize(ModalSize.MEDIUM);
+		dialogModal.setRemoveOnHide(true);
+		
 		ModalBody modalBody = new ModalBody();
 		curEditor = editor;
 		final ListBoxMVP availableItemToInsert = new ListBoxMVP();
@@ -198,6 +200,7 @@ public class InsertIntoAceEditorDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
+		
 		addChangeHandlerIntoLists(dialogModal, cqlNavBarView, availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
 				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup);

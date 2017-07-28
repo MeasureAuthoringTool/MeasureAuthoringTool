@@ -111,6 +111,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setId("InsertItemToAceEditor_Modal");
 		//dialogModal.setSize(ModalSize.MEDIUM);
 		dialogModal.setWidth("400px");
+		dialogModal.setRemoveOnHide(true);
 		ModalBody modalBody = new ModalBody();
 		modalBody.clear();
 		
@@ -383,6 +384,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setDataBackdrop(ModalBackdrop.STATIC);
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertCQLTimingToAceEditor_Modal");
+		dialogModal.setRemoveOnHide(true);
 		//dialogModal.setSize("375px","350px");
 		//dialogModal.setSize(ModalSize.SMALL);
 		dialogModal.setWidth("400px");
@@ -474,6 +476,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertItemToAceEditor_Modal");
 		dialogModal.setWidth("400px");
+		dialogModal.setRemoveOnHide(true);
 		//dialogModal.setSize(ModalSize.SMALL);
 		ModalBody modalBody = new ModalBody();
 		modalBody.setHeight("250px");

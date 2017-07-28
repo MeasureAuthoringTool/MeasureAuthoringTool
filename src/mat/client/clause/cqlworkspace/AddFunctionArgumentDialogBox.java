@@ -107,6 +107,7 @@ public class AddFunctionArgumentDialogBox {
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("AddEditArgument_Modal");
 		dialogModal.setSize(ModalSize.SMALL);
+		dialogModal.setRemoveOnHide(true);
 		ModalBody modalBody = new ModalBody();
 		final ListBoxMVP listAllDataTypes = new ListBoxMVP();
 		listAllDataTypes.setWidth("290px");

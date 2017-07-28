@@ -136,6 +136,7 @@ public class InsertAttributeBuilderDialogBox {
 		dialogModal.setDataKeyboard(true);
 		dialogModal.setId("InsertAttrToAceEditor_Modal");
 		dialogModal.setWidth("50%");
+		dialogModal.setRemoveOnHide(true);
 		ModalBody modalBody = new ModalBody();
 		final FormGroup messageFormgroup = new FormGroup();
 		final HelpBlock helpBlock = new HelpBlock();
@@ -209,6 +210,7 @@ public class InsertAttributeBuilderDialogBox {
 		modalFooter.add(buttonToolBar);
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
+		
 		
 		Collections.sort(allAttributes);
 		Collections.sort(allAttributes);

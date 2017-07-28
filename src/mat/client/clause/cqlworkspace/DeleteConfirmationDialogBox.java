@@ -46,6 +46,7 @@ public class DeleteConfirmationDialogBox {
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
+		panel.setRemoveOnHide(true);
 		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);

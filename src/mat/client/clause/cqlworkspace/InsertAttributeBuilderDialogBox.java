@@ -49,77 +49,77 @@ import mat.model.ModeDetailModel;
 import mat.model.clause.QDSAttributes;
 
 public class InsertAttributeBuilderDialogBox {
-	private final String VALUE_SETS_CODES = "Value Sets/Codes";
+	private static final String VALUE_SETS_CODES = "Value Sets/Codes";
 
-	private final String NULLABLE = "Nullable";
+	private static final String NULLABLE = "Nullable";
 
 	/**
 	 * allCqlUnits map in the format of <UnitName, CQLUnit>
 	 */
-	private Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
+	private static Map<String, String> allCqlUnits = MatContext.get().getCqlConstantContainer().getCqlUnitMap();
 		
-	private HashSet<String> nonQuoteUnits = MatContext.get().getNonQuotesUnits();
+	private static HashSet<String> nonQuoteUnits = MatContext.get().getNonQuotesUnits();
 	/** The current section. */
-	private AceEditor curEditor; 
+	private static AceEditor curEditor; 
 	/** The attribute service. */
-	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	/** The all data types. */
-	private List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 	
 	/** The all attributes. */
-	private List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 	
-	final  ListBoxMVP DtAttriblistBox = new ListBoxMVP();
-	final  ListBoxMVP AttriblistBox = new ListBoxMVP();
-	final  ListBoxMVP ModelistBox = new ListBoxMVP();
-	final  ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
+	final static ListBoxMVP DtAttriblistBox = new ListBoxMVP();
+	final static ListBoxMVP AttriblistBox = new ListBoxMVP();
+	final static ListBoxMVP ModelistBox = new ListBoxMVP();
+	final static ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
 	
-	final  FormGroup dtFormGroup = new FormGroup();
-	final  FormGroup attrFormGroup = new FormGroup();
-	final  FormGroup modeFormGroup = new FormGroup();
-	final  FormGroup modeDetailsFormGroup = new FormGroup();
-	final  FormGroup quantityFormGroup = new FormGroup();
-	final  FormGroup unitFormGroup = new FormGroup();
+	final static FormGroup dtFormGroup = new FormGroup();
+	final static FormGroup attrFormGroup = new FormGroup();
+	final static FormGroup modeFormGroup = new FormGroup();
+	final static FormGroup modeDetailsFormGroup = new FormGroup();
+	final static FormGroup quantityFormGroup = new FormGroup();
+	final static FormGroup unitFormGroup = new FormGroup();
 	
-	final  HorizontalPanel dtPanel = new HorizontalPanel();
-	final  HorizontalPanel attrPanel = new HorizontalPanel();
-	final  HorizontalPanel modePanel = new HorizontalPanel();
-	final  HorizontalPanel modeDetailPanel = new HorizontalPanel();
-	final  HorizontalPanel quantityPanel = new HorizontalPanel();
-	final  HorizontalPanel unitPanel = new HorizontalPanel();
+	final static HorizontalPanel dtPanel = new HorizontalPanel();
+	final static HorizontalPanel attrPanel = new HorizontalPanel();
+	final static HorizontalPanel modePanel = new HorizontalPanel();
+	final static HorizontalPanel modeDetailPanel = new HorizontalPanel();
+	final static HorizontalPanel quantityPanel = new HorizontalPanel();
+	final static HorizontalPanel unitPanel = new HorizontalPanel();
 	
 	/** The Constant yyyyTxtBox. */
-	final  CustomDateTimeTextBox yyyyTxtBox = new CustomDateTimeTextBox(4);
+	final static CustomDateTimeTextBox yyyyTxtBox = new CustomDateTimeTextBox(4);
 	
 	/** The Constant mmTxtBox. */
-	final  CustomDateTimeTextBox mmTxtBox = new CustomDateTimeTextBox(2);
+	final static CustomDateTimeTextBox mmTxtBox = new CustomDateTimeTextBox(2);
 	
 	/** The Constant ddTxtBox. */
-	final  CustomDateTimeTextBox ddTxtBox = new CustomDateTimeTextBox(2);
+	final static CustomDateTimeTextBox ddTxtBox = new CustomDateTimeTextBox(2);
 	
 	/** The Constant hhTextBox. */
-	final  CustomDateTimeTextBox hhTextBox = new CustomDateTimeTextBox(2);
+	final static CustomDateTimeTextBox hhTextBox = new CustomDateTimeTextBox(2);
 	
 	/** The Constant minTxtBox. */
-	final  CustomDateTimeTextBox minTxtBox = new CustomDateTimeTextBox(2);
+	final static CustomDateTimeTextBox minTxtBox = new CustomDateTimeTextBox(2);
 	
 	/** The Constant ssTxtBox. */
-	final  CustomDateTimeTextBox ssTxtBox = new CustomDateTimeTextBox(2);
+	final static CustomDateTimeTextBox ssTxtBox = new CustomDateTimeTextBox(2);
 	
 	/** The Constant msTxtBox. */
-	final  CustomDateTimeTextBox msTxtBox = new CustomDateTimeTextBox(3);
+	final static CustomDateTimeTextBox msTxtBox = new CustomDateTimeTextBox(3);
 	
-	final  FormGroup yearFormGroup = new FormGroup();
-	final  FormGroup mmFormGroup = new FormGroup();
-	final  FormGroup ddFormGroup = new FormGroup();
-	final  FormGroup hourFormGroup = new FormGroup();
-	final  FormGroup minFormGroup = new FormGroup();
-	final  FormGroup secondsFormGroup = new FormGroup();
-	final  FormGroup millisecFormGroup = new FormGroup();
+	final static FormGroup yearFormGroup = new FormGroup();
+	final static FormGroup mmFormGroup = new FormGroup();
+	final static FormGroup ddFormGroup = new FormGroup();
+	final static FormGroup hourFormGroup = new FormGroup();
+	final static FormGroup minFormGroup = new FormGroup();
+	final static FormGroup secondsFormGroup = new FormGroup();
+	final static FormGroup millisecFormGroup = new FormGroup();
 	
-    final  CustomQuantityTextBox QuantityTextBox = new CustomQuantityTextBox(30);
-	final  ListBoxMVP UnitslistBox = new ListBoxMVP();
+    final static CustomQuantityTextBox QuantityTextBox = new CustomQuantityTextBox(30);
+	final static ListBoxMVP UnitslistBox = new ListBoxMVP();
 	
 	/**
 	 * Show attributes dialog box.
@@ -127,7 +127,7 @@ public class InsertAttributeBuilderDialogBox {
 	 * @param searchDisplay the search display
 	 * @param currentSection the current section
 	 */
-	public void showAttributesDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
+	public static void showAttributesDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Insert Options for Attributes");
 		dialogModal.setClosable(true);
@@ -446,7 +446,7 @@ public class InsertAttributeBuilderDialogBox {
 		dialogModal.show();
 		}
 	
-	private boolean isModeDisabledEntry(String attrSelected) {
+	private static boolean isModeDisabledEntry(String attrSelected) {
 		int selectedIndex = DtAttriblistBox.getSelectedIndex();
 		if (selectedIndex != 0) {
 			String dataTypeSelected = DtAttriblistBox.getItemText(selectedIndex);
@@ -469,7 +469,7 @@ public class InsertAttributeBuilderDialogBox {
 		return false;
 	}
 	
-private void clearAllFormGroups() {
+private static void clearAllFormGroups() {
 		
 		dtFormGroup.clear();
 		attrFormGroup.clear();
@@ -486,7 +486,7 @@ private void clearAllFormGroups() {
 		unitFormGroup.clear();
 	}
 
-	private void createUnitWidget(HorizontalPanel unitPanel) {
+	private static void createUnitWidget(HorizontalPanel unitPanel) {
 		unitPanel.clear();
 		unitPanel.getElement().setId("HorizontalPanel_UnitsPanel");
 		UnitslistBox.clear();
@@ -520,7 +520,7 @@ private void clearAllFormGroups() {
 		unitPanel.add(queryGrid);
 	}
 
-	private void createQuantityWidget(HorizontalPanel quantityPanel) {
+	private static void createQuantityWidget(HorizontalPanel quantityPanel) {
 		quantityPanel.clear();
 		quantityPanel.getElement().setId("HorizontalPanel_QuantityPanel");
 		QuantityTextBox.clear();
@@ -545,7 +545,7 @@ private void clearAllFormGroups() {
 		quantityPanel.add(queryGrid);
 	}
 
-	private void createDataTypeWidget(HorizontalPanel dtPanel) {
+	private static void createDataTypeWidget(HorizontalPanel dtPanel) {
 		dtPanel.clear();
 		dtPanel.getElement().setId("HorizontalPanel_DtPanel");
 		//final ListBoxMVP DtAttriblistBox = new ListBoxMVP();
@@ -575,7 +575,7 @@ private void clearAllFormGroups() {
 		dtPanel.add(queryGrid);
 	}
 
-	private void createAttributeWidget(HorizontalPanel attrPanel) {
+	private static void createAttributeWidget(HorizontalPanel attrPanel) {
 		attrPanel.clear();
 		attrPanel.getElement().setId("HorizontalPanel_AttrPanel");
 		//final ListBoxMVP AttriblistBox = new ListBoxMVP();
@@ -606,7 +606,7 @@ private void clearAllFormGroups() {
 
 	}
 
-	private void createModeWidget(HorizontalPanel modePanel) {
+	private static void createModeWidget(HorizontalPanel modePanel) {
 		modePanel.clear();
 		modePanel.getElement().setId("HorizontalPanel_ModePanel");
 		//final ListBoxMVP ModelistBox = new ListBoxMVP();
@@ -639,7 +639,7 @@ private void clearAllFormGroups() {
 		
 	}
 
-	private void createModeDetailsWidget(HorizontalPanel modeDetailPanel) {
+	private static void createModeDetailsWidget(HorizontalPanel modeDetailPanel) {
 		modeDetailPanel.clear();
 		modeDetailPanel.getElement().setId("HorizontalPanel_ModeDetailsPanel");
 		//final ListBoxMVP ModeDetailslistBox = new ListBoxMVP();
@@ -671,7 +671,7 @@ private void clearAllFormGroups() {
 		modeDetailPanel.add(queryGrid);
 	}
 	
-	private boolean validateQuantity(String text) {
+	private static boolean validateQuantity(String text) {
 		
 		if(text.isEmpty()){
 			return false;
@@ -685,7 +685,7 @@ private void clearAllFormGroups() {
 		return true;
 	}
 
-	private boolean validateDate() {
+	private static boolean validateDate() {
 		
 			
 		if(!mmTxtBox.getText().isEmpty() && yyyyTxtBox.getText().isEmpty()){
@@ -705,7 +705,7 @@ private void clearAllFormGroups() {
 	}
 	
 	
-	private boolean validateTime() {
+	private static boolean validateTime() {
 		
 		if(!minTxtBox.getText().isEmpty() && hhTextBox.getText().isEmpty()){
 			return false;
@@ -726,7 +726,7 @@ private void clearAllFormGroups() {
 	 *
 	 * @param datePanel the date panel
 	 */
-	private void createDateWidget(HorizontalPanel datePanel) {
+	private static void createDateWidget(HorizontalPanel datePanel) {
 		
 		yyyyTxtBox.clear();
 		yyyyTxtBox.setWidth("50px");
@@ -832,7 +832,7 @@ private void clearAllFormGroups() {
 		
 	}
 	
-	private void validateDateTimeWidget(AceEditor editor, HelpBlock helpBlock, FormGroup messageFormgroup,
+	private static void validateDateTimeWidget(AceEditor editor, HelpBlock helpBlock, FormGroup messageFormgroup,
 			Modal dialogModal)
 
 	{
@@ -925,7 +925,7 @@ private void clearAllFormGroups() {
 	 * @param timePanel
 	 *            the time panel
 	 */
-	private void createTimeWidget(HorizontalPanel timePanel) {
+	private static void createTimeWidget(HorizontalPanel timePanel) {
 		
 		hhTextBox.clear();
 		hhTextBox.setWidth("50px");
@@ -1062,7 +1062,7 @@ private void clearAllFormGroups() {
 	}
 
 	
-	private void clearAllBoxes(){
+	private static void clearAllBoxes(){
 		QuantityTextBox.clear();
 		UnitslistBox.setSelectedIndex(0);
 		yyyyTxtBox.clear();
@@ -1074,7 +1074,7 @@ private void clearAllFormGroups() {
 		msTxtBox.clear();
 	}
 	
-	private void setDateTimeEnabled(boolean enabled){
+	private static void setDateTimeEnabled(boolean enabled){
 		yyyyTxtBox.setEnabled(enabled);
 		mmTxtBox.setEnabled(enabled);
 		ddTxtBox.setEnabled(enabled);
@@ -1085,7 +1085,7 @@ private void clearAllFormGroups() {
 		
 	}
 	
-	private void setWidgetEnabled(ListBox attributeListBox, ListBoxMVP ModelistBox){
+	private static void setWidgetEnabled(ListBox attributeListBox, ListBoxMVP ModelistBox){
 		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 		String modeName = ModelistBox.getItemText(ModelistBox.getSelectedIndex());
 		attributeName = attributeName.toLowerCase();
@@ -1110,7 +1110,7 @@ private void clearAllFormGroups() {
 		}
 		
 	}
-private void defaultFrmGrpValidations(){
+private static void defaultFrmGrpValidations(){
 		
 		dtFormGroup.setValidationState(ValidationState.NONE);
 		attrFormGroup.setValidationState(ValidationState.NONE);
@@ -1129,14 +1129,14 @@ private void defaultFrmGrpValidations(){
 	
 	
 	
-	private void setEnabled(boolean enabled){
+	private static void setEnabled(boolean enabled){
 		
 		QuantityTextBox.setEnabled(enabled);
 		UnitslistBox.setEnabled(enabled);
 		setDateTimeEnabled(enabled);
 	}
 	
-	private void addModelist(ListBoxMVP availableItemToInsert, List<String> attrModeList) {
+	private static void addModelist(ListBoxMVP availableItemToInsert, List<String> attrModeList) {
 		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < attrModeList.size(); i++) {
 			if(!attrModeList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
@@ -1145,7 +1145,7 @@ private void defaultFrmGrpValidations(){
 		}
 	}
 	
-	private void addModeDetailslist(ListBoxMVP availableItemToInsert, List<ModeDetailModel> list) {
+	private static void addModeDetailslist(ListBoxMVP availableItemToInsert, List<ModeDetailModel> list) {
 		/*availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < list.size(); i++) {
 			if(!list.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
@@ -1172,7 +1172,7 @@ private void defaultFrmGrpValidations(){
 	 * @param upperBound the upper bound
 	 * @return true, if successful
 	 */
-	private boolean inRange(String s, String lowerBound, String upperBound) {
+	private static boolean inRange(String s, String lowerBound, String upperBound) {
 		if(s.isEmpty()){
 			return true;
 		}
@@ -1191,7 +1191,7 @@ private void defaultFrmGrpValidations(){
 	 *
 	 * @return the string
 	 */
-	private String attributeStringBuilder(){
+	private static String attributeStringBuilder(){
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = "";
 		String selectedMode = "";
@@ -1257,7 +1257,7 @@ private void defaultFrmGrpValidations(){
 	 *
 	 * @return the string
 	 */
-	private String buildDateTimeString(){
+	private static String buildDateTimeString(){
 		StringBuilder sb = new StringBuilder();
 		String selectedAttrItem = AttriblistBox.getItemText(AttriblistBox.getSelectedIndex());
 		String selectedMDetailsItem = ModeDetailslistBox.getItemText(ModeDetailslistBox.getSelectedIndex());
@@ -1324,7 +1324,7 @@ private void defaultFrmGrpValidations(){
 		return sb.toString();
 	}
 	
-	private String appendZeroString(int count){
+	private static String appendZeroString(int count){
 		
 		StringBuilder sb = new StringBuilder();
 		for(int i=0;i<count;i++){
@@ -1333,7 +1333,7 @@ private void defaultFrmGrpValidations(){
 		return sb.toString();
 	}
 	
-	public boolean isValidate(String inDate){
+	public static boolean isValidate(String inDate){
 		DateTimeFormat format = DateTimeFormat.getFormat("yyyy/MM/dd");
 		try {
 			format.parseStrict(inDate);
@@ -1348,7 +1348,7 @@ private void defaultFrmGrpValidations(){
 	 * @param availableItemToInsert - ListBoxMVP
 	 * @param availableInsertItemList the available insert item list
 	 */
-	private void addAvailableItems(ListBoxMVP availableItemToInsert, 
+	private static void addAvailableItems(ListBoxMVP availableItemToInsert, 
 			List<String> availableInsertItemList) {
 		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < availableInsertItemList.size(); i++) {
@@ -1367,7 +1367,7 @@ private void defaultFrmGrpValidations(){
 	 * @param dataType the data type
 	 * @return the all attibutes by data type
 	 */
-	private void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
+	private static void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
 		
 		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
 			

@@ -2,11 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -26,29 +22,16 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.shared.CustomDateTimeTextBox;
-import mat.client.shared.CustomQuantityTextBox;
-import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.shared.NameValuePair;
-import mat.model.ModeDetailModel;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLFunctionArgument;
 import mat.model.cql.CQLFunctions;
@@ -63,20 +46,20 @@ public class InsertIntoAceEditorDialogBox {
 	/**
 	 * List of availableInsertItemList.
 	 */
-	private  List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
+	private static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
 	
 	/** The all data types. */
-	private  List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
+	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 		
 	/** The all attributes. */
-	private  List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
+	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 	
-	private  List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
+	private static List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
 
 
 	
 	/** The attribute service. */
-	private  QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
 
@@ -85,28 +68,28 @@ public class InsertIntoAceEditorDialogBox {
 	/**
 	 * List of timingList.
 	 */
-	//private  List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
+	//private static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
 	/**
 	 * List of cqlFunctionsList.
 	 */
-	private  List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
+	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	
 	/** The Constant INSERT_AT_END. */
-	private  final int INSERT_AT_END = -1;
+	private static final int INSERT_AT_END = -1;
 	
-	private  AceEditor curEditor; 
+	private static AceEditor curEditor; 
 	
-	private  final String BIRTH_DATE = "Birthdate";
-	private  final String DEAD = "Dead";
-	private  final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-	private  final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
+	private static final String BIRTH_DATE = "Birthdate";
+	private static final String DEAD = "Dead";
+	private static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
+	private static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
 
 	/**
-	 * Public  method to build Pop up for Insert into Ace Editor.
+	 * Public static method to build Pop up for Insert into Ace Editor.
 	 * @param searchDisplay - ViewDisplay.
 	 * @param currentSection - String.
 	 */
-	public   void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
+	public static  void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.setTitle("Insert Item into CQL Editor");
 		dialogModal.setClosable(true);
@@ -365,7 +348,7 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.show();
 	}
 	
-	private  String modifyQuotesInString(String textToBeModified) {
+	private static String modifyQuotesInString(String textToBeModified) {
 		return textToBeModified.replaceAll("\"", "");
 	}
 	
@@ -384,7 +367,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param availableItemTypeFormGroup - FormGroup.
 	 * @param selectItemListFormGroup - FormGroup.
 	 */
-	private  void addChangeHandlerIntoLists(final Modal dialogModal, final CQLLeftNavBarPanelView cqlNavBarView,
+	private static void addChangeHandlerIntoLists(final Modal dialogModal, final CQLLeftNavBarPanelView cqlNavBarView,
 			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes,
 			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
 			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
@@ -489,8 +472,7 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						InsertAttributeBuilderDialogBox AttrBuildBox = new InsertAttributeBuilderDialogBox();
-						AttrBuildBox.showAttributesDialogBox(cqlNavBarView,curEditor);
+						InsertAttributeBuilderDialogBox.showAttributesDialogBox(cqlNavBarView,curEditor);
 						listAllItemNames.setEnabled(false);
 						availableDatatypes.setEnabled(true);
 						availableAttributesToInsert.setEnabled(true);
@@ -586,7 +568,7 @@ public class InsertIntoAceEditorDialogBox {
 		
 		
 	}
-private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
+private static void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){
 		
 		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
 			
@@ -614,7 +596,7 @@ private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToIn
 	 * @param currentSection - String.
 	 * @return AceEditor.
 	 *//*
-	private  AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
+	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
 		AceEditor editor = null;
 		switch(currentSection) {
 			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
@@ -636,7 +618,7 @@ private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToIn
 	 * @param availableItemToInsert - ListBoxMVP
 	 * @param availableInsertItemList the available insert item list
 	 */
-	private  void addAvailableItems(ListBoxMVP availableItemToInsert, 
+	private static void addAvailableItems(ListBoxMVP availableItemToInsert, 
 			List<String> availableInsertItemList) {
 		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < availableInsertItemList.size(); i++) {
@@ -655,7 +637,7 @@ private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToIn
 	 * @param functions the functions
 	 * @return the function argument value builder
 	 */
-	private  String getFunctionArgumentValueBuilder(CQLFunctions functions){
+	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
 		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
 		functionNameBuilder.append("(");
 		StringBuilder argumentType = new StringBuilder();
@@ -678,7 +660,7 @@ private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToIn
 	 * @param functions the functions
 	 * @return the function argument tool tip builder
 	 */
-	private  String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
+	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
 		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
 		functionNameBuilder.append("(");
 		StringBuilder argumentType = new StringBuilder();
@@ -710,7 +692,7 @@ private  void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToIn
 	 * @param str the str
 	 * @return the string
 	 */
-	private  String convertToCamelCase(String str){
+	private static String convertToCamelCase(String str){
         String result = "";
         char firstChar = str.charAt(0);
         result = result + Character.toLowerCase(firstChar);

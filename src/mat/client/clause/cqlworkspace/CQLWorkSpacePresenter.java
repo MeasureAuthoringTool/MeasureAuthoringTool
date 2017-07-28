@@ -346,8 +346,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void buildInsertPopUp() {
 		searchDisplay.resetMessageDisplay();
-		InsertIntoAceEditorDialogBox AceEditorDBox = new InsertIntoAceEditorDialogBox();
-		AceEditorDBox.showListOfItemAvailableForInsertDialogBox(searchDisplay
+		InsertIntoAceEditorDialogBox.showListOfItemAvailableForInsertDialogBox(searchDisplay
 				.getCqlLeftNavBarPanelView(), curAceEditor);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 	}
@@ -358,6 +357,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addEventHandlers() {
 
+		
 		ClickHandler cHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -2961,7 +2961,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					includesEvent();
 				}
-				
+
 			}
 		});
 
@@ -4160,7 +4160,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					searchDisplay.resetMessageDisplay();
-					updateVSACValueSets();
+					updateVSACValueSets();	
 				}
 			}
 		});

@@ -10,6 +10,10 @@ import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.Icon;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -21,17 +25,14 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.ImageResources;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.FocusableImageButton;
 import mat.client.shared.InformationMessageAlert;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -69,11 +70,9 @@ implements ManageUsersPresenter.DetailDisplay {
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/** The lock. */
-	private FocusableImageButton lock = new FocusableImageButton(ImageResources.INSTANCE.g_lock(), "Account Locked");
-	
 	/** The locked label. */
-	private HorizontalPanel lockedLabel = new HorizontalPanel();
+	private Label lockedLabel = new Label();
+	private Icon lockedIcon = new Icon();
 	
 	/** The login id. */
 	private Label loginId = new Label();
@@ -137,14 +136,31 @@ implements ManageUsersPresenter.DetailDisplay {
 	 */
 	public ManageUsersDetailView() {
 		lockedLabel.getElement().setId("lockedLabel_HorizontalPanel");
+		lockedLabel.setText("Account Locked");
+		lockedLabel.setStyleName("bold");
 		
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.setHeight("100%");
-		fPanel.add(required);
-		fPanel.add(new SpacerWidget());
+		
+		lockedIcon.setType(IconType.LOCK);
+		lockedIcon.setSize(IconSize.LARGE);
+		lockedIcon.setColor("#daa520");
+		lockedIcon.setId("LockedIcon");
+		lockedIcon.setTitle("Account Locked");
+		
+		FlowPanel topRightPanel = new FlowPanel();
+		topRightPanel.addStyleName("floatRight");
+		topRightPanel.add(lockedIcon);
+		topRightPanel.add(lockedLabel);
+		FlowPanel topLeftPanel = new FlowPanel();
+		topLeftPanel.addStyleName("floatLeft");
+		topLeftPanel.add(required);
+		fPanel.add(topLeftPanel);
+		fPanel.add(topRightPanel);
+		
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.add(informationMessage);
 		fPanel.add(hPanel);
@@ -171,12 +187,6 @@ implements ManageUsersPresenter.DetailDisplay {
 		leftPanel.add(new SpacerWidget());
 		
 				
-		lockedLabel.addStyleName("floatRight");
-		lockedLabel.addStyleName("bold");
-		lockedLabel.add(lock);
-		lockedLabel.add(new Label("Account Locked"));
-		rightPanel.add(lockedLabel);
-		
 		Form rightSideForm = buildRightSideForm();
 		
 		rightPanel.add(rightSideForm);
@@ -770,6 +780,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	@Override
 	public void setUserLocked(boolean b) {
 		MatContext.get().setVisible(lockedLabel, b);
+		MatContext.get().setVisible(lockedIcon, b);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.Label;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,7 +23,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 /*import com.google.gwt.user.client.ui.Button;*/
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -1013,7 +1013,7 @@ public class ManageUsersPresenter implements MatPresenter {
 
 		if (currentDetails.getLoginId() != null) {
 			detailDisplay.getInformationMessageDisplay().createAlert(messages);
-			detailDisplay.getInformationMessageDisplay().setWidth("800px");
+			detailDisplay.getInformationMessageDisplay().setWidth("900px");
 		}
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if (!currentDetails.isActive()) {

@@ -48,7 +48,7 @@
  <attribute attribName="diagnosis">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
-  <mode mode="Codes" />
+ <!--  <mode mode="Codes" /> -->
  </attribute>
  <attribute attribName="dischargeDisposition">
   <mode mode="Nullable" />
@@ -66,7 +66,7 @@
  <attribute attribName="facilityLocation">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
-  <mode mode="Codes" />
+ <!--  <mode mode="Codes" /> -->
  </attribute>
  <attribute attribName="frequency">
   <mode mode="Nullable" />
@@ -131,7 +131,7 @@
  <attribute attribName="relatedTo">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
-  <mode mode="Codes" />
+  <!-- <mode mode="Codes" /> -->
  </attribute>
  <attribute attribName="relationship">
   <mode mode="Nullable" />

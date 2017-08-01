@@ -42,6 +42,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
@@ -2750,7 +2751,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
-		
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**

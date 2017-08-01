@@ -23,6 +23,6 @@
   <details detail="is null" />
   <details detail="is not null" />
  </mode>
- <mode modeName="Value Sets/Codes">
- </mode>
+ <mode modeName="Value Sets"></mode>
+ <mode modeName="Codes"></mode>
 </modedetails>

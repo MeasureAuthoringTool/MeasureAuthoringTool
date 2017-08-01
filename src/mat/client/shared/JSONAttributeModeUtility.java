@@ -47,7 +47,10 @@ public class JSONAttributeModeUtility {
 	private static final String NULLABLE = "Nullable";
 	
 	/** The Constant VALUE_SET. */
-	private static final String VALUE_SET = "Value Sets/Codes";
+	private static final String VALUE_SET = "Value Sets";
+	
+	/** The Constant VALUE_SET. */
+	private static final String CODES = "Codes";
 	
 	/** The Constant DATATYPE. */
 	static final String DATATYPE = "datatype";
@@ -166,16 +169,26 @@ public class JSONAttributeModeUtility {
 					String mName = attrObject.toString();
 					mName = mName.replace("\"", "");
 					if (modeName.equalsIgnoreCase(mName)) {
-						if(modeName.equalsIgnoreCase("Value Sets/Codes")){
+						if(modeName.equalsIgnoreCase("Value Sets")){
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
 								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
 									mode.setModeValue(valSets.getCodeListName());
-									if(valSets.getType()!= null)
-										mode.setModeName(valSets.getType()+":" +valSets.getCodeListName());
-									else 
+									if(valSets.getType()== null) {
 										mode.setModeName("valueset:"+valSets.getCodeListName());
-									modeDetailsList.add(mode);
+										modeDetailsList.add(mode);
+									}
+								}
+							}
+						} else if(modeName.equalsIgnoreCase("Codes")){
+							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
+								ModeDetailModel mode = new ModeDetailModel();
+								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
+									mode.setModeValue(valSets.getCodeListName());
+									if(valSets.getType()!= null) {
+										mode.setModeName(valSets.getType()+":" +valSets.getCodeListName());
+										modeDetailsList.add(mode);
+									}
 								}
 							}
 						} else{
@@ -355,8 +368,10 @@ public class JSONAttributeModeUtility {
 			attrMode = COMPUTATIVE;
 		} else if(mode.equals("Nullable")){
 			attrMode = NULLABLE;
-		} else if(mode.equals("ValueSets/Codes")){
+		} else if(mode.equals("ValueSets")){
 			attrMode = VALUE_SET;
+		} else if(mode.equals("Codes")){
+			attrMode = CODES;
 		}
 		
 		return attrMode;

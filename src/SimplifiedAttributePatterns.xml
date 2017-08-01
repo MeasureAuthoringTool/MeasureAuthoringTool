@@ -7,15 +7,18 @@
  </attribute>
  <attribute attribName="admissionSource">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="anatomicalApproachSite">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="anatomicalLocationSite">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="authorDatetime">
   <mode mode="Comparison" />
@@ -24,11 +27,13 @@
  </attribute>
  <attribute attribName="cause">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="code">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="birthDatetime">
   <mode mode="Comparison" />
@@ -42,11 +47,13 @@
  </attribute>
  <attribute attribName="diagnosis">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="dischargeDisposition">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="dosage">
   <mode mode="Comparison" />
@@ -58,11 +65,13 @@
  </attribute>
  <attribute attribName="facilityLocation">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="frequency">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+ <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="incisionDatetime">
   <mode mode="Comparison" />
@@ -78,22 +87,26 @@
  </attribute>
  <attribute attribName="method">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="negationRationale">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+ <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="ordinality">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="prevalencePeriod">
   <mode mode="Nullable" />
  </attribute>
  <attribute attribName="principalDiagnosis">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="radiationDosage">
   <mode mode="Comparison" />
@@ -105,7 +118,8 @@
  </attribute>
  <attribute attribName="reason">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="referenceRange">
   <mode mode="Nullable" />
@@ -116,11 +130,13 @@
  </attribute>
  <attribute attribName="relatedTo">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="relationship">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="relevantPeriod">
   <mode mode="Nullable" />
@@ -128,7 +144,8 @@
  <attribute attribName="result">
   <mode mode="Comparison" />
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="resultDatetime">
   <mode mode="Comparison" />
@@ -137,33 +154,41 @@
  </attribute>
  <attribute attribName="route">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="severity">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="status">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="targetOutcome">
   <mode mode="Comparison" />
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="type">
   <mode mode="Nullable" />
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="id">
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="recorder">
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="reporter">
-  <mode mode="ValueSets/Codes" />
+  <mode mode="ValueSets" />
+  <mode mode="Codes" />
  </attribute>
  <attribute attribName="participationPeriod">
   <mode mode="Nullable" />

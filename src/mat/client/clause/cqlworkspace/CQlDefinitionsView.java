@@ -276,7 +276,7 @@ public class CQlDefinitionsView {
 		defineAceEditor.redisplay();
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		defineAceEditor.setTitle("Build CQL Expression");
-		defineAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");;
+		defineAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
 		defAceEditorPanel.add(defineAceEditor);
 		defAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Define_AceEditor");
 		body.add(defAceEditorPanel);

@@ -238,7 +238,7 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.removeAllMarkers();
 		functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
-		functionBodyAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");;
+		functionBodyAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
 
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");

@@ -129,6 +129,8 @@ public class CQLParametersView {
 		parameterAceEditor.clearAnnotations();
 		parameterAceEditor.removeAllMarkers();
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
+		parameterAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");;
+
 		paramAceEditorPanel.add(parameterAceEditor);
 		paramAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Parameter_AceEditor");
 		

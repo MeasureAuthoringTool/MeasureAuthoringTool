@@ -221,7 +221,7 @@ public class CQLFunctionsView {
 		
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
-		header.setText("Build CQL Expression.");
+		header.setText("Build CQL Expression");
 		PanelBody body = new PanelBody();
 		
 		SimplePanel funcAceEditorPanel = new SimplePanel();
@@ -238,6 +238,8 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.removeAllMarkers();
 		functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
+		functionBodyAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");;
+
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");
 		body.add(funcAceEditorPanel);

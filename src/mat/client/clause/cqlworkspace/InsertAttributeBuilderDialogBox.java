@@ -49,7 +49,8 @@ import mat.model.ModeDetailModel;
 import mat.model.clause.QDSAttributes;
 
 public class InsertAttributeBuilderDialogBox {
-	private static final String VALUE_SETS_CODES = "Value Sets/Codes";
+	private static final String VALUE_SETS = "Value Sets";
+	private static final String CODES = "Codes";
 
 	private static final String NULLABLE = "Nullable";
 
@@ -1218,7 +1219,7 @@ private static void defaultFrmGrpValidations(){
 			sb.append(".").append(selectedAttrItem);
 		}else if(selectedMode.equalsIgnoreCase(NULLABLE)){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
-		}else if(selectedMode.equalsIgnoreCase(VALUE_SETS_CODES)){
+		}else if(selectedMode.equalsIgnoreCase(VALUE_SETS) ||selectedMode.equalsIgnoreCase(CODES) ){
 			String valueArray[] = ModeDetailslistBox.getValue().split(":");
 			String type="";
 			String value = "";

@@ -175,6 +175,7 @@ public class CQLIncludeLibraryView {
 		aliasNameTxtBox.setSize("260px", "25px");
 		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
 		aliasNameTxtBox.setName("aliasName");
+		aliasNameTxtBox.setTitle("Enter Library Alias");
 		
 		aliasNameGroup.add(aliasLabel);
 		aliasNameGroup.add(new SpacerWidget());
@@ -783,10 +784,10 @@ public class CQLIncludeLibraryView {
 	private void resetAceEditor() {
 		cqlAceEditor.clearAnnotations();
 		cqlAceEditor.removeAllMarkers();
-		cqlAceEditor.redisplay();
+		//cqlAceEditor.redisplay();
 		cqlAceEditor.setText("");
 	}
-	
+
 	/**
 	 * Reset from group.
 	 */

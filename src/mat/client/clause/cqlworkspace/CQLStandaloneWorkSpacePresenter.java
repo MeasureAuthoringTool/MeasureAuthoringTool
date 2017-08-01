@@ -5554,7 +5554,8 @@ private void addCodeSearchPanelHandlers() {
 						} else {
 							searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 						}
-
+						// 508 changes for Library Alias.
+						searchDisplay.getIncludeView().getAliasNameTxtArea().setFocus(true);
 					}
 				});
 

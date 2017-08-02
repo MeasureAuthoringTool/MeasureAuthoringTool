@@ -50,6 +50,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
@@ -239,6 +240,10 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		functionBodyAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
+		
+		// MAT-8735 Disable tab and shift-tab
+		functionBodyAceEditor.removeCommand(AceCommand.INDENT);
+		functionBodyAceEditor.removeCommand(AceCommand.OUTDENT);
 
 		funcAceEditorPanel.add(functionBodyAceEditor);
 		funcAceEditorPanel.getElement().setAttribute("id", "SimplePanel_Function_AceEditor");

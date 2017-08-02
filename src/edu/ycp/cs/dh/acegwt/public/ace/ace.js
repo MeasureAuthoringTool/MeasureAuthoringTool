@@ -10815,19 +10815,19 @@ exports.commands = [
     multiSelectAction: "forEach",
     scrollIntoView: "cursor"
 },   	
-//{
-//    name: "outdent",
-//    bindKey: bindKey("Shift-Tab", "Shift-Tab"),
-//    exec: function(editor) { editor.blockOutdent(); },
-//    multiSelectAction: "forEach",
-//    scrollIntoView: "selectionPart"
-//}, {
-//    name: "indent",
-//    bindKey: bindKey("Tab", "Tab"),
-//    exec: function(editor) { editor.indent(); },
-//    multiSelectAction: "forEach",
-//    scrollIntoView: "selectionPart"
-//}, 
+{
+    name: "outdent",
+    bindKey: bindKey("Shift-Tab", "Shift-Tab"),
+    exec: function(editor) { editor.blockOutdent(); },
+    multiSelectAction: "forEach",
+    scrollIntoView: "selectionPart"
+}, {
+    name: "indent",
+    bindKey: bindKey("Tab", "Tab"),
+    exec: function(editor) { editor.indent(); },
+    multiSelectAction: "forEach",
+    scrollIntoView: "selectionPart"
+}, 
 {
     name: "blockoutdent",
     bindKey: bindKey("Ctrl-[", "Ctrl-["),

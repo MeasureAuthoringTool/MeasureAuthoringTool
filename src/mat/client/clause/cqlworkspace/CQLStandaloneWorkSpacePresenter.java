@@ -2078,6 +2078,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText().trim());
+				// 508 changes for Library Alias.
+				searchDisplay.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -2100,6 +2102,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 					addIncludeLibraryInCQLLookUp();
+					// 508 changes for Library Alias.
+					searchDisplay.getIncludeView().getAliasNameTxtArea().setFocus(true);
 				}
 			}
 		});
@@ -2111,6 +2115,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox()
 						.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE());
+				// 508 changes for Library Alias.
+				searchDisplay.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
 
 		});
@@ -2148,6 +2154,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 				}
+				// 508 changes for Library Alias.
+				searchDisplay.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -2168,6 +2176,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 				}
+				// 508 changes for Library Alias.
+				searchDisplay.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -3375,9 +3385,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 									searchDisplay.getIncludeView().getViewCQLEditor().clearAnnotations();
 									searchDisplay.getIncludeView().getViewCQLEditor().removeAllMarkers();
-									searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
+									//searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
 									searchDisplay.getIncludeView().getViewCQLEditor().setAnnotations();
-									searchDisplay.getIncludeView().getViewCQLEditor().redisplay();
 									searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 											.createAlert("This Included Library has been deleted successfully.");

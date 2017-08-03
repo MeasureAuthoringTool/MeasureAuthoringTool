@@ -152,14 +152,20 @@ implements ManageUsersPresenter.DetailDisplay {
 		lockedIcon.setTitle("Account Locked");
 		
 		FlowPanel topRightPanel = new FlowPanel();
-		topRightPanel.addStyleName("floatRight");
+		topRightPanel.addStyleName("topRightAdmin");
 		topRightPanel.add(lockedIcon);
 		topRightPanel.add(lockedLabel);
 		FlowPanel topLeftPanel = new FlowPanel();
 		topLeftPanel.addStyleName("floatLeft");
 		topLeftPanel.add(required);
-		fPanel.add(topLeftPanel);
-		fPanel.add(topRightPanel);
+		
+		Grid gridTable = new Grid(1,2);
+		gridTable.setWidget(0, 0, topLeftPanel);
+		gridTable.setWidget(0, 1, topRightPanel);
+		gridTable.getColumnFormatter().setWidth(0, "90%");
+		gridTable.getColumnFormatter().setWidth(1, "10%");
+		
+		fPanel.add(gridTable);
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.add(informationMessage);

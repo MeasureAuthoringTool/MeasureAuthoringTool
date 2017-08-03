@@ -2733,3 +2733,8 @@ padding: 2px;
 	-moz-border-radius: 6px 0 6px 6px;
 	border-radius: 6px 0 6px 6px;
 }
+
+.topRightAdmin {
+	float: right;
+	white-space: nowrap;
+	}

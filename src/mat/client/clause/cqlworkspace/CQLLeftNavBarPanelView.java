@@ -2485,6 +2485,7 @@ public class CQLLeftNavBarPanelView {
 		MatContext.get().getValuesets().clear();
 		MatContext.get().getIncludes().clear();
 		MatContext.get().getIncludedValueSetNames().clear();
+		MatContext.get().getIncludedCodeNames().clear();
 		MatContext.get().getIncludedParamNames().clear();
 		MatContext.get().getIncludedDefNames().clear();
 		MatContext.get().getIncludedFuncNames().clear();

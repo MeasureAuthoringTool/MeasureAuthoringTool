@@ -1038,6 +1038,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		List<CQLIdentifierObject> valueSetList = new ArrayList<CQLIdentifierObject>();
 		valueSetList.addAll(MatContext.get().getValuesets());
 		valueSetList.addAll(MatContext.get().getIncludedValueSetNames());
+		valueSetList.addAll(MatContext.get().getIncludedCodeNames());
 		
 		Collections.sort(valueSetList, new Comparator() {
 

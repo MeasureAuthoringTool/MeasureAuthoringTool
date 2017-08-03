@@ -11,6 +11,7 @@ import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.model.ModeDetailModel;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLIdentifierObject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -180,6 +181,8 @@ public class JSONAttributeModeUtility {
 									}
 								}
 							}
+							getIncludesList(MatContext.get().getIncludedValueSetNames(), modeDetailsList, "valueset:");
+							
 						} else if(modeName.equalsIgnoreCase("Codes")){
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
@@ -191,6 +194,7 @@ public class JSONAttributeModeUtility {
 									}
 								}
 							}
+							getIncludesList(MatContext.get().getIncludedValueSetNames(), modeDetailsList, "code:");
 						} else{
 							if (attrJSONObject.get("details").isArray() != null) {
 								JSONArray attrModeObject = attrJSONObject.get("details").isArray();
@@ -391,4 +395,16 @@ public class JSONAttributeModeUtility {
 	}
 	
 	
+	public static List<ModeDetailModel> getIncludesList(List<CQLIdentifierObject> includesList,
+			List<ModeDetailModel> modeDetailList, String type) {
+		
+		for (int i = 0; i < includesList.size(); i++) {
+			ModeDetailModel mode = new ModeDetailModel();
+			mode.setModeValue(includesList.get(i).toString());
+			mode.setModeName(type + includesList.get(i).toString());
+		}
+		
+		return modeDetailList;
+
+	}
 }

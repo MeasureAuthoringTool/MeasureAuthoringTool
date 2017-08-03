@@ -2781,7 +2781,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																	result.getIncludeLibrary().getAliasName()));
 											clearAlias();
 											MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSetNames());
-											MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
+											MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCodeNames());
+											//MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
 											MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParamNames());
 											MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 											MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFuncNames());
@@ -3366,7 +3367,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									MatContext.get()
 											.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
 									MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSetNames());
-									MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
+									MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCodeNames());
+									//MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
 									MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParamNames());
 									MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 									MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFuncNames());
@@ -3774,7 +3776,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									MatContext.get()
 											.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
 									MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSetNames());
-									MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
+									MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCodeNames());
+									//MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
 									MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParamNames());
 									MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
 									MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFuncNames());

@@ -216,4 +216,5 @@
         <include file="classpath:/liquibase/deploy_Sprint-123_MAT-8727_07182017_CQL_Add_Component_Attributes.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-123_MAT-8708_8713_8714_ADD_REMOVE_DATATYPE4_ATTRIBUTES.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-123_Add_Abbr_Name_To_Measure_Type.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-124_MAT-8733_REMOVE_LOCATION_PERIOD_ATTRIBUTE.xml"/>
    	</databaseChangeLog>

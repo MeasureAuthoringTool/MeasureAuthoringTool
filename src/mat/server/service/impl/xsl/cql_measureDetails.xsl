@@ -340,19 +340,7 @@
                             <code code="MSRTYPE" codeSystem="2.16.840.1.113883.5.4">
                                 <displayName value="Measure Type" />
                             </code>
-                            <xsl:variable name="nameVar">
-                                <xsl:choose>
-                                    <xsl:when test="@id = 'PATENGEXP'">
-                                        EXPERIENCE
-                                    </xsl:when>
-                                    <xsl:when test="@id = 'COSTRESOURCEUSE'">
-                                        RESOURCE
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <xsl:value-of select="upper-case(.)" />
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </xsl:variable>
+                            <xsl:variable name="nameVar" select="@id" />
                             <value xsi:type="CD" code="{$nameVar}" codeSystem="2.16.840.1.113883.1.11.20368">
                                 <displayName value="{$nameVar}" />
                             </value>

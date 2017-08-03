@@ -35,6 +35,7 @@ public class MeasureTypeDAO extends GenericDAO<MeasureType, String> implements m
 			MeasureTypeDTO mTypeDTO =  new MeasureTypeDTO();
 			mTypeDTO.setName(mType.getDescription());
 			mTypeDTO.setId(mType.getId());
+			mTypeDTO.setAbbrName(mType.getAbbrName());
 			measureTypeList.add(mTypeDTO);
 		}
 		return measureTypeList;

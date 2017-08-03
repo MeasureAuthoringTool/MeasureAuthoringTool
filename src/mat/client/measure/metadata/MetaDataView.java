@@ -2,6 +2,7 @@ package mat.client.measure.metadata;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import mat.client.ImageResources;
@@ -1600,6 +1601,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureTypeSPanel.clear();
 		//measureTypeSelectedListVPanel.clear();
 		measureTypeSPanel.setStyleName("cellTablePanel");
+		
+		Collections.sort(measureTypeDTOList, new MeasureType.Comparator());
+		
 		if (measureTypeDTOList.size() > 0) {
 			measureTypeCellTable = new CellTable<MeasureType>();
 			measureTypeCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);

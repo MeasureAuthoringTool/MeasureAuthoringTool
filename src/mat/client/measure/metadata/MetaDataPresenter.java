@@ -470,14 +470,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		 */
 		HasValue<String> getMeasurePopulationExclusions();
 		
-		/**
-		 * Builds the cell table.
-		 *
-		 * @param appliedListModel the applied list model
-		 * @param isEditable the is editable
-		 */
-		public void buildCellTable(QDSAppliedListModel appliedListModel,
-				boolean isEditable);
 		
 		/**
 		 * Builds the measure type cell table.

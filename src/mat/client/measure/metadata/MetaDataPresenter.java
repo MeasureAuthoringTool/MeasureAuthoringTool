@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -21,7 +20,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -50,20 +48,15 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
-import mat.client.shared.NameValuePair;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.model.Author;
@@ -104,7 +97,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the edits the measure type button
 		 */
-		public HasClickHandlers getEditMeasureTypeButton();
+		//public HasClickHandlers getEditMeasureTypeButton();
 		
 		/**
 		 * Gets the focus panel.
@@ -187,14 +180,14 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the endorseby nqf
 		 */
-		public HasValue<Boolean> getEndorsebyNQF();
+		//public HasValue<Boolean> getEndorsebyNQF();
 		
 		/**
 		 * Gets the not endorseby nqf.
 		 * 
 		 * @return the not endorseby nqf
 		 */
-		public HasValue<Boolean> getNotEndorsebyNQF();		
+		//public HasValue<Boolean> getNotEndorsebyNQF();		
 		
 		/**
 		 * Gets the measure status.
@@ -439,7 +432,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * @param b
 		 *            the b
 		 */
-		public void enableEndorseByRadioButtons(boolean b);
+		//public void enableEndorseByRadioButtons(boolean b);
 		
 		/**
 		 * Sets the save button enabled.
@@ -1621,8 +1614,15 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getMeasurePopulationExclusions().setValue(currentMeasureDetail.getMeasurePopulationExclusions());
 		
 		boolean isEndorsedByNQF = currentMeasureDetail.getEndorseByNQF();
-		metaDataDisplay.getNotEndorsebyNQF().setValue(!isEndorsedByNQF);
-		metaDataDisplay.getEndorsebyNQF().setValue(isEndorsedByNQF);
+		
+		if(isEndorsedByNQF){
+			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(1);
+		} else {
+			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(0);
+		}
+		
+		/*metaDataDisplay.getNotEndorsebyNQF().setValue(!isEndorsedByNQF);
+		metaDataDisplay.getEndorsebyNQF().setValue(isEndorsedByNQF);*/
 		
 		metaDataDisplay.getCopyright().setValue(currentMeasureDetail.getCopyright());
 		
@@ -1713,7 +1713,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		}
 		metaDataDisplay.setAddEditButtonsVisible(editable);
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(metaDataDisplay.asWidget(), editable);
-		metaDataDisplay.enableEndorseByRadioButtons(editable);
+		metaDataDisplay.getEndorsedByListBox().setEnabled(editable);
+		//metaDataDisplay.enableEndorseByRadioButtons(editable);
 		metaDataDisplay.setSaveButtonEnabled(editable);
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
 		metaDataDisplay.getDeleteMeasure().setEnabled(isMeasureDeletable());
@@ -1995,7 +1996,12 @@ public class MetaDataPresenter  implements MatPresenter {
 		}
 		
 		currentMeasureDetail.setCopyright(metaDataDisplay.getCopyright().getValue());
-		currentMeasureDetail.setEndorseByNQF(metaDataDisplay.getEndorsebyNQF().getValue());
+		if(metaDataDisplay.getEndorsedByListBox().getSelectedItemText().equalsIgnoreCase("Yes")){
+			currentMeasureDetail.setEndorseByNQF(true);
+		} else {
+			currentMeasureDetail.setEndorseByNQF(false);
+		}
+		//currentMeasureDetail.setEndorseByNQF(metaDataDisplay.getEndorsebyNQF().getValue());
 		currentMeasureDetail.setGuidance(metaDataDisplay.getGuidance().getValue());
 		currentMeasureDetail.setTransmissionFormat(metaDataDisplay.getTransmissionFormat().getValue());
 		currentMeasureDetail.setImprovNotations(metaDataDisplay.getImprovementNotation().getValue());

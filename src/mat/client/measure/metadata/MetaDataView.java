@@ -254,7 +254,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected FormLabel endorsedByNQF = new FormLabel();
 	
 	/** The item FormLabel. */
-	protected FormLabel itemLabel = new FormLabel();
+	//protected FormLabel itemLabel = new FormLabel();
 	
 	/** The component measures FormLabel. */
 	protected FormLabel componentMeasuresLabel = new FormLabel();
@@ -263,10 +263,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private int counter = 0;
 	
 	/** The No. */
-	protected RadioButton No = new RadioButton("NQFgroup","No");
+	//protected RadioButton No = new RadioButton("NQFgroup","No");
 	
 	/** The Yes. */
-	protected RadioButton Yes = new RadioButton("NQFgroup","Yes");
+	//protected RadioButton Yes = new RadioButton("NQFgroup","Yes");
 	
 	/** The clinical stmt input. */
 	protected TextAreaWithMaxLength  clinicalStmtInput = new TextAreaWithMaxLength ();
@@ -287,7 +287,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength transmissionFormatInput = new TextAreaWithMaxLength();
 	
 	/** The add edit measure type. */
-	private Button addEditMeasureType = new Button("Add/Edit Measure Type");
+	//private Button addEditMeasureType = new Button("Add/Edit Measure Type");
 	
 	/** The add edit cmponent measures. */
 	private Button addEditCmponentMeasures = new Button("Add/Edit Component Measures");
@@ -429,11 +429,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generateeMeasureIDButton.setMarginLeft(14.00);
 		deleteMeasure.setType(ButtonType.DANGER);
 		deleteMeasure.setIcon(IconType.TRASH);
+		deleteMeasure.setTitle("Delete Measure");
 		saveButton.setType(ButtonType.PRIMARY);
 		AddRowButton.setType(ButtonType.PRIMARY);
+		AddRowButton.setTitle("Add More Reference");
 		AddRowButton.setMarginLeft(14.00);
 		addEditCmponentMeasures.setType(ButtonType.PRIMARY);
-		addEditMeasureType.setType(ButtonType.PRIMARY);
+	//	addEditMeasureType.setType(ButtonType.PRIMARY);
+		addEditCmponentMeasures.setTitle("Add or Edit Component Measures.");
 		
 		addClickHandlers();
 		searchString.setHeight("20px");
@@ -459,7 +462,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		saveErrorDisplay.clearAlert();
 		stewardSPanel.clear();
 		authorListBox.setVisibleItemCount(5);
-		
+		resetEndorsedByListBox();
 		authorListBox.getElement().setId("authorListBox_ListBox");
 		
 		measureTypeListBox.setVisibleItemCount(5);
@@ -482,10 +485,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		PanelGroup panelGroup = new PanelGroup();
 		panelGroup.setId("panelGroup2");
-		Panel panel = new Panel(PanelType.PRIMARY);
+		Panel panel = new Panel(PanelType.DEFAULT);
 		PanelHeader header = new PanelHeader();
-		header.setText("More Measure Details");
-		//panel.add(header);
+		header.setText("More Measure Information");
+		panel.add(header);
 		PanelBody panelBody = new PanelBody();
 		
 		VerticalPanel moreMeasureDetailsVP = new VerticalPanel();
@@ -568,6 +571,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		stewardTableLabel.setId("stewardTableLabel");
 		stewardTableLabel.setFor("stewardListBox");
 		stewardListBox.setId("stewardListBox");
+		stewardListBox.setTitle("Measure Steward List");
 		moreMeasureDetailsVP.add(stewardTableLabel);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		stewardListBox.setWidth("508px");
@@ -1304,7 +1308,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					}
 					
 				}
-				itemLabel.setText("Selected Items: " + qdmSelectedList.size());
+				//itemLabel.setText("Selected Items: " + qdmSelectedList.size());
 				element.setAttribute("aria-role", "panel");
 				element.setAttribute("aria-labelledby", "selectedItemsSummary");
 				element.setAttribute("aria-live", "assertive");
@@ -1444,8 +1448,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			SimplePanel sPanel = new SimplePanel();
 			sPanel.setHeight("75px");
 			qdmSelectedListVPanel.add(sPanel);
-			itemLabel.setText("Selected Items: " + qdmSelectedList.size());
-			qdmSelectedListVPanel.add(itemLabel);
+			//itemLabel.setText("Selected Items: " + qdmSelectedList.size());
+			//qdmSelectedListVPanel.add(itemLabel);
 			element = qdmSelectedListVPanel.getElement();
 			horzPanel.add(qdmSelectedListVPanel);
 			
@@ -2212,10 +2216,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEditMeasureTypeButton()
 	 */
-	@Override
+	/*@Override
 	public HasClickHandlers getEditMeasureTypeButton() {
 		return addEditMeasureType;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getAddEditCmponentMeasures()
@@ -2307,10 +2311,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEndorsebyNQF()
 	 */
-	@Override
+	/*@Override
 	public HasValue<Boolean> getEndorsebyNQF() {
 		return Yes;
-	}
+	}*/
 	
 	
 	/* (non-Javadoc)
@@ -2555,6 +2559,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void  addRow(FlexTable reference) {
 		TextAreaWithMaxLength newReferenceBox = createReferenceInput();
+		newReferenceBox.setPlaceholder("Enter Reference");
+		newReferenceBox.setTitle("Enter Reference");
 		++counter;
 		String dynamicLabel = "Reference" + counter;
 		Widget newReferenceBoxLabel = LabelBuilder.buildInvisibleLabel(newReferenceBox, dynamicLabel);
@@ -2663,6 +2669,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		} else if (values.isEmpty()) {
 			clearReferences();
 			TextAreaWithMaxLength newReferenceBox = createReferenceInput();
+			newReferenceBox.setTitle("Enter Reference");
+			newReferenceBox.setPlaceholder("Enter Reference");
 			referenceTable.setWidget(0, 0, newReferenceBox);
 			referenceTable.setWidget(0, 1, new SimplePanel());
 			referenceTable.setWidget(0, 2, AddRowButton);
@@ -2679,7 +2687,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	private void buildReferenceTable(TextAreaWithMaxLength referenceInput) {
 		clearReferences();
-		
+		referenceInput.setPlaceholder("Enter Reference");
+		referenceInput.setTitle("Enter Reference");
 		referenceTable.setWidget(0, 0, referenceInput);
 		referenceArrayList.add(referenceInput);
 		referenceTable.setWidget(0, 1, new SimplePanel());
@@ -2774,7 +2783,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void setAddEditButtonsVisible(boolean b) {
-		addEditMeasureType.setEnabled(b);
+		//addEditMeasureType.setEnabled(b);
 		addEditCmponentMeasures.setEnabled(b);
 		measurePeriodFromInput.setEnableCSS(b);
 		measurePeriodToInput.setEnableCSS(b);
@@ -2797,12 +2806,18 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getNotEndorsebyNQF()
 	 */
-	@Override
+	/*@Override
 	public HasValue<Boolean> getNotEndorsebyNQF() {
 		return No;
+	}*/
+	
+	private void resetEndorsedByListBox() {
+		endorsedByListBox.clear();
+		endorsedByListBox.insertItem("No", "false","No");
+		endorsedByListBox.insertItem("Yes", "true","Yes");
+		endorsedByListBox.setSelectedIndex(0);
+		endorsedByListBox.setTitle("Endorsed By NQF List");
 	}
-	
-	
 	
 	
 	/* (non-Javadoc)
@@ -2827,11 +2842,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#enableEndorseByRadioButtons(boolean)
 	 */
-	@Override
+	/*@Override
 	public void enableEndorseByRadioButtons(boolean b) {
 		No.setEnabled(b);
 		Yes.setEnabled(b);
-	}
+	}*/
 	
 	
 	/* (non-Javadoc)

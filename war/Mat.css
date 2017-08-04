@@ -1943,6 +1943,17 @@ padding: 2px;
     width: 99%;
 }
 
+.cellTablePanelMeasureDetails {
+    background-color: #FFFFFF;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: -1px;
+   margin-top: -1px;
+    width: 750px;
+    height:150px;
+}
+
 .cellTablePanel_Report {
     background-color: #FFFFFF;
     border-color: #E8EEF7 #E8EEF7 #E8EFF7;
@@ -2406,7 +2417,7 @@ padding: 2px;
     background-color: #DCE9F5; 
     font-weight: bold;
     padding: 5px;
-    width: 495px;
+    width: 750px;
     text-align:left;
     margin-bottom: 2px;
 }

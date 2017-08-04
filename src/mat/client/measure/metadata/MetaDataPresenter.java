@@ -1996,7 +1996,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		}
 		
 		currentMeasureDetail.setCopyright(metaDataDisplay.getCopyright().getValue());
-		if(metaDataDisplay.getEndorsedByListBox().getSelectedItemText().equalsIgnoreCase("Yes")){
+		if(metaDataDisplay.getEndorsedByListBox().getItemText(metaDataDisplay.getEndorsedByListBox().getSelectedIndex()).equalsIgnoreCase("Yes")){
 			currentMeasureDetail.setEndorseByNQF(true);
 		} else {
 			currentMeasureDetail.setEndorseByNQF(false);

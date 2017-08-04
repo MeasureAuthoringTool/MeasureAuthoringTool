@@ -4,6 +4,35 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.TextBox;
+
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
+//import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -21,48 +50,27 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.shared.SearchWidgetWithFilter;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
+import mat.client.shared.NameValuePair;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.TextAreaWithMaxLength;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -81,7 +89,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the short name
 		 */
-		public Label getShortName();
+		public TextBox getShortName();
 		
 		//US 421. Measure scoring choice is now part of measure creation process. So, this module just displays the choice.
 		/**
@@ -89,7 +97,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the measure scoring
 		 */
-		public Label getMeasureScoring();
+		public TextBox getMeasureScoring();
 		
 		/**
 		 * Gets the edits the measure type button.
@@ -110,7 +118,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the version number
 		 */
-		public Label getVersionNumber();
+		public TextBox getVersionNumber();
 		
 		/**
 		 * Gets the sets the name.
@@ -124,7 +132,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the e measure identifier
 		 */
-		public Label geteMeasureIdentifier();
+		public TextBox geteMeasureIdentifier();
 		
 		/**
 		 * Gets the nqf id.
@@ -138,7 +146,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 * 
 		 * @return the finalized date
 		 */
-		public Label getFinalizedDate();
+		public TextBox getFinalizedDate();
 		
 		/**
 		 * Gets the measurement from period.
@@ -587,14 +595,14 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the save error msg
 		 */
-		ErrorMessageDisplay getSaveErrorMsg();
+		WarningConfirmationMessageAlert getSaveErrorMsg();
 		
 		/**
 		 * Gets the error message display.
 		 *
 		 * @return the error message display
 		 */
-		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		MessageAlert getErrorMessageDisplay();
 		
 		/**
 		 * As widget.
@@ -608,7 +616,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the success message display
 		 */
-		SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		MessageAlert getSuccessMessageDisplay();
 		
 		/**
 		 * Sets the measure steward options.
@@ -618,8 +626,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		 */
 		//void setMeasureStewardOptions(List<? extends HasListBox> itemList);
 		
-		public void buildStewardCellTable(List<MeasureSteward> result,
-				boolean editable);
+		/*public void buildStewardCellTable(List<MeasureSteward> result,
+				boolean editable);*/
 		
 		/**
 		 * Sets the steward id.
@@ -703,13 +711,13 @@ public class MetaDataPresenter  implements MatPresenter {
 		
 		TextAreaWithMaxLength getMeasurePopulationInput();
 		
-		Label getAbbrInput();
+		TextBox getAbbrInput();
 		
-		Label getMeasScoringInput();
+		TextBox getMeasScoringInput();
 		
 		TextAreaWithMaxLength getRationaleInput();
 		
-		Label getVersionInput();
+		TextBox getVersionInput();
 		
 		ListBoxMVP getAuthorInput();
 		
@@ -750,7 +758,12 @@ public class MetaDataPresenter  implements MatPresenter {
 		/**
 		 * Gets the patient based input label
 		 */
-		Label getPatientBasedInput();
+		TextBox getPatientBasedInput();
+
+		ListBoxMVP getStewardListBox();
+
+		ListBoxMVP getEndorsedByListBox();
+		
 	}
 	
 	/**
@@ -899,7 +912,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		 *
 		 * @return the success message display
 		 */
-		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		public SuccessMessageAlert getSuccessMessageDisplay();
 		
 		/**
 		 * Gets the addto component measures btn.
@@ -1062,7 +1075,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getAddEditComponentMeasures().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				getMetaDataDisplay().getSaveErrorMsg().clear();
+				getMetaDataDisplay().getSaveErrorMsg().clearAlert();
 				displayAddEditComponentMeasures();
 			}
 		});
@@ -1091,7 +1104,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				metaDataDisplay.getErrorMessageDisplay().clear();
+				metaDataDisplay.getErrorMessageDisplay().clearAlert();
 			}
 		});
 		
@@ -1099,7 +1112,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				metaDataDisplay.getErrorMessageDisplay().clear();
+				metaDataDisplay.getErrorMessageDisplay().clearAlert();
 			}
 		});
 		
@@ -1157,164 +1170,164 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getAuthorListBox().addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getMeasureTypeListBox().addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		//getGenerateeMeasureIDButton().addClickHandler(clickHandler);
 		metaDataDisplay.getNQFIDInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getDescriptionInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getCopyrightInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getDisclaimerInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getStratificationInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getRiskAdjustmentInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getRateAggregationInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getRationaleInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getClinicalStmtInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getImprovementNotationInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getReferenceInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getDefinitionsInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getGuidanceInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getTransmissionFormatInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getInitialPopInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getDenominatorInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getDenominatorExclusionsInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getNumeratorInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getNumeratorExclusionsInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getDenominatorExceptionsInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getMeasurePopulationInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getMeasurePopulationExclusionsInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getMeasureObservationsInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getSupplementalDataInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		metaDataDisplay.getSetNameInput().addKeyDownHandler(new KeyDownHandler() {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		
@@ -1323,7 +1336,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				metaDataDisplay.addRow(metaDataDisplay.getReferenceTable());
-				metaDataDisplay.getSaveErrorMsg().clear();
+				metaDataDisplay.getSaveErrorMsg().clearAlert();
 			}
 		});
 		
@@ -1377,7 +1390,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	private void searchMeasuresList(final String searchText, int startIndex, int pageSize,
 			int filter){
-		addEditComponentMeasuresDisplay.getSuccessMessageDisplay().clear();
+		addEditComponentMeasuresDisplay.getSuccessMessageDisplay().clearAlert();
 		showAdminSearchingBusy(true);
 		metaDataDisplay.setSaveButtonEnabled(false);
 		MatContext
@@ -1390,7 +1403,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				metaDataDisplay
 				.getErrorMessageDisplay()
-				.setMessage(
+				.createAlert(
 						MatContext
 						.get()
 						.getMessageDelegate()
@@ -1429,7 +1442,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			Mat.hideLoadingMessage();
 		}
 		((org.gwtbootstrap3.client.ui.Button) addEditComponentMeasuresDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox) (addEditComponentMeasuresDisplay.getSearchString())).setEnabled(!busy);
+		((com.google.gwt.user.client.ui.TextBox) (addEditComponentMeasuresDisplay.getSearchString())).setEnabled(!busy);
 		((Button) addEditComponentMeasuresDisplay.getReturnButton()).setEnabled(!busy);
 		addEditComponentMeasuresDisplay.getApplytoComponentMeasuresBtn().setEnabled(!busy);
 	}
@@ -1489,7 +1502,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					metaDataDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					metaDataDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 					
 				}
@@ -1654,7 +1667,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		}
 		dbAuthorList.clear();
 		dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
-		metaDataDisplay.buildStewardCellTable(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
+		setOptionsInStewardList(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
+		//metaDataDisplay.buildStewardCellTable(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
 		metaDataDisplay.buildAuthorCellTable(currentMeasureDetail.getMeasureDetailResult().getAllAuthorList(), editable);
 //		setStewardAndMeasureDevelopers();
 		
@@ -1745,13 +1759,34 @@ public class MetaDataPresenter  implements MatPresenter {
 				dbAuthorList.clear();
 				
 				dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
-				metaDataDisplay.buildStewardCellTable(result.getAllStewardList(), editable);
+				setOptionsInStewardList(result.getAllStewardList(),editable);
+				
+				//metaDataDisplay.buildStewardCellTable(result.getAllStewardList(), editable);
 				metaDataDisplay.buildAuthorCellTable(result.getAllAuthorList(), editable);
 			}
+
+			
 			
 		});
 	}
-	
+	private void setOptionsInStewardList(List<MeasureSteward> allStewardList, boolean editable) {
+		int i=1;
+		metaDataDisplay.getStewardListBox().clear();
+		metaDataDisplay.getStewardListBox().addItem("--Select--");
+		metaDataDisplay.getStewardListBox().setSelectedIndex(i);
+		
+		for(MeasureSteward m : allStewardList){
+			metaDataDisplay.getStewardListBox().insertItem(m.getOrgName(), m.getId(), m.getOrgOid());
+			if(metaDataDisplay.getStewardId() != null){
+				if(m.getId().equals(metaDataDisplay.getStewardId())){
+					metaDataDisplay.getStewardListBox().setSelectedIndex(i);
+				}
+			} 
+			i= i+1;
+		}
+		
+		metaDataDisplay.getStewardListBox().setEnabled(editable);
+	}
 	/**
 	 * Save meta data information.
 	 * 
@@ -1759,9 +1794,9 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the disp success msg
 	 */
 	public void saveMetaDataInformation(final boolean dispSuccessMsg) {
-		metaDataDisplay.getSaveErrorMsg().clear();
-		metaDataDisplay.getErrorMessageDisplay().clear();
-		metaDataDisplay.getSuccessMessageDisplay().clear();
+		metaDataDisplay.getSaveErrorMsg().clearAlert();
+		metaDataDisplay.getErrorMessageDisplay().clearAlert();
+		metaDataDisplay.getSuccessMessageDisplay().clearAlert();
 		metaDataDisplay.getSaveBtn().setFocus(true);
 		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear()) {
 			updateModelDetailsFromView();
@@ -1776,10 +1811,7 @@ public class MetaDataPresenter  implements MatPresenter {
 					
 					if (result.isSuccess()) {
 						Mat.hideLoadingMessage();
-						if (dispSuccessMsg) {
-							metaDataDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-									.getMessageDelegate().getChangesSavedMessage());
-						}
+						
 						
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 						MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(),
@@ -1794,6 +1826,10 @@ public class MetaDataPresenter  implements MatPresenter {
 							public void onSuccess(ManageMeasureDetailModel result) {
 								currentMeasureDetail = result;
 								displayDetail();
+								if (dispSuccessMsg) {
+									metaDataDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
+											.getMessageDelegate().getChangesSavedMessage());
+								}
 								
 							}
 							
@@ -1801,7 +1837,7 @@ public class MetaDataPresenter  implements MatPresenter {
 					} else {
 						Mat.hideLoadingMessage();
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
-						metaDataDisplay.getErrorMessageDisplay().setMessage(MessageDelegate
+						metaDataDisplay.getErrorMessageDisplay().createAlert(MessageDelegate
 								.getMeasureSaveServerErrorMessage(result.getFailureReason()));
 					}
 				}
@@ -1810,7 +1846,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				public void onFailure(Throwable caught) {
 					Mat.hideLoadingMessage();
 					MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
-					metaDataDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
+					metaDataDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 				}
 			});
 		}
@@ -1855,7 +1891,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		if (!isCalender) {
 			Mat.hideLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
-			metaDataDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_PERIOD_DATES_ERROR());
+			metaDataDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PERIOD_DATES_ERROR());
 		}
 		return isCalender;
 	}
@@ -1966,6 +2002,15 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setCalenderYear(metaDataDisplay.getCalenderYear().getValue());
 		currentMeasureDetail.setMeasFromPeriod(metaDataDisplay.getMeasurementFromPeriod());
 		
+		if(metaDataDisplay.getStewardListBox().getSelectedIndex() !=0){
+			String sId= metaDataDisplay.getStewardListBox().getValue(metaDataDisplay.getStewardListBox().getSelectedIndex());
+			metaDataDisplay.setStewardId(sId);
+			String sValue= metaDataDisplay.getStewardListBox().getItemText(metaDataDisplay.getStewardListBox().getSelectedIndex());
+			metaDataDisplay.setStewardValue(sValue);
+		} else {
+			metaDataDisplay.setStewardId(null);
+			metaDataDisplay.setStewardValue(null);
+		}
 		currentMeasureDetail.setStewardId(metaDataDisplay.getStewardId());
 		currentMeasureDetail.setStewardValue(metaDataDisplay.getStewardValue());
 		
@@ -2027,7 +2072,7 @@ public class MetaDataPresenter  implements MatPresenter {
 					public void onClick(ClickEvent event) {
 						addEditComponentMeasuresDisplay
 						.getSuccessMessageDisplay()
-						.setMessage(
+						.createAlert(
 								MatContext
 								.get()
 								.getMessageDelegate()
@@ -2134,7 +2179,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
-				metaDataDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+				metaDataDisplay.getErrorMessageDisplay().createAlert(MatContext.get()
 						.getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " +caught.getLocalizedMessage(), 0);
@@ -2228,8 +2273,8 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Clear messages.
 	 */
 	private void  clearMessages() {
-		metaDataDisplay.getErrorMessageDisplay().clear();
-		metaDataDisplay.getSuccessMessageDisplay().clear();
+		metaDataDisplay.getErrorMessageDisplay().clearAlert();
+		metaDataDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 	
 	/**

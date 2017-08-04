@@ -2,7 +2,12 @@ package mat.client.shared;
 
 import java.util.Date;
 
-import mat.client.ImageResources;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InputGroup;
+import org.gwtbootstrap3.client.ui.InputGroupButton;
+import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -25,7 +30,6 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
@@ -50,7 +54,7 @@ public class DateBoxWithCalendar extends Composite{
 		@Override
 		public void onBlur(BlurEvent event) {
 			Widget source = (Widget)event.getSource();
-			source.setStylePrimaryName("no-border");
+		//	source.setStylePrimaryName("no-border");
 			if(!isDateValid()) {
 				showInvalidDateMessage();
 			}
@@ -61,7 +65,7 @@ public class DateBoxWithCalendar extends Composite{
 	};
 	
 	/** The calendar. */
-	public CustomButton calendar;
+	public Button calendar;
 	
 	/** The date box. */
 	private TextBox dateBox;
@@ -83,7 +87,7 @@ public class DateBoxWithCalendar extends Composite{
 		@Override
 		public void onFocus(FocusEvent event) {
 			Widget source = (Widget)event.getSource();
-			source.setStylePrimaryName("focus-border");
+			//source.setStylePrimaryName("focus-border");
 			hideInvalidDateMessage();
 		}
 	};
@@ -102,6 +106,15 @@ public class DateBoxWithCalendar extends Composite{
 			datePickerPopup.hide();
 		}
 	};
+	
+	/*private ClickHandler clickHandler = new ClickHandler() {
+		
+		@Override
+		public void onClick(ClickEvent arg0) {
+			datePickerPopup.hide();
+			
+		}
+	};*/
 
 	/** The label. */
 	public String label;
@@ -144,7 +157,7 @@ public class DateBoxWithCalendar extends Composite{
 		dateBox = new TextBox();
 		dateBox.getElement().setId("dateBox_TextBox");
 		invLabel = (Label) LabelBuilder.buildInvisibleLabelWithContent(new Label(), "Input Date", "Input Date");
-		dateBox.setStylePrimaryName("no-border");
+		//dateBox.setStylePrimaryName("no-border");
 		panel.getElement().setId("panel_HorizontalPanel");
 		panel.add(invLabel);
 		Element element = dateBox.getElement();
@@ -328,7 +341,7 @@ public class DateBoxWithCalendar extends Composite{
 	 * 
 	 * @return the calendar
 	 */
-	public CustomButton getCalendar() {
+	public Button getCalendar() {
 		return calendar;
 	}
 	
@@ -388,13 +401,20 @@ public class DateBoxWithCalendar extends Composite{
 	private void initDateBoxWithCalender(final String availableDateId)
 	{
 		
-		panel.add(dateBox);
 		//calendar = new FocusableImageButton(ImageResources.INSTANCE.calendar(), "Calendar");
-		calendar = new CustomButton();
-		calendar.getElement().setId("calendar_CustomButton");
+		calendar = new Button();
+		calendar.setType(ButtonType.PRIMARY);
+		calendar.setIcon(IconType.CALENDAR);
+		/*calendar.getElement().setId("calendar_CustomButton");
 		calendar.removeStyleName("gwt-button");
 		calendar.setStylePrimaryName("invisibleButtonText");
-		calendar.setResource(ImageResources.INSTANCE.calendar(), "Calendar");
+		calendar.setResource(ImageResources.INSTANCE.calendar(), "Calendar");*/
+		
+		InputGroup iGroup = new InputGroup();
+		InputGroupButton iGroupButton = new InputGroupButton();
+		iGroupButton.add(calendar);
+		iGroup.add(dateBox);
+		iGroup.add(iGroupButton);
 		calendar.addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -416,8 +436,8 @@ public class DateBoxWithCalendar extends Composite{
 				}
 			}
 		});
-		calendar.addKeyDownHandler(keyDownHandler);
-		panel.add(calendar);
+		//calendar.addClickHandler(clickHandler);
+		panel.add(iGroup);
 		panel.setStylePrimaryName("thin-border");
 		dateBox.addFocusHandler(focusHandler);
 		dateBox.addBlurHandler(blurHandler);
@@ -529,9 +549,13 @@ public class DateBoxWithCalendar extends Composite{
 		 * in transition from disabled to enabled state 
 		 */
 		if(enabled) {
-			dateBox.setStyleName("gwt-TextBox");
+			//dateBox.setStyleName("gwt-TextBox");
+			dateBox.setEnabled(true);
+			dateBox.setReadOnly(false);
 		} else {
-			dateBox.setStyleName("gwt-TextBox-readonly");
+			//dateBox.setStyleName("gwt-TextBox-readonly");
+			dateBox.setEnabled(false);
+			dateBox.setReadOnly(true);
 		}
 		//calendar.enableImage(enabled);
 		calendar.setEnabled(enabled);
@@ -546,6 +570,7 @@ public class DateBoxWithCalendar extends Composite{
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		dateBox.setEnabled(enabled);
+		dateBox.setReadOnly(!enabled);
 		//calendar.enableImage(enabled);
 		calendar.setEnabled(enabled);
 		if(label != null){
@@ -555,13 +580,13 @@ public class DateBoxWithCalendar extends Composite{
 		
 		if(enabled){
 			if(label != null){
-				calendar.getImage().setAltText(label + " Calendar Enabled");
+			//	calendar.getImage().setAltText(label + " Calendar Enabled");
 				calendar.setTitle(label + " Enabled");
 				invLabel.setText(label + " Enabled");
 			}
 		}else{
 			if(label != null){
-				calendar.getImage().setAltText(label + " Calendar Disabled");
+				//calendar.getImage().setAltText(label + " Calendar Disabled");
 				calendar.setTitle(label + " Disabled");
 				invLabel.setText(label + " Disabled");				
 			}

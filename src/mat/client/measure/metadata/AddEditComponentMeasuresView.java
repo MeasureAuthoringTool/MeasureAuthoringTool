@@ -4,6 +4,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -21,7 +24,7 @@ import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
@@ -48,6 +51,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.CellTableUtility;
@@ -61,8 +65,7 @@ public class AddEditComponentMeasuresView implements
 		MetaDataPresenter.AddEditComponentMeasuresDisplay {
 
 	/** The search button. */
-	private Button searchButton = new PrimaryButton("Search",
-			"primaryGreyLeftButton");
+	private Button searchButton = new Button("Search");
 
 	/** The search input. */
 	private TextBox searchInput = new TextBox();
@@ -112,21 +115,20 @@ public class AddEditComponentMeasuresView implements
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
 
 	/** The return button. */
-	protected Button returnButton = new PrimaryButton("Return to Previous");
+	protected Button returnButton = new Button("Return to Previous");
 
 	/** The addto component measures. */
-	protected Button applytoComponentMeasures = new PrimaryButton(
-			"Apply to Component Measures List");
+	protected Button applytoComponentMeasures = new Button("Apply to Component Measures List");
 
 	/** The success messages. */ 
-	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	private SuccessMessageAlert successMessages = new SuccessMessageAlert();
 
 	/**
 	 * Instantiates a new adds the edit component measures view.
 	 */
 	public AddEditComponentMeasuresView() {
 		
-		successMessages.setMessage("");
+		successMessages.clearAlert();
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
 		searchInput.getElement().setId("searchInput_TextBox");
@@ -486,7 +488,7 @@ public class AddEditComponentMeasuresView implements
 	 * getSuccessMessageDisplay()
 	 */
 	@Override
-	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
+	public SuccessMessageAlert getSuccessMessageDisplay() {
 		return successMessages;
 	}
 
@@ -573,6 +575,7 @@ public class AddEditComponentMeasuresView implements
 	 */
 	public Button getRetButton() {
 		returnButton.getElement().setId("returnButton_Button");
+		returnButton.setType(ButtonType.PRIMARY);
 		return returnButton;
 	}
 
@@ -585,6 +588,7 @@ public class AddEditComponentMeasuresView implements
 	 */
 	public Button getApplytoComponentMeasuresBtn() {
 		applytoComponentMeasures.getElement().setId("applytoComponentMeasures_Button");
+		applytoComponentMeasures.setType(ButtonType.PRIMARY);
 		return applytoComponentMeasures;
 	}
 
@@ -620,7 +624,7 @@ public class AddEditComponentMeasuresView implements
 	 * #getSearchString()
 	 */
 	@Override
-	public HasValue<String> getSearchString() {
+	public TextBox getSearchString() {
 		return searchWidget.getSearchInput();
 	}
 	

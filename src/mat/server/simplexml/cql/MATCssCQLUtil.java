@@ -70,8 +70,8 @@ public class MATCssCQLUtil {
 			"}\r\n" + 
 			"\r\n" + 
 			".list-unstyled li {\r\n" + 
-			"    padding-top: 10px;\r\n" + 
-			"    padding-bottom: 10px;\r\n" + 
+			"    padding-top: 5px;\r\n" + 
+			"    padding-bottom: 5px;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
 			".list-header {\r\n" + 
@@ -89,7 +89,7 @@ public class MATCssCQLUtil {
 			"    background-color:rgb(250,250,250);\r\n" + 
 			//"    margin-top: 1em;\r\n" + 
 			//"    margin-bottom: 1em;\r\n" + 
-			"    padding: 10px;\r\n" + 
+			//"    padding: 10px;\r\n" + 
 			//"    line-height: 1.5em;\r\n" + 
 			"    font-size: 12px;\r\n" + 
 			//"    overflow: auto;\r\n" + 
@@ -197,7 +197,8 @@ public class MATCssCQLUtil {
 			"\r\n" + 
 			".treeview input[type=checkbox] ~ ul {\r\n" + 
 			"  max-height: 100%;\r\n" + 
-			"  max-width: 100%;\r\n" + 
+			//"  max-width: 80%;\r\n" +
+			"  margin-right: 20%;\r\n" +
 			"  opacity: 1;  \r\n" + 
 			"}\r\n" + 
 			"\r\n" + 

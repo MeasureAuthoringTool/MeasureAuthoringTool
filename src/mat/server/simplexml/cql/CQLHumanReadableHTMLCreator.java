@@ -89,9 +89,7 @@ public class CQLHumanReadableHTMLCreator {
 		cqlObjects = new ArrayList<String>();
 		cqlObjects.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		cqlObjects.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
-		
-		System.out.println("Generating human readable with definitions/functions:"+cqlObjects);
-		
+				
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlObjects);
 		includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
 		
@@ -428,10 +426,10 @@ public class CQLHumanReadableHTMLCreator {
 				
 		Element mainElement = mainListElement.appendElement("li");
 		mainElement.attr("class", "list-unstyled");
-		mainElement.attr("style","list-style:none;padding-left:0;");
+		mainElement.attr("style","list-style:none;");
 		
 		Element divElement = mainElement.appendElement("div");
-		
+				
 		for(String definitionName:definitionsList){
 			
 			Element ulElement = divElement.appendElement(HTML_UL);
@@ -462,16 +460,20 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainElement = mainListElement.appendElement("li");
 		mainElement.attr("class", "list-unstyled");
-		mainElement.attr("style","list-style:none;padding-left:0;");
+		mainElement.attr("style","list-style:none;");
 		
 		Element divElement = mainElement.appendElement("div");
 		
-		for(String definitionName:functionsList){
+		if(functionsList.size() == 0){
+			mainListElement.appendElement(HTML_LI).appendText("None");
+		}
+		
+		for(String functionName:functionsList){
 			
 			Element ulElement = divElement.appendElement(HTML_UL);
 			ulElement.attr("class", "list-unstyled");
 			ulElement.attr("style","list-style:none;padding-left:0;");
-			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLFUNCTION,definitionName,ulElement,true,"");
+			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLFUNCTION,functionName,ulElement,true,"");
 		}
 	}
 	
@@ -714,18 +716,8 @@ public class CQLHumanReadableHTMLCreator {
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode, simpleXMLProcessor);
 				
-//				if(!childPopulationName.startsWith("Initial Population")){
-//					populationListElement.appendText(childPopulationName
-//							+ (popassoc.length() > 0 ? popassoc : "")
-//							+ (itemCountText.length() > 0 ? itemCountText : ""));
-//							//+ " =");
-//				}
-				
 				childPopulationName += (popassoc.length() > 0 ? popassoc : "") + (itemCountText.length() > 0 ? itemCountText : "");
-				
-				/*if(childPopulationName.startsWith("Measure Observation")){
-					populationListElement = populationListElement.appendElement(HTML_UL);
-				}*/
+
 				parseAndBuildHTML(simpleXMLProcessor,
 						populationListElement, clauseNode, c + 1, cqlModel, childPopulationName, cqlResult);
 				
@@ -1077,7 +1069,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println("Main Defintion Name: " + mainDefinitionName);
-		generateHTMLForSingleExpression(cqlModel, cqlResult, populationOrSubtreeXMLProcessor,cqlNodeType, mainDefinitionName, mainliElement, true,additionalLabel);
+		generateHTMLForCQLPopulation(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, mainDefinitionName, mainliElement, true,additionalLabel,cqlNodeType);
 	}
 
 	
@@ -1099,6 +1091,72 @@ public class CQLHumanReadableHTMLCreator {
 		strongElement.appendText("None");
 	}
 	
+	/**
+	 * Generate html for definition or function, w/o the name of the attached CQL defn/function. Just the logic.
+	 *
+	 * @param cqlBaseStatementObject the cql base statement object
+	 * @param mainElement the main element
+	 * @param isTopExpression the is top definition
+	 * @param cqlNodeType 
+	 */
+	private static void generateHTMLForCQLPopulation(
+			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor, String expressionName, 
+			Element mainElement, boolean isTopExpression, String additionalLabel, String cqlNodeType) {
+
+		String statementIdentifier = expressionName;
+				
+		String[] arr = expressionName.split(Pattern.quote("|"));
+		if(arr.length == 3){
+			expressionName = arr[2];
+			statementIdentifier = arr[1] + "." + arr[2];
+		}
+		
+		Element mainULElement = mainElement;
+		if (isTopExpression) {
+			mainULElement = mainElement.appendElement("ul");
+			mainULElement.attr("class", "code");
+		}
+
+		Element mainliElement = mainULElement; 
+		// create a base LI element
+		if (isTopExpression) {
+			mainliElement = mainULElement.appendElement("li");
+			mainliElement.attr("class", "list-unstyled");
+		}
+
+		Element mainDivElement = mainliElement.appendElement("div");
+		mainDivElement.attr("class", "treeview hover p-l-10");
+
+		Element checkBoxElement = mainDivElement.appendElement("input");
+		checkBoxElement.attr("type", "checkbox");
+		String id = "test-" + statementIdentifier + "_"
+				+ (int) (Math.random() * 1000);
+		checkBoxElement.attr("id", id);
+		
+//		if (definitionsOrFunctionsAlreadyDisplayed.contains(statementIdentifier)) {
+//			checkBoxElement.attr("checked", "");
+//		} else {
+//			definitionsOrFunctionsAlreadyDisplayed.add(statementIdentifier);
+//		}		
+				
+		Element subULElement = mainDivElement.appendElement("ul");
+		Element subLiElement = subULElement.appendElement("li");
+		subLiElement.attr("style","padding-left: 0px;");
+		Element subDivElement = subLiElement.appendElement("div");
+		
+		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
+		
+		if(codeLineList.size() > 0){
+			mainDivElement.append("&nbsp;" + codeLineList.get(0));
+						
+			for (int i = 1; i < codeLineList.size(); i++) {
+				Element spanElemDefBody = getSpanElementWithClass(subDivElement,
+						"cql-definition-body");
+				spanElemDefBody.append(codeLineList.get(i));
+			}
+		}			
+		subDivElement.appendElement("br");
+	}
 	
 	/**
 	 * Generate html for definition or function.
@@ -1119,39 +1177,23 @@ public class CQLHumanReadableHTMLCreator {
 			statementIdentifier = arr[1] + "." + arr[2];
 		}
 		
-		Element mainULElement = mainElement;
-		if (isTopExpression) {
-			mainULElement = mainElement.appendElement("ul");
-			mainULElement.attr("class", "code");
-		}
-
-		Element mainliElement = mainULElement;
-		// create a base LI element
-		if (isTopExpression) {
-			mainliElement = mainULElement.appendElement("li");
-			mainliElement.attr("class", "list-unstyled");
-		}
-
+		Element mainliElement = mainElement.appendElement("li");
+		mainliElement.attr("class", "list-unstyled");
+		
 		Element mainDivElement = mainliElement.appendElement("div");
 		mainDivElement.attr("class", "treeview hover p-l-10");
-
+		
 		Element checkBoxElement = mainDivElement.appendElement("input");
 		checkBoxElement.attr("type", "checkbox");
 		String id = "test-" + statementIdentifier + "_"
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
-		
-		if (definitionsOrFunctionsAlreadyDisplayed.contains(statementIdentifier)) {
-			checkBoxElement.attr("checked", "");
-		} else {
-			definitionsOrFunctionsAlreadyDisplayed.add(statementIdentifier);
-		}		
 
-		Element defnOrFuncLabelElement = mainDivElement.appendElement("label");
-		defnOrFuncLabelElement.attr("for", id);
-		defnOrFuncLabelElement.attr("class", "list-header");
+		Element definitionLabelElement = mainDivElement.appendElement("label");
+		definitionLabelElement.attr("for", id);
+		definitionLabelElement.attr("class", "list-header");
 
-		Element strongElement = defnOrFuncLabelElement.appendElement("strong");
+		Element strongElement = definitionLabelElement.appendElement("strong");
 		String strongText = additionalLabel + " " + statementIdentifier;
 		
 		if(cqlNodeType.equals(CQLFUNCTION)){
@@ -1159,16 +1201,34 @@ public class CQLHumanReadableHTMLCreator {
 			strongText += signature;
 		}
 		strongElement.appendText(strongText);
-				
-		Element subULElement = mainDivElement.appendElement("ul");
+		
+		Element mainULElement = mainliElement;
+		if (isTopExpression) {
+			mainULElement = mainULElement.appendElement(HTML_UL);
+			mainULElement.attr("class", "code");
+			mainULElement.attr("style", "margin-right: 20%; opacity: 1;");
+		}
+
+		Element liElement = mainULElement;
+		// create a base LI element
+		if (isTopExpression) {
+			liElement = mainULElement.appendElement("li");
+			liElement.attr("class", "list-unstyled");
+		}
+		
+		Element codeDivElement = liElement.appendElement("div");
+
+		Element subULElement = codeDivElement.appendElement("ul");
+		subULElement.attr("style","padding-left: 0px;");
 		Element subLiElement = subULElement.appendElement("li");
 		subLiElement.attr("style","padding-left: 0px;");
+		subLiElement.attr("class","list-unstyled");
 		Element subDivElement = subLiElement.appendElement("div");
 		
 		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
 		
 		if(codeLineList.size() > 0){
-			mainDivElement.append("&nbsp;" + codeLineList.get(0));
+			codeDivElement.append("&nbsp;" + codeLineList.get(0));
 						
 			for (int i = 1; i < codeLineList.size(); i++) {
 				Element spanElemDefBody = getSpanElementWithClass(subDivElement,
@@ -1196,6 +1256,8 @@ public class CQLHumanReadableHTMLCreator {
 						if("QDM Datatype".equals(type)){
 							type = child.getAttributes().getNamedItem("qdmDataType").getNodeValue();
 							type = "\"" + type + "\"";
+						}else if("Others".equals(type)){
+							type = child.getAttributes().getNamedItem("otherType").getNodeValue();
 						}
 						String argName = child.getAttributes().getNamedItem("argumentName").getNodeValue();
 						signature += argName + " " + type + ", ";

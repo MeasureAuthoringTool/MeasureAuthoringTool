@@ -1,6 +1,7 @@
 package mat.server.simplexml.cql;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -90,6 +90,8 @@ public class CQLHumanReadableHTMLCreator {
 		cqlObjects.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		cqlObjects.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 		
+		System.out.println("Generating human readable with definitions/functions:"+cqlObjects);
+		
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlObjects);
 		includedXMLMap = loadIncludedLibXMLProcessors(cqlModel);
 		
@@ -150,6 +152,12 @@ public class CQLHumanReadableHTMLCreator {
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument,
 				simpleXMLProcessor, cqlModel,cqlResult);
+		
+		CQLArtifactHolder usedCQLArtifactHolder = 
+				CQLUtil.getCQLArtifactsReferredByPoplns(simpleXMLProcessor.getOriginalDoc());
+		
+		generateDefinitionsSection(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult, usedCQLArtifactHolder);
+		generateFunctionsSection(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult, usedCQLArtifactHolder);
 		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 		generateSupplementalDataVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
@@ -286,25 +294,19 @@ public class CQLHumanReadableHTMLCreator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		mainListElement.attr("style", "list-style:none;padding-left:0px;");
 				
-		NodeList elements = simpleXMLProcessor.findNodeList(
-				simpleXMLProcessor.getOriginalDoc(),
-				"/measure/supplementalDataElements/cqldefinition");
+		List<String> supplementalDefinitionList = getSupplementalDefinitions(simpleXMLProcessor);
 		
-		if (elements.getLength() > 0) {
-			for(int i=0;i<elements.getLength();i++){
-				Node childNode = elements.item(i);
-				String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
-				String xpathforSubTree = "/measure/cqlLookUp//definition[@id='"+ uuid +"']";
-				Node defineNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(),
-						xpathforSubTree);
-				String defineNodeName = defineNode.getAttributes().getNamedItem("name").getNodeValue();
-				//defineNodeName = "\"" + defineNodeName + "\"";
-				generatePopulationCriteria(mainListElement, cqlModel, childNode, defineNodeName, defineNodeName, cqlResult, simpleXMLProcessor);
-				
+		if (supplementalDefinitionList.size() > 0) {
+			for(String definitionName : supplementalDefinitionList){
+				generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,mainListElement,true,"");				
 			}
 		} else {
 			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
+	}
+	
+	private static List<String> getSupplementalDefinitions(XmlProcessor simpleXMLProcessor) throws XPathExpressionException{
+		return getReferredDefinitions(simpleXMLProcessor, "/measure/supplementalDataElements/cqldefinition");
 	}
 	
 	private static void generateRiskAdjustmentVariables(
@@ -318,10 +320,32 @@ public class CQLHumanReadableHTMLCreator {
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		mainListElement.attr("style", "list-style:none;padding-left:0px;");
+				
+		List<String> riskAdjDefinitionList = getRiskAdjustmentDefinitions(simpleXMLProcessor);
 		
+		if (riskAdjDefinitionList.size() > 0) {
+			for(String definitionName : riskAdjDefinitionList){
+				generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,mainListElement,true,"");
+			}
+		} else {
+			mainListElement.appendElement(HTML_LI).appendText("None");
+		}
+	}
+	
+	private static List<String> getRiskAdjustmentDefinitions(XmlProcessor simpleXMLProcessor) throws XPathExpressionException{
+		
+		return getReferredDefinitions(simpleXMLProcessor, "/measure/riskAdjustmentVariables/cqldefinition");
+		
+	}
+	
+
+	private static List<String> getReferredDefinitions(
+			XmlProcessor simpleXMLProcessor, String referredDefXPath) throws XPathExpressionException {
+		List<String> definitionList = new ArrayList<String>();
+				
 		NodeList elements = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
-				"/measure/riskAdjustmentVariables/cqldefinition");
+				referredDefXPath);
 		
 		if (elements.getLength() > 0) {
 			for(int i=0;i<elements.getLength();i++){
@@ -331,15 +355,12 @@ public class CQLHumanReadableHTMLCreator {
 				Node defineNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(),
 						xpathforSubTree);
 				String defineNodeName = defineNode.getAttributes().getNamedItem("name").getNodeValue();
-				defineNodeName = "\"" + defineNodeName + "\"";
-				generatePopulationCriteria(mainListElement, cqlModel, childNode, defineNodeName, defineNodeName, cqlResult, simpleXMLProcessor);
-				
+				definitionList.add(defineNodeName);
 			}
-		} else {
-			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
+		
+		return definitionList;
 	}
-	
 
 	/**
 	 * Generate table of contents.
@@ -358,6 +379,13 @@ public class CQLHumanReadableHTMLCreator {
 		populationCriteriaLI
 		.append("<a href=\"#d1e405\">Population Criteria</a>");
 		
+		Element definitionsLI = tocULElement.appendElement(HTML_LI);
+		definitionsLI
+		.append("<a href=\"#d1e649\">Definitions</a>");
+		
+		Element functionsLI = tocULElement.appendElement(HTML_LI);
+		functionsLI
+		.append("<a href=\"#d1e650\">Functions</a>");
 		
 		Element terminologyLI = tocULElement.appendElement(HTML_LI); 
 		terminologyLI.append("<a href=\"#d1e555\">Terminology</a>"); 
@@ -377,6 +405,74 @@ public class CQLHumanReadableHTMLCreator {
 		bodyElement
 		.append("<div style=\"float:left; background:teal; height:3px; width:80%\"></div><pre><br/></pre>");
 		
+	}
+	
+	private static void generateDefinitionsSection(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder)
+			throws XPathExpressionException {
+			
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e649\" href=\"#toc\">Definitions</a></h3>");	
+		
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		mainListElement.attr("style","list-style:none;padding-left:0;");
+		
+		List<String> usedDefinitions = cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions();
+		
+		List<String> definitionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlDefFromPopSet());
+		definitionsList.removeAll(usedDefinitions);
+		
+		definitionsList.addAll(usedDefinitions);
+		java.util.Collections.sort(definitionsList, String.CASE_INSENSITIVE_ORDER);
+				
+		Element mainElement = mainListElement.appendElement("li");
+		mainElement.attr("class", "list-unstyled");
+		mainElement.attr("style","list-style:none;padding-left:0;");
+		
+		Element divElement = mainElement.appendElement("div");
+		
+		for(String definitionName:definitionsList){
+			
+			Element ulElement = divElement.appendElement(HTML_UL);
+			ulElement.attr("class", "list-unstyled");
+			ulElement.attr("style","list-style:none;padding-left:0;");
+			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,ulElement,true,"");
+		}
+	}
+	
+	private static void generateFunctionsSection(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder)
+			throws XPathExpressionException {
+			
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e650\" href=\"#toc\">Functions</a></h3>");
+		
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		mainListElement.attr("style","list-style:none;padding-left:0;");
+		
+		List<String> usedFunctions = cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions();
+		
+		List<String> functionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlFuncFromPopSet());
+		functionsList.removeAll(usedFunctions);
+		
+		functionsList.addAll(usedFunctions);
+		java.util.Collections.sort(functionsList, String.CASE_INSENSITIVE_ORDER);
+		
+		Element mainElement = mainListElement.appendElement("li");
+		mainElement.attr("class", "list-unstyled");
+		mainElement.attr("style","list-style:none;padding-left:0;");
+		
+		Element divElement = mainElement.appendElement("div");
+		
+		for(String definitionName:functionsList){
+			
+			Element ulElement = divElement.appendElement(HTML_UL);
+			ulElement.attr("class", "list-unstyled");
+			ulElement.attr("style","list-style:none;padding-left:0;");
+			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLFUNCTION,definitionName,ulElement,true,"");
+		}
 	}
 	
 	/**
@@ -981,7 +1077,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println("Main Defintion Name: " + mainDefinitionName);
-		generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, populationOrSubtreeXMLProcessor,cqlNodeType, mainDefinitionName, mainliElement, true,additionalLabel);
+		generateHTMLForSingleExpression(cqlModel, cqlResult, populationOrSubtreeXMLProcessor,cqlNodeType, mainDefinitionName, mainliElement, true,additionalLabel);
 	}
 
 	
@@ -1004,7 +1100,6 @@ public class CQLHumanReadableHTMLCreator {
 	}
 	
 	
-	
 	/**
 	 * Generate html for definition or function.
 	 *
@@ -1012,13 +1107,12 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param mainElement the main element
 	 * @param isTopExpression the is top definition
 	 */
-	private static void generateHTMLForDefinitionOrFunction(
+	private static void generateHTMLForSingleExpression(
 			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor, String cqlNodeType, String expressionName, 
 			Element mainElement, boolean isTopExpression, String additionalLabel) {
 
 		String statementIdentifier = expressionName;
-		String fullExpressionName = expressionName;
-		
+				
 		String[] arr = expressionName.split(Pattern.quote("|"));
 		if(arr.length == 3){
 			expressionName = arr[2];
@@ -1035,6 +1129,7 @@ public class CQLHumanReadableHTMLCreator {
 		// create a base LI element
 		if (isTopExpression) {
 			mainliElement = mainULElement.appendElement("li");
+			mainliElement.attr("class", "list-unstyled");
 		}
 
 		Element mainDivElement = mainliElement.appendElement("div");
@@ -1082,74 +1177,8 @@ public class CQLHumanReadableHTMLCreator {
 			}
 		}			
 		subDivElement.appendElement("br");
-				
-		List<String> referredToDefinitions = getReferredToDefinitions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
-		System.out.println("Referred to definitions for "+ expressionName + " are:"+referredToDefinitions);
-		for(String defName:referredToDefinitions){
-			
-			XmlProcessor processor = populationOrSubtreeXMLProcessor;
-			System.out.println("defName:"+defName);
-			String[] arr1 = defName.split(Pattern.quote("|"));
-			if(arr1.length == 3){
-				processor = includedXMLMap.get(arr1[0] + "|" + arr1[1]);
-			}
-			
-			generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, processor, CQLDEFINITION, defName, subDivElement, false,"");
-		}
-		
-		List<String> referredToFunctions = getReferredToFunctions(fullExpressionName, cqlNodeType, populationOrSubtreeXMLProcessor, cqlResult);
-		System.out.println("Referred to functions for "+ expressionName + " are:"+referredToFunctions);
-		for(String funcName:referredToFunctions){
-			
-			XmlProcessor processor = populationOrSubtreeXMLProcessor;
-			System.out.println("funcName:"+funcName);
-			String[] arr1 = funcName.split(Pattern.quote("|"));
-			if(arr1.length == 3){
-				processor = includedXMLMap.get(arr1[0] + "|" + arr1[1]);
-			}
-			
-			generateHTMLForDefinitionOrFunction(cqlModel, cqlResult, processor, CQLFUNCTION, funcName, subDivElement, false,"");
-		}
 	}
 	
-	private static List<String> getReferredToFunctions(String expressionName,
-			String cqlNodeType, XmlProcessor populationOrSubtreeXMLProcessor,
-			SaveUpdateCQLResult cqlResult) {
-		
-		List<String> usedFuncs = new ArrayList<String>();
-		
-		if(cqlNodeType.equals(CQLDEFINITION)){
-			usedFuncs = cqlResult.getUsedCQLArtifacts().getDefinitionToFunctionMap().get(expressionName);
-		}else if(cqlNodeType.equals(CQLFUNCTION)){
-			usedFuncs = cqlResult.getUsedCQLArtifacts().getFunctionToFunctionMap().get(expressionName);
-		}
-		
-		if(usedFuncs == null){
-			usedFuncs = new ArrayList<String>(); 
-		}
-		
-		return usedFuncs;
-	}
-	
-	private static List<String> getReferredToDefinitions(String expressionName,
-			String cqlNodeType, XmlProcessor populationOrSubtreeXMLProcessor,
-			SaveUpdateCQLResult cqlResult) {
-		
-		List<String> usedDefs = new ArrayList<String>();
-		
-		if(cqlNodeType.equals(CQLDEFINITION)){
-			usedDefs = cqlResult.getUsedCQLArtifacts().getDefinitionToDefinitionMap().get(expressionName);
-		}else if(cqlNodeType.equals(CQLFUNCTION)){
-			usedDefs = cqlResult.getUsedCQLArtifacts().getFunctionToDefinitionMap().get(expressionName);
-		}
-		
-		if(usedDefs == null){
-			usedDefs = new ArrayList<String>();
-		}
-		
-		return usedDefs;
-	}
-
 	private static String getCQLFunctionSignature(String expressionName,
 			XmlProcessor populationOrSubtreeXMLProcessor) {
 		

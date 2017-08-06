@@ -546,6 +546,8 @@ public class ExportSimpleXML {
 
 			// rename node to "qdm"
 			xmlDoc.renameNode(clonedValueSet_CodeNode, null, "qdm");
+			
+			clonedValueSet_CodeNode.getAttributes().removeNamedItem("datatype");
 
 			// set new attribute "code" to indicate if this is a Direct
 			// reference code or value-set.
@@ -641,7 +643,7 @@ public class ExportSimpleXML {
 			List<String> dataTypeList = usedValueSet_Code_Map.get(valueSet_CodeName);
 
 			/*
-			 * Find the Measure XML for this valueset/code. This is necessary
+			 * Find the Measure XML for this value-set/code. This is necessary
 			 * because we are trying to find used value-sets/codes even within
 			 * included CQL Libraries (children & grand-children).
 			 */

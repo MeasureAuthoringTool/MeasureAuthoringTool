@@ -194,7 +194,7 @@ public class JSONAttributeModeUtility {
 									}
 								}
 							}
-							getIncludesList(MatContext.get().getIncludedValueSetNames(), modeDetailsList, "code:");
+							getIncludesList(MatContext.get().getIncludedCodeNames(), modeDetailsList, "code:");
 						} else{
 							if (attrJSONObject.get("details").isArray() != null) {
 								JSONArray attrModeObject = attrJSONObject.get("details").isArray();
@@ -402,6 +402,7 @@ public class JSONAttributeModeUtility {
 			ModeDetailModel mode = new ModeDetailModel();
 			mode.setModeValue(includesList.get(i).toString());
 			mode.setModeName(type + includesList.get(i).toString());
+			modeDetailList.add(mode);
 		}
 		
 		return modeDetailList;

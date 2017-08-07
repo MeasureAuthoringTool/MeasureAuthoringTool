@@ -41,7 +41,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.clause.cqlworkspace.DeleteCQLLibraryConfirmDialogBox;
+import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
@@ -101,7 +101,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	List<CQLLibraryDataSetObject> selectedList;
 	
 	/** The delete CQL library confirm dialog box. */
-	private DeleteCQLLibraryConfirmDialogBox deleteCQLLibraryConfirmDialogBox = new DeleteCQLLibraryConfirmDialogBox();
+	private DeleteConfirmDialogBox deleteCQLLibraryConfirmDialogBox = new DeleteConfirmDialogBox();
 
 	/**
 	 * The Interface Observer.
@@ -838,7 +838,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 *
 	 * @return the delete CQL library confirm dialog box
 	 */
-	public DeleteCQLLibraryConfirmDialogBox getDeleteCQLLibraryConfirmDialogBox() {
+	public DeleteConfirmDialogBox getDeleteCQLLibraryConfirmDialogBox() {
 		return deleteCQLLibraryConfirmDialogBox;
 	}
 
@@ -847,7 +847,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 *
 	 * @param deleteCQLLibraryConfirmDialogBox the new delete CQL library confirm dialog box
 	 */
-	public void setDeleteCQLLibraryConfirmDialogBox(DeleteCQLLibraryConfirmDialogBox deleteCQLLibraryConfirmDialogBox) {
+	public void setDeleteCQLLibraryConfirmDialogBox(DeleteConfirmDialogBox deleteCQLLibraryConfirmDialogBox) {
 		this.deleteCQLLibraryConfirmDialogBox = deleteCQLLibraryConfirmDialogBox;
 	}
 }

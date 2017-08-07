@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.shared.ui;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Input;
@@ -26,9 +26,9 @@ import mat.client.shared.SpacerWidget;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class DeleteCQLLibraryConfirmDialogBox.
+ * The Class DeleteConfirmDialogBox.
  */
-public class DeleteCQLLibraryConfirmDialogBox {
+public class DeleteConfirmDialogBox {
 
 	/** The confirm button. */
 	private static Button confirmButton;
@@ -149,7 +149,7 @@ public class DeleteCQLLibraryConfirmDialogBox {
 	 * @param passwordEntered the new password entered
 	 */
 	public static void setPasswordEntered(String passwordEntered) {
-		DeleteCQLLibraryConfirmDialogBox.passwordEntered = passwordEntered;
+		DeleteConfirmDialogBox.passwordEntered = passwordEntered;
 	}
 
 	/**

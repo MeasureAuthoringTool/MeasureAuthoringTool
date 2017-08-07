@@ -748,6 +748,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		ListBoxMVP getStewardListBox();
 
 		ListBoxMVP getEndorsedByListBox();
+
+		Button getDeleteMeasure2();
+
+		Button getSaveButton2();
 		
 	}
 	
@@ -1085,6 +1089,27 @@ public class MetaDataPresenter  implements MatPresenter {
 			}
 		});
 		
+metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(final ClickEvent event) {
+				
+				if(isMeasureDeletable()){
+					
+					DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
+					DeleteMeasureConfirmationBox.getConfirm().addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(final ClickEvent event) {
+							
+							checkPasswordForMeasureDeletion(DeleteMeasureConfirmationBox.getPasswordEntered());
+							DeleteMeasureConfirmationBox.getDialogBox().hide();
+						}
+					});
+				}
+			}
+		});
+		
 		metaDataDisplay.getMeasurementFromPeriodInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
@@ -1111,6 +1136,16 @@ public class MetaDataPresenter  implements MatPresenter {
 		});
 		
 		metaDataDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				isComponentMeasuresSelected = false;
+				saveMetaDataInformation(true);
+			}
+			
+		});
+		
+		metaDataDisplay.getSaveButton2().addClickHandler(new ClickHandler(){
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1710,6 +1745,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.setSaveButtonEnabled(editable);
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
 		metaDataDisplay.getDeleteMeasure().setEnabled(isMeasureDeletable());
+		metaDataDisplay.getDeleteMeasure2().setEnabled(isMeasureDeletable());
 		currentMeasureDetail.setEditable(editable);
 		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE) && editable){
 			metaDataDisplay.setMeasurementPeriodButtonsVisible(true);

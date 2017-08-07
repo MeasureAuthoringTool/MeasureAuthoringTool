@@ -547,7 +547,10 @@ public class ExportSimpleXML {
 			// rename node to "qdm"
 			xmlDoc.renameNode(clonedValueSet_CodeNode, null, "qdm");
 			
-			clonedValueSet_CodeNode.getAttributes().removeNamedItem("datatype");
+			/*if(clonedValueSet_CodeNode.getAttributes().getNamedItem("datatype") != null){
+				clonedValueSet_CodeNode.getAttributes().removeNamedItem("datatype");
+			}*/
+			
 
 			// set new attribute "code" to indicate if this is a Direct
 			// reference code or value-set.

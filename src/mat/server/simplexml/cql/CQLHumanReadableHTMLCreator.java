@@ -1175,11 +1175,13 @@ public class CQLHumanReadableHTMLCreator {
 			Element mainElement, boolean isTopExpression, String additionalLabel) {
 
 		String statementIdentifier = expressionName;
+		XmlProcessor currentProcessor = populationOrSubtreeXMLProcessor;
 				
 		String[] arr = expressionName.split(Pattern.quote("|"));
 		if(arr.length == 3){
 			expressionName = arr[2];
 			statementIdentifier = arr[1] + "." + arr[2];
+			currentProcessor = includedXMLMap.get(arr[0] + "|" + arr[1]);
 		}
 		
 		Element mainliElement = mainElement.appendElement("li");
@@ -1202,7 +1204,7 @@ public class CQLHumanReadableHTMLCreator {
 		String strongText = additionalLabel + " " + statementIdentifier;
 		
 		if(cqlNodeType.equals(CQLFUNCTION)){
-			String signature = getCQLFunctionSignature(expressionName, populationOrSubtreeXMLProcessor);
+			String signature = getCQLFunctionSignature(expressionName, currentProcessor);
 			strongText += signature;
 		}
 		strongElement.appendText(strongText);
@@ -1230,7 +1232,7 @@ public class CQLHumanReadableHTMLCreator {
 		subLiElement.attr("class","list-unstyled");
 		Element subDivElement = subLiElement.appendElement("div");
 		
-		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
+		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, currentProcessor, expressionName, cqlNodeType);
 		
 		if(codeLineList.size() > 0){
 			codeDivElement.append("&nbsp;" + codeLineList.get(0));

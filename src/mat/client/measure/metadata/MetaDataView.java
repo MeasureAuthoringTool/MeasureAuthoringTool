@@ -274,11 +274,17 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The save button. */
 	private Button saveButton = new Button("Save");
 	
+	/** The save button. */
+	private Button saveButton2 = new Button("Save");
+	
 	/** The generatee measure id button. */
 	private Button generateeMeasureIDButton = new Button("Generate Identifier");
 	
 	/** The delete measure. */
 	private Button deleteMeasure = new Button("Delete Measure");
+	
+	/** The delete measure. */
+	private Button deleteMeasure2 = new Button("Delete Measure");
 	
 	/** The reference array list. */
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
@@ -368,7 +374,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		deleteMeasure.setType(ButtonType.DANGER);
 		deleteMeasure.setIcon(IconType.TRASH);
 		deleteMeasure.setTitle("Delete Measure");
+		
+		deleteMeasure2.setType(ButtonType.DANGER);
+		deleteMeasure2.setIcon(IconType.TRASH);
+		deleteMeasure2.setTitle("Delete Measure");
+		
 		saveButton.setType(ButtonType.PRIMARY);
+		saveButton2.setType(ButtonType.PRIMARY);
+		
 		AddRowButton.setType(ButtonType.LINK);
 		AddRowButton.setIcon(IconType.PLUS);
 		AddRowButton.setTitle("Add More Reference");
@@ -416,12 +429,20 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		fPanel.add(errorMessages);
 		
-		//HorizontalPanel hp = new HorizontalPanel();
-		
 		PanelGroup metadataPanelGroup = buildMeasureMetadeta();
 		
 		
 		fPanel.add(metadataPanelGroup);
+		fPanel.add(new SpacerWidget());
+		
+		ButtonToolBar saveDeleteButtonBar2 = new ButtonToolBar();
+		saveButton2.setTitle("Save");
+		saveButton2.setIcon(IconType.SAVE);
+		saveButton2.setId("saveButton_Button");
+		saveDeleteButtonBar2.add(saveButton2);
+		saveDeleteButtonBar2.add(deleteMeasure2);
+		saveDeleteButtonBar2.getElement().setAttribute("style", "margin-left: 670px;");
+		fPanel.add(saveDeleteButtonBar2);
 		fPanel.add(new SpacerWidget());
 		
 		PanelGroup panelGroup = new PanelGroup();
@@ -2768,6 +2789,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void setSaveButtonEnabled(boolean b) {
 		saveButton.setEnabled(b);
+		saveButton2.setEnabled(b);
 		
 	}
 	
@@ -3504,6 +3526,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 	public void setEndorsedByListBox(ListBoxMVP endorsedByListBox) {
 		this.endorsedByListBox = endorsedByListBox;
+	}
+
+	@Override
+	public Button getSaveButton2() {
+		return saveButton2;
+	}
+
+	@Override
+	public Button getDeleteMeasure2() {
+		return deleteMeasure2;
 	}
 	
 }

@@ -447,7 +447,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		ButtonToolBar saveDeleteButtonBar2 = new ButtonToolBar();
 		saveButton2.setTitle("Save");
 		saveButton2.setIcon(IconType.SAVE);
-		saveButton2.setId("saveButton_Button");
+		saveButton2.setId("saveButton_Button1");
+		deleteMeasure2.setId("deleteMeasure_Button1");
+		deleteMeasure.setId("deleteMeasure_Button");
 		saveDeleteButtonBar2.add(saveButton2);
 		saveDeleteButtonBar2.add(deleteMeasure2);
 		saveDeleteButtonBar2.getElement().setAttribute("style", "margin-left: 670px;");
@@ -1149,7 +1151,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		endorsedByNQFLabel.setText("Endorsed By NQF");
 		nqfNumberLeftVP.add(endorsedByNQFLabel);
 		endorsedByListBox.setWidth("150px");
-		
+		endorsedByListBox.setId("endorsedByNQFListBox");
 		nqfNumberLeftVP.add(endorsedByListBox);
 		nqfNumberRightVP.getElement().setAttribute("style", "padding-left:10px;");
 		nqfNumberEndorsmentPanel.add(nqfNumberLeftVP);
@@ -2522,8 +2524,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		hp.add(newReferenceBox);
 		newReferenceBox.getElement().setId(dynamicLabel+"_TextAreaWithMaxLength");
 		Button newremoveButton = new Button("Remove");
+		newremoveButton.setId(dynamicLabel+"_RemoveButton");
 		newremoveButton.setType(ButtonType.LINK);
 		newremoveButton.setIcon(IconType.MINUS);
+		newremoveButton.setTitle("Remove Reference");
 		newremoveButton.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -2601,8 +2605,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					referenceTable.setWidget(i, 0, newReferenceBox);
 					if (editable) {
 						Button newRemoveButton = new Button("Remove");
+						newRemoveButton.setId("RemoveButton_"+i);
 						newRemoveButton.setType(ButtonType.DANGER);
 						newRemoveButton.setMarginLeft(14.00);
+						newRemoveButton.setTitle("Remove Reference");
 						newRemoveButton.addClickHandler(new ClickHandler() {
 							
 							@Override

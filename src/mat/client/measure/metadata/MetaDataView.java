@@ -104,6 +104,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The success messages. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
 	
+	/** The success messages. */
+	private MessageAlert successMessages2 = new SuccessMessageAlert();
 	/** The abbr input. */
 	protected TextBox abbrInput = new TextBox();
 	
@@ -212,6 +214,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The error messages. */
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
+	
+	/** The error messages. */
+	protected MessageAlert errorMessages2 = new ErrorMessageAlert();
 	
 	/** The measure period from input. */
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
@@ -387,6 +392,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		AddRowButton.setTitle("Add More Reference");
 		successMessages.setWidth("750px");
 		errorMessages.setWidth("750px");
+		successMessages2.setWidth("900px");
+		errorMessages2.setWidth("900px");
 		saveErrorDisplay.setWidth("900px");
 		addEditCmponentMeasures.setType(ButtonType.PRIMARY);
 	//	addEditMeasureType.setType(ButtonType.PRIMARY);
@@ -413,6 +420,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void buildForm() {
 		mainPanel.clear();
 		mainPanel.add(saveErrorDisplay);
+		mainPanel.add(successMessages2);
+		mainPanel.add(errorMessages2);
 		saveErrorDisplay.clearAlert();
 		stewardSPanel.clear();
 		authorListBox.setVisibleItemCount(5);
@@ -2137,6 +2146,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return errorMessages;
 	}
 	
+	@Override
+	public MessageAlert getErrorMessageDisplay2() {
+		return errorMessages2;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getFocusPanel()
 	 */
@@ -2460,6 +2474,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
+	}
+	
+	@Override
+	public MessageAlert getSuccessMessageDisplay2() {
+		return successMessages2;
 	}
 	/**
 	 * Creates the reference input.
@@ -3008,6 +3027,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			measurePeriodFromInput.setValue("");
 			measurePeriodToInput.setValue("");
 			errorMessages.clearAlert();
+			errorMessages2.clearAlert();
 			if (calenderYear.getValue().equals(Boolean.FALSE)) {
 				measurePeriodFromInput.setEnabled(true);
 				measurePeriodToInput.setEnabled(true);

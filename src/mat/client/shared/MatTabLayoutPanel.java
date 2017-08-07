@@ -430,6 +430,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				metaDataPresenter.getComponentMeasures();
 				metaDataPresenter.setStewardAndMeasureDevelopers();
 			}
+			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay2().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay2().clearAlert();
 			showErrorMessageAlert(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getWarningConfirmationYesButton().setFocus(true);
 			handleClickEventsOnUnsavedErrorMsgAlert(selectedIndex, metaDataPresenter.getMetaDataDisplay(), null);

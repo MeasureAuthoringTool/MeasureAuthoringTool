@@ -752,6 +752,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		Button getDeleteMeasure2();
 
 		Button getSaveButton2();
+
+		MessageAlert getSuccessMessageDisplay2();
+
+		MessageAlert getErrorMessageDisplay2();
 		
 	}
 	
@@ -1115,6 +1119,7 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				metaDataDisplay.getErrorMessageDisplay().clearAlert();
+				metaDataDisplay.getErrorMessageDisplay2().clearAlert();
 			}
 		});
 		
@@ -1123,6 +1128,7 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				metaDataDisplay.getErrorMessageDisplay().clearAlert();
+				metaDataDisplay.getErrorMessageDisplay2().clearAlert();
 			}
 		});
 		
@@ -1140,7 +1146,7 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				isComponentMeasuresSelected = false;
-				saveMetaDataInformation(true);
+				saveMetaDataInformation(true,"bottomButton");
 			}
 			
 		});
@@ -1150,7 +1156,7 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				isComponentMeasuresSelected = false;
-				saveMetaDataInformation(true);
+				saveMetaDataInformation(true,"topButton");
 			}
 			
 		});
@@ -1161,7 +1167,7 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 			public void onKeyDown(KeyDownEvent event) {
 				//control-alt-s is save
 				if (event.isAltKeyDown() && event.isControlKeyDown() && (event.getNativeKeyCode() == 83)) {
-					saveMetaDataInformation(true);
+					saveMetaDataInformation(true,"bottomButton");
 				}
 			}
 		});
@@ -1822,12 +1828,14 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 	 * @param dispSuccessMsg
 	 *            the disp success msg
 	 */
-	public void saveMetaDataInformation(final boolean dispSuccessMsg) {
+	public void saveMetaDataInformation(final boolean dispSuccessMsg,final String fromButton) {
 		metaDataDisplay.getSaveErrorMsg().clearAlert();
 		metaDataDisplay.getErrorMessageDisplay().clearAlert();
 		metaDataDisplay.getSuccessMessageDisplay().clearAlert();
-		metaDataDisplay.getSaveBtn().setFocus(true);
-		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear()) {
+		metaDataDisplay.getErrorMessageDisplay2().clearAlert();
+		metaDataDisplay.getSuccessMessageDisplay2().clearAlert();
+	//	
+		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear(fromButton)) {
 			updateModelDetailsFromView();
 			Mat.showLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(true);
@@ -1856,8 +1864,16 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 								currentMeasureDetail = result;
 								displayDetail();
 								if (dispSuccessMsg) {
-									metaDataDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
+									if(fromButton.equalsIgnoreCase("bottomButton")){
+										metaDataDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
+												.getMessageDelegate().getChangesSavedMessage());
+										metaDataDisplay.getSaveBtn().setFocus(true);
+									} else  {
+									metaDataDisplay.getSuccessMessageDisplay2().createAlert(MatContext.get()
 											.getMessageDelegate().getChangesSavedMessage());
+									metaDataDisplay.getSaveButton2().setFocus(true);
+									
+									}
 								}
 								
 							}
@@ -1866,8 +1882,15 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 					} else {
 						Mat.hideLoadingMessage();
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
-						metaDataDisplay.getErrorMessageDisplay().createAlert(MessageDelegate
+						if(fromButton.equalsIgnoreCase("bottomButton")){
+							metaDataDisplay.getErrorMessageDisplay().createAlert(MessageDelegate
+									.getMeasureSaveServerErrorMessage(result.getFailureReason()));
+							metaDataDisplay.getSaveBtn().setFocus(true);
+						} else {
+						metaDataDisplay.getErrorMessageDisplay2().createAlert(MessageDelegate
 								.getMeasureSaveServerErrorMessage(result.getFailureReason()));
+						metaDataDisplay.getSaveButton2().setFocus(true);
+						}
 					}
 				}
 				
@@ -1886,7 +1909,7 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 	 *
 	 * @return true, if successful
 	 */
-	private boolean checkIfCalenderYear(){
+	private boolean checkIfCalenderYear(String fromButton){
 		boolean isCalender = false;
 		boolean isFromDateValid = true;
 		boolean isToDateValid = true;
@@ -1920,7 +1943,11 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 		if (!isCalender) {
 			Mat.hideLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
-			metaDataDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PERIOD_DATES_ERROR());
+			if(fromButton.equalsIgnoreCase("bottomButton")){
+				metaDataDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PERIOD_DATES_ERROR());
+			} else  {
+				metaDataDisplay.getErrorMessageDisplay2().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PERIOD_DATES_ERROR());
+			}
 		}
 		return isCalender;
 	}
@@ -2309,6 +2336,9 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 	private void  clearMessages() {
 		metaDataDisplay.getErrorMessageDisplay().clearAlert();
 		metaDataDisplay.getSuccessMessageDisplay().clearAlert();
+		
+		metaDataDisplay.getErrorMessageDisplay2().clearAlert();
+		metaDataDisplay.getSuccessMessageDisplay2().clearAlert();
 	}
 	
 	/**
@@ -2447,9 +2477,9 @@ metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
 	/**
 	 * Sets the focus for save.
 	 */
-	public void setFocusForSave() {
+	/*public void setFocusForSave() {
 		getMetaDataDisplay().getSaveBtn().setFocus(true);
-	}
+	}*/
 	
 	/**
 	 * Checks if is sub view.

@@ -1,12 +1,7 @@
 package mat.client.util;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.Tooltip;
-
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.HTML;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -19,7 +14,7 @@ public class CellTableUtility {
 	 * @param title the title
 	 * @return the column tool tip */
 	public static SafeHtml getColumnToolTip(String title) {
-		String htmlConstant = "<html>" + "<head> </head> <body><span title=\" " + title + "\">" + title + "</span></body>" + "</html>";
+		String htmlConstant = "<html>" + "<head> </head> <body><span tabIndex = \"0\" title=\" " + title + "\">" + title + "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	/** Gets the column tool tip.

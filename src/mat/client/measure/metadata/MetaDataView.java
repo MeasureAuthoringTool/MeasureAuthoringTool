@@ -1375,6 +1375,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodPanel.add(fromLabel);
 		measurePeriodFromInput.getDateBox().getElement().setAttribute("id", "measurePeriodFromInput");
 		measurePeriodFromInput.getDateBox().setWidth("127px");
+		measurePeriodFromInput.getCalendar().setTitle("Click to select From date.");
 		measurePeriodPanel.add(measurePeriodFromInput);
 		measurePeriodFromInput.getElement().setId("measurePeriodFromInput_DateBoxWithCalendar");
 		FormLabel toLabel = new FormLabel();
@@ -1384,6 +1385,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		toLabel.addStyleName("secondLabel");
 		measurePeriodPanel.add(toLabel);
 		measurePeriodToInput.getDateBox().setWidth("127px");
+		measurePeriodToInput.getCalendar().setTitle("Click to select To date.");
 		measurePeriodToInput.getDateBox().getElement().setAttribute("id", "measurePeriodToInput");
 		measurePeriodPanel.add(measurePeriodToInput);
 		measurePeriodToInput.getElement().setId("measurePeriodToInput_DateBoxWithCalendar");
@@ -2606,8 +2608,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					if (editable) {
 						Button newRemoveButton = new Button("Remove");
 						newRemoveButton.setId("RemoveButton_"+i);
-						newRemoveButton.setType(ButtonType.DANGER);
-						newRemoveButton.setMarginLeft(14.00);
+						newRemoveButton.setType(ButtonType.LINK);
+						newRemoveButton.setIcon(IconType.MINUS);
+						//newRemoveButton.setMarginLeft(14.00);
 						newRemoveButton.setTitle("Remove Reference");
 						newRemoveButton.addClickHandler(new ClickHandler() {
 							

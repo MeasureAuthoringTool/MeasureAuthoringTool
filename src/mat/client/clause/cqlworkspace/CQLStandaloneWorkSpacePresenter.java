@@ -149,6 +149,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
 	/** The applied code table list. */
 	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
+	
+	/**
+	 * Flag for if parameters, definitions, or functions should be formatted.
+	 * For now this flag will always be set to true. 
+	 */
+	private boolean isFormatable = true;
 
 	/**
 	 * The Interface ViewDisplay.
@@ -2247,7 +2253,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				MatContext.get().getCQLLibraryService().saveAndModifyFunctions(
 						MatContext.get().getCurrentCQLLibraryId(), toBeModifiedParamObj, function,
 						searchDisplay.getCqlLeftNavBarPanelView().getViewFunctions(),
-						new AsyncCallback<SaveUpdateCQLResult>() {
+						isFormatable, new AsyncCallback<SaveUpdateCQLResult>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -2431,7 +2437,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				MatContext.get().getCQLLibraryService().saveAndModifyParameters(
 						MatContext.get().getCurrentCQLLibraryId(), toBeModifiedParamObj, parameter,
 						searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList(),
-						new AsyncCallback<SaveUpdateCQLResult>() {
+						isFormatable, new AsyncCallback<SaveUpdateCQLResult>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -2584,7 +2590,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				MatContext.get().getCQLLibraryService().saveAndModifyDefinitions(
 						MatContext.get().getCurrentCQLLibraryId(), toBeModifiedObj, define,
 						searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions(),
-						new AsyncCallback<SaveUpdateCQLResult>() {
+						isFormatable, new AsyncCallback<SaveUpdateCQLResult>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
@@ -5404,7 +5410,7 @@ private void addCodeSearchPanelHandlers() {
 	private void buildCQLView() {
 		searchDisplay.getCqlAceEditor().setText("");
 		showSearchingBusy(true);
-		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(),
+		MatContext.get().getCQLLibraryService().getCQLLibraryFileData(MatContext.get().getCurrentCQLLibraryId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {

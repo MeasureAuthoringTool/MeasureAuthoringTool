@@ -67,13 +67,13 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
 	SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList);
+			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 	
 	SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList);
+			List<CQLFunctions> functionsList, boolean isFormatable);
 	
 	SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList);
+			List<CQLParameter> parameterList, boolean isFormatable);
 	
 	SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList);
@@ -99,4 +99,6 @@ public interface CQLLibraryService extends RemoteService {
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId);
+
+	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 }

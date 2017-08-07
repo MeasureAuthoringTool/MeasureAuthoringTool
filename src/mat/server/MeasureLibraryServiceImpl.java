@@ -1234,6 +1234,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		
+		measureDetailModel.getMeasureTypeSelectedList();
 		try {
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
@@ -5797,6 +5799,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		return result;
 	}
+	
+	@Override
+	public SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
+
+		if (model != null && !StringUtils.isEmpty(model.getXml())) {
+			String xmlString = model.getXml();
+			result = cqlService.getCQLLibraryData(xmlString);
+			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+		}		
+		
+		return result; 
+	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -5820,7 +5839,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
+			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
 		
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
@@ -5828,7 +5847,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (measureXMLModel != null) {
 				MatContextServiceUtil.get().setMeasure(true);
 				result = getCqlService().saveAndModifyDefinitions(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-						definitionList);
+						definitionList, isFormatable);
 				if (result.isSuccess()) {
 					measureXMLModel.setXml(result.getXml());
 					getService().saveMeasureXml(measureXMLModel);
@@ -5849,14 +5868,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj,
-			CQLParameter currentObj, List<CQLParameter> parameterList) {
+			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable) {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel measureXMLModel = getService().getMeasureXmlForMeasure(measureId);
 			if (measureXMLModel != null) {
 				result = getCqlService().saveAndModifyParameters(measureXMLModel.getXml(), toBeModifiedObj, currentObj,
-						parameterList);
+						parameterList, isFormatable);
 				if (result.isSuccess()) {
 					measureXMLModel.setXml(result.getXml());
 					getService().saveMeasureXml(measureXMLModel);
@@ -5878,7 +5897,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
-			CQLFunctions currentObj, List<CQLFunctions> functionsList) {
+			CQLFunctions currentObj, List<CQLFunctions> functionsList, boolean isFormatable) {
 		
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
@@ -5886,7 +5905,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (measureXMLModel != null) {
 				MatContextServiceUtil.get().setMeasure(true);
 				result = getCqlService().saveAndModifyFunctions(measureXMLModel.getXml(), toBeModifiedObj,
-						currentObj, functionsList);
+						currentObj, functionsList, isFormatable);
 				if (result.isSuccess()) {
 					measureXMLModel.setXml(result.getXml());
 					getService().saveMeasureXml(measureXMLModel);

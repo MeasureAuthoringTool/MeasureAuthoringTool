@@ -453,7 +453,7 @@ public class CQLUtil {
 	 * @param cqlLibraryDAO the cql library DAO
 	 * @return the CQL include lib map
 	 */
-	private static void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
+	public static void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
 			CQLLibraryDAO cqlLibraryDAO) {
 
 		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
@@ -550,7 +550,7 @@ public class CQLUtil {
 	 * @param exprList the expr list
 	 */
 
-	private static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
+	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
 		if (cqlToElm != null) {
 
 			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, cqlToElm.getLibraryHolderMap(), cqlModel);

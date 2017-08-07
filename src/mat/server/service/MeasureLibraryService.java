@@ -634,7 +634,7 @@ public interface MeasureLibraryService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyDefinitions(String measureId,
-			CQLDefinition toBemodifiedObj, CQLDefinition currentObj, List<CQLDefinition> definitionList);
+			CQLDefinition toBemodifiedObj, CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable);
 		
 	/**
 	 * Save and modify parameters.
@@ -646,7 +646,7 @@ public interface MeasureLibraryService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList);
+			List<CQLParameter> parameterList, boolean isFormatable);
 	
 	/**
 	 * Save and modify cql general info.
@@ -668,7 +668,7 @@ public interface MeasureLibraryService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList);
+			List<CQLFunctions> functionsList, boolean isFormatable);
 	/**
 	 * Delete definition
 	 * 
@@ -764,5 +764,7 @@ public interface MeasureLibraryService {
 	CQLCodeWrapper getCQLCodes(String measureID);
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID);
+
+	SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId);
 
 }

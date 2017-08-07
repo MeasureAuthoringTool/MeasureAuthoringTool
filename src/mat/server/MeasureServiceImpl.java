@@ -550,8 +550,8 @@ MeasureService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList){
-		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList);
+			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable){
+		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList, isFormatable);
 	}
 	
 	/* (non-Javadoc)
@@ -559,8 +559,8 @@ MeasureService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj,
-			CQLParameter currentObj, List<CQLParameter> parameterList){
-		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList);
+			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable){
+		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList, isFormatable);
 	}
 	
 	/* (non-Javadoc)
@@ -568,8 +568,8 @@ MeasureService {
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
-			CQLFunctions currentObj, List<CQLFunctions> functionsList){
-		return this.getMeasureLibraryService().saveAndModifyFunctions(measureId, toBeModifiedObj, currentObj, functionsList);
+			CQLFunctions currentObj, List<CQLFunctions> functionsList,boolean isFormatable){
+		return this.getMeasureLibraryService().saveAndModifyFunctions(measureId, toBeModifiedObj, currentObj, functionsList, isFormatable);
 	}
 	
 	/* (non-Javadoc)
@@ -686,34 +686,40 @@ MeasureService {
 		// TODO Auto-generated method stub
 		return this.getMeasureLibraryService().getMeasureCQLData(measureId);
 	}
-@Override
-public
-	SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
+	@Override
+	public SaveUpdateCQLResult getMeasureCQLFileData(String measureId) {
 		return this.getMeasureLibraryService().getMeasureCQLFileData(measureId);
 	}
+	
+	@Override
+	public SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId) {
+		return this.getMeasureLibraryService().getMeasureCQLLibraryData(measureId);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
+			CQLIncludeLibrary toBeModifiedIncludeObj,
+			CQLIncludeLibrary cqlLibObject,
+			List<CQLIncludeLibrary> viewIncludeLibrarys) {
+		return this.getMeasureLibraryService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+	}
+	
+	@Override
+	public VsacApiResult updateCQLVSACValueSets(String currentMeasureId, String expansionId) {
+		String sessionId = getThreadLocalRequest().getSession().getId();
+		return this.getMeasureLibraryService().updateCQLVSACValueSets(currentMeasureId, expansionId, sessionId);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject){
+		return this.getMeasureLibraryService().saveCQLCodestoMeasure(transferObject);
+	}
+	
+	@Override
+	public CQLCodeWrapper getCQLCodes(String measureID){
+		return this.getMeasureLibraryService().getCQLCodes(measureID);
+	}
 
-@Override
-public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
-		CQLIncludeLibrary toBeModifiedIncludeObj,
-		CQLIncludeLibrary cqlLibObject,
-		List<CQLIncludeLibrary> viewIncludeLibrarys) {
-	return this.getMeasureLibraryService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
-}
 
-@Override
-public VsacApiResult updateCQLVSACValueSets(String currentMeasureId, String expansionId) {
-	String sessionId = getThreadLocalRequest().getSession().getId();
-	return this.getMeasureLibraryService().updateCQLVSACValueSets(currentMeasureId, expansionId, sessionId);
-}
-
-@Override
-public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject){
-	return this.getMeasureLibraryService().saveCQLCodestoMeasure(transferObject);
-}
-
-@Override
-public CQLCodeWrapper getCQLCodes(String measureID){
-	return this.getMeasureLibraryService().getCQLCodes(measureID);
-}
 
 }

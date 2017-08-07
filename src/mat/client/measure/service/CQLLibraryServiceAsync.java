@@ -46,6 +46,8 @@ public interface CQLLibraryServiceAsync {
 	void saveDraftFromVersion(String libraryId, AsyncCallback<SaveCQLLibraryResult> callback);
 	
 	void getLibraryCQLFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void getCQLLibraryFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue,
 			AsyncCallback<SaveUpdateCQLResult> callback);
@@ -68,13 +70,13 @@ public interface CQLLibraryServiceAsync {
 	void countNumberOfAssociation(String Id, AsyncCallback<Integer> callback);
 
 	void saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
-			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback);
+			List<CQLDefinition> definitionList, boolean isFormatable, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
+			List<CQLFunctions> functionsList, boolean isFormatable, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
+			List<CQLParameter> parameterList, boolean isFormatable, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
 			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback);

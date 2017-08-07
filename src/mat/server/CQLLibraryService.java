@@ -895,11 +895,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param parameterList the parameter list
+	 * @param isFormatable flag to determine if the parameter should be formatted on save
 	 * @return the save update CQL result
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj,
-			CQLParameter currentObj, List<CQLParameter> parameterList) {
+			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable) {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
@@ -907,7 +908,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
 			if (cqlXml != null) {
-				result = cqlService.saveAndModifyParameters(cqlXml, toBeModifiedObj, currentObj, parameterList);
+				result = cqlService.saveAndModifyParameters(cqlXml, toBeModifiedObj, currentObj, parameterList, isFormatable);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);
@@ -924,11 +925,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param definitionList the definition list
+	 * @param isFormatable flag to determine if the definition should be formatted on save
 	 * @return the save update CQL result
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
+			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
@@ -937,7 +939,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 			if (cqlXml != null) {
 
-				result = cqlService.saveAndModifyDefinitions(cqlXml, toBeModifiedObj, currentObj, definitionList);
+				result = cqlService.saveAndModifyDefinitions(cqlXml, toBeModifiedObj, currentObj, definitionList, isFormatable);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);
@@ -955,11 +957,12 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param functionsList the functions list
+	 * @param isFormatable flag to determine if the function should be formatted on save
 	 * @return the save update CQL result
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj,
-			CQLFunctions currentObj, List<CQLFunctions> functionsList) {
+			CQLFunctions currentObj, List<CQLFunctions> functionsList, boolean isFormatable) {
 		
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
@@ -967,7 +970,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
 			if (cqlXml != null) {
-				result = cqlService.saveAndModifyFunctions(cqlXml, toBeModifiedObj, currentObj, functionsList);
+				result = cqlService.saveAndModifyFunctions(cqlXml, toBeModifiedObj, currentObj, functionsList, isFormatable);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);
@@ -1213,6 +1216,22 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		return result;
+	}
+	
+	@Override
+	public SaveUpdateCQLResult getCQLLibraryFileData(String libraryId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		String cqlXml = getCQLLibraryXml(cqlLibrary);
+		
+		if (cqlXml != null && !StringUtils.isEmpty(cqlXml)) {
+			result = cqlService.getCQLLibraryData(cqlXml);
+			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+		}
+		
+		return result;		
 	}
 	
 	

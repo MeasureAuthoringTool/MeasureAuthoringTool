@@ -48,7 +48,7 @@ public class CQLUtilityClass {
 		return toBeInsertedAtEnd;
 	}
 
-	public static StringBuilder getCqlString(CQLModel cqlModel, String toBeInserted) {
+	public static String getCqlString(CQLModel cqlModel, String toBeInserted) {
 
 		StringBuilder cqlStr = new StringBuilder();
 		toBeInsertedAtEnd = new  StringBuilder();
@@ -208,7 +208,7 @@ public class CQLUtilityClass {
 			cqlStr = cqlStr.append(toBeInsertedAtEnd.toString());
 		}*/
 		
-		return cqlStr;
+		return cqlStr.toString();
 
 	}
 	

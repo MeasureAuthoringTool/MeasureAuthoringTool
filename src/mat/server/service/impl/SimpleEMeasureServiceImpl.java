@@ -58,6 +58,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
+import org.cqframework.cql.tools.formatter.CQLFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Document;
@@ -320,6 +321,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 		
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+		cqlFileString = CQLFormatter.format(cqlFileString);
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;
@@ -351,6 +353,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 			String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString),"").toString();
+			try {
+				cqlFileString = CQLFormatter.format(cqlFileString);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			ExportResult includeResult = new ExportResult();
 			includeResult.export = cqlFileString;
 			

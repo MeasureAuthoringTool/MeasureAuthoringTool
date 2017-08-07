@@ -139,6 +139,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private AceEditor curAceEditor;
 	
 	/**
+	 * Flag for if parameters, definitions, or functions should be formatted.
+	 * For now this flag will always be set to true. 
+	 */
+	private boolean isFormatable = true;
+	
+	/**
 	 * The Interface ViewDisplay.
 	 */
 	public static interface ViewDisplay {
@@ -2265,7 +2271,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				showSearchingBusy(true);
 					MatContext.get().getMeasureService().saveAndModifyFunctions(MatContext.get().getCurrentMeasureId(),
 							toBeModifiedParamObj, function, searchDisplay.getCqlLeftNavBarPanelView().getViewFunctions(),
-							new AsyncCallback<SaveUpdateCQLResult>() {
+							isFormatable, new AsyncCallback<SaveUpdateCQLResult>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -2439,7 +2445,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				showSearchingBusy(true);
 				MatContext.get().getMeasureService().saveAndModifyParameters(MatContext.get().getCurrentMeasureId(),
 							toBeModifiedParamObj, parameter, searchDisplay.getCqlLeftNavBarPanelView().getViewParameterList(),
-							new AsyncCallback<SaveUpdateCQLResult>() {
+							isFormatable, new AsyncCallback<SaveUpdateCQLResult>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -2574,7 +2580,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				showSearchingBusy(true);
 				MatContext.get().getMeasureService().saveAndModifyDefinitions(
 							MatContext.get().getCurrentMeasureId(), toBeModifiedObj, define,
-							searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions(), new AsyncCallback<SaveUpdateCQLResult>() {
+							searchDisplay.getCqlLeftNavBarPanelView().getViewDefinitions(), 
+							isFormatable, new AsyncCallback<SaveUpdateCQLResult>() {
 
 								@Override
 								public void onFailure(Throwable caught) {
@@ -3447,7 +3454,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void buildCQLView() {
 		searchDisplay.getViewCQLView().getCqlAceEditor().setText("");
 		showSearchingBusy(true);
-		MatContext.get().getMeasureService().getMeasureCQLFileData(MatContext.get().getCurrentMeasureId(),
+		MatContext.get().getMeasureService().getMeasureCQLLibraryData(MatContext.get().getCurrentMeasureId(),
 				new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {

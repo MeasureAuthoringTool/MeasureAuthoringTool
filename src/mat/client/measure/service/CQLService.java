@@ -74,10 +74,11 @@ public interface CQLService {
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param functionsList the functions list
+	 * @param isFormatable flag to determine if the function should be formatted on save
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList);
+			List<CQLFunctions> functionsList, boolean isFormatable);
 	
 	/**
 	 * Save and modify parameters.
@@ -86,10 +87,12 @@ public interface CQLService {
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param parameterList the parameter list
+	 * @param isFormatable flag to determine if the parameter should be formatted on save
+
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList);
+			List<CQLParameter> parameterList, boolean isFormatable);
 	
 	/**
 	 * Save and modify definitions.
@@ -98,10 +101,11 @@ public interface CQLService {
 	 * @param toBeModifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param definitionList the definition list
+	 * @param isFormatable flag to determine if the definition should be formatted on save
 	 * @return the save update cql result
 	 */
-	SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList);
+	SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj, CQLDefinition currentObj,
+			List<CQLDefinition> definitionList, boolean isFormatable);
 	
 	/**
 	 * Delete definition
@@ -162,7 +166,7 @@ public interface CQLService {
 
 	String getSupplementalDefinitions();
 
-	StringBuilder getCqlString(CQLModel cqlModel);
+	String getCqlString(CQLModel cqlModel);
 
 	String getDefaultCodeSystems();
 	
@@ -212,5 +216,7 @@ public interface CQLService {
 	SaveUpdateCQLResult deleteCode(String xml, String toBeDeletedCodeId);
 
 	SaveUpdateCQLResult saveCQLCodeSystem(String xml, CQLCodeSystem codeSystem);
+
+	SaveUpdateCQLResult getCQLLibraryData(String xmlString);
 
 }

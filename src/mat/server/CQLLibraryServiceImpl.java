@@ -97,6 +97,11 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
+	public SaveUpdateCQLResult getCQLLibraryFileData(String libraryId) {
+		return this.getCQLLibraryService().getCQLLibraryFileData(libraryId);
+	}
+	
+	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue){
 		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue);
 	}
@@ -148,19 +153,19 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String libraryId, CQLDefinition toBeModifiedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
-		return this.getCQLLibraryService().saveAndModifyDefinitions(libraryId, toBeModifiedObj, currentObj, definitionList);
+			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
+		return this.getCQLLibraryService().saveAndModifyDefinitions(libraryId, toBeModifiedObj, currentObj, definitionList, isFormatable);
 	}
 	@Override
 	public
 	SaveUpdateCQLResult saveAndModifyFunctions(String libraryId, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
-			List<CQLFunctions> functionsList) {
-		return this.getCQLLibraryService().saveAndModifyFunctions(libraryId, toBeModifiedObj, currentObj, functionsList);
+			List<CQLFunctions> functionsList, boolean isFormatable) {
+		return this.getCQLLibraryService().saveAndModifyFunctions(libraryId, toBeModifiedObj, currentObj, functionsList, isFormatable);
 	}
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
-			List<CQLParameter> parameterList) {
-		return this.getCQLLibraryService().saveAndModifyParameters(libraryId, toBeModifiedObj, currentObj, parameterList);
+			List<CQLParameter> parameterList, boolean isFormatable) {
+		return this.getCQLLibraryService().saveAndModifyParameters(libraryId, toBeModifiedObj, currentObj, parameterList, isFormatable);
 	}
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,

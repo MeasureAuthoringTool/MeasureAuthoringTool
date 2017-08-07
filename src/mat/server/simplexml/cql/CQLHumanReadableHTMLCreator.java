@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -422,6 +423,8 @@ public class CQLHumanReadableHTMLCreator {
 		definitionsList.removeAll(usedDefinitions);
 		
 		definitionsList.addAll(usedDefinitions);
+		
+		definitionsList = definitionsList.stream().distinct().collect(Collectors.toList());
 		java.util.Collections.sort(definitionsList, String.CASE_INSENSITIVE_ORDER);
 				
 		Element mainElement = mainListElement.appendElement("li");
@@ -456,6 +459,8 @@ public class CQLHumanReadableHTMLCreator {
 		functionsList.removeAll(usedFunctions);
 		
 		functionsList.addAll(usedFunctions);
+		
+		functionsList = functionsList.stream().distinct().collect(Collectors.toList());
 		java.util.Collections.sort(functionsList, String.CASE_INSENSITIVE_ORDER);
 		
 		Element mainElement = mainListElement.appendElement("li");

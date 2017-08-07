@@ -31,12 +31,12 @@ import mat.client.shared.SpacerWidget;
 public class DeleteConfirmDialogBox {
 
 	/** The confirm button. */
-	private static Button confirmButton;
+	private  Button confirmButton;
 
 	/** The password entered. */
-	private static String passwordEntered;
+	private  String passwordEntered;
 	
-	private static Modal panel;
+	private  Modal panel;
 	
 
 	/**
@@ -45,7 +45,7 @@ public class DeleteConfirmDialogBox {
 	 * @param message
 	 *            the message
 	 */
-	public static void showDeletionConfimationDialog(String message) {
+	public void showDeletionConfimationDialog(String message) {
 
 	    panel = new Modal();
 	    confirmButton = new Button("Confirm");
@@ -139,7 +139,7 @@ public class DeleteConfirmDialogBox {
 	 *
 	 * @return the password entered
 	 */
-	public static String getPasswordEntered() {
+	public  String getPasswordEntered() {
 		return passwordEntered;
 	}
 
@@ -148,8 +148,8 @@ public class DeleteConfirmDialogBox {
 	 *
 	 * @param passwordEntered the new password entered
 	 */
-	public static void setPasswordEntered(String passwordEntered) {
-		DeleteConfirmDialogBox.passwordEntered = passwordEntered;
+	public  void setPasswordEntered(String passwordEntered) {
+		this.passwordEntered = passwordEntered;
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class DeleteConfirmDialogBox {
 	 *
 	 * @return the confirmbutton
 	 */
-	public static Button getConfirmbutton() {
+	public  Button getConfirmbutton() {
 		return confirmButton;
 	}
 

@@ -59,6 +59,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
@@ -1078,6 +1079,29 @@ public class MetaDataPresenter  implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				
 				if(isMeasureDeletable()){
+					final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
+					dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate()
+				.getDELETE_MEASURE_WARNING_MESSAGE());
+					//DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
+					dialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(final ClickEvent event) {
+							
+							checkPasswordForMeasureDeletion(dialogBox.getPasswordEntered());
+							//DeleteConfirmDialogBox.get.hide();
+						}
+					});
+				}
+			}
+		});
+		
+		metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(final ClickEvent event) {
+				
+				/*if(isMeasureDeletable()){
 					
 					DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
 					DeleteMeasureConfirmationBox.getConfirm().addClickHandler(new ClickHandler() {
@@ -1089,25 +1113,19 @@ public class MetaDataPresenter  implements MatPresenter {
 							DeleteMeasureConfirmationBox.getDialogBox().hide();
 						}
 					});
-				}
-			}
-		});
-		
-metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(final ClickEvent event) {
-				
+				}*/
 				if(isMeasureDeletable()){
-					
-					DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
-					DeleteMeasureConfirmationBox.getConfirm().addClickHandler(new ClickHandler() {
+					final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
+					dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate()
+				.getDELETE_MEASURE_WARNING_MESSAGE());
+					//DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
+					dialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
 						
 						@Override
 						public void onClick(final ClickEvent event) {
 							
-							checkPasswordForMeasureDeletion(DeleteMeasureConfirmationBox.getPasswordEntered());
-							DeleteMeasureConfirmationBox.getDialogBox().hide();
+							checkPasswordForMeasureDeletion(dialogBox.getPasswordEntered());
+							//DeleteConfirmDialogBox.get.hide();
 						}
 					});
 				}

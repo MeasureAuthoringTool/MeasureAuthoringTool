@@ -471,9 +471,8 @@ public class MessageDelegate {
 			+ "Initial Population, Measure Population,and at least one Measure Observation.";
 	
 	/** The delete measure warning message. */
-	private final String DELETE_MEASURE_WARNING_MESSAGE = "Deleting a draft or version of a measure will"
-			+ "permanently remove the designated measure draft or "
-			+ "version from  the Measure Authoring Tool. Deleted measures cannot <br> be recovered.";
+	private final String DELETE_MEASURE_WARNING_MESSAGE = "Deleting a draft or version of a measure will permanently remove the designated measure draft or "
+			+ "version from  the Measure Authoring Tool. Deleted measures cannot be recovered.";
 	
 	/** The description required. */
 	private final String DESCRIPTION_REQUIRED = "Description is required.";

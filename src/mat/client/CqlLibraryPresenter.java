@@ -606,16 +606,14 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onDeleteClicked(CQLLibraryDataSetObject object) {
 				final String cqlLibraryId = object.getId();
-				
-				DeleteConfirmDialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate()
+				final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
+				dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate()
 						.getWARNING_DELETION_CQL_LIBRARY());
-				
-				DeleteConfirmDialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
-					
+				dialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
 						
-						checkPasswordForCQLLibraryDeletion(DeleteConfirmDialogBox.getPasswordEntered(), 
+						checkPasswordForCQLLibraryDeletion(dialogBox.getPasswordEntered(), 
 								cqlLibraryId);
 						
 					}

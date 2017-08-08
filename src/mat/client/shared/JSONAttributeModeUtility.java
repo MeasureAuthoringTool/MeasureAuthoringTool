@@ -400,8 +400,9 @@ public class JSONAttributeModeUtility {
 		
 		for (int i = 0; i < includesList.size(); i++) {
 			ModeDetailModel mode = new ModeDetailModel();
-			mode.setModeValue(includesList.get(i).toString());
-			mode.setModeName(type + includesList.get(i).toString());
+			String includesStr = includesList.get(i).toString().replaceAll("\"", "");
+			mode.setModeValue(includesStr);
+			mode.setModeName(type + includesStr);
 			modeDetailList.add(mode);
 		}
 		

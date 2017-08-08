@@ -143,7 +143,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected VerticalPanel qdmItemCountListVPanel = new VerticalPanel();
 	
 	/** The component measures list v panel. */
-	protected VerticalPanel componentMeasuresListVPanel = new VerticalPanel();
+	//protected VerticalPanel componentMeasuresListVPanel = new VerticalPanel();
 	
 	
 	/** The component measures list s panel. */
@@ -307,13 +307,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> measureSelectionModel;
 	
 	/** The horz component measure panel. */
-	private HorizontalPanel horzComponentMeasurePanel = new HorizontalPanel();
+//	private HorizontalPanel horzComponentMeasurePanel = new HorizontalPanel();
 	
 	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
 	
 	/** The component measures selected list v panel. */
-	VerticalPanel componentMeasuresSelectedListVPanel = new VerticalPanel();
+	//VerticalPanel componentMeasuresSelectedListVPanel = new VerticalPanel();
 
 	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
@@ -1023,7 +1023,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		CompMeasureTableLabel.setTitle("Component Measures List");
 		CompMeasureTableLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(CompMeasureTableLabel);
-		moreMeasureDetailsVP.add(horzComponentMeasurePanel);
+		//moreMeasureDetailsVP.add(horzComponentMeasurePanel);
+		moreMeasureDetailsVP.add(componentMeasuresListSPanel);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(addEditCmponentMeasures);
 		addEditCmponentMeasures.setId("addEditCmponentMeasures_Button");
@@ -1694,9 +1695,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result, boolean editable){
-		horzComponentMeasurePanel.clear();
 		componentMeasuresListSPanel.clear();
-		componentMeasuresSelectedListVPanel.clear();
 		componentMeasuresListSPanel.setStyleName("cellTablePanelMeasureDetails");
 		if(result.size()>0){
 			componentMeasureCellTable = new CellTable<ManageMeasureSearchModel.Result>();
@@ -1718,34 +1717,22 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			sortProvider.addDataDisplay(componentMeasureCellTable);
 			componentMeasureCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
-					"In the following Measure List table,Select is given in first Column, Measure Name is given in Second column,"
+					"In the following Component Measure List table,Select is given in first Column, Measure Name is given in Second column,"
 							+ " Version in Third column, Finalized Date in fouth column.");
-			/*Label FormLabel = (Label)LabelBuilder
-					.buildInvisibleLabel("selectedComponentMeasuresSummary","Selected Items: "+ componentMeasureSelectedList.size());*/
 			componentMeasureCellTable.getElement().setAttribute("id", "ComponentMeasuresListCellTable");
 			componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
-			componentMeasuresListSPanel.setSize("750px", "150px");
-			componentMeasuresListSPanel.add(invisibleLabel);
-			componentMeasuresListSPanel.setWidget(componentMeasureCellTable);
-			componentMeasuresListVPanel.add(componentMeasuresListSPanel);
-			horzComponentMeasurePanel.add(componentMeasuresListVPanel);
-			VerticalPanel vPanel = new VerticalPanel();
-			vPanel.setWidth("10px");
-			horzComponentMeasurePanel.add(vPanel);
-			SimplePanel sPanel = new SimplePanel();
-			sPanel.setHeight("75px");
-			componentMeasuresSelectedListVPanel.add(sPanel);
-			//componentMeasuresLabel.setText("Selected Items: " + componentMeasureSelectedList.size());
-			componentMeasuresSelectedListVPanel.add(componentMeasuresLabel);
-			horzComponentMeasurePanel.add(componentMeasuresSelectedListVPanel);
+			componentMeasureCellTable.setWidth("99%");
+			VerticalPanel vp = new VerticalPanel();
+			vp.add(invisibleLabel);
+			vp.add(componentMeasureCellTable);
+			vp.setSize("750px", "150px");
+			componentMeasuresListSPanel.setWidget(vp);
+			
 			
 		} else {
 			HTML desc = new HTML("<p> No Component Measures Selected.</p>");
-			componentMeasuresListSPanel.setSize("750px", "60px");
+			
 			componentMeasuresListSPanel.setWidget(desc);
-			componentMeasuresListVPanel.add(componentMeasuresListSPanel);
-			horzComponentMeasurePanel.add(componentMeasuresListVPanel);
-			horzComponentMeasurePanel.setWidth("99%");
 		}
 		
 	}
@@ -1857,9 +1844,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					"In the following Measure Type List table,Select is given in first Column and Measure Type is given in Second column");
 			measureTypeCellTable.getElement().setAttribute("id", "MeasureTypeListCellTable");
 			measureTypeCellTable.getElement().setAttribute("aria-describedby", "measureTypeListSummary");
-			measureTypeSPanel.setSize("750px", "150px");
-			measureTypeSPanel.add(invisibleLabel);
-			measureTypeSPanel.setWidget(measureTypeCellTable);
+			
+			VerticalPanel vp = new VerticalPanel();
+			vp.add(invisibleLabel);
+			vp.add(measureTypeCellTable);
+			vp.setSize("750px", "150px");
+		//	measureTypeSPanel.add(invisibleLabel);
+			measureTypeSPanel.setWidget(vp);
 		}
 		
 	}
@@ -1897,12 +1888,17 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		sortProvider.addDataDisplay(authorCellTable);
 		authorCellTable.setWidth("100%");
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
-				"In the following Measure Type List table,Select is given in first Column and Author is given in Second column");
-		authorSPanel.getElement().setAttribute("id", "AuthorListCellTable");
-		authorSPanel.getElement().setAttribute("aria-describedby", "authorListSummary");
-		authorSPanel.setSize("750px", "150px");
-		authorSPanel.add(invisibleLabel);
-		authorSPanel.setWidget(authorCellTable);
+				"In the following Measure Type List table,Select is given in first Column for selection and Author is given in Second column.");
+		authorCellTable.getElement().setAttribute("id", "AuthorListCellTable");
+		authorCellTable.getElement().setAttribute("aria-describedby", "authorListSummary");
+		/*authorSPanel.setSize("750px", "150px");
+		authorSPanel.add(invisibleLabel);*/
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(invisibleLabel);
+		vp.add(authorCellTable);
+		vp.setSize("750px", "150px");
+		authorSPanel.setWidget(vp);
 	}
 	
 	/**
@@ -2111,7 +2107,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public Widget asComponentMeasuresWidget() {
-		return horzComponentMeasurePanel;
+		return componentMeasuresListSPanel;
 		//return mainPanel;
 	}
 	

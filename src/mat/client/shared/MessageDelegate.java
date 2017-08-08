@@ -2670,6 +2670,24 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the successful qdm remove msg.
+	 *
+	 * @return the 508 Complaint message for successful qdm remove msg
+	 */
+	public String getSUCCESSFUL_QDM_REMOVE_MSG(String codeListName) {
+		return "Value set (" + codeListName.substring(0, 59) + ") has been removed successfully.";
+	}
+	
+	/**
+	 * Gets the successful qdm remove msg.
+	 *
+	 * @return the 508 Complaint message for successful Code Remove msg
+	 */
+	public String getSUCCESSFUL_CODE_REMOVE_MSG(String codeOID) {
+		return "Code (" + codeOID + ") has been removed successfully.";
+	}
+	
+	/**
 	 * Gets the warning measure package creation generic.
 	 *
 	 * @return the warning measure package creation generic
@@ -3350,10 +3368,24 @@ public class MessageDelegate {
 	}
 
 	/**
+	 * @return the 508 Complaint message for deleting the Code
+	 */
+	public String getDELETE_CONFIRMATION_CODES(String codeOID) {
+		return "You have selected to delete code (" + codeOID + "). Please confirm that you want to remove this Code.";
+	}
+
+	/**
 	 * @return the dELETE_CONFIRMATION_VALUESET
 	 */
 	public String getDELETE_CONFIRMATION_VALUESET() {
 		return DELETE_CONFIRMATION_VALUESET;
+	}
+
+	/**
+	 * @return the 508 Complaint message for deleting the Value Set
+	 */
+	public String getDELETE_CONFIRMATION_VALUESET(String codeListName) {
+		return "You have selected to delete value set (" + codeListName.substring(0, 59) + "). Please confirm that you want to remove this value set.";
 	}
 
 	/**

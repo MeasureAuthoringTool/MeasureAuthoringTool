@@ -1226,7 +1226,6 @@ private static void defaultFrmGrpValidations(){
 			if(valueArray.length > 0){
 				type = valueArray[0];
 				value = valueArray[1];
-				value = getValueString(value);
 				if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT)
 						|| selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
 					if(type.equalsIgnoreCase("valueset")) { // For Value Set
@@ -1252,21 +1251,6 @@ private static void defaultFrmGrpValidations(){
 				sb.append("'").append(selectedUnit).append("'");
 			}
 		} 
-		return sb.toString();
-		
-	}
-	
-	
-	private static String getValueString(String value){
-		
-		String valueStr[] = value.split("\\.");
-		StringBuilder sb = new StringBuilder();
-		if(valueStr.length>0){
-			sb.append(valueStr[0]).append(".").append("\"").append(valueStr[1]).append("\"");
-		} else {
-			sb.append("\"").append(valueStr[0]).append("\"");
-		}
-		
 		return sb.toString();
 		
 	}

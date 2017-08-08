@@ -176,7 +176,7 @@ public class JSONAttributeModeUtility {
 								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
 									mode.setModeValue(valSets.getCodeListName());
 									if(valSets.getType()== null) {
-										mode.setModeName("valueset:"+valSets.getCodeListName());
+										mode.setModeName("valueset:\""+valSets.getCodeListName() + "\"");
 										modeDetailsList.add(mode);
 									}
 								}
@@ -189,7 +189,7 @@ public class JSONAttributeModeUtility {
 								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
 									mode.setModeValue(valSets.getCodeListName());
 									if(valSets.getType()!= null) {
-										mode.setModeName(valSets.getType()+":" +valSets.getCodeListName());
+										mode.setModeName(valSets.getType()+":\"" +valSets.getCodeListName() + "\"");
 										modeDetailsList.add(mode);
 									}
 								}
@@ -400,7 +400,7 @@ public class JSONAttributeModeUtility {
 		
 		for (int i = 0; i < includesList.size(); i++) {
 			ModeDetailModel mode = new ModeDetailModel();
-			String includesStr = includesList.get(i).toString().replaceAll("\"", "");
+			String includesStr = includesList.get(i).toString();
 			mode.setModeValue(includesStr);
 			mode.setModeName(type + includesStr);
 			modeDetailList.add(mode);

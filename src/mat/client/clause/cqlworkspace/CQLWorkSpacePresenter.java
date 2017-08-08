@@ -1949,7 +1949,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if ((measureId != null) && !measureId.equals("")) {
 					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show(
-							MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET());
+							MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET(result.getCodeListName()));
 				}
 			}
 			
@@ -1995,7 +1995,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					//The below call will update the Applied QDM drop down list in insert popup.
 					getAppliedValueSetList();
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-							MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
+							MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG(result.getCqlQualityDataSetDTO().getCodeListName()));
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 				}
 				getUsedValueSets();
@@ -4088,7 +4088,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
 				if(result.isSuccess()){
-					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code has been removed successfully.");
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+					.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_CODE_REMOVE_MSG(result.getCqlCode().getCodeOID()));
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					appliedCodeTableList.clear();
 					appliedCodeTableList.addAll(result.getCqlCodeList());
@@ -4340,7 +4341,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if(result != null){
 					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
 					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox()
-					.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES());
+					.show(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
 				}
 				
 			}

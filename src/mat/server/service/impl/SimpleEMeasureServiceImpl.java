@@ -321,7 +321,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 		
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-		cqlFileString = CQLFormatter.format(cqlFileString);
+		
+		if(cqlFileString != null && !cqlFileString.isEmpty()) {
+			cqlFileString = CQLFormatter.format(cqlFileString);
+		}
+		
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = cqlFileString;

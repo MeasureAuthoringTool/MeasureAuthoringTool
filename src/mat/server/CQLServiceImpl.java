@@ -544,18 +544,25 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private String formatFunction(CQLFunctions function) throws IOException {
 		// create argument string and then format the cql expression
-		String argumentString = "(";
+		
+		StringBuilder argumentBuilder = new StringBuilder(); 
+		
+		argumentBuilder.append("(");
 		for(int i = 0; i < function.getArgumentList().size(); i++) {
 			CQLFunctionArgument argument = function.getArgumentList().get(i);
 			
-			argumentString = argumentString + argument.getArgumentName() + " " + argument.getArgumentType() + ", ";
+			argumentBuilder.append(argument.getArgumentName() + " " + argument.getArgumentType() + ", ");
 		}
-		argumentString = argumentString + ")";
+		argumentBuilder.append(")");
 		
-		String definitionStatement = "define" + " \"" + function.getFunctionName() + argumentString  + "\":";
-		String tempFunctionString =  "define" + " \"" + function.getFunctionName() + argumentString  + "\":\n" + function.getFunctionLogic(); 
-		String formattedFunction = CQLFormatter.format(tempFunctionString);
-		String functionLogic = parseOutBody(formattedFunction, definitionStatement);
+		String definitionStatement = "define" + " \"" + function.getFunctionName() + argumentBuilder.toString()  + "\":";
+		String tempFunctionString =  "define" + " \"" + function.getFunctionName() + argumentBuilder.toString()  + "\":\n" + function.getFunctionLogic(); 
+		
+		String functionLogic = "";
+		if(function.getFunctionLogic() != null && !function.getFunctionLogic().isEmpty()) {
+			String formattedFunction = CQLFormatter.format(tempFunctionString);
+			functionLogic = parseOutBody(formattedFunction, definitionStatement);
+		}
 		
 		return functionLogic;
 
@@ -758,9 +765,15 @@ public class CQLServiceImpl implements CQLService {
 	private String formatParameter(CQLParameter parameter) throws IOException {
 		
 		// format the cql parameter
-		String tempParameterString = "parameter" + " \"" + parameter.getParameterName() + "\" " + parameter.getParameterLogic(); 
-		String formattedParameter = CQLFormatter.format(tempParameterString);
-		String parameterLogic = parseOutParameterBody(formattedParameter, parameter.getParameterName());
+		String tempParameterString = "parameter" + " \"" + parameter.getParameterName() + "\" " + parameter.getParameterLogic();
+		
+		String parameterLogic = "";
+		if(parameter.getParameterLogic() != null && !parameter.getParameterLogic().isEmpty()) {
+			String formattedParameter = CQLFormatter.format(tempParameterString);
+			parameterLogic = parseOutParameterBody(formattedParameter, parameter.getParameterName());
+		}
+		
+
 		return parameterLogic; 
 	}
 	
@@ -1015,8 +1028,12 @@ public class CQLServiceImpl implements CQLService {
 		String definitionStatement = "define" + " \"" + definition.getDefinitionName() + "\":"; 
 		String tempDefinitionString = definitionStatement + definition.getDefinitionLogic(); 
 		 
-		String formattedDefinition = CQLFormatter.format(tempDefinitionString);
-		String definitionLogic = parseOutBody(formattedDefinition, definitionStatement);
+		String definitionLogic = "";
+		if(definition.getDefinitionLogic() != null && !definition.getDefinitionLogic().isEmpty()) {
+			String formattedDefinition = CQLFormatter.format(tempDefinitionString);
+			definitionLogic = parseOutBody(formattedDefinition, definitionStatement);
+		}
+
 		
 		return definitionLogic; 
 	}
@@ -1629,7 +1646,9 @@ public class CQLServiceImpl implements CQLService {
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		try {
-			parentCQLString = CQLFormatter.format(parentCQLString);
+			if(parentCQLString != null && !parentCQLString.isEmpty()) {
+				parentCQLString = CQLFormatter.format(parentCQLString);
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -16,6 +16,8 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -38,7 +40,9 @@ public class DeleteConfirmDialogBox {
 	
 	private  Modal panel;
 	
-
+	FocusPanel focusPanel = new FocusPanel();
+	
+	Input password = new Input(InputType.PASSWORD);
 	/**
 	 * showDeletionConfimationDialog.
 	 *
@@ -46,7 +50,7 @@ public class DeleteConfirmDialogBox {
 	 *            the message
 	 */
 	public void showDeletionConfimationDialog(String message) {
-
+		focusPanel.clear();
 	    panel = new Modal();
 	    confirmButton = new Button("Confirm");
 	    passwordEntered = "";
@@ -69,19 +73,19 @@ public class DeleteConfirmDialogBox {
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
 		messageAlert.createAlert(message);
-		modalBody.add(messageAlert);
+		//modalBody.add(messageAlert);
 		
 		VerticalPanel passwordPanel = new VerticalPanel();
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
-		final HTML passwordText = new HTML(
+		HTML passwordText = new HTML(
 				"<h4>To confirm deletion enter your password below:<h4>");
-		final Input password = new Input(InputType.PASSWORD);
+		
 		
 		password.setId("password_PasswordTextBox");
 		password.setPlaceholder("Enter Password");
-		password.setTitle("Enter Password");
-		password.setValidateOnBlur(true);
-		
+		password.setTitle( message + "To confirm deletion enter your password.");
+		//password.setValidateOnBlur(true);
+		password.setFocus(true);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get());
@@ -116,8 +120,11 @@ public class DeleteConfirmDialogBox {
 		confirmButton.setEnabled(false);
 
 		modalFooter.add(confirmButton);
-
-		modalBody.add(passwordPanel);
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(messageAlert);
+		vp.add(passwordPanel);
+		focusPanel.add(vp);
+		modalBody.add(focusPanel);
 		panel.add(modalBody);
 
 		panel.add(modalFooter);
@@ -159,6 +166,10 @@ public class DeleteConfirmDialogBox {
 	 */
 	public  Button getConfirmbutton() {
 		return confirmButton;
+	}
+
+	public Input getPassword() {
+		return password;
 	}
 
 }

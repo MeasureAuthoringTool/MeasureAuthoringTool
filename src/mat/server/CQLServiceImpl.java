@@ -1346,17 +1346,14 @@ public class CQLServiceImpl implements CQLService {
 			CQLModel cqlModel = getCQLData(xml).getCqlModel();
 	        List<CQLQualityDataSetDTO> cqlQualityDataSetDTO = cqlModel.getAllValueSetList();
 			if (valueSetElements != null) {
+				String valueSetName = valueSetElements.getAttributes().getNamedItem("name").getNodeValue();
+				CQLQualityDataSetDTO valueSet = new CQLQualityDataSetDTO();
+				valueSet.setCodeListName(valueSetName);
 				Node parentNode = valueSetElements.getParentNode();
 				parentNode.removeChild(valueSetElements);
 				result.setSuccess(true);
 				result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-				if(cqlQualityDataSetDTO != null){
-                    for(CQLQualityDataSetDTO valueSet : cqlQualityDataSetDTO){
-                           if(valueSet.getId().equalsIgnoreCase(toBeDelValueSetId)){
-                                  result.setCqlQualityDataSetDTO(valueSet);
-                           }
-                    }
-             }
+				result.setCqlQualityDataSetDTO(valueSet);
 
 			} else {
 				logger.info("Unable to find the selected valueset element with id in deleteValueSet : "
@@ -1382,31 +1379,20 @@ public class CQLServiceImpl implements CQLService {
 			String xpathforCodeNode = "//cqlLookUp//code[@id='" + toBeDeletedCodeId + "']";
 			Node codeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforCodeNode);
 			List<CQLCode> cqlCodeListBeforeDeletion = getCQLCodes(xml).getCqlCodeList();
-			Node parentNode = codeNode.getParentNode();
-            parentNode.removeChild(codeNode);
-            result.setSuccess(true);
-            result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-            result.setCqlCodeList(getCQLCodes(result.getXml()).getCqlCodeList());
 
             if (codeNode != null) {
-                //Saving the CQLCode object to be removed.
+                String cqlOID = codeNode.getAttributes().getNamedItem("codeOID").getNodeValue();
+                String cqlCodeName = codeNode.getAttributes().getNamedItem("codeName").getNodeValue();
                 CQLCode cqlCode = new CQLCode();
-                if(result.getCqlCodeList() != null){
-                       for(CQLCode codes : cqlCodeListBeforeDeletion){
-                              if(codes.getId().equalsIgnoreCase(toBeDeletedCodeId)){
-                                     cqlCode.setCodeIdentifier(codes.getCodeIdentifier());
-                                     cqlCode.setCodeName(codes.getCodeName());
-                                     cqlCode.setCodeOID(codes.getCodeOID());
-                                     cqlCode.setCodeSystemName(codes.getCodeSystemName());
-                                     cqlCode.setCodeSystemOID(codes.getCodeSystemOID());
-                                     cqlCode.setCodeSystemVersion(codes.getCodeSystemVersion());
-                                     cqlCode.setDisplayName(codes.getDisplayName());
-                              }
-                       }
-                }
-         
+                cqlCode.setCodeName(cqlCodeName);
+                cqlCode.setCodeOID(cqlOID);
+                
+    			Node parentNode = codeNode.getParentNode();
+                parentNode.removeChild(codeNode);
+                result.setSuccess(true);
+                result.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+                result.setCqlCodeList(getCQLCodes(result.getXml()).getCqlCodeList());
                 result.setCqlCode(cqlCode);
-
 			} else {
 				logger.info("Unable to find the selected Code element with id in deleteCode : " + toBeDeletedCodeId);
 				result.setSuccess(false);

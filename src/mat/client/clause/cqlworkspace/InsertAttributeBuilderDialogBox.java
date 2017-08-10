@@ -1220,7 +1220,7 @@ private static void defaultFrmGrpValidations(){
 		}else if(selectedMode.equalsIgnoreCase(NULLABLE)){
 			sb.append(".").append(selectedAttrItem).append(" ").append(selectedMDetailsItem);
 		}else if(selectedMode.equalsIgnoreCase(VALUE_SETS) ||selectedMode.equalsIgnoreCase(CODES) ){
-			String valueArray[] = ModeDetailslistBox.getValue().split(":");
+			String valueArray[] = ModeDetailslistBox.getValue().split(":", 2);
 			String type="";
 			String value = "";
 			if(valueArray.length > 0){

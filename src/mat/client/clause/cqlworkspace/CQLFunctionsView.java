@@ -355,13 +355,11 @@ public class CQLFunctionsView {
 		mainFunctionVerticalPanel.setTitle("Function Section");
 		mainFunctionVerticalPanel.setStyleName("cqlRightContainer");
 		mainFunctionVerticalPanel.setWidth("725px");
-		mainFunctionVerticalPanel.setHeight("500px");
 		funcFP.setWidth("700px");
 		funcFP.setStyleName("marginLeft15px");
 	
 		mainFunctionVerticalPanel.clear();
 		mainFunctionVerticalPanel.add(funcFP);
-		mainFunctionVerticalPanel.setHeight("700px");
 	}
 
 	/**

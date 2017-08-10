@@ -187,11 +187,9 @@ public class CQLParametersView {
 		mainParamViewVerticalPanel.setTitle("Parameter Section");
 		mainParamViewVerticalPanel.setStyleName("cqlRightContainer");
 		mainParamViewVerticalPanel.setWidth("725px");
-		mainParamViewVerticalPanel.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
 		mainParamViewVerticalPanel.add(parameterFP);
-		mainParamViewVerticalPanel.setHeight("700px");
 	}
 
 	

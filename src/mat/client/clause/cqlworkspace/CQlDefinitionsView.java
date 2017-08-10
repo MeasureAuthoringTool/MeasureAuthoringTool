@@ -235,7 +235,6 @@ public class CQlDefinitionsView {
 		mainDefineViewVerticalPanel.setTitle("Definition Section");
 		mainDefineViewVerticalPanel.setStyleName("cqlRightContainer");
 		mainDefineViewVerticalPanel.setWidth("725px");
-		mainDefineViewVerticalPanel.setHeight("700px");
 		mainDefineViewVerticalPanel.add(definitionFP);
 	}
 

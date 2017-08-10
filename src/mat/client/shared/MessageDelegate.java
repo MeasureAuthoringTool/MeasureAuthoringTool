@@ -860,12 +860,6 @@ public class MessageDelegate {
 	/** The delete confirmation include. */
 	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
 	
-	/** The delete confirmation valueset. */
-	private final String DELETE_CONFIRMATION_VALUESET = "You have selected to delete this Value Set. Please confirm that you want to remove this Value Set.";
-	
-	/** The delete confirmation codes. */
-	private final String DELETE_CONFIRMATION_CODES = "You have selected to delete this Code. Please confirm that you want to remove this Code.";
-	
 	/** The error library version. */
 	private final String ERROR_LIBRARY_VERSION ="Please select version type Major or Minor.";
 	
@@ -3361,24 +3355,10 @@ public class MessageDelegate {
 	}
 
 	/**
-	 * @return the dELETE_CONFIRMATION_CODES
-	 */
-	public String getDELETE_CONFIRMATION_CODES() {
-		return DELETE_CONFIRMATION_CODES;
-	}
-
-	/**
 	 * @return the 508 Complaint message for deleting the Code
 	 */
 	public String getDELETE_CONFIRMATION_CODES(String codeOID) {
 		return "You have selected to delete code " + codeOID + ". Please confirm that you want to remove this Code.";
-	}
-
-	/**
-	 * @return the dELETE_CONFIRMATION_VALUESET
-	 */
-	public String getDELETE_CONFIRMATION_VALUESET() {
-		return DELETE_CONFIRMATION_VALUESET;
 	}
 
 	/**

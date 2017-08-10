@@ -3402,6 +3402,12 @@ public class MessageDelegate {
 		return PACKAGER_CQL_ERROR;
 	}
 	
+	public String getSUCESS_FUNCTION_ARG_MODIFY(String ArgName){
+		return "Function Argument "+ ArgName +" successfully modified.";
+	}
+	 public String getSUCESS_FUNCTION_ARG_ADD(String ArgName){
+		 return "Function Argument "+ ArgName +" successfully saved.";
+	 }
 	/**
 	 * Gets the valueset success message.
 	 *

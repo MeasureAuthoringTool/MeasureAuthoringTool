@@ -243,7 +243,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlParametersView.getView());
-
+		//508 Compliance for Parameter section
+		getCqlLeftNavBarPanelView().setFocus(getCQLParametersView().getMainParamViewVerticalPanel());
 	}
 
 
@@ -261,6 +262,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlDefinitionsView.getView());
+		//508 Compliance for Definition section
+		getCqlLeftNavBarPanelView().setFocus(getCQlDefinitionsView().getMainDefineViewVerticalPanel());
 	}
 
 
@@ -278,6 +281,8 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getMeasureLockService().checkForEditPermission()));
+		//508 Compliance for Function section
+		getCqlLeftNavBarPanelView().setFocus(getCqlFunctionsView().getMainFunctionVerticalPanel());
 	}
 	
 	/**

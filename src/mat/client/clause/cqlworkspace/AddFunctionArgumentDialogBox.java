@@ -81,7 +81,7 @@ public class AddFunctionArgumentDialogBox {
 	 * @param searchDisplay - {@link CQLWorkSpaceView}
 	 */
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final boolean isEditable) {
+			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final CQLLeftNavBarPanelView cqlLeftNavBarPanelView, final boolean isEditable) {
 		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 		
@@ -414,6 +414,7 @@ public class AddFunctionArgumentDialogBox {
 								cqlFunctionsView.getFunctionArgumentList().add(argument);
 								cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(),isEditable);
 								cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
+								cqlLeftNavBarPanelView.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_MODIFY(argumentName));
 								break;
 							}
 						}
@@ -427,9 +428,12 @@ public class AddFunctionArgumentDialogBox {
 						cqlFunctionsView.getFunctionArgumentList().add(functionArg);
 						cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(),isEditable);
 						cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
+						cqlLeftNavBarPanelView.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_ADD(argumentName));
 					}
 					dialogModal.hide();
 				}
+				//508 change for Function Argument section
+				cqlFunctionsView.getAddNewArgument().setFocus(true);
 			}
 		});
 		dialogModal.show();

@@ -43,6 +43,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -99,8 +100,8 @@ public class CQLFunctionsView {
 	/** The observer. */
 	private Observer observer;
 	
-	/** The main function vertical panel. */
-	private VerticalPanel mainFunctionVerticalPanel = new VerticalPanel();
+	/** The main function focus panel. */
+	private FocusPanel mainFunctionVerticalPanel = new FocusPanel();
 	
 	/** The func name txt area. */
 	private MatTextBox funcNameTxtArea = new MatTextBox();
@@ -237,7 +238,8 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.setUseWrapMode(true);
 		functionBodyAceEditor.clearAnnotations();
 		functionBodyAceEditor.removeAllMarkers();
-		functionBodyAceEditor.redisplay();
+		//Commenting below code as its taking away focus and that makes our application not 508 compliant with other fields.
+		//functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		functionBodyAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
 		
@@ -350,15 +352,16 @@ public class CQLFunctionsView {
 		funcFP.add(funcVP);
 		funcFP.setStyleName("cqlRightContainer");
 
+		mainFunctionVerticalPanel.setTitle("Function Section");
 		mainFunctionVerticalPanel.setStyleName("cqlRightContainer");
-		mainFunctionVerticalPanel.setWidth("700px");
+		mainFunctionVerticalPanel.setWidth("725px");
 		mainFunctionVerticalPanel.setHeight("500px");
 		funcFP.setWidth("700px");
 		funcFP.setStyleName("marginLeft15px");
 	
 		mainFunctionVerticalPanel.clear();
 		mainFunctionVerticalPanel.add(funcFP);
-		mainFunctionVerticalPanel.setHeight("675px");
+		mainFunctionVerticalPanel.setHeight("700px");
 	}
 
 	/**
@@ -381,7 +384,7 @@ public class CQLFunctionsView {
 	 * @param isEditable the is editable
 	 * @return the view
 	 */
-	public VerticalPanel getView(boolean isEditable) {
+	public FocusPanel getView(boolean isEditable) {
 		mainFunctionVerticalPanel.clear();
 		resetAll();
 		buildView(isEditable);
@@ -764,7 +767,7 @@ public class CQLFunctionsView {
 	 *
 	 * @return the main function vertical panel
 	 */
-	public VerticalPanel getMainFunctionVerticalPanel() {
+	public FocusPanel getMainFunctionVerticalPanel() {
 		return mainFunctionVerticalPanel;
 	}
 
@@ -773,7 +776,7 @@ public class CQLFunctionsView {
 	 *
 	 * @param mainFunctionVerticalPanel the new main function vertical panel
 	 */
-	public void setMainFunctionVerticalPanel(VerticalPanel mainFunctionVerticalPanel) {
+	public void setMainFunctionVerticalPanel(FocusPanel mainFunctionVerticalPanel) {
 		this.mainFunctionVerticalPanel = mainFunctionVerticalPanel;
 	}
 

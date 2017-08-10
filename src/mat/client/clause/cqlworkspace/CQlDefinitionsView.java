@@ -19,6 +19,7 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -61,9 +62,6 @@ public class CQlDefinitionsView {
 	/** The define add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("definition");
 
-	/** The main define view vertical panel. */
-	private VerticalPanel mainDefineViewVerticalPanel = new VerticalPanel();
-
 	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	
@@ -82,6 +80,8 @@ public class CQlDefinitionsView {
 	private FormGroup defineContextGroup = new FormGroup();
 	
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
+	
+	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
 	
 	/**
 	 * Instantiates a new c ql definitions view.
@@ -129,7 +129,7 @@ public class CQlDefinitionsView {
 		defineNameHPanel.add(defineNameLabel);
 		defineNameHPanel.add(defineNameTxtArea);
 		defineNameHPanel.setWidth("700px");
-		
+			
 		defineNameGroup.add(defineNameHPanel);
 		
 		// Build Definition Context Form Group
@@ -229,14 +229,14 @@ public class CQlDefinitionsView {
 		definitionFP.add(definitionVP);
 		definitionFP.setStyleName("cqlRightContainer");
 
-		mainDefineViewVerticalPanel.setStyleName("cqlRightContainer");
-		mainDefineViewVerticalPanel.setWidth("700px");
-		mainDefineViewVerticalPanel.setHeight("500px");
 		definitionFP.setWidth("700px");
 		definitionFP.setStyleName("marginLeft15px");
 		
+		mainDefineViewVerticalPanel.setTitle("Definition Section");
+		mainDefineViewVerticalPanel.setStyleName("cqlRightContainer");
+		mainDefineViewVerticalPanel.setWidth("725px");
+		mainDefineViewVerticalPanel.setHeight("700px");
 		mainDefineViewVerticalPanel.add(definitionFP);
-		mainDefineViewVerticalPanel.setHeight("675px");
 	}
 
 	/**
@@ -274,7 +274,8 @@ public class CQlDefinitionsView {
 		defineAceEditor.setUseWrapMode(true);
 		defineAceEditor.removeAllMarkers();
 		defineAceEditor.clearAnnotations();
-		defineAceEditor.redisplay();
+		//Commenting below code as its taking away focus and that makes our application not 508 compliant with other fields.
+		//defineAceEditor.redisplay();
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		defineAceEditor.setTitle("Build CQL Expression");
 		defineAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
@@ -297,7 +298,7 @@ public class CQlDefinitionsView {
 	 *
 	 * @return the view
 	 */
-	public VerticalPanel getView() {
+	public FocusPanel getView() {
 		mainDefineViewVerticalPanel.clear();
 		resetAll();
 		buildView();
@@ -572,4 +573,19 @@ public class CQlDefinitionsView {
 		return returnTypeTextBox;
 	}
 
+	/**
+	 * @return the mainDefineViewVerticalPanel
+	 */
+	public FocusPanel getMainDefineViewVerticalPanel() {
+		return mainDefineViewVerticalPanel;
+	}
+
+	/**
+	 * @param mainDefineViewVerticalPanel the mainDefineViewVerticalPanel to set
+	 */
+	public void setMainDefineViewVerticalPanel(FocusPanel mainDefineViewVerticalPanel) {
+		this.mainDefineViewVerticalPanel = mainDefineViewVerticalPanel;
+	}
+
+	
 }

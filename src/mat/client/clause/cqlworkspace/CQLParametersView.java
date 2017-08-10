@@ -15,6 +15,7 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -51,8 +52,8 @@ public class CQLParametersView {
 	/** The parameter add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
 
-	/** The main param view vertical panel. */
-	VerticalPanel mainParamViewVerticalPanel = new VerticalPanel();
+	/** The main param view focus panel. */
+	FocusPanel mainParamViewVerticalPanel = new FocusPanel();
 
 	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
@@ -183,13 +184,14 @@ public class CQLParametersView {
 		parameterFP.add(parameterVP);
 		parameterFP.setStyleName("cqlRightContainer");
 
+		mainParamViewVerticalPanel.setTitle("Parameter Section");
 		mainParamViewVerticalPanel.setStyleName("cqlRightContainer");
-		mainParamViewVerticalPanel.setWidth("700px");
+		mainParamViewVerticalPanel.setWidth("725px");
 		mainParamViewVerticalPanel.setHeight("500px");
 		parameterFP.setWidth("700px");
 		parameterFP.setStyleName("marginLeft15px");
 		mainParamViewVerticalPanel.add(parameterFP);
-		mainParamViewVerticalPanel.setHeight("675px");
+		mainParamViewVerticalPanel.setHeight("700px");
 	}
 
 	
@@ -244,7 +246,7 @@ public class CQLParametersView {
 	 *
 	 * @return the view
 	 */
-	public VerticalPanel getView() {
+	public FocusPanel getView() {
 		mainParamViewVerticalPanel.clear();
 		resetAll();
 		buildView();
@@ -393,4 +395,19 @@ public class CQLParametersView {
 		getParamCommentGroup().setValidationState(ValidationState.NONE);
 		getParamNameGroup().setValidationState(ValidationState.NONE);
 	}
+
+	/**
+	 * @return the mainParamViewVerticalPanel
+	 */
+	public FocusPanel getMainParamViewVerticalPanel() {
+		return mainParamViewVerticalPanel;
+	}
+
+	/**
+	 * @param mainParamViewVerticalPanel the mainParamViewVerticalPanel to set
+	 */
+	public void setMainParamViewVerticalPanel(FocusPanel mainParamViewVerticalPanel) {
+		this.mainParamViewVerticalPanel = mainParamViewVerticalPanel;
+	}
+	
 }

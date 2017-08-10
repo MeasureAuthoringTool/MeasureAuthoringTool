@@ -208,7 +208,8 @@ public class CQLIncludeLibraryView {
 		cqlAceEditor.setReadOnly(true);
 		cqlAceEditor.setUseWrapMode(true);
 		cqlAceEditor.clearAnnotations();
-		cqlAceEditor.redisplay();
+		//Commenting below code as its taking away focus and that makes our application not 508 compliant with other fields.
+		//cqlAceEditor.redisplay();
 		
 		Label viewCQlFileLabel = new Label(LabelType.INFO);
 		viewCQlFileLabel.setText("View CQL file here");

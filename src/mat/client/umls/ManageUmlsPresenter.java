@@ -161,10 +161,10 @@ public class ManageUmlsPresenter implements MatPresenter{
 	/** The welcome message. */
 	private String userFirstName;
 	/** The panel. */
-	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
+	//private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 	
 	/** The panel with message. */
-	private VerticalPanel panelWithMessage = new VerticalPanel();
+	//private VerticalPanel panelWithMessage = new VerticalPanel();
 	
 	/**Key down handler to trap enter key.**/
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
@@ -242,11 +242,11 @@ public class ManageUmlsPresenter implements MatPresenter{
 	/**
 	 * Hide welcome message.
 	 */
-	protected void hideWelcomeMessage() {
+	/*protected void hideWelcomeMessage() {
 		panelWithMessage.remove(buildSuccessMessagePanel(userFirstName));
 		showWelcomeMessage = false;
 		
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
@@ -260,21 +260,24 @@ public class ManageUmlsPresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
-		String heading = "UMLS Account Login";
+		/*String heading = "UMLS Account Login";
 		panel.setHeading(heading, "UmlsLogin");
 		FlowPanel fp = new FlowPanel();
-		fp.getElement().setId("fp_FlowPanel");
+		fp.getElement().setId("fp_FlowPanel");*/
 		resetWidget();		
-		fp.add(display.asWidget());		
-		panel.setContent(fp);
+	//	fp.add(display.asWidget());		
+		/*panel.setContent(fp);
 		if(showWelcomeMessage){
 		panelWithMessage.add(buildSuccessMessagePanel(userFirstName));	
 		showWelcomeMessage=false;
+		Mat.focusSkipLists("UMLSMessageLogin");
 		}else{
 			panelWithMessage.remove(buildSuccessMessagePanel(userFirstName));
+			Mat.focusSkipLists("UmlsLogin");
 		}
-		panelWithMessage.add(panel);
-		Mat.focusSkipLists("UmlsLogin");
+		panelWithMessage.add(panel);*/
+		Mat.focusSkipLists("UMLSAccountLogin");
+		
 	}
 	
 	/**
@@ -283,7 +286,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	 * @param userFirstName the user first name
 	 * @return the widget
 	 */
-	private Widget buildSuccessMessagePanel(String userFirstName) {
+	/*private Widget buildSuccessMessagePanel(String userFirstName) {
 		hfPpanel.clear();
 		hfPpanel.getElement().setId("hfPpanel_HorizontalFlowPanel");
 		hfPpanel.setStyleName(MAT_LOGIN_SUCCESS_MESSAGE);
@@ -301,23 +304,23 @@ public class ManageUmlsPresenter implements MatPresenter{
 		hPanel.add(msgPanel);
 		hfPpanel.add(hPanel);			
 		return hfPpanel;
-	}
+	}*/
 	
 	/**
 	 * Wrap.
 	 *
 	 * @param arg the arg
 	 * @return the widget
-	 */
+	 *//*
 	private Widget wrap(String arg) {
 		return new HTML(arg);
-	}
+	}*/
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
 	@Override
 	public Widget getWidget() {		
-		return panelWithMessage;
+		return display.asWidget();
 	}
 	
 	/**private method to invalidate UMLS's session by clearing UMLSSession Map for current HTTP session ID.**/
@@ -350,7 +353,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	
 	/** Private submit method - Calls to VSAC service.**/
 	private void submit() {
-		hideWelcomeMessage();
+		//hideWelcomeMessage();
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);

@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
 import mat.client.Mat;
+import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableImageButton;
@@ -87,6 +88,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	
 	/** The button bar. */
 	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("umls");
+	
+	private ContentWithHeadingWidget panel;
 	
 	/**
 	 * Instantiates a new umls login view.
@@ -179,6 +182,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());*/
 		
 		buildUmlLoginView();
+		panel = new ContentWithHeadingWidget(mainPanel, "UMLS Account Login","UMLSAccountLogin");
 	}
 	
 	
@@ -336,7 +340,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	 */
 	@Override
 	public Widget asWidget() {
-		return mainPanel;
+		return panel;
 	}
 	
 	/* (non-Javadoc)

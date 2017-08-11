@@ -249,7 +249,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected FormLabel componentMeasuresLabel = new FormLabel();
 	
 	/** The counter. */
-	private int counter = 0;
+	//private int counter = 0;
 	
 	/** The clinical stmt input. */
 	protected TextAreaWithMaxLength  clinicalStmtInput = new TextAreaWithMaxLength ();
@@ -2514,12 +2514,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		TextAreaWithMaxLength newReferenceBox = createReferenceInput();
 		newReferenceBox.setPlaceholder("Enter Reference");
 		newReferenceBox.setTitle("Enter Reference");
-		++counter;
-		String dynamicLabel = "Reference" + counter;
-		Widget newReferenceBoxLabel = LabelBuilder.buildInvisibleLabel(newReferenceBox, dynamicLabel);
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(newReferenceBoxLabel);
-		hp.add(newReferenceBox);
+		//++counter;
+		String dynamicLabel = "Reference" + referenceTable.getRowCount()+1;
+		//Widget newReferenceBoxLabel = LabelBuilder.buildInvisibleLabel(newReferenceBox, dynamicLabel);
+		//HorizontalPanel hp = new HorizontalPanel();
+		//hp.add(newReferenceBoxLabel);
+		//hp.add(newReferenceBox);
 		newReferenceBox.getElement().setId(dynamicLabel+"_TextAreaWithMaxLength");
 		Button newremoveButton = new Button("Remove");
 		newremoveButton.setId(dynamicLabel+"_RemoveButton");
@@ -2538,11 +2538,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			}
 		});
 		int numRows = referenceTable.getRowCount();
-		referenceTable.setWidget(numRows, 0, hp);
+		referenceTable.setWidget(numRows, 0, newReferenceBox);
 		//referenceTable.setWidget(numRows, 1, new SimplePanel());
 		referenceTable.setWidget(numRows, 1, newremoveButton);
 		newremoveButton.getElement().setId("newremoveButton"+numRows+"_Button");
-		referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows + 1);
+		//referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows + 1);
+	//	referenceTable.getFlexCellFormatter().setColSpan(numRows + 1, 0, 1);
 		referenceArrayList.add(newReferenceBox);
 	}
 	
@@ -2597,8 +2598,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				newReferenceBox.setPlaceholder("Enter Reference");
 				if (i == 0) {
 					referenceTable.setWidget(0, 0, newReferenceBox);
-					referenceTable.setWidget(0, 1, new SimplePanel());
-					referenceTable.setWidget(0, 2, AddRowButton);
+					//referenceTable.setWidget(0, 1, new SimplePanel());
+					VerticalPanel vp = new VerticalPanel();
+					vp.getElement().setId("vp_1");
+					vp.add(AddRowButton);
+					//AddRowButton.setWidth("10px");
+					
+					referenceTable.setWidget(0, 1, vp);
 				} else {
 					referenceTable.setWidget(i, 0, newReferenceBox);
 					if (editable) {
@@ -2617,8 +2623,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 								removeRow(referenceTable, clickedRowIndex);
 							}
 						});
-						referenceTable.setWidget(i, 1, new SimplePanel());
-						referenceTable.setWidget(i, 2, newRemoveButton);
+						//referenceTable.setWidget(i, 1, new SimplePanel());
+						referenceTable.setWidget(i, 1, newRemoveButton);
 					}
 				}
 				referenceArrayList.add(newReferenceBox);
@@ -2629,9 +2635,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			TextAreaWithMaxLength newReferenceBox = createReferenceInput();
 			newReferenceBox.setTitle("Enter Reference");
 			newReferenceBox.setPlaceholder("Enter Reference");
+			VerticalPanel vp = new VerticalPanel();
+			vp.getElement().setId("vp_2");
+			vp.add(AddRowButton);
+			//AddRowButton.setWidth("10px");
+
 			referenceTable.setWidget(0, 0, newReferenceBox);
-			referenceTable.setWidget(0, 1, new SimplePanel());
-			referenceTable.setWidget(0, 2, AddRowButton);
+			//referenceTable.setWidget(0, 1, new SimplePanel());
+			referenceTable.setWidget(0, 1, vp);
 			referenceArrayList.add(newReferenceBox);
 			referencePlaceHolder.add(referenceTable);
 		}
@@ -2649,8 +2660,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		referenceInput.setTitle("Enter Reference");
 		referenceTable.setWidget(0, 0, referenceInput);
 		referenceArrayList.add(referenceInput);
-		referenceTable.setWidget(0, 1, new SimplePanel());
-		referenceTable.setWidget(0, 2, AddRowButton);
+		//referenceTable.setWidget(0, 1, new SimplePanel());
+		VerticalPanel vp = new VerticalPanel();
+		vp.getElement().setId("vp_3");
+		vp.add(AddRowButton);
+		//AddRowButton.setWidth("10px");
+
+		referenceTable.setWidget(0, 1, vp);
 	}
 	
 	

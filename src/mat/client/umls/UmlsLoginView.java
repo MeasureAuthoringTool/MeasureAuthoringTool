@@ -59,7 +59,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
 	/** The info message. */
-	private HTML infoMessage = new HTML();
+	//private HTML infoMessage = new HTML();
 	
 	/** The info message panel. */
 	private SimplePanel infoMessagePanel;
@@ -75,7 +75,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	private SimplePanel simplePanel = new SimplePanel();
 	
 	/** The success. */
-	Label success = new Label();
+	//Label success = new Label();
 	
 	/** The umls external link. */
 	Anchor umlsExternalLink ;//= new Anchor("Need a UMLS license?");
@@ -198,7 +198,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessageAlert);
 		mainPanel.add(new SpacerWidget());
-		Grid infoGrid = new Grid(2,2);
+		
+		/*Grid infoGrid = new Grid(2,2);
 		FocusableImageButton focusableImageButton = new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success");
 		infoGrid.setWidget(0, 0, focusableImageButton);
 		Mat.removeInputBoxFromFocusPanel(focusableImageButton.getElement());
@@ -210,7 +211,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		infoMessage.setStyleName("loginInfoMessageContainer");
 		infoMessagePanel = wrapInSpacer(infoMessage);
 		mainPanel.add(infoMessagePanel);
-		
+		*/
 		//Login Panel.
 		Panel loginPanel = new Panel();
 		loginPanel.setWidth("300px");
@@ -351,10 +352,10 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getInfoMessage()
 	 */
-	@Override
+	/*@Override
 	public HasHTML getInfoMessage() {
 		return infoMessage;
-	}
+	}*/
 	
 	
 	/* (non-Javadoc)
@@ -368,7 +369,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#setInfoMessageVisible(boolean)
 	 */
-	@Override
+	/*@Override
 	public void setInfoMessageVisible(boolean value) {
 		if(value){
 			success.setText("Success");
@@ -376,7 +377,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 			success.setText("");
 		}
 		MatContext.get().setVisible(infoMessagePanel,value);
-	}
+	}*/
 	
 	
 	

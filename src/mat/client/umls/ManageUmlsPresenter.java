@@ -103,7 +103,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 * 
 		 * @return the info message
 		 */
-		HasHTML getInfoMessage();
+		//HasHTML getInfoMessage();
 		
 		
 		
@@ -136,7 +136,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 * @param value
 		 *            the new info message visible
 		 */
-		void setInfoMessageVisible(boolean value);
+		//void setInfoMessageVisible(boolean value);
 		
 		/**
 		 * Sets the initial focus.
@@ -352,7 +352,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageAlert().clear();
-		display.setInfoMessageVisible(false);
+		//display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		display.getPasswordInput().setText("");
 		display.getUserIdText().setText("");
@@ -367,7 +367,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		//hideWelcomeMessage();
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageAlert().clearAlert();
-		display.setInfoMessageVisible(false);
+		//display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		
 		if (display.getUserIdText().getText().isEmpty()) {
@@ -403,9 +403,10 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getMessageFormGrp().setValidationState(ValidationState.NONE);
 						display.getHelpBlock().setText("");
 						Mat.showUMLSActive();
-						display.setInfoMessageVisible(true);
-						display.getInfoMessage().setText(
-								MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
+					//	display.setInfoMessageVisible(true);
+						//display.getInfoMessage().setText(
+							//	MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
+						display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getPasswordInput().setText("");
 						display.getUserIdText().setText("");
 						Mat.showUMLSActive();

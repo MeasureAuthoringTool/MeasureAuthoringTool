@@ -31,9 +31,11 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 //import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 
 
 /**
@@ -91,6 +93,9 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	
 	private ContentWithHeadingWidget panel;
 	
+	private MessageAlert successMessageAlert = new SuccessMessageAlert();
+	
+
 	/**
 	 * Instantiates a new umls login view.
 	 */
@@ -191,6 +196,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.setStyleName("umlscontentPanel");
 		mainPanel.getElement().setAttribute("id", "umlsContent");
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		Grid infoGrid = new Grid(2,2);
 		FocusableImageButton focusableImageButton = new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success");
@@ -204,7 +210,6 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		infoMessage.setStyleName("loginInfoMessageContainer");
 		infoMessagePanel = wrapInSpacer(infoMessage);
 		mainPanel.add(infoMessagePanel);
-		
 		
 		//Login Panel.
 		Panel loginPanel = new Panel();
@@ -482,6 +487,11 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
+	}
+	
+	@Override
+	public MessageAlert getSuccessMessageAlert() {
+		return successMessageAlert;
 	}
 	
 }

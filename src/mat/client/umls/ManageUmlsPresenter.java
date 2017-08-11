@@ -30,6 +30,7 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
@@ -153,6 +154,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 		FormGroup getMessageFormGrp();
 
 		FormGroup getUserIdGroup();
+
+		MessageAlert getSuccessMessageAlert();
 	}
 	
 	/** The display. */
@@ -276,6 +279,13 @@ public class ManageUmlsPresenter implements MatPresenter{
 			Mat.focusSkipLists("UmlsLogin");
 		}
 		panelWithMessage.add(panel);*/
+		if(showWelcomeMessage){
+			showWelcomeMessage = false;
+			display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWelcomeMessage(userFirstName));
+		} else {
+			display.getSuccessMessageAlert().clearAlert();
+		}
+		
 		Mat.focusSkipLists("UMLSAccountLogin");
 		
 	}
@@ -341,6 +351,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	/**Method to clear all messages and un set user id and password input box's.**/
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();
+		display.getSuccessMessageAlert().clear();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		display.getPasswordInput().setText("");
@@ -355,6 +366,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private void submit() {
 		//hideWelcomeMessage();
 		display.getErrorMessageDisplay().clear();
+		display.getSuccessMessageAlert().clearAlert();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		

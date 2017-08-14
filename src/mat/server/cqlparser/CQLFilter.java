@@ -5,19 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLModel;
-import mat.shared.CQLExpressionObject;
-import mat.shared.CQLObject;
-
-import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
-import org.cqframework.cql.cql2elm.cqlModels.*;
+import org.cqframework.cql.cql2elm.cqlModels.LibraryHolder;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AggregateExpression;
-import org.hl7.elm.r1.AliasRef;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.BinaryExpression;
 import org.hl7.elm.r1.ByExpression;
@@ -45,10 +38,8 @@ import org.hl7.elm.r1.Interval;
 import org.hl7.elm.r1.Last;
 import org.hl7.elm.r1.LetClause;
 import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.NaryExpression;
 import org.hl7.elm.r1.OperandDef;
-import org.hl7.elm.r1.OperandRef;
 import org.hl7.elm.r1.ParameterDef;
 import org.hl7.elm.r1.ParameterRef;
 import org.hl7.elm.r1.PositionOf;
@@ -746,12 +737,23 @@ public class CQLFilter {
 		// System.out.println("\t" + inValueSet.getValueset().getName());
 		String name = inValueSet.getValueset().getName();
 
-		if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
+		
+		String libraryAlias = inValueSet.getValueset().getLibraryName();
+
+		if (libraryAlias != null) {
+			LibraryInfoHolder libHolder = getIncludedLibrary(libraryAlias);
+			name = libHolder.getLibraryName() + "-" + libHolder.getLibraryVersion() + "|" + libraryAlias + "|" + name;
+		} else if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
+			name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion()
+					+ "|" + this.currentLibraryHolder.getLibraryAlias() + "|" + name;
+		}
+		
+		/*if (this.currentLibraryHolder.getLibraryAlias().length() > 0) {
 			// name = this.currentLibraryHolder.getLibraryAlias() + "." + name;
 			name = this.currentLibraryHolder.getLibraryName() + "-" + this.currentLibraryHolder.getLibraryVersion() + 
 					"|" + this.currentLibraryHolder.getLibraryAlias() + "|"
 					+ name;
-		}
+		}*/
 
 		this.addUsedValueset(name);
 	}

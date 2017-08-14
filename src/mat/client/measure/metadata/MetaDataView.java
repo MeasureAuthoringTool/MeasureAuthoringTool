@@ -71,6 +71,7 @@ import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
@@ -79,6 +80,7 @@ import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.Author;
+import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 
@@ -1124,6 +1126,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//moreMeasureDetailsVP.add(new SpacerWidget());
 		stewardListBox.setWidth("750px");
 		stewardSPanel.add(stewardListBox);
+		//stewardListBox.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 		moreMeasureDetailsVP.add(stewardSPanel);
 	}
 
@@ -3520,8 +3523,22 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return stratificationInput;
 	}
 	
-	
-	
+	@Override
+	public void setOptionsInStewardList(List<MeasureSteward> allStewardList, boolean editable) {
+		int i=1;
+		getStewardListBox().clear();
+		getStewardListBox().addItem("--Select--");
+		getStewardListBox().setSelectedIndex(i);
+		for(MeasureSteward m : allStewardList){
+			getStewardListBox().insertItem(m.getOrgName(), m.getId(), m.getOrgOid());
+			if(getStewardId() != null){
+				if(m.getId().equals(getStewardId())){
+					getStewardListBox().setSelectedIndex(i);
+				}
+			}
+			i= i+1;
+		}
+	}
 	
 	
 	/**

@@ -756,6 +756,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		MessageAlert getSuccessMessageDisplay2();
 
 		MessageAlert getErrorMessageDisplay2();
+
+		void setOptionsInStewardList(List<MeasureSteward> allStewardList, boolean editable);
 		
 	}
 	
@@ -1624,6 +1626,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * Prepopulate fields.
 	 */
 	private void prepopulateFields() {
+		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
 		
 		
@@ -1717,7 +1720,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		}
 		dbAuthorList.clear();
 		dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
-		setOptionsInStewardList(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
+		metaDataDisplay.setOptionsInStewardList(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
 		//metaDataDisplay.buildStewardCellTable(currentMeasureDetail.getMeasureDetailResult().getAllStewardList(), editable);
 		metaDataDisplay.buildAuthorCellTable(currentMeasureDetail.getMeasureDetailResult().getAllAuthorList(), editable);
 //		setStewardAndMeasureDevelopers();
@@ -1755,7 +1758,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		getComponentMeasures();
 		dbComponentMeasuresSelectedList.clear();
 		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
-		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		
 		if (currentMeasureDetail.getReferencesList() != null) {
 			metaDataDisplay.setReferenceValues(currentMeasureDetail.getReferencesList(), editable);
 		} else {
@@ -1769,6 +1772,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
 		metaDataDisplay.getDeleteMeasure().setEnabled(isMeasureDeletable());
 		metaDataDisplay.getDeleteMeasure2().setEnabled(isMeasureDeletable());
+		metaDataDisplay.getStewardListBox().setEnabled(editable);
 		currentMeasureDetail.setEditable(editable);
 		if(metaDataDisplay.getCalenderYear().getValue().equals(Boolean.FALSE) && editable){
 			metaDataDisplay.setMeasurementPeriodButtonsVisible(true);
@@ -1811,7 +1815,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				dbAuthorList.clear();
 				
 				dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
-				setOptionsInStewardList(result.getAllStewardList(),editable);
+				metaDataDisplay.setOptionsInStewardList(result.getAllStewardList(),MatContext.get().getMeasureLockService().checkForEditPermission());
 				
 				//metaDataDisplay.buildStewardCellTable(result.getAllStewardList(), editable);
 				metaDataDisplay.buildAuthorCellTable(result.getAllAuthorList(), editable);
@@ -1821,24 +1825,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			
 		});
 	}
-	private void setOptionsInStewardList(List<MeasureSteward> allStewardList, boolean editable) {
-		int i=1;
-		metaDataDisplay.getStewardListBox().clear();
-		metaDataDisplay.getStewardListBox().addItem("--Select--");
-		metaDataDisplay.getStewardListBox().setSelectedIndex(i);
-		
-		for(MeasureSteward m : allStewardList){
-			metaDataDisplay.getStewardListBox().insertItem(m.getOrgName(), m.getId(), m.getOrgOid());
-			if(metaDataDisplay.getStewardId() != null){
-				if(m.getId().equals(metaDataDisplay.getStewardId())){
-					metaDataDisplay.getStewardListBox().setSelectedIndex(i);
-				}
-			} 
-			i= i+1;
-		}
-		
-		metaDataDisplay.getStewardListBox().setEnabled(!editable);
-	}
+	
 	/**
 	 * Save meta data information.
 	 * 
@@ -2228,7 +2215,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		//This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure.
 		//MatContext.get().getCurrentMeasureInfo().setMeasureId("");
 		panel.clear();
-		
+		editable=false;
 		clearMessages();
 		
 	}

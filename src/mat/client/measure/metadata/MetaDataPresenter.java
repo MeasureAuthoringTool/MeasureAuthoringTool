@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.clause.QDSAppliedListModel;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.ListBoxCodeProvider;
@@ -1838,7 +1837,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			i= i+1;
 		}
 		
-		metaDataDisplay.getStewardListBox().setEnabled(editable);
+		metaDataDisplay.getStewardListBox().setEnabled(!editable);
 	}
 	/**
 	 * Save meta data information.

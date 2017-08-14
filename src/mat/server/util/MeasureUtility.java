@@ -3,20 +3,10 @@
  */
 package mat.server.util;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Node;
 
-import mat.model.QualityDataModelWrapper;
-import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.shared.StringUtility;
 
 // TODO: Auto-generated Javadoc
@@ -27,7 +17,7 @@ import mat.shared.StringUtility;
  */
 public class MeasureUtility {
 	/** The Constant logger. */
-	private static final Log LOG = LogFactory.getLog(XmlProcessor.class);
+	//private static final Log LOG = LogFactory.getLog(MeasureUtility.class);
 	/**
 	 * Gets the version text.
 	 * 
@@ -149,7 +139,7 @@ public class MeasureUtility {
 	 * @param qualityDataSetDTO
 	 *            the quality data set dto
 	 * @return the org.apache.commons.io.output. byte array output stream
-	 */
+	 *//*
 	public static ByteArrayOutputStream convertQualityDataDTOToXML(
 			CQLQualityDataModelWrapper qualityDataSetDTO) {
 		LOG.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
@@ -182,7 +172,7 @@ public class MeasureUtility {
 		}
 		LOG.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
 		return stream;
-	}
+	}*/
 	
 	/**
 	 * This method will take a String and remove all non-alphabet/non-numeric characters 
@@ -209,6 +199,19 @@ public class MeasureUtility {
 		}
 		
 		return cleanedString;
+	}
+	
+	/**
+	 * Method to set latest QDM Version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
+	 * 
+	 * **/
+	public static void updateLatestQDMVersion(XmlProcessor processor) throws XPathExpressionException {
+
+		Node cqlLibraryQdmVersionNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp/usingModelVersion");
+
+		if (cqlLibraryQdmVersionNode != null) {
+			cqlLibraryQdmVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
+		}
 	}
 	
 }

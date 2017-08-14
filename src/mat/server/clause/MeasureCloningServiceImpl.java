@@ -308,7 +308,7 @@ implements MeasureCloningService {
 				appendSupplementalDefinitions(xmlProcessor, false);
 				xmlProcessor.updateCQLLibraryName();
 				// Always set latest QDM Version.
-				xmlProcessor.updateLatestQDMVersion();
+				MeasureUtility.updateLatestQDMVersion(xmlProcessor);
 			}
 			
 			clonedXml.setMeasureXMLAsByteArray(xmlProcessor
@@ -460,6 +460,11 @@ implements MeasureCloningService {
 					}
 					Node clonedqdmNode = qdmNode.cloneNode(true);
 					xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
+					//MAT-8770
+					if(clonedqdmNode.getAttributes().getNamedItem("datatype") != null){
+						clonedqdmNode.getAttributes().removeNamedItem("datatype");
+					}
+					
 					cqlValuesetsNode.appendChild(clonedqdmNode);
 				}
 			}

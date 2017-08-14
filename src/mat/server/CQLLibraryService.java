@@ -345,7 +345,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			if(versionLibraryXml != null){
 				XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
 				try {
-					processor.updateLatestQDMVersion();
+					MeasureUtility.updateLatestQDMVersion(processor);
 					versionLibraryXml = processor.transform(processor.getOriginalDoc());
 				} catch (XPathExpressionException e) {
 					// TODO Auto-generated catch block

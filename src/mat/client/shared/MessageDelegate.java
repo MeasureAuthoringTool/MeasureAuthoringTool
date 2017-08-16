@@ -3409,22 +3409,37 @@ public class MessageDelegate {
 	}
 	
 	public String getMeasureDraftSuccessfulMessage(String measureName){
+		if(measureName.length() >= 60){
+			measureName = measureName.substring(0, 59);
+		}
 		return "You have created a draft of "+measureName+". Please click continue to navigate to the Measure Details page.";
 	}
 	
-	public String getLibraryDraftSuccessfulMessage(String measureName){
-		return "You have created a draft of "+measureName+". Please click continue to navigate to the CQL Composer.";
+	public String getLibraryDraftSuccessfulMessage(String cqlLibName){
+		if(cqlLibName.length() >= 60){
+			cqlLibName = cqlLibName.substring(0, 59);
+		}
+		return "You have created a draft of "+cqlLibName+". Please click continue to navigate to the CQL Composer.";
 	}
 	
 	public String getCreateNewMeasureSuccessfulMessage(String measureName){
+		if(measureName.length() >= 60){
+			measureName = measureName.substring(0, 59);
+		}
 		return "You have created a new measure "+measureName+". Please click continue to navigate to the Measure Details page.";
 	}
 	
 	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
+		if(libraryName.length() >= 60){
+			libraryName = libraryName.substring(0, 59);
+		}
 		return "You have created a new library "+libraryName+". Please click continue to navigate to the CQL Composer.";
 	}
 	
 	public String getVersionSuccessfulMessage(String name){
+		if(name.length() >= 60){
+			name = name.substring(0, 59);
+		}
 		return "Version of "+name+" has been successfully created.";
 	}
 

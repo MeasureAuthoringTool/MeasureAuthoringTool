@@ -875,7 +875,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if (((selectedLibrary !=null) && (selectedLibrary.getId() != null))
 						&& (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
 								.getMinorRadio().getValue())) {
-					saveFinalizedVersion(selectedLibrary.getId(),
+					saveFinalizedVersion(selectedLibrary.getId(), selectedLibrary.getCqlName(),
 							versionDisplay.getMajorRadioButton().getValue(),
 							selectedLibrary.getVersion());
 				} else {
@@ -893,10 +893,11 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * Method to Save Version of a Draft.
 	 *
 	 * @param libraryId the library id
+	 * @param string 
 	 * @param isMajor the is major
 	 * @param version the version
 	 */
-	protected void saveFinalizedVersion(final String libraryId, Boolean isMajor, String version) {
+	protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
 		
 		versionDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
@@ -938,7 +939,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 										}
 									});
-							String cqlLibName = MatContext.get().getCurrentLibraryInfo().getLibraryName();
 							fireSuccessfullDeletionEvent(true,
 									MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName));
 						} else {
@@ -1107,6 +1107,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(resultToFireEvent.isSuccess()){
+					cqlLibraryView.getDraftConfirmationDialogBox().hide();
 					fireCQLLibrarySelectedEvent(resultToFireEvent.getId(), resultToFireEvent.getVersionStr(), resultToFireEvent.getCqlLibraryName(), resultToFireEvent.isEditable(), false,
 							null,"","");
 					fireCqlLibraryEditEvent();

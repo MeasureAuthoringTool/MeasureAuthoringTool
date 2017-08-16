@@ -1020,16 +1020,48 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(ManageMeasureSearchModel.Result result) {
 						resultToFireEvent = result;
-						
+						if(isDraftCreation){
 						searchDisplay.getDraftConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(result.getName()));
 						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setTitle("Continue");
 						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setText("Continue");
 						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setFocus(true);
+						}
+						else if(isClone){
+							fireMeasureSelected(result);
+						}
 					
 					}
 				});
 	}
 
+	private void fireMeasureSelected(ManageMeasureSearchModel.Result result){
+		fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
+				result.getShortName(), result.getScoringType(), result.isEditable(),
+				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()));
+		// fireMeasureEditEvent();
+		showSearchingBusy(false);
+		isClone = false;
+	}
+	
+	private void auditMeasureSelected(ManageMeasureSearchModel.Result result){
+		
+			MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created",
+					"Draft created based on Version " + result.getVersionValue(), false,
+					new AsyncCallback<Boolean>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+
+						}
+					});
+
+	}
+	
 	/**
 	 * Creates the draft of selected version.
 	 * 
@@ -1085,11 +1117,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				
+			//Check if onClick is not for Cloning or Editing existing Measure
+				if(!isClone && currentDetails.getId() == null){
 				detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
 				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
 				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText("Continue");
 				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+				}else{
+					update();
+				}
 			
 			}
 		});
@@ -1640,12 +1676,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * 
 	 * @param measureId
 	 *            the measure id
+	 * @param measureName 
 	 * @param isMajor
 	 *            the is major
 	 * @param version
 	 *            the version
 	 */
-	private void saveFinalizedVersion(final String measureId, final boolean isMajor, final String version) {
+	private void saveFinalizedVersion(final String measureId, final String measureName, final boolean isMajor, final String version) {
 		showSearchingBusy(true);
 		MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version,
 				new AsyncCallback<SaveMeasureResult>() {
@@ -1678,8 +1715,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 										}
 									});
 							searchDisplay.getSuccessMeasureDeletion().clearAlert();
-							String MeasureName = MatContext.get().getCurrentMeasureName();
-							searchDisplay.getSuccessMeasureDeletion().createAlert(MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(MeasureName));
+							searchDisplay.getSuccessMeasureDeletion().createAlert(MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName));
 						} else {
 							if (result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
 								versionDisplay.getErrorMessageDisplay()
@@ -1973,32 +2009,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				fireMeasureSelectedEvent(resultToFireEvent.getId(), resultToFireEvent.getVersion(), resultToFireEvent.getName(),
-						resultToFireEvent.getShortName(), resultToFireEvent.getScoringType(), resultToFireEvent.isEditable(),
-						resultToFireEvent.isMeasureLocked(), resultToFireEvent.getLockedUserId(resultToFireEvent.getLockedUserInfo()));
-				// fireMeasureEditEvent();
-				showSearchingBusy(false);
-				isClone = false;
-
-				// LOGIT
-			//	if (isDraftCreation) {
-					MatContext.get().getAuditService().recordMeasureEvent(resultToFireEvent.getId(), "Draft Created",
-							"Draft created based on Version " + resultToFireEvent.getVersionValue(), false,
-							new AsyncCallback<Boolean>() {
-
-								@Override
-								public void onFailure(Throwable caught) {
-
-								}
-
-								@Override
-								public void onSuccess(Boolean result) {
-
-								}
-							});
-
-				//}
-					resultToFireEvent = new ManageMeasureSearchModel.Result();
+				fireMeasureSelected(resultToFireEvent);
+				auditMeasureSelected(resultToFireEvent);
+				resultToFireEvent = new ManageMeasureSearchModel.Result();
 			}
 		});
 		
@@ -2665,7 +2678,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if (((selectedMeasure != null) && (selectedMeasure.getId() != null))
 						&& (versionDisplay.getMajorRadioButton().getValue()
 								|| versionDisplay.getMinorRadioButton().getValue())) {
-					saveFinalizedVersion(selectedMeasure.getId(), versionDisplay.getMajorRadioButton().getValue(),
+					saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(),
 							selectedMeasure.getVersion());
 				} else {
 					versionDisplay.getErrorMessageDisplay()

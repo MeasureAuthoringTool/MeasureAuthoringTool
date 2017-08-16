@@ -62,7 +62,7 @@ public interface CQLLibraryServiceAsync {
 	void saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj, CQLIncludeLibrary cqlLibObject,
+	void deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj, 
 			List<CQLIncludeLibrary> viewIncludeLibrarys, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getUsedCqlArtifacts(String libraryId, AsyncCallback<GetUsedCQLArtifactsResult> callback);
@@ -78,13 +78,13 @@ public interface CQLLibraryServiceAsync {
 	void saveAndModifyParameters(String libraryId, CQLParameter toBeModifiedObj, CQLParameter currentObj,
 			List<CQLParameter> parameterList, boolean isFormatable, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+	void deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj, 
 			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+	void deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	void deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	void saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject, AsyncCallback<SaveUpdateCQLResult> asyncCallback);

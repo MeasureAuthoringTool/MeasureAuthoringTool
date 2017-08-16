@@ -690,7 +690,7 @@ public interface MeasureServiceAsync {
 	 * @param definitionList the definition list
 	 * @param callback the callback
 	 */
-	void deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj, 
+	void deleteDefinition(String measureId, CQLDefinition toBeDeletedObj,  
 			List<CQLDefinition> definitionList, AsyncCallback<SaveUpdateCQLResult> callback); 	
 	
 	/**
@@ -702,7 +702,7 @@ public interface MeasureServiceAsync {
 	 * @param functionsList the function list
 	 * @param callback the callback
 	 */
-	void deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj, 
+	void deleteFunctions(String measureId, CQLFunctions toBeDeletedObj,  
 			List<CQLFunctions> functionsList, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	/**
@@ -714,7 +714,7 @@ public interface MeasureServiceAsync {
 	 * @param parameterList the parameter list
 	 * @param callback the callback
 	 */
-	void deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	void deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList, AsyncCallback<SaveUpdateCQLResult> callback);
 	
 	void getUsedCQLArtifacts(String currentMeasureId, AsyncCallback<GetUsedCQLArtifactsResult> asyncCallback);
@@ -755,7 +755,6 @@ public interface MeasureServiceAsync {
 
 	void deleteInclude(String currentMeasureId,
 			CQLIncludeLibrary toBeModifiedIncludeObj,
-			CQLIncludeLibrary cqlLibObject,
 			List<CQLIncludeLibrary> viewIncludeLibrarys,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 

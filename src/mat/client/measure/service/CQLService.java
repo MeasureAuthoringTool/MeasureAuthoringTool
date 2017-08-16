@@ -116,7 +116,7 @@ public interface CQLService {
 	 * @param definitionList the definition list
 	 * @return the save and update result
 	 */
-	SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+	SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, 
 			List<CQLDefinition> definitionList);
 	
 	/**
@@ -128,7 +128,7 @@ public interface CQLService {
 	 * @param functionsList the functions list
 	 * @return the save and update result
 	 */
-	SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeltedObj, CQLFunctions currentObj,
+	SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeltedObj, 
 			List<CQLFunctions> functionsList);
 	
 	/**
@@ -140,7 +140,7 @@ public interface CQLService {
 	 * @param parameterList the parameter list
 	 * @return the save and update result
 	 */
-	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList);
 	
 	/**
@@ -189,7 +189,6 @@ public interface CQLService {
 
 	SaveUpdateCQLResult deleteInclude(String currentMeasureId,
 			CQLIncludeLibrary toBeModifiedIncludeObj,
-			CQLIncludeLibrary cqlLibObject,
 			List<CQLIncludeLibrary> viewIncludeLibrarys);
 
 	void saveCQLAssociation(CQLIncludeLibrary currentObj, String measureId);

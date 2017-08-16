@@ -4,28 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import mat.client.CustomPager;
-import mat.client.clause.QDSAppliedListModel;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.InProgressMessageDisplay;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatButtonCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MeasurePackageClauseCellListWidget;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.ShowMorePagerPanel;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.WarningMessageDisplay;
-import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-import mat.model.RiskAdjustmentDTO;
-import mat.model.cql.CQLDefinition;
 
-import org.gwtbootstrap3.client.ui.CheckBox;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -60,6 +39,29 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+
+import mat.client.CustomPager;
+import mat.client.clause.QDSAppliedListModel;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.InProgressMessageDisplay;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatButtonCell;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MeasurePackageClauseCellListWidget;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.ShowMorePagerPanel;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
+import mat.client.shared.WarningMessageDisplay;
+import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
+import mat.model.RiskAdjustmentDTO;
+import mat.model.cql.CQLDefinition;
 
 
 // TODO: Auto-generated Javadoc
@@ -121,16 +123,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private Button addAllQDMLeft = buildDoubleAddButton("customAddAllLeftButton", "addAllToLeft");
 	
 	/** The measure package success msg. */
-	private SuccessMessageDisplay measurePackageSuccessMsg = new SuccessMessageDisplay();
+	private MessageAlert measurePackageSuccessMsg = new SuccessMessageAlert();
 	/** The measure package warning msg. */
-	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
+	private MessageAlert measurePackageWarningMsg = new WarningMessageAlert();
 	/** The measure error messages. */
-	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
+	private MessageAlert measureErrorMessages = new ErrorMessageAlert();
 	/** The supp data success messages. */
-	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
+	private MessageAlert suppDataSuccessMessages = new SuccessMessageAlert();
 	
 	/** The in progress message display. */
-	@SuppressWarnings("unused")
 	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
 	/** The package measure. */
 	private PrimaryButton packageMeasure = new PrimaryButton(
@@ -161,7 +162,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private Observer observer;
 	
 	/** The save error message display. */
-	private ErrorMessageDisplay saveErrorMessageDisplay = new ErrorMessageDisplay();
+	private WarningConfirmationMessageAlert saveErrorMessageDisplay = new WarningConfirmationMessageAlert();
 	
 	/** The include vsac data. */
 	/*private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
@@ -172,7 +173,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSaveErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplay getSaveErrorMessageDisplay() {
+	public WarningConfirmationMessageAlert getSaveErrorMessageDisplay() {
 		return saveErrorMessageDisplay;
 	}
 	//added for adding cell list
@@ -249,7 +250,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private Button addAllRiskAdjLeft = buildDoubleAddButton("customAddAllLeftButton", "addAllToLeft");
 	
 	/** The risk adj success messages. */
-	private SuccessMessageDisplay riskAdjSuccessMessages = new SuccessMessageDisplay();
+	private MessageAlert riskAdjSuccessMessages = new SuccessMessageAlert();
 	
 	/** The add risk adjustment button panel. */
 	private Widget addRiskAdjButtonPanel = buildRiskAdjustmentAddButtonWidget();
@@ -1253,28 +1254,28 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public ErrorMessageAlert getErrorMessageDisplay() {
 		return packageGroupingWidget.getErrorMessages();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasurePackageSuccessMsg()
 	 */
 	@Override
-	public SuccessMessageDisplayInterface getMeasurePackageSuccessMsg() {
+	public MessageAlert getMeasurePackageSuccessMsg() {
 		return measurePackageSuccessMsg;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasurePackageWarningMsg()
 	 */
 	@Override
-	public WarningMessageDisplay getMeasurePackageWarningMsg() {
+	public MessageAlert getMeasurePackageWarningMsg() {
 		return measurePackageWarningMsg;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageDisplayInterface getPackageErrorMessageDisplay() {
+	public ErrorMessageAlert getPackageErrorMessageDisplay() {
 		return packageGroupingWidget.getErrorMessages();
 	}
 	/**
@@ -1307,7 +1308,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageSuccessMessageDisplay()
 	 */
 	@Override
-	public SuccessMessageDisplayInterface getPackageSuccessMessageDisplay() {
+	public MessageAlert getPackageSuccessMessageDisplay() {
 		return packageGroupingWidget.getSuccessMessages();
 	}
 	/* (non-Javadoc)
@@ -1336,7 +1337,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSuppDataSuccessMessageDisplay()
 	 */
 	@Override
-	public final SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay() {
+	public final MessageAlert getSuppDataSuccessMessageDisplay() {
 		return suppDataSuccessMessages;
 	}
 	
@@ -1344,7 +1345,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getRiskAdjSuccessMessageDisplay()
 	 */
 	@Override
-	public final SuccessMessageDisplayInterface getRiskAdjSuccessMessageDisplay() {
+	public final MessageAlert getRiskAdjSuccessMessageDisplay() {
 		return riskAdjSuccessMessages;
 	}
 	/* (non-Javadoc)
@@ -1686,7 +1687,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasureErrorMessageDisplay()
 	 */
 	@Override
-	public final ErrorMessageDisplayInterface getMeasureErrorMessageDisplay() {
+	public final MessageAlert getMeasureErrorMessageDisplay() {
 		return measureErrorMessages;
 	}
 	

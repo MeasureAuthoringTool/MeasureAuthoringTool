@@ -7,18 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import mat.client.CustomPager;
-import mat.client.measurepackage.MeasurePackageClauseDetail;
-import mat.model.QualityDataSetDTO;
-import mat.shared.ConstantMessages;
-import mat.shared.MeasurePackageClauseValidator;
-import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -33,10 +27,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -49,10 +40,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+
+import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
+import mat.shared.MeasurePackageClauseValidator;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -114,8 +109,6 @@ public class MeasurePackageClauseCellListWidget {
 	private FlowPanel mainFlowPanel = new FlowPanel();
 	/** The add Grouping to measure. */
 	private PrimaryButton saveGrouping = new PrimaryButton("Save Grouping", "primaryButton");
-	/** The pagesize. */
-	private final int PAGESIZE = 3;
 	/** The add Clause Right. */
 	private Button addClauseRight = buildAddButton("customAddRightButton", "AddClauseToRight");
 	/** The add Clause left. */
@@ -134,7 +127,7 @@ public class MeasurePackageClauseCellListWidget {
 	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
 			new SingleSelectionModel<MeasurePackageClauseDetail>();
 	/** List of Measure Observations in Array.*/
-	private List<String> meaObsList = new ArrayList();
+	private List<String> meaObsList = new ArrayList<String>();
 	/** List Data Provider for Right(Package Clauses) cell List.*/
 	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
 	/** List Data Provider for Left(Clause) cell List. */
@@ -161,16 +154,14 @@ public class MeasurePackageClauseCellListWidget {
 	/** Cell List Associate Widget. **/
 	private CellList<MeasurePackageClauseDetail> associatedPOPCellList;
 	/** Error Message in Package Grouping Section. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	//private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
 	/** Success Message in Package Grouping Section.**/
-	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	private MessageAlert successMessages = new SuccessMessageAlert();
 	/**Selection Model for Associate Widget.**/
 	private SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel;
 	/**Map of Grouping Clauses.**/
 	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<String, MeasurePackageClauseDetail>();
-	
-	/** The Item count label. */
-	private Label itemCountLabel = new Label();
 	
 	/** The clear button panel. */
 	private SimplePanel clearButtonPanel = new SimplePanel();
@@ -309,8 +300,8 @@ public class MeasurePackageClauseCellListWidget {
 	 * Adds the association to clauses.
 	 */
 	private void addAssociationToClauses() {
-		errorMessages.clear();
-		successMessages.clear();
+		errorMessages.clearAlert();
+		successMessages.clearAlert();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 		MeasurePackageClauseDetail otherClauseCell = null;
 		String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
@@ -345,7 +336,6 @@ public class MeasurePackageClauseCellListWidget {
 		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 			String scoring = MatContext.get().getCurrentMeasureScoringType();
 			if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
-				int i = 0;
 				//As there are no more than two entries in meaObsList for Ratio do not need to bother about rest.
 				String measureObservation1 = ""; 
 				String measureObservation2 = ""; 
@@ -422,8 +412,8 @@ public class MeasurePackageClauseCellListWidget {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
+				errorMessages.clearAlert();
+				successMessages.clearAlert();
 				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 				if (selectedClauseCell.getType().equals(MEASURE_OBSERVATION)) {
 					groupingClausesMap.get(rightCellListSelectionModel.
@@ -510,8 +500,8 @@ public class MeasurePackageClauseCellListWidget {
 					@Override
 					public void update(int index,
 							MeasurePackageClauseDetail object, Boolean value) {
-						errorMessages.clear();
-						successMessages.clear();
+						errorMessages.clearAlert();
+						successMessages.clearAlert();
 						MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.
 								getSelectedObject();
 						if (selectedClauseCell.getType().equalsIgnoreCase(DENOMINATOR)) {
@@ -665,8 +655,8 @@ public class MeasurePackageClauseCellListWidget {
 		addClauseRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
+				errorMessages.clearAlert();
+				successMessages.clearAlert();
 				if ((clausesPopulationList.size() > 0)
 						&& (leftCellListSelectionModel.getSelectedObject() != null)) {
 					ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<MeasurePackageClauseDetail>();
@@ -689,8 +679,8 @@ public class MeasurePackageClauseCellListWidget {
 		addClauseLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
+				errorMessages.clearAlert();
+				successMessages.clearAlert();
 				if ((groupingPopulationList.size() > 0)
 						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
 					String otherClauseType = null;
@@ -761,8 +751,8 @@ public class MeasurePackageClauseCellListWidget {
 		addAllClauseRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
+				errorMessages.clearAlert();
+				successMessages.clearAlert();
 				if (clausesPopulationList.size() != 0) {
 					ArrayList<MeasurePackageClauseDetail> validateGroupingList =
 							new ArrayList<MeasurePackageClauseDetail>();
@@ -785,8 +775,8 @@ public class MeasurePackageClauseCellListWidget {
 		addAllClauseLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
+				errorMessages.clearAlert();
+				successMessages.clearAlert();
 				if (groupingPopulationList.size() != 0) {
 					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 						detail.setAssociatedPopulationUUID(null);
@@ -1007,8 +997,8 @@ public class MeasurePackageClauseCellListWidget {
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
-			errorMessages.clear();
-			successMessages.clear();
+			errorMessages.clearAlert();
+			successMessages.clearAlert();
 			if(rightCellListSelectionModel.getSelectedObject() != null){
 				groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject());
 			}
@@ -1177,10 +1167,10 @@ public class MeasurePackageClauseCellListWidget {
 			CheckForNumberOfMeasureObs(validatGroupingList, messages , scoring);
 		}
 		if (messages.size() > 0) {
-			errorMessages.setMessages(messages);
+			errorMessages.createAlert(messages);
 		} else {
-			errorMessages.clear();
-			successMessages.clear();
+			errorMessages.clearAlert();
+			successMessages.clearAlert();
 		}
 		return messages.size() == 0;
 	}
@@ -1362,7 +1352,7 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the errorMessages
 	 */
-	public ErrorMessageDisplay getErrorMessages() {
+	public ErrorMessageAlert getErrorMessages() {
 		return errorMessages;
 	}
 	
@@ -1371,7 +1361,7 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @param errorMessages the errorMessages to set
 	 */
-	public void setErrorMessages(ErrorMessageDisplay errorMessages) {
+	public void setErrorMessages(ErrorMessageAlert errorMessages) {
 		this.errorMessages = errorMessages;
 	}
 	
@@ -1380,7 +1370,7 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the successMessages
 	 */
-	public SuccessMessageDisplay getSuccessMessages() {
+	public MessageAlert getSuccessMessages() {
 		return successMessages;
 	}
 	
@@ -1389,7 +1379,7 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @param successMessages the successMessages to set
 	 */
-	public void setSuccessMessages(SuccessMessageDisplay successMessages) {
+	public void setSuccessMessages(MessageAlert successMessages) {
 		this.successMessages = successMessages;
 	}
 	

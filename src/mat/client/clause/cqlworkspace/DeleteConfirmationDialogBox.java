@@ -1,6 +1,8 @@
 package mat.client.clause.cqlworkspace;
 
 
+import java.util.ArrayList;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -73,6 +75,52 @@ public class DeleteConfirmationDialogBox {
 		panel.getElement().focus();
 		panel.show();
 	}
+	
+	public void show(ArrayList<String> messageList) {
+		
+		Modal panel = new Modal();
+		ModalBody modalBody = new ModalBody(); 
+		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
+
+		modalBody.clear();
+		messageAlert.clear();
+		modalBody.remove(messageAlert);
+		panel.remove(modalBody);
+		panel.setTitle("Warning");
+		
+		panel.setClosable(true);
+		panel.setFade(true);
+		panel.setDataBackdrop(ModalBackdrop.STATIC);
+		panel.setSize(ModalSize.MEDIUM);
+		panel.getElement().getStyle().setZIndex(1000);
+		panel.setRemoveOnHide(true);
+		
+		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
+		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
+		messageAlert.createMultiLineAlert(messageList);
+		modalBody.add(messageAlert);
+		
+		
+		ModalFooter modalFooter = new ModalFooter(); 
+		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
+		yesButton.setType(ButtonType.PRIMARY);
+		yesButton.setSize(ButtonSize.SMALL);
+		noButton.setType(ButtonType.DANGER);
+		noButton.setSize(ButtonSize.SMALL);
+		yesButton.setDataDismiss(ButtonDismiss.MODAL);
+		noButton.setDataDismiss(ButtonDismiss.MODAL);
+		buttonToolBar.add(yesButton);
+		buttonToolBar.add(noButton);
+	
+		modalFooter.add(buttonToolBar);
+		
+		panel.add(modalBody);
+		
+		panel.add(modalFooter);
+		panel.getElement().focus();
+		panel.show();
+	}
+
 	
 	public void hide() {
 

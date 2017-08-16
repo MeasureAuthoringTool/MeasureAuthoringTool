@@ -7,12 +7,12 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 var SqlHighlightRules = function() {
 
 	var keywords = (
-	        "-|!|(|)|*|,|.|/|:|[|]|^|{|}|~|+|<|=|>|after|all|and|as|asc|ascending|before|begins|begun|between|Boolean|by|called|case|cast|Code|codesystem|codesystems|" +
+	        "after|all|and|as|asc|ascending|before|begins|begun|between|Boolean|by|called|case|cast|Choice|Code|codesystem|codesystems|" +
 	        "collapse|Concept|contains|context|convert|date|DateTime|day|days|Decimal|default|define|desc|descending|difference|display|distinct|div|duration|during|" +
-	        "else|end|ends|except|exists|false|flatten|from|function|hour|hours|if|in|include|included in|includes|Integer|intersect|Interval|is|less|let|library|List|" +
-	        "maximum|meets|millisecond|milliseconds|minimum|minute|minutes|mod|month|months|more|not|null|occurs|of|or|or after|or before|or less|or more|overlaps|parameter|" +
+	        "else|end|ends|except|exists|false|flatten|from|function|hour|hours|if|implies|in|include|included|included in|includes|Integer|intersect|Interval|Is|less|let|library|List|" +
+	        "maximum|meets|millisecond|milliseconds|minimum|minute|minutes|mod|month|months|more|not|null|occurs|of|on|or|or after|or before|or less|or more|overlaps|parameter|" +
 	        "predecessor|predecessor of|private|properly|properly included in|properly includes|public|QDM|Quantity|return|same|second|seconds|singleton|singleton from|sort|" +
-	        "sort by|start|starts|String|successor|such|such that|Sum|that|then|Time|time|timezone|to|true|Tuple|union|using|valueset|version|week|weeks|when|where|width|with|" +
+	        "sort by|start|starts|String|successor|such|such that|Sum|that|than|then|Time|time|timezone|to|true|Tuple|union|using|valueset|version|week|weeks|when|where|width|with|" +
 	        "within|without|xor|year|years"
 	    );
 	    
@@ -41,28 +41,11 @@ var SqlHighlightRules = function() {
 	    var builtinConstants = (
 	        
 	    	//basic constants	
-	    	'Patient|Population|MeasurementPeriod|' + 
-	    	
-	        //data type constants
-	        '"Adverse Event"|"Allergy/Intolerance"|"Assessment, Performed"|"Assessment, Not Performed"|"Assessment, Recommended"|"Assessment, Not Recommended"|"Patient Care Experience"|' +
-	    	'"Provider Care Experience"|"Care Goal"|"Communication: From Patient to Provider"|"Communication: From Patient to Provider, Not Done"|"Communication: From Provider to Patient"|' +
-	    	'"Communication: From Provider to Patient, Not Done"|"Communication: From Provider to Provider"|"Communication: From Provider to Provider, Not Done"|"Diagnosis"|"Device, Applied"|' +
-	    	'"Device, Not Applied"|"Device, Not Ordered"|"Device, Order"|"Device, Not Recommeded"|"Device, Recommeded"|"Diagnositic Study, Order"|"Diagnositic Study, Not Ordered"|' +
-	    	'"Diagnositic Study, Performed"|"Diagnositic Study, Not Performed"|"Diagnositic Study, Recommended"|"Diagnositic Study, Not Recommended"|"Encounter, Active"|"Encounter, Order"|' +
-	    	'"Encounter, Not Ordered"|"Encounter, Performed"|"Encounter, Not Performed"|"Encounter, Recommended"|"Encounter, Not Recommended"|"Family History"|"Immunization, Administered"|' +
-	    	'"Immunization, Not Administered"|"Immunization, Order"|"Immunization, Not Ordered"|"Participation"|"Patient Characteristic"|"Patient Characteristic Birthdate"|' +
-	    	'"Patient Characteristic Clinical Trial Participant"|"Patient Characteristic Ethnicity"|"Patient Characteristic Expired"|"Patient Characteristic Payer"|"Patient Characteristic Race"|' +
-	    	'"Patient Characteristic Sex"|"Provider Characteristic"|"Intervention, Not Ordered"|"Intervention, Order"|"Intervention, Not Performed"|"Intervention, Performed"|' +
-	    	'"Intervention, Not Recommended"|"Intervention, Recommended"|"Laboratory Test, Order"|"Laboratory Test, Not Ordered"|"Laboratory Test, Performed"|"Laboratory Test, Not Performed"|' +
-	    	'"Laboratory Test, Recommended"|"Laboratory Test, Not Recommended"|"Medication, Active"|"Medication, Administered"|"Medication, Not Administered"|"Medication, Discharge"|' +
-	    	'"Medication, Not Discharged"|"Medication, Dispensed"|"Medication, Not Dispensed"|"Medication, Order"|"Medication, Not Ordered"|"Physical Exam, Order"|"Physical Exam, Not Ordered"|' +
-	    	'"Physical Exam, Performed"|"Physical Exam, Not Performed"|"Physical Exam, Recommended"|"Physical Exam, Not Recommended"|"Procedure, Order"|"Procedure, Not Ordered"|' +
-	    	'"Procedure, Performed"|"Procedure, Not Performed"|"Procedure, Recommended"|"Procedure, Not Recommended"|"Substance, Administered"|"Substance, Not Administered"|"Substance, Order"|' +
-	    	'"Substance, Not Ordered"|"Substance, Recommended"|"Substance, Not Recommended"|"Symptom"|' +
-	        
+	    	'Patient|Population|' + 
+	    		        
 	        //data type attribute constants
-	        'activeDatetime|admissionSource|anatomicalApproachSite|anatomicalLocationSite|authorDatetime|birthDatetime|cause|code|diagnosis|dischargeDisposition|dosage|expiredDatetime|' +
-	        'facilityLocation|frequency|id|incisionDatetime|lengthOfStay|locationPeriod|method|negationRationale|ordinality|participationPeriod|prevalencePeriod|principalDiagnosis|' +
+	        'activeDatetime|admissionSource|anatomicalApproachSite|anatomicalLocationSite|authorDatetime|birthDatetime|cause|code|component|denominator|diagnosis|dischargeDisposition|dosage|expiredDatetime|' +
+	        'facilityLocation|frequency|high|id|incisionDatetime|lengthOfStay|locationPeriod|low|method|negationRationale|numerator|ordinality|participationPeriod|prevalencePeriod|principalDiagnosis|' +
 	        'reason|recorder|referenceRange|refills|relatedTo|relationship|relevantPeriod|reporter|result|resultDatetime|route|severity|status|supply|targetOutcome|type'
 	        
 	    );
@@ -96,9 +79,9 @@ var SqlHighlightRules = function() {
         }, {
             token : "constant.numeric", // float
             regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-        }, {
+        }, {  
             token : keywordMapper,
-            regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            regex : "\\w+"
         }, {
             token : "keyword.operator",
             regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="

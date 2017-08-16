@@ -44,8 +44,8 @@ var SqlHighlightRules = function() {
 	    	'Patient|Population|' + 
 	    		        
 	        //data type attribute constants
-	        'activeDatetime|admissionSource|anatomicalApproachSite|anatomicalLocationSite|authorDatetime|birthDatetime|cause|code|component|denominator|diagnosis|dischargeDisposition|dosage|expiredDatetime|' +
-	        'facilityLocation|frequency|high|id|incisionDatetime|lengthOfStay|locationPeriod|low|method|negationRationale|numerator|ordinality|participationPeriod|prevalencePeriod|principalDiagnosis|' +
+	        'activeDatetime|admissionSource|anatomicalApproachSite|anatomicalLocationSite|authorDatetime|birthDatetime|cause|code|components|denominator|diagnoses|dischargeDisposition|dosage|expiredDatetime|' +
+	        'facilityLocation|facilityLocations|frequency|high|id|incisionDatetime|lengthOfStay|locationPeriod|low|method|negationRationale|numerator|ordinality|participationPeriod|prevalencePeriod|principalDiagnosis|' +
 	        'reason|recorder|referenceRange|refills|relatedTo|relationship|relevantPeriod|reporter|result|resultDatetime|route|severity|status|supply|targetOutcome|type'
 	        
 	    );

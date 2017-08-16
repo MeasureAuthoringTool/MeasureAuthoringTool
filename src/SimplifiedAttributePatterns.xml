@@ -45,11 +45,6 @@
   <mode mode="Computative" />
   <mode mode="Nullable" />
  </attribute>
- <attribute attribName="diagnosis">
-  <mode mode="Nullable" />
-  <mode mode="ValueSets" />
- <!--  <mode mode="Codes" /> -->
- </attribute>
  <attribute attribName="dischargeDisposition">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />

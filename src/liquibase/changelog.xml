@@ -218,5 +218,5 @@
         <include file="classpath:/liquibase/deploy_Sprint-123_Add_Abbr_Name_To_Measure_Type.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-124_MAT-8733_REMOVE_LOCATION_PERIOD_ATTRIBUTE.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-124-MAT-8732_Adding_New_Measure_Types_v2.xml" />
-   
+   		<include file="classpath:/liquibase/deploy_Sprint-125-MAT-8776_Remove_And_Rename_Attributes_QDM_5.3.xml" />
    	</databaseChangeLog>

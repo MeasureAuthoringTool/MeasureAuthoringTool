@@ -1207,7 +1207,7 @@ public class CQLHumanReadableHTMLCreator {
 		}
 		strongElement.appendText(strongText);
 		
-		Element mainULElement = mainDivElement;
+		Element mainULElement = mainDivElement;//assign the <div> element to start with
 		if (isTopExpression) {
 			mainULElement = mainULElement.appendElement(HTML_UL);
 			mainULElement.attr("class", "code");

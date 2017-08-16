@@ -618,21 +618,21 @@ MeasureService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj, 
 			List<CQLDefinition> definitionList) {
-		return this.getMeasureLibraryService().deleteDefinition(measureId, toBeDeletedObj, currentObj, definitionList);
+		return this.getMeasureLibraryService().deleteDefinition(measureId, toBeDeletedObj, definitionList);
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList) {
-		return this.getMeasureLibraryService().deleteFunctions(measureId, toBeDeletedObj, currentObj, functionsList);
+		return this.getMeasureLibraryService().deleteFunctions(measureId, toBeDeletedObj, functionsList);
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList) {
-		return this.getMeasureLibraryService().deleteParameter(measureId, toBeDeletedObj, currentObj, parameterList);
+		return this.getMeasureLibraryService().deleteParameter(measureId, toBeDeletedObj, parameterList);
 	}
 	
 	@Override
@@ -699,9 +699,8 @@ MeasureService {
 	@Override
 	public SaveUpdateCQLResult deleteInclude(String currentMeasureId,
 			CQLIncludeLibrary toBeModifiedIncludeObj,
-			CQLIncludeLibrary cqlLibObject,
 			List<CQLIncludeLibrary> viewIncludeLibrarys) {
-		return this.getMeasureLibraryService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+		return this.getMeasureLibraryService().deleteInclude(currentMeasureId, toBeModifiedIncludeObj, viewIncludeLibrarys);
 	}
 	
 	@Override

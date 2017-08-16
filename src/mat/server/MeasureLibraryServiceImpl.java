@@ -5943,13 +5943,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String measureId, CQLDefinition toBeDeletedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
+			List<CQLDefinition> definitionList) {
 		
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 			if(xmlModel != null){
-				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj, currentObj, definitionList);
+				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj, definitionList);
 				if(result.isSuccess()){
 					xmlModel.setXml(result.getXml());
 					getService().saveMeasureXml(xmlModel);
@@ -5960,7 +5960,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+	public SaveUpdateCQLResult deleteFunctions(String measureId, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList) {
 		
 		SaveUpdateCQLResult result = null;
@@ -5968,7 +5968,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 			
 			if(xmlModel != null){
-				result = getCqlService().deleteFunctions(xmlModel.getXml(), toBeDeletedObj, currentObj, functionsList);
+				result = getCqlService().deleteFunctions(xmlModel.getXml(), toBeDeletedObj, functionsList);
 				if(result.isSuccess()){
 					xmlModel.setXml(result.getXml());
 					getService().saveMeasureXml(xmlModel);
@@ -5979,7 +5979,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList) {
 		
 		SaveUpdateCQLResult result = null;
@@ -5987,7 +5987,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 			
 			if(xmlModel != null){
-				result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj, currentObj, parameterList);
+				result = getCqlService().deleteParameter(xmlModel.getXml(), toBeDeletedObj, parameterList);
 				if(result.isSuccess()){
 					xmlModel.setXml(result.getXml());
 					getService().saveMeasureXml(xmlModel);
@@ -6295,14 +6295,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj,
-			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
+			List<CQLIncludeLibrary> viewIncludeLibrarys) {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, currentMeasureId)) {
 
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(currentMeasureId);
 			if (xmlModel != null) {
-				result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj, cqlLibObject,
+				result = getCqlService().deleteInclude(xmlModel.getXml(), toBeModifiedIncludeObj, 
 						viewIncludeLibrarys);
 				if (result.isSuccess()) {
 					xmlModel.setXml(result.getXml());

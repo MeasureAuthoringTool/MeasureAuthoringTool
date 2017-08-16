@@ -1066,7 +1066,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String libraryId, CQLDefinition toBeDeletedObj,
-			CQLDefinition currentObj, List<CQLDefinition> definitionList) {
+			List<CQLDefinition> definitionList) {
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 
@@ -1074,7 +1074,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
 			if (cqlXml != null) {
-				result = cqlService.deleteDefinition(cqlXml, toBeDeletedObj, currentObj, definitionList);
+				result = cqlService.deleteDefinition(cqlXml, toBeDeletedObj, definitionList);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);
@@ -1096,7 +1096,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @return the save update CQL result
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+	public SaveUpdateCQLResult deleteFunctions(String libraryId, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList) {
 		
 		SaveUpdateCQLResult result = null;
@@ -1106,7 +1106,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
 			if (cqlXml != null) {
-				result = cqlService.deleteFunctions(cqlXml, toBeDeletedObj, currentObj, functionsList);
+				result = cqlService.deleteFunctions(cqlXml, toBeDeletedObj, functionsList);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);
@@ -1127,7 +1127,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @return the save update CQL result
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	public SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList) {
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
@@ -1135,7 +1135,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 
 			if (cqlXml != null) {
-				result = cqlService.deleteParameter(cqlXml, toBeDeletedObj, currentObj, parameterList);
+				result = cqlService.deleteParameter(cqlXml, toBeDeletedObj, parameterList);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);
@@ -1157,13 +1157,13 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
     @Override 
 	public SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
-			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
+			List<CQLIncludeLibrary> viewIncludeLibrarys) {
     	SaveUpdateCQLResult result = null;
 		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		String cqlXml = getCQLLibraryXml(cqlLibrary);
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
 			if (cqlXml != null) {
-				result = cqlService.deleteInclude(cqlXml, toBeModifiedIncludeObj, cqlLibObject, viewIncludeLibrarys);
+				result = cqlService.deleteInclude(cqlXml, toBeModifiedIncludeObj, viewIncludeLibrarys);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 					cqlLibraryDAO.save(cqlLibrary);

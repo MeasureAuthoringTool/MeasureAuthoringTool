@@ -43,6 +43,16 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 		setFocus();
 		setVisible(true);
 	}
+	
+	public void createConfirmationAlert(String message) {
+		clear();
+		setStyleName("alert alert-success");
+		getElement().setAttribute("id", "ConfirmationMessageAlert");
+		super.setMessage(getMsgPanel(IconType.BELL, message));
+		createButtons();
+		setFocus();
+		setVisible(true);
+	}
 		
 	private void createButtons() {
 		add(new SpacerWidget());

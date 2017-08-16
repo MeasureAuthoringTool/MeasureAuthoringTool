@@ -37,7 +37,6 @@ import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -47,6 +46,7 @@ import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
 import mat.client.event.MeasureDeleteEvent;
@@ -209,6 +209,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		FormGroup getMessageFormGrp();
 
 		void setPatientBasedInput(ListBoxMVP patientBasedInput);
+		
+		EditConfirmationDialogBox getCreateNewConfirmationDialogBox();
 	}
 
 	/**
@@ -577,6 +579,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		CustomButton getZoomButton();
 
 		VerticalPanel getCellTablePanel();
+
+		EditConfirmationDialogBox getDraftConfirmationDialogBox();
+
 	}
 
 	/**
@@ -690,6 +695,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 	};
 
+	private ManageMeasureSearchModel.Result resultToFireEvent ;
+	
 	/** The current details. */
 	private ManageMeasureDetailModel currentDetails;
 
@@ -1012,31 +1019,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel.Result result) {
-						fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
-								result.getShortName(), result.getScoringType(), result.isEditable(),
-								result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()));
-						// fireMeasureEditEvent();
-						showSearchingBusy(false);
-						isClone = false;
-
-						// LOGIT
-						if (isDraftCreation) {
-							MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created",
-									"Draft created based on Version " + result.getVersionValue(), false,
-									new AsyncCallback<Boolean>() {
-
-										@Override
-										public void onFailure(Throwable caught) {
-
-										}
-
-										@Override
-										public void onSuccess(Boolean result) {
-
-										}
-									});
-
-						}
+						resultToFireEvent = result;
+						
+						searchDisplay.getDraftConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getMeasureDraftSuccessfulMessage(result.getName()));
+						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setTitle("Continue");
+						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setText("Continue");
+						searchDisplay.getDraftConfirmationDialogBox().getYesButton().setFocus(true);
+					
 					}
 				});
 	}
@@ -1084,10 +1073,24 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the detail display
 	 */
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
-		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+		
+		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				update();
+			}
+		});
+		
+		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
+				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText("Continue");
+				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+			
 			}
 		});
 
@@ -1674,6 +1677,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 										}
 									});
+							searchDisplay.getSuccessMeasureDeletion().clearAlert();
+							String MeasureName = MatContext.get().getCurrentMeasureName();
+							searchDisplay.getSuccessMeasureDeletion().createAlert(MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(MeasureName));
 						} else {
 							if (result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
 								versionDisplay.getErrorMessageDisplay()
@@ -1943,10 +1949,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 										}
 									}
 
-								} else {
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-								}
+								} 
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchText);
@@ -1966,6 +1969,39 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the search display
 	 */
 	private void searchDisplayHandlers(final SearchDisplay searchDisplay) {
+		searchDisplay.getDraftConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				fireMeasureSelectedEvent(resultToFireEvent.getId(), resultToFireEvent.getVersion(), resultToFireEvent.getName(),
+						resultToFireEvent.getShortName(), resultToFireEvent.getScoringType(), resultToFireEvent.isEditable(),
+						resultToFireEvent.isMeasureLocked(), resultToFireEvent.getLockedUserId(resultToFireEvent.getLockedUserInfo()));
+				// fireMeasureEditEvent();
+				showSearchingBusy(false);
+				isClone = false;
+
+				// LOGIT
+			//	if (isDraftCreation) {
+					MatContext.get().getAuditService().recordMeasureEvent(resultToFireEvent.getId(), "Draft Created",
+							"Draft created based on Version " + resultToFireEvent.getVersionValue(), false,
+							new AsyncCallback<Boolean>() {
+
+								@Override
+								public void onFailure(Throwable caught) {
+
+								}
+
+								@Override
+								public void onSuccess(Boolean result) {
+
+								}
+							});
+
+				//}
+					resultToFireEvent = new ManageMeasureSearchModel.Result();
+			}
+		});
+		
 		searchDisplay.getSelectIdForEditTool()
 				.addSelectionHandler(new SelectionHandler<ManageMeasureSearchModel.Result>() {
 

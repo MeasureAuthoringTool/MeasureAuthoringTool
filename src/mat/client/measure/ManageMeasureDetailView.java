@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ListBoxMVP;
@@ -71,6 +72,9 @@ public class ManageMeasureDetailView
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
+	
+	/**  The edit confirmation box. */
+	EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
 	
 	/** The yes patient based radio button. *//*
 	private RadioButton radioBtnYes;
@@ -492,4 +496,12 @@ public class ManageMeasureDetailView
 	public FormGroup getMessageFormGrp() {
 		return messageFormGrp;
 	}
+
+	/**
+	 * @return the createNewConfirmationDialogBox
+	 */
+	public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
+		return createNewConfirmationDialogBox;
+	}
+
 }

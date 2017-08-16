@@ -11,9 +11,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CreateNewItemWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
@@ -60,6 +60,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	private MostRecentCQLLibraryWidget mostRecentLibraryWidget = new MostRecentCQLLibraryWidget();
 	
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
+	
+	private EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
 
 	@Override
 	public VerticalPanel getWidgetVP() {
@@ -242,5 +244,12 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	public void setSuccessMessageAlert(MessageAlert successMessageAlert) {
 		this.successMessageAlert = successMessageAlert;
+	}
+
+	/**
+	 * @return the draftConfirmationDialogBox
+	 */
+	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
+		return draftConfirmationDialogBox;
 	}
 }

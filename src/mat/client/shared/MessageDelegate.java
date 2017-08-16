@@ -3408,5 +3408,24 @@ public class MessageDelegate {
 		return "Value set " + codeListName + " successfully retrieved from VSAC.";
 	}
 	
+	public String getMeasureDraftSuccessfulMessage(String measureName){
+		return "You have created a draft of "+measureName+". Please click continue to navigate to the Measure Details page.";
+	}
+	
+	public String getLibraryDraftSuccessfulMessage(String measureName){
+		return "You have created a draft of "+measureName+". Please click continue to navigate to the CQL Composer.";
+	}
+	
+	public String getCreateNewMeasureSuccessfulMessage(String measureName){
+		return "You have created a new measure "+measureName+". Please click continue to navigate to the Measure Details page.";
+	}
+	
+	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
+		return "You have created a new library "+libraryName+". Please click continue to navigate to the CQL Composer.";
+	}
+	
+	public String getVersionSuccessfulMessage(String name){
+		return "Version of "+name+" has been successfully created.";
+	}
 
 }

@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
+import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
@@ -96,6 +97,9 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	
 	/** The success measure deletion. */
 	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
+	
+	/**  The delete confirmation box. */
+	EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
 	
 	/** The transfer button. */
 	private Button transferButton = new Button("Transfer");
@@ -615,4 +619,12 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * @return the draftConfirmationDialogBox
+	 */
+	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
+		return draftConfirmationDialogBox;
+	}
+
 }

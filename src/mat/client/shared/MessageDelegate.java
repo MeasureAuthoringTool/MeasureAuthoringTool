@@ -1,5 +1,7 @@
 package mat.client.shared;
 
+import java.util.ArrayList;
+
 import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
@@ -844,21 +846,6 @@ public class MessageDelegate {
 	
 	/** The invalid logic measure packager. */
 	private final String INVALID_LOGIC_MEASURE_PACKAGER = "Populations or Measure Observations within a Measure Grouping must contain a valid Definition or Function.";
-	
-	/** The delete confirmation parameter. */
-	private final String DELETE_CONFIRMATION_PARAMETER = "You have selected to delete this expression. Do you want to permanently delete this Parameter?";
-	
-	/** The delete confirmation definition. */
-	private final String DELETE_CONFIRMATION_DEFINITION = "You have selected to delete this expression. Do you want to permanently delete this Definition?";
-	
-	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION = "You have selected to delete this expression. Do you want to permanently delete this Function?";
-	
-	/** The delete confirmation function. */
-	private final String DELETE_CONFIRMATION_FUNCTION_ARGUMENT = "You have selected to delete this Argument. Please confirm that you want to remove this Argument.";
-	
-	/** The delete confirmation include. */
-	private final String DELETE_CONFIRMATION_INCLUDE = "You have selected to delete this expression. Do you want to permanently delete this Library Alias?";
 	
 	/** The error library version. */
 	private final String ERROR_LIBRARY_VERSION ="Please select version type Major or Minor.";
@@ -2682,6 +2669,51 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the successful definition remove msg.
+	 *
+	 * @return the 508 Complaint message for successful Definition Remove msg
+	 */
+	public String getSuccessfulDefinitionRemoveMessage(String definitionName) {
+		return "Definition " + definitionName + " has been removed successfully.";
+	}
+	
+	/**
+	 * Gets the successful function remove msg.
+	 *
+	 * @return the 508 Complaint message for successful Function Remove msg
+	 */
+	public String getSuccessfulFunctionRemoveMessage(String functionName) {
+		return "Function " + functionName + " has been removed successfully.";
+	}
+	
+	/**
+	 * Gets the successful paramater remove msg.
+	 *
+	 * @return the 508 Complaint message for successful Parameter Remove msg
+	 */
+	public String getSuccessfulParameterRemoveMessage(String parameterName) {
+		return "Parameter " + parameterName + " has been deleted successfully.";
+	}
+	
+	/**
+	 * Gets the successful include remove msg.
+	 *
+	 * @return the 508 Complaint message for successful Include Remove msg
+	 */
+	public String getSuccessfulIncludeRemoveMessage(String includeName) {
+		return "Library " + includeName + " has been removed successfully.";
+	}
+	
+	/**
+	 * Gets the successful function argument remove msg.
+	 *
+	 * @return the 508 Complaint message for successful Function Argument Remove msg
+	 */
+	public String getSuccessfulFunctionArgumentRemoveMessage(String argumentName) {
+		return "Argument " + argumentName + " has been removed successfully.";
+	}
+	
+	/**
 	 * Gets the warning measure package creation generic.
 	 *
 	 * @return the warning measure package creation generic
@@ -2970,39 +3002,86 @@ public class MessageDelegate {
 	}
 
 	/**
-	 * Gets the delete confirmation parameter.
+	 * Gets the delete confirmation parameter displaying the definition name to be deleted.
 	 *
 	 * @return the delete confirmation parameter
 	 */
-	public String getDELETE_CONFIRMATION_PARAMETER() {
-		return DELETE_CONFIRMATION_PARAMETER;
+	public String getDELETE_CONFIRMATION_PARAMETER(String parameterName) {
+		return "You have selected to delete parameter " + parameterName + ". Please confirm that you want to remove this parameter.";
 	}
 
 	/**
-	 * Gets the delete confirmation definition.
+	 * Gets the delete confirmation definition for CQL Workspace displaying the definition name to be deleted.
 	 *
 	 * @return the delete confirmation definition
 	 */
-	public String getDELETE_CONFIRMATION_DEFINITION() {
-		return DELETE_CONFIRMATION_DEFINITION;
+	public ArrayList<String> getDeleteConfirmationDefinitionCQLWorkspace(String definitionName) {
+		
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("You have selected to delete definition " + definitionName + ".");
+		list.add(" ");
+		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this definition.");
+		
+		return list;
 	}
 
 	/**
-	 * Gets the delete confirmation function.
+	 * Gets the delete confirmation definition for CQL Library Workspace displaying the definition name to be deleted.
+	 *
+	 * @return the delete confirmation definition
+	 */
+	public String getDeleteConfirmationDefinitionCQLLibraryWorkspace(String definitionName) {
+		return "You have selected to delete definition " + definitionName + ".";
+	}
+
+	/**
+	 * Gets the delete confirmation definition displaying the definition name to be deleted.
+	 *
+	 * @return the delete confirmation definition
+	 */
+	/*public String getDELETE_CONFIRMATION_DEFINITION(String definitionName) {
+		return "You have selected to delete definition " + definitionName + ". Please confirm that you want to remove this definition.";
+	}*/
+
+	/**
+	 * Gets the delete confirmation function for CQL Workspace displaying the function name to be deleted.
 	 *
 	 * @return the delete confirmation function
 	 */
-	public String getDELETE_CONFIRMATION_FUNCTION() {
-		return DELETE_CONFIRMATION_FUNCTION;
+	public ArrayList<String> getDeleteConfirmationFunctionCQLWorkspace(String functionName) {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("You have selected to delete function " + functionName + ".");
+		list.add(" ");
+		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this function.");
+		
+		return list;
 	}
 	
 	/**
-	 * Gets the delete confirmation include.
+	 * Gets the delete confirmation function for CQL Library Workspace displaying the function name to be deleted.
+	 *
+	 * @return the delete confirmation function
+	 */
+	public String getDeleteConfirmationFunctionCQLLibraryWorkspace(String functionName) {
+		return "You have selected to delete function " + functionName + ".";
+	}
+	
+	/**
+	 * Gets the delete confirmation function displaying the function name to be deleted.
+	 *
+	 * @return the delete confirmation function
+	 */
+	/*public String getDELETE_CONFIRMATION_FUNCTION(String functionName) {
+		return "You have selected to delete function " + functionName + ". Please confirm that you want to remove this function.";
+	}*/
+	
+	/**
+	 * Gets the delete confirmation include displaying the include name to be deleted.
 	 *
 	 * @return the delete confirmation include
 	 */
-	public String getDELETE_CONFIRMATION_INCLUDE() {
-		return DELETE_CONFIRMATION_INCLUDE;
+	public String getDELETE_CONFIRMATION_INCLUDE(String includeName) {
+		return "You have selected to delete library " + includeName + ". Please confirm that you want to remove this library alias.";
 	}
 
 	
@@ -3371,8 +3450,8 @@ public class MessageDelegate {
 	/**
 	 * @return the dELETE_CONFIRMATION_FUNCTION_ARGUMENT
 	 */
-	public String getDELETE_CONFIRMATION_FUNCTION_ARGUMENT() {
-		return DELETE_CONFIRMATION_FUNCTION_ARGUMENT;
+	public String getDELETE_CONFIRMATION_FUNCTION_ARGUMENT(String functionArgumentName) {
+		return "You have selected to delete argument " + functionArgumentName + ". Please confirm that you want to remove this argument.";
 	}
 	
 	/**

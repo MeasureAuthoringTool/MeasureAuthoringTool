@@ -513,13 +513,19 @@ public class CQLHumanReadableHTMLCreator {
 			String key = measureGroupingNode.getAttributes().getNamedItem("sequence").getNodeValue();
 			groupMap.put(Integer.parseInt(key), measureGroupingNode);
 		}
-	
+		
+		int j=0;
 		for (Integer key : groupMap.keySet()) {
 			if (groupMap.size() > 1) {
 				
 				Element mainElement = mainListElement.appendElement("li");
 				mainElement.attr("class", "list-unstyled");
-				mainElement.attr("style","list-style:none;padding-left:0;");
+								
+				if(j > 0){
+					mainElement.attr("style","list-style:none;padding-left:0;padding-top:15px;");
+				}else{
+					mainElement.attr("style","list-style:none;padding-left:0;");
+				}
 				
 				Element divElement = mainElement.appendElement("div");
 				divElement.attr("class", "treeview hover p-l-10");
@@ -545,6 +551,7 @@ public class CQLHumanReadableHTMLCreator {
 				generatePopulationNodes(clauseNodeList, mainListElement,
 						groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);
 			}
+			j++;
 		}
 	}
 	
@@ -1158,7 +1165,7 @@ public class CQLHumanReadableHTMLCreator {
 				spanElemDefBody.append(codeLineList.get(i));
 			}
 		}			
-		subDivElement.appendElement("br");
+		//subDivElement.appendElement("br");
 	}
 	
 	/**

@@ -71,7 +71,7 @@ public class MATCssCQLUtil {
 			"\r\n" + 
 			".list-unstyled li {\r\n" + 
 			"    padding-top: 5px;\r\n" + 
-			"    padding-bottom: 5px;\r\n" + 
+			//"    padding-bottom: 5px;\r\n" + 
 			"}\r\n" + 
 			"\r\n" + 
 			".list-header {\r\n" + 
@@ -86,7 +86,7 @@ public class MATCssCQLUtil {
 			".code {\r\n" + 
 			"    font-family: Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif;\r\n" + 
 			"    color:black;\r\n" + 
-			"    background-color:rgb(250,250,250);\r\n" + 
+			//"    background-color:rgb(250,250,250);\r\n" + 
 			//"    margin-top: 1em;\r\n" + 
 			//"    margin-bottom: 1em;\r\n" + 
 			//"    padding: 10px;\r\n" + 

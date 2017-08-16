@@ -287,7 +287,7 @@ public class CQLHumanReadableHTMLCreator {
 		definitionsOrFunctionsAlreadyDisplayed.clear();
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement
-		.append("<h3><a name=\"d1e879\" href=\"#toc\">Supplemental Data Elements</a></h3>");
+		.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
@@ -534,7 +534,7 @@ public class CQLHumanReadableHTMLCreator {
 				labelElement.attr("for", id);
 				labelElement.attr("class", "list-header");
 				labelElement.append("<b>Population Criteria "
-						+ (key.toString()) + "</b> (click to expand/collapse)");
+						+ (key.toString()) );
 								
 				NodeList clauseNodeList = groupMap.get(key).getChildNodes();
 				generatePopulationNodes(clauseNodeList, divElement.appendElement(HTML_UL),
@@ -1036,7 +1036,6 @@ public class CQLHumanReadableHTMLCreator {
 		Element strongElement = definitionLabelElement.appendElement("strong");
 		strongElement.appendText(populationDisplayName);
 		
-		definitionLabelElement.appendText(" (click to expand/collapse)");
 		System.out.println(mainDefinitionName);
 
 		generateHTMLToDsiplayNone(mainliElement);
@@ -1071,8 +1070,7 @@ public class CQLHumanReadableHTMLCreator {
 
 		Element strongElement = definitionLabelElement.appendElement("strong");
 		strongElement.appendText(populationDisplayName);
-		
-		definitionLabelElement.appendText(" (click to expand/collapse)");
+				
 		System.out.println("Main Defintion Name: " + mainDefinitionName);
 		generateHTMLForCQLPopulation(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, mainDefinitionName, mainliElement, true,additionalLabel,cqlNodeType);
 	}
@@ -1209,7 +1207,7 @@ public class CQLHumanReadableHTMLCreator {
 		}
 		strongElement.appendText(strongText);
 		
-		Element mainULElement = mainliElement;
+		Element mainULElement = mainDivElement;
 		if (isTopExpression) {
 			mainULElement = mainULElement.appendElement(HTML_UL);
 			mainULElement.attr("class", "code");

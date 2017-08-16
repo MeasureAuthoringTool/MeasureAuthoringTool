@@ -21,6 +21,12 @@ public class ErrorMessageAlert extends MessageAlert implements MessageAlertInter
 		setVisible(true);
 	}
 		
+	public void createMultiLineAlert (List<String> errorMessage) {
+		clear();
+		createErrorMultiLineAlert(errorMessage);
+		setVisible(true);
+	}
+		
 	public ErrorMessageAlert(String errorMessage) {
 		createErrorAlert(errorMessage);
 	}
@@ -40,6 +46,20 @@ public class ErrorMessageAlert extends MessageAlert implements MessageAlertInter
 		setType(AlertType.DANGER);
 		for(int i=0;i< errorMessage.size();i++){
 			setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage.get(i)));
+		}
+		getElement().setAttribute("id", "ErrorMessageAlert");
+		setFocus();
+	}
+		
+	public void createErrorMultiLineAlert(List<String> errorMessage) {
+		setType(AlertType.DANGER);
+		for(int i=0;i< errorMessage.size();i++){
+			if (i==0)
+				setMessage(getMsgPanel(IconType.EXCLAMATION_CIRCLE, errorMessage.get(i)));
+			else if (i==1)
+				setMessage(getMsgPanel(null, errorMessage.get(i)));
+			else
+				setMessage(getMsgPanel(errorMessage.get(i)));
 		}
 		getElement().setAttribute("id", "ErrorMessageAlert");
 		setFocus();

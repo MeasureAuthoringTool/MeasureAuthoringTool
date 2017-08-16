@@ -1274,7 +1274,7 @@ public class CQLServiceImpl implements CQLService {
 	 * mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj, CQLDefinition currentObj,
+	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj, 
 			List<CQLDefinition> definitionList) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
@@ -1415,7 +1415,7 @@ public class CQLServiceImpl implements CQLService {
 	 * mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteFunctions(String xml, CQLFunctions toBeDeletedObj, CQLFunctions currentObj,
+	public SaveUpdateCQLResult deleteFunctions(String xml, CQLFunctions toBeDeletedObj, 
 			List<CQLFunctions> functionsList) {
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -1483,7 +1483,7 @@ public class CQLServiceImpl implements CQLService {
 	 * mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj, CQLParameter currentObj,
+	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLParametersWrapper wrapper = new CQLParametersWrapper();
@@ -3373,10 +3373,11 @@ public class CQLServiceImpl implements CQLService {
 
 	@Override
 	public SaveUpdateCQLResult deleteInclude(String xml, CQLIncludeLibrary toBeModifiedIncludeObj,
-			CQLIncludeLibrary cqlLibObject, List<CQLIncludeLibrary> viewIncludeLibrarys) {
+			List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		System.out.println("DELETE Include CLICK " + cqlLibObject.getAliasName());
+		//System.out.println("DELETE Include CLICK " + cqlLibObject.getAliasName());
+		System.out.println("DELETE Include CLICK " + toBeModifiedIncludeObj.getAliasName());
 
 		/*
 		 * MeasureXmlModel xmlModel =

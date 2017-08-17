@@ -6,8 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.user.client.Window;
-
 import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.cqlconstant.service.CQLConstantService;
@@ -17,6 +15,7 @@ import mat.dao.clause.QDSAttributesDAO;
 import mat.model.cql.CQLKeywords;
 import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
+import mat.server.util.MATPropertiesService;
 
 @SuppressWarnings("serial")
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
@@ -64,6 +63,9 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		List<String> timings = keywordList.getCqlTimingList();
 		Collections.sort(timings);
 		cqlConstantContainer.setCqlTimingList(timings);
+		
+		cqlConstantContainer.setCurrentQDMVersion(MATPropertiesService.get().getQmdVersion());
+		cqlConstantContainer.setCurrentReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 		
 		return cqlConstantContainer;
 		

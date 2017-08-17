@@ -5,10 +5,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import com.google.gwt.core.client.GWT;
@@ -25,9 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 //import mat.client.measure.AdminManageMeasureSearchView;
 
 import mat.DTO.OperatorDTO;
-import mat.DTO.UnitDTO;
 import mat.client.Enableable;
-import mat.client.Mat;
 import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
@@ -38,8 +34,6 @@ import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.QDSCodeListSearchView;
-
-import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
@@ -70,7 +64,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.ClientConstants;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.VSACExpansionProfile;
-import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
@@ -2327,6 +2320,17 @@ public class MatContext implements IsSerializable {
 	public List<String> getShorcutKeyUnits() {
 		return shorcutKeyUnits;
 	}
+
+
+	public String getCurrentQDMVersion() {
+		if(cqlConstantContainer == null){
+			return "";
+		} else {
+			return cqlConstantContainer.getCurrentQDMVersion();
+		}
+		
+	}
+
 
 	/*public GlobalCopyPaste getCopyPaste() {
 		return copyPaste;

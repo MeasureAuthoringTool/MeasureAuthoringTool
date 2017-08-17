@@ -1628,7 +1628,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", "")+"."+cqlLibraryDataSetObject.getRevisionNumber();
 				incLibrary.setVersion(versionValue);
 				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
-				
+				incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
 					showSearchingBusy(true);
 					//this is just to add include library and not modify
@@ -2979,6 +2979,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 								searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
 							}
+							
+							boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion();
+							if(!isValidQDMVersion){
+								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_QDM_VERSION_IN_INCLUDES());
+							} else {
+								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+							}
 
 						} else {
 							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -3128,6 +3135,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 			searchDisplay.buildGeneralInformation();
+			boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion();
+			if(!isValidQDMVersion){
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_QDM_VERSION_IN_INCLUDES());
+			} else {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+			}
 		}
 
 	}

@@ -20,6 +20,8 @@ public class CQLIncludeLibrary implements IsSerializable {
 	private String version;
 	
 	private String cqlLibraryName;
+	
+	private String qdmVersion;
 
 	/**
 	 * Gets the id.
@@ -105,6 +107,14 @@ public class CQLIncludeLibrary implements IsSerializable {
 		this.cqlLibraryName = cqlLibraryName;
 	}
 	
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
+	}
+
 	@Override
 	public boolean equals(Object arg0) {
 		CQLIncludeLibrary cqlIncludeLibrary = (CQLIncludeLibrary)arg0;
@@ -117,12 +127,14 @@ public class CQLIncludeLibrary implements IsSerializable {
 		if(cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) && 
 			cqlIncludeLibrary.aliasName.equals(aliasName) && 
 			cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) && 
-			cqlIncludeLibrary.version.equals(version) ){
+			cqlIncludeLibrary.version.equals(version)
+			){
 			
 			System.out.println(cqlIncludeLibrary.cqlLibraryId + " == " + cqlLibraryId);
 			System.out.println(cqlIncludeLibrary.aliasName + " == " + aliasName);
 			System.out.println(cqlIncludeLibrary.cqlLibraryName + " == " + cqlLibraryName);
 			System.out.println(cqlIncludeLibrary.version + " == " + version);
+			System.out.println(cqlIncludeLibrary.qdmVersion + " == " + qdmVersion);
 			
 			System.out.println("equals true");
 			

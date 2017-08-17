@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import mat.shared.CQLIdentifierObject;
+
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
@@ -76,6 +76,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLErrors;
+import mat.shared.CQLIdentifierObject;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -2789,7 +2790,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						+ cqlLibraryDataSetObject.getRevisionNumber();
 				incLibrary.setVersion(versionValue);
 				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
-
+				incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
 					// this is just to add include library and not modify
 					MatContext.get().getCQLLibraryService().saveIncludeLibrayInCQLLookUp(
@@ -3733,17 +3734,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if (result.isSuccess()) {
 							if (result.getCqlModel() != null) {
-								// System.out.println("I got the model");
-
-								// if(result.getCqlModel().getLibraryName()!=null){
 								if (result.getSetId() != null) {
 									setId = result.getSetId();
 								}
 								if (result.getCqlModel().getLibraryName() != null) {
 									cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 											.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
-									/*searchDisplay.getCqlGeneralInformationView().getLibraryNameValue()
-											.setText(cqlLibraryName);*/
 
 									String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
 
@@ -3751,25 +3747,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									if (libraryVersion.startsWith("v")) {
 										libraryVersion = libraryVersion.substring(1);
 									}
-/*
-									searchDisplay.getCqlGeneralInformationView().getLibraryVersionValue()
-											.setText(libraryVersion);
-
-									searchDisplay.getCqlGeneralInformationView().getUsingModelValue().setText("QDM");
-
-									searchDisplay.getCqlGeneralInformationView().getModelVersionValue()
-											.setText("5.0.2");*/
 									searchDisplay.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName,libraryVersion, result.getCqlModel().getQdmVersion(),"QDM");
 								}
 
-								/*if(result.getExpIdentifier() !=null){
-									isExpansionProfile = true;
-									expProfileToAllValueSet = result.getExpIdentifier();
-								} else {
-									expProfileToAllValueSet = "";
-									isExpansionProfile = false;
-								}*/
-								
 								List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
 								List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel()
 										.getAllValueSetList();
@@ -3849,7 +3829,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 									searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
 								}
-
+								
+								boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion();
+								if(!isValidQDMVersion){
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_QDM_VERSION_IN_INCLUDES());
+								} else {
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+								}
 							}
 							showSearchingBusy(false);
 						}
@@ -3863,6 +3849,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					}
 				});
 	}
+	
+	
 
 	/**
 	 * Adds the left nav event handler.
@@ -5181,60 +5169,7 @@ private void addCodeSearchPanelHandlers() {
 		}
 	}
 
-	/**
-	 * Update all applied QDM Elements with default Expansion Profile.
-	 *
-	 * @param list
-	 *            the list
-	 */
-	/*private void updateAllValueSetWithExpProfile(List<CQLQualityDataSetDTO> list) {
-		List<CQLQualityDataSetDTO> modifiedCqlValueSetList = new ArrayList<CQLQualityDataSetDTO>();
-		for (CQLQualityDataSetDTO cqlQualityDataSetDTO : list) {
-			if (!ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(cqlQualityDataSetDTO.getOid())) {
-				cqlQualityDataSetDTO.setVersion("1.0");
-				if (!expProfileToAllValueSet.isEmpty()) {
-					cqlQualityDataSetDTO.setExpansionIdentifier(expProfileToAllValueSet);
-				}
-				if (searchDisplay.getValueSetView().getDefaultExpProfileSel().getValue()) {
-					modifiedCqlValueSetList.add(cqlQualityDataSetDTO);
-				}
-			}
-		}
-		updateAllInLibraryXml(modifiedCqlValueSetList);
-	}*/
-
-	/**
-	 * Update all in library xml.
-	 *
-	 * @param modifiedCqlQDMList
-	 *            the modified cql QDM list
-	 */
-	/*private void updateAllInLibraryXml(List<CQLQualityDataSetDTO> modifiedCqlQDMList) {
-		String libraryId = MatContext.get().getCurrentCQLLibraryId();
-		MatContext.get().getLibraryService().updateCQLLibraryXMLForExpansionProfile(modifiedCqlQDMList, libraryId,
-				expProfileToAllValueSet, new AsyncCallback<Void>() {
-
-					@Override
-					public void onSuccess(Void result) {
-						getAppliedValueSetList();
-						if (!searchDisplay.getValueSetView().getDefaultExpProfileSel().getValue()) {
-							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-									MatContext.get().getMessageDelegate().getDefaultExpansionIdRemovedMessage());
-
-						} else {
-							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-									MatContext.get().getMessageDelegate().getVsacProfileAppliedToQdmElements());
-						}
-					}
-
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-
-					}
-				});
-	}*/
-
+	
 	/**
 	 * Build View for General info when General Info AnchorList item is clicked.
 	 */
@@ -5252,6 +5187,12 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 			searchDisplay.buildGeneralInformation();
+			boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion();
+			if(!isValidQDMVersion){
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_QDM_VERSION_IN_INCLUDES());
+			} else {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+			}
 			searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
 		}
 

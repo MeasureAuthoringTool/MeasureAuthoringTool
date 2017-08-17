@@ -42,12 +42,10 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextBox;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
@@ -2601,5 +2599,21 @@ public class CQLLeftNavBarPanelView {
 
 	public void setFocus(TextBox aliasNameTxtArea) {
 		aliasNameTxtArea.setFocus(true);
+	}
+	
+	public boolean checkForIncludedLibrariesQDMVersion(){
+		boolean isValid = true;
+		List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();
+		if(includedLibraryList.size()==0){
+			isValid = true;
+		} else {
+			for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
+				if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
+					isValid = false;
+					break;
+				}
+			}
+		}
+		return isValid;
 	}
 }

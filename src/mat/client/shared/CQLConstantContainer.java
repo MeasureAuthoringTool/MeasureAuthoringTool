@@ -6,11 +6,11 @@ import java.util.Map;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.DTO.UnitDTO;
-import mat.client.codelist.HasListBox;
 import mat.model.cql.CQLKeywords;
 
 public class CQLConstantContainer implements IsSerializable {
-	
+	private String currentQDMVersion;
+	private String currentReleaseVersion;
 	private List<String> cqlAttributeList; 
 	
 	private List<String> cqlDatatypeList; 
@@ -79,5 +79,21 @@ public class CQLConstantContainer implements IsSerializable {
 
 	public void setCqlTimingList(List<String> cqlTimingList) {
 		this.cqlTimingList = cqlTimingList;
+	}
+
+	public String getCurrentQDMVersion() {
+		return currentQDMVersion;
+	}
+
+	public void setCurrentQDMVersion(String currentQDMVersion) {
+		this.currentQDMVersion = currentQDMVersion;
+	}
+
+	public String getCurrentReleaseVersion() {
+		return currentReleaseVersion;
+	}
+
+	public void setCurrentReleaseVersion(String currentReleaseVersion) {
+		this.currentReleaseVersion = currentReleaseVersion;
 	} 
 }

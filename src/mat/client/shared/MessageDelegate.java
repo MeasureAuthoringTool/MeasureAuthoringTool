@@ -3007,7 +3007,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation parameter
 	 */
 	public String getDELETE_CONFIRMATION_PARAMETER(String parameterName) {
-		return "You have selected to delete parameter " + parameterName + ". Please confirm that you want to remove this parameter.";
+		return "You have selected to delete parameter " + parameterName.substring(0, 59) + ". Please confirm that you want to remove this parameter.";
 	}
 
 	/**
@@ -3018,7 +3018,7 @@ public class MessageDelegate {
 	public ArrayList<String> getDeleteConfirmationDefinitionCQLWorkspace(String definitionName) {
 		
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("You have selected to delete definition " + definitionName + ".");
+		list.add("You have selected to delete definition " + definitionName.substring(0, 59) + ".");
 		list.add(" ");
 		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this definition.");
 		
@@ -3031,7 +3031,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation definition
 	 */
 	public String getDeleteConfirmationDefinitionCQLLibraryWorkspace(String definitionName) {
-		return "You have selected to delete definition " + definitionName + ".";
+		return "You have selected to delete definition " + definitionName.substring(0, 59) + ".";
 	}
 
 	/**
@@ -3050,7 +3050,7 @@ public class MessageDelegate {
 	 */
 	public ArrayList<String> getDeleteConfirmationFunctionCQLWorkspace(String functionName) {
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("You have selected to delete function " + functionName + ".");
+		list.add("You have selected to delete function " + functionName.substring(0, 59) + ".");
 		list.add(" ");
 		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this function.");
 		
@@ -3063,7 +3063,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation function
 	 */
 	public String getDeleteConfirmationFunctionCQLLibraryWorkspace(String functionName) {
-		return "You have selected to delete function " + functionName + ".";
+		return "You have selected to delete function " + functionName.substring(0, 59) + ".";
 	}
 	
 	/**
@@ -3081,7 +3081,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation include
 	 */
 	public String getDELETE_CONFIRMATION_INCLUDE(String includeName) {
-		return "You have selected to delete library " + includeName + ". Please confirm that you want to remove this library alias.";
+		return "You have selected to delete library " + includeName.substring(0, 59) + ". Please confirm that you want to remove this library alias.";
 	}
 
 	
@@ -3437,7 +3437,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for deleting the Code
 	 */
 	public String getDELETE_CONFIRMATION_CODES(String codeOID) {
-		return "You have selected to delete code " + codeOID + ". Please confirm that you want to remove this Code.";
+		return "You have selected to delete code " + codeOID.substring(0, 59) + ". Please confirm that you want to remove this Code.";
 	}
 
 	/**
@@ -3451,7 +3451,7 @@ public class MessageDelegate {
 	 * @return the dELETE_CONFIRMATION_FUNCTION_ARGUMENT
 	 */
 	public String getDELETE_CONFIRMATION_FUNCTION_ARGUMENT(String functionArgumentName) {
-		return "You have selected to delete argument " + functionArgumentName + ". Please confirm that you want to remove this argument.";
+		return "You have selected to delete argument " + functionArgumentName.substring(0, 59) + ". Please confirm that you want to remove this argument.";
 	}
 	
 	/**

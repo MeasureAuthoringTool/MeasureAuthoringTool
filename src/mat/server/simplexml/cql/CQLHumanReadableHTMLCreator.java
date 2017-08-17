@@ -500,7 +500,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style","list-style:none;");
+		
 				
 		NodeList groupNodeList = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
@@ -517,6 +517,8 @@ public class CQLHumanReadableHTMLCreator {
 		int j=0;
 		for (Integer key : groupMap.keySet()) {
 			if (groupMap.size() > 1) {
+				
+				mainListElement.attr("style","list-style:none;");
 				
 				Element mainElement = mainListElement.appendElement("li");
 				mainElement.attr("class", "list-unstyled");
@@ -547,6 +549,8 @@ public class CQLHumanReadableHTMLCreator {
 						groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);
 								
 			}else{
+				mainListElement.attr("style","list-style:none;padding-left:10px;");
+				
 				NodeList clauseNodeList = groupMap.get(key).getChildNodes();
 				generatePopulationNodes(clauseNodeList, mainListElement,
 						groupNodeList.getLength(),key, simpleXMLProcessor, cqlModel, cqlResult);

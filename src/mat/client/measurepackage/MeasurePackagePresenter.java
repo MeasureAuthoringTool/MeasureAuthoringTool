@@ -30,6 +30,7 @@ import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
@@ -174,7 +175,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * 
 		 * @return the measure package warning msg
 		 */
-		MessageAlert getMeasurePackageWarningMsg();
+		WarningMessageAlert getMeasurePackageWarningMsg();
 		
 		/**
 		 * Gets the package error message display.
@@ -1196,7 +1197,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				} else {
 					Mat.hideLoadingMessage();
 					if (result.getValidationMessages() != null) {
-						view.getMeasurePackageWarningMsg().createAlert(result.getValidationMessages());
+						view.getMeasurePackageWarningMsg().createWarningMultiLineAlert(result.getValidationMessages());
 					}
 					view.getInProgressMessageDisplay().clear();
 					((Button) view.getPackageMeasureButton()).setEnabled(true);

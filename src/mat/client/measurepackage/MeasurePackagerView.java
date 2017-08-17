@@ -125,7 +125,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The measure package success msg. */
 	private MessageAlert measurePackageSuccessMsg = new SuccessMessageAlert();
 	/** The measure package warning msg. */
-	private MessageAlert measurePackageWarningMsg = new WarningMessageAlert();
+	private WarningMessageAlert measurePackageWarningMsg = new WarningMessageAlert();
 	/** The measure error messages. */
 	private MessageAlert measureErrorMessages = new ErrorMessageAlert();
 	/** The supp data success messages. */
@@ -1268,7 +1268,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasurePackageWarningMsg()
 	 */
 	@Override
-	public MessageAlert getMeasurePackageWarningMsg() {
+	public WarningMessageAlert getMeasurePackageWarningMsg() {
 		return measurePackageWarningMsg;
 	}
 	/* (non-Javadoc)

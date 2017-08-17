@@ -27,7 +27,7 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 		CQLLibraryShareDTO extractDTOFromCQLLibrary(CQLLibrary cqlLibrary);
 
-		List<CQLLibrary> searchForIncludes(String setId, String searchText);
+		List<CQLLibrary> searchForIncludes(String setId, String searchText, boolean filter);
 
 		String getAssociatedMeasureId(String measureId);
 		String getSetIdForCQLLibrary(String cqlLibraryId);
@@ -42,5 +42,5 @@ public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
 
 		CQLLibrary getLibraryByMeasureId(String measureId);
 
-		List<CQLLibrary> searchForStandaloneIncludes(String setId, String searchText);
+		//List<CQLLibrary> searchForStandaloneIncludes(String setId, String searchText);
 }

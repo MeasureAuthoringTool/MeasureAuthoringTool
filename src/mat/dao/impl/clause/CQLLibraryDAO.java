@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -35,6 +36,7 @@ import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
+import mat.server.util.CQLQueryUtil;
 import mat.server.util.MATPropertiesService;
 import mat.shared.StringUtility;
 
@@ -103,16 +105,28 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
 	@Override
-	public List<CQLLibrary> searchForIncludes(String setId, String searchText) {
+	public List<CQLLibrary> searchForIncludes(String setId, String searchText, boolean filter) {
 		String searchString = searchText.toLowerCase().trim();
-		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
+		/*Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		cCriteria.add(Restrictions.eq("draft", false));
 		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
 		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
 		cCriteria.setFirstResult(0);
-
-		List<CQLLibrary> libraryResultList = cCriteria.list();
+*/
+		String queryString = null;
+		
+		if(filter){
+			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), 2);
+		} else {
+			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), 1);
+		}
+		
+		Query query = getSessionFactory().getCurrentSession().createQuery(queryString);
+				
+		List<CQLLibrary> libraryResultList = query.list();
+		
+		//List<CQLLibrary> result = null;
 
 		List<CQLLibrary> orderedCQlLibList = null;
 		if (libraryResultList != null) {
@@ -124,11 +138,11 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		StringUtility su = new StringUtility();
 		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
 
-		Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
+		//Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
 
 		// Adding logic to get rid of libraries with second level of child and
 		// also those with cyclic dependency.
-		List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
+		/*List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
 		while (orderedCQlLibListIte.hasNext()) {
 			CQLLibrary cqlLibrary = orderedCQlLibListIte.next();
 			String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId() : cqlLibrary.getId();
@@ -148,7 +162,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 				}
 			}
 		}
-
+*/
 		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
 
 			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su, cqlLibrary);
@@ -161,7 +175,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 
 	}
 
-	@Override
+	/*@Override
 	public List<CQLLibrary> searchForStandaloneIncludes(String setId, String searchText) {
 		String searchString = searchText.toLowerCase().trim();
 		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
@@ -213,7 +227,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		return orderedList;
 
 	}
-	
+*/	
 	private void printAllID(List<CQLLibrary> orderedCQlLibList) {
 		StringBuilder idString = new StringBuilder();
 		for (CQLLibrary library : orderedCQlLibList) {

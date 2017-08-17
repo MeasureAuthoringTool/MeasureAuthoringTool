@@ -5406,7 +5406,12 @@ private void addCodeSearchPanelHandlers() {
 
 		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
 				.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
-		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
+		searchDisplay.buildIncludesView();
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
+		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
+				MatContext.get().getLibraryLockService().checkForEditPermission());
+		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getCqlIncludeLibraryView()
 				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
@@ -5613,7 +5618,7 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 		showSearchingBusy(true);
 
-		MatContext.get().getCQLLibraryService().searchForStandaloneIncludes(setId, searchText,
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId, searchText, false,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override

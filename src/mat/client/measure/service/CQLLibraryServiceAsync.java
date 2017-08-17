@@ -55,7 +55,7 @@ public interface CQLLibraryServiceAsync {
 	void getUserShareInfo(String cqlId, String searchText,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
-	void searchForIncludes(String referringID, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+	void searchForIncludes(String referringID, String searchText, boolean filter, AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void updateUsersShare(SaveCQLLibraryResult result, AsyncCallback<Void> callback);
 
@@ -111,6 +111,6 @@ public interface CQLLibraryServiceAsync {
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId, AsyncCallback<Void> callback);
 
-	void searchForStandaloneIncludes(String setId, String searchText,
-			AsyncCallback<SaveCQLLibraryResult> asyncCallback);
+	//void searchForStandaloneIncludes(String setId, String searchText,
+		//	AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 }

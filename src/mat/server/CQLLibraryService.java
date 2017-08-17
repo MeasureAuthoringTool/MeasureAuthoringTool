@@ -153,10 +153,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @see mat.server.service.CQLLibraryServiceInterface#searchForIncludes(java.lang.String)
 	 */
 	@Override
-	public SaveCQLLibraryResult searchForIncludes(String setId, String searchText){
+	public SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter){
         SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
-        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, searchText);
+        List<CQLLibrary> list = cqlLibraryDAO.searchForIncludes(setId, searchText, filter);
         saveCQLLibraryResult.setResultsTotal(list.size());
         for(CQLLibrary cqlLibrary : list){
                CQLLibraryDataSetObject object = extractCQLLibraryDataObject(cqlLibrary);
@@ -1826,7 +1826,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		logger.info("CQLLibraryService: DeleteCQLLibrary End : cqlLibraryId:: " + cqllibId);
 	}
 
-	@Override
+	/*@Override
 	public SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText) {
 		SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult();
         List<CQLLibraryDataSetObject> allLibraries = new ArrayList<CQLLibraryDataSetObject>();
@@ -1838,6 +1838,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
         saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
         return saveCQLLibraryResult;
-	}
+	}*/
 
 }

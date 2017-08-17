@@ -2822,7 +2822,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		//int startIndex = 1;
 		//int pageSize = Integer.MAX_VALUE;
 		
-		MatContext.get().getCQLLibraryService().searchForIncludes(setId,searchText, new AsyncCallback<SaveCQLLibraryResult>() {
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId,searchText, true,
+				new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -3329,7 +3330,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getMainFlowPanel().clear();
 		searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
 				.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
-		getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
+		searchDisplay.buildIncludesView();
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
+		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
+				MatContext.get().getLibraryLockService().checkForEditPermission());
+		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}

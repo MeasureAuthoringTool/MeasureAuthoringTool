@@ -180,6 +180,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div"); 
 		Element mainListElement = mainDivElement.appendElement(HTML_UL); 
+		mainListElement.attr("style","padding-left: 50px;");
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm"); 	
 		if(elements.getLength() > 0) {
 			generateTerminologyCodeAndCodesystem(mainListElement, simpleXMLProcessor);
@@ -291,7 +292,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style", "list-style:none;padding-left:0px;");
+		mainListElement.attr("style", "list-style:none;padding-left: 10px;");
 				
 		List<String> supplementalDefinitionList = getSupplementalDefinitions(simpleXMLProcessor);
 		
@@ -318,7 +319,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style", "list-style:none;padding-left:0px;");
+		mainListElement.attr("style", "list-style:none;padding-left: 10px;");
 				
 		List<String> riskAdjDefinitionList = getRiskAdjustmentDefinitions(simpleXMLProcessor);
 		
@@ -373,6 +374,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		bodyElement.append("<h2><a name=\"toc\">Table of Contents</a></h2>");
 		Element tocULElement = bodyElement.appendElement(HTML_UL);
+		tocULElement.attr("style","padding-left: 50px;");
 		
 		Element populationCriteriaLI = tocULElement.appendElement(HTML_LI);
 		populationCriteriaLI
@@ -451,7 +453,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style","list-style:none;padding-left:0;");
+		mainListElement.attr("style","list-style:none;padding-left: 10px;");
 		
 		List<String> usedFunctions = cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions();
 		
@@ -571,6 +573,7 @@ public class CQLHumanReadableHTMLCreator {
 		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data Criteria (QDM Data Elements)</a></h3>");
 		
 		Element qdmElementUL = bodyElement.appendElement(HTML_UL);
+		qdmElementUL.attr("style","padding-left: 50px;");
 		
 		try {
 			

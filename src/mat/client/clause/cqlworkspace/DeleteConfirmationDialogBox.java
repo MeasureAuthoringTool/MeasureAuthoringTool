@@ -24,21 +24,28 @@ public class DeleteConfirmationDialogBox {
 
 	private  final Button yesButton = new Button("Yes"); 
 	private final Button noButton = new Button("Cancel");
+	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
 	
+	public ErrorMessageAlert getMessageAlert() {
+		return messageAlert;
+	}
+
+	public void setMessageAlert(ErrorMessageAlert messageAlert) {
+		this.messageAlert = messageAlert;
+	}
+
 	public DeleteConfirmationDialogBox() {
 		yesButton.getElement().setId("yes_Button");
 		noButton.getElement().setId("no_Button");
 	}
 	
-	public void show(String message) {
+	public void show() {
 		
 		Modal panel = new Modal();
 		ModalBody modalBody = new ModalBody(); 
-		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
 		modalBody.clear();
-		messageAlert.clear();
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
 		panel.setTitle("Warning");
@@ -52,7 +59,6 @@ public class DeleteConfirmationDialogBox {
 		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
-		messageAlert.createAlert(message);
 		modalBody.add(messageAlert);
 		
 		
@@ -76,51 +82,6 @@ public class DeleteConfirmationDialogBox {
 		panel.show();
 	}
 	
-	public void show(ArrayList<String> messageList) {
-		
-		Modal panel = new Modal();
-		ModalBody modalBody = new ModalBody(); 
-		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
-
-		modalBody.clear();
-		messageAlert.clear();
-		modalBody.remove(messageAlert);
-		panel.remove(modalBody);
-		panel.setTitle("Warning");
-		
-		panel.setClosable(true);
-		panel.setFade(true);
-		panel.setDataBackdrop(ModalBackdrop.STATIC);
-		panel.setSize(ModalSize.MEDIUM);
-		panel.getElement().getStyle().setZIndex(1000);
-		panel.setRemoveOnHide(true);
-		
-		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
-		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
-		messageAlert.createMultiLineAlert(messageList);
-		modalBody.add(messageAlert);
-		
-		
-		ModalFooter modalFooter = new ModalFooter(); 
-		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
-		yesButton.setType(ButtonType.PRIMARY);
-		yesButton.setSize(ButtonSize.SMALL);
-		noButton.setType(ButtonType.DANGER);
-		noButton.setSize(ButtonSize.SMALL);
-		yesButton.setDataDismiss(ButtonDismiss.MODAL);
-		noButton.setDataDismiss(ButtonDismiss.MODAL);
-		buttonToolBar.add(yesButton);
-		buttonToolBar.add(noButton);
-	
-		modalFooter.add(buttonToolBar);
-		
-		panel.add(modalBody);
-		
-		panel.add(modalFooter);
-		panel.getElement().focus();
-		panel.show();
-	}
-
 	
 	public void hide() {
 

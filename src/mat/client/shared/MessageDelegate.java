@@ -2665,7 +2665,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Code Remove msg
 	 */
 	public String getSUCCESSFUL_CODE_REMOVE_MSG(String codeOID) {
-		return "Code " + codeOID + " has been removed successfully.";
+		return "Code " + codeOID.substring(0, 59) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2674,7 +2674,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Definition Remove msg
 	 */
 	public String getSuccessfulDefinitionRemoveMessage(String definitionName) {
-		return "Definition " + definitionName + " has been removed successfully.";
+		return "Definition " + definitionName.substring(0, 59) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2683,7 +2683,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Function Remove msg
 	 */
 	public String getSuccessfulFunctionRemoveMessage(String functionName) {
-		return "Function " + functionName + " has been removed successfully.";
+		return "Function " + functionName.substring(0, 59) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2692,7 +2692,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Parameter Remove msg
 	 */
 	public String getSuccessfulParameterRemoveMessage(String parameterName) {
-		return "Parameter " + parameterName + " has been removed successfully.";
+		return "Parameter " + parameterName.substring(0, 59) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2701,7 +2701,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Include Remove msg
 	 */
 	public String getSuccessfulIncludeRemoveMessage(String includeName) {
-		return "Library " + includeName + " has been removed successfully.";
+		return "Library " + includeName.substring(0, 59) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2710,7 +2710,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Function Argument Remove msg
 	 */
 	public String getSuccessfulFunctionArgumentRemoveMessage(String argumentName) {
-		return "Argument " + argumentName + " has been removed successfully.";
+		return "Argument " + argumentName.substring(0, 59) + " has been removed successfully.";
 	}
 	
 	/**

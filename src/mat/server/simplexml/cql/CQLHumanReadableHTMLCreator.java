@@ -415,7 +415,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style","list-style:none;padding-left:0;");
+		mainListElement.attr("style","list-style:none;padding-left: 10px;");
 		
 		List<String> usedDefinitions = cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions();
 		
@@ -500,7 +500,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style","list-style:none;padding-left:0;");
+		mainListElement.attr("style","list-style:none;");
 				
 		NodeList groupNodeList = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),

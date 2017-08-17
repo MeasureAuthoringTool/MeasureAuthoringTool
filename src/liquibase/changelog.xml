@@ -220,4 +220,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-124-MAT-8732_Adding_New_Measure_Types_v2.xml" />
    		<include file="classpath:/liquibase/deploy_Sprint-125-MAT-8776_Remove_And_Rename_Attributes_QDM_5.3.xml" />
    		<include file="classpath:/liquibase/deploy_Sprint-125-MAT-8775_Add_Attributes_To_Datatypes_QDM_5.3.xml" />
+        <include file="classpath:/liquibase/deploy_Sprint-125_MAT-8795_ALTER_TABLE_CQL_LIBRARY.xml"/>
    	</databaseChangeLog>

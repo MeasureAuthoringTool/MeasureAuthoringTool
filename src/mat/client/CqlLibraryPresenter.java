@@ -939,7 +939,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 										}
 									});
-							fireSuccessfullDeletionEvent(true,
+							cqlLibraryView.getSuccessMessageAlert().createAlert(
 									MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName));
 						} else {
 							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
@@ -1324,6 +1324,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 		cqlLibraryView.getCellTablePanel().clear();
 		cqlLibraryView.getErrorMessageAlert().clearAlert();
 		cqlLibraryView.getSuccessMessageAlert().clearAlert();
+		
 		String heading = "CQL Library";
 		panel.setHeading(heading, "CQLLibrary");
 		setSubSkipEmbeddedLink("CQLSearchView_mainPanel");
@@ -1395,10 +1396,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 									}
 								}
 
-							} else {
-								cqlLibraryView.getSuccessMessageAlert().clearAlert();
-								cqlLibraryView.getErrorMessageAlert().clearAlert();
-							}
+							} 
 						}
 
 						SearchResultUpdate sru = new SearchResultUpdate();

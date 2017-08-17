@@ -2692,7 +2692,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Parameter Remove msg
 	 */
 	public String getSuccessfulParameterRemoveMessage(String parameterName) {
-		return "Parameter " + parameterName + " has been deleted successfully.";
+		return "Parameter " + parameterName + " has been removed successfully.";
 	}
 	
 	/**

@@ -571,6 +571,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			
 			@Override
 			public void onClick(ClickEvent arg0) {
+				isUnsavedData = false;
 				if (auditMessage != null) {
 					MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
 							null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
@@ -587,6 +588,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			
 			@Override
 			public void onClick(ClickEvent arg0) {
+				isUnsavedData = false;
 				saveErrorMessage.clearAlert();
 				saveButton.setFocus(true);
 				

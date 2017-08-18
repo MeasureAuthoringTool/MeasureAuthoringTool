@@ -2608,7 +2608,9 @@ public class CQLLeftNavBarPanelView {
 			isValid = true;
 		} else {
 			for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
-				if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
+				if(cqlIncludeLibrary.getQdmVersion()==null){
+					continue;
+				}else if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
 					isValid = false;
 					break;
 				}

@@ -326,6 +326,7 @@ public class CQLIncludeLibraryView {
 		searchLibraryVP.add(new SpacerWidget());
 
 		sWidget.getSearchBox().setWidth("590px");
+		sWidget.getSearchBox().setText("");
 		searchLibraryVP.add(sWidget.getSearchWidget());
 		searchLibraryVP.add(new SpacerWidget());
 

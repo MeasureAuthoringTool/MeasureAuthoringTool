@@ -29,21 +29,21 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.xml.sax.InputSource;
 
 public class CQLUtilityClass {
-	
+
 	/** The Constant PATIENT. */
 	private static final String PATIENT = "Patient";
-	
+
 	/** The Constant POPULATION. */
 	private static final String POPULATION = "Population";
-	
+
 	private static StringBuilder toBeInsertedAtEnd;
-	
-	private static int size; 
-	
+
+	private static int size;
+
 	public static int getSize() {
-		return size; 
+		return size;
 	}
-	
+
 	public static StringBuilder getStrToBeInserted(){
 		return toBeInsertedAtEnd;
 	}
@@ -52,18 +52,18 @@ public class CQLUtilityClass {
 
 		StringBuilder cqlStr = new StringBuilder();
 		toBeInsertedAtEnd = new  StringBuilder();
-		// library Name and Using 
+		// library Name and Using
 		if (cqlModel.getLibraryName() != null) {
 			cqlStr = cqlStr.append("library "
 					+ cqlModel.getLibraryName());
 			cqlStr = cqlStr.append(" version "
 					+ "'" + cqlModel.getVersionUsed());
 			cqlStr = cqlStr.append("'");
-			
+
 			cqlStr = cqlStr.append("\n\n");
-			
+
 			cqlStr = cqlStr.append("using QDM");
-			
+
 			cqlStr = cqlStr.append(" version ");
 			cqlStr = cqlStr.append("'");
 			cqlStr = cqlStr.append(cqlModel.getQdmVersion());
@@ -81,26 +81,28 @@ public class CQLUtilityClass {
 				cqlStr = cqlStr.append("\n\n");
 			}
 		}
-		
+
 		//CodeSystems
 		List<CQLCodeSystem> codeSystemList = cqlModel.getCodeSystemList();
 		List<String> codeSystemAlreadyUsed = new ArrayList<String>();
 		if(codeSystemList != null){
 			for(CQLCodeSystem codeSystem : codeSystemList){
-				String codeSysStr = codeSystem.getCodeSystemName() + ":" 
+				String codeSysStr = codeSystem.getCodeSystemName() + ":"
 			                          + codeSystem.getCodeSystemVersion();
 				String version = codeSystem.getCodeSystemVersion().replaceAll(" ", "%20");
 				if(!codeSystemAlreadyUsed.contains(codeSysStr)){
 					cqlStr = cqlStr.append("codesystem \"" + codeSysStr+'"').append(": ")
 							.append("'urn:oid:" + codeSystem.getCodeSystem() +"' ");
 					cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"'");
-					cqlStr = cqlStr.append("\n\n");
+					cqlStr = cqlStr.append("\n");
 					codeSystemAlreadyUsed.add(codeSysStr);
 				}
-				
+
 			}
+
+			cqlStr = cqlStr.append("\n");
 		}
-		
+
 		//Valuesets
 		List<CQLQualityDataSetDTO> valueSetList = cqlModel.getValueSetList();
 		List<String> valueSetAlreadyUsed = new ArrayList<String>();
@@ -117,81 +119,73 @@ public class CQLUtilityClass {
 							+"'urn:oid:"+ valueset.getOid()+"' "
 							);
 					List<String> codeSysName = getCodeSysName(valueset.getOid(),cqlModel);
-					
+
 					//Check if QDM has expansionidentifier or not.
 					//if(expIdentifier.equalsIgnoreCase("")){
 						if(!version.equalsIgnoreCase("1.0")){
 							cqlStr = cqlStr.append("version 'urn:hl7:version:" + version +"' ");
 						}
-					/*}
-					else{
-						cqlStr = cqlStr.append("version 'urn:hl7:profile:" + expIdentifier +"' ");
-					}*/
-					/*if(!valueset.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
-						cqlStr = cqlStr.append("codesystems {"+'"');
-						Iterator<String> codeSysNameIterator = codeSysName.iterator();
-						while (codeSysNameIterator.hasNext()) {
-							cqlStr = cqlStr.append(codeSysNameIterator.next());
-							if(codeSysNameIterator.hasNext()){
-								cqlStr = cqlStr.append('"'+", "+'"');
-							}
-						}
-						cqlStr = cqlStr.append('"'+"}");
-					}*/
-					cqlStr = cqlStr.append("\n\n");
+
+					cqlStr = cqlStr.append("\n");
 					valueSetAlreadyUsed.add(valueset.getCodeListName());
 				}
 			}
+
+			cqlStr = cqlStr.append("\n");
 		}
 
 		//Codes
-				List<CQLCode> codeList = cqlModel.getCodeList();
-				List<String> codesAlreadyUsed = new ArrayList<String>();
-				if(codeList != null){
-					for(CQLCode codes : codeList){
-						String codesStr = '"'+codes.getCodeName()+'"'+ ": " 
-					                          +"'" +codes.getCodeOID()+"'";
-						String codeSysStr = codes.getCodeSystemName() + ":" 
-		                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");
-						if(!codesAlreadyUsed.contains(codesStr)){
-							cqlStr = cqlStr.append("code " + codesStr).append(" ")
-									.append("from " + '"' + codeSysStr + '"' +" ");
-							cqlStr = cqlStr.append("display " +"'" +codes.getDisplayName().replaceAll("'", "\\\\'")+"'");
-							cqlStr = cqlStr.append("\n\n");
-							codesAlreadyUsed.add(codesStr);
-						}
-						
-					}
+		List<CQLCode> codeList = cqlModel.getCodeList();
+		List<String> codesAlreadyUsed = new ArrayList<String>();
+		if(codeList != null){
+			for(CQLCode codes : codeList){
+				String codesStr = '"'+codes.getCodeName()+'"'+ ": "
+			                          +"'" +codes.getCodeOID()+"'";
+				String codeSysStr = codes.getCodeSystemName() + ":"
+                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");
+				if(!codesAlreadyUsed.contains(codesStr)){
+					cqlStr = cqlStr.append("code " + codesStr).append(" ")
+							.append("from " + '"' + codeSysStr + '"' +" ");
+					cqlStr = cqlStr.append("display " +"'" +codes.getDisplayName().replaceAll("'", "\\\\'")+"'");
+					cqlStr = cqlStr.append("\n");
+					codesAlreadyUsed.add(codesStr);
 				}
-		
+
+			}
+
+			cqlStr = cqlStr.append("\n");
+		}
+
 		// parameters
 		List<CQLParameter> paramList = cqlModel.getCqlParameters();
 		if (paramList != null) {
 			for (CQLParameter parameter : paramList) {
 				System.out.println(parameter.getParameterName());
-					
+
 				String param = "parameter "
 						+ "\""+parameter.getParameterName()+ "\"";
-				
-				
+
+
 					String commentString = parameter.getCommentString();
 					if(commentString != null && commentString.trim().length() > 0){
 						commentString = "/*" + commentString + "*/" + "\n";
 						cqlStr.append(commentString);
 					}
-					
+
 					cqlStr = cqlStr.append(param + " "
 							+ parameter.getParameterLogic());
-					cqlStr = cqlStr.append("\n\n");
-					
+					cqlStr = cqlStr.append("\n");
+
 					// if the the param we just appended is the current one, then
-					// find the size of the file at that time. 
-					// This will give us the end line of the parameter we are trying to insert. 
+					// find the size of the file at that time.
+					// This will give us the end line of the parameter we are trying to insert.
 					if(param.equalsIgnoreCase(toBeInserted)) {
 						size = getEndLine(cqlStr.toString());
 					}
-					
+
 				}
+
+			cqlStr.append("\n");
 		}
 
 		// Definitions and Functions by Context
@@ -201,13 +195,13 @@ public class CQLUtilityClass {
 		} else {
 			cqlStr = cqlStr.append("context").append(" " + PATIENT).append("\n\n");
 		}
-		
+
 		//cqlModel.setLines(countLines(cqlStr.toString()));
-		
+
 		/*if(!toBeInsertedAtEnd.toString().isEmpty()){
 			cqlStr = cqlStr.append(toBeInsertedAtEnd.toString());
 		}*/
-		
+
 		return cqlStr.toString();
 
 	}
@@ -230,10 +224,10 @@ public class CQLUtilityClass {
 
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtilityClass.class);
-	
+
 	/**
 	 * Gets the define and funcs by context.
-	 * 
+	 *
 	 * @param defineList
 	 *            the define list
 	 * @param functionsList
@@ -245,12 +239,12 @@ public class CQLUtilityClass {
 	private static StringBuilder getDefineAndFunctionsByContext(
 			List<CQLDefinition> defineList, List<CQLFunctions> functionsList,
 			StringBuilder cqlStr, String toBeInserted) {
-		
+
 		List<CQLDefinition> contextPatDefineList = new ArrayList<CQLDefinition>();
 		List<CQLDefinition> contextPopDefineList = new ArrayList<CQLDefinition>();
 		List<CQLFunctions> contextPatFuncList = new ArrayList<CQLFunctions>();
 		List<CQLFunctions> contextPopFuncList = new ArrayList<CQLFunctions>();
-		
+
 		if (defineList != null) {
 			for (int i = 0; i < defineList.size(); i++) {
 				if (defineList.get(i).getContext().equalsIgnoreCase(PATIENT)) {
@@ -269,26 +263,26 @@ public class CQLUtilityClass {
 				}
 			}
 		}
-		
+
 		if ((contextPatDefineList.size() > 0) || (contextPatFuncList.size() > 0)) {
-			
+
 			getDefineAndFunctionsByContext(contextPatDefineList,
 					contextPatFuncList, PATIENT, cqlStr, toBeInserted);
 		}
-		
+
 		if ((contextPopDefineList.size() > 0) || (contextPopFuncList.size() > 0)) {
-			
+
 			getDefineAndFunctionsByContext(contextPopDefineList,
 					contextPopFuncList, POPULATION, cqlStr, toBeInserted);
 		}
-		
+
 		return cqlStr;
-		
+
 	}
-	
+
 	/**
 	 * Gets the define and functions by context.
-	 * 
+	 *
 	 * @param definitionList
 	 *            the definition list
 	 * @param functionsList
@@ -303,42 +297,44 @@ public class CQLUtilityClass {
 			List<CQLDefinition> definitionList,
 			List<CQLFunctions> functionsList, String context,
 			StringBuilder cqlStr, String toBeInserted) {
+
+
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
 		for (CQLDefinition definition : definitionList) {
-			
+
 				String definitionComment = definition.getCommentString();
 				if(definitionComment != null && definitionComment.trim().length() > 0){
 					definitionComment = "/*" + definitionComment + "*/" + "\n";
 					cqlStr = cqlStr.append(definitionComment);
 				}
-				
+
 				String def = "define " + "\""+ definition.getDefinitionName() + "\"";
-				
-				cqlStr = cqlStr.append(def + ": ");
-				cqlStr = cqlStr.append(definition.getDefinitionLogic());
-				cqlStr = cqlStr.append("\n\n");	
-				
+
+				cqlStr = cqlStr.append(def + ":\n");
+				cqlStr = cqlStr.append("\t" + definition.getDefinitionLogic().replaceAll("\\n", "\n\t"));
+				cqlStr = cqlStr.append("\n\n");
+
 				// if the the def we just appended is the current one, then
 				// find the size of the file at that time. ;-
-				// This will give us the end line of the definition we are trying to insert. 
+				// This will give us the end line of the definition we are trying to insert.
 				if(def.equalsIgnoreCase(toBeInserted.toString())) {
 					size = getEndLine(cqlStr.toString());
 				}
-				
+
 		}
-		
+
 		for (CQLFunctions function : functionsList) {
-			
+
 			String functionComment = function.getCommentString();
 			if(functionComment != null && functionComment.trim().length() > 0){
 				functionComment = "/*" + functionComment + "*/" + "\n";
 				cqlStr = cqlStr.append(functionComment);
 			}
-			
+
 				String func = "define function "
 						+ "\""+ function.getFunctionName() + "\"";
-			
-				
+
+
 				cqlStr = cqlStr.append(func + "(");
 				if(function.getArgumentList()!=null) {
 				for (CQLFunctionArgument argument : function.getArgumentList()) {
@@ -367,18 +363,18 @@ public class CQLUtilityClass {
 				}
 				cqlStr.deleteCharAt(cqlStr.length() - 2);
 			}
-				
-				cqlStr = cqlStr.append("): " + function.getFunctionLogic());
+
+				cqlStr = cqlStr.append("):\n" + "\t" + function.getFunctionLogic().replaceAll("\\n", "\n\t"));
 				cqlStr = cqlStr.append("\n\n");
-				
+
 				// if the the func we just appended is the current one, then
-				// find the size of the file at that time. 
-				// This will give us the end line of the function we are trying to insert. 
+				// find the size of the file at that time.
+				// This will give us the end line of the function we are trying to insert.
 				if(func.equalsIgnoreCase(toBeInserted)) {
 					size = getEndLine(cqlStr.toString());
 				}
 			}
- 					
+
 		return cqlStr;
 	}
 
@@ -419,12 +415,12 @@ public class CQLUtilityClass {
 			}
 		}
 		return cqlModel;
-	}	
+	}
 
 
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		CQLQualityDataModelWrapper valuesetWrapper;
-		try {			 
+		try {
 
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("ValueSetsMapping.xml"));
@@ -441,8 +437,8 @@ public class CQLUtilityClass {
 		}
 
 	}
-	
-	
+
+
 	private static List<CQLQualityDataSetDTO> convertCodesToQualityDataSetDTO(List<CQLCode> codeList){
 		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 			for (CQLCode tempDataSet : codeList) {
@@ -455,27 +451,27 @@ public class CQLUtilityClass {
 					convertedCQLDataSet.setDisplayName(tempDataSet.getDisplayName());
 					convertedCQLDataSet.setType("code");
 					convertedCQLDataSetList.add(convertedCQLDataSet);
-					
-				
+
+
 			}
 		return convertedCQLDataSetList;
-		
+
 	}
-	
+
 	private static int getEndLine(String cqlString) {
 		System.out.println("Get end line");
 		Scanner scanner = new Scanner(cqlString);
-		
-		int endLine = -1; 
+
+		int endLine = -1;
 		while(scanner.hasNextLine()) {
 			endLine++;
-			scanner.nextLine(); 
+			scanner.nextLine();
 		}
-		
-		
-		return endLine; 
+
+		scanner.close();
+		return endLine;
 	}
-	
+
 	public static int countLines(String str) {
 	    if(str == null || str.isEmpty())
 	    {
@@ -488,7 +484,7 @@ public class CQLUtilityClass {
 	    }
 	    return lines;
 	}
-	
+
 	public static List<CQLQualityDataSetDTO> sortCQLQualityDataSetDto(List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs){
 		Collections.sort(cqlQualityDataSetDTOs, new Comparator<CQLQualityDataSetDTO>() {
 			@Override
@@ -496,10 +492,10 @@ public class CQLUtilityClass {
 				return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
 			}
 		});
-		
+
 		return cqlQualityDataSetDTOs;
 	}
-	
+
 	public static List<CQLCode> sortCQLCodeDTO(List<CQLCode> cqlCode){
 		Collections.sort(cqlCode, new Comparator<CQLCode>() {
 			@Override
@@ -507,18 +503,18 @@ public class CQLUtilityClass {
 				return o1.getCodeName().compareToIgnoreCase(o2.getCodeName());
 			}
 		});
-		
+
 		return cqlCode;
 	}
-	
+
 	private static List<CQLQualityDataSetDTO> filterValuesets(List<CQLQualityDataSetDTO> cqlValuesets){
-		
+
 		List<CQLQualityDataSetDTO> filteredValuesets = new ArrayList<CQLQualityDataSetDTO>();
-		 
+
 		for(int i=0; i<cqlValuesets.size(); i++){
 			CQLQualityDataSetDTO cqlQualityDataSetDTO = cqlValuesets.get(i);
 			if(cqlQualityDataSetDTO.getDataType()!= null){
-				if(!cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") 
+				if(!cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Birthdate")
 						&& !cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
 					filteredValuesets.add(cqlQualityDataSetDTO);
 				}
@@ -526,15 +522,15 @@ public class CQLUtilityClass {
 				filteredValuesets.add(cqlQualityDataSetDTO);
 			}
 		}
-		
+
 		return filteredValuesets;
-		
+
 	}
-	
+
 	/*
 	private static void getCodeSystems(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLCodeSystemWrapper codeSystemWrapper;
-		try {			 
+		try {
 
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeSystemsMapping.xml"));
@@ -549,12 +545,12 @@ public class CQLUtilityClass {
 		} catch (Exception e) {
 			logger.info("Error while getting codesystems :" +e.getMessage());
 		}
-		
+
 	}
-	
+
 	private static void getCodes(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLCodeWrapper codeWrapper;
-		try {			 
+		try {
 
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CodeMapping.xml"));
@@ -574,28 +570,28 @@ public class CQLUtilityClass {
 		} catch (Exception e) {
 			logger.info("Error while getting codes :" +e.getMessage());
 		}
-		
+
 	}*/
-	
+
 	/*private static void getCQLGeneralInfo(CQLModel cqlModel, XmlProcessor measureXMLProcessor) {
-		
+
 		String libraryNameStr = "";
 		String usingModelStr = "";
 		String usingModelVer = "";
 		String versionStr = "";
 		//CQLLibraryModel libraryModel = new CQLLibraryModel();
 		//CQLDataModel usingModel = new CQLDataModel();
-		
-		
+
+
 		if (measureXMLProcessor != null) {
-					
+
 			String XPATH_EXPRESSION_CQLLOOKUP_lIBRARY = "//cqlLookUp/library/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_USING = "//cqlLookUp/usingModel/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_USING_VERSION = "//cqlLookUp/usingModelVersion/text()";
 			String XPATH_EXPRESSION_CQLLOOKUP_VERSION = "//cqlLookUp/version/text()";
-			
+
 			try {
-				
+
 				Node nodeCQLLibrary = measureXMLProcessor.findNode(
 						measureXMLProcessor.getOriginalDoc(),
 						XPATH_EXPRESSION_CQLLOOKUP_lIBRARY);
@@ -608,43 +604,43 @@ public class CQLUtilityClass {
 				Node nodeCQLVersion = measureXMLProcessor.findNode(
 						measureXMLProcessor.getOriginalDoc(),
 						XPATH_EXPRESSION_CQLLOOKUP_VERSION);
-				
+
 				if (nodeCQLLibrary != null) {
 					libraryNameStr = nodeCQLLibrary.getTextContent();
 					cqlModel.setLibraryName(libraryNameStr);
 				}
-				
+
 				if (nodeCQLUsingModel != null) {
 					usingModelStr = nodeCQLUsingModel.getTextContent();
 					cqlModel.setName(usingModelStr);
 				}
-				
+
 				if (nodeCQLUsingModelVersion != null) {
 					usingModelVer = nodeCQLUsingModelVersion.getTextContent();
 					cqlModel.setQdmVersion(usingModelVer);
 				}
-				
+
 				if (nodeCQLVersion != null) {
 					versionStr = nodeCQLVersion.getTextContent();
 					cqlModel.setVersionUsed(versionStr);
 				}
-				
+
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
-		
+
 		//cqlModel.setLibrary(libraryModel);
 		//cqlModel.setUsedModel(usingModel);
-		
+
 	}*/
-	
+
 	/*private static void getCQLDefinitionsInfo(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLDefinitionsWrapper details = null;
-		
-		try {			 
-			
+
+		try {
+
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLDefinitionModelMapping.xml"));
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
@@ -653,15 +649,15 @@ public class CQLUtilityClass {
 			unmarshaller.setValidation(false);
 			details = (CQLDefinitionsWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			cqlModel.setDefinitionList(details.getCqlDefinitions());
-			
+
 		} catch (Exception e) {
 			logger.info("Error while getting cql definition :" +e.getMessage());
 		}
-		
+
 	}*/
 
 	/*private static void getCQLParametersInfo(CQLModel cqlModel, String cqlLookUpXMLString) {
-		
+
 		CQLParametersWrapper details = null;
 		try {
 				Mapping mapping = new Mapping();
@@ -675,20 +671,20 @@ public class CQLUtilityClass {
 		} catch (Exception e) {
 			logger.info("Error while getting cql parameters :" +e.getMessage());
 		}
-		
+
 	}*/
 
 	/*private static void getCQLFunctionsInfo(CQLModel cqlModel, String cqlLookUpXMLString) {
-		
+
 		CQLFunctionsWrapper details = null;
 		try {
 			Mapping mapping = new Mapping();
-			
+
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLFunctionModelMapping.xml"));
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLFunctionsWrapper.class);
 			unmarshaller.setWhitespacePreserve(true);
-			
+
 			unmarshaller.setValidation(false);
 			details = (CQLFunctionsWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			cqlModel.setCqlFunctions(details.getCqlFunctionsList());
@@ -696,7 +692,7 @@ public class CQLUtilityClass {
 			logger.info("Error while getting cql functions :" +e.getMessage());
 		}
 	}*/
-	
+
 /*	private static List<CQLQualityDataSetDTO> convertToCQLQualityDataSetDTO(List<CQLQualityDataSetDTO> qualityDataSetDTO){
 		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 			for (CQLQualityDataSetDTO tempDataSet : qualityDataSetDTO) {
@@ -717,35 +713,35 @@ public class CQLUtilityClass {
 					convertedCQLDataSet.setVsacExpIdentifier(tempDataSet.getVsacExpIdentifier());
 					convertedCQLDataSetList.add(convertedCQLDataSet);
 				}
-				
+
 			}
 		return convertedCQLDataSetList;
-		
+
 	}*/
-	
-	
-	
+
+
+
 	/*private static void getCQLIncludeLibrarysInfo(CQLModel cqlModel, String cqlLookUpXMLString) {
 		CQLIncludeLibraryWrapper details = null;
-		
-		try {			 
-			
+
+		try {
+
 			Mapping mapping = new Mapping();
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLIncludeLibrayMapping.xml"));
 			Unmarshaller unmarshaller = new Unmarshaller(mapping);
 			unmarshaller.setClass(CQLIncludeLibraryWrapper.class);
 			unmarshaller.setValidation(false);
 			unmarshaller.setWhitespacePreserve(true);
-			
+
 			details = (CQLIncludeLibraryWrapper) unmarshaller.unmarshal(new InputSource(new StringReader(cqlLookUpXMLString)));
 			cqlModel.setCqlIncludeLibrarys(details.getCqlIncludeLibrary());
-			
+
 		} catch (Exception e) {
 			logger.info("Error while getting cql definition :" +e.getMessage());
 		}
-		
+
 	}*/
-	
-	
-	
+
+
+
 }

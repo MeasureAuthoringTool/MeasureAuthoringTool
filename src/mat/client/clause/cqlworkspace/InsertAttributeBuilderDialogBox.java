@@ -49,6 +49,9 @@ import mat.model.ModeDetailModel;
 import mat.model.clause.QDSAttributes;
 
 public class InsertAttributeBuilderDialogBox {
+	private static final String FACILITY_LOCATIONS = "facilityLocations";
+	private static final String DIAGNOSES = "diagnoses";
+	private static final String COMPONENTS = "components";
 	private static final String VALUE_SETS = "Value Sets";
 	private static final String CODES = "Codes";
 
@@ -451,8 +454,8 @@ public class InsertAttributeBuilderDialogBox {
 	
 	private static boolean isModeDisabledEntry(String attrSelected) {
 		
-		if(attrSelected.equalsIgnoreCase("components") || attrSelected.equalsIgnoreCase("diagnoses") 
-				|| attrSelected.equalsIgnoreCase("facilityLocations")) {
+		if(attrSelected.equalsIgnoreCase(COMPONENTS) || attrSelected.equalsIgnoreCase(DIAGNOSES) 
+				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS)) {
 			return true; 
 		}
 		

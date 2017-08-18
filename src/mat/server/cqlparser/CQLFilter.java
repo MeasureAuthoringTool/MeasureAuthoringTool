@@ -1327,8 +1327,11 @@ public class CQLFilter {
 
 	public ExpressionDef findExpression(String expressionName, LibraryInfoHolder libraryHolder) {
 		if (libraryHolder.getLibrary() != null) {
-			List<ExpressionDef> expressionDefs = libraryHolder.getLibrary().getStatements().getDef();
-
+			List<ExpressionDef> expressionDefs = new ArrayList<>(); 
+			if(libraryHolder.getLibrary().getStatements() != null) {
+				expressionDefs = libraryHolder.getLibrary().getStatements().getDef(); 
+			}
+			
 			for (ExpressionDef expressionDef : expressionDefs) {
 				// System.out.println(expressionDef.getName());
 				if (expressionDef.getName().equals(expressionName)) {

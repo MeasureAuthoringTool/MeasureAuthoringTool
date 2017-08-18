@@ -177,7 +177,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveCQL(mat.model.cql.CQLModel)
 	 */
@@ -190,7 +190,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#parseCQL(java.lang.String)
 	 */
 	@Override
@@ -207,13 +207,13 @@ public class CQLServiceImpl implements CQLService {
 		 * cqlListener.setParser(cqlListener); cqlListener.setLexer(lexer);
 		 * parser.addParseListener(cqlListener); cqlListener.setTokens(tokens);
 		 * parser.setBuildParseTree(true);
-		 * 
+		 *
 		 * ParserRuleContext tree = parser.logic();
 		 * parser.notifyErrorListeners("");
-		 * 
+		 *
 		 * System.out.println(parser.getNumberOfSyntaxErrors());
 		 * System.out.println(cqlErrorListener.getErrors());
-		 * 
+		 *
 		 * cqlModel = cqlListener.getCqlModel();
 		 */
 
@@ -222,7 +222,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveAndModifyCQLGeneralInfo(java
 	 * .lang.String, java.lang.String)
@@ -287,7 +287,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveAndModifyFunctions(java.lang
 	 * .String, mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions,
@@ -297,13 +297,6 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveAndModifyFunctions(String xml, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, boolean isFormatable) {
 
-		/*
-		 * if(MatContext.get().getMeasureLockService().checkForEditPermission())
-		 * { return null; }
-		 * 
-		 * MeasureXmlModel measureXMLModel =
-		 * getService().getMeasureXmlForMeasure( measureId);
-		 */
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
@@ -311,7 +304,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModelValidator validator = new CQLModelValidator();
 		boolean isDuplicate = false;
 		boolean isCommentInvalid = false;
-		
+
 		String XPATH_EXPRESSION_FUNCTIONS = "//cqlLookUp/functions";
 		if (xml != null && !xml.isEmpty()) {
 
@@ -328,10 +321,10 @@ public class CQLServiceImpl implements CQLService {
 					}
 					isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), xml);
 				}
-				
+
 				//validating function comment string
 				isCommentInvalid = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
-				
+
 				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
@@ -351,9 +344,9 @@ public class CQLServiceImpl implements CQLService {
 					if (isValidArgumentName) {
 						logger.debug(" CQLServiceImpl: saveAndModifyFunctions Start :  ");
 
-						String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='"
-								+ toBeModifiedObj.getId() + "']";
 						try {
+							String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='"
+									+ toBeModifiedObj.getId() + "']";
 							Node nodeFunction = processor.findNode(processor.getOriginalDoc(),
 									XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
 
@@ -381,33 +374,57 @@ public class CQLServiceImpl implements CQLService {
 									}
 
 								}
-								
-								// format function
-								if(isFormatable) {
-									currentObj.setFunctionLogic(formatFunction(currentObj));
-								}
-								
-								String cqlString = createFunctionsXML(currentObj);
 
 								processor.removeFromParent(nodeFunction);
+								String cqlString = createFunctionsXML(currentObj);
 								processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
+
 								String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
-
-								String cqlExpressionName = "define function" + " \"" + currentObj.getFunctionName()
-										+ "\"";
 								result.setXml(finalUpdatedXmlString);
+								processor.setOriginalXml(finalUpdatedXmlString);
 
+								String cqlExpressionName = "define function" + " \"" + currentObj.getFunctionName() + "\"";
 								parseCQLExpressionForErrors(result, finalUpdatedXmlString, cqlExpressionName,
 										currentObj.getFunctionLogic(), currentObj.getFunctionName(), "Function");
+
+								// if the function has no errors, get the result type and format it
 								if(result.getCqlErrors().isEmpty()) {
+
 									CQLExpressionObject obj = findExpressionObject(currentObj.getFunctionName(), result.getCqlObject().getCqlFunctionObjectList());
 									if(obj != null){
 										currentObj.setReturnType(obj.getReturnType());
 									}
+
+									// format function
+									if(isFormatable) {
+										currentObj.setFunctionLogic(formatFunction(currentObj));
+
+										XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='"
+												+ currentObj.getId() + "']";
+										nodeFunction = processor.findNode(processor.getOriginalDoc(),
+												XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+
+										if(nodeFunction != null) {
+											NodeList functionChildNodes = nodeFunction.getChildNodes();
+											for(int i = 0; i < functionChildNodes.getLength(); i++) {
+												Node currentChildNode = functionChildNodes.item(i);
+
+												if(currentChildNode.getNodeName().equalsIgnoreCase("logic")) {
+													currentChildNode.setTextContent(currentObj.getFunctionLogic());
+													break;
+												}
+											}
+										}
+
+
+										finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
+										result.setXml(finalUpdatedXmlString);
+									}
+
 								}
 								result.setCqlObject(null);
 								wrapper = modfiyCQLFunctionList(toBeModifiedObj, currentObj, functionsList);
-								
+
 								result.setSuccess(true);
 								result.setFunction(currentObj);
 							} else {
@@ -447,16 +464,16 @@ public class CQLServiceImpl implements CQLService {
 					return result;
 				}
 				isDuplicate = isDuplicateIdentifierName(currentObj.getFunctionName(), xml);
-				
+
 				//validating function comment string
 				isCommentInvalid = validator.validateForCommentTextArea(currentObj.getCommentString());
-				
+
 				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
 				}
-				
+
 				if (!isDuplicate) {
 
 					boolean isValidArgumentName = true;
@@ -471,31 +488,55 @@ public class CQLServiceImpl implements CQLService {
 					if (isValidArgumentName) {
 
 						try {
-							
-							// format function
-							if(isFormatable) {
-								currentObj.setFunctionLogic(formatFunction(currentObj));
-							}
-							
 							String cqlString = createFunctionsXML(currentObj);
-							
 							Node nodeFunctions = processor.findNode(processor.getOriginalDoc(),
 									XPATH_EXPRESSION_FUNCTIONS);
+
 							if (nodeFunctions != null) {
 								try {
+
 									processor.appendNode(cqlString, "function", XPATH_EXPRESSION_FUNCTIONS);
 									processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-									String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
-									String cqlExpressionName = "define function" + " \"" + currentObj.getFunctionName()
-											+ "\"";
 
+									String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
 									result.setXml(finalUpdatedXmlString);
+									processor.setOriginalXml(finalUpdatedXmlString);
+
+									String cqlExpressionName = "define function" + " \"" + currentObj.getFunctionName()
+									+ "\"";
 									parseCQLExpressionForErrors(result, finalUpdatedXmlString, cqlExpressionName,
 											currentObj.getFunctionLogic(), currentObj.getFunctionName(), "Function");
+
+									// if the function has no errors, get the result type and format it
 									if(result.getCqlErrors().isEmpty()) {
 										CQLExpressionObject obj = findExpressionObject(currentObj.getFunctionName(), result.getCqlObject().getCqlFunctionObjectList());
 										if(obj != null){
 											currentObj.setReturnType(obj.getReturnType());
+										}
+
+										// format function
+										if(isFormatable) {
+											currentObj.setFunctionLogic(formatFunction(currentObj));
+
+											String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='"
+													+ currentObj.getId() + "']";
+											Node nodeFunction = processor.findNode(processor.getOriginalDoc(),
+													XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
+
+											if(nodeFunction != null) {
+												NodeList functionChildNodes = nodeFunction.getChildNodes();
+												for(int i = 0; i < functionChildNodes.getLength(); i++) {
+													Node currentChildNode = functionChildNodes.item(i);
+
+													if(currentChildNode.getNodeName().equalsIgnoreCase("logic")) {
+														currentChildNode.setTextContent(currentObj.getFunctionLogic());
+														break;
+													}
+												}
+											}
+
+											finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
+											result.setXml(finalUpdatedXmlString);
 										}
 									}
 									result.setCqlObject(null);
@@ -535,43 +576,43 @@ public class CQLServiceImpl implements CQLService {
 
 		return result;
 	}
-	
+
 	/**
-	 * Builds a temporary function exprsesion string by taking the name, arguments, and logic, then formats the logic, and returns the formatted logic. 
+	 * Builds a temporary function exprsesion string by taking the name, arguments, and logic, then formats the logic, and returns the formatted logic.
 	 * @param function the function to format
 	 * @return the formatted function logic
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private String formatFunction(CQLFunctions function) throws IOException {
 		// create argument string and then format the cql expression
-		
-		StringBuilder argumentBuilder = new StringBuilder(); 
-		
+
+		StringBuilder argumentBuilder = new StringBuilder();
+
 		argumentBuilder.append("(");
 		for(int i = 0; i < function.getArgumentList().size(); i++) {
 			CQLFunctionArgument argument = function.getArgumentList().get(i);
-			
+
 			argumentBuilder.append(argument.getArgumentName() + " " + argument.getArgumentType() + ", ");
 		}
 		argumentBuilder.append(")");
-		
+
 		String definitionStatement = "define" + " \"" + function.getFunctionName() + argumentBuilder.toString()  + "\":";
-		String tempFunctionString =  "define" + " \"" + function.getFunctionName() + argumentBuilder.toString()  + "\":\n" + function.getFunctionLogic(); 
-		
+		String tempFunctionString =  "define" + " \"" + function.getFunctionName() + argumentBuilder.toString()  + "\":\n" + function.getFunctionLogic();
+
 		String functionLogic = "";
 		if(function.getFunctionLogic() != null && !function.getFunctionLogic().isEmpty()) {
 			String formattedFunction = CQLFormatter.format(tempFunctionString);
 			functionLogic = parseOutBody(formattedFunction, definitionStatement);
 		}
-		
+
 		return functionLogic;
 
-		
+
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveAndModifyParameters(java.lang
 	 * .String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter,
@@ -580,14 +621,7 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String xml, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable) {
-		
-		/*
-		 * if(MatContext.get().getMeasureLockService().checkForEditPermission())
-		 * { return null; }
-		 * 
-		 * MeasureXmlModel measureXMLModel =
-		 * getService().getMeasureXmlForMeasure( measureId);
-		 */
+
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
@@ -615,10 +649,10 @@ public class CQLServiceImpl implements CQLService {
 					}
 					isDuplicate = isDuplicateIdentifierName(currentObj.getParameterName(), xml);
 				}
-				
+
 				//validating parameter comment
 				isCommentInvalid = validtor.validateForCommentTextArea(toBeModifiedObj.getCommentString());
-				
+
 				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
@@ -626,33 +660,57 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				if (!isDuplicate) {
-
 					logger.debug(" CQLServiceImpl: saveAndModifyParameters Start :  ");
 
-					String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='"
-							+ toBeModifiedObj.getId() + "']";
 					try {
+						String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='"
+								+ toBeModifiedObj.getId() + "']";
 						Node nodeParameter = processor.findNode(processor.getOriginalDoc(),
 								XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
 
 						if (nodeParameter != null) {
 
-							if(isFormatable) {
-								currentObj.setParameterLogic(formatParameter(currentObj));
-							}
-							
+
 							String cqlString = createParametersXML(currentObj);
-							
 							processor.removeFromParent(nodeParameter);
 							processor.appendNode(cqlString, "parameter", XPATH_EXPRESSION_PARAMETERS);
 
-							// create the xml and parse for errors
 							String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
-							String cqlExpressionName = "parameter" + " \"" + currentObj.getParameterName() + "\"";
 							result.setXml(finalUpdatedXmlString);
-							cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
+							processor.setOriginalXml(finalUpdatedXmlString);
+
+							String cqlExpressionName = "parameter" + " \"" + currentObj.getParameterName() + "\"";
 							parseCQLExpressionForErrors(result, finalUpdatedXmlString, cqlExpressionName,
 									currentObj.getParameterLogic(), currentObj.getParameterName(), "Parameter");
+
+							// if the parameter has no errors, format it
+							if(result.getCqlErrors().isEmpty()) {
+								if(isFormatable) {
+									currentObj.setParameterLogic(formatParameter(currentObj));
+
+									XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='"
+											+ currentObj.getId() + "']";
+									nodeParameter = processor.findNode(processor.getOriginalDoc(),
+											XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
+
+									if(nodeParameter != null) {
+										NodeList parameterChildNodelist = nodeParameter.getChildNodes();
+
+										for(int i = 0 ; i < parameterChildNodelist.getLength(); i++) {
+											Node currentChildNode = parameterChildNodelist.item(i);
+
+											if(currentChildNode.getNodeName().equalsIgnoreCase("logic")) {
+												currentChildNode.setTextContent(currentObj.getParameterLogic());
+												break;
+											}
+										}
+									}
+
+									finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
+									result.setXml(finalUpdatedXmlString);
+								}
+							}
+
 							result.setCqlObject(null);
 							wrapper = modfiyCQLParameterList(toBeModifiedObj, currentObj, parameterList);
 							result.setSuccess(true);
@@ -694,35 +752,60 @@ public class CQLServiceImpl implements CQLService {
 
 				//validating parameter comment String
 				isCommentInvalid = validtor.validateForCommentTextArea(currentObj.getCommentString());
-				
+
 				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
 				}
-				
+
 				if (!isDuplicate) {
 					try {
-						
-						// format the parameter
-						if(isFormatable) {
-							currentObj.setParameterLogic(formatParameter(currentObj));
-						}
-						
 						String cqlString = createParametersXML(currentObj);
-						
+
 						Node nodeParameters = processor.findNode(processor.getOriginalDoc(),
 								XPATH_EXPRESSION_PARAMETERS);
 						if (nodeParameters != null) {
 							try {
 								processor.appendNode(cqlString, "parameter", XPATH_EXPRESSION_PARAMETERS);
 								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-								String finalUpdatedString = processor.transform(processor.getOriginalDoc());
-								String cqlExpressionName = "parameter" + " \"" + currentObj.getParameterName() + "\"";
 
+								String finalUpdatedString = processor.transform(processor.getOriginalDoc());
 								result.setXml(finalUpdatedString);
+								processor.setOriginalXml(finalUpdatedString);
+
+								String cqlExpressionName = "parameter" + " \"" + currentObj.getParameterName() + "\"";
 								parseCQLExpressionForErrors(result, finalUpdatedString, cqlExpressionName,
 										currentObj.getParameterLogic(), currentObj.getParameterName(), "Parameter");
+
+								// if the parameter has no errors, format it
+								if(result.getCqlErrors().isEmpty()) {
+									if(isFormatable) {
+										currentObj.setParameterLogic(formatParameter(currentObj));
+
+										String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='"
+												+ currentObj.getId() + "']";
+										Node nodeParameter = processor.findNode(processor.getOriginalDoc(),
+												XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
+
+										if(nodeParameter != null) {
+											NodeList parameterChildNodelist = nodeParameter.getChildNodes();
+
+											for(int i = 0 ; i < parameterChildNodelist.getLength(); i++) {
+												Node currentChildNode = parameterChildNodelist.item(i);
+
+												if(currentChildNode.getNodeName().equalsIgnoreCase("logic")) {
+													currentChildNode.setTextContent(currentObj.getParameterLogic());
+													break;
+												}
+											}
+										}
+
+										finalUpdatedString = processor.transform(processor.getOriginalDoc());
+										result.setXml(finalUpdatedString);
+									}
+								}
+
 								result.setCqlObject(null);
 								parameterList.add(currentObj);
 								wrapper.setCqlParameterList(parameterList);
@@ -755,50 +838,50 @@ public class CQLServiceImpl implements CQLService {
 
 		return result;
 	}
-	
+
 	/**
 	 * Builds a temporary parameter expressions string, formats the parameter, and returns the formatted logic
 	 * @param parameterExpressionString the
 	 * @return the formatted parameter logic
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private String formatParameter(CQLParameter parameter) throws IOException {
-		
+
 		// format the cql parameter
 		String tempParameterString = "parameter" + " \"" + parameter.getParameterName() + "\" " + parameter.getParameterLogic();
-		
+
 		String parameterLogic = "";
 		if(parameter.getParameterLogic() != null && !parameter.getParameterLogic().isEmpty()) {
 			String formattedParameter = CQLFormatter.format(tempParameterString);
 			parameterLogic = parseOutParameterBody(formattedParameter, parameter.getParameterName());
 		}
-		
 
-		return parameterLogic; 
+
+		return parameterLogic;
 	}
-	
+
 	/**
-	 * Parses the body from the parameter expression. Removes the parameter definition statement from the logic and formats nicely for ace editor. 
+	 * Parses the body from the parameter expression. Removes the parameter definition statement from the logic and formats nicely for ace editor.
 	 * @param cqlExpressionString the parameter expression string in the format of `parameter "ParamName" paramlogic`
 	 * @param parameterName the parameter name
 	 * @return the parameter body
 	 */
 	private String parseOutParameterBody(String cqlExpressionString, String parameterName) {
-		
+
 		String parameterDefinitionStatement = "parameter \"" + parameterName + "\"";
-		
+
 		// remove the parameter definition statement
 		String expressionBodyString = cqlExpressionString.replace(parameterDefinitionStatement, "");
 		expressionBodyString = expressionBodyString.trim();
-		
+
 		return expressionBodyString;
-		
+
 	}
-	
+
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveAndModifyDefinitions(java.lang
 	 * .String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition,
@@ -815,7 +898,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModelValidator validator = new CQLModelValidator();
 		boolean isDuplicate = false;
 		boolean isCommentInvalid = false;
-		
+
 		String XPATH_EXPRESSION_DEFINTIONS = "//cqlLookUp/definitions";
 		if (xml != null && !xml.isEmpty()) {
 
@@ -825,7 +908,7 @@ public class CQLServiceImpl implements CQLService {
 				if (toBeModifiedObj.isSupplDataElement()) {
 					return null;
 				}
-				
+
 				currentObj.setId(toBeModifiedObj.getId());
 				// if the modified Name and current Name are not same
 				if (!toBeModifiedObj.getDefinitionName().equalsIgnoreCase(currentObj.getDefinitionName())) {
@@ -841,13 +924,13 @@ public class CQLServiceImpl implements CQLService {
 
 				//validate definition comment string
 				isCommentInvalid = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
-				
+
 				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
 					return result;
 				}
-				
+
 				if (!isDuplicate) {
 
 					logger.debug(" CQLServiceImpl: saveAndModifyDefinitions Start :  ");
@@ -877,23 +960,19 @@ public class CQLServiceImpl implements CQLService {
 									currentObj.setContext(oldContextValue);
 								}
 
-							}			
-							
-							
-							// format the definition
-							if(isFormatable) {
-								currentObj.setDefinitionLogic(formatDefinition(currentObj));
 							}
-							
-							String cqlString = createDefinitionsXML(currentObj);
-							
+
 							// append the definition node and parse for errors
+							String cqlString = createDefinitionsXML(currentObj);
 							processor.removeFromParent(nodeDefinition);
 							processor.appendNode(cqlString, "definition", XPATH_EXPRESSION_DEFINTIONS);
 							updateRiskAdjustmentVariables(processor, toBeModifiedObj, currentObj);
-							String cqlExpressionName = "define" + " \"" + currentObj.getDefinitionName() + "\"";
+
 							String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
 							result.setXml(finalUpdatedXmlString);
+							processor.setOriginalXml(finalUpdatedXmlString);
+
+							String cqlExpressionName = "define" + " \"" + currentObj.getDefinitionName() + "\"";
 							parseCQLExpressionForErrors(result, finalUpdatedXmlString, cqlExpressionName,
 									currentObj.getDefinitionLogic(), currentObj.getDefinitionName(), "Definition");
 
@@ -902,8 +981,32 @@ public class CQLServiceImpl implements CQLService {
 								if(obj != null){
 									currentObj.setReturnType(obj.getReturnType());
 								}
-								
+
+								// format the definition
+								if(isFormatable) {
+									currentObj.setDefinitionLogic(formatDefinition(currentObj));
+
+									XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "//cqlLookUp//definition[@id='"
+											+ currentObj.getId() + "']";
+									nodeDefinition = processor.findNode(processor.getOriginalDoc(),
+											XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
+
+									if(nodeDefinition != null) {
+										NodeList definitionChildNodes = nodeDefinition.getChildNodes();
+										for(int i = 0; i < definitionChildNodes.getLength(); i++) {
+											Node currentChildNode = definitionChildNodes.item(i);
+											if(currentChildNode.getNodeName().equals("logic")) {
+												currentChildNode.setTextContent(currentObj.getDefinitionLogic());
+												break;
+											}
+										}
+									}
+
+									finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
+									result.setXml(finalUpdatedXmlString);
+								}
 							}
+							
 							result.setCqlObject(null);
 							wrapper = modfiyCQLDefinitionList(toBeModifiedObj, currentObj, definitionList);
 
@@ -932,8 +1035,6 @@ public class CQLServiceImpl implements CQLService {
 				currentObj.setId(UUID.randomUUID().toString());
 				String cqlExpressionName = "define" + " \"" + currentObj.getDefinitionName() + "\"";
 
-				parseCQLExpressionForErrors(result, xml, cqlExpressionName, currentObj.getDefinitionLogic(),
-						currentObj.getDefinitionName(), "Definition");
 				isDuplicate = validator.validateForSpecialChar(currentObj.getDefinitionName());
 				if (isDuplicate) {
 					result.setSuccess(false);
@@ -942,10 +1043,10 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				isDuplicate = isDuplicateIdentifierName(currentObj.getDefinitionName(), xml);
-				
-				//validating definition Comment 
+
+				//validating definition Comment
 				isCommentInvalid = validator.validateForCommentTextArea(currentObj.getCommentString());
-				
+
 				if (isCommentInvalid) {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
@@ -956,29 +1057,52 @@ public class CQLServiceImpl implements CQLService {
 						Node nodeDefinitions = processor.findNode(processor.getOriginalDoc(),
 								XPATH_EXPRESSION_DEFINTIONS);
 						if (nodeDefinitions != null) {
-							
-							if(isFormatable) {
-								currentObj.setDefinitionLogic(formatDefinition(currentObj));
-							}
-							
+
 							String cqlString = createDefinitionsXML(currentObj);
-							
+
 							try {
 								processor.appendNode(cqlString, "definition", XPATH_EXPRESSION_DEFINTIONS);
-								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));			
-								
-								String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
-								cqlExpressionName = "define" + " \"" + currentObj.getDefinitionName() + "\"";
+								processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 
+								String finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
 								result.setXml(finalUpdatedXmlString);
+								processor.setOriginalXml(finalUpdatedXmlString);
+
+								cqlExpressionName = "define" + " \"" + currentObj.getDefinitionName() + "\"";
 								parseCQLExpressionForErrors(result, finalUpdatedXmlString, cqlExpressionName,
 										currentObj.getDefinitionLogic(), currentObj.getDefinitionName(), "Definition");
+
 								if(result.getCqlErrors().isEmpty()) {
 									CQLExpressionObject obj = findExpressionObject(currentObj.getDefinitionName(), result.getCqlObject().getCqlDefinitionObjectList());
 									if(obj != null){
 										currentObj.setReturnType(obj.getReturnType());
 									}
+
+									// format the definition
+									if(isFormatable) {
+										currentObj.setDefinitionLogic(formatDefinition(currentObj));
+
+										String XPATH_EXPRESSION_CQLLOOKUP_DEFINITION = "//cqlLookUp//definition[@id='"
+												+ currentObj.getId() + "']";
+										Node nodeDefinition = processor.findNode(processor.getOriginalDoc(),
+												XPATH_EXPRESSION_CQLLOOKUP_DEFINITION);
+
+										if(nodeDefinition != null) {
+											NodeList definitionChildNodes = nodeDefinition.getChildNodes();
+											for(int i = 0; i < definitionChildNodes.getLength(); i++) {
+												Node currentChildNode = definitionChildNodes.item(i);
+												if(currentChildNode.getNodeName().equals("logic")) {
+													currentChildNode.setTextContent(currentObj.getDefinitionLogic());
+													break;
+												}
+											}
+										}
+
+										finalUpdatedXmlString = processor.transform(processor.getOriginalDoc());
+										result.setXml(finalUpdatedXmlString);
+									}
 								}
+
 								result.setCqlObject(null);
 								result.setSuccess(true);
 								result.setDefinition(currentObj);
@@ -1016,7 +1140,7 @@ public class CQLServiceImpl implements CQLService {
 
 		return result;
 	}
-	
+
 	/**
 	 * Creates a temporary string for the definition, formats it, and returns the formatted definition logic.
 	 * @param definition the definition to format
@@ -1024,59 +1148,63 @@ public class CQLServiceImpl implements CQLService {
 	 * @throws IOException
 	 */
 	private String formatDefinition(CQLDefinition definition) throws IOException {
+
+		String definitionStatement = "define" + " \"" + definition.getDefinitionName() + "\":";
+		String tempDefinitionString = definitionStatement + "\n\t" + definition.getDefinitionLogic();
 		
-		String definitionStatement = "define" + " \"" + definition.getDefinitionName() + "\":"; 
-		String tempDefinitionString = definitionStatement + definition.getDefinitionLogic(); 
-		 
+		System.out.println(tempDefinitionString);
+
 		String definitionLogic = "";
 		if(definition.getDefinitionLogic() != null && !definition.getDefinitionLogic().isEmpty()) {
 			String formattedDefinition = CQLFormatter.format(tempDefinitionString);
 			definitionLogic = parseOutBody(formattedDefinition, definitionStatement);
 		}
 
-		
-		return definitionLogic; 
+
+		return definitionLogic;
 	}
-		
+
 	/**
-	 * Parses the body from the cql definition or function. Remove the define statement for the expression and formats it nicely for ace editor by 
-	 * removing the first tab on each line. 
+	 * Parses the body from the cql definition or function. Remove the define statement for the expression and formats it nicely for ace editor by
+	 * removing the first tab on each line.
 	 * @param cqlExpressionString the cql expression string
-	 * @param expressionDefinitionString the definition string in the format of define "ExpressionName": logic or 
+	 * @param expressionDefinitionString the definition string in the format of define "ExpressionName": logic or
 	 * define function "FunctionName"(arg1 Boolean, arg2 Boolean...): logic
 	 * @return the body of the cql expression
 	 */
 	private String parseOutBody(String cqlExpressionString, String expressionDefinitionString) {
-		
+
 		// remove the definition statement from the expressions string to make the epxerssion body and then trim whitespace
 		String expressionBodyString = cqlExpressionString.replace(expressionDefinitionString, "").trim();
-		
-		
-		Scanner scanner = new Scanner(expressionBodyString); 
-		StringBuilder builder = new StringBuilder(); 
-		
+
+
+		Scanner scanner = new Scanner(expressionBodyString);
+		StringBuilder builder = new StringBuilder();
+
 		// go through and rebuild the the format
-		// this will remove the first tab in a line so 
-		// it properly displays in the ace editor. 
-		// without doing this, the the ace editor display 
+		// this will remove the first tab in a line so
+		// it properly displays in the ace editor.
+		// without doing this, the the ace editor display
 		// would be indented one too many
 		while(scanner.hasNextLine()) {
-			String line = scanner.nextLine(); 
-			
+			String line = scanner.nextLine();
+
 			if(!line.isEmpty() && line.charAt(0) == '\t') {
 				line = line.replaceFirst("\t", "");
 			}
-			
+
 			builder.append(line + "\n");
 		}
 		
+		System.out.println(builder.toString());
+
 		scanner.close();
-		return builder.toString(); 		
+		return builder.toString();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveAndModifyIncludeLibray(java.
 	 * lang.String, mat.model.cql.CQLIncludeLibrary,
@@ -1268,7 +1396,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#deleteDefinition(java.lang.String,
 	 * mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
@@ -1281,13 +1409,13 @@ public class CQLServiceImpl implements CQLService {
 
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		
+
 		if(toBeDeletedObj.isSupplDataElement()){
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
-		
+
 		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
 		if (artifactsResult.getCqlErrors().isEmpty()
 				&& artifactsResult.getUsedCQLDefinitions().contains(toBeDeletedObj.getDefinitionName())) {
@@ -1386,7 +1514,7 @@ public class CQLServiceImpl implements CQLService {
                 CQLCode cqlCode = new CQLCode();
                 cqlCode.setCodeName(cqlCodeName);
                 cqlCode.setCodeOID(cqlOID);
-                
+
     			Node parentNode = codeNode.getParentNode();
                 parentNode.removeChild(codeNode);
                 result.setSuccess(true);
@@ -1409,7 +1537,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#deleteFunctions(java.lang.String,
 	 * mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
@@ -1423,7 +1551,7 @@ public class CQLServiceImpl implements CQLService {
 
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		
+
 
 		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
 		if (artifactsResult.getCqlErrors().isEmpty()
@@ -1431,16 +1559,16 @@ public class CQLServiceImpl implements CQLService {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 		} else {
-		
+
 			XmlProcessor processor = new XmlProcessor(xml);
-	
+
 			if (xml != null && !xml.isEmpty()) {
 				String XPATH_EXPRESSION_CQLLOOKUP_FUNCTION = "//cqlLookUp//function[@id='" + toBeDeletedObj.getId() + "']";
 				try {
 					Node functionNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_FUNCTION);
-	
+
 					if (functionNode != null) {
-	
+
 						// remove from xml
 						functionNode.getParentNode().removeChild(functionNode);
 						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
@@ -1449,19 +1577,19 @@ public class CQLServiceImpl implements CQLService {
 						 * xmlModel.setXml(processor.getOriginalXml());
 						 * getService().saveMeasureXml(xmlModel);
 						 */
-	
+
 						// remove from function list
 						functionsList.remove(toBeDeletedObj);
 						wrapper.setCqlFunctionsList(functionsList);
 						result.setSuccess(true);
 						result.setFunction(toBeDeletedObj);
 					}
-	
+
 					else {
 						result.setSuccess(false);
 						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 					}
-	
+
 				} catch (XPathExpressionException e) {
 					result.setSuccess(false);
 					e.printStackTrace();
@@ -1477,7 +1605,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#deleteParameter(java.lang.String,
 	 * mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
@@ -1492,14 +1620,14 @@ public class CQLServiceImpl implements CQLService {
 		// getService().getMeasureXmlForMeasure(measureId);
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
-		
+
 		if(toBeDeletedObj.isReadOnly()){
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
-		
-		
+
+
 		GetUsedCQLArtifactsResult artifactsResult = getUsedCQlArtifacts(xml);
 		if (artifactsResult.getCqlErrors().isEmpty()
 				&& artifactsResult.getUsedCQLParameters().contains(toBeDeletedObj.getParameterName())) {
@@ -1507,16 +1635,16 @@ public class CQLServiceImpl implements CQLService {
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 		} else {
 			XmlProcessor processor = new XmlProcessor(xml);
-	
+
 			if (xml != null) {
 				String XPATH_EXPRESSION_CQLLOOKUP_PARAMETER = "//cqlLookUp//parameter[@id='" + toBeDeletedObj.getId()
 						+ "']";
 				try {
 					Node parameterNode = processor.findNode(processor.getOriginalDoc(),
 							XPATH_EXPRESSION_CQLLOOKUP_PARAMETER);
-	
+
 					if (parameterNode != null) {
-	
+
 						// remove from xml
 						parameterNode.getParentNode().removeChild(parameterNode);
 						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
@@ -1525,24 +1653,24 @@ public class CQLServiceImpl implements CQLService {
 						 * xmlModel.setXml(processor.getOriginalXml());
 						 * getService().saveMeasureXml(xmlModel);
 						 */
-	
+
 						// remove from parameter list
 						parameterList.remove(toBeDeletedObj);
 						wrapper.setCqlParameterList(parameterList);
 						result.setSuccess(true);
 						result.setParameter(toBeDeletedObj);
 					}
-	
+
 					else {
 						result.setSuccess(false);
 						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 					}
-	
+
 				} catch (XPathExpressionException e) {
 					result.setSuccess(false);
 					e.printStackTrace();
 				}
-	
+
 			}
 		}
 		if (result.isSuccess() && (wrapper.getCqlParameterList().size() > 0)) {
@@ -1610,7 +1738,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getCQLData(java.lang.String)
 	 */
 	@Override
@@ -1630,42 +1758,35 @@ public class CQLServiceImpl implements CQLService {
 			boolean isValid = CQLUtil.isValidDataTypeUsed(parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(),
 					parsedCQL.getUsedCQLArtifacts().getCodeDataTypeMap());
 			parsedCQL.setDatatypeUsedCorrectly(isValid);
-			
+
 		}
 
 		parsedCQL.setCqlModel(cqlModel);
 
 		return parsedCQL;
 	}
-	
+
 	@Override
 	public SaveUpdateCQLResult getCQLLibraryData(String xmlString) {
-				
+
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
-		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>(); 
+		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
 		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
-	
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult(); 
+
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
-		Map<String, String> libraryMap = new HashMap<>(); 
-		
+		Map<String, String> libraryMap = new HashMap<>();
+
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
-		try {
-			if(parentCQLString != null && !parentCQLString.isEmpty()) {
-				parentCQLString = CQLFormatter.format(parentCQLString);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		libraryMap.put(cqlModel.getName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
 			CQLModel includedCQLModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
 			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
-			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();			
+			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();
 			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
 		}
 
@@ -1674,14 +1795,14 @@ public class CQLServiceImpl implements CQLService {
 		cqlToELM.doTranslation(true);
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		cqlTranslatorExceptions.addAll(cqlToELM.getErrors());
-		
+
 		List<String> exprList = getExpressionListFromCqlModel(cqlModel);
-		
+
 		// do the filtering
 		if(exprList != null){
 			CQLUtil.filterCQLArtifacts(cqlModel, result, cqlToELM, exprList);
 		}
-		
+
 		// add in the errors, if any
 		for (CqlTranslatorException cte : cqlTranslatorExceptions) {
 			CQLErrors cqlErrors = new CQLErrors();
@@ -1697,15 +1818,27 @@ public class CQLServiceImpl implements CQLService {
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
 		}
-		
+
 		setUsedValuesets(result, cqlModel);
 		setUsedCodes(result, cqlModel);
 		boolean isValid = CQLUtil.isValidDataTypeUsed(result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
 				result.getUsedCQLArtifacts().getCodeDataTypeMap());
 		result.setDatatypeUsedCorrectly(isValid);
+
+		if(errors.isEmpty()) {
+			try {
+				result.setCqlString(CQLFormatter.format(parentCQLString));
+			} catch (IOException e) {
+				result.setCqlString(parentCQLString);
+			}
+		}
+
+		else {
+			result.setCqlString(parentCQLString);
+		}
 		result.setCqlString(parentCQLString);
 		result.setCqlErrors(errors);
-		
+
 		return result;
 	}
 
@@ -1722,7 +1855,7 @@ public class CQLServiceImpl implements CQLService {
 				if (obj != null) {
 					//definition.setReturnType(obj.getReturnType());
 					result.getUsedCQLArtifacts().getExpressionReturnTypeMap().put(obj.getName(), obj.getReturnType());
-				} 
+				}
 
 			}
 
@@ -1781,7 +1914,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Gets the CQL definitions from measure xml.
-	 * 
+	 *
 	 * @param measureId
 	 *            the measure id
 	 * @return the CQL definitions from measure xml
@@ -1801,7 +1934,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Convert xmlto cql definition model.
-	 * 
+	 *
 	 * @param xmlModel
 	 *            the xml model
 	 * @return the CQL definitions wrapper
@@ -1846,7 +1979,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Creates the Parameters xml.
-	 * 
+	 *
 	 * @param parameter
 	 *            the CQLParameter
 	 * @return the string
@@ -1890,7 +2023,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Creates the Function xml.
-	 * 
+	 *
 	 * @param function
 	 *            the CQLFunctions
 	 * @return the string
@@ -1933,7 +2066,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Creates the definitions xml.
-	 * 
+	 *
 	 * @param definition
 	 *            the definition
 	 * @return the string
@@ -1976,7 +2109,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#getCQLFileData(java.lang.String)
 	 */
@@ -1994,10 +2127,10 @@ public class CQLServiceImpl implements CQLService {
 		result.setCqlString(cqlString);
 		return result;
 	}
-	
+
 	/**
 	 * Gets the cql string.
-	 * 
+	 *
 	 * @param cqlModel
 	 *            - CQLModel
 	 * @return the cql string
@@ -2015,7 +2148,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	/*
 	 * private boolean checkForCQLKeywords(String name) {
-	 * 
+	 *
 	 * XmlProcessor cqlXMLProcessor = CQLTemplateXML
 	 * .getCQLTemplateXmlProcessor(); String XPATH_CQL_KEYWORDS =
 	 * "/cqlTemplate/keywords/keyword[translate(text(),'abcdefghijklmnopqrstuvwxyz',"
@@ -2028,7 +2161,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getCQLKeyWords()
 	 */
 	@Override
@@ -2085,7 +2218,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Checks if is duplicate identifier name.
-	 * 
+	 *
 	 * @param identifierName
 	 *            the identifier name
 	 * @param id
@@ -2166,13 +2299,13 @@ public class CQLServiceImpl implements CQLService {
 	/*
 	 * private SaveUpdateCQLResult checkIfKeywordForFuncArguments(
 	 * SaveUpdateCQLResult result, CQLFunctions currentObj) {
-	 * 
+	 *
 	 * List<CQLFunctionArgument> argList = currentObj.getArgumentList(); for
 	 * (int i = 0; i < argList.size(); i++) { if
 	 * (checkForCQLKeywords(argList.get(i).getArgumentName())) {
 	 * argList.get(i).setValid(true); result.setSuccess(true); } else {
 	 * argList.get(i).setValid(false); } }
-	 * 
+	 *
 	 * if (argList.size() > 0) { currentObj.setArgumentList(argList); } else {
 	 * currentObj.setArgumentList(new ArrayList<CQLFunctionArgument>()); }
 	 * result.setFunction(currentObj); return result; }
@@ -2180,7 +2313,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Modfiy cql Parameter List list.
-	 * 
+	 *
 	 * @param toBeModifiedObj
 	 *            the to be modified obj
 	 * @param currentObj
@@ -2209,7 +2342,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Modfiy cql Function List list.
-	 * 
+	 *
 	 * @param toBeModifiedObj
 	 *            the to be modified obj
 	 * @param currentObj
@@ -2238,7 +2371,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Modfiy cql definition list.
-	 * 
+	 *
 	 * @param toBeModifiedObj
 	 *            the to be modified obj
 	 * @param currentObj
@@ -2267,7 +2400,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Sort definitions list.
-	 * 
+	 *
 	 * @param defineList
 	 *            the define list
 	 * @return the list
@@ -2286,7 +2419,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Sort parameters list.
-	 * 
+	 *
 	 * @param paramList
 	 *            the param list
 	 * @return the list
@@ -2305,7 +2438,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Sort Functions list.
-	 * 
+	 *
 	 * @param funcList
 	 *            the Function list
 	 * @return the list
@@ -2343,7 +2476,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getJSONObjectFromXML()
 	 */
 	@Override
@@ -2400,7 +2533,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Gets the service.
-	 * 
+	 *
 	 * @return the service
 	 */
 	private MeasurePackageService getService() {
@@ -2409,7 +2542,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getSupplementalDefinitions()
 	 */
 	@Override
@@ -2421,7 +2554,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getDefaultCodeSystems()
 	 */
 	@Override
@@ -2436,31 +2569,35 @@ public class CQLServiceImpl implements CQLService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName).toString();
-		
+
 		cqlModel.setLines(countLines(cqlFileString));
-		
-		String wholeDef = ""; 
-		if(expressionType.equalsIgnoreCase("parameter")) {
-			 wholeDef = cqlExpressionName + " " + logic;
-		}
-		
-		else {
-			 wholeDef = cqlExpressionName + " :\n" + logic;
-		}
-		
-		System.out.println(wholeDef);
-		
+
+		String wholeDef = "";
+		int size = 0;
+		int startLine = 0;
 		int endLine = CQLUtilityClass.getSize();
-		int size = countLines(wholeDef);
-		int startLine = endLine - size + 1;
-		
+
+		if(expressionType.equalsIgnoreCase("parameter")) {
+			endLine = endLine + 1; // for parameters, the size is actually 1 more than reporetd.
+			wholeDef = cqlExpressionName + " " + logic;
+			size = countLines(wholeDef);
+			startLine = endLine - size;
+		}
+
+		else {
+			wholeDef = cqlExpressionName + " :\n" + logic;
+			size = countLines(wholeDef);
+			startLine = endLine - size + 1; // the start line is really 1 more than endLine - size because
+											// the definition logic starts on the next line.
+		}
+
 		result.setStartLine(startLine);
 		result.setEndLine(endLine);
 
 		List<String> expressionList = getExpressionListFromCqlModel(cqlModel);
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 		parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
-				
+
 		if(!parsedCQL.getCqlErrors().isEmpty()){
 			result.setValidCQLWhileSavingExpression(false);
 		}
@@ -2480,7 +2617,7 @@ public class CQLServiceImpl implements CQLService {
 		if (errors.isEmpty()) {
 			result.setCqlObject(parsedCQL.getCqlObject());
 			//setReturnTypes(result, cqlModel);
-			
+
 			boolean isValid = findValidDataTypeUsage(expressionName, expressionType, parsedCQL);
 			result.setDatatypeUsedCorrectly(isValid);
 			if (isValid) {
@@ -2491,7 +2628,7 @@ public class CQLServiceImpl implements CQLService {
 				parsedCQL.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
 			}
 		}
-		
+
 		result.setCqlModel(cqlModel);
 		result.setCqlErrors(errors);
 		result.setUsedCQLArtifacts(parsedCQL.getUsedCQLArtifacts());
@@ -2558,7 +2695,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getDefaultCodes()
 	 */
 	@Override
@@ -2568,7 +2705,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#getUsedCQlArtifacts(java.lang.
 	 * String)
 	 */
@@ -2600,7 +2737,7 @@ public class CQLServiceImpl implements CQLService {
 			cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
 			System.out.println("USED LIBRARY: " + cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries());
-			
+
 			setReturnTypes(cqlResult, cqlModel);
 
 		} else {
@@ -2622,30 +2759,30 @@ public class CQLServiceImpl implements CQLService {
 	 * private void findUsedValuesets(String cqlFileString, CQLModel cqlModel){
 	 * MATCQLParser matcqlParser = new MATCQLParser(); CQLFileObject
 	 * cqlFileObject = matcqlParser.parseCQL(cqlFileString);
-	 * 
+	 *
 	 * try { CQLArtifactHolder cqlArtifactHolder =
 	 * CQLUtil.getUsedCQLValuesets(cqlFileObject); List<String> usedValuesets =
 	 * new ArrayList<String>();
-	 * 
+	 *
 	 * usedValuesets.addAll(new
 	 * ArrayList<String>(cqlArtifactHolder.getCqlValuesetIdentifierSet()));
 	 * cqlModel.getValueSetList();
-	 * 
-	 * 
+	 *
+	 *
 	 * for(int i=0; i<cqlModel.getValueSetList().size(); i++){
 	 * CQLQualityDataSetDTO cqlDataset = cqlModel.getValueSetList().get(i);
-	 * 
+	 *
 	 * if(usedValuesets.contains(cqlDataset.getCodeListName())){
 	 * cqlDataset.setUsed(true); } }
-	 * 
-	 * 
+	 *
+	 *
 	 * } catch (XPathExpressionException e) { logger.info(
 	 * "Error while trying to find used value sets : "+e.getMessage()); } }
 	 */
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#parseCQLStringForError(java.lang.
 	 * String)
@@ -2783,7 +2920,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveUserDefinedQDStoMeasure(mat.
 	 * model.CQLValueSetTransferObject)
@@ -2950,7 +3087,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see mat.client.measure.service.CQLService#updateQDStoMeasure(mat.model.
 	 * CQLValueSetTransferObject)
 	 */
@@ -3320,7 +3457,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#getCQLValusets(java.lang.String)
 	 */
@@ -3438,7 +3575,7 @@ public class CQLServiceImpl implements CQLService {
 
 	/**
 	 * Delete CQL Association.
-	 * 
+	 *
 	 * @param currentObj
 	 *            the current obj
 	 * @param associatedWithId

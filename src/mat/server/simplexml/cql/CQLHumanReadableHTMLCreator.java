@@ -292,7 +292,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style", "list-style:none;padding-left: 10px;");
+		mainListElement.attr("style", "list-style:none;padding-left: 25px;");
 				
 		List<String> supplementalDefinitionList = getSupplementalDefinitions(simpleXMLProcessor);
 		
@@ -319,7 +319,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		mainListElement.attr("style", "list-style:none;padding-left: 10px;");
+		mainListElement.attr("style", "list-style:none;padding-left: 25px;");
 				
 		List<String> riskAdjDefinitionList = getRiskAdjustmentDefinitions(simpleXMLProcessor);
 		

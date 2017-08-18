@@ -612,7 +612,7 @@ public class ManageUsersPresenter implements MatPresenter {
 										
 										List<String> event = new ArrayList<String>();
 										String addInfo = null;
-										
+										String actMsg = "";
 										if(currentDetails.getKey()!=null){
 											if (detailDisplay.getAddInfoArea()
 													.getText().length() > 0) {
@@ -649,6 +649,7 @@ public class ManageUsersPresenter implements MatPresenter {
 													event.add("Security Role Changed");
 												}
 
+												
 												// maintaining logs for active and
 												// revoked activity
 												if (!(detailDisplay.getIsActive()
@@ -657,6 +658,7 @@ public class ManageUsersPresenter implements MatPresenter {
 													if (detailDisplay.getIsActive()
 															.getValue()) {
 														event.add("Activated");
+														actMsg = MatContext.get().getMessageDelegate().getTempEmailSentMessage();
 													} else {
 														event.add("Revoked");
 													}
@@ -675,7 +677,7 @@ public class ManageUsersPresenter implements MatPresenter {
 													MatContext
 															.get()
 															.getMessageDelegate()
-															.getUSER_SUCCESS_MESSAGE());
+															.getUSER_SUCCESS_MESSAGE() + actMsg);
 										} else {
 											onNewUserCreation(updatedDetails.getEmailAddress());
 										}

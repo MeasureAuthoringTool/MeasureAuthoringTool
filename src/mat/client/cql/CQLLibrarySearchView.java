@@ -261,19 +261,33 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				cellTablePanel.add(invisibleLabel);
 
 			} else {
+				Label header = new Label(getCQLlibraryListLabel());
+				header.getElement().setId("headerCQLLibrary_Label");
+				header.setStyleName("recentSearchHeader");
+				header.getElement().setAttribute("tabIndex", "0");
+				header.getElement().setAttribute("aria-describedby", "CQLLibrarySearchSummary");
 				table = addColumnToTable();
 				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibrarySearchSummary",
 						"In the following CQL Library Cell table, CQL Library Name is given in first column,"
 								+ " Version in second column, Create Version or Draft in third column,"
 								+ "History in fourth column, Share in fifth column");
 				table.getElement().setAttribute("id", "CQLLibrarySearchCellTable");
-				table.getElement().setAttribute("aria-describedby", "CQLLibrarySearchSummary");
+				//table.getElement().setAttribute("aria-describedby", "CQLLibrarySearchSummary");
 				table.setColumnWidth(0, 50.0, Unit.PCT);
 				table.setColumnWidth(1, 15.0, Unit.PCT);
 				table.setColumnWidth(2, 15.0, Unit.PCT);
 				table.setColumnWidth(3, 5.0, Unit.PCT);
 				table.setColumnWidth(4, 5.0, Unit.PCT);
-			
+				MatSimplePager topSPager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,
+						"cqlLibTopSpager");
+				topSPager.setPageStart(0);
+				topSPager.setDisplay(table);
+				topSPager.setPageSize(PAGE_SIZE);
+				
+				cellTablePanel.add(header);
+				cellTablePanel.add(new SpacerWidget());
+				cellTablePanel.add(topSPager);
+				cellTablePanel.add(new SpacerWidget());
 				cellTablePanel.add(invisibleLabel);
 			}
 
@@ -301,7 +315,8 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private CellTable<CQLLibraryDataSetObject> addColumnToAdminTable() {
 		Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
 		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
-		cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
+		//cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
+		cqlLibrarySearchHeader.setStyleName("invisible");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
@@ -420,13 +435,14 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * @return the cell table
 	 */
 	private CellTable<CQLLibraryDataSetObject> addColumnToTable() {
-		Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
+	/*	Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
 		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
 		cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(cqlLibrarySearchHeader.getElement());
+		caption.appendChild(cqlLibrarySearchHeader.getElement());*/
+		
 		selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
 		table.setSelectionModel(selectionModel);
 

@@ -2798,20 +2798,32 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the successful saved cql definition.
+	 * @param name TODO
 	 *
 	 * @return the successful saved cql definition
 	 */
-	public String getSUCCESSFUL_SAVED_CQL_DEFINITION() {
-		return SUCCESSFUL_SAVED_CQL_DEFINITION;
+	public String getSUCCESSFUL_SAVED_CQL_DEFINITION(String name) {
+		
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		return "Definition " + name + " successfully saved.";
+		//return SUCCESSFUL_SAVED_CQL_DEFINITION;
 	}
 	
 	/**
 	 * Gets the successful saved cql parameter.
+	 * @param name TODO
 	 *
 	 * @return the successful saved cql parameter
 	 */
-	public String getSUCCESSFUL_SAVED_CQL_PARAMETER() {
-		return SUCCESSFUL_SAVED_CQL_PARAMETER;
+	public String getSUCCESSFUL_SAVED_CQL_PARAMETER(String name) {
+		
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		return "Parameter " + name + " successfully saved.";
+		//return SUCCESSFUL_SAVED_CQL_PARAMETER;
 	}
 	
 	/**
@@ -2861,11 +2873,18 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the successful saved cql functions.
+	 * @param name TODO
 	 *
 	 * @return the successful saved cql functions
 	 */
-	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS() {
-		return SUCCESSFUL_SAVED_CQL_FUNCTIONS;
+	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS(String name) {
+		
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Function " + name + " successfully saved.";
+		//return SUCCESSFUL_SAVED_CQL_FUNCTIONS;
 	}
 	
 	/**

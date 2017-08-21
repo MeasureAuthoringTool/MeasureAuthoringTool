@@ -2855,20 +2855,30 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess definition modify.
+	 * @param name TODO
 	 *
 	 * @return the sucess definition modify
 	 */
-	public String getSUCESS_DEFINITION_MODIFY() {
-		return SUCESS_DEFINITION_MODIFY;
+	public String getSUCESS_DEFINITION_MODIFY(String name) {
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Definition " +name+" successfully saved.";
 	}
 	
 	/**
 	 * Gets the sucess parameter modify.
+	 * @param name TODO
 	 *
 	 * @return the sucess parameter modify
 	 */
-	public String getSUCESS_PARAMETER_MODIFY() {
-		return SUCESS_PARAMETER_MODIFY;
+	public String getSUCESS_PARAMETER_MODIFY(String name) {
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Parameter " +name+" successfully saved.";
 	}
 	
 	/**
@@ -2898,11 +2908,16 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess function modify.
+	 * @param name TODO
 	 *
 	 * @return the sucess function modify
 	 */
-	public String getSUCESS_FUNCTION_MODIFY() {
-		return SUCESS_FUNCTION_MODIFY;
+	public String getSUCESS_FUNCTION_MODIFY(String name) {
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Function " +name+" successfully saved.";
 	}
 	
 	/**
@@ -2961,29 +2976,44 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess definition modify with errors.
+	 * @param name TODO
 	 *
 	 * @return the sucess definition modify with errors
 	 */
-	public String getSUCESS_DEFINITION_MODIFY_WITH_ERRORS() {
-		return SUCESS_DEFINITION_MODIFY_WITH_ERRORS;
+	public String getSUCESS_DEFINITION_MODIFY_WITH_ERRORS(String name) {
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Definition " +name+" successfully saved with errors.";
 	}
 
 	/**
 	 * Gets the sucess parameter modify with errors.
+	 * @param name TODO
 	 *
 	 * @return the sucess parameter modify with errors
 	 */
-	public String getSUCESS_PARAMETER_MODIFY_WITH_ERRORS() {
-		return SUCESS_PARAMETER_MODIFY_WITH_ERRORS;
+	public String getSUCESS_PARAMETER_MODIFY_WITH_ERRORS(String name) {
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Parameter " +name+" successfully saved with errors.";
 	}
 
 	/**
 	 * Gets the sucess function modify with errors.
+	 * @param name TODO
 	 *
 	 * @return the sucess function modify with errors
 	 */
-	public String getSUCESS_FUNCTION_MODIFY_WITH_ERRORS() {
-		return SUCESS_FUNCTION_MODIFY_WITH_ERRORS;
+	public String getSUCESS_FUNCTION_MODIFY_WITH_ERRORS(String name) {
+		if(name.length()>60){
+			name = name.substring(0, 59);
+		}
+		
+		return "Function " +name+" successfully saved with errors.";
 	}
 
 	/**

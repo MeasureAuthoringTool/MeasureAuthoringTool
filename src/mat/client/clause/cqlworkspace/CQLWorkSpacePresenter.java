@@ -2342,7 +2342,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
-														.getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
+														.getMessageDelegate().getSUCESS_FUNCTION_MODIFY_WITH_ERRORS(functionName.trim()));
 												searchDisplay.getCqlFunctionsView().getReturnTypeTextBox()
 												.setText("");
 												searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
@@ -2360,7 +2360,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												
 											}else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-														MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY());
+														MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_MODIFY(functionName.trim()));
 												if(result.isValidCQLWhileSavingExpression()){
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setText(result.getFunction().getReturnType());
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+ result.getFunction().getReturnType());
@@ -2510,14 +2510,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											//searchDisplay.getCQLParametersView().getParameterAceEditor().redisplay();
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
-														.getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
+														.getMessageDelegate().getSUCESS_PARAMETER_MODIFY_WITH_ERRORS(parameterName.trim()));
 
 											} else if (!result.isDatatypeUsedCorrectly()) {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWarningBadDataTypeCombination());
 											} else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-														MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY());
+														MatContext.get().getMessageDelegate().getSUCESS_PARAMETER_MODIFY(parameterName.trim()));
 											}
 											
 											
@@ -2649,7 +2649,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											
 											if (validateCQLArtifact(result, currentSection)) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get()
-														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
+														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY_WITH_ERRORS(definitionName.trim()));
 												searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
 												searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 											}  else if (!result.isDatatypeUsedCorrectly()) {
@@ -2665,7 +2665,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												
 											} else {
 												searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get()
-														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY());
+														.getMessageDelegate().getSUCESS_DEFINITION_MODIFY(definitionName.trim()));
 												if(result.isValidCQLWhileSavingExpression()){
 													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
 													searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+ result.getDefinition().getReturnType());

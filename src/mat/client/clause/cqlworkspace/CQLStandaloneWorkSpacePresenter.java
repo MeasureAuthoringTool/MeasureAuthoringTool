@@ -2336,7 +2336,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 													.clearAlert();
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
-															.getSUCESS_FUNCTION_MODIFY_WITH_ERRORS());
+															.getSUCESS_FUNCTION_MODIFY_WITH_ERRORS(functionName.trim()));
 											searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
 											searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 
@@ -2358,7 +2358,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 													.clearAlert();
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
-															.getSUCESS_FUNCTION_MODIFY());
+															.getSUCESS_FUNCTION_MODIFY(functionName.trim()));
 											if(result.isValidCQLWhileSavingExpression()){
 												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getFunction().getReturnType());
 												searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is " + result.getFunction().getReturnType());
@@ -2511,7 +2511,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										if (validateCQLArtifact(result, currentSection)) {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
-															.getSUCESS_PARAMETER_MODIFY_WITH_ERRORS());
+															.getSUCESS_PARAMETER_MODIFY_WITH_ERRORS(parameterName.trim()));
 
 										} else if (!result.isDatatypeUsedCorrectly()) {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
@@ -2522,7 +2522,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										} else {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
-															.getSUCESS_PARAMETER_MODIFY());
+															.getSUCESS_PARAMETER_MODIFY(parameterName.trim()));
 										}
 
 										
@@ -2665,7 +2665,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										if (validateCQLArtifact(result, currentSection)) {
 											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
-															.getSUCESS_DEFINITION_MODIFY_WITH_ERRORS());
+															.getSUCESS_DEFINITION_MODIFY_WITH_ERRORS(definitionName.trim()));
 											searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
 											searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
 										} else if (!result.isDatatypeUsedCorrectly()) {
@@ -2685,7 +2685,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										} else {
 											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 													.createAlert(MatContext.get().getMessageDelegate()
-															.getSUCESS_DEFINITION_MODIFY());
+															.getSUCESS_DEFINITION_MODIFY(definitionName.trim()));
 											if(result.isValidCQLWhileSavingExpression()){
 												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getDefinition().getReturnType());
 												searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getDefinition().getReturnType());

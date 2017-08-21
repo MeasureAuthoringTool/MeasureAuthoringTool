@@ -64,6 +64,7 @@ public class EditConfirmationDialogBox {
 		panel.add(modalBody);
 		
 		panel.add(modalFooter);
+		panel.getElement().setAttribute("role", "dialog");
 		panel.getElement().focus();
 		panel.show();
 	}

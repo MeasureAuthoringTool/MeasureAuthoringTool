@@ -117,6 +117,14 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		void onShareClicked(CQLLibraryDataSetObject result);
 
 		/**
+		 * On edit clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
+		void onEditClicked(CQLLibraryDataSetObject result);
+		
+		/**
 		 * On history clicked.
 		 * 
 		 * @param result
@@ -517,6 +525,25 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		});
 		table.addColumn(historyColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
+		
+		//Edit
+		Column<CQLLibraryDataSetObject, SafeHtml> editColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
+				new ClickableSafeHtmlCell()) {
+
+			@Override
+			public SafeHtml getValue(CQLLibraryDataSetObject object) {
+				return getEditColumnToolTip(object);
+			}
+		};
+		editColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
+			@Override
+			public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
+				if (object.isEditable() && !object.isLocked()) {
+					observer.onEditClicked(object);
+				}
+			}
+		});
+		table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
 
 		// Share
 		Column<CQLLibraryDataSetObject, SafeHtml> shareColumn = new Column<CQLLibraryDataSetObject, SafeHtml>(
@@ -625,6 +652,39 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		return sb.toSafeHtml();
 	}
 
+	/**
+	 * Gets the edit column tool tip.
+	 *
+	 * @param object the object
+	 * @return the edit column tool tip
+	 */
+	private SafeHtml getEditColumnToolTip(CQLLibraryDataSetObject object){
+		SafeHtmlBuilder sb = new SafeHtmlBuilder();
+		String title;
+		String cssClass = "btn btn-link";
+		String iconCss;
+		if (object.isEditable()) {
+			if (object.isLocked()) {
+				String emailAddress = object.getLockedUserInfo().getEmailAddress();
+				title = "Library in use by " + emailAddress;
+				iconCss = "fa fa-lock fa-lg";
+			} else {
+				title = "Edit";
+				iconCss = "fa fa-pencil fa-lg";
+				
+			}
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+		} else {
+			title = "Read-Only";
+			iconCss = "fa fa-newspaper-o fa-lg";
+			sb.appendHtmlConstant("<button type=\"button\" title='"
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
+		}
+		
+		return sb.toSafeHtml();
+	}
+	
 	/**
 	 * Builds the cell table css style.
 	 */

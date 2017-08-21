@@ -49,6 +49,7 @@ import mat.client.MatPresenter;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
+import mat.client.event.CQLVersionEvent;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -726,7 +727,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	/** The is measure deleted. */
 	private boolean isMeasureDeleted = false;
-
+	
+	private boolean isMeasureVersioned = false;
+	
 	/** The is measure search filter visible. */
 	boolean isMeasureSearchFilterVisible = true;
 
@@ -763,6 +766,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	/** The measure del message. */
 	private String measureDelMessage;
+
+	/** The measure ver message. */
+	private String measureVerMessage;
 
 	/** The model. */
 	private TransferOwnerShipModel model = null;
@@ -860,6 +866,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					isMeasureDeleted = true;
 					measureDeletion = true;
+					isMeasureVersioned = false;
 					measureDelMessage = event.getMessage();
 					System.out.println("Event - is Deleted : " + isMeasureDeleted + measureDeletion);
 					System.out.println("Event - message : " + measureDelMessage);
@@ -868,6 +875,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					// deletion Failed.");
 					isMeasureDeleted = false;
 					measureDeletion = true;
+					isMeasureVersioned = false;
 					measureDelMessage = event.getMessage();
 					System.out.println("Event - is NOT Deleted : " + isMeasureDeleted + measureDeletion);
 					System.out.println("Event - message : " + measureDelMessage);
@@ -895,6 +903,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public void beforeClosingDisplay() {
 		isMeasureDeleted = false;
 		measureDeletion = false;
+		isMeasureVersioned = false;
 		isClone = false;
 		isLoading = false;
 		if(detailDisplay != null){
@@ -1714,9 +1723,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 										}
 									});
-							searchDisplay.getSuccessMeasureDeletion().clearAlert();
-							searchDisplay.getSuccessMeasureDeletion().createAlert(MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName));
+							isMeasureVersioned = true;
+							fireSuccessfullVersionEvent(isMeasureVersioned,measureName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName));
 						} else {
+							isMeasureVersioned = false;
+							fireSuccessfullVersionEvent(isMeasureVersioned,null,null);
 							if (result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
 								versionDisplay.getErrorMessageDisplay()
 										.createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
@@ -1726,6 +1737,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 				});
 	}
 
+	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){
+		CQLVersionEvent versionEvent = new CQLVersionEvent(isSuccess, name, message);
+		MatContext.get().getEventBus().fireEvent(versionEvent);
+	}
+	
 	/**
 	 * Search.
 	 * 
@@ -1834,6 +1850,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onCloneClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									isClone = true;
@@ -1851,6 +1868,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									// result.getLockedUserId(result.getLockedUserInfo()));
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									edit(result.getId());
@@ -1860,6 +1878,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onExportClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									export(result.getId(), result.getName());
@@ -1869,6 +1888,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onExportSelectedClicked(Result result, boolean isCBChecked) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
@@ -1880,6 +1900,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onExportSelectedClicked(CustomCheckBox checkBox) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
@@ -1902,6 +1923,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									historyDisplay.setReturnToLinkText("<< Return to Measure Library");
@@ -1912,6 +1934,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								public void onShareClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
+									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 									displayShare(result.getId(), result.getName());
@@ -1985,7 +2008,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 										}
 									}
 
-								} 
+								}  else {
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
+								}
+								if(isMeasureVersioned){
+									searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
+								}
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchText);
@@ -2670,9 +2699,33 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the version display
 	 */
 	private void versionDisplayHandlers(final VersionDisplay versionDisplay) {
+		
+		MatContext.get().getEventBus().addHandler(CQLVersionEvent.TYPE, new CQLVersionEvent.Handler() {
+
+			@Override
+			public void onVersioned(CQLVersionEvent event) {
+				displaySearch();
+				if (event.isVersioned()) {
+
+					measureDeletion = false;
+					isMeasureDeleted = false;
+					isMeasureVersioned = true;
+					measureVerMessage = event.getMessage();
+				} else {
+					
+					measureDeletion = false;
+					isMeasureDeleted = false;
+					isMeasureVersioned = false;
+					measureVerMessage = null;
+				}
+			}
+		});
+		
 		versionDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				isMeasureDeleted = false;
+				measureDeletion = false;
 				ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
 				versionDisplay.getErrorMessageDisplay().clearAlert();
 				if (((selectedMeasure != null) && (selectedMeasure.getId() != null))

@@ -35,6 +35,8 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
 	 * 
 	 * @author jnarang. */
 	public static interface Observer {
+
+		void onEditClicked(CQLLibraryDataSetObject object);
 		/** On export clicked.
 		 * @param result the result */
 	//	void onExportClicked(ManageMeasureSearchModel.Result result);
@@ -46,7 +48,7 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
 		//void onEditClicked(ManageMeasureSearchModel.Result result);
 	}
 	/** Cell Table Column Count. */
-	private static final int MAX_TABLE_COLUMN_SIZE = 2;
+	private static final int MAX_TABLE_COLUMN_SIZE = 3;
 	/** Cell Table Instance. */
 	private CellTable<CQLLibraryDataSetObject> cellTable = new CellTable<CQLLibraryDataSetObject>();
 	/** HandlerManager Instance. */
@@ -100,14 +102,55 @@ public class MostRecentCQLLibraryWidget extends Composite implements HasSelectio
 			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
 					"<span title='Version'>" + "Version" + "</span>"));
 			//Edit
-			
+			Column<CQLLibraryDataSetObject, SafeHtml> editColumn =
+					new Column<CQLLibraryDataSetObject, SafeHtml>(
+							new ClickableSafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLLibraryDataSetObject object) {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					String title;
+					String cssClass = "btn btn-link";
+					String iconCss;
+					if (object.isEditable()) {
+						if (object.isLocked()) {
+							String emailAddress = object.getLockedUserInfo().getEmailAddress();
+							title = "Library in use by " + emailAddress;
+							iconCss = "fa fa-lock fa-lg";
+						} else {
+							title = "Edit";
+							iconCss = "fa fa-pencil fa-lg";
+							
+						}
+						sb.appendHtmlConstant("<button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+					} else {
+						title = "Read-Only";
+						iconCss = "fa fa-newspaper-o fa-lg";
+						sb.appendHtmlConstant("<button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Read-Only</span></button>");
+					}
+					
+					return sb.toSafeHtml();
+				}
+			};
+			editColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
+				@Override
+				public void update(int index, CQLLibraryDataSetObject object, SafeHtml value) {
+					if (object.isEditable() && !object.isLocked()) {
+						observer.onEditClicked(object);
+					}
+				}
+			});
+			table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
 			
 			table.setColumnWidth(0, 50.0, Unit.PCT);
-			table.setColumnWidth(1, 50.0, Unit.PCT);
+			table.setColumnWidth(1, 25.0, Unit.PCT);
+			table.setColumnWidth(2, 25.0, Unit.PCT);
 			
 		}
 		return table;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler

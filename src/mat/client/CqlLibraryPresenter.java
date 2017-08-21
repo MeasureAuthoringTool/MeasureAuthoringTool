@@ -989,7 +989,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 							fireSuccessfullVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName));
 						} else {
 							isCqlLibraryVersioned = false;
-							fireSuccessfullVersionEvent(isCqlLibraryVersioned,null,null);
 							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
 								versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
 							}
@@ -1495,6 +1494,17 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveCQLLibraryResult result) {
 				cqlLibraryView.getMostRecentLibraryWidget().setResult(result);
+				cqlLibraryView.getMostRecentLibraryWidget().setObserver(new MostRecentCQLLibraryWidget.Observer() {
+					
+					@Override
+					public void onEditClicked(CQLLibraryDataSetObject object) {
+						cqlLibraryDeletion = false;
+						isCqlLibraryDeleted = false;
+						cqlLibraryView.getSuccessMessageAlert().clearAlert();
+						cqlLibraryView.getErrorMessageAlert().clearAlert();
+						displayEdit(object);
+					}
+				});
 				cqlLibraryView.buildMostRecentWidget();;
 			}
 		});

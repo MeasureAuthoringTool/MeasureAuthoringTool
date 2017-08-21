@@ -3348,6 +3348,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				MatContext.get().getLibraryLockService().checkForEditPermission());
 		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
+		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	

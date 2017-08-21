@@ -5354,6 +5354,7 @@ private void addCodeSearchPanelHandlers() {
 				MatContext.get().getLibraryLockService().checkForEditPermission());
 		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
+		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlIncludeLibraryView()
 				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 	}

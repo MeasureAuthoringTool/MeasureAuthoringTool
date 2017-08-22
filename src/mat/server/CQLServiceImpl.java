@@ -1,10 +1,13 @@
 package mat.server;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.URISyntaxException;
@@ -19,9 +22,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -2725,8 +2726,18 @@ public class CQLServiceImpl implements CQLService {
 			System.out.println("name:" + cqlFunction.getFunctionName());
 			exprList.add(cqlFunction.getFunctionName());
 		}
+		
+		
+		/*for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
+			System.out.println("name:" + cqlParameter.getParameterName());
+			exprList.add(cqlParameter.getParameterName());
+		}*/
 
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
+		
+		Map<String , List<CQLErrors>> expressionMapWithError = getCQLErrorsPerExpressions(cqlModel, cqlResult);
+		
+		cqlResult.getUsedCQLArtifacts().setCqlErrorsPerExpression(expressionMapWithError);
 
 		// if there are no errors in the cql file, get the used cql artifacts
 		if (cqlResult.getCqlErrors().isEmpty()) {
@@ -2747,40 +2758,7 @@ public class CQLServiceImpl implements CQLService {
 		return cqlResult.getUsedCQLArtifacts();
 	}
 
-	/**
-	 * Find used value-sets.
-	 *
-	 * @param cqlFileString
-	 *            the cql file string
-	 * @param cqlModel
-	 *            the cql model
-	 */
-	/*
-	 * private void findUsedValuesets(String cqlFileString, CQLModel cqlModel){
-	 * MATCQLParser matcqlParser = new MATCQLParser(); CQLFileObject
-	 * cqlFileObject = matcqlParser.parseCQL(cqlFileString);
-	 *
-	 * try { CQLArtifactHolder cqlArtifactHolder =
-	 * CQLUtil.getUsedCQLValuesets(cqlFileObject); List<String> usedValuesets =
-	 * new ArrayList<String>();
-	 *
-	 * usedValuesets.addAll(new
-	 * ArrayList<String>(cqlArtifactHolder.getCqlValuesetIdentifierSet()));
-	 * cqlModel.getValueSetList();
-	 *
-	 *
-	 * for(int i=0; i<cqlModel.getValueSetList().size(); i++){
-	 * CQLQualityDataSetDTO cqlDataset = cqlModel.getValueSetList().get(i);
-	 *
-	 * if(usedValuesets.contains(cqlDataset.getCodeListName())){
-	 * cqlDataset.setUsed(true); } }
-	 *
-	 *
-	 * } catch (XPathExpressionException e) { logger.info(
-	 * "Error while trying to find used value sets : "+e.getMessage()); } }
-	 */
-
-	/*
+		/*
 	 * (non-Javadoc)
 	 *
 	 * @see
@@ -3588,4 +3566,148 @@ public class CQLServiceImpl implements CQLService {
 		cqlLibraryAssociation.setAssociationId(associatedWithId);
 		cqlLibraryAssociationDAO.deleteAssociation(cqlLibraryAssociation);
 	}
+	
+	
+	/**
+	 * Find CQL Parsing Errors per CQL Expression.
+	 * 
+	 * @param cqlModel
+	 * @param parsedCQL
+	 * @return Map.
+	 */
+	private Map<String , List<CQLErrors>> getCQLErrorsPerExpressions(CQLModel cqlModel , SaveUpdateCQLResult parsedCQL ){
+		
+		Map<String , List<CQLErrors>> expressionMapWithError = new HashMap<String,List<CQLErrors>>();
+		List<CQLExpressionObject> cqlExpressionObjects = getCQLExpressionObjectListFormCQLModel(cqlModel);
+		 
+		for(CQLExpressionObject expressionObject : cqlExpressionObjects){
+			int fileStartLine = -1;
+			int fileEndLine = -1;
+			int size = 0;
+			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, expressionObject.getName()).toString();
+			
+			String wholeDef = ""; 
+			String expressionToFind = null;
+			
+			switch (expressionObject.getType()) {
+			case "Parameter":
+				expressionToFind = "parameter \"" + expressionObject.getName() + "\"";
+				fileStartLine = findStartLineForCQLExpressionInCQLFile(cqlFileString, expressionToFind);
+				wholeDef = expressionObject.getName() + " " + expressionObject.getLogic();
+				size = countLines(wholeDef);
+				fileEndLine = fileStartLine + size - 1;
+				break;
+			case "Definition":
+				expressionToFind = "define \"" + expressionObject.getName() + "\"";
+				wholeDef = expressionObject.getName() + " :\n" + expressionObject.getLogic();
+				fileStartLine = findStartLineForCQLExpressionInCQLFile(cqlFileString, expressionToFind);
+				size = countLines(wholeDef);
+				fileEndLine = fileStartLine + size - 1;
+				break;
+			case "Function":
+				expressionToFind = "define function \"" + expressionObject.getName() + "\"";
+				wholeDef = expressionObject.getName() + " :\n" + expressionObject.getLogic();
+				fileStartLine = findStartLineForCQLExpressionInCQLFile(cqlFileString, expressionToFind);
+				size = countLines(wholeDef);
+				fileEndLine = fileStartLine + size - 1;
+				break;
+
+			default:
+				break;
+			}
+			
+			
+			System.out.println("fileStartLine of expression ===== "+ fileStartLine);
+			System.out.println("fileEndLine of expression ===== "+ fileEndLine);
+		
+			List<CQLErrors> errors = new ArrayList<CQLErrors>();
+			for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
+				int errorStartLine = cqlError.getStartErrorInLine();
+				String errorMsg = (cqlError.getErrorMessage() == null) ? "" : cqlError.getErrorMessage();
+
+				if ((errorStartLine >= fileStartLine && errorStartLine <= fileEndLine)) {
+					cqlError.setStartErrorInLine(errorStartLine - fileStartLine - 1);
+					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - fileStartLine - 1);
+					cqlError.setErrorMessage(errorMsg);
+					if(cqlError.getStartErrorInLine() ==-1){
+						cqlError.setStartErrorInLine(0);
+					}
+					errors.add(cqlError);
+				}
+			}
+			expressionMapWithError.put(expressionObject.getName(), errors);
+			
+		}
+
+		return expressionMapWithError;
+		
+		
+	}
+
+	/**
+	 * This method finds the start line of each expression in CQL File.
+	 * @param fileStartLine
+	 * @param cqlFileString
+	 * @param expressionToFind
+	 * @return integer value.
+	 */
+	private int findStartLineForCQLExpressionInCQLFile( String cqlFileString,
+			String expressionToFind) {
+		int fileStartLine =-1;
+		try {
+			File cqlFile = File.createTempFile("temp", ".cql");
+			BufferedWriter  out = new BufferedWriter (new FileWriter(cqlFile));
+			out.write(cqlFileString);
+			out.close();
+			LineNumberReader rdr = new LineNumberReader(new FileReader(cqlFile));
+			String line = null;
+			System.out.println("Expression to Find :: " + expressionToFind);
+			while((line = rdr.readLine()) != null) {
+				if (line.indexOf(expressionToFind) >= 0) {
+		        	fileStartLine =rdr.getLineNumber();
+		        	break;
+		        }
+			}
+			rdr.close();
+		    cqlFile.deleteOnExit();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return fileStartLine;
+	}
+	
+	
+	/**
+	 * This method iterates through CQLModel object and generates CQLExpressionObject with type, Name and Logic.
+	 * @param cqlModel
+	 * @return List<CQLExpressionObject>.
+	 */
+	private List<CQLExpressionObject> getCQLExpressionObjectListFormCQLModel(CQLModel cqlModel) {
+		
+		
+
+		List<CQLExpressionObject> cqlExpressionObjects = new ArrayList<CQLExpressionObject>();
+		
+		
+		/*for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
+			CQLExpressionObject cqlExpressionObject = new CQLExpressionObject("Parameter",
+					cqlParameter.getParameterName(), cqlParameter.getParameterLogic());
+			cqlExpressionObjects.add(cqlExpressionObject);
+		}*/
+		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
+			CQLExpressionObject cqlExpressionObject = new CQLExpressionObject("Definition",
+					cqlDefinition.getDefinitionName(), cqlDefinition.getDefinitionLogic());
+			cqlExpressionObjects.add(cqlExpressionObject);
+		}
+
+		for (CQLFunctions cqlFunction : cqlModel.getCqlFunctions()) {
+			CQLExpressionObject cqlExpressionObject = new CQLExpressionObject("Function", cqlFunction.getFunctionName(),
+					cqlFunction.getFunctionLogic());
+			cqlExpressionObjects.add(cqlExpressionObject);
+		}
+		
+		return cqlExpressionObjects;
+		
+	}	
 }

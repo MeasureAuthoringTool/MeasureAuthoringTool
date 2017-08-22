@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
@@ -1126,6 +1127,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												
 												CQLParameter currentParameter = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID);
 												
+												/*Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+												if(expressionCQLErrorMap != null){
+													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentParameter.getParameterName());
+													searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
+													searchDisplay.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
+													for (CQLErrors error : errorList) {
+														int startLine = error.getStartErrorInLine();
+														int startColumn = error.getStartErrorAtOffset();
+														searchDisplay.getCQLParametersView().getParameterAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+													}
+													searchDisplay.getCQLParametersView().getParameterAceEditor().setAnnotations();
+												}*/
+												
 												// if it is not a default parameter, check if the delete button needs to be enabled 
 												if(!currentParameter.isReadOnly()) {
 													
@@ -1223,8 +1237,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 											@Override
 											public void onSuccess(GetUsedCQLArtifactsResult result) {
-
+												
 												CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
+												
+												Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+												if(expressionCQLErrorMap != null){
+													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentDefinition.getDefinitionName());
+													searchDisplay.getCQlDefinitionsView().getDefineAceEditor().clearAnnotations();
+													searchDisplay.getCQlDefinitionsView().getDefineAceEditor().removeAllMarkers();
+													for (CQLErrors error : errorList) {
+														int startLine = error.getStartErrorInLine();
+														int startColumn = error.getStartErrorAtOffset();
+														searchDisplay.getCQlDefinitionsView().getDefineAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+													}
+													searchDisplay.getCQlDefinitionsView().getDefineAceEditor().setAnnotations();
+												}
+												
 												if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 													// if the current definition is not a default definition, check if we need to enable the delete buttons
 													if(!currentDefinition.isSupplDataElement()) {
@@ -1331,6 +1359,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										public void onSuccess(GetUsedCQLArtifactsResult result) {
 											
 											CQLFunctions currentFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
+											
+											
+											Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+											if(expressionCQLErrorMap != null){
+												List<CQLErrors> errorList = expressionCQLErrorMap.get(currentFunction.getFunctionName());
+												searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
+												searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
+												for (CQLErrors error : errorList) {
+													int startLine = error.getStartErrorInLine();
+													int startColumn = error.getStartErrorAtOffset();
+													searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+												}
+												searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor().setAnnotations();
+											}
+											
+											
 											if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 												// if there are errors or the function is not in use, enable the context radio buttons and delete button
 												if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {

@@ -13,6 +13,8 @@ import mat.model.cql.CQLIncludeLibrary;
 * The Class SaveUpdateCQLResult.
 */
 public class GetUsedCQLArtifactsResult extends GenericResult{
+	
+		private Map<String , List<CQLErrors>> cqlErrorsPerExpression = new HashMap<String,List<CQLErrors>>();
        
        private List<String> usedCQLDefinitions = new ArrayList<String>(); 
        
@@ -177,6 +179,14 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setExpressionReturnTypeMap(Map<String, String> expressionReturnTypeMap) {
 		this.expressionReturnTypeMap = expressionReturnTypeMap;
+	}
+
+	public Map<String, List<CQLErrors>> getCqlErrorsPerExpression() {
+		return cqlErrorsPerExpression;
+	}
+
+	public void setCqlErrorsPerExpression(Map<String, List<CQLErrors>> cqlErrorsPerExpression) {
+		this.cqlErrorsPerExpression = cqlErrorsPerExpression;
 	}
 
 }

@@ -1232,6 +1232,20 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 												CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
 												
+												Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+												if(expressionCQLErrorMap != null){
+													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentDefinition.getDefinitionName());
+													searchDisplay.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
+													searchDisplay.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
+													for (CQLErrors error : errorList) {
+														int startLine = error.getStartErrorInLine();
+														int startColumn = error.getStartErrorAtOffset();
+														searchDisplay.getCQLDefinitionsView().getDefineAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+													}
+													searchDisplay.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
+												}
+												
+												
 												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 													// if there are cql errors or the definition is not in use, enable the delete button
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
@@ -1537,6 +1551,20 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											public void onSuccess(GetUsedCQLArtifactsResult result) {
 
 												CQLFunctions currentFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
+												
+												Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+												if(expressionCQLErrorMap != null){
+													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentFunction.getFunctionName());
+													searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
+													searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
+													for (CQLErrors error : errorList) {
+														int startLine = error.getStartErrorInLine();
+														int startColumn = error.getStartErrorAtOffset();
+														searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+													}
+													searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().setAnnotations();
+												}
+												
 												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {
 														searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);

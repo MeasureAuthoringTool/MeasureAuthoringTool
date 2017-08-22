@@ -18,6 +18,8 @@ public class CQLExpressionObject implements IsSerializable {
     
     /** The name. */
     private String name;
+    /** The logic. */
+    private String logic;
     
     /** The return type. */
     private String returnType;
@@ -68,6 +70,13 @@ public class CQLExpressionObject implements IsSerializable {
               this.name = name;
        }
     
+    
+    public CQLExpressionObject(String type, String name, String logic) {
+        // TODO Auto-generated constructor stub
+        this.type = type;
+        this.name = name;
+        this.logic = logic;
+ }
        /**
         * Gets the used expressions.
         *
@@ -341,5 +350,13 @@ public class CQLExpressionObject implements IsSerializable {
        public void setOprandList(List<CQLExpressionOprandObject> oprandList) {
               this.oprandList = oprandList;
        }
+
+	public String getLogic() {
+		return logic;
+	}
+
+	public void setLogic(String logic) {
+		this.logic = logic;
+	}
 }
 

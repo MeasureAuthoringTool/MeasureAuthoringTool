@@ -53,6 +53,7 @@ import mat.client.event.CQLVersionEvent;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
+import mat.client.event.MeasureVersionEvent;
 import mat.client.history.HistoryModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.AdminObserver;
@@ -1737,7 +1738,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){
-		CQLVersionEvent versionEvent = new CQLVersionEvent(isSuccess, name, message);
+		MeasureVersionEvent versionEvent = new MeasureVersionEvent(isSuccess, name, message);
 		MatContext.get().getEventBus().fireEvent(versionEvent);
 	}
 	
@@ -2007,12 +2008,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 										}
 									}
 
-								}  else {
+								} else {
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
-								}
-								if(isMeasureVersioned){
+								}if(isMeasureVersioned){
 									searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
+								} else {
+									searchDisplay.getSuccessMeasureDeletion().clearAlert();
+									searchDisplay.getErrorMeasureDeletion().clearAlert();
 								}
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
@@ -2053,6 +2056,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						searchDisplay.getSuccessMeasureDeletion().clearAlert();
 						measureDeletion = false;
 						isMeasureDeleted = false;
+						isMeasureVersioned = false;
 						if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 							final String mid = event.getSelectedItem().getId();
 							Result result = event.getSelectedItem();
@@ -2102,6 +2106,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						searchDisplay.getSuccessMeasureDeletion().clearAlert();
 						measureDeletion = false;
 						isMeasureDeleted = false;
+						isMeasureVersioned = false;
 						if (!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 							final String mid = event.getSelectedItem().getId();
 							Result result = event.getSelectedItem();
@@ -2148,7 +2153,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getSuccessMeasureDeletion().clearAlert();
 				measureDeletion = false;
 				isMeasureDeleted = false;
-
+				isMeasureVersioned = false;
 				createNew(); 
 			}
 		});
@@ -2204,6 +2209,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 				isMeasureDeleted = false;
 				measureDeletion = false;
+				isMeasureVersioned = false;
 				searchDisplay.getErrorMeasureDeletion().clearAlert();
 				searchDisplay.getSuccessMeasureDeletion().clearAlert();
 				searchDisplay.getErrorMessageDisplay().clearAlert();
@@ -2331,6 +2337,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							public void onExportClicked(Result result) {
 								measureDeletion = false;
 								isMeasureDeleted = false;
+								isMeasureVersioned = false;
 								searchDisplay.getSuccessMeasureDeletion().clearAlert();
 								searchDisplay.getErrorMeasureDeletion().clearAlert();
 								export(result.getId(), result.getName());
@@ -2340,6 +2347,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							public void onEditClicked(Result result) {
 								measureDeletion = false;
 								isMeasureDeleted = false;
+								isMeasureVersioned = false;
 								searchDisplay.getSuccessMeasureDeletion().clearAlert();
 								searchDisplay.getErrorMeasureDeletion().clearAlert();
 								edit(result.getId());
@@ -2699,10 +2707,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void versionDisplayHandlers(final VersionDisplay versionDisplay) {
 		
-		MatContext.get().getEventBus().addHandler(CQLVersionEvent.TYPE, new CQLVersionEvent.Handler() {
+		MatContext.get().getEventBus().addHandler(MeasureVersionEvent.TYPE, new MeasureVersionEvent.Handler() {
 
 			@Override
-			public void onVersioned(CQLVersionEvent event) {
+			public void onVersioned(MeasureVersionEvent event) {
 				displaySearch();
 				if (event.isVersioned()) {
 
@@ -2715,7 +2723,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					measureDeletion = false;
 					isMeasureDeleted = false;
 					isMeasureVersioned = false;
-					measureVerMessage = null;
+					measureVerMessage = event.getMessage();
 				}
 			}
 		});

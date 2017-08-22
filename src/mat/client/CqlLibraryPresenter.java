@@ -892,7 +892,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 					isCqlLibraryDeleted = false;
 					cqlLibraryDeletion = false;
 					isCqlLibraryVersioned = false;
-					cqlLibraryVerMessage = null;
+					cqlLibraryVerMessage = event.getMessage();
 				}
 			}
 		});
@@ -1432,6 +1432,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				pageSize = 25;
 				showSearchingBusy(true);
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
+				cqlLibraryView.getSuccessMessageAlert().clearAlert();
 				MatContext.get().getCQLLibraryService().search(lastSearchText, filter, startIndex,pageSize, new AsyncCallback<SaveCQLLibraryResult>() {
 					
 					@Override
@@ -1448,6 +1449,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 							cqlLibraryView.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoLibrarues());
 						} else {
 							cqlLibraryView.getErrorMessageAlert().clearAlert();
+							cqlLibraryView.getSuccessMessageAlert().clearAlert();
 							if (cqlLibraryDeletion) {
 								if (isCqlLibraryDeleted) {
 									cqlLibraryView.getSuccessMessageAlert().createAlert(cqlLibraryDelMessage);
@@ -1463,6 +1465,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 							}
 							if(isCqlLibraryVersioned){
 								cqlLibraryView.getSuccessMessageAlert().createAlert(cqlLibraryVerMessage);
+							}else {
+								cqlLibraryView.getSuccessMessageAlert().clearAlert();
+								cqlLibraryView.getErrorMessageAlert().clearAlert();
 							}
 
 						}
@@ -1500,6 +1505,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 					public void onEditClicked(CQLLibraryDataSetObject object) {
 						cqlLibraryDeletion = false;
 						isCqlLibraryDeleted = false;
+						isCqlLibraryVersioned = false;
 						cqlLibraryView.getSuccessMessageAlert().clearAlert();
 						cqlLibraryView.getErrorMessageAlert().clearAlert();
 						displayEdit(object);

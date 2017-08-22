@@ -206,14 +206,14 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 */
 	//TO DO : Consider re factoring this method as code lines are more then 150.
 	private CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
-		/*Label measureSearchHeader = new Label(getMeasureListLabel());
+		Label measureSearchHeader = new Label(getMeasureListLabel());
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
-		*/
+		
 		selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		table.setSelectionModel(selectionModel);
 		
@@ -783,11 +783,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					cellTablePanel.add(invisibleLabel);
 			    }else{
 			    	
-			    	Label header = new Label(getMeasureListLabel());
-					header.getElement().setId("headerMeasureLibrary_Label");
-					header.setStyleName("recentSearchHeader");
-					header.getElement().setAttribute("tabIndex", "0");
-					header.getElement().setAttribute("aria-describedby", "measureSearchSummary");
 			    	table = addColumnToTable();
 			    	Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
 							"In the following Measure List table, Measure Name is given in first column,"
@@ -795,7 +790,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 									+ "History in fourth column, Edit in fifth column, Share in sixth column"
 									+ "Clone in seventh column and Export in eight column.");
 					table.getElement().setAttribute("id", "MeasureSearchCellTable");
-					//table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
+					table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
 					
 					MatSimplePager topSPager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,
 							"measureLibTopSpager");
@@ -803,7 +798,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					topSPager.setDisplay(table);
 					topSPager.setPageSize(PAGE_SIZE);
 					
-					cellTablePanel.add(header);
 					cellTablePanel.add(new SpacerWidget());
 					cellTablePanel.add(topSPager);
 					cellTablePanel.add(new SpacerWidget());

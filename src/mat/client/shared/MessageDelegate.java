@@ -2676,7 +2676,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Definition Remove msg
 	 */
 	public String getSuccessfulDefinitionRemoveMessage(String definitionName) {
-		return "Definition " + definitionName.substring(0, 59) + " has been removed successfully.";
+		return "Definition " + (definitionName.length()>60 ? definitionName.substring(0, 59) : definitionName) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2685,7 +2685,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Function Remove msg
 	 */
 	public String getSuccessfulFunctionRemoveMessage(String functionName) {
-		return "Function " + functionName.substring(0, 59) + " has been removed successfully.";
+		return "Function " + (functionName.length()>60 ? functionName.substring(0, 59) : functionName) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2694,7 +2694,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Parameter Remove msg
 	 */
 	public String getSuccessfulParameterRemoveMessage(String parameterName) {
-		return "Parameter " + parameterName.substring(0, 59) + " has been removed successfully.";
+		return "Parameter " + (parameterName.length()>60 ? parameterName.substring(0, 59) : parameterName) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2703,7 +2703,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Include Remove msg
 	 */
 	public String getSuccessfulIncludeRemoveMessage(String includeName) {
-		return "Library " + includeName.substring(0, 59) + " has been removed successfully.";
+		return "Library " + (includeName.length()>60 ? includeName.substring(0, 59) : includeName) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2712,7 +2712,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Function Argument Remove msg
 	 */
 	public String getSuccessfulFunctionArgumentRemoveMessage(String argumentName) {
-		return "Argument " + argumentName.substring(0, 59) + " has been removed successfully.";
+		return "Argument " + (argumentName.length()>60 ? argumentName.substring(0, 59) : argumentName) + " has been removed successfully.";
 	}
 	
 	/**
@@ -3058,7 +3058,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation parameter
 	 */
 	public String getDELETE_CONFIRMATION_PARAMETER(String parameterName) {
-		return "You have selected to delete parameter " + parameterName.substring(0, 59) + ". Please confirm that you want to remove this parameter.";
+		return "You have selected to delete parameter " + (parameterName.length()>60 ? parameterName.substring(0, 59) : parameterName) + ". Please confirm that you want to remove this parameter.";
 	}
 
 	/**
@@ -3069,7 +3069,7 @@ public class MessageDelegate {
 	public ArrayList<String> getDeleteConfirmationDefinitionCQLWorkspace(String definitionName) {
 		
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("You have selected to delete definition " + definitionName.substring(0, 59) + ".");
+		list.add("You have selected to delete definition " + (definitionName.length()>60 ? definitionName.substring(0, 59) : definitionName) + ".");
 		list.add(" ");
 		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this definition.");
 		
@@ -3082,7 +3082,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation definition
 	 */
 	public String getDeleteConfirmationDefinitionCQLLibraryWorkspace(String definitionName) {
-		return "You have selected to delete definition " + definitionName.substring(0, 59) + ".";
+		return "You have selected to delete definition " + (definitionName.length()>60 ? definitionName.substring(0, 59) : definitionName) + ".";
 	}
 
 	/**
@@ -3101,7 +3101,7 @@ public class MessageDelegate {
 	 */
 	public ArrayList<String> getDeleteConfirmationFunctionCQLWorkspace(String functionName) {
 		ArrayList<String> list = new ArrayList<String>();
-		list.add("You have selected to delete function " + functionName.substring(0, 59) + ".");
+		list.add("You have selected to delete function " + (functionName.length()>60 ? functionName.substring(0, 59) : functionName) + ".");
 		list.add(" ");
 		list.add("Note: Removing an expression that is currently connected to a population will cause that expression to be removed from the Population Workspace and may reset your measure grouping. Please confirm that you want to remove this function.");
 		
@@ -3114,7 +3114,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation function
 	 */
 	public String getDeleteConfirmationFunctionCQLLibraryWorkspace(String functionName) {
-		return "You have selected to delete function " + functionName.substring(0, 59) + ".";
+		return "You have selected to delete function " + (functionName.length()>60 ? functionName.substring(0, 59) : functionName) + ".";
 	}
 	
 	/**
@@ -3132,7 +3132,7 @@ public class MessageDelegate {
 	 * @return the delete confirmation include
 	 */
 	public String getDELETE_CONFIRMATION_INCLUDE(String includeName) {
-		return "You have selected to delete library " + includeName.substring(0, 59) + ". Please confirm that you want to remove this library alias.";
+		return "You have selected to delete library " + (includeName.length()>60 ? includeName.substring(0, 59) : includeName) + ". Please confirm that you want to remove this library alias.";
 	}
 
 	
@@ -3502,7 +3502,7 @@ public class MessageDelegate {
 	 * @return the dELETE_CONFIRMATION_FUNCTION_ARGUMENT
 	 */
 	public String getDELETE_CONFIRMATION_FUNCTION_ARGUMENT(String functionArgumentName) {
-		return "You have selected to delete argument " + functionArgumentName.substring(0, 59) + ". Please confirm that you want to remove this argument.";
+		return "You have selected to delete argument " + (functionArgumentName.length()>60 ? functionArgumentName.substring(0, 59) : functionArgumentName) + ". Please confirm that you want to remove this argument.";
 	}
 	
 	/**

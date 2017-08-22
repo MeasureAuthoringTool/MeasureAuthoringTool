@@ -8,6 +8,11 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.clause.MeasureExport;
+import mat.server.util.MATPropertiesService;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,11 +21,6 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import mat.model.clause.MeasureExport;
-import mat.server.util.MATPropertiesService;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -94,7 +94,8 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		Element itemChild = outputProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.6");
-		itemChild.setAttribute("extension", getDataCriteriaExtValueBasedOnVersion(me));
+		//itemChild.setAttribute("extension", getDataCriteriaExtValueBasedOnVersion(me));
+		itemChild.setAttribute("extension", DATA_CRITERIA_CQL_EXTENSION);
 		templateId.appendChild(itemChild);
 		// creating Code Element for DataCriteria
 		Element codeElem = outputProcessor.getOriginalDoc()
@@ -469,7 +470,11 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, oidValue);
-		if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
+		if(templateNode.getAttributes().getNamedItem("specificExtensionValue") != null){
+			String specificExtensionValue = templateNode.getAttributes().getNamedItem("specificExtensionValue").getNodeValue();
+			itemChild.setAttribute("extension", specificExtensionValue);
+		}
+		else if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
 			itemChild.setAttribute("extension", extensionValue);
 		}
 		templateId.appendChild(itemChild);

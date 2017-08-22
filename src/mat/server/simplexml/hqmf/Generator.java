@@ -2,6 +2,7 @@ package mat.server.simplexml.hqmf;
 
 import mat.model.clause.MeasureExport;
 import mat.shared.MatConstants;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -118,7 +119,7 @@ public interface Generator extends MatConstants {
 	
 	/** The Constant VERSIONID. */
 	public static final String VERSION_5_0_ID = "2017-05-01";
-	
+		
 	/** The Constant VERSIONID. */
 	public static final String VERSION_4_1_2_ID = "2014-11-24";
 	
@@ -129,7 +130,7 @@ public interface Generator extends MatConstants {
 	public static final String POPULATION_CRITERIA_EXTENSION = "2015-12-01";
 	
 	/** The Constant POPULATION_CRITERIA_EXTENSION_CQL. */
-	public static final String POPULATION_CRITERIA_EXTENSION_CQL = "2017-05-01";
+	public static final String POPULATION_CRITERIA_EXTENSION_CQL = "2017-08-01";
 	
 	/** The Constant VALUE_SET. */
 	public static final String VALUE_SET = "Value Set";
@@ -211,6 +212,8 @@ public interface Generator extends MatConstants {
 	
 	/** The name space. */
 	public final String nameSpace = "http://www.w3.org/2001/XMLSchema-instance";
+
+	public static final String DATA_CRITERIA_CQL_EXTENSION = "2017-08-01";
 	
 	/** The Constant LESS_THAN. */
 	public static final String LESS_THAN = "Less Than";

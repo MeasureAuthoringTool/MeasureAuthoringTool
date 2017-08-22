@@ -10,7 +10,6 @@ import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 // TODO: Auto-generated Javadoc
@@ -87,8 +86,7 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 			//This is 4.2 because were on qdm version 4.2 and export 4.3. The QDM version needs to appear in the comments
 			formatVersion = "4.2";
 		}
-		return formatVersion;
-		
+		return formatVersion;		
 	}
 	
 	/**

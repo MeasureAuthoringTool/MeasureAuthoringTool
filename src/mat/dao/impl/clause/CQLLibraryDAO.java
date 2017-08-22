@@ -117,9 +117,9 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		String queryString = null;
 		
 		if(filter){
-			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), 2);
+			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), setId, 2);
 		} else {
-			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), 1);
+			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), setId, 1);
 		}
 		
 		Query query = getSessionFactory().getCurrentSession().createQuery(queryString);

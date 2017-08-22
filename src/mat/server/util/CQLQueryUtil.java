@@ -7,7 +7,7 @@ public class CQLQueryUtil {
 	private static final String SEMICOLON = ";";
 	private static final String NEWLINE = "\n";
 	
-	public static String buildQuery(String qdmVersion, int level) {
+	public static String buildQuery(String qdmVersion, String setId, int level) {
 		
 		String result = 
 				/*"SELECT  OWNER_ID" + 
@@ -17,6 +17,8 @@ public class CQLQueryUtil {
 				" WHERE qdmVersion = '" + qdmVersion + "'" + 
 				NEWLINE +
 				"   AND DRAFT = 0" + 
+				NEWLINE +
+				"   AND SET_ID <> '" +  setId + "'" +
 				NEWLINE +
 				"   AND NOT EXISTS (" +
 				NEWLINE +

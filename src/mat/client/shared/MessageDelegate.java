@@ -157,7 +157,7 @@ public class MessageDelegate {
 	public static final String RISK_ADJ_SAVED = "Risk Adjustment Variables have been saved.";
 	
 	/** The Constant TEMP_EMAIL_SENT. */
-	public static final String TEMP_EMAIL_SENT = "Temporary Password E-mail has been sent.";
+	public static final String TEMP_EMAIL_SENT = " Temporary Password E-mail has been sent.";
 	
 	/** The Constant VALUE_SET_COMPLETE_SAVED. */
 	public static final String VALUE_SET_COMPLETE_SAVED = "Value set successfully saved as complete.";

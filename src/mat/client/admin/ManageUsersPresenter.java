@@ -620,6 +620,14 @@ public class ManageUsersPresenter implements MatPresenter {
 												addInfo = updatedDetails.getAdditionalInfo();
 												detailDisplay.getAddInfoArea()
 														.setText("");
+												//Adding Message if the User Account it activated by Admin.
+												if ( !(detailDisplay.getIsActive()
+														.getValue() == currentDetails
+														.isActive()) && detailDisplay.getIsActive()
+														.getValue()) {
+													actMsg = MatContext.get().getMessageDelegate().getTempEmailSentMessage();
+												}
+												
 											} else {
 												// adding logs for change in
 												// personal Information

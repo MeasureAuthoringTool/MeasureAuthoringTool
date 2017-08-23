@@ -2,7 +2,9 @@ package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.summernote.client.ui.Summernote;
 
@@ -19,7 +21,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 //import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -29,7 +30,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.MeasureNoteDTO;
-import mat.client.ImageResources;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
@@ -636,25 +636,43 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.add(lastModifiedDatePanel);
 		headerPanel.setCellWidth(lastModifiedDatePanel, "25%");
 		
-		CustomButton editButton = (CustomButton) getImage("edit", ImageResources.INSTANCE.g_openPanel(), result.getId());
+		
+		
+		Button editButton = new Button(); 
+		editButton.setTitle("Edit");
+		editButton.getElement().setId("editButton_Measurenotes");
+		editButton.setSize("70px", "30px");
+		editButton.getElement().setAttribute("aria-label", "Edit");
+		editButton.setType(ButtonType.LINK);
+		editButton.setIcon(IconType.ARROW_RIGHT);
+		editButton.setIconSize(IconSize.LARGE);
+		editButton.setColor("#0964A2");
 		editButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
-				CustomButton myEditButton = (CustomButton)event.getSource();
+				Button myEditButton = (Button)event.getSource();
 				if(notesDisclosurePanel.isOpen()){
-					Image img = myEditButton.getImage();
-					img.setResource(ImageResources.INSTANCE.g_openPanel());
+					myEditButton.setIcon(IconType.ARROW_RIGHT);
 				}else{
-					Image img = myEditButton.getImage();
-					img.setResource(ImageResources.INSTANCE.g_closePanel());
+					myEditButton.setIcon(IconType.ARROW_DOWN);
 				}
 				notesDisclosurePanel.setOpen(!notesDisclosurePanel.isOpen());
 			}
 			
 		});
 		
-		CustomButton deleteButton =(CustomButton) getImage("Delete",ImageResources.INSTANCE.g_trash(), result.getId());
+		/** The delete button. */
+		Button deleteButton = new Button();
+		deleteButton.setType(ButtonType.LINK);
+		deleteButton.getElement().setId("deleteButton_Measurenotes");
+		deleteButton.setTitle("Delete");
+		deleteButton.setSize("70px", "30px");
+		deleteButton.getElement().setAttribute("aria-label", "Delete");
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.setIconSize(IconSize.LARGE);
+		deleteButton.setColor("#0964A2");
+		
 		HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 		deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		deleteButtonPanel.add(deleteButton);

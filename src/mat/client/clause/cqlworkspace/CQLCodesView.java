@@ -973,20 +973,17 @@ public class CQLCodesView {
 			public SafeHtml getValue(CQLCode object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String title = "Click to delete Code";
-				String cssClass;
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-trash fa-lg";
 				// Delete button is not created for default codes - Dead and Birthdate.
 				if(object.getCodeOID().equals(DEAD) || object.getCodeOID().equals(BIRTHDATE)){
 					sb.appendHtmlConstant("<span></span>");
-				} else	if (object.isUsed()) {
-					cssClass = "customDeleteDisableButton";
+				}else if (object.isUsed()) {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass
-							+ "\"disabled/>Delete</button>");
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
 				} else {
-					cssClass = "customDeleteButton";
-					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
-							+ title + "' class=\" " + cssClass
-							+ "\"/>Delete</button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
 				}
 								
 				return sb.toSafeHtml();

@@ -674,15 +674,15 @@ public class CQLFunctionsView {
 			@Override
 			public SafeHtml getValue(CQLFunctionArgument object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Modify QDM";
-				String cssClass = "customEditButton";
-				
-				if (isEditable) {
-					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title + "' class=\" "
-							+ cssClass + "\">Editable</button>");
+				String title = "Click to Modify Argument";
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-pencil fa-lg";
+				if(isEditable){
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
 				} else {
-					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title + "' class=\" "
-							+ cssClass + "\" disabled/>Editable</button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
 				}
 				
 				return sb.toSafeHtml();
@@ -722,17 +722,16 @@ public class CQLFunctionsView {
 			@Override
 			public SafeHtml getValue(CQLFunctionArgument object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Delete QDM";
-				String cssClass;
+				String title = "Click to Delete Argument";
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-trash fa-lg";
 				
-				cssClass = "customDeleteButton";
 				if (isEditable) {
-					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='" + title + "' class=\" "
-							+ cssClass + "\"/>Delete</button>");
-					
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
 				} else {
-					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='" + title + "' class=\" "
-							+ cssClass + "\" disabled/>Delete</button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
 				}
 				
 				return sb.toSafeHtml();

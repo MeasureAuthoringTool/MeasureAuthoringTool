@@ -1611,7 +1611,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
 						.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
-						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission());
+						cqlLibrarySearchModel,MatContext.get().getMeasureLockService().checkForEditPermission(), false);
 				searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 				
 				if(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT){
@@ -2154,7 +2154,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryList());
 		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(
-				result,MatContext.get().getMeasureLockService().checkForEditPermission());
+				result,MatContext.get().getMeasureLockService().checkForEditPermission(), false);
 	}
 	
 	/**
@@ -2879,11 +2879,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if(result != null && result.getCqlLibraryDataSetObjects().size() > 0){
 					searchDisplay.getCqlLeftNavBarPanelView().setIncludeLibraryList(result.getCqlLibraryDataSetObjects());
 					searchDisplay.buildIncludesView();
-					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission());
+					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission(), false);
 					
 				} else {
 					searchDisplay.buildIncludesView();
-					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission());
+					searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,MatContext.get().getMeasureLockService().checkForEditPermission(), false);
 					if(!searchDisplay.getIncludeView().getSearchTextBox().getText().isEmpty())
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
 				}
@@ -3389,7 +3389,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
 		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
-				MatContext.get().getLibraryLockService().checkForEditPermission());
+				MatContext.get().getLibraryLockService().checkForEditPermission(), true);
 		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");

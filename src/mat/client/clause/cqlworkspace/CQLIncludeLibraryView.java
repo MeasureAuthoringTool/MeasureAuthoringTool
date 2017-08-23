@@ -417,8 +417,9 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @param result the cql library list
 	 * @param isEditable the is editable
+	 * @param isIncludesTab TODO
 	 */
-	public void buildIncludeLibraryCellTable(SaveCQLLibraryResult result, boolean isEditable) {
+	public void buildIncludeLibraryCellTable(SaveCQLLibraryResult result, boolean isEditable, boolean isIncludesTab) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
@@ -490,7 +491,14 @@ public class CQLIncludeLibraryView {
 			cellTablePanel.add(cellTablePanelBody);
 			
 		} else {
-			HTML desc = new HTML("<p> No available libraries.</p>");
+			
+			HTML desc = null;
+			
+			if(isIncludesTab){
+				desc = new HTML("<p> Search to find Available Libraries.</p>");
+			} else {
+				desc = new HTML("<p> No available libraries.</p>");
+			}
 			cellTablePanelBody.add(desc);
 			cellTablePanel.add(cellTablePanelBody);
 		}

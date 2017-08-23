@@ -2215,7 +2215,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getIncludeView().setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
 						.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
 				searchDisplay.getIncludeView().buildIncludeLibraryCellTable(cqlLibrarySearchModel,
-						MatContext.get().getLibraryLockService().checkForEditPermission());
+						MatContext.get().getLibraryLockService().checkForEditPermission(), false);
 				searchDisplay.getIncludeView()
 						.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
@@ -5379,7 +5379,7 @@ private void addCodeSearchPanelHandlers() {
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
 		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
-				MatContext.get().getLibraryLockService().checkForEditPermission());
+				MatContext.get().getLibraryLockService().checkForEditPermission(), true);
 		//getAllIncludeLibraryList(searchDisplay.getIncludeView().getSearchTextBox().getText());
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
@@ -5606,12 +5606,12 @@ private void addCodeSearchPanelHandlers() {
 									.setIncludeLibraryList(result.getCqlLibraryDataSetObjects());
 							searchDisplay.buildIncludesView();
 							searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
-									MatContext.get().getLibraryLockService().checkForEditPermission());
+									MatContext.get().getLibraryLockService().checkForEditPermission(), false);
 
 						} else {
 							searchDisplay.buildIncludesView();
 							searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
-									MatContext.get().getLibraryLockService().checkForEditPermission());
+									MatContext.get().getLibraryLockService().checkForEditPermission(), false);
 							if (!searchDisplay.getIncludeView().getSearchTextBox().getText().isEmpty())
 								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 										.createAlert(MatContext.get().getMessageDelegate().getNoIncludes());
@@ -5739,7 +5739,7 @@ private void addCodeSearchPanelHandlers() {
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryList());
 		searchDisplay.getIncludeView().buildIncludeLibraryCellTable(result,
-				MatContext.get().getLibraryLockService().checkForEditPermission());
+				MatContext.get().getLibraryLockService().checkForEditPermission(), false);
 	}
 
 	/**

@@ -2013,10 +2013,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
 								}if(isMeasureVersioned){
 									searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
-								} else {
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-								}
+								} 
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchText);

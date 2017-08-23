@@ -1465,9 +1465,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 							}
 							if(isCqlLibraryVersioned){
 								cqlLibraryView.getSuccessMessageAlert().createAlert(cqlLibraryVerMessage);
-							}else {
-								cqlLibraryView.getSuccessMessageAlert().clearAlert();
-								cqlLibraryView.getErrorMessageAlert().clearAlert();
 							}
 
 						}

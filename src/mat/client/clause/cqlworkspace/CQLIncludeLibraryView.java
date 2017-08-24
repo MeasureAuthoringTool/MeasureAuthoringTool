@@ -495,7 +495,7 @@ public class CQLIncludeLibraryView {
 			HTML desc = null;
 			
 			if(isIncludesTab){
-				desc = new HTML("<p> Search to find Available Libraries.</p>");
+				desc = new HTML("<p> Search to find available libraries.</p>");
 			} else {
 				desc = new HTML("<p> No available libraries.</p>");
 			}

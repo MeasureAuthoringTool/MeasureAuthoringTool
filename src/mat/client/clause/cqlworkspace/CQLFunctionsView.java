@@ -256,7 +256,7 @@ public class CQLFunctionsView {
 		addNewArgument.setType(ButtonType.LINK);
 		addNewArgument.getElement().setId("addArgument_Button");
 
-		addNewArgument.setTitle("Add Argument");
+		addNewArgument.setTitle("Click this button to add a new function argument");
 		addNewArgument.setText("Add Argument");
 		addNewArgument.setId("Add_Argument_ID");
 		addNewArgument.setIcon(IconType.PLUS);

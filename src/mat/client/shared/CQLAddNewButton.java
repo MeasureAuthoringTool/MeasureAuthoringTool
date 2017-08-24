@@ -31,7 +31,15 @@ public class CQLAddNewButton extends Composite {
 		addNewButton.setType(ButtonType.LINK);
 		addNewButton.getElement().setId("addNewButton_"+sectionName);
 		//addNewButton.getElement().setAttribute("style", "padding-left:600px");
-		addNewButton.setTitle("Add New");
+		if ("definition".equalsIgnoreCase(sectionName)) {
+			addNewButton.setTitle("Click this button to add a new definition");
+		} else if ("function".equalsIgnoreCase(sectionName)) {
+			addNewButton.setTitle("Click this button to add a new function");
+		} else if ("parameter".equalsIgnoreCase(sectionName)) {
+			addNewButton.setTitle("Click this button to add a new parameter");
+		} else {
+			addNewButton.setTitle("Add New");
+		}
 		addNewButton.setText("Add New");
 		addNewButton.setId("Add_New_ID");
 		addNewButton.setIcon(IconType.PLUS);

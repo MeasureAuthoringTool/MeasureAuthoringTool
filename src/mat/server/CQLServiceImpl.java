@@ -3578,7 +3578,7 @@ public class CQLServiceImpl implements CQLService {
 	private Map<String , List<CQLErrors>> getCQLErrorsPerExpressions(CQLModel cqlModel , SaveUpdateCQLResult parsedCQL ){
 		
 		Map<String , List<CQLErrors>> expressionMapWithError = new HashMap<String,List<CQLErrors>>();
-		List<CQLExpressionObject> cqlExpressionObjects = getCQLExpressionObjectListFormCQLModel(cqlModel);
+		List<CQLExpressionObject> cqlExpressionObjects = getCQLExpressionObjectListFromCQLModel(cqlModel);
 		 
 		for(CQLExpressionObject expressionObject : cqlExpressionObjects){
 			int fileStartLine = -1;
@@ -3655,11 +3655,11 @@ public class CQLServiceImpl implements CQLService {
 			String expressionToFind) {
 		int fileStartLine =-1;
 		try {
-			File cqlFile = File.createTempFile("temp", ".cql");
+			/*File cqlFile = File.createTempFile("temp", ".cql");
 			BufferedWriter  out = new BufferedWriter (new FileWriter(cqlFile));
 			out.write(cqlFileString);
-			out.close();
-			LineNumberReader rdr = new LineNumberReader(new FileReader(cqlFile));
+			out.close();*/
+			LineNumberReader rdr = new LineNumberReader(new StringReader(cqlFileString));
 			String line = null;
 			System.out.println("Expression to Find :: " + expressionToFind);
 			while((line = rdr.readLine()) != null) {
@@ -3669,7 +3669,7 @@ public class CQLServiceImpl implements CQLService {
 		        }
 			}
 			rdr.close();
-		    cqlFile.deleteOnExit();
+		   // cqlFile.deleteOnExit();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3683,7 +3683,7 @@ public class CQLServiceImpl implements CQLService {
 	 * @param cqlModel
 	 * @return List<CQLExpressionObject>.
 	 */
-	private List<CQLExpressionObject> getCQLExpressionObjectListFormCQLModel(CQLModel cqlModel) {
+	private List<CQLExpressionObject> getCQLExpressionObjectListFromCQLModel(CQLModel cqlModel) {
 		
 		
 

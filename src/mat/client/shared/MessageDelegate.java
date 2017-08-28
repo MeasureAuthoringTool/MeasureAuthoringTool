@@ -438,7 +438,7 @@ public class MessageDelegate {
 	//MAT-8627 validations for functions attached to Measure Observations.
 	private final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must contain a user-defined function that returns an integer, a decimal, or a quantity.";
 	
-	private final String INVALID_QDM_VERSION_IN_INCLUDES ="The current QDM version and the QDM version of one or more of the included libraries are not the same. Please, navigate to the Includes section to replace or remove the conflicting libraries.";
+	private final String INVALID_QDM_VERSION_IN_INCLUDES ="The current QDM version and the QDM version of one or more of the included libraries are not the same. Please navigate to the Includes section to replace or remove the conflicting libraries.";
 	
 	/**
 	 * Gets the population work space validation error.

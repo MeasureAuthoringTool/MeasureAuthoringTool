@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -672,6 +671,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		deleteButton.setIcon(IconType.TRASH);
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
+		
+		//Our delete functionality required Id in a way unique to each notes. Follow setId method.
+		setId(deleteButton,"Delete",result.getId());
+		deleteButton.addClickHandler(clickHandler);
 		
 		HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 		deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);

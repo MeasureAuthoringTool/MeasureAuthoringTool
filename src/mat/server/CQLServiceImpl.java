@@ -2728,10 +2728,10 @@ public class CQLServiceImpl implements CQLService {
 		}
 		
 		
-		/*for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
+		for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
 			System.out.println("name:" + cqlParameter.getParameterName());
 			exprList.add(cqlParameter.getParameterName());
-		}*/
+		}
 
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
 		
@@ -3690,11 +3690,11 @@ public class CQLServiceImpl implements CQLService {
 		List<CQLExpressionObject> cqlExpressionObjects = new ArrayList<CQLExpressionObject>();
 		
 		
-		/*for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
+		for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
 			CQLExpressionObject cqlExpressionObject = new CQLExpressionObject("Parameter",
 					cqlParameter.getParameterName(), cqlParameter.getParameterLogic());
 			cqlExpressionObjects.add(cqlExpressionObject);
-		}*/
+		}
 		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
 			CQLExpressionObject cqlExpressionObject = new CQLExpressionObject("Definition",
 					cqlDefinition.getDefinitionName(), cqlDefinition.getDefinitionLogic());

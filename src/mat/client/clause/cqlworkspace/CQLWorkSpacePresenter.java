@@ -1127,7 +1127,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												
 												CQLParameter currentParameter = searchDisplay.getCqlLeftNavBarPanelView().getParameterMap().get(selectedParamID);
 												
-												/*Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+												Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
 												if(expressionCQLErrorMap != null){
 													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentParameter.getParameterName());
 													searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
@@ -1138,7 +1138,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														searchDisplay.getCQLParametersView().getParameterAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
 													}
 													searchDisplay.getCQLParametersView().getParameterAceEditor().setAnnotations();
-												}*/
+												}
 												
 												// if it is not a default parameter, check if the delete button needs to be enabled 
 												if(!currentParameter.isReadOnly()) {

@@ -1255,7 +1255,7 @@ public class CQLHumanReadableHTMLCreator {
 				spanElemDefBody.append(codeLineList.get(i));
 			}
 		}			
-		subDivElement.appendElement("br");
+		//subDivElement.appendElement("br");
 	}
 	
 	private static String getCQLFunctionSignature(String expressionName,
@@ -1310,13 +1310,8 @@ public class CQLHumanReadableHTMLCreator {
 		}
 		
 		String logic = getLogicStringFromXML(cqlName, cqlType, simpleXMLProcessor);
-		String lines[] = logic.split("\\r?\\n");
-		
-		for(int i=0;i<lines.length;i++){
-			//String coloredLine = colorize(lines[i]);
-			String escapedLine = lines[i].replaceAll("\\s", "&nbsp;");
-			lineList.add(escapedLine);
-		}		
+		lineList.add(logic);
+	
 		return lineList;
 	}
 

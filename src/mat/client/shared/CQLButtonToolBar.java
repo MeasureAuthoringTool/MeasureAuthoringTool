@@ -1,9 +1,14 @@
 package mat.client.shared;
 
+import org.gwtbootstrap3.client.ui.Anchor;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -39,12 +44,16 @@ public class CQLButtonToolBar extends Composite {
 	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
+	ButtonGroup infoButtonGroup = new ButtonGroup();
+	
 	/**
 	 * Instantiates a new CQL Button tool bar.
 	 *
 	 * @param sectionName the section name
 	 */
 	public CQLButtonToolBar(String sectionName) {
+		
+		buildInfoButtonGroup(sectionName);
 		
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
 		//buttonLayout.setStylePrimaryName("myAccountButtonLayout continueButton");
@@ -108,16 +117,7 @@ public class CQLButtonToolBar extends Composite {
 		closeButton.setSize("70px", "30px");
 		closeButton.getElement().setAttribute("aria-label", "Cancel");
 		
-		infoButton.setType(ButtonType.LINK);
-		infoButton.getElement().setId("infoButton_"+sectionName);
-		infoButton.setMarginTop(10);
-		infoButton.setTitle("Information");
-		infoButton.setText("Info");
-		infoButton.setIcon(IconType.INFO_CIRCLE);
-		infoButton.setIconSize(IconSize.LARGE);
-		infoButton.setColor("#0964A2");
-		infoButton.setSize("70px", "30px");
-		infoButton.getElement().setAttribute("aria-label", "Information");
+		
 		
 		/*timingExpIcon.setType(ButtonType.LINK);
 		timingExpIcon.getElement().setId("timingExpButton_"+sectionName);
@@ -133,11 +133,109 @@ public class CQLButtonToolBar extends Composite {
 		buttonLayout.add(eraseButton);
 		buttonLayout.add(insertButton);
 		//buttonLayout.add(timingExpIcon);
-		buttonLayout.add(infoButton);
+		
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(closeButton);
 		initWidget(buttonLayout);
 		
+	}
+
+
+	/**
+	 * 
+	 */
+	private void buildInfoButtonGroup(String sectionName) {
+		
+		infoButton.setType(ButtonType.LINK);
+		infoButton.getElement().setId("infoButton_"+sectionName);
+		infoButton.setMarginTop(10);
+		infoButton.setTitle("Click to view available short cut's information");
+		infoButton.setText("Information");
+		infoButton.setIcon(IconType.INFO_CIRCLE);
+		infoButton.setIconSize(IconSize.LARGE);
+		infoButton.setColor("#0964A2");
+		infoButton.setSize("70px", "30px");
+		infoButton.getElement().setAttribute("aria-label", "Information");
+		
+		infoButton.setToggleCaret(false);
+		infoButton.setDataToggle(Toggle.DROPDOWN);
+		
+		DropDownMenu downMenu = new DropDownMenu();
+		
+		AnchorListItem item1= new AnchorListItem("Ctrl-Alt-a: attributes");
+		item1.setTitle("Ctrl-Alt-a: attributes");
+		item1.setHref("#");
+		AnchorListItem item2= new AnchorListItem("Ctrl-Alt-y: datatypes");
+		item2.setHref("#");
+		item2.setTitle("Ctrl-Alt-y: datatypes");
+		AnchorListItem item3= new AnchorListItem("Ctrl-Alt-d: definitions");
+		item3.setHref("#");
+		item3.setTitle("Ctrl-Alt-d: definitions");
+		AnchorListItem item4= new AnchorListItem("Ctrl-Alt-f: functions");
+		item4.setHref("#");
+		item4.setTitle(item4.getText());
+		AnchorListItem item5= new AnchorListItem("Ctrl-Alt-k: keywords");
+		item5.setHref("#");
+		item5.setTitle(item5.getText());
+		AnchorListItem item6= new AnchorListItem("Ctrl-Alt-p: parameters");
+		item6.setHref("#");
+		item6.setTitle(item6.getText());
+		AnchorListItem item7= new AnchorListItem("Ctrl-Alt-t: timings");
+		item7.setHref("#");
+		item7.setTitle(item7.getText());
+		AnchorListItem item8= new AnchorListItem("Ctrl-Alt-v: value sets & codes");
+		item8.setHref("#");
+		item8.setTitle(item8.getText());
+		AnchorListItem item9= new AnchorListItem("Ctrl-Space: all");
+		item9.setHref("#");
+		item9.setTitle(item9.getText());
+		
+		
+		Anchor itemAnchor1 = (Anchor) (item1.getWidget(0));
+		itemAnchor1.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor2 = (Anchor) (item2.getWidget(0));
+		itemAnchor2.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor3 = (Anchor) (item3.getWidget(0));
+		itemAnchor3.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor4 = (Anchor) (item4.getWidget(0));
+		itemAnchor4.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor5 = (Anchor) (item5.getWidget(0));
+		itemAnchor5.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor6 = (Anchor) (item6.getWidget(0));
+		itemAnchor6.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor7 = (Anchor) (item7.getWidget(0));
+		itemAnchor7.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor8 = (Anchor) (item8.getWidget(0));
+		itemAnchor8.getElement().setAttribute("style", "cursor:text");
+		
+		Anchor itemAnchor9 = (Anchor) (item9.getWidget(0));
+		itemAnchor9.getElement().setAttribute("style", "cursor:text");
+		
+		
+		downMenu.setWidth("50px");
+		downMenu.getElement().setAttribute("style", "font-size:small;");
+		downMenu.add(item1);
+		downMenu.add(item2);
+		downMenu.add(item3);
+		downMenu.add(item4);
+		downMenu.add(item5);
+		downMenu.add(item6);
+		
+		downMenu.add(item7);
+		downMenu.add(item8);
+		downMenu.add(item9);
+		//infoButtonGroup.setDropUp(true);
+		infoButtonGroup.getElement().setAttribute("class", "btn-group");
+		infoButtonGroup.add(infoButton);
+		infoButtonGroup.add(downMenu);
+		infoButtonGroup.getElement().setAttribute("style", "margin-top:-10px;");
 	}
 	
 	
@@ -227,6 +325,16 @@ public class CQLButtonToolBar extends Composite {
 	 */
 	public Button getCloseButton(){
 		return closeButton;
+	}
+
+
+	public ButtonGroup getInfoButtonGroup() {
+		return infoButtonGroup;
+	}
+
+
+	public void setInfoButtonGroup(ButtonGroup infoButtonGroup) {
+		this.infoButtonGroup = infoButtonGroup;
 	}
 	
 }

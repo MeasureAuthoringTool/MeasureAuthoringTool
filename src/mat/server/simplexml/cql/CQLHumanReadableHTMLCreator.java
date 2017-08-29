@@ -1167,7 +1167,7 @@ public class CQLHumanReadableHTMLCreator {
 			mainDivElement.append("&nbsp;" + codeLineList.get(0));
 						
 			for (int i = 1; i < codeLineList.size(); i++) {
-				Element spanElemDefBody = getSpanElementWithClass(subDivElement,
+				Element spanElemDefBody = getPreElementWithClass(subDivElement,
 						"cql-definition-body");
 				spanElemDefBody.append(codeLineList.get(i));
 			}
@@ -1250,7 +1250,7 @@ public class CQLHumanReadableHTMLCreator {
 			codeDivElement.append("&nbsp;" + codeLineList.get(0));
 						
 			for (int i = 1; i < codeLineList.size(); i++) {
-				Element spanElemDefBody = getSpanElementWithClass(subDivElement,
+				Element spanElemDefBody = getPreElementWithClass(subDivElement,
 						"cql-definition-body");
 				spanElemDefBody.append(codeLineList.get(i));
 			}
@@ -1335,8 +1335,8 @@ public class CQLHumanReadableHTMLCreator {
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
+		 
 		return logic;
 	}
 	
@@ -1347,9 +1347,9 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param cssClassName the css class name
 	 * @return the span element with class
 	 */
-	private static Element getSpanElementWithClass(Element subLiElement,
+	private static Element getPreElementWithClass(Element subLiElement,
 			String cssClassName) {
-		Element spanElem = subLiElement.appendElement("span");
+		Element spanElem = subLiElement.appendElement("pre");
 		spanElem.attr("class", cssClassName);
 		return spanElem;
 	}

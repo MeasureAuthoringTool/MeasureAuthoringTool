@@ -24,7 +24,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.constants.Toggle;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
@@ -342,7 +341,13 @@ public class CQLFunctionsView {
 		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
 		funcVP.add(cellTablePanel);
-		funcVP.add(functionButtonBar);
+		
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.add(functionButtonBar.getInfoButtonGroup());
+		buttonPanel.add(functionButtonBar);
+		funcVP.add(buttonPanel);
+		
+	//	funcVP.add(functionButtonBar);
 	//	funcVP.add(new SpacerWidget());
 		funcVP.add(aceEditorPanel);
 		funcVP.add(new SpacerWidget());
@@ -370,7 +375,7 @@ public class CQLFunctionsView {
 		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:330px;");
 		functionButtonBar.getEraseButton().setMarginRight(5.00);
 		functionButtonBar.getInsertButton().setMarginRight(10.00);
-		functionButtonBar.getInfoButton().setMarginLeft(-10.00);
+		//functionButtonBar.getInfoButton().setMarginLeft(-10.00);
 		functionButtonBar.getDeleteButton().setMarginLeft(-10.00);
 	}
 	

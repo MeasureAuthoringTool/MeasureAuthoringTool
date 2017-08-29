@@ -332,6 +332,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void buildCodes();
 
+		void hideInformationDropDown();
+
 	}
 
 	/**
@@ -496,6 +498,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onHide(HideEvent hideEvent) {
 				resetAceEditor(searchDisplay.getCQLParametersView().getViewCQLAceEditor());
+				searchDisplay.getCQLParametersView().getParameterButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 
 			}
 		});		
@@ -529,7 +532,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCQLParametersView().getParameterAceEditor());
 			}
 		});
-		searchDisplay.getCQLParametersView().getParameterButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getCQLParametersView().getParameterButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -537,7 +540,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 			}
-		});
+		});*/
 
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
 
@@ -657,6 +660,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onHide(HideEvent hideEvent) {
 				resetAceEditor(searchDisplay.getCqlFunctionsView().getViewCQLAceEditor());
+				searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 
 			}
 		});
@@ -704,7 +708,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 
 		//Info Icon functionality for Function Section
-		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -712,7 +716,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 
 			}
-		});
+		});*/
 
 		//Delete functionality for Function Section
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
@@ -731,7 +735,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.hideAceEditorAutoCompletePopUp();
 				resetViewCQLCollapsiblePanel(searchDisplay.getCqlFunctionsView().getPanelViewCQLCollapse());
-				
+				searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
 				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, 
 						searchDisplay.getCqlFunctionsView(), searchDisplay.getCqlLeftNavBarPanelView(), 
@@ -771,7 +775,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
 				resetViewCQLCollapsiblePanel(searchDisplay.getCqlFunctionsView().getPanelViewCQLCollapse());
-				
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
@@ -892,6 +895,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onHide(HideEvent hideEvent) {
+				searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 				resetAceEditor(searchDisplay.getCQlDefinitionsView().getViewCQLAceEditor());
 
 			}
@@ -940,7 +944,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 		
 		//Definition section Information Functionality
-		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInfoButton().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -948,7 +952,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().buildInfoPanel((Widget) event.getSource());
 				
 			}	
-		});
+		});*/
 		
 		// Definition Delete Icon Functionality
 				searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
@@ -1879,6 +1883,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * when user clicks yes on warning message (Dirty Check).
 	 */
 	private void changeSectionSelection() {
+		searchDisplay.hideInformationDropDown();
 		// Unset current selected section.
 		switch (currentSection) {
 		case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
@@ -3355,6 +3360,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void parameterEvent() {
 		unsetActiveMenuItem(currentSection);
+		searchDisplay.hideInformationDropDown();
 		searchDisplay.getValueSetView().getCellTableMainPanel().clear();
 		searchDisplay.getCodesView().getCellTableMainPanel().clear();
 		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setActive(true);
@@ -3376,6 +3382,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void includesEvent() {
 		unsetActiveMenuItem(currentSection);
+		searchDisplay.hideInformationDropDown();
 		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 		searchDisplay.getValueSetView().getCellTableMainPanel().clear();
@@ -3400,6 +3407,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * codes event.
 	 */
 	private void codesEvent() {
+		searchDisplay.hideInformationDropDown();
 		// server
 		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
@@ -3434,6 +3442,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void definitionEvent() {
 		unsetActiveMenuItem(currentSection);
+		searchDisplay.hideInformationDropDown();
 		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 		searchDisplay.getValueSetView().getCellTableMainPanel().clear();
@@ -3461,6 +3470,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getCellTableMainPanel().clear();
 		searchDisplay.getCodesView().getCellTableMainPanel().clear();
 		unsetActiveMenuItem(currentSection);
+		searchDisplay.hideInformationDropDown();
 		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
 		searchDisplay.buildFunctionLibraryView();
@@ -3479,6 +3489,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Build View for View Cql when View Cql AnchorList item is clicked.
 	 */
 	private void viewCqlEvent() {
+		searchDisplay.hideInformationDropDown();
 		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 		searchDisplay.getValueSetView().getCellTableMainPanel().clear();

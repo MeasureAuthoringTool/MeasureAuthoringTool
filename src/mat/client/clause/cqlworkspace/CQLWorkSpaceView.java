@@ -495,6 +495,13 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlFunctionsView.hideAceEditorAutoCompletePopUp();
 	}
 	
+	@Override
+	public void hideInformationDropDown() {
+		cqlDefinitionsView.getDefineButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+		cqlParametersView.getParameterButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+		cqlFunctionsView.getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+	}
+	
 	/**
 	 * Unset each section selected object and clear Value sets CellTable Panel.
 	 */
@@ -527,6 +534,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
 		//cqlLeftNavBarPanelView.getDeleteConfirmationMessgeAlert().clearAlert();
 		hideAceEditorAutoCompletePopUp();
+		hideInformationDropDown();
 		resetFormGroups();
 	}
 

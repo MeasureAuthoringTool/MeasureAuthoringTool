@@ -173,7 +173,13 @@ public class CQLParametersView {
 		parameterVP.add(addNewButtonBar);
 		parameterVP.add(paramNameGroup);
 		parameterVP.add(paramCommentGroup);
-		parameterVP.add(parameterButtonBar);
+		
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.add(parameterButtonBar.getInfoButtonGroup());
+		buttonPanel.add(parameterButtonBar);
+		parameterVP.add(buttonPanel);
+		
+		//parameterVP.add(parameterButtonBar);
 		parameterVP.add(aceEditorPanel);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());

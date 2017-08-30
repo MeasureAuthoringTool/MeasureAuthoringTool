@@ -6147,7 +6147,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Override
 	public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject) {
-		
+
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, transferObject.getId())) {
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(transferObject.getId());
@@ -6155,22 +6155,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
 				if (result != null && result.isSuccess()) {
 					String newSavedXml = saveCQLCodesInMeasureXml(result, transferObject.getId());
-					if(!newSavedXml.isEmpty()){
-						CQLCodeWrapper wrapper = getCqlService().getCQLCodes(newSavedXml);
-						if(wrapper!= null && !wrapper.getCqlCodeList().isEmpty()){
-							result.setCqlCodeList(wrapper.getCqlCodeList());
-						}
+					if (!newSavedXml.isEmpty()) {
+
 						CQLCodeSystem codeSystem = new CQLCodeSystem();
 						codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
 						codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
 						codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
 						SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(newSavedXml, codeSystem);
-						if(updatedResult.isSuccess()) {
-							 saveCQLCodeSystemInMeasureXml(updatedResult, transferObject.getId());
+						if (updatedResult.isSuccess()) {
+							newSavedXml = saveCQLCodeSystemInMeasureXml(updatedResult, transferObject.getId());
 						}
-						
-						
-						
+						CQLCodeWrapper wrapper = getCqlService().getCQLCodes(newSavedXml);
+						if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
+							result.setCqlCodeList(wrapper.getCqlCodeList());
+						}
 					}
 				}
 

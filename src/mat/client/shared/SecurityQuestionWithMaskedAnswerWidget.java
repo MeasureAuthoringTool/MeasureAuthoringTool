@@ -95,18 +95,21 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		labelQns1.setText("Security Question 1");
 		labelQns1.setTitle("Security Question 1");
 		labelQns1.setId("SecurityQnsLabel1");
+		labelQns1.setFor("securityQuestion1ListBoxMVP");
 		labelQns1.setShowRequiredIndicator(true);
 		
 		FormLabel labelQns2 = new FormLabel();
 		labelQns2.setText("Security Question 2");
 		labelQns2.setTitle("Security Question 2");
 		labelQns2.setId("SecurityQnsLabel2");
+		labelQns2.setFor("securityQuestion2ListBoxMVP");
 		labelQns2.setShowRequiredIndicator(true);
 		
 		FormLabel labelQns3 = new FormLabel();
 		labelQns3.setText("Security Question 3");
 		labelQns3.setTitle("Security Question 3");
 		labelQns3.setId("SecurityQnsLabel3");
+		labelQns3.setFor("securityQuestion3ListBoxMVP");
 		labelQns3.setShowRequiredIndicator(true);
 		
 		
@@ -115,12 +118,14 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		labelAnswer1.setText("Security Answer 1");
 		labelAnswer1.setTitle("Security Answer 1");
 		labelAnswer1.setId("SecurityAnswerLabel1");
+		labelAnswer1.setFor("answer1TextBox");
 		labelAnswer1.setShowRequiredIndicator(true);
 		
 		FormLabel labelAnswer2 = new FormLabel();
 		labelAnswer2.setText("Security Answer 2");
 		labelAnswer2.setTitle("Security Answer 2");
 		labelAnswer2.setId("SecurityAnswerLabel2");
+		labelAnswer2.setFor("answer2TextBox");
 		labelAnswer2.setShowRequiredIndicator(true);
 		
 		
@@ -129,6 +134,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		labelAnswer3.setText("Security Answer 3");
 		labelAnswer3.setTitle("Security Answer 3");
 		labelAnswer3.setId("SecurityAnswerLabel3");
+		labelAnswer3.setFor("answer3TextBox");
 		labelAnswer3.setShowRequiredIndicator(true);
 		
 		securityQuestion1.setWidth("320px");

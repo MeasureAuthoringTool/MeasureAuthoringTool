@@ -69,7 +69,6 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		container.add(errorMessages);
 		container.add(successMessages);
 		
-		Form formSecurityQuestionAnswer = new Form();
 		FieldSet fieldSetQnA = new FieldSet();
 		fieldSetQnA.add(securityQuestionsWidget.getRulesGroup());
 		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns1FormGroup());
@@ -81,10 +80,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		
 		fieldSetQnA.add(passwordEditInfoWidget.getPasswordExistingGroup());
 		
-		formSecurityQuestionAnswer.add(fieldSetQnA);
-		
-		
-		container.add(formSecurityQuestionAnswer);
+		container.add(fieldSetQnA);
 		container.add(new SpacerWidget());
 		/*password.getElement().setId("password_ExistingPasswordTextBox");
 		container.add(LabelBuilder.buildRequiredLabel(password, "Enter existing password to confirm changes"));

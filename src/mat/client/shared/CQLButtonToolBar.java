@@ -155,7 +155,7 @@ public class CQLButtonToolBar extends Composite {
 		infoButton.setIconSize(IconSize.LARGE);
 		infoButton.setColor("#0964A2");
 		infoButton.setSize("120px", "30px");
-		infoButton.getElement().setAttribute("aria-label", "Information");
+		infoButton.getElement().setAttribute("aria-label", "Click to view available short cut keys information");
 		
 		infoButton.setToggleCaret(false);
 		infoButton.setDataToggle(Toggle.DROPDOWN);

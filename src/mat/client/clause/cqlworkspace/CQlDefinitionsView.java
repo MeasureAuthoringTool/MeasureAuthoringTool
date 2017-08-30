@@ -245,7 +245,7 @@ public class CQlDefinitionsView {
 	 * 
 	 */
 	public void setMarginInButtonBar() {
-		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:330px;");
+		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:280px;");
 		/*defineButtonBar.getSaveButton().setMarginRight(-15.00);*/
 		defineButtonBar.getEraseButton().setMarginRight(5.00);
 		defineButtonBar.getInsertButton().setMarginRight(10.00);

@@ -372,7 +372,7 @@ public class CQLFunctionsView {
 	 */
 	public void setMarginInButtonBar() {
 		
-		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:330px;");
+		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:280px;");
 		functionButtonBar.getEraseButton().setMarginRight(5.00);
 		functionButtonBar.getInsertButton().setMarginRight(10.00);
 		//functionButtonBar.getInfoButton().setMarginLeft(-10.00);

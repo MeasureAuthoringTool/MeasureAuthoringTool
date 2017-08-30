@@ -149,12 +149,12 @@ public class CQLButtonToolBar extends Composite {
 		infoButton.setType(ButtonType.LINK);
 		infoButton.getElement().setId("infoButton_"+sectionName);
 		infoButton.setMarginTop(10);
-		infoButton.setTitle("Click to view available short cut's information");
+		infoButton.setTitle("Click to view available short cut keys information");
 		infoButton.setText("Information");
 		infoButton.setIcon(IconType.INFO_CIRCLE);
 		infoButton.setIconSize(IconSize.LARGE);
 		infoButton.setColor("#0964A2");
-		infoButton.setSize("70px", "30px");
+		infoButton.setSize("120px", "30px");
 		infoButton.getElement().setAttribute("aria-label", "Information");
 		
 		infoButton.setToggleCaret(false);
@@ -233,6 +233,7 @@ public class CQLButtonToolBar extends Composite {
 		downMenu.add(item9);
 		//infoButtonGroup.setDropUp(true);
 		infoButtonGroup.getElement().setAttribute("class", "btn-group");
+		
 		infoButtonGroup.add(infoButton);
 		infoButtonGroup.add(downMenu);
 		infoButtonGroup.getElement().setAttribute("style", "margin-top:-10px;");

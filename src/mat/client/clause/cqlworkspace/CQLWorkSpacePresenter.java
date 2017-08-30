@@ -3161,6 +3161,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					event.stopPropagation();
 				} else {
 					codesEvent();
+					//508 : Shift focus to code search panel.
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 				}
 			}
 		});
@@ -4229,6 +4231,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to delete.");
 					
 				}
+				
+				//508 : Shift focus to code search panel.
+				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 		});
 	}
@@ -4465,7 +4470,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					//508 Compliance for Codes section
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 				}
 			}
 		});
@@ -4536,6 +4541,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 				}
 				//getUsedCodes();
+				
+				//508 : Shift focus to code search panel.
+				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 				
 			}
 			
@@ -4817,6 +4825,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 			 }
 				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+				
+				//508 : Shift focus to code search panel.
+				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 		});
 

@@ -3574,6 +3574,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Unable to delete.");
 					
 				}
+				
+				//508 : Shift focus to code search panel.
+				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 		});
 	}
@@ -3946,6 +3949,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					event.stopPropagation();
 				} else {
 					codesEvent();
+					//508 : Shift focus to code search panel.
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 				}
 
 			}
@@ -4386,7 +4391,7 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.resetMessageDisplay();
 					addNewCodes();
 					//508 Compliance for Codes section
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 				}
 				
 			}
@@ -4400,7 +4405,7 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					//508 Compliance for Codes section
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 				}
 			}
 		});
@@ -4462,6 +4467,9 @@ private void addCodeSearchPanelHandlers() {
 					}
 				}
 				//getUsedCodes();
+
+				//508 : Shift focus to code search panel.
+				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 			
 			@Override
@@ -4777,6 +4785,9 @@ private void addCodeSearchPanelHandlers() {
 					 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				 }
 				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+				
+				//508 : Shift focus to code search panel.
+				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 		});
 	}

@@ -1725,7 +1725,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 										}
 									});
 							isMeasureVersioned = true;
-							fireSuccessfullVersionEvent(isMeasureVersioned,measureName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName));
+							fireSuccessfullVersionEvent(isMeasureVersioned,measureName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
 						} else {
 							isMeasureVersioned = false;
 							if (result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {

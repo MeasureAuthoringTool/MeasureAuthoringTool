@@ -3566,11 +3566,11 @@ public class MessageDelegate {
 		return "You have created a new library "+libraryName+". Please click continue to navigate to the CQL Composer.";
 	}
 	
-	public String getVersionSuccessfulMessage(String name){
+	public String getVersionSuccessfulMessage(String name, String version){
 		if(name.length() >= 60){
 			name = name.substring(0, 59);
 		}
-		return "Version of "+name+" has been successfully created.";
+		return name + " v" + version + " has been successfully created.";
 	}
 
 	public String getINVALID_QDM_VERSION_IN_INCLUDES() {

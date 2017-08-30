@@ -986,7 +986,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 										}
 									});
 							isCqlLibraryVersioned = true;
-							fireSuccessfullVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName));
+							fireSuccessfullVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
 						} else {
 							isCqlLibraryVersioned = false;
 							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){

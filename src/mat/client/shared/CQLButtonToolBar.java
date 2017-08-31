@@ -165,6 +165,7 @@ public class CQLButtonToolBar extends Composite {
 		AnchorListItem item1= new AnchorListItem("Ctrl-Alt-a: attributes");
 		item1.setTitle("Ctrl-Alt-a: attributes");
 		item1.setHref("#");
+		
 		AnchorListItem item2= new AnchorListItem("Ctrl-Alt-y: datatypes");
 		item2.setHref("#");
 		item2.setTitle("Ctrl-Alt-y: datatypes");
@@ -193,31 +194,39 @@ public class CQLButtonToolBar extends Composite {
 		
 		Anchor itemAnchor1 = (Anchor) (item1.getWidget(0));
 		itemAnchor1.getElement().setAttribute("style", "cursor:text");
+		itemAnchor1.getElement().setAttribute("aria-label", "Ctrl-Alt-a: attributes");
 		
 		Anchor itemAnchor2 = (Anchor) (item2.getWidget(0));
 		itemAnchor2.getElement().setAttribute("style", "cursor:text");
+		itemAnchor2.getElement().setAttribute("aria-label", "Ctrl-Alt-y: datatypes");
 		
 		Anchor itemAnchor3 = (Anchor) (item3.getWidget(0));
 		itemAnchor3.getElement().setAttribute("style", "cursor:text");
+		itemAnchor3.getElement().setAttribute("aria-label", "Ctrl-Alt-d: definitions");
 		
 		Anchor itemAnchor4 = (Anchor) (item4.getWidget(0));
 		itemAnchor4.getElement().setAttribute("style", "cursor:text");
+		itemAnchor4.getElement().setAttribute("aria-label", "Ctrl-Alt-f: functions");
 		
 		Anchor itemAnchor5 = (Anchor) (item5.getWidget(0));
 		itemAnchor5.getElement().setAttribute("style", "cursor:text");
+		itemAnchor5.getElement().setAttribute("aria-label", "Ctrl-Alt-k: keywords");
 		
 		Anchor itemAnchor6 = (Anchor) (item6.getWidget(0));
 		itemAnchor6.getElement().setAttribute("style", "cursor:text");
+		itemAnchor6.getElement().setAttribute("aria-label", "Ctrl-Alt-p: parameters");
 		
 		Anchor itemAnchor7 = (Anchor) (item7.getWidget(0));
 		itemAnchor7.getElement().setAttribute("style", "cursor:text");
+		itemAnchor7.getElement().setAttribute("aria-label", "Ctrl-Alt-t: timings");
 		
 		Anchor itemAnchor8 = (Anchor) (item8.getWidget(0));
 		itemAnchor8.getElement().setAttribute("style", "cursor:text");
+		itemAnchor8.getElement().setAttribute("aria-label", "Ctrl-Alt-v: value sets & codes");
 		
 		Anchor itemAnchor9 = (Anchor) (item9.getWidget(0));
 		itemAnchor9.getElement().setAttribute("style", "cursor:text");
-		
+		itemAnchor9.getElement().setAttribute("aria-label", "Ctrl-Space: all");
 		
 		downMenu.setWidth("50px");
 		downMenu.getElement().setAttribute("style", "font-size:small;");

@@ -73,7 +73,7 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		mainPanel.add(new SpacerWidget());
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
-		containerPanel.setHeading("Administrator Reports", "");
+		containerPanel.setHeading("Administrator Reports", "AdminReports");
 	}
 	/**
 	 * Add Columns to Report Table.

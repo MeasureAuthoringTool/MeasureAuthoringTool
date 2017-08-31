@@ -1271,12 +1271,12 @@ public class CqlLibraryPresenter implements MatPresenter {
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "My CQL Library > History";
 		panel.getButtonPanel().clear();
-		panel.setHeading(heading, "CQL Library");
+		panel.setHeading(heading, "CQLLibrary");
 		searchHistory(cqlLibraryId, startIndex, pageSize);
 		historyDisplay.setCQLLibraryId(cqlLibraryId);
 		historyDisplay.setCQLLibraryName(cqlLibraryName);
 		panel.setContent(historyDisplay.asWidget());
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists("CQLLibrary");
 	}
 
 	/**

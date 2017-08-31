@@ -323,4 +323,12 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	public void setErrorMessageDisplay(MessageAlert errorMessageDisplay) {
 		this.errorMessageDisplay = errorMessageDisplay;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageOrganizationPresenter.SearchDisplay#setTitle(java.lang.String)
+	 */
+	@Override
+	public void setTitle(String title) {
+		containerPanel.setHeading(title, "Manage Organizations");
+	}
 }

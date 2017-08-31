@@ -91,10 +91,35 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		/** Gets the select id for edit tool.
 		 * @return the select id for edit tool */
 		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
+		
+		/**
+		 * Sets the observer.
+		 *
+		 * @param observer the new observer
+		 */
 		//Button getGenerateCSVFileButton();
 		void setObserver(Observer observer);
+		
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
 		MessageAlert getSuccessMessageDisplay();
+		
+		/**
+		 * Gets the error message display.
+		 *
+		 * @return the error message display
+		 */
 		MessageAlert getErrorMessageDisplay();
+		
+		/**
+		 * Sets the title.
+		 *
+		 * @param title the new title
+		 */
+		void setTitle(String title);
 	}
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
@@ -215,6 +240,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		panel.add(searchDisplay.asWidget());
 		searchDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		searchDisplay.setTitle("");
 		search("");
 	}
 	/**

@@ -44,6 +44,7 @@ import mat.client.util.MatTextBox;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageUsersPresenter.
  */
@@ -104,7 +105,19 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		HasValue<String> getSearchString();
 
+		/**
+		 * Sets the observer.
+		 *
+		 * @param observer the new observer
+		 */
 		void setObserver(Observer observer);
+
+		/**
+		 * Sets the title.
+		 *
+		 * @param title the new title
+		 */
+		void setTitle(String title);
 	}
 
 	/**
@@ -315,23 +328,66 @@ public class ManageUsersPresenter implements MatPresenter {
 
 		// Label getExpLabel();
 
+		/**
+		 * Gets the information message display.
+		 *
+		 * @return the information message display
+		 */
 		MessageAlert getInformationMessageDisplay();
 
+		/**
+		 * Gets the revoke date.
+		 *
+		 * @return the revoke date
+		 */
 		Label getRevokeDate();
 
+		/**
+		 * Sets the revoke date.
+		 *
+		 * @param revokeDate the new revoke date
+		 */
 		void setRevokeDate(Label revokeDate);
 
+		/**
+		 * Gets the adds the info area.
+		 *
+		 * @return the adds the info area
+		 */
 		CustomTextAreaWithMaxLength getAddInfoArea();
 
+		/**
+		 * Sets the adds the info area.
+		 *
+		 * @param addInfoArea the new adds the info area
+		 */
 		void setAddInfoArea(CustomTextAreaWithMaxLength addInfoArea);
 
+		/**
+		 * Sets the show admin notes.
+		 *
+		 * @param b the new show admin notes
+		 */
 		void setShowAdminNotes(boolean b);
 	}
 
+	/**
+	 * The Interface HistoryDisplay.
+	 */
 	public static interface HistoryDisplay {
 
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		public Widget asWidget();
 
+		/**
+		 * Gets the user id.
+		 *
+		 * @return the user id
+		 */
 		public String getUserId();
 
 		/**
@@ -348,6 +404,11 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getReturnToLink();
 
+		/**
+		 * Sets the user id.
+		 *
+		 * @param id the new user id
+		 */
 		public void setUserId(String id);
 
 		/**
@@ -394,6 +455,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	/** The detail display. */
 	private DetailDisplay detailDisplay;
 
+	/** The history display. */
 	private HistoryDisplay historyDisplay;
 
 	/** The current details. */
@@ -405,17 +467,18 @@ public class ManageUsersPresenter implements MatPresenter {
 	/** The last search key. */
 	private String lastSearchKey;
 
+	/** The is personal info modified. */
 	private boolean isPersonalInfoModified = false;
 
+	/** The updated details. */
 	private ManageUsersDetailModel updatedDetails;
 
 	/**
 	 * Instantiates a new manage users presenter.
-	 * 
-	 * @param sDisplayArg
-	 *            the s display arg
-	 * @param dDisplayArg
-	 *            the d display arg
+	 *
+	 * @param sDisplayArg            the s display arg
+	 * @param dDisplayArg            the d display arg
+	 * @param hDisplayArg the h display arg
 	 */
 	public ManageUsersPresenter(SearchDisplay sDisplayArg,
 			DetailDisplay dDisplayArg, HistoryDisplay hDisplayArg) {
@@ -543,6 +606,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		// panel.clear();
 		panel.setContent(searchDisplay.asWidget());
 		panel.setHeading("", "");
+		searchDisplay.setTitle("");
 		search("");
 	}
 
@@ -755,6 +819,11 @@ public class ManageUsersPresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * On new user creation.
+	 *
+	 * @param emailId the email id
+	 */
 	public void onNewUserCreation(String emailId){
 		detailDisplay.setTitle("Update a User");
 		detailDisplay.getAddInfoArea().setText("");
@@ -787,6 +856,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Checks if is user details modified.
+	 */
 	// check if personal info is changed
 	private void isUserDetailsModified() {
 
@@ -840,6 +912,8 @@ public class ManageUsersPresenter implements MatPresenter {
 
 	/**
 	 * Generate csv of active user emails.
+	 *
+	 * @param name the name
 	 */
 	/*
 	 * private void generateCSVOfActiveUserEmails() { String url =
@@ -1137,6 +1211,11 @@ public class ManageUsersPresenter implements MatPresenter {
 		return vPanel;
 	}
 
+	/**
+	 * History display handlers.
+	 *
+	 * @param historyDisplay the history display
+	 */
 	private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
 
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
@@ -1168,6 +1247,12 @@ public class ManageUsersPresenter implements MatPresenter {
 		return valid;
 	}
 
+	/**
+	 * Display history.
+	 *
+	 * @param userId the user id
+	 * @param userName the user name
+	 */
 	private void displayHistory(String userId, String userName) {
 
 		searchUserHistory(userId);
@@ -1178,6 +1263,11 @@ public class ManageUsersPresenter implements MatPresenter {
 		Mat.focusSkipLists("UserLibrary");
 	}
 
+	/**
+	 * Search user history.
+	 *
+	 * @param userId the user id
+	 */
 	private void searchUserHistory(String userId) {
 
 		MatContext

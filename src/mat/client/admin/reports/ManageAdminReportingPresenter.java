@@ -1,4 +1,5 @@
 package mat.client.admin.reports;
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.reports.ManageAdminReportingView.Observer;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -91,6 +92,7 @@ public class ManageAdminReportingPresenter implements MatPresenter {
 	public void beforeDisplay() {
 		fp.add(display.asWidget());
 		adminContentWidget.add(fp);
+		Mat.focusSkipLists("AdminReports");
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()

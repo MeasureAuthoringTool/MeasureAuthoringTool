@@ -317,7 +317,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "CQL Library > History";
 		panel.getButtonPanel().clear();
-		panel.setHeading(heading, "CQL Library");
+		panel.setHeading(heading, "CQLLibraryOwnership");
 		searchHistory(cqlLibraryId, startIndex, pageSize);
 		historyDisplay.setCQLLibraryId(cqlLibraryId);
 		historyDisplay.setCQLLibraryName(cqlLibraryName);

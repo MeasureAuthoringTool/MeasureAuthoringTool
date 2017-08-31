@@ -47,6 +47,7 @@ import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 
+// TODO: Auto-generated Javadoc
 /**ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay.**/
 public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay, HasSelectionHandlers<ManageUsersSearchModel.Result> {
 	/** MARGIN Value used in constructor for button panel , search label and search text box. */
@@ -76,8 +77,16 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	private Observer observer;
 	
 	
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
 		
+		/**
+		 * On history clicked.
+		 *
+		 * @param result the result
+		 */
 		void onHistoryClicked(Result result);
 	}
 	
@@ -104,8 +113,13 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
 	}
-	/** @param cellTable
-	 * @return */
+	
+	/**
+	 * Adds the column to table.
+	 *
+	 * @param cellTable the cell table
+	 * @return the cell table
+	 */
 	private CellTable<Result> addColumnToTable(final CellTable<Result> cellTable) {
 		Label cellTableCaption = new Label("Manage Users");
 		cellTableCaption.getElement().setId("manageUserCellTableCaption_Label");
@@ -179,6 +193,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		cellTable.addColumn(statusColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Status\">" + "Status" + "</span>"));
 		return cellTable;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<ManageUsersSearchModel.Result> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
@@ -228,6 +246,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(spager);
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
@@ -268,8 +290,20 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		return this;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#setObserver(mat.client.admin.ManageUsersSearchView.Observer)
+	 */
 	@Override
 	public void setObserver(Observer observer){
 		this.observer = observer;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#setTitle(java.lang.String)
+	 */
+	@Override
+	public void setTitle(String title) {
+		containerPanel.setHeading(title, "Manage Users");
+	}
+	
 }

@@ -26,30 +26,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
@@ -141,6 +117,30 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -5952,11 +5952,100 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result = getCqlService().deleteDefinition(xmlModel.getXml(), toBeDeletedObj, definitionList);
 				if(result.isSuccess()){
 					xmlModel.setXml(result.getXml());
+					cleanPopulationsAndGroups(toBeDeletedObj, xmlModel);
 					getService().saveMeasureXml(xmlModel);
 				}
 			}
 		}
 		return result;
+	}
+	
+private void cleanPopulationsAndGroups(CQLDefinition toBeDeletedObj, MeasureXmlModel xmlModel) {
+		
+		List<String> deletedClauseUUIDs = new ArrayList<String>();
+		
+		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+		try {
+			
+			//find all <populations with this definition
+			String populationXPath = "/measure/populations//cqldefinition[@uuid='" + toBeDeletedObj.getId() + "']";
+			NodeList cqlDefinitionNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), populationXPath);
+			
+			for(int i=0;i<cqlDefinitionNodeList.getLength();i++){
+				Node node = cqlDefinitionNodeList.item(i);
+				Node parentClauseNode = node.getParentNode();
+				String clauseUUID = parentClauseNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				
+				if(parentClauseNode.getAttributes().getNamedItem("displayName").getNodeValue().endsWith("1")){
+					parentClauseNode.removeChild(node);
+				}else{
+					parentClauseNode.getParentNode().removeChild(parentClauseNode);
+				}
+				
+				deletedClauseUUIDs.add(clauseUUID);
+			}
+			
+			//find all <stratification with this definition
+			String stratificationXPath = "/measure/strata/stratification/clause[cqldefinition/@uuid='" + toBeDeletedObj.getId() +  "']";
+			NodeList stratiClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), stratificationXPath);
+			
+			for(int i=0;i<stratiClauseNodeList.getLength();i++){
+				Node clauseNode = stratiClauseNodeList.item(i);
+				Node stratiNode = clauseNode.getParentNode();
+				
+				String clauseName = clauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				String stratiName = stratiNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				
+				if(stratiName.endsWith("1") && clauseName.endsWith("1")){
+					clauseNode.removeChild(clauseNode.getFirstChild());
+				}else{
+					stratiNode.removeChild(clauseNode);
+				}
+				
+				if(stratiNode.getChildNodes().getLength() == 0){
+					String stratiUUID = stratiNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					if(!stratiName.endsWith("1")){
+						stratiNode.getParentNode().removeChild(stratiNode);
+					}					
+					deletedClauseUUIDs.add(stratiUUID);
+				}
+			}
+			
+			String supplementalXPath = "/measure/supplementalDataElements/cqldefinition[@uuid='" + toBeDeletedObj.getId() +  "']";
+			String riskAdjXPath = "/measure/riskAdjustmentVariables/cqldefinition[@uuid='" + toBeDeletedObj.getId() +  "']";
+			
+			Node suppDefNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), supplementalXPath);
+			if(suppDefNode != null){
+				suppDefNode.getParentNode().removeChild(suppDefNode);
+			}
+			
+			Node riskDefNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), riskAdjXPath);
+			if(riskDefNode != null){
+				riskDefNode.getParentNode().removeChild(riskDefNode);
+			}
+			
+			//remove groupings if they contain deleted populations/strtifications
+			if(deletedClauseUUIDs.size() > 0){
+				for(String clauseUUID:deletedClauseUUIDs){
+					String groupingXPath = "/measure/measureGrouping/group[packageClause/@uuid='" + clauseUUID + "']";
+					
+					NodeList groupNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), groupingXPath);
+					
+					for(int i=0;i<groupNodeList.getLength();i++){
+						Node groupNode = groupNodeList.item(i);
+						groupNode.getParentNode().removeChild(groupNode);
+					}
+				}
+			}
+			
+			if((deletedClauseUUIDs.size() > 0) || (suppDefNode != null) || (riskDefNode != null)){
+				xmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			}
+					
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -5971,11 +6060,60 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				result = getCqlService().deleteFunctions(xmlModel.getXml(), toBeDeletedObj, functionsList);
 				if(result.isSuccess()){
 					xmlModel.setXml(result.getXml());
+					cleanMsrObservationsAndGroups(toBeDeletedObj, xmlModel);
 					getService().saveMeasureXml(xmlModel);
 				}
 			}
 		}
 		return result;
+	}
+	
+	private void cleanMsrObservationsAndGroups(CQLFunctions toBeDeletedObj,
+			MeasureXmlModel xmlModel) {
+		
+		List<String> deletedClauseUUIDs = new ArrayList<String>();
+		
+		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+		
+		try{
+			
+			//find all <measureObservations with this function
+			String msrObsClauseXPath = "/measure/measureObservations/clause[//cqlfunction/@uuid='" + toBeDeletedObj.getId() +  "']";
+			NodeList msrObsClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), msrObsClauseXPath);
+			
+			for(int i=0;i<msrObsClauseNodeList.getLength();i++){
+				Node clauseNode = msrObsClauseNodeList.item(i);
+				String uuid = clauseNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				String displayName = clauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				
+				if(displayName.endsWith("1")){
+					clauseNode.removeChild(clauseNode.getFirstChild());
+				}else{
+					clauseNode.getParentNode().removeChild(clauseNode);
+				}
+				deletedClauseUUIDs.add(uuid);
+			}
+			
+			//remove groupings if they contain deleted measureObservations
+			if(deletedClauseUUIDs.size() > 0){
+				for(String clauseUUID:deletedClauseUUIDs){
+					String groupingXPath = "/measure/measureGrouping/group[packageClause/@uuid='" + clauseUUID + "']";
+					
+					NodeList groupNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), groupingXPath);
+					
+					for(int i=0;i<groupNodeList.getLength();i++){
+						Node groupNode = groupNodeList.item(i);
+						groupNode.getParentNode().removeChild(groupNode);
+					}
+				}
+								
+				xmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			}
+			
+		}catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 	}
 
 	@Override

@@ -1219,6 +1219,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				int startIndex = 1;
 				cqlLibraryDeletion = false;
+				isCqlLibraryVersioned = false;
 				cqlLibraryView.getErrorMessageAlert().clearAlert();
 				cqlLibraryView.getSuccessMessageAlert().clearAlert();
 				int filter = cqlLibraryView.getSelectedFilter();

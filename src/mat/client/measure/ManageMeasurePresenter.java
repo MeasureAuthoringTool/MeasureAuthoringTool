@@ -2160,6 +2160,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				int startIndex = 1;
 				measureDeletion = false;
+				isMeasureVersioned = false;
 				searchDisplay.getErrorMeasureDeletion().clearAlert();
 				searchDisplay.getSuccessMeasureDeletion().clearAlert();
 				searchDisplay.getErrorMessageDisplay().clearAlert();

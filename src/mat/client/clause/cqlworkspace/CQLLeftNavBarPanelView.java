@@ -954,7 +954,8 @@ public class CQLLeftNavBarPanelView {
 				for (int i = 0; i < listBox.getItemCount(); i++) {
 					if (selectedQDMName.equals(listBox.getItemText(i))) {
 						listBox.setItemSelected(i, true);
-
+						//listBox.setSelectedIndex(i);
+						listBox.setFocus(true);
 						break;
 					}
 				}
@@ -1348,6 +1349,7 @@ public class CQLLeftNavBarPanelView {
 	public void updateNewSuggestIncLibOracle() {
 		if (searchSuggestIncludeTextBox != null) {
 			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(includeLibraryNameMap.values());
+			
 		}
 	}
 

@@ -43,6 +43,10 @@ import mat.shared.CQLIdentifierObject;
  */
 public class InsertIntoAceEditorDialogBox {
 	
+	private static final String ITEM_NAME_DATA_TYPE_ALERT = "Item Name dropdown is enabled. Data Type dropdown now available.";
+
+	private static final String ITEM_NAME_ALERT = "Item Name dropdown is now enabled.";
+
 	/**
 	 * List of availableInsertItemList.
 	 */
@@ -55,9 +59,11 @@ public class InsertIntoAceEditorDialogBox {
 	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 	
 	private static List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
-
-
 	
+	private static FormGroup messageHelpFormGroup = new FormGroup(); 
+	
+	private static HelpBlock messageHelpBlock = new HelpBlock(); 
+
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
@@ -144,8 +150,18 @@ public class InsertIntoAceEditorDialogBox {
 		// message Form group
 		final FormGroup messageFormgroup = new FormGroup();
 		final HelpBlock helpBlock = new HelpBlock();
+		
 		messageFormgroup.add(helpBlock);
 		messageFormgroup.getElement().setAttribute("role", "alert");
+		
+		messageHelpBlock.setHeight("0px");
+		messageHelpBlock = new HelpBlock(); 
+		messageHelpFormGroup = new FormGroup(); 
+		messageHelpFormGroup.setHeight("0px");
+		messageHelpFormGroup.add(messageHelpBlock);
+		messageHelpFormGroup.getElement().setAttribute("role", "alert");
+		
+		
 		// CQL Data Type Drop down Form group
 		final FormGroup availableItemTypeFormGroup = new FormGroup();
 		FormLabel availableParamFormLabel = new FormLabel();
@@ -173,6 +189,7 @@ public class InsertIntoAceEditorDialogBox {
 		dataTypeListFormGroup.setVisible(false);
 		
 		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(messageHelpFormGroup);
 		formFieldSet.add(messageFormgroup);
 		formFieldSet.add(availableItemTypeFormGroup);
 		formFieldSet.add(selectItemListFormGroup);
@@ -394,6 +411,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();
+						alertUserItemNameFieldEnabled(listAllItemNames);
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
@@ -410,6 +428,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();
+						alertUserItemNameFieldEnabled(listAllItemNames);
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
@@ -428,6 +447,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();
+						alertUserItemNameFieldEnabled(listAllItemNames);
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
@@ -444,6 +464,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();
+						alertUserItemNameFieldEnabled(listAllItemNames);
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
@@ -452,6 +473,8 @@ public class InsertIntoAceEditorDialogBox {
 							listAllItemNames.addItem(cqlFunctionsList.get(i));
 						}
 					} else if (itemTypeSelected.equalsIgnoreCase("Applied Value Sets/Codes")) {
+						messageHelpBlock.setColor("transparent");
+						messageHelpBlock.setText(ITEM_NAME_DATA_TYPE_ALERT);
 						dataTypeFormGroup.setVisible(true);
 						listAllItemNames.clear();
 						availableDatatypes.clear();
@@ -488,6 +511,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.clear();
 						availableDatatypes.clear();
 						availableAttributesToInsert.clear();
+						alertUserItemNameFieldEnabled(listAllItemNames);
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
@@ -567,8 +591,14 @@ public class InsertIntoAceEditorDialogBox {
 				messageFormgroup.setValidationState(ValidationState.NONE);
 			}
 		});
+	}
+	
+	private static void alertUserItemNameFieldEnabled(final ListBoxMVP listAllItemNames) {
+		messageHelpBlock.setColor("transparent");
 		
-		
+		if(!listAllItemNames.isEnabled()) {
+			messageHelpBlock.setText(ITEM_NAME_ALERT);
+		}
 		
 	}
 private static void getAllAttibutesByDataType(final ListBoxMVP availableAttributesToInsert, String dataType){

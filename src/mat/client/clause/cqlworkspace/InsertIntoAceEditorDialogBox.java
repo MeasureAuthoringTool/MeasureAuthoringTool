@@ -97,6 +97,7 @@ public class InsertIntoAceEditorDialogBox {
 	 */
 	public static  void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
 		final Modal dialogModal = new Modal();
+		dialogModal.getElement().setAttribute("role", "dialog");
 		dialogModal.setTitle("Insert Item into CQL Editor");
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);

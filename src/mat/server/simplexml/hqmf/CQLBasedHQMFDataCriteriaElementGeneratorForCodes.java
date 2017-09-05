@@ -243,7 +243,11 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 		dataCriteriaElem.appendChild(templateId);
 		Element itemChild = dataCriteriaXMLProcessor.getOriginalDoc().createElement(ITEM);
 		itemChild.setAttribute(ROOT, oidValue);
-		if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
+		if(templateNode.getAttributes().getNamedItem("specificExtensionValue") != null){
+			String specificExtensionValue = templateNode.getAttributes().getNamedItem("specificExtensionValue").getNodeValue();
+			itemChild.setAttribute("extension", specificExtensionValue);
+		}
+		else if (templateNode.getAttributes().getNamedItem("addExtensionInTemplate") == null) {
 			itemChild.setAttribute("extension", extensionValue);
 		}
 		templateId.appendChild(itemChild);

@@ -5960,7 +5960,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 	
-private void cleanPopulationsAndGroups(CQLDefinition toBeDeletedObj, MeasureXmlModel xmlModel) {
+	private void cleanPopulationsAndGroups(CQLDefinition toBeDeletedObj, MeasureXmlModel xmlModel) {
 		
 		List<String> deletedClauseUUIDs = new ArrayList<String>();
 		
@@ -5976,12 +5976,7 @@ private void cleanPopulationsAndGroups(CQLDefinition toBeDeletedObj, MeasureXmlM
 				Node parentClauseNode = node.getParentNode();
 				String clauseUUID = parentClauseNode.getAttributes().getNamedItem("uuid").getNodeValue();
 				
-				if(parentClauseNode.getAttributes().getNamedItem("displayName").getNodeValue().endsWith("1")){
-					parentClauseNode.removeChild(node);
-				}else{
-					parentClauseNode.getParentNode().removeChild(parentClauseNode);
-				}
-				
+				parentClauseNode.removeChild(node);				
 				deletedClauseUUIDs.add(clauseUUID);
 			}
 			
@@ -5993,22 +5988,10 @@ private void cleanPopulationsAndGroups(CQLDefinition toBeDeletedObj, MeasureXmlM
 				Node clauseNode = stratiClauseNodeList.item(i);
 				Node stratiNode = clauseNode.getParentNode();
 				
-				String clauseName = clauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
-				String stratiName = stratiNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				clauseNode.removeChild(clauseNode.getFirstChild());
 				
-				if(stratiName.endsWith("1") && clauseName.endsWith("1")){
-					clauseNode.removeChild(clauseNode.getFirstChild());
-				}else{
-					stratiNode.removeChild(clauseNode);
-				}
-				
-				if(stratiNode.getChildNodes().getLength() == 0){
-					String stratiUUID = stratiNode.getAttributes().getNamedItem("uuid").getNodeValue();
-					if(!stratiName.endsWith("1")){
-						stratiNode.getParentNode().removeChild(stratiNode);
-					}					
-					deletedClauseUUIDs.add(stratiUUID);
-				}
+				String stratiUUID = stratiNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				deletedClauseUUIDs.add(stratiUUID);
 			}
 			
 			String supplementalXPath = "/measure/supplementalDataElements/cqldefinition[@uuid='" + toBeDeletedObj.getId() +  "']";
@@ -6084,13 +6067,8 @@ private void cleanPopulationsAndGroups(CQLDefinition toBeDeletedObj, MeasureXmlM
 			for(int i=0;i<msrObsClauseNodeList.getLength();i++){
 				Node clauseNode = msrObsClauseNodeList.item(i);
 				String uuid = clauseNode.getAttributes().getNamedItem("uuid").getNodeValue();
-				String displayName = clauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
-				
-				if(displayName.endsWith("1")){
-					clauseNode.removeChild(clauseNode.getFirstChild());
-				}else{
-					clauseNode.getParentNode().removeChild(clauseNode);
-				}
+								
+				clauseNode.removeChild(clauseNode.getFirstChild());
 				deletedClauseUUIDs.add(uuid);
 			}
 			

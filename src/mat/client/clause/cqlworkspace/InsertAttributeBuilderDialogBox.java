@@ -520,7 +520,7 @@ private static void clearAllFormGroups() {
 		UnitsLabel.setText("Units");
 		UnitsLabel.setTitle("Select Units");
 		UnitsLabel.setStyleName("attr-Label");
-		UnitsLabel.setFor("Units");
+		UnitsLabel.setFor("Units_listBox");
 		
 		unitFormGroup.clear();
 		unitFormGroup.add(UnitsLabel);
@@ -575,7 +575,7 @@ private static void clearAllFormGroups() {
 		AttrDataTypeLabel.setText("Attributes By DataType");
 		AttrDataTypeLabel.setTitle("Select Attributes By DataType");
 		AttrDataTypeLabel.setStyleName("attr-Label");
-		AttrDataTypeLabel.setFor("ListAttributesByDataType");
+		AttrDataTypeLabel.setFor("DataTypeBtAtrr_listBox");
 
 		dtFormGroup.clear();
 		dtFormGroup.add(AttrDataTypeLabel);
@@ -605,7 +605,7 @@ private static void clearAllFormGroups() {
 		AttributeLabel.setText("Attributes");
 		AttributeLabel.setTitle("Select Attributes");
 		AttributeLabel.setStyleName("attr-Label");
-		AttributeLabel.setFor("SelectAttributes");
+		AttributeLabel.setFor("Atrr_listBox");
 
 		attrFormGroup.clear();
 		attrFormGroup.add(AttributeLabel);
@@ -638,7 +638,7 @@ private static void clearAllFormGroups() {
 		ModeLabel.setText("Mode");
 		ModeLabel.setTitle("Select Mode");
 		ModeLabel.setStyleName("attr-Label");
-		ModeLabel.setFor("SelectMode");
+		ModeLabel.setFor("Mode_listBox");
 		
 		modeFormGroup.clear();
 		modeFormGroup.add(ModeLabel);
@@ -671,7 +671,7 @@ private static void clearAllFormGroups() {
 		ModeDetailsLabel.setText("Mode Details");
 		ModeDetailsLabel.setTitle("Select Mode Details");
 		ModeDetailsLabel.setStyleName("attr-Label");
-		ModeDetailsLabel.setFor("SelectModeDetails");
+		ModeDetailsLabel.setFor("ModeDetails_listBox");
 		
 		modeDetailsFormGroup.clear();
 		modeDetailsFormGroup.add(ModeDetailsLabel);

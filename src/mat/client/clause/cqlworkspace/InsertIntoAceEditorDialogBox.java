@@ -168,7 +168,7 @@ public class InsertIntoAceEditorDialogBox {
 		FormLabel availableParamFormLabel = new FormLabel();
 		availableParamFormLabel.setText("Item Type");
 		availableParamFormLabel.setTitle("Select Item type to insert");
-		availableParamFormLabel.setFor("listAvailableItemType");
+		availableParamFormLabel.setFor("availableItemToInsert_ListBox");
 		availableItemTypeFormGroup.add(availableParamFormLabel);
 		availableItemTypeFormGroup.add(availableItemToInsert);
 		
@@ -176,7 +176,7 @@ public class InsertIntoAceEditorDialogBox {
 		FormLabel selectItemListFormLabel = new FormLabel();
 		selectItemListFormLabel.setText("Item Name");
 		selectItemListFormLabel.setTitle("Select Item Name to insert");
-		selectItemListFormLabel.setFor("listItemType");
+		selectItemListFormLabel.setFor("listAllItemNames_ListBox");
 		selectItemListFormGroup.add(selectItemListFormLabel);
 		selectItemListFormGroup.add(listAllItemNames);
 		
@@ -184,7 +184,7 @@ public class InsertIntoAceEditorDialogBox {
 		FormLabel dataTypeListFormLabel = new FormLabel();
 		dataTypeListFormLabel.setText("Datatype");
 		dataTypeListFormLabel.setTitle("Select Datatype to insert");
-		dataTypeListFormLabel.setFor("listItemType");
+		dataTypeListFormLabel.setFor("allQDMDatatypes_ListBox");
 		dataTypeListFormGroup.add(dataTypeListFormLabel);
 		dataTypeListFormGroup.add(allQDMDatatypes);
 		dataTypeListFormGroup.setVisible(false);

@@ -6057,23 +6057,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<String> deletedClauseUUIDs = new ArrayList<String>();
 		
 		XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+		boolean isUpdated = false;
 		
 		try{
 			
 			//find all <measureObservations with this function
-			String msrObsClauseXPath = "/measure/measureObservations/clause[//cqlfunction/@uuid='" + toBeDeletedObj.getId() +  "']";
-			NodeList msrObsClauseNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), msrObsClauseXPath);
+			String msrObsFuncXPath = "/measure/measureObservations/clause//cqlfunction[@uuid='" + toBeDeletedObj.getId() +  "']";
+			NodeList msrObsFuncNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), msrObsFuncXPath);
 			
-			for(int i=0;i<msrObsClauseNodeList.getLength();i++){
-				Node clauseNode = msrObsClauseNodeList.item(i);
-				String uuid = clauseNode.getAttributes().getNamedItem("uuid").getNodeValue();
-								
-				clauseNode.removeChild(clauseNode.getFirstChild());
-				deletedClauseUUIDs.add(uuid);
+			for(int i=0;i<msrObsFuncNodeList.getLength();i++){
+				Node funcNode = msrObsFuncNodeList.item(i);
+				
+				Node parentNode = funcNode.getParentNode();
+				
+				if(parentNode.getNodeName().equals("clause")){
+					String uuid = parentNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					deletedClauseUUIDs.add(uuid);
+				}
+													
+				parentNode.removeChild(funcNode);
+				isUpdated = true;
 			}
 			
 			//remove groupings if they contain deleted measureObservations
-			if(deletedClauseUUIDs.size() > 0){
+			if(isUpdated){
 				for(String clauseUUID:deletedClauseUUIDs){
 					String groupingXPath = "/measure/measureGrouping/group[packageClause/@uuid='" + clauseUUID + "']";
 					
@@ -6093,6 +6100,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			e.printStackTrace();
 		}		
 	}
+
 
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String measureId, CQLParameter toBeDeletedObj, 

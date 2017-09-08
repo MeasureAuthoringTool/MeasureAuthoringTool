@@ -5784,6 +5784,7 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getValueSetView().getCancelQDMButton().setEnabled(!busy);
 			searchDisplay.getValueSetView().getUpdateFromVSACButton().setEnabled(!busy);
 			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(!busy);
+			searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedValueSetTableList, !busy);
 			
 			searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
 			searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);

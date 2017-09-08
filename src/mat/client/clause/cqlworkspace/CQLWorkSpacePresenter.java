@@ -4923,7 +4923,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
 			return;
 		}
-		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
+		showSearchingBusy(true);
 		/*expProfileToAllValueSet = getExpProfileValue();
 		if (expProfileToAllValueSet.isEmpty()) {
 			isExpansionProfile = false;
@@ -5785,6 +5785,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView().getCancelQDMButton().setEnabled(!busy);
 			searchDisplay.getValueSetView().getUpdateFromVSACButton().setEnabled(!busy);
 			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(!busy);
+			searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedValueSetTableList, !busy);
 			
 			searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
 			searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);

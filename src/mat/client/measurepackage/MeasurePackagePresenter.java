@@ -809,12 +809,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 				
 				if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
 						dbPackageClauses)){
-					view.getSaveErrorMessageDisplay().clearAlert();
-					//showErrorMessage(view.getSaveErrorMessageDisplay());
-					view.getSaveErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getSaveErrorMsg());
-					view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
-					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
-				} else {
+					if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
+							dbPackageClauses)){
+						clearMessages();
+						view.getSaveErrorMessageDisplay().clearAlert();
+						//showErrorMessage(view.getSaveErrorMessageDisplay());
+						view.getSaveErrorMessageDisplay().createAlert();
+						view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
+						handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
+					} else {
 					currentDetail = new MeasurePackageDetail();
 					currentDetail = detail;
 					clearMessages();

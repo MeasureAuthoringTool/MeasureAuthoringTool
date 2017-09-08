@@ -564,7 +564,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 		resetWidget();
 		search();
 		notesDisplay.asWidget();
-		MeasureComposerPresenter.setSubSkipEmbeddedLink("contentPanel");
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasureNoteContainerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	

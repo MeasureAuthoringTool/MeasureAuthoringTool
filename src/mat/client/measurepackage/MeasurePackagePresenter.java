@@ -738,6 +738,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 							}else{
 								panel.clear();
+								panel.getElement().setId("MeasurePackagerContentFlowPanel");
 								ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();
 								panel.add(errorMessageAlert);
 																
@@ -753,7 +754,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		} else {
 			displayEmpty();
 		}
-		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackagerContentFlowPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	/* (non-Javadoc)

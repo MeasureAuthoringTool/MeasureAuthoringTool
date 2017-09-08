@@ -93,7 +93,7 @@ public class AppliedQDMPresenter implements MatPresenter {
 			QDMContentWidget.clear();
 			QDMContentWidget.add(fp);
 			MeasureComposerPresenter
-					.setSubSkipEmbeddedLink("subContainerPanel");
+					.setSubSkipEmbeddedLink("subQDMAPPliedListContainerPanel");
 			Mat.focusSkipLists("MeasureComposure");
 		}
 

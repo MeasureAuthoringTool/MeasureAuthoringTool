@@ -25,6 +25,7 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDMAppliedSelectionView.Observer;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.event.QDSElementCreatedEvent;
@@ -2116,6 +2117,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	@Override
 	public void beforeDisplay() {
 		displaySearch();
+		MeasureComposerPresenter
+		.setSubSkipEmbeddedLink("subQDMAPPliedListContainerPanel");
+		//Mat.focusSkipLists("MeasureComposure");
+		
 	}
 	
 	/*

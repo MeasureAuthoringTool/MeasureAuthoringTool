@@ -24,6 +24,7 @@ public class MeasureNameLabel extends Composite {
 		measureLabel.addStyleName("bold");
 		measureLabel.addStyleName("measureLabel");
 		measureName.addStyleName("measureName");
+		measureName.getElement().setAttribute("tabIndex", "0");
 		measureNamePanel.add(measureLabel);
 		measureNamePanel.add(measureName);
 		SimplePanel clearBoth = new SimplePanel();

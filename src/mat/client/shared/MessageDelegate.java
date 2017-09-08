@@ -2658,7 +2658,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful qdm remove msg
 	 */
 	public String getSUCCESSFUL_QDM_REMOVE_MSG(String codeListName) {
-		return "Value set " + codeListName.substring(0, 59) + " has been removed successfully.";
+		return "Value set " + (codeListName.length()>60 ? codeListName.substring(0, 59) : codeListName) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2667,7 +2667,7 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for successful Code Remove msg
 	 */
 	public String getSUCCESSFUL_CODE_REMOVE_MSG(String codeOID) {
-		return "Code " + codeOID.substring(0, 59) + " has been removed successfully.";
+		return "Code " + (codeOID.length()>60 ? codeOID.substring(0, 59) : codeOID) + " has been removed successfully.";
 	}
 	
 	/**
@@ -2803,12 +2803,7 @@ public class MessageDelegate {
 	 * @return the successful saved cql definition
 	 */
 	public String getSUCCESSFUL_SAVED_CQL_DEFINITION(String name) {
-		
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		return "Definition " + name + " successfully saved.";
-		//return SUCCESSFUL_SAVED_CQL_DEFINITION;
+		return "Definition " + (name.length()>60 ? name.substring(0, 59) : name) + " successfully saved.";
 	}
 	
 	/**
@@ -2818,12 +2813,7 @@ public class MessageDelegate {
 	 * @return the successful saved cql parameter
 	 */
 	public String getSUCCESSFUL_SAVED_CQL_PARAMETER(String name) {
-		
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		return "Parameter " + name + " successfully saved.";
-		//return SUCCESSFUL_SAVED_CQL_PARAMETER;
+		return "Parameter " + (name.length()>60 ? name.substring(0, 59) : name) + " successfully saved.";
 	}
 	
 	/**
@@ -2860,11 +2850,7 @@ public class MessageDelegate {
 	 * @return the sucess definition modify
 	 */
 	public String getSUCESS_DEFINITION_MODIFY(String name) {
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Definition " +name+" successfully saved.";
+		return "Definition " +(name.length()>60 ? name.substring(0, 59) : name)+" successfully saved.";
 	}
 	
 	/**
@@ -2874,11 +2860,7 @@ public class MessageDelegate {
 	 * @return the sucess parameter modify
 	 */
 	public String getSUCESS_PARAMETER_MODIFY(String name) {
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Parameter " +name+" successfully saved.";
+		return "Parameter " +(name.length()>60 ? name.substring(0, 59) : name)+" successfully saved.";
 	}
 	
 	/**
@@ -2888,13 +2870,7 @@ public class MessageDelegate {
 	 * @return the successful saved cql functions
 	 */
 	public String getSUCCESSFUL_SAVED_CQL_FUNCTIONS(String name) {
-		
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Function " + name + " successfully saved.";
-		//return SUCCESSFUL_SAVED_CQL_FUNCTIONS;
+		return "Function " + (name.length()>60 ? name.substring(0, 59) : name) + " successfully saved.";
 	}
 	
 	/**
@@ -2913,11 +2889,7 @@ public class MessageDelegate {
 	 * @return the sucess function modify
 	 */
 	public String getSUCESS_FUNCTION_MODIFY(String name) {
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Function " +name+" successfully saved.";
+		return "Function " +(name.length()>60 ? name.substring(0, 59) : name)+" successfully saved.";
 	}
 	
 	/**
@@ -2981,11 +2953,7 @@ public class MessageDelegate {
 	 * @return the sucess definition modify with errors
 	 */
 	public String getSUCESS_DEFINITION_MODIFY_WITH_ERRORS(String name) {
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Definition " +name+" successfully saved with errors.";
+		return "Definition " +(name.length()>60 ? name.substring(0, 59) : name)+" successfully saved with errors.";
 	}
 
 	/**
@@ -2995,11 +2963,7 @@ public class MessageDelegate {
 	 * @return the sucess parameter modify with errors
 	 */
 	public String getSUCESS_PARAMETER_MODIFY_WITH_ERRORS(String name) {
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Parameter " +name+" successfully saved with errors.";
+		return "Parameter " +(name.length()>60 ? name.substring(0, 59) : name)+" successfully saved with errors.";
 	}
 
 	/**
@@ -3009,11 +2973,7 @@ public class MessageDelegate {
 	 * @return the sucess function modify with errors
 	 */
 	public String getSUCESS_FUNCTION_MODIFY_WITH_ERRORS(String name) {
-		if(name.length()>60){
-			name = name.substring(0, 59);
-		}
-		
-		return "Function " +name+" successfully saved with errors.";
+		return "Function " +(name.length()>60 ? name.substring(0, 59) : name)+" successfully saved with errors.";
 	}
 
 	/**
@@ -3488,14 +3448,14 @@ public class MessageDelegate {
 	 * @return the 508 Complaint message for deleting the Code
 	 */
 	public String getDELETE_CONFIRMATION_CODES(String codeOID) {
-		return "You have selected to delete code " + codeOID.substring(0, 59) + ". Please confirm that you want to remove this Code.";
+		return "You have selected to delete code " + (codeOID.length()>60 ? codeOID.substring(0, 59) : codeOID) + ". Please confirm that you want to remove this Code.";
 	}
 
 	/**
 	 * @return the 508 Complaint message for deleting the Value Set
 	 */
 	public String getDELETE_CONFIRMATION_VALUESET(String codeListName) {
-		return "You have selected to delete value set " + codeListName.substring(0, 59) + ". Please confirm that you want to remove this value set.";
+		return "You have selected to delete value set " + (codeListName.length()>60 ? codeListName.substring(0, 59) : codeListName) + ". Please confirm that you want to remove this value set.";
 	}
 
 	/**
@@ -3525,52 +3485,31 @@ public class MessageDelegate {
 	 * @return the valueset success message
 	 */
 	public String getValuesetSuccessMessage(String codeListName) {
-		if(codeListName.length() >= 60){
-			codeListName = codeListName.substring(0, 59);
-		}
-		return "Value set " + codeListName + " has been applied successfully.";
+		return "Value set " + (codeListName.length()>60 ? codeListName.substring(0, 59) : codeListName) + " has been applied successfully.";
 	}
 	
 	public String getValuesetSuccessfulReterivalMessage(String codeListName) {
-		if(codeListName.length() >= 60){
-			codeListName = codeListName.substring(0, 59);
-		}
-		return "Value set " + codeListName + " successfully retrieved from VSAC.";
+		return "Value set " + (codeListName.length()>60 ? codeListName.substring(0, 59) : codeListName) + " successfully retrieved from VSAC.";
 	}
 	
 	public String getMeasureDraftSuccessfulMessage(String measureName){
-		if(measureName.length() >= 60){
-			measureName = measureName.substring(0, 59);
-		}
-		return "You have created a draft of "+measureName+". Please click continue to navigate to the Measure Details page.";
+		return "You have created a draft of "+(measureName.length()>60 ? measureName.substring(0, 59) : measureName)+". Please click continue to navigate to the Measure Details page.";
 	}
 	
 	public String getLibraryDraftSuccessfulMessage(String cqlLibName){
-		if(cqlLibName.length() >= 60){
-			cqlLibName = cqlLibName.substring(0, 59);
-		}
-		return "You have created a draft of "+cqlLibName+". Please click continue to navigate to the CQL Composer.";
+		return "You have created a draft of "+(cqlLibName.length()>60 ? cqlLibName.substring(0, 59) : cqlLibName)+". Please click continue to navigate to the CQL Composer.";
 	}
 	
 	public String getCreateNewMeasureSuccessfulMessage(String measureName){
-		if(measureName.length() >= 60){
-			measureName = measureName.substring(0, 59);
-		}
-		return "You have created a new measure "+measureName+". Please click continue to navigate to the Measure Details page.";
+		return "You have created a new measure "+(measureName.length()>60 ? measureName.substring(0, 59) : measureName)+". Please click continue to navigate to the Measure Details page.";
 	}
 	
 	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
-		if(libraryName.length() >= 60){
-			libraryName = libraryName.substring(0, 59);
-		}
-		return "You have created a new library "+libraryName+". Please click continue to navigate to the CQL Composer.";
+		return "You have created a new library "+(libraryName.length()>60 ? libraryName.substring(0, 59) : libraryName)+". Please click continue to navigate to the CQL Composer.";
 	}
 	
 	public String getVersionSuccessfulMessage(String name, String version){
-		if(name.length() >= 60){
-			name = name.substring(0, 59);
-		}
-		return name + " v" + version + " has been successfully created.";
+		return name + " v" + (version.length()>60 ? version.substring(0, 59) : version) + " has been successfully created.";
 	}
 
 	public String getINVALID_QDM_VERSION_IN_INCLUDES() {

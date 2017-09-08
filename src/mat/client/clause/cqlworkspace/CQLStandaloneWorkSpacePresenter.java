@@ -3658,7 +3658,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						appliedValueSetTableList.clear();
 						if (result.getCqlModel().getAllValueSetList() != null) {
 							for (CQLQualityDataSetDTO dto : result.getCqlModel().getAllValueSetList()) {
-								if (dto.isSuppDataElement())
+								if(dto.isSuppDataElement() || 
+										dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") 
+												|| (dto.getType() !=null && dto.getType().equalsIgnoreCase("code")))
 									continue;
 								appliedValueSetTableList.add(dto);
 							}

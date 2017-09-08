@@ -4313,10 +4313,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				appliedValueSetTableList.clear();
 				if (result.getQualityDataDTO() != null) {
 					for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
-						if(dto.isSuppDataElement())
+						if(dto.isSuppDataElement() || 
+								dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") 
+										|| (dto.getType() !=null && dto.getType().equalsIgnoreCase("code")))
 							continue;
 						appliedValueSetTableList.add(dto);
 					}
+					
 					
 					if (appliedValueSetTableList.size() > 0) {
 						Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();

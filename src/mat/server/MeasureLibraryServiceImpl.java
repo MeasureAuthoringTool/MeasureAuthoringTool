@@ -6073,6 +6073,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if(parentNode.getNodeName().equals("clause")){
 					String uuid = parentNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					deletedClauseUUIDs.add(uuid);
+				}else{
+					String uuid = parentNode.getParentNode().getAttributes().getNamedItem("uuid").getNodeValue();
+					deletedClauseUUIDs.add(uuid);
 				}
 													
 				parentNode.removeChild(funcNode);

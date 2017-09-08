@@ -552,7 +552,7 @@ public class CQLLeftNavBarPanelView {
 		searchSuggestIncludeTextBox = new SuggestBox(getSuggestOracle(includeLibraryNameMap.values()));
 		searchSuggestIncludeTextBox.setWidth("180px");
 		searchSuggestIncludeTextBox.setText("Search");
-		searchSuggestIncludeTextBox.setTitle("Search");
+		searchSuggestIncludeTextBox.setTitle("Search Included Alias");
 		searchSuggestIncludeTextBox.getElement().setId("searchTextBox_TextBoxIncludesLib");
 
 		searchSuggestIncludeTextBox.getValueBox().addClickHandler(new ClickHandler() {
@@ -611,7 +611,7 @@ public class CQLLeftNavBarPanelView {
 		// updateSuggestOracle();
 		searchSuggestParamTextBox.setWidth("180px");
 		searchSuggestParamTextBox.setText("Search");
-		searchSuggestParamTextBox.setTitle("Search");
+		searchSuggestParamTextBox.setTitle("Search Parameter");
 		searchSuggestParamTextBox.getElement().setId("searchTextBox_TextBoxParameterLib");
 
 		searchSuggestParamTextBox.getValueBox().addClickHandler(new ClickHandler() {
@@ -670,7 +670,7 @@ public class CQLLeftNavBarPanelView {
 		// updateNewSuggestDefineOracle();
 		searchSuggestDefineTextBox.setWidth("180px");
 		searchSuggestDefineTextBox.setText("Search");
-		searchSuggestDefineTextBox.setTitle("Search");
+		searchSuggestDefineTextBox.setTitle("Search Definition");
 		searchSuggestDefineTextBox.getElement().setId("searchSuggestDefineTextBox");
 
 		searchSuggestDefineTextBox.getValueBox().addClickHandler(new ClickHandler() {
@@ -729,7 +729,7 @@ public class CQLLeftNavBarPanelView {
 		// updateNewSuggestFuncOracle();
 		searchSuggestFuncTextBox.setWidth("180px");
 		searchSuggestFuncTextBox.setText("Search");
-		searchSuggestFuncTextBox.setTitle("Search");
+		searchSuggestFuncTextBox.setTitle("Search Function");
 		searchSuggestFuncTextBox.getElement().setId("searchTextBox_TextBoxFuncLib");
 
 		searchSuggestFuncTextBox.getValueBox().addClickHandler(new ClickHandler() {

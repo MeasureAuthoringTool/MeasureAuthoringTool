@@ -4940,7 +4940,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
-				searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+				showSearchingBusy(false);
 			}
 
 			/**
@@ -4980,7 +4980,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						//searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
 						searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 					//}
-						searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+						showSearchingBusy(false);
 						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
 						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
@@ -4989,7 +4989,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					String message = searchDisplay.getValueSetView().convertMessage(result.getFailureReason());
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
-					searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
+					showSearchingBusy(false);
 				}
 			}
 		});

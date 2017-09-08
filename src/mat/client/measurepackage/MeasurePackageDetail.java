@@ -3,8 +3,6 @@ package mat.client.measurepackage;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.model.Author;
-import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
@@ -317,6 +315,10 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	 * @return true, if is equal
 	 */
 	public boolean isEqual(List listA, List listB) {
+		
+		if( (listA == null) || (listB == null) ){
+			return false;
+		}
 		if (listA.size() != listB.size()) {
 			return false;
 		}

@@ -1013,7 +1013,7 @@ public class CQLHumanReadableHTMLCreator {
 			Node childCQLNode = cqlNode.getChildNodes().item(0);
 			String childCQLName = childCQLNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
-					populationName, populationDisplayName, childCQLName, populationOrSubtreeXMLProcessor, CQLFUNCTION, (cqlName + " of:"));
+					populationName, populationDisplayName, childCQLName, populationOrSubtreeXMLProcessor, CQLFUNCTION, (cqlName + " of: " + childCQLName));
 		} else {
 			generateHTMLForPopulation(mainULElement, populationName, populationDisplayName, "");
 		}
@@ -1161,7 +1161,13 @@ public class CQLHumanReadableHTMLCreator {
 		subLiElement.attr("style","padding-left: 0px;");
 		Element subDivElement = subLiElement.appendElement("div");
 		
-		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
+		List<String> codeLineList = new ArrayList<>();
+		
+		if(additionalLabel != null && additionalLabel.length() > 0){
+			codeLineList.add(additionalLabel);
+		}else{
+			codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
+		}
 		
 		if(codeLineList.size() > 0){
 			mainDivElement.append("&nbsp;" + codeLineList.get(0));

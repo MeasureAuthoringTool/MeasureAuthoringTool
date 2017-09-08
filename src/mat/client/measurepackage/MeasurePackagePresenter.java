@@ -4,16 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -39,6 +29,16 @@ import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
 import mat.shared.MeasurePackageClauseValidator;
 import mat.shared.SaveUpdateCQLResult;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -809,15 +809,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 				
 				if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
 						dbPackageClauses)){
-					if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
-							dbPackageClauses)){
-						clearMessages();
-						view.getSaveErrorMessageDisplay().clearAlert();
-						//showErrorMessage(view.getSaveErrorMessageDisplay());
-						view.getSaveErrorMessageDisplay().createAlert();
-						view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
-						handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
-					} else {
+					clearMessages();
+					view.getSaveErrorMessageDisplay().clearAlert();
+					//showErrorMessage(view.getSaveErrorMessageDisplay());
+					view.getSaveErrorMessageDisplay().createAlert();
+					view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
+					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
+				} else {
 					currentDetail = new MeasurePackageDetail();
 					currentDetail = detail;
 					clearMessages();

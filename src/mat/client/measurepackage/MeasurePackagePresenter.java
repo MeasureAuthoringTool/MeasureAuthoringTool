@@ -578,11 +578,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 				
 				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
-				updateDetailsFromView(currentDetail);
+				updateDetailsFromView(tempMeasurePackageDetails);
 				
 				if (isValid()) {
 					MatContext.get().getPackageService()
-					.save(currentDetail, new AsyncCallback<MeasurePackageSaveResult>() {
+					.save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
 						@Override
 						public void onFailure(final Throwable caught) {
 							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -590,6 +590,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 						@Override
 						public void onSuccess(final MeasurePackageSaveResult result) {
 							if (result.isSuccess()) {
+								updateDetailsFromView(currentDetail);
 								getMeasurePackageOverview(MatContext.get()
 										.getCurrentMeasureId());
 								view.getPackageSuccessMessageDisplay().createAlert(
@@ -597,7 +598,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 										getGroupingSavedMessage());
 								
 							} else {
-								currentDetail = tempMeasurePackageDetails;
 								if (result.getMessages().size() > 0) {
 									view.getPackageErrorMessageDisplay().
 									createAlert(result.getMessages());

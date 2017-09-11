@@ -431,6 +431,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setRiskAdjustLabel(boolean isCQLMeasure);
 		
 		void setQdmElementsLabel(boolean isCQLMeasure);
+		WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
+		void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit);
 	}
 	
 	/** The vsacapi service async. */
@@ -696,6 +698,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getMeasurePackageWarningMsg().clearAlert();
 		view.getMeasureErrorMessageDisplay().clearAlert();
 		view.getSaveErrorMessageDisplay().clearAlert();
+		view.getSaveErrorMessageDisplayOnEdit().clearAlert();
 		view.getRiskAdjSuccessMessageDisplay().clearAlert();
 		
 	}
@@ -819,10 +822,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 						dbPackageClauses)){
 					
 					view.getSaveErrorMessageDisplay().clearAlert();
+					view.getSaveErrorMessageDisplayOnEdit().clearAlert();
 					//showErrorMessage(view.getSaveErrorMessageDisplay());
-					view.getSaveErrorMessageDisplay().createAlert();
-					view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
-					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
+					view.getSaveErrorMessageDisplayOnEdit().createAlert();
+					view.getSaveErrorMessageDisplayOnEdit().getWarningConfirmationYesButton().setFocus(true);
+					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplayOnEdit(), null);
 					
 				} else {
 					currentDetail = new MeasurePackageDetail();

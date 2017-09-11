@@ -820,7 +820,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					
 					view.getSaveErrorMessageDisplay().clearAlert();
 					//showErrorMessage(view.getSaveErrorMessageDisplay());
-					view.getSaveErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getSaveErrorMsg());
+					view.getSaveErrorMessageDisplay().createAlert();
 					view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
 					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
 					

@@ -451,7 +451,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	private void validateNewMeasurePackageTab(int selectedIndex,
 			MeasurePackagePresenter measurePackagerPresenter) {
 		if (!isMeasurePackageDetailsSame(measurePackagerPresenter)) {
-			
+			measurePackagerPresenter.getView().getSaveErrorMessageDisplayOnEdit().clearAlert();
 			saveErrorMessageAlert = measurePackagerPresenter.getView().getSaveErrorMessageDisplay();
 			saveErrorMessageAlert.clearAlert();
 			

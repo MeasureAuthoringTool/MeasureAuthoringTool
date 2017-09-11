@@ -164,6 +164,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The save error message display. */
 	private WarningConfirmationMessageAlert saveErrorMessageDisplay = new WarningConfirmationMessageAlert();
 	
+	private WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit = new WarningConfirmationMessageAlert();
+	
 	/** The include vsac data. */
 	/*private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
 			+ "a measure package with VSAC data.", "Include VSAC value set data", true);*/
@@ -319,6 +321,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		createNew.getElement().setAttribute("id", "CreateNewGroupingButton");
 		content.add(saveErrorMessageDisplay);
+		content.add(saveErrorMessageDisplayOnEdit);
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(createNew);
@@ -1837,5 +1840,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		}
 		
 	}
+
+@Override
+public WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit() {
+	return saveErrorMessageDisplayOnEdit;
+}
+@Override
+public void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit) {
+	this.saveErrorMessageDisplayOnEdit = saveErrorMessageDisplayOnEdit;
+}
 	
 }

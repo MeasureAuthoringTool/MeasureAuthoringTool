@@ -452,6 +452,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	private void addAllHandlers() {
 		
+		
+		
 		view.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -574,21 +576,25 @@ public class MeasurePackagePresenter implements MatPresenter {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-				updateDetailsFromView(currentDetail);
+				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail();
+				updateDetailsFromView(tempMeasurePackageDetails);
 				if (isValid()) {
 					MatContext.get().getPackageService()
-					.save(currentDetail, new AsyncCallback<MeasurePackageSaveResult>() {
+					.save(tempMeasurePackageDetails, new AsyncCallback<MeasurePackageSaveResult>() {
 						@Override
 						public void onFailure(final Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
 						@Override
 						public void onSuccess(final MeasurePackageSaveResult result) {
 							if (result.isSuccess()) {
+								currentDetail = tempMeasurePackageDetails;
 								getMeasurePackageOverview(MatContext.get()
 										.getCurrentMeasureId());
 								view.getPackageSuccessMessageDisplay().createAlert(
 										MatContext.get().getMessageDelegate().
 										getGroupingSavedMessage());
+								
 							} else {
 								if (result.getMessages().size() > 0) {
 									view.getPackageErrorMessageDisplay().
@@ -806,19 +812,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setObserver(new MeasurePackagerView.Observer() {
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
-				
+				clearMessages();
 				if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
 						dbPackageClauses)){
-					clearMessages();
+					
 					view.getSaveErrorMessageDisplay().clearAlert();
 					//showErrorMessage(view.getSaveErrorMessageDisplay());
-					view.getSaveErrorMessageDisplay().createAlert();
+					view.getSaveErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getSaveErrorMsg());
 					view.getSaveErrorMessageDisplay().getWarningConfirmationYesButton().setFocus(true);
 					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplay(), null);
+					
 				} else {
 					currentDetail = new MeasurePackageDetail();
 					currentDetail = detail;
-					clearMessages();
 					setMeasurePackageDetailsOnView();
 				}
 			}

@@ -832,6 +832,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					currentDetail = new MeasurePackageDetail();
 					currentDetail = detail;
 					setMeasurePackageDetailsOnView();
+					getAssociationListFromView(currentDetail.getPackageClauses());
 				}
 			}
 			@Override

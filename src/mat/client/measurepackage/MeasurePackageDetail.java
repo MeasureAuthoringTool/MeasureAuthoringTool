@@ -57,6 +57,27 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	
 	/** The to compare risk adj vars. */
 	private List<RiskAdjustmentDTO> toCompareRiskAdjVars;
+	
+	public MeasurePackageDetail(MeasurePackageDetail detail){
+		this.sequence = detail.getSequence();
+		this.measureId = detail.getMeasureId();
+		this.packageClauses = detail.getPackageClauses();
+		this.qdmElements = detail.getQdmElements();
+		this.suppDataElements = detail.getSuppDataElements();
+		this.cqlSuppDataElements = detail.getCqlSuppDataElements();
+		this.cqlQdmElements = detail.getCqlQdmElements();
+		this.valueSetDate = detail.getValueSetDate();
+		this.toComparePackageClauses = detail.getToComparePackageClauses();
+		this.toCompareSuppDataElements = detail.getToCompareSuppDataElements();
+		this.toCompareCqlSuppDataElements = detail.getToCompareCqlSuppDataElements();
+		this.riskAdjClauses = detail.getRiskAdjClauses();
+		this.riskAdjVars = detail.getRiskAdjVars();
+		this.toCompareRiskAdjVars = detail.getToCompareRiskAdjVars();
+	}
+	
+	public MeasurePackageDetail() {
+		
+	}
 
 	/**
 	 * Gets the package name.

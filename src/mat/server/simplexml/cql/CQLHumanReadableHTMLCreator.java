@@ -298,7 +298,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		if (supplementalDefinitionList.size() > 0) {
 			for(String definitionName : supplementalDefinitionList){
-				generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,mainListElement,true,"");				
+				generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,mainListElement,true,null);				
 			}
 		} else {
 			mainListElement.appendElement(HTML_LI).appendText("None");
@@ -325,7 +325,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		if (riskAdjDefinitionList.size() > 0) {
 			for(String definitionName : riskAdjDefinitionList){
-				generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,mainListElement,true,"");
+				generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,mainListElement,true,null);
 			}
 		} else {
 			mainListElement.appendElement(HTML_LI).appendText("None");
@@ -440,7 +440,7 @@ public class CQLHumanReadableHTMLCreator {
 			Element ulElement = divElement.appendElement(HTML_UL);
 			ulElement.attr("class", "list-unstyled");
 			ulElement.attr("style","list-style:none;padding-left:0;");
-			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,ulElement,true,"");
+			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLDEFINITION,definitionName,ulElement,true,null);
 		}
 	}
 	
@@ -480,7 +480,7 @@ public class CQLHumanReadableHTMLCreator {
 			Element ulElement = divElement.appendElement(HTML_UL);
 			ulElement.attr("class", "list-unstyled");
 			ulElement.attr("style","list-style:none;padding-left:0;");
-			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLFUNCTION,functionName,ulElement,true,"");
+			generateHTMLForSingleExpression(cqlModel,cqlResult,simpleXMLProcessor,CQLFUNCTION,functionName,ulElement,true,null);
 		}
 	}
 	
@@ -1003,17 +1003,17 @@ public class CQLHumanReadableHTMLCreator {
 		if (CQLDEFINITION.equals(cqlNodeType)) {
 			
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
-					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType,"");
+					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType,null);
 		} else if (CQLFUNCTION.equals(cqlNodeType)){
 			
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
-					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType,"");
+					populationName, populationDisplayName, cqlName, populationOrSubtreeXMLProcessor, cqlNodeType,null);
 		} else if(CQLAGGFUNCTION.equals(cqlNodeType)){
 
 			Node childCQLNode = cqlNode.getChildNodes().item(0);
 			String childCQLName = childCQLNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			generateHTMLForPopulation(mainULElement, cqlModel, cqlResult, 
-					populationName, populationDisplayName, childCQLName, populationOrSubtreeXMLProcessor, CQLFUNCTION, (cqlName + " of: " + childCQLName));
+					populationName, populationDisplayName, childCQLName, populationOrSubtreeXMLProcessor, CQLFUNCTION, cqlName);
 		} else {
 			generateHTMLForPopulation(mainULElement, populationName, populationDisplayName, "");
 		}
@@ -1067,7 +1067,7 @@ public class CQLHumanReadableHTMLCreator {
 	 */
 	private static void generateHTMLForPopulation(Element mainElement,
 			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, String populationName, String populationDisplayName, 
-			String mainDefinitionName, XmlProcessor populationOrSubtreeXMLProcessor, String cqlNodeType, String additionalLabel) {
+			String mainDefinitionName, XmlProcessor populationOrSubtreeXMLProcessor, String cqlNodeType, String aggFuncLabel) {
 		// create a base LI element
 		Element mainliElement = mainElement.appendElement("li");
 		mainliElement.attr("class", "list-unstyled");
@@ -1086,7 +1086,7 @@ public class CQLHumanReadableHTMLCreator {
 		strongElement.appendText(populationDisplayName);
 				
 		System.out.println("Main Defintion Name: " + mainDefinitionName);
-		generateHTMLForCQLPopulation(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, mainDefinitionName, mainliElement, true,additionalLabel,cqlNodeType);
+		generateHTMLForCQLPopulation(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, mainDefinitionName, mainliElement, true,aggFuncLabel,cqlNodeType);
 	}
 
 	
@@ -1118,7 +1118,7 @@ public class CQLHumanReadableHTMLCreator {
 	 */
 	private static void generateHTMLForCQLPopulation(
 			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor, String expressionName, 
-			Element mainElement, boolean isTopExpression, String additionalLabel, String cqlNodeType) {
+			Element mainElement, boolean isTopExpression, String aggFuncLabel, String cqlNodeType) {
 
 		String statementIdentifier = expressionName;
 				
@@ -1163,12 +1163,8 @@ public class CQLHumanReadableHTMLCreator {
 		
 		List<String> codeLineList = new ArrayList<>();
 		
-		if(additionalLabel != null && additionalLabel.length() > 0){
-			codeLineList.add(additionalLabel);
-		}else{
-			codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType);
-		}
-		
+		codeLineList = getExpressionLineList(cqlModel, cqlResult, populationOrSubtreeXMLProcessor, expressionName, cqlNodeType,aggFuncLabel);
+				
 		if(codeLineList.size() > 0){
 			mainDivElement.append("&nbsp;" + codeLineList.get(0));
 						
@@ -1190,7 +1186,7 @@ public class CQLHumanReadableHTMLCreator {
 	 */
 	private static void generateHTMLForSingleExpression(
 			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor, String cqlNodeType, String expressionName, 
-			Element mainElement, boolean isTopExpression, String additionalLabel) {
+			Element mainElement, boolean isTopExpression, String aggFuncLabel) {
 
 		String statementIdentifier = expressionName;
 		XmlProcessor currentProcessor = populationOrSubtreeXMLProcessor;
@@ -1219,7 +1215,7 @@ public class CQLHumanReadableHTMLCreator {
 		definitionLabelElement.attr("class", "list-header");
 
 		Element strongElement = definitionLabelElement.appendElement("strong");
-		String strongText = additionalLabel + " " + statementIdentifier;
+		String strongText = (aggFuncLabel != null)?(aggFuncLabel + " " + statementIdentifier):(" " + statementIdentifier);
 		
 		if(cqlNodeType.equals(CQLFUNCTION)){
 			String signature = getCQLFunctionSignature(expressionName, currentProcessor);
@@ -1250,7 +1246,7 @@ public class CQLHumanReadableHTMLCreator {
 		subLiElement.attr("class","list-unstyled");
 		Element subDivElement = subLiElement.appendElement("div");
 		
-		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, currentProcessor, expressionName, cqlNodeType);
+		List<String> codeLineList = getExpressionLineList(cqlModel, cqlResult, currentProcessor, expressionName, cqlNodeType,aggFuncLabel);
 		
 		if(codeLineList.size() > 0){
 			codeDivElement.append("&nbsp;" + codeLineList.get(0));
@@ -1307,15 +1303,21 @@ public class CQLHumanReadableHTMLCreator {
 		return signature;
 	}
 
-	private static List<String> getExpressionLineList(CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor simpleXMLProcessor, String cqlName, String cqlType){
+	private static List<String> getExpressionLineList(CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor simpleXMLProcessor, String cqlName, String cqlType, String aggFuncLabel){
 		
 		List<String> lineList = new ArrayList<String>();
-		
+			
 		if(cqlType.equals(CQLFUNCTION) || cqlType.equals(CQLDEFINITION)){
 			lineList.add("");
-		}
+		}	
 		
 		String logic = getLogicStringFromXML(cqlName, cqlType, simpleXMLProcessor);
+		
+		if(aggFuncLabel != null){
+			logic = logic.replace("\n", "\n\t\t");
+			logic = aggFuncLabel +  " (" + System.lineSeparator() + "\t\t" +  logic + System.lineSeparator() + "\t )";
+		}
+				
 		lineList.add(logic);
 	
 		return lineList;

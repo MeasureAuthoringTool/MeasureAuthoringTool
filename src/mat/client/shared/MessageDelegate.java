@@ -3515,5 +3515,11 @@ public class MessageDelegate {
 	public String getINVALID_QDM_VERSION_IN_INCLUDES() {
 		return INVALID_QDM_VERSION_IN_INCLUDES;
 	}
+	
+	public String generateDuplicateErrorMessage(String name){
+		String message = (name.length()>60 ? name.substring(0, 59) : name) +" already exists. Please add a unique suffix.";
+		return  message;
+		
+	}
 
 }

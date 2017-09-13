@@ -314,7 +314,7 @@ public class CQLCodesView {
 		FormLabel suffixLabel = new FormLabel();
 		suffixLabel.setText("Suffix (Max Length 4)");
 		suffixLabel.setTitle("Suffix");
-		suffixTextBox.setTitle("Suffix");
+		suffixTextBox.setTitle("Suffix must be an integer between 1-4 characters");
 		/*suffixTextBox.setWidth("50px");*/
 		/*codeDescriptorInput.setWidth("510px");
 		codeDescriptorInput.setHeight("30px");*/
@@ -583,10 +583,11 @@ public class CQLCodesView {
 	public void setWidgetsReadOnly(boolean editable){
 		
 		getCodeSearchInput().setEnabled(editable);
+		getSuffixTextBox().setEnabled(editable);
 		getCodeDescriptorInput().setEnabled(false);
 		getCodeInput().setEnabled(false);
 		getCodeSystemInput().setEnabled(false);
-		getSuffixTextBox().setEnabled(false);
+		
 		getCodeSystemVersionInput().setEnabled(false);
 		getRetrieveFromVSACButton().setEnabled(editable);
 		getCancelCodeButton().setEnabled(editable);
@@ -603,6 +604,7 @@ public class CQLCodesView {
 		getCodeDescriptorInput().setValue("");
 		getCodeInput().setValue("");
 		getCodeSystemInput().setValue("");
+		getSuffixTextBox().setValue("");
 		getCodeSystemVersionInput().setValue("");
 		getSaveButton().setEnabled(false);
 	}

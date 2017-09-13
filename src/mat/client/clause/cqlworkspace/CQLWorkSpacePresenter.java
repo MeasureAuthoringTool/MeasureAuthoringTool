@@ -4613,7 +4613,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 					if(result.getFailureReason()==result.getDuplicateCode()){
-						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Code "+ searchDisplay.getCodesView().getCodeInput().getText() +" already exists.");
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().generateDuplicateErrorMessage(codeName));
 						searchDisplay.getCodesView().buildCodesCellTable(
 								appliedCodeTableList,
 								MatContext.get().getMeasureLockService().checkForEditPermission());

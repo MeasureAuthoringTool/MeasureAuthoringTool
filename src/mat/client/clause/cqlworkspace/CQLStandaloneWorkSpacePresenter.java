@@ -4822,7 +4822,7 @@ private void addCodeSearchPanelHandlers() {
 	 */
 	private void retrieveCodeReferences(String url){
 		
-		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+		showSearchingBusy(true);
 		
 		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
 
@@ -4838,7 +4838,6 @@ private void addCodeSearchPanelHandlers() {
 			public void onSuccess(VsacApiResult result) {
 				
 				if (result.isSuccess()) {
-					
 					searchDisplay.getCodesView().getCodeDescriptorInput().setValue(result.getDirectReferenceCode().getCodeDescriptor());
 					searchDisplay.getCodesView().getCodeInput().setValue(result.getDirectReferenceCode().getCode());
 					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
@@ -4853,8 +4852,8 @@ private void addCodeSearchPanelHandlers() {
 				 } else {
 					 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				 }
-				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				
+				showSearchingBusy(false);
 				//508 : Shift focus to code search panel.
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
@@ -5791,6 +5790,7 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
 			searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);
 			searchDisplay.getCodesView().getRetrieveFromVSACButton().setEnabled(!busy);
+			searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, !busy);
 		}
 		searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
 

@@ -117,7 +117,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/** The vsacapi service. */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get().getVsacapiServiceAsync();
 
-	/** The is u ser defined. */
+	/** The is user defined. */
 	private boolean isUserDefined = false;
 
 	/** The exp profile to all qdm. */
@@ -4861,8 +4861,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param url the url
 	 */
 	private void retrieveCodeReferences(String url){
-		
-		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+				
+		showSearchingBusy(true);
 		
 		vsacapiService.getDirectReferenceCode(url, new AsyncCallback<VsacApiResult>() {
 
@@ -4878,13 +4878,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onSuccess(VsacApiResult result) {
 				
 				if (result.isSuccess()) {
-					
+					showSearchingBusy(false);
 					searchDisplay.getCodesView().getCodeDescriptorInput().setValue(result.getDirectReferenceCode().getCodeDescriptor());
 					searchDisplay.getCodesView().getCodeInput().setValue(result.getDirectReferenceCode().getCode());
 					searchDisplay.getCodesView().getCodeSystemInput().setValue(result.getDirectReferenceCode().getCodeSystemName());
 					searchDisplay.getCodesView().getCodeSystemVersionInput().setValue(result.getDirectReferenceCode().getCodeSystemVersion());
 					searchDisplay.getCodesView().setCodeSystemOid(result.getDirectReferenceCode().getCodeSystemOid());
-					searchDisplay.getCodesView().getSaveButton().setEnabled(true);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code "+result.getDirectReferenceCode().getCode()+" successfully retrieved from VSAC.");
 					
 			 } else if (result.getFailureReason() == 5) { 
@@ -4893,8 +4892,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			 } else {
 				 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 			 }
-				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
 				
+				showSearchingBusy(false);
 				//508 : Shift focus to code search panel.
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
@@ -5793,6 +5792,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
 			searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);
 			searchDisplay.getCodesView().getRetrieveFromVSACButton().setEnabled(!busy);
+			searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, !busy);
 		}
 		searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
 		searchDisplay.getCqlLeftNavBarPanelView().setIsLoading(busy);

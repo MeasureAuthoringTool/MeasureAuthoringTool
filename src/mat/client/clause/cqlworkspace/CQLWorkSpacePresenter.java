@@ -1466,6 +1466,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														searchDisplay.getCqlLeftNavBarPanelView().getOwnerName(result));
 												searchDisplay.getIncludeView().getCqlLibraryNameTextBox()
 														.setText(result.getCqlName());
+												searchDisplay.getIncludeView().addAvailableItems(new ArrayList<String>());
 												
 												if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 													searchDisplay.getIncludeView().setWidgetReadOnly(false);

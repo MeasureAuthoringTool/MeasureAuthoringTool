@@ -2162,6 +2162,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																			.getOwnerName(result));
 															searchDisplay.getIncludeView().getCqlLibraryNameTextBox()
 																	.setText(result.getCqlName());
+															searchDisplay.getIncludeView().addAvailableItems(new ArrayList<String>());
 
 															if (MatContext.get().getLibraryLockService()
 																	.checkForEditPermission()) {

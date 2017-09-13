@@ -50,7 +50,9 @@ import mat.client.CustomPager;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
@@ -133,6 +135,9 @@ public class CQLIncludeLibraryView {
 	
 	/** The alias name group. */
 	private FormGroup aliasNameGroup = new FormGroup();
+	
+	/** The rep lib items. */
+	private  ListBoxMVP repLibItems = new ListBoxMVP();
 	
 	/**
 	 * The Interface Observer.
@@ -257,6 +262,9 @@ public class CQLIncludeLibraryView {
 	}
 	
 	
+	/**
+	 * Sets the margin in button bar.
+	 */
 	private void setMarginInButtonBar() {
 
 		includesButtonBar.getSaveButton().setMarginLeft(-30.00);
@@ -296,6 +304,12 @@ public class CQLIncludeLibraryView {
 		cqlLibraryNameTextBox.setName("aliasName");
 		cqlLibraryNameTextBox.setEnabled(false);
 		
+		FormLabel cqlRepLibLabel = new FormLabel();
+		cqlRepLibLabel.setMarginTop(5);
+		cqlRepLibLabel.setId("cqlRepLibrary_Label");
+		cqlRepLibLabel.setText("Replace Library");
+		cqlRepLibLabel.setTitle("Replace Library");
+		
 		ownerTextboxPanel.add(ownerLabel);
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(ownerNameTextBox);
@@ -304,6 +318,10 @@ public class CQLIncludeLibraryView {
 		ownerTextboxPanel.add(cqlLibNameLabel);
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(cqlLibraryNameTextBox);
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(cqlRepLibLabel);
+		ownerTextboxPanel.add(new SpacerWidget());
+		ownerTextboxPanel.add(repLibItems);
 		createReadOnlyViewIncludesButtonBar();
 	}
 	
@@ -1021,6 +1039,7 @@ public class CQLIncludeLibraryView {
 		getAliasNameTxtArea().setEnabled(isEditable);
 		getIncludesButtonBar().getSaveButton().setEnabled(isEditable);
 		getIncludesButtonBar().getEraseButton().setEnabled(isEditable);
+		getRepLibItems().setEnabled(isEditable);
 	}
 
 
@@ -1041,6 +1060,42 @@ public class CQLIncludeLibraryView {
 	 */
 	public void setAliasNameGroup(FormGroup aliasNameGroup) {
 		this.aliasNameGroup = aliasNameGroup;
+	}
+	
+	/**
+	 * Adds the available items.
+	 *
+	 * @param availableInsertItemList the available insert item list
+	 */
+	public void addAvailableItems( List<String> availableInsertItemList) {
+		repLibItems.clear();
+		repLibItems.addItem(MatContext.get().PLEASE_SELECT);
+		for (int i = 0; i < availableInsertItemList.size(); i++) {
+			if(!availableInsertItemList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+				repLibItems.addItem(availableInsertItemList.get(i));
+			}
+		}
+		
+	}
+
+
+	/**
+	 * Gets the rep lib items.
+	 *
+	 * @return the rep lib items
+	 */
+	public ListBoxMVP getRepLibItems() {
+		return repLibItems;
+	}
+
+
+	/**
+	 * Sets the rep lib items.
+	 *
+	 * @param repLibItems the new rep lib items
+	 */
+	public void setRepLibItems(ListBoxMVP repLibItems) {
+		this.repLibItems = repLibItems;
 	}
 	
 	

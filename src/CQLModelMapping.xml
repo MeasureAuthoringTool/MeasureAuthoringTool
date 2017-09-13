@@ -107,6 +107,9 @@
 					<field name="codeOID" type="java.lang.String">
 						<bind-xml name="codeOID" node="attribute" />
 					</field>
+					<field name="suffix" type="java.lang.String">
+						<bind-xml name="suffix" node="attribute" />
+					</field>
 				</class>
 			</bind-xml>
 		</field>

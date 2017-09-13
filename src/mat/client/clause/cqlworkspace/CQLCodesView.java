@@ -21,7 +21,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
@@ -45,7 +44,7 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
-import mat.client.clause.cqlworkspace.CQLAppliedValueSetView.Observer;
+import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -123,6 +122,8 @@ public class CQLCodesView {
 	
 	/** the Code system Version input */
 	private MatTextBox codeSystemVersionInput = new MatTextBox();
+	
+	private CustomQuantityTextBox suffixTextBox = new CustomQuantityTextBox(4);
 	
 	private String CodeSystemOid;
 	
@@ -252,7 +253,8 @@ public class CQLCodesView {
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 
-		Grid searchGrid = new Grid(2, 1);
+		Grid searchGrid = new Grid(1, 1);
+		Grid codeDescriptorAndSuffixGrid = new Grid(1, 2);
 		Grid codeGrid = new Grid(2, 3);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveCode);
@@ -266,7 +268,7 @@ public class CQLCodesView {
 
 
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("430px");
+		sWidget.setSearchBoxWidth("530px");
 		sWidget.getGo().setEnabled(true);
 		sWidget.getGo().setTitle("Reterive Code Identifier");
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
@@ -284,7 +286,7 @@ public class CQLCodesView {
 		codeSystemLabel.setText("Code System");
 		codeSystemLabel.setTitle("Code System");
 		codeSystemInput.setTitle("Code System");
-		codeSystemInput.setWidth("180px");
+		codeSystemInput.setWidth("280px");
 		codeSystemInput.setHeight("30px");
 
 		VerticalPanel codeGroup = new VerticalPanel();
@@ -295,15 +297,32 @@ public class CQLCodesView {
 		codeInput.setHeight("30px");
 
 		VerticalPanel codeDescriptorGroup = new VerticalPanel();
+		
 		FormLabel codeDescriptorLabel = new FormLabel();
 		codeDescriptorLabel.setText("Code Descriptor");
 		codeDescriptorLabel.setTitle("Code Descriptor");
 		codeDescriptorInput.setTitle("Code Descriptor");
-		codeDescriptorInput.setWidth("510px");
-		codeDescriptorInput.setHeight("30px");
+		codeDescriptorInput.setWidth("450px");
+		/*codeDescriptorInput.setHeight("30px");*/
 
 		codeDescriptorGroup.add(codeDescriptorLabel);
 		codeDescriptorGroup.add(codeDescriptorInput);
+		
+		
+		VerticalPanel suffixGroup = new VerticalPanel();
+		
+		FormLabel suffixLabel = new FormLabel();
+		suffixLabel.setText("Suffix (Max Length 4)");
+		suffixLabel.setTitle("Suffix");
+		suffixTextBox.setTitle("Suffix");
+		/*suffixTextBox.setWidth("50px");*/
+		/*codeDescriptorInput.setWidth("510px");
+		codeDescriptorInput.setHeight("30px");*/
+
+		suffixGroup.add(suffixLabel);
+		suffixGroup.add(suffixTextBox);
+		
+		
 		codeGroup.add(codeLabel);
 		codeGroup.add(codeInput);
 		codeSystemGroup.add(codeSystemLabel);
@@ -317,9 +336,12 @@ public class CQLCodesView {
 
 
 		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
-		searchGrid.setWidget(1, 0, codeDescriptorGroup);
+		//searchGrid.setWidget(1, 0, codeDescriptorGroup);
 		searchGrid.setStyleName("secondLabel");
 		
+		codeDescriptorAndSuffixGrid.setWidget(0, 0, codeDescriptorGroup);
+		codeDescriptorAndSuffixGrid.setWidget(0, 1, suffixGroup);
+		codeDescriptorAndSuffixGrid.setStyleName("code-grid");
 		codeGrid.setWidget(0, 0, codeGroup);
 		codeGrid.setWidget(0, 1, codeSystemGroup);
 		codeGrid.setWidget(0, 2, versionFormGroup);
@@ -328,6 +350,7 @@ public class CQLCodesView {
 
 		VerticalPanel codeFormGroup = new VerticalPanel();
 		codeFormGroup.add(searchGrid);
+		codeFormGroup.add(codeDescriptorAndSuffixGrid);
 		codeFormGroup.add(codeGrid);
 
 		searchPanelBody.add(codeFormGroup);
@@ -563,6 +586,7 @@ public class CQLCodesView {
 		getCodeDescriptorInput().setEnabled(false);
 		getCodeInput().setEnabled(false);
 		getCodeSystemInput().setEnabled(false);
+		getSuffixTextBox().setEnabled(false);
 		getCodeSystemVersionInput().setEnabled(false);
 		getRetrieveFromVSACButton().setEnabled(editable);
 		getCancelCodeButton().setEnabled(editable);
@@ -652,6 +676,7 @@ public class CQLCodesView {
 		getCodeSystemInput().setValue("");
 		getCodeSystemVersionInput().setValue("");
 		setCodeSystemOid("");
+		getSuffixTextBox().setValue("");
 		getSaveButton().setEnabled(false);
 	}
 
@@ -748,11 +773,12 @@ public class CQLCodesView {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
-					String value = object.getCodeName();
+					String value = object.getDisplayName();
+					
 					title = title.append("Descriptor : ").append(value);
 					title.append("");
 					
-					return CellTableUtility.getCodeDescriptorColumnToolTip(value, title.toString());
+					return CellTableUtility.getCodeDescriptorColumnToolTip(value, title.toString(),object.getSuffix());
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils
@@ -999,6 +1025,14 @@ public class CQLCodesView {
 
 	public void setCodeSystemOid(String codeSystemOid) {
 		CodeSystemOid = codeSystemOid;
+	}
+
+	public CustomQuantityTextBox getSuffixTextBox() {
+		return suffixTextBox;
+	}
+
+	public void setSuffixTextBox(CustomQuantityTextBox suffixTextBox) {
+		this.suffixTextBox = suffixTextBox;
 	}
 	
 }

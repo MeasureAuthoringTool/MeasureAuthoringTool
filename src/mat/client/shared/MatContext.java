@@ -1870,7 +1870,13 @@ public class MatContext implements IsSerializable {
 		List<CQLIdentifierObject> valuesetIdentifiers = new ArrayList<>(); 
 		
 		for(int i = 0; i < valuesets.size(); i++) {
-			CQLIdentifierObject valuesetIdentifier = new CQLIdentifierObject(null, valuesets.get(i).getCodeListName());
+			CQLIdentifierObject valuesetIdentifier = null;
+			if(valuesets.get(i).getType() != null){
+				valuesetIdentifier  = new CQLIdentifierObject(null, valuesets.get(i).getDisplayName());
+			} else{
+				valuesetIdentifier  = new CQLIdentifierObject(null, valuesets.get(i).getCodeListName());
+			}
+			
 			valuesetIdentifiers.add(valuesetIdentifier);
 		}
 		

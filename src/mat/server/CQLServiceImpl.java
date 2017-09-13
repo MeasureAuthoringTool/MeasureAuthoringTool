@@ -1,11 +1,9 @@
 package mat.server;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.OutputStreamWriter;
@@ -2963,8 +2961,10 @@ public class CQLServiceImpl implements CQLService {
 			 * "' and @codeSystemVersion ='"+ appliedCode.getCodeSystemVersion()
 			 * +"' and @displayName = '" + appliedCode.getDisplayName()+"' ]");
 			 */
+			/*Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
+					"//cqlLookUp/codes/code[@codeOID='" + appliedCode.getCodeOID() + "' ]");*/
 			Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-					"//cqlLookUp/codes/code[@codeOID='" + appliedCode.getCodeOID() + "' ]");
+					"//cqlLookUp/codes/code[@displayName=\"" + appliedCode.getDisplayName() + "\" ]");
 			if (existingCodeList != null) {
 				logger.info("::: Duplicate Code :::");
 				result.setSuccess(false);
@@ -3014,7 +3014,6 @@ public class CQLServiceImpl implements CQLService {
 				CQLCodeSystemWrapper wrapper = new CQLCodeSystemWrapper();
 				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
 				wrapper.setCqlCodeSystemList(codeSystemList);
-				;
 				wrapper.getCqlCodeSystemList().add(codeSystem);
 				String codeSystemXMLString = generateXmlForAppliedCodeSystem(wrapper);
 				result.setSuccess(true);

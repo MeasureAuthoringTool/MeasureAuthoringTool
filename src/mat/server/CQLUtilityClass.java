@@ -139,14 +139,16 @@ public class CQLUtilityClass {
 		List<String> codesAlreadyUsed = new ArrayList<String>();
 		if(codeList != null){
 			for(CQLCode codes : codeList){
-				String codesStr = '"'+codes.getCodeName()+'"'+ ": "
+				String codesStr = '"'+codes.getDisplayName()+'"'+ ": "
 			                          +"'" +codes.getCodeOID()+"'";
 				String codeSysStr = codes.getCodeSystemName() + ":"
                           + codes.getCodeSystemVersion().replaceAll(" ", "%20");
+				//boolean containsSearchStr = codesAlreadyUsed.stream().filter(s -> s.equalsIgnoreCase(codesStr)).findFirst().isPresent();
+				//System.out.println("Code is :: "+ codesStr + ": " + containsSearchStr);
 				if(!codesAlreadyUsed.contains(codesStr)){
 					cqlStr = cqlStr.append("code " + codesStr).append(" ")
 							.append("from " + '"' + codeSysStr + '"' +" ");
-					cqlStr = cqlStr.append("display " +"'" +codes.getDisplayName().replaceAll("'", "\\\\'")+"'");
+					cqlStr = cqlStr.append("display " +"'" +codes.getCodeName().replaceAll("'", "\\\\'")+"'");
 					cqlStr = cqlStr.append("\n");
 					codesAlreadyUsed.add(codesStr);
 				}
@@ -449,6 +451,7 @@ public class CQLUtilityClass {
 					convertedCQLDataSet.setOid(tempDataSet.getCodeOID());
 					convertedCQLDataSet.setVersion(tempDataSet.getCodeSystemVersion());
 					convertedCQLDataSet.setDisplayName(tempDataSet.getDisplayName());
+					convertedCQLDataSet.setSuffix(tempDataSet.getSuffix());
 					convertedCQLDataSet.setType("code");
 					convertedCQLDataSetList.add(convertedCQLDataSet);
 

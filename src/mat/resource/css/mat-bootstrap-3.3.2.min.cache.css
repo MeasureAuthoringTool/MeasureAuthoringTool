@@ -1361,7 +1361,7 @@ td,th {
 	font-size: medium;
 }
 .code-grid{
-	border-spacing:14px;
+	 border-spacing:10px;
 	overflow: scroll;
 }
 .attr-grid{

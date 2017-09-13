@@ -51,10 +51,24 @@ public class CellTableUtility {
 	 * @param title the title
 	 * @return the name column tool tip
 	 */
-	public static SafeHtml getCodeDescriptorColumnToolTip(String columnText, String title) {
+	public static SafeHtml getCodeDescriptorColumnToolTip(String columnText, String title, String suffix) {
 		
-		if(columnText.length() >450){
-			columnText = columnText.substring(0, 449);
+		if(columnText.length() >450 ){
+			if(suffix != null && !suffix.isEmpty()){
+				columnText = columnText.substring(0, 443);
+				columnText.concat(" (" + suffix+ ")");
+			} else{
+				columnText = columnText.substring(0, 449);
+			}
+		} else if(columnText.length() > 443){
+			if(suffix != null && !suffix.isEmpty()){
+				columnText = columnText.substring(0, 443);
+				columnText.concat(" (" + suffix+ ")");
+			} 
+		} else {
+			if(suffix != null && !suffix.isEmpty()){
+				columnText.concat(" (" + suffix+ ")");
+			} 
 		}
 		String htmlConstant = "<div id='container' tabindex=\"-1\"> "+
 	                           "<span id='div3' title=\" " + escapeHtml(title) + "\" tabindex=\"0\">" + 

@@ -68,6 +68,9 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The data type has removed. */
 	private boolean dataTypeHasRemoved;
 	
+	private String suffix;
+	
+	
 	/** The expansion profile. */
 //	private String expansionIdentifier;
 	
@@ -430,10 +433,17 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-	
-	
-	
-	
-	
+
+
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
 	
 }

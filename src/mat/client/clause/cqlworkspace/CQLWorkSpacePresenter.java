@@ -1470,7 +1470,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												
 												if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 													searchDisplay.getIncludeView().setWidgetReadOnly(false);
-													
+													searchDisplay.getIncludeView().getRepLibItems().setEnabled(
+															MatContext.get().getMeasureLockService().checkForEditPermission());
 													searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
 													// load most recent used cql artifacts
 													MatContext.get().getMeasureService().getUsedCQLArtifacts(

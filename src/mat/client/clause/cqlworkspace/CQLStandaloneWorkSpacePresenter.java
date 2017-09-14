@@ -2167,6 +2167,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															if (MatContext.get().getLibraryLockService()
 																	.checkForEditPermission()) {
 																searchDisplay.getIncludeView().setWidgetReadOnly(false);
+																searchDisplay.getIncludeView().getRepLibItems().setEnabled(
+																		MatContext.get().getLibraryLockService().checkForEditPermission());
 																// load most recent
 																// used
 																// cql artifacts

@@ -1877,7 +1877,8 @@ public class CQLServiceImpl implements CQLService {
 		List<String> usedCodes = parsedCQL.getUsedCQLArtifacts().getUsedCQLcodes();
 		System.out.println("used codes:" + usedCodes);
 		for (CQLCode cqlCode : cqlModel.getCodeList()) {
-			boolean isUsed = usedCodes.contains(cqlCode.getCodeName());
+			//boolean isUsed = usedCodes.contains(cqlCode.getCodeName());
+			boolean isUsed = usedCodes.contains(cqlCode.getDisplayName());
 			cqlCode.setUsed(isUsed);
 		}
 
@@ -3461,7 +3462,8 @@ public class CQLServiceImpl implements CQLService {
 				GetUsedCQLArtifactsResult artifactsResult = parsedResult.getUsedCQLArtifacts();
 				List<String> usedCodes = artifactsResult.getUsedCQLcodes();
 				for (CQLCode code : allCodes) {
-					if (usedCodes.contains(code.getCodeName())) {
+					//if (usedCodes.contains(code.getCodeName())) {
+					if (usedCodes.contains(code.getDisplayName())) {
 						code.setUsed(true);
 					}
 				}

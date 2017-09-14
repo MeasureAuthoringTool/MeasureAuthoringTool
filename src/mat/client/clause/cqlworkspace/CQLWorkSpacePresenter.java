@@ -3405,7 +3405,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		               	// otherwise, check if the valueset is in the used valusets list
 		               	else {
 		                      for(CQLCode cqlCode : appliedCodeTableList){
-		                             if (result.getUsedCQLcodes().contains(cqlCode.getCodeName())) {
+		                             //if (result.getUsedCQLcodes().contains(cqlCode.getCodeName())) {
+		                    	  	if (result.getUsedCQLcodes().contains(cqlCode.getDisplayName())) {
 		                                    cqlCode.setUsed(true);
 		                             } else{
 		                           	  cqlCode.setUsed(false);

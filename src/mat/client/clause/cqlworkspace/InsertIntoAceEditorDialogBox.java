@@ -492,7 +492,15 @@ public class InsertIntoAceEditorDialogBox {
 						terminologies.addAll(MatContext.get().getIncludedCodeNames());
 						
 						for(CQLIdentifierObject terminology : terminologies) {
-							listAllItemNames.addItem(terminology.toString().replaceAll("\"", ""), terminology.toString());
+							String displayName = terminology.getDisplay();
+							if(displayName.length() > 65) {
+								String firstPart = displayName.substring(0, 55);
+								String secondPart = displayName.substring(displayName.length() - 7); 
+								displayName = firstPart + "..." + secondPart;
+							}
+							
+							
+							listAllItemNames.addItem(displayName, terminology.toString());
 						}
 						
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {

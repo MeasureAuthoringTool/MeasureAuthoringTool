@@ -174,7 +174,7 @@ public class JSONAttributeModeUtility {
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
 								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
-									mode.setModeValue(valSets.getCodeListName());
+									mode.setModeValue(formatModeValue(valSets.getCodeListName()));
 									if(valSets.getType()== null) {
 										mode.setModeName("valueset:\""+valSets.getCodeListName() + "\"");
 										modeDetailsList.add(mode);
@@ -187,9 +187,9 @@ public class JSONAttributeModeUtility {
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
 								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
-									mode.setModeValue(valSets.getCodeListName());
 									if(valSets.getType()!= null) {
-										mode.setModeName(valSets.getType()+":\"" +valSets.getCodeListName() + "\"");
+										mode.setModeValue(formatModeValue(valSets.getDisplayName()));
+										mode.setModeName(valSets.getType()+":\"" +valSets.getDisplayName() + "\"");
 										modeDetailsList.add(mode);
 									}
 								}
@@ -400,13 +400,22 @@ public class JSONAttributeModeUtility {
 		
 		for (int i = 0; i < includesList.size(); i++) {
 			ModeDetailModel mode = new ModeDetailModel();
-			String includesStr = includesList.get(i).toString();
-			mode.setModeValue(includesStr);
-			mode.setModeName(type + includesStr);
+			String includesStr = includesList.get(i).getDisplay();
+			mode.setModeValue(formatModeValue(includesStr));
+			mode.setModeName(type + includesList.get(i).toString());
 			modeDetailList.add(mode);
 		}
 		
 		return modeDetailList;
-
 	}
+	
+	private static String formatModeValue(String displayName) {
+		if(displayName.length() > 65) {
+			String firstPart = displayName.substring(0, 55);
+			String secondPart = displayName.substring(displayName.length() - 7); 
+			displayName = firstPart + "..." + secondPart;
+		}
+		return displayName;
+	}
+
 }

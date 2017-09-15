@@ -21,7 +21,6 @@ public class CQLIdentifierObject implements IsSerializable {
 	 */
 	private String identifier;
 
-
 	public CQLIdentifierObject(String aliasName, String identifier) {
 		this.aliasName = aliasName;
 		this.identifier = identifier;
@@ -49,6 +48,16 @@ public class CQLIdentifierObject implements IsSerializable {
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	} 
+	
+	public String getDisplay() {
+		if(aliasName != null && !aliasName.isEmpty()) {
+			return aliasName + "." + identifier;
+		}
+		
+		else {
+			return identifier;
+		}
+	}
 	
 	
 	@Override

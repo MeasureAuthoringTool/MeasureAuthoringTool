@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, David H. Hovemeyer <david.hovemeyer@gmail.com>
+//Copyright (c) 2011-2014, David H. Hovemeyer <david.hovemeyer@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1040,16 +1040,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		valueSetList.addAll(MatContext.get().getIncludedValueSetNames());
 		valueSetList.addAll(MatContext.get().getIncludedCodeNames());
 		
-		Collections.sort(valueSetList, new Comparator() {
-
-			@Override
-			public int compare(Object o1, Object o2) {
-				String string1 = o1.toString(); 
-				String string2 = o2.toString(); 
-				return string1.toLowerCase().compareTo(string2.toLowerCase());
-			}
-			
-		});
+		List<String> terminologyStrings = new ArrayList<>(); 
+		for(CQLIdentifierObject valueset : valueSetList) {
+			terminologyStrings.add(valueset.toString());
+		}
+		
+		Collections.sort(terminologyStrings);
 		
 		JsArrayString jsArray = (JsArrayString) JsArrayString.createArray(); 
 		for (CQLIdentifierObject valueset : valueSetList) {

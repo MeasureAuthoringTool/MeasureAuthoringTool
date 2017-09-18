@@ -98,6 +98,10 @@ public class CQLIncludeLibraryView {
 	/** The includes button bar. */
 	private CQLButtonToolBar includesButtonBar = new CQLButtonToolBar("includes");
 	
+	private CQLButtonToolBar includesModifyButtonBar = new CQLButtonToolBar("includesAliasModify");
+	
+	private VerticalPanel buttonPanel = new VerticalPanel();
+	
 	/** The s widget. */
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	
@@ -157,8 +161,9 @@ public class CQLIncludeLibraryView {
 	 * Instantiates a new CQL include library view.
 	 */
 	public CQLIncludeLibraryView(){
-	
+		buttonPanel.clear();
 		aliasNameGroup.clear();
+		buttonPanel.getElement().setId("buttonPanel");
 		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -189,17 +194,17 @@ public class CQLIncludeLibraryView {
 		setMarginInButtonBar();
 		
 		VerticalPanel aliasLabelVP = new VerticalPanel();
-		//aliasLabelVP.add(aliasLabel);
-		//aliasLabelVP.add(new SpacerWidget());
-		//aliasLabelVP.add(aliasNameTxtBox);
-		aliasLabelVP.add(aliasNameGroup);
-		aliasLabelVP.setWidth("580px");
-		aliasLabelVP.setStylePrimaryName("margintop20px");
 		
+		aliasLabelVP.add(aliasNameGroup);
+		
+		aliasLabelVP.setStylePrimaryName("margintop20px");
+		buttonPanel.clear();
+		buttonPanel.add(includesButtonBar);
+		buttonPanel.getElement().setAttribute("style", "margin-left:300px;");
 		aliasLabelHP.add(aliasLabelVP);
 		aliasLabelHP.add(new SpacerWidget());
 		aliasLabelHP.add(new SpacerWidget());
-		aliasLabelHP.add(includesButtonBar);
+		aliasLabelHP.add(buttonPanel);
 		aliasNameVP.add(aliasLabelHP);
 		
 		
@@ -279,6 +284,9 @@ public class CQLIncludeLibraryView {
 		ownerTextboxPanel.clear();
 		searchCellTablePanel.clear();
 		aliasNameTxtBox.setEnabled(false);
+		buttonPanel.clear();
+		buttonPanel.getElement().setAttribute("style", "margin-left:250px;");
+		buttonPanel.add(includesModifyButtonBar);
 		
 		//Label ownerLabel = new Label(LabelType.INFO, "Owner Name");
 		FormLabel ownerLabel = new FormLabel();
@@ -353,6 +361,9 @@ public class CQLIncludeLibraryView {
 		searchCellTablePanel.add(new SpacerWidget());
 		
 		searchCellTablePanel.add(cellTablePanel);
+		buttonPanel.clear();
+		buttonPanel.add(includesButtonBar);
+		buttonPanel.getElement().setAttribute("style", "margin-left:300px;");
 		createIncludesButtonBar();
 		//return searchCellTablePanel;
 	}
@@ -416,16 +427,19 @@ public class CQLIncludeLibraryView {
 	 * @return the CQL button tool bar
 	 */
 	private CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
-		includesButtonBar.getDeleteButton().setVisible(true);
-		includesButtonBar.getDeleteButton().setMarginLeft(-40.00);
-		includesButtonBar.getDeleteButton().setEnabled(false);
-		includesButtonBar.getCloseButton().setVisible(true);;
-		includesButtonBar.getSaveButton().setVisible(false);
-		includesButtonBar.getEraseButton().setVisible(false);
-		includesButtonBar.getInfoButton().removeFromParent();
-		includesButtonBar.getInsertButton().removeFromParent();
-		includesButtonBar.getTimingExpButton().removeFromParent();
-		return includesButtonBar;
+		includesModifyButtonBar.getDeleteButton().setVisible(true);
+		/*includesButtonBar.getDeleteButton().setMarginLeft(-40.00);*/
+		includesModifyButtonBar.getSaveButton().setMarginLeft(-50.00);
+		includesModifyButtonBar.getCloseButton().setMarginLeft(10.00);
+		includesModifyButtonBar.getDeleteButton().setEnabled(false);
+		includesModifyButtonBar.getCloseButton().setVisible(true);;
+		includesModifyButtonBar.getSaveButton().setVisible(true);
+		includesModifyButtonBar.getSaveButton().setEnabled(false);
+		includesModifyButtonBar.getInfoButton().removeFromParent();
+		includesModifyButtonBar.getInsertButton().removeFromParent();
+		includesModifyButtonBar.getTimingExpButton().removeFromParent();
+		includesModifyButtonBar.getEraseButton().removeFromParent();
+		return includesModifyButtonBar;
 	}
 
 	
@@ -794,6 +808,11 @@ public class CQLIncludeLibraryView {
 		return this.includesButtonBar;
 	}
 	
+	public CQLButtonToolBar getIncludesModifyButtonBar() {
+		return includesModifyButtonBar;
+	}
+
+
 	/**
 	 * Reset to default.
 	 */
@@ -856,7 +875,7 @@ public class CQLIncludeLibraryView {
 	 * @return the delete button
 	 */
 	public Button getDeleteButton(){
-		return getIncludesButtonBar().getDeleteButton();
+		return getIncludesModifyButtonBar().getDeleteButton();
 	}
 	
 	
@@ -866,7 +885,7 @@ public class CQLIncludeLibraryView {
 	 * @return the close button
 	 */
 	public Button getCloseButton(){
-		return getIncludesButtonBar().getCloseButton();
+		return getIncludesModifyButtonBar().getCloseButton();
 	}
 	
 	/**

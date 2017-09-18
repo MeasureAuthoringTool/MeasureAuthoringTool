@@ -28,7 +28,6 @@ import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
-import mat.model.MeasureNotes;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
@@ -38,7 +37,6 @@ import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureLibraryService;
-import mat.server.service.MeasureNotesService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
@@ -244,7 +242,6 @@ implements MeasureCloningService {
 				clonedMeasure.setRevisionNumber("000");
 				clonedMeasure.seteMeasureId(measure.geteMeasureId());
 				measureDAO.saveMeasure(clonedMeasure);
-				saveMeasureNotesInDraftMeasure(clonedMeasure.getId(), measure);
 				createNewMeasureDetailsForDraft();
 			} else { 
 				// Clear the measureDetails tag
@@ -820,48 +817,6 @@ implements MeasureCloningService {
 			}
 		}
 		return returnNodeList;
-	}
-	
-	/**
-	 * Save measure notes in draft measure.
-	 * 
-	 * @param draftMeasureId
-	 *            the draft measure id
-	 * @param measure
-	 *            the measure
-	 */
-	private void saveMeasureNotesInDraftMeasure(String draftMeasureId,
-			Measure measure) {
-		List<MeasureNotes> measureNotesList = getMeasureNotesService()
-				.getAllMeasureNotesByMeasureID(measure.getId());
-		if ((measureNotesList != null) && !measureNotesList.isEmpty()) {
-			
-			for (MeasureNotes measureNotes : measureNotesList) {
-				if (measureNotes != null) {
-					try {
-						MeasureNotes measureNotesDraft = measureNotes
-								.clone();
-						measureNotesDraft.setMeasure_id(draftMeasureId);
-						getMeasureNotesService().saveMeasureNote(
-								measureNotesDraft);
-						logger.info("MeasureNotes saved successfully on creating draft measure.");
-					} catch (Exception e) {
-						logger.info("Failed to save MeasureNotes on creating draft measure. Exception occured:"
-								+ e.getMessage());
-					}
-				}
-			}
-			
-		}
-	}
-	
-	/**
-	 * Gets the measure notes service.
-	 * 
-	 * @return the measure notes service
-	 */
-	private MeasureNotesService getMeasureNotesService() {
-		return ((MeasureNotesService) context.getBean("measureNotesService"));
 	}
 	
 	/**

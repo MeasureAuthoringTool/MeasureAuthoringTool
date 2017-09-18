@@ -7,14 +7,12 @@ import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
-import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
@@ -97,14 +95,6 @@ public interface MeasureLibraryService {
 			String measureID, String expProfileToAllQDM);
 	
 	/**
-	 * Delete measure notes.
-	 * 
-	 * @param measureNoteDTO
-	 *            the measure note dto
-	 */
-	void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
-	
-	/**
 	 * Generate and save max emeasure id.
 	 * 
 	 * @param measureId
@@ -112,15 +102,6 @@ public interface MeasureLibraryService {
 	 * @return the int
 	 */
 	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
-	
-	/**
-	 * Gets the all measure notes by measure id.
-	 * 
-	 * @param measureID
-	 *            the measure id
-	 * @return the all measure notes by measure id
-	 */
-	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
 	
 	/** Gets the all recent measure for user.
 	 * 
@@ -261,18 +242,6 @@ public interface MeasureLibraryService {
 	 */
 	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
 	
-	
-	/**
-	 * Save measure note.
-	 *
-	 * @param model the model
-	 * @param measureId the measure id
-	 * @param userId the user id
-	 * @return the save measure notes result
-	 */
-	SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
-			String measureId, String userId);
-	
 	/**
 	 * Save measure xml.
 	 * 
@@ -329,17 +298,7 @@ public interface MeasureLibraryService {
 	 * @return the save measure result
 	 */
 	SaveMeasureResult updateLockedDate(String measureId, String userId);
-	
-	/**
-	 * Update measure notes.
-	 * 
-	 * @param measureNoteDTO
-	 *            the measure note dto
-	 * @param userId
-	 *            the user id
-	 */
-	void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
-	
+
 	/**
 	 * Update measure xml.
 	 * 

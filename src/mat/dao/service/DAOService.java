@@ -12,7 +12,6 @@ import mat.dao.ListObjectDAO;
 import mat.dao.ListObjectLTDAO;
 import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
-import mat.dao.MeasureNotesDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureValidationLogDAO;
 import mat.dao.ObjectStatusDAO;
@@ -103,9 +102,6 @@ public class DAOService {
 	
 	/** The measure export dao. */
 	private MeasureExportDAO measureExportDAO;
-	
-	/** The measure notes dao. */
-	private MeasureNotesDAO measureNotesDAO;
 	
 	/** The measure score dao. */
 	private MeasureScoreDAO measureScoreDAO;
@@ -334,15 +330,6 @@ public class DAOService {
 	 */
 	public MeasureExportDAO getMeasureExportDAO() {
 		return measureExportDAO;
-	}
-	
-	/**
-	 * Gets the measure notes dao.
-	 * 
-	 * @return the measure notes dao
-	 */
-	public MeasureNotesDAO getMeasureNotesDAO() {
-		return measureNotesDAO;
 	}
 	
 	//US 421
@@ -693,16 +680,6 @@ public class DAOService {
 	 */
 	public void setMeasureExportDAO(MeasureExportDAO measureExportDAO) {
 		this.measureExportDAO = measureExportDAO;
-	}
-	
-	/**
-	 * Sets the measure notes dao.
-	 * 
-	 * @param measureNotesDAO
-	 *            the new measure notes dao
-	 */
-	public void setMeasureNotesDAO(MeasureNotesDAO measureNotesDAO) {
-		this.measureNotesDAO = measureNotesDAO;
 	}
 	
 	/**

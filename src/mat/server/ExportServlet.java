@@ -15,12 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.CQLLibraryOwnerReportDTO;
-import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.server.service.MeasureLibraryService;
-import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
@@ -177,8 +175,6 @@ public class ExportServlet extends HttpServlet {
 				exportActiveUserListCSV(resp, fnu);
 			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
 				exportActiveOrganizationListCSV(resp, fnu);
-			} else if (EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
-				export = exportMeasureNotesCSV(resp, id, measure, fnu);
 			} else if("exportMeasureOwner".equalsIgnoreCase(format)){
 				exportActiveUserMeasureOwnershipListCSV(resp,fnu);
 			} else if (EXPORT_ALL_USERS_CSV.equals(format)) {
@@ -256,24 +252,6 @@ public class ExportServlet extends HttpServlet {
 		} else {
 			resp.setHeader(CONTENT_TYPE, TEXT_PLAIN);
 		}
-		return export;
-	}
-	
-	public ExportResult exportMeasureNotesCSV(HttpServletResponse resp,
-			String id, Measure measure, FileNameUtility fnu) throws Exception,
-			XPathExpressionException, IOException {
-		ExportResult export;
-		System.out.println("testing the print out!");
-		//String csvFileString = generateCSVToExportMeasureNotes(id);
-		export = getService().getSimpleXML(id);
-		String csvFileString = generateHTMLToExportMeasureNotes(id,export,measure.getDescription());
-		Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String measureNoteDate = formatter.format(new Date());
-		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-				+ fnu.getHTMLFileName("MeasureNotes", measureNoteDate) + ";");
-		resp.setContentType("html");
-		resp.getOutputStream().write(csvFileString.getBytes());
-		resp.getOutputStream().close();
 		return export;
 	}
 	
@@ -534,58 +512,6 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	/**
-	 * Generate html to export measure notes.
-	 *
-	 * @param measureId the measure id
-	 * @param export the export
-	 * @param name the name
-	 * @return the string
-	 * @throws XPathExpressionException the x path expression exception
-	 */
-	private String generateHTMLToExportMeasureNotes(final String measureId, ExportResult export,String name) throws XPathExpressionException{
-		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
-		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
-		Element html = htmlDocument.appendElement("html");
-		html.appendElement("head");
-		html.appendElement("body");
-		Element head = htmlDocument.head();
-		htmlDocument.title("Measure Notes");
-		
-		String styleTagString = MATCssUtil.getCSS();
-		head.append(styleTagString);
-		Element header = htmlDocument.body().appendElement("h1");
-		Node eMeasureId = null;
-		if(export != null){
-			XmlProcessor measureXMLProcessor = new XmlProcessor(export.export);
-			eMeasureId = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails/emeasureid");
-		}
-		if(eMeasureId != null){
-			header.appendText(name+ " (CMS " + eMeasureId.getTextContent() + ") " + "Measure Notes");
-		}else{
-			header.appendText(name + " Measure Notes");
-		}
-		Element table = htmlDocument.body().appendElement("table");
-		table.attr("class", "header_table");
-		table.attr("width", "100%");
-		Element row = table.appendElement("tr");
-		createHeader(row);
-		for(MeasureNotes measureNotes:allMeasureNotes){
-			row = table.appendElement("tr");
-			createBody(row, measureNotes.getNoteTitle(),false,"20%");
-			createBody(row,measureNotes.getNoteDesc(), true,"33%");
-			createBody(row,convertDateToString(measureNotes.getLastModifiedDate()),false,"17%");
-			createBody(row,measureNotes.getCreateUser().getEmailAddress(),false,"15%");
-			if (measureNotes.getModifyUser() != null) {
-				createBody(row,measureNotes.getModifyUser().getEmailAddress(),false,"15%");
-			}else{
-				createBody(row,"",false,"15%");
-			}
-		}
-		
-		return htmlDocument.toString();
-	}
-	
-	/**
 	 * Creates the body.
 	 *
 	 * @param row the row
@@ -632,39 +558,6 @@ public class ExportServlet extends HttpServlet {
 		span.attr("width", width);
 		span.appendText(header);
 		
-	}
-	/**
-	 * Generate csv to export measure notes.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the string
-	 */
-	private String generateCSVToExportMeasureNotes(final String measureId) {
-		logger.info("Generating CSV of Measure Notes...");
-		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
-		
-		StringBuilder csvStringBuilder = new StringBuilder();
-		//Add the header row
-		csvStringBuilder.append("Title,Description,LastModifiedDate,Created By,Modified By");
-		csvStringBuilder.append("\r\n");
-		//Add data rows
-		for (MeasureNotes measureNotes:allMeasureNotes) {
-			if (measureNotes.getModifyUser() != null) {
-				csvStringBuilder.append("\"" + measureNotes.getNoteTitle() + "\",\""
-						+ measureNotes.getNoteDesc() + "\",\""
-						+ convertDateToString(measureNotes.getLastModifiedDate()) + "\",\""
-						+ measureNotes.getCreateUser().getEmailAddress() + "\",\""
-						+ measureNotes.getModifyUser().getEmailAddress() + "\"");
-			} else {
-				csvStringBuilder.append("\"" + measureNotes.getNoteTitle() + "\",\""
-						+ measureNotes.getNoteDesc() + "\",\""
-						+ convertDateToString(measureNotes.getLastModifiedDate()) + "\",\""
-						+ measureNotes.getCreateUser().getEmailAddress() + "\",\"" + "" + "\"");
-			}
-			csvStringBuilder.append("\r\n");
-		}
-		return csvStringBuilder.toString();
 	}
 	
 	/**
@@ -906,15 +799,6 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private UserService getUserService() {
 		return (UserService) context.getBean("userService");
-	}
-	
-	/**
-	 * Gets the measure note service.
-	 * 
-	 * @return the measure note service
-	 */
-	private MeasureNotesService getMeasureNoteService() {
-		return (MeasureNotesService) context.getBean("measureNotesService");
 	}
 	
 	/**

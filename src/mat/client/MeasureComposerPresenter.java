@@ -8,8 +8,6 @@ import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
-import mat.client.measure.MeasureNotesPresenter;
-import mat.client.measure.MeasureNotesView;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
@@ -112,10 +110,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	
 	/** The measure composer tab layout. */
 	private MatTabLayoutPanel measureComposerTabLayout;
-	
-	/** The measure notes presenter. */
-	private MeasureNotesPresenter measureNotesPresenter = new MeasureNotesPresenter(new MeasureNotesView());
-	
+		
 	/** The measure package presenter. */
 	private MeasurePackagePresenter measurePackagePresenter;
 	
@@ -145,7 +140,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 		//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
-		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
 		measureComposerTabLayout.setHeight("98%");

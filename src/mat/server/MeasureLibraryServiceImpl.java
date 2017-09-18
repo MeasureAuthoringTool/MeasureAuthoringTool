@@ -26,7 +26,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
@@ -37,7 +36,6 @@ import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
-import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferOwnerShipModel;
@@ -48,12 +46,10 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.shared.ManageMeasureModelValidator;
-import mat.client.shared.ManageMeasureNotesModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.dao.DataTypeDAO;
-import mat.dao.MeasureNotesDAO;
 import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
@@ -68,7 +64,6 @@ import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
-import mat.model.MeasureNotes;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
@@ -97,7 +92,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.model.MatUserDetails;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasureLibraryService;
-import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
@@ -1260,27 +1254,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return stream;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.MeasureLibraryService#deleteMeasureNotes(mat.DTO.
-	 * MeasureNoteDTO)
-	 */
-	@Override
-	public final void deleteMeasureNotes(final MeasureNoteDTO measureNoteDTO) {
-		MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
-		MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
-		try {
-			if (MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureNoteDTO.getMeasureId())) {
-				getMeasureNotesService().deleteMeasureNote(measureNotes);
-			}
-
-			logger.info("MeasureNotes Deleted Successfully :: " + measureNotes.getId());
-		} catch (Exception e) {
-			logger.info("MeasureNotes not deleted. Exception occured. Measure notes Id :: " + measureNotes.getId());
-		}
-	}
-
 	/**
 	 * Extract measure search model detail.
 	 * 
@@ -1476,49 +1449,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			checkIfDataTypeIsPresent = true;
 		}
 		return checkIfDataTypeIsPresent;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.MeasureLibraryService#getAllMeasureNotesByMeasureID(
-	 * java.lang.String)
-	 */
-	@Override
-	public final MeasureNotesModel getAllMeasureNotesByMeasureID(final String measureID) {
-		MeasureNotesModel measureNotesModel = new MeasureNotesModel();
-		ArrayList<MeasureNoteDTO> data = new ArrayList<MeasureNoteDTO>();
-		Measure measure = getMeasureDAO().find(measureID);
-		if (measure != null) {
-			List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measureID);
-			if ((measureNotesList != null) && !measureNotesList.isEmpty()) {
-				for (MeasureNotes measureNotes : measureNotesList) {
-					if (measureNotes != null) {
-						MeasureNoteDTO measureNoteDTO = new MeasureNoteDTO();
-						measureNoteDTO.setMeasureId(measureID);
-						measureNoteDTO.setId(measureNotes.getId());
-						if (measureNotes.getModifyUser() != null) {
-							measureNoteDTO
-									.setLastModifiedByEmailAddress(measureNotes.getModifyUser().getEmailAddress());
-						} else if (measureNotes.getCreateUser() != null) {
-							measureNoteDTO
-									.setLastModifiedByEmailAddress(measureNotes.getCreateUser().getEmailAddress());
-						}
-						measureNoteDTO.setNoteDesc(measureNotes.getNoteDesc());
-						measureNoteDTO.setNoteTitle(measureNotes.getNoteTitle());
-						Date lastModifiedDate = measureNotes.getLastModifiedDate();
-						SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z");
-						if (lastModifiedDate != null) {
-							measureNoteDTO.setLastModifiedDate(dateFormat.format(lastModifiedDate));
-						}
-						data.add(measureNoteDTO);
-					}
-				}
-			}
-		}
-		measureNotesModel.setData(data);
-		return measureNotesModel;
 	}
 
 	/*
@@ -1913,25 +1843,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private MeasureDAO getMeasureDAO() {
 		return ((MeasureDAO) context.getBean("measureDAO"));
-	}
-
-	/**
-	 * Gets the measure notes dao.
-	 * 
-	 * @return the measure notes dao
-	 */
-	private MeasureNotesDAO getMeasureNotesDAO() {
-		return ((MeasureNotesDAO) context.getBean("measureNotesDAO"));
-	}
-
-	/**
-	 * Gets the measure notes service.
-	 * 
-	 * @return the measure notes service
-	 */
-	private MeasureNotesService getMeasureNotesService() {
-		return ((MeasureNotesService) context.getBean("measureNotesService"));
-
 	}
 
 	/**
@@ -2633,52 +2544,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.info("Saving of Measure Details Failed. Invalid Data issue.");
 			return result;
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.MeasureLibraryService#saveMeasureNote(java.lang.
-	 * String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public final SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model, final String measureId,
-			final String userId) {
-		model.scrubForMarkUp();
-		ManageMeasureNotesModelValidator validator = new ManageMeasureNotesModelValidator();
-		List<String> message = validator.validation(model);
-		SaveMeasureNotesResult result = new SaveMeasureNotesResult();
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureId)) {
-			if (message.size() == 0) {
-				try {
-					MeasureNotes measureNote = new MeasureNotes();
-					measureNote.setNoteTitle(model.getNoteTitle());
-					measureNote.setNoteDesc(model.getNoteDesc());
-					Measure measure = getMeasureDAO().find(measureId);
-					if (measure != null) {
-						measureNote.setMeasure_id(measureId);
-					}
-					User user = getUserService().getById(userId);
-					if (user != null) {
-						measureNote.setCreateUser(user);
-					}
-					measureNote.setLastModifiedDate(new Date());
-					getMeasureNotesService().saveMeasureNote(measureNote);
-					logger.info("MeasureNotes Saved Successfully.");
-					result.setSuccess(true);
-				} catch (Exception e) {
-					result.setSuccess(false);
-					logger.info("Failed to save MeasureNotes. Exception occured.");
-				}
-			} else {
-				result.setSuccess(false);
-				result.setFailureReason(SaveMeasureNotesResult.INVALID_DATA);
-			}
-		} else {
-			result.setSuccess(false);
-
-		}
-		return result;
 	}
 
 	/*
@@ -3402,35 +3267,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		result.setId(existingmeasure.getId());
 		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.MeasureLibraryService#updateMeasureNotes(mat.DTO.
-	 * MeasureNoteDTO, java.lang.String)
-	 */
-	@Override
-	public final void updateMeasureNotes(final MeasureNoteDTO measureNoteDTO, final String userId) {
-		try {
-			if (MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureNoteDTO.getMeasureId())) {
-				MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
-				MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
-				measureNotes.setNoteTitle(measureNoteDTO.getNoteTitle());
-				measureNotes.setNoteDesc(measureNoteDTO.getNoteDesc());
-				User user = getUserService().getById(userId);
-				if (user != null) {
-					measureNotes.setModifyUser(user);
-				}
-				measureNotes.setLastModifiedDate(new Date());
-				getMeasureNotesService().saveMeasureNote(measureNotes);
-				logger.info("Edited MeasureNotes Saved Successfully. Measure notes Id :: " + measureNoteDTO.getId());
-			}
-
-		} catch (Exception e) {
-			logger.info(
-					"Edited MeasureNotes not saved. Exception occured. Measure notes Id :: " + measureNoteDTO.getId());
-		}
 	}
 
 	/**

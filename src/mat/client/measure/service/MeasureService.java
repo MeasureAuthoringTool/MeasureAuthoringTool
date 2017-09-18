@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
-import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
@@ -82,14 +80,6 @@ public interface MeasureService extends RemoteService {
 	void createAndSaveCQLLookUp(List<QualityDataSetDTO> list, String measureID, String expProfileToAllQDM);
 	
 	/**
-	 * Delete measure notes.
-	 * 
-	 * @param measureNoteDTO
-	 *            the measure note dto
-	 */
-	void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
-	
-	/**
 	 * Generate and save max emeasure id.
 	 * 
 	 * @param measureId
@@ -98,14 +88,6 @@ public interface MeasureService extends RemoteService {
 	 */
 	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
 	
-	/**
-	 * Gets the all measure notes by measure id.
-	 * 
-	 * @param measureID
-	 *            the measure id
-	 * @return the all measure notes by measure id
-	 */
-	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
 	
 	/** Gets the all recent measure for user.
 	 * 
@@ -254,18 +236,7 @@ public interface MeasureService extends RemoteService {
 	 * @return the save measure result
 	 */
 	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
-	
-	/**
-	 * Save measure note.
-	 *
-	 * @param model the model
-	 * @param measureId the measure id
-	 * @param userId the user id
-	 * @return the save measure notes result
-	 */
-	SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
-			String measureId, String userId);
-	
+
 	/**
 	 * Save measure xml.
 	 * 
@@ -320,16 +291,6 @@ public interface MeasureService extends RemoteService {
 	 * @return the save measure result
 	 */
 	SaveMeasureResult updateLockedDate(String measureId,String userId);
-	
-	/**
-	 * Update measure notes.
-	 * 
-	 * @param measureNoteDTO
-	 *            the measure note dto
-	 * @param userId
-	 *            the user id
-	 */
-	void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
 	
 	/**
 	 * Update measure xml.

@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
-import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureNotesResult;
@@ -79,27 +77,11 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#deleteMeasureNotes(mat.DTO.MeasureNoteDTO)
-	 */
-	@Override
-	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO) {
-		this.getMeasureLibraryService().deleteMeasureNotes(measureNoteDTO);
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#generateAndSaveMaxEmeasureId(mat.client.measure.ManageMeasureDetailModel)
 	 */
 	@Override
 	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId) {
 		return this.getMeasureLibraryService().generateAndSaveMaxEmeasureId(measureId);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getAllMeasureNotesByMeasureID(java.lang.String)
-	 */
-	@Override
-	public MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID) {
-		return this.getMeasureLibraryService().getAllMeasureNotesByMeasureID(measureID);
 	}
 	
 	/** Gets the all recent measure for user.
@@ -242,16 +224,6 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveMeasureNote(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public SaveMeasureNotesResult saveMeasureNote(MeasureNoteDTO model,
-			String measureId, String userId) {
-		return this.getMeasureLibraryService().saveMeasureNote(model, measureId, userId);
-		
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#saveMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
 	 */
 	@Override
@@ -294,15 +266,6 @@ MeasureService {
 	@Override
 	public SaveMeasureResult updateLockedDate(String measureId, String userId) {
 		return this.getMeasureLibraryService().updateLockedDate(measureId, userId);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateMeasureNotes(mat.DTO.MeasureNoteDTO, java.lang.String)
-	 */
-	@Override
-	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId) {
-		this.getMeasureLibraryService().updateMeasureNotes(measureNoteDTO, userId);
-		
 	}
 	
 	/* (non-Javadoc)

@@ -70,11 +70,7 @@
     <!-- US154 -->
     <bean id="transactionAuditService" class="mat.server.service.impl.TransactionAuditServiceImpl">
     </bean>
-     <!-- MAT-1337  --> 
-    <bean id="measureNotesService" class="mat.server.service.impl.MeasureNotesServiceImpl">
-    	<property name="measureNotesDAO" ref="measureNotesDAO"/>
-    </bean>  
-    
+      
     <bean id="cqlService" class="mat.server.CQLServiceImpl">
     </bean>  
     

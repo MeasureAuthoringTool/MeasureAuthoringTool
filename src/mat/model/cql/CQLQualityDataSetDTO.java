@@ -35,6 +35,12 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The code list name. */
 	private String codeListName;
 	
+	/** The suffix. */
+	private String suffix;
+	
+	/** The code list name with suffix. */
+	private String originalCodeListName;
+	
 	/** The code system name. */
 	private String codeSystemName;
 	
@@ -68,8 +74,6 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The data type has removed. */
 	private boolean dataTypeHasRemoved;
 	
-	private String suffix;
-	
 	
 	/** The expansion profile. */
 //	private String expansionIdentifier;
@@ -100,6 +104,29 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 		return codeListName;
 	}
 	
+	public String getSuffix() {
+		return suffix;
+	}
+
+
+
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
+
+
+
+	public String getOriginalCodeListName() {
+		return originalCodeListName;
+	}
+
+
+
+	public void setOriginalCodeListName(String originalCodeListName) {
+		this.originalCodeListName = originalCodeListName;
+	}
+
+
 	/**
 	 * Gets the code system name.
 	 * 
@@ -436,14 +463,4 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 
 
 
-	public String getSuffix() {
-		return suffix;
-	}
-
-
-
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
-	
 }

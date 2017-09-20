@@ -506,7 +506,7 @@ public class ExportSimpleXML {
 			String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name=\"" + valueSet_CodeName + "\"]";
 
 			if (!isValueSet) {
-				xPathForValueSetNode = "//cqlLookUp/codes/code[@codeName=\"" + valueSet_CodeName + "\"]";
+				xPathForValueSetNode = "//cqlLookUp/codes/code[@displayName=\"" + valueSet_CodeName + "\"]";
 			}
 
 			Node valueSet_CodeNode = (Node) xPath.evaluate(xPathForValueSetNode, xmlDoc.getDocumentElement(),
@@ -531,10 +531,10 @@ public class ExportSimpleXML {
 				}
 
 				// rename "codeName" attribute to "name"
-				Node codeName = clonedValueSet_CodeNode.getAttributes().getNamedItem("codeName");
+				Node codeName = clonedValueSet_CodeNode.getAttributes().getNamedItem("displayName");
 				if (codeName != null) {
 					((Element) clonedValueSet_CodeNode).setAttribute("name", codeName.getNodeValue());
-					clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeName");
+					//clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeName");
 				}
 
 				// set "uuid" attribute to new a UUID
@@ -667,7 +667,7 @@ public class ExportSimpleXML {
 				String xPathForValueSetNode = "//cqlLookUp/valuesets/valueset[@name=\"" + valueSet_CodeName + "\"]";
 
 				if (!isValueSet) {
-					xPathForValueSetNode = "//cqlLookUp/codes/code[@codeName=\"" + valueSet_CodeName + "\"]";
+					xPathForValueSetNode = "//cqlLookUp/codes/code[@displayName=\"" + valueSet_CodeName + "\"]";
 				}
 
 				Node valueSet_CodeNode = (Node) xPath.evaluate(xPathForValueSetNode, xmlDoc.getDocumentElement(),
@@ -692,10 +692,10 @@ public class ExportSimpleXML {
 					}
 
 					// rename "codeName" attribute to "name"
-					Node codeName = clonedValueSet_CodeNode.getAttributes().getNamedItem("codeName");
+					Node codeName = clonedValueSet_CodeNode.getAttributes().getNamedItem("displayName");
 					if (codeName != null) {
 						((Element) clonedValueSet_CodeNode).setAttribute("name", codeName.getNodeValue());
-						clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeName");
+						//clonedValueSet_CodeNode.getAttributes().removeNamedItem("codeName");
 					}
 
 					// set "uuid" attribute to new a UUID

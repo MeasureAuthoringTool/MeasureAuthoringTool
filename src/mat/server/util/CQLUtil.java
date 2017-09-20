@@ -279,7 +279,7 @@ public class CQLUtil {
 
 		String nameXPathString = "";
 		for (String codeName : cqlCodesIdentifierList) {            	  
-			nameXPathString += "[@codeName !=\"" + codeName + "\"]";
+			nameXPathString += "[@displayName !=\"" + codeName + "\"]";
 		}
 
 		String xPathForUnusedCodes = "//cqlLookUp//code" + nameXPathString;

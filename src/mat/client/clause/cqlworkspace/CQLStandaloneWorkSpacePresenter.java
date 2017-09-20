@@ -619,9 +619,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(!isUserDefined);
 
 		searchDisplay.getValueSetView().getUserDefinedInput().setEnabled(isUserDefined);
-		searchDisplay.getValueSetView().getUserDefinedInput().setValue(result.getCodeListName());
-		searchDisplay.getValueSetView().getUserDefinedInput().setTitle(result.getCodeListName());
+		searchDisplay.getValueSetView().getUserDefinedInput().setValue(result.getOriginalCodeListName());
+		searchDisplay.getValueSetView().getUserDefinedInput().setTitle(result.getOriginalCodeListName());
 
+		searchDisplay.getValueSetView().getSuffixInput().setEnabled(true);
+		searchDisplay.getValueSetView().getSuffixInput().setValue(result.getSuffix());
+		searchDisplay.getValueSetView().getSuffixInput().setTitle(result.getSuffix());
+		
 		//searchDisplay.getValueSetView().getQDMExpProfileListBox().clear();
 		/*if (result.getExpansionIdentifier() != null) {
 			if (!isUserDefined)
@@ -4895,7 +4899,9 @@ private void addCodeSearchPanelHandlers() {
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
 			//String expansionId;
 			String version;
-			String displayName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
+			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
+			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
+			String displayName = (!originalName.isEmpty() ? originalName : "")  + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
 			/*expansionId = searchDisplay.getValueSetView()
 					.getExpansionProfileValue(searchDisplay.getValueSetView().getQDMExpProfileListBox());*/
 			version = searchDisplay.getValueSetView()
@@ -4921,6 +4927,10 @@ private void addCodeSearchPanelHandlers() {
 			modifyValueSetList(modifyValueSetDTO);
 
 			if (!CheckNameInValueSetList(displayName)) {
+				modifyValueSetDTO.setCodeListName(displayName);
+				modifyValueSetDTO.setSuffix(suffix);
+				modifyValueSetDTO.setOriginalCodeListName(originalName);
+				modifyWithDTO.setDisplayName(displayName);
 				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
 			}
 			getUsedArtifacts();
@@ -5082,7 +5092,10 @@ private void addCodeSearchPanelHandlers() {
 		String libraryID = MatContext.get().getCurrentCQLLibraryId();
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(libraryID);
 		matValueSetTransferObject.scrubForMarkUp();
-		final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
+		String originalCodeListName = matValueSetTransferObject.getMatValueSet().getDisplayName(); 
+		String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
+		final String codeListName = (originalCodeListName!=null ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
+		
 		//String expProfile = matValueSetTransferObject.getMatValueSet().getExpansionProfile();
 		String version = matValueSetTransferObject.getMatValueSet().getVersion();
 		//expProfileToAllValueSet = getExpProfileValue();
@@ -5234,6 +5247,16 @@ private void addCodeSearchPanelHandlers() {
 
 		CQLValueSetTransferObject matValueSetTransferObject = new CQLValueSetTransferObject();
 		matValueSetTransferObject.setCqlLibraryId(libraryID);
+		
+		String originalCodeListName = searchDisplay.getValueSetView().getUserDefinedInput().getValue(); 
+		String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
+		String codeListName = (!originalCodeListName.isEmpty() ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix +")" : "");
+		
+		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(suffix);
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(codeListName);
+		
 		CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
 		codeListSearchDTO.setName(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 		matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
@@ -5272,7 +5295,9 @@ private void addCodeSearchPanelHandlers() {
 		//modifyValueSetDTO.setExpansionIdentifier("");
 		modifyValueSetDTO.setVersion("");
 		if ((searchDisplay.getValueSetView().getUserDefinedInput().getText().trim().length() > 0)) {
-			final String usrDefDisplayName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
+			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
+			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
+			String usrDefDisplayName = (!originalName.isEmpty() ? originalName : "") + (!suffix.isEmpty() ? suffix : ""); 
 			/*String expProfile = searchDisplay.getValueSetView()
 					.getExpansionProfileValue(searchDisplay.getValueSetView().getQDMExpProfileListBox());*/
 			String version = searchDisplay.getValueSetView()
@@ -5295,7 +5320,10 @@ private void addCodeSearchPanelHandlers() {
 				if (message.isEmpty()) {
 
 					CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
-					modifyWithDTO.setName(searchDisplay.getValueSetView().getUserDefinedInput().getText());
+					modifyWithDTO.setName(usrDefDisplayName);
+					modifyValueSetDTO.setOriginalCodeListName(originalName);
+					modifyValueSetDTO.setSuffix(suffix);
+					modifyValueSetDTO.setCodeListName(usrDefDisplayName);
 					updateAppliedValueSetsList(null, modifyWithDTO, modifyValueSetDTO, true);
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);

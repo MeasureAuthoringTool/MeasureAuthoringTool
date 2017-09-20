@@ -2826,7 +2826,10 @@ public class CQLServiceImpl implements CQLService {
 		MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
 		qds.setOid(matValueSet.getID());
 		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-		qds.setCodeListName(matValueSet.getDisplayName());
+		qds.setCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
+		qds.setSuffix((valueSetTransferObject.getCqlQualityDataSetDTO()!=null ? (valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix()!=null ? 
+				valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix() : "") : ""));
+		qds.setOriginalCodeListName(matValueSet.getDisplayName());
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -2925,7 +2928,9 @@ public class CQLServiceImpl implements CQLService {
 				CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
 				qds.setId(UUID.randomUUID().toString());
-				qds.setCodeListName(matValueSetTransferObject.getUserDefinedText());
+				qds.setCodeListName(matValueSetTransferObject.getUserDefinedText() + (!matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix().isEmpty() ? " (" + matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix() + ")" : ""));
+				qds.setSuffix(!matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix().isEmpty() ? matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix() : "");
+				qds.setOriginalCodeListName(matValueSetTransferObject.getUserDefinedText());
 				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setVersion("1.0");
@@ -3040,19 +3045,13 @@ public class CQLServiceImpl implements CQLService {
 	private boolean isDuplicate(CQLValueSetTransferObject matValueSetTransferObject, boolean isVSACValueSet) {
 		logger.info(" checkForDuplicates Method Call Start.");
 		boolean isQDSExist = false;
-		String qdmCompareName = "";
-
-		if (isVSACValueSet) {
-			qdmCompareName = matValueSetTransferObject.getMatValueSet().getDisplayName();
-		} else {
-			qdmCompareName = matValueSetTransferObject.getCodeListSearchDTO().getName();
-		}
+		
+		String qdmCompareName = matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName();
 
 		List<CQLQualityDataSetDTO> existingQDSList = matValueSetTransferObject.getAppliedQDMList();
 		for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
 
-			String codeListName = "";
-			codeListName = dataSetDTO.getCodeListName();
+			String codeListName =  dataSetDTO.getCodeListName();
 
 			if (codeListName.equalsIgnoreCase(qdmCompareName)) {
 				isQDSExist = true;
@@ -3198,6 +3197,8 @@ public class CQLServiceImpl implements CQLService {
 				} else {
 					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
 				}
+				
+				newNode.getAttributes().getNamedItem("suffix").setNodeValue(modifyDTO.getSuffix());
 
 			/*	if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
 					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
@@ -3427,6 +3428,8 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private void populatedOldQDM(CQLQualityDataSetDTO oldQdm, CQLQualityDataSetDTO qualityDataSetDTO) {
 		oldQdm.setCodeListName(qualityDataSetDTO.getCodeListName());
+		oldQdm.setSuffix(qualityDataSetDTO.getSuffix());
+		oldQdm.setOriginalCodeListName(qualityDataSetDTO.getOriginalCodeListName());
 		oldQdm.setOid(qualityDataSetDTO.getOid());
 		oldQdm.setUuid(qualityDataSetDTO.getUuid());
 		oldQdm.setVersion(qualityDataSetDTO.getVersion());

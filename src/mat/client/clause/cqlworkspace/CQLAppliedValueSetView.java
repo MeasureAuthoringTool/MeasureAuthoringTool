@@ -49,6 +49,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.Mat;
 import mat.client.codelist.HasListBox;
+import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -153,6 +154,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	/** The name input. */
 	private MatTextBox nameInput = new MatTextBox();
+	
+	/** The Suffix input. */
+	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
 	
 	/** The is editable. */
 	private boolean isEditable;
@@ -365,7 +369,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		
 		searchPanel.add(searchHeader);
-		searchPanel.setWidth("550px");
+		searchPanel.setWidth("650px");
 		searchPanel.setHeight("355px");
 		searchPanelBody.add(new SpacerWidget());
 		
@@ -375,6 +379,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		nameInput.setTitle("Enter Name");
 		nameInput.setWidth("450px");
 		nameInput.setHeight("30px");
+		
+		suffixInput.getElement().setId("suffixInput_TextBox");
+		
+		suffixInput.setTitle("Enter Suffix");
+		suffixInput.setWidth("40px");
+		suffixInput.setHeight("30px");
+
+		
 		/*qdmExpProfileListBox.getElement().setId("QDMExpansionProfile_ListBox");
 		qdmExpProfileListBox.getElement().setTitle("Expansion Profile Selection List");
 		qdmExpProfileListBox.setEnabled(false);
@@ -391,7 +403,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 		
-		Grid queryGrid = new Grid(7, 1);
+		Grid queryGrid = new Grid(7, 2);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);
 		buttonToolBar.add(cancelButton);
@@ -416,6 +428,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		namePanel.add(nameInput);
 		namePanel.add(new SpacerWidget());
 
+		VerticalPanel suffixPanel = new VerticalPanel();
+		FormLabel suffixLabel = new FormLabel();
+		suffixLabel.setText("Suffix");
+		suffixLabel.setTitle("Suffix");
+		suffixPanel.add(suffixLabel);
+		suffixPanel.add(suffixInput);
+		suffixPanel.add(new SpacerWidget());
+
 		/*VerticalPanel expansionIdFormGroup = new VerticalPanel();
 		FormLabel expLabelPanel = new FormLabel();
 		expLabelPanel.setText("Expansion Profile");
@@ -439,6 +459,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 		queryGrid.setWidget(0, 0, searchWidgetFormGroup);
 		queryGrid.setWidget(1, 0, namePanel);
+		queryGrid.setWidget(1, 1, suffixPanel);
 		//queryGrid.setWidget(2, 0, expansionIdFormGroup);
 		queryGrid.setWidget(2, 0, versionFormGroup);
 		queryGrid.setWidget(3, 0, buttonFormGroup);
@@ -1168,6 +1189,15 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 	
 	/**
+	 * Gets the user defined input.
+	 *
+	 * @return the user defined input
+	 */
+	public CustomQuantityTextBox getSuffixInput() {
+		return suffixInput;
+	}
+	
+	/**
 	 * Checks if is editable.
 	 *
 	 * @return true, if is editable
@@ -1395,6 +1425,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getUserDefinedInput().setEnabled(true);
 		getUserDefinedInput().setValue("");
 		getUserDefinedInput().setTitle("Enter Name");
+		
+		getSuffixInput().setEnabled(true);
+		getSuffixInput().setValue("");
+		getSuffixInput().setTitle("Enter Suffix");
 		
 		//getQDMExpProfileListBox().clear();
 		getVersionListBox().clear();

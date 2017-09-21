@@ -120,5 +120,5 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 
-
+	SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter);
 }

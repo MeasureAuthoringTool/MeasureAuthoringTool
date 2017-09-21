@@ -56,6 +56,9 @@ public interface CQLLibraryServiceAsync {
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
 	void searchForIncludes(String referringID, String searchText, boolean filter, AsyncCallback<SaveCQLLibraryResult> callback);
+	
+	void searchForReplaceLibraries(String setId, boolean filter, AsyncCallback<SaveCQLLibraryResult> callback);
+
 
 	void updateUsersShare(SaveCQLLibraryResult result, AsyncCallback<Void> callback);
 

@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1449,7 +1450,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						final String selectedIncludeLibraryID = searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getValue(selectedIndex);
 						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
 						if (searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID) != null) {
-
 							MatContext.get().getCQLLibraryService().findCQLLibraryByID(
 									searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID).getCqlLibraryId(),
 									new AsyncCallback<CQLLibraryDataSetObject>() {
@@ -1473,6 +1473,33 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 													searchDisplay.getIncludeView().getRepLibItems().setEnabled(
 															MatContext.get().getMeasureLockService().checkForEditPermission());
 													searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+
+													// load libraries for replace
+													MatContext.get().getCQLLibraryService().searchForReplaceLibraries(result.getCqlSetId(), true, new AsyncCallback<SaveCQLLibraryResult>() {
+
+														@Override
+														public void onFailure(Throwable caught) {
+															// TODO Auto-generated method stub
+															
+														}
+
+														@Override
+														public void onSuccess(SaveCQLLibraryResult result) {
+															List<CQLLibraryDataSetObject> libraries = result.getCqlLibraryDataSetObjects();
+															Map<String, CQLLibraryDataSetObject> libraryMap = new HashMap<>(); 
+															
+															for(CQLLibraryDataSetObject library : libraries) {
+																libraryMap.put(library.getCqlName() + " " + library.getVersion(), library);
+															}
+															
+															searchDisplay.getIncludeView().setReplaceLibraries(libraryMap);
+															List<String> availableItems = new ArrayList<>(libraryMap.keySet());
+															searchDisplay.getIncludeView().addAvailableItems(availableItems);
+														}
+														
+													});
+													
+													
 													// load most recent used cql artifacts
 													MatContext.get().getMeasureService().getUsedCQLArtifacts(
 															MatContext.get().getCurrentMeasureId(),
@@ -1744,6 +1771,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				incLibrary.setVersion(versionValue);
 				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 				incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
+				incLibrary.setSetId(cqlLibraryDataSetObject.getCqlSetId());
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
 					showSearchingBusy(true);
 					//this is just to add include library and not modify

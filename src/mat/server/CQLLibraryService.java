@@ -164,7 +164,24 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
         }
         saveCQLLibraryResult.setCqlLibraryDataSetObjects(allLibraries);
         return saveCQLLibraryResult;
- }
+	}
+	
+	@Override
+	public SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter) {
+		SaveCQLLibraryResult saveCQLLibraryResult = new SaveCQLLibraryResult(); 
+		
+		List<CQLLibraryDataSetObject> dataSetObjects = new ArrayList<>(); 
+		List<CQLLibrary> libraries = cqlLibraryDAO.searchForReplaceLibraries(setId, filter); 
+		for(CQLLibrary library : libraries) {
+			CQLLibraryDataSetObject dataSetObject = extractCQLLibraryDataObject(library);
+			dataSetObjects.add(dataSetObject);
+		}
+		
+		saveCQLLibraryResult.setCqlLibraryDataSetObjects(dataSetObjects);
+	
+		return saveCQLLibraryResult;
+		
+	}
 	
 
 	/* (non-Javadoc)

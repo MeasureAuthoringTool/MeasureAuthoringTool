@@ -32,6 +32,12 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
+	public SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter) {
+		return this.getCQLLibraryService().searchForReplaceLibraries(setId, filter);
+
+	}
+	
+	@Override
 	public CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID){
 		return this.getCQLLibraryService().findCQLLibraryByID(cqlLibraryID);
 	}

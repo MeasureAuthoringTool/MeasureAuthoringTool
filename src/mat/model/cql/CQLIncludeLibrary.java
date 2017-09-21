@@ -22,6 +22,16 @@ public class CQLIncludeLibrary implements IsSerializable {
 	private String cqlLibraryName;
 	
 	private String qdmVersion;
+	
+	private String setId; 
+
+	public String getSetId() {
+		return setId;
+	}
+
+	public void setSetId(String setId) {
+		this.setId = setId;
+	}
 
 	/**
 	 * Gets the id.

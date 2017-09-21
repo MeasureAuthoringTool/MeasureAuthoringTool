@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
@@ -122,6 +123,11 @@ public class CQLIncludeLibraryView {
 	/** The selected list. */
 	private List<CQLLibraryDataSetObject> selectedList;
 	
+	private Map<String, CQLLibraryDataSetObject> replaceLibraries; 
+	
+
+
+
 	/** The selected object. */
 	private String selectedObject;
 	
@@ -1116,5 +1122,13 @@ public class CQLIncludeLibraryView {
 		this.repLibItems = repLibItems;
 	}
 	
+	public Map<String, CQLLibraryDataSetObject> getReplaceLibraries() {
+		return replaceLibraries;
+	}
+
+
+	public void setReplaceLibraries(Map<String, CQLLibraryDataSetObject> replaceLibraries) {
+		this.replaceLibraries = replaceLibraries;
+	}
 	
 }

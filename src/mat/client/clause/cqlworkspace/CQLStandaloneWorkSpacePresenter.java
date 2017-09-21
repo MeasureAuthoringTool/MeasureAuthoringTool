@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -2173,6 +2174,32 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																searchDisplay.getIncludeView().setWidgetReadOnly(false);
 																searchDisplay.getIncludeView().getRepLibItems().setEnabled(
 																		MatContext.get().getLibraryLockService().checkForEditPermission());
+																
+																// load libraries for replace
+																MatContext.get().getCQLLibraryService().searchForReplaceLibraries(result.getCqlSetId(), false, new AsyncCallback<SaveCQLLibraryResult>() {
+
+																	@Override
+																	public void onFailure(Throwable caught) {
+																		// TODO Auto-generated method stub
+																		
+																	}
+
+																	@Override
+																	public void onSuccess(SaveCQLLibraryResult result) {
+																		List<CQLLibraryDataSetObject> libraries = result.getCqlLibraryDataSetObjects();
+																		Map<String, CQLLibraryDataSetObject> libraryMap = new HashMap<>(); 
+																		
+																		for(CQLLibraryDataSetObject library : libraries) {
+																			libraryMap.put(library.getCqlName() + " " + library.getVersion(), library);
+																		}
+																		
+																		searchDisplay.getIncludeView().setReplaceLibraries(libraryMap);
+																		List<String> availableItems = new ArrayList<>(libraryMap.keySet());
+																		searchDisplay.getIncludeView().addAvailableItems(availableItems);
+																	}
+																	
+																});
+																
 																// load most recent
 																// used
 																// cql artifacts
@@ -2913,6 +2940,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				incLibrary.setVersion(versionValue);
 				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
 				incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
+				incLibrary.setSetId(cqlLibraryDataSetObject.getCqlSetId());
 				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
 					// this is just to add include library and not modify
 					MatContext.get().getCQLLibraryService().saveIncludeLibrayInCQLLookUp(

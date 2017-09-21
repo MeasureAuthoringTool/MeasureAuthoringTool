@@ -5032,7 +5032,7 @@ private void addCodeSearchPanelHandlers() {
 
 								if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-											MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+											MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getCodeListName()));
 
 								} else if (result
 										.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
@@ -5061,7 +5061,7 @@ private void addCodeSearchPanelHandlers() {
 				CQLQualityDataSetDTO dataSetDTO = iterator.next();
 				if (dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)) {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+							.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(userDefinedInput));
 					return true;
 
 				}
@@ -5140,7 +5140,7 @@ private void addCodeSearchPanelHandlers() {
 								} else {
 									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-												MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+												MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getCodeListName()));
 									}
 								}
 							}
@@ -5165,7 +5165,7 @@ private void addCodeSearchPanelHandlers() {
 			ValueSetNameInputValidator valueSetNameInputValidator = new ValueSetNameInputValidator();
 			String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
 			if (message.isEmpty()) {
-				final String userDefinedInput = matValueSetTransferObject.getUserDefinedText();
+				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName(); 
 				/*String expProfile = searchDisplay.getValueSetView()
 						.getExpansionProfileValue(searchDisplay.getValueSetView().getQDMExpProfileListBox());*/
 				String version = searchDisplay.getValueSetView()
@@ -5206,7 +5206,7 @@ private void addCodeSearchPanelHandlers() {
 											if (result.getFailureReason() == result.ALREADY_EXISTS) {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert(MatContext.get().getMessageDelegate()
-																.getDuplicateAppliedValueSetMsg());
+																.getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getCodeListName()));
 											} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert("Invalid input data.");
@@ -5297,7 +5297,7 @@ private void addCodeSearchPanelHandlers() {
 		if ((searchDisplay.getValueSetView().getUserDefinedInput().getText().trim().length() > 0)) {
 			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
-			String usrDefDisplayName = (!originalName.isEmpty() ? originalName : "") + (!suffix.isEmpty() ? suffix : ""); 
+			String usrDefDisplayName = (!originalName.isEmpty() ? originalName : "") + (!suffix.isEmpty() ? " (" + suffix + ")" : ""); 
 			/*String expProfile = searchDisplay.getValueSetView()
 					.getExpansionProfileValue(searchDisplay.getValueSetView().getQDMExpProfileListBox());*/
 			String version = searchDisplay.getValueSetView()

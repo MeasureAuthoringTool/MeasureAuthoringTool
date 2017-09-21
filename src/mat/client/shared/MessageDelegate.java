@@ -1159,8 +1159,12 @@ public class MessageDelegate {
 	 * 
 	 * @return String
 	 */
-	public String getDuplicateAppliedValueSetMsg() {
+/*	public String getDuplicateAppliedValueSetMsg() {
 		return DUPLICATE_APPLIED_VALUE_SET;
+	}*/
+	
+	public String getDuplicateAppliedValueSetMsg(String name) {
+		return name + " already exists. Please add a unique suffix.";
 	}
 	
 	/**

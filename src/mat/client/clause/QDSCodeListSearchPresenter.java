@@ -458,7 +458,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 											MatContext
 											.get()
 											.getMessageDelegate()
-											.getDuplicateAppliedValueSetMsg());
+											.getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 								}
 							}
 						});
@@ -566,7 +566,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 							searchDisplay.getErrorMessageDisplay().setMessage(
 									MatContext.get().getMessageDelegate()
-									.getDuplicateAppliedValueSetMsg());
+									.getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 						}
 					}
 				}

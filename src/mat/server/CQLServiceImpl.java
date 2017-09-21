@@ -2827,9 +2827,8 @@ public class CQLServiceImpl implements CQLService {
 		qds.setOid(matValueSet.getID());
 		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 		qds.setCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
-		qds.setSuffix((valueSetTransferObject.getCqlQualityDataSetDTO()!=null ? (valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix()!=null ? 
-				valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix() : "") : ""));
-		qds.setOriginalCodeListName(matValueSet.getDisplayName());
+		qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
+		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -2918,7 +2917,7 @@ public class CQLServiceImpl implements CQLService {
 			boolean isQDSExist = false;
 			for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
 				if (dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID) && dataSetDTO
-						.getCodeListName().equalsIgnoreCase(matValueSetTransferObject.getUserDefinedText())) {
+						.getCodeListName().equalsIgnoreCase(matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName())) {
 					isQDSExist = true;
 					break;
 				}
@@ -2928,9 +2927,9 @@ public class CQLServiceImpl implements CQLService {
 				CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
 				qds.setId(UUID.randomUUID().toString());
-				qds.setCodeListName(matValueSetTransferObject.getUserDefinedText() + (!matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix().isEmpty() ? " (" + matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix() + ")" : ""));
-				qds.setSuffix(!matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix().isEmpty() ? matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix() : "");
-				qds.setOriginalCodeListName(matValueSetTransferObject.getUserDefinedText());
+				qds.setCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
+				qds.setSuffix(matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
+				qds.setOriginalCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
 				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setVersion("1.0");

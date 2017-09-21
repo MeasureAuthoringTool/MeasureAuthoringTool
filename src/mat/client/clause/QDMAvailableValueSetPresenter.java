@@ -810,10 +810,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 					if (!isUSerDefined) {
 						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+								MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 					} else {
 						searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
-								MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+								MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 					}
 				} else {
 					appliedQDMList = result.getAppliedQDMList();

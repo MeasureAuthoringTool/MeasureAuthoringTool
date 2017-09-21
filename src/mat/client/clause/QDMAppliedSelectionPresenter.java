@@ -1498,7 +1498,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 													MatContext
 													.get()
 													.getMessageDelegate()
-													.getDuplicateAppliedValueSetMsg());
+													.getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 										} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
 											searchDisplay
 											.getErrorMessageDisplay()
@@ -1551,7 +1551,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								if(modifyValueSetDTO.getExpansionIdentifier().equalsIgnoreCase(expId) && modifyValueSetDTO.getVersion().equalsIgnoreCase(version)){
 									searchDisplay.getErrorMessageDisplay().setMessage(
 											MatContext.get().getMessageDelegate()
-											.getDuplicateAppliedValueSetMsg());
+											.getDuplicateAppliedValueSetMsg(modifyValueSetDTO.getCodeListName()));
 									return true;
 								}
 							}
@@ -1569,7 +1569,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 									if(dataSetDTO.getExpansionIdentifier().equalsIgnoreCase(expId) && dataSetDTO.getVersion().equalsIgnoreCase(version)){
 										searchDisplay.getErrorMessageDisplay().setMessage(
 												MatContext.get().getMessageDelegate()
-												.getDuplicateAppliedValueSetMsg());
+												.getDuplicateAppliedValueSetMsg(dataSetDTO.getCodeListName()));
 										return true;	
 									}
 								}
@@ -1589,7 +1589,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								if(dataSetDTO.getExpansionIdentifier().equalsIgnoreCase(expId) || dataSetDTO.getVersion().equalsIgnoreCase(version)){
 									searchDisplay.getErrorMessageDisplay().setMessage(
 											MatContext.get().getMessageDelegate()
-											.getDuplicateAppliedValueSetMsg());
+											.getDuplicateAppliedValueSetMsg(dataSetDTO.getCodeListName()));
 									return true;	
 								}
 							}
@@ -1693,7 +1693,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 										searchDisplay.getErrorMessageDisplay().setMessage(
 												MatContext.get().getMessageDelegate()
-												.getDuplicateAppliedValueSetMsg());
+												.getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 									}
 								}
 
@@ -1902,10 +1902,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 						if (!isUSerDefined) {
 							searchDisplay.getErrorMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+									MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 						} else {
 							searchDisplay.getErrorMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg());
+									MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCodeListName()));
 						}
 					} else if (result.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
 						searchDisplay.getErrorMessageDisplay().setMessage("Invalid Input data.");

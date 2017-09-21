@@ -37,6 +37,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -382,8 +383,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		suffixInput.getElement().setId("suffixInput_TextBox");
 		
-		suffixInput.setTitle("Enter Suffix");
-		suffixInput.setWidth("40px");
+		suffixInput.setTitle("Suffix must be an integer between 1-4 characters");
+		suffixInput.setWidth("150px");
 		suffixInput.setHeight("30px");
 
 		
@@ -394,7 +395,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		versionListBox.getElement().setId("Version_ListBox");
 		versionListBox.getElement().setTitle("Version Selection List");
 		versionListBox.setEnabled(false);
-		versionListBox.setWidth("450px");
+		versionListBox.setWidth("600px");
 		
 		saveValueSet.setText("Apply");
 		saveValueSet.setTitle("Apply");
@@ -403,7 +404,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle("Cancel");
 		
-		Grid queryGrid = new Grid(7, 2);
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);
 		buttonToolBar.add(cancelButton);
@@ -416,7 +416,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("350px");
+		sWidget.setSearchBoxWidth("500px");
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 
@@ -430,7 +430,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 		VerticalPanel suffixPanel = new VerticalPanel();
 		FormLabel suffixLabel = new FormLabel();
-		suffixLabel.setText("Suffix");
+		suffixLabel.setText("Suffix (Max Length 4)");
 		suffixLabel.setTitle("Suffix");
 		suffixPanel.add(suffixLabel);
 		suffixPanel.add(suffixInput);
@@ -457,16 +457,30 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		buttonFormGroup.add(new SpacerWidget());
 
 
+		/*Grid queryGrid = new Grid(7, 2);
 		queryGrid.setWidget(0, 0, searchWidgetFormGroup);
 		queryGrid.setWidget(1, 0, namePanel);
 		queryGrid.setWidget(1, 1, suffixPanel);
 		//queryGrid.setWidget(2, 0, expansionIdFormGroup);
 		queryGrid.setWidget(2, 0, versionFormGroup);
 		queryGrid.setWidget(3, 0, buttonFormGroup);
-		queryGrid.setStyleName("secondLabel");
+		queryGrid.setStyleName("secondLabel");*/
+		
+		Grid oidGrid = new Grid(1, 1);
+		oidGrid.setWidget(0, 0, searchWidgetFormGroup);
+		Grid nameGrid = new Grid(1, 2);
+		nameGrid.setWidget(0, 0, namePanel);
+		nameGrid.setWidget(0, 1, suffixPanel);
+		Grid versionGrid = new Grid(2, 1);
+		versionGrid.setWidget(0, 0, versionFormGroup);
+		versionGrid.setWidget(1, 0, buttonFormGroup);
+
+		searchPanelBody.add(oidGrid);
+		searchPanelBody.add(nameGrid);
+		searchPanelBody.add(versionGrid);
 
 
-		searchPanelBody.add(queryGrid);
+		//searchPanelBody.add(queryGrid);
 
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
@@ -1428,7 +1442,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		getSuffixInput().setEnabled(true);
 		getSuffixInput().setValue("");
-		getSuffixInput().setTitle("Enter Suffix");
+		getSuffixInput().setTitle("Suffix must be an integer between 1-4 characters");
 		
 		//getQDMExpProfileListBox().clear();
 		getVersionListBox().clear();

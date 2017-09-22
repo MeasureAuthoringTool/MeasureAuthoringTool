@@ -41,26 +41,28 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.Mat;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class EditIncludedLibraryDialogBox {
 	
-	ProgressBar bar = new ProgressBar();
-	Progress progress = new Progress();
+	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
+	
+	private ProgressBar bar = new ProgressBar();
+	private Progress progress = new Progress();
 	
 	private List<CQLLibraryDataSetObject> libraries = new ArrayList<CQLLibraryDataSetObject>();
 
@@ -110,7 +112,7 @@ public class EditIncludedLibraryDialogBox {
 
 	
 	private void showDialogBox() {
-		
+		errorMessageAlert.clearAlert();
 		dialogModal.setTitle(modalText);
 		dialogModal.setClosable(true);
 		dialogModal.setFade(true);
@@ -120,6 +122,7 @@ public class EditIncludedLibraryDialogBox {
 		dialogModal.setSize(ModalSize.LARGE);
 		dialogModal.setRemoveOnHide(true);
 		ModalBody modalBody = new ModalBody();
+		modalBody.add(errorMessageAlert);
 		modalBody.add(progressBarPanel);
 		modalBody.add(cellTablePanel);
 
@@ -286,7 +289,7 @@ public class EditIncludedLibraryDialogBox {
 
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				
+				errorMessageAlert.clearAlert();
 				CQLLibraryDataSetObject selectedObject = selectionModel.getSelectedObject();
 				if (selectedObject != null) {
 					for (CQLLibraryDataSetObject obj : listDataProvider.getList()) {
@@ -432,6 +435,11 @@ public class EditIncludedLibraryDialogBox {
 
 	public Modal getDialogModal() {
 		return dialogModal;
+	}
+
+
+	public MessageAlert getErrorMessageAlert() {
+		return errorMessageAlert;
 	}
 
 	

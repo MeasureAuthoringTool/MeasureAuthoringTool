@@ -1628,11 +1628,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 											@Override
 											public void onFailure(Throwable arg0) {
+												editIncludedLibraryDialogBox.getDialogModal().hide();
+												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
 												Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 											}
 
 											@Override
 											public void onSuccess(SaveUpdateCQLResult result) {
+												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
 												if (result != null) {
 													if (result.isSuccess()) {
 														searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
@@ -1658,8 +1661,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																				.getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
 																				false),
 																searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox());
+														String libraryNameWithVersion = result.getIncludeLibrary().getCqlLibraryName() + " v" +result.getIncludeLibrary().getVersion();
 														searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-																.createAlert("Successfully replaced the library.");
+																.createAlert(libraryNameWithVersion + " has been successfully saved as the alias " + result.getIncludeLibrary().getAliasName());
 													}
 												}
 
@@ -1669,7 +1673,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 							}
 						} else {
-							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+							editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
+							editIncludedLibraryDialogBox.getErrorMessageAlert()
 							.createAlert("No Library selected for replace.");
 						}
 

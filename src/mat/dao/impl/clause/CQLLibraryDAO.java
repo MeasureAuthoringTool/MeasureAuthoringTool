@@ -104,12 +104,12 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	/** The lock threshold. */
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 	
-	private List<CQLLibrary> searchForReplaceLibrariesMeasure(String setId, String searchText) {
-		String searchString = searchText.toLowerCase().trim();
+	private List<CQLLibrary> searchForReplaceLibrariesMeasure(String setId) {
 		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		cCriteria.add(Restrictions.eq("draft", false));
 		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
+		cCriteria.add(Restrictions.eq("set_id", setId));
 		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
 		cCriteria.setFirstResult(0);
 
@@ -122,9 +122,6 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 			orderedCQlLibList = new ArrayList<CQLLibrary>();
 		}
 
-		StringUtility su = new StringUtility();
-		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
-
 		Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
 
 		// Adding logic to get rid of libraries with second level of child and
@@ -134,37 +131,24 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 			CQLLibrary cqlLibrary = orderedCQlLibListIte.next();
 			String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId() : cqlLibrary.getId();
 			
-			if(!cqlLibrary.getSet_id().equalsIgnoreCase(setId)) {
+			totalAssociations = cqlLibraryAssociationDAO.getAssociations(asociationId);
+			if (hasChildLibraries(totalAssociations)) {
 				orderedCQlLibListIte.remove();
 			}
-			
-			else {
-				totalAssociations = cqlLibraryAssociationDAO.getAssociations(asociationId);
-				if (hasChildLibraries(totalAssociations)) {
-					orderedCQlLibListIte.remove();
-				}
-			}
 		}
 
-		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
-
-			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su, cqlLibrary);
-			if (matchesSearch) {
-				orderedList.add(cqlLibrary);
-			}
-		}
-
-		return orderedList;
+		return orderedCQlLibList;
 
 	}
 
-	private List<CQLLibrary> searchForReplaceLibrariesIncludes(String setId, String searchText) {
-		String searchString = searchText.toLowerCase().trim();
+	private List<CQLLibrary> searchForReplaceLibrariesIncludes(String setId) {
 		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		cCriteria.add(Restrictions.eq("draft", false));
 		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
+		cCriteria.add(Restrictions.eq("set_id", setId));
 		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
+		
 		cCriteria.setFirstResult(0);
 
 		List<CQLLibrary> libraryResultList = cCriteria.list();
@@ -186,25 +170,13 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 			String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId() : cqlLibrary.getId();
 			int associationCount = cqlLibraryAssociationDAO.findAssociationCount(asociationId);
 
-			// Logic to remove any library with a child. if there are no children, check for if it's not in the same family
-			if(setId.equalsIgnoreCase(getSetIdForCQLLibrary(asociationId))) {
-				if (associationCount > 0){
-					orderedCQlLibListIte.remove();
-				}
-			} else {
+			// Logic to remove any library with a child
+			if (associationCount > 0){
 				orderedCQlLibListIte.remove();
 			}
 		}
 
-		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
-
-			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su, cqlLibrary);
-			if (matchesSearch) {
-				orderedList.add(cqlLibrary);
-			}
-		}
-
-		return orderedList;
+		return orderedCQlLibList;
 
 	}
 
@@ -252,9 +224,9 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		
 		
 		if(filter){
-			libraryResultList = searchForReplaceLibrariesMeasure(setId, "");
+			libraryResultList = searchForReplaceLibrariesMeasure(setId);
 		} else {
-			libraryResultList = searchForReplaceLibrariesIncludes(setId, "");
+			libraryResultList = searchForReplaceLibrariesIncludes(setId);
 		}
 		
 		return libraryResultList;

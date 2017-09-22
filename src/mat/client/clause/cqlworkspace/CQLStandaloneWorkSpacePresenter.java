@@ -1,7 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -124,6 +123,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 	/** The setId for the current library. */
 	private String setId = null;
+	
+	private String currentIncludeLibrarySetId = null;
 
 	/** The is modfied. */
 	private boolean isModified = false;
@@ -2103,10 +2104,94 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				});
 	}
 
+	
 	/**
 	 * Adds the include CQL library handlers.
 	 */
 	private void addIncludeCQLLibraryHandlers() {
+		
+		searchDisplay.getIncludeView().getSaveModifyButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent arg0) {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
+				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId,false);
+				
+				editIncludedLibraryDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
+
+					@Override
+					public void onClick(ClickEvent arg0) {
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+						if(editIncludedLibraryDialogBox.getSelectedList().size() > 0){
+							final CQLIncludeLibrary toBeModified = searchDisplay.getCqlLeftNavBarPanelView()
+									.getIncludeLibraryMap()
+									.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId());
+							
+							final CQLLibraryDataSetObject dto = editIncludedLibraryDialogBox.getSelectedList().get(0);
+							if (dto != null) {
+								final CQLIncludeLibrary currentObject = new CQLIncludeLibrary(dto);
+								
+								MatContext.get().getCQLLibraryService().saveIncludeLibrayInCQLLookUp(
+										MatContext.get().getCurrentCQLLibraryId(), toBeModified, currentObject,
+										searchDisplay.getCqlLeftNavBarPanelView().getViewIncludeLibrarys(),
+										new AsyncCallback<SaveUpdateCQLResult>() {
+
+											@Override
+											public void onFailure(Throwable arg0) {
+												Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+											}
+
+											@Override
+											public void onSuccess(SaveUpdateCQLResult result) {
+												if (result != null) {
+													if (result.isSuccess()) {
+														searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
+																result.getCqlModel().getCqlIncludeLibrarys());
+														searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
+														MatContext.get().setIncludes(getIncludesList(
+																result.getCqlModel().getCqlIncludeLibrarys()));
+														MatContext.get().setIncludedValueSetNames(
+																result.getCqlModel().getIncludedValueSetNames());
+														MatContext.get().setIncludedCodeNames(
+																result.getCqlModel().getIncludedCodeNames());
+														// MatContext.get().getIncludedValueSetNames().addAll(result.getCqlModel().getIncludedCodeNames());
+														MatContext.get().setIncludedParamNames(
+																result.getCqlModel().getIncludedParamNames());
+														MatContext.get().setIncludedDefNames(
+																result.getCqlModel().getIncludedDefNames());
+														MatContext.get().setIncludedFuncNames(
+																result.getCqlModel().getIncludedFuncNames());
+														editIncludedLibraryDialogBox.getDialogModal().hide();
+														DomEvent.fireNativeEvent(
+																Document.get()
+																		.createDblClickEvent(searchDisplay.getCqlLeftNavBarPanelView()
+																				.getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
+																				false),
+																searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox());
+														searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+																.createAlert("Successfully replaced the library.");
+													}
+												}
+
+											}
+
+										});
+
+							}
+						} else {
+							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+							.createAlert("No Library selected for replace.");
+						}
+
+
+						}
+				});
+			}
+		});
+		
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().addKeyPressHandler(new KeyPressHandler() {
 
 			@Override
@@ -2153,6 +2238,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 													@Override
 													public void onSuccess(CQLLibraryDataSetObject result) {
 														if (result != null) {
+															currentIncludeLibrarySetId = result.getCqlSetId();
 															searchDisplay.getIncludeView().buildIncludesReadOnlyView();
 
 															searchDisplay.getIncludeView().getAliasNameTxtArea()
@@ -2167,39 +2253,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																			.getOwnerName(result));
 															searchDisplay.getIncludeView().getCqlLibraryNameTextBox()
 																	.setText(result.getCqlName());
-															searchDisplay.getIncludeView().addAvailableItems(new ArrayList<String>());
+															//searchDisplay.getIncludeView().addAvailableItems(new ArrayList<String>());
 
 															if (MatContext.get().getLibraryLockService()
 																	.checkForEditPermission()) {
 																searchDisplay.getIncludeView().setWidgetReadOnly(false);
-																searchDisplay.getIncludeView().getRepLibItems().setEnabled(
-																		MatContext.get().getLibraryLockService().checkForEditPermission());
-																
-																// load libraries for replace
-																MatContext.get().getCQLLibraryService().searchForReplaceLibraries(result.getCqlSetId(), false, new AsyncCallback<SaveCQLLibraryResult>() {
-
-																	@Override
-																	public void onFailure(Throwable caught) {
-																		// TODO Auto-generated method stub
-																		
-																	}
-
-																	@Override
-																	public void onSuccess(SaveCQLLibraryResult result) {
-																		List<CQLLibraryDataSetObject> libraries = result.getCqlLibraryDataSetObjects();
-																		Map<String, CQLLibraryDataSetObject> libraryMap = new HashMap<>(); 
-																		
-																		for(CQLLibraryDataSetObject library : libraries) {
-																			libraryMap.put(library.getCqlName() + " " + library.getVersion(), library);
-																		}
-																		
-																		searchDisplay.getIncludeView().setReplaceLibraries(libraryMap);
-																		List<String> availableItems = new ArrayList<>(libraryMap.keySet());
-																		searchDisplay.getIncludeView().addAvailableItems(availableItems);
-																	}
-																	
-																});
-																
+																searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 																// load most recent
 																// used
 																// cql artifacts
@@ -2309,6 +2368,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
 				// 508 changes for Library Alias.
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getIncludeView().getAliasNameTxtArea());
+				//currentIncludeLibrarySetId = null;
 			}
 
 		});
@@ -2322,6 +2382,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				// Below lines are to clear search suggestion textbox and
 				// listbox
 				// selection after erase.
+				currentIncludeLibrarySetId =  null;
 				searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestIncludeTextBox().setText("");
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex() >= 0) {
 					searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().setItemSelected(
@@ -3807,6 +3868,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		currentIncludeLibrarySetId = null;
 		searchDisplay.getCqlGeneralInformationView().clearAllGeneralInfoOfLibrary();
 		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);

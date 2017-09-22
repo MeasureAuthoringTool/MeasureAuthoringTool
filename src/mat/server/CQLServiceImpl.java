@@ -1201,6 +1201,8 @@ public class CQLServiceImpl implements CQLService {
 		return builder.toString();
 	}
 
+	
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -1210,7 +1212,7 @@ public class CQLServiceImpl implements CQLService {
 	 * mat.model.cql.CQLIncludeLibrary, java.util.List)
 	 */
 	@Override
-	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
+	public SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -1228,8 +1230,35 @@ public class CQLServiceImpl implements CQLService {
 			checkAndAppendIncludeLibraryParentNode(processor);
 
 			if (toBeModifiedObj != null) { // this is a part of Modify
-											// functionality
+				currentObj.setId(toBeModifiedObj.getId());
+				currentObj.setAliasName(toBeModifiedObj.getAliasName());
+				String XPATH_EXPRESSION_INCLUDES = "//includeLibrary[@cqlLibRefId='" + toBeModifiedObj.getCqlLibraryId()
+						+ "']";
+				try {
+					Node nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
 
+					if (nodeIncludes != null) {
+						currentObj.setId(toBeModifiedObj.getId());
+						String cqlString = createIncludeLibraryXML(currentObj);
+						String XPATH_EXPRESSION_INCLUDELIBRARYS = "//cqlLookUp/includeLibrarys";
+						processor.removeFromParent(nodeIncludes);
+						processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDELIBRARYS);
+						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+
+						String finalUpdatedXml = processor.transform(processor.getOriginalDoc());
+						result.setXml(finalUpdatedXml);
+						result.setSuccess(true);
+						result.setIncludeLibrary(currentObj);
+						wrapper.setCqlIncludeLibrary(modifyIncludesList(toBeModifiedObj, currentObj, incLibraryList));
+					} else {
+						result.setSuccess(false);
+						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
+					}
+				} catch (XPathExpressionException | SAXException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				
 			} else { // this is part of save functionality
 				currentObj.setId(UUID.randomUUID().toString());
 				isDuplicate = validator.validateForAliasNameSpecialChar(currentObj.getAliasName());
@@ -2285,31 +2314,20 @@ public class CQLServiceImpl implements CQLService {
 		return false;
 	}
 
-	/**
-	 * Check if keyword for func arguments.
-	 *
-	 * @param toBeModifiedObj
-	 *            the to be modified obj
-	 * @param currentObj
-	 *            the current obj
-	 * @param parameterList
-	 *            the parameter list
-	 * @return the save update cql result
-	 */
-	/*
-	 * private SaveUpdateCQLResult checkIfKeywordForFuncArguments(
-	 * SaveUpdateCQLResult result, CQLFunctions currentObj) {
-	 *
-	 * List<CQLFunctionArgument> argList = currentObj.getArgumentList(); for
-	 * (int i = 0; i < argList.size(); i++) { if
-	 * (checkForCQLKeywords(argList.get(i).getArgumentName())) {
-	 * argList.get(i).setValid(true); result.setSuccess(true); } else {
-	 * argList.get(i).setValid(false); } }
-	 *
-	 * if (argList.size() > 0) { currentObj.setArgumentList(argList); } else {
-	 * currentObj.setArgumentList(new ArrayList<CQLFunctionArgument>()); }
-	 * result.setFunction(currentObj); return result; }
-	 */
+	private List<CQLIncludeLibrary> modifyIncludesList(CQLIncludeLibrary toBeModified , CQLIncludeLibrary currentObj , List<CQLIncludeLibrary> incLibraryList ){
+		Iterator<CQLIncludeLibrary> iterator = incLibraryList.iterator();
+		while (iterator.hasNext()) {
+			CQLIncludeLibrary cqlParam = iterator.next();
+			if (cqlParam.getId().equals(toBeModified.getId())) {
+				// CQLDefinition definition = cqlDefinition;
+
+				iterator.remove();
+				break;
+			}
+		}
+		incLibraryList.add(currentObj);
+		return incLibraryList;
+	}
 
 	/**
 	 * Modfiy cql Parameter List list.

@@ -24,13 +24,35 @@ public class CQLIncludeLibrary implements IsSerializable {
 	private String qdmVersion;
 	
 	private String setId; 
-
+	
 	public String getSetId() {
 		return setId;
 	}
 
 	public void setSetId(String setId) {
 		this.setId = setId;
+	}
+	
+	public CQLIncludeLibrary(CQLLibraryDataSetObject dto){
+		this.cqlLibraryId = dto.getId();
+		this.version =dto.getVersion().replace("v", "") + "."+ dto.getRevisionNumber();
+		this.cqlLibraryName = dto.getCqlName();
+		this.qdmVersion = dto.getQdmVersion();
+		this.setId = dto.getCqlSetId();
+	}
+	
+	public CQLIncludeLibrary(CQLIncludeLibrary includeLibrary){
+		this.aliasName = includeLibrary.getAliasName();
+		this.id = includeLibrary.getId();
+		this.cqlLibraryId = includeLibrary.getCqlLibraryId();
+		this.version = includeLibrary.getVersion();
+		this.cqlLibraryName = includeLibrary.getCqlLibraryName();
+		this.qdmVersion = includeLibrary.getQdmVersion();
+		this.setId = includeLibrary.getSetId();
+	}
+	
+	public CQLIncludeLibrary(){
+		
 	}
 
 	/**

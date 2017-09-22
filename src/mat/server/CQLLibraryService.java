@@ -1044,12 +1044,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				if (associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
 					String cqlXml = getCQLLibraryXml(cqlLibrary);
 					if (cqlXml != null) {
-						result = cqlService.saveIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj,
+						result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj,
 								incLibraryList);
 						if (result != null && result.isSuccess()) {
 							cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 							cqlLibraryDAO.save(cqlLibrary);
 							cqlService.saveCQLAssociation(currentObj, libraryId);
+							if(toBeModifiedObj != null){
+								cqlService.deleteCQLAssociation(toBeModifiedObj, cqlLibrary.getId());
+							}
 						}
 					}
 				}

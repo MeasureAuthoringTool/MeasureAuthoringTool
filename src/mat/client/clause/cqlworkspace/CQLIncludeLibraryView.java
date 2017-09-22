@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +126,7 @@ public class CQLIncludeLibraryView {
 	
 	private Map<String, CQLLibraryDataSetObject> replaceLibraries; 
 	
+	private Map<String,CQLLibraryDataSetObject> availableLibraries = new HashMap<String,CQLLibraryDataSetObject>();
 
 
 
@@ -147,7 +149,7 @@ public class CQLIncludeLibraryView {
 	private FormGroup aliasNameGroup = new FormGroup();
 	
 	/** The rep lib items. */
-	private  ListBoxMVP repLibItems = new ListBoxMVP();
+	//private  ListBoxMVP repLibItems = new ListBoxMVP();
 	
 	/**
 	 * The Interface Observer.
@@ -318,12 +320,12 @@ public class CQLIncludeLibraryView {
 		cqlLibraryNameTextBox.setName("aliasName");
 		cqlLibraryNameTextBox.setEnabled(false);
 		
-		FormLabel cqlRepLibLabel = new FormLabel();
+		/*FormLabel cqlRepLibLabel = new FormLabel();
 		cqlRepLibLabel.setMarginTop(5);
 		cqlRepLibLabel.setId("cqlRepLibrary_Label");
 		cqlRepLibLabel.setText("Replace Library");
 		cqlRepLibLabel.setTitle("Replace Library");
-		
+		*/
 		ownerTextboxPanel.add(ownerLabel);
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(ownerNameTextBox);
@@ -333,9 +335,9 @@ public class CQLIncludeLibraryView {
 		ownerTextboxPanel.add(new SpacerWidget());
 		ownerTextboxPanel.add(cqlLibraryNameTextBox);
 		ownerTextboxPanel.add(new SpacerWidget());
-		ownerTextboxPanel.add(cqlRepLibLabel);
-		ownerTextboxPanel.add(new SpacerWidget());
-		ownerTextboxPanel.add(repLibItems);
+		/*ownerTextboxPanel.add(cqlRepLibLabel);
+		ownerTextboxPanel.add(new SpacerWidget());*/
+	//	ownerTextboxPanel.add(repLibItems);
 		createReadOnlyViewIncludesButtonBar();
 	}
 	
@@ -433,9 +435,11 @@ public class CQLIncludeLibraryView {
 	 * @return the CQL button tool bar
 	 */
 	private CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
+		
 		includesModifyButtonBar.getDeleteButton().setVisible(true);
 		/*includesButtonBar.getDeleteButton().setMarginLeft(-40.00);*/
-		includesModifyButtonBar.getSaveButton().setMarginLeft(-50.00);
+		includesModifyButtonBar.getEditButton().setVisible(true);
+		includesModifyButtonBar.getEditButton().setMarginLeft(-50.00);
 		includesModifyButtonBar.getCloseButton().setMarginLeft(10.00);
 		includesModifyButtonBar.getDeleteButton().setEnabled(false);
 		includesModifyButtonBar.getCloseButton().setVisible(true);;
@@ -444,6 +448,7 @@ public class CQLIncludeLibraryView {
 		includesModifyButtonBar.getInfoButton().removeFromParent();
 		includesModifyButtonBar.getInsertButton().removeFromParent();
 		includesModifyButtonBar.getTimingExpButton().removeFromParent();
+		includesModifyButtonBar.getSaveButton().removeFromParent();
 		includesModifyButtonBar.getEraseButton().removeFromParent();
 		return includesModifyButtonBar;
 	}
@@ -866,6 +871,9 @@ public class CQLIncludeLibraryView {
 		return getIncludesButtonBar().getSaveButton();
 	}
 	
+	public Button getSaveModifyButton(){
+		return getIncludesModifyButtonBar().getEditButton();
+	}
 	/**
 	 * Gets the erase button.
 	 *
@@ -1091,7 +1099,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @param availableInsertItemList the available insert item list
 	 */
-	public void addAvailableItems( List<String> availableInsertItemList) {
+	/*public void addAvailableItems( List<String> availableInsertItemList) {
 		repLibItems.clear();
 		repLibItems.addItem(MatContext.get().PLEASE_SELECT);
 		for (int i = 0; i < availableInsertItemList.size(); i++) {
@@ -1101,26 +1109,26 @@ public class CQLIncludeLibraryView {
 		}
 		
 	}
-
+*/
 
 	/**
 	 * Gets the rep lib items.
 	 *
 	 * @return the rep lib items
 	 */
-	public ListBoxMVP getRepLibItems() {
+/*	public ListBoxMVP getRepLibItems() {
 		return repLibItems;
 	}
-
+*/
 
 	/**
 	 * Sets the rep lib items.
 	 *
 	 * @param repLibItems the new rep lib items
 	 */
-	public void setRepLibItems(ListBoxMVP repLibItems) {
+	/*public void setRepLibItems(ListBoxMVP repLibItems) {
 		this.repLibItems = repLibItems;
-	}
+	}*/
 	
 	public Map<String, CQLLibraryDataSetObject> getReplaceLibraries() {
 		return replaceLibraries;
@@ -1130,5 +1138,16 @@ public class CQLIncludeLibraryView {
 	public void setReplaceLibraries(Map<String, CQLLibraryDataSetObject> replaceLibraries) {
 		this.replaceLibraries = replaceLibraries;
 	}
+
+
+	public Map<String, CQLLibraryDataSetObject> getAvailableLibraries() {
+		return availableLibraries;
+	}
+
+
+	public void setAvailableLibraries(Map<String, CQLLibraryDataSetObject> availableLibraries) {
+		this.availableLibraries = availableLibraries;
+	}
+	
 	
 }

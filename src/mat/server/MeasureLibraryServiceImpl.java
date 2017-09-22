@@ -6215,13 +6215,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (xmlModel != null) {
 				int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
 				if (numberOfAssociations < 10) {
-					result = getCqlService().saveIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj,
+					result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj,
 							currentObj, incLibraryList);
 
 					if (result.isSuccess()) {
 						xmlModel.setXml(result.getXml());
 						getService().saveMeasureXml(xmlModel);
 						getCqlService().saveCQLAssociation(currentObj, measureId);
+						if(toBeModifiedObj != null){
+							getCqlService().deleteCQLAssociation(toBeModifiedObj, measureId);
+						}
 					}
 				} else {
 					logger.info("Already 10 associations exists for this measure.");

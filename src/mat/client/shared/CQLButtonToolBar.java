@@ -23,6 +23,8 @@ public class CQLButtonToolBar extends Composite {
 	/** The Insert button. */
 	private Button insertButton = new Button();
 	
+	private Button editButton = new Button();
+	
 	/** The save button. */
 	private Button saveButton = new Button();
 	
@@ -81,6 +83,18 @@ public class CQLButtonToolBar extends Composite {
 		saveButton.setSize("70px", "30px");
 		saveButton.getElement().setAttribute("aria-label", "Save");
 		
+		editButton.setType(ButtonType.LINK);
+		editButton.getElement().setId("editButton_"+sectionName);
+		editButton.setMarginTop(10);
+		editButton.setTitle("Edit");
+		editButton.setText("Edit");
+		editButton.setIcon(IconType.EDIT);
+		editButton.setIconSize(IconSize.LARGE);
+		editButton.setColor("#0964A2");
+		editButton.setSize("70px", "30px");
+		editButton.getElement().setAttribute("aria-label", "Edit");
+		
+		
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_"+sectionName);
 		deleteButton.setMarginTop(10);
@@ -128,7 +142,8 @@ public class CQLButtonToolBar extends Composite {
 		timingExpIcon.setColor("#0964A2");
 		timingExpIcon.setSize("30px", "30px");
 		timingExpIcon.getElement().setAttribute("aria-label", "Timing Expression");*/
-		
+		editButton.setVisible(false);
+		buttonLayout.add(editButton);
 		buttonLayout.add(saveButton);
 		buttonLayout.add(eraseButton);
 		buttonLayout.add(insertButton);
@@ -345,6 +360,11 @@ public class CQLButtonToolBar extends Composite {
 
 	public void setInfoButtonGroup(ButtonGroup infoButtonGroup) {
 		this.infoButtonGroup = infoButtonGroup;
+	}
+
+
+	public Button getEditButton() {
+		return editButton;
 	}
 	
 }

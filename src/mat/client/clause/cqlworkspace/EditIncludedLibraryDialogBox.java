@@ -133,8 +133,8 @@ public class EditIncludedLibraryDialogBox {
 		applyButton.setType(ButtonType.PRIMARY);
 		applyButton.setSize(ButtonSize.SMALL);
 		
-		closeButton.setText("Close");
-		closeButton.setTitle("Close");
+		closeButton.setText("Cancel");
+		closeButton.setTitle("Cancel");
 		closeButton.setType(ButtonType.DANGER);
 		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);

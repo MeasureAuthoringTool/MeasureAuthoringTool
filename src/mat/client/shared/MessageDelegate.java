@@ -440,6 +440,7 @@ public class MessageDelegate {
 	
 	private final String INVALID_QDM_VERSION_IN_INCLUDES ="The current QDM version and the QDM version of one or more of the included libraries are not the same. Please navigate to the Includes section to replace or remove the conflicting libraries.";
 	
+	private final String NO_LIBRARY_TO_REPLACE ="Please select a library to replace.";
 	/**
 	 * Gets the population work space validation error.
 	 *
@@ -3532,6 +3533,10 @@ public class MessageDelegate {
 		String message = (name.length()>60 ? name.substring(0, 59) : name) +" already exists. Please add a unique suffix.";
 		return  message;
 		
+	}
+
+	public String getNO_LIBRARY_TO_REPLACE() {
+		return NO_LIBRARY_TO_REPLACE;
 	}
 
 }

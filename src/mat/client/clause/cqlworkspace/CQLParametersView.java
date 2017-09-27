@@ -16,6 +16,7 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -27,6 +28,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
@@ -67,13 +69,15 @@ public class CQLParametersView {
 	/** The param comment group. */
 	private FormGroup paramCommentGroup = new FormGroup();
 	
+	HTML heading = new HTML();
+	
 	/**
 	 * Instantiates a new CQL parameters view.
 	 */
 	public CQLParametersView() {
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		parameterAceEditor.startEditor();
-
+		heading.addStyleName("leftAligned");
 		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataParent("#panelGroup");
@@ -87,12 +91,17 @@ public class CQLParametersView {
 	 */
 	@SuppressWarnings("static-access")
 	private void buildView() {
+		
+		
+		
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		paramNameGroup.clear();
 		paramCommentGroup.clear();
 		VerticalPanel parameterVP = new VerticalPanel();
 		HorizontalPanel parameterFP = new HorizontalPanel();
-		
+		parameterVP.add(heading);
+		parameterVP.add(new SpacerWidget());
+		parameterVP.add(new SpacerWidget());
 		FormLabel parameterLabel = new FormLabel();
 		parameterLabel.setText("Parameter Name");
 		parameterLabel.setTitle("Parameter Name");
@@ -412,6 +421,11 @@ public class CQLParametersView {
 	 */
 	public void setMainParamViewVerticalPanel(FocusPanel mainParamViewVerticalPanel) {
 		this.mainParamViewVerticalPanel = mainParamViewVerticalPanel;
+	}
+	
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h3><b>" + text + "</b></h3>");
 	}
 	
 }

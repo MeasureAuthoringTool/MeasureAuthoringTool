@@ -57,6 +57,7 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
@@ -148,6 +149,8 @@ public class CQLIncludeLibraryView {
 	/** The alias name group. */
 	private FormGroup aliasNameGroup = new FormGroup();
 	
+	HTML heading = new HTML();
+	
 	/** The rep lib items. */
 	//private  ListBoxMVP repLibItems = new ListBoxMVP();
 	
@@ -173,11 +176,12 @@ public class CQLIncludeLibraryView {
 		aliasNameGroup.clear();
 		buttonPanel.getElement().setId("buttonPanel");
 		getIncludesButtonBar().setStylePrimaryName("floatRightButtonPanel");
-		
+		heading.addStyleName("leftAligned");
 		VerticalPanel verticalPanel = new VerticalPanel();
 		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
+		verticalPanel.add(heading);
 		verticalPanel.add(new SpacerWidget());
-		
+		verticalPanel.add(new SpacerWidget());
 		VerticalPanel aliasNameVP = new VerticalPanel();
 		HorizontalPanel aliasLabelHP = new HorizontalPanel();
 		
@@ -1147,6 +1151,11 @@ public class CQLIncludeLibraryView {
 
 	public void setAvailableLibraries(Map<String, CQLLibraryDataSetObject> availableLibraries) {
 		this.availableLibraries = availableLibraries;
+	}
+	
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h3><b>" + text + "</b></h3>");
 	}
 	
 	

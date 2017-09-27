@@ -20,6 +20,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -31,6 +32,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
@@ -83,25 +85,30 @@ public class CQlDefinitionsView {
 	
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
 	
+	HTML heading = new HTML();
+	
 	/**
 	 * Instantiates a new c ql definitions view.
 	 */
 	public CQlDefinitionsView() {
 
 		defineAceEditor.startEditor();
-		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
+		mainDefineViewVerticalPanel.getElement().setId("mainDefViewVerticalPanel");
 		
+		collapsibleCQLPanelWidget.getViewCQLAceEditor().startEditor();
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataToggle(Toggle.COLLAPSE);
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setDataParent("#panelGroup");
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setHref("#panelCollapse");
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setText("Click to View CQL");
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
+		heading.addStyleName("leftAligned");
 	}
 
 	/**
 	 * Builds the view.
 	 */
 	private void buildView() {
+		
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		defineNameGroup.clear();
 		defineCommentGroup.clear();
@@ -110,6 +117,11 @@ public class CQlDefinitionsView {
 		
 		VerticalPanel definitionVP = new VerticalPanel();
 		HorizontalPanel definitionFP = new HorizontalPanel();
+		
+		definitionVP.add(heading);
+		definitionVP.add(new SpacerWidget());
+		definitionVP.add(new SpacerWidget());
+		
 
 		// Build Definition Name Form Group
 		FormLabel defineNameLabel = new FormLabel();
@@ -589,5 +601,9 @@ public class CQlDefinitionsView {
 		this.mainDefineViewVerticalPanel = mainDefineViewVerticalPanel;
 	}
 
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h3><b>" + text + "</b></h3>");
+	}
 	
 }

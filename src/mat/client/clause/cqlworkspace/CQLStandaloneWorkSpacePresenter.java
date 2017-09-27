@@ -1754,6 +1754,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCQLFunctionsView().getMainFunctionVerticalPanel());
 			}
 		});
+
 		
 		searchDisplay.getCQLFunctionsView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
 
@@ -5559,7 +5560,8 @@ private void addCodeSearchPanelHandlers() {
 			currentSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
 			buildAppliedQDMTable();
 		}
-
+		searchDisplay.getValueSetView().setHeading("CQL Library Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/**
@@ -5606,7 +5608,8 @@ private void addCodeSearchPanelHandlers() {
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 			getUsedCodes();
 		}
-
+		searchDisplay.getCodesView().setHeading("CQL Library Workspace > Codes", "codesContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -5676,6 +5679,8 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getParameterButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLParametersView().getParameterAceEditor();
+		searchDisplay.getCQLParametersView().setHeading("CQL Library Workspace > Parameter", "mainParamViewVerticalPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -5703,6 +5708,8 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlIncludeLibraryView()
 				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+		searchDisplay.getIncludeView().setHeading("CQL Library Workspace > Includes", "IncludeSectionContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -5729,6 +5736,8 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLDefinitionsView().getDefineAceEditor();
+		searchDisplay.getCQLDefinitionsView().setHeading("CQL Library Workspace > Definition", "mainDefViewVerticalPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -5753,6 +5762,8 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor();
+		searchDisplay.getCQLFunctionsView().setHeading("CQL Library Workspace > Function", "mainFuncViewVerticalPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**

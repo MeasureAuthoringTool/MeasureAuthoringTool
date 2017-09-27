@@ -49,6 +49,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -156,6 +157,8 @@ public class CQLCodesView {
 	
 	private static final int TABLE_ROW_COUNT = 10;
 	
+	HTML heading = new HTML();
+	
 	
 	/**
 	 * Instantiates a new VSAC profile selection view.
@@ -173,6 +176,9 @@ public class CQLCodesView {
 		hp.getElement().setId("hp_HorizontalPanel");
 		hp.add(buildElementWithCodesWidget());
 		hp.add(simplePanel);
+		
+		heading.addStyleName("leftAligned");
+		verticalPanel.add(heading);
 		
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
 		verticalPanel.add(new SpacerWidget());
@@ -1035,6 +1041,11 @@ public class CQLCodesView {
 
 	public void setSuffixTextBox(CustomQuantityTextBox suffixTextBox) {
 		this.suffixTextBox = suffixTextBox;
+	}
+	
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h3><b>" + text + "</b></h3>");
 	}
 	
 }

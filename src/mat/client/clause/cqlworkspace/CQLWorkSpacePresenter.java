@@ -1276,7 +1276,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											@Override
 											public void onSuccess(GetUsedCQLArtifactsResult result) {
 												showSearchingBusy(false);
-											
+												
 												boolean isReadOnly = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
 												CQLDefinition currentDefinition = searchDisplay.getCqlLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
 												
@@ -3438,6 +3438,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			buildAppliedQDMTable();
 		}
 
+		searchDisplay.getValueSetView().setHeading("CQL Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	private void buildAppliedQDMTable() {
@@ -3602,6 +3604,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLParametersView().getParameterAceEditor();
+		searchDisplay.getCQLParametersView().setHeading("CQL Workspace > Parameter", "mainParamViewVerticalPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -3628,6 +3632,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().getAliasNameTxtArea().setText("");
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getIncludeView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		searchDisplay.getIncludeView().setHeading("CQL Workspace > Includes", "IncludeSectionContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/**
@@ -3659,7 +3665,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			
 		}
-
+		searchDisplay.getCodesView().setHeading("CQL Workspace > Codes", "codesContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	
@@ -3686,6 +3693,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
+		searchDisplay.getCQlDefinitionsView().setHeading("CQL Workspace > Definition", "mainDefViewVerticalPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -3709,6 +3718,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getCqlFunctionsView().getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor();
+		searchDisplay.getCqlFunctionsView().setHeading("CQL Workspace > Function", "mainFuncViewVerticalPanel");
+		Mat.focusSkipLists("MeasureComposer");
 
 	}
 

@@ -56,6 +56,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
@@ -190,6 +191,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	/** The cell table main panel. */
 	SimplePanel cellTableMainPanel = new SimplePanel();
 	
+	HTML heading = new HTML();
+	
 	
 	/**
 	 * Instantiates a new VSAC profile selection view.
@@ -210,6 +213,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		//hp.add(buildElementWithVSACExpansionProfile());
 		
 		verticalPanel.getElement().setId("vPanel_VerticalPanel");
+		heading.addStyleName("leftAligned");
+		verticalPanel.add(heading);
 		verticalPanel.add(new SpacerWidget());
 		
 		verticalPanel.add(new SpacerWidget());
@@ -1454,6 +1459,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 	//	getApplyDefaultExpansionIdButton().setEnabled(true);
 		getUpdateFromVSACButton().setEnabled(true);
+	}
+	
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h3><b>" + text + "</b></h3>");
 	}
 	
 }

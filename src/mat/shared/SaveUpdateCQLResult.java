@@ -76,6 +76,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	public static final int COMMEENT_INVALID = 8;
 	
+	public static final int BIRTHDATE_OR_DEAD_ERROR = 9;
+	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
 	
@@ -364,6 +366,11 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public int getDuplicateCode() {
 		return DUPLICATE_CODE;
+	}
+	
+	
+	public int getBirthdateOrDeadError() {
+		return BIRTHDATE_OR_DEAD_ERROR;
 	}
 
 	public boolean isValidCQLWhileSavingExpression() {

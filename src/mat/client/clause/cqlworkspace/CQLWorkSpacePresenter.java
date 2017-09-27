@@ -4719,6 +4719,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								appliedCodeTableList,
 								MatContext.get().getMeasureLockService().checkForEditPermission());
 					}
+					
+					else if(result.getFailureReason() ==  result.getBirthdateOrDeadError()) {
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getBirthdateOrDeadMessage());
+						searchDisplay.getCodesView().buildCodesCellTable(
+								appliedCodeTableList,
+								MatContext.get().getMeasureLockService().checkForEditPermission());
+					}
 				}
 				//getUsedCodes();
 				

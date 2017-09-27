@@ -4654,6 +4654,13 @@ private void addCodeSearchPanelHandlers() {
 					if(result.getFailureReason()==result.getDuplicateCode()){
 						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().generateDuplicateErrorMessage(codeName));
 					}
+					
+					else if(result.getFailureReason() ==  result.getBirthdateOrDeadError()) {
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getBirthdateOrDeadMessage());
+						searchDisplay.getCodesView().buildCodesCellTable(
+								appliedCodeTableList,
+								MatContext.get().getMeasureLockService().checkForEditPermission());
+					}
 				}
 				//getUsedCodes();
 

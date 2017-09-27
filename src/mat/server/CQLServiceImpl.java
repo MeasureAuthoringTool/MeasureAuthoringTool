@@ -2974,6 +2974,14 @@ public class CQLServiceImpl implements CQLService {
 		XmlProcessor xmlProcessor = new XmlProcessor(xml);
 		CQLCode appliedCode = codeTransferObject.getCqlCode();
 		appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+		
+		if(codeTransferObject.getCqlCode().getCodeName().equals(BIRTHDATE) || codeTransferObject.getCqlCode().getCodeName().equals(DEAD)) {
+			result.setFailureReason(result.getBirthdateOrDeadError());
+			result.setSuccess(false);
+			return result; 
+		}
+		
+		
 		try {
 			/*
 			 * Node existingCodeList =

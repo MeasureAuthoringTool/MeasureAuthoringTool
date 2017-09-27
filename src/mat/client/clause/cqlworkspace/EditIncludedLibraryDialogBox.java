@@ -92,6 +92,7 @@ public class EditIncludedLibraryDialogBox {
 
 	private String modalText;
 	
+	private String currentLibraryId = null; 
 	
 	private Button applyButton = new Button();
 	private Button closeButton = new Button();
@@ -146,7 +147,7 @@ public class EditIncludedLibraryDialogBox {
 		dialogModal.show();
 	}
 
-	public void findAvailableLibraries(String setId , boolean filterForInclude) {
+	public void findAvailableLibraries(String setId, final String currentId, boolean filterForInclude) {
 		showDialogBox();
 		cellTablePanel.removeStyleName("cellTablePanel");
 		cellTablePanel.add(progress);
@@ -161,6 +162,7 @@ public class EditIncludedLibraryDialogBox {
 					}
 					@Override
 					public void onSuccess(SaveCQLLibraryResult result) {
+						currentLibraryId = currentId; 
 						libraries = result.getCqlLibraryDataSetObjects();
 						cellTablePanel.remove(progress);
 						buildIncludeLibraryCellTable();
@@ -184,7 +186,18 @@ public class EditIncludedLibraryDialogBox {
 		cellTablePanel.add(searchHeader);
 		selectedList = new ArrayList<CQLLibraryDataSetObject>();
 		selectedObject = null;
-		if (libraries.size() > 0) {
+		
+		List<CQLLibraryDataSetObject> tempLibraries = new ArrayList<>();
+		tempLibraries.addAll(libraries);
+		// filter out the library that is the 'current library'
+		for(CQLLibraryDataSetObject library : tempLibraries) {
+			if(library.getId().equalsIgnoreCase(currentLibraryId)) {
+				tempLibraries.remove(library); 
+				break; 
+			}
+		}
+		
+		if (tempLibraries.size() > 0) {
 			table = new CellTable<CQLLibraryDataSetObject>();
 			// setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -192,8 +205,8 @@ public class EditIncludedLibraryDialogBox {
 			/* qdmSelectedList = new ArrayList<CQLLibraryModel>(); */
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
-			listDataProvider.refresh();
-			listDataProvider.getList().addAll(libraries);
+			listDataProvider.refresh();	
+			listDataProvider.getList().addAll(tempLibraries);
 			ListHandler<CQLLibraryDataSetObject> sortHandler = new ListHandler<CQLLibraryDataSetObject>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);

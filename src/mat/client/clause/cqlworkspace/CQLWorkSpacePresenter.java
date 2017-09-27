@@ -128,6 +128,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private String setId = null;
 	
 	private String currentIncludeLibrarySetId = null;
+	
+	private String currentIncludeLibraryId = null; 
 
 	/** The is modfied. */
 	private boolean isModified = false;
@@ -1463,6 +1465,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										public void onSuccess(CQLLibraryDataSetObject result) {
 											if (result != null) {
 												currentIncludeLibrarySetId = result.getCqlSetId();
+												currentIncludeLibraryId = result.getId();
 												searchDisplay.getIncludeView().buildIncludesReadOnlyView();
 												
 												searchDisplay.getIncludeView().getAliasNameTxtArea().setText(searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap()
@@ -1604,7 +1607,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 				final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
-				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId,true);
+				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId, true);
 				
 				editIncludedLibraryDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
 
@@ -1637,6 +1640,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											public void onSuccess(SaveUpdateCQLResult result) {
 												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
 												if (result != null) {
+													currentIncludeLibraryId = dto.getId();
 													if (result.isSuccess()) {
 														searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
 																result.getCqlModel().getCqlIncludeLibrarys());
@@ -2978,6 +2982,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	//	expProfileToAllValueSet = "";
 		setId= null;
 		currentIncludeLibrarySetId = null;
+		currentIncludeLibraryId = null; 
 		modifyValueSetDTO = null;
 		curAceEditor = null;
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;

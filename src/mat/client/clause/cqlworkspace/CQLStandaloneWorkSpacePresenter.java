@@ -124,7 +124,15 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	/** The setId for the current library. */
 	private String setId = null;
 	
+	/**
+	 * The set id of the currently selected 
+	 */
 	private String currentIncludeLibrarySetId = null;
+	
+	/**
+	 * The id of the currently selected included library
+	 */
+	private String currentIncludeLibraryId; 
 
 	/** The is modfied. */
 	private boolean isModified = false;
@@ -2117,7 +2125,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 				final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
-				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId,false);
+				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId, false);
 				
 				editIncludedLibraryDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
 
@@ -2244,6 +2252,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 													public void onSuccess(CQLLibraryDataSetObject result) {
 														if (result != null) {
 															currentIncludeLibrarySetId = result.getCqlSetId();
+															currentIncludeLibraryId = result.getId();
 															searchDisplay.getIncludeView().buildIncludesReadOnlyView();
 
 															searchDisplay.getIncludeView().getAliasNameTxtArea()
@@ -3874,6 +3883,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	@Override
 	public void beforeClosingDisplay() {
 		currentIncludeLibrarySetId = null;
+		currentIncludeLibraryId = null; 
 		searchDisplay.getCqlGeneralInformationView().clearAllGeneralInfoOfLibrary();
 		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);

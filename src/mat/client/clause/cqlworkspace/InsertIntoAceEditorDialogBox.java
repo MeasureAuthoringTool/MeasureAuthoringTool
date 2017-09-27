@@ -281,17 +281,17 @@ public class InsertIntoAceEditorDialogBox {
 										boolean isNotValidCode = false;
 										if(dataType != null){
 											String modifiedItemNameToBeInserted = modifyQuotesInString(itemNameToBeInserted);
-											if(modifiedItemNameToBeInserted.equalsIgnoreCase(DEAD) 
+											if(modifiedItemNameToBeInserted.equals(DEAD) 
 													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
 												isNotValidCode = true;											
-											} else if(modifiedItemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE) 
+											} else if(modifiedItemNameToBeInserted.equals(BIRTH_DATE) 
 													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
 												isNotValidCode = true;
 											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)
-												&& !modifiedItemNameToBeInserted.equalsIgnoreCase(BIRTH_DATE)){
+												&& !modifiedItemNameToBeInserted.equals(BIRTH_DATE)){
 												isNotValidCode = true;
 											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)
-												&& !modifiedItemNameToBeInserted.equalsIgnoreCase(DEAD)){
+												&& !modifiedItemNameToBeInserted.equals(DEAD)){
 												isNotValidCode = true;
 											}
 											if(isNotValidCode){

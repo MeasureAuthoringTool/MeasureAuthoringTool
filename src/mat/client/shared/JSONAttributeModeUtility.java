@@ -173,7 +173,7 @@ public class JSONAttributeModeUtility {
 						if(modeName.equalsIgnoreCase("Value Sets")){
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
-								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
+								if(!valSets.getCodeListName().equals("Birthdate") && !valSets.getCodeListName().equals("Dead")) {
 									mode.setModeValue(formatModeValue(valSets.getCodeListName()));
 									if(valSets.getType()== null) {
 										mode.setModeName("valueset:\""+valSets.getCodeListName() + "\"");
@@ -186,7 +186,7 @@ public class JSONAttributeModeUtility {
 						} else if(modeName.equalsIgnoreCase("Codes")){
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
-								if(!valSets.getCodeListName().equalsIgnoreCase("Birthdate") && !valSets.getCodeListName().equalsIgnoreCase("Dead")) {
+								if(!valSets.getCodeListName().equals("Birthdate") && !valSets.getCodeListName().equals("Dead")) {
 									if(valSets.getType()!= null) {
 										mode.setModeValue(formatModeValue(valSets.getDisplayName()));
 										mode.setModeName(valSets.getType()+":\"" +valSets.getDisplayName() + "\"");

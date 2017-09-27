@@ -148,7 +148,7 @@ public class CQLUtil {
 
 		// check if the birthdate valueset is being used with something other
 		// than then Patient Characteristic Birthdate datatype
-		if (name.equalsIgnoreCase(BIRTHDATE)) {
+		if (name.equals(BIRTHDATE)) {
 			for (String dataType : dataTypeList) {
 				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
 					return false;
@@ -158,7 +158,7 @@ public class CQLUtil {
 
 		// check if the dead valueset is being used with something other than
 		// the Patient Characteristic Expired datatype
-		else if (name.equalsIgnoreCase(DEAD)) {
+		else if (name.equals(DEAD)) {
 			for (String dataType : dataTypeList) {
 				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
 					return false;

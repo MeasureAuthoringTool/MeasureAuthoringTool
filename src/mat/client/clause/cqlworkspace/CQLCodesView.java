@@ -80,9 +80,9 @@ public class CQLCodesView {
 		void onDeleteClicked(CQLCode result, int index);
 		
 	}
-	private static final String BIRTHDATE = "21112-8";
+	private static final String BIRTHDATE = "Birthdate";
 
-	public static final String DEAD = "419099009";
+	public static final String DEAD = "Dead";
 
 	
 	
@@ -1010,7 +1010,7 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				// Delete button is not created for default codes - Dead and Birthdate.
-				if(object.getCodeOID().equals(DEAD) || object.getCodeOID().equals(BIRTHDATE)){
+				if(object.getCodeName().equals(DEAD) || object.getCodeName().equals(BIRTHDATE)){
 					sb.appendHtmlConstant("<span></span>");
 				}else if (object.isUsed()) {
 					sb.appendHtmlConstant("<button type=\"button\" title='"

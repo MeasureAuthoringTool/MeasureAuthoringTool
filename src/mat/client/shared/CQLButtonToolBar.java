@@ -184,27 +184,38 @@ public class CQLButtonToolBar extends Composite {
 		AnchorListItem item2= new AnchorListItem("Ctrl-Alt-y: datatypes");
 		item2.setHref("#");
 		item2.setTitle("Ctrl-Alt-y: datatypes");
+		
 		AnchorListItem item3= new AnchorListItem("Ctrl-Alt-d: definitions");
 		item3.setHref("#");
 		item3.setTitle("Ctrl-Alt-d: definitions");
+		
 		AnchorListItem item4= new AnchorListItem("Ctrl-Alt-f: functions");
 		item4.setHref("#");
 		item4.setTitle(item4.getText());
+		
 		AnchorListItem item5= new AnchorListItem("Ctrl-Alt-k: keywords");
 		item5.setHref("#");
 		item5.setTitle(item5.getText());
+		
 		AnchorListItem item6= new AnchorListItem("Ctrl-Alt-p: parameters");
 		item6.setHref("#");
 		item6.setTitle(item6.getText());
+		
 		AnchorListItem item7= new AnchorListItem("Ctrl-Alt-t: timings");
 		item7.setHref("#");
 		item7.setTitle(item7.getText());
-		AnchorListItem item8= new AnchorListItem("Ctrl-Alt-v: value sets & codes");
+		
+		AnchorListItem item8 = new AnchorListItem("Ctrl-Alt-u: units");
 		item8.setHref("#");
 		item8.setTitle(item8.getText());
-		AnchorListItem item9= new AnchorListItem("Ctrl-Space: all");
+		
+		AnchorListItem item9= new AnchorListItem("Ctrl-Alt-v: value sets & codes");
 		item9.setHref("#");
 		item9.setTitle(item9.getText());
+		
+		AnchorListItem item10= new AnchorListItem("Ctrl-Space: all");
+		item10.setHref("#");
+		item10.setTitle(item10.getText());
 		
 		
 		Anchor itemAnchor1 = (Anchor) (item1.getWidget(0));
@@ -237,11 +248,15 @@ public class CQLButtonToolBar extends Composite {
 		
 		Anchor itemAnchor8 = (Anchor) (item8.getWidget(0));
 		itemAnchor8.getElement().setAttribute("style", "cursor:text");
-		itemAnchor8.getElement().setAttribute("aria-label", "Ctrl-Alt-v: value sets & codes");
+		itemAnchor8.getElement().setAttribute("aria-label", "Ctrl-Alt-u: units");
 		
 		Anchor itemAnchor9 = (Anchor) (item9.getWidget(0));
 		itemAnchor9.getElement().setAttribute("style", "cursor:text");
-		itemAnchor9.getElement().setAttribute("aria-label", "Ctrl-Space: all");
+		itemAnchor9.getElement().setAttribute("aria-label", "Ctrl-Alt-v: value sets & codes");
+		
+		Anchor itemAnchor10 = (Anchor) (item10.getWidget(0));
+		itemAnchor10.getElement().setAttribute("style", "cursor:text");
+		itemAnchor10.getElement().setAttribute("aria-label", "Ctrl-Space: all");
 		
 		downMenu.setWidth("50px");
 		downMenu.getElement().setAttribute("style", "font-size:small;");
@@ -255,6 +270,7 @@ public class CQLButtonToolBar extends Composite {
 		downMenu.add(item7);
 		downMenu.add(item8);
 		downMenu.add(item9);
+		downMenu.add(item10);
 		//infoButtonGroup.setDropUp(true);
 		infoButtonGroup.getElement().setAttribute("class", "btn-group");
 		

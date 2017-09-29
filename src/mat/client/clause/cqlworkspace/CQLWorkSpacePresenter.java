@@ -1514,11 +1514,25 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														.setText(result.getCqlName());
 											//	searchDisplay.getIncludeView().addAvailableItems(new ArrayList<String>());
 												
+
+												searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(false);
 												if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-													searchDisplay.getIncludeView().setWidgetReadOnly(false);
-													searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
-												
+													searchDisplay.getIncludeView().setWidgetReadOnly(false);												
 													searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
+
+													// edit button should not be enabled if it is a versioned measure. 
+													if(MatContext.get().getCurrentMeasureVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+														searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(true);
+													}
+													
+													else {
+														searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(false);
+													}
+
+													
+
+													
+													
 													// load most recent used cql artifacts
 													MatContext.get().getMeasureService().getUsedCQLArtifacts(
 															MatContext.get().getCurrentMeasureId(),

@@ -1155,7 +1155,7 @@ public class CQLIncludeLibraryView {
 	
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
-		heading.setHTML(linkStr +"<h3><b>" + text + "</b></h3>");
+		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 	
 	

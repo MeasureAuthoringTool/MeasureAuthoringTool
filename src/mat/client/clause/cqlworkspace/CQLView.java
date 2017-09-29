@@ -6,28 +6,36 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SpacerWidget;
 
 public class CQLView {
 	
-	SimplePanel cqlViewSimpleP = new SimplePanel();
+	VerticalPanel cqlViewSimpleP = new VerticalPanel();
 	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();
+	
+	HTML heading = new HTML();
+	
 	public CQLView(){
 		cqlViewSimpleP.clear();
 		cqlAceEditor.startEditor();
 	}
 	
-	public SimplePanel buildView(){
+	public VerticalPanel buildView(){
 		cqlViewSimpleP.clear();
+		cqlViewSimpleP.getElement().setId("cqlViewCQL_Id");
 		//VerticalPanel cqlViewVP = new VerticalPanel();
 		//cqlViewSimpleP.getElement().setId("ViewCQl_SimplePanel");
 		//cqlViewVP.getElement().setId("ViewCQl_VPanel");
-		
+		heading.addStyleName("leftAligned");
 		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
 		viewCQLPanel.setMarginTop(20);
 		viewCQLPanel.setId("ViewCQLPanel_Id");
@@ -67,6 +75,9 @@ public class CQLView {
 		
 		viewCQLPanel.add(viewCQLHeader);
 		viewCQLPanel.add(viewCQLBody);
+		cqlViewSimpleP.add(heading);
+		cqlViewSimpleP.add(new SpacerWidget());
+		cqlViewSimpleP.add(new SpacerWidget());
 		cqlViewSimpleP.add(viewCQLPanel);
 		cqlViewSimpleP.setStyleName("cqlRightContainer");
 		cqlViewSimpleP.setWidth("700px");
@@ -85,5 +96,10 @@ public class CQLView {
 	
 	public void resetAll() {
 		getCqlAceEditor().setText("");
+	}
+	
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 }

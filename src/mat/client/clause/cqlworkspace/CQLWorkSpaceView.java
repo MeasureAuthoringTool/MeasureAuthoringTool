@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.Mat;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 
@@ -149,6 +150,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void buildGeneralInformation() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
+		setGeneralInfoHeading();
 		mainFlowPanel.add(generalInformationView.getView());
 
 	}
@@ -618,6 +620,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	@Override
 	public CQLCodesView getCodesView() {
 		return codesView;
+	}
+	
+	@Override
+	public void setGeneralInfoHeading(){
+		getCqlGeneralInformationView().setHeading("CQL Library Workspace > General Information", "generalInfoMainHPanel_HPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 }

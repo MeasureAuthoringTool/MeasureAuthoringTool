@@ -514,6 +514,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		void hideInformationDropDown();
 
+		CQLView getViewCQLView();
+
+		void setGeneralInfoHeading();
+
 	}
 
 	/**
@@ -5487,7 +5491,7 @@ private void addCodeSearchPanelHandlers() {
 			}
 			searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
 		}
-
+		searchDisplay.setGeneralInfoHeading();
 	}
 
 	/**
@@ -5733,7 +5737,8 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.buildCQLFileView();
 			buildCQLView();
 		}
-
+		searchDisplay.getViewCQLView().setHeading("CQL Library Workspace > View CQL", "cqlViewCQL_Id");
+		Mat.focusSkipLists("CqlComposer");
 	}
 
 	/**

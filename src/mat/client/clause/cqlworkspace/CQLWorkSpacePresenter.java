@@ -342,6 +342,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		void hideInformationDropDown();
 
+		void setGeneralInfoHeading();
+
 	}
 
 	/**
@@ -3395,6 +3397,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		}
 
+		searchDisplay.setGeneralInfoHeading();
 	}
 
 	/**
@@ -3719,7 +3722,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.buildCQLFileView();
 			buildCQLView();
 		}
-
+		searchDisplay.getViewCQLView().setHeading("CQL Workspace > View CQL", "cqlViewCQL_Id");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**

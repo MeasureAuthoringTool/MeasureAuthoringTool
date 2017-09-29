@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.Mat;
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
@@ -127,6 +128,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	public void buildGeneralInformation() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
+		setGeneralInfoHeading();
 		mainFlowPanel.add(generalInformationView.getCQLView());
 
 	}
@@ -741,6 +743,17 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 
 	public void setLockedButtonVPanel(HorizontalPanel lockedButtonVPanel) {
 		this.lockedButtonHPanel = lockedButtonVPanel;
+	}
+	
+	@Override
+	public CQLView getViewCQLView(){
+		return cqlViewCQLView;
+	}
+	
+	@Override
+	public void setGeneralInfoHeading(){
+		getCqlGeneralInformationView().setHeading("CQL Workspace > General Information", "generalInfoMainHPanel_HPanel");
+		Mat.focusSkipLists("CqlComposer");
 	}
 
 }

@@ -5,11 +5,13 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.MatContext;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
@@ -54,6 +56,8 @@ public class CQLGeneralInformationView {
 	/** The model version group. */
 	private FormGroup modelVersionGroup = new FormGroup();
 	
+	HTML heading = new HTML();
+	
 	/**
 	 * Instantiates a new CQL general information view.
 	 */
@@ -70,7 +74,7 @@ public class CQLGeneralInformationView {
 		usingModelGroup.clear();
 		libVersionGroup.clear();
 		modelVersionGroup.clear();
-		
+		heading.addStyleName("leftAligned");
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		//Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");
@@ -136,6 +140,8 @@ public class CQLGeneralInformationView {
 		modelVersionGroup.add(modelVersionLabel);
 		//modelVersionGroup.add(new SpacerWidget());
 		modelVersionGroup.add(modelVersionValue);
+		
+		generalInfoTopPanel.add(heading);
 		
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
@@ -452,6 +458,11 @@ public class CQLGeneralInformationView {
 		this.modelUsed = "";
 		this.version = "";
 		this.qdmVersionUsed = "";
+	}
+	
+	public void setHeading(String text,String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 
 }

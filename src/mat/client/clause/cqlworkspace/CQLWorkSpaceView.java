@@ -624,7 +624,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	@Override
 	public void setGeneralInfoHeading(){
-		getCqlGeneralInformationView().setHeading("CQL Library Workspace > General Information", "generalInfoMainHPanel_HPanel");
+		getCqlGeneralInformationView().setHeading("CQL Workspace > General Information", "generalInfoMainHPanel_HPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	

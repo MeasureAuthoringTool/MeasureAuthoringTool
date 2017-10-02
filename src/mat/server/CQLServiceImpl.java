@@ -2840,6 +2840,14 @@ public class CQLServiceImpl implements CQLService {
 		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
 		wrapper.setQualityDataDTO(qdsList);
 		valueSetTransferObject.scrubForMarkUp();
+		
+		if(!valueSetTransferObject.validateModel()){
+			result.setSuccess(false);
+			result.setFailureReason(result.SERVER_SIDE_VALIDATION);
+			return result;
+		}
+		
+		
 		CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 		MatValueSet matValueSet = valueSetTransferObject.getMatValueSet();
 		qds.setOid(matValueSet.getID());
@@ -2927,6 +2935,14 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		matValueSetTransferObject.scrubForMarkUp();
+		
+		if(!matValueSetTransferObject.validateModel()){
+			result.setSuccess(false);
+			result.setFailureReason(result.SERVER_SIDE_VALIDATION);
+			return result;
+		}
+		
+		
 		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		String errorMessage = validator.validate(matValueSetTransferObject);
 		if (errorMessage.isEmpty()) {
@@ -2971,48 +2987,50 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveCQLCodes(String xml, MatCodeTransferObject codeTransferObject) {
 		logger.info("::: CQLServiceImpl saveCQLCodes Start :::");
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		
-		if(codeTransferObject.getCqlCode().getCodeName().equals(BIRTHDATE) || codeTransferObject.getCqlCode().getCodeName().equals(DEAD)) {
-			result.setFailureReason(result.getBirthdateOrDeadError());
-			result.setSuccess(false);
-			return result; 
-		}
-		
-		XmlProcessor xmlProcessor = new XmlProcessor(xml);
-		CQLCode appliedCode = codeTransferObject.getCqlCode();
-		appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-		
-		
-		try {
-			/*
-			 * Node existingCodeList =
-			 * xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-			 * "//cqlLookUp/codes/code[@codeName='"+appliedCode.getCodeName() +
-			 * "' and @codeOID='"+ appliedCode.getCodeOID()+
-			 * "' and @codeSystemName='"+ appliedCode.getCodeSystemName()+
-			 * "' and @codeSystemVersion ='"+ appliedCode.getCodeSystemVersion()
-			 * +"' and @displayName = '" + appliedCode.getDisplayName()+"' ]");
-			 */
-			/*Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-					"//cqlLookUp/codes/code[@codeOID='" + appliedCode.getCodeOID() + "' ]");*/
-			Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
-					"//cqlLookUp/codes/code[@displayName=\"" + appliedCode.getDisplayName() + "\" ]");
-			if (existingCodeList != null) {
-				logger.info("::: Duplicate Code :::");
+		codeTransferObject.scrubForMarkUp();
+		if (codeTransferObject.isValidModel() ) {
+			if(codeTransferObject.getCqlCode().getCodeName().equals(BIRTHDATE) || codeTransferObject.getCqlCode().getCodeName().equals(DEAD)) {
+				result.setFailureReason(result.getBirthdateOrDeadError());
 				result.setSuccess(false);
-				result.setFailureReason(result.getDuplicateCode());
-			} else {
-				CQLCodeWrapper wrapper = new CQLCodeWrapper();
-				ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
-				wrapper.setCqlCodeList(codeList);
-				wrapper.getCqlCodeList().add(codeTransferObject.getCqlCode());
-				String codeXMLString = generateXmlForAppliedCode(wrapper);
-				result.setSuccess(true);
-				result.setXml(codeXMLString);
+				return result; 
 			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			CQLCode appliedCode = codeTransferObject.getCqlCode();
+			appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			
+			
+			try {
+				/*
+				 * Node existingCodeList =
+				 * xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
+				 * "//cqlLookUp/codes/code[@codeName='"+appliedCode.getCodeName() +
+				 * "' and @codeOID='"+ appliedCode.getCodeOID()+
+				 * "' and @codeSystemName='"+ appliedCode.getCodeSystemName()+
+				 * "' and @codeSystemVersion ='"+ appliedCode.getCodeSystemVersion()
+				 * +"' and @displayName = '" + appliedCode.getDisplayName()+"' ]");
+				 */
+				/*Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
+						"//cqlLookUp/codes/code[@codeOID='" + appliedCode.getCodeOID() + "' ]");*/
+				Node existingCodeList = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
+						"//cqlLookUp/codes/code[@displayName=\"" + appliedCode.getDisplayName() + "\" ]");
+				if (existingCodeList != null) {
+					logger.info("::: Duplicate Code :::");
+					result.setSuccess(false);
+					result.setFailureReason(result.getDuplicateCode());
+				} else {
+					CQLCodeWrapper wrapper = new CQLCodeWrapper();
+					ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
+					wrapper.setCqlCodeList(codeList);
+					wrapper.getCqlCodeList().add(codeTransferObject.getCqlCode());
+					String codeXMLString = generateXmlForAppliedCode(wrapper);
+					result.setSuccess(true);
+					result.setXml(codeXMLString);
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		logger.info("::: CQLServiceImpl saveCQLCodes End :::");
 		return result;
@@ -3181,23 +3199,6 @@ public class CQLServiceImpl implements CQLService {
 		try {
 			NodeList nodesValuesets = (NodeList) processor.findNodeList(processor.getOriginalDoc(),
 					XPATH_EXPRESSION_VALUESETS);
-			if (nodesValuesets.getLength() > 1) {
-				Node parentNode = nodesValuesets.item(0).getParentNode();
-				/*if (parentNode.getAttributes().getNamedItem("vsacExpIdentifier") != null) {
-					if (!StringUtils.isBlank(modifyWithDTO.getVsacExpIdentifier())) {
-						parentNode.getAttributes().getNamedItem("vsacExpIdentifier")
-								.setNodeValue(modifyWithDTO.getExpansionIdentifier());
-					} else {
-						parentNode.getAttributes().removeNamedItem("vsacExpIdentifier");
-					}
-				} else {
-					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
-						Attr vsacExpIdentifierAttr = processor.getOriginalDoc().createAttribute("vsacExpIdentifier");
-						vsacExpIdentifierAttr.setNodeValue(modifyWithDTO.getVsacExpIdentifier());
-						parentNode.getAttributes().setNamedItem(vsacExpIdentifierAttr);
-					}
-				}*/
-			}
 			for (int i = 0; i < nodesValuesets.getLength(); i++) {
 				Node newNode = nodesValuesets.item(i);
 				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
@@ -3223,24 +3224,18 @@ public class CQLServiceImpl implements CQLService {
 				} else {
 					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
 				}
-				
-				newNode.getAttributes().getNamedItem("suffix").setNodeValue(modifyDTO.getSuffix());
-
-			/*	if (newNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-					if (!StringUtils.isBlank(modifyWithDTO.getExpansionIdentifier())) {
-						newNode.getAttributes().getNamedItem("expansionIdentifier")
-								.setNodeValue(modifyWithDTO.getExpansionIdentifier());
-					} else {
-						newNode.getAttributes().removeNamedItem("expansionIdentifier");
+				if ((newNode.getAttributes().getNamedItem("suffix") == null)){
+					if(modifyDTO.getSuffix() != null && !modifyDTO.getSuffix().isEmpty()){
+						Attr attrNode = processor.getOriginalDoc().createAttribute("suffix");
+						attrNode.setNodeValue(modifyWithDTO.getSuffix());
+						newNode.getAttributes().setNamedItem(attrNode);
 					}
+					
 				} else {
-					if (!StringUtils.isEmpty(modifyWithDTO.getExpansionIdentifier())) {
-						Attr expansionIdentifierAttr = processor.getOriginalDoc()
-								.createAttribute("expansionIdentifier");
-						expansionIdentifierAttr.setNodeValue(modifyWithDTO.getExpansionIdentifier());
-						newNode.getAttributes().setNamedItem(expansionIdentifierAttr);
-					}
-				}*/
+					if(modifyDTO.getSuffix() != null ){
+						newNode.getAttributes().getNamedItem("suffix").setNodeValue(modifyDTO.getSuffix());
+					} 
+				}
 			}
 			result.setSuccess(true);
 			result.setXml(processor.transform(processor.getOriginalDoc()));

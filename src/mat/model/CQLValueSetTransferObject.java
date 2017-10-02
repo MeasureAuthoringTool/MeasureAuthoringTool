@@ -193,7 +193,7 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 				this.setUserDefinedText(noMarkupText);
 			}
 		}
-		if (this.getMatValueSet() != null) {
+		if (this.getMatValueSet() != null && this.getMatValueSet().getDisplayName()!= null) {
 			String noMarkupText = this.getMatValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
 			System.out.println("QDM VSAC Value set name:" + noMarkupText);
 			if (this.getMatValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
@@ -214,6 +214,23 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 				this.getCodeListSearchDTO().setName(noMarkupText);
 			}
 		}
+	}
+	
+	public boolean validateModel(){
+		boolean isValid = true;
+		if(this.matValueSet != null){
+			if(this.getMatValueSet().getDisplayName()!= null && this.getMatValueSet().getDisplayName().trim().isEmpty()){
+				isValid = false;
+			} else if(this.getMatValueSet().getDisplayName()== null){
+				isValid = false;
+			}
+		} else if(this.getUserDefinedText().trim().isEmpty()){
+			isValid = false;
+		}
+		
+		
+		
+		return isValid;
 	}
 
 	public String getCqlLibraryId() {

@@ -2289,19 +2289,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(false);														
 															searchDisplay.getIncludeView().getDeleteButton().setEnabled(false);
 
+															searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(false);
 															if (MatContext.get().getLibraryLockService()
 																	.checkForEditPermission()) {
 																searchDisplay.getIncludeView().setWidgetReadOnly(false);
-																// edit button should not be enabled if library is versioned 
-																if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
-																	searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(true);
-																}
-																
-																else {
-																	searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(false);
-																}
-																
-																
+																searchDisplay.getIncludeView().getSaveModifyButton().setEnabled(true);
+
 																
 																// load most recent
 																// used

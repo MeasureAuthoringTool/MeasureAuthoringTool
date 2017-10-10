@@ -412,7 +412,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
 						MatContext.get().setUMLSLoggedIn(true);
-						MatContext.get().getAllExpProfileList();
+					/*	MatContext.get().getAllExpProfileList();*/
 					} else { //incorrect UMLS credential - no ticket is assigned.
 						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);

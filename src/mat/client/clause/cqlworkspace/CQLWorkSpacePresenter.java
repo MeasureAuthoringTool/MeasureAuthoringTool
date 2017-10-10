@@ -4802,28 +4802,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 		
 	}
-	
-	/*List<CQLCode> cloneCQLCodeList(List<CQLCode> list){
-		List<CQLCode> newList = new ArrayList<CQLCode>();
-		
-		for(CQLCode code : list){
-			newList.add((CQLCode) code.clonez());
-		}
-		
-		return newList;
-	}*/
-	
 	/**
 	 * Update vsac value sets.
 	 */
 	private void updateVSACValueSets() {
 		
-		/*String expansionId = null;
-		if(expProfileToAllValueSet.isEmpty()){
-			expansionId = null;
-		} else {
-			expansionId = expProfileToAllValueSet;
-		}*/
+		
 		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
 		service.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), null,
 				new AsyncCallback<VsacApiResult>() {
@@ -5331,10 +5315,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			modifyValueSetList(modifyValueSetDTO);
 			
 			if(!CheckNameInValueSetList(displayName)){
-				modifyValueSetDTO.setCodeListName(displayName);
-				modifyValueSetDTO.setSuffix(suffix);
+				if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
+					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
+					modifyValueSetDTO.setCodeListName(originalName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
+				} else {
+					modifyValueSetDTO.setCodeListName(originalName);
+					modifyValueSetDTO.setSuffix(null);
+				}
 				modifyValueSetDTO.setOriginalCodeListName(originalName);
-				modifyWithDTO.setDisplayName(displayName);
+				//modifyWithDTO.setDisplayName(displayName);
 				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
 			}
 			
@@ -5591,13 +5580,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		matValueSetTransferObject.setMeasureId(measureID);
 		
 		String originalCodeListName = searchDisplay.getValueSetView().getUserDefinedInput().getValue(); 
-		String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
-		String codeListName = (!originalCodeListName.isEmpty() ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix +")" : "");
+		/*String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
+		String codeListName = (!originalCodeListName.isEmpty() ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix +")" : "");*/
 		
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(suffix);
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(codeListName);
+		/*matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(suffix);
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(codeListName);*/
+
+		if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(originalCodeListName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
+		} else {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(originalCodeListName);
+		}
 		
 		CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
 		codeListSearchDTO.setName(searchDisplay.getValueSetView().getUserDefinedInput().getText());

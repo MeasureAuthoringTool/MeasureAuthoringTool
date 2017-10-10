@@ -11,21 +11,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
  */
 public interface VSACAPIServiceAsync {
 	
-	/**
-	 * Gets the value set by oid and version.
-	 * 
-	 * @param oid
-	 *            the oid
-	 * @param version
-	 *            the version
-	 * @param effectiveDate
-	 *            the effective date
-	 * @param callback
-	 *            the callback
-	 * @return the value set by oid and version or effective date
-	 */
-	void getValueSetByOIDAndVersionOrExpansionId(String oid, String version, String effectiveDate,
-			AsyncCallback<VsacApiResult> callback);
 	
 	/**
 	 * In validate vsac user.
@@ -44,28 +29,6 @@ public interface VSACAPIServiceAsync {
 	void isAlreadySignedIn(AsyncCallback<Boolean> callback);
 	
 	/**
-	 * Update all vsac value sets at package.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param callback
-	 *            the callback
-	 */
-	void updateAllVSACValueSetsAtPackage(String measureId,
-			AsyncCallback<VsacApiResult> callback);
-	
-	/**
-	 * Update vsac value sets.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param callback
-	 *            the callback
-	 */
-	void updateVSACValueSets(String measureId, String defaultExpId,
-			AsyncCallback<VsacApiResult> callback);
-	
-	/**
 	 * Update vsac value sets.
 	 * 
 	 * @param appliedQDMList
@@ -76,16 +39,6 @@ public interface VSACAPIServiceAsync {
 	void updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId,
 			AsyncCallback<VsacApiResult> callback);
 	
-	/**
-	 * Update stand alone vsac value sets.
-	 * 
-	 * @param libraryId
-	 *            the library id
-	 * @param callback
-	 *            the callback
-	 */
-	void updateStandaloneCQLVSACValueSets(String libraryId, String defaultExpId,
-			AsyncCallback<VsacApiResult> callback);
 	
 	/**
 	 * Validate vsac user.
@@ -99,8 +52,6 @@ public interface VSACAPIServiceAsync {
 	 */
 	void validateVsacUser(String userName, String password,
 			AsyncCallback<Boolean> callback);
-	
-	void getAllExpProfileList(AsyncCallback<VsacApiResult> callback);
 	
 	void getAllVersionListByOID(String oid, AsyncCallback<VsacApiResult> callback);
 	

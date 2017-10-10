@@ -25,21 +25,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	
 	
 	/**
-	 * Method to retrieve value set from VSAC based on OID and version.
-	 *
-	 * @param oid            - String.
-	 * @param version            - String.
-	 * @param expansionId the expansion id
-	 * @return VsacApiResult - VsacApiResult.
-	 * *
-	 */
-	@Override
-	public final VsacApiResult getValueSetByOIDAndVersionOrExpansionId (final String oid, final String version,
-			final String expansionId) {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().getValueSetByOIDAndVersionOrExpansionId(oid, version, expansionId, sessionId);
-	}
-	/**
 	 *Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.
 	 * **/
 	@Override
@@ -58,32 +43,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 	
 	
-	/***
-	 * Method to update valueset's without versions from VSAC in Measure XML.
-	 * Skip Timing elements, Expired, Birthdate and User defined QDM. Supplemental Data Elements are considered here.
-	 *
-	 * @param measureId - Selected Measure Id.
-	 * @return VsacApiResult - Result.
-	 * */
-	@Override
-	public final VsacApiResult updateAllVSACValueSetsAtPackage(final String measureId) {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().updateAllVSACValueSetsAtPackage(measureId, sessionId);
-	}
-	
-	
-	
-	/**
-	 * Method to retrive All Profile List from VSAC.
-	 *
-	 * @return the all profile list
-	 */
-	@Override
-	public final VsacApiResult getAllExpProfileList() {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().getAllExpIdentifierList(sessionId);
-	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.service.VSACAPIService#getAllVersionListByOID(java.lang.String)
@@ -95,20 +54,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 	
 	
-	/**
-	 * *
-	 * Method to update valueset's without versions from VSAC in Measure XML.
-	 * Skip supplemental Data Elements and Timing elements, Expired, Birth date and User defined QDM.
-	 *
-	 * @param measureId            - Selected Measure Id.
-	 * @param defaultExpId the default exp id
-	 * @return VsacApiResult - Result.
-	 */
-	@Override
-	public final VsacApiResult updateVSACValueSets(final String measureId, String defaultExpId) {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().updateVSACValueSets(measureId, defaultExpId,sessionId);
-	}
+	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
 	 *@param userName - String.
@@ -139,13 +85,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 
 
-	@Override
-	public VsacApiResult updateStandaloneCQLVSACValueSets(String libraryId, String defaultExpId) {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().updateStandaloneCQLVSACValueSets(libraryId, defaultExpId, sessionId);
-	}
-
-
+	
 	@Override
 	public VsacApiResult getDirectReferenceCode(String url) {
 		String sessionId = getThreadLocalRequest().getSession().getId();

@@ -1301,33 +1301,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Service call to VSAC to update Measure Xml before invoking simple xml and value set sheet generation.
-	 *
-	 * @param measureId - String.
-	 * @param updateVsacResult the update vsac result
-	 */ //commented out for 5.1 release
-	/*private void updateValueSetsBeforePackaging(final String measureId) {
-		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId,
-				new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				Mat.hideLoadingMessage();
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-				view.getInProgressMessageDisplay().clear();
-			}
-			
-			@Override
-			public void onSuccess(final VsacApiResult result) {
-				validateMeasureAndExport(measureId,
-						result);
-			}
-		});
-	}*/
-	
-	/**
 	 * Service Call to generate Simple Xml and value set sheet.
 	 * @param measureId - String.
 	 * @param updateVsacResult - VsacApiResult.

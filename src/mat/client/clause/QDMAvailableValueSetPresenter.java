@@ -704,7 +704,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			return;
 		}
 		
-		showSearchingBusy(true);
+		/*showSearchingBusy(true);
 		vsacapiService.getValueSetByOIDAndVersionOrExpansionId(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
@@ -724,7 +724,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				}
 				showSearchingBusy(false);
 			}
-		});
+		});*/
 	}
 	
 	/**

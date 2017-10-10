@@ -4738,24 +4738,22 @@ private void addCodeSearchPanelHandlers() {
 	 * Update vsac value sets.
 	 */
 	private void updateVSACValueSets() {
-		showSearchingBusy(true);
+		searchDisplay.getValueSetView().showSearchingBusyOnQDM(true);
 		String expansionId = null;
-		/*if (expProfileToAllValueSet.isEmpty()) {
-			expansionId = null;
-		} else {
-			expansionId = expProfileToAllValueSet;
-		}*/
+		
 		cqlService.updateCQLVSACValueSets(MatContext.get().getCurrentCQLLibraryId(), expansionId,
 				new AsyncCallback<VsacApiResult>() {
 
 					@Override
 					public void onFailure(final Throwable caught) {
+						searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
 						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						showSearchingBusy(false);
+						
 					}
 
 					@Override
 					public void onSuccess(final VsacApiResult result) {
+						
 						if (result.isSuccess()) {
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 									.createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
@@ -4773,7 +4771,7 @@ private void addCodeSearchPanelHandlers() {
 							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 									searchDisplay.getValueSetView().convertMessage(result.getFailureReason()));
 						}
-						showSearchingBusy(false);
+						searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
 					}
 				});
 	}
@@ -4881,24 +4879,11 @@ private void addCodeSearchPanelHandlers() {
 							.setValue(matValueSets.get(0).getDisplayName());
 					searchDisplay.getValueSetView().getUserDefinedInput()
 							.setTitle(matValueSets.get(0).getDisplayName());
-					//searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
 					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 
 					searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
-
-					/*if (isExpansionProfile) {
-						searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(false);
-						searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-						searchDisplay.getValueSetView().getQDMExpProfileListBox().clear();
-						searchDisplay.getValueSetView().getQDMExpProfileListBox().addItem(expProfileToAllValueSet,
-								expProfileToAllValueSet);
-					} else {
-						searchDisplay.getValueSetView()
-								.setQDMExpProfileListBox(getProfileList(MatContext.get().getVsacExpProfileList()));*/
-						getVSACVersionListByOID(oid);
-						//searchDisplay.getValueSetView().getQDMExpProfileListBox().setEnabled(true);
-						searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
-				//	}
+					getVSACVersionListByOID(oid);
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 					showSearchingBusy(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
@@ -5018,29 +5003,16 @@ private void addCodeSearchPanelHandlers() {
 		// Normal Available QDM Flow
 		MatValueSet modifyWithDTO = currentMatValueSet;
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
-			//String expansionId;
+			
 			String version;
 			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String displayName = (!originalName.isEmpty() ? originalName : "")  + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-			/*expansionId = searchDisplay.getValueSetView()
-					.getExpansionProfileValue(searchDisplay.getValueSetView().getQDMExpProfileListBox());*/
 			version = searchDisplay.getValueSetView()
 					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-			/*if (expansionId == null) {
-				expansionId = "";
-			}*/
 			if (version == null) {
 				version = "";
 			}
-			//expProfileToAllValueSet = getExpProfileValue();
-			/*if (modifyValueSetDTO.getExpansionIdentifier() == null) {
-				if (expProfileToAllValueSet.equalsIgnoreCase("")) {
-					modifyValueSetDTO.setExpansionIdentifier("");
-				} else {
-					modifyValueSetDTO.setExpansionIdentifier(expProfileToAllValueSet);
-				}
-			}*/
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
 			}
@@ -5048,10 +5020,18 @@ private void addCodeSearchPanelHandlers() {
 			modifyValueSetList(modifyValueSetDTO);
 
 			if (!CheckNameInValueSetList(displayName)) {
-				modifyValueSetDTO.setCodeListName(displayName);
-				modifyValueSetDTO.setSuffix(suffix);
+				if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
+					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
+					modifyValueSetDTO.setCodeListName(originalName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
+				} else {
+					modifyValueSetDTO.setCodeListName(originalName);
+					modifyValueSetDTO.setSuffix(null);
+				}
+				
+				/*modifyValueSetDTO.setCodeListName(displayName);
+				modifyValueSetDTO.setSuffix(suffix);*/
 				modifyValueSetDTO.setOriginalCodeListName(originalName);
-				modifyWithDTO.setDisplayName(displayName);
+				//modifyWithDTO.setDisplayName(displayName);
 				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
 			}
 			getUsedArtifacts();
@@ -5205,6 +5185,7 @@ private void addCodeSearchPanelHandlers() {
 		String originalCodeListName = matValueSetTransferObject.getMatValueSet().getDisplayName(); 
 		String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 		final String codeListName = (originalCodeListName!=null ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
+		
 		String version = matValueSetTransferObject.getMatValueSet().getVersion();
 		if (version == null) {
 			version = "";
@@ -5353,14 +5334,21 @@ private void addCodeSearchPanelHandlers() {
 		matValueSetTransferObject.setCqlLibraryId(libraryID);
 		
 		String originalCodeListName = searchDisplay.getValueSetView().getUserDefinedInput().getValue(); 
-		String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
-		String codeListName = (!originalCodeListName.isEmpty() ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix +")" : "");
+		/*String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
+		String codeListName = (!originalCodeListName.isEmpty() ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix +")" : "");*/
+		
+		
 		
 		matValueSetTransferObject.setCqlQualityDataSetDTO(new CQLQualityDataSetDTO());
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setOriginalCodeListName(originalCodeListName);
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(suffix);
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(codeListName);
-		
+		/*matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(suffix);
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(codeListName);*/
+		if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(originalCodeListName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
+		} else {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(originalCodeListName);
+		}
 		CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
 		codeListSearchDTO.setName(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 		matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);

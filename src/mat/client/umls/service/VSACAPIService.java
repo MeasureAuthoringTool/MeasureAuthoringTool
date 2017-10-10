@@ -19,21 +19,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 public interface VSACAPIService extends RemoteService {
 	
 	/**
-	 * Gets the value set by oid and version.
-	 * 
-	 * @param oid
-	 *            the oid
-	 * @param version
-	 *            the version
-	 * @param effectiveDate
-	 *            the effective date
-	 * @return the value set by oid and version
-	 */
-	/* VsacApiResult getValueSetByOIDAndVersion(String OID, String version); */
-	
-	VsacApiResult getValueSetByOIDAndVersionOrExpansionId(String oid, String version, String effectiveDate);
-	
-	/**
 	 * In validate vsac user.
 	 */
 	void inValidateVsacUser();
@@ -46,27 +31,6 @@ public interface VSACAPIService extends RemoteService {
 	boolean isAlreadySignedIn();
 	
 	/**
-	 * Update all vsac value sets at package.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the vsac api result
-	 */
-	VsacApiResult updateAllVSACValueSetsAtPackage(String measureId);
-	
-	/**
-	 * Update vsac value sets.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param defaultExpId TODO
-	 * @return the vsac api result
-	 */
-	VsacApiResult updateVSACValueSets(String measureId, String defaultExpId);
-	
-	VsacApiResult updateStandaloneCQLVSACValueSets(String libraryId, String defaultExpId);
-	
-	/**
 	 * Validate vsac user.
 	 * 
 	 * @param userName
@@ -76,8 +40,6 @@ public interface VSACAPIService extends RemoteService {
 	 * @return true, if successful
 	 */
 	boolean validateVsacUser(String userName, String password);
-
-	VsacApiResult getAllExpProfileList();
 
 	VsacApiResult getAllVersionListByOID(String oid);
 

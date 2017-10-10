@@ -3201,7 +3201,8 @@ public class CQLServiceImpl implements CQLService {
 					XPATH_EXPRESSION_VALUESETS);
 			for (int i = 0; i < nodesValuesets.getLength(); i++) {
 				Node newNode = nodesValuesets.item(i);
-				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
+				newNode.getAttributes().getNamedItem("originalName").setNodeValue(modifyWithDTO.getOriginalCodeListName());
+				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName());
 				newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
 				if ((newNode.getAttributes().getNamedItem("codeSystemName") == null)
 						&& (modifyWithDTO.getCodeSystemName() != null)) {
@@ -3229,12 +3230,16 @@ public class CQLServiceImpl implements CQLService {
 						Attr attrNode = processor.getOriginalDoc().createAttribute("suffix");
 						attrNode.setNodeValue(modifyWithDTO.getSuffix());
 						newNode.getAttributes().setNamedItem(attrNode);
+						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+"("+modifyWithDTO.getSuffix()+")");
 					}
 					
 				} else {
-					if(modifyDTO.getSuffix() != null ){
+					if(modifyDTO.getSuffix() != null && !modifyDTO.getSuffix().isEmpty()){
 						newNode.getAttributes().getNamedItem("suffix").setNodeValue(modifyDTO.getSuffix());
-					} 
+						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+"("+modifyWithDTO.getSuffix()+")");
+					} else if(modifyDTO.getSuffix() != null && modifyDTO.getSuffix().isEmpty()){
+						newNode.getAttributes().removeNamedItem("suffix");
+					}
 				}
 			}
 			result.setSuccess(true);

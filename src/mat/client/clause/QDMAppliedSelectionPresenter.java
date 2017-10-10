@@ -523,8 +523,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 					} else {
 						if(result.getVsacExpIdentifier()!=null){
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(true);
-							searchDisplay.setExpIdentifierList(MatContext.get()
-									.getExpProfileList());
+							/*searchDisplay.setExpIdentifierList(MatContext.get()
+									.getExpProfileList());*/
 							searchDisplay.setDefaultExpansionIdentifierListBox();
 							for(int i = 0; i < searchDisplay.getVSACExpansionIdentifierListBox().getItemCount(); i++){
 								if(searchDisplay.getVSACExpansionIdentifierListBox().getItemText(i)
@@ -723,8 +723,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						searchDisplay.getQDMExpIdentifierListBox().addItem(expIdentifierToAllQDM,
 								expIdentifierToAllQDM);
 					} else {
-						searchDisplay.setQDMExpIdentifierListBox(getProfileList(
-								MatContext.get().getVsacExpProfileList()));
+						/*searchDisplay.setQDMExpIdentifierListBox(getProfileList(
+								MatContext.get().getVsacExpProfileList()));*/
 						getVSACVersionListByOID(oid);
 						searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
 						searchDisplay.getVersionListBox().setEnabled(true);
@@ -996,7 +996,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
 					resetQDSMsgPanel();
-					updateVSACValueSets();
+					//updateVSACValueSets();
 
 				}
 			}
@@ -1244,8 +1244,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							}
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
 									true);
-							searchDisplay.setExpIdentifierList(MatContext.get()
-									.getExpProfileList());
+							/*searchDisplay.setExpIdentifierList(MatContext.get()
+									.getExpProfileList());*/
 							searchDisplay.setDefaultExpansionIdentifierListBox();
 						} else if (event.getValue().toString().equals("false")) {
 							searchDisplay.getVSACExpansionIdentifierListBox().setEnabled(
@@ -2218,42 +2218,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		
 	}
 	
-	/**
-	 * Update vsac value sets.
-	 */
-	private void updateVSACValueSets() {
-		
-		String expansionId = null;
-		if(expIdentifierToAllQDM.isEmpty()){
-			expansionId = null;
-		} else {
-			expansionId = expIdentifierToAllQDM;
-		}
-		vsacapiService.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), expansionId,
-				new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				searchDisplay.getInProgressMessageDisplay().clear();
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-			
-			@Override
-			public void onSuccess(final VsacApiResult result) {
-				searchDisplay.getInProgressMessageDisplay().clear();
-				if (result.isSuccess()) {
-					searchDisplay.getUpdateVSACSuccessMessagePanel().setMessage(
-							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
-					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					appliedListModel.setAppliedQDMs(result.getUpdatedQualityDataDTOLIst());
-					searchDisplay.buildAppliedQDMCellTable(appliedListModel, MatContext.get().getMeasureLockService()
-							.checkForEditPermission());
-				} else {
-					searchDisplay.getUpdateVSACErrorMessagePanel().setMessage(convertMessage(result.getFailureReason()));
-				}
-			}
-		});
-	}
+	
 	
 	//
 	/**

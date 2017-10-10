@@ -218,7 +218,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				resetQDSFields();
 				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
-				updateVSACValueSets();
+			//	updateVSACValueSets();
 			}
 		});
 	}
@@ -401,32 +401,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 */
 	private void updateVSACValueSets() {
 		//showSearchingBusy(true);
-		vsacapiServiceAsync.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), null, new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				searchDisplay.getInProgressMessageDisplay().clear();
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				//showSearchingBusy(false);
-			}
-			
-			@Override
-			public void onSuccess(final VsacApiResult result) {
-				//showSearchingBusy(false);
-				searchDisplay.getInProgressMessageDisplay().clear();
-				if (result.isSuccess()) {
-					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
-					// getAppliedQDMList(true);
-					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					appliedListModel.setAppliedQDMs(result.getUpdatedQualityDataDTOLIst());
-					searchDisplay.buildCellTable(appliedListModel);
-					searchDisplay.setAppliedQDMList(result.getUpdatedQualityDataDTOLIst());
-				} else {
-					searchDisplay.getErrorMessageDisplay().setMessage(convertMessage(result.getFailureReason()));
-				}
-			}
-		});
+		
 	}
 	
 }

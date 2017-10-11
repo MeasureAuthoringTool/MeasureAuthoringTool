@@ -15,17 +15,25 @@ public class CQLIdentifierObject implements IsSerializable {
 	 */
 	private String aliasName; 
 	
+	private String id;
 	
 	/**
 	 * The identifier
 	 */
 	private String identifier;
 
+	public CQLIdentifierObject(String aliasName, String identifier, String id) {
+		this.aliasName = aliasName;
+		this.identifier = identifier;
+		this.id = id;
+	}
+	
 	public CQLIdentifierObject(String aliasName, String identifier) {
 		this.aliasName = aliasName;
 		this.identifier = identifier;
 	}
 
+	
 	public CQLIdentifierObject() {
 		
 	}
@@ -69,6 +77,14 @@ public class CQLIdentifierObject implements IsSerializable {
 		else {
 			return "\"" + identifier + "\"";
 		}
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 }

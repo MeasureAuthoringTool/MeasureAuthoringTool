@@ -185,7 +185,7 @@ public class CQLLeftNavBarPanelView {
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
 
 	/** The applied qdm list. */
-	private List<CQLQualityDataSetDTO> appliedQdmList = new ArrayList<CQLQualityDataSetDTO>();
+	//private List<CQLQualityDataSetDTO> appliedQdmList = new ArrayList<CQLQualityDataSetDTO>();
 
 	/** The codes list. */
 	private List<CQLCode> codesList = new ArrayList<CQLCode>();
@@ -1764,20 +1764,20 @@ public class CQLLeftNavBarPanelView {
 	 * Gets the applied qdm list.
 	 *
 	 * @return the applied qdm list
-	 */
+	 *//*
 	public List<CQLQualityDataSetDTO> getAppliedQdmList() {
 		return appliedQdmList;
 	}
 
 
-	/**
+	*//**
 	 * Sets the applied qdm list.
 	 *
 	 * @param appliedQdmList the new applied qdm list
-	 */
+	 *//*
 	public void setAppliedQdmList(List<CQLQualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;
-	}
+	}*/
 
 
 	/**

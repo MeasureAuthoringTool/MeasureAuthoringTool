@@ -3173,7 +3173,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 							
 							MatContext.get().setValuesets(appliedAllValueSetList);
-							searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(appliedAllValueSetList);
+							//searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(appliedAllValueSetList);
 							appliedValueSetTableList.clear();
 							appliedCodeTableList.clear();
 							for (CQLQualityDataSetDTO dto : result.getCqlModel().getValueSetList()) {
@@ -3881,7 +3881,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		List<CQLIdentifierObject> defineList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < definitionList.size(); i++) {
-			CQLIdentifierObject definition = new CQLIdentifierObject(null, definitionList.get(i).getDefinitionName());
+			CQLIdentifierObject definition = new CQLIdentifierObject(null, definitionList.get(i).getDefinitionName(), definitionList.get(i).getId());
 			defineList.add(definition);
 		}
 		return defineList;
@@ -3899,7 +3899,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		List<CQLIdentifierObject> paramList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < parameterList.size(); i++) {
-			CQLIdentifierObject parameter = new CQLIdentifierObject(null, parameterList.get(i).getParameterName());
+			CQLIdentifierObject parameter = new CQLIdentifierObject(null, parameterList.get(i).getParameterName(),parameterList.get(i).getId());
 			paramList.add(parameter);
 		}
 		return paramList;
@@ -3917,7 +3917,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		List<CQLIdentifierObject> funcList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < functionList.size(); i++) {
-			CQLIdentifierObject function = new CQLIdentifierObject(null, functionList.get(i).getFunctionName());
+			CQLIdentifierObject function = new CQLIdentifierObject(null, functionList.get(i).getFunctionName(),functionList.get(i).getId());
 			funcList.add(function);
 		}
 		return funcList;
@@ -4823,7 +4823,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getValueSetView().showSearchingBusyOnQDM(false);
 				if (result.isSuccess()) {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
-					List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
+					/*List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
 					for (CQLQualityDataSetDTO cqlQDMDTO : result.getUpdatedCQLQualityDataDTOLIst()) {
 						if (!ConstantMessages.EXPIRED_OID.equals(cqlQDMDTO
 								.getDataType()) && !ConstantMessages.BIRTHDATE_OID.equals(cqlQDMDTO
@@ -4831,8 +4831,39 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								&& (cqlQDMDTO.getType() == null))  {
 							appliedListModel.add(cqlQDMDTO);
 						} 
+					}*/
+					List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
+					for (CQLQualityDataSetDTO cqlQDMDTO : result.getUpdatedCQLQualityDataDTOLIst()) {
+						if (!ConstantMessages.EXPIRED_OID.equals(cqlQDMDTO
+								.getDataType()) && !ConstantMessages.BIRTHDATE_OID.equals(cqlQDMDTO
+										.getDataType())
+								&& (cqlQDMDTO.getType() == null))  {
+							appliedListModel.add(cqlQDMDTO);
+							//Update existing Table value set list
+							for(CQLQualityDataSetDTO cqlQualityDataSetDTO : appliedValueSetTableList){
+								if(cqlQualityDataSetDTO.getId().equals(cqlQDMDTO.getId())){
+									cqlQualityDataSetDTO.setOriginalCodeListName(cqlQDMDTO.getOriginalCodeListName());
+									cqlQualityDataSetDTO.setCodeListName(cqlQDMDTO.getCodeListName());
+								}
+							}
+							// update existing Value set list for Insert Button and short cut keys
+							for(CQLIdentifierObject cqlIdentifierObject : MatContext.get().getValuesets()){
+								if(cqlIdentifierObject.getId().equals(cqlQDMDTO.getId())){
+									cqlIdentifierObject.setIdentifier(cqlQDMDTO.getCodeListName());
+								}
+							}
+							// Update value set list for Attribute builder.
+							for(CQLQualityDataSetDTO dataSetDTO : MatContext.get().getValueSetCodeQualityDataSetList()){
+								if(dataSetDTO.getId().equals(cqlQDMDTO.getId())){
+									dataSetDTO.setOriginalCodeListName(cqlQDMDTO.getOriginalCodeListName());
+									dataSetDTO.setCodeListName(cqlQDMDTO.getCodeListName());
+								}
+							}
+						}
 					}
 					searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedListModel, MatContext.get().getMeasureLockService().checkForEditPermission());
+					searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmTableList(appliedValueSetTableList);
+					searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(searchDisplay.getValueSetView().convertMessage(result.getFailureReason()));
 				}
@@ -5509,7 +5540,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						allValuesets.add(dto);
 					}
 					
-					searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(allValuesets);
+				//	searchDisplay.getCqlLeftNavBarPanelView().setAppliedQdmList(allValuesets);
 					MatContext.get().setValuesets(allValuesets);
 					for(CQLQualityDataSetDTO valueset : allValuesets){
 						//filtering out codes from valuesets list

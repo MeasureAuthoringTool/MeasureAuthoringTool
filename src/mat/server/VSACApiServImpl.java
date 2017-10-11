@@ -491,7 +491,7 @@ public class VSACApiServImpl implements VSACApiService{
 								cqlQualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
 								cqlQualityDataSetDTO.setOriginalCodeListName(matValueSet.getDisplayName());
 								if(cqlQualityDataSetDTO.getSuffix() != null && !cqlQualityDataSetDTO.getSuffix().isEmpty()){
-									cqlQualityDataSetDTO.setCodeListName(matValueSet.getDisplayName()+"("+cqlQualityDataSetDTO.getSuffix()+")");
+									cqlQualityDataSetDTO.setCodeListName(matValueSet.getDisplayName()+" ("+cqlQualityDataSetDTO.getSuffix()+")");
 								}
 								if (matValueSet.isGrouping()) {
 									cqlQualityDataSetDTO.setTaxonomy(ConstantMessages.

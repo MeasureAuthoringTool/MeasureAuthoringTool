@@ -536,9 +536,10 @@ public class CQLHumanReadableHTMLCreator {
 				
 				Element checkBoxElement = divElement.appendElement("input");
 				checkBoxElement.attr("type", "checkbox");
-				String id = "test-Population Criteria" + (key.toString()) + "_"
+				String id = "test-Population_Criteria" + (key.toString()) + "_" 
 						+ (int) (Math.random() * 1000);
 				checkBoxElement.attr("id", id);
+				checkBoxElement.attr("shorttag", "yes");
 				
 				Element labelElement = divElement.appendElement("label");
 				labelElement.attr("for", id);
@@ -1039,9 +1040,10 @@ public class CQLHumanReadableHTMLCreator {
 
 		Element checkBoxElement = mainliElement.appendElement("input");
 		checkBoxElement.attr("type", "checkbox");
-		String id = "test-" + populationName + "_"
+		String id = "test-" + populationName.replace(" ", "_") + "_"
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
+		checkBoxElement.attr("shorttag", "yes");
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
 		definitionLabelElement.attr("for", id);
@@ -1074,9 +1076,10 @@ public class CQLHumanReadableHTMLCreator {
 
 		Element checkBoxElement = mainliElement.appendElement("input");
 		checkBoxElement.attr("type", "checkbox");
-		String id = "test-" + populationName + "_"
+		String id = "test-" + populationName.replace(" ", "_") + "_"
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
+		checkBoxElement.attr("shorttag", "yes");
 
 		Element definitionLabelElement = mainliElement.appendElement("label");
 		definitionLabelElement.attr("for", id);
@@ -1144,11 +1147,12 @@ public class CQLHumanReadableHTMLCreator {
 		Element mainDivElement = mainliElement.appendElement("div");
 		mainDivElement.attr("class", "treeview hover p-l-10");
 
-		Element checkBoxElement = mainDivElement.appendElement("input");
-		checkBoxElement.attr("type", "checkbox");
-		String id = "test-" + statementIdentifier + "_"
-				+ (int) (Math.random() * 1000);
-		checkBoxElement.attr("id", id);
+//		Element checkBoxElement = mainDivElement.appendElement("input");
+//		checkBoxElement.attr("type", "checkbox");
+//		String id = "test-" + statementIdentifier.replace(" ", "_") + "_"
+//				+ (int) (Math.random() * 1000);
+//		checkBoxElement.attr("id", id);
+//		checkBoxElement.attr("shorttag", "yes");
 		
 //		if (definitionsOrFunctionsAlreadyDisplayed.contains(statementIdentifier)) {
 //			checkBoxElement.attr("checked", "");
@@ -1206,9 +1210,10 @@ public class CQLHumanReadableHTMLCreator {
 		
 		Element checkBoxElement = mainDivElement.appendElement("input");
 		checkBoxElement.attr("type", "checkbox");
-		String id = "test-" + statementIdentifier + "_"
+		String id = "test-" + statementIdentifier.replace(" ", "_") + "_"
 				+ (int) (Math.random() * 1000);
 		checkBoxElement.attr("id", id);
+		checkBoxElement.attr("shorttag", "yes");
 
 		Element definitionLabelElement = mainDivElement.appendElement("label");
 		definitionLabelElement.attr("for", id);

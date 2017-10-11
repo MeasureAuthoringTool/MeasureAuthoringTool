@@ -31,9 +31,9 @@ var SqlHighlightRules = function() {
 	    
 	    var matFunctionKeywords = (
 	    		"Abs|AgeInDays|AgeInDaysAt|AgeInHours|AgeInHoursAt|AgeInMinutes|AgeInMinutesAt|AgeInMonths|AgeInMonthsAt|AgeInSeconds|" +
-	    		"AgeInSecondsAt|AgeInYears|AgeInYearsAt|AllTrue|AnyTrue|Avg|CalculateAgeInDays|CalculateAgeInDaysAt|CalculateAgeInHours|" +
+	    		"AgeInSecondsAt|AgeInWeeks|AgeInWeeksAt|AgeInYears|AgeInYearsAt|AllTrue|AnyTrue|Avg|CalculateAgeInDays|CalculateAgeInDaysAt|CalculateAgeInHours|" +
 	    		"CalculateAgeInHoursAt|CalculateAgeInMinutes|CalculateAgeInMinutesAt|CalculateAgeInMonths|CalculateAgeInMonthsAt|CalculateAgeInSeconds|" +
-	    		"CalculateAgeInSecondsAt|CalculateAgeInYears|CalculateAgeInYearsAt|Ceiling|Coalesce|Count|DateTime|Exp|First|Floor|IndexOf|Last|" +
+	    		"CalculateAgeInSecondsAt|CalculateAgeInWeeks|CalculateAgeInWeeksAt|CalculateAgeInYears|CalculateAgeInYearsAt|Ceiling|Coalesce|Count|DateTime|Exp|First|Floor|IndexOf|Last|" +
 	    		"Length|Ln|Log|Max|Median|Min|Mode|Now|PopulationStdDev|PopulationVariance|Round|StdDev|Sum|Time|TimeOfDay|Today|" +
 	    		"Truncate|Variance"
 	    );

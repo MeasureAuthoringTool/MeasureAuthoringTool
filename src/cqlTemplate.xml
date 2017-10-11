@@ -97,6 +97,8 @@
 		<function>AgeInMonthsAt()</function>
 		<function>AgeInSeconds()</function>
 		<function>AgeInSecondsAt()</function>
+		<function>AgeInWeeks()</function>
+		<function>AgeInWeeksAt()</function>
 		<function>AgeInYears()</function>
 		<function>AgeInYearsAt()</function>
 		<function>AllTrue()</function>
@@ -112,6 +114,8 @@
 		<function>CalculateAgeInMonthsAt()</function>
 		<function>CalculateAgeInSeconds()</function>
 		<function>CalculateAgeInSecondsAt()</function>
+		<function>CalculateAgeInWeeks()</function>
+		<function>CalculateAgeInWeeksAt()</function>
 		<function>CalculateAgeInYears()</function>
 		<function>CalculateAgeInYearsAt()</function>
 		<function>Ceiling()</function>

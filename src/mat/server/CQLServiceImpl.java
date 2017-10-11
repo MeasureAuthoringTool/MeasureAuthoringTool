@@ -3230,13 +3230,13 @@ public class CQLServiceImpl implements CQLService {
 						Attr attrNode = processor.getOriginalDoc().createAttribute("suffix");
 						attrNode.setNodeValue(modifyWithDTO.getSuffix());
 						newNode.getAttributes().setNamedItem(attrNode);
-						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+"("+modifyWithDTO.getSuffix()+")");
+						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+" ("+modifyWithDTO.getSuffix()+")");
 					}
 					
 				} else {
 					if(modifyDTO.getSuffix() != null && !modifyDTO.getSuffix().isEmpty()){
 						newNode.getAttributes().getNamedItem("suffix").setNodeValue(modifyDTO.getSuffix());
-						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+"("+modifyWithDTO.getSuffix()+")");
+						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+" ("+modifyWithDTO.getSuffix()+")");
 					} else if(modifyDTO.getSuffix() != null && modifyDTO.getSuffix().isEmpty()){
 						newNode.getAttributes().removeNamedItem("suffix");
 					}

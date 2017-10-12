@@ -106,6 +106,14 @@ public class CQLServiceImpl implements CQLService {
 
 	public static final String BIRTHDATE = "Birthdate";
 
+	private static final String BIRTHDATE_CODE_ID = "21112-8";
+	
+	private static final String DEAD_CODE_ID = "419099009";
+	
+	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
+	
+	private static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
+	
 	/** The cql dao. */
 	@Autowired
 	private CQLDAO cqlDAO;
@@ -2989,7 +2997,8 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		codeTransferObject.scrubForMarkUp();
 		if (codeTransferObject.isValidModel() ) {
-			if(codeTransferObject.getCqlCode().getCodeName().equals(BIRTHDATE) || codeTransferObject.getCqlCode().getCodeName().equals(DEAD)) {
+			if(((codeTransferObject.getCqlCode().getCodeOID().equals(BIRTHDATE_CODE_ID)) && (codeTransferObject.getCqlCode().getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID)))
+					|| ((codeTransferObject.getCqlCode().getCodeOID().equals(DEAD_CODE_ID)) && (codeTransferObject.getCqlCode().getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID)))) {
 				result.setFailureReason(result.getBirthdateOrDeadError());
 				result.setSuccess(false);
 				return result; 

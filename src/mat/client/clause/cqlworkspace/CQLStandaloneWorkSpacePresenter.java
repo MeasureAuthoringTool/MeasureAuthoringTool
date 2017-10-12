@@ -4564,6 +4564,9 @@ private void addCodeSearchPanelHandlers() {
 		//refCode.setDisplayName(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
 		
+		final String codeSystemName = refCode.getCodeSystemName();
+		final String codeId = refCode.getCodeOID();
+		
 		if(!searchDisplay.getCodesView().getSuffixTextBox().getValue().isEmpty()){
 			refCode.setSuffix(searchDisplay.getCodesView().getSuffixTextBox().getValue());
 			refCode.setDisplayName(codeName+" ("+searchDisplay.getCodesView().getSuffixTextBox().getValue()+")");
@@ -4598,7 +4601,9 @@ private void addCodeSearchPanelHandlers() {
 						}
 						
 						else if(result.getFailureReason() ==  result.getBirthdateOrDeadError()) {
-							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getBirthdateOrDeadMessage());
+							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate()
+									.getBirthdateOrDeadMessage(codeSystemName, codeId));
+							
 							searchDisplay.getCodesView().buildCodesCellTable(
 									appliedCodeTableList,
 									MatContext.get().getMeasureLockService().checkForEditPermission());

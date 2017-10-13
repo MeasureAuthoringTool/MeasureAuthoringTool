@@ -207,13 +207,14 @@ public class ZipPackager {
 	 * @param packageDate the package date
 	 * @param emeasureHTMLStr the emeasure html str
 	 * @param simpleXmlStr the simple xml str
+	 * @param jsonExportResult 
 	 * @param currentRealeaseVersion 
 	 * @param string 
 	 * @param string 
 	 * @return the zip barr
 	 */
 	public byte[] getZipBarr(String emeasureName, byte[] wkbkbarr,
-						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, String currentRealeaseVersion) {
+						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String currentRealeaseVersion) {
 		byte[] ret = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -254,6 +255,7 @@ public class ZipPackager {
 		    
 		    addFileToZip(cqlExportResult, parentPath, "cql", zip);
 		    addFileToZip(elmExportResult, parentPath, "xml", zip);
+		    addFileToZip(jsonExportResult, parentPath, "json", zip);
 		    		    
 		    zip.close();
 		    ret = baos.toByteArray();

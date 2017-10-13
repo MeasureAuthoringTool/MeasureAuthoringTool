@@ -729,14 +729,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
 				String emeasureXML = emeasureExportResult.export; 
 		        ExportResult exportResult = getCQLLibraryFile(measureId);
-		        ExportResult elmExportResult = getELMFile(measureId); 
-		        String cqlFileStr = exportResult.export;
-		        String elmFileStr = elmExportResult.export;
-
+		        ExportResult elmExportResult = getELMFile(measureId);
+		        ExportResult jsonExportResult = getJSONFile(measureId);
+		        
 				ZipPackager zp = new ZipPackager();
 				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), 
-						emeasureHTMLStr, simpleXmlStr,emeasureXML, exportResult, elmExportResult, me.getMeasure().getReleaseVersion());
-		}
+						emeasureHTMLStr, simpleXmlStr,emeasureXML, exportResult, elmExportResult, jsonExportResult, me.getMeasure().getReleaseVersion());
+	}
 	
 	
 	/**

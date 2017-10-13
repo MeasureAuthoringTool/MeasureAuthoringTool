@@ -227,7 +227,7 @@ public class ExportServlet extends HttpServlet {
 	private ExportResult exportJSONFile(HttpServletResponse resp, MeasureLibraryService measureLibraryService, String id,
 			String type, Measure measure, FileNameUtility fnu) throws Exception {
 		
-		ExportResult export = getService().getELMFile(id); 
+		ExportResult export = getService().getJSONFile(id); 
 		
 		if(export.getIncludedCQLExports().size() > 0){
 			ZipPackager zp = new ZipPackager();

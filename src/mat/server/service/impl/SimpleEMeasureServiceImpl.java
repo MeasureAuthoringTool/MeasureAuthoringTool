@@ -374,6 +374,69 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			result.includedCQLExports.add(includeResult);
 		}		
 	}
+	
+	@Override
+	public final ExportResult getJSONFile(final String measureId) throws Exception {
+		MeasureExport measureExport = getMeasureExport(measureId);
+
+		
+		String measureSimpleXML = measureExport.getSimpleXML();
+		XmlProcessor xmlProcessor = new XmlProcessor(measureSimpleXML);
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureSimpleXML);
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
+		ExportResult result = new ExportResult();
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		String elmString = ""; 
+				
+		// if the cqlFile String is blank, don't even parse it.
+		if(!cqlFileString.isEmpty()) {
+
+			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			elmString = elmResult.getElmString();					
+					
+			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
+		} else {
+			elmString = "";
+			result.measureName = measureExport.getMeasure().getaBBRName();
+			result.setCqlLibraryName(result.measureName);
+		}
+		
+		result.export = elmString; 
+		
+		getIncludedCQLJSONs(result, xmlProcessor);
+		
+		return result;
+	}
+	
+	private void getIncludedCQLJSONs(ExportResult result,
+			XmlProcessor xmlProcessor) throws XPathExpressionException {
+		
+		//String xPathForIncludedLibs = "/measure/allUsedCQLLibs/lib";
+		String xPathForIncludedLibs ="//allUsedCQLLibs/lib[not( preceding::lib/@id =@id)]";
+		NodeList includedCQLLibNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForIncludedLibs);
+		
+		for(int i=0;i<includedCQLLibNodes.getLength();i++){
+			Node libNode = includedCQLLibNodes.item(i);
+			String libId = libNode.getAttributes().getNamedItem("id").getNodeValue();
+			CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
+			
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+			CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
+			SaveUpdateCQLResult elmResult =  CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			String elmString = elmResult.getElmString();
+			ExportResult includeResult = new ExportResult();
+			includeResult.export = elmString;
+			
+			String libName = libNode.getAttributes().getNamedItem("name").getNodeValue();
+			String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
+			
+			includeResult.setCqlLibraryName(libName + "-" + libVersion); 
+			
+			result.includedCQLExports.add(includeResult);
+		}
+		
+	}
+	
 
 	@Override
 	public final ExportResult getELMFile(final String measureId) throws Exception {

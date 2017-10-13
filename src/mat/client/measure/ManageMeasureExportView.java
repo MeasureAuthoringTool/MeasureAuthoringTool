@@ -46,6 +46,9 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	/** The ELM radio */
 	private RadioButton elmRadio = new RadioButton("format", "ELM"); 
 	
+	/** The ELM radio */
+	private RadioButton jsonRadio = new RadioButton("format", "JSON");
+	
 	private RadioButton cqlLibraryRadio = new RadioButton("format", "CQL Library");
 	
 	/** The save button. */
@@ -79,6 +82,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		vp.add(eCQMRadio);
 		vp.add(cqlLibraryRadio);
 		vp.add(elmRadio);
+		vp.add(jsonRadio);
 		vp.add(eCQMPackageRadio);
 		content.add(vp);
 		eCQMPackageRadio.setValue(true);
@@ -191,6 +195,13 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	 */
 	public boolean isELM() {
 		return elmRadio.getValue(); 
+	}
+	
+	/* (non-Javadoc
+	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isJSON()
+	 */
+	public boolean isJSON() {
+		return jsonRadio.getValue(); 
 	}
 	
 	/* (non-Javadoc)

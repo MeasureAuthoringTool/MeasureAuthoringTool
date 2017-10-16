@@ -386,22 +386,22 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
-		String elmString = ""; 
+		String jsonString = ""; 
 				
 		// if the cqlFile String is blank, don't even parse it.
 		if(!cqlFileString.isEmpty()) {
 
-			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-			elmString = elmResult.getElmString();					
+			SaveUpdateCQLResult jsonResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			jsonString = jsonResult.getJsonString();					
 					
 			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		} else {
-			elmString = "";
+			jsonString = "";
 			result.measureName = measureExport.getMeasure().getaBBRName();
 			result.setCqlLibraryName(result.measureName);
 		}
 		
-		result.export = elmString; 
+		result.export = jsonString; 
 		
 		getIncludedCQLJSONs(result, xmlProcessor);
 		
@@ -422,10 +422,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 			CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
-			SaveUpdateCQLResult elmResult =  CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-			String elmString = elmResult.getElmString();
+			SaveUpdateCQLResult jsonResult =  CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			String jsonString = jsonResult.getJsonString();
 			ExportResult includeResult = new ExportResult();
-			includeResult.export = elmString;
+			includeResult.export = jsonString;
 			
 			String libName = libNode.getAttributes().getNamedItem("name").getNodeValue();
 			String libVersion = libNode.getAttributes().getNamedItem("version").getNodeValue();
@@ -717,11 +717,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public final byte[] getZipBarr(final String measureId,final MeasureExport me)
 			throws Exception {
 				byte[] wkbkbarr = null;
-				/*if (me.getCodeList() == null) {
-					wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
-				} else {
-					wkbkbarr = me.getCodeListBarr();
-				}*/
 				
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion());

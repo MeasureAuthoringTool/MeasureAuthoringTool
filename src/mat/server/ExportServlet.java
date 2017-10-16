@@ -76,6 +76,9 @@ public class ExportServlet extends HttpServlet {
 	/** The Constant TEXT_XML. */
 	private static final String TEXT_XML = "text/xml";
 	
+	/** The Constant APPLICATION_JSON. */
+	private static final String APPLICATION_JSON = "application/json";
+	
 	/** The Constant TEXT_HTML. */
 	private static final String TEXT_HTML = "text/html";
 	
@@ -248,7 +251,7 @@ public class ExportServlet extends HttpServlet {
 					//+ fnu.getELMFileName(export.getCqlLibraryName()));
 					+ export.getCqlLibraryName() + ".json");
 		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_XML);
+			resp.setHeader(CONTENT_TYPE, APPLICATION_JSON);
 		}
 		return export;
 	}

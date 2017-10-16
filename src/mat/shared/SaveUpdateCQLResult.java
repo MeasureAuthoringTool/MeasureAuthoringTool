@@ -90,6 +90,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	private String elmString = "";
 	
+	private String jsonString = "";
+	
 	private boolean isDatatypeUsedCorrectly = true;
 	
 	private boolean isValidCQLWhileSavingExpression = true;
@@ -379,6 +381,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public void setValidCQLWhileSavingExpression(boolean isValidCQLWhileSavingExpression) {
 		this.isValidCQLWhileSavingExpression = isValidCQLWhileSavingExpression;
+	}
+
+	public String getJsonString() {
+		return jsonString;
+	}
+
+	public void setJsonString(String jsonString) {
+		this.jsonString = jsonString;
 	}
 	
 }

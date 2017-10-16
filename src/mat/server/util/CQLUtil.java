@@ -519,6 +519,7 @@ public class CQLUtil {
 		// set the elm string
 		if(generateELM) {
 			parsedCQL.setElmString(cqlToELM.getElmString());
+			parsedCQL.setJsonString(cqlToELM.getParentJsonString());
 		}
 
 		// add in the errors, if any

@@ -1000,13 +1000,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureName = me.getMeasure().getaBBRName();
 		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
 		ExportResult cqlEportResult = getCQLLibraryFile(measureId);
-		String cqlFileStr = cqlEportResult.export;
-		ExportResult elmExportResult = getELMFile(measureId); 
-		String elmFileStr = elmExportResult.export; 
+		ExportResult elmExportResult = getELMFile(measureId);
+		ExportResult jsonExportResult = getJSONFile(measureId); 
+		
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum,currentReleaseVersion, cqlEportResult, elmExportResult);
+				seqNum,currentReleaseVersion, cqlEportResult, elmExportResult, jsonExportResult);
 	}
 
 	/**
@@ -1047,11 +1047,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult cqlExportResult = getCQLLibraryFile(measureId);
 		String cqlFileStr = cqlExportResult.export;
 		ExportResult elmExportResult = getELMFile(measureId);
+		ExportResult jsonExportResult = getJSONFile(measureId); 
 		String elmFileStr = elmExportResult.export;
 		
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName,exportDate, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
-				seqNum, me.getMeasure().getReleaseVersion(), cqlExportResult, elmExportResult);
+				seqNum, me.getMeasure().getReleaseVersion(), cqlExportResult, elmExportResult,jsonExportResult);
 	}
 }

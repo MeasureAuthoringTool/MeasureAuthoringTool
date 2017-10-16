@@ -146,7 +146,7 @@ public class ZipPackager {
 	 * @throws Exception             the exception
 	 */
 	public void createBulkExportZip(String emeasureName,Date exportDate, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
-			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult) throws Exception{
+			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum, String releaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult,ExportResult jsonExportResult) throws Exception{
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try{
@@ -189,7 +189,7 @@ public class ZipPackager {
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			
-			addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath);
+			addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 				  
 		}catch(Exception e){
 			System.out.println(e.toString());
@@ -279,12 +279,13 @@ public class ZipPackager {
 	 * @param seqNum the seq num
 	 * @param currentReleaseVersion 
 	 * @param elmExportResult 
+	 * @param jsonExportResult 
 	 * @throws Exception the exception
 	 */
 	public void createBulkExportZip(String emeasureName, byte[] wkbkbarr,
 			String emeasureXMLStr, String emeasureHTMLStr,
 			String packageDate, String simpleXmlStr,
-			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult) throws Exception{
+			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult) throws Exception{
 			FileNameUtility fnu = new FileNameUtility();
 
 		try{
@@ -321,7 +322,7 @@ public class ZipPackager {
 	//		filesMap.put(codeListXLSPath, wkbkbarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			
-			addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath);
+			addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			
 		}catch(Exception e){
 			System.out.println(e.toString());
@@ -335,10 +336,11 @@ public class ZipPackager {
 	 * @param cqlExportResult
 	 * @param elmExportResult
 	 * @param parentPath
+	 * @param jsonExportResult 
 	 */
 	private void addCQL_ELM(Map<String, byte[]> filesMap,
 			ExportResult cqlExportResult, ExportResult elmExportResult,
-			String parentPath) {
+			String parentPath, ExportResult jsonExportResult) {
 				
 		if(cqlExportResult.includedCQLExports.size() > 0){
 			String filePath = "";
@@ -358,16 +360,31 @@ public class ZipPackager {
 		if(elmExportResult.includedCQLExports.size() > 0){
 			String filePath = "";
 			filePath = parentPath+File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml";
-			filesMap.put(filePath,cqlExportResult.export.getBytes());
+			filesMap.put(filePath,elmExportResult.export.getBytes());
 			
-			for(ExportResult includedResult : cqlExportResult.getIncludedCQLExports()){
+			for(ExportResult includedResult : elmExportResult.getIncludedCQLExports()){
 				filePath = parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "xml";
 				filesMap.put(filePath,includedResult.export.getBytes());
 			}
 		}else{
 			String filePath = "";
 			filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "xml";
-			filesMap.put(filePath,cqlExportResult.export.getBytes());
+			filesMap.put(filePath,elmExportResult.export.getBytes());
+		}
+		
+		if(jsonExportResult.includedCQLExports.size() > 0){
+			String filePath = "";
+			filePath = parentPath+File.separator + cqlExportResult.getCqlLibraryName() + "." + "json";
+			filesMap.put(filePath,jsonExportResult.export.getBytes());
+			
+			for(ExportResult includedResult : jsonExportResult.getIncludedCQLExports()){
+				filePath = parentPath + File.separator + includedResult.getCqlLibraryName() + "." + "json";
+				filesMap.put(filePath,includedResult.export.getBytes());
+			}
+		}else{
+			String filePath = "";
+			filePath = parentPath + File.separator + cqlExportResult.getCqlLibraryName() + "." + "json";
+			filesMap.put(filePath,jsonExportResult.export.getBytes());
 		}
 	}	 
 	

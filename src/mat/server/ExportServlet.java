@@ -234,7 +234,7 @@ public class ExportServlet extends HttpServlet {
 		
 		if(export.getIncludedCQLExports().size() > 0){
 			ZipPackager zp = new ZipPackager();
-			zp.getCQLZipBarr(export, "xml");
+			zp.getCQLZipBarr(export, "json");
 			
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + "_" + "JSON"));
 			resp.setContentType("application/zip");

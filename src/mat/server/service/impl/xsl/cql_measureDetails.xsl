@@ -228,6 +228,10 @@
 	            <translation mediaType="application/elm+xml">
 		               <reference value="{../cqlLookUp/library}-{../cqlLookUp/version}.xml"/>
 	            </translation>
+
+				<translation mediaType="application/elm+json">
+					<reference value="{../cqlLookUp/library}-{../cqlLookUp/version}.json" />
+				</translation>
 	         </text>
 	      </expressionDocument>
 	   </relatedDocument>
@@ -241,6 +245,9 @@
 			            <translation mediaType="application/elm+xml">
 				               <reference value="{@name}-{@version}.xml"/>
 			            </translation>
+			            <translation mediaType="application/elm+json">
+							<reference value="{@name}-{@version}.json" />
+						</translation>
 	         		</text>
 	      		</expressionDocument>
 	      	</relatedDocument>	

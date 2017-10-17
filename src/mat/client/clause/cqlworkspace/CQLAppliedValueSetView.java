@@ -17,7 +17,6 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -47,18 +46,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
-import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.CQLCopyPasteClearButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -67,7 +62,6 @@ import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
-import mat.model.QualityDataSetDTO;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
@@ -85,7 +79,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	/** The Constant EXTENSIONAL_QDM. */
 	static final String EXTENSIONAL_QDM = " (E)";
-	
+	/** The Loading flag for page. */
+	private Boolean isLoading = false;
 	/**
 	 * The Interface Observer.
 	 */
@@ -111,11 +106,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	/** The observer. */
 	private Observer observer;
-	
-	/** The default exp Profile sel. */
-	//private CheckBox defaultExpProfileSel = new CheckBox();
-	/** The vsac profile list box. */
-	//private ListBox defaultExpProfileListBox = new ListBox();
 	
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
@@ -149,21 +139,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	/** The update button. */
 	private Button updateVSACButton = new Button("Update From VSAC ");
 	
-	/** The apply button. */
-	//private Button applyDefaultExpansionIdButton = new Button("Apply");
 	
 	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
 	
-	/** The profile list. */
-//	private List<String> expProfileList = new ArrayList<String>();
 	
 	
 	/** The last selected object. */
 	private CQLQualityDataSetDTO lastSelectedObject;
-	
-	/** The expansion pro list box. */
-	//private ListBox qdmExpProfileListBox = new ListBox();
 	
 	/** The version list box. */
 	private ListBox versionListBox = new ListBox();
@@ -1130,7 +1113,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 *
 	 * @param busy the busy
 	 */
-	public void showSearchingBusyOnQDM(final boolean busy) {
+	/*public void showSearchingBusyOnQDM(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {
@@ -1138,7 +1121,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 		getUpdateFromVSACButton().setEnabled(!busy);
 		getRetrieveFromVSACButton().setEnabled(!busy);
-	}
+	}*/
 	
 	/**
 	 * Gets the cell table main panel.
@@ -1292,6 +1275,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
+	}
+
+	public Boolean getIsLoading() {
+		return isLoading;
+	}
+
+	public void setIsLoading(Boolean isLoading) {
+		this.isLoading = isLoading;
 	}
 	
 }

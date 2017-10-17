@@ -4475,8 +4475,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					if((modifyValueSetDTO!=null) && modifyValueSetDTO.getId().equalsIgnoreCase(result.getId())){
 						isModified = false;
 					}
-					String measureId = MatContext.get().getCurrentMeasureId();
-					if ((measureId != null) && !measureId.equals("")) {
+					String libraryId = MatContext.get().getCurrentCQLLibraryId();
+					if ((libraryId != null) && !libraryId.equals("")) {
 						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
 						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET(result.getCodeListName()));
 						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();

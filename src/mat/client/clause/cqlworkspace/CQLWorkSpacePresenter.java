@@ -3535,7 +3535,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Call this to update used status for delete button.
 	 */
 	private void getUsedCodes() {
-		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService().getUsedCQLArtifacts(
 		        MatContext.get().getCurrentMeasureId(),
 		        new AsyncCallback<GetUsedCQLArtifactsResult>() {
@@ -3543,12 +3543,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		               @Override
 		               public void onFailure(Throwable caught) {
 		                      Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		                      searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+		              		showSearchingBusy(false);
 		               }
 
 		               @Override
 		               public void onSuccess(GetUsedCQLArtifactsResult result) {
-		            	searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+		           		showSearchingBusy(false);
 		               	// if there are errors, set the codes to not used.
 		               	if(!result.getCqlErrors().isEmpty()) {
 		               		for(CQLCode cqlCode : appliedCodeTableList){
@@ -4430,19 +4430,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	
 	private void deleteCode(){
-		searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+		showSearchingBusy(true);
 		MatContext.get().getMeasureService().deleteCode(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedCodesObjId(), MatContext.get().getCurrentMeasureId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
-				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+				showSearchingBusy(false);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
-				searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+				showSearchingBusy(false);
 				searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(null);
 				if(result.isSuccess()){
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
@@ -4714,14 +4714,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onDeleteClicked(CQLCode result, int index) {
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
-				if(result != null){
-					searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
-					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
-					searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
-					//508 Compliance for Codes section
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+				if(!searchDisplay.getCodesView().getIsLoading()) {
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
+					if(result != null){
+						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
+						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
+						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+						//508 Compliance for Codes section
+						searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+					}
+				} else{
+					// table is loading, do nothing
 				}
 				
 			}
@@ -4761,12 +4765,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		transferObject.scrubForMarkUp();
 		
 		if(transferObject.isValidModel()){
-			searchDisplay.getCodesView().showSearchingBusyOnCodes(true);
+			showSearchingBusy(true);
 			service.saveCQLCodestoMeasure(transferObject, new AsyncCallback<SaveUpdateCQLResult>() {
 				
 				@Override
 				public void onSuccess(SaveUpdateCQLResult result) {
-					searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+					showSearchingBusy(false);
 					if(result.isSuccess()){
 						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
 								getMessageDelegate().getCodeSuccessMessage(searchDisplay.getCodesView().getCodeInput().getText()));
@@ -4808,7 +4812,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
-					searchDisplay.getCodesView().showSearchingBusyOnCodes(false);
+					showSearchingBusy(false);
 					
 				}
 			});
@@ -5855,6 +5859,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
 				searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);
 				searchDisplay.getCodesView().getRetrieveFromVSACButton().setEnabled(!busy);
+				searchDisplay.getCodesView().setIsLoading(busy);
 			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
 				searchDisplay.getCQLParametersView().getParameterButtonBar().getSaveButton().setEnabled(!busy);
 				searchDisplay.getCQLParametersView().getParameterButtonBar().getEraseButton().setEnabled(!busy);

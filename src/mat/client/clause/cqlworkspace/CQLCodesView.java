@@ -159,6 +159,11 @@ public class CQLCodesView {
 	
 	HTML heading = new HTML();
 	
+	/**
+	 * Flag for if the codes view is loading
+	 */
+	private boolean isLoading; 
+	
 	
 	/**
 	 * Instantiates a new VSAC profile selection view.
@@ -1047,5 +1052,15 @@ public class CQLCodesView {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
+
+	public boolean getIsLoading() {
+		return isLoading;
+	}
+
+	public void setIsLoading(boolean isLoading) {
+		this.isLoading = isLoading;
+	}
+	
+	
 	
 }

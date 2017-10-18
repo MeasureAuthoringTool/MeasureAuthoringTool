@@ -1,7 +1,5 @@
 package mat.client.shared;
 
-import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
@@ -23,25 +21,9 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 	 * An html string representation of a checked input box.
 	 */
 	
-	private static String checkBoxTitle = "Click checkbox to select";
+	private String checkBoxTitle = "Click checkbox to select";
 	
-	/** The Constant INPUT_CHECKED. */
-	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant(
-			"<input type=\"checkbox\" tabindex=\"0\" title=\" " + checkBoxTitle + "\" checked/>");
 
-	/**
-	 * An html string representation of an unchecked input box.
-	 */
-	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant(
-			"<input type=\"checkbox\" tabindex=\"0\" title=\"" + checkBoxTitle + "\" />");
-
-	/** The Constant INPUT_UNCHECKED_DISABLED. */
-	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant(
-			"<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" />");
-	
-	/** The Constant INPUT_CHECKED_DISABLED. */
-	private static final SafeHtml INPUT_CHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant(
-			"<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" checked/>");
 
 	/** The depends on selection. */
 	private final boolean dependsOnSelection;
@@ -92,19 +74,8 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 		this.isUsed = isEditable;
 	}
 	
-	/**
-	 * Instantiates a new mat check box cell.
-	 * 
-	 * @param dataSetDTO
-	 *            the data set dto
-	 */
-	public MatCheckBoxCell(QualityDataSetDTO dataSetDTO) {
-		this(false);
-		this.isUsed = dataSetDTO.isUsed(); 
-		
-	}
 
-	/**
+		/**
 	 * Construct a new {@link MatCheckBoxCell} that optionally controls selection.
 	 *
 	 * @param isSelectBox true if the cell controls the selection state
@@ -125,6 +96,13 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 		super(BrowserEvents.CHANGE, BrowserEvents.KEYDOWN);
 		this.dependsOnSelection = dependsOnSelection;
 		this.handlesSelection = handlesSelection;
+	}
+	
+	public MatCheckBoxCell(boolean dependsOnSelection, boolean handlesSelection, String title) {
+		super(BrowserEvents.CHANGE, BrowserEvents.KEYDOWN);
+		this.dependsOnSelection = dependsOnSelection;
+		this.handlesSelection = handlesSelection;
+		checkBoxTitle = title;
 	}
 
 	/* (non-Javadoc)
@@ -199,6 +177,25 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 	 */
 	@Override
 	public void render(Context context, Boolean value, SafeHtmlBuilder sb) {
+		
+		/** The Constant INPUT_CHECKED. */
+		SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant(
+				"<input type=\"checkbox\" tabindex=\"0\" title=\" " + checkBoxTitle + "\" checked/>");
+
+		/**
+		 * An html string representation of an unchecked input box.
+		 */
+		SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant(
+				"<input type=\"checkbox\" tabindex=\"0\" title=\"" + checkBoxTitle + "\" />");
+
+		/** The Constant INPUT_UNCHECKED_DISABLED. */
+		SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant(
+				"<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" />");
+		
+		/** The Constant INPUT_CHECKED_DISABLED. */
+		SafeHtml INPUT_CHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant(
+				"<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" checked/>");
+		
 		Boolean viewData = getViewData(context.getKey());
 		if (viewData != null && viewData.equals(value)) {
 			clearViewData(context.getKey());

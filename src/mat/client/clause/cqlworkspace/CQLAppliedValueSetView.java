@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -17,9 +18,13 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -48,12 +53,12 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.Mat;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.CQLCopyPasteClearButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -479,8 +484,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			TableCaptionElement caption = elem.createCaption();
 			searchHeader.setVisible(false);
 			caption.appendChild(searchHeader.getElement());
-			/*selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
-			table.setSelectionModel(selectionModel);*/
+			selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
+			table.setSelectionModel(selectionModel);
 			
 			// Name Column
 			Column<CQLQualityDataSetDTO, SafeHtml> nameColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
@@ -568,104 +573,238 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.addColumn(versionColumn, SafeHtmlUtils
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
-			
-			if(isEditable){
-				
-				//Edit
-				Column<CQLQualityDataSetDTO, SafeHtml> editColumn =
-						new Column<CQLQualityDataSetDTO, SafeHtml>(
-								new ClickableSafeHtmlCell()) {
-					@Override
-					public SafeHtml getValue(CQLQualityDataSetDTO object) {
-						SafeHtmlBuilder sb = new SafeHtmlBuilder();
-						String title = "Click to modify value set";
-						String cssClass = "btn btn-link";
-						String iconCss = "fa fa-pencil fa-lg";
-						if(isEditable){
-							sb.appendHtmlConstant("<button type=\"button\" title='"
-									+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
-						} else {
-							sb.appendHtmlConstant("<button type=\"button\" title='"
-									+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
-						}
-						
-						return sb.toSafeHtml();
-					}
-				};
-				editColumn.setFieldUpdater(new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
-					@Override
-					public void update(int index, CQLQualityDataSetDTO object, SafeHtml value) {
-						if ((object != null)) {
-							observer.onModifyClicked(object);
-						}
-					}
-				});
-				table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Modify'>" + "Modify" + "</span>"));
-				
-				//Delete
-				Column<CQLQualityDataSetDTO, SafeHtml> deleteColumn =
-						new Column<CQLQualityDataSetDTO, SafeHtml>(
-								new ClickableSafeHtmlCell()) {
-					@Override
-					public SafeHtml getValue(CQLQualityDataSetDTO object) {
-						SafeHtmlBuilder sb = new SafeHtmlBuilder();
-						String title = "Click to delete value set";
-						String cssClass = "btn btn-link";
-						String iconCss = "fa fa-trash fa-lg";
-						if (object.isUsed()) {
-							sb.appendHtmlConstant("<button type=\"button\" title='"
-									+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
-						} else {
-							sb.appendHtmlConstant("<button type=\"button\" title='"
-									+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
-						}
-						return sb.toSafeHtml();
-					}
-				};
-				deleteColumn.setFieldUpdater(new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
-					@Override
-					public void update(int index, CQLQualityDataSetDTO object, SafeHtml value) {
-						if ((object != null) && !object.isUsed()) {
-							lastSelectedObject = object;
-							observer.onDeleteClicked(object, index);
-						}
-					}
-				});
-				table.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "" + "</span>"));
+			String colName = "Modify";
+			if(!isEditable){
+				colName = "Select";
 			}
+		
+		// Modify by Delete Column
+		table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+				getCompositeCell(isEditable)) {
 			
-			
-			/*Column<CQLQualityDataSetDTO, Boolean> select = new Column<CQLQualityDataSetDTO, Boolean>(new CheckboxCell()) {
-
-				@Override
-				public Boolean getValue(CQLQualityDataSetDTO object) {
-					boolean isSelected = false;
-					if (qdmSelectedList.size() > 0) {
-						for (int i = 0; i < qdmSelectedList.size(); i++) {
-							if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-								isSelected = true;
-								selectionModel.setSelected(object, isSelected);
-								break;
-							}
-						}
-					} else {
-						isSelected = false;
-						selectionModel.setSelected(object, isSelected);
-					}
-					return isSelected;
-				}
-				
-			};*/
-			
+			@Override
+			public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+				return object;
+			}
+		}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+				+ colName + "</span>"));
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
 			table.setColumnWidth(2, 14.0, Unit.PCT);
 			table.setColumnWidth(3, 8.0, Unit.PCT);
-			table.setColumnWidth(4, 8.0, Unit.PCT);
+			/*table.setColumnWidth(4, 8.0, Unit.PCT);*/
 		}
 		
 		return table;
+	}
+	
+	
+	private CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable) {
+		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<HasCell<CQLQualityDataSetDTO, ?>>();
+		if(isEditable){
+			cells.add(getModifyButtonCell());
+			cells.add(getDeleteButtonCell());
+		}
+		cells.add(getCheckBoxCell());
+		CompositeCell<CQLQualityDataSetDTO> cell = new CompositeCell<CQLQualityDataSetDTO>(
+				cells) {
+			@Override
+			public void render(Context context, CQLQualityDataSetDTO object,
+					SafeHtmlBuilder sb) {
+				sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
+				for (HasCell<CQLQualityDataSetDTO, ?> hasCell : cells) {
+					render(context, object, sb, hasCell);
+				}
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			
+			@Override
+			protected <X> void render(Context context,
+					CQLQualityDataSetDTO object, SafeHtmlBuilder sb,
+					HasCell<CQLQualityDataSetDTO, X> hasCell) {
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+				if ((object != null)) {
+					cell.render(context, hasCell.getValue(object), sb);
+				} else {
+					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+				}
+				sb.appendHtmlConstant("</td>");
+			}
+			
+			@Override
+			protected Element getContainerElement(Element parent) {
+				return parent.getFirstChildElement().getFirstChildElement()
+						.getFirstChildElement();
+			}
+		};
+		return cell;
+	}
+	
+	/**
+	 * Gets the modify qdm button cell.
+	 * 
+	 * @return the modify qdm button cell
+	 */
+	private HasCell<CQLQualityDataSetDTO, SafeHtml> getModifyButtonCell() {
+		
+		HasCell<CQLQualityDataSetDTO, SafeHtml> hasCell = new HasCell<CQLQualityDataSetDTO, SafeHtml>() {
+			
+			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return modifyButonCell;
+			}
+			
+			@Override
+			public FieldUpdater<CQLQualityDataSetDTO, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
+					@Override
+					public void update(int index, CQLQualityDataSetDTO object,
+							SafeHtml value) {
+						if ((object != null)) {
+							observer.onModifyClicked(object);
+						}
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLQualityDataSetDTO object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to modify value set";
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-pencil fa-lg";
+				if(isEditable){
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+				} else {
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+				}
+				
+				return sb.toSafeHtml();
+			}
+		};
+		
+		return hasCell;
+	}
+	
+	/**
+	 * Gets the delete qdm button cell.
+	 * 
+	 * @return the delete qdm button cell
+	 */
+	private HasCell<CQLQualityDataSetDTO, SafeHtml> getDeleteButtonCell() {
+		
+		HasCell<CQLQualityDataSetDTO, SafeHtml> hasCell = new HasCell<CQLQualityDataSetDTO, SafeHtml>() {
+			
+			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return deleteButonCell;
+			}
+			
+			@Override
+			public FieldUpdater<CQLQualityDataSetDTO, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLQualityDataSetDTO, SafeHtml>() {
+					@Override
+					public void update(int index, CQLQualityDataSetDTO object,
+							SafeHtml value) {
+						if ((object != null) && !object.isUsed()) {
+							lastSelectedObject = object;
+							observer.onDeleteClicked(object, index);
+						}
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLQualityDataSetDTO object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to delete value set";
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-trash fa-lg";
+				if (object.isUsed()) {
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+				} else {
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
+				}
+				return sb.toSafeHtml();
+			}
+			
+			
+			
+		};
+		
+		return hasCell;
+	}
+	
+	
+	/**
+	 * Gets the QDM check box cell.
+	 *
+	 * @return the QDM check box cell
+	 */
+	private HasCell<CQLQualityDataSetDTO, Boolean> getCheckBoxCell(){
+		HasCell<CQLQualityDataSetDTO, Boolean> hasCell = new HasCell<CQLQualityDataSetDTO, Boolean>() {
+			
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true,"Copy Value Set");
+			@Override
+			public Cell<Boolean> getCell() {
+				return cell;
+			}
+			@Override
+			public Boolean getValue(CQLQualityDataSetDTO object) {
+				boolean isSelected = false;
+				if (qdmSelectedList.size() > 0) {
+					for (int i = 0; i < qdmSelectedList.size(); i++) {
+						if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							isSelected = true;
+							selectionModel.setSelected(object, isSelected);
+							break;
+						}
+					}
+				} else {
+					isSelected = false;
+					selectionModel.setSelected(object, isSelected);
+				}
+
+				return isSelected;
+			}
+			@Override
+			public FieldUpdater<CQLQualityDataSetDTO, Boolean> getFieldUpdater() {
+				return new FieldUpdater<CQLQualityDataSetDTO, Boolean>() {
+					@Override
+					public void update(int index, CQLQualityDataSetDTO object,
+							Boolean isCBChecked) {
+						
+						if (isCBChecked) {
+							qdmSelectedList.add(object);
+						} else {
+							for (int i = 0; i < qdmSelectedList.size(); i++) {
+								if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+									qdmSelectedList.remove(i);
+									break;
+								}
+							}
+						}
+						selectionModel.setSelected(object, isCBChecked);
+					}
+
+				};
+			}
+			
+			
+		};
+		return hasCell;
 	}
 	
 	/**
@@ -675,6 +814,18 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 */
 	public Widget asWidget() {
 		return containerPanel;
+	}
+	
+	public void clearSelectedCheckBoxes(){
+		if(table!=null){
+			List<CQLQualityDataSetDTO> displayedItems = new ArrayList<CQLQualityDataSetDTO>();
+			displayedItems.addAll(qdmSelectedList);
+			qdmSelectedList = new  ArrayList<CQLQualityDataSetDTO>();
+			for (CQLQualityDataSetDTO dto : displayedItems) {
+				selectionModel.setSelected(dto, false);
+			}
+			table.redraw();
+		}
 	}
 	
 	/**
@@ -1212,36 +1363,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 	
 	
-	/**
-	 * Adds the selection handler on table.
-	 * 
-	 * @param appliedListModel
-	 *            the applied list model
-	 * @return the single selection model
-	 */
-	/*public SingleSelectionModel<CQLQualityDataSetDTO> addSelectionHandlerOnTable(
-			final QDSAppliedListModel appliedListModel) {
-		final SingleSelectionModel<CQLQualityDataSetDTO> selectionModel = new SingleSelectionModel<CQLQualityDataSetDTO>();
-		selectionModel
-		.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				CQLQualityDataSetDTO qualityDataSetDTO = selectionModel
-						.getSelectedObject();
-				if (qualityDataSetDTO != null) {
-					
-					appliedListModel.setLastSelected(selectionModel
-							.getSelectedObject());
-					System.out
-					.println("appliedListModel.getLastSelected() =======>>>>"
-							+ appliedListModel
-							.getLastSelected());
-				}
-			}
-		});
-		return selectionModel;
-	}*/
-	
 	
 	/**
 	 * Reset QDM search panel.
@@ -1285,4 +1406,16 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		this.isLoading = isLoading;
 	}
 	
+	
+	public Button getClearButton(){
+		return copyPasteClearButtonToolBar.getClearButton();
+	}
+	
+	public Button getCopyButton(){
+		return copyPasteClearButtonToolBar.getCopyButton();
+	}
+	
+	public Button getPasteButton(){
+		return copyPasteClearButtonToolBar.getPasteButton();
+	}
 }

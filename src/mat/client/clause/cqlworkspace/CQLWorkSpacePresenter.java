@@ -4626,24 +4626,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
-		/**
-		 * value change handler for Expansion Profile in Search Panel in QDM
-		 * Elements Tab
-		 */
-		/*searchDisplay.getValueSetView().getQDMExpProfileListBox().addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				// TODO Auto-generated method stub
-				searchDisplay.resetMessageDisplay();
-				if (!searchDisplay.getValueSetView()
-						.getExpansionProfileValue(searchDisplay.getValueSetView().getQDMExpProfileListBox())
-						.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-					searchDisplay.getValueSetView().getVersionListBox().setSelectedIndex(0);
-				}
-			}
-		});*/
-
+		
 		/**
 		 * value Change Handler for Version listBox in Search Panel
 		 */
@@ -4652,15 +4635,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				searchDisplay.resetMessageDisplay();
-				/*if (!searchDisplay.getValueSetView().getVersionValue(searchDisplay.getValueSetView().getVersionListBox())
-						.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-					searchDisplay.getValueSetView().getQDMExpProfileListBox().setSelectedIndex(0);
-				}*/
-
+		
 			}
 		});
 		
-		//addValueSetExpProfileHandlers();
+		searchDisplay.getValueSetView().getClearButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent arg0) {
+				if(!searchDisplay.getValueSetView().getIsLoading()){
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getValueSetView().clearSelectedCheckBoxes();
+				}
+			}
+		});
+		
 		addValuSetObserverHandler();
 		
 	}

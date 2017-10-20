@@ -5838,13 +5838,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getIncludeView().getEraseButton().setEnabled(!busy);
 				searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
 			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_APPLIED_QDM)){
-				searchDisplay.getValueSetView().getSaveButton().setEnabled(!busy);
+				//searchDisplay.getValueSetView().getSaveButton().setEnabled(!busy);
 				searchDisplay.getValueSetView().getCancelQDMButton().setEnabled(!busy);
 				searchDisplay.getValueSetView().getUpdateFromVSACButton().setEnabled(!busy);
 				searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(!busy);
 				searchDisplay.getValueSetView().setIsLoading(busy);
 			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_CODES)){
-				searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
+				//searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
 				searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);
 				searchDisplay.getCodesView().getRetrieveFromVSACButton().setEnabled(!busy);
 				searchDisplay.getCodesView().setIsLoading(busy);

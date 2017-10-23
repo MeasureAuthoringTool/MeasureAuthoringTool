@@ -756,7 +756,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private HasCell<CQLQualityDataSetDTO, Boolean> getCheckBoxCell(){
 		HasCell<CQLQualityDataSetDTO, Boolean> hasCell = new HasCell<CQLQualityDataSetDTO, Boolean>() {
 			
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true,"Copy Value Set");
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 			@Override
 			public Cell<Boolean> getCell() {
 				return cell;

@@ -5832,7 +5832,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setEnabled(!busy);
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			if(currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
-				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
+				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(false);
 			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_INCLUDES_MENU)){
 				searchDisplay.getIncludeView().getSaveButton().setEnabled(!busy);
 				searchDisplay.getIncludeView().getEraseButton().setEnabled(!busy);

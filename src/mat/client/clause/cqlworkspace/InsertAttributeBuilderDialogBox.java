@@ -55,6 +55,7 @@ public class InsertAttributeBuilderDialogBox {
 	private static final String QUANTITY_UNIT_DATE_TIME_ALERT = "Date/Time fields are now enabled. Quantity field is now enabled. Units dropdown is now enabled.";
 	private static final String QUANTITY_UNIT_ALERT = "Quantity field is now enabled. Units dropdown is now enabled.";
 	private static final String FACILITY_LOCATIONS = "facilityLocations";
+	private static final String ATTR_ID = "id";
 	private static final String DIAGNOSES = "diagnoses";
 	private static final String COMPONENTS = "components";
 	private static final String VALUE_SETS = "Value Sets";
@@ -476,7 +477,7 @@ public class InsertAttributeBuilderDialogBox {
 	private static boolean isModeDisabledEntry(String attrSelected) {
 		
 		if(attrSelected.equalsIgnoreCase(COMPONENTS) || attrSelected.equalsIgnoreCase(DIAGNOSES) 
-				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS)) {
+				|| attrSelected.equalsIgnoreCase(FACILITY_LOCATIONS) || attrSelected.equalsIgnoreCase(ATTR_ID)) {
 			return true; 
 		}
 		

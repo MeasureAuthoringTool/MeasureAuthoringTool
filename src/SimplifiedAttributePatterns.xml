@@ -173,10 +173,10 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <attribute attribName="id">
+ <!-- <attribute attribName="id">
   <mode mode="ValueSets" />
   <mode mode="Codes" />
- </attribute>
+ </attribute> -->
  <attribute attribName="recorder">
   <mode mode="ValueSets" />
   <mode mode="Codes" />

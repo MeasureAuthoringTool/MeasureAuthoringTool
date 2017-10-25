@@ -229,7 +229,7 @@ public class ZipPackager {
 			String elmFilePath = "";
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
-		    
+		    String measureReleaseVersion = currentRealeaseVersion;
 		    if(currentRealeaseVersion.contains(".")){
 		    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
 		    }
@@ -252,7 +252,7 @@ public class ZipPackager {
 		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
 		    
-		    if(currentRealeaseVersion.equals(MATPropertiesService.get().getCurrentReleaseVersion())){
+		    if(measureReleaseVersion.equals(MATPropertiesService.get().getCurrentReleaseVersion())){
 			    addFileToZip(cqlExportResult, parentPath, "cql", zip);
 			    addFileToZip(elmExportResult, parentPath, "xml", zip);
 			    addFileToZip(jsonExportResult, parentPath, "json", zip);

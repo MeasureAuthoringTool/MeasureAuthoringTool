@@ -722,7 +722,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion());
 				//String emeasureXML = getEMeasureXML(me);
 				ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
-				String emeasureXML = emeasureExportResult.export; 
+				String emeasureXML = emeasureExportResult.export;
+				
 		        ExportResult exportResult = getCQLLibraryFile(measureId);
 		        ExportResult elmExportResult = getELMFile(measureId);
 		        ExportResult jsonExportResult = getJSONFile(measureId);
@@ -820,15 +821,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
-		ExportResult cqlExportResult = getCQLLibraryFile(measureId);
-		ExportResult elmExportResult = getELMFile(measureId);
-
-		String cqlFileStr = cqlExportResult.export;
-		String elmFileStr = elmExportResult.export; 
-
+		
 		ZipPackager zp = new ZipPackager();
 		return zp.getZipBarr(emeasureName,exportDate, releaseVersion, wkbkbarr, emeasureXMLStr,
-				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, cqlExportResult, elmExportResult);
+				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
 	}
 
 	/**

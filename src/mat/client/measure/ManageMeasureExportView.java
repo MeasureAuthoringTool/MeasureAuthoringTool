@@ -1,9 +1,11 @@
 package mat.client.measure;
 
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
+import mat.model.SecurityRole;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -13,7 +15,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,6 +61,8 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	/** The open button. */
 	private Button openButton = new Button("Open");
 	
+	VerticalPanel vp = new VerticalPanel();
+	
 
 	/**
 	 * Instantiates a new manage measure export view.
@@ -74,32 +77,16 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		content.add(measureNameLabel);
 		content.add(new Label("Select an export option"));
 		content.add(new SpacerWidget());
-		VerticalPanel vp = new VerticalPanel();
 		
-		if(isTopLevelUser) {
-			vp.add(simpleXMLRadio);
-		}
-		vp.add(eCQMRadio);
-		vp.add(cqlLibraryRadio);
-		vp.add(elmRadio);
-		vp.add(jsonRadio);
-		vp.add(eCQMPackageRadio);
 		content.add(vp);
-		eCQMPackageRadio.setValue(true);
-		/*content.add(wrapRadioButton(eMeasureRadio));
-		//content.add(wrapRadioButton(codeListRadio));
-		content.add(wrapRadioButton(cqlLibraryRadio));
-		content.add(wrapRadioButton(elmRadio));
-		content.add(wrapRadioButton(eMeasurePackageRadio));*/
+			
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 
-		/*FlowPanel buttonPanel = new FlowPanel();
-		buttonPanel.addStyleName("measureExportButtonContainer");*/
 		ButtonToolBar buttonPanel = new ButtonToolBar();
 		saveButton.setType(ButtonType.PRIMARY);
 		cancelButton.setType(ButtonType.DANGER);
-		//openButton.setStyleName("btn btn-gray");;
+		
 		openButton.setType(ButtonType.PRIMARY);
 		saveButton.setTitle("Save");
 		cancelButton.setTitle("Cancel");
@@ -107,23 +94,10 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		buttonPanel.add(saveButton);
 		buttonPanel.add(openButton);
 		buttonPanel.add(cancelButton);
-		//cancelButton.addStyleName("cancelButton");
+		
 		content.add(buttonPanel);
 		content.add(new SpacerWidget());
 		
-	}
-	
-	/**
-	 * Wrap radio button.
-	 * 
-	 * @param w
-	 *            the w
-	 * @return the widget
-	 */
-	private Widget wrapRadioButton(RadioButton w) {
-		SimplePanel p = new SimplePanel();
-		p.add(w);
-		return p;
 	}
 	
 	/* (non-Javadoc)
@@ -132,6 +106,25 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	@Override
 	public Widget asWidget() {
 		return content;
+	}
+	
+	@Override
+	public void setVersion_Based_ExportOptions(String releaseVersion) {
+		
+		vp.clear();
+		
+		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
+			vp.add(simpleXMLRadio);
+		}
+		vp.add(eCQMRadio);
+		
+		if(releaseVersion.startsWith("v5")){
+			vp.add(cqlLibraryRadio);
+			vp.add(elmRadio);
+			vp.add(jsonRadio);
+		}				
+		vp.add(eCQMPackageRadio);	
+		eCQMPackageRadio.setValue(true);
 	}
 
 	/* (non-Javadoc)
@@ -224,4 +217,6 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	public boolean isCQLLibrary() {
 		return cqlLibraryRadio.getValue();
 	}
+
+	
 }

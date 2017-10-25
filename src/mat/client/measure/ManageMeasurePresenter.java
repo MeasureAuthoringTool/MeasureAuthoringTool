@@ -287,6 +287,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void setMeasureName(String name);
 
 		boolean isCQLLibrary();
+
+		public void setVersion_Based_ExportOptions(String releaseVersion);
 	}
 
 	/**
@@ -1475,7 +1477,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param name
 	 *            the name
 	 */
-	private void export(String id, String name) {
+	private void export(ManageMeasureSearchModel.Result result) {
+		String id = result.getId();
+		String name = result.getName();
 		// US 170
 		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Exported", null, true,
 				new AsyncCallback<Boolean>() {
@@ -1493,6 +1497,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		exportDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		panel.getButtonPanel().clear();
+		exportDisplay.setVersion_Based_ExportOptions(result.getHqmfReleaseVersion());
 		panel.setHeading("My Measures > Export", "MeasureLibrary");
 		panel.setContent(exportDisplay.asWidget());
 		exportDisplay.setMeasureName(name);
@@ -1885,7 +1890,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
 									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									export(result.getId(), result.getName());
+									export(result);
 								}
 
 								@Override
@@ -2342,7 +2347,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								isMeasureVersioned = false;
 								searchDisplay.getSuccessMeasureDeletion().clearAlert();
 								searchDisplay.getErrorMeasureDeletion().clearAlert();
-								export(result.getId(), result.getName());
+								export(result);
 							}
 
 							@Override

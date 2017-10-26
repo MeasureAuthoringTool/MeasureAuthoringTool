@@ -320,8 +320,8 @@ implements MeasureCloningService {
 			result.setScoringType(currentDetails.getMeasScoring());
 			/*String formattedVersion = MeasureUtility.getVersionText(
 					measure.getVersion(), measure.isDraft());*/
-			String formattedVersion = MeasureUtility.getVersionText(
-					clonedMeasure.getVersion(), clonedMeasure.isDraft());
+			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(), 
+					clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
 			result.setVersion(formattedVersion);
 			result.setEditable(TRUE);
 			result.setClonable(TRUE);

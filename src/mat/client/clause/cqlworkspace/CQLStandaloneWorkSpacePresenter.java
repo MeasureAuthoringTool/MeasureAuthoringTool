@@ -803,6 +803,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCQLParametersView().setWidgetReadOnly(false);
 										searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton()
 												.setEnabled(false);
+										searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 										// load most recent used cql artifacts
 										MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 												MatContext.get().getCurrentCQLLibraryId(),
@@ -827,9 +828,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 														if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 															searchDisplay.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
 															// checking if its Draft.
-															if (MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())) {
+															/*if (MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())) {
 																searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-															}
+															}*/
 															
 															if (!currentParameter.isReadOnly()) {
 																// if there are cql errors or the parameter is not in use, enable the delete button
@@ -1178,7 +1179,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								
 								searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 								searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(false);
-								
+								searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 								// load most recent used cql artifacts
 								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 										MatContext.get().getCurrentCQLLibraryId(),
@@ -1225,9 +1226,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 													searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(!isReadOnly);
 													//Checks if Draft
-													if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+													/*if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
 														searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-													}
+													}*/
 													
 													// if there are cql errors or the definition is not in use, enable the delete button
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getDefinitionName())) {
@@ -1530,6 +1531,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 									.get(selectedFunctionId) != null) {
 								searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
 								searchDisplay.getCQLFunctionsView().setWidgetReadOnly(false);
+								searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 								// load most recent used cql artifacts
 								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
 										MatContext.get().getCurrentCQLLibraryId(),
@@ -1561,9 +1563,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 													searchDisplay.getCQLFunctionsView().setWidgetReadOnly(true);
 													//Checks if Draft
-													if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+													/*if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
 														searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-													}
+													}*/
 													
 													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getFunctionName())) {
 														searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
@@ -5476,9 +5478,10 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCQLParametersView()
 				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 		//checking if its Draft.
-		if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+		/*if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
 			searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-		}
+		}*/
+		searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getParameterButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLParametersView().getParameterAceEditor();
@@ -5533,9 +5536,10 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCQLDefinitionsView()
 				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 		//Checks if Draft
-		if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+		/*if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
 			searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-		}
+		}*/
+		searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getDefineButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLDefinitionsView().getDefineAceEditor();
@@ -5559,9 +5563,10 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCQLFunctionsView()
 				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 		//Checks if Draft
-		if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
+		/*if(MatContext.get().getCurrentCQLLibraryVersion().toLowerCase().contains(CQLWorkSpaceConstants.CQL_DRAFT.toLowerCase())){
 			searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-		}
+		}*/
+		searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
 		searchDisplay.getFunctionButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor();

@@ -320,13 +320,13 @@ public class CQLParametersView {
 	 * @param isEditable the new widget read only
 	 */
 	public void setWidgetReadOnly(boolean isEditable) {
-
+	//	getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterCommentTextArea().setEnabled(isEditable);
 		getParameterAceEditor().setReadOnly(!isEditable);
-		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
-		System.out.println(
-				"in setParameterWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);
+		
+	/*	System.out.println(
+				"in setParameterWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);*/
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);

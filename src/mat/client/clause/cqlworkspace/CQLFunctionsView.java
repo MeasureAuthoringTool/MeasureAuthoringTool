@@ -1009,7 +1009,7 @@ public class CQLFunctionsView {
 		getFunctionCommentTextArea().setEnabled(isEditable);
 		getFunctionBodyAceEditor().setReadOnly(!isEditable);
 		getFunctionButtonBar().setEnabled(isEditable);
-		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
+		/*getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);*/
 		getAddNewArgument().setEnabled(isEditable);
 		getContextFuncPATRadioBtn().setEnabled(isEditable);
 		getContextFuncPOPRadioBtn().setEnabled(isEditable);

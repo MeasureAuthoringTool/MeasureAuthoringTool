@@ -318,8 +318,10 @@ implements MeasureCloningService {
 			result.setName(currentDetails.getName());
 			result.setShortName(currentDetails.getShortName());
 			result.setScoringType(currentDetails.getMeasScoring());
+			/*String formattedVersion = MeasureUtility.getVersionText(
+					measure.getVersion(), measure.isDraft());*/
 			String formattedVersion = MeasureUtility.getVersionText(
-					measure.getVersion(), measure.isDraft());
+					clonedMeasure.getVersion(), clonedMeasure.isDraft());
 			result.setVersion(formattedVersion);
 			result.setEditable(TRUE);
 			result.setClonable(TRUE);

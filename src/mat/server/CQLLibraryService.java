@@ -373,8 +373,11 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			result.setSuccess(true);
 			result.setId(newLibraryObject.getId());
 			result.setCqlLibraryName(newLibraryObject.getName());
-			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(existingLibrary.getVersion(), 
+			/*String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(existingLibrary.getVersion(), 
 					newLibraryObject.getRevisionNumber(), existingLibrary.isDraft());
+			*/
+			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
+					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
 			result.setVersionStr(formattedVersion);
 			result.setEditable(isDraftable);
 			

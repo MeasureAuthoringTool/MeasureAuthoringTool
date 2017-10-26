@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.service.SimpleEMeasureService.ExportResult;
-import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 
@@ -49,9 +48,7 @@ public class ZipPackager {
 		
 		FileNameUtility fnu = new FileNameUtility();
 		
-		try{
-
-			
+		try{			
 			URL u = new URL(emeasureXSLUrl);
 			int contentLength = u.openConnection().getContentLength();
 			InputStream openStream = u.openStream();
@@ -63,11 +60,6 @@ public class ZipPackager {
 			String emeasureXSLPath = "";
 			String emeasureXMLPath = "";
 			String emeasureHumanReadablePath = "";
-			//String codeListXLSPath = "";
-//			String simpleXMLPath = "";
-			String cqlFilePath = "";
-			String elmFilePath = "";
-			
 			if(releaseVersion.contains(".")){
 				releaseVersion = releaseVersion.replace(".", "_");
 			}
@@ -76,26 +68,14 @@ public class ZipPackager {
 			emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eCQM.xsl";
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + releaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + releaseVersion);
-			//codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + releaseVersion,packageDate);
-//			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + releaseVersion);
-			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
-			if(cqlLibraryName.isEmpty()) {
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
-			} else {			
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
-			}		
-			
+						
 		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
 		    
-//		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
 			addBytesToZip(emeasureXSLPath, emeasureXSLBarr, zip);
 		    addBytesToZip(emeasureXMLPath, emeasureXMLStr.getBytes(), zip);
 		    addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
-		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
-		   		   	    
+
 		    zip.close();
 		    ret = baos.toByteArray();
 		}catch(Exception e){
@@ -158,11 +138,6 @@ public class ZipPackager {
 			String emeasureXSLPath = "";
 			String emeasureXMLPath = "";
 			String emeasureHumanReadablePath = "";
-			//String codeListXLSPath = "";
-//			String simpleXMLPath = "";
-			String cqlFilePath = "";
-			String elmFilePath = "";
-          
 			if(releaseVersion.contains(".")){
 				releaseVersion = releaseVersion.replace(".", "_");
 			}
@@ -172,20 +147,10 @@ public class ZipPackager {
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + releaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" + releaseVersion);
 	
-			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
-			if(cqlLibraryName.isEmpty()) {
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
-			} else {			
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
-			}
-
 			filesMap.put(emeasureXSLPath, emeasureXSLBarr);
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
-			
-			System.out.println("releaseVersion:"+releaseVersion);
+						
 			if(releaseVersion.startsWith("v5")){
 				addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
@@ -219,15 +184,10 @@ public class ZipPackager {
 		FileNameUtility fnu = new FileNameUtility();
 		
 		try{
-
 			String parentPath = "";
 			String emeasureHumanReadablePath = "";
-			//String codeListXLSPath = "";
-//			String simpleXMLPath = "";
 			String emeasureXMLPath = "";
-			String cqlFilePath = "";
-			String elmFilePath = "";
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
 		    String measureReleaseVersion = currentRealeaseVersion;
 		    if(currentRealeaseVersion.contains(".")){
@@ -236,28 +196,16 @@ public class ZipPackager {
 		    
 			parentPath = fnu.getParentPath(emeasureName +"_" + currentRealeaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" +currentRealeaseVersion);
-			//codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_" + currentRealeaseVersion,packageDate);
-//			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName +"_" + currentRealeaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
-			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
-			if(cqlLibraryName.isEmpty()) {
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
-			} else {			
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
-			}			
-//		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
+						
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
-		   // addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
 		    
-		    if(measureReleaseVersion.equals(MATPropertiesService.get().getCurrentReleaseVersion())){
+		    if(measureReleaseVersion.startsWith("v5")){
 			    addFileToZip(cqlExportResult, parentPath, "cql", zip);
 			    addFileToZip(elmExportResult, parentPath, "xml", zip);
 			    addFileToZip(jsonExportResult, parentPath, "json", zip);
-		    }
-		    		    
+		    }		    		    
 		    zip.close();
 		    ret = baos.toByteArray();
 		}catch(Exception e){

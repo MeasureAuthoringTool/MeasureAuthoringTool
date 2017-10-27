@@ -1961,11 +1961,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 								@Override
 								public void onCreateClicked(Result object) {
-									ManageMeasureSearchModel.Result selectedLibrary = object;
-									if (!isLoading && selectedLibrary.isDraftable()) {
-										if (((selectedLibrary != null) && (selectedLibrary.getId() != null))) {
+									ManageMeasureSearchModel.Result selectedMeasure = object;
+									if (!isLoading && selectedMeasure.isDraftable()) {
+										if (((selectedMeasure != null) && (selectedMeasure.getId() != null))) {
 											showSearchingBusy(true);
-											MatContext.get().getMeasureService().getMeasure(selectedLibrary.getId(),
+											MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
 													new AsyncCallback<ManageMeasureDetailModel>() {
 														@Override
 														public void onFailure(Throwable caught) {
@@ -1989,8 +1989,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 														}
 													});
 										}
-									} else if (!isLoading && selectedLibrary.isVersionable()) {
-										versionDisplay.setSelectedMeasure(selectedLibrary);
+									} else if (!isLoading && selectedMeasure.isVersionable()) {
+										versionDisplay.setSelectedMeasure(selectedMeasure);
 										createVersion();
 									}
 
@@ -2577,7 +2577,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			final String name = currentDetails.getName();
 			final String shortName = currentDetails.getShortName();
 			final String scoringType = currentDetails.getMeasScoring();
-			final String version = currentDetails.getVersionNumber();		
+			final String version = currentDetails.getVersionNumber()+"."+currentDetails.getRevisionNumber();		
 			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
 
 				@Override

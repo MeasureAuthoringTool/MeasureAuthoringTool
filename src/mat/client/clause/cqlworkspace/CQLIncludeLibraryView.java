@@ -1158,5 +1158,14 @@ public class CQLIncludeLibraryView {
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 	
-	
+	/**
+	 * Added this method as part of MAT-8882.
+	 * @param isEditable
+	 */
+	public void setReadOnly(boolean isEditable) {		
+		getSaveButton().setEnabled(isEditable);
+		getEraseButton().setEnabled(isEditable);
+		getSearchButton().setEnabled(isEditable);
+	}
+
 }

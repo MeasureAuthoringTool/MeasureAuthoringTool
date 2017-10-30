@@ -1112,4 +1112,18 @@ public class CQLFunctionsView {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
+	
+	/**
+	 * Added this method as part of MAT-8882.
+	 * @param isEditable
+	 */
+	public void setReadOnly(boolean isEditable) {		
+		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
+		getAddNewArgument().setEnabled(isEditable);
+		getFunctionButtonBar().getSaveButton().setEnabled(isEditable);
+		getFunctionButtonBar().getEraseButton().setEnabled(isEditable);
+		getFunctionButtonBar().getDeleteButton().setEnabled(isEditable);
+		getFunctionButtonBar().getInsertButton().setEnabled(isEditable);
+		getFunctionButtonBar().getInfoButton().setEnabled(isEditable);
+	}	
 }

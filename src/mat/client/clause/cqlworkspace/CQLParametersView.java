@@ -428,4 +428,16 @@ public class CQLParametersView {
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 	
+	/**
+	 * Added this method as part of MAT-8882.
+	 * @param isEditable
+	 */
+	public void setReadOnly(boolean isEditable) {		
+		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
+		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
+		getParameterButtonBar().getEraseButton().setEnabled(isEditable);
+		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
+		getParameterButtonBar().getInfoButton().setEnabled(isEditable);
+	}	
+	
 }

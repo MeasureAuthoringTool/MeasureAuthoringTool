@@ -5785,30 +5785,22 @@ private void addCodeSearchPanelHandlers() {
 				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
 			break;
 			case(CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
-				searchDisplay.getIncludeView().setWidgetReadOnly(!busy);
-				searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
+				searchDisplay.getIncludeView().setReadOnly(!busy);				
 			break;
 			case(CQLWorkSpaceConstants.CQL_APPLIED_QDM): 
-				searchDisplay.getValueSetView().setWidgetsReadOnly(!busy);				
-				searchDisplay.getValueSetView().setIsLoading(busy);
+				searchDisplay.getValueSetView().setReadOnly(!busy);				
 			break;
 			case(CQLWorkSpaceConstants.CQL_CODES): 
-				searchDisplay.getCodesView().setWidgetsReadOnly(!busy);				
-				searchDisplay.getCodesView().setIsLoading(busy);
+				searchDisplay.getCodesView().setReadOnly(!busy);				
 			break;
 			case(CQLWorkSpaceConstants.CQL_PARAMETER_MENU): 
-				searchDisplay.getCQLParametersView().setWidgetReadOnly(!busy);
-				searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
-				searchDisplay.getCQLParametersView().getParameterButtonBar().getInfoButton().setEnabled(!busy);
+				searchDisplay.getCQLParametersView().setReadOnly(!busy);
 			break;
 			case(CQLWorkSpaceConstants.CQL_DEFINE_MENU): 
-				searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(!busy);
-				searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
-				searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getInfoButton().setEnabled(!busy);
+				searchDisplay.getCQLDefinitionsView().setReadOnly(!busy);
 			break;
 			case(CQLWorkSpaceConstants.CQL_FUNCTION_MENU): 
-				searchDisplay.getCQLFunctionsView().setWidgetReadOnly(!busy);
-				searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
+				searchDisplay.getCQLFunctionsView().setReadOnly(!busy);
 			break;															  
 			}
 			

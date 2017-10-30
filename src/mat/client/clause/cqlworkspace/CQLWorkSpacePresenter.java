@@ -5798,33 +5798,26 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			switch(currentSection.toLowerCase()) {
 			case(CQLWorkSpaceConstants.CQL_GENERAL_MENU): 
-				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
+				//This needs to be set to false to make the CQL Name uneditable under Measure. 
+				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(false);
 			break;
 			case(CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
-				searchDisplay.getIncludeView().setWidgetReadOnly(!busy);
-				searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
+				searchDisplay.getIncludeView().setReadOnly(!busy);				
 			break;
 			case(CQLWorkSpaceConstants.CQL_APPLIED_QDM): 
-				searchDisplay.getValueSetView().setWidgetsReadOnly(!busy);				
-				searchDisplay.getValueSetView().setIsLoading(busy);
+				searchDisplay.getValueSetView().setReadOnly(!busy);						
 			break;
 			case(CQLWorkSpaceConstants.CQL_CODES): 
-				searchDisplay.getCodesView().setWidgetsReadOnly(!busy);				
-				searchDisplay.getCodesView().setIsLoading(busy);
+				searchDisplay.getCodesView().setReadOnly(!busy);						
 			break;
 			case(CQLWorkSpaceConstants.CQL_PARAMETER_MENU): 
-				searchDisplay.getCQLParametersView().setWidgetReadOnly(!busy);
-				searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
-				searchDisplay.getCQLParametersView().getParameterButtonBar().getInfoButton().setEnabled(!busy);
+				searchDisplay.getCQLParametersView().setReadOnly(!busy);				
 			break;
 			case(CQLWorkSpaceConstants.CQL_DEFINE_MENU): 
-				searchDisplay.getCQlDefinitionsView().setWidgetReadOnly(!busy);
-				searchDisplay.getCQlDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
-				searchDisplay.getCQlDefinitionsView().getDefineButtonBar().getInfoButton().setEnabled(!busy);
+				searchDisplay.getCQlDefinitionsView().setReadOnly(!busy);				
 			break;
 			case(CQLWorkSpaceConstants.CQL_FUNCTION_MENU): 
-				searchDisplay.getCqlFunctionsView().setWidgetReadOnly(!busy);
-				searchDisplay.getCqlFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
+				searchDisplay.getCqlFunctionsView().setReadOnly(!busy);				
 			break;															  
 			}			
 

@@ -605,5 +605,18 @@ public class CQlDefinitionsView {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
+
+	/**
+	 * Added this method as part of MAT-8882.
+	 * @param isEditable
+	 */
+	public void setReadOnly(boolean isEditable) {		
+		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
+		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
+		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
+		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
+		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
+		getDefineButtonBar().getInfoButton().setEnabled(isEditable);
+	}	
 	
 }

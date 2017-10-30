@@ -1061,6 +1061,15 @@ public class CQLCodesView {
 		this.isLoading = isLoading;
 	}
 	
-	
+	/**
+	 * Added this method as part of MAT-8882.
+	 * @param isEditable
+	 */
+	public void setReadOnly(boolean isEditable) {		
+		getSaveButton().setEnabled(isEditable);
+		getCancelCodeButton().setEnabled(isEditable);
+		getRetrieveFromVSACButton().setEnabled(isEditable);
+		this.setIsLoading(isEditable);
+	}	
 	
 }

@@ -5778,59 +5778,40 @@ private void addCodeSearchPanelHandlers() {
 	 * @param busy the busy
 	 */
 	private void showSearchingBusy(final boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setEnabled(!busy);
-		/*if (!currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_INCLUDES_MENU))*/
-		searchDisplay.getCqlLeftNavBarPanelView().getIncludesLibrary().setEnabled(!busy);
-		searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().setEnabled(!busy);
-		searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().setEnabled(!busy);
-		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setEnabled(!busy);
-		searchDisplay.getCqlLeftNavBarPanelView().getDefinitionLibrary().setEnabled(!busy);
-		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setEnabled(!busy);
-		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setEnabled(!busy);
+		showSearchBusyOnDoubleClick(busy);
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			if(currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)){
+			switch(currentSection.toLowerCase()) {
+			case(CQLWorkSpaceConstants.CQL_GENERAL_MENU): 
 				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_INCLUDES_MENU)){
-				searchDisplay.getIncludeView().getSaveButton().setEnabled(!busy);
-				searchDisplay.getIncludeView().getEraseButton().setEnabled(!busy);
+			break;
+			case(CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
+				searchDisplay.getIncludeView().setWidgetReadOnly(!busy);
 				searchDisplay.getIncludeView().getSearchButton().setEnabled(!busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_APPLIED_QDM)){
-			//	searchDisplay.getValueSetView().getSaveButton().setEnabled(!busy);
-				searchDisplay.getValueSetView().getCancelQDMButton().setEnabled(!busy);
-				searchDisplay.getValueSetView().getUpdateFromVSACButton().setEnabled(!busy);
-				searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(!busy);
+			break;
+			case(CQLWorkSpaceConstants.CQL_APPLIED_QDM): 
+				searchDisplay.getValueSetView().setWidgetsReadOnly(!busy);				
 				searchDisplay.getValueSetView().setIsLoading(busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_CODES)){
-			//	searchDisplay.getCodesView().getSaveButton().setEnabled(!busy);
-				searchDisplay.getCodesView().getCancelCodeButton().setEnabled(!busy);
-				searchDisplay.getCodesView().getRetrieveFromVSACButton().setEnabled(!busy);
+			break;
+			case(CQLWorkSpaceConstants.CQL_CODES): 
+				searchDisplay.getCodesView().setWidgetsReadOnly(!busy);				
 				searchDisplay.getCodesView().setIsLoading(busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)){
-				searchDisplay.getCQLParametersView().getParameterButtonBar().getSaveButton().setEnabled(!busy);
-				searchDisplay.getCQLParametersView().getParameterButtonBar().getEraseButton().setEnabled(!busy);
-				searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(!busy);
+			break;
+			case(CQLWorkSpaceConstants.CQL_PARAMETER_MENU): 
+				searchDisplay.getCQLParametersView().setWidgetReadOnly(!busy);
+				searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
 				searchDisplay.getCQLParametersView().getParameterButtonBar().getInfoButton().setEnabled(!busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DEFINE_MENU)){
-				searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getSaveButton().setEnabled(!busy);
-				searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getEraseButton().setEnabled(!busy);
-				searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(!busy);
-				searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getInsertButton().setEnabled(!busy);
+			break;
+			case(CQLWorkSpaceConstants.CQL_DEFINE_MENU): 
+				searchDisplay.getCQLDefinitionsView().setWidgetReadOnly(!busy);
+				searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
 				searchDisplay.getCQLDefinitionsView().getDefineButtonBar().getInfoButton().setEnabled(!busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)){
-				searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getSaveButton().setEnabled(!busy);
-				searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getEraseButton().setEnabled(!busy);
-				searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(!busy);
-				searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getInsertButton().setEnabled(!busy);
-				searchDisplay.getCQLFunctionsView().getFunctionButtonBar().getInfoButton().setEnabled(!busy);
-				searchDisplay.getCQLFunctionsView().getAddNewArgument().setEnabled(!busy);
-			} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEW_MENU)){
-				
+			break;
+			case(CQLWorkSpaceConstants.CQL_FUNCTION_MENU): 
+				searchDisplay.getCQLFunctionsView().setWidgetReadOnly(!busy);
+				searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(!busy);
+			break;															  
 			}
+			
 		}
 		searchDisplay.getCqlLeftNavBarPanelView().setIsLoading(busy);
 	}

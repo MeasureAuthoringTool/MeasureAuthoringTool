@@ -1427,6 +1427,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getCancelQDMButton().setEnabled(isEditable);
 		getUpdateFromVSACButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
-		this.setIsLoading(isEditable);
+		this.setIsLoading(!isEditable);
 	}
 }

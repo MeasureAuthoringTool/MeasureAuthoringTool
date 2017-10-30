@@ -1069,7 +1069,7 @@ public class CQLCodesView {
 		getSaveButton().setEnabled(isEditable);
 		getCancelCodeButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
-		this.setIsLoading(isEditable);
+		this.setIsLoading(!isEditable);
 	}	
 	
 }

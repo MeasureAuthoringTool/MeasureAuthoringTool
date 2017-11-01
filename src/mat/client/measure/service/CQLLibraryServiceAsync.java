@@ -26,6 +26,8 @@ public interface CQLLibraryServiceAsync {
 
 
 	void getCQLData(String id, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void getCQLDataForLoad(String id, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void isLibraryLocked(String id, AsyncCallback<Boolean> isLocked);
 	

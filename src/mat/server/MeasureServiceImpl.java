@@ -643,6 +643,11 @@ MeasureService {
 			List<CQLIncludeLibrary> incLibraryList){
 		return this.getMeasureLibraryService().saveIncludeLibrayInCQLLookUp(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
+	
+	@Override
+	public SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId) {
+		return this.getMeasureLibraryService().getMeasureCQLDataForLoad(measureId);
+	}
 
 	@Override
 	public SaveUpdateCQLResult getMeasureCQLData(String measureId) {

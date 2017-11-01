@@ -722,5 +722,7 @@ public interface MeasureServiceAsync {
 	void deleteCode(String toBeDeletedId, String measureID, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getMeasureCQLLibraryData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+	
+	void getMeasureCQLDataForLoad(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 }

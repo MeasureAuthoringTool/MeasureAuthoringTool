@@ -725,4 +725,6 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId);
 
+	SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId);
+
 }

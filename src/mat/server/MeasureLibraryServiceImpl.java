@@ -6255,6 +6255,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		return result;
 	}
+	
+	@Override
+	public SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
+		Measure measure = getService().getById(measureId);
+
+		if (model != null && !StringUtils.isEmpty(model.getXml())) {
+			String xmlString = model.getXml();
+			result = cqlService.getCQLDataForLoad(xmlString);
+			result.setSetId(measure.getMeasureSet().getId());
+			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+		}
+
+		return result;
+	}
 
 	@Override
 	public SaveUpdateCQLResult deleteInclude(String currentMeasureId, CQLIncludeLibrary toBeModifiedIncludeObj,

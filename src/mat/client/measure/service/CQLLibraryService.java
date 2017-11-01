@@ -26,6 +26,9 @@ public interface CQLLibraryService extends RemoteService {
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
 	SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlModel);
 	public SaveUpdateCQLResult getCQLData(String id);
+	
+	public SaveUpdateCQLResult getCQLDataForLoad(String id);
+	
 	boolean isLibraryLocked(String id);
 	SaveCQLLibraryResult resetLockedDate(String currentLibraryId,String userId);
 	SaveCQLLibraryResult updateLockedDate(String currentLibraryId,String userId);

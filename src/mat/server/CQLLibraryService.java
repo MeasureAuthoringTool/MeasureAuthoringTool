@@ -784,7 +784,22 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		return cqlResult;
+	}
+	
+	@Override
+	public SaveUpdateCQLResult getCQLDataForLoad(String id) {
+		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(id);
+		String str = getCQLLibraryXml(cqlLibrary);
 		
+		if(str != null) {
+			cqlResult = cqlService.getCQLDataForLoad(str);
+			//cqlResult.setExpIdentifier(cqlService.getDefaultExpansionIdentifier(str));
+			cqlResult.setSetId(cqlLibrary.getSet_id());
+			cqlResult.setSuccess(true);
+		}
+		
+		return cqlResult;
 	}
 	
 	

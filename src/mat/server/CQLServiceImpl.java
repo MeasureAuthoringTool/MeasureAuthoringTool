@@ -1507,8 +1507,8 @@ public class CQLServiceImpl implements CQLService {
 		try {
 			String xpathforValueSet = "//cqlLookUp//valueset[@id='" + toBeDelValueSetId + "']";
 			Node valueSetElements = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforValueSet);
-			CQLModel cqlModel = getCQLData(xml).getCqlModel();
-	        List<CQLQualityDataSetDTO> cqlQualityDataSetDTO = cqlModel.getAllValueSetList();
+			//CQLModel cqlModel = getCQLData(xml).getCqlModel();
+	      //  List<CQLQualityDataSetDTO> cqlQualityDataSetDTO = cqlModel.getAllValueSetList();
 			if (valueSetElements != null) {
 				String valueSetName = valueSetElements.getAttributes().getNamedItem("name").getNodeValue();
 				CQLQualityDataSetDTO valueSet = new CQLQualityDataSetDTO();
@@ -1542,7 +1542,7 @@ public class CQLServiceImpl implements CQLService {
 		try {
 			String xpathforCodeNode = "//cqlLookUp//code[@id='" + toBeDeletedCodeId + "']";
 			Node codeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforCodeNode);
-			List<CQLCode> cqlCodeListBeforeDeletion = getCQLCodes(xml).getCqlCodeList();
+			//List<CQLCode> cqlCodeListBeforeDeletion = getCQLCodes(xml).getCqlCodeList();
 
             if (codeNode != null) {
                 String cqlOID = codeNode.getAttributes().getNamedItem("codeOID").getNodeValue();
@@ -1801,7 +1801,27 @@ public class CQLServiceImpl implements CQLService {
 
 		return parsedCQL;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see mat.client.measure.service.CQLService#getCQLData(java.lang.String)
+	 */
+	@Override
+	public SaveUpdateCQLResult getCQLDataForLoad(String xmlString) {
+		CQLModel cqlModel = new CQLModel();
+		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
+		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlLibraryDAO);
+		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		CQLUtil.setIncludedCQLExpressions(cqlModel);
+		result.setCqlModel(cqlModel);
+
+		return result;
+	}
+	
 	@Override
 	public SaveUpdateCQLResult getCQLLibraryData(String xmlString) {
 

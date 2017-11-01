@@ -70,6 +70,10 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().getCQLData(id);
 	}
 	
+	public SaveUpdateCQLResult getCQLDataForLoad(String id) {
+		return this.getCQLLibraryService().getCQLDataForLoad(id);
+	}
+	
 	@Override
 	public boolean isLibraryLocked(String id) {
 		return this.getCQLLibraryService().isLibraryLocked(id);

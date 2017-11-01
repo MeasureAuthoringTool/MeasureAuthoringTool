@@ -665,4 +665,6 @@ public interface MeasureService extends RemoteService {
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String measureID);
 
 	SaveUpdateCQLResult getMeasureCQLLibraryData(String measureId);
+
+	SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId);
 }

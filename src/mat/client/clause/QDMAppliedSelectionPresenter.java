@@ -2245,7 +2245,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void copy() {
 		resetQDSMsgPanel();
-		if(searchDisplay.getQdmSelectedList().size() > 0){
+		/*if(searchDisplay.getQdmSelectedList().size() > 0){
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedQDMList(searchDisplay.getQdmSelectedList());
 			gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());
@@ -2253,7 +2253,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		} else {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate().getCOPY_QDM_SELECT_ATLEAST_ONE());
-		}
+		}*/
 	}
 	
 	
@@ -2265,8 +2265,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		
 		resetQDSMsgPanel();
 		GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
-		if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedQDMList().size()>0) ){
-			gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
+		//if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedQDMList().size()>0) ){
+			//gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
 			/*MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
 					new AsyncCallback<SaveUpdateCodeListResult>() {
 				
@@ -2287,7 +2287,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				}
 			});
 			*/
-		}
+		//}
 	}
 	
 	/**

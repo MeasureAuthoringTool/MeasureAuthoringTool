@@ -1,5 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,11 +42,14 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
+import mat.client.shared.CQLCopyPasteClearButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -165,6 +169,14 @@ public class CQLCodesView {
 	private boolean isLoading; 
 	
 	
+	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("codes");
+	
+	/** The selection model. */
+	private MultiSelectionModel<CQLCode> selectionModel;
+	
+	/** The qdm selected list. */
+	private List<CQLCode> codesSelectedList;
+	
 	/**
 	 * Instantiates a new VSAC profile selection view.
 	 */
@@ -211,6 +223,7 @@ public class CQLCodesView {
 		vPanel.setStyleName("cqlqdsContentPanel");
 		vPanel.getElement().setId("hPanel_HorizontalPanel");
 		vPanel.setWidth("100%");
+		vPanel.add(copyPasteClearButtonToolBar.getButtonToolBar());
 		vPanel.add(cellTablePanel);
 
 		cellTableMainPanel.add(vPanel);
@@ -708,7 +721,7 @@ public class CQLCodesView {
 		cellTablePanel.add(codesElementsHeader);
 		if ((codesTableList != null)
 				&& (codesTableList.size() > 0)) {
-			
+			codesSelectedList = new ArrayList<CQLCode>();
 			table = new CellTable<CQLCode>();
 			setEditable(checkForEditPermission);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -777,6 +790,8 @@ public class CQLCodesView {
 			TableCaptionElement caption = elem.createCaption();
 			searchHeader.setVisible(false);
 			caption.appendChild(searchHeader.getElement());
+			selectionModel = new MultiSelectionModel<CQLCode>();
+			table.setSelectionModel(selectionModel);
 			
 			//table.setSelectionModel(selectionModel);
 			
@@ -797,24 +812,6 @@ public class CQLCodesView {
 			table.addColumn(nameColumn, SafeHtmlUtils
 					.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"
 							+ "</span>"));
-			
-			/*// Identifier Column
-			Column<CQLCode, SafeHtml> identifierColumn = new Column<CQLCode, SafeHtml>(
-					new SafeHtmlCell()) {
-				@Override
-				public SafeHtml getValue(CQLCode object) {
-					StringBuilder title = new StringBuilder();
-					String value = object.getDisplayName();
-					title = title.append("Identifier : ").append(value);
-					title.append("");
-					return CellTableUtility.getColumnToolTip(value, title.toString());
-				}
-			};
-			table.addColumn(identifierColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Identifier\">" + "Identifier"
-							+ "</span>"));*/
-			
-			
 			// Code Profile Column
 			Column<CQLCode, SafeHtml> codeColumn = new Column<CQLCode, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -857,21 +854,20 @@ public class CQLCodesView {
 				}
 			};
 			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));			
-			
-			
-			if(isEditable){
-				// Modify by Delete Column
-				String colName = "Delete";
-				table.addColumn(new Column<CQLCode, CQLCode>(
-						getCompositeCell(isEditable)) {
-					
-					@Override
-					public CQLCode getValue(CQLCode object) {
-						return object;
-					}
-				}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-						+ colName + "</span>"));
+		
+			String colName = "Modify";
+			if(!isEditable){
+				colName = "Select";
 			}
+			table.addColumn(new Column<CQLCode, CQLCode>(
+					getCompositeCell(isEditable)) {
+				
+				@Override
+				public CQLCode getValue(CQLCode object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+					+ colName + "</span>"));
 			
 			table.setColumnWidth(0, 55.0, Unit.PCT);
 			table.setColumnWidth(1, 15.0, Unit.PCT);
@@ -888,10 +884,9 @@ public class CQLCodesView {
 	private CompositeCell<CQLCode> getCompositeCell(boolean isEditable) {
 		final List<HasCell<CQLCode, ?>> cells = new LinkedList<HasCell<CQLCode, ?>>();
 		if(isEditable){
-			//cells.add(getModifyQDMButtonCell());
 			cells.add(getDeleteButtonCell());
 		}
-		
+		cells.add(getCheckBoxCell());
 		CompositeCell<CQLCode> cell = new CompositeCell<CQLCode>(
 				cells) {
 			@Override
@@ -910,7 +905,7 @@ public class CQLCodesView {
 					HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
-				if ((object != null)) {
+				if ((object != null) && !object.getCodeName().equals(DEAD) && !object.getCodeName().equals(BIRTHDATE)) {
 					cell.render(context, hasCell.getValue(object), sb);
 				} else {
 					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
@@ -928,54 +923,63 @@ public class CQLCodesView {
 	}
 	
 	/**
-	 * Gets the modify qdm button cell.
-	 * 
-	 * @return the modify qdm button cell
-	 *//*
-	private HasCell<CQLCode, SafeHtml> getModifyQDMButtonCell() {
-		
-		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
+	 * Gets the QDM check box cell.
+	 *
+	 * @return the QDM check box cell
+	 */
+	private HasCell<CQLCode, Boolean> getCheckBoxCell(){
+		HasCell<CQLCode, Boolean> hasCell = new HasCell<CQLCode, Boolean>() {
 			
-			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
-			
+			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 			@Override
-			public Cell<SafeHtml> getCell() {
-				return modifyButonCell;
+			public Cell<Boolean> getCell() {
+				return cell;
 			}
-			
-			//@Override
-			public FieldUpdater<CQLCode, SafeHtml> getFieldUpdater() {
-				
-				return new FieldUpdater<CQLCode, SafeHtml>() {
-					@Override
-					public void update(int index, CQLCode object,
-							SafeHtml value) {
-						if ((object != null)) {
-							observer.onModifyClicked(object);
+			@Override
+			public Boolean getValue(CQLCode object) {
+				boolean isSelected = false;
+				if (codesSelectedList.size() > 0) {
+					for (int i = 0; i < codesSelectedList.size(); i++) {
+						if (codesSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							isSelected = true;
+							selectionModel.setSelected(object, isSelected);
+							break;
 						}
 					}
+				} else {
+					isSelected = false;
+					selectionModel.setSelected(object, isSelected);
+				}
+
+				return isSelected;
+			}
+			@Override
+			public FieldUpdater<CQLCode, Boolean> getFieldUpdater() {
+				return new FieldUpdater<CQLCode, Boolean>() {
+					@Override
+					public void update(int index, CQLCode object,
+							Boolean isCBChecked) {
+						
+						if (isCBChecked) {
+							codesSelectedList.add(object);
+						} else {
+							for (int i = 0; i < codesSelectedList.size(); i++) {
+								if (codesSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+									codesSelectedList.remove(i);
+									break;
+								}
+							}
+						}
+						selectionModel.setSelected(object, isCBChecked);
+					}
+
 				};
 			}
 			
-			@Override
-			public SafeHtml getValue(CQLCode object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to modify Code";
-				String cssClass = "customEditButton";
-				if(isEditable){
-					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-							+ "' class=\" " + cssClass + "\">Editable</button>");
-				} else {
-					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
-				//}
-				
-				return sb.toSafeHtml();
-			}
+			
 		};
-		
 		return hasCell;
-	}*/
+	}
 	
 	/**
 	 * Gets the delete qdm button cell.
@@ -1031,6 +1035,18 @@ public class CQLCodesView {
 		
 		return hasCell;
 	}
+	
+	public void clearSelectedCheckBoxes(){
+		if(table!=null){
+			List<CQLCode> displayedItems = new ArrayList<CQLCode>();
+			displayedItems.addAll(codesSelectedList);
+			codesSelectedList = new  ArrayList<CQLCode>();
+			for (CQLCode dto : displayedItems) {
+				selectionModel.setSelected(dto, false);
+			}
+			table.redraw();
+		}
+	}
 
 	public String getCodeSystemOid() {
 		return CodeSystemOid;
@@ -1061,6 +1077,19 @@ public class CQLCodesView {
 		this.isLoading = isLoading;
 	}
 	
+	
+	public Button getClearButton(){
+		return copyPasteClearButtonToolBar.getClearButton();
+	}
+	
+	public Button getCopyButton(){
+		return copyPasteClearButtonToolBar.getCopyButton();
+	}
+	
+	public Button getPasteButton(){
+		return copyPasteClearButtonToolBar.getPasteButton();
+	}
+	
 	/**
 	 * Added this method as part of MAT-8882.
 	 * @param isEditable
@@ -1070,6 +1099,10 @@ public class CQLCodesView {
 		getCancelCodeButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
 		this.setIsLoading(!isEditable);
+	}
+
+	public List<CQLCode> getCodesSelectedList() {
+		return codesSelectedList;
 	}	
 	
 }

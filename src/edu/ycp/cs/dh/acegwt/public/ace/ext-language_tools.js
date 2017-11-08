@@ -1602,7 +1602,8 @@ var Autocomplete = function() {
     	                name: keyWordArray[i],
     	                value: keyWordArray[i],
     	                score: 1,
-    	                meta: keyword
+    	                meta: keyword, 
+    	                docHTML: keyWordArray[i]
     	            }
     				);
     	}

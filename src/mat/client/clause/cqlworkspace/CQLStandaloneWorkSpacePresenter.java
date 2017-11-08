@@ -67,6 +67,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
+import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.VSACVersion;
@@ -4417,15 +4418,147 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getValueSetView().getCopyButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				copyValueSets();
+			}
+		});
+
+		searchDisplay.getValueSetView().getPasteButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				pasteValueSets();
+			}
+		});
+	}
+	
+	private void copyValueSets() {
+		searchDisplay.resetMessageDisplay();
+		if(searchDisplay.getValueSetView().getQdmSelectedList().size() > 0){
+			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
+			gbCopyPaste.setCopiedValueSetList(searchDisplay.getValueSetView().getQdmSelectedList());
+			gbCopyPaste.setCurrentLibraryId(MatContext.get().getCurrentCQLLibraryId());
+			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
+		} else {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+					MatContext.get().getMessageDelegate().getCOPY_QDM_SELECT_ATLEAST_ONE());
+		}
+	}
+	
+	/**
+	 * paste Value Sets. This functionality is to paste all the Value sets elements that have been copied
+	 * from any Measure and can be pasted to any measure.
+	 */
+	private void pasteValueSets() {
+		
+		searchDisplay.resetMessageDisplay();
+		/*GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
+		if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedValueSetList().size()>0) ){
+			List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList  = searchDisplay.getValueSetView().
+					setMatValueSetListForValueSets(gbCopyPaste.getCopiedValueSetList(), appliedValueSetTableList);
+			gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
+			MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
+					new AsyncCallback<SaveUpdateCodeListResult>() {
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					searchDisplay.getErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+				
+				@Override
+				public void onSuccess(
+						SaveUpdateCodeListResult result) {
+					
+					getAppliedQDMList(true);
+					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE());
+				}
+			});
+			
+		}*/
 	}
 	
 	
+	private void copyCodes() {
+		searchDisplay.resetMessageDisplay();
+		if(searchDisplay.getCodesView().getCodesSelectedList().size() > 0){
+			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
+			gbCopyPaste.setCopiedCodeList(searchDisplay.getCodesView().getCodesSelectedList());
+			gbCopyPaste.setCurrentLibraryId(MatContext.get().getCurrentCQLLibraryId());
+			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
+		} else {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+					MatContext.get().getMessageDelegate().getCOPY_QDM_SELECT_ATLEAST_ONE());
+		}
+	}
+	
+	/**
+	 * paste Value Sets. This functionality is to paste all the Value sets elements that have been copied
+	 * from any Measure and can be pasted to any measure.
+	 */
+	private void pasteCodes() {
+		
+		searchDisplay.resetMessageDisplay();
+		/*GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
+		if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedCodeList().size()>0) ){
+			gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
+			MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
+					new AsyncCallback<SaveUpdateCodeListResult>() {
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					searchDisplay.getErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+				
+				@Override
+				public void onSuccess(
+						SaveUpdateCodeListResult result) {
+					
+					getAppliedQDMList(true);
+					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+							.getMessageDelegate().getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE());
+				}
+			});
+			
+		}*/
+	}
 /**
  * Adds the code search panel handlers.
  */
 private void addCodeSearchPanelHandlers() {
-		
-		
+		searchDisplay.getCodesView().getCopyButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				copyCodes();
+			}
+		});
+
+		searchDisplay.getCodesView().getPasteButton().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				pasteCodes();
+			}
+		});
+		searchDisplay.getCodesView().getClearButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent arg0) {
+				if (!searchDisplay.getCodesView().getIsLoading()) {
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCodesView().clearSelectedCheckBoxes();
+				}
+			}
+		});
+	
 		searchDisplay.getCodesView().getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -4902,12 +5035,10 @@ private void addCodeSearchPanelHandlers() {
 		// Normal Available QDM Flow
 		MatValueSet modifyWithDTO = currentMatValueSet;
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
-			
-			String version;
 			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String displayName = (!originalName.isEmpty() ? originalName : "")  + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-			version = searchDisplay.getValueSetView()
+			String version = searchDisplay.getValueSetView()
 					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
 			if (version == null) {
 				version = "";
@@ -4918,7 +5049,7 @@ private void addCodeSearchPanelHandlers() {
 
 			modifyValueSetList(modifyValueSetDTO);
 
-			if (!CheckNameInValueSetList(displayName)) {
+			if (!searchDisplay.getValueSetView().CheckNameInValueSetList(displayName,appliedValueSetTableList)) {
 				if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
 					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
 					modifyValueSetDTO.setCodeListName(originalName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
@@ -4932,6 +5063,9 @@ private void addCodeSearchPanelHandlers() {
 				modifyValueSetDTO.setOriginalCodeListName(originalName);
 				//modifyWithDTO.setDisplayName(displayName);
 				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
+			} else {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(displayName));
 			}
 			getUsedArtifacts();
 		} else {
@@ -5043,7 +5177,7 @@ private void addCodeSearchPanelHandlers() {
 	 *            the user defined input
 	 * @return true, if successful
 	 */
-	private boolean CheckNameInValueSetList(String userDefinedInput) {
+/*	private boolean CheckNameInValueSetList(String userDefinedInput) {
 		if (appliedValueSetTableList.size() > 0) {
 			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
 			while (iterator.hasNext()) {
@@ -5057,7 +5191,7 @@ private void addCodeSearchPanelHandlers() {
 			}
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Adds the selected code listto library.
@@ -5090,7 +5224,7 @@ private void addCodeSearchPanelHandlers() {
 			version = "";
 		}
 		// Check if QDM name already exists in the list.
-		if (!CheckNameInValueSetList(codeListName)) {
+		if (!searchDisplay.getValueSetView().CheckNameInValueSetList(codeListName,appliedValueSetTableList)) {
 			showSearchingBusy(true);
 			MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject,
 					new AsyncCallback<SaveUpdateCQLResult>() {
@@ -5132,6 +5266,9 @@ private void addCodeSearchPanelHandlers() {
 							showSearchingBusy(false);
 						}
 					});
+		}  else {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+			.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(codeListName));
 		}
 
 	}
@@ -5158,7 +5295,7 @@ private void addCodeSearchPanelHandlers() {
 					version = "";
 				}
 				// Check if QDM name already exists in the list.
-				if (!CheckNameInValueSetList(userDefinedInput)) {
+				if (!searchDisplay.getValueSetView().CheckNameInValueSetList(userDefinedInput,appliedValueSetTableList)) {
 					showSearchingBusy(true);
 					MatContext.get().getLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject,
 							new AsyncCallback<SaveUpdateCQLResult>() {
@@ -5201,6 +5338,9 @@ private void addCodeSearchPanelHandlers() {
 								}
 							});
 
+				}  else {
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+					.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(userDefinedInput));
 				}
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
@@ -5289,7 +5429,7 @@ private void addCodeSearchPanelHandlers() {
 			}
 
 			modifyValueSetList(modifyValueSetDTO);
-			if (!CheckNameInValueSetList(usrDefDisplayName)) {
+			if (!searchDisplay.getValueSetView().CheckNameInValueSetList(usrDefDisplayName,appliedValueSetTableList)) {
 				CQLValueSetTransferObject object = new CQLValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 				object.scrubForMarkUp();
@@ -5307,6 +5447,9 @@ private void addCodeSearchPanelHandlers() {
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 				}
+			}  else {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(usrDefDisplayName));
 			}
 			getUsedArtifacts();
 		} else {

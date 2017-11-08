@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,6 +68,11 @@ import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.model.CQLValueSetTransferObject;
+import mat.model.CodeListSearchDTO;
+import mat.model.MatConcept;
+import mat.model.MatConceptList;
+import mat.model.MatValueSet;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
@@ -779,6 +785,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 				return isSelected;
 			}
+			
 			@Override
 			public FieldUpdater<CQLQualityDataSetDTO, Boolean> getFieldUpdater() {
 				return new FieldUpdater<CQLQualityDataSetDTO, Boolean>() {
@@ -1428,5 +1435,85 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getUpdateFromVSACButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
 		this.setIsLoading(!isEditable);
+	}
+
+	public List<CQLQualityDataSetDTO> getQdmSelectedList() {
+		return qdmSelectedList;
+	}
+
+	public void setQdmSelectedList(List<CQLQualityDataSetDTO> qdmSelectedList) {
+		this.qdmSelectedList = qdmSelectedList;
+	}
+	
+	
+	/**
+	 * Method to generate List of {@link CQLValueSetTransferObject} when user pastes the list of selected {@link CQLQualityDataSetDTO}.
+	 * @param copiedValueSetList
+	 * @return List of {@link CQLValueSetTransferObject}
+	 */
+	public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList,  List<CQLQualityDataSetDTO> appliedValueSetTableList) {
+		List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList  = new ArrayList<CQLValueSetTransferObject>();
+		for(CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
+			if(!CheckNameInValueSetList(cqlQualityDataSetDTO.getCodeListName(), appliedValueSetTableList)) {
+				CQLValueSetTransferObject cqlValueSetTransferObject = new CQLValueSetTransferObject();
+				cqlValueSetTransferObject.setCqlQualityDataSetDTO(cqlQualityDataSetDTO);
+				
+				if(cqlQualityDataSetDTO.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
+					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
+				} else {
+					MatValueSet matValueSet = new MatValueSet();
+					if(!cqlQualityDataSetDTO.getVersion().equalsIgnoreCase("1.0") || !cqlQualityDataSetDTO.getVersion().equalsIgnoreCase("1")) {
+						cqlValueSetTransferObject.setVersion(true);
+						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
+					}
+					if(cqlQualityDataSetDTO.getTaxonomy().equalsIgnoreCase("grouping")) {
+						matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
+					} else {
+						matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
+						List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
+						MatConcept matConcept = new MatConcept();
+						matConcept.setCodeSystemName(cqlQualityDataSetDTO.getCodeSystemName());
+						matConcepts.add(matConcept);
+						MatConceptList matConceptList = new MatConceptList();
+						matConceptList.setConceptList(matConcepts);
+						matValueSet.setConceptList(matConceptList);
+					}
+					
+					
+					matValueSet.setID(cqlQualityDataSetDTO.getOid());
+					matValueSet.setDisplayName(cqlQualityDataSetDTO.getCodeListName());
+					cqlValueSetTransferObject.setMatValueSet(matValueSet);
+				}
+				CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
+				codeListSearchDTO.setName(cqlQualityDataSetDTO.getOriginalCodeListName());
+				cqlValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
+				cqlValueSetTransferObjectsList.add(cqlValueSetTransferObject);
+			} else {
+				System.out.println("Duplicate value set ==== " + cqlQualityDataSetDTO.getCodeListName());
+			}
+			
+		}
+		
+		return cqlValueSetTransferObjectsList;
+	}
+	
+	/**
+	 * Check name in Applied Value set list.
+	 *
+	 * @param userDefinedInput the user defined input
+	 * @param appliedValueSetTableList the list of {@link CQLQualityDataSetDTO}
+	 * @return true, if successful
+	 */
+	public  boolean CheckNameInValueSetList(String userDefinedInput, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
+		if (appliedValueSetTableList.size() > 0) {
+			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
+			while (iterator.hasNext()) {
+				CQLQualityDataSetDTO dataSetDTO = iterator.next();
+				if (dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

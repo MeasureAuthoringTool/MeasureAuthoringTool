@@ -15,6 +15,8 @@ import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
@@ -123,4 +125,7 @@ public interface CQLLibraryServiceInterface {
 	SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String id);
+
+	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
 }

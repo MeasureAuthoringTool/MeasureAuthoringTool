@@ -67,6 +67,7 @@ import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.model.MatUserDetails;
 import mat.server.service.CQLLibraryServiceInterface;
@@ -1414,6 +1415,51 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		return result;
 	}
+	
+	@Override
+	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList , 
+			List<CQLQualityDataSetDTO> appliedValueSetList , String cqlLibraryId) {
+		
+		StringBuilder finalXmlString = new StringBuilder("<valuesets>");
+		SaveUpdateCQLResult finalResult = new SaveUpdateCQLResult();
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibraryId)) {
+			for (CQLValueSetTransferObject  transferObject : transferObjectList) {
+				SaveUpdateCQLResult result = null;
+				transferObject.setAppliedQDMList(appliedValueSetList);
+				if(transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
+					result = cqlService.saveCQLUserDefinedValueset(transferObject);
+				} else {
+					result = cqlService.saveCQLValueset(transferObject);
+				}
+				
+				if(result != null && result.isSuccess()) {
+					if ((result.getXml() != null) && !StringUtils.isEmpty(result.getXml())) {
+						finalXmlString = finalXmlString.append(result.getXml());
+					}	
+				}
+			}
+			
+			finalXmlString.append("</valuesets>");
+			finalResult.setXml(finalXmlString.toString());
+			logger.info(finalXmlString);
+			CQLLibrary library = cqlLibraryDAO.find(cqlLibraryId);
+			if (library != null) {
+				String nodeName = "valueset";
+				String parentNode = "//cqlLookUp/valuesets";
+				appendAndSaveNode(library, nodeName, finalResult.getXml(), parentNode);
+				cqlLibraryDAO.refresh(library);
+				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
+						.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetList());
+				wrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
+				
+			}
+		}
+		
+		
+		return wrapper;
+	}
+	
 	
 	
 	/**

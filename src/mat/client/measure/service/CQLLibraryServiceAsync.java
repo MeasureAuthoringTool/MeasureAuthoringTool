@@ -13,6 +13,8 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -115,6 +117,10 @@ public interface CQLLibraryServiceAsync {
 	void deleteCode(String toBeDeletedId, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId, AsyncCallback<Void> callback);
+
+	void saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId,
+			AsyncCallback<CQLQualityDataModelWrapper> callback);
 
 	//void searchForStandaloneIncludes(String setId, String searchText,
 		//	AsyncCallback<SaveCQLLibraryResult> asyncCallback);

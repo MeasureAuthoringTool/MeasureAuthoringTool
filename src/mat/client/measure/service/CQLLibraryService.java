@@ -15,6 +15,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
@@ -106,4 +107,7 @@ public interface CQLLibraryService extends RemoteService {
 	void deleteCQLLibrary(String cqllibId, String loginUserId);
 
 	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
+
+	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
 }

@@ -1466,19 +1466,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						cqlValueSetTransferObject.setVersion(true);
 						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
 					}
-					if(cqlQualityDataSetDTO.getTaxonomy().equalsIgnoreCase("grouping")) {
-						matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
-					} else {
-						matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
-						List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
-						MatConcept matConcept = new MatConcept();
-						matConcept.setCodeSystemName(cqlQualityDataSetDTO.getCodeSystemName());
-						matConcepts.add(matConcept);
-						MatConceptList matConceptList = new MatConceptList();
-						matConceptList.setConceptList(matConcepts);
-						matValueSet.setConceptList(matConceptList);
-					}
-					
+					List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
+					MatConcept matConcept = new MatConcept();
+					matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
+					matConcept.setCodeSystemName(cqlQualityDataSetDTO.getTaxonomy());
+					matConcepts.add(matConcept);
+					MatConceptList matConceptList = new MatConceptList();
+					matConceptList.setConceptList(matConcepts);
+					matValueSet.setConceptList(matConceptList);
 					
 					matValueSet.setID(cqlQualityDataSetDTO.getOid());
 					matValueSet.setDisplayName(cqlQualityDataSetDTO.getCodeListName());

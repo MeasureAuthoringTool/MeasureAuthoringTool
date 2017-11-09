@@ -686,7 +686,10 @@ MeasureService {
 	public CQLCodeWrapper getCQLCodes(String measureID){
 		return this.getMeasureLibraryService().getCQLCodes(measureID);
 	}
-
-
+	@Override
+	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId) {
+		 return this.getMeasureLibraryService().saveValueSetList(transferObjectList, appliedValueSetList, measureId);
+	}
 
 }

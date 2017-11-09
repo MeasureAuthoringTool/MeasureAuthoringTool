@@ -1746,32 +1746,6 @@ public class CQLServiceImpl implements CQLService {
 		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables End :  ");
 
 	}
-
-	//@Override
-	/*public String getDefaultExpansionIdentifier(String xml) {
-		String defaultExpId = null;
-		if (xml != null) {
-			XmlProcessor processor = new XmlProcessor(xml);
-
-			String XPATH_VSAC_EXPANSION_IDENTIFIER = "//cqlLookUp/valuesets/@vsacExpIdentifier";
-
-			try {
-				Node vsacExpIdAttr = (Node) XPathFactory.newInstance().newXPath()
-						.evaluate(XPATH_VSAC_EXPANSION_IDENTIFIER, processor.getOriginalDoc(), XPathConstants.NODE);
-				if (vsacExpIdAttr != null) {
-					defaultExpId = vsacExpIdAttr.getNodeValue();
-				}
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		if (defaultExpId != null) {
-			return defaultExpId;
-		} else {
-			return "";
-		}
-	}*/
-
 	/*
 	 * (non-Javadoc)
 	 *
@@ -2882,7 +2856,7 @@ public class CQLServiceImpl implements CQLService {
 		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 		qds.setCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
 		qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
-		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
+		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -2894,10 +2868,7 @@ public class CQLServiceImpl implements CQLService {
 		} else {
 			qds.setVersion("1.0");
 		}
-		/*if (valueSetTransferObject.isExpansionProfile()) {
-			//qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet().getExpansionProfile());
-		}*/
-
+		
 		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject
 				.getAppliedQDMList();
 

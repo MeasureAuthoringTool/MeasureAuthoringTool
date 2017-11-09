@@ -727,4 +727,7 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId);
 
+	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
+
 }

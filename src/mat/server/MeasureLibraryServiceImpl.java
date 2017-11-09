@@ -6035,14 +6035,42 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public CQLQualityDataModelWrapper getCQLValusets(String measureID) {
 		CQLQualityDataModelWrapper cqlQualityDataModelWrapper = new CQLQualityDataModelWrapper();
-		/*String expProfilestr = getDefaultExpansionIdentifier(measureID);
-		if (expProfilestr != null) {
-			cqlQualityDataModelWrapper.setVsacExpIdentifier(expProfilestr);
-		}*/
-
 		return this.getCqlService().getCQLValusets(measureID, cqlQualityDataModelWrapper);
 	}
 
+	@Override
+	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList , 
+			List<CQLQualityDataSetDTO> appliedValueSetList , String measureId) {
+		
+		StringBuilder finalXmlString = new StringBuilder("<valuesets>");
+		SaveUpdateCQLResult finalResult = new SaveUpdateCQLResult();
+		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			for (CQLValueSetTransferObject  transferObject : transferObjectList) {
+				SaveUpdateCQLResult result = null;
+				transferObject.setAppliedQDMList(appliedValueSetList);
+				if(transferObject.getCqlQualityDataSetDTO().getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
+					result = getCqlService().saveCQLUserDefinedValueset(transferObject);
+				} else {
+					result = getCqlService().saveCQLValueset(transferObject);
+				}
+				
+				if(result != null && result.isSuccess()) {
+					if ((result.getXml() != null) && !StringUtils.isEmpty(result.getXml())) {
+						finalXmlString = finalXmlString.append(result.getXml());
+					}	
+				}
+			}
+			
+			finalXmlString.append("</valuesets>");
+			finalResult.setXml(finalXmlString.toString());
+			logger.info(finalXmlString);
+			saveCQLValuesetInMeasureXml(finalResult, measureId);
+			wrapper = getCQLValusets( measureId);
+		}
+		return wrapper;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

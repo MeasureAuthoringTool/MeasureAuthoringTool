@@ -13,6 +13,8 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLKeywords;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataModelWrapper;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -227,6 +229,11 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	@Override
 	public final void deleteCQLLibrary(final String cqllibId, String loginUserId) {
 		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId);
+	}
+	@Override
+	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId) {
+		return this.getCQLLibraryService().saveValueSetList(transferObjectList, appliedValueSetList, cqlLibraryId);
 	}
 	
 	/*@Override

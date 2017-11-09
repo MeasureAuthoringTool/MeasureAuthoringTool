@@ -725,4 +725,8 @@ public interface MeasureServiceAsync {
 	
 	void getMeasureCQLDataForLoad(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
+	void saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
+			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId,
+			AsyncCallback<CQLQualityDataModelWrapper> callback);
+
 }

@@ -203,7 +203,9 @@ public class MessageDelegate {
 	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully.";
 	
 	/** The copy qdm select atleast one. */
-	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied QDM element to copy.";
+	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied Value set element to copy.";
+	
+	public final String COPY_CODE_SELECT_ATLEAST_ONE  = "Please select at least one applied code to copy.";
 	
 	/** The successful qdm remove msg. */
 	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected value set has been removed successfully.";
@@ -3535,6 +3537,10 @@ public class MessageDelegate {
 
 	public String getNO_LIBRARY_TO_REPLACE() {
 		return NO_LIBRARY_TO_REPLACE;
+	}
+
+	public String getCOPY_CODE_SELECT_ATLEAST_ONE() {
+		return COPY_CODE_SELECT_ATLEAST_ONE;
 	}
 
 }

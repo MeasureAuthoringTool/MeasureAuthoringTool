@@ -915,7 +915,7 @@ public class CQLCodesView {
 					HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
-				if((object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
+				if((object == null) || (object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
 						|| (object.getCodeOID().equals(DEAD_OID) && object.getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID))) {
 					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
 				} else {
@@ -1031,7 +1031,7 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				// Delete button is not created for default codes - Dead and Birthdate.
-				if((object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
+				if((object == null) || (object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
 						|| (object.getCodeOID().equals(DEAD_OID) && object.getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID))){
 					sb.appendHtmlConstant("<span></span>");
 				}else if (object.isUsed()) {

@@ -1454,7 +1454,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList,  List<CQLQualityDataSetDTO> appliedValueSetTableList) {
 		List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList  = new ArrayList<CQLValueSetTransferObject>();
 		for(CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
-			if(!CheckNameInValueSetList(cqlQualityDataSetDTO.getCodeListName(), appliedValueSetTableList)) {
+			if(!checkNameInValueSetList(cqlQualityDataSetDTO.getCodeListName(), appliedValueSetTableList)) {
 				CQLValueSetTransferObject cqlValueSetTransferObject = new CQLValueSetTransferObject();
 				cqlValueSetTransferObject.setCqlQualityDataSetDTO(cqlQualityDataSetDTO);
 				
@@ -1499,7 +1499,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 * @param appliedValueSetTableList the list of {@link CQLQualityDataSetDTO}
 	 * @return true, if successful
 	 */
-	public  boolean CheckNameInValueSetList(String userDefinedInput, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
+	public  boolean checkNameInValueSetList(String userDefinedInput, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
 		if (appliedValueSetTableList.size() > 0) {
 			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
 			while (iterator.hasNext()) {

@@ -5050,7 +5050,7 @@ private void addCodeSearchPanelHandlers() {
 
 			modifyValueSetList(modifyValueSetDTO);
 
-			if (!searchDisplay.getValueSetView().CheckNameInValueSetList(displayName,appliedValueSetTableList)) {
+			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName,appliedValueSetTableList)) {
 				if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
 					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
 					modifyValueSetDTO.setCodeListName(originalName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
@@ -5225,7 +5225,7 @@ private void addCodeSearchPanelHandlers() {
 			version = "";
 		}
 		// Check if QDM name already exists in the list.
-		if (!searchDisplay.getValueSetView().CheckNameInValueSetList(codeListName,appliedValueSetTableList)) {
+		if (!searchDisplay.getValueSetView().checkNameInValueSetList(codeListName,appliedValueSetTableList)) {
 			showSearchingBusy(true);
 			MatContext.get().getLibraryService().saveCQLValueset(matValueSetTransferObject,
 					new AsyncCallback<SaveUpdateCQLResult>() {
@@ -5296,7 +5296,7 @@ private void addCodeSearchPanelHandlers() {
 					version = "";
 				}
 				// Check if QDM name already exists in the list.
-				if (!searchDisplay.getValueSetView().CheckNameInValueSetList(userDefinedInput,appliedValueSetTableList)) {
+				if (!searchDisplay.getValueSetView().checkNameInValueSetList(userDefinedInput,appliedValueSetTableList)) {
 					showSearchingBusy(true);
 					MatContext.get().getLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject,
 							new AsyncCallback<SaveUpdateCQLResult>() {
@@ -5430,7 +5430,7 @@ private void addCodeSearchPanelHandlers() {
 			}
 
 			modifyValueSetList(modifyValueSetDTO);
-			if (!searchDisplay.getValueSetView().CheckNameInValueSetList(usrDefDisplayName,appliedValueSetTableList)) {
+			if (!searchDisplay.getValueSetView().checkNameInValueSetList(usrDefDisplayName,appliedValueSetTableList)) {
 				CQLValueSetTransferObject object = new CQLValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 				object.scrubForMarkUp();

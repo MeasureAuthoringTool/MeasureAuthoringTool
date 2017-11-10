@@ -158,6 +158,8 @@ public interface MeasureService extends RemoteService {
 	/**
 	 * Gets the users for share.
 	 * 
+	 * @param userName
+	 *            the user name
 	 * @param measureId
 	 *            the measure id
 	 * @param startIndex
@@ -166,7 +168,7 @@ public interface MeasureService extends RemoteService {
 	 *            the page size
 	 * @return the users for share
 	 */
-	ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
+	ManageMeasureShareModel getUsersForShare(String userName, String measureId, int startIndex, int pageSize);
 	
 	/**
 	 * Checks if is measure locked.

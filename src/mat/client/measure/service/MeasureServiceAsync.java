@@ -173,6 +173,8 @@ public interface MeasureServiceAsync {
 	/**
 	 * Gets the users for share.
 	 * 
+	 * @param userName
+	 *            the user name entered for search 
 	 * @param measureId
 	 *            the measure id
 	 * @param startIndex
@@ -183,7 +185,7 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 * @return the users for share
 	 */
-	void getUsersForShare(String measureId, int startIndex, int pageSize, AsyncCallback<ManageMeasureShareModel> callback);
+	void getUsersForShare(String userName, String measureId, int startIndex, int pageSize, AsyncCallback<ManageMeasureShareModel> callback);
 	
 	/**
 	 * Checks if is measure locked.

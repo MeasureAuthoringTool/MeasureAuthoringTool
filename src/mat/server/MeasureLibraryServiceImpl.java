@@ -2017,14 +2017,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mat.server.service.MeasureLibraryService#getUsersForShare(java.lang.
+	 * @see mat.server.service.MeasureLibraryService#getUsersForShare(String, java.lang.
 	 * String, int, int)
 	 */
 	@Override
-	public final ManageMeasureShareModel getUsersForShare(final String measureId, final int startIndex,
+	public final ManageMeasureShareModel getUsersForShare(final String userName, final String measureId, final int startIndex,
 			final int pageSize) {
 		ManageMeasureShareModel model = new ManageMeasureShareModel();
-		List<MeasureShareDTO> dtoList = getService().getUsersForShare(measureId, startIndex, pageSize);
+		List<MeasureShareDTO> dtoList = getService().getUsersForShare(userName, measureId, startIndex, pageSize);
 		model.setResultsTotal(getService().countUsersForMeasureShare());
 		List<MeasureShareDTO> dataList = new ArrayList<MeasureShareDTO>();
 		for (MeasureShareDTO dto : dtoList) {

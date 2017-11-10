@@ -122,7 +122,9 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	
 	/**
 	 * Gets the measure share info for measure.
-	 * 
+	 *
+	 * @param userName
+	 *            the user name  
 	 * @param measureId
 	 *            the measure id
 	 * @param startIndex
@@ -131,7 +133,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the page size
 	 * @return the measure share info for measure
 	 */
-	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String measureId, int startIndex, int pageSize);
+	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String userName, String measureId, int startIndex, int pageSize);
 	
 	/**
 	 * Gets the measure share info for measure and user.

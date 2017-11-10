@@ -14,7 +14,6 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
-import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -160,6 +159,8 @@ public interface MeasureLibraryService {
 	/**
 	 * Gets the users for share.
 	 * 
+	 * @param userName
+	 *            the user name
 	 * @param measureId
 	 *            the measure id
 	 * @param startIndex
@@ -168,7 +169,7 @@ public interface MeasureLibraryService {
 	 *            the page size
 	 * @return the users for share
 	 */
-	ManageMeasureShareModel getUsersForShare(String measureId,
+	ManageMeasureShareModel getUsersForShare(String userName, String measureId,
 			int startIndex, int pageSize);
 	
 	/**

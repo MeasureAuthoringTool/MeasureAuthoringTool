@@ -3,23 +3,9 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.CustomPager;
-import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.MeasureNameLabel;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
-import mat.client.util.CellTableUtility;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.ShareLevel;
-
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.InputGroup;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -35,6 +21,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -42,6 +29,21 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+
+import mat.client.CustomPager;
+import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.MeasureNameLabel;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SearchWidgetBootStrap;
+import mat.client.shared.SpacerWidget;
+import mat.client.util.CellTableUtility;
+import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ShareLevel;
 
 /**
  * The Class ManageMeasureShareView.
@@ -64,15 +66,9 @@ public class ManageMeasureShareView implements ShareDisplay {
 	
 	/** The private check. */
 	private CheckBox privateCheck = new CheckBox();
-//	private ToggleSwitch privateCheck = new ToggleSwitch();
-//	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
-//			+ "a Measure Private.", "Private Measure", true);
-//	/** The search view. */
-//	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
-	/** The selection model. */
-	/*
-	 * private SingleSelectionModel<MeasureShareDTO> selectionModel;
-	 */
+	
+	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
+
 	/**
 	 * Instantiates a new manage measure share view.
 	 */
@@ -93,6 +89,12 @@ public class ManageMeasureShareView implements ShareDisplay {
 		// content.add(measureNameLabel);
 		content.add(horizontalPanel);
 		
+		//MAT-8907
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(getSearchWidget("-Search User Name-")); //searchWidgetBootStrap.getSearchWidget());
+		content.add(new SpacerWidget());
+		content.add(vp);		
+		content.add(new SpacerWidget());
 		// content.add(new Label("Select users with whom you wish to share modify access:"));
 		content.add(new SpacerWidget());
 		
@@ -332,4 +334,25 @@ public class ManageMeasureShareView implements ShareDisplay {
 	public void setPrivate(boolean isPrivate) {
 		privateCheck.setValue(isPrivate);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchButton()
+	 */
+	@Override
+	public HasClickHandlers getSearchButton() {
+		return searchWidgetBootStrap.getGo();
+	}
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchString()
+	 */
+	@Override
+	public HasValue<String> getSearchString() {
+		return searchWidgetBootStrap.getSearchBox();
+	}
+
+	public InputGroup getSearchWidget(String placeHolderText) {		
+		searchWidgetBootStrap.getSearchBox().getElement().setPropertyString("placeholder", placeHolderText);
+		return searchWidgetBootStrap.getSearchWidget();
+	}
+	
 }

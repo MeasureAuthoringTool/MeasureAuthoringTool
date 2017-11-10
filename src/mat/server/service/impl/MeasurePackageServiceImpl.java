@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -49,10 +53,6 @@ import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
 import mat.shared.ValidationUtility;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -320,11 +320,11 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getUsersForShare(java.lang.String, int, int)
+	 * @see mat.server.service.MeasurePackageService#getUsersForShare(String, java.lang.String, int, int)
 	 */
 	@Override
-	public List<MeasureShareDTO> getUsersForShare(final String measureId, final int startIndex, final int pageSize) {
-		return measurePackageDAO.getMeasureShareInfoForMeasure(measureId, startIndex - 1, pageSize);
+	public List<MeasureShareDTO> getUsersForShare(final String userName, final String measureId, final int startIndex, final int pageSize) {
+		return measurePackageDAO.getMeasureShareInfoForMeasure(userName, measureId, startIndex - 1, pageSize);
 	}
 	
 	/**

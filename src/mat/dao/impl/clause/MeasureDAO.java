@@ -12,21 +12,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.MeasureSearchFilterPanel;
-import mat.dao.search.GenericDAO;
-import mat.dao.service.DAOService;
-import mat.model.LockedUserInfo;
-import mat.model.SecurityRole;
-import mat.model.User;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureSet;
-import mat.model.clause.MeasureShare;
-import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.ShareLevel;
-import mat.model.cql.CQLLibraryShareDTO;
-import mat.server.LoggedInUserUtil;
-import mat.shared.StringUtility;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,6 +24,20 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
+
+import mat.client.measure.MeasureSearchFilterPanel;
+import mat.dao.search.GenericDAO;
+import mat.dao.service.DAOService;
+import mat.model.LockedUserInfo;
+import mat.model.SecurityRole;
+import mat.model.User;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureSet;
+import mat.model.clause.MeasureShare;
+import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ShareLevel;
+import mat.server.LoggedInUserUtil;
+import mat.shared.StringUtility;
 
 
 // TODO: Auto-generated Javadoc
@@ -589,6 +589,8 @@ mat.dao.clause.MeasureDAO {
 	 * This method returns a List of MeasureShareDTO objects which have
 	 * userId,firstname,lastname and sharelevel for the given measureId.
 	 * 
+	 * @param userName
+	 *            the user name entered for search 
 	 * @param measureId
 	 *            the measure id
 	 * @param startIndex
@@ -598,13 +600,18 @@ mat.dao.clause.MeasureDAO {
 	 * @return the measure share info for measure
 	 */
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(
+	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String userName,
 			String measureId, int startIndex, int pageSize) {
 		Criteria userCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(User.class);
 		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
 		//Added restriction for Active user's for User story MAT:2900.
 		userCriteria.add(Restrictions.eq("status.id", "1"));
+		//Added restriction for Search by user name MAT-8907.
+		if(StringUtils.isNotBlank(userName)) {
+			userCriteria.add(Restrictions.or(Restrictions.ilike("firstName", "%" + userName + "%"),
+					Restrictions.ilike("lastName", "%" + userName + "%")));
+		}
 		userCriteria.add(Restrictions.ne("id",
 				LoggedInUserUtil.getLoggedInUser()));
 		userCriteria.setFirstResult(startIndex);
@@ -614,10 +621,9 @@ mat.dao.clause.MeasureDAO {
 		List<User> userResults = userCriteria.list();
 		HashMap<String, MeasureShareDTO> userIdDTOMap = new HashMap<String, MeasureShareDTO>();
 		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
-		List<MeasureShareDTO> dtoList = new ArrayList<MeasureShareDTO>();
+		
 		for (User user : userResults) {
-			MeasureShareDTO dto = new MeasureShareDTO();
-			dtoList.add(dto);
+			MeasureShareDTO dto = new MeasureShareDTO();			
 			dto.setUserId(user.getId());
 			dto.setFirstName(user.getFirstName());
 			dto.setLastName(user.getLastName());
@@ -626,7 +632,7 @@ mat.dao.clause.MeasureDAO {
 			orderedDTOList.add(dto);
 		}
 		
-		if (dtoList.size() > 0) {
+		if (orderedDTOList.size() > 0) {
 			Criteria shareCriteria = getSessionFactory().getCurrentSession()
 					.createCriteria(MeasureShare.class);
 			shareCriteria.add(Restrictions.in("shareUser.id",

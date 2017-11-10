@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.model.DataType;
@@ -135,6 +134,8 @@ public interface MeasurePackageService {
 	/**
 	 * Gets the users for share.
 	 * 
+	 * @param userName
+	 *            - {@link String}.
 	 * @param measureId
 	 *            - {@link String}.
 	 * @param startIndex
@@ -143,7 +144,7 @@ public interface MeasurePackageService {
 	 *            - {@link Integer}.
 	 * @return {@link List} {@link MeasureShareDTO}.
 	 */
-	List<MeasureShareDTO> getUsersForShare(String measureId,
+	List<MeasureShareDTO> getUsersForShare(String userName, String measureId,
 			int startIndex, int pageSize);
 	
 	/**

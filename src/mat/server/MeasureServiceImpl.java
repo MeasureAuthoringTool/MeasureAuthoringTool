@@ -12,7 +12,6 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.MeasureService;
-import mat.client.measure.service.SaveMeasureNotesResult;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -166,12 +165,12 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getUsersForShare(java.lang.String, int, int)
+	 * @see mat.client.measure.service.MeasureService#getUsersForShare(String, java.lang.String, int, int)
 	 */
 	@Override
-	public ManageMeasureShareModel getUsersForShare(String measureId,
+	public ManageMeasureShareModel getUsersForShare(String userName, String measureId,
 			int startIndex, int pageSize) {
-		return this.getMeasureLibraryService().getUsersForShare(measureId, startIndex, pageSize);
+		return this.getMeasureLibraryService().getUsersForShare(userName, measureId, startIndex, pageSize);
 	}
 	
 	/* (non-Javadoc)

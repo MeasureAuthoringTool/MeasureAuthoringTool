@@ -101,11 +101,17 @@
 					<field name="codeName" type="java.lang.String">
 						<bind-xml name="codeName" node="attribute" />
 					</field>
+					<field name="codeIdentifier" type="java.lang.String">
+						<bind-xml name="codeIdentifier" node="attribute" />
+					</field>
 					<field name="codeSystemName" type="java.lang.String">
 						<bind-xml name="codeSystemName" node="attribute" />
 					</field>
 					<field name="codeSystemVersion" type="java.lang.String">
 						<bind-xml name="codeSystemVersion" node="attribute" />
+					</field>
+					<field name="codeSystemOID" type="java.lang.String">
+						<bind-xml name="codeSystemOID" node="attribute" />
 					</field>
 					<field name="displayName" type="java.lang.String">
 						<bind-xml name="displayName" node="attribute" />
@@ -115,6 +121,9 @@
 					</field>
 					<field name="suffix" type="java.lang.String">
 						<bind-xml name="suffix" node="attribute" />
+					</field>
+					<field name="readOnly" type="java.lang.Boolean">
+						<bind-xml name="readOnly" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

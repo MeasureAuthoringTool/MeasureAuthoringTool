@@ -447,11 +447,17 @@ public class CQLUtilityClass {
 				CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
 					convertedCQLDataSet.setCodeListName(tempDataSet.getCodeName());
 					convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
+					convertedCQLDataSet.setCodeSystemOID(tempDataSet.getCodeSystemOID());
+					
+					convertedCQLDataSet.setCodeIdentifier(tempDataSet.getCodeIdentifier());
 					convertedCQLDataSet.setId(tempDataSet.getId());
 					convertedCQLDataSet.setOid(tempDataSet.getCodeOID());
 					convertedCQLDataSet.setVersion(tempDataSet.getCodeSystemVersion());
 					convertedCQLDataSet.setDisplayName(tempDataSet.getDisplayName());
 					convertedCQLDataSet.setSuffix(tempDataSet.getSuffix());
+
+					convertedCQLDataSet.setReadOnly(tempDataSet.isReadOnly());
+					
 					convertedCQLDataSet.setType("code");
 					convertedCQLDataSetList.add(convertedCQLDataSet);
 

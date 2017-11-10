@@ -61,6 +61,7 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.ConstantMessages;
 
 
 
@@ -86,8 +87,17 @@ public class CQLCodesView {
 	}
 	private static final String BIRTHDATE = "Birthdate";
 
-	public static final String DEAD = "Dead";
+	private static final String DEAD = "Dead";
+	
+	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
+	
+	private static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
 
+	/** The Constant EXPIRED_OID. */
+	private static final String DEAD_OID = "419099009";
+	
+	/** The Constant BIRTHDATE. */
+	private static final String BIRTHDATE_OID = "21112-8";
 	
 	
 	/** The observer. */
@@ -905,11 +915,13 @@ public class CQLCodesView {
 					HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
-				if ((object != null) && !object.getCodeName().equals(DEAD) && !object.getCodeName().equals(BIRTHDATE)) {
-					cell.render(context, hasCell.getValue(object), sb);
-				} else {
+				if((object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
+						|| (object.getCodeOID().equals(DEAD_OID) && object.getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID))) {
 					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+				} else {
+					cell.render(context, hasCell.getValue(object), sb);
 				}
+				
 				sb.appendHtmlConstant("</td>");
 			}
 			
@@ -1019,7 +1031,8 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				// Delete button is not created for default codes - Dead and Birthdate.
-				if(object.getCodeName().equals(DEAD) || object.getCodeName().equals(BIRTHDATE)){
+				if((object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
+						|| (object.getCodeOID().equals(DEAD_OID) && object.getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID))){
 					sb.appendHtmlConstant("<span></span>");
 				}else if (object.isUsed()) {
 					sb.appendHtmlConstant("<button type=\"button\" title='"

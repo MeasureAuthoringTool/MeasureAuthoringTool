@@ -44,6 +44,7 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The code system name. */
 	private String codeSystemName;
 	
+	
 	/** The data type. */
 	private String dataType;
 	
@@ -55,6 +56,21 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	
 	/** The oid. */
 	private String oid;
+	
+	/**
+	 * The code system OID
+	 */
+	private String codeSystemOID;
+	
+	/**
+	 * The code identifier
+	 */
+	private String codeIdentifier; 
+	
+	/**
+	 * Is read only flag
+	 */
+	private boolean isReadOnly; 
 	
 	/** The supp data element. */
 	private boolean suppDataElement;
@@ -459,6 +475,42 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+
+
+	public String getCodeSystemOID() {
+		return codeSystemOID;
+	}
+
+
+
+	public void setCodeSystemOID(String codeSystemOID) {
+		this.codeSystemOID = codeSystemOID;
+	}
+
+
+
+	public String getCodeIdentifier() {
+		return codeIdentifier;
+	}
+
+
+
+	public void setCodeIdentifier(String codeIdentifier) {
+		this.codeIdentifier = codeIdentifier;
+	}
+
+
+
+	public boolean isReadOnly() {
+		return isReadOnly;
+	}
+
+
+
+	public void setReadOnly(boolean isReadOnly) {
+		this.isReadOnly = isReadOnly;
 	}
 
 

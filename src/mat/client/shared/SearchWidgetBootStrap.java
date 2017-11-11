@@ -15,7 +15,7 @@ import mat.client.util.MatTextBox;
 
 public class SearchWidgetBootStrap {
 	private Button go;
-	private MatTextBox searchBox = new MatTextBox();;
+	private MatTextBox searchBox = new MatTextBox();
 	
 	public SearchWidgetBootStrap(String buttonText , String placeHolderText){
 		go = new Button(buttonText);
@@ -25,11 +25,8 @@ public class SearchWidgetBootStrap {
 		go.setSize(ButtonSize.SMALL);
 		go.setTitle(buttonText);
 		go.setPull(Pull.LEFT);
-		/*searchBox.removeStyleName("gwt-TextBox");
-		searchBox.setStyleName("Text-Box");*/
-		
+	
 		searchBox.setHeight("30px");
-		//searchBox.setPlaceholder(placeHolderText);
 		searchBox.setTitle(placeHolderText);
 	}
 	
@@ -40,12 +37,14 @@ public class SearchWidgetBootStrap {
 		iGroup.add(searchBox);
 		iGroup.add(iGroupButton);
 		iGroup.setWidth("300px");
-		/*iGroup.getElement().getStyle().setMarginLeft(10, Unit.PX);
-		iGroup.getElement().getStyle().setMarginRight(5, Unit.PX);
-		iGroup.getElement().getStyle().setMarginBottom(7, Unit.PX);*/
 		return iGroup;
 	}
 
+	public InputGroup getSearchWidget(String placeHolderText) {		
+		getSearchBox().getElement().setPropertyString("placeholder", placeHolderText);
+		return getSearchWidget();
+	}
+	
 	public Button getGo() {
 		return go;
 	}

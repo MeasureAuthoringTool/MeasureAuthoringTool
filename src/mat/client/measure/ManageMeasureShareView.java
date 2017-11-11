@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.InputGroup;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -91,7 +90,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		
 		//MAT-8907
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(getSearchWidget("-Search User Name-")); //searchWidgetBootStrap.getSearchWidget());
+		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-"));
 		content.add(new SpacerWidget());
 		content.add(vp);		
 		content.add(new SpacerWidget());
@@ -100,9 +99,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
-		/*
-		 * Widget searchViewWidget = searchView.asWidget(); searchViewWidget.setWidth("60%"); content.add(searchViewWidget);
-		 */
+
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(buttonBar);
@@ -348,11 +345,6 @@ public class ManageMeasureShareView implements ShareDisplay {
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
-	}
-
-	public InputGroup getSearchWidget(String placeHolderText) {		
-		searchWidgetBootStrap.getSearchBox().getElement().setPropertyString("placeholder", placeHolderText);
-		return searchWidgetBootStrap.getSearchWidget();
 	}
 	
 }

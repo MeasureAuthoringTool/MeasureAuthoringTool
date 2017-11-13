@@ -4,6 +4,8 @@ import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
+import mat.client.clause.cqlworkspace.CQLPopulationWorkSpacePresenter;
+import mat.client.clause.cqlworkspace.CQLPopulationWorkSpaceView;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceView;
 import mat.client.event.MATClickHandler;
@@ -20,6 +22,7 @@ import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SkipListBuilder;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -137,11 +140,12 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
 		//measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
 		measureComposerTabLayout.addPresenter(buildCQLWorkSpaceTab(), "CQL Workspace");
-		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
+		measureComposerTabLayout.addPresenter(buildCQLPopulationWorkspaceTab(), "Population Workspace");
 		//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
+		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Old Population Workspace");
 		measureComposerTabLayout.setHeight("98%");
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(measureComposerTab, measureComposerTabLayout);
@@ -384,6 +388,19 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 				new CQLWorkSpacePresenter(cqlView);
 		cqlPresenter.getWidget();
 		return cqlPresenter;
+	}
+	
+	/**
+	* Builds the cql work space tab.
+	*
+	* @return the mat presenter
+	*/
+	private MatPresenter buildCQLPopulationWorkspaceTab() {		
+		CQLPopulationWorkSpaceView cqlPopulationWorkspaceView = new CQLPopulationWorkSpaceView();
+		CQLPopulationWorkSpacePresenter cqlPopulationPresenter =
+				new CQLPopulationWorkSpacePresenter(cqlPopulationWorkspaceView);
+		cqlPopulationPresenter.getWidget();
+		return cqlPopulationPresenter;
 	}
 	
 	/**

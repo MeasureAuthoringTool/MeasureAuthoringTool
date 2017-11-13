@@ -200,7 +200,7 @@ public class MessageDelegate {
 			"If you want to continue say Yes or No to cancel.";
 	
 	/** The successfully pasted qdm elements in measure. */
-	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully.";
+	public final String SUCCESSFULLY_VALUESET_PASTE = "Selected value sets have been pasted successfully.";
 	
 	public final String SUCCESSFULLY_PASTED_CODES_IN_MEASURE = "Selected Codes have been pasted successfully.";
 	
@@ -2644,8 +2644,8 @@ public class MessageDelegate {
 	 *
 	 * @return the successfully pasted qdm elements in measure
 	 */
-	public String getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE() {
-		return SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE;
+	public String getSUCCESSFULLY_VALUESET_PASTE() {
+		return SUCCESSFULLY_VALUESET_PASTE;
 	}
 	
 	/**

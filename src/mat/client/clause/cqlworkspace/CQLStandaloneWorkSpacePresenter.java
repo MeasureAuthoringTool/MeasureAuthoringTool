@@ -4543,13 +4543,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								if (result != null && result.getQualityDataDTO() != null) {
 									setAppliedValueSetListInTable(result.getQualityDataDTO());
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-											.createAlert("Selected value sets have been pasted successfully.");
+											.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFULLY_VALUESET_PASTE());
 								}
 							}
 						});
 			} else {
 				showSearchingBusy(false);
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Selected value sets have been pasted successfully.");
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCCESSFULLY_VALUESET_PASTE());
 			}
 			MatContext.get().getGlobalCopyPaste().getCopiedValueSetList().clear();
 			;

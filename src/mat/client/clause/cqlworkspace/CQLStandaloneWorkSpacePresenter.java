@@ -4324,7 +4324,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		} else {
 			showSearchingBusy(false);
-			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
+			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().
 					getMessageDelegate().CLIPBOARD_DOES_NOT_CONTAIN_CODES);
 		}
 	}

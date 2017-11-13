@@ -4610,7 +4610,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		} else {
 			showSearchingBusy(false);
-			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("The clipboard does not contain any codes to be pasted at this time.");
+			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
+					getMessageDelegate().CLIPBOARD_DOES_NOT_CONTAIN_CODES);
 		}
 	}
 /**

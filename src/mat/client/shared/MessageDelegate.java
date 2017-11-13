@@ -203,6 +203,8 @@ public class MessageDelegate {
 	
 	public final String SUCCESSFULLY_PASTED_CODES_IN_MEASURE = "Selected Codes have been pasted successfully.";
 	
+	public final String CLIPBOARD_DOES_NOT_CONTAIN_CODES = "The clipboard does not contain any codes to be pasted at this time.";
+	
 	/** The copy qdm select atleast one. */
 	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied Value set element to copy.";
 	

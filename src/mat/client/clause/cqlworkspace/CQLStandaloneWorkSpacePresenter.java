@@ -4219,7 +4219,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
 	private void copyValueSets() {
 		searchDisplay.resetMessageDisplay();
-		if(searchDisplay.getValueSetView().getQdmSelectedList().size() > 0){
+		if(searchDisplay.getValueSetView().getQdmSelectedList() != null &&
+				searchDisplay.getValueSetView().getQdmSelectedList().size() > 0){
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedValueSetList(searchDisplay.getValueSetView().getQdmSelectedList());
 			MatContext.get().setGlobalCopyPaste(gbCopyPaste);

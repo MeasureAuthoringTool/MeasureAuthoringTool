@@ -196,8 +196,7 @@ public class MessageDelegate {
 	public final String  SUCCESSFUL_OID_RETREIVAL_FROM_VSAC = "Value set successfully retrieved from VSAC.";
 	
 	/** The warning pasting in applied qdm elements. */
-	public final String WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS = "You are trying to paste QDM elements in this measure." +
-			"If you want to continue say Yes or No to cancel.";
+	public final String WARNING_PASTING_IN_VALUESET = "The clipboard does not contain any value sets to be pasted at this time.";
 	
 	/** The successfully pasted qdm elements in measure. */
 	public final String SUCCESSFULLY_VALUESET_PASTE = "Selected value sets have been pasted successfully.";
@@ -2626,8 +2625,8 @@ public class MessageDelegate {
 	 *
 	 * @return the warning pasting in applied qdm elements
 	 */
-	public String getWARNING_PASTING_IN_APPLIED_QDM_ELEMENTS() {
-		return WARNING_PASTING_IN_APPLIED_QDM_ELEMENTS;
+	public String getWARNING_PASTING_IN_VALUESET() {
+		return WARNING_PASTING_IN_VALUESET;
 	}
 	
 	/**

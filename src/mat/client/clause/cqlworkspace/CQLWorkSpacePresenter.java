@@ -4494,7 +4494,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if(searchDisplay.getValueSetView().getQdmSelectedList().size() > 0){
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedValueSetList(searchDisplay.getValueSetView().getQdmSelectedList());
-			gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());
 			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
@@ -4798,7 +4797,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if(searchDisplay.getCodesView().getCodesSelectedList().size() > 0){
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedCodeList(searchDisplay.getCodesView().getCodesSelectedList());
-			gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());
 			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(

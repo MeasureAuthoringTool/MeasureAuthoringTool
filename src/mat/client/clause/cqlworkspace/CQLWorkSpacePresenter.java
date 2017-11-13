@@ -5,6 +5,45 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtbootstrap3.client.shared.event.HideEvent;
+import org.gwtbootstrap3.client.shared.event.HideHandler;
+import org.gwtbootstrap3.client.shared.event.ShowEvent;
+import org.gwtbootstrap3.client.shared.event.ShowHandler;
+import org.gwtbootstrap3.client.ui.PanelCollapse;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -47,48 +86,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-import org.gwtbootstrap3.client.shared.event.HideEvent;
-import org.gwtbootstrap3.client.shared.event.HideHandler;
-import org.gwtbootstrap3.client.shared.event.ShowEvent;
-import org.gwtbootstrap3.client.shared.event.ShowHandler;
-import org.gwtbootstrap3.client.ui.PanelCollapse;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-//import org.gwtbootstrap3.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLPresenterNavBarWithList.
  */

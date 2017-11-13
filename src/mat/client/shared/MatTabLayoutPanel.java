@@ -360,8 +360,8 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				CQLWorkSpacePresenter cqlWorkspacePresenter = (CQLWorkSpacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(CQLWorkspaceTab);
 				validateCQLWorkspaceTab(cqlWorkspacePresenter, selectedIndex);
-			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2) {
-				int populationWorkspaceTab = 2;
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 6) {
+				int populationWorkspaceTab = 6;
 				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);

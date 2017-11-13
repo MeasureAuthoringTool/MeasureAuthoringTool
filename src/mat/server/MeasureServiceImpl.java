@@ -24,6 +24,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -679,6 +680,11 @@ MeasureService {
 	@Override
 	public SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject){
 		return this.getMeasureLibraryService().saveCQLCodestoMeasure(transferObject);
+	}
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodeListToMeasure(List<CQLCode> codeList, String measureId){
+		return this.getMeasureLibraryService().saveCQLCodeListToMeasure(codeList, measureId);
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.clause.CQLLibrary;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -115,6 +116,8 @@ public interface CQLLibraryServiceInterface {
 	List<CQLLibraryOwnerReportDTO> getCQLLibrariesForOwner();
 
 	SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject);
+	
+	SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId);
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 

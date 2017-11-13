@@ -20,6 +20,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -719,6 +720,8 @@ public interface MeasureServiceAsync {
 
 	void saveCQLCodestoMeasure(MatCodeTransferObject transferObject, AsyncCallback<SaveUpdateCQLResult> callback);
 
+	void saveCQLCodeListToMeasure(List<CQLCode> codeList, String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
+	
 	void getCQLCodes(String measureID, AsyncCallback<CQLCodeWrapper> callback);
 
 	void deleteCode(String toBeDeletedId, String measureID, AsyncCallback<SaveUpdateCQLResult> callback);

@@ -5,6 +5,46 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import mat.client.CqlComposerPresenter;
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
+import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
+import mat.client.clause.event.QDSElementCreatedEvent;
+import mat.client.codelist.HasListBox;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.measure.service.CQLLibraryServiceAsync;
+import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.ValueSetNameInputValidator;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
+import mat.model.CQLValueSetTransferObject;
+import mat.model.CodeListSearchDTO;
+import mat.model.GlobalCopyPasteObject;
+import mat.model.MatCodeTransferObject;
+import mat.model.MatValueSet;
+import mat.model.VSACVersion;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLLibraryDataSetObject;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLErrors;
+import mat.shared.CQLIdentifierObject;
+import mat.shared.CQLModelValidator;
+import mat.shared.ConstantMessages;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.SaveUpdateCQLResult;
+
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
@@ -47,6 +87,45 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.CqlComposerPresenter;
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
+import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
+import mat.client.clause.event.QDSElementCreatedEvent;
+import mat.client.codelist.HasListBox;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.event.CQLLibrarySelectedEvent;
+import mat.client.measure.service.CQLLibraryServiceAsync;
+import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.MatContext;
+import mat.client.shared.ValueSetNameInputValidator;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
+import mat.model.CQLValueSetTransferObject;
+import mat.model.CodeListSearchDTO;
+import mat.model.GlobalCopyPasteObject;
+import mat.model.MatCodeTransferObject;
+import mat.model.MatValueSet;
+import mat.model.VSACVersion;
+import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctionArgument;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLLibraryDataSetObject;
+import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLErrors;
+import mat.shared.CQLIdentifierObject;
+import mat.shared.CQLModelValidator;
+import mat.shared.ConstantMessages;
+import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.SaveUpdateCQLResult;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
@@ -4500,32 +4579,39 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	 * from any Measure and can be pasted to any measure.
 	 */
 	private void pasteCodes() {
-		
 		searchDisplay.resetMessageDisplay();
-		/*GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
+		GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
 		if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedCodeList().size()>0) ){
-			gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
-			MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
-					new AsyncCallback<SaveUpdateCodeListResult>() {
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					searchDisplay.getErrorMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());
-				}
-				
-				@Override
-				public void onSuccess(
-						SaveUpdateCodeListResult result) {
-					
-					getAppliedQDMList(true);
-					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE());
-				}
-			});
-			
-		}*/
+			List<CQLCode> codesToPaste = searchDisplay.getCodesView().setMatCodeList(gbCopyPaste.getCopiedCodeList(), appliedCodeTableList);
+			if(codesToPaste.size() > 0) {
+				String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
+				showSearchingBusy(true);
+				cqlService.saveCQLCodeListToCQLLibrary(codesToPaste, cqlLibraryId, new AsyncCallback<SaveUpdateCQLResult>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						Window.alert(MatContext.get().getMessageDelegate()
+								.getGenericErrorMessage());
+						showSearchingBusy(false);
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
+								getMessageDelegate().SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
+						searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+						appliedCodeTableList.clear();
+						appliedCodeTableList.addAll(result.getCqlCodeList());
+						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService().checkForEditPermission());
+						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
+						showSearchingBusy(false);
+					}
+				});
+				MatContext.get().getGlobalCopyPaste().getCopiedCodeList().clear();
+			}
+		} else {
+			showSearchingBusy(false);
+			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("The clipboard does not contain any codes to be pasted at this time.");
+		}
 	}
 /**
  * Adds the code search panel handlers.
@@ -5555,6 +5641,8 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCodesView()
 					.setWidgetsReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
 			getUsedCodes();
+			boolean isEnabled = MatContext.get().getLibraryLockService().checkForEditPermission();
+			searchDisplay.getCodesView().getPasteButton().setEnabled(isEnabled);
 		}
 		searchDisplay.getCodesView().setHeading("CQL Library Workspace > Codes", "codesContainerPanel");
 		Mat.focusSkipLists("CqlComposer");

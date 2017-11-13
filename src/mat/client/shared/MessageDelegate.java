@@ -202,6 +202,8 @@ public class MessageDelegate {
 	/** The successfully pasted qdm elements in measure. */
 	public final String SUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE = "Selected QDM elements have been pasted successfully.";
 	
+	public final String SUCCESSFULLY_PASTED_CODES_IN_MEASURE = "Selected Codes have been pasted successfully.";
+	
 	/** The copy qdm select atleast one. */
 	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied Value set element to copy.";
 	

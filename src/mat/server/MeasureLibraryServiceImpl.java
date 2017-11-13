@@ -102,6 +102,7 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
 import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -6168,6 +6169,54 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	@Override
+	public SaveUpdateCQLResult saveCQLCodeListToMeasure(List<CQLCode> codeList, String measureId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		result.setSuccess(true);
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
+			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+			if (xmlModel != null && !xmlModel.getXml().isEmpty()) {
+				for(CQLCode cqlCode: codeList) {
+					MatCodeTransferObject transferObject = new MatCodeTransferObject();
+					transferObject.setCqlCode(cqlCode);
+					transferObject.setId(measureId);
+					SaveUpdateCQLResult codeResult = getCqlService().saveCQLCodes(xmlModel.getXml(), transferObject);
+					if (codeResult != null && codeResult.isSuccess()) {
+						String newXml = appendCQLCodesInMeasureXml(codeResult, measureId, xmlModel);
+						if(newXml != null && !newXml.isEmpty()){
+							xmlModel.setXml(newXml);
+
+							CQLCodeSystem codeSystem = new CQLCodeSystem();
+							codeSystem.setCodeSystem(cqlCode.getCodeSystemOID());
+							codeSystem.setCodeSystemName(cqlCode.getCodeSystemName());
+							codeSystem.setCodeSystemVersion(cqlCode.getCodeSystemVersion());
+							SaveUpdateCQLResult updatedResult = getCqlService().saveCQLCodeSystem(xmlModel.getXml(), codeSystem);
+							if (updatedResult.isSuccess()) {
+								newXml = appendCQLCodeSystemInMeasureXml(updatedResult, measureId, xmlModel);
+								if(newXml != null && !newXml.isEmpty()){
+									xmlModel.setXml(newXml);
+								}
+							}
+						}
+						result.setXml(xmlModel.getXml());
+					} else {
+						result.setSuccess(false);
+						break;
+					}
+				}
+				if(result.isSuccess()) {
+					getService().saveMeasureXml(xmlModel);
+					CQLCodeWrapper wrapper = getCqlService().getCQLCodes(xmlModel.getXml());
+					if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
+						result.setCqlCodeList(wrapper.getCqlCodeList());
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+	
+	@Override
 	public CQLCodeWrapper getCQLCodes(String measureID) {
 		CQLCodeWrapper cqlCodeWrapper = new CQLCodeWrapper();
 		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureID);
@@ -6180,7 +6229,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/**
-	 * Save CQL valueset in measure xml.
+	 * Save CQL codes in measure xml.
 	 *
 	 * @param result
 	 *            the result
@@ -6197,7 +6246,50 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return appendAndSaveNode(xmlModal, nodeName);
 		
 	}
+	
+	/**
+	 * append CQL codes in measure xml.
+	 *
+	 * @param saveUpdateCQLResult
+	 *            the result
+	 */
+	private String appendCQLCodesInMeasureXml(SaveUpdateCQLResult saveUpdateCQLResult, String measureId, MeasureXmlModel xmlModel) {
+		String result = new String();
+		String nodeName = "code";
+		MeasureXmlModel codeXmlModel = new MeasureXmlModel();
+		codeXmlModel.setMeasureId(measureId);
+		codeXmlModel.setParentNode("//cqlLookUp/codes");
+		codeXmlModel.setToReplaceNode(nodeName);
+		System.out.println("CODE NEW XML " + saveUpdateCQLResult.getXml());
+		codeXmlModel.setXml(saveUpdateCQLResult.getXml());
+							
+		if ((xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml()))
+				&& (nodeName != null && StringUtils.isNotBlank(nodeName))) {
+			result = callAppendNode(xmlModel, codeXmlModel.getXml(), nodeName, codeXmlModel.getParentNode());
+		}
+		return result;
+	}
 
+	/**
+	 * append CQL code system in measure xml.
+	 *
+	 * @param saveUpdateCQLResult
+	 *            the result
+	 */
+	private String appendCQLCodeSystemInMeasureXml(SaveUpdateCQLResult saveUpdateCQLResult, String measureId, MeasureXmlModel xmlModel) {
+		String result = new String();
+		final String systemNodeName = "codeSystem";
+		MeasureXmlModel codeSystemXmlModel = new MeasureXmlModel();
+		codeSystemXmlModel.setMeasureId(measureId);
+		codeSystemXmlModel.setParentNode("//cqlLookUp/codeSystems");
+		codeSystemXmlModel.setToReplaceNode(systemNodeName);
+		System.out.println("codeSystems NEW XML " + saveUpdateCQLResult.getXml());
+		codeSystemXmlModel.setXml(saveUpdateCQLResult.getXml());
+		
+		result = callAppendNode(xmlModel, codeSystemXmlModel.getXml(), systemNodeName, codeSystemXmlModel.getParentNode());
+		return result;
+	}
+	
 	
 	private String saveCQLCodeSystemInMeasureXml(SaveUpdateCQLResult result, String measureId) {
 		final String nodeName = "codeSystem";

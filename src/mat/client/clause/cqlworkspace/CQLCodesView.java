@@ -1116,6 +1116,17 @@ public class CQLCodesView {
 
 	public List<CQLCode> getCodesSelectedList() {
 		return codesSelectedList;
+	}
+
+	public List<CQLCode> setMatCodeList(List<CQLCode> copiedCodeList, List<CQLCode> appliedCodeTableList) {
+		List<CQLCode> codesToPaste = new ArrayList<CQLCode>();
+		for(CQLCode cqlCode: copiedCodeList) {
+			boolean isDuplicate = appliedCodeTableList.stream().anyMatch(c -> c.getDisplayName().equals(cqlCode.getDisplayName()));
+			if(!isDuplicate) {
+				codesToPaste.add(cqlCode);
+			}
+		}
+		return codesToPaste;
 	}	
 	
 }

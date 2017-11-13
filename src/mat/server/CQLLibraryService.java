@@ -55,6 +55,7 @@ import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibrarySet;
 import mat.model.clause.ShareLevel;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -1335,6 +1336,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return result;
 	}
 	
+	private SaveUpdateCQLResult updateCodeSystem(String xml, CQLCode cqlCode) {
+		CQLCodeSystem codeSystem = new CQLCodeSystem();
+		codeSystem.setCodeSystem(cqlCode.getCodeSystemOID());
+		codeSystem.setCodeSystemName(cqlCode.getCodeSystemName());
+		codeSystem.setCodeSystemVersion(cqlCode.getCodeSystemVersion());
+		SaveUpdateCQLResult result = cqlService.saveCQLCodeSystem(xml, codeSystem);
+		return result;
+	}
+	
 	@Override
 	public SaveUpdateCQLResult saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject) {
 		
@@ -1353,12 +1363,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						cqlLibraryDAO.refresh(cqlLibrary);
 						System.out.println("newXml ::: " + newXml);
 						
-						
-						CQLCodeSystem codeSystem = new CQLCodeSystem();
-						codeSystem.setCodeSystem(transferObject.getCqlCode().getCodeSystemOID());
-						codeSystem.setCodeSystemName(transferObject.getCqlCode().getCodeSystemName());
-						codeSystem.setCodeSystemVersion(transferObject.getCqlCode().getCodeSystemVersion());
-						SaveUpdateCQLResult updatedResult = cqlService.saveCQLCodeSystem(newXml, codeSystem);
+						SaveUpdateCQLResult updatedResult = updateCodeSystem(newXml, transferObject.getCqlCode());
 						if(updatedResult.isSuccess()) {
 							newXml = saveCQLCodeSystemInLibrary(cqlLibrary, updatedResult);
 							System.out.println("Updated newXml ::: " + newXml);
@@ -1371,6 +1376,73 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return result;
 	}
 
+	
+	@Override
+	public SaveUpdateCQLResult saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId) {
+		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		result.setSuccess(true);
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+			if (cqlLibrary != null) {
+				String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+				if(!cqlLibraryXml.isEmpty()){
+					for(CQLCode cqlCode: codeList) {
+						MatCodeTransferObject transferObject = new MatCodeTransferObject();
+						transferObject.setCqlCode(cqlCode);
+						transferObject.setId(libraryId);
+						SaveUpdateCQLResult codeResult = cqlService.saveCQLCodes(cqlLibraryXml,transferObject);
+						if(codeResult != null && codeResult.isSuccess()) {
+							cqlLibraryXml = appendCQLCodeInLibrary(cqlLibraryXml, codeResult);
+							SaveUpdateCQLResult updatedResult = updateCodeSystem(cqlLibraryXml, transferObject.getCqlCode());
+							if(updatedResult.isSuccess()) {
+								cqlLibraryXml = appendCQLCodeSystemInLibrary(cqlLibraryXml, updatedResult);
+							}
+							result.setXml(cqlLibraryXml);
+						} else {
+							result.setSuccess(false);
+							break;
+						}
+					}
+					
+					if(result.isSuccess() && result.getXml() != null && !StringUtils.isEmpty(result.getXml())){
+						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
+						save(cqlLibrary);
+						result.setCqlCodeList(getSortedCQLCodes(result.getXml()).getCqlCodeList());
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+	
+	/**
+	 * @param cqlLibrary
+	 * @param codeResult
+	 */
+	private String appendCQLCodeInLibrary(String cqlLibraryXml, SaveUpdateCQLResult codeResult) {
+		String result = cqlLibraryXml;
+		String nodeName = "code";
+		String parentNode = "//cqlLookUp/codes";
+		result = callAppendNode(cqlLibraryXml, codeResult.getXml(), nodeName, parentNode);
+		System.out.println("newXml ::: " + result);
+		return result;
+	}
+	
+	/**
+	 * @param cqlLibrary
+	 * @param updatedResult
+	 */
+	private String appendCQLCodeSystemInLibrary(String cqlLibraryXml, SaveUpdateCQLResult updatedResult) {
+		String result = cqlLibraryXml;
+		String systemNode = "codeSystem";
+		String systemParentNode = "//cqlLookUp/codeSystems";
+		result = callAppendNode(cqlLibraryXml, updatedResult.getXml(), systemNode, systemParentNode);
+		System.out.println("Updated newXml ::: " + result);
+		return result;
+	}
+	
+	
 	/**
 	 * @param cqlLibrary
 	 * @param updatedResult

@@ -21,6 +21,7 @@ import mat.model.Organization;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
@@ -661,6 +662,8 @@ public interface MeasureService extends RemoteService {
 	VsacApiResult updateCQLVSACValueSets(String currentMeasureId, String expansionId);
 
 	SaveUpdateCQLResult saveCQLCodestoMeasure(MatCodeTransferObject transferObject);
+	
+	SaveUpdateCQLResult saveCQLCodeListToMeasure(List<CQLCode> codeList, String measureId);
 
 	CQLCodeWrapper getCQLCodes(String measureID);
 

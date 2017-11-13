@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
@@ -114,6 +115,8 @@ public interface CQLLibraryServiceAsync {
 
 	void saveCQLCodestoCQLLibrary(MatCodeTransferObject transferObject, AsyncCallback<SaveUpdateCQLResult> callback);
 
+	void saveCQLCodeListToCQLLibrary(List<CQLCode> codeList, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
+	
 	void deleteCode(String toBeDeletedId, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void deleteCQLLibrary(String cqllibId, String loginUserId, AsyncCallback<Void> callback);

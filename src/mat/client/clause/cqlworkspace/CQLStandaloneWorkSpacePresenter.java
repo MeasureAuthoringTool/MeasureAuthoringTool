@@ -4279,7 +4279,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
 	private void copyCodes() {
 		searchDisplay.resetMessageDisplay();
-		if(searchDisplay.getCodesView().getCodesSelectedList().size() > 0){
+		if(searchDisplay.getCodesView().getCodesSelectedList() != null && searchDisplay.getCodesView().getCodesSelectedList().size() > 0){
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedCodeList(searchDisplay.getCodesView().getCodesSelectedList());
 			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
@@ -4318,6 +4318,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						appliedCodeTableList.addAll(result.getCqlCodeList());
 						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService().checkForEditPermission());
 						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
+						//Temporary fix to update codes for insert Icon.
+						getAppliedValueSetList();
 						showSearchingBusy(false);
 					}
 				});

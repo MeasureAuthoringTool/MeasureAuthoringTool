@@ -1597,13 +1597,20 @@ var Autocomplete = function() {
     
     this.getSpecificKeyWords = function(keyWordArray,matches, keyword){
     	for(var i=0;i<keyWordArray.length;i++){
+    	
+    		var docHTMLFinal = keyWordArray[i];
+    		if(docHTMLFinal.length > 512) {
+    			docHTMLFinal = keyWordArray[i].substring(0, 513); 
+    		} 
+    	
+    	
     		matches.push(
     				{
     	                name: keyWordArray[i],
     	                value: keyWordArray[i],
     	                score: 1,
     	                meta: keyword, 
-    	                docHTML: keyWordArray[i]
+    	                docHTML: docHTMLFinal
     	            }
     				);
     	}

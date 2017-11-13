@@ -124,6 +124,20 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 			vp.add(jsonRadio);
 		}				
 		vp.add(eCQMPackageRadio);	
+		resetRadioButtonValues();
+	}
+
+	/**
+	 * This method will reset the values of Radio button.
+	 * eCQMPackageRadio is set to true(selected) and all other radio buttons 
+	 * (irrespective of them being visible on the page) are set to false.
+	 */
+	private void resetRadioButtonValues() {
+		simpleXMLRadio.setValue(false);
+		eCQMRadio.setValue(false);
+		cqlLibraryRadio.setValue(false);
+		elmRadio.setValue(false);
+		jsonRadio.setValue(false);
 		eCQMPackageRadio.setValue(true);
 	}
 

@@ -4542,7 +4542,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			;
 		} else {
 			showSearchingBusy(false);
-			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("The clipboard does not contain any value sets to be pasted at this time.");
+			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWARNING_PASTING_IN_VALUESET());
 		}
 		
 	}

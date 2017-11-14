@@ -29,9 +29,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	private SimplePanel panel = new SimplePanel();
 
 	/** The clicked menu. */
-	private String currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
+	private String currentSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
 	/** The next clicked menu. */
-	private String nextSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
+	private String nextSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
 
 	/** The search display. */
 	private ViewDisplay searchDisplay;
@@ -221,8 +221,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
-		nextSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
+		currentSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
+		nextSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
 
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
@@ -255,11 +255,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			addLeftNavEventHandler();
 			searchDisplay.resetMessageDisplay();
 			panel.add(searchDisplay.asWidget());
-			initialPopulationEvent();
+			viewPopulationsEvent();
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		
+		}		
 	}	
 
 	

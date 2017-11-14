@@ -4587,6 +4587,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	private void deleteCode() {
+		searchDisplay.resetMessageDisplay();
 		showSearchingBusy(true);
 		MatContext.get().getMeasureService().deleteCode(
 				searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedCodesObjId(),

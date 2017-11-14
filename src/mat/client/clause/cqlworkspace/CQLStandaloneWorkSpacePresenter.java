@@ -3485,6 +3485,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	}
 
 	private void deleteCode(){
+		searchDisplay.resetMessageDisplay();
 		showSearchingBusy(true);
 		MatContext.get().getCQLLibraryService().deleteCode(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedCodesObjId(), MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 

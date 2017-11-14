@@ -201,6 +201,9 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_DENOMINATOR = "denominator";
 	public static final String CQL_NUMERATOREXCLUSIONS = "numeratorexclusions";
 	public static final String CQL_DENOMINATOREXCLUSIONS = "denominatorexclusions";
+	public static final String CQL_DENOMINATOREXCEPTIONS = "denominatorexceptions";
+	public static final String CQL_MEASUREPOPULATIONS = "measurepopulations";
+	public static final String CQL_MEASUREPOPULATIONEXCLUSIONS = "measurepopulationexclusions";
 	public static final String CQL_STRATIFICATIONS = "stratifications";
 	public static final String CQL_MEASUREOBSERVATIONS = "measureobservations";
 	public static final String CQL_VIEWPOPULATIONS = "viewpopulations";

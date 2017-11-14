@@ -1,15 +1,15 @@
 package mat.client.clause.cqlworkspace;
 
+import mat.client.Mat;
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
+
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import mat.client.Mat;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -95,11 +95,9 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	 * Builds the view.
 	 */
 	@Override
-	public void buildView() {
+	public void buildView(com.google.gwt.xml.client.Document document) {
 		resetAll();
-		//unsetEachSectionSelectedObject();
-	
-		//buildGeneralInformation();
+		
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");
 		mainPanel.add(new SpacerWidget());
@@ -110,7 +108,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		resetMessageDisplay();
 
 		mainHPPanel.addStyleName("cqlRightMessage");
-		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
+		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView(document));
 		mainHPPanel.add(mainPanel);
 		
 		mainVPanel.add(mainHPPanel);

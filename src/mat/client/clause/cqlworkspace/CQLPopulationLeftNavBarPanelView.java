@@ -60,6 +60,9 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 
@@ -184,6 +187,12 @@ public class CQLPopulationLeftNavBarPanelView {
 	private AnchorListItem numeratorExclusions;
 	
 	private AnchorListItem denominatorExclusions;
+	
+	private AnchorListItem denominatorExceptions;
+	
+	private AnchorListItem measurePopulations;
+	
+	private AnchorListItem measurePopulationExclusions;
 	
 	private AnchorListItem stratifications;
 	
@@ -335,16 +344,12 @@ public class CQLPopulationLeftNavBarPanelView {
 
 	/**
 	 * Builds the measure lib CQL view.
+	 * @param document 
 	 *
 	 * @return the vertical panel
 	 */
-	public VerticalPanel buildMeasureLibCQLView(){
-//		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-//		includesCollapse = createIncludesCollapsablePanel();
-//		paramCollapse = createParameterCollapsablePanel();
-//		defineCollapse = createDefineCollapsablePanel();
-//		functionCollapse = createFunctionCollapsablePanel();
-		buildLeftHandNavBar();
+	public VerticalPanel buildMeasureLibCQLView(Document document){
+		buildLeftHandNavBar(document);
 		return rightHandNavPanel;
 	}
 	
@@ -352,215 +357,82 @@ public class CQLPopulationLeftNavBarPanelView {
 	/**
 	 * Builds the left hand nav nar.
 	 */
-	private void buildLeftHandNavBar() {
+	private void buildLeftHandNavBar(Document document) {
 		
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
-
-//		generalInformation = new AnchorListItem();
-//		includesLibrary = new AnchorListItem();
-//		appliedQDM = new AnchorListItem();
-//		codesLibrary = new AnchorListItem();
-//		parameterLibrary = new AnchorListItem();
-//		definitionLibrary = new AnchorListItem();
-//		functionLibrary = new AnchorListItem();
-//		viewCQL = new AnchorListItem();
 		
 		initialPopulation = new AnchorListItem();
 		numerator = new AnchorListItem();
 		denominator = new AnchorListItem();
 		numeratorExclusions = new AnchorListItem();
 		denominatorExclusions = new AnchorListItem();
+		denominatorExceptions = new AnchorListItem();
+		measurePopulations = new AnchorListItem();
+		measurePopulationExclusions = new AnchorListItem();
+		
 		stratifications = new AnchorListItem();
+		
 		measureObservations = new AnchorListItem();
+		
 		viewPopulations = new AnchorListItem();
 		
-		setTextAndIcons(initialPopulation, "Initial Population");
+		setTextAndIcons(initialPopulation, "Initial Populations");
 		initialPopulation.setActive(true);
 		
-		setTextAndIcons(numerator, "Numerator");
-		setTextAndIcons(denominator, "Denominator");
+		setTextAndIcons(numerator, "Numerators");
+		setTextAndIcons(denominator, "Denominators");
 		setTextAndIcons(numeratorExclusions, "Numerator Exclusions");
 		setTextAndIcons(denominatorExclusions, "Denominator Exclusions");
+		setTextAndIcons(denominatorExceptions, "Denominator Exceptions");
+		setTextAndIcons(measurePopulations, "Measure Populations");
+		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions");
 		setTextAndIcons(stratifications, "Stratifications");
 		setTextAndIcons(measureObservations, "Measure Observations");
 		setTextAndIcons(viewPopulations, "View Populations");
 
-//		generalInformation.setIcon(IconType.INFO);
-//		generalInformation.setText("General Information");
-//		generalInformation.setTitle("General Information");
-//		generalInformation.setActive(true);
-//		generalInformation.setId("generatalInformation_Anchor");
-//
-//		includesLibrary.setIcon(IconType.PENCIL);
-//		includesLibrary.setTitle("Includes");
-//		includesBadge.setText("0" + viewIncludeLibrarys.size());
-//		Anchor includesAnchor = (Anchor) (includesLibrary.getWidget(0));
-//		// Double Click causing issues.So Event is not propogated
-//		includesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				// TODO Auto-generated method stub
-//				event.stopPropagation();
-//			}
-//		});
-//		includesLabel.setStyleName("transparentLabel");
-//		includesLabel.setId("includesLabel_Label");
-//		includesAnchor.add(includesLabel);
-//		includesBadge.setPull(Pull.RIGHT);
-//		includesBadge.setMarginLeft(52);
-//		includesBadge.setId("includesBadge_Badge");
-//		includesAnchor.add(includesBadge);
-//		includesAnchor.setDataParent("#navGroup");
-//		includesLibrary.setDataToggle(Toggle.COLLAPSE);
-//		includesLibrary.setHref("#collapseIncludes");
-//		includesLibrary.setId("includesLibrary_Anchor");
-//		includesLibrary.add(includesCollapse);
-//
-//		appliedQDM.setIcon(IconType.PENCIL);
-//		appliedQDM.setTitle("Value Sets");
-//		valueSetBadge.setText("0" + appliedQdmTableList.size());
-//		Anchor valueSetAnchor = (Anchor) (appliedQDM.getWidget(0));
-//		// Double Click causing issues.So Event is not propogated
-//		valueSetAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				// TODO Auto-generated method stub
-//				event.stopPropagation();
-//			}
-//		});
-//		valueSetLabel.setStyleName("transparentLabel");
-//		valueSetLabel.setId("valueSetLabel_Label");
-//		valueSetAnchor.add(valueSetLabel);
-//		valueSetBadge.setPull(Pull.RIGHT);
-//		valueSetBadge.setMarginLeft(52);
-//		valueSetBadge.setId("valueSetBadge_Badge");
-//		valueSetAnchor.add(valueSetBadge);
-//		valueSetAnchor.setDataParent("#navGroup");
-//		
-//		codesLibrary.setIcon(IconType.PENCIL);
-//		codesLibrary.setTitle("Codes");
-//		codesBadge.setText("0" + codesList.size());
-//		Anchor codesAnchor = (Anchor) (codesLibrary.getWidget(0));
-//		// Double Click causing issues.So Event is not propogated
-//		codesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				// TODO Auto-generated method stub
-//				event.stopPropagation();
-//			}
-//		});
-//		codesLabel.setStyleName("transparentLabel");
-//		codesLabel.setId("codesLabel_Label");
-//		codesAnchor.add(codesLabel);
-//		codesBadge.setPull(Pull.RIGHT);
-//		codesBadge.setMarginLeft(52);
-//		codesBadge.setId("codesBadge_Badge");
-//		codesAnchor.add(codesBadge);
-//		codesAnchor.setDataParent("#navGroup");
-//
-//		parameterLibrary.setIcon(IconType.PENCIL);
-//		parameterLibrary.setTitle("Parameter");
-//		paramBadge.setText("" + viewParameterList.size());
-//		Anchor paramAnchor = (Anchor) (parameterLibrary.getWidget(0));
-//		// Double Click causing issues.So Event is not propogated
-//		paramAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				// TODO Auto-generated method stub
-//				event.stopPropagation();
-//			}
-//		});
-//		paramLabel.setStyleName("transparentLabel");
-//		paramLabel.setId("paramLabel_Label");
-//		paramAnchor.add(paramLabel);
-//		paramBadge.setPull(Pull.RIGHT);
-//		paramBadge.setId("paramBadge_Badge");
-//		// paramBadge.setMarginLeft(45);
-//		paramAnchor.add(paramBadge);
-//		paramAnchor.setDataParent("#navGroup");
-//		paramAnchor.setDataToggle(Toggle.COLLAPSE);
-//		parameterLibrary.setHref("#collapseParameter");
-//		parameterLibrary.setId("parameterLibrary_Anchor");
-//		parameterLibrary.add(paramCollapse);
-//
-//		definitionLibrary.setIcon(IconType.PENCIL);
-//		definitionLibrary.setTitle("Define");
-//		definitionLibrary.setId("definitionLibrary_Anchor");
-//		defineBadge.setText("" + viewDefinitions.size());
-//		Anchor defineAnchor = (Anchor) (definitionLibrary.getWidget(0));
-//		// Double Click causing issues.So Event is not propogated
-//		defineAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				// TODO Auto-generated method stub
-//				event.stopPropagation();
-//			}
-//		});
-//		defineLabel.setStyleName("transparentLabel");
-//		defineLabel.setId("defineLabel_Label");
-//		defineAnchor.add(defineLabel);
-//		defineBadge.setPull(Pull.RIGHT);
-//		// defineBadge.setMarginLeft(52);
-//		defineAnchor.add(defineBadge);
-//		defineBadge.setId("defineBadge_Badge");
-//		defineAnchor.setDataParent("#navGroup");
-//		definitionLibrary.setDataToggle(Toggle.COLLAPSE);
-//		definitionLibrary.setHref("#collapseDefine");
-//
-//		definitionLibrary.add(defineCollapse);
-//
-//		functionLibrary.setIcon(IconType.PENCIL);
-//		functionLibrary.setId("functionLibrary_Anchor");
-//		functionLibrary.setTitle("Functions");
-//
-//		functionBadge.setText("" + viewFunctions.size());
-//		Anchor funcAnchor = (Anchor) (functionLibrary.getWidget(0));
-//		// Double Click causing issues.So Event is not propogated
-//		funcAnchor.addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				// TODO Auto-generated method stub
-//				event.stopPropagation();
-//			}
-//		});
-//		functionLibLabel.setStyleName("transparentLabel");
-//		functionLibLabel.setId("functionLibLabel_label");
-//		funcAnchor.add(functionLibLabel);
-//		functionBadge.setPull(Pull.RIGHT);
-//
-//		// functionBadge.setMarginLeft(57);
-//		funcAnchor.add(functionBadge);
-//		functionBadge.setId("functionBadge_Badge");
-//		funcAnchor.setDataParent("#navGroup");
-//		functionLibrary.setDataToggle(Toggle.COLLAPSE);
-//		functionLibrary.setHref("#collapseFunction");
-//
-//		functionLibrary.add(functionCollapse);
-//
-//		viewCQL.setIcon(IconType.BOOK);
-//		viewCQL.setText("View CQL");
-//		viewCQL.setTitle("View CQL");
-//		viewCQL.setId("viewCQL_Anchor");
-//		navPills.add(generalInformation);
-//		navPills.add(includesLibrary);
-//		navPills.add(appliedQDM);
-//		navPills.add(codesLibrary);
-//		navPills.add(parameterLibrary);
-//
-//		navPills.add(definitionLibrary);
-//		navPills.add(functionLibrary);
-//		navPills.add(viewCQL);
 		
-		navPills.add(initialPopulation);
-		navPills.add(numerator);
-		navPills.add(denominator);
-		navPills.add(numeratorExclusions);
-		navPills.add(denominatorExclusions);
-		navPills.add(stratifications);
-		navPills.add(measureObservations);
-		navPills.add(viewPopulations);
+		/**
+		 * Find Scoring type for the measure from the Measure XML.
+		 */
+		NodeList nodeList = document.getElementsByTagName("scoring");
+
+		if ((nodeList != null) && (nodeList.getLength() > 0)) {
+			Node scoringNode = nodeList.item(0);
+			Node scoringIdAttribute = scoringNode.getAttributes()
+					.getNamedItem("id");
+			String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
+			
+			if ("COHORT".equals(scoringIdAttributeValue)) {
+				navPills.add(initialPopulation);
+				navPills.add(stratifications);
+			} else if("PROPOR".equals(scoringIdAttributeValue)){
+				navPills.add(initialPopulation);
+				navPills.add(numerator);
+				navPills.add(denominator);
+				navPills.add(numeratorExclusions);
+				navPills.add(denominatorExclusions);
+				navPills.add(denominatorExceptions);
+				navPills.add(stratifications);				
+			} else if("CONTVAR".equals(scoringIdAttributeValue)){
+				navPills.add(initialPopulation);
+				navPills.add(measurePopulations);
+				navPills.add(measurePopulationExclusions);
+				navPills.add(measureObservations);
+				navPills.add(stratifications);
+			} else if("RATIO".equals(scoringIdAttributeValue)){
+				navPills.add(initialPopulation);
+				navPills.add(numerator);
+				navPills.add(denominator);
+				navPills.add(numeratorExclusions);
+				navPills.add(denominatorExclusions);
+				navPills.add(measureObservations);
+				navPills.add(stratifications);
+			}
+		}		
+			
+		navPills.add(viewPopulations);//View Populations is always present
 
 		navPills.setWidth("200px");
 		
@@ -2744,5 +2616,20 @@ public class CQLPopulationLeftNavBarPanelView {
 
 	public AnchorListItem getViewPopulations() {
 		return viewPopulations;
+	}
+
+
+	public AnchorListItem getDenominatorExceptions() {
+		return denominatorExceptions;
+	}
+
+
+	public AnchorListItem getMeasurePopulations() {
+		return measurePopulations;
+	}
+
+
+	public AnchorListItem getMeasurePopulationExclusions() {
+		return measurePopulationExclusions;
 	}
 }

@@ -1,5 +1,11 @@
 package mat.client.clause.cqlworkspace;
 
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
+
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -10,48 +16,42 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-
 /**
  * The Class CQLPopulationLeftNavBarPanelView.
  */
 public class CQLPopulationLeftNavBarPanelView {
-	
+
 	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
-	
+
 	private AnchorListItem initialPopulation;
-	
+
 	private AnchorListItem numerator;
-	
+
 	private AnchorListItem denominator;
-	
+
 	private AnchorListItem numeratorExclusions;
-	
+
 	private AnchorListItem denominatorExclusions;
-	
+
 	private AnchorListItem denominatorExceptions;
-	
+
 	private AnchorListItem measurePopulations;
-	
+
 	private AnchorListItem measurePopulationExclusions;
-	
+
 	private AnchorListItem stratifications;
-	
+
 	private AnchorListItem measureObservations;
-	
+
 	private AnchorListItem viewPopulations;
 
 
-	
-	
+
+
 	/** The message panel. */
 	private VerticalPanel messagePanel = new VerticalPanel();
-	
+
 	/** The CQL success message. */
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 
@@ -69,10 +69,10 @@ public class CQLPopulationLeftNavBarPanelView {
 
 	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
-	
+
 	/** The delete confirmation messge alert. */
 	//private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
-	
+
 	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 
@@ -81,12 +81,12 @@ public class CQLPopulationLeftNavBarPanelView {
 
 	/** The is nav bar click. */
 	private Boolean isNavBarClick = false;
-	
+
 	/** The Loading flag for page. */
 	private Boolean isLoading = false;
-	
-	
-	
+
+
+
 
 	/**
 	 * Builds the measure lib CQL view.
@@ -98,17 +98,17 @@ public class CQLPopulationLeftNavBarPanelView {
 		buildLeftHandNavBar(document);
 		return rightHandNavPanel;
 	}
-	
+
 
 	/**
 	 * Builds the left hand nav nar.
 	 */
 	private void buildLeftHandNavBar(Document document) {
-		
+
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
-		
+
 		initialPopulation = new AnchorListItem();
 		numerator = new AnchorListItem();
 		denominator = new AnchorListItem();
@@ -121,12 +121,11 @@ public class CQLPopulationLeftNavBarPanelView {
 		stratifications = new AnchorListItem();
 		
 		measureObservations = new AnchorListItem();
-		
+
 		viewPopulations = new AnchorListItem();
-		
+
 		setTextAndIcons(initialPopulation, "Initial Populations");
-		initialPopulation.setActive(true);
-		
+
 		setTextAndIcons(numerator, "Numerators");
 		setTextAndIcons(denominator, "Denominators");
 		setTextAndIcons(numeratorExclusions, "Numerator Exclusions");
@@ -138,7 +137,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		setTextAndIcons(measureObservations, "Measure Observations");
 		setTextAndIcons(viewPopulations, "View Populations");
 
-		
+
 		/**
 		 * Find Scoring type for the measure from the Measure XML.
 		 */
@@ -149,39 +148,15 @@ public class CQLPopulationLeftNavBarPanelView {
 			Node scoringIdAttribute = scoringNode.getAttributes()
 					.getNamedItem("id");
 			String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
-			
-			if ("COHORT".equals(scoringIdAttributeValue)) {
-				navPills.add(initialPopulation);
-				navPills.add(stratifications);
-			} else if("PROPOR".equals(scoringIdAttributeValue)){
-				navPills.add(initialPopulation);
-				navPills.add(numerator);
-				navPills.add(denominator);
-				navPills.add(numeratorExclusions);
-				navPills.add(denominatorExclusions);
-				navPills.add(denominatorExceptions);
-				navPills.add(stratifications);				
-			} else if("CONTVAR".equals(scoringIdAttributeValue)){
-				navPills.add(initialPopulation);
-				navPills.add(measurePopulations);
-				navPills.add(measurePopulationExclusions);
-				navPills.add(measureObservations);
-				navPills.add(stratifications);
-			} else if("RATIO".equals(scoringIdAttributeValue)){
-				navPills.add(initialPopulation);
-				navPills.add(numerator);
-				navPills.add(denominator);
-				navPills.add(numeratorExclusions);
-				navPills.add(denominatorExclusions);
-				navPills.add(measureObservations);
-				navPills.add(stratifications);
-			}
+
+			addAchorsByScoring(navPills, scoringIdAttributeValue);
 		}		
-			
+
 		navPills.add(viewPopulations);//View Populations is always present
+		viewPopulations.setActive(true);// View Populations is initially selected.
 
 		navPills.setWidth("200px");
-		
+
 		messagePanel.add(successMessageAlert);
 		messagePanel.add(warningMessageAlert);
 		messagePanel.add(errorMessageAlert);
@@ -194,12 +169,43 @@ public class CQLPopulationLeftNavBarPanelView {
 		rightHandNavPanel.add(navPills);
 	}
 
+	private void addAchorsByScoring(NavPills navPills,
+			String scoringIdAttributeValue) {
+		System.out.println("Adding anchors by scoring type...");
+		if ("COHORT".equals(scoringIdAttributeValue)) {
+			navPills.add(initialPopulation);
+			navPills.add(stratifications);
+		} else if("PROPOR".equals(scoringIdAttributeValue)){
+			navPills.add(initialPopulation);
+			navPills.add(numerator);
+			navPills.add(numeratorExclusions);
+			navPills.add(denominator);
+			navPills.add(denominatorExclusions);
+			navPills.add(denominatorExceptions);
+			navPills.add(stratifications);				
+		} else if("CONTVAR".equals(scoringIdAttributeValue)){
+			navPills.add(initialPopulation);
+			navPills.add(measurePopulations);
+			navPills.add(measurePopulationExclusions);
+			navPills.add(measureObservations);
+			navPills.add(stratifications);
+		} else if("RATIO".equals(scoringIdAttributeValue)){
+			navPills.add(initialPopulation);
+			navPills.add(numerator);
+			navPills.add(numeratorExclusions);
+			navPills.add(denominator);
+			navPills.add(denominatorExclusions);
+			navPills.add(measureObservations);
+			navPills.add(stratifications);
+		}
+	}
+
 	private void setTextAndIcons(AnchorListItem anchorListItem, String text) {
 		anchorListItem.setIcon(IconType.PENCIL);
 		anchorListItem.setText(text);
 		anchorListItem.setTitle(text);
 		anchorListItem.setId(text+"_Anchor");	
-		
+
 		/*Anchor anchor = (Anchor) (anchorListItem.getWidget(0));
 		// Double Click causing issues.So Event is not propogated
 		anchor.addDoubleClickHandler(new DoubleClickHandler() {
@@ -212,14 +218,14 @@ public class CQLPopulationLeftNavBarPanelView {
 //		anchorLabel.setStyleName("transparentLabel");
 //		anchorLabel.setId("includesLabel_Label");
 //		anchor.add(anchorLabel);
-		
+
 		anchorListItem.setDataToggle(Toggle.COLLAPSE);
 		anchorListItem.setHref("#collapseIncludes");
 		anchorListItem.setId("includesLibrary_Anchor");
 	//	anchorListItem.add(includesCollapse);
-		
+
 		anchor.setDataParent("#navGroup");*/
-				
+
 	}
 
 	/**
@@ -387,7 +393,7 @@ public class CQLPopulationLeftNavBarPanelView {
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-	
+
 	/**
 	 * Gets the checks if is page dirty.
 	 *
@@ -435,7 +441,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 
-	
+
 	/**
 	 * Show delete confirmation message alert.
 	 *
@@ -449,7 +455,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		//getDeleteConfirmationMessgeAlert().createWarningAlert(message);
 		//getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
-	
+
 	/**
 	 * Sets the warning message alert.
 	 *
@@ -467,7 +473,7 @@ public class CQLPopulationLeftNavBarPanelView {
 	public Button getWarningConfirmationYesButton() {
 		return warningConfirmationMessageAlert.getWarningConfirmationYesButton();
 	}
-	
+
 	/**
 	 * Gets the warning confirmation no button.
 	 *
@@ -531,8 +537,8 @@ public class CQLPopulationLeftNavBarPanelView {
 		return deleteConfirmationMessgeAlert.getWarningConfirmationNoButton();
 	}*/
 
-	
-	
+
+
 
 	public Boolean getIsLoading() {
 		return isLoading;

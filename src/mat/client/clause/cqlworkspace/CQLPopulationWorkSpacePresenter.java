@@ -1,5 +1,12 @@
 package mat.client.clause.cqlworkspace;
 
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.MatContext;
+
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,13 +19,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.XMLParser;
-
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
-import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.MatContext;
 
 /**
  * The Class CQLPopulationWorkSpacePresenter.
@@ -128,7 +128,6 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		void resetAll();
 
 		void setHeadingBasedOnCurrentSection(String headingText, String panelId);
-
 
 	}
 

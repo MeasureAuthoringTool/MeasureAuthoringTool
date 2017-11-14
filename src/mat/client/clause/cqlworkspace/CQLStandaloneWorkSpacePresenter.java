@@ -4798,9 +4798,8 @@ private void addCodeSearchPanelHandlers() {
 				modifyValueSetDTO.setVersion("");
 			}
 
-			modifyValueSetList(modifyValueSetDTO);
-
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName,appliedValueSetTableList)) {
+				modifyValueSetList(modifyValueSetDTO);
 				if(!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()){
 					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
 					modifyValueSetDTO.setCodeListName(originalName+" ("+searchDisplay.getValueSetView().getSuffixInput().getValue()+")");
@@ -5141,8 +5140,8 @@ private void addCodeSearchPanelHandlers() {
 				version = "";
 			}
 
-			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(usrDefDisplayName,appliedValueSetTableList)) {
+				modifyValueSetList(modifyValueSetDTO);
 				CQLValueSetTransferObject object = new CQLValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 				object.scrubForMarkUp();

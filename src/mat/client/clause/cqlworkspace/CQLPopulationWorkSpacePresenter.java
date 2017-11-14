@@ -15,6 +15,7 @@ import com.google.gwt.xml.client.XMLParser;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
@@ -126,6 +127,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		 */
 		void resetAll();
 
+		void setHeadingBasedOnCurrentSection(String headingText, String panelId);
+
 
 	}
 
@@ -236,8 +239,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					// TODO Auto-generated method stub
 
 				}});	
-
+			
+			MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLPopulationWorkspaceView.containerPanel");
 			Mat.focusSkipLists("MeasureComposer");
+			
 		}
 	}
 
@@ -251,7 +256,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			addLeftNavEventHandler();
 			searchDisplay.resetMessageDisplay();
 			panel.add(searchDisplay.asWidget());
-			
+			initialPopulationEvent();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -368,6 +373,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_INITIALPOPULATION, true);
 			currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -384,6 +391,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_NUMERATOR, true);
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerators", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -400,6 +409,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerator Exclusions", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -416,6 +427,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_DENOMINATOR, true);
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOR;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominators", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -432,6 +445,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominator Exclusions", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 	
 	/**
@@ -449,6 +464,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominator Exceptions", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 	
 	/**
@@ -465,6 +482,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 	
 	/**
@@ -481,6 +500,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -497,6 +518,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_STRATIFICATIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_STRATIFICATIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -513,6 +536,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS, true); 
 			currentSection = CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
 	/**
@@ -529,8 +554,11 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS, true); 
 			currentSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
 		}
+		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > View Populations", "headingPanel");
+		Mat.focusSkipLists("CqlPopulationView");
 	}
 
+	
 
 	/**
 	 * Method to unset Anchor List Item selection for previous selection and set

@@ -2,13 +2,15 @@ package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 
-import mat.client.shared.SpacerWidget;
+import mat.client.Mat;
+import mat.client.shared.SkipListBuilder;
 
 /**
  * The Class CQLPopulationWorkSpaceView.
@@ -36,6 +38,9 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	/** The vp. */
 	VerticalPanel vp = new VerticalPanel();
+	
+	HTML heading = new HTML();
+	HorizontalPanel headingPanel = new HorizontalPanel();
 
 	/** The cql left nav bar panel view. */
 	private CQLPopulationLeftNavBarPanelView cqlLeftNavBarPanelView;
@@ -59,18 +64,19 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void buildView(Document document) {
 		resetAll();
-		
+		heading.addStyleName("leftAligned");
+		headingPanel.getElement().setId("headingPanel");
 		mainFlowPanel.setWidth("700px");
 		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");
-		mainPanel.add(new SpacerWidget());
-		
+		/*mainPanel.add(new SpacerWidget());*/
+		mainPanel.add(headingPanel);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
-
 		resetMessageDisplay();
 
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView(document));
+		
 		mainHPPanel.add(mainPanel);
 		
 		mainVPanel.add(mainHPPanel);
@@ -83,6 +89,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void resetAll() {
 		mainFlowPanel.clear();
+		headingPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		cqlLeftNavBarPanelView.setIsPageDirty(false);
 		resetMessageDisplay();
@@ -239,9 +246,6 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 
 	
-	
-	
-
 	/* (non-Javadoc)
 	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlLeftNavBarPanelView()
 	 */
@@ -250,6 +254,16 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		return cqlLeftNavBarPanelView;
 	}
 
+	@Override
+	public void setHeadingBasedOnCurrentSection(String headingText, String panelId){
+		setHeading(headingText, panelId);
+		Mat.focusSkipLists("CqlPopulationView");
+	}
 	
-	
+	private void setHeading(String text,String linkName) {
+		headingPanel.clear();
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
+		headingPanel.add(heading);
+	}
 }

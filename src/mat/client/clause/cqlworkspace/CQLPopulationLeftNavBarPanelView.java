@@ -155,7 +155,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		navPills.add(viewPopulations);//View Populations is always present
 		viewPopulations.setActive(true);// View Populations is initially selected.
 
-		navPills.setWidth("200px");
+		navPills.setWidth("210px");
 
 		messagePanel.add(successMessageAlert);
 		messagePanel.add(warningMessageAlert);
@@ -205,27 +205,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		anchorListItem.setText(text);
 		anchorListItem.setTitle(text);
 		anchorListItem.setId(text+"_Anchor");	
-
-		/*Anchor anchor = (Anchor) (anchorListItem.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
-		anchor.addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-				event.stopPropagation();
-			}
-		});
-//		Label anchorLabel = new Label(text);
-//		anchorLabel.setStyleName("transparentLabel");
-//		anchorLabel.setId("includesLabel_Label");
-//		anchor.add(anchorLabel);
-
-		anchorListItem.setDataToggle(Toggle.COLLAPSE);
-		anchorListItem.setHref("#collapseIncludes");
-		anchorListItem.setId("includesLibrary_Anchor");
-	//	anchorListItem.add(includesCollapse);
-
-		anchor.setDataParent("#navGroup");*/
-
 	}
 
 	/**

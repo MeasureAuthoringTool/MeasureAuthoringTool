@@ -5530,17 +5530,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			String displayName = (!originalName.isEmpty() ? originalName : "")
 					+ (!suffix.isEmpty() ? " (" + suffix + ")" : "");
 
-			version = searchDisplay.getValueSetView()
-					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-
-			if (version == null) {
-				version = "";
-			}
-			if (modifyValueSetDTO.getVersion() == null) {
-				modifyValueSetDTO.setVersion("");
-			}
-
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName, appliedValueSetTableList)) {
+				version = searchDisplay.getValueSetView()
+						.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
+
+				if (version == null) {
+					version = "";
+				}
+				if (modifyValueSetDTO.getVersion() == null) {
+					modifyValueSetDTO.setVersion("");
+				}
+				
 				modifyValueSetList(modifyValueSetDTO);
 				if (!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
@@ -5574,13 +5574,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String usrDefDisplayName = (!originalName.isEmpty() ? originalName : "")
 					+ (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-			String version = searchDisplay.getValueSetView()
-					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-			if (version == null) {
-				version = "";
-			}
 
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(usrDefDisplayName, appliedValueSetTableList)) {
+				String version = searchDisplay.getValueSetView()
+						.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
+				if (version == null) {
+					version = "";
+				}
 				modifyValueSetList(modifyValueSetDTO);
 				CQLValueSetTransferObject object = new CQLValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getValueSetView().getUserDefinedInput().getText());

@@ -12,6 +12,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -19,6 +20,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -66,7 +68,11 @@ public class ManageMeasureShareView implements ShareDisplay {
 	/** The private check. */
 	private CheckBox privateCheck = new CheckBox();
 	
+	/**The search widget. */
 	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
+	
+	/** The search widget focus panel. */
+	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
 
 	/**
 	 * Instantiates a new manage measure share view.
@@ -92,7 +98,8 @@ public class ManageMeasureShareView implements ShareDisplay {
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-"));
 		content.add(new SpacerWidget());
-		content.add(vp);		
+		searchWidgetFocusPanel.add(vp);
+		content.add(searchWidgetFocusPanel);		
 		content.add(new SpacerWidget());
 		// content.add(new Label("Select users with whom you wish to share modify access:"));
 		content.add(new SpacerWidget());
@@ -345,6 +352,15 @@ public class ManageMeasureShareView implements ShareDisplay {
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
+	}
+	
+	/**
+	 * Gets the focus panel.
+	 *
+	 * @return the focus panel
+	 */
+	public HasKeyDownHandlers getFocusPanel(){
+		return searchWidgetFocusPanel;
 	}
 	
 }

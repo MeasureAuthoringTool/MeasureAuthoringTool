@@ -17,7 +17,10 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -655,6 +658,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the search string
 		 */
 		public HasValue<String> getSearchString();
+		/**
+		 * Gets the focus panel.
+		 * 
+		 * @return the focus panel
+		 */
+		public HasKeyDownHandlers getFocusPanel();
 	}
 
 	/**
@@ -2482,6 +2491,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
+		shareDisplay.getFocusPanel().addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) shareDisplay.getSearchButton()).click();
+				}
+			}
+		}); 
 	}
 
 	/**

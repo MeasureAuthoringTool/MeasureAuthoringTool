@@ -10,13 +10,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -26,15 +28,13 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
-import mat.client.ImageResources;
 import mat.client.shared.CQLLibraryNameLabel;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SearchWidget;
+import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.clause.ShareLevel;
@@ -59,20 +59,15 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	private CheckBox privateCheck = new CheckBox();
 	*/
 	
-	/** The measure search filter widget. */
-	private SearchWidget searchWidget = new SearchWidget("Search", 
-            "Search", "searchWidget");
+	/** The measure search filter widget. */	
+	private SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search User Name");
+	/** The search widget focus panel. */
+	private FocusPanel searchWidgetFocusPanel = new FocusPanel();
 	
-	/** Zoom Button for Showing Search Widget. */
-	private CustomButton zoomButton = (CustomButton) getImage("Search",
-			ImageResources.INSTANCE.search_zoom(), "Search");
-
 	/**
 	 * Instantiates a new manage measure share view.
 	 */
-	public CQLLibraryShareView() {
-		zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
-		zoomButton.getElement().setId("CqlzoomButton_CustomButton");
+	public CQLLibraryShareView() {	
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.add(new SpacerWidget());
@@ -89,10 +84,18 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		horizontalPanel.add(privateCheckLabel);*/
 		//horizontalPanel.add(searchWidget);
 		horizontalPanel.setStyleName("horizontalPanel");
-		mainPanel.add(searchWidget);
+		
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(horizontalPanel);
 		
+		//MAT-8908
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-"));
+		mainPanel.add(new SpacerWidget());
+		searchWidgetFocusPanel.add(vp);
+		mainPanel.add(searchWidgetFocusPanel);				
+		mainPanel.add(new SpacerWidget());
+				
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("77%");
 		mainPanel.add(cellTablePanel);
@@ -278,24 +281,27 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	public void setPrivate(boolean isPrivate) {
 		privateCheck.setValue(isPrivate);
 	}*/
-	
-	private Widget getImage(String action, ImageResource url, String key) {
-		CustomButton image = new CustomButton();
-		image.removeStyleName("gwt-button");
-		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
-		image.setTitle(action);
-		image.setResource(url, action);
-		image.getElement().setAttribute("id", "CQLLibVersionViewSearchButton");
-		return image;
-	}
-	
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.CqlLibraryPresenter.shareDisplay#getSearchButton()
+	 */
 	@Override
-	public CustomButton getZoomButton() {
-		return zoomButton;
+	public HasClickHandlers getSearchButton() {
+		return searchWidgetBootStrap.getGo();
 	}
-	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.CqlLibraryPresenter.shareDisplay#getSearchString()
+	 */
 	@Override
-	public SearchWidget getSearchWidget() {
-		return searchWidget;
+	public HasValue<String> getSearchString() {
+		return searchWidgetBootStrap.getSearchBox();
+	}
+	/**
+	 * Gets the focus panel.
+	 *
+	 * @return the focus panel
+	 */
+	public HasKeyDownHandlers getFocusPanel(){
+		return searchWidgetFocusPanel;
 	}
 }

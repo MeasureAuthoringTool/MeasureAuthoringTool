@@ -617,13 +617,19 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	 */
 	@Override
 	public List<CQLLibraryShareDTO> getLibraryShareInfoForLibrary(String cqlId, String searchText) {
-		String searchString = searchText.toLowerCase().trim();
+		
 		Criteria userCriteria = getSessionFactory().getCurrentSession().createCriteria(User.class);
 		int pageSize = Integer.MAX_VALUE;
 		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
 		// Added restriction for Active user's for User story MAT:2900.
 		userCriteria.add(Restrictions.eq("status.id", "1"));
 		userCriteria.add(Restrictions.ne("id", LoggedInUserUtil.getLoggedInUser()));
+		//Added restriction for Search by user name MAT-8908.
+		if(StringUtils.isNotBlank(searchText)) {
+			String searchString = searchText.toLowerCase();
+			userCriteria.add(Restrictions.or(Restrictions.ilike("firstName", "%" + searchString + "%"),
+					Restrictions.ilike("lastName", "%" + searchString + "%")));
+		}
 		userCriteria.setFirstResult(0);
 		// userCriteria.setMaxResults(pageSize);
 		userCriteria.addOrder(Order.asc("lastName"));
@@ -631,22 +637,17 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		List<User> userResults = userCriteria.list();
 		HashMap<String, CQLLibraryShareDTO> userIdDTOMap = new HashMap<String, CQLLibraryShareDTO>();
 		ArrayList<CQLLibraryShareDTO> orderedDTOList = new ArrayList<CQLLibraryShareDTO>();
-		List<CQLLibraryShareDTO> dtoList = new ArrayList<CQLLibraryShareDTO>();
-		StringUtility stringUtility = new StringUtility();
 		for (User user : userResults) {
-			if (searchResultsForSharedUsers(searchString, stringUtility, user)) {
-				CQLLibraryShareDTO dto = new CQLLibraryShareDTO();
-				dtoList.add(dto);
-				dto.setUserId(user.getId());
-				dto.setFirstName(user.getFirstName());
-				dto.setLastName(user.getLastName());
-				dto.setOrganizationName(user.getOrganizationName());
-				userIdDTOMap.put(user.getId(), dto);
-				orderedDTOList.add(dto);
-			}
+			CQLLibraryShareDTO dto = new CQLLibraryShareDTO();		
+			dto.setUserId(user.getId());
+			dto.setFirstName(user.getFirstName());
+			dto.setLastName(user.getLastName());
+			dto.setOrganizationName(user.getOrganizationName());
+			userIdDTOMap.put(user.getId(), dto);
+			orderedDTOList.add(dto);
 		}
 
-		if (dtoList.size() > 0) {
+		if (orderedDTOList.size() > 0) {
 			Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryShare.class);
 			shareCriteria.add(Restrictions.in("shareUser.id", userIdDTOMap.keySet()));
 			shareCriteria.add(Restrictions.eq("cqlLibrary.id", cqlId));
@@ -754,22 +755,6 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 			dto.setLockedUserInfo(lockedUserInfo);
 		}
 		return dto;
-	}
-
-	private boolean searchResultsForSharedUsers(String searchTextLC, StringUtility stringUtility, User user) {
-
-		boolean matchesSearch = stringUtility.isEmptyOrNull(searchTextLC) ? true :
-		// User First Name
-				user.getFirstName().toLowerCase().contains(searchTextLC) ? true :
-				// User Last Name
-						user.getLastName().toLowerCase().contains(searchTextLC) ? true :
-						/*
-						 * // Owner email address
-						 * user.getEmailAddress().toLowerCase().contains(
-						 * searchTextLC) ? true:
-						 */
-								false;
-		return matchesSearch;
 	}
 
 	@Override

@@ -133,7 +133,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		setTextAndIcons(denominatorExceptions, "Denominator Exceptions");
 		setTextAndIcons(measurePopulations, "Measure Populations");
 		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions");
-		setTextAndIcons(stratifications, "Stratifications");
+		setTextAndIcons(stratifications, "Stratification");
 		setTextAndIcons(measureObservations, "Measure Observations");
 		setTextAndIcons(viewPopulations, "View Populations");
 

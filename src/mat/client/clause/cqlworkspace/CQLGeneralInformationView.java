@@ -84,6 +84,7 @@ public class CQLGeneralInformationView {
 		libraryNameLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
 		libraryNameLabel.setWidth("150px");
 		libraryNameLabel.setId("libraryNameLabel_Label");
+		libraryNameLabel.setFor("libraryNameValue_TextBox");
 		
 		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
 		//libraryNameValue.setText(createCQLLibraryName(MatContext.get().getCurrentMeasureName()));
@@ -100,6 +101,7 @@ public class CQLGeneralInformationView {
 		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
 		libraryVersionLabel.setWidth("150px");
 		libraryVersionLabel.setId("libraryVersionLabel_Label");
+		libraryVersionLabel.setFor("libraryVersionValue_TextBox");
 		
 		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
 		libraryVersionValue.getElement().setId("libraryVersionValue_TextBox");
@@ -116,6 +118,7 @@ public class CQLGeneralInformationView {
 		usingModeLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
 		usingModeLabel.setId("usingModeLabel_Label");
 		usingModeLabel.setWidth("150px");
+		usingModeLabel.setFor("usingModelValue_TextBox");
 		
 		usingModelValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
 		usingModelValue.getElement().setId("usingModelValue_TextBox");
@@ -132,6 +135,7 @@ public class CQLGeneralInformationView {
 		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
 		modelVersionLabel.getElement().setId("modelVersionLabel_Label");
 		modelVersionLabel.setWidth("150px");
+		modelVersionLabel.setFor("modelVersionValue_TextBox");
 		
 		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:32px;");
 		modelVersionValue.getElement().setId("modelVersionValue_TextBox");

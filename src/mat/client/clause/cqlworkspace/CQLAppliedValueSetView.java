@@ -354,6 +354,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText("Name");
 		nameLabel.setTitle("Name");
+		nameLabel.setFor("nameInput_TextBox");
 		namePanel.add(nameLabel);
 		namePanel.add(nameInput);
 		namePanel.add(new SpacerWidget());
@@ -362,6 +363,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		FormLabel suffixLabel = new FormLabel();
 		suffixLabel.setText("Suffix (Max Length 4)");
 		suffixLabel.setTitle("Suffix");
+		suffixLabel.setFor("suffixInput_TextBox");
 		suffixPanel.add(suffixLabel);
 		suffixPanel.add(suffixInput);
 		suffixPanel.add(new SpacerWidget());
@@ -370,6 +372,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		FormLabel verLabel = new FormLabel();
 		verLabel.setText("Version");
 		verLabel.setTitle("Version");
+		verLabel.setFor("Version_ListBox");
 		versionFormGroup.add(verLabel);
 		versionFormGroup.add(versionListBox);
 		versionFormGroup.add(new SpacerWidget());

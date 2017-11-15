@@ -312,6 +312,8 @@ public class CQLCodesView {
 		FormLabel verLabel = new FormLabel();
 		verLabel.setText("Code System Version");
 		verLabel.setTitle("Code System Version");
+		verLabel.setFor("codeSystemVersionInput_TextBox");
+		codeSystemVersionInput.getElement().setId("codeSystemVersionInput_TextBox");
 		codeSystemVersionInput.setTitle("Code System Version");
 		codeSystemVersionInput.setHeight("30px");
 
@@ -319,7 +321,9 @@ public class CQLCodesView {
 		FormLabel codeSystemLabel = new FormLabel();
 		codeSystemLabel.setText("Code System");
 		codeSystemLabel.setTitle("Code System");
+		codeSystemLabel.setFor("codeSystemInput_TextBox");
 		codeSystemInput.setTitle("Code System");
+		codeSystemInput.getElement().setId("codeSystemInput_TextBox");
 		codeSystemInput.setWidth("280px");
 		codeSystemInput.setHeight("30px");
 
@@ -327,7 +331,9 @@ public class CQLCodesView {
 		FormLabel codeLabel = new FormLabel();
 		codeLabel.setText("Code");
 		codeLabel.setTitle("Code");
+		codeLabel.setFor("codeInput_TextBox");
 		codeInput.setTitle("Code");
+		codeInput.getElement().setId("codeInput_TextBox");
 		codeInput.setHeight("30px");
 
 		VerticalPanel codeDescriptorGroup = new VerticalPanel();
@@ -335,8 +341,10 @@ public class CQLCodesView {
 		FormLabel codeDescriptorLabel = new FormLabel();
 		codeDescriptorLabel.setText("Code Descriptor");
 		codeDescriptorLabel.setTitle("Code Descriptor");
+		codeDescriptorLabel.setFor("codeDescriptorInput_TextBox");
 		codeDescriptorInput.setTitle("Code Descriptor");
 		codeDescriptorInput.setWidth("450px");
+		codeDescriptorInput.getElement().setId("codeDescriptorInput_TextBox");
 		/*codeDescriptorInput.setHeight("30px");*/
 
 		codeDescriptorGroup.add(codeDescriptorLabel);
@@ -348,7 +356,9 @@ public class CQLCodesView {
 		FormLabel suffixLabel = new FormLabel();
 		suffixLabel.setText("Suffix (Max Length 4)");
 		suffixLabel.setTitle("Suffix");
+		suffixLabel.setFor("suffixInput_TextBox");
 		suffixTextBox.setTitle("Suffix must be an integer between 1-4 characters");
+		suffixTextBox.getElement().setId("suffixInput_TextBox");
 		/*suffixTextBox.setWidth("50px");*/
 		/*codeDescriptorInput.setWidth("510px");
 		codeDescriptorInput.setHeight("30px");*/

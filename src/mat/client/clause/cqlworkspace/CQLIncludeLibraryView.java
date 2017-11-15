@@ -192,6 +192,7 @@ public class CQLIncludeLibraryView {
 		//aliasLabel.setText("Alias Name");
 		aliasLabel.setTitle("Alias Name");
 		aliasLabel.setText("Library Alias");
+		aliasLabel.setFor("aliasNameField_IncludeSection");
 		
 		aliasNameTxtBox.setText("");
 		aliasNameTxtBox.setSize("260px", "25px");

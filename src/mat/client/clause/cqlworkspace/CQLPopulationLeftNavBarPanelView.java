@@ -124,18 +124,18 @@ public class CQLPopulationLeftNavBarPanelView {
 
 		viewPopulations = new AnchorListItem();
 
-		setTextAndIcons(initialPopulation, "Initial Populations");
+		setTextAndIcons(initialPopulation, "Initial Populations",IconType.PENCIL);
 
-		setTextAndIcons(numerator, "Numerators");
-		setTextAndIcons(denominator, "Denominators");
-		setTextAndIcons(numeratorExclusions, "Numerator Exclusions");
-		setTextAndIcons(denominatorExclusions, "Denominator Exclusions");
-		setTextAndIcons(denominatorExceptions, "Denominator Exceptions");
-		setTextAndIcons(measurePopulations, "Measure Populations");
-		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions");
-		setTextAndIcons(stratifications, "Stratification");
-		setTextAndIcons(measureObservations, "Measure Observations");
-		setTextAndIcons(viewPopulations, "View Populations");
+		setTextAndIcons(numerator, "Numerators",IconType.PENCIL);
+		setTextAndIcons(denominator, "Denominators",IconType.PENCIL);
+		setTextAndIcons(numeratorExclusions, "Numerator Exclusions",IconType.PENCIL);
+		setTextAndIcons(denominatorExclusions, "Denominator Exclusions",IconType.PENCIL);
+		setTextAndIcons(denominatorExceptions, "Denominator Exceptions",IconType.PENCIL);
+		setTextAndIcons(measurePopulations, "Measure Populations",IconType.PENCIL);
+		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions",IconType.PENCIL);
+		setTextAndIcons(stratifications, "Stratification",IconType.PENCIL);
+		setTextAndIcons(measureObservations, "Measure Observations",IconType.PENCIL);
+		setTextAndIcons(viewPopulations, "View Populations",IconType.BOOK);
 
 
 		/**
@@ -155,7 +155,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		navPills.add(viewPopulations);//View Populations is always present
 		viewPopulations.setActive(true);// View Populations is initially selected.
 
-		navPills.setWidth("210px");
+		navPills.setWidth("200px");
 
 		messagePanel.add(successMessageAlert);
 		messagePanel.add(warningMessageAlert);
@@ -200,8 +200,9 @@ public class CQLPopulationLeftNavBarPanelView {
 		}
 	}
 
-	private void setTextAndIcons(AnchorListItem anchorListItem, String text) {
-		anchorListItem.setIcon(IconType.PENCIL);
+	private void setTextAndIcons(AnchorListItem anchorListItem, String text, IconType iconType) {
+		anchorListItem.setIcon(iconType);
+		
 		anchorListItem.setText(text);
 		anchorListItem.setTitle(text);
 		anchorListItem.setId(text+"_Anchor");	

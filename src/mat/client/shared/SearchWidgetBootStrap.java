@@ -40,8 +40,18 @@ public class SearchWidgetBootStrap {
 		return iGroup;
 	}
 
-	public InputGroup getSearchWidget(String placeHolderText) {		
+	/**
+	 * 
+	 * @param placeHolderText the text to display in the textbox
+	 * @param id the text used for defining an element id
+	 * 			appended Search for the search box
+	 * 			appended Button for the search button
+	 * @return
+	 */
+	public InputGroup getSearchWidget(String placeHolderText, String id) {		
 		getSearchBox().getElement().setPropertyString("placeholder", placeHolderText);
+		getSearchBox().getElement().setId(id + "Search");
+		getGo().getElement().setId(id + "Button");
 		return getSearchWidget();
 	}
 	

@@ -17,7 +17,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -34,8 +33,8 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HasValue;
@@ -74,6 +73,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
@@ -644,26 +644,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the new private
 		 */
 		public void setPrivate(boolean isPrivate);
-		
 		/**
 		 * Gets the search button.
 		 * 
 		 * @return the search button
 		 */
-		public HasClickHandlers getSearchButton();
-
-		/**
-		 * Gets the search string.
-		 * 
-		 * @return the search string
-		 */
-		public HasValue<String> getSearchString();
+		SearchWidgetBootStrap getSearchWidgetBootStrap();
 		/**
 		 * Gets the focus panel.
 		 * 
 		 * @return the focus panel
 		 */
-		public HasKeyDownHandlers getFocusPanel();
+		FocusPanel getSearchWidgetFocusPanel();
 	}
 
 	/**
@@ -1386,7 +1378,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayShare(String userName, String id, String name) {
 		//Setting this value so that visiting this page every time from share link, any previously entered value is reset
-		shareDisplay.getSearchString().setValue("");
+		shareDisplay.getSearchWidgetBootStrap().getSearchBox().setValue("");
 		shareDisplay.setMeasureName(name);
 		displayShare(userName, id);
 	}
@@ -2484,19 +2476,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 
-		shareDisplay.getSearchButton().addClickHandler(new ClickHandler() {			
+		shareDisplay.getSearchWidgetBootStrap().getGo().addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
-				displayShare(shareDisplay.getSearchString().getValue(), currentShareDetails.getMeasureId());				
+				displayShare(shareDisplay.getSearchWidgetBootStrap().getSearchBox().getValue(), currentShareDetails.getMeasureId());				
 			}
 		});
 		
-		shareDisplay.getFocusPanel().addKeyDownHandler(new KeyDownHandler() {
+		shareDisplay.getSearchWidgetFocusPanel().addKeyDownHandler(new KeyDownHandler() {
 			
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) shareDisplay.getSearchButton()).click();
+					((Button) shareDisplay.getSearchWidgetBootStrap().getGo()).click();
 				}
 			}
 		}); 

@@ -304,7 +304,7 @@ public class CQLCodesView {
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		sWidget.setSearchBoxWidth("530px");
 		sWidget.getGo().setEnabled(true);
-		sWidget.getGo().setTitle("Reterive Code Identifier");
+		sWidget.getGo().setTitle("Retrieve Code Identifier");
 		searchWidgetFormGroup.add(sWidget.getSearchWidget());
 		searchWidgetFormGroup.add(new SpacerWidget());
 

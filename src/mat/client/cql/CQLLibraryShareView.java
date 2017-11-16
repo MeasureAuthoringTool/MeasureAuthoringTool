@@ -88,7 +88,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		
 		//MAT-8908
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-", "CQLLibrarySharing"));
+		vp.add(searchWidgetBootStrap.getSearchWidget("Search User Name", "CQLLibrarySharing"));
 		mainPanel.add(new SpacerWidget());
 		searchWidgetFocusPanel.add(vp);
 		searchWidgetFocusPanel.setWidth("300px");

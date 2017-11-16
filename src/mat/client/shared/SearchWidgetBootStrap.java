@@ -50,8 +50,8 @@ public class SearchWidgetBootStrap {
 	 */
 	public InputGroup getSearchWidget(String placeHolderText, String id) {		
 		getSearchBox().getElement().setPropertyString("placeholder", placeHolderText);
-		getSearchBox().getElement().setId(id + "Search");
-		getGo().getElement().setId(id + "Button");
+		getSearchBox().getElement().setId(id + "_Search");
+		getGo().getElement().setId(id + "_Button");
 		return getSearchWidget();
 	}
 	

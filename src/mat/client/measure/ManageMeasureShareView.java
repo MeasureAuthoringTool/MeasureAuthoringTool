@@ -94,7 +94,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		
 		//MAT-8907
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-", "MeasureSharing"));
+		vp.add(searchWidgetBootStrap.getSearchWidget("Search User Name", "MeasureSharing"));
 		content.add(new SpacerWidget());
 		searchWidgetFocusPanel.add(vp);
 		searchWidgetFocusPanel.setWidth("300px");

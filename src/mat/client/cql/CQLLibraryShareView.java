@@ -10,7 +10,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -18,7 +17,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -90,9 +88,10 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		
 		//MAT-8908
 		VerticalPanel vp = new VerticalPanel();
-		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-"));
+		vp.add(searchWidgetBootStrap.getSearchWidget("-Search User Name-", "CQLLibrarySharing"));
 		mainPanel.add(new SpacerWidget());
 		searchWidgetFocusPanel.add(vp);
+		searchWidgetFocusPanel.setWidth("300px");
 		mainPanel.add(searchWidgetFocusPanel);				
 		mainPanel.add(new SpacerWidget());
 				
@@ -283,25 +282,18 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	}*/
 
 	/* (non-Javadoc)
-	 * @see mat.client.measure.CqlLibraryPresenter.shareDisplay#getSearchButton()
-	 */
-	@Override
-	public HasClickHandlers getSearchButton() {
-		return searchWidgetBootStrap.getGo();
-	}
-	/* (non-Javadoc)
-	 * @see mat.client.measure.CqlLibraryPresenter.shareDisplay#getSearchString()
-	 */
-	@Override
-	public HasValue<String> getSearchString() {
-		return searchWidgetBootStrap.getSearchBox();
+	 * @see mat.client.measure.CqlLibraryPresenter.shareDisplay#getSearchWidgetBootStrap()
+	 */	
+	public SearchWidgetBootStrap getSearchWidgetBootStrap() {
+		return searchWidgetBootStrap;
 	}
 	/**
 	 * Gets the focus panel.
 	 *
 	 * @return the focus panel
 	 */
-	public HasKeyDownHandlers getFocusPanel(){
+	public FocusPanel getSearchWidgetFocusPanel() {
 		return searchWidgetFocusPanel;
 	}
+
 }

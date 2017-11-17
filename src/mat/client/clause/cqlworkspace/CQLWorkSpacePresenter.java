@@ -131,8 +131,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/** The current mat value set. */
 	private MatValueSet currentMatValueSet = null;
-
-	/** The applied QDM list. */
+	
+		/** The applied QDM list. */
 	private List<CQLQualityDataSetDTO> appliedValueSetTableList = new ArrayList<CQLQualityDataSetDTO>();
 
 	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
@@ -5523,25 +5523,23 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		// Normal Available QDM Flow
 		MatValueSet modifyWithDTO = currentMatValueSet;
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
-			// String expansionId;
-			String version;
+			String version = searchDisplay.getValueSetView()
+			.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
+
 			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String displayName = (!originalName.isEmpty() ? originalName : "")
 					+ (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-
+			if (version == null) {
+				version = "";
+			}
+			if (modifyValueSetDTO.getVersion() == null) {
+				modifyValueSetDTO.setVersion("");
+			}
+			
+			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName, appliedValueSetTableList)) {
-				version = searchDisplay.getValueSetView()
-						.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-
-				if (version == null) {
-					version = "";
-				}
-				if (modifyValueSetDTO.getVersion() == null) {
-					modifyValueSetDTO.setVersion("");
-				}
 				
-				modifyValueSetList(modifyValueSetDTO);
 				if (!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
 					modifyValueSetDTO.setCodeListName(
@@ -5555,6 +5553,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(displayName));
+				appliedValueSetTableList.add(modifyValueSetDTO);
 			}
 
 			getUsedValueSets();
@@ -5574,14 +5573,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String usrDefDisplayName = (!originalName.isEmpty() ? originalName : "")
 					+ (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-
+			String version = searchDisplay.getValueSetView()
+					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
+			if (version == null) {
+				version = "";
+			}
+			
+			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(usrDefDisplayName, appliedValueSetTableList)) {
-				String version = searchDisplay.getValueSetView()
-						.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-				if (version == null) {
-					version = "";
-				}
-				modifyValueSetList(modifyValueSetDTO);
+				
 				CQLValueSetTransferObject object = new CQLValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 				object.scrubForMarkUp();
@@ -5598,6 +5598,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 				}
 			} else {
+				appliedValueSetTableList.add(modifyValueSetDTO);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 						MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(usrDefDisplayName));
 			}

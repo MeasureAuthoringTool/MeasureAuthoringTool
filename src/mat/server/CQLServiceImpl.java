@@ -3237,8 +3237,10 @@ public class CQLServiceImpl implements CQLService {
 					if(modifyDTO.getSuffix() != null && !modifyDTO.getSuffix().isEmpty()){
 						newNode.getAttributes().getNamedItem("suffix").setNodeValue(modifyDTO.getSuffix());
 						newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getOriginalCodeListName()+" ("+modifyWithDTO.getSuffix()+")");
-					} else if(modifyDTO.getSuffix() != null && modifyDTO.getSuffix().isEmpty()){
-						newNode.getAttributes().removeNamedItem("suffix");
+					} else  {
+						if(newNode.getAttributes().getNamedItem("suffix") != null && modifyDTO.getSuffix()== null) {
+							newNode.getAttributes().removeNamedItem("suffix");
+						}
 					}
 				}
 			}

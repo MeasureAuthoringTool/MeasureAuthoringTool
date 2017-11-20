@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cql-all.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpclient-4.2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpclient-cache-4.2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpcore-4.2.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpmime-4.2.5.jar"/>
-	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/activation.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/aspectjrt-1.6.8.jar"/>
@@ -50,7 +50,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-taglibs-3.0.3.RELEASE.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-web-3.0.3.RELEASE.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/standard-1.1.2.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-3.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/easymock-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cglib-2.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/objenesis-1.2.jar"/>
@@ -60,7 +59,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/javassist-3.9.0.GA.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/xpp3_min-1.1.4c.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/liquibase.jar"/>
-	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cos.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-3.8-beta1-20110307.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-ooxml-3.8-beta1-20110307.jar"/>
@@ -77,18 +75,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/vt-password-3.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon-9.1.0.8.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/saxon-dom-9.1.0.8.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-api-checker.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-codeserver.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-dev.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-elemental.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet-deps.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-servlet.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-soyc-vis.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/gwt-user.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/requestfactory-apt.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/requestfactory-client.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/requestfactory-server.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/fluent-hc-4.2.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/vsac_framework.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsoup-1.7.3.jar"/>
@@ -106,5 +92,9 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtbootstrap3-0.9.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/gwtbootstrap3-extras-0.9.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/antlr4-4.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-5.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-tree-5.2.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

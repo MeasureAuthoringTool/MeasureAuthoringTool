@@ -4319,8 +4319,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						appliedCodeTableList.addAll(result.getCqlCodeList());
 						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService().checkForEditPermission());
 						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						//Temporary fix to update codes for insert Icon.
-						getAppliedValueSetList();
+						if (result != null && result.getCqlModel().getAllValueSetList() != null) {
+							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetList());
+						}
 						showSearchingBusy(false);
 					}
 				});

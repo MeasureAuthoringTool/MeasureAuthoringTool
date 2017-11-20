@@ -6159,6 +6159,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						CQLCodeWrapper wrapper = getCqlService().getCQLCodes(newSavedXml);
 						if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
 							result.setCqlCodeList(wrapper.getCqlCodeList());
+							CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(result.getXml())).getCqlModel();
+							result.setCqlModel(cqlModel);
 						}
 					}
 				}
@@ -6208,6 +6210,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					CQLCodeWrapper wrapper = getCqlService().getCQLCodes(xmlModel.getXml());
 					if (wrapper != null && !wrapper.getCqlCodeList().isEmpty()) {
 						result.setCqlCodeList(wrapper.getCqlCodeList());
+						CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(result.getXml())).getCqlModel();
+						result.setCqlModel(cqlModel);
 					}
 				}
 			}

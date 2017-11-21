@@ -190,7 +190,7 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_ATTRIBUTE_RESULT = "result";
 	public static final String CQL_ATTRIBUTE_TARGET_OUTCOME = "targetOutcome";
 	public static final String CQL_INSERT_AS_CODE_IN = " as Code in ";
-	public static final String CQL_INSERT_AS_CODE = " as Code = ";
+	public static final String CQL_INSERT_AS_CODE = " as Code ~ ";
 	public static final String CQL_INSERT_IN = " in ";
 	public static final String CQL_EQUALS = " = ";
 	public static final String CQL_DRAFT = "Draft";

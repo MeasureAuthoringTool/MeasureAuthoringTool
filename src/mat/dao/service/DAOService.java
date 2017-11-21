@@ -8,6 +8,7 @@ import mat.dao.CodeListAuditLogDAO;
 import mat.dao.CodeListDAO;
 import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
+import mat.dao.EmailAuditLogDAO;
 import mat.dao.ListObjectDAO;
 import mat.dao.ListObjectLTDAO;
 import mat.dao.MatFlagDAO;
@@ -186,6 +187,8 @@ public class DAOService {
 	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
 	
 	private CQLLibraryShareDAO cqlLibraryShareDAO;
+	
+	private EmailAuditLogDAO emailAuditLogDAO; 
 	
 	/**
 	 * Gets the attribute details dao.
@@ -989,6 +992,14 @@ public class DAOService {
 
 	public void setCqlLibraryShareDAO(CQLLibraryShareDAO cqlLibraryShareDAO) {
 		this.cqlLibraryShareDAO = cqlLibraryShareDAO;
+	}
+
+	public EmailAuditLogDAO getEmailAuditLogDAO() {
+		return emailAuditLogDAO;
+	}
+
+	public void setEmailAuditLogDAO(EmailAuditLogDAO emailAuditLogDAO) {
+		this.emailAuditLogDAO = emailAuditLogDAO;
 	}
 	
 }

@@ -31,6 +31,7 @@
 	
 	<bean id="sendEmailTask" class="mat.server.service.jobs.CheckUserLastLoginTask" >
 		<property name="userDAO" ref="userDAO"/>
+		<property name="emailAuditLogDAO" ref="emailAuditLogDAO"/>
 		<property name ="mailSender" ref="mailSender"/>
 		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>
 		<property name ="warningDayLimit" value="${mat.warning.dayLimit}"/>
@@ -45,6 +46,7 @@
 	<!-- bean for scheduling password change warning email for 45 day limit and expiry email for 60 day limit -->
 	<bean id="sendPasswordChangeEmailTask" class="mat.server.service.jobs.CheckUserChangePasswordLimit" >
 		<property name="userDAO" ref="userDAO"/>
+		<property name="emailAuditLogDAO" ref="emailAuditLogDAO"/>
 		<property name="userService" ref="userService"/>
 		<property name ="mailSender" ref="mailSender"/>
 		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>

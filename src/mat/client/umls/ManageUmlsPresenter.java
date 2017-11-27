@@ -15,52 +15,23 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.ImageResources;
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageUmlsPresenter.
  */
 public class ManageUmlsPresenter implements MatPresenter{
 	
-	/** The Constant MAT_LOGIN_SUCCESS_MESSAGE. */
-	private static final String MAT_LOGIN_SUCCESS_MESSAGE = "matLoginSuccessMessage";
-	
-	/** The Constant WELCOME. */
-	private static final String WELCOME = "Welcome";
-	/** The h panel. */
-	private HorizontalFlowPanel hfPpanel = new HorizontalFlowPanel();
-	
-	/** The h panel. */
-	private HorizontalPanel hPanel = new HorizontalPanel(); 
-	
-	/** The image panel. */
-	private FlowPanel imagePanel = new FlowPanel();
-	
-	/** The msg panel. */
-	private FlowPanel msgPanel = new FlowPanel();
-	
-	/** The success icon. */
-	private Image successIcon = new Image(ImageResources.INSTANCE.msg_success());
 	
 	/** The show welcome message. */
 	private boolean showWelcomeMessage = false;
@@ -99,15 +70,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 		VerticalPanel getExternalLinkDisclaimer();
 		
 		/**
-		 * Gets the info message.
-		 * 
-		 * @return the info message
-		 */
-		//HasHTML getInfoMessage();
-		
-		
-		
-		/**
 		 * Gets the submit.
 		 * 
 		 * @return the submit
@@ -127,16 +89,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 * @return the umls trouble logging
 		 */
 		Anchor getUmlsTroubleLogging();
-		
-		
-		
-		/**
-		 * Sets the info message visible.
-		 * 
-		 * @param value
-		 *            the new info message visible
-		 */
-		//void setInfoMessageVisible(boolean value);
 		
 		/**
 		 * Sets the initial focus.
@@ -163,12 +115,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	
 	/** The welcome message. */
 	private String userFirstName;
-	/** The panel. */
-	//private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
-	
-	/** The panel with message. */
-	//private VerticalPanel panelWithMessage = new VerticalPanel();
-	
+
 	/**Key down handler to trap enter key.**/
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
@@ -242,15 +189,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 		});
 	}
 	
-	/**
-	 * Hide welcome message.
-	 */
-	/*protected void hideWelcomeMessage() {
-		panelWithMessage.remove(buildSuccessMessagePanel(userFirstName));
-		showWelcomeMessage = false;
-		
-	}*/
-
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
@@ -263,22 +201,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
-		/*String heading = "UMLS Account Login";
-		panel.setHeading(heading, "UmlsLogin");
-		FlowPanel fp = new FlowPanel();
-		fp.getElement().setId("fp_FlowPanel");*/
+	
 		resetWidget();		
-	//	fp.add(display.asWidget());		
-		/*panel.setContent(fp);
-		if(showWelcomeMessage){
-		panelWithMessage.add(buildSuccessMessagePanel(userFirstName));	
-		showWelcomeMessage=false;
-		Mat.focusSkipLists("UMLSMessageLogin");
-		}else{
-			panelWithMessage.remove(buildSuccessMessagePanel(userFirstName));
-			Mat.focusSkipLists("UmlsLogin");
-		}
-		panelWithMessage.add(panel);*/
 		if(showWelcomeMessage){
 			showWelcomeMessage = false;
 			display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWelcomeMessage(userFirstName));
@@ -290,41 +214,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		
 	}
 	
-	/**
-	 * Builds the success message panel.
-	 *
-	 * @param userFirstName the user first name
-	 * @return the widget
-	 */
-	/*private Widget buildSuccessMessagePanel(String userFirstName) {
-		hfPpanel.clear();
-		hfPpanel.getElement().setId("hfPpanel_HorizontalFlowPanel");
-		hfPpanel.setStyleName(MAT_LOGIN_SUCCESS_MESSAGE);
-		hPanel.clear();
-		hPanel.getElement().setId("hPanel_HorizontalPanel");
-		imagePanel.clear();
-		imagePanel.getElement().setId("imagePanel_FlowPanel");
-		msgPanel.clear();	
-		msgPanel.getElement().setId("msgPanel_FlowPanel");
-		successIcon.getElement().setAttribute("alt", "SuccessMessage");	
-		successIcon.setStyleName("successIcon");
-		imagePanel.add(successIcon);
-		msgPanel.add(wrap(WELCOME+" "+userFirstName+"! "+MatContext.get().getMessageDelegate().getWelcomeMessage()));		
-		hPanel.add(successIcon);
-		hPanel.add(msgPanel);
-		hfPpanel.add(hPanel);			
-		return hfPpanel;
-	}*/
 	
-	/**
-	 * Wrap.
-	 *
-	 * @param arg the arg
-	 * @return the widget
-	 *//*
-	private Widget wrap(String arg) {
-		return new HTML(arg);
-	}*/
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
@@ -352,7 +242,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageAlert().clear();
-		//display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		display.getPasswordInput().setText("");
 		display.getUserIdText().setText("");
@@ -364,10 +253,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 	
 	/** Private submit method - Calls to VSAC service.**/
 	private void submit() {
-		//hideWelcomeMessage();
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageAlert().clearAlert();
-		//display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		
 		if (display.getUserIdText().getText().isEmpty()) {
@@ -403,16 +290,12 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getMessageFormGrp().setValidationState(ValidationState.NONE);
 						display.getHelpBlock().setText("");
 						Mat.showUMLSActive();
-					//	display.setInfoMessageVisible(true);
-						//display.getInfoMessage().setText(
-							//	MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getPasswordInput().setText("");
 						display.getUserIdText().setText("");
 						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
 						MatContext.get().setUMLSLoggedIn(true);
-					/*	MatContext.get().getAllExpProfileList();*/
 					} else { //incorrect UMLS credential - no ticket is assigned.
 						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);

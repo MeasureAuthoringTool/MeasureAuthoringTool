@@ -33,8 +33,8 @@
    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/MAT_APP"/>
-        <property name="username" value="root"/>
-        <property name="password" value="admin"/>
+        <property name="username" value="username"/>
+        <property name="password" value="password"/>
     </bean>
     
     <context:annotation-config />
@@ -333,6 +333,10 @@
 		class="mat.dao.impl.clause.CQLLibraryShareDAO" parent="baseDAO">
 	</bean>
 	
+	<bean id="emailAuditLogDAO"
+		class="mat.dao.impl.EmailAuditLogDAO" parent="baseDAO">
+	</bean>
+	
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
@@ -386,6 +390,7 @@
 		<property name="cqlLibraryDAO" ref="cqlLibraryDAO"/>
 		<property name="cqlLibraryAssociationDAO" ref="cqlLibraryAssociationDAO"/>
 		<property name="cqlLibraryShareDAO" ref="cqlLibraryShareDAO"/>
+		<property name="emailAuditLogDAO" ref="emailAuditLogDAO"/>
 	</bean>
 	 
 </beans>

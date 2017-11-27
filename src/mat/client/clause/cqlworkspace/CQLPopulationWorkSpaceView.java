@@ -50,7 +50,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	 */
 	public CQLPopulationWorkSpaceView() {
 		cqlLeftNavBarPanelView = new CQLPopulationLeftNavBarPanelView();
-		
+		//this is test commit
 	}
 
 	/*

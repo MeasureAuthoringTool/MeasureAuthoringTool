@@ -14,6 +14,8 @@ import mat.client.shared.SkipListBuilder;
 
 /**
  * The Class CQLPopulationWorkSpaceView.
+ * 
+ * 
  */
 
 public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresenter.ViewDisplay {

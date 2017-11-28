@@ -1,9 +1,19 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.List;
+
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconSize;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 //import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -92,7 +102,90 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	
 	public void displayInitialPopulations() {
 		
+		List<PopulationClauseObject> initPopClauses = this.populationDataModel.getInitialPopulationsObject().getPopulationClauseObjectList();
+		showPopulation(initPopClauses);				
 	}
+	
+	public void displayNumerators() {
+		
+		List<PopulationClauseObject> numeratorsClauses = this.populationDataModel.getNumeratorsObject().getPopulationClauseObjectList();
+		showPopulation(numeratorsClauses);				
+	}
+
+	private void showPopulation(List<PopulationClauseObject> popClauses) {
+		
+		mainFlowPanel.clear();
+		Grid populationGrid = new Grid(popClauses.size(), 4);
+		
+		for(int i=0;i<popClauses.size();i++) {
+			
+			PopulationClauseObject populationClauseObject = popClauses.get(i);
+			
+			//set the name of the Initial Population clause.
+			FormLabel nameLabel = new FormLabel();
+			nameLabel.setText(populationClauseObject.getDisplayName());
+			nameLabel.setTitle(populationClauseObject.getDisplayName());
+			nameLabel.setMarginLeft(10.00);
+			nameLabel.setMarginRight(10.00);
+			populationGrid.setWidget(i, 0, nameLabel);
+			
+			//Set a listbox with all definition names in it.
+			ListBox definitionListBox = new ListBox();
+			definitionListBox.setWidth("50");
+			
+			for(String definitionName : this.populationDataModel.getDefinitionNameList()) {
+				definitionListBox.addItem(definitionName, definitionName);
+			}
+			
+			//select a definition name in the listbox
+			for(int j=0;j<definitionListBox.getItemCount();j++) {
+				String definitionName = definitionListBox.getItemText(j);
+				if(definitionName.equals(populationClauseObject.getCqlDefinitionDisplayName())){
+					definitionListBox.setItemSelected(j, true);
+					break;
+				}
+			}
+			
+			populationGrid.setWidget(i, 1, definitionListBox);
+			
+			//button for Delete
+			Button deleteButton = new Button();
+			deleteButton.setType(ButtonType.LINK);
+			deleteButton.getElement().setId("deleteButton_"+populationClauseObject.getDisplayName());
+			deleteButton.setTitle("Delete");
+			//deleteButton.setText("Delete");
+			deleteButton.setSize("70px", "30px");
+			deleteButton.setMarginLeft(10.00);
+			deleteButton.getElement().setAttribute("aria-label", "Delete");
+			deleteButton.setIcon(IconType.TRASH);
+			deleteButton.setIconSize(IconSize.LARGE);
+			deleteButton.setColor("#0964A2");
+			
+			populationGrid.setWidget(i, 2, deleteButton);
+			
+			//button for View Human Readable
+			Button viewHRButton = new Button();
+			viewHRButton.setType(ButtonType.LINK);
+			viewHRButton.getElement().setId("viewHRButton_"+populationClauseObject.getDisplayName());
+			viewHRButton.setTitle("View Human Readable");
+			//viewHRButton.setText("View Human Readable");
+			viewHRButton.setSize("70px", "30px");
+			viewHRButton.setMarginLeft(10.00);
+			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
+			viewHRButton.setIcon(IconType.BINOCULARS);
+			viewHRButton.setIconSize(IconSize.LARGE);
+			viewHRButton.setColor("black");
+			
+			populationGrid.setWidget(i, 3, viewHRButton);
+		}
+		
+		populationGrid.setCellPadding(15);
+		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
+		mainFlowPanel.add(scrollPanel);
+	}
+	
+	
+	
 	
 	/**
 	 * Reset All components to default state.
@@ -108,8 +201,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		this.populationDataModel = null;
 		
 		resetMessageDisplay();
-	}
-	
+	}	
 
 	/*
 	 * (non-Javadoc)

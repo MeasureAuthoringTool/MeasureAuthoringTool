@@ -11,6 +11,7 @@ public class PopulationDataModel {
 	
 	private List<String> definitionNameList = new ArrayList<String>();
 	private List<String> functionNameList = new ArrayList<String>();
+	
 	private PopulationsObject initialPopulationsObject = new PopulationsObject("initialPopulations");
 	private PopulationsObject numeratorsObject = new PopulationsObject("numerators");
 

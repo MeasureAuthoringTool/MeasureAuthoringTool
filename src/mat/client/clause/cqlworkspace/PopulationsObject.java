@@ -53,5 +53,13 @@ public class PopulationsObject {
 		
 		populationClauseObjectList.add(populationClauseObject);
 	}
+	
+	public List<PopulationClauseObject> getPopulationClauseObjectList() {
+		return populationClauseObjectList;
+	}
+
+	private void setPopulationClauseObjectList(List<PopulationClauseObject> populationClauseObjectList) {
+		this.populationClauseObjectList = populationClauseObjectList;
+	}
 
 }

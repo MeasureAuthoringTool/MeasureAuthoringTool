@@ -252,4 +252,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
 		return draftConfirmationDialogBox;
 	}
+
+	@Override
+	public void resetMessageDisplay() {
+		getSuccessMessageAlert().clearAlert();
+		getErrorMessageAlert().clearAlert();
+	}
 }

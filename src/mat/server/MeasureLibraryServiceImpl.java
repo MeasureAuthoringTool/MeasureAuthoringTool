@@ -2037,7 +2037,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		model.setData(dataList);
 		model.setStartIndex(startIndex);
 		model.setMeasureId(measureId);
-		model.setPrivate(getService().getById(measureId).getIsPrivate());
+		Measure measure = getService().getById(measureId);
+		model.setMeasureName(measure.getDescription());
+		model.setPrivate(measure.getIsPrivate());
 		return model;
 	}
 

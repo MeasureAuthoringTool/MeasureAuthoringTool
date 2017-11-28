@@ -332,6 +332,8 @@ public class MessageDelegate {
 	
 	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
 	
+	private static final String SUCCESSFULLY_SHARED = " has been successfully shared.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -3548,6 +3550,14 @@ public class MessageDelegate {
 
 	public String getCOPY_CODE_SELECT_ATLEAST_ONE() {
 		return COPY_CODE_SELECT_ATLEAST_ONE;
+	}
+	
+	public static String getMeasureSuccessfullyShared(String measureName) {
+		return measureName + SUCCESSFULLY_SHARED;
+	}
+
+	public static String getLibrarySuccessfullyShared(String cqlLibraryName) {
+		return cqlLibraryName + SUCCESSFULLY_SHARED;
 	}
 
 }

@@ -1306,8 +1306,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		SaveCQLLibraryResult result =  new SaveCQLLibraryResult();
 		List<CQLLibraryShareDTO> shareDTOList = cqlLibraryDAO
 				.getLibraryShareInfoForLibrary(cqlId, searchText);
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlId);
 		result.setCqlLibraryShareDTOs(shareDTOList);
 		result.setId(cqlId);
+		result.setCqlLibraryName(cqlLibrary.getName());
 		result.setResultsTotal(shareDTOList.size());
 		return result;
 	}

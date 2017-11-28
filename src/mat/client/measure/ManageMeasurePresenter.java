@@ -581,7 +581,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the success measure deletion
 		 */
 		public MessageAlert getSuccessMeasureDeletion();
-
+		
+		/**
+		 * Gets the success message display
+		 * 
+		 * @return the success message display
+		 */
+		public MessageAlert getSuccessMessageDisplay();
+		
 		/**
 		 * Gets the zoom button.
 		 * 
@@ -592,6 +599,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		VerticalPanel getCellTablePanel();
 
 		EditConfirmationDialogBox getDraftConfirmationDialogBox();
+		
+		/* clear the message alerts */
+		public void resetMessageDisplay();
 
 	}
 
@@ -620,7 +630,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the share button
 		 */
-		public HasClickHandlers getShareButton();
+		public HasClickHandlers getSaveButton();
 
 		/**
 		 * Private checkbox.
@@ -656,6 +666,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the focus panel
 		 */
 		FocusPanel getSearchWidgetFocusPanel();
+
+		MessageAlert getWarningMessageDisplay();
+
+		void resetMessageDisplay();
 	}
 
 	/**
@@ -788,6 +802,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	/** The measure del message. */
 	private String measureDelMessage;
+	
+	/** The measure share. */
+	private boolean measureShared = false;
+	
+	/** The measure share message. */
+	private String measureShareMessage;
 
 	/** The measure ver message. */
 	private String measureVerMessage;
@@ -923,7 +943,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		searchDisplay.resetMessageDisplay();
 		isMeasureDeleted = false;
+		measureShared = false;
 		measureDeletion = false;
 		isMeasureVersioned = false;
 		isClone = false;
@@ -1032,8 +1054,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void cloneMeasure(final ManageMeasureDetailModel currentDetails, final boolean isDraftCreation) {
 		String loggedinUserId = MatContext.get().getLoggedinUserId();
-		searchDisplay.getSuccessMeasureDeletion().clearAlert();
-		searchDisplay.getErrorMeasureDeletion().clearAlert();
+		searchDisplay.resetMessageDisplay();
 		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
 		
 		mcs.clone(currentDetails, loggedinUserId, isDraftCreation,
@@ -1119,9 +1140,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void createVersion() {
 		versionDisplay.getErrorMessageDisplay().clearAlert();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-		searchDisplay.getSuccessMeasureDeletion().clearAlert();
-		searchDisplay.getErrorMeasureDeletion().clearAlert();
+		searchDisplay.resetMessageDisplay();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create Measure Version of Draft", "MeasureLibrary");
 		panel.setContent(versionDisplay.asWidget());
@@ -1590,8 +1609,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			boolean isEditable, boolean isLocked, String lockedUserId) {
 		MeasureSelectedEvent evt = new MeasureSelectedEvent(id, version, name, shortName, scoringType, isEditable,
 				isLocked, lockedUserId);
-		searchDisplay.getSuccessMeasureDeletion().clearAlert();
-		searchDisplay.getErrorMeasureDeletion().clearAlert();
+		searchDisplay.resetMessageDisplay();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 
@@ -1615,8 +1633,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void getShareDetails(String userName, String id, int startIndex) {
 		shareStartIndex = startIndex;
-		searchDisplay.getSuccessMeasureDeletion().clearAlert();
-		searchDisplay.getErrorMeasureDeletion().clearAlert();
+		searchDisplay.resetMessageDisplay();
+		shareDisplay.resetMessageDisplay();
 		MatContext.get().getMeasureService().getUsersForShare(userName, id, startIndex, Integer.MAX_VALUE,
 				new AsyncCallback<ManageMeasureShareModel>() {
 					@Override
@@ -1633,6 +1651,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 						shareDisplay.setPrivate(currentShareDetails.isPrivate());
 						userShareInfo.setData(result);
 						shareDisplay.buildDataTable(userShareInfo);
+						if (result.getData() == null && (result.getData().isEmpty())) {
+							shareDisplay.getWarningMessageDisplay().createAlert(MessageDelegate.getNoUsersReturned());
+						} 
 					}
 				});
 	}
@@ -1889,6 +1910,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onCloneClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -1907,6 +1929,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									// result.getScoringType(),result.isEditable(),result.isMeasureLocked(),
 									// result.getLockedUserId(result.getLockedUserInfo()));
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -1917,6 +1940,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onExportClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -1927,6 +1951,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onExportSelectedClicked(Result result, boolean isCBChecked) {
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -1939,6 +1964,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onExportSelectedClicked(CustomCheckBox checkBox) {
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -1962,6 +1988,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -1973,6 +2000,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								@Override
 								public void onShareClicked(ManageMeasureSearchModel.Result result) {
 									measureDeletion = false;
+									measureShared = false;
 									isMeasureDeleted = false;
 									isMeasureVersioned = false;
 									searchDisplay.getSuccessMeasureDeletion().clearAlert();
@@ -2047,10 +2075,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 											searchDisplay.getErrorMeasureDeletion().createAlert(measureDelMessage);
 										}
 									}
-
+								} else if (measureShared) {
+									searchDisplay.getSuccessMessageDisplay().createAlert(measureShareMessage);
+									measureShared = false;
 								} else {
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
+									searchDisplay.resetMessageDisplay();
 								}if(isMeasureVersioned){
 									searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
 								} 
@@ -2186,8 +2215,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMeasureDeletion().clearAlert();
-				searchDisplay.getSuccessMeasureDeletion().clearAlert();
+				searchDisplay.resetMessageDisplay();
 				measureDeletion = false;
 				isMeasureDeleted = false;
 				isMeasureVersioned = false;
@@ -2201,9 +2229,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				int startIndex = 1;
 				measureDeletion = false;
 				isMeasureVersioned = false;
-				searchDisplay.getErrorMeasureDeletion().clearAlert();
-				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.resetMessageDisplay();
 				int filter = searchDisplay.getSelectedFilter();
 				search(searchDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
 			}
@@ -2248,9 +2274,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				isMeasureDeleted = false;
 				measureDeletion = false;
 				isMeasureVersioned = false;
-				searchDisplay.getErrorMeasureDeletion().clearAlert();
-				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.resetMessageDisplay();
 				versionDisplay.getErrorMessageDisplay().clearAlert();
 
 				detailDisplay.getErrorMessageDisplay().clearAlert();
@@ -2376,8 +2400,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								measureDeletion = false;
 								isMeasureDeleted = false;
 								isMeasureVersioned = false;
-								searchDisplay.getSuccessMeasureDeletion().clearAlert();
-								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								searchDisplay.resetMessageDisplay();
 								export(result);
 							}
 
@@ -2386,8 +2409,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								measureDeletion = false;
 								isMeasureDeleted = false;
 								isMeasureVersioned = false;
-								searchDisplay.getSuccessMeasureDeletion().clearAlert();
-								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								searchDisplay.resetMessageDisplay();
 								edit(result.getId());
 
 							}
@@ -2431,11 +2453,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
 				isClone = false;
 				displaySearch();
 			}
 		});
-		shareDisplay.getShareButton().addClickHandler(new ClickHandler() {
+		shareDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				MatContext.get().getMeasureService().updateUsersShare(currentShareDetails, new AsyncCallback<Void>() {
@@ -2450,6 +2473,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(Void result) {
+						searchDisplay.resetMessageDisplay();
+						measureShared = currentShareDetails.getData().stream().anyMatch(sd -> (sd.getShareLevel() != null && !(sd.getShareLevel().equals(""))));
+						if(measureShared) {
+							measureShareMessage = MessageDelegate.getMeasureSuccessfullyShared(currentShareDetails.getMeasureName());
+						}
 						displaySearch();
 					}
 				});

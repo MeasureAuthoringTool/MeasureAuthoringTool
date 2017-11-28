@@ -16,7 +16,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -31,9 +30,12 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLLibraryShareDTO;
@@ -48,7 +50,9 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	/** The content. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
+	private MessageAlert errorMessages = new ErrorMessageAlert();
+	private MessageAlert successMessages = new SuccessMessageAlert();
+	private MessageAlert warningMessages = new WarningMessageAlert();
 	
 	/** The measure name label. */
 	private CQLLibraryNameLabel cqLLibnNameLabel = new CQLLibraryNameLabel();
@@ -99,6 +103,9 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 		cellTablePanel.setWidth("77%");
 		mainPanel.add(cellTablePanel);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(errorMessages);
+		mainPanel.add(warningMessages);
+		mainPanel.add(successMessages);
 		mainPanel.add(buttonBar);
 		
 	}
@@ -175,7 +182,6 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	 */
 	@Override
 	public void buildCQLLibraryShareTable(List<CQLLibraryShareDTO> data) {
-
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		Label cellTableHeader = new Label("Select users with whom you wish to share modify access.");
@@ -220,14 +226,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 			cellTablePanel.add(cellTable);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
-		} else {
-			HTML desc = new HTML("<p> No Users available for sharing.</p>");
-			cellTablePanel.add(cellTableHeader);
-			cellTablePanel.add(new SpacerWidget());
-			cellTablePanel.add(desc);
 		}
-		
-		
 	}
 	/*
 	 * (non-Javadoc)
@@ -243,8 +242,17 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
 	 */
 	@Override
-	public ErrorMessageAlert getErrorMessageDisplay() {
+	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
+	}
+	
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessages;
+	}
+	@Override
+	public MessageAlert getWarningMessageDisplay() {
+		return warningMessages;
 	}
 	
 	/*
@@ -295,5 +303,10 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 	public FocusPanel getSearchWidgetFocusPanel() {
 		return searchWidgetFocusPanel;
 	}
-
+	@Override
+	public void resetMessageDisplay() {
+		getWarningMessageDisplay().clearAlert();
+		getErrorMessageDisplay().clearAlert();
+		getSuccessMessageDisplay().clearAlert();
+	}
 }

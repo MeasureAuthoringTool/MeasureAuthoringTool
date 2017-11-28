@@ -98,6 +98,9 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	/** The success measure deletion. */
 	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
 	
+	/** The success message display. */
+	private MessageAlert successMessages = new SuccessMessageAlert();
+	
 	/**  The delete confirmation box. */
 	EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
 	
@@ -150,6 +153,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessages);
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(measureSearchView.asWidget());
@@ -625,6 +629,20 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
 		return draftConfirmationDialogBox;
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessages;
+	}
+
+	@Override
+	public void resetMessageDisplay() {
+		getErrorMessageDisplayForBulkExport().clearAlert();
+		getErrorMessageDisplay().clearAlert();
+		getErrorMeasureDeletion().clearAlert();
+		getSuccessMeasureDeletion().clearAlert();
+		getSuccessMessageDisplay().clearAlert();
 	}
 
 }

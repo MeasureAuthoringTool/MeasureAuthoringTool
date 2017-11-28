@@ -131,6 +131,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 		void displayInitialPopulations();
 
+		void displayNumerators();
+
 	}
 
 	/**
@@ -376,6 +378,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
 			searchDisplay.displayInitialPopulations();
 		}
+		
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
 		Mat.focusSkipLists("CqlPopulationView");
 	}
@@ -393,6 +396,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_NUMERATOR, true);
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
+			searchDisplay.displayNumerators();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerators", "headingPanel");
 		Mat.focusSkipLists("CqlPopulationView");

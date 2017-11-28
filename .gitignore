@@ -18,3 +18,12 @@ war/mat
 
 #compilation logs
 .gwt/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# Misc
+velocity.log
+war/WEB-INF/mat-persistence.xml

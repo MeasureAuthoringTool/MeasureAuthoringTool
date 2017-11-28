@@ -46,13 +46,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	/** The cql left nav bar panel view. */
 	private CQLPopulationLeftNavBarPanelView cqlLeftNavBarPanelView;
+	
+	private PopulationDataModel populationDataModel = null;
+	private Document document = null;
 
 	/**
 	 * Instantiates a new CQL work space view.
 	 */
 	public CQLPopulationWorkSpaceView() {
 		cqlLeftNavBarPanelView = new CQLPopulationLeftNavBarPanelView();
-		//this is test commit
 	}
 
 	/*
@@ -64,8 +66,12 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	 * Builds the view.
 	 */
 	@Override
-	public void buildView(Document document) {
+	public void buildView(Document document, PopulationDataModel populationDataModel) {
 		resetAll();
+		
+		this.document = document;
+		this.populationDataModel = populationDataModel;
+		
 		heading.addStyleName("leftAligned");
 		headingPanel.getElement().setId("headingPanel");
 		mainFlowPanel.setWidth("700px");
@@ -82,9 +88,12 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainHPPanel.add(mainPanel);
 		
 		mainVPanel.add(mainHPPanel);
-       
-        
 	}
+	
+	public void displayInitialPopulations() {
+		
+	}
+	
 	/**
 	 * Reset All components to default state.
 	 */
@@ -94,6 +103,10 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		headingPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		cqlLeftNavBarPanelView.setIsPageDirty(false);
+		
+		this.document = null;
+		this.populationDataModel = null;
+		
 		resetMessageDisplay();
 	}
 	

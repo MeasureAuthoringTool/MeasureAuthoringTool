@@ -55,7 +55,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		 * Generates View for CQLWorkSpace tab.
 		 * @param document 
 		 */
-		void buildView(Document document);
+		void buildView(Document document, PopulationDataModel populationDataModel);
 
 			/**
 		 * Gets the main v panel.
@@ -128,6 +128,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		void resetAll();
 
 		void setHeadingBasedOnCurrentSection(String headingText, String panelId);
+
+		void displayInitialPopulations();
 
 	}
 
@@ -250,8 +252,11 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		try {
 			String xml = result != null ? result.getMeasureXmlModel().getXml() : null;
 			Document document = XMLParser.parse(xml);
-			//PopulationWorkSpaceConstants.subTreeLookUpName = result.getClauseMap();			
-			searchDisplay.buildView(document);
+			
+			//create a Populations Data model object from the Measure XML.
+			PopulationDataModel populationDataModel = new PopulationDataModel(document);
+			
+			searchDisplay.buildView(document, populationDataModel);
 			addLeftNavEventHandler();
 			searchDisplay.resetMessageDisplay();
 			panel.add(searchDisplay.asWidget());
@@ -261,7 +266,6 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		}		
 	}	
 
-	
 	/**
 	 * Adding handlers for Anchor Items.
 	 */
@@ -370,6 +374,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_INITIALPOPULATION, true);
 			currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
+			searchDisplay.displayInitialPopulations();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
 		Mat.focusSkipLists("CqlPopulationView");

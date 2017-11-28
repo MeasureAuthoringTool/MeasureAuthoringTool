@@ -533,7 +533,7 @@ public class CQLUtil {
 
 			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
 			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-
+			System.err.println(cte.getMessage());
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
 		}
@@ -568,6 +568,7 @@ public class CQLUtil {
 			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValueSetDataTypeMap());
 			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
 			usedArtifacts.setIncludeLibMap(cqlFilter.getUsedLibrariesMap());
+			
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 			parsedCQL.setCqlObject(cqlObject);
 
@@ -575,6 +576,8 @@ public class CQLUtil {
 			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
 			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
 			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
+			
+			System.out.println(usedArtifacts.toString());
 		}
 	}
 

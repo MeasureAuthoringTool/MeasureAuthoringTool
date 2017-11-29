@@ -8,6 +8,7 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Grid;
@@ -20,7 +21,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
+import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SpacerWidget;
 
 /**
  * The Class CQLPopulationWorkSpaceView.
@@ -59,7 +62,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	
 	private PopulationDataModel populationDataModel = null;
 	private Document document = null;
-
+	
 	/**
 	 * Instantiates a new CQL work space view.
 	 */
@@ -85,7 +88,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		heading.addStyleName("leftAligned");
 		headingPanel.getElement().setId("headingPanel");
 		mainFlowPanel.setWidth("700px");
-		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");
+		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
 		/*mainPanel.add(new SpacerWidget());*/
 		mainPanel.add(headingPanel);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
@@ -98,21 +101,24 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainHPPanel.add(mainPanel);
 		
 		mainVPanel.add(mainHPPanel);
+		mainVPanel.setStyleName("cqlRightContainer");
 	}
 	
 	public void displayInitialPopulations() {
+		/** The function add new button. */
 		
+		PopulationsObject initPopulationObject = this.populationDataModel.getInitialPopulationsObject();
 		List<PopulationClauseObject> initPopClauses = this.populationDataModel.getInitialPopulationsObject().getPopulationClauseObjectList();
-		showPopulation(initPopClauses);				
+		showPopulation(initPopClauses, initPopulationObject);				
 	}
 	
 	public void displayNumerators() {
 		
 		List<PopulationClauseObject> numeratorsClauses = this.populationDataModel.getNumeratorsObject().getPopulationClauseObjectList();
-		showPopulation(numeratorsClauses);				
+		showPopulation(numeratorsClauses, this.populationDataModel.getNumeratorsObject());				
 	}
 
-	private void showPopulation(List<PopulationClauseObject> popClauses) {
+	private void showPopulation(List<PopulationClauseObject> popClauses, PopulationsObject populationObject) {
 		
 		mainFlowPanel.clear();
 		Grid populationGrid = new Grid(popClauses.size(), 4);
@@ -125,13 +131,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
+			nameLabel.setMarginTop(15.00);
 			nameLabel.setMarginLeft(10.00);
 			nameLabel.setMarginRight(10.00);
+			
 			populationGrid.setWidget(i, 0, nameLabel);
 			
 			//Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
-			definitionListBox.setWidth("50");
+			definitionListBox.setWidth("50");			
 			
 			for(String definitionName : this.populationDataModel.getDefinitionNameList()) {
 				definitionListBox.addItem(definitionName, definitionName);
@@ -155,6 +163,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			deleteButton.setTitle("Delete");
 			//deleteButton.setText("Delete");
 			deleteButton.setSize("70px", "30px");
+			deleteButton.setMarginTop(15.00);
 			deleteButton.setMarginLeft(10.00);
 			deleteButton.getElement().setAttribute("aria-label", "Delete");
 			deleteButton.setIcon(IconType.TRASH);
@@ -170,6 +179,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			viewHRButton.setTitle("View Human Readable");
 			//viewHRButton.setText("View Human Readable");
 			viewHRButton.setSize("70px", "30px");
+			viewHRButton.setMarginTop(15.00);
 			viewHRButton.setMarginLeft(10.00);
 			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
 			viewHRButton.setIcon(IconType.BINOCULARS);
@@ -177,11 +187,18 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			viewHRButton.setColor("black");
 			
 			populationGrid.setWidget(i, 3, viewHRButton);
+			
 		}
-		
-		populationGrid.setCellPadding(15);
+				
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
+		
+		mainFlowPanel.add(new SpacerWidget());
+		CQLAddNewButton addNewButtonBar = new CQLAddNewButton(populationObject.getPopulationName());
+		addNewButtonBar.getaddNewButton().setPull(Pull.LEFT);
+		mainFlowPanel.add(addNewButtonBar);
+		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(scrollPanel);
+		mainFlowPanel.add(new SpacerWidget());
 	}
 	
 	

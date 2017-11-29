@@ -44,7 +44,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	/** The main flow panel. */
 	private FlowPanel mainFlowPanel = new FlowPanel();
-	
+
 	/** The clicked menu. */
 	public String clickedMenu = "general";
 
@@ -53,21 +53,24 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	/** The vp. */
 	VerticalPanel vp = new VerticalPanel();
-	
+
 	HTML heading = new HTML();
 	HorizontalPanel headingPanel = new HorizontalPanel();
 
 	/** The cql left nav bar panel view. */
 	private CQLPopulationLeftNavBarPanelView cqlLeftNavBarPanelView;
-	
+
+	private CQLViewPopulationsDisplay cqlViewPopulationsDisplay;
+
 	private PopulationDataModel populationDataModel = null;
 	private Document document = null;
-	
+
 	/**
 	 * Instantiates a new CQL work space view.
 	 */
 	public CQLPopulationWorkSpaceView() {
 		cqlLeftNavBarPanelView = new CQLPopulationLeftNavBarPanelView();
+		cqlViewPopulationsDisplay = new CQLViewPopulationsDisplay();
 	}
 
 	/*
@@ -81,15 +84,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void buildView(Document document, PopulationDataModel populationDataModel) {
 		resetAll();
-		
+
 		this.document = document;
 		this.populationDataModel = populationDataModel;
-		
+
 		heading.addStyleName("leftAligned");
 		headingPanel.getElement().setId("headingPanel");
 		mainFlowPanel.setWidth("700px");
-		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
-		/*mainPanel.add(new SpacerWidget());*/
+		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");
+		/* mainPanel.add(new SpacerWidget()); */
 		mainPanel.add(headingPanel);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
@@ -97,103 +100,146 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView(document));
-		
+
 		mainHPPanel.add(mainPanel);
-		
+
 		mainVPanel.add(mainHPPanel);
 		mainVPanel.setStyleName("cqlRightContainer");
 	}
-	
+	@Override
 	public void displayInitialPopulations() {
 		/** The function add new button. */
-		
+
 		PopulationsObject initPopulationObject = this.populationDataModel.getInitialPopulationsObject();
-		List<PopulationClauseObject> initPopClauses = this.populationDataModel.getInitialPopulationsObject().getPopulationClauseObjectList();
-		showPopulation(initPopClauses, initPopulationObject);				
+		List<PopulationClauseObject> initPopClauses = this.populationDataModel.getInitialPopulationsObject()
+				.getPopulationClauseObjectList();
+		showPopulation(initPopClauses, initPopulationObject);
 	}
-	
+	@Override
 	public void displayNumerators() {
-		
-		List<PopulationClauseObject> numeratorsClauses = this.populationDataModel.getNumeratorsObject().getPopulationClauseObjectList();
-		showPopulation(numeratorsClauses, this.populationDataModel.getNumeratorsObject());				
+
+		List<PopulationClauseObject> numeratorsClauses = this.populationDataModel.getNumeratorsObject()
+				.getPopulationClauseObjectList();
+		showPopulation(numeratorsClauses, this.populationDataModel.getNumeratorsObject());
+	}
+	@Override
+	public void displayDenominator() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayDenominatorExclusions() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayDenominatorExceptions() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayNumeratorExclusion() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayMeasurePopulations() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayMeasurePopulationsExclusions() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayMeasureObservations() {
+
+		mainFlowPanel.clear();
+	}
+	@Override
+	public void displayStratification() {
+
+		mainFlowPanel.clear();
 	}
 
 	private void showPopulation(List<PopulationClauseObject> popClauses, PopulationsObject populationObject) {
-		
+
 		mainFlowPanel.clear();
 		Grid populationGrid = new Grid(popClauses.size(), 4);
-		populationGrid.addStyleName("borderSpacing"); 
-		//populationGrid.getElement().setAttribute("style", "float:right; position: relative; right: 50%;");
+		populationGrid.addStyleName("borderSpacing");
+		// populationGrid.getElement().setAttribute("style", "float:right; position:
+		// relative; right: 50%;");
 
-		for(int i=0;i<popClauses.size();i++) {
-			
+		for (int i = 0; i < popClauses.size(); i++) {
+
 			PopulationClauseObject populationClauseObject = popClauses.get(i);
-			
-			//set the name of the Initial Population clause.
+
+			// set the name of the Initial Population clause.
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
 			nameLabel.setMarginLeft(10.00);
 			nameLabel.setMarginRight(10.00);
-			
+
 			populationGrid.setWidget(i, 0, nameLabel);
 			populationGrid.getCellFormatter().setWidth(i, 0, "250px");
-			
-			//Set a listbox with all definition names in it.
+
+			// Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
 			definitionListBox.setWidth("50");
 			definitionListBox.addItem("--Select--", "");
-			
-			for(String definitionName : this.populationDataModel.getDefinitionNameList()) {
+
+			for (String definitionName : this.populationDataModel.getDefinitionNameList()) {
 				definitionListBox.addItem(definitionName, definitionName);
 			}
-			
-			//select a definition name in the listbox
-			for(int j=0;j<definitionListBox.getItemCount();j++) {
+
+			// select a definition name in the listbox
+			for (int j = 0; j < definitionListBox.getItemCount(); j++) {
 				String definitionName = definitionListBox.getItemText(j);
-				if(definitionName.equals(populationClauseObject.getCqlDefinitionDisplayName())){
+				if (definitionName.equals(populationClauseObject.getCqlDefinitionDisplayName())) {
 					definitionListBox.setItemSelected(j, true);
 					break;
 				}
 			}
-			
+
 			populationGrid.setWidget(i, 1, definitionListBox);
-			
-			//button for Delete
+
+			// button for Delete
 			Button deleteButton = new Button();
 			deleteButton.setType(ButtonType.LINK);
-			deleteButton.getElement().setId("deleteButton_"+populationClauseObject.getDisplayName());
+			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");
-			//deleteButton.setText("Delete");
+			// deleteButton.setText("Delete");
 			deleteButton.setSize("50px", "30px");
-			//deleteButton.setMarginLeft(10.00);
+			// deleteButton.setMarginLeft(10.00);
 			deleteButton.getElement().setAttribute("aria-label", "Delete");
 			deleteButton.setIcon(IconType.TRASH);
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
-			
+
 			populationGrid.setWidget(i, 2, deleteButton);
-			
-			//button for View Human Readable
+
+			// button for View Human Readable
 			Button viewHRButton = new Button();
 			viewHRButton.setType(ButtonType.LINK);
-			viewHRButton.getElement().setId("viewHRButton_"+populationClauseObject.getDisplayName());
+			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 			viewHRButton.setTitle("View Human Readable");
-			//viewHRButton.setText("View Human Readable");
+			// viewHRButton.setText("View Human Readable");
 			viewHRButton.setSize("50px", "30px");
-			//viewHRButton.setMarginLeft(10.00);
+			// viewHRButton.setMarginLeft(10.00);
 			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
 			viewHRButton.setIcon(IconType.BINOCULARS);
 			viewHRButton.setIconSize(IconSize.LARGE);
 			viewHRButton.setColor("black");
-			
+
 			populationGrid.setWidget(i, 3, viewHRButton);
-			
+
 		}
-				
+
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "550px");
-				
+
 		mainFlowPanel.add(new SpacerWidget());
 		CQLAddNewButton addNewButtonBar = new CQLAddNewButton(populationObject.getPopulationName());
 		addNewButtonBar.getaddNewButton().setPull(Pull.LEFT);
@@ -202,27 +248,24 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
-		
-		//button for Save
+
+		// button for Save
 		Button saveButton = new Button();
 		saveButton.setType(ButtonType.PRIMARY);
-		saveButton.getElement().setId("saveButton_"+populationObject.getPopulationName());
+		saveButton.getElement().setId("saveButton_" + populationObject.getPopulationName());
 		saveButton.setMarginTop(10);
 		saveButton.setTitle("Save");
 		saveButton.setText("Save");
 		saveButton.setIcon(IconType.SAVE);
 		saveButton.setIconSize(IconSize.LARGE);
-		//saveButton.setColor("#0964A2");
-		//saveButton.setSize("70px", "30px");
+		// saveButton.setColor("#0964A2");
+		// saveButton.setSize("70px", "30px");
 		saveButton.getElement().setAttribute("aria-label", "Save");
-		
+
 		mainFlowPanel.add(saveButton);
 		mainFlowPanel.add(new SpacerWidget());
 	}
-	
-	
-	
-	
+
 	/**
 	 * Reset All components to default state.
 	 */
@@ -232,12 +275,20 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		headingPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		cqlLeftNavBarPanelView.setIsPageDirty(false);
-		
+
 		this.document = null;
 		this.populationDataModel = null;
-		
+
 		resetMessageDisplay();
-	}	
+	}
+
+	@Override
+	public void buildViewPopulations() {
+		// resetAll();
+		mainFlowPanel.clear();
+		cqlViewPopulationsDisplay.getMeasureXmlAndBuildView();
+		mainFlowPanel.add(cqlViewPopulationsDisplay.getMainPanel());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -302,8 +353,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
 	 * lang.String)
 	 */
 	/**
@@ -335,8 +385,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
+	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
 	 * lang.String)
 	 */
 	/**
@@ -363,17 +412,18 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	/**
 	 * Unset each section selected object and clear Value sets CellTable Panel.
 	 */
-	/*public void unsetEachSectionSelectedObject() {
-		cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedParamerterObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedFunctionObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentName(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedIncLibraryObjId(null);
-		
-	}*/
-	
-	
+	/*
+	 * public void unsetEachSectionSelectedObject() {
+	 * cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
+	 * cqlLeftNavBarPanelView.setCurrentSelectedParamerterObjId(null);
+	 * cqlLeftNavBarPanelView.setCurrentSelectedFunctionObjId(null);
+	 * cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentObjId(null);
+	 * cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentName(null);
+	 * cqlLeftNavBarPanelView.setCurrentSelectedIncLibraryObjId(null);
+	 * 
+	 * }
+	 */
+
 	/**
 	 * Reset message display.
 	 */
@@ -383,30 +433,41 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		cqlLeftNavBarPanelView.getSuccessMessageAlert().clearAlert();
 		cqlLeftNavBarPanelView.getErrorMessageAlert().clearAlert();
 		cqlLeftNavBarPanelView.getWarningConfirmationMessageAlert().clearAlert();
-		if(cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert() != null)
+		if (cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert() != null)
 			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
-		
+
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlLeftNavBarPanelView()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
+	 * getCqlLeftNavBarPanelView()
 	 */
 	@Override
-	public CQLPopulationLeftNavBarPanelView getCqlLeftNavBarPanelView(){
+	public CQLPopulationLeftNavBarPanelView getCqlLeftNavBarPanelView() {
 		return cqlLeftNavBarPanelView;
 	}
 
 	@Override
-	public void setHeadingBasedOnCurrentSection(String headingText, String panelId){
+	public void setHeadingBasedOnCurrentSection(String headingText, String panelId) {
 		setHeading(headingText, panelId);
 		Mat.focusSkipLists("CqlPopulationView");
 	}
-	
-	private void setHeading(String text,String linkName) {
+
+	private void setHeading(String text, String linkName) {
 		headingPanel.clear();
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
-		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
+		heading.setHTML(linkStr + "<h4><b>" + text + "</b></h4>");
 		headingPanel.add(heading);
+	}
+
+	@Override
+	public CQLViewPopulationsDisplay getCqlViewPopulationsDisplay() {
+		return cqlViewPopulationsDisplay;
+	}
+
+	public void setCqlViewPopulationsDisplay(CQLViewPopulationsDisplay cqlViewPopulationsDisplay) {
+		this.cqlViewPopulationsDisplay = cqlViewPopulationsDisplay;
 	}
 }

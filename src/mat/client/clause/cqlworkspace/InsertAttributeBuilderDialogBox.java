@@ -1287,7 +1287,7 @@ private static void defaultFrmGrpValidations(){
 					if(type.equalsIgnoreCase("valueset")) { // For Value Set
 						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append(value);
 					} else { // For Code
-						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_EQUALS).append(value);
+						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_CODE_EQUALS).append(value);
 					}
 				}
 			}

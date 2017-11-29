@@ -193,6 +193,7 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_INSERT_AS_CODE = " as Code ~ ";
 	public static final String CQL_INSERT_IN = " in ";
 	public static final String CQL_EQUALS = " = ";
+	public static final String CQL_CODE_EQUALS = " ~ "; 
 	public static final String CQL_DRAFT = "Draft";
 	public static final String CQL_CODE = "CODE:";
 	

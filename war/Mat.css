@@ -2749,3 +2749,7 @@ padding: 2px;
 	float: right;
 	white-space: nowrap;
 	}
+
+.borderSpacing {
+	border-spacing: 35px 20px;
+}	

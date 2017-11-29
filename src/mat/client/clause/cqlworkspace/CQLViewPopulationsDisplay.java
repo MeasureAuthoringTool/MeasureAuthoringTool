@@ -26,6 +26,7 @@ import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.CQLXmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
 
 public class CQLViewPopulationsDisplay {
 	String rootNode ="populations";
@@ -78,16 +79,16 @@ public class CQLViewPopulationsDisplay {
 				treeNode.setChildOpen(i, true, true);
 			}
 		}
-		
-	
 		mainPanel.add(xmlTreeView.asWidget());
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
 	}
 	
 	public VerticalPanel getMainPanel() {
 		return mainPanel;
 	}
 
-	public void getMeasureXml() {
+	public void getMeasureXmlAndBuildView() {
 		mainPanel.clear();
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
@@ -105,7 +106,6 @@ public class CQLViewPopulationsDisplay {
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-
 				}});	
 			
 		}

@@ -1652,7 +1652,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						userShareInfo.setData(result);
 						shareDisplay.buildDataTable(userShareInfo);
 						if (result.getData() == null || result.getData().isEmpty()) {
-							shareDisplay.getWarningMessageDisplay().createAlert(MessageDelegate.getNoUsersReturned());
+							shareDisplay.getErrorMessageDisplay().createAlert(MessageDelegate.getNoUsersReturned());
 						} 
 					}
 				});

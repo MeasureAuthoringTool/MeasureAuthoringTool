@@ -14,7 +14,10 @@ public class PopulationDataModel {
 	
 	private PopulationsObject initialPopulationsObject = new PopulationsObject("initialPopulations");
 	private PopulationsObject numeratorsObject = new PopulationsObject("numerators");
-
+	private PopulationsObject numeratorExclusionsObject = new PopulationsObject("numeratorExclusions");
+	private PopulationsObject denominatorsObject = new PopulationsObject("denominators");
+	private PopulationsObject denominatorExclusionsObject = new PopulationsObject("denominatorExclusions");
+	private PopulationsObject denominatorExceptionsObject = new PopulationsObject("denominatorExceptions");
 	public PopulationDataModel(Document document) {
 		
 		extractDefinitionNames(document);
@@ -34,6 +37,10 @@ public class PopulationDataModel {
 		
 		extractPopulations(populationsNode, initialPopulationsObject);
 		extractPopulations(populationsNode, numeratorsObject);
+		extractPopulations(populationsNode, numeratorExclusionsObject);
+		extractPopulations(populationsNode, denominatorsObject);
+		extractPopulations(populationsNode, denominatorExclusionsObject);
+		extractPopulations(populationsNode, denominatorExceptionsObject);
 	}
 
 	private void extractPopulations(Node populationsNode, PopulationsObject populationsObject) {
@@ -158,6 +165,38 @@ public class PopulationDataModel {
 
 	private void setNumeratorsObject(PopulationsObject numeratorsObject) {
 		this.numeratorsObject = numeratorsObject;
+	}
+
+	public PopulationsObject getNumeratorExclusionsObject() {
+		return numeratorExclusionsObject;
+	}
+
+	public void setNumeratorExclusionsObject(PopulationsObject numeratorExclusionsObject) {
+		this.numeratorExclusionsObject = numeratorExclusionsObject;
+	}
+
+	public PopulationsObject getDenominatorsObject() {
+		return denominatorsObject;
+	}
+
+	public void setDenominatorsObject(PopulationsObject denominatorsObject) {
+		this.denominatorsObject = denominatorsObject;
+	}
+
+	public PopulationsObject getDenominatorExclusionsObject() {
+		return denominatorExclusionsObject;
+	}
+
+	public void setDenominatorExclusionsObject(PopulationsObject denominatorExclusionsObject) {
+		this.denominatorExclusionsObject = denominatorExclusionsObject;
+	}
+
+	public PopulationsObject getDenominatorExceptionsObject() {
+		return denominatorExceptionsObject;
+	}
+
+	public void setDenominatorExceptionsObject(PopulationsObject denominatorExceptionsObject) {
+		this.denominatorExceptionsObject = denominatorExceptionsObject;
 	}
 
 

@@ -109,38 +109,27 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void displayInitialPopulations() {
 		/** The function add new button. */
-
-		PopulationsObject initPopulationObject = this.populationDataModel.getInitialPopulationsObject();
-		List<PopulationClauseObject> initPopClauses = this.populationDataModel.getInitialPopulationsObject()
-				.getPopulationClauseObjectList();
-		showPopulation(initPopClauses, initPopulationObject);
+		showPopulation(this.populationDataModel.getInitialPopulationsObject());
 	}
 	@Override
 	public void displayNumerators() {
-
-		List<PopulationClauseObject> numeratorsClauses = this.populationDataModel.getNumeratorsObject()
-				.getPopulationClauseObjectList();
-		showPopulation(numeratorsClauses, this.populationDataModel.getNumeratorsObject());
+		showPopulation(this.populationDataModel.getNumeratorsObject());
 	}
 	@Override
 	public void displayDenominator() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getDenominatorsObject());
 	}
 	@Override
 	public void displayDenominatorExclusions() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getDenominatorExclusionsObject());
 	}
 	@Override
 	public void displayDenominatorExceptions() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getDenominatorExceptionsObject());
 	}
 	@Override
 	public void displayNumeratorExclusion() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getNumeratorExclusionsObject());
 	}
 	@Override
 	public void displayMeasurePopulations() {
@@ -163,8 +152,8 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.clear();
 	}
 
-	private void showPopulation(List<PopulationClauseObject> popClauses, PopulationsObject populationObject) {
-
+	private void showPopulation(PopulationsObject populationObject) {
+		List<PopulationClauseObject> popClauses = populationObject.getPopulationClauseObjectList();
 		mainFlowPanel.clear();
 		Grid populationGrid = new Grid(popClauses.size(), 4);
 		populationGrid.addStyleName("borderSpacing");

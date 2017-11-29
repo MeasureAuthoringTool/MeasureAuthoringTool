@@ -137,6 +137,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			nameLabel.setMarginRight(10.00);
 			
 			populationGrid.setWidget(i, 0, nameLabel);
+			populationGrid.getCellFormatter().setWidth(i, 0, "250px");
 			
 			//Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
@@ -191,7 +192,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		}
 				
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
-		scrollPanel.setSize("700px", "200px");
+		scrollPanel.setSize("700px", "550px");
 				
 		mainFlowPanel.add(new SpacerWidget());
 		CQLAddNewButton addNewButtonBar = new CQLAddNewButton(populationObject.getPopulationName());
@@ -204,15 +205,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		
 		//button for Save
 		Button saveButton = new Button();
-		saveButton.setType(ButtonType.LINK);
+		saveButton.setType(ButtonType.PRIMARY);
 		saveButton.getElement().setId("saveButton_"+populationObject.getPopulationName());
 		saveButton.setMarginTop(10);
 		saveButton.setTitle("Save");
 		saveButton.setText("Save");
 		saveButton.setIcon(IconType.SAVE);
 		saveButton.setIconSize(IconSize.LARGE);
-		saveButton.setColor("#0964A2");
-		saveButton.setSize("70px", "30px");
+		//saveButton.setColor("#0964A2");
+		//saveButton.setSize("70px", "30px");
 		saveButton.getElement().setAttribute("aria-label", "Save");
 		
 		mainFlowPanel.add(saveButton);

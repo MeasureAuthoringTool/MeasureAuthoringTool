@@ -1651,7 +1651,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						shareDisplay.setPrivate(currentShareDetails.isPrivate());
 						userShareInfo.setData(result);
 						shareDisplay.buildDataTable(userShareInfo);
-						if (result.getData() == null && (result.getData().isEmpty())) {
+						if (result.getData() == null || result.getData().isEmpty()) {
 							shareDisplay.getWarningMessageDisplay().createAlert(MessageDelegate.getNoUsersReturned());
 						} 
 					}

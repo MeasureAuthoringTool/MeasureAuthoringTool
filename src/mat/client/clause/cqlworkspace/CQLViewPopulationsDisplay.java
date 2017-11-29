@@ -22,6 +22,7 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
+import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.CQLXmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -64,9 +65,59 @@ public class CQLViewPopulationsDisplay {
 		CellTree.Style cellTreeStyle();
 	}
 	
-	public void buildView() {
-		CQLXmlTreeView xmlTreeView = new CQLXmlTreeView(
-				CQLXmlConversionlHelper.createCQLCellTreeNode(document, rootNode));
+	public void buildView(String scoringType) {
+		CQLCellTreeNode parentNode = new CQLCellTreeNodeImpl();
+		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
+		
+		parentNode.setName(MatContext.get().getCurrentMeasureName());
+		parentNode.setLabel(MatContext.get().getCurrentMeasureName());
+		parentNode.setNodeType(CQLCellTreeNode.MAIN_NODE);
+		
+		if ("PROPOR".equals(scoringType)
+				|| "COHORT".equals(scoringType)) {
+			
+			CQLCellTreeNode populationsNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "populations");
+			populationsNode.setLabel("Populations");
+			parentchilds.add(populationsNode.getChilds().get(0));
+			populationsNode.setParent(parentNode);
+			
+			
+			CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "strata");
+			stratificationNode.setLabel("Stratification");
+			parentchilds.add(stratificationNode.getChilds().get(0));
+			stratificationNode.setParent(parentNode);
+			
+			parentNode.setChilds(parentchilds);
+			parentNode.setOpen(true);
+			
+		} else {
+			CQLCellTreeNode populationsNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "Populations");
+			populationsNode.setLabel("populations");
+			parentchilds.add(populationsNode.getChilds().get(0));
+			populationsNode.setParent(parentNode);
+			
+			
+			CQLCellTreeNode moNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "measureObservations");
+			moNode.setLabel("Measure Observations");
+			parentchilds.add(moNode.getChilds().get(0));
+			moNode.setParent(parentNode);
+			
+			CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "strata");
+			stratificationNode.setLabel("Stratification");
+			parentchilds.add(stratificationNode.getChilds().get(0));
+			stratificationNode.setParent(parentNode);
+			
+			parentNode.setChilds(parentchilds);
+			parentNode.setOpen(true);
+		}
+		
+		CQLCellTreeNode topmainNode = new CQLCellTreeNodeImpl();
+		List<CQLCellTreeNode> topchilds = new ArrayList<CQLCellTreeNode>();
+		
+		topchilds.add(parentNode);
+		topmainNode.setChilds(topchilds);
+		
+		CQLXmlTreeView xmlTreeView = new CQLXmlTreeView(topmainNode);
 		
 		CellTree.Resources resource = GWT.create(TreeResources.class);
 		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
@@ -100,7 +151,15 @@ public class CQLViewPopulationsDisplay {
 					document = XMLParser.parse(measureXml);
 					PopulationWorkSpaceConstants.subTreeLookUpName = result.getClauseMap();
 					setMeasureElementsMap();
-					buildView();
+					NodeList nodeList = document.getElementsByTagName("scoring");
+					if ((nodeList != null) && (nodeList.getLength() > 0)) {
+						Node scoringNode = nodeList.item(0);
+						Node scoringIdAttribute = scoringNode.getAttributes()
+								.getNamedItem("id");
+						String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
+						buildView(scoringIdAttributeValue);
+					}
+					
 				}
 
 				@Override

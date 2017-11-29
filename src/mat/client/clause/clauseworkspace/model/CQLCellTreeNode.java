@@ -71,6 +71,8 @@ public interface CQLCellTreeNode {
 	short CQL_DEFINITION_NODE = 15;  
 	short CQL_FUNCTION_NODE = 16;
 	short CQL_AGG_FUNCTION_NODE = 17;
+	
+	short MAIN_NODE = 20;
 	/**
 	 * Append child.
 	 * 

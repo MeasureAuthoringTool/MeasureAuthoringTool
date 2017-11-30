@@ -125,14 +125,7 @@ public class CQLViewPopulationsDisplay {
 		
 		xmlTreeView.buildView(cellTree); // Page Layout
 		cellTree.setTabIndex(0);
-		TreeNode treeNode = cellTree.getRootTreeNode();
-		for (int i = 0; i < treeNode.getChildCount(); i++) {
-			if (((CQLCellTreeNode) treeNode.getChildValue(i)).getNodeType() == CQLCellTreeNode.MAIN_NODE) {
-				treeNode.setChildOpen(i, true, true);
-			}
-		}
-		
-		
+		xmlTreeView.openMainNode();
 		mainPanel.add(xmlTreeView.asWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());

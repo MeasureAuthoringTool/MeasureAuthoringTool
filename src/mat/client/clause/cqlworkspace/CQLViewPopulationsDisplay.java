@@ -80,12 +80,13 @@ public class CQLViewPopulationsDisplay {
 			populationsNode.setLabel("Populations");
 			parentchilds.add(populationsNode.getChilds().get(0));
 			populationsNode.setParent(parentNode);
-			
+			populationsNode.setOpen(true);
 			
 			CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "strata");
 			stratificationNode.setLabel("Stratification");
 			parentchilds.add(stratificationNode.getChilds().get(0));
 			stratificationNode.setParent(parentNode);
+			stratificationNode.setOpen(true);
 			
 			parentNode.setChilds(parentchilds);
 			parentNode.setOpen(true);
@@ -95,18 +96,19 @@ public class CQLViewPopulationsDisplay {
 			populationsNode.setLabel("Populations");
 			parentchilds.add(populationsNode.getChilds().get(0));
 			populationsNode.setParent(parentNode);
-			
+			populationsNode.setOpen(true);
 			
 			CQLCellTreeNode moNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "measureObservations");
 			moNode.setLabel("Measure Observations");
 			parentchilds.add(moNode.getChilds().get(0));
 			moNode.setParent(parentNode);
+			moNode.setOpen(true);
 			
 			CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "strata");
 			stratificationNode.setLabel("Stratification");
 			parentchilds.add(stratificationNode.getChilds().get(0));
 			stratificationNode.setParent(parentNode);
-			
+			stratificationNode.setOpen(true);
 			parentNode.setChilds(parentchilds);
 			parentNode.setOpen(true);
 		}
@@ -123,6 +125,13 @@ public class CQLViewPopulationsDisplay {
 		
 		xmlTreeView.buildView(cellTree); // Page Layout
 		cellTree.setTabIndex(0);
+		TreeNode treeNode = cellTree.getRootTreeNode();
+		for (int i = 0; i < treeNode.getChildCount(); i++) {
+			if (((CQLCellTreeNode) treeNode.getChildValue(i)).getNodeType() == CQLCellTreeNode.MAIN_NODE) {
+				treeNode.setChildOpen(i, true, true);
+			}
+		}
+		
 		
 		mainPanel.add(xmlTreeView.asWidget());
 		mainPanel.add(new SpacerWidget());

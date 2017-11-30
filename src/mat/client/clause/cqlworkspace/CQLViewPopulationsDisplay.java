@@ -69,8 +69,8 @@ public class CQLViewPopulationsDisplay {
 		CQLCellTreeNode parentNode = new CQLCellTreeNodeImpl();
 		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
 		
-		parentNode.setName(MatContext.get().getCurrentMeasureName());
-		parentNode.setLabel(MatContext.get().getCurrentMeasureName());
+		parentNode.setName(MatContext.get().getCurrentShortName());
+		parentNode.setLabel(MatContext.get().getCurrentShortName());
 		parentNode.setNodeType(CQLCellTreeNode.MAIN_NODE);
 		
 		if ("PROPOR".equals(scoringType)
@@ -91,8 +91,8 @@ public class CQLViewPopulationsDisplay {
 			parentNode.setOpen(true);
 			
 		} else {
-			CQLCellTreeNode populationsNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "Populations");
-			populationsNode.setLabel("populations");
+			CQLCellTreeNode populationsNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "populations");
+			populationsNode.setLabel("Populations");
 			parentchilds.add(populationsNode.getChilds().get(0));
 			populationsNode.setParent(parentNode);
 			
@@ -116,20 +116,14 @@ public class CQLViewPopulationsDisplay {
 		
 		topchilds.add(parentNode);
 		topmainNode.setChilds(topchilds);
-		
+		topmainNode.setOpen(true);
 		CQLXmlTreeView xmlTreeView = new CQLXmlTreeView(topmainNode);
-		
 		CellTree.Resources resource = GWT.create(TreeResources.class);
 		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
 		
 		xmlTreeView.buildView(cellTree); // Page Layout
 		cellTree.setTabIndex(0);
-		TreeNode treeNode = cellTree.getRootTreeNode();
-		for (int i = 0; i < treeNode.getChildCount(); i++) {
-			if (((CQLCellTreeNode) treeNode.getChildValue(i)).getNodeType() == CQLCellTreeNode.MASTER_ROOT_NODE) {
-				treeNode.setChildOpen(i, true, true);
-			}
-		}
+		
 		mainPanel.add(xmlTreeView.asWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());

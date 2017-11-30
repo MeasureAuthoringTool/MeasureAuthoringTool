@@ -11,7 +11,6 @@ import java.util.TreeMap;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
-import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -21,6 +20,7 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
+import mat.client.Mat;
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -65,7 +65,7 @@ public class CQLViewPopulationsDisplay {
 		CellTree.Style cellTreeStyle();
 	}
 	
-	public void buildView(String scoringType) {
+	private void buildView(String scoringType) {
 		CQLCellTreeNode parentNode = new CQLCellTreeNodeImpl();
 		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
 		
@@ -136,6 +136,7 @@ public class CQLViewPopulationsDisplay {
 	}
 
 	public void getMeasureXmlAndBuildView() {
+		Mat.showLoadingMessage();
 		mainPanel.clear();
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
@@ -155,14 +156,17 @@ public class CQLViewPopulationsDisplay {
 						String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
 						buildView(scoringIdAttributeValue);
 					}
-					
+					Mat.hideLoadingMessage();
 				}
 
 				@Override
 				public void onFailure(Throwable caught) {
+					Mat.hideLoadingMessage();
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}});	
 			
+		} else {
+			Mat.hideLoadingMessage();
 		}
 	}
 	

@@ -261,6 +261,18 @@ public class CQLXmlTreeView extends Composite implements  CQLXmlTreeDisplay, Tre
 		});
 	}
 	
+	public void openMainNode() {
+		TreeNode treeNode = cellTree.getRootTreeNode();
+		for (int i = 0; i < treeNode.getChildCount(); i++) {
+			TreeNode subTree = treeNode.setChildOpen(i, true, true);
+			if ((subTree != null) && (subTree.getChildCount() > 0)) {
+				for (int j = 0; j < subTree.getChildCount(); j++) {
+					subTree.setChildOpen(j, true, true);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void onFocus(FocusEvent event) {
 		focusPanel.setStyleName("focusPanel");

@@ -1276,20 +1276,23 @@ private static void defaultFrmGrpValidations(){
 			if(valueArray.length > 0){
 				type = valueArray[0];
 				value = valueArray[1];
+				sb.append(".").append(selectedAttrItem);
 				if(selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_RESULT)
 						|| selectedAttrItem.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_ATTRIBUTE_TARGET_OUTCOME)){
 					if(type.equalsIgnoreCase("valueset")) { // For Value Set
-						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE_IN).append(value);
+						sb.append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE_IN);
 					} else { // For Code 
-						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE).append(value);
+						sb.append(CQLWorkSpaceConstants.CQL_INSERT_AS_CODE);
 					}
 				}else{
 					if(type.equalsIgnoreCase("valueset")) { // For Value Set
-						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_INSERT_IN).append(value);
+						sb.append(CQLWorkSpaceConstants.CQL_INSERT_IN);
 					} else { // For Code
-						sb.append(".").append(selectedAttrItem).append(CQLWorkSpaceConstants.CQL_CODE_EQUALS).append(value);
+						sb.append(CQLWorkSpaceConstants.CQL_CODE_EQUALS);
 					}
 				}
+				
+				sb.append(value);
 			}
 			
 		}else if(QuantityTextBox.isEnabled()){

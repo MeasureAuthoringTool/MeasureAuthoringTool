@@ -14,7 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-//import org.gwtbootstrap3.client.ui.TextBox;
+
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
@@ -397,7 +397,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayInitialPopulations();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -416,7 +416,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayNumerators();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerators", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -435,7 +435,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayNumeratorExclusion();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerator Exclusions", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -454,7 +454,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayDenominator();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominators", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -473,7 +473,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayDenominatorExclusions();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominator Exclusions", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/**
@@ -493,7 +493,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayDenominatorExceptions();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominator Exceptions", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/**
@@ -512,7 +512,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayMeasurePopulations();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/**
@@ -531,7 +531,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayMeasurePopulationsExclusions();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -550,7 +550,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayStratification();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -569,7 +569,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.displayMeasureObservations();
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	/**
@@ -589,7 +589,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > View Populations", "headingPanel");
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	

@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-//import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
@@ -89,13 +88,17 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		this.populationDataModel = populationDataModel;
 
 		heading.addStyleName("leftAligned");
+		headingPanel.setStyleName("marginLeft");
 		headingPanel.getElement().setId("headingPanel");
+		
 		mainFlowPanel.setWidth("700px");
-		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");
-		/* mainPanel.add(new SpacerWidget()); */
+		
+		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
 		mainPanel.add(headingPanel);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
+		mainPanel.setStyleName("cqlRightContainer");
+		
 		resetMessageDisplay();
 
 		mainHPPanel.addStyleName("cqlRightMessage");
@@ -103,9 +106,9 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 		mainHPPanel.add(mainPanel);
 
-		mainVPanel.add(mainHPPanel);
-		mainVPanel.setStyleName("cqlRightContainer");
+		mainVPanel.add(mainHPPanel);		
 	}
+	
 	@Override
 	public void displayInitialPopulations() {
 		/** The function add new button. */
@@ -157,8 +160,6 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.clear();
 		Grid populationGrid = new Grid(popClauses.size(), 4);
 		populationGrid.addStyleName("borderSpacing");
-		// populationGrid.getElement().setAttribute("style", "float:right; position:
-		// relative; right: 50%;");
 
 		for (int i = 0; i < popClauses.size(); i++) {
 
@@ -168,16 +169,16 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
-			nameLabel.setMarginLeft(10.00);
-			nameLabel.setMarginRight(10.00);
 
 			populationGrid.setWidget(i, 0, nameLabel);
-			populationGrid.getCellFormatter().setWidth(i, 0, "250px");
+			populationGrid.getCellFormatter().setWidth(i, 0, "230px");
 
 			// Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
-			definitionListBox.setWidth("50");
-			definitionListBox.addItem("--Select--", "");
+			definitionListBox.setSize("180px", "28px");			
+			definitionListBox.addItem("--Select Definition--", "");
+			definitionListBox.setTitle("Select Definition List");
+			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
 			for (String definitionName : this.populationDataModel.getDefinitionNameList()) {
 				definitionListBox.addItem(definitionName, definitionName);
@@ -199,9 +200,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			deleteButton.setType(ButtonType.LINK);
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");
-			// deleteButton.setText("Delete");
 			deleteButton.setSize("50px", "30px");
-			// deleteButton.setMarginLeft(10.00);
 			deleteButton.getElement().setAttribute("aria-label", "Delete");
 			deleteButton.setIcon(IconType.TRASH);
 			deleteButton.setIconSize(IconSize.LARGE);
@@ -214,9 +213,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			viewHRButton.setType(ButtonType.LINK);
 			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 			viewHRButton.setTitle("View Human Readable");
-			// viewHRButton.setText("View Human Readable");
 			viewHRButton.setSize("50px", "30px");
-			// viewHRButton.setMarginLeft(10.00);
 			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
 			viewHRButton.setIcon(IconType.BINOCULARS);
 			viewHRButton.setIconSize(IconSize.LARGE);
@@ -227,13 +224,13 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		}
 
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
-		scrollPanel.setSize("700px", "550px");
+		scrollPanel.setSize("700px", "250px");
 
 		mainFlowPanel.add(new SpacerWidget());
 		CQLAddNewButton addNewButtonBar = new CQLAddNewButton(populationObject.getPopulationName());
 		addNewButtonBar.getaddNewButton().setPull(Pull.LEFT);
+		addNewButtonBar.setStyleName("marginLeft");
 		mainFlowPanel.add(addNewButtonBar);
-		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
@@ -243,12 +240,11 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		saveButton.setType(ButtonType.PRIMARY);
 		saveButton.getElement().setId("saveButton_" + populationObject.getPopulationName());
 		saveButton.setMarginTop(10);
+		saveButton.setMarginLeft(35);
 		saveButton.setTitle("Save");
 		saveButton.setText("Save");
 		saveButton.setIcon(IconType.SAVE);
 		saveButton.setIconSize(IconSize.LARGE);
-		// saveButton.setColor("#0964A2");
-		// saveButton.setSize("70px", "30px");
 		saveButton.getElement().setAttribute("aria-label", "Save");
 
 		mainFlowPanel.add(saveButton);
@@ -441,7 +437,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void setHeadingBasedOnCurrentSection(String headingText, String panelId) {
 		setHeading(headingText, panelId);
-		Mat.focusSkipLists("CqlPopulationView");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 
 	private void setHeading(String text, String linkName) {

@@ -138,13 +138,11 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 	@Override
 	public void displayMeasurePopulations() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getMeasurePopulationsObject());
 	}
 	@Override
 	public void displayMeasurePopulationsExclusions() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getMeasurePopulationsExclusionsObject());
 	}
 	@Override
 	public void displayMeasureObservations() {

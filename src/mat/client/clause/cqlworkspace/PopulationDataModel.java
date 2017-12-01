@@ -3,7 +3,6 @@ package mat.client.clause.cqlworkspace;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.shared.GWT;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
@@ -19,6 +18,8 @@ public class PopulationDataModel {
 	private PopulationsObject denominatorsObject = new PopulationsObject("denominators");
 	private PopulationsObject denominatorExclusionsObject = new PopulationsObject("denominatorExclusions");
 	private PopulationsObject denominatorExceptionsObject = new PopulationsObject("denominatorExceptions");
+	private PopulationsObject measurePopulationsObject = new PopulationsObject("measurePopulations");
+	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject("measurePopulationExclusions");
 	public PopulationDataModel(Document document) {
 		
 		extractDefinitionNames(document);
@@ -42,6 +43,8 @@ public class PopulationDataModel {
 		extractPopulations(populationsNode, denominatorsObject);
 		extractPopulations(populationsNode, denominatorExclusionsObject);
 		extractPopulations(populationsNode, denominatorExceptionsObject);
+		extractPopulations(populationsNode, measurePopulationsObject);
+		extractPopulations(populationsNode, measurePopulationsExclusionsObject);
 	}
 
 	private void extractPopulations(Node populationsNode, PopulationsObject populationsObject) {
@@ -158,7 +161,7 @@ public class PopulationDataModel {
 		return initialPopulationsObject;
 	}
 
-	private void setInitialPopulationsObject(PopulationsObject initialPopulationsObject) {
+	public void setInitialPopulationsObject(PopulationsObject initialPopulationsObject) {
 		this.initialPopulationsObject = initialPopulationsObject;
 	}
 
@@ -166,7 +169,7 @@ public class PopulationDataModel {
 		return numeratorsObject;
 	}
 
-	private void setNumeratorsObject(PopulationsObject numeratorsObject) {
+	public void setNumeratorsObject(PopulationsObject numeratorsObject) {
 		this.numeratorsObject = numeratorsObject;
 	}
 
@@ -200,6 +203,22 @@ public class PopulationDataModel {
 
 	public void setDenominatorExceptionsObject(PopulationsObject denominatorExceptionsObject) {
 		this.denominatorExceptionsObject = denominatorExceptionsObject;
+	}
+
+	public PopulationsObject getMeasurePopulationsObject() {
+		return measurePopulationsObject;
+	}
+
+	public void setMeasurePopulationsObject(PopulationsObject measurePopulationsObject) {
+		this.measurePopulationsObject = measurePopulationsObject;
+	}
+
+	public PopulationsObject getMeasurePopulationsExclusionsObject() {
+		return measurePopulationsExclusionsObject;
+	}
+
+	public void setMeasurePopulationsExclusionsObject(PopulationsObject measurePopulationsExclusionsObject) {
+		this.measurePopulationsExclusionsObject = measurePopulationsExclusionsObject;
 	}
 
 

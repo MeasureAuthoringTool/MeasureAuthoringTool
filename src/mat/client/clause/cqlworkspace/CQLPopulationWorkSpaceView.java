@@ -176,7 +176,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 			// Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
-			definitionListBox.setSize("180px", "28px");			
+			definitionListBox.setSize("180px", "30px");			
 			definitionListBox.addItem("--Select Definition--", "");
 			definitionListBox.setTitle("Select Definition List");
 			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
@@ -455,6 +455,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			newBtn.setTitle("Click this button to save " + displayName);
 			newBtn.setIcon(IconType.SAVE);
 			newBtn.setPull(Pull.RIGHT);
+			newBtn.setIconSize(IconSize.LARGE);
 		}else {			
 			newBtn.setId("addNewButton_" + sectionName);
 			newBtn.setTitle("Click this button to add a new " + displayName.substring(0, displayName.length()-1));

@@ -396,7 +396,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
 			searchDisplay.displayInitialPopulations();
 		}
-		//searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
+
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
@@ -415,7 +415,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
 			searchDisplay.displayNumerators();
 		}
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerators", "headingPanel");
+		
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
@@ -434,7 +434,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS;
 			searchDisplay.displayNumeratorExclusion();
 		}
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Numerator Exclusions", "headingPanel");
+
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
@@ -453,7 +453,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOR;
 			searchDisplay.displayDenominator();
 		}
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominators", "headingPanel");
+
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
@@ -472,7 +472,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS;
 			searchDisplay.displayDenominatorExclusions();
 		}
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominator Exclusions", "headingPanel");
+
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	
@@ -492,7 +492,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS;
 			searchDisplay.displayDenominatorExceptions();
 		}
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Denominator Exceptions", "headingPanel");
+
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	

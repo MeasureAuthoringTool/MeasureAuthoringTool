@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
@@ -50,7 +51,9 @@ public class PopulationDataModel {
 		if(populationNode == null) {
 			return;
 		}
-		
+		String displayName = populationNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		populationsObject.setDisplayName(displayName);
+
 		extractClauses(populationNode, populationsObject);
 	}
 

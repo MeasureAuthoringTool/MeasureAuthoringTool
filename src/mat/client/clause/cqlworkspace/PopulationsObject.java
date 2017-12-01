@@ -9,6 +9,7 @@ import com.google.gwt.xml.client.NodeList;
 public class PopulationsObject {
 	
 	private String populationName = "";
+	private String displayName = "";
 	List<PopulationClauseObject> populationClauseObjectList = new ArrayList<PopulationClauseObject>();
 
 	public PopulationsObject(String name) {
@@ -21,6 +22,14 @@ public class PopulationsObject {
 
 	private void setPopulationName(String populationName) {
 		this.populationName = populationName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 
 	public void addClause(Node clauseNode) {

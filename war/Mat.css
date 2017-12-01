@@ -2752,4 +2752,8 @@ padding: 2px;
 
 .borderSpacing {
 	border-spacing: 35px 20px;
+}
+
+.marginLeftButtons {
+	margin-left: 500px;
 }	

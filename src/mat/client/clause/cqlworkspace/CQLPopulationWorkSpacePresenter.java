@@ -396,7 +396,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
 			searchDisplay.displayInitialPopulations();
 		}
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
+		//searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Initial Populations", "headingPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
 

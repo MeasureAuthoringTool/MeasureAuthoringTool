@@ -127,7 +127,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	public void displayPopulationDetailView(String populationType) {
 		CQLPopulationDetail cqlPopulationDetailView = new CQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
-		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject(), "headingPanel");
+		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
 	}
 
 	/**

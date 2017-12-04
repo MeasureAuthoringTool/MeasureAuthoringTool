@@ -3,8 +3,10 @@ package mat.client.clause.cqlworkspace;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.ListBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -13,6 +15,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -20,7 +23,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
-import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 
@@ -136,13 +138,11 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 	@Override
 	public void displayMeasurePopulations() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getMeasurePopulationsObject());
 	}
 	@Override
 	public void displayMeasurePopulationsExclusions() {
-
-		mainFlowPanel.clear();
+		showPopulation(this.populationDataModel.getMeasurePopulationsExclusionsObject());
 	}
 	@Override
 	public void displayMeasureObservations() {
@@ -157,7 +157,8 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	private void showPopulation(PopulationsObject populationObject) {
 		List<PopulationClauseObject> popClauses = populationObject.getPopulationClauseObjectList();
-		mainFlowPanel.clear();
+		mainFlowPanel.clear();		
+		setHeadingBasedOnCurrentSection("Population Workspace > " + populationObject.getDisplayName(), "headingPanel");
 		Grid populationGrid = new Grid(popClauses.size(), 4);
 		populationGrid.addStyleName("borderSpacing");
 
@@ -175,7 +176,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 			// Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
-			definitionListBox.setSize("180px", "28px");			
+			definitionListBox.setSize("180px", "30px");			
 			definitionListBox.addItem("--Select Definition--", "");
 			definitionListBox.setTitle("Select Definition List");
 			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
@@ -227,28 +228,17 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		scrollPanel.setSize("700px", "250px");
 
 		mainFlowPanel.add(new SpacerWidget());
-		CQLAddNewButton addNewButtonBar = new CQLAddNewButton(populationObject.getPopulationName());
-		addNewButtonBar.getaddNewButton().setPull(Pull.LEFT);
-		addNewButtonBar.setStyleName("marginLeft");
-		mainFlowPanel.add(addNewButtonBar);
+		
+		HorizontalPanel btnPanel = new HorizontalPanel();		
+		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		btnPanel.setStyleName("marginLeftButtons");		
+		btnPanel.add(getAllButtons(populationObject.getDisplayName(), populationObject.getPopulationName()));
+		
+		mainFlowPanel.add(btnPanel);		
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
 
-		// button for Save
-		Button saveButton = new Button();
-		saveButton.setType(ButtonType.PRIMARY);
-		saveButton.getElement().setId("saveButton_" + populationObject.getPopulationName());
-		saveButton.setMarginTop(10);
-		saveButton.setMarginLeft(35);
-		saveButton.setTitle("Save");
-		saveButton.setText("Save");
-		saveButton.setIcon(IconType.SAVE);
-		saveButton.setIconSize(IconSize.LARGE);
-		saveButton.getElement().setAttribute("aria-label", "Save");
-
-		mainFlowPanel.add(saveButton);
-		mainFlowPanel.add(new SpacerWidget());
 	}
 
 	/**
@@ -454,5 +444,34 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	public void setCqlViewPopulationsDisplay(CQLViewPopulationsDisplay cqlViewPopulationsDisplay) {
 		this.cqlViewPopulationsDisplay = cqlViewPopulationsDisplay;
+	}
+	
+	private Button getNewButton(String displayName, String sectionName, String buttonName) {
+		Button newBtn = new Button();
+		newBtn.setType(ButtonType.LINK);
+		newBtn.setText(buttonName);		
+		if(buttonName.equals("Save")) {
+			newBtn.setId("saveButton_" + sectionName);
+			newBtn.setTitle("Click this button to save " + displayName);
+			newBtn.setIcon(IconType.SAVE);
+			newBtn.setPull(Pull.RIGHT);
+			newBtn.setIconSize(IconSize.LARGE);
+		}else {			
+			newBtn.setId("addNewButton_" + sectionName);
+			newBtn.setTitle("Click this button to add a new " + displayName.substring(0, displayName.length()-1));
+			newBtn.setIcon(IconType.PLUS);
+			newBtn.setPull(Pull.LEFT);
+		}				
+		newBtn.setSize(ButtonSize.SMALL);
+		
+		return newBtn;
+	}
+	
+	private ButtonGroup getAllButtons(String displayName, String sectionName) {
+		ButtonGroup btnGroup = new ButtonGroup();
+		btnGroup.add(getNewButton(displayName, sectionName, "Add New"));
+		btnGroup.add(getNewButton(displayName, sectionName, "Save"));
+		btnGroup.getElement().setAttribute("class", "btn-group");
+		return btnGroup;
 	}
 }

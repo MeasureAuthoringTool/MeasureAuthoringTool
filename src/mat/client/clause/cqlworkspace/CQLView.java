@@ -1,8 +1,11 @@
 package mat.client.clause.cqlworkspace;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -19,20 +22,27 @@ import mat.client.shared.SpacerWidget;
 public class CQLView {
 	
 	
-	VerticalPanel cqlViewSimpleP = new VerticalPanel();
+	VerticalPanel cqlViewVP = new VerticalPanel();
 	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();
+	
+	private Button exportErrorFile = new Button();
 	
 	HTML heading = new HTML();
 	
 	public CQLView(){
-		cqlViewSimpleP.clear();
+		cqlViewVP.clear();
+		exportErrorFile.setType(ButtonType.PRIMARY);
+		exportErrorFile.setIcon(IconType.DOWNLOAD);
+		exportErrorFile.setText("Export Error File");
+		exportErrorFile.setTitle("Click to download Export Error File.");
+		exportErrorFile.setId("Button_exportErrorFile");
 		cqlAceEditor.startEditor();
 	}
 	
-	public VerticalPanel buildView(){
-		cqlViewSimpleP.clear();
-		cqlViewSimpleP.getElement().setId("cqlViewCQL_Id");
+	public VerticalPanel buildView(boolean showExportButton){
+		cqlViewVP.clear();
+		cqlViewVP.getElement().setId("cqlViewCQL_Id");
 		//VerticalPanel cqlViewVP = new VerticalPanel();
 		//cqlViewSimpleP.getElement().setId("ViewCQl_SimplePanel");
 		//cqlViewVP.getElement().setId("ViewCQl_VPanel");
@@ -60,30 +70,22 @@ public class CQLView {
 		cqlAceEditor.setUseWrapMode(true);
 		cqlAceEditor.clearAnnotations();
 		cqlAceEditor.redisplay();
-		/*Label viewCQlFileLabel = new Label(LabelType.INFO);
-		viewCQlFileLabel.setId("viewCQl_Lbl");
-		viewCQlFileLabel.setText("View CQL file here");
-		viewCQlFileLabel.setTitle("View CQL file here");
-		
-		cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(new SpacerWidget());
-		
-		cqlViewVP.add(viewCQlFileLabel);
-		cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(new SpacerWidget());
-		cqlViewVP.add(cqlAceEditor);
-		*/
 		
 		viewCQLPanel.add(viewCQLHeader);
+		
 		viewCQLPanel.add(viewCQLBody);
-		cqlViewSimpleP.add(heading);
-		cqlViewSimpleP.add(new SpacerWidget());
-		cqlViewSimpleP.add(new SpacerWidget());
-		cqlViewSimpleP.add(viewCQLPanel);
-		cqlViewSimpleP.setStyleName("cqlRightContainer");
-		cqlViewSimpleP.setWidth("700px");
-		cqlViewSimpleP.setStyleName("marginLeft15px");
-		return cqlViewSimpleP;
+		cqlViewVP.add(heading);
+		cqlViewVP.add(new SpacerWidget());
+		if(showExportButton) {
+			cqlViewVP.add(exportErrorFile);
+		}
+		
+		/*cqlViewVP.add(new SpacerWidget());*/
+		cqlViewVP.add(viewCQLPanel);
+		cqlViewVP.setStyleName("cqlRightContainer");
+		cqlViewVP.setWidth("700px");
+		cqlViewVP.setStyleName("marginLeft15px");
+		return cqlViewVP;
 	}
 
 	

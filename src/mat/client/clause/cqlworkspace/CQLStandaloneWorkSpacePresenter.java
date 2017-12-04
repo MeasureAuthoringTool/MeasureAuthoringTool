@@ -279,7 +279,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Builds the CQL file view.
 		 */
-		void buildCQLFileView();
+		void buildCQLFileView(boolean isEditable);
 
 		/**
 		 * Gets the cql ace editor.
@@ -5443,7 +5443,7 @@ private void addCodeSearchPanelHandlers() {
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-			searchDisplay.buildCQLFileView();
+			searchDisplay.buildCQLFileView(MatContext.get().getLibraryLockService().checkForEditPermission());
 			buildCQLView();
 		}
 		searchDisplay.getViewCQLView().setHeading("CQL Library Workspace > View CQL", "cqlViewCQL_Id");

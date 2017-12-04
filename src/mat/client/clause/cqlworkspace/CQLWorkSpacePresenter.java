@@ -195,7 +195,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Builds the cql file view.
 		 */
-		void buildCQLFileView();
+		void buildCQLFileView(boolean isEditable);
 
 		/**
 		 * Gets the main v panel.
@@ -3934,7 +3934,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-			searchDisplay.buildCQLFileView();
+			searchDisplay.buildCQLFileView(MatContext.get().getMeasureLockService().checkForEditPermission());
 			buildCQLView();
 		}
 		searchDisplay.getViewCQLView().setHeading("CQL Workspace > View CQL", "cqlViewCQL_Id");

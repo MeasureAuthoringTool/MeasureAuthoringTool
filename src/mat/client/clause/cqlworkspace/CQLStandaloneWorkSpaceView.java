@@ -159,10 +159,10 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#buildCQLFileView()
 	 */
 	@Override
-	public void buildCQLFileView() {
+	public void buildCQLFileView(boolean isEditable) {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-		mainFlowPanel.add(cqlViewCQLView.buildView());
+		mainFlowPanel.add(cqlViewCQLView.buildView(isEditable));
 
 	}
 	

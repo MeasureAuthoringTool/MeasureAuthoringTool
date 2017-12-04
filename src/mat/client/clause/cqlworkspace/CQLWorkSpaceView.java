@@ -129,10 +129,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	 * Builds the cql file view.
 	 */
 	@Override
-	public void buildCQLFileView() {
+	public void buildCQLFileView(boolean isEditable) {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
-		mainFlowPanel.add(cqlViewCQLView.buildView());
+		mainFlowPanel.add(cqlViewCQLView.buildView(isEditable));
 
 	}
 

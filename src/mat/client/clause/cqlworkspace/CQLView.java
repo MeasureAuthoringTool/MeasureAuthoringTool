@@ -18,6 +18,7 @@ import mat.client.shared.SpacerWidget;
 
 public class CQLView {
 	
+	
 	VerticalPanel cqlViewSimpleP = new VerticalPanel();
 	/** The cql ace editor. */
 	private AceEditor cqlAceEditor = new AceEditor();

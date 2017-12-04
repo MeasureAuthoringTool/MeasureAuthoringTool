@@ -7,11 +7,13 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
+import mat.client.shared.MatContext;
+
 public class PopulationDataModel {
 	
 	private List<String> definitionNameList = new ArrayList<String>();
 	private List<String> functionNameList = new ArrayList<String>();
-	
+	private String measureId;
 	private PopulationsObject initialPopulationsObject = new PopulationsObject("initialPopulations");
 	private PopulationsObject numeratorsObject = new PopulationsObject("numerators");
 	private PopulationsObject numeratorExclusionsObject = new PopulationsObject("numeratorExclusions");
@@ -21,7 +23,7 @@ public class PopulationDataModel {
 	private PopulationsObject measurePopulationsObject = new PopulationsObject("measurePopulations");
 	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject("measurePopulationExclusions");
 	public PopulationDataModel(Document document) {
-		
+		this.setMeasureId(MatContext.get().getCurrentMeasureId());
 		extractDefinitionNames(document);
 		extractFunctionNames(document);
 		extractPopulationDetails(document);
@@ -219,6 +221,14 @@ public class PopulationDataModel {
 
 	public void setMeasurePopulationsExclusionsObject(PopulationsObject measurePopulationsExclusionsObject) {
 		this.measurePopulationsExclusionsObject = measurePopulationsExclusionsObject;
+	}
+
+	public String getMeasureId() {
+		return measureId;
+	}
+
+	public void setMeasureId(String measureId) {
+		this.measureId = measureId;
 	}
 
 

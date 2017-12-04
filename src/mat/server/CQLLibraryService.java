@@ -1306,8 +1306,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		SaveCQLLibraryResult result =  new SaveCQLLibraryResult();
 		List<CQLLibraryShareDTO> shareDTOList = cqlLibraryDAO
 				.getLibraryShareInfoForLibrary(cqlId, searchText);
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlId);
 		result.setCqlLibraryShareDTOs(shareDTOList);
 		result.setId(cqlId);
+		result.setCqlLibraryName(cqlLibrary.getName());
 		result.setResultsTotal(shareDTOList.size());
 		return result;
 	}
@@ -1369,6 +1371,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 							System.out.println("Updated newXml ::: " + newXml);
 						}
 						result.setCqlCodeList(getSortedCQLCodes(newXml).getCqlCodeList());
+						CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(newXml)).getCqlModel();
+						result.setCqlModel(cqlModel);
 					}
 				}
 			}
@@ -1408,6 +1412,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 						save(cqlLibrary);
 						result.setCqlCodeList(getSortedCQLCodes(result.getXml()).getCqlCodeList());
+						CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(result.getXml())).getCqlModel();
+						result.setCqlModel(cqlModel);
 					}
 				}
 			}

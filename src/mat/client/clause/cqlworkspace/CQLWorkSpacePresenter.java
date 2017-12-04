@@ -4681,6 +4681,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedValueSetList(searchDisplay.getValueSetView().getQdmSelectedList());
 			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
+			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().VALUE_SETS_COPIED_SUCCESSFULLY);
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getCOPY_QDM_SELECT_ATLEAST_ONE());
@@ -4713,7 +4714,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							public void onSuccess(CQLQualityDataModelWrapper result) {
 								showSearchingBusy(false);
 								if (result != null && result.getQualityDataDTO() != null) {
-									setAppliedValueSetListInTable(result);
+									setAppliedValueSetListInTable(result.getQualityDataDTO());
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 											MatContext.get().getMessageDelegate().getSUCCESSFULLY_VALUESET_PASTE());
 								}
@@ -4982,6 +4983,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
 			gbCopyPaste.setCopiedCodeList(searchDisplay.getCodesView().getCodesSelectedList());
 			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
+			searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().CODES_COPIED_SUCCESSFULLY);
 		} else {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getCOPY_CODE_SELECT_ATLEAST_ONE());
@@ -5018,8 +5020,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList,
 								MatContext.get().getMeasureLockService().checkForEditPermission());
-						//Temporary fix to update codes for insert Icon.
-						getAppliedValueSetList();
+						if (result != null && result.getCqlModel().getAllValueSetList() != null) {
+							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetList());
+						}
 						showSearchingBusy(false);
 					}
 				});
@@ -5724,7 +5727,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 						@Override
 						public void onSuccess(CQLQualityDataModelWrapper result) {
-							setAppliedValueSetListInTable(result);
+							setAppliedValueSetListInTable(result.getQualityDataDTO());
 						}
 					});
 		}
@@ -5981,10 +5984,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param result
 	 *            - {@link CQLQualityDataModelWrapper}
 	 */
-	private void setAppliedValueSetListInTable(CQLQualityDataModelWrapper result) {
+	private void setAppliedValueSetListInTable(List<CQLQualityDataSetDTO> valueSetList) {
 		appliedValueSetTableList.clear();
 		List<CQLQualityDataSetDTO> allValuesets = new ArrayList<CQLQualityDataSetDTO>();
-		for (CQLQualityDataSetDTO dto : result.getQualityDataDTO()) {
+		for (CQLQualityDataSetDTO dto : valueSetList) {
 			if (dto.isSuppDataElement())
 				continue;
 			allValuesets.add(dto);

@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.dao.EmailAuditLogDAO;
 import mat.dao.UserDAO;
+import mat.model.EmailAuditLog;
 import mat.model.User;
-import mat.model.UserPasswordHistory;
-import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 
@@ -36,6 +36,8 @@ public class CheckUserChangePasswordLimit {
 	/** The user dao. */
 	private UserDAO userDAO;
 	
+	private EmailAuditLogDAO emailAuditLogDAO; 
+
 	/** The mail sender. */
 	private MailSender mailSender;
 	
@@ -127,6 +129,15 @@ public class CheckUserChangePasswordLimit {
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
+	
+	public EmailAuditLogDAO getEmailAuditLogDAO() {
+		return emailAuditLogDAO;
+	}
+
+	public void setEmailAuditLogDAO(EmailAuditLogDAO emailAuditLogDAO) {
+		this.emailAuditLogDAO = emailAuditLogDAO;
+	}
+
 
 	/**
 	 * Gets the mail sender.
@@ -368,7 +379,14 @@ public class CheckUserChangePasswordLimit {
 						//Update Termination Date for User.
 						//updateUserTerminationDate(user);
 					}	
+				
 					mailSender.send(simpleMailMessage);
+					EmailAuditLog emailAudit = new EmailAuditLog();
+					emailAudit.setActivityType("Password " + emailType + " email sent.");
+					emailAudit.setTime(new Date());
+					emailAudit.setLoginId(user.getLoginId());
+					emailAuditLogDAO.save(emailAudit);
+					
 					content.clear();
 					model.clear();
 					logger.info("Email Sent to "+user.getFirstName());

@@ -1,0 +1,29 @@
+/test-classes/
+*.class
+
+# Package Files #
+*.war
+
+# gwt caches and compiled units #
+gwt-unitCache/
+
+# boilerplate generated classes #
+.apt_generated/
+
+# more caches and things from deploy #
+war/WEB-INF/deploy/
+war/WEB-INF/classes/
+war/login
+war/mat
+
+#compilation logs
+.gwt/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# Misc
+velocity.log
+war/WEB-INF/mat-persistence.xml

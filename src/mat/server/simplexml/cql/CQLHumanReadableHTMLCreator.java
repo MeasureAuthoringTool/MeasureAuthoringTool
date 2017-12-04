@@ -210,11 +210,11 @@ public class CQLHumanReadableHTMLCreator {
 			
 			String output = "";
 			if(version != null && !version.isEmpty() && !version.equalsIgnoreCase("1.0")) {
-				output = "valueset \"" + name + "\" using \"" + oid + ", version " + version + "\"";
+				output = "valueset \"" + name + "\" (" + oid + ", version " + version + ")";
 			} 
 			
 			else {
-				output = "valueset \"" + name + "\" using \"" + oid + "\"";
+				output = "valueset \"" + name + "\" (" + oid + ")";
 			}
 			
 			// no duplicates should appear
@@ -252,8 +252,8 @@ public class CQLHumanReadableHTMLCreator {
 			}
 			
 			String codeSystemVersion = current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
-			String codeOutput = "code \"" + codeName + "\" using \"" + codeSystemName + " version " + codeSystemVersion + " Code (" + codeOID +")\"";
-			String codeSystemOutput = "codesystem \"" + codeSystemName + "\" using \"" + codeSystemOID + " version " + codeSystemVersion + "\"";
+			String codeOutput = "code \"" + codeName + "\" (\"" + codeSystemName + " version " + codeSystemVersion + " Code (" + codeOID +")\")";
+			String codeSystemOutput = "codesystem \"" + codeSystemName + "\" (" + codeSystemOID + " version " + codeSystemVersion + ")";
 			
 			// no duplicates should appear
 			if(!codeStringList.contains(codeOutput)) {

@@ -20,7 +20,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
@@ -40,6 +39,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.WarningMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
@@ -59,6 +59,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
+	private MessageAlert warningMessages = new WarningMessageAlert();
 	
 	/** The measure name label. */
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
@@ -108,6 +109,8 @@ public class ManageMeasureShareView implements ShareDisplay {
 
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
+		content.add(errorMessages);
+		content.add(warningMessages);
 		content.add(buttonBar);
 		
 	}
@@ -238,12 +241,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 			 * ("mouseover".equals(event.getNativeEvent().getType())) { Element cellElement =
 			 * event.getNativeEvent().getEventTarget().cast(); cellElement.setTitle("cell contents go here."); } } });
 			 */
-		} else {
-			HTML desc = new HTML("<p> No Users available for sharing.</p>");
-			cellTablePanel.add(desc);
 		}
-		
-		
 	}
 	/*
 	 * (non-Javadoc)
@@ -271,6 +269,16 @@ public class ManageMeasureShareView implements ShareDisplay {
 		return errorMessages;
 	}
 	
+	@Override
+	public MessageAlert getWarningMessageDisplay() {
+		return warningMessages;
+	}
+	
+	@Override
+	public void resetMessageDisplay() {
+		errorMessages.clearAlert();
+		warningMessages.clearAlert();
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSelectionTool()
 	 */
@@ -310,7 +318,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getShareButton()
 	 */
 	@Override
-	public HasClickHandlers getShareButton() {
+	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 	

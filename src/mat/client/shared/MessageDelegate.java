@@ -205,10 +205,14 @@ public class MessageDelegate {
 	
 	public final String CLIPBOARD_DOES_NOT_CONTAIN_CODES = "The clipboard does not contain any codes to be pasted at this time.";
 	
-	/** The copy qdm select atleast one. */
-	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one applied Value set element to copy.";
+	public final String VALUE_SETS_COPIED_SUCCESSFULLY = "Value Sets successfully copied.";
 	
-	public final String COPY_CODE_SELECT_ATLEAST_ONE  = "Please select at least one applied code to copy.";
+	public final String CODES_COPIED_SUCCESSFULLY = "Codes successfully copied.";
+	
+	/** The copy qdm select atleast one. */
+	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one Value Set to copy.";
+	
+	public final String COPY_CODE_SELECT_ATLEAST_ONE  = "Please select at least one Code to copy.";
 	
 	/** The successful qdm remove msg. */
 	public final String SUCCESSFUL_QDM_REMOVE_MSG  = "Selected value set has been removed successfully.";
@@ -317,7 +321,7 @@ public class MessageDelegate {
 	
 	
 	/** The Constant NO_USERS_RETURNED. */
-	public static final String NO_USERS_RETURNED = "No Users returned. Please search again.";
+	public static final String NO_USERS_RETURNED = "No users returned. Please search again.";
 	
 	/** The Constant NO_VERSION_CREATED. */
 	public static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";
@@ -327,6 +331,8 @@ public class MessageDelegate {
 	private final String ERROR_VALIDATION_COMMENT_AREA = "Comment cannot exceed 250 characters. ";
 	
 	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
+	
+	private static final String SUCCESSFULLY_SHARED = " has been successfully shared.";
 	
 	/**
 	 * Gets the measure save server error message.
@@ -3544,6 +3550,14 @@ public class MessageDelegate {
 
 	public String getCOPY_CODE_SELECT_ATLEAST_ONE() {
 		return COPY_CODE_SELECT_ATLEAST_ONE;
+	}
+	
+	public static String getMeasureSuccessfullyShared(String measureName) {
+		return measureName + SUCCESSFULLY_SHARED;
+	}
+
+	public static String getLibrarySuccessfullyShared(String cqlLibraryName) {
+		return cqlLibraryName + SUCCESSFULLY_SHARED;
 	}
 
 }

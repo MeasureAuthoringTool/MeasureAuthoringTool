@@ -129,28 +129,15 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 		void setHeadingBasedOnCurrentSection(String headingText, String panelId);
 
-		void displayInitialPopulations();
-
-		void displayNumerators();
 		CQLViewPopulationsDisplay getCqlViewPopulationsDisplay();
 
 		void buildViewPopulations();
 
-		void displayDenominator();
-
-		void displayDenominatorExceptions();
-
-		void displayDenominatorExclusions();
-
-		void displayNumeratorExclusion();
-
-		void displayMeasurePopulations();
-
-		void displayMeasurePopulationsExclusions();
-
 		void displayMeasureObservations();
 
 		void displayStratification();
+		
+		void displayPopulationDetailView(String populationType);
 	}
 
 	/**
@@ -394,7 +381,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_INITIALPOPULATION, true);
 			currentSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
-			searchDisplay.displayInitialPopulations();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_INITIALPOPULATION);
 		}
 
 		Mat.focusSkipLists("MeasureComposer");
@@ -413,7 +400,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_NUMERATOR, true);
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
-			searchDisplay.displayNumerators();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOR);
 		}
 		
 		Mat.focusSkipLists("MeasureComposer");
@@ -432,7 +419,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS;
-			searchDisplay.displayNumeratorExclusion();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS);
 		}
 
 		Mat.focusSkipLists("MeasureComposer");
@@ -451,7 +438,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_DENOMINATOR, true);
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOR;
-			searchDisplay.displayDenominator();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOR);
 		}
 
 		Mat.focusSkipLists("MeasureComposer");
@@ -470,7 +457,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS;
-			searchDisplay.displayDenominatorExclusions();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS);
 		}
 
 		Mat.focusSkipLists("MeasureComposer");
@@ -490,7 +477,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS;
-			searchDisplay.displayDenominatorExceptions();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS);
 		}
 
 		Mat.focusSkipLists("MeasureComposer");
@@ -509,7 +496,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS;
-			searchDisplay.displayMeasurePopulations();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS);
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
 		Mat.focusSkipLists("MeasureComposer");
@@ -528,7 +515,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS, true);
 			currentSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS;
-			searchDisplay.displayMeasurePopulationsExclusions();
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS);
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions", "headingPanel");
 		Mat.focusSkipLists("MeasureComposer");

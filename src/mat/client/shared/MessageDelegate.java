@@ -205,9 +205,9 @@ public class MessageDelegate {
 	
 	public final String CLIPBOARD_DOES_NOT_CONTAIN_CODES = "The clipboard does not contain any codes to be pasted at this time.";
 	
-	public final String VALUE_SETS_COPIED_SUCCESSFULLY = "Value Sets copied successfully.";
+	public final String VALUE_SETS_COPIED_SUCCESSFULLY = "Value Sets successfully copied.";
 	
-	public final String CODES_COPIED_SUCCESSFULLY = "Codes copied successfully.";
+	public final String CODES_COPIED_SUCCESSFULLY = "Codes successfully copied.";
 	
 	/** The copy qdm select atleast one. */
 	public final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one Value Set to copy.";

@@ -321,7 +321,7 @@ public class MessageDelegate {
 	
 	
 	/** The Constant NO_USERS_RETURNED. */
-	public static final String NO_USERS_RETURNED = "No Users returned. Please search again.";
+	public static final String NO_USERS_RETURNED = "No users returned. Please search again.";
 	
 	/** The Constant NO_VERSION_CREATED. */
 	public static final String NO_VERSION_CREATED = "Unable to version. There are validation errors in CQL. Please correct and try again.";

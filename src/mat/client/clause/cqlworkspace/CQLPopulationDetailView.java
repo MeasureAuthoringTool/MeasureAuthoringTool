@@ -13,6 +13,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -67,11 +68,14 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			PopulationClauseObject populationClauseObject = popClauses.get(i);
 
 			// set the name of the Initial Population clause.
+			FocusPanel nameFocusPanel = new FocusPanel();
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
+			nameLabel.setId("nameLabel" + i);
+			nameFocusPanel.add(nameLabel);
 
-			populationGrid.setWidget(i, 0, nameLabel);
+			populationGrid.setWidget(i, 0, nameFocusPanel);
 			populationGrid.getCellFormatter().setWidth(i, 0, "230px");
 
 			// Set a listbox with all definition names in it.

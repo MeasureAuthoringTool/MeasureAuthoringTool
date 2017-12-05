@@ -50,7 +50,7 @@ public class PopulationDataModel {
 		extractPopulationDetails(document);
 	}
 
-	private void extractPopulationDetails(Document document) {
+	private void extractPopulationDetails(Document document) { 
 		
 		NodeList populationsNodeList = document.getElementsByTagName(TAGNAME_POPULATIONS); 
 		

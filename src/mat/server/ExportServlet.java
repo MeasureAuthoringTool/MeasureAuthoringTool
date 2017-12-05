@@ -211,13 +211,15 @@ public class ExportServlet extends HttpServlet {
 			sb.append((i+1)+" "+cqlLinesArray[i] + "\r\n");
 		}
 		if (!result.getCqlErrors().isEmpty()) {
+			sb.append("/*******************************************************************************************************************");
 			for (CQLErrors error : result.getCqlErrors()) {
 				String errorMessage = new String();
-				errorMessage = errorMessage.concat("// Error : "+ error.getErrorMessage()+ " line : " + error.getErrorInLine()
-						+ " at Column :" + error.getErrorAtOffeset());
+				errorMessage = errorMessage.concat("Line " + error.getErrorInLine()+ "  :" +error.getErrorMessage());
+				sb.append("\r\n");
 				sb.append(errorMessage + "\r\n");
 				
 			}
+			sb.append("*******************************************************************************************************************/");
 		}
 		System.out.println(sb.toString());
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME

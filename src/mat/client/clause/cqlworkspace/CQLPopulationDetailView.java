@@ -72,7 +72,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
-			nameLabel.setId("nameLabel");
+			nameLabel.setId("nameLabel" + i);
 			nameFocusPanel.add(nameLabel);
 
 			populationGrid.setWidget(i, 0, nameFocusPanel);

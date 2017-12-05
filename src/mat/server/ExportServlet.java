@@ -214,7 +214,7 @@ public class ExportServlet extends HttpServlet {
 			sb.append("/*******************************************************************************************************************");
 			for (CQLErrors error : result.getCqlErrors()) {
 				String errorMessage = new String();
-				errorMessage = errorMessage.concat("Line " + error.getErrorInLine()+ "  :" +error.getErrorMessage());
+				errorMessage = errorMessage.concat("Line " + error.getErrorInLine()+ ":" +error.getErrorMessage());
 				sb.append("\r\n");
 				sb.append(errorMessage + "\r\n");
 				

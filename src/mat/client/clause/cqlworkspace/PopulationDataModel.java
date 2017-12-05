@@ -48,6 +48,8 @@ public class PopulationDataModel {
 		extractDefinitionNames(document);
 		extractFunctionNames(document);
 		extractPopulationDetails(document);
+		extractMeasureObservations(document);
+		extractStratifications(document);
 	}
 
 	private void extractPopulationDetails(Document document) { 
@@ -82,7 +84,7 @@ public class PopulationDataModel {
 
 		extractClauses(populationNode, populationsObject);
 	}
-
+	
 	private void extractClauses(Node populationNode, PopulationsObject populationsObject) {
 		
 		NodeList clauseNodeList = populationNode.getChildNodes();
@@ -109,6 +111,16 @@ public class PopulationDataModel {
 		
 		setDefinitionNameList(extractExpressionNames(document,TAGNAME_DEFINITIONS, TAGNAME_DEFINITION));
 
+	}
+	
+	private void extractMeasureObservations(Document document) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void extractStratifications(Document document) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private List<String> extractExpressionNames(Document document, String expressionParentNodeName, String expressionNodeName) {

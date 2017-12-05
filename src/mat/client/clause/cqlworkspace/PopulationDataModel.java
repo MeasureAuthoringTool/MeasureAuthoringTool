@@ -52,7 +52,7 @@ public class PopulationDataModel {
 
 	private void extractPopulationDetails(Document document) {
 		
-		NodeList populationsNodeList = document.getElementsByTagName(TAGNAME_POPULATIONS);
+		NodeList populationsNodeList = document.getElementsByTagName(TAGNAME_POPULATIONS); 
 		
 		if(populationsNodeList == null || populationsNodeList.getLength() == 0) {
 			return;

@@ -11,17 +11,38 @@ import mat.client.shared.MatContext;
 
 public class PopulationDataModel {
 	
+	private static final String TAGNAME_NAME = "name";
+	private static final String TAGNAME_CQL_LOOK_UP = "cqlLookUp";
+	private static final String TAGNAME_DEFINITION = "definition";
+	private static final String TAGNAME_DEFINITIONS = "definitions";
+	private static final String TAGNAME_FUNCTION = "function";
+	private static final String TAGNAME_FUNCTIONS = "functions";
+	private static final String TAGNAME_CLAUSE = "clause";
+	private static final String ATTRIBUTE_DISPLAY_NAME = "displayName";
+	private static final String TAGNAME_POPULATIONS = "populations";
+	private static final String TAGNAME_MEASURE_POPULATION_EXCLUSIONS = "measurePopulationExclusions";
+	private static final String TAGNAME_MEASURE_POPULATIONS = "measurePopulations";
+	private static final String TAGNAME_DENOMINATOR_EXCEPTIONS = "denominatorExceptions";
+	private static final String TAGNAME_DENOMINATOR_EXCLUSIONS = "denominatorExclusions";
+	private static final String TAGNAME_DENOMINATORS = "denominators";
+	private static final String TAGNAME_NUMERATOR_EXCLUSIONS = "numeratorExclusions";
+	private static final String TAGNAME_NUMERATORS = "numerators";
+	private static final String TAGNAME_INITIAL_POPULATIONS = "initialPopulations";
+	
+	
 	private List<String> definitionNameList = new ArrayList<String>();
 	private List<String> functionNameList = new ArrayList<String>();
 	private String measureId;
-	private PopulationsObject initialPopulationsObject = new PopulationsObject("initialPopulations");
-	private PopulationsObject numeratorsObject = new PopulationsObject("numerators");
-	private PopulationsObject numeratorExclusionsObject = new PopulationsObject("numeratorExclusions");
-	private PopulationsObject denominatorsObject = new PopulationsObject("denominators");
-	private PopulationsObject denominatorExclusionsObject = new PopulationsObject("denominatorExclusions");
-	private PopulationsObject denominatorExceptionsObject = new PopulationsObject("denominatorExceptions");
-	private PopulationsObject measurePopulationsObject = new PopulationsObject("measurePopulations");
-	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject("measurePopulationExclusions");
+	
+	private PopulationsObject initialPopulationsObject = new PopulationsObject(TAGNAME_INITIAL_POPULATIONS);
+	private PopulationsObject numeratorsObject = new PopulationsObject(TAGNAME_NUMERATORS);
+	private PopulationsObject numeratorExclusionsObject = new PopulationsObject(TAGNAME_NUMERATOR_EXCLUSIONS);
+	private PopulationsObject denominatorsObject = new PopulationsObject(TAGNAME_DENOMINATORS);
+	private PopulationsObject denominatorExclusionsObject = new PopulationsObject(TAGNAME_DENOMINATOR_EXCLUSIONS);
+	private PopulationsObject denominatorExceptionsObject = new PopulationsObject(TAGNAME_DENOMINATOR_EXCEPTIONS);
+	private PopulationsObject measurePopulationsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATIONS);
+	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATION_EXCLUSIONS);
+	
 	public PopulationDataModel(Document document) {
 		this.setMeasureId(MatContext.get().getCurrentMeasureId());
 		extractDefinitionNames(document);
@@ -31,7 +52,7 @@ public class PopulationDataModel {
 
 	private void extractPopulationDetails(Document document) {
 		
-		NodeList populationsNodeList = document.getElementsByTagName("populations");
+		NodeList populationsNodeList = document.getElementsByTagName(TAGNAME_POPULATIONS);
 		
 		if(populationsNodeList == null || populationsNodeList.getLength() == 0) {
 			return;
@@ -56,7 +77,7 @@ public class PopulationDataModel {
 		if(populationNode == null) {
 			return;
 		}
-		String displayName = populationNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		String displayName = populationNode.getAttributes().getNamedItem(ATTRIBUTE_DISPLAY_NAME).getNodeValue();
 		populationsObject.setDisplayName(displayName);
 
 		extractClauses(populationNode, populationsObject);
@@ -73,7 +94,7 @@ public class PopulationDataModel {
 		for(int i=0;i<clauseNodeList.getLength();i++) {
 			Node clauseNode = clauseNodeList.item(i);
 			
-			if(clauseNode.getNodeName().equals("clause")) {
+			if(clauseNode.getNodeName().equals(TAGNAME_CLAUSE)) {
 				populationsObject.addClause(clauseNode);
 			}
 		}
@@ -81,12 +102,12 @@ public class PopulationDataModel {
 
 	private void extractFunctionNames(Document document) {
 		
-		setFunctionNameList(extractExpressionNames(document,"functions", "function"));		
+		setFunctionNameList(extractExpressionNames(document,TAGNAME_FUNCTIONS, TAGNAME_FUNCTION));		
 	}
 
 	private void extractDefinitionNames(Document document) {
 		
-		setDefinitionNameList(extractExpressionNames(document,"definitions", "definition"));
+		setDefinitionNameList(extractExpressionNames(document,TAGNAME_DEFINITIONS, TAGNAME_DEFINITION));
 
 	}
 
@@ -94,7 +115,7 @@ public class PopulationDataModel {
 		
 		List<String> expressionNameList = new ArrayList<String>();
 		
-		NodeList cqlLookUpNodeList = document.getElementsByTagName("cqlLookUp");
+		NodeList cqlLookUpNodeList = document.getElementsByTagName(TAGNAME_CQL_LOOK_UP);
 		
 		if(cqlLookUpNodeList == null || cqlLookUpNodeList.getLength() == 0) {
 			return expressionNameList;
@@ -113,7 +134,7 @@ public class PopulationDataModel {
 					
 					Node definitionNode = definitionsNodeList.item(i);
 					if(definitionNode.getNodeName().equals(expressionNodeName)) {
-						expressionNameList.add(definitionNode.getAttributes().getNamedItem("name").getNodeValue());
+						expressionNameList.add(definitionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue());
 					}
 					
 				}
@@ -163,64 +184,32 @@ public class PopulationDataModel {
 		return initialPopulationsObject;
 	}
 
-	public void setInitialPopulationsObject(PopulationsObject initialPopulationsObject) {
-		this.initialPopulationsObject = initialPopulationsObject;
-	}
-
 	public PopulationsObject getNumeratorsObject() {
 		return numeratorsObject;
-	}
-
-	public void setNumeratorsObject(PopulationsObject numeratorsObject) {
-		this.numeratorsObject = numeratorsObject;
 	}
 
 	public PopulationsObject getNumeratorExclusionsObject() {
 		return numeratorExclusionsObject;
 	}
 
-	public void setNumeratorExclusionsObject(PopulationsObject numeratorExclusionsObject) {
-		this.numeratorExclusionsObject = numeratorExclusionsObject;
-	}
-
 	public PopulationsObject getDenominatorsObject() {
 		return denominatorsObject;
-	}
-
-	public void setDenominatorsObject(PopulationsObject denominatorsObject) {
-		this.denominatorsObject = denominatorsObject;
 	}
 
 	public PopulationsObject getDenominatorExclusionsObject() {
 		return denominatorExclusionsObject;
 	}
 
-	public void setDenominatorExclusionsObject(PopulationsObject denominatorExclusionsObject) {
-		this.denominatorExclusionsObject = denominatorExclusionsObject;
-	}
-
 	public PopulationsObject getDenominatorExceptionsObject() {
 		return denominatorExceptionsObject;
-	}
-
-	public void setDenominatorExceptionsObject(PopulationsObject denominatorExceptionsObject) {
-		this.denominatorExceptionsObject = denominatorExceptionsObject;
 	}
 
 	public PopulationsObject getMeasurePopulationsObject() {
 		return measurePopulationsObject;
 	}
 
-	public void setMeasurePopulationsObject(PopulationsObject measurePopulationsObject) {
-		this.measurePopulationsObject = measurePopulationsObject;
-	}
-
 	public PopulationsObject getMeasurePopulationsExclusionsObject() {
 		return measurePopulationsExclusionsObject;
-	}
-
-	public void setMeasurePopulationsExclusionsObject(PopulationsObject measurePopulationsExclusionsObject) {
-		this.measurePopulationsExclusionsObject = measurePopulationsExclusionsObject;
 	}
 
 	public String getMeasureId() {

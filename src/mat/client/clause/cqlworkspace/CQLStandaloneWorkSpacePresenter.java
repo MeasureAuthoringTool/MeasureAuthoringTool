@@ -523,6 +523,19 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		addEventHandlers();
 	}
 
+	private void addViewCQLEventHandlers() {
+		searchDisplay.getViewCQLView().getExportErrorFile().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
+					String url = GWT.getModuleBaseURL() + "export?libraryid=" + MatContext.get().getCurrentCQLLibraryId() + "&format=errorFileStandAlone";
+					Window.open(url + "&type=save", "_self", "");
+				}
+			}
+		});
+		
+	}
 	/**
 	 * Adds the event handlers.
 	 */
@@ -604,6 +617,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		addEventHandlerOnAceEditors();
 		addEventHandlersOnContextRadioButtons();
 		addWarningAlertHandlers();
+		addViewCQLEventHandlers();
 	}
 
 	/**

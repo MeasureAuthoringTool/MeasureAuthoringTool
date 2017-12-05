@@ -105,4 +105,12 @@ public class CQLView {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
+
+	public Button getExportErrorFile() {
+		return exportErrorFile;
+	}
+
+	public void setExportErrorFile(Button exportErrorFile) {
+		this.exportErrorFile = exportErrorFile;
+	}
 }

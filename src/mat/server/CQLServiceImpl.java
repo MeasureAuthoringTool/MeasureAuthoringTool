@@ -200,33 +200,8 @@ public class CQLServiceImpl implements CQLService {
 	 *
 	 * @see mat.client.measure.service.CQLService#parseCQL(java.lang.String)
 	 */
-	@Override
-	public CQLModel parseCQL(String cqlBuilder) {
-
-		CQLModel cqlModel = new CQLModel();
-		/*
-		 * cqlLexer lexer = new cqlLexer(new ANTLRInputStream(cqlBuilder));
-		 * System.out.println(cqlBuilder); CommonTokenStream tokens = new
-		 * CommonTokenStream(lexer); cqlParser parser = new cqlParser(tokens);
-		 * MATCQLParser cqlParser = new MATCQLParser(); CQLErrorListener
-		 * cqlErrorListener = new CQLErrorListener(); MATCQLListener cqlListener
-		 * = new MATCQLListener(cqlParser); cqlListener.setCqlModel(cqlModel);
-		 * cqlListener.setParser(cqlListener); cqlListener.setLexer(lexer);
-		 * parser.addParseListener(cqlListener); cqlListener.setTokens(tokens);
-		 * parser.setBuildParseTree(true);
-		 *
-		 * ParserRuleContext tree = parser.logic();
-		 * parser.notifyErrorListeners("");
-		 *
-		 * System.out.println(parser.getNumberOfSyntaxErrors());
-		 * System.out.println(cqlErrorListener.getErrors());
-		 *
-		 * cqlModel = cqlListener.getCqlModel();
-		 */
-
-		return cqlModel;
-	}
-
+	//@Override
+	
 	/*
 	 * (non-Javadoc)
 	 *
@@ -1802,6 +1777,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
+		String parentLibraryName = cqlModel.getLibraryName();
 		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 
@@ -1868,7 +1844,7 @@ public class CQLServiceImpl implements CQLService {
 		}
 		result.setCqlString(parentCQLString);
 		result.setCqlErrors(errors);
-
+		result.setLibraryName(parentLibraryName);
 		return result;
 	}
 
@@ -2786,45 +2762,6 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
-		// SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		// List<CqlTranslatorException> cqlErrorsList = new
-		// ArrayList<CqlTranslatorException>();
-		// List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		// if (!StringUtils.isBlank(cqlFileString)) {
-		//
-		// CQLtoELM cqlToElm = new CQLtoELM(cqlFileString);
-		// try {
-		// cqlToElm.doTranslation(true, false, false);
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// if (cqlToElm.getErrors() != null) {
-		// cqlErrorsList.addAll(cqlToElm.getErrors());
-		// }
-		// }
-		//
-		// for (CqlTranslatorException cte : cqlErrorsList) {
-		//
-		// CQLErrors cqlErrors = new CQLErrors();
-		//
-		// cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-		//
-		// cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-		// cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-		//
-		// cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-		// cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-		//
-		// cqlErrors.setErrorMessage(cte.getMessage());
-		// errors.add(cqlErrors);
-		// System.out.println(cte.getMessage());
-		//
-		// }
-		//
-		// result.setCqlErrors(errors);
-		//
 		return null;
 	}
 
@@ -3741,5 +3678,7 @@ public class CQLServiceImpl implements CQLService {
 		
 		return cqlExpressionObjects;
 		
-	}	
+	}
+
+	
 }

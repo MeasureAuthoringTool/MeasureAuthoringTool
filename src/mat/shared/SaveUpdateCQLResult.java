@@ -23,6 +23,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private CQLObject cqlObject;
 	
+	private String libraryName;
+	
 	//private String expIdentifier;
 	
 	private String setId;
@@ -105,6 +107,14 @@ public class SaveUpdateCQLResult extends GenericResult{
 		return cqlString;
 	}
 	
+	public String getLibraryName() {
+		return libraryName;
+	}
+
+	public void setLibraryName(String libraryName) {
+		this.libraryName = libraryName;
+	}
+
 	/**
 	 * Sets the cql string.
 	 *

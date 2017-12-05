@@ -379,7 +379,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addParameterSectionHandlers();
 		addDefinitionSectionHandlers();
 		addFunctionSectionHandlers();
+		addViewCQLEventHandlers();
 		addListBoxEventHandler();
+	}
+
+	private void addViewCQLEventHandlers() {
+		searchDisplay.getViewCQLView().getExportErrorFile().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=errorFileMeasure";
+					Window.open(url + "&type=save", "_self", "");
+				}
+			}
+		});
+		
 	}
 
 	/**

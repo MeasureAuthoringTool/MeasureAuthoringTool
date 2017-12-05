@@ -2762,6 +2762,45 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
+		// SaveUpdateCQLResult result = new SaveUpdateCQLResult();
+		// List<CqlTranslatorException> cqlErrorsList = new
+		// ArrayList<CqlTranslatorException>();
+		// List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		// if (!StringUtils.isBlank(cqlFileString)) {
+		//
+		// CQLtoELM cqlToElm = new CQLtoELM(cqlFileString);
+		// try {
+		// cqlToElm.doTranslation(true, false, false);
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// if (cqlToElm.getErrors() != null) {
+		// cqlErrorsList.addAll(cqlToElm.getErrors());
+		// }
+		// }
+		//
+		// for (CqlTranslatorException cte : cqlErrorsList) {
+		//
+		// CQLErrors cqlErrors = new CQLErrors();
+		//
+		// cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
+		//
+		// cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+		// cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+		//
+		// cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
+		// cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
+		//
+		// cqlErrors.setErrorMessage(cte.getMessage());
+		// errors.add(cqlErrors);
+		// System.out.println(cte.getMessage());
+		//
+		// }
+		//
+		// result.setCqlErrors(errors);
+		//
 		return null;
 	}
 
@@ -3680,5 +3719,9 @@ public class CQLServiceImpl implements CQLService {
 		
 	}
 
-	
+	@Override
+	public CQLModel parseCQL(String cqlBuilder) {
+		CQLModel cqlModel = new CQLModel();
+		return cqlModel;
+	}	
 }

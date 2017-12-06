@@ -206,22 +206,19 @@ public class ExportServlet extends HttpServlet {
 		StringBuilder sb = new StringBuilder();
 		String cqlString = result.getCqlString();
 		String[] cqlLinesArray = cqlString.split("\n");
-		for(int i=0;i<cqlLinesArray.length;i++) {
-			System.out.println((i+1)+" "+cqlLinesArray[i]);
-			sb.append((i+1)+" "+cqlLinesArray[i] + "\r\n");
+		for(int i=0;i<cqlLinesArray.length;i++) {			
+			sb.append((i+1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
 		}
 		if (!result.getCqlErrors().isEmpty()) {
 			sb.append("/*******************************************************************************************************************");
 			for (CQLErrors error : result.getCqlErrors()) {
-				String errorMessage = new String();
-				errorMessage = errorMessage.concat("Line " + error.getErrorInLine()+ ":" +error.getErrorMessage());
-				sb.append("\r\n");
-				sb.append(errorMessage + "\r\n");
-				
+				StringBuilder errorMessage = new StringBuilder();
+				errorMessage.append("Line ").append(error.getErrorInLine()).append(": ").append(error.getErrorMessage());				
+				sb.append("\r\n").append(errorMessage).append("\r\n");								
 			}
 			sb.append("*******************************************************************************************************************/");
 		}
-		System.out.println(sb.toString());
+		
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
 				+ result.getLibraryName() + ".txt");
 		resp.getOutputStream().write(sb.toString().getBytes());

@@ -28,10 +28,11 @@ public class PopulationDataModel {
 	private static final String TAGNAME_NUMERATOR_EXCLUSIONS = "numeratorExclusions";
 	private static final String TAGNAME_NUMERATORS = "numerators";
 	private static final String TAGNAME_INITIAL_POPULATIONS = "initialPopulations";
+	private static final String TAGNAME_ID = "id";
 	
 	
-	private List<String> definitionNameList = new ArrayList<String>();
-	private List<String> functionNameList = new ArrayList<String>();
+	private List<ExpressionObject> definitionNameList = new ArrayList<>();
+	private List<ExpressionObject> functionNameList = new ArrayList<>();
 	private String measureId;
 	
 	private PopulationsObject initialPopulationsObject = new PopulationsObject(TAGNAME_INITIAL_POPULATIONS);
@@ -42,6 +43,32 @@ public class PopulationDataModel {
 	private PopulationsObject denominatorExceptionsObject = new PopulationsObject(TAGNAME_DENOMINATOR_EXCEPTIONS);
 	private PopulationsObject measurePopulationsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATIONS);
 	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATION_EXCLUSIONS);
+	
+	public class ExpressionObject {
+		private String uuid; 
+		private String name; 
+		
+		ExpressionObject(String uuid, String name) {
+			this.uuid = uuid; 
+			this.name = name; 
+		}
+		
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+		
+		public String getUuid() {
+			return uuid;
+		}
+
+		public void setUuid(String uuid) {
+			this.uuid = uuid;
+		}
+	}
 	
 	public PopulationDataModel(Document document) {
 		this.setMeasureId(MatContext.get().getCurrentMeasureId());
@@ -123,9 +150,9 @@ public class PopulationDataModel {
 		
 	}
 
-	private List<String> extractExpressionNames(Document document, String expressionParentNodeName, String expressionNodeName) {
+	private List<ExpressionObject> extractExpressionNames(Document document, String expressionParentNodeName, String expressionNodeName) {
 		
-		List<String> expressionNameList = new ArrayList<String>();
+		List<ExpressionObject> expressionNameList = new ArrayList<>();
 		
 		NodeList cqlLookUpNodeList = document.getElementsByTagName(TAGNAME_CQL_LOOK_UP);
 		
@@ -146,7 +173,11 @@ public class PopulationDataModel {
 					
 					Node definitionNode = definitionsNodeList.item(i);
 					if(definitionNode.getNodeName().equals(expressionNodeName)) {
-						expressionNameList.add(definitionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue());
+						String name = definitionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
+						String uuid = definitionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
+						
+						ExpressionObject expression = new ExpressionObject(uuid, name);
+						expressionNameList.add(expression);
 					}
 					
 				}
@@ -176,19 +207,19 @@ public class PopulationDataModel {
 		return childNode;
 	}
 
-	public List<String> getDefinitionNameList() {
+	public List<ExpressionObject> getDefinitionNameList() {
 		return definitionNameList;
 	}
 
-	private void setDefinitionNameList(List<String> definitionNameList) {
+	private void setDefinitionNameList(List<ExpressionObject> definitionNameList) {
 		this.definitionNameList = definitionNameList;
 	}
 
-	public List<String> getFunctionNameList() {
+	public List<ExpressionObject> getFunctionNameList() {
 		return functionNameList;
 	}
 
-	private void setFunctionNameList(List<String> functionNameList) {
+	private void setFunctionNameList(List<ExpressionObject> functionNameList) {
 		this.functionNameList = functionNameList;
 	}
 	

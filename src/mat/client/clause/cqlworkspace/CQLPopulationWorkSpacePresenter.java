@@ -4,6 +4,7 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 
@@ -11,6 +12,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -649,7 +651,47 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	}
 
 	
+	public static Observer getObserver() {
+		return new Observer() {
 
+			@Override
+			public void onDeleteClick(String definitionName) {
+
+			}
+
+			@Override
+			public void onViewHRClick(PopulationClauseObject population) {
+				MatContext.get().getMeasureService().getHumanReadableForNode(MatContext.get().getCurrentMeasureId(),
+						population.toXML(), new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								System.out.println("On Success....showHumanReadableDialogBox:");
+								showHumanReadableDialogBox(result, population.getDisplayName());
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+							}
+						});
+			}
+		};
+	}
+
+	/**
+	 * Show human readable dialog box.
+	 *
+	 * @param result the result
+	 * @param populationName the population name
+	 */
+	public native static void showHumanReadableDialogBox(String result, String populationName) /*-{
+		var dummyURL = window.location.protocol + "//" +  window.location.hostname + ":" + window.location.port + "/" + "mat/humanreadable.html";
+		var humanReadableWindow = window.open(dummyURL,"","width=1200,height=700,scrollbars=yes,resizable=yes");
+		
+		if(humanReadableWindow && humanReadableWindow.top){
+			humanReadableWindow.document.write(result);
+			humanReadableWindow.document.title = populationName;
+		}
+	}-*/;
 
 	/**
 	 * Show searching busy.

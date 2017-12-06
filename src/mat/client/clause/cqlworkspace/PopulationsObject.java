@@ -51,7 +51,7 @@ public class PopulationsObject {
 				
 				Node child = childs.item(i);
 				if(child.getNodeName().equals("cqldefinition")) {
-					
+					populationClauseObject.setCqlExpressionType(child.getNodeName());
 					populationClauseObject.setCqlDefinitionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
 					populationClauseObject.setCqlDefinitionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
 					

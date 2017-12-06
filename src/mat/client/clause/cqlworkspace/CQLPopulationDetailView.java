@@ -13,15 +13,32 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
+import mat.client.clause.cqlworkspace.PopulationDataModel.ExpressionObject;
 import mat.client.shared.SpacerWidget;
+import mat.model.cql.CQLDefinition;
 
 public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPopulationDetail{
+	
+	public static interface Observer {
+		void onDeleteClick(String definitionName); 
+		
+		void onViewHRClick(PopulationClauseObject population); 
+	}
+	
+	
+	
+	private Observer observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
 	private Button deleteButton;
@@ -66,7 +83,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 		for (int i = 0; i < popClauses.size(); i++) {
 
 			PopulationClauseObject populationClauseObject = popClauses.get(i);
-
+					
 			// set the name of the Initial Population clause.
 			FocusPanel nameFocusPanel = new FocusPanel();
 			FormLabel nameLabel = new FormLabel();
@@ -85,10 +102,16 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			definitionListBox.setTitle("Select Definition List");
 			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-			for (String definitionName : populationDataModel.getDefinitionNameList()) {
-				definitionListBox.addItem(definitionName, definitionName);
+			for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
+				definitionListBox.addItem(definition.getName(), definition.getUuid());
 			}
-
+			
+			SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+		    for (int j = 0; j < options.getLength(); j++) {
+		        options.getItem(j).setTitle(options.getItem(j).getText());
+		    }
+			
 			// select a definition name in the listbox
 			for (int j = 0; j < definitionListBox.getItemCount(); j++) {
 				String definitionName = definitionListBox.getItemText(j);
@@ -110,6 +133,14 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			deleteButton.setIcon(IconType.TRASH);
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
+			
+			deleteButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					observer.onDeleteClick(definitionListBox.getSelectedItemText());
+				}
+			});
 
 			populationGrid.setWidget(i, 2, deleteButton);
 
@@ -123,6 +154,20 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			viewHRButton.setIcon(IconType.BINOCULARS);
 			viewHRButton.setIconSize(IconSize.LARGE);
 			viewHRButton.setColor("black");
+						
+			viewHRButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					
+					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
+					population.setCqlDefinitionDisplayName(definitionListBox.getSelectedItemText());
+					population.setCqlDefinitionUUID(definitionListBox.getSelectedValue());
+					
+					observer.onViewHRClick(populationClauseObject);
+				}
+			});
+			
 
 			populationGrid.setWidget(i, 3, viewHRButton);
 
@@ -143,7 +188,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
 	}
-
+	
 	@Override
 	public Button getDeleteButton() {
 		return deleteButton;
@@ -214,7 +259,22 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 		btnGroup.getElement().setAttribute("class", "btn-group");
 		return btnGroup;
 	}
+	
+	/**
+	 * Gets the observer.
+	 *
+	 * @return the observer
+	 */
+	public Observer getObserver() {
+		return observer;
+	}
 
-
-
+	/**
+	 * Sets the observer.
+	 *
+	 * @param observer the new observer
+	 */
+	public void setObserver(Observer observer) {
+		this.observer = observer;
+	}
 }

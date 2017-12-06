@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -10,6 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
+import mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer;
 import mat.client.shared.SkipListBuilder;
 
 /**
@@ -27,6 +29,8 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		public void addButtonClicked();
 		void displayPopulationDetail(FlowPanel mainFlowPanel);
 		public PopulationsObject getPopulationsObject();
+		public void setObserver(Observer observer); 
+		public Observer getObserver(); 
 	}
 
 	/** The main horizontal panel. */
@@ -120,6 +124,9 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void displayPopulationDetailView(String populationType) {
 		CQLPopulationDetail cqlPopulationDetailView = new CQLPopulationDetailView(populationDataModel, populationType);
+		
+		cqlPopulationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
+		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
 	}

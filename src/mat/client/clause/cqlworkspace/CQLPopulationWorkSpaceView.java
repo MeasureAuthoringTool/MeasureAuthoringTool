@@ -3,7 +3,6 @@ package mat.client.clause.cqlworkspace;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -23,8 +22,6 @@ import mat.client.shared.SkipListBuilder;
 public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresenter.ViewDisplay {
 
 	public interface CQLPopulationDetail {
-		public Button getDeleteButton();
-		public Button getViewHRButton();
 		public Button getSaveButton();
 		public void addButtonClicked();
 		void displayPopulationDetail(FlowPanel mainFlowPanel);
@@ -123,8 +120,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	
 	@Override
 	public void displayPopulationDetailView(String populationType) {
-		CQLPopulationDetail cqlPopulationDetailView = new CQLPopulationDetailView(populationDataModel, populationType);
-		
+		CQLPopulationDetail cqlPopulationDetailView = CQLPopulationDetailFactory.getInstance().getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
 		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);

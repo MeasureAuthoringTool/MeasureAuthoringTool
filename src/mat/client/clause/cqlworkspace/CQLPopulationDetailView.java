@@ -23,10 +23,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
-import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.cqlworkspace.PopulationDataModel.ExpressionObject;
 import mat.client.shared.SpacerWidget;
-import mat.model.cql.CQLDefinition;
 
 public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPopulationDetail{
 	
@@ -36,12 +34,9 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 		void onViewHRClick(PopulationClauseObject population); 
 	}
 	
-	
-	
 	private Observer observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
-	private Button deleteButton;
 	public CQLPopulationDetailView(PopulationDataModel populationDataModel, String populationType) {
 		setPopulationDataModel(populationDataModel);
 		
@@ -164,7 +159,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 					population.setCqlDefinitionDisplayName(definitionListBox.getSelectedItemText());
 					population.setCqlDefinitionUUID(definitionListBox.getSelectedValue());
 					
-					observer.onViewHRClick(populationClauseObject);
+					observer.onViewHRClick(population);
 				}
 			});
 			
@@ -187,19 +182,6 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
-	}
-	
-	@Override
-	public Button getDeleteButton() {
-		return deleteButton;
-		
-	}
-
-	@Override
-	public Button getViewHRButton() {
-		return null;
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

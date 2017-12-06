@@ -2,7 +2,7 @@ package mat.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CQLErrors implements IsSerializable {
+public class CQLErrors implements IsSerializable ,Comparable<CQLErrors> {
 	int errorInLine;
 	int errorAtOffeset;
 	
@@ -68,4 +68,18 @@ public class CQLErrors implements IsSerializable {
 	public void setEndErrorAtOffset(int endErrorAtOffset) {
 		this.endErrorAtOffset = endErrorAtOffset;
 	}
+	
+	
+	@Override
+    public int compareTo(CQLErrors o) {
+           
+           if(this.errorInLine > o.errorInLine) {
+                  return 1;
+           }else if(this.errorInLine < o.errorInLine) {
+                  return -1;
+           }
+           
+           return 0;
+    }
+
 }

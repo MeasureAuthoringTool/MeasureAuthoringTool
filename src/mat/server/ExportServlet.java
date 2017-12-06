@@ -3,6 +3,9 @@ package mat.server;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +22,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+
+
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
+import mat.model.QualityDataSetDTO;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.server.service.MeasureLibraryService;
@@ -209,7 +215,9 @@ public class ExportServlet extends HttpServlet {
 		for(int i=0;i<cqlLinesArray.length;i++) {			
 			sb.append((i+1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
 		}
-		if (!result.getCqlErrors().isEmpty()) {
+		if (!result.getCqlErrors().isEmpty() && result.getCqlErrors().size() > 0) {
+			
+			Collections.sort(result.getCqlErrors());
 			sb.append("/*******************************************************************************************************************");
 			for (CQLErrors error : result.getCqlErrors()) {
 				StringBuilder errorMessage = new StringBuilder();

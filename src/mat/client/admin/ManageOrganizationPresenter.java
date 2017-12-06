@@ -334,7 +334,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				searchDisplay.setObserver(new Observer() {
 					@Override
 					public void onDeleteClicked(Result result) {
-						if(result.isUsed()){
+						if(!result.isUsed()){
 							deleteOrganization(result);
 						}
 						

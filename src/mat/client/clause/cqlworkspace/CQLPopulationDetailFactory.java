@@ -5,13 +5,10 @@ import mat.client.clause.cqlworkspace.CQLPopulationWorkSpaceView.CQLPopulationDe
 public class CQLPopulationDetailFactory {
 	private static CQLPopulationDetailFactory instance;
 	public static CQLPopulationDetailFactory getInstance() {
-		
-		synchronized (instance) {
-			if(instance == null) {
-				instance = new CQLPopulationDetailFactory();
-			}
+		if (instance == null) {
+			instance = new CQLPopulationDetailFactory();
 		}
-		
+
 		return instance;
 	}
 	public CQLPopulationDetail getCQLPopulationDetailView(PopulationDataModel populationDataModel, String populationType) {

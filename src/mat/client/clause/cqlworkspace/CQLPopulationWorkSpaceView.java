@@ -11,6 +11,8 @@ import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer;
+import mat.client.clause.cqlworkspace.model.PopulationDataModel;
+import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.SkipListBuilder;
 
 /**

@@ -23,7 +23,10 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
-import mat.client.clause.cqlworkspace.PopulationDataModel.ExpressionObject;
+import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
+import mat.client.clause.cqlworkspace.model.PopulationDataModel;
+import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
+import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.SpacerWidget;
 
 public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPopulationDetail{
@@ -37,6 +40,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 	private Observer observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
+	
 	public CQLPopulationDetailView(PopulationDataModel populationDataModel, String populationType) {
 		setPopulationDataModel(populationDataModel);
 		
@@ -64,6 +68,8 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			break;
 		case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS:
 			setPopulationsObject(populationDataModel.getMeasurePopulationsExclusionsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_STRATIFICATIONS:
 			break;
 		}
 	}

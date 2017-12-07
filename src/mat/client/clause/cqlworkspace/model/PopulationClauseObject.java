@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.model;
 
 public class PopulationClauseObject {
 	

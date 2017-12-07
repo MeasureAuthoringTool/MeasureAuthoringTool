@@ -5,6 +5,8 @@ import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer;
+import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
+import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 

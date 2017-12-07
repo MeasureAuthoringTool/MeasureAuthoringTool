@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,9 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
+import mat.client.clause.cqlworkspace.model.PopulationsObject;
+import mat.client.clause.cqlworkspace.model.StrataDataModel;
+import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.shared.MatContext;
 
 public class PopulationDataModel {
@@ -43,6 +46,8 @@ public class PopulationDataModel {
 	private PopulationsObject denominatorExceptionsObject = new PopulationsObject(TAGNAME_DENOMINATOR_EXCEPTIONS);
 	private PopulationsObject measurePopulationsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATIONS);
 	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATION_EXCLUSIONS);
+	
+	private StrataDataModel strataDataModel = new StrataDataModel();
 	
 	public class ExpressionObject {
 		private String uuid; 
@@ -141,13 +146,36 @@ public class PopulationDataModel {
 	}
 	
 	private void extractMeasureObservations(Document document) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	private void extractStratifications(Document document) {
-		// TODO Auto-generated method stub
+		NodeList strataNodeList = document.getElementsByTagName("strata"); 
 		
+		if(strataNodeList == null || strataNodeList.getLength() == 0) {
+			return;
+		}
+		
+		Node strataNode = strataNodeList.item(0);
+		
+		for(int k=0;k<strataNode.getChildNodes().getLength();k++) {
+			Node stratificationNode = strataNode.getChildNodes().item(k);
+			String displayName = stratificationNode.getAttributes().getNamedItem(ATTRIBUTE_DISPLAY_NAME).getNodeValue();
+			StratificationsObject stratificationsObject = new StratificationsObject(displayName);
+			stratificationsObject.setDisplayName(displayName);
+			
+			NodeList clauseNodeList = stratificationNode.getChildNodes();
+			if(clauseNodeList == null || clauseNodeList.getLength() == 0) {
+				return;
+			}
+			for(int i=0;i<clauseNodeList.getLength();i++) {
+				Node clauseNode = clauseNodeList.item(i);
+				if(clauseNode.getNodeName().equals(TAGNAME_CLAUSE)) {
+					stratificationsObject.addClause(clauseNode);
+				}
+			}
+			strataDataModel.addStratification(stratificationsObject);
+		}
 	}
 
 	private List<ExpressionObject> extractExpressionNames(Document document, String expressionParentNodeName, String expressionNodeName) {

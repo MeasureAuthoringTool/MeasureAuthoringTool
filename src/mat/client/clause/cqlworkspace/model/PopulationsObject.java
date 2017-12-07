@@ -1,10 +1,12 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
+
+import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 
 public class PopulationsObject {
 	

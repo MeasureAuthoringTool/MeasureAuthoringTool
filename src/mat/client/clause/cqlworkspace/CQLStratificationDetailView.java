@@ -1,13 +1,17 @@
 package mat.client.clause.cqlworkspace;
 
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.hibernate.transaction.BTMTransactionManagerLookup;
 
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -19,6 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
+import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.clause.cqlworkspace.model.StrataDataModel;
 import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
@@ -57,7 +62,7 @@ public class CQLStratificationDetailView {
 		this.strataDataModel = populationDataModel.getStrataDataModel();
 		HorizontalPanel btnPanel = new HorizontalPanel();		
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		btnPanel.getElement().setAttribute("style", "margin-left:450px;");
+		btnPanel.getElement().setAttribute("style", "margin-left:400px;");
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 		mainPanel.add(btnPanel);
 		mainPanel.add(scrollPanel);
@@ -72,6 +77,9 @@ public class CQLStratificationDetailView {
 		for(StratificationsObject stratificationsObject : strataDataModel.getStratificationObjectList()) {
 			Grid parentGrid = generateStratificationGrid(stratificationsObject);
 			mainVP.add(parentGrid);
+			
+			Grid stratumGrip = generateStratumGrid(stratificationsObject);
+			mainVP.add(stratumGrip);
 		}
 		
 		scrollPanel.add(mainVP);
@@ -79,17 +87,122 @@ public class CQLStratificationDetailView {
 	}
 	
 	
+	private Grid generateStratumGrid(StratificationsObject stratificationsObject) {
+		List<PopulationClauseObject> stratumClauses = stratificationsObject.getPopulationClauseObjectList();
+		Grid stratumsGrid = new Grid(stratumClauses.size(), 4);
+		stratumsGrid.addStyleName("borderSpacing");
+
+		for (int i = 0; i < stratumClauses.size(); i++) {
+
+			PopulationClauseObject populationClauseObject = stratumClauses.get(i);
+					
+			// set the name of the Initial Population clause.
+			FocusPanel nameFocusPanel = new FocusPanel();
+			FormLabel nameLabel = new FormLabel();
+			nameLabel.setText(populationClauseObject.getDisplayName());
+			nameLabel.setTitle(populationClauseObject.getDisplayName());
+			nameLabel.setId("nameLabel" + i);
+			nameFocusPanel.add(nameLabel);
+			nameFocusPanel.getElement().setAttribute("style", "margin-left:25px;padding-right:20px;");
+			
+			stratumsGrid.setWidget(i, 0, nameFocusPanel);
+			stratumsGrid.getCellFormatter().setWidth(i, 0, "200px");
+
+			// Set a listbox with all definition names in it.
+			ListBox definitionListBox = new ListBox();
+			definitionListBox.setSize("180px", "30px");			
+			definitionListBox.addItem("--Select Definition--", "");
+			definitionListBox.setTitle("Select Definition List");
+			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
+
+			for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
+				definitionListBox.addItem(definition.getName(), definition.getUuid());
+			}
+			
+			SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+		    for (int j = 0; j < options.getLength(); j++) {
+		        options.getItem(j).setTitle(options.getItem(j).getText());
+		    }
+			
+			// select a definition name in the listbox
+			for (int j = 0; j < definitionListBox.getItemCount(); j++) {
+				String definitionName = definitionListBox.getItemText(j);
+				if (definitionName.equals(populationClauseObject.getCqlDefinitionDisplayName())) {
+					definitionListBox.setItemSelected(j, true);
+					break;
+				}
+			}
+
+			stratumsGrid.setWidget(i, 1, definitionListBox);
+
+			// button for Delete
+			Button deleteButton = new Button();
+			deleteButton.setType(ButtonType.LINK);
+			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
+			deleteButton.setTitle("Delete");
+			deleteButton.setText("Delete");
+			deleteButton.setSize("50px", "30px");
+			deleteButton.getElement().setAttribute("aria-label", "Delete");
+			deleteButton.setIcon(IconType.TRASH);
+		//	deleteButton.setIconSize(IconSize.LARGE);
+			deleteButton.setColor("#0964A2");
+			deleteButton.setMarginRight(100.00);
+			
+			deleteButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					
+				}
+			});
+
+			stratumsGrid.setWidget(i, 2, deleteButton);
+
+			// button for View Human Readable
+			Button viewHRButton = new Button();
+			viewHRButton.setType(ButtonType.LINK);
+			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
+			viewHRButton.setTitle("View Human Readable");
+			viewHRButton.setText("View");
+			viewHRButton.setSize("50px", "30px");
+			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
+			viewHRButton.setIcon(IconType.BINOCULARS);
+			//viewHRButton.setIconSize(IconSize.LARGE);
+			viewHRButton.setColor("black");
+						
+			viewHRButton.addClickHandler(new ClickHandler() {
+
+				@Override
+				public void onClick(ClickEvent event) {
+					
+					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
+					population.setCqlDefinitionDisplayName(definitionListBox.getSelectedItemText());
+					population.setCqlDefinitionUUID(definitionListBox.getSelectedValue());
+					
+					observer.onViewHRClick(population);
+				}
+			});
+			
+
+			stratumsGrid.setWidget(i, 3, viewHRButton);
+
+		}
+		return stratumsGrid;
+	}
+
 	private Grid generateStratificationGrid(StratificationsObject stratificationsObject) {
 		Grid stratificationParentGrid = new Grid(1, 3);
 		stratificationParentGrid.getElement().setId("grid_"+stratificationsObject.getDisplayName());
-		
+		//stratificationParentGrid.addStyleName("borderSpacing");
+		stratificationParentGrid.getElement().setAttribute("style", "border-spacing:5px 20px;");
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(stratificationsObject.getDisplayName());
 		nameLabel.setTitle(stratificationsObject.getDisplayName());
 		nameLabel.setId("nameLabel" + 1);
 		nameFocusPanel.add(nameLabel);
-		nameFocusPanel.getElement().setAttribute("style", "margin-left:55px");
+		
 
 		stratificationParentGrid.setWidget(0, 0, nameFocusPanel);
 		stratificationParentGrid.getCellFormatter().setWidth(0, 0, "230px");
@@ -98,12 +211,12 @@ public class CQLStratificationDetailView {
 		Button addNewStratum = new Button();
 		addNewStratum.setType(ButtonType.LINK);
 		addNewStratum.getElement().setId("addNewStratumButton_" + stratificationsObject.getDisplayName());
-		addNewStratum.setTitle("Add New Stratum");
-		addNewStratum.setText("Add New Stratum");
+		addNewStratum.setTitle("Click to add new stratum");
+		addNewStratum.setText("Add Stratum");
 		addNewStratum.setSize("50px", "30px");
-		addNewStratum.getElement().setAttribute("aria-label", "Add New Stratum");
+		addNewStratum.getElement().setAttribute("aria-label", "Add Stratum");
 		addNewStratum.setIcon(IconType.PLUS);
-		addNewStratum.setIconSize(IconSize.LARGE);
+		//addNewStratum.setIconSize(IconSize.LARGE);
 		addNewStratum.setColor("#0964A2");
 		addNewStratum.setMarginRight(150.00);
 		
@@ -127,7 +240,7 @@ public class CQLStratificationDetailView {
 		deleteButton.setSize("50px", "30px");
 		deleteButton.getElement().setAttribute("aria-label", "Delete");
 		deleteButton.setIcon(IconType.TRASH);
-		deleteButton.setIconSize(IconSize.LARGE);
+	//	deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
 
 		deleteButton.addClickHandler(new ClickHandler() {

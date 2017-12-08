@@ -35,7 +35,7 @@ public class CQLPopulationTopLevelButtonGroup {
 		saveButton.setIcon(IconType.SAVE);
 		saveButton.setPull(Pull.RIGHT);
 		saveButton.setIconSize(IconSize.LARGE);
-		saveButton.setSize(ButtonSize.SMALL);
+	//	saveButton.setSize(ButtonSize.SMALL);
 		
 		
 		addNewButton.setType(ButtonType.LINK);
@@ -44,7 +44,7 @@ public class CQLPopulationTopLevelButtonGroup {
 		addNewButton.setTitle("Click this button to add a new " + displayName.substring(0, displayName.length()-1));
 		addNewButton.setIcon(IconType.PLUS);
 		addNewButton.setPull(Pull.LEFT);
-		addNewButton.setSize(ButtonSize.SMALL);
+	//	addNewButton.setSize(ButtonSize.SMALL);
 		
 		buttonGroup.add(addNewButton);
 		buttonGroup.add(saveButton);

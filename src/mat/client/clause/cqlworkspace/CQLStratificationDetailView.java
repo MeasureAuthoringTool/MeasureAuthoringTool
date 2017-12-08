@@ -195,7 +195,7 @@ public class CQLStratificationDetailView {
 		Grid stratificationParentGrid = new Grid(1, 3);
 		stratificationParentGrid.getElement().setId("grid_"+stratificationsObject.getDisplayName());
 		//stratificationParentGrid.addStyleName("borderSpacing");
-		stratificationParentGrid.getElement().setAttribute("style", "border-spacing:5px 20px;");
+		stratificationParentGrid.getElement().setAttribute("style", "border-spacing:35px 10px;");
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(stratificationsObject.getDisplayName());
@@ -219,6 +219,7 @@ public class CQLStratificationDetailView {
 		//addNewStratum.setIconSize(IconSize.LARGE);
 		addNewStratum.setColor("#0964A2");
 		addNewStratum.setMarginRight(150.00);
+		addNewStratum.setMarginLeft(-105.00);
 		
 		addNewStratum.addClickHandler(new ClickHandler() {
 
@@ -242,7 +243,7 @@ public class CQLStratificationDetailView {
 		deleteButton.setIcon(IconType.TRASH);
 	//	deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
-
+		deleteButton.setMarginLeft(-17.00);
 		deleteButton.addClickHandler(new ClickHandler() {
 
 			@Override

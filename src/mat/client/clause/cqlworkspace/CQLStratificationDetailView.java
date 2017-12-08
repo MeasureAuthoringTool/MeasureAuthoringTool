@@ -89,13 +89,10 @@ public class CQLStratificationDetailView {
 	private Grid generateStratumGrid(StratificationsObject stratificationsObject) {
 		List<PopulationClauseObject> stratumClauses = stratificationsObject.getPopulationClauseObjectList();
 		Grid stratumsGrid = new Grid(stratumClauses.size(), 4);
-		/*stratumsGrid.addStyleName("borderSpacing");*/
 		stratumsGrid.getElement().setAttribute("style", "border-spacing:40px 10px;");
 		for (int i = 0; i < stratumClauses.size(); i++) {
 
 			PopulationClauseObject populationClauseObject = stratumClauses.get(i);
-					
-			// set the name of the Initial Population clause.
 			FocusPanel nameFocusPanel = new FocusPanel();
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
@@ -103,11 +100,9 @@ public class CQLStratificationDetailView {
 			nameLabel.setId("nameLabel" + i);
 			nameLabel.setWidth("100px");
 			nameFocusPanel.add(nameLabel);
-			//nameFocusPanel.getElement().setAttribute("style", "margin-left:5px;");
 			
 			stratumsGrid.setWidget(i, 0, nameFocusPanel);
-		//	stratumsGrid.getCellFormatter().setWidth(i, 0, "200px");
-
+	
 			// Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
 			definitionListBox.setSize("180px", "30px");			

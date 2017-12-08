@@ -57,7 +57,7 @@ public class CQLStratificationDetailView {
 	public VerticalPanel buildView(PopulationDataModel populationDataModel) {
 		mainPanel.clear();
 		scrollPanel.clear();
-		scrollPanel.setSize("700px", "250px");
+		scrollPanel.setSize("700px", "450px");
 		this.populationDataModel = populationDataModel;
 		this.strataDataModel = populationDataModel.getStrataDataModel();
 		HorizontalPanel btnPanel = new HorizontalPanel();		
@@ -71,9 +71,8 @@ public class CQLStratificationDetailView {
 	}
 	
 	private void buildStratificationView() {
-		
-		
 		VerticalPanel mainVP = new VerticalPanel();
+		//mainVP.setSize("700px", "250px");
 		for(StratificationsObject stratificationsObject : strataDataModel.getStratificationObjectList()) {
 			Grid parentGrid = generateStratificationGrid(stratificationsObject);
 			mainVP.add(parentGrid);
@@ -90,8 +89,8 @@ public class CQLStratificationDetailView {
 	private Grid generateStratumGrid(StratificationsObject stratificationsObject) {
 		List<PopulationClauseObject> stratumClauses = stratificationsObject.getPopulationClauseObjectList();
 		Grid stratumsGrid = new Grid(stratumClauses.size(), 4);
-		stratumsGrid.addStyleName("borderSpacing");
-
+		/*stratumsGrid.addStyleName("borderSpacing");*/
+		stratumsGrid.getElement().setAttribute("style", "border-spacing:40px 10px;");
 		for (int i = 0; i < stratumClauses.size(); i++) {
 
 			PopulationClauseObject populationClauseObject = stratumClauses.get(i);
@@ -102,11 +101,12 @@ public class CQLStratificationDetailView {
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
 			nameLabel.setId("nameLabel" + i);
+			nameLabel.setWidth("100px");
 			nameFocusPanel.add(nameLabel);
-			nameFocusPanel.getElement().setAttribute("style", "margin-left:25px;padding-right:20px;");
+			//nameFocusPanel.getElement().setAttribute("style", "margin-left:5px;");
 			
 			stratumsGrid.setWidget(i, 0, nameFocusPanel);
-			stratumsGrid.getCellFormatter().setWidth(i, 0, "200px");
+		//	stratumsGrid.getCellFormatter().setWidth(i, 0, "200px");
 
 			// Set a listbox with all definition names in it.
 			ListBox definitionListBox = new ListBox();
@@ -142,10 +142,10 @@ public class CQLStratificationDetailView {
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");
 			deleteButton.setText("Delete");
-			deleteButton.setSize("50px", "30px");
+		//	deleteButton.setSize("50px", "30px");
 			deleteButton.getElement().setAttribute("aria-label", "Delete");
 			deleteButton.setIcon(IconType.TRASH);
-		//	deleteButton.setIconSize(IconSize.LARGE);
+			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
 			deleteButton.setMarginRight(100.00);
 			
@@ -165,12 +165,10 @@ public class CQLStratificationDetailView {
 			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 			viewHRButton.setTitle("View Human Readable");
 			viewHRButton.setText("View");
-			viewHRButton.setSize("50px", "30px");
 			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
 			viewHRButton.setIcon(IconType.BINOCULARS);
-			//viewHRButton.setIconSize(IconSize.LARGE);
 			viewHRButton.setColor("black");
-						
+			viewHRButton.setMarginLeft(-100.00);			
 			viewHRButton.addClickHandler(new ClickHandler() {
 
 				@Override
@@ -213,7 +211,7 @@ public class CQLStratificationDetailView {
 		addNewStratum.getElement().setId("addNewStratumButton_" + stratificationsObject.getDisplayName());
 		addNewStratum.setTitle("Click to add new stratum");
 		addNewStratum.setText("Add Stratum");
-		addNewStratum.setSize("50px", "30px");
+		//addNewStratum.setSize("50px", "30px");
 		addNewStratum.getElement().setAttribute("aria-label", "Add Stratum");
 		addNewStratum.setIcon(IconType.PLUS);
 		//addNewStratum.setIconSize(IconSize.LARGE);
@@ -238,12 +236,12 @@ public class CQLStratificationDetailView {
 		deleteButton.getElement().setId("deleteButton_" + stratificationsObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
-		deleteButton.setSize("50px", "30px");
+		//deleteButton.setSize("50px", "30px");
 		deleteButton.getElement().setAttribute("aria-label", "Delete");
 		deleteButton.setIcon(IconType.TRASH);
-	//	deleteButton.setIconSize(IconSize.LARGE);
+		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
-		deleteButton.setMarginLeft(-17.00);
+		deleteButton.setMarginLeft(-100.00);
 		deleteButton.addClickHandler(new ClickHandler() {
 
 			@Override

@@ -291,5 +291,13 @@ public class PopulationDataModel {
 		this.measureId = measureId;
 	}
 
+	public StrataDataModel getStrataDataModel() {
+		return strataDataModel;
+	}
+
+	public void setStrataDataModel(StrataDataModel strataDataModel) {
+		this.strataDataModel = strataDataModel;
+	}
+
 
 }

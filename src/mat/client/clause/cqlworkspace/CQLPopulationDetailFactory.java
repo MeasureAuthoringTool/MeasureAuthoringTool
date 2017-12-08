@@ -5,7 +5,7 @@ import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 
 public class CQLPopulationDetailFactory {
 
-	private static CQLPopulationDetailFactory instance;
+	/*private static CQLPopulationDetailFactory instance;
 
 	private CQLPopulationDetailFactory() {
 		// preventing CQLPopulationDetailFactory object instantiation from outside
@@ -17,9 +17,9 @@ public class CQLPopulationDetailFactory {
 		}
 
 		return instance;
-	}
+	}*/
 
-	public CQLPopulationDetail getCQLPopulationDetailView(PopulationDataModel populationDataModel,
+	public static CQLPopulationDetail getCQLPopulationDetailView(PopulationDataModel populationDataModel,
 			String populationType) {
 		return new CQLPopulationDetailView(populationDataModel, populationType);
 	}

@@ -1556,6 +1556,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							showSearchBusyOnDoubleClick(false);
 						}
 						if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {
+							searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
 							CQLFunctions selectedFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap()
 									.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionObjId());
 							if (selectedFunction.getArgumentList() != null) {

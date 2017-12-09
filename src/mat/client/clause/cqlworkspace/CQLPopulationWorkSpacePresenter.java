@@ -555,7 +555,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			setActiveMenuItem(currentSection, false);
 			setActiveMenuItem(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS, true); 
 			currentSection = CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS;
-			searchDisplay.displayMeasureObservations();
+			searchDisplay.displayMeasureObservations();			
 		}
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
 		Mat.focusSkipLists("MeasureComposer");

@@ -115,6 +115,13 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	public void displayMeasureObservations() {
 
 		mainFlowPanel.clear();
+		CQLMeasureObservationDetailView cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 
+				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
+		
+		cqlMeasureObservationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
+		
+		cqlMeasureObservationDetailView.displayPopulationDetail(mainFlowPanel);
+		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
 	}
 	@Override
 	public void displayStratification() {

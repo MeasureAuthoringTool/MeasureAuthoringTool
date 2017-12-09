@@ -69,6 +69,8 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 		case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS:
 			setPopulationsObject(populationDataModel.getMeasurePopulationsExclusionsObject());
 			break;
+		case CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS:
+			break;	
 		case CQLWorkSpaceConstants.CQL_STRATIFICATIONS:
 			break;
 		}
@@ -116,7 +118,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 			// select a definition name in the listbox
 			for (int j = 0; j < definitionListBox.getItemCount(); j++) {
 				String definitionName = definitionListBox.getItemText(j);
-				if (definitionName.equals(populationClauseObject.getCqlDefinitionDisplayName())) {
+				if (definitionName.equals(populationClauseObject.getCqlExpressionDisplayName())) {
 					definitionListBox.setItemSelected(j, true);
 					break;
 				}
@@ -162,8 +164,8 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 				public void onClick(ClickEvent event) {
 					
 					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					population.setCqlDefinitionDisplayName(definitionListBox.getSelectedItemText());
-					population.setCqlDefinitionUUID(definitionListBox.getSelectedValue());
+					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
 					
 					observer.onViewHRClick(population);
 				}

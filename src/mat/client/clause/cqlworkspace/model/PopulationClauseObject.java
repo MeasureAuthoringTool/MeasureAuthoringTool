@@ -5,16 +5,17 @@ public class PopulationClauseObject {
 	private String displayName = "";
 	private String type = "";
 	private String uuid = "";
-	private String cqlDefinitionDisplayName = "";
-	private String cqlDefinitionUUID = "";
+	private String cqlExpressionDisplayName = "";
+	private String cqlExpressionUUID = "";
 	private String cqlExpressionType = "";
+	private String aggFunctionName = "";
 	
 	public PopulationClauseObject(PopulationClauseObject population) {
 		this.displayName = population.getDisplayName(); 
 		this.type = population.getType(); 
 		this.uuid = population.getUuid();
-		this.cqlDefinitionDisplayName = population.getCqlDefinitionDisplayName(); 
-		this.cqlDefinitionUUID = population.getCqlDefinitionUUID(); 
+		this.cqlExpressionDisplayName = population.getCqlExpressionDisplayName(); 
+		this.cqlExpressionUUID = population.getCqlExpressionUUID(); 
 		this.cqlExpressionType = population.getCqlExpressionType(); 
 	}
 	
@@ -40,17 +41,17 @@ public class PopulationClauseObject {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
-	public String getCqlDefinitionDisplayName() {
-		return cqlDefinitionDisplayName;
+	public String getCqlExpressionDisplayName() {
+		return cqlExpressionDisplayName;
 	}
-	public void setCqlDefinitionDisplayName(String cqlDefinitionDisplayName) {
-		this.cqlDefinitionDisplayName = cqlDefinitionDisplayName;
+	public void setCqlExpressionDisplayName(String cqlDefinitionDisplayName) {
+		this.cqlExpressionDisplayName = cqlDefinitionDisplayName;
 	}
-	public String getCqlDefinitionUUID() {
-		return cqlDefinitionUUID;
+	public String getCqlExpressionUUID() {
+		return cqlExpressionUUID;
 	}
-	public void setCqlDefinitionUUID(String cqlDefinitionUUID) {
-		this.cqlDefinitionUUID = cqlDefinitionUUID;
+	public void setCqlExpressionUUID(String cqlDefinitionUUID) {
+		this.cqlExpressionUUID = cqlDefinitionUUID;
 	}
 	
 	public String getCqlExpressionType() {
@@ -72,12 +73,20 @@ public class PopulationClauseObject {
 		builder.append(">");
 		
 		builder.append("<" + this.getCqlExpressionType() + " ");
-		builder.append("displayName=\"" + this.getCqlDefinitionDisplayName() + "\" "); 
-		builder.append("uuid=\"" + this.getCqlDefinitionUUID() + "\"/>"); 
+		builder.append("displayName=\"" + this.getCqlExpressionDisplayName() + "\" "); 
+		builder.append("uuid=\"" + this.getCqlExpressionUUID() + "\"/>"); 
 	
 		builder.append("</clause>"); 
 		
 		return builder.toString(); 
+	}
+
+	public String getAggFunctionName() {
+		return aggFunctionName;
+	}
+
+	public void setAggFunctionName(String aggFunctionName) {
+		this.aggFunctionName = aggFunctionName;
 	}
 	
 }

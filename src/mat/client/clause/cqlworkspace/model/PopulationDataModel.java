@@ -31,6 +31,7 @@ public class PopulationDataModel {
 	private static final String TAGNAME_NUMERATOR_EXCLUSIONS = "numeratorExclusions";
 	private static final String TAGNAME_NUMERATORS = "numerators";
 	private static final String TAGNAME_INITIAL_POPULATIONS = "initialPopulations";
+	private static final String TAGNAME_MEASURE_OBSERVATIONS = "measureObservations";
 	private static final String TAGNAME_ID = "id";
 	
 	
@@ -48,6 +49,8 @@ public class PopulationDataModel {
 	private PopulationsObject measurePopulationsExclusionsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATION_EXCLUSIONS);
 	
 	private StrataDataModel strataDataModel = new StrataDataModel();
+	private PopulationsObject measureObservationsObject = new PopulationsObject(TAGNAME_MEASURE_OBSERVATIONS);
+	
 	
 	public class ExpressionObject {
 		private String uuid; 
@@ -134,18 +137,17 @@ public class PopulationDataModel {
 		}
 	}
 
-	private void extractFunctionNames(Document document) {
-		
-		setFunctionNameList(extractExpressionNames(document,TAGNAME_FUNCTIONS, TAGNAME_FUNCTION));		
-	}
-
-	private void extractDefinitionNames(Document document) {
-		
-		setDefinitionNameList(extractExpressionNames(document,TAGNAME_DEFINITIONS, TAGNAME_DEFINITION));
-
-	}
-	
 	private void extractMeasureObservations(Document document) {
+		
+		NodeList measureNodeList = document.getElementsByTagName("measure"); 
+		
+		if(measureNodeList == null || measureNodeList.getLength() == 0) {
+			return;
+		}
+		
+		Node measureNode = measureNodeList.item(0);
+		
+		extractPopulations(measureNode, measureObservationsObject);
 		
 	}
 	
@@ -213,6 +215,17 @@ public class PopulationDataModel {
 		}
 		
 		return expressionNameList;		
+	}
+	
+	private void extractFunctionNames(Document document) {
+		
+		setFunctionNameList(extractExpressionNames(document,TAGNAME_FUNCTIONS, TAGNAME_FUNCTION));		
+	}
+
+	private void extractDefinitionNames(Document document) {
+		
+		setDefinitionNameList(extractExpressionNames(document,TAGNAME_DEFINITIONS, TAGNAME_DEFINITION));
+
 	}
 
 	private Node findChildNode(Node node, String nodeName) {
@@ -299,5 +312,11 @@ public class PopulationDataModel {
 		this.strataDataModel = strataDataModel;
 	}
 
+	public PopulationsObject getMeasureObservationsObject() {
+		return measureObservationsObject;
+	}
 
+	public void setMeasureObservationsObject(PopulationsObject measureObservationsObject) {
+		this.measureObservationsObject = measureObservationsObject;
+	}
 }

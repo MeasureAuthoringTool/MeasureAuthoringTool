@@ -14,26 +14,7 @@ public class PopulationsObject {
 	private String displayName = "";
 	List<PopulationClauseObject> populationClauseObjectList = new ArrayList<PopulationClauseObject>();
 
-	public PopulationsObject(String name) {
-		setPopulationName(name);
-	}
-
-	public String getPopulationName() {
-		return populationName;
-	}
-
-	private void setPopulationName(String populationName) {
-		this.populationName = populationName;
-	}
-
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
+	
 	public void addClause(Node clauseNode) {
 		
 		if(clauseNode == null) {
@@ -54,15 +35,59 @@ public class PopulationsObject {
 				Node child = childs.item(i);
 				if(child.getNodeName().equals("cqldefinition")) {
 					populationClauseObject.setCqlExpressionType(child.getNodeName());
-					populationClauseObject.setCqlDefinitionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
-					populationClauseObject.setCqlDefinitionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
+					populationClauseObject.setCqlExpressionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
+					populationClauseObject.setCqlExpressionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
 					
 					break;
+				}else if(child.getNodeName().equals("cqlfunction")) {
+					populationClauseObject.setCqlExpressionType(child.getNodeName());
+					populationClauseObject.setCqlExpressionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
+					populationClauseObject.setCqlExpressionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
+					
+					break;
+				}else if(child.getNodeName().equals("cqlaggfunction")) {
+					populationClauseObject.setAggFunctionName(child.getAttributes().getNamedItem("displayName").getNodeValue());
+					
+					//check if the agg function has a node of name "cqlfunction". It is fine if there is none.
+					NodeList children = child.getChildNodes();
+					
+					for(int c=0; c < children.getLength(); c++) {
+						Node childNode = children.item(c);
+						
+						if("cqlfunction".equals(childNode.getNodeName())) {
+							
+							populationClauseObject.setCqlExpressionType(childNode.getNodeName());
+							populationClauseObject.setCqlExpressionDisplayName(childNode.getAttributes().getNamedItem("displayName").getNodeValue());
+							populationClauseObject.setCqlExpressionUUID(childNode.getAttributes().getNamedItem("uuid").getNodeValue());
+							
+							break;
+						}
+					}
 				}
 			}
 		}
 		
 		populationClauseObjectList.add(populationClauseObject);
+	}
+	
+	public PopulationsObject(String name) {
+		setPopulationName(name);
+	}
+
+	public String getPopulationName() {
+		return populationName;
+	}
+
+	private void setPopulationName(String populationName) {
+		this.populationName = populationName;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 	
 	public List<PopulationClauseObject> getPopulationClauseObjectList() {
@@ -72,5 +97,7 @@ public class PopulationsObject {
 	private void setPopulationClauseObjectList(List<PopulationClauseObject> populationClauseObjectList) {
 		this.populationClauseObjectList = populationClauseObjectList;
 	}
+
+	
 
 }

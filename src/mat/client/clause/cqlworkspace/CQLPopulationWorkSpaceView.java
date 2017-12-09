@@ -63,6 +63,8 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	private PopulationDataModel populationDataModel = null;
 	private Document document = null;
+	
+	CQLStratificationDetailView cqlStratificationDetailView;
 
 	/**
 	 * Instantiates a new CQL work space view.
@@ -118,11 +120,14 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	public void displayStratification() {
 
 		mainFlowPanel.clear();
+		cqlStratificationDetailView  = new CQLStratificationDetailView();
+		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
+		
 	}
 	
 	@Override
 	public void displayPopulationDetailView(String populationType) {
-		CQLPopulationDetail cqlPopulationDetailView = CQLPopulationDetailFactory.getInstance().getCQLPopulationDetailView(populationDataModel, populationType);
+		CQLPopulationDetail cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
 		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
@@ -272,21 +277,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		return mainFlowPanel;
 	}
 
-	/**
-	 * Unset each section selected object and clear Value sets CellTable Panel.
-	 */
-	/*
-	 * public void unsetEachSectionSelectedObject() {
-	 * cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
-	 * cqlLeftNavBarPanelView.setCurrentSelectedParamerterObjId(null);
-	 * cqlLeftNavBarPanelView.setCurrentSelectedFunctionObjId(null);
-	 * cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentObjId(null);
-	 * cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentName(null);
-	 * cqlLeftNavBarPanelView.setCurrentSelectedIncLibraryObjId(null);
-	 * 
-	 * }
-	 */
-
+	
 	/**
 	 * Reset message display.
 	 */

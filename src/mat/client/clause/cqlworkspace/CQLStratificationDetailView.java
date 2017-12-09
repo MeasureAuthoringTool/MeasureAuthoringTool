@@ -123,7 +123,7 @@ public class CQLStratificationDetailView {
 			// select a definition name in the listbox
 			for (int j = 0; j < definitionListBox.getItemCount(); j++) {
 				String definitionName = definitionListBox.getItemText(j);
-				if (definitionName.equals(populationClauseObject.getCqlDefinitionDisplayName())) {
+				if (definitionName.equals(populationClauseObject.getCqlExpressionDisplayName())) {
 					definitionListBox.setItemSelected(j, true);
 					break;
 				}
@@ -170,8 +170,8 @@ public class CQLStratificationDetailView {
 				public void onClick(ClickEvent event) {
 					
 					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					population.setCqlDefinitionDisplayName(definitionListBox.getSelectedItemText());
-					population.setCqlDefinitionUUID(definitionListBox.getSelectedValue());
+					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
 					
 					observer.onViewHRClick(population);
 				}

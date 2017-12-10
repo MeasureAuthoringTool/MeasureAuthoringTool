@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
-import mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.SkipListBuilder;
@@ -22,15 +21,6 @@ import mat.client.shared.SkipListBuilder;
  */
 
 public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresenter.ViewDisplay {
-
-	public interface CQLPopulationDetail {
-		public Button getSaveButton();
-		public void addButtonClicked();
-		void displayPopulationDetail(FlowPanel mainFlowPanel);
-		public PopulationsObject getPopulationsObject();
-		public void setObserver(Observer observer); 
-		public Observer getObserver(); 
-	}
 
 	/** The main horizontal panel. */
 	HorizontalPanel mainHPPanel = new HorizontalPanel();

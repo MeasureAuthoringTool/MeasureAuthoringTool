@@ -1,6 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
-import mat.client.clause.cqlworkspace.CQLPopulationWorkSpaceView.CQLPopulationDetail;
+import mat.client.clause.cqlworkspace.CQLPopulationDetail;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 
 public class CQLPopulationDetailFactory {
@@ -8,6 +8,43 @@ public class CQLPopulationDetailFactory {
 
 	public static CQLPopulationDetail getCQLPopulationDetailView(PopulationDataModel populationDataModel,
 			String populationType) {
-		return new CQLPopulationDetailView(populationDataModel, populationType);
+		
+		CQLPopulationDetailView cqlPopulationDetailView = new CQLPopulationDetailView(populationDataModel);
+		
+		switch(populationType) {
+		case CQLWorkSpaceConstants.CQL_INITIALPOPULATION:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getInitialPopulationsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_NUMERATOR:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getNumeratorsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getNumeratorExclusionsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_DENOMINATOR:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getDenominatorsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getDenominatorExclusionsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getDenominatorExceptionsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getMeasurePopulationsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS:
+			cqlPopulationDetailView.setPopulationsObject(populationDataModel.getMeasurePopulationsExclusionsObject());
+			break;
+		case CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS:
+			break;	
+		case CQLWorkSpaceConstants.CQL_STRATIFICATIONS:
+			break;
+		}
+		
+		
+		return cqlPopulationDetailView;
 	}
+	
+	
 }

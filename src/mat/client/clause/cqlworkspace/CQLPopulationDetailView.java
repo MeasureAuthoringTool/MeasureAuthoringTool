@@ -29,51 +29,14 @@ import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.SpacerWidget;
 
-public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPopulationDetail{
+public class CQLPopulationDetailView implements CQLPopulationDetail{
 	
-	public static interface Observer {
-		void onDeleteClick(String definitionName); 
-		
-		void onViewHRClick(PopulationClauseObject population); 
-	}
-	
-	private Observer observer; 
+	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
 	
-	public CQLPopulationDetailView(PopulationDataModel populationDataModel, String populationType) {
+	public CQLPopulationDetailView(PopulationDataModel populationDataModel) {
 		setPopulationDataModel(populationDataModel);
-		
-		switch(populationType) {
-		case CQLWorkSpaceConstants.CQL_INITIALPOPULATION:
-			setPopulationsObject(populationDataModel.getInitialPopulationsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_NUMERATOR:
-			setPopulationsObject(populationDataModel.getNumeratorsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS:
-			setPopulationsObject(populationDataModel.getNumeratorExclusionsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_DENOMINATOR:
-			setPopulationsObject(populationDataModel.getDenominatorsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS:
-			setPopulationsObject(populationDataModel.getDenominatorExclusionsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS:
-			setPopulationsObject(populationDataModel.getDenominatorExceptionsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS:
-			setPopulationsObject(populationDataModel.getMeasurePopulationsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS:
-			setPopulationsObject(populationDataModel.getMeasurePopulationsExclusionsObject());
-			break;
-		case CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS:
-			break;	
-		case CQLWorkSpaceConstants.CQL_STRATIFICATIONS:
-			break;
-		}
 	}
 	
 	@Override
@@ -164,7 +127,13 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 				public void onClick(ClickEvent event) {
 					
 					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					
+					if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+						population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					}else {
+						population.setCqlExpressionDisplayName("");
+					}
+					
 					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
 					
 					observer.onViewHRClick(population);
@@ -255,7 +224,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 	 *
 	 * @return the observer
 	 */
-	public Observer getObserver() {
+	public CQLPopulationObserver getObserver() {
 		return observer;
 	}
 
@@ -264,7 +233,7 @@ public class CQLPopulationDetailView implements CQLPopulationWorkSpaceView.CQLPo
 	 *
 	 * @param observer the new observer
 	 */
-	public void setObserver(Observer observer) {
+	public void setObserver(CQLPopulationObserver observer) {
 		this.observer = observer;
 	}
 }

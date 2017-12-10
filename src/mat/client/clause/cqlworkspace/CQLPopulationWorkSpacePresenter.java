@@ -16,7 +16,6 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -651,8 +650,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	}
 
 	
-	public static Observer getObserver() {
-		return new Observer() {
+	public static CQLPopulationObserver getObserver() {
+		return new CQLPopulationObserver() {
 
 			@Override
 			public void onDeleteClick(String definitionName) {

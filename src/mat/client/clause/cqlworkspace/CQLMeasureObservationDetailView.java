@@ -29,15 +29,9 @@ import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.SpacerWidget;
 
-public class CQLMeasureObservationDetailView implements CQLPopulationWorkSpaceView.CQLPopulationDetail{
+public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 	
-	public static interface Observer {
-		void onDeleteClick(String definitionName); 
-		
-		void onViewHRClick(PopulationClauseObject population); 
-	}
-	
-	private Observer observer; 
+	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
 	
@@ -47,7 +41,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationWorkSpaceVi
 		setPopulationsObject(populationDataModel.getMeasureObservationsObject());		
 	}
 	
-	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
 		mainFlowPanel.clear();		
@@ -171,7 +164,19 @@ public class CQLMeasureObservationDetailView implements CQLPopulationWorkSpaceVi
 				public void onClick(ClickEvent event) {
 					
 					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					population.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+					
+					if(!functionListBox.getSelectedItemText().equals("--Select Function--")) {
+						population.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+					}else {
+						population.setCqlExpressionDisplayName("");
+					}
+					
+					if(!aggFuncListBox.getSelectedItemText().equals("--Select--")) {
+						population.setAggFunctionName(aggFuncListBox.getSelectedItemText());
+					}else {
+						population.setAggFunctionName("");
+					}
+					
 					population.setCqlExpressionUUID(functionListBox.getSelectedValue());
 					
 					observer.onViewHRClick(population);
@@ -199,14 +204,14 @@ public class CQLMeasureObservationDetailView implements CQLPopulationWorkSpaceVi
 		mainFlowPanel.add(new SpacerWidget());
 	}
 
-	@Override
+	
 	public Button getSaveButton() {
 		return null;
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+	
 	public void addButtonClicked() {
 		// TODO Auto-generated method stub
 		
@@ -257,15 +262,12 @@ public class CQLMeasureObservationDetailView implements CQLPopulationWorkSpaceVi
 		return btnGroup;
 	}
 	
-	@Override
-	public void setObserver(mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer observer) {
-		// TODO Auto-generated method stub
+	public void setObserver(CQLPopulationObserver observer) {
+		this.observer = observer;
 		
 	}
 
-	@Override
-	public mat.client.clause.cqlworkspace.CQLPopulationDetailView.Observer getObserver() {
-		// TODO Auto-generated method stub
-		return null;
+	public CQLPopulationObserver getObserver() {
+		return this.observer;
 	}
 }

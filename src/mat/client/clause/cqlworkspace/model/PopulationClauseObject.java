@@ -72,9 +72,23 @@ public class PopulationClauseObject {
 		builder.append("uuid=\"" + this.getUuid() + "\" "); 
 		builder.append(">");
 		
+		if(this.getAggFunctionName() != null && this.getAggFunctionName().trim().length() > 0) {
+			builder.append("<cqlaggfunction ");
+			builder.append("displayName=\"" + this.getAggFunctionName() + "\" ");
+			builder.append(">");
+		}
+		
+		if(this.cqlExpressionType == null || this.cqlExpressionType.trim().length() == 0) {
+			this.setCqlExpressionType("cqldefinition");
+		}
+		
 		builder.append("<" + this.getCqlExpressionType() + " ");
 		builder.append("displayName=\"" + this.getCqlExpressionDisplayName() + "\" "); 
-		builder.append("uuid=\"" + this.getCqlExpressionUUID() + "\"/>"); 
+		builder.append("uuid=\"" + this.getCqlExpressionUUID() + "\"/>"); 		
+	
+		if(this.getAggFunctionName() != null && this.getAggFunctionName().trim().length() > 0) {
+			builder.append("</cqlaggfunction>");
+		}
 	
 		builder.append("</clause>"); 
 		

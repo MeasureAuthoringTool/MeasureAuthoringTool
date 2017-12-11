@@ -77,8 +77,8 @@ public class CQLStratificationDetailView {
 			Grid parentGrid = generateStratificationGrid(stratificationsObject);
 			mainVP.add(parentGrid);
 			
-			Grid stratumGrip = generateStratumGrid(stratificationsObject);
-			mainVP.add(stratumGrip);
+			Grid stratumGrid = generateStratumGrid(stratificationsObject);
+			mainVP.add(stratumGrid);
 		}
 		
 		scrollPanel.add(mainVP);

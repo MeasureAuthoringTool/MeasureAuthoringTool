@@ -1,6 +1,5 @@
 package mat.client.clause.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HTML;
@@ -11,7 +10,6 @@ import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
-import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.SkipListBuilder;
 
 /**
@@ -53,7 +51,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	private PopulationDataModel populationDataModel = null;
 	private Document document = null;
-	
+	private CQLPopulationObserver cqlPopulationObserver;
 	CQLStratificationDetailView cqlStratificationDetailView;
 
 	/**
@@ -63,6 +61,11 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		cqlLeftNavBarPanelView = new CQLPopulationLeftNavBarPanelView();
 		cqlViewPopulationsDisplay = new CQLViewPopulationsDisplay();
 	}
+	
+	public void setObserver(CQLPopulationObserver cqlPopulationObserver) {
+		this.cqlPopulationObserver = cqlPopulationObserver;
+	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -108,7 +111,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		CQLMeasureObservationDetailView cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 
 				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
 		
-		cqlMeasureObservationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
+		cqlMeasureObservationDetailView.setObserver(cqlPopulationObserver);
 		
 		cqlMeasureObservationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
@@ -119,13 +122,13 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.clear();
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
-		cqlStratificationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
+		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
 	}
 	
 	@Override
 	public void displayPopulationDetailView(String populationType) {
 		CQLPopulationDetail cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
-		cqlPopulationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
+		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
 		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");

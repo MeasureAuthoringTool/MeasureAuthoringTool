@@ -139,6 +139,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		void displayStratification();
 		
 		void displayPopulationDetailView(String populationType);
+		
+		void setObserver(CQLPopulationObserver cqlPopulationObserver);
 	}
 
 	/**
@@ -149,6 +151,46 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 */
 	public CQLPopulationWorkSpacePresenter(final ViewDisplay srchDisplay) {
 		searchDisplay = srchDisplay;
+		addEventHandlers();
+	}
+
+	private void addEventHandlers() {
+		searchDisplay.setObserver(new CQLPopulationObserver() {
+			
+			@Override
+			public void onViewHRClick(PopulationClauseObject population) {
+				MatContext.get().getMeasureService().getHumanReadableForNode(MatContext.get().getCurrentMeasureId(),
+						population.toXML(), new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								System.out.println("On Success....showHumanReadableDialogBox:");
+								showHumanReadableDialogBox(result, population.getDisplayName());
+							}
+
+							@Override
+							public void onFailure(Throwable caught) {
+							}
+						});
+			}
+			
+			@Override
+			public void onSaveClick(PopulationDataModel populationDataModel) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onDeleteClick(String definitionName) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAddNewClick() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	/**
@@ -649,44 +691,6 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		return searchDisplay;
 	}
 
-	
-	public static CQLPopulationObserver getObserver() {
-		return new CQLPopulationObserver() {
-
-			@Override
-			public void onDeleteClick(String definitionName) {
-
-			}
-
-			@Override
-			public void onViewHRClick(PopulationClauseObject population) {
-				MatContext.get().getMeasureService().getHumanReadableForNode(MatContext.get().getCurrentMeasureId(),
-						population.toXML(), new AsyncCallback<String>() {
-							@Override
-							public void onSuccess(String result) {
-								System.out.println("On Success....showHumanReadableDialogBox:");
-								showHumanReadableDialogBox(result, population.getDisplayName());
-							}
-
-							@Override
-							public void onFailure(Throwable caught) {
-							}
-						});
-			}
-
-			@Override
-			public void onAddNewClick() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onSaveClick(PopulationDataModel populationDataModel) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-	}
 
 	/**
 	 * Show human readable dialog box.

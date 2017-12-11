@@ -155,7 +155,7 @@ public class CQLStratificationDetailView {
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");
 			deleteButton.setText("Delete");
-			deleteButton.getElement().setAttribute("aria-label", "Click delete button to delete stratification and stratums attached to it.");
+			deleteButton.getElement().setAttribute("aria-label", "click delete button to delete stratum row.");
 			deleteButton.setIcon(IconType.TRASH);
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
@@ -259,7 +259,7 @@ public class CQLStratificationDetailView {
 		deleteButton.getElement().setId("deleteButton_" + stratificationsObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
-		deleteButton.getElement().setAttribute("aria-label", "click delete button to delete stratum row. ");
+		deleteButton.getElement().setAttribute("aria-label", "Click delete button to delete stratification and stratums attached to it.");
 		deleteButton.setIcon(IconType.TRASH);
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");

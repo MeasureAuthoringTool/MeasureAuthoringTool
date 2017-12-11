@@ -1,7 +1,10 @@
 package mat.client.clause.cqlworkspace;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -28,6 +31,10 @@ import mat.client.clause.cqlworkspace.model.StrataDataModel;
 import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 
+/**
+ * Class CQLStratificationDetailView.
+ *
+ */
 public class CQLStratificationDetailView {
 	
 	public static interface Observer {
@@ -39,21 +46,21 @@ public class CQLStratificationDetailView {
 	private StrataDataModel strataDataModel;
 	private PopulationDataModel populationDataModel;
 	
+	private Map<String, Grid> parentToChildGridMap = new HashMap<String,Grid>();
+	private List<Grid> parentGridList = new ArrayList<Grid>();
+	
 	private VerticalPanel mainPanel = new VerticalPanel();
 	
-	ScrollPanel scrollPanel = new ScrollPanel();
+	private ScrollPanel scrollPanel = new ScrollPanel();
 	
-	CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("Stratification" , "Stratification", "Save", "Add New Stratification");
+	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
+			"Stratification" , "Stratification", "Save", "Add New Stratification");
 	
-	public PopulationDataModel getPopulationDataModel() {
-		return populationDataModel;
-	}
-
-	public void setPopulationDataModel(PopulationDataModel populationDataModel) {
-		this.populationDataModel = populationDataModel;
-	}
-	
-	
+	/**
+	 * This is a public method that is invoked to generate Stratification View for Stratification Left nav pill.
+	 * @param populationDataModel
+	 * @return Vertical Panel
+	 */
 	public VerticalPanel buildView(PopulationDataModel populationDataModel) {
 		mainPanel.clear();
 		scrollPanel.clear();
@@ -70,14 +77,20 @@ public class CQLStratificationDetailView {
 		return mainPanel;
 	}
 	
+	/**
+	 * Method to generate Stratification Grid with Stratum grid.
+	 */
 	private void buildStratificationView() {
+		parentToChildGridMap.clear();
+		parentGridList.clear();
 		VerticalPanel mainVP = new VerticalPanel();
-		//mainVP.setSize("700px", "250px");
+
 		for(StratificationsObject stratificationsObject : strataDataModel.getStratificationObjectList()) {
 			Grid parentGrid = generateStratificationGrid(stratificationsObject);
 			mainVP.add(parentGrid);
-			
+			parentGridList.add(parentGrid);
 			Grid stratumGrid = generateStratumGrid(stratificationsObject);
+			parentToChildGridMap.put(stratificationsObject.getDisplayName(), stratumGrid);
 			mainVP.add(stratumGrid);
 		}
 		
@@ -86,6 +99,11 @@ public class CQLStratificationDetailView {
 	}
 	
 	
+	/**
+	 * This method generates Grid for all stratums.
+	 * @param stratificationsObject
+	 * @return Grid.
+	 */
 	private Grid generateStratumGrid(StratificationsObject stratificationsObject) {
 		List<PopulationClauseObject> stratumClauses = stratificationsObject.getPopulationClauseObjectList();
 		Grid stratumsGrid = new Grid(stratumClauses.size(), 4);
@@ -137,7 +155,6 @@ public class CQLStratificationDetailView {
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");
 			deleteButton.setText("Delete");
-		//	deleteButton.setSize("50px", "30px");
 			deleteButton.getElement().setAttribute("aria-label", "Delete");
 			deleteButton.setIcon(IconType.TRASH);
 			deleteButton.setIconSize(IconSize.LARGE);
@@ -184,10 +201,14 @@ public class CQLStratificationDetailView {
 		return stratumsGrid;
 	}
 
+	/**
+	 * This method Generates Stratification Level Grid.
+	 * @param stratificationsObject
+	 * @return Grid.
+	 */
 	private Grid generateStratificationGrid(StratificationsObject stratificationsObject) {
 		Grid stratificationParentGrid = new Grid(1, 3);
 		stratificationParentGrid.getElement().setId("grid_"+stratificationsObject.getDisplayName());
-		//stratificationParentGrid.addStyleName("borderSpacing");
 		stratificationParentGrid.getElement().setAttribute("style", "border-spacing:35px 10px;");
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
@@ -206,10 +227,8 @@ public class CQLStratificationDetailView {
 		addNewStratum.getElement().setId("addNewStratumButton_" + stratificationsObject.getDisplayName());
 		addNewStratum.setTitle("Click to add new stratum");
 		addNewStratum.setText("Add Stratum");
-		//addNewStratum.setSize("50px", "30px");
 		addNewStratum.getElement().setAttribute("aria-label", "Add Stratum");
 		addNewStratum.setIcon(IconType.PLUS);
-		//addNewStratum.setIconSize(IconSize.LARGE);
 		addNewStratum.setColor("#0964A2");
 		addNewStratum.setMarginRight(150.00);
 		addNewStratum.setMarginLeft(-105.00);
@@ -224,14 +243,12 @@ public class CQLStratificationDetailView {
 
 		stratificationParentGrid.setWidget(0, 1, addNewStratum);
 		
-		
 		// button for Delete
 		Button deleteButton = new Button();
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + stratificationsObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
-		//deleteButton.setSize("50px", "30px");
 		deleteButton.getElement().setAttribute("aria-label", "Delete");
 		deleteButton.setIcon(IconType.TRASH);
 		deleteButton.setIconSize(IconSize.LARGE);
@@ -267,4 +284,29 @@ public class CQLStratificationDetailView {
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
+	
+	public PopulationDataModel getPopulationDataModel() {
+		return populationDataModel;
+	}
+
+	public void setPopulationDataModel(PopulationDataModel populationDataModel) {
+		this.populationDataModel = populationDataModel;
+	}
+
+	public Map<String, Grid> getParentToChildGridMap() {
+		return parentToChildGridMap;
+	}
+
+	public void setParentToChildGridMap(Map<String, Grid> parentToChildGridMap) {
+		this.parentToChildGridMap = parentToChildGridMap;
+	}
+
+	public List<Grid> getParentGridList() {
+		return parentGridList;
+	}
+
+	public void setParentGridList(List<Grid> parentGridList) {
+		this.parentGridList = parentGridList;
+	}
+	
 }

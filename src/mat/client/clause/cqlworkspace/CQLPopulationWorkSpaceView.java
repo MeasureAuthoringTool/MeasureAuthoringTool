@@ -119,7 +119,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.clear();
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
-		
+		cqlStratificationDetailView.setObserver(CQLPopulationWorkSpacePresenter.getObserver());
 	}
 	
 	@Override

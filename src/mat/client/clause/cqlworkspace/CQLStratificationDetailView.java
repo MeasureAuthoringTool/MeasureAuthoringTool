@@ -42,7 +42,7 @@ public class CQLStratificationDetailView {
 		void onDeleteStratification(StratificationsObject stratificationsObject);
 		void onViewHRClick(PopulationClauseObject population); 
 	}
-	private Observer observer; 
+	private CQLPopulationObserver observer; 
 	private StrataDataModel strataDataModel;
 	private PopulationDataModel populationDataModel;
 	
@@ -165,7 +165,17 @@ public class CQLStratificationDetailView {
 
 				@Override
 				public void onClick(ClickEvent event) {
+					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
 					
+					if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+						population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					}else {
+						population.setCqlExpressionDisplayName("");
+					}
+					
+					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
+					
+					observer.onViewHRClick(population);
 				}
 			});
 
@@ -272,7 +282,7 @@ public class CQLStratificationDetailView {
 	 *
 	 * @return the observer
 	 */
-	public Observer getObserver() {
+	public CQLPopulationObserver getObserver() {
 		return observer;
 	}
 
@@ -281,7 +291,7 @@ public class CQLStratificationDetailView {
 	 *
 	 * @param observer the new observer
 	 */
-	public void setObserver(Observer observer) {
+	public void setObserver(CQLPopulationObserver observer) {
 		this.observer = observer;
 	}
 	

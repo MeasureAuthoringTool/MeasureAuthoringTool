@@ -1,11 +1,10 @@
 package mat.client.clause.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
+
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 
 public interface CQLPopulationDetail {
-	public Button getSaveButton();
 	public void addButtonClicked();
 	void displayPopulationDetail(FlowPanel mainFlowPanel);
 	public PopulationsObject getPopulationsObject();

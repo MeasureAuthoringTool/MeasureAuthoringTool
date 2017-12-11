@@ -145,18 +145,28 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		
 		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getDisplayName() , populationsObject.getPopulationName(), "Save", "Add New");
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				addButtonClicked();
+				observer.onAddNewClick(); //set dirty flag on left nav bar
+			}
+		});
+		
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				observer.onSaveClick(populationDataModel);
+			}
+		});
+		
 		
 		mainFlowPanel.add(btnPanel);		
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
-	}
-
-	@Override
-	public Button getSaveButton() {
-		return null;
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

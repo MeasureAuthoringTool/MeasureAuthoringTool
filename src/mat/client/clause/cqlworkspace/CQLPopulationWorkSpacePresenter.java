@@ -673,6 +673,18 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 							}
 						});
 			}
+
+			@Override
+			public void onAddNewClick() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSaveClick(PopulationDataModel populationDataModel) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 

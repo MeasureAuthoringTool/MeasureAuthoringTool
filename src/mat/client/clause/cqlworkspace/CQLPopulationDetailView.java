@@ -143,7 +143,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		btnPanel.setStyleName("marginLeftButtons");	
 		
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getDisplayName() , populationsObject.getPopulationName(), "Save", "Add New");
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getPopulationName(), populationsObject.getDisplayName(), "Save", "Add New");
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
 			

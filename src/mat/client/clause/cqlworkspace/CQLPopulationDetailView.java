@@ -27,6 +27,7 @@ import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
+import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 
 public class CQLPopulationDetailView implements CQLPopulationDetail{
@@ -152,8 +153,10 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		
 		HorizontalPanel btnPanel = new HorizontalPanel();		
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		btnPanel.setStyleName("marginLeftButtons");		
-		btnPanel.add(getAllButtons(populationsObject.getDisplayName(), populationsObject.getPopulationName()));
+		btnPanel.setStyleName("marginLeftButtons");	
+		
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getDisplayName() , populationsObject.getPopulationName(), "Save", "Add New");
+		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 		
 		mainFlowPanel.add(btnPanel);		
 		mainFlowPanel.add(scrollPanel);
@@ -190,7 +193,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		this.populationDataModel = populationDataModel;
 	}
 
-	private Button getNewButton(String displayName, String sectionName, String buttonName) {
+	private Button createButton(String displayName, String sectionName, String buttonName) {
 		Button newBtn = new Button();
 		newBtn.setType(ButtonType.LINK);
 		newBtn.setText(buttonName);		
@@ -209,14 +212,6 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		newBtn.setSize(ButtonSize.SMALL);
 		
 		return newBtn;
-	}
-	
-	private ButtonGroup getAllButtons(String displayName, String sectionName) {
-		ButtonGroup btnGroup = new ButtonGroup();
-		btnGroup.add(getNewButton(displayName, sectionName, "Add New"));
-		btnGroup.add(getNewButton(displayName, sectionName, "Save"));
-		btnGroup.getElement().setAttribute("class", "btn-group");
-		return btnGroup;
 	}
 	
 	/**

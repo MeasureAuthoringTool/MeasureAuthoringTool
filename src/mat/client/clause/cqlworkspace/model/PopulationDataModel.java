@@ -14,6 +14,7 @@ import mat.client.shared.MatContext;
 
 public class PopulationDataModel {
 	
+	private static final String TAGNAME_STRATA = "strata";
 	private static final String TAGNAME_NAME = "name";
 	private static final String TAGNAME_CQL_LOOK_UP = "cqlLookUp";
 	private static final String TAGNAME_DEFINITION = "definition";
@@ -152,7 +153,7 @@ public class PopulationDataModel {
 	}
 	
 	private void extractStratifications(Document document) {
-		NodeList strataNodeList = document.getElementsByTagName("strata"); 
+		NodeList strataNodeList = document.getElementsByTagName(TAGNAME_STRATA); 
 		
 		if(strataNodeList == null || strataNodeList.getLength() == 0) {
 			return;

@@ -44,7 +44,10 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		mainFlowPanel.clear();		
 		Grid populationGrid = new Grid(popClauses.size(), 5);
 		populationGrid.addStyleName("borderSpacing");
-
+		
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
+				populationsObject.getPopulationName() , populationsObject.getDisplayName(), "Save", "Add New");
+		
 		for (int i = 0; i < popClauses.size(); i++) {
 
 			PopulationClauseObject populationClauseObject = popClauses.get(i);
@@ -186,8 +189,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		HorizontalPanel btnPanel = new HorizontalPanel();		
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		btnPanel.setStyleName("marginLeftButtons");		
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-				populationsObject.getPopulationName() , populationsObject.getDisplayName(), "Save", "Add New");
+		
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 		
 		mainFlowPanel.add(btnPanel);		

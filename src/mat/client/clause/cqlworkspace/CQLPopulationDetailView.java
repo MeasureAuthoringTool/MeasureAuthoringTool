@@ -44,6 +44,8 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		Grid populationGrid = new Grid(popClauses.size(), 4);
 		populationGrid.addStyleName("borderSpacing");
 
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getPopulationName(), populationsObject.getDisplayName(), "Save", "Add New");
+		
 		for (int i = 0; i < popClauses.size(); i++) {
 
 			PopulationClauseObject populationClauseObject = popClauses.get(i);
@@ -143,7 +145,6 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		btnPanel.setStyleName("marginLeftButtons");	
 		
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getPopulationName(), populationsObject.getDisplayName(), "Save", "Add New");
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
 			

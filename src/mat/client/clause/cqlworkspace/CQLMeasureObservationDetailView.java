@@ -231,4 +231,10 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 	public CQLPopulationObserver getObserver() {
 		return this.observer;
 	}
+
+	@Override
+	public Button getAddButton() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

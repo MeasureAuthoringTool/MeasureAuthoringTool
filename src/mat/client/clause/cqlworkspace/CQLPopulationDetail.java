@@ -6,7 +6,8 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 
 public interface CQLPopulationDetail {
-	public Button addButtonClicked();
+	public Button getAddButton();
+	public Button getSaveButton();
 	void displayPopulationDetail(FlowPanel mainFlowPanel);
 	public PopulationsObject getPopulationsObject();
 	public void setObserver(CQLPopulationObserver observer); 

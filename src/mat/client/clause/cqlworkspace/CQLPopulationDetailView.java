@@ -153,23 +153,6 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		btnPanel.setStyleName("marginLeftButtons");	
 		
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
-		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				addButtonClicked();
-				observer.onAddNewClick(); //set dirty flag on left nav bar
-			}
-		});
-		
-		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				observer.onSaveClick(populationDataModel);
-			}
-		});
-		
 		
 		mainFlowPanel.add(btnPanel);		
 		mainFlowPanel.add(scrollPanel);
@@ -177,11 +160,6 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		mainFlowPanel.add(new SpacerWidget());
 	}
 
-	@Override
-	public Button addButtonClicked() {
-		return null;
-		
-	}
 	
 	public PopulationsObject getPopulationsObject() {
 		return populationsObject;
@@ -215,5 +193,15 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	 */
 	public void setObserver(CQLPopulationObserver observer) {
 		this.observer = observer;
+	}
+
+	@Override
+	public Button getAddButton() {
+		return cqlPopulationTopLevelButtonGroup.getAddNewButton();
+	}
+
+	@Override
+	public Button getSaveButton() {
+		return cqlPopulationTopLevelButtonGroup.getSaveButton();
 	}
 }

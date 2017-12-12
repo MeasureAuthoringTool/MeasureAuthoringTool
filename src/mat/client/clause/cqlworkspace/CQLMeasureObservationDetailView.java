@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
-import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
@@ -33,7 +32,8 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
-	
+	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
+			"Measure Observations" , "Measure Observations", "Save", "Add New");
 	public CQLMeasureObservationDetailView(PopulationDataModel populationDataModel, String populationType) {
 		
 		setPopulationDataModel(populationDataModel);
@@ -46,8 +46,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		Grid populationGrid = new Grid(popClauses.size(), 5);
 		populationGrid.addStyleName("borderSpacing");
 		
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-				populationsObject.getPopulationName() , populationsObject.getDisplayName(), "Save", "Add New");
+		
 		
 		for (int i = 0; i < popClauses.size(); i++) {
 
@@ -59,6 +58,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
 			nameLabel.setId("nameLabel" + i);
+			nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
 			nameFocusPanel.add(nameLabel);
 
 			populationGrid.setWidget(i, 0, nameFocusPanel);
@@ -132,7 +132,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 			deleteButton.setType(ButtonType.LINK);
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");			
-			deleteButton.getElement().setAttribute("aria-label", "Delete");			
+			deleteButton.getElement().setAttribute("aria-label", "Click this button to delete " +populationClauseObject.getDisplayName());			
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
 			
@@ -167,7 +167,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 			viewHRButton.setTitle("View Human Readable");
 			viewHRButton.setSize("20px", "30px");
-			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
+			viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
 			viewHRButton.setIcon(IconType.BINOCULARS);			
 			viewHRButton.setColor("black");
 						
@@ -194,14 +194,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 
 	
 	public Button getSaveButton() {
-		return null;
-		// TODO Auto-generated method stub
+		return cqlPopulationTopLevelButtonGroup.getSaveButton();
 		
 	}
 
 	
-	public void addButtonClicked() {
-		// TODO Auto-generated method stub
+	public Button addButtonClicked() {
+		return cqlPopulationTopLevelButtonGroup.getAddNewButton();
 		
 	}
 	

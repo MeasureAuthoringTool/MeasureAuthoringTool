@@ -172,8 +172,8 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	}
 
 	@Override
-	public void addButtonClicked() {
-		// TODO Auto-generated method stub
+	public Button addButtonClicked() {
+		return null;
 		
 	}
 	

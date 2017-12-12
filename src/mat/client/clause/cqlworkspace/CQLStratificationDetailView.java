@@ -56,6 +56,12 @@ public class CQLStratificationDetailView {
 	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
 			"Stratification" , "Stratification", "Save", "Add New Stratification");
 	
+	public CQLStratificationDetailView() {
+		cqlPopulationTopLevelButtonGroup.getSaveButton().getElement().setAttribute("aria-label", "Click this button to save stratifications and stratums.");
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().getElement().setAttribute("aria-label", "Click this button to add a new stratification.");
+		
+	}
+	
 	/**
 	 * This is a public method that is invoked to generate Stratification View for Stratification Left nav pill.
 	 * @param populationDataModel
@@ -115,6 +121,7 @@ public class CQLStratificationDetailView {
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
+			nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
 			nameLabel.setId("nameLabel" + i);
 			nameLabel.setWidth("100px");
 			nameFocusPanel.add(nameLabel);
@@ -155,7 +162,7 @@ public class CQLStratificationDetailView {
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");
 			deleteButton.setText("Delete");
-			deleteButton.getElement().setAttribute("aria-label", "click delete button to delete stratum row.");
+			deleteButton.getElement().setAttribute("aria-label", "click delete button to delete "+ populationClauseObject.getDisplayName());
 			deleteButton.setIcon(IconType.TRASH);
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
@@ -187,7 +194,7 @@ public class CQLStratificationDetailView {
 			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 			viewHRButton.setTitle("View Human Readable");
 			viewHRButton.setText("View");
-			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
+			viewHRButton.getElement().setAttribute("aria-label", "Click this button to view human readable for "+ populationClauseObject.getDisplayName());
 			viewHRButton.setIcon(IconType.BINOCULARS);
 			viewHRButton.setColor("black");
 			viewHRButton.setMarginLeft(-100.00);			
@@ -237,7 +244,7 @@ public class CQLStratificationDetailView {
 		addNewStratum.getElement().setId("addNewStratumButton_" + stratificationsObject.getDisplayName());
 		addNewStratum.setTitle("Click to add new stratum");
 		addNewStratum.setText("Add Stratum");
-		addNewStratum.getElement().setAttribute("aria-label", "Add Stratum");
+		addNewStratum.getElement().setAttribute("aria-label", "Click this button to add new Stratum under " + stratificationsObject.getDisplayName());
 		addNewStratum.setIcon(IconType.PLUS);
 		addNewStratum.setColor("#0964A2");
 		addNewStratum.setMarginRight(150.00);
@@ -259,7 +266,7 @@ public class CQLStratificationDetailView {
 		deleteButton.getElement().setId("deleteButton_" + stratificationsObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
-		deleteButton.getElement().setAttribute("aria-label", "Click delete button to delete stratification and stratums attached to it.");
+		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete " + stratificationsObject.getDisplayName()+  " and stratums attached to it.");
 		deleteButton.setIcon(IconType.TRASH);
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");

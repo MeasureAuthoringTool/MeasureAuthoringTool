@@ -30,7 +30,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
-	private PopulationDataModel populationDataModel;
+	private PopulationDataModel populationDataModel; 
 	CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "", "Save", "Add New");
 	
 	public CQLPopulationDetailView(PopulationDataModel populationDataModel) {

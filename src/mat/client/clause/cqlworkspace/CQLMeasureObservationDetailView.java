@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
@@ -70,17 +71,9 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 			aggFuncListBox.setTitle("Select Aggregate Function");
 			aggFuncListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-			//TODO: hard-coding this for now. Need to get these values from Db.
-			aggFuncListBox.addItem("Sum", "Sum");
-			aggFuncListBox.addItem("Average", "Average");
-			aggFuncListBox.addItem("Sample Standard Deviation", "Sample Standard Deviation");
-			aggFuncListBox.addItem("Sample Variance", "Sample Variance");
-			aggFuncListBox.addItem("Population Standard Deviation", "Population Standard Deviation");
-			aggFuncListBox.addItem("Population Variance", "Population Variance");
-			aggFuncListBox.addItem("Minimum", "Minimum");
-			aggFuncListBox.addItem("Maximum", "Maximum");
-			aggFuncListBox.addItem("Median", "Median");
-			aggFuncListBox.addItem("Mode", "Mode");
+
+			//Add all Aggregate function names to aggFuncListBox 
+			PopulationWorkSpaceConstants.AggfuncNames.forEach(name -> aggFuncListBox.addItem(name, name));
 			
 			SelectElement selectAggElement = SelectElement.as(aggFuncListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectAggElement.getOptions();
@@ -106,9 +99,10 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 			functionListBox.setTitle("Select Function List");
 			functionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-			for (ExpressionObject function : populationDataModel.getFunctionNameList()) {
-				functionListBox.addItem(function.getName(), function.getUuid());
-			}
+			populationDataModel.getFunctionNameList()
+							.forEach(
+										functionExpressionObject -> functionListBox.addItem(functionExpressionObject.getName(), functionExpressionObject.getUuid())
+									);
 			
 			SelectElement selectFuncElement = SelectElement.as(functionListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> funcOptions = selectFuncElement.getOptions();

@@ -68,9 +68,10 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			definitionListBox.setTitle("Select Definition List");
 			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-			for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
-				definitionListBox.addItem(definition.getName(), definition.getUuid());
-			}
+			populationDataModel.getDefinitionNameList().forEach(definition -> definitionListBox.addItem(definition.getName(), definition.getUuid()));
+//			for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
+//				definitionListBox.addItem(definition.getName(), definition.getUuid());
+//			}
 			
 			SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();

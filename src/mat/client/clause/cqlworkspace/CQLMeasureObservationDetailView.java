@@ -77,6 +77,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(populationClauseObject.getDisplayName());
 		nameLabel.setTitle(populationClauseObject.getDisplayName());
+		nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
 		nameLabel.setId("nameLabel" + i);
 		nameFocusPanel.add(nameLabel);
 
@@ -150,7 +151,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 		deleteButton.setTitle("Delete");			
-		deleteButton.getElement().setAttribute("aria-label", "Delete");			
+		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete " +populationClauseObject.getDisplayName());		
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
 		
@@ -187,7 +188,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 		viewHRButton.setTitle("View Human Readable");
 		viewHRButton.setSize("20px", "30px");
-		viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
+		viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
 		viewHRButton.setIcon(IconType.BINOCULARS);			
 		viewHRButton.setColor("black");
 					

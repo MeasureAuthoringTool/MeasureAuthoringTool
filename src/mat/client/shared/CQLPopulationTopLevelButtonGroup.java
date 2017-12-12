@@ -39,7 +39,12 @@ public class CQLPopulationTopLevelButtonGroup {
 		addNewButton.setType(ButtonType.LINK);
 		addNewButton.setText(addNewButtonText);	
 		addNewButton.setId("addNewButton_" + sectionName);
-		addNewButton.setTitle("Click this button to add a new " + displayName.substring(0, displayName.length()-1));
+		if(displayName != null && !displayName.isEmpty()) {
+			addNewButton.setTitle("Click this button to add a new " + displayName.substring(0, displayName.length()-1));
+		} else {
+			addNewButton.setTitle("Click this button to add new ");
+		}
+		
 		addNewButton.setIcon(IconType.PLUS);
 		addNewButton.setPull(Pull.LEFT);
 		

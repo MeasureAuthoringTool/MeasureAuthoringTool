@@ -54,9 +54,13 @@ public class CQLStratificationDetailView {
 	private ScrollPanel scrollPanel = new ScrollPanel();
 	
 	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-			"Stratification" , "Stratification", "Save", "Add New Stratification");
+			"" , "", "Save", "Add New Stratification");
 	
 	public CQLStratificationDetailView() {
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().setId("addNewButton_Stratification" );
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().setTitle("Click this button to add a new Stratification");
+		cqlPopulationTopLevelButtonGroup.getSaveButton().setId("saveButton_ Stratification");
+		cqlPopulationTopLevelButtonGroup.getSaveButton().setTitle("Click this button to save Stratifications");
 		cqlPopulationTopLevelButtonGroup.getSaveButton().getElement().setAttribute("aria-label", "Click this button to save stratifications and stratums.");
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().getElement().setAttribute("aria-label", "Click this button to add a new stratification.");
 		

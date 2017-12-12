@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
-import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
@@ -32,6 +31,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
+	CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "", "Save", "Add New");
 	
 	public CQLPopulationDetailView(PopulationDataModel populationDataModel) {
 		setPopulationDataModel(populationDataModel);
@@ -40,11 +40,16 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
-		mainFlowPanel.clear();		
+		mainFlowPanel.clear();
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().setId("addNewButton_" + populationsObject.getPopulationType());
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().setTitle("Click this button to add a new " + populationsObject.getPopulationType());
+		cqlPopulationTopLevelButtonGroup.getSaveButton().setId("saveButton_" + populationsObject.getPopulationType());
+		cqlPopulationTopLevelButtonGroup.getSaveButton().setTitle("Click this button to save " + populationsObject.getPopulationType()+"s");
+	
 		Grid populationGrid = new Grid(popClauses.size(), 4);
 		populationGrid.addStyleName("borderSpacing");
 
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(populationsObject.getPopulationName(), populationsObject.getDisplayName(), "Save", "Add New");
+	
 		
 		for (int i = 0; i < popClauses.size(); i++) {
 
@@ -55,6 +60,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			FormLabel nameLabel = new FormLabel();
 			nameLabel.setText(populationClauseObject.getDisplayName());
 			nameLabel.setTitle(populationClauseObject.getDisplayName());
+			nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
 			nameLabel.setId("nameLabel" + i);
 			nameFocusPanel.add(nameLabel);
 
@@ -101,7 +107,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			deleteButton.setType(ButtonType.LINK);
 			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 			deleteButton.setTitle("Delete");			
-			deleteButton.getElement().setAttribute("aria-label", "Delete");			
+			deleteButton.getElement().setAttribute("aria-label", "Click this button to delete "+ populationClauseObject.getDisplayName());			
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
 
@@ -129,7 +135,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			viewHRButton.setType(ButtonType.LINK);
 			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 			viewHRButton.setTitle("View Human Readable");			
-			viewHRButton.getElement().setAttribute("aria-label", "View Human Readable");
+			viewHRButton.getElement().setAttribute("aria-label", "Click this button to View Human Readable for "+ populationClauseObject.getDisplayName());
 			viewHRButton.setIcon(IconType.BINOCULARS);			
 			viewHRButton.setColor("black");
 

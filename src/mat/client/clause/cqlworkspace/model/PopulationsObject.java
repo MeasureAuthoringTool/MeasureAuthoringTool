@@ -12,6 +12,7 @@ public class PopulationsObject {
 	
 	private String populationName = "";
 	private String displayName = "";
+	
 	List<PopulationClauseObject> populationClauseObjectList = new ArrayList<PopulationClauseObject>();
 
 	
@@ -98,6 +99,54 @@ public class PopulationsObject {
 		this.populationClauseObjectList = populationClauseObjectList;
 	}
 
-	
+	public String getPopulationType() {
+		String popType = null;
+		if(populationName != null && !populationName.isEmpty()) {
+			switch (populationName) {
+			case "initialPopulations":
+				popType = "Initial Population";
+				break;
+			case "numerators":
+				popType = "Numerator";
+				break;
+				
+			case "denominators":
+				popType = "Denominator";
+				break;
+				
+			case "measurePopulations":
+				popType = "Measure Population";
+				break;
+				
+			case "numeratorExclusions":
+				popType = "Numerator Exclusion";
+				break;
+				
+			case "denominatorExclusions":
+				popType = "Denominator Exclusion";
+				break;
+				
+			case "denominatorExceptions":
+				popType = "Denominator Exception";
+				break;
+				
+			case "measurePopulationExclusions":
+				popType = "Measure Population Exclusion";
+				break;
+				
+			case "measureObservations":
+				popType = "Measure Observation";
+				break;
+				
+			case "stratification":
+				popType = "Stratification";
+				break;	
+				
+			default:
+				break;
+			}
+		}
+		return popType;
+	}
 
 }

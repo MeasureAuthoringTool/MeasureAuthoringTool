@@ -186,8 +186,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		});
 		viewHRButton.setType(ButtonType.LINK);
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
-		viewHRButton.setTitle("View Human Readable");
-		viewHRButton.setSize("20px", "30px");
+		viewHRButton.setTitle("View Human Readable");		
 		viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
 		viewHRButton.setIcon(IconType.BINOCULARS);			
 		viewHRButton.setColor("black");

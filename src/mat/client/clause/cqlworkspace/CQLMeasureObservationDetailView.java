@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
-import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
@@ -33,7 +32,8 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
-	
+	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
+			"Measure Observations" , "Measure Observations", "Save", "Add New");
 	public CQLMeasureObservationDetailView(PopulationDataModel populationDataModel, String populationType) {
 		
 		setPopulationDataModel(populationDataModel);
@@ -46,8 +46,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		Grid populationGrid = new Grid(popClauses.size(), 5);
 		populationGrid.addStyleName("borderSpacing");
 		
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-				populationsObject.getPopulationName() , populationsObject.getDisplayName(), "Save", "Add New");
+		
 		
 		for (int i = 0; i < popClauses.size(); i++) {
 			populateGrid(popClauses, populationGrid, i);
@@ -197,14 +196,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 
 	
 	public Button getSaveButton() {
-		return null;
-		// TODO Auto-generated method stub
+		return cqlPopulationTopLevelButtonGroup.getSaveButton();
 		
 	}
 
 	
-	public void addButtonClicked() {
-		// TODO Auto-generated method stub
+	public Button addButtonClicked() {
+		return cqlPopulationTopLevelButtonGroup.getAddNewButton();
 		
 	}
 	

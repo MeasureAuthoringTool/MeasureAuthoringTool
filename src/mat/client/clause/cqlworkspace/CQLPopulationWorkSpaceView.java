@@ -131,9 +131,9 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	
 	@Override
 	public boolean displayPopulationDetailView(String populationType) {
-		boolean goForward = false;
+		boolean goForward = true;
 		
-		if(cqlPopulationDetailView != null  && cqlPopulationDetailView.isDirty()) {
+		/*if(cqlPopulationDetailView != null  && cqlPopulationDetailView.isDirty()) {
 			goForward = false;
 		} else {
 			goForward = true;
@@ -142,7 +142,12 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 			
 			cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 			setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		}
+		}*/
+		cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
+		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
+		
+		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
+		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
 		return goForward;
 	}
 

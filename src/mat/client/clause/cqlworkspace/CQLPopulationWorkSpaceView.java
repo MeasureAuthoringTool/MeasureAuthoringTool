@@ -53,6 +53,10 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	private Document document = null;
 	private CQLPopulationObserver cqlPopulationObserver;
 	CQLStratificationDetailView cqlStratificationDetailView;
+	CQLMeasureObservationDetailView cqlMeasureObservationDetailView;
+	
+
+	CQLPopulationDetail cqlPopulationDetailView;
 
 	/**
 	 * Instantiates a new CQL work space view.
@@ -108,7 +112,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	public void displayMeasureObservations() {
 
 		mainFlowPanel.clear();
-		CQLMeasureObservationDetailView cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 
+		cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 
 				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
 		
 		cqlMeasureObservationDetailView.setObserver(cqlPopulationObserver);
@@ -126,12 +130,20 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 	
 	@Override
-	public void displayPopulationDetailView(String populationType) {
-		CQLPopulationDetail cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
-		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
+	public boolean displayPopulationDetailView(String populationType) {
+		boolean goForward = false;
 		
-		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
-		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
+		if(cqlPopulationDetailView != null  && cqlPopulationDetailView.isDirty()) {
+			goForward = false;
+		} else {
+			goForward = true;
+			cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
+			cqlPopulationDetailView.setObserver(cqlPopulationObserver);
+			
+			cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
+			setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
+		}
+		return goForward;
 	}
 
 	/**
@@ -323,5 +335,36 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 	public void setCqlViewPopulationsDisplay(CQLViewPopulationsDisplay cqlViewPopulationsDisplay) {
 		this.cqlViewPopulationsDisplay = cqlViewPopulationsDisplay;
+	}
+
+	public CQLPopulationObserver getCqlPopulationObserver() {
+		return cqlPopulationObserver;
+	}
+	@Override
+	public CQLStratificationDetailView getCqlStratificationDetailView() {
+		return cqlStratificationDetailView;
+	}
+
+	public void setCqlPopulationObserver(CQLPopulationObserver cqlPopulationObserver) {
+		this.cqlPopulationObserver = cqlPopulationObserver;
+	}
+	@Override
+	public void setCqlStratificationDetailView(CQLStratificationDetailView cqlStratificationDetailView) {
+		this.cqlStratificationDetailView = cqlStratificationDetailView;
+	}
+	@Override
+	public CQLMeasureObservationDetailView getCqlMeasureObservationDetailView() {
+		return cqlMeasureObservationDetailView;
+	}
+	@Override
+	public void setCqlMeasureObservationDetailView(CQLMeasureObservationDetailView cqlMeasureObservationDetailView ) {
+		this.cqlMeasureObservationDetailView = cqlMeasureObservationDetailView;
+	}
+	public CQLPopulationDetail getCqlPopulationDetailView() {
+		return cqlPopulationDetailView;
+	}
+	@Override
+	public void setCqlPopulationDetailView(CQLPopulationDetail cqlPopulationDetailView ) {
+		this.cqlPopulationDetailView = cqlPopulationDetailView;
 	}
 }

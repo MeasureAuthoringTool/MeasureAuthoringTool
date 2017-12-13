@@ -12,4 +12,6 @@ public interface CQLPopulationDetail {
 	public PopulationsObject getPopulationsObject();
 	public void setObserver(CQLPopulationObserver observer); 
 	public CQLPopulationObserver getObserver(); 
+	public boolean isDirty();
+	public void setIsDirty(boolean isDirty);
 }

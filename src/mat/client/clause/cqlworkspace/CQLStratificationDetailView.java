@@ -12,6 +12,7 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
+import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.clause.cqlworkspace.model.StrataDataModel;
 import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
@@ -35,9 +37,9 @@ import mat.client.shared.CQLPopulationTopLevelButtonGroup;
  * Class CQLStratificationDetailView.
  *
  */
-public class CQLStratificationDetailView {
+public class CQLStratificationDetailView implements CQLPopulationDetail{
 	
-	public static interface Observer {
+	public  interface Observer {
 		void onDeleteStratum(PopulationClauseObject population); 
 		void onDeleteStratification(StratificationsObject stratificationsObject);
 		void onViewHRClick(PopulationClauseObject population); 
@@ -319,6 +321,42 @@ public class CQLStratificationDetailView {
 
 	public void setParentGridList(List<Grid> parentGridList) {
 		this.parentGridList = parentGridList;
+	}
+
+	@Override
+	public Button getAddButton() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Button getSaveButton() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public PopulationsObject getPopulationsObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isDirty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setIsDirty(boolean isDirty) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

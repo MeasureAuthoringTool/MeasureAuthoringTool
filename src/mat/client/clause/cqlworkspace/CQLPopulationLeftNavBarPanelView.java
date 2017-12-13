@@ -396,7 +396,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
-		getGlobalWarningConfirmationMessageAlert().clearAlert();
+	//	getGlobalWarningConfirmationMessageAlert().clearAlert();
 		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);

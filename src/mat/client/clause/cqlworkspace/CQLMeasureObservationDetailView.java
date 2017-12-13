@@ -12,6 +12,8 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -34,6 +36,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 	private PopulationDataModel populationDataModel;
 	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
 			"Measure Observations" , "Measure Observations", "Save", "Add New");
+	private boolean isViewDirty = false;
 	public CQLMeasureObservationDetailView(PopulationDataModel populationDataModel, String populationType) {
 		
 		setPopulationDataModel(populationDataModel);
@@ -45,8 +48,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		mainFlowPanel.clear();		
 		Grid populationGrid = new Grid(popClauses.size(), 5);
 		populationGrid.addStyleName("borderSpacing");
-		
-		
 		
 		for (int i = 0; i < popClauses.size(); i++) {
 			populateGrid(popClauses, populationGrid, i);
@@ -109,7 +110,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 				break;
 			}
 		}
-		
+		aggFuncListBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				isViewDirty = true;
+			}
+		});
 		populationGrid.setWidget(i, 1, aggFuncListBox);
 
 		// Set a listbox with all function names in it.
@@ -137,7 +144,14 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 				break;
 			}
 		}
-
+		functionListBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				isViewDirty = true;
+				
+			}
+		});
 		populationGrid.setWidget(i, 2, functionListBox);
 
 		// button for Delete
@@ -233,7 +247,15 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 
 	@Override
 	public Button getAddButton() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isDirty() {
+		return isViewDirty;
+	}
+	
+	public void setIsDirty(boolean isViewDirty) {
+		this.isViewDirty = isViewDirty;
 	}
 }

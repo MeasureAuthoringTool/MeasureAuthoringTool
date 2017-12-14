@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -64,7 +65,37 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 		
-		mainFlowPanel.add(btnPanel);		
+		mainFlowPanel.add(btnPanel);
+		
+		Grid headerGrid = new Grid(1,2);
+		
+		FocusPanel aggFuncHeaderPanel = new FocusPanel();
+		HTML aggFuncLabel = new HTML("<b><u>Aggregate Function</u></b>");
+//		aggFuncLabel.setText("Aggregate Function");
+		aggFuncLabel.setTitle("Aggregate Function");
+		aggFuncLabel.getElement().setAttribute("aria-label", "Aggregate Function");
+		aggFuncLabel.getElement().setId("Aggregate_Function_Label");
+		aggFuncLabel.getElement().setAttribute("style", "margin-left:120px;");
+		aggFuncHeaderPanel.add(aggFuncLabel);
+		
+		headerGrid.getCellFormatter().setWidth(0, 0, "300px");
+		headerGrid.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
+		headerGrid.setWidget(0, 0, aggFuncHeaderPanel);
+		
+		FocusPanel funcHeaderPanel = new FocusPanel();
+		HTML funcLabel = new HTML("<b><u>Function</u></b>");
+		//funcLabel.setText("Function");
+		funcLabel.setTitle("Function");
+		funcLabel.getElement().setAttribute("aria-label", "Function");
+		funcLabel.getElement().setId("Function_Label");
+		funcLabel.getElement().setAttribute("style", "margin-left:55px;");
+		funcHeaderPanel.add(funcLabel);
+		
+		headerGrid.getCellFormatter().setWidth(0, 1, "200px");
+		headerGrid.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
+		headerGrid.setWidget(0, 1, funcHeaderPanel);
+		
+		mainFlowPanel.add(headerGrid);
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());

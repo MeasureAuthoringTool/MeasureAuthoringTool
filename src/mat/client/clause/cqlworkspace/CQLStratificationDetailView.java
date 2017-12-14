@@ -324,18 +324,6 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	}
 
 	@Override
-	public Button getAddButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Button getSaveButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		// TODO Auto-generated method stub
 		
@@ -355,6 +343,12 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 	@Override
 	public void setIsDirty(boolean isDirty) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void populateGrid(FlowPanel flowPanel, List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		// TODO Auto-generated method stub
 		
 	}

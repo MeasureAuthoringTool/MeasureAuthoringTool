@@ -30,7 +30,7 @@ import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 
-public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
+public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
@@ -51,9 +51,15 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		populationGrid.addStyleName("borderSpacing");
 		
 		for (int i = 0; i < popClauses.size(); i++) {
-			populateGrid(popClauses, populationGrid, i);
+			populateGrid(mainFlowPanel, popClauses, populationGrid, i);
 		}
 
+//		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				observer.onAddNewClick(mainFlowPanel, populationGrid, populationsObject);
+//			}
+//		});
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
@@ -101,9 +107,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		mainFlowPanel.add(new SpacerWidget());
 	}
 
-	private void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
+	public void populateGrid(FlowPanel flowPanel, List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		PopulationClauseObject populationClauseObject = popClauses.get(i);
-				
+			
+		if(i == (populationGrid.getRowCount())) {
+			populationGrid.resizeRows(i +1);
+		}
+		
 		// set the name of the Initial Population clause.
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
@@ -276,10 +286,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail{
 		return this.observer;
 	}
 
-	@Override
-	public Button getAddButton() {
-		return null;
-	}
 
 	@Override
 	public boolean isDirty() {

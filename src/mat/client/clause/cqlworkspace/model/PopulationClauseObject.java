@@ -9,7 +9,7 @@ public class PopulationClauseObject {
 	private String cqlExpressionUUID = "";
 	private String cqlExpressionType = "";
 	private String aggFunctionName = "";
-	
+	private Integer sequenceNumber;
 	public PopulationClauseObject(PopulationClauseObject population) {
 		this.displayName = population.getDisplayName(); 
 		this.type = population.getType(); 
@@ -101,6 +101,14 @@ public class PopulationClauseObject {
 
 	public void setAggFunctionName(String aggFunctionName) {
 		this.aggFunctionName = aggFunctionName;
+	}
+
+	public Integer getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(Integer sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
 	}
 	
 }

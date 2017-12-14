@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
@@ -23,8 +24,14 @@ public class PopulationsObject {
 		}
 		
 		PopulationClauseObject populationClauseObject = new PopulationClauseObject();
-		
-		populationClauseObject.setDisplayName(clauseNode.getAttributes().getNamedItem("displayName").getNodeValue());
+		String displayName = clauseNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		int sequenceNumber;
+		if(displayName != null && !displayName.isEmpty()) {
+			sequenceNumber = Integer.parseInt(displayName.substring(displayName.lastIndexOf(" "), displayName.length()).trim());
+			populationClauseObject.setSequenceNumber(sequenceNumber);
+		}
+
+		populationClauseObject.setDisplayName(displayName);
 		populationClauseObject.setType(clauseNode.getAttributes().getNamedItem("type").getNodeValue());
 		populationClauseObject.setUuid(clauseNode.getAttributes().getNamedItem("uuid").getNodeValue());
 		
@@ -149,4 +156,12 @@ public class PopulationsObject {
 		return popType;
 	}
 
+	public int getLastSequenceNumber() {
+		int lastSequenceNumber = 1;
+		if(populationClauseObjectList.size() > 1) {
+			populationClauseObjectList.sort((PopulationClauseObject pc1, PopulationClauseObject pc2)->pc1.getSequenceNumber().compareTo(pc2.getSequenceNumber()));
+		}
+		lastSequenceNumber = populationClauseObjectList.get(populationClauseObjectList.size() - 1).getSequenceNumber();
+		return lastSequenceNumber;
+	}
 }

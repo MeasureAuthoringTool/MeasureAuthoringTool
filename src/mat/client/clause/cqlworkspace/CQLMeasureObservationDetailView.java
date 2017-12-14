@@ -77,7 +77,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		
 		FocusPanel aggFuncHeaderPanel = new FocusPanel();
 		HTML aggFuncLabel = new HTML("<b><u>Aggregate Function</u></b>");
-//		aggFuncLabel.setText("Aggregate Function");
 		aggFuncLabel.setTitle("Aggregate Function");
 		aggFuncLabel.getElement().setAttribute("aria-label", "Aggregate Function");
 		aggFuncLabel.getElement().setId("Aggregate_Function_Label");
@@ -90,7 +89,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		
 		FocusPanel funcHeaderPanel = new FocusPanel();
 		HTML funcLabel = new HTML("<b><u>Function</u></b>");
-		//funcLabel.setText("Function");
 		funcLabel.setTitle("Function");
 		funcLabel.getElement().setAttribute("aria-label", "Function");
 		funcLabel.getElement().setId("Function_Label");

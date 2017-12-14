@@ -5,6 +5,7 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -18,6 +19,7 @@ import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
+import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 
@@ -205,13 +207,20 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 			
 			@Override
-			public void onAddNewClick() {
+			public void onAddNewClick(FlowPanel mainFlowPanel, Grid populationGrid, PopulationsObject populationsObject) {
+				int sequenceNumber = populationsObject.getLastSequenceNumber() + 1;
+				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
+				PopulationClauseObject popClause = new PopulationClauseObject();
+				popClause.setDisplayName(displayName);
+				popClause.setSequenceNumber(sequenceNumber);
+				populationsObject.getPopulationClauseObjectList().add(popClause);
 				if(currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
+					searchDisplay.getCqlMeasureObservationDetailView().populateGrid(mainFlowPanel, populationsObject.getPopulationClauseObjectList(), populationGrid, populationsObject.getPopulationClauseObjectList().size() -1);
 					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(true);
 				} else {
+					searchDisplay.getCqlPopulationDetailView().populateGrid(mainFlowPanel, populationsObject.getPopulationClauseObjectList(), populationGrid, populationsObject.getPopulationClauseObjectList().size() -1);
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(true);
-				}
-				
+				}	
 			}
 		});
 	}

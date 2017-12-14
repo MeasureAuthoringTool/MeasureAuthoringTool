@@ -100,6 +100,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		headerGrid.setWidget(0, 1, funcHeaderPanel);
 		
 		mainFlowPanel.add(headerGrid);
+		
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());

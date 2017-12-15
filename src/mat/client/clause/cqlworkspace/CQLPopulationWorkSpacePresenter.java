@@ -173,18 +173,26 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onViewHRClick(PopulationClauseObject population) {
-				MatContext.get().getMeasureService().getHumanReadableForNode(MatContext.get().getCurrentMeasureId(),
-						population.toXML(), new AsyncCallback<String>() {
-							@Override
-							public void onSuccess(String result) {
-								System.out.println("On Success....showHumanReadableDialogBox:");
-								showHumanReadableDialogBox(result, population.getDisplayName());
-							}
+				
+				if(population.getCqlExpressionDisplayName().equals("")) {
+					showHumanReadableDialogBox("<html></html>", population.getDisplayName());
+				}
+				
+				else {
+					MatContext.get().getMeasureService().getHumanReadableForNode(MatContext.get().getCurrentMeasureId(),
+							population.toXML(), new AsyncCallback<String>() {
+								@Override
+								public void onSuccess(String result) {
+									System.out.println("On Success....showHumanReadableDialogBox:");
+									showHumanReadableDialogBox(result, population.getDisplayName());
+								}
 
-							@Override
-							public void onFailure(Throwable caught) {
-							}
-						});
+								@Override
+								public void onFailure(Throwable caught) {
+								}
+							});
+				}
+		
 			}
 			
 			@Override

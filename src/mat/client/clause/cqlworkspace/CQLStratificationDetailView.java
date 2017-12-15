@@ -168,6 +168,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 				@Override
 				public void onClick(ClickEvent event) {
+					
 					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
 					
 					if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
@@ -198,9 +199,14 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 				@Override
 				public void onClick(ClickEvent event) {
-					
 					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					
+					if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+						population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+					}else {
+						population.setCqlExpressionDisplayName("");
+					}
+	
 					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
 					
 					observer.onViewHRClick(population);

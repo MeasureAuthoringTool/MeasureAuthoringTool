@@ -245,7 +245,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		Button addNewStratum = new Button();
 		addNewStratum.setType(ButtonType.LINK);
 		addNewStratum.getElement().setId("addNewStratumButton_" + stratificationsObject.getDisplayName());
-		addNewStratum.setTitle("Click to add new stratum");
+		addNewStratum.setTitle("Click this button to add new stratum");
 		addNewStratum.setText("Add Stratum");
 		addNewStratum.getElement().setAttribute("aria-label", "Click this button Add Stratum under "+ stratificationsObject.getDisplayName());
 		addNewStratum.setIcon(IconType.PLUS);

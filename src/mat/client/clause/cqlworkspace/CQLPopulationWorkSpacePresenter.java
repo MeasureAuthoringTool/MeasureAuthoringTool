@@ -223,8 +223,29 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				}	
 			}
 		});
+		
+		addWarningConfirmationHandlers();
 	}
 
+	private void addWarningConfirmationHandlers() {
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationYesButton().addClickHandler(event -> handleYesConfirmation());		
+		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationNoButton().addClickHandler(event -> handleNoConfirmation());		
+	}
+	
+	private void handleYesConfirmation() {
+		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+		setActiveMenuItem(currentSection, false);
+		setActiveMenuItem(nextSection, true);
+		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+	}
+	
+	private void handleNoConfirmation() {
+		setActiveMenuItem(currentSection, true);
+		setActiveMenuItem(nextSection, false);
+		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+	}
+	
 	/**
 	 * Method to Unset current Left Nav section and set next selected section
 	 * when user clicks yes on warning message (Dirty Check).
@@ -775,33 +796,43 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	private void setActiveMenuItem(String menuClickedBefore, boolean isSet) {
 		if (!searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
 			searchDisplay.resetMessageDisplay();
-			if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_INITIALPOPULATION)) {
+			switch(menuClickedBefore) {
+			case CQLWorkSpaceConstants.CQL_INITIALPOPULATION:
 				searchDisplay.getCqlLeftNavBarPanelView().getInitialPopulation().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DENOMINATOR)) {
+				break;
+			case CQLWorkSpaceConstants.CQL_DENOMINATOR:
 				searchDisplay.getCqlLeftNavBarPanelView().getDenominator().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_NUMERATOR)) {
+				break;	
+			case CQLWorkSpaceConstants.CQL_NUMERATOR:
 				searchDisplay.getCqlLeftNavBarPanelView().getNumerator().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS)) {
+				break;	
+			case CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getNumeratorExclusions().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS)) {
+				break;
+			case CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExclusions().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS)) {
+				break;
+			case CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExceptions().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS)) {
+				break;	
+			case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulations().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS)) {
+				break;	
+			case CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulationExclusions().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_STRATIFICATIONS)) {
+				break;
+			case CQLWorkSpaceConstants.CQL_STRATIFICATIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getStratifications().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
+				break;	
+			case CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getMeasureObservations().setActive(isSet);
-			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS)) {
+				break;
+			case CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS:
 				searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(isSet);
-			} 
-
+				break;
+			}			
 		}
 	}
-
 
 	
 
@@ -839,7 +870,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * @param result the result
 	 * @param populationName the population name
 	 */
-	public native static void showHumanReadableDialogBox(String result, String populationName) /*-{
+	public static native void showHumanReadableDialogBox(String result, String populationName) /*-{
 		var dummyURL = window.location.protocol + "//" +  window.location.hostname + ":" + window.location.port + "/" + "mat/humanreadable.html";
 		var humanReadableWindow = window.open(dummyURL,"","width=1200,height=700,scrollbars=yes,resizable=yes");
 		

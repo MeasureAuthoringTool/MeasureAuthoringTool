@@ -56,12 +56,12 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 
 		}
 		
-//		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				observer.onAddNewClick(mainFlowPanel, populationGrid, populationsObject);
-//			}
-//		});
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				observer.onAddNewClick(mainFlowPanel, populationGrid, populationsObject);
+			}
+		});
 
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");

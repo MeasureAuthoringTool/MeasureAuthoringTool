@@ -43,7 +43,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
@@ -57,7 +56,6 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
-import mat.client.shared.WarningMessageDisplay;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
@@ -1197,25 +1195,25 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setViewIsEditable(boolean, java.util.List)
 	 */
 	@Override
-	public final void setViewIsEditable(final boolean b, final List<MeasurePackageDetail> packages) {
-		createNew.setEnabled(b);
-		packageMeasure.setEnabled(b);
-		packageMeasureAndExport.setEnabled(b);
-		addQDMElementsToMeasure.setEnabled(b);
-		packageGroupingWidget.getSaveGrouping().setEnabled(b);
-		addAllQDMLeft.setEnabled(b);
-		addAllQDMRight.setEnabled(b);
-		addQDMLeft.setEnabled(b);
-		addQDMRight.setEnabled(b);
-		packageGroupingWidget.getAddClauseRight().setEnabled(b);
-		packageGroupingWidget.getAddClauseLeft().setEnabled(b);
-		packageGroupingWidget.getAddAllClauseRight().setEnabled(b);
-		packageGroupingWidget.getAddAllClauseLeft().setEnabled(b);
-		addRiskAdjVariablesToMeasure.setEnabled(b);
-		addRiskAdjRight.setEnabled(b);
-		addRiskAdjLeft.setEnabled(b);
-		addAllRiskAdjRight.setEnabled(b);
-		addAllRiskAdjLeft.setEnabled(b);
+	public final void setViewIsEditable(final boolean isEnabled, final List<MeasurePackageDetail> packages) {
+		createNew.setEnabled(isEnabled);
+		packageMeasure.setEnabled(isEnabled);
+		packageMeasureAndExport.setEnabled(isEnabled);
+		addQDMElementsToMeasure.setEnabled(isEnabled);
+		packageGroupingWidget.getSaveGrouping().setEnabled(isEnabled);
+		addAllQDMLeft.setEnabled(isEnabled);
+		addAllQDMRight.setEnabled(isEnabled);
+		addQDMLeft.setEnabled(isEnabled);
+		addQDMRight.setEnabled(isEnabled);
+		packageGroupingWidget.getAddClauseRight().setEnabled(isEnabled);
+		packageGroupingWidget.getAddClauseLeft().setEnabled(isEnabled);
+		packageGroupingWidget.getAddAllClauseRight().setEnabled(isEnabled);
+		packageGroupingWidget.getAddAllClauseLeft().setEnabled(isEnabled);
+		addRiskAdjVariablesToMeasure.setEnabled(isEnabled);
+		addRiskAdjRight.setEnabled(isEnabled);
+		addRiskAdjLeft.setEnabled(isEnabled);
+		addAllRiskAdjRight.setEnabled(isEnabled);
+		addAllRiskAdjLeft.setEnabled(isEnabled);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setQDMElements(java.util.List)

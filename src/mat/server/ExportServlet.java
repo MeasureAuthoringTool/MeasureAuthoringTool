@@ -3,6 +3,7 @@ package mat.server;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,18 +30,19 @@ import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
 import mat.server.service.impl.ZipPackager;
+import mat.shared.CQLErrors;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
-
-// TODO: Auto-generated Javadoc
+import mat.shared.SaveUpdateCQLResult;
 /**
  * The Class ExportServlet.
  */
 public class ExportServlet extends HttpServlet {
 	
-	/** The Constant EXPORT_MEASURE_NOTES_FOR_MEASURE. */
-	private static final String EXPORT_MEASURE_NOTES_FOR_MEASURE = "exportMeasureNotesForMeasure";
-	
+	private static final String LIBRARY_ID = "libraryid";
+	private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
+	private static final String EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE = "errorFileStandAlone";
+	private static final String EXPORT_CQL_ERROR_FILE_FOR_MEASURE = "errorFileMeasure";
 	/** The Constant EXPORT_ACTIVE_NON_ADMIN_USERS_CSV. */
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
 	private static final String EXPORT_ALL_USERS_CSV = "exportAllUsersCSV";
@@ -49,9 +51,6 @@ public class ExportServlet extends HttpServlet {
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
 	
 	private static final String EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP = "exportCQLLibraryOwner";
-	
-	/** The Constant VALUESET. */
-	//private static final String VALUESET = "valueset";
 	
 	/** The Constant ZIP. */
 	private static final String ZIP = "zip";
@@ -130,7 +129,7 @@ public class ExportServlet extends HttpServlet {
 		String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
-		//String[] matVersion ={"_v3","_v4"};
+		String libraryId = req.getParameter(LIBRARY_ID);
 		Measure measure = null;
 		ExportResult export = null;
 		Date exportDate = null;
@@ -169,19 +168,20 @@ public class ExportServlet extends HttpServlet {
 						measure, exportDate, fnu);
 			} else if (SUBTREE_HTML.equals(format)){
 				export = exportSubTreeHumanReadable(req, resp, id);
-			} /*else if (VALUESET.equals(format)) {
-				export = exportValueSetListXLS(resp, measureLibraryService, id,
-						measure, fnu);
-			} */else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
+			} else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
 				exportActiveUserListCSV(resp, fnu);
 			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
 				exportActiveOrganizationListCSV(resp, fnu);
-			} else if("exportMeasureOwner".equalsIgnoreCase(format)){
+			} else if(EXPORT_MEASURE_OWNER.equalsIgnoreCase(format)){
 				exportActiveUserMeasureOwnershipListCSV(resp,fnu);
 			} else if (EXPORT_ALL_USERS_CSV.equals(format)) {
 				exportAllUserCSV(resp, fnu);
 			} else if(EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP.equals(format)) {
 				exportActiveUserCQLLibraryOwnershipListCSV(resp, fnu);
+			} else if(EXPORT_CQL_ERROR_FILE_FOR_MEASURE.equalsIgnoreCase(format)) {
+				exportErrorFileForMeasure(resp, measureLibraryService, id);
+			} else if(EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE.equalsIgnoreCase(format)) {
+				exportErrorFileForStandAloneLib(resp, libraryId);
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
@@ -190,6 +190,44 @@ public class ExportServlet extends HttpServlet {
 				resp.getOutputStream().close();
 		}		
 	}		
+	
+	private void exportErrorFileForMeasure(HttpServletResponse resp, MeasureLibraryService measureLibraryService,
+			String id) throws IOException {
+		SaveUpdateCQLResult result = measureLibraryService.getMeasureCQLLibraryData(id);
+		addLineNumberAndErrorMessageToCQLErrorExport(resp, result);
+	}
+	
+	private void exportErrorFileForStandAloneLib(HttpServletResponse resp,	String id) throws IOException {
+		SaveUpdateCQLResult result = getCQLLibraryService().getCQLLibraryFileData(id);
+		addLineNumberAndErrorMessageToCQLErrorExport(resp, result);
+	}
+
+	private void addLineNumberAndErrorMessageToCQLErrorExport(HttpServletResponse resp, SaveUpdateCQLResult result)
+			throws IOException {
+		StringBuilder sb = new StringBuilder();
+		String cqlString = result.getCqlString();
+		String[] cqlLinesArray = cqlString.split("\n");
+		for(int i=0;i<cqlLinesArray.length;i++) {			
+			sb.append((i+1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
+		}
+		if (!result.getCqlErrors().isEmpty() && result.getCqlErrors().size() > 0) {
+			
+			Collections.sort(result.getCqlErrors());
+			sb.append("/*******************************************************************************************************************");
+			for (CQLErrors error : result.getCqlErrors()) {
+				StringBuilder errorMessage = new StringBuilder();
+				errorMessage.append("Line ").append(error.getErrorInLine()).append(": ").append(error.getErrorMessage());				
+				sb.append("\r\n").append(errorMessage).append("\r\n");								
+			}
+			sb.append("*******************************************************************************************************************/");
+		}
+		
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+				+ result.getLibraryName() + ".txt");
+		resp.getOutputStream().write(sb.toString().getBytes());
+	}
+
+	
 	
 	private ExportResult exportELMFile(HttpServletResponse resp, MeasureLibraryService measureLibraryService, String id,
 			String type, Measure measure, FileNameUtility fnu) throws Exception {
@@ -251,8 +289,8 @@ public class ExportServlet extends HttpServlet {
 		return export;
 	}
 
-
-
+	
+	
 	private ExportResult exportCQLLibraryFile(HttpServletResponse resp,
 			MeasureLibraryService measureLibraryService, String id,
 			String type, Measure measure, FileNameUtility fnu) throws Exception {
@@ -359,16 +397,6 @@ public class ExportServlet extends HttpServlet {
 					throws Exception, IOException {
 		ExportResult export;
 		export = getService().getValueSetXLS(id);
-		/*if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getValueSetXLSName(export.valueSetName + matVersion[0], export.lastModifiedDate));
-		} else if(measure.getExportedDate().equals(measureLibraryService
-				.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-				|| measure.getExportedDate().after(measureLibraryService
-						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ fnu.getValueSetXLSName(export.valueSetName + matVersion[1], export.lastModifiedDate));
-		}*/
 		
 		String currentReleaseVersion = measure.getReleaseVersion();
 		if(currentReleaseVersion.contains(".")){

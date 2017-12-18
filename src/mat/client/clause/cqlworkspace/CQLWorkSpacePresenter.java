@@ -195,7 +195,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		/**
 		 * Builds the cql file view.
 		 */
-		void buildCQLFileView();
+		void buildCQLFileView(boolean isEditable);
 
 		/**
 		 * Gets the main v panel.
@@ -379,7 +379,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addParameterSectionHandlers();
 		addDefinitionSectionHandlers();
 		addFunctionSectionHandlers();
+		addViewCQLEventHandlers();
 		addListBoxEventHandler();
+	}
+
+	private void addViewCQLEventHandlers() {
+		searchDisplay.getViewCQLView().getExportErrorFile().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=errorFileMeasure";
+					Window.open(url + "&type=save", "_self", "");
+				}
+			}
+		});
+		
 	}
 
 	/**
@@ -1541,6 +1556,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							showSearchBusyOnDoubleClick(false);
 						}
 						if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {
+							searchDisplay.getCqlFunctionsView().getFunctionArgNameMap().clear();
 							CQLFunctions selectedFunction = searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap()
 									.get(searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedFunctionObjId());
 							if (selectedFunction.getArgumentList() != null) {
@@ -3934,7 +3950,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_VIEW_MENU;
-			searchDisplay.buildCQLFileView();
+			searchDisplay.buildCQLFileView(MatContext.get().getMeasureLockService().checkForEditPermission());
 			buildCQLView();
 		}
 		searchDisplay.getViewCQLView().setHeading("CQL Workspace > View CQL", "cqlViewCQL_Id");

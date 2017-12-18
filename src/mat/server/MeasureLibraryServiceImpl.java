@@ -3771,6 +3771,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public String getHumanReadableForNode(final String measureId, final String populationSubXML) {
+		System.out.println(populationSubXML);
 		String humanReadableHTML = "";
 		try {
 			humanReadableHTML = getService().getHumanReadableForNode(measureId, populationSubXML);

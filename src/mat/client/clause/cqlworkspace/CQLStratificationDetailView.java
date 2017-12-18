@@ -120,6 +120,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
 			nameLabel.setId("nameLabel" + i);
 			nameLabel.setWidth("100px");
+			nameLabel.setMarginLeft(20.00);
 			nameFocusPanel.add(nameLabel);
 			
 			stratumsGrid.setWidget(i, 0, nameFocusPanel);
@@ -163,7 +164,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			deleteButton.setIconSize(IconSize.LARGE);
 			deleteButton.setColor("#0964A2");
 			deleteButton.setMarginRight(100.00);
-			
+			deleteButton.setMarginLeft(-20.00);
 			deleteButton.addClickHandler(new ClickHandler() {
 
 				@Override

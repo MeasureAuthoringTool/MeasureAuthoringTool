@@ -130,25 +130,14 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 	
 	@Override
-	public boolean displayPopulationDetailView(String populationType) {
-		boolean goForward = true;
+	public void displayPopulationDetailView(String populationType) {
 		
-		/*if(cqlPopulationDetailView != null  && cqlPopulationDetailView.isDirty()) {
-			goForward = false;
-		} else {
-			goForward = true;
-			cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
-			cqlPopulationDetailView.setObserver(cqlPopulationObserver);
-			
-			cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
-			setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		}*/
 		cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
 		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		return goForward;
+		
 	}
 
 	/**
@@ -159,7 +148,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.clear();
 		headingPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
-		cqlLeftNavBarPanelView.setIsPageDirty(false);
+		//cqlLeftNavBarPanelView.setIsPageDirty(false);
 
 		this.document = null;
 		this.populationDataModel = null;

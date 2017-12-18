@@ -14,6 +14,7 @@ import mat.client.clause.clauseworkspace.presenter.PopulationClausePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.clause.clauseworkspace.presenter.StratificationClausePresenter;
 import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
+import mat.client.clause.cqlworkspace.CQLPopulationWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -362,9 +363,11 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				validateCQLWorkspaceTab(cqlWorkspacePresenter, selectedIndex);
 			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 6) {
 				int populationWorkspaceTab = 6;
-				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
+				CQLPopulationWorkSpacePresenter popWorkspacePresenter = (CQLPopulationWorkSpacePresenter) previousPresenter;
+				validatePopulationWorkSpaceTab(selectedIndex, popWorkspacePresenter);
+				/*PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
-				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
+				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);*/
 			}
 			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
 				int measurePackagerTab = 3;
@@ -380,9 +383,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if ((selectedIndex == 1) && (previousPresenter instanceof CQLWorkSpacePresenter)) {
 			CQLWorkSpacePresenter cqlPresenter = (CQLWorkSpacePresenter) previousPresenter;
 			validateCQLWorkspaceTab(cqlPresenter, selectedIndex);
-		} else if ((selectedIndex == 2) && (previousPresenter instanceof PopulationWorkspacePresenter)) {
-			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) previousPresenter;
-			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
+		} else if ((selectedIndex == 2) && (previousPresenter instanceof CQLPopulationWorkSpacePresenter)) {
+			CQLPopulationWorkSpacePresenter popWorkspacePresenter = (CQLPopulationWorkSpacePresenter) previousPresenter;
+			validatePopulationWorkSpaceTab(selectedIndex, popWorkspacePresenter);
+		//	validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 		} else if (previousPresenter instanceof PopulationClausePresenter) {
 			PopulationClausePresenter clauseWorkspacePresenter = (PopulationClausePresenter) previousPresenter;
 			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
@@ -407,6 +411,22 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		return isUnsavedData;
 	}
 	
+	private void validatePopulationWorkSpaceTab(int selectedIndex2,
+			CQLPopulationWorkSpacePresenter popWorkspacePresenter) {
+		popWorkspacePresenter.getSearchDisplay().resetMessageDisplay();
+		if (popWorkspacePresenter.isDirty()) {
+			isUnsavedData = true;
+			popWorkspacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert().createAlert();
+			popWorkspacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
+			String auditMessage = popWorkspacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+			handleClickEventsOnUnsavedChangesMsg(selectedIndex, 
+					popWorkspacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert(), auditMessage);
+		} else {
+			isUnsavedData = false;
+		}
+		
+	}
+
 	/**
 	 * checks if the Measure Details Page data and the Measure Details DB data
 	 * are the same. If Not Same shows Error Message with Buttons

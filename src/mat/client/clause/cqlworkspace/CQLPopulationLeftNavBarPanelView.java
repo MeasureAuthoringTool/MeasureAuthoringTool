@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
@@ -73,14 +74,6 @@ public class CQLPopulationLeftNavBarPanelView {
 	/** The delete confirmation messge alert. */
 	//private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
 
-	/** The dirty flag for page. */
-	private Boolean isPageDirty = false;
-
-	/** The is double click. */
-	private Boolean isDoubleClick = false;
-
-	/** The is nav bar click. */
-	private Boolean isNavBarClick = false;
 
 	/** The Loading flag for page. */
 	private Boolean isLoading = false;
@@ -95,6 +88,7 @@ public class CQLPopulationLeftNavBarPanelView {
 	 * @return the vertical panel
 	 */
 	public VerticalPanel buildMeasureLibCQLView(Document document){
+		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 		buildLeftHandNavBar(document);
 		return rightHandNavPanel;
 	}
@@ -108,7 +102,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
-
 		initialPopulation = new AnchorListItem();
 		numerator = new AnchorListItem();
 		denominator = new AnchorListItem();
@@ -117,27 +110,21 @@ public class CQLPopulationLeftNavBarPanelView {
 		denominatorExceptions = new AnchorListItem();
 		measurePopulations = new AnchorListItem();
 		measurePopulationExclusions = new AnchorListItem();
-		
 		stratifications = new AnchorListItem();
-		
 		measureObservations = new AnchorListItem();
-
 		viewPopulations = new AnchorListItem();
-
-		setTextAndIcons(initialPopulation, "Initial Populations",IconType.PENCIL);
-
-		setTextAndIcons(numerator, "Numerators",IconType.PENCIL);
-		setTextAndIcons(denominator, "Denominators",IconType.PENCIL);
-		setTextAndIcons(numeratorExclusions, "Numerator Exclusions",IconType.PENCIL);
-		setTextAndIcons(denominatorExclusions, "Denominator Exclusions",IconType.PENCIL);
-		setTextAndIcons(denominatorExceptions, "Denominator Exceptions",IconType.PENCIL);
-		setTextAndIcons(measurePopulations, "Measure Populations",IconType.PENCIL);
-		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions",IconType.PENCIL);
-		setTextAndIcons(stratifications, "Stratification",IconType.PENCIL);
-		setTextAndIcons(measureObservations, "Measure Observations",IconType.PENCIL);
-		setTextAndIcons(viewPopulations, "View Populations",IconType.BOOK);
-
-
+		
+		setTextAndIcons(initialPopulation, "Initial Populations", IconType.PENCIL);
+		setTextAndIcons(numerator, "Numerators", IconType.PENCIL);
+		setTextAndIcons(denominator, "Denominators", IconType.PENCIL);
+		setTextAndIcons(numeratorExclusions, "Numerator Exclusions", IconType.PENCIL);
+		setTextAndIcons(denominatorExclusions, "Denominator Exclusions", IconType.PENCIL);
+		setTextAndIcons(denominatorExceptions, "Denominator Exceptions", IconType.PENCIL);
+		setTextAndIcons(measurePopulations, "Measure Populations", IconType.PENCIL);
+		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions", IconType.PENCIL);
+		setTextAndIcons(stratifications, "Stratification", IconType.PENCIL);
+		setTextAndIcons(measureObservations, "Measure Observations", IconType.PENCIL);
+		setTextAndIcons(viewPopulations, "View Populations", IconType.BOOK);
 		/**
 		 * Find Scoring type for the measure from the Measure XML.
 		 */
@@ -145,14 +132,13 @@ public class CQLPopulationLeftNavBarPanelView {
 
 		if ((nodeList != null) && (nodeList.getLength() > 0)) {
 			Node scoringNode = nodeList.item(0);
-			Node scoringIdAttribute = scoringNode.getAttributes()
-					.getNamedItem("id");
+			Node scoringIdAttribute = scoringNode.getAttributes().getNamedItem("id");
 			String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
 
 			addAchorsByScoring(navPills, scoringIdAttributeValue);
-		}		
+		}
 
-		navPills.add(viewPopulations);//View Populations is always present
+		navPills.add(viewPopulations);// View Populations is always present
 		viewPopulations.setActive(true);// View Populations is initially selected.
 
 		navPills.setWidth("200px");
@@ -161,8 +147,8 @@ public class CQLPopulationLeftNavBarPanelView {
 		messagePanel.add(warningMessageAlert);
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
-		//messagePanel.add(globalWarningConfirmationMessageAlert);
-		//messagePanel.add(deleteConfirmationMessgeAlert);
+		messagePanel.add(globalWarningConfirmationMessageAlert);
+		// messagePanel.add(deleteConfirmationMessgeAlert);
 		messagePanel.setStyleName("marginLeft15px");
 
 		// rightHandNavPanel.add(messagePanel);
@@ -305,89 +291,9 @@ public class CQLPopulationLeftNavBarPanelView {
 	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
 		return globalWarningConfirmationMessageAlert;
 	}
-	/**
-	 * Sets the checks if is page dirty.
-	 *
-	 * @param isPageDirty the new checks if is page dirty
-	 */
-	public void setIsPageDirty(Boolean isPageDirty) {
-		this.isPageDirty = isPageDirty;
-	}
+	
 
-	/**
-	 * Sets the checks if is double click.
-	 *
-	 * @param isDoubleClick the new checks if is double click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsDoubleClick(java.lang.Boolean)
-	 */
-	public void setIsDoubleClick(Boolean isDoubleClick) {
-		this.isDoubleClick = isDoubleClick;
-	}
 
-	/**
-	 * Checks if is double click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isDoubleClick()
-	 */
-	public Boolean isDoubleClick() {
-		return isDoubleClick;
-	}
-
-	/**
-	 * Sets the checks if is nav bar click.
-	 *
-	 * @param isNavBarClick the new checks if is nav bar click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsNavBarClick(java.lang.Boolean)
-	 */
-	public void setIsNavBarClick(Boolean isNavBarClick) {
-		this.isNavBarClick = isNavBarClick;
-	}
-
-	/**
-	 * Checks if is nav bar click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isNavBarClick()
-	 */
-	public Boolean isNavBarClick() {
-		return isNavBarClick;
-	}
-
-	/**
-	 * Gets the checks if is page dirty.
-	 *
-	 * @return the checks if is page dirty
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getIsPageDirty()
-	 */
-	public Boolean getIsPageDirty() {
-		return isPageDirty;
-	}
 
 	/**
 	 * Show unsaved changes warning.

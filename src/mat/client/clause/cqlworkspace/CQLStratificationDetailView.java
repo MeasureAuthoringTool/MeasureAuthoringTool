@@ -16,6 +16,8 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -57,6 +59,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	
 	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
 			"Stratifications" , "Stratifications", "Save", "Add New Stratification");
+	private boolean isDirty = false;
 	
 	/**
 	 * This is a public method that is invoked to generate Stratification View for Stratification Left nav pill.
@@ -131,6 +134,14 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			definitionListBox.addItem("--Select Definition--", "");
 			definitionListBox.setTitle("Select Definition List");
 			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
+			definitionListBox.addChangeHandler(new ChangeHandler() {
+				
+				@Override
+				public void onChange(ChangeEvent event) {
+					setIsDirty(true);
+					
+				}
+			});
 
 			for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
 				definitionListBox.addItem(definition.getName(), definition.getUuid());
@@ -345,12 +356,12 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	@Override
 	public boolean isDirty() {
 		// TODO Auto-generated method stub
-		return false;
+		return isDirty;
 	}
 
 	@Override
 	public void setIsDirty(boolean isDirty) {
-		// TODO Auto-generated method stub
+		this.isDirty = isDirty;
 		
 	}
 

@@ -13,6 +13,8 @@ import mat.client.shared.MatContext;
 
 public class PopulationDataModel {
 	
+	private static final String ARGUMENT = "argument";
+	private static final String ARGUMENTS = "arguments";
 	private static final String TAGNAME_STRATA = "strata";
 	private static final String TAGNAME_NAME = "name";
 	private static final String TAGNAME_CQL_LOOK_UP = "cqlLookUp";
@@ -231,7 +233,7 @@ public class PopulationDataModel {
 						 * Ignore CQL Functions with arguments not equal to 1.
 						 */
 						if(TAGNAME_FUNCTION.equals(expressionNodeName)) {
-							if(getFunctionArgumentCount(expressionNode) == 1) {
+							if(getFunctionArgumentCount(expressionNode) != 1) {
 								continue;
 							}
 						}
@@ -249,6 +251,7 @@ public class PopulationDataModel {
 		
 		return expressionNameList;		
 	}
+
 	
 	/**
 	 * Check for CQL Function to find out how many arguments it has. 
@@ -263,12 +266,12 @@ public class PopulationDataModel {
 			
 			for(int i=0;i<childNodes.getLength();i++) {
 				Node child = childNodes.item(i);
-				if("arguments".equals(child.getNodeName())) {
+				if(ARGUMENTS.equals(child.getNodeName())) {
 					NodeList argumentNodes = child.getChildNodes();
 					
 					for(int j=0;j<argumentNodes.getLength();j++) {
 						Node argNode = argumentNodes.item(j);
-						if(argNode.getNodeName().equals("argument")) {
+						if(argNode.getNodeName().equals(ARGUMENT)) {
 							argCount++;
 						}
 					}

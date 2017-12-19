@@ -13,8 +13,6 @@ import mat.client.shared.MatContext;
 
 public class PopulationDataModel {
 	
-	private static final String ARGUMENT = "argument";
-	private static final String ARGUMENTS = "arguments";
 	private static final String TAGNAME_STRATA = "strata";
 	private static final String TAGNAME_NAME = "name";
 	private static final String TAGNAME_CQL_LOOK_UP = "cqlLookUp";
@@ -228,14 +226,15 @@ public class PopulationDataModel {
 						 */
 						if(TAGNAME_FUNCTION.equals(expressionNodeName)) {
 							if(getFunctionArgumentCount(expressionNode) == 1) {
-								String name = expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
-								String uuid = expressionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
-								
-								ExpressionObject expression = new ExpressionObject(uuid, name);
-								expressionNameList.add(expression);
+								continue;
 							}
 						}
-												
+						
+						String name = expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
+						String uuid = expressionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
+						
+						ExpressionObject expression = new ExpressionObject(uuid, name);
+						expressionNameList.add(expression);
 					}
 					
 				}
@@ -258,12 +257,12 @@ public class PopulationDataModel {
 			
 			for(int i=0;i<childNodes.getLength();i++) {
 				Node child = childNodes.item(i);
-				if(ARGUMENTS.equals(child.getNodeName())) {
+				if("arguments".equals(child.getNodeName())) {
 					NodeList argumentNodes = child.getChildNodes();
 					
 					for(int j=0;j<argumentNodes.getLength();j++) {
 						Node argNode = argumentNodes.item(j);
-						if(argNode.getNodeName().equals(ARGUMENT)) {
+						if(argNode.getNodeName().equals("argument")) {
 							argCount++;
 						}
 					}

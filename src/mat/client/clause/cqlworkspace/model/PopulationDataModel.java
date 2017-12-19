@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
@@ -83,6 +84,23 @@ public class PopulationDataModel {
 		this.setMeasureId(MatContext.get().getCurrentMeasureId());
 		extractDefinitionNames(document);
 		extractFunctionNames(document);
+		loadPopulations(document);
+	}
+	
+	public void loadPopulations(Document document) {
+		
+		initialPopulationsObject = new PopulationsObject(TAGNAME_INITIAL_POPULATIONS);
+		numeratorsObject = new PopulationsObject(TAGNAME_NUMERATORS);
+		numeratorExclusionsObject = new PopulationsObject(TAGNAME_NUMERATOR_EXCLUSIONS);
+		denominatorsObject = new PopulationsObject(TAGNAME_DENOMINATORS);
+		denominatorExclusionsObject = new PopulationsObject(TAGNAME_DENOMINATOR_EXCLUSIONS);
+		denominatorExceptionsObject = new PopulationsObject(TAGNAME_DENOMINATOR_EXCEPTIONS);
+		measurePopulationsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATIONS);
+		measurePopulationsExclusionsObject = new PopulationsObject(TAGNAME_MEASURE_POPULATION_EXCLUSIONS);
+		
+		strataDataModel = new StrataDataModel();
+		measureObservationsObject = new PopulationsObject(TAGNAME_MEASURE_OBSERVATIONS);
+		
 		extractPopulationDetails(document);
 		extractMeasureObservations(document);
 		extractStratifications(document);
@@ -193,19 +211,30 @@ public class PopulationDataModel {
 		
 		Node cqlLookUpNode = cqlLookUpNodeList.item(0);
 		
-		Node definitionsNode = findChildNode(cqlLookUpNode, expressionParentNodeName);
+		Node expressionsNode = findChildNode(cqlLookUpNode, expressionParentNodeName);
 		
-		if(definitionsNode != null) {
-			NodeList definitionsNodeList = definitionsNode.getChildNodes();
+		if(expressionsNode != null) {
+			NodeList expressionsNodeList = expressionsNode.getChildNodes();
 			
-			if(definitionsNodeList != null && definitionsNodeList.getLength() > 0) {
+			if(expressionsNodeList != null && expressionsNodeList.getLength() > 0) {
 				
-				for(int i=0;i<definitionsNodeList.getLength();i++) {
+				for(int i=0;i<expressionsNodeList.getLength();i++) {
 					
-					Node definitionNode = definitionsNodeList.item(i);
-					if(definitionNode.getNodeName().equals(expressionNodeName)) {
-						String name = definitionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
-						String uuid = definitionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
+					Node expressionNode = expressionsNodeList.item(i);
+					if(expressionNode.getNodeName().equals(expressionNodeName)) {
+						
+						/**
+						 * Ignore CQL Functions with arguments not equal to 1.
+						 */
+						if(TAGNAME_FUNCTION.equals(expressionNodeName)) {
+							Window.alert(expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue()+" has "+getFunctionArgumentCount(expressionNode)+ " arguments.");
+							if(getFunctionArgumentCount(expressionNode) != 1) {
+								continue;
+							}
+						}
+						
+						String name = expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
+						String uuid = expressionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
 						
 						ExpressionObject expression = new ExpressionObject(uuid, name);
 						expressionNameList.add(expression);
@@ -218,6 +247,35 @@ public class PopulationDataModel {
 		return expressionNameList;		
 	}
 	
+	/**
+	 * Check for CQL Function to find out how many arguments it has. 
+	 * @param expressionNode
+	 * @return
+	 */
+	private int getFunctionArgumentCount(Node expressionNode) {
+		int argCount = 0;
+		
+		if(TAGNAME_FUNCTION.equals(expressionNode.getNodeName())) {
+			NodeList childNodes = expressionNode.getChildNodes();
+			
+			for(int i=0;i<childNodes.getLength();i++) {
+				Node child = childNodes.item(i);
+				if("arguments".equals(child.getNodeName())) {
+					NodeList argumentNodes = child.getChildNodes();
+					
+					for(int j=0;j<argumentNodes.getLength();j++) {
+						Node argNode = argumentNodes.item(j);
+						if(argNode.getNodeName().equals("argument")) {
+							argCount++;
+						}
+					}
+				}
+			}
+		}
+		
+		return argCount;
+	}
+
 	private void extractFunctionNames(Document document) {
 		
 		setFunctionNameList(extractExpressionNames(document,TAGNAME_FUNCTIONS, TAGNAME_FUNCTION));		

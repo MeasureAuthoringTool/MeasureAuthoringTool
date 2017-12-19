@@ -112,6 +112,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	public void displayMeasureObservations() {
 
 		mainFlowPanel.clear();
+		populationDataModel.loadPopulations(document);
 		cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 
 				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
 		
@@ -125,6 +126,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 		mainFlowPanel.clear();
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
+		populationDataModel.loadPopulations(document);
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
 		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
 	}
@@ -132,6 +134,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void displayPopulationDetailView(String populationType) {
 		
+		populationDataModel.loadPopulations(document);
 		cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
 		

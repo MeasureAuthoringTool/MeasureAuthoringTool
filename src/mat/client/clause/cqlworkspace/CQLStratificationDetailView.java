@@ -126,112 +126,114 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		Grid stratumsGrid = new Grid(stratumClauses.size(), 4);
 		stratumsGrid.getElement().setAttribute("style", "border-spacing:40px 10px;");
 		for (int i = 0; i < stratumClauses.size(); i++) {
-
-			PopulationClauseObject populationClauseObject = stratumClauses.get(i);
-			FocusPanel nameFocusPanel = new FocusPanel();
-			FormLabel nameLabel = new FormLabel();
-			nameLabel.setText(populationClauseObject.getDisplayName());
-			nameLabel.setTitle(populationClauseObject.getDisplayName());
-			nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
-			nameLabel.setId("nameLabel" + i);
-			nameLabel.setWidth("100px");
-			nameLabel.setMarginLeft(20.00);
-			nameFocusPanel.add(nameLabel);
-			
-			stratumsGrid.setWidget(i, 0, nameFocusPanel);
-	
-			// Set a listbox with all definition names in it.
-			ListBox definitionListBox = new ListBox();
-			definitionListBox.setSize("180px", "30px");			
-			definitionListBox.addItem("--Select Definition--", "");
-			definitionListBox.setTitle("Select Definition List");
-			definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
-			definitionListBox.addChangeHandler(new ChangeHandler() {
-				
-				@Override
-				public void onChange(ChangeEvent event) {
-					setIsDirty(true);
-					
-				}
-			});
-
-			for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
-				definitionListBox.addItem(definition.getName(), definition.getUuid());
-			}
-			
-			SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
-			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
-		    for (int j = 0; j < options.getLength(); j++) {
-		        options.getItem(j).setTitle(options.getItem(j).getText());
-		    }
-			
-			// select a definition name in the listbox
-			for (int j = 0; j < definitionListBox.getItemCount(); j++) {
-				String definitionName = definitionListBox.getItemText(j);
-				if (definitionName.equals(populationClauseObject.getCqlExpressionDisplayName())) {
-					definitionListBox.setItemSelected(j, true);
-					break;
-				}
-			}
-
-			stratumsGrid.setWidget(i, 1, definitionListBox);
-
-			// button for Delete
-			Button deleteButton = new Button();
-			deleteButton.setType(ButtonType.LINK);
-			deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
-			deleteButton.setTitle("Delete");
-			deleteButton.setText("Delete");
-			deleteButton.getElement().setAttribute("aria-label", "click this button to delete " +  populationClauseObject.getDisplayName());
-			deleteButton.setIcon(IconType.TRASH);
-			deleteButton.setIconSize(IconSize.LARGE);
-			deleteButton.setColor("#0964A2");
-			deleteButton.setMarginRight(100.00);
-			deleteButton.setMarginLeft(-20.00);
-			deleteButton.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					
-					isDirty = true;
-				}
-			});
-
-			stratumsGrid.setWidget(i, 2, deleteButton);
-
-			// button for View Human Readable
-			Button viewHRButton = new Button();
-			viewHRButton.setType(ButtonType.LINK);
-			viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
-			viewHRButton.setTitle("View Human Readable");
-			viewHRButton.setText("View");
-			viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
-			viewHRButton.setIcon(IconType.BINOCULARS);
-			viewHRButton.setColor("black");
-			viewHRButton.setMarginLeft(-100.00);			
-			viewHRButton.addClickHandler(new ClickHandler() {
-
-				@Override
-				public void onClick(ClickEvent event) {
-					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					
-					if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
-						population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
-					}else {
-						population.setCqlExpressionDisplayName("");
-					}
-	
-					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
-					
-					observer.onViewHRClick(population);
-				}
-			});
-			
-
-			stratumsGrid.setWidget(i, 3, viewHRButton);
-
+			buildStratumGrid(stratumClauses, stratumsGrid, i);
 		}
 		return stratumsGrid;
+	}
+
+	private void buildStratumGrid(List<PopulationClauseObject> stratumClauses, Grid stratumsGrid, int i) {
+		PopulationClauseObject populationClauseObject = stratumClauses.get(i);
+		FocusPanel nameFocusPanel = new FocusPanel();
+		FormLabel nameLabel = new FormLabel();
+		nameLabel.setText(populationClauseObject.getDisplayName());
+		nameLabel.setTitle(populationClauseObject.getDisplayName());
+		nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
+		nameLabel.setId("nameLabel" + i);
+		nameLabel.setWidth("100px");
+		nameLabel.setMarginLeft(20.00);
+		nameFocusPanel.add(nameLabel);
+		
+		stratumsGrid.setWidget(i, 0, nameFocusPanel);
+
+		// Set a listbox with all definition names in it.
+		ListBox definitionListBox = new ListBox();
+		definitionListBox.setSize("180px", "30px");			
+		definitionListBox.addItem("--Select Definition--", "");
+		definitionListBox.setTitle("Select Definition List");
+		definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
+		definitionListBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				setIsDirty(true);
+				
+			}
+		});
+
+		for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
+			definitionListBox.addItem(definition.getName(), definition.getUuid());
+		}
+		
+		SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
+		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+		for (int j = 0; j < options.getLength(); j++) {
+		    options.getItem(j).setTitle(options.getItem(j).getText());
+		}
+		
+		// select a definition name in the listbox
+		for (int j = 0; j < definitionListBox.getItemCount(); j++) {
+			String definitionName = definitionListBox.getItemText(j);
+			if (definitionName.equals(populationClauseObject.getCqlExpressionDisplayName())) {
+				definitionListBox.setItemSelected(j, true);
+				break;
+			}
+		}
+
+		stratumsGrid.setWidget(i, 1, definitionListBox);
+
+		// button for Delete
+		Button deleteButton = new Button();
+		deleteButton.setType(ButtonType.LINK);
+		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
+		deleteButton.setTitle("Delete");
+		deleteButton.setText("Delete");
+		deleteButton.getElement().setAttribute("aria-label", "click this button to delete " +  populationClauseObject.getDisplayName());
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.setIconSize(IconSize.LARGE);
+		deleteButton.setColor("#0964A2");
+		deleteButton.setMarginRight(100.00);
+		deleteButton.setMarginLeft(-20.00);
+		deleteButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				isDirty = true;
+			}
+		});
+
+		stratumsGrid.setWidget(i, 2, deleteButton);
+
+		// button for View Human Readable
+		Button viewHRButton = new Button();
+		viewHRButton.setType(ButtonType.LINK);
+		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
+		viewHRButton.setTitle("View Human Readable");
+		viewHRButton.setText("View");
+		viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
+		viewHRButton.setIcon(IconType.BINOCULARS);
+		viewHRButton.setColor("black");
+		viewHRButton.setMarginLeft(-100.00);			
+		viewHRButton.addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
+				
+				if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+				}else {
+					population.setCqlExpressionDisplayName("");
+				}
+
+				population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
+				
+				observer.onViewHRClick(population);
+			}
+		});
+		
+
+		stratumsGrid.setWidget(i, 3, viewHRButton);
 	}
 
 	/**
@@ -383,12 +385,15 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	public void addStratumGrid(StratificationsObject stratificationsObject) {
 		Grid existingStratumsGrid = parentToChildGridMap.get(stratificationsObject.getDisplayName());
 		if(existingStratumsGrid != null) {
-			mainVP.remove(existingStratumsGrid);
+			//resize the grid
+			int newRowCount = existingStratumsGrid.getRowCount() + 1;
+			existingStratumsGrid.resizeRows(newRowCount);
+			buildStratumGrid(stratificationsObject.getPopulationClauseObjectList(), existingStratumsGrid, newRowCount - 1);
+		} else {
+			Grid newStratumsGrid = generateStratumGrid(stratificationsObject);
+			mainVP.add(newStratumsGrid);
+			parentToChildGridMap.put(stratificationsObject.getDisplayName(), newStratumsGrid);
 		}
-
-		Grid newStratumsGrid = generateStratumGrid(stratificationsObject);
-		mainVP.add(newStratumsGrid);
-		parentToChildGridMap.put(stratificationsObject.getDisplayName(), newStratumsGrid);
 	}
 	
 }

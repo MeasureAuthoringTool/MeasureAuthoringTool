@@ -10,7 +10,7 @@ import mat.client.clause.cqlworkspace.model.StratificationsObject;
 
 public interface CQLPopulationObserver {
 
-	void onDeleteClick(String definitionName);
+	void onDeleteClick(Grid grid, PopulationClauseObject clauseObject , int rowIndex);
 	void onSaveClick(PopulationDataModel populationDataModel);
 	void onViewHRClick(PopulationClauseObject population);
 	void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject);

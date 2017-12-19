@@ -1,5 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -214,9 +215,13 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onDeleteClick(String definitionName) {
+			public void onDeleteClick(Grid grid, PopulationClauseObject clauseObject, int rowIndex) {
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
-					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(true);
+					grid.removeRow(rowIndex);
+					searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject().getPopulationClauseObjectList().remove(clauseObject);
+					if (searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject().getPopulationClauseObjectList().size() == 1) {
+						((Button) grid.getWidget(0, 3)).setEnabled(false);
+					}
 				} else {
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(true);
 				}
@@ -233,6 +238,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					searchDisplay.getCqlMeasureObservationDetailView().populateGrid(populationsObject.getPopulationClauseObjectList(), populationGrid,
 							populationsObject.getPopulationClauseObjectList().size() - 1);
+					if (searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject().getPopulationClauseObjectList().size() > 1) {
+						((Button) populationGrid.getWidget(0, 3)).setEnabled(true);
+					}
 				} else {
 					searchDisplay.getCqlPopulationDetailView().populateGrid(populationsObject.getPopulationClauseObjectList(), populationGrid,
 							populationsObject.getPopulationClauseObjectList().size() - 1);

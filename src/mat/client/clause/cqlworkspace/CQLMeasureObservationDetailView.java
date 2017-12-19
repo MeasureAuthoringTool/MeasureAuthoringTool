@@ -10,6 +10,8 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -210,17 +212,27 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				isViewDirty = true;
-				observer.onDeleteClick(functionListBox.getSelectedItemText());
+				if (popClauses.size() == 1) {
+					event.stopPropagation();
+				} else {
+					isViewDirty = true;
+					int rowToRemove = findRowForPopulationClause(populationGrid, populationClauseObject);
+					observer.onDeleteClick(populationGrid, populationClauseObject, rowToRemove);
+				}
 			}
-		} );
+		});
+		
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 		deleteButton.setTitle("Delete");			
 		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete " +populationClauseObject.getDisplayName());		
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
-		
+		if (popClauses.size() == 1) {
+			deleteButton.setEnabled(false);
+		} else {
+			deleteButton.setEnabled(true);
+		}
 		populationGrid.setWidget(i, 3, deleteButton);
 
 		// button for View Human Readable
@@ -258,6 +270,24 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		viewHRButton.setColor("black");
 					
 		populationGrid.setWidget(i, 4, viewHRButton);
+	}
+	
+	/**
+	 * This method returns the matching grid index based on populationClauseObject displayName and Grid zeroth column label's aria-label value.
+	 * @param populationGrid
+	 * @param populationClauseObject
+	 * @return integer rowIndex.
+	 */
+	private int findRowForPopulationClause(Grid populationGrid, PopulationClauseObject populationClauseObject) {
+		int rowIndex =-1;
+		for(int i=0; i< populationGrid.getRowCount();i++) {
+			NodeList<Element> nodeList = populationGrid.getWidget(i, 0).getElement().getElementsByTagName("label");
+			if(nodeList.getItem(0).getAttribute("aria-label").equalsIgnoreCase(populationClauseObject.getDisplayName())) {
+				rowIndex = i;
+				break;
+			}
+		}
+		return rowIndex;
 	}
 	
 	public PopulationsObject getPopulationsObject() {

@@ -146,7 +146,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			@Override
 			public void onClick(ClickEvent event) {
 				isViewDirty = true;
-				observer.onDeleteClick(definitionListBox.getSelectedItemText());
+				//observer.onDeleteClick(definitionListBox.getSelectedItemText());
 			}
 		});
 		deleteButton.setType(ButtonType.LINK);

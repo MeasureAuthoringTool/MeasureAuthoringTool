@@ -2,8 +2,6 @@ package mat.client.clause.cqlworkspace.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gwt.user.client.Window;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
@@ -227,17 +225,15 @@ public class PopulationDataModel {
 						 * Ignore CQL Functions with arguments not equal to 1.
 						 */
 						if(TAGNAME_FUNCTION.equals(expressionNodeName)) {
-							Window.alert(expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue()+" has "+getFunctionArgumentCount(expressionNode)+ " arguments.");
-							if(getFunctionArgumentCount(expressionNode) != 1) {
-								continue;
+							if(getFunctionArgumentCount(expressionNode) == 1) {
+								String name = expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
+								String uuid = expressionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
+								
+								ExpressionObject expression = new ExpressionObject(uuid, name);
+								expressionNameList.add(expression);
 							}
 						}
-						
-						String name = expressionNode.getAttributes().getNamedItem(TAGNAME_NAME).getNodeValue();
-						String uuid = expressionNode.getAttributes().getNamedItem(TAGNAME_ID).getNodeValue();
-						
-						ExpressionObject expression = new ExpressionObject(uuid, name);
-						expressionNameList.add(expression);
+												
 					}
 					
 				}

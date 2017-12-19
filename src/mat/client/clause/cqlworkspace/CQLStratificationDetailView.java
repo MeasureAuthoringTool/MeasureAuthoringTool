@@ -14,7 +14,6 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -52,9 +51,6 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	private VerticalPanel mainPanel = new VerticalPanel();
 	
 	private ScrollPanel scrollPanel = new ScrollPanel();
-	
-	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-			"Stratifications" , "Stratifications", "Save", "Add New Stratification");
 	private boolean isDirty = false;
 	
 	/**
@@ -64,6 +60,8 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	 */
 	public VerticalPanel buildView(PopulationDataModel populationDataModel) {
 		mainPanel.clear();
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
+				"Stratifications" , "Stratifications", "Save", "Add New Stratification");
 		scrollPanel.clear();
 		scrollPanel.setSize("700px", "450px");
 		this.populationDataModel = populationDataModel;
@@ -76,7 +74,17 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				isDirty = true;
 				observer.onAddNewStratificationClick(strataDataModel);
+			}
+		});
+		
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				isDirty = false;
+				
 			}
 		});
 		
@@ -102,22 +110,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			parentToChildGridMap.put(stratificationsObject.getDisplayName(), stratumGrid);
 			mainVP.add(stratumGrid);
 		}
-		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isDirty = true;
-				observer.onAddNewStratificationClick(strataDataModel);
-			}
-		});
-		
-		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				isDirty = false;
-				
-			}
-		});
+
 		scrollPanel.add(mainVP);
 		
 	}
@@ -376,7 +369,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	}
 
 	@Override
-	public void populateGrid(FlowPanel flowPanel, List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
+	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -388,9 +381,11 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	}
 
 	public void addStratumGrid(StratificationsObject stratificationsObject) {
-		// TODO Auto-generated method stub
 		Grid existingStratumsGrid = parentToChildGridMap.get(stratificationsObject.getDisplayName());
-		mainVP.remove(existingStratumsGrid);
+		if(existingStratumsGrid != null) {
+			mainVP.remove(existingStratumsGrid);
+		}
+
 		Grid newStratumsGrid = generateStratumGrid(stratificationsObject);
 		mainVP.add(newStratumsGrid);
 		parentToChildGridMap.put(stratificationsObject.getDisplayName(), newStratumsGrid);

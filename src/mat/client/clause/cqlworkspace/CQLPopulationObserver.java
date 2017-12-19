@@ -1,7 +1,5 @@
 package mat.client.clause.cqlworkspace;
 
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
-
 import com.google.gwt.user.client.ui.Grid;
 
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
@@ -15,7 +13,7 @@ public interface CQLPopulationObserver {
 	void onDeleteClick(String definitionName);
 	void onSaveClick(PopulationDataModel populationDataModel);
 	void onViewHRClick(PopulationClauseObject population);
-	void onAddNewClick(FlowPanel flowPanel, Grid populationGrid, PopulationsObject populationsObject);
+	void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject);
 	void onSaveClick();
 	void onAddNewStratificationClick(StrataDataModel strataDataModel);
 	void onAddNewStratumClick(StratificationsObject stratificationsObject);

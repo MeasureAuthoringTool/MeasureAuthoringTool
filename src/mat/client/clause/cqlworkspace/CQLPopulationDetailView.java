@@ -33,7 +33,6 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel; 
-	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "", "Save", "Add New");
 	boolean isViewDirty = false;
 	public CQLPopulationDetailView(PopulationDataModel populationDataModel) {
 		setPopulationDataModel(populationDataModel);
@@ -41,8 +40,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	
 	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
-		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
 		mainFlowPanel.clear();
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "", "Save", "Add New");
+		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().setId("addNewButton_" + populationsObject.getPopulationType());
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().setTitle("Click this button to add a new " + populationsObject.getPopulationType());
 		cqlPopulationTopLevelButtonGroup.getSaveButton().setId("saveButton_" + populationsObject.getPopulationType());
@@ -52,7 +52,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		populationGrid.addStyleName("borderSpacing");
 
 		for (int i = 0; i < popClauses.size(); i++) {
-			populateGrid(mainFlowPanel, popClauses, populationGrid, i);
+			populateGrid(popClauses, populationGrid, i);
 
 		}
 		
@@ -60,7 +60,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			@Override
 			public void onClick(ClickEvent event) {
 				isViewDirty = true;
-				observer.onAddNewClick(mainFlowPanel, populationGrid, populationsObject);
+				observer.onAddNewClick(populationGrid, populationsObject);
 			}
 		});
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
@@ -88,7 +88,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		mainFlowPanel.add(new SpacerWidget());
 	}
 
-	public void populateGrid(FlowPanel mainFlowPanel, List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
+	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		PopulationClauseObject populationClauseObject = popClauses.get(i);
 				
 		if(i == (populationGrid.getRowCount())) {

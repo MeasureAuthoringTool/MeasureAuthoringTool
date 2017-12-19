@@ -10,6 +10,7 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
 
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants.POPULATIONS;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
@@ -117,23 +118,21 @@ public class CQLPopulationLeftNavBarPanelView {
 		
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			
-			final String SCORING = "scoring";			
-			
-			setTextAndIcons(initialPopulation, "Initial Populations", IconType.PENCIL);
-			setTextAndIcons(numerator, "Numerators", IconType.PENCIL);
-			setTextAndIcons(denominator, "Denominators", IconType.PENCIL);
-			setTextAndIcons(numeratorExclusions, "Numerator Exclusions", IconType.PENCIL);
-			setTextAndIcons(denominatorExclusions, "Denominator Exclusions", IconType.PENCIL);
-			setTextAndIcons(denominatorExceptions, "Denominator Exceptions", IconType.PENCIL);
-			setTextAndIcons(measurePopulations, "Measure Populations", IconType.PENCIL);
-			setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions", IconType.PENCIL);
-			setTextAndIcons(stratifications, "Stratification", IconType.PENCIL);
-			setTextAndIcons(measureObservations, "Measure Observations", IconType.PENCIL);
+			setTextAndIcons(initialPopulation, POPULATIONS.INITIAL_POPULATIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(numerator, POPULATIONS.NUMERATORS.popName(), IconType.PENCIL);
+			setTextAndIcons(denominator, POPULATIONS.DENOMINATORS.popName(), IconType.PENCIL);
+			setTextAndIcons(numeratorExclusions, POPULATIONS.NUMERATOR_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(denominatorExclusions, POPULATIONS.DENOMINATOR_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(denominatorExceptions, POPULATIONS.DENOMINATOR_EXCEPTIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(measurePopulations, POPULATIONS.MEASURE_POPULATIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(measurePopulationExclusions, POPULATIONS.MEASURE_POPULATION_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(stratifications, POPULATIONS.STRATIFICATION.popName(), IconType.PENCIL);
+			setTextAndIcons(measureObservations, POPULATIONS.MEASURE_OBSERVATIONS.popName(), IconType.PENCIL);
 			
 			/**
 			 * Find Scoring type for the measure from the Measure XML.
 			 */
-			Node scoringNode = document.getElementsByTagName(SCORING).item(0);
+			Node scoringNode = document.getElementsByTagName(CQLWorkSpaceConstants.SCORING).item(0);
 			String scoringIdAttributeValue = ((Element) scoringNode).getAttribute("id");
 			
 			addAchorsByScoring(navPills, scoringIdAttributeValue);
@@ -141,7 +140,7 @@ public class CQLPopulationLeftNavBarPanelView {
 
 		}
 		
-		setTextAndIcons(viewPopulations, "View Populations", IconType.BOOK);
+		setTextAndIcons(viewPopulations, POPULATIONS.VIEW_POPULATIONS.popName(), IconType.BOOK);
 		navPills.add(viewPopulations);// View Populations is always present
 		viewPopulations.setActive(true);// View Populations is initially selected.
 

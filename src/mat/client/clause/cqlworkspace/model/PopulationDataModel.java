@@ -180,10 +180,16 @@ public class PopulationDataModel {
 		Node strataNode = strataNodeList.item(0);
 		
 		for(int k=0;k<strataNode.getChildNodes().getLength();k++) {
+			int sequenceNumber;
 			Node stratificationNode = strataNode.getChildNodes().item(k);
 			String displayName = stratificationNode.getAttributes().getNamedItem(ATTRIBUTE_DISPLAY_NAME).getNodeValue();
-			StratificationsObject stratificationsObject = new StratificationsObject(displayName);
+			StratificationsObject stratificationsObject = new StratificationsObject("stratification");
 			stratificationsObject.setDisplayName(displayName);
+			
+			if(displayName != null && !displayName.isEmpty()) {
+				sequenceNumber = Integer.parseInt(displayName.substring(displayName.lastIndexOf(" "), displayName.length()).trim());
+				stratificationsObject.setSequenceNumber(sequenceNumber);
+			}
 			
 			NodeList clauseNodeList = stratificationNode.getChildNodes();
 			if(clauseNodeList == null || clauseNodeList.getLength() == 0) {

@@ -208,5 +208,6 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_STRATIFICATIONS = "stratifications";
 	public static final String CQL_MEASUREOBSERVATIONS = "measureobservations";
 	public static final String CQL_VIEWPOPULATIONS = "viewpopulations";
+	public static final String CQL_STRATUM = "Stratum";
 	
 }

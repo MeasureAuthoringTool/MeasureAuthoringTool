@@ -3,17 +3,14 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
-
-import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 
 public class PopulationsObject {
 	
 	private String populationName = "";
 	private String displayName = "";
-	
+	private int sequenceNumber;
 	List<PopulationClauseObject> populationClauseObjectList = new ArrayList<PopulationClauseObject>();
 
 	
@@ -156,12 +153,20 @@ public class PopulationsObject {
 		return popType;
 	}
 
-	public int getLastSequenceNumber() {
+	public int getLastClauseSequenceNumber() {
 		int lastSequenceNumber = 1;
 		if(populationClauseObjectList.size() > 1) {
 			populationClauseObjectList.sort((PopulationClauseObject pc1, PopulationClauseObject pc2)->pc1.getSequenceNumber().compareTo(pc2.getSequenceNumber()));
 		}
 		lastSequenceNumber = populationClauseObjectList.get(populationClauseObjectList.size() - 1).getSequenceNumber();
 		return lastSequenceNumber;
+	}
+
+	public Integer getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
 	}
 }

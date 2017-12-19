@@ -2,6 +2,7 @@ package mat.client.clause.cqlworkspace;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -21,6 +22,8 @@ import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
+import mat.client.clause.cqlworkspace.model.StrataDataModel;
+import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 
@@ -214,9 +217,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onAddNewClick(FlowPanel mainFlowPanel, Grid populationGrid,
-					PopulationsObject populationsObject) {
-				int sequenceNumber = populationsObject.getLastSequenceNumber() + 1;
+			public void onAddNewClick(FlowPanel mainFlowPanel, Grid populationGrid, PopulationsObject populationsObject) {
+				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
 				PopulationClauseObject popClause = new PopulationClauseObject();
 				popClause.setDisplayName(displayName);
@@ -234,17 +236,33 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(true);
 				}
 			}
-
+			
 			@Override
-			public void onAddNewStratificationClick() {
+			public void onAddNewStratificationClick(StrataDataModel strataDataModel) {
+				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
+				String displayName = strataDataModel.getStratificationObjectList().get(strataDataModel.getStratificationObjectList().size() -1).getPopulationType() + " " + sequenceNumber;
+				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS);
+				stratificationsObject.setSequenceNumber(sequenceNumber);
+				stratificationsObject.setDisplayName(displayName);
+				strataDataModel.getStratificationObjectList().add(stratificationsObject);
+				searchDisplay.getCqlStratificationDetailView().addStratificationGrid(stratificationsObject);
 			}
 
 			@Override
-			public void onAddNewStratumClick() {
+			public void onAddNewStratumClick(StratificationsObject stratificationsObject) {
+				// TODO Auto-generated method stub
+				int sequenceNumber = stratificationsObject.getLastClauseSequenceNumber() + 1;
+				PopulationClauseObject popClause = new PopulationClauseObject();
+				popClause.setDisplayName(CQLWorkSpaceConstants.CQL_STRATUM + " " + sequenceNumber);
+				popClause.setSequenceNumber(sequenceNumber);
+				stratificationsObject.getPopulationClauseObjectList().add(popClause);
+				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);
 			}
 
 			@Override
 			public void onSaveClick() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 

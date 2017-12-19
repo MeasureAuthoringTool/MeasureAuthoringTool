@@ -16,5 +16,5 @@ public interface CQLPopulationDetail {
 	public CQLPopulationObserver getObserver(); 
 	public boolean isDirty();
 	public void setIsDirty(boolean isDirty);
-	public void populateGrid(FlowPanel flowPanel, List<PopulationClauseObject> popClauses, Grid populationGrid, int i);
+	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i);
 }

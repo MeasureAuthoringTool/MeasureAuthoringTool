@@ -35,8 +35,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	private CQLPopulationObserver observer; 
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
-	private CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-			"Measure Observations" , "Measure Observations", "Save", "Add New");
+
 	private boolean isViewDirty = false;
 	public CQLMeasureObservationDetailView(PopulationDataModel populationDataModel, String populationType) {
 		
@@ -45,20 +44,22 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	}
 	
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
+				"Measure Observations" , "Measure Observations", "Save", "Add New");
 		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
 		mainFlowPanel.clear();		
 		Grid populationGrid = new Grid(popClauses.size(), 5);
 		populationGrid.addStyleName("borderSpacing");
 		
 		for (int i = 0; i < popClauses.size(); i++) {
-			populateGrid(mainFlowPanel, popClauses, populationGrid, i);
+			populateGrid(popClauses, populationGrid, i);
 		}
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				isViewDirty = true;
-				observer.onAddNewClick(mainFlowPanel, populationGrid, populationsObject);
+				observer.onAddNewClick(populationGrid, populationsObject);
 			}
 		});
 		
@@ -116,7 +117,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		mainFlowPanel.add(new SpacerWidget());
 	}
 
-	public void populateGrid(FlowPanel flowPanel, List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
+	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		PopulationClauseObject populationClauseObject = popClauses.get(i);
 			
 		if(i == (populationGrid.getRowCount())) {
@@ -257,18 +258,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		viewHRButton.setColor("black");
 					
 		populationGrid.setWidget(i, 4, viewHRButton);
-	}
-
-	
-	public Button getSaveButton() {
-		return cqlPopulationTopLevelButtonGroup.getSaveButton();
-		
-	}
-
-	
-	public Button addButtonClicked() {
-		return cqlPopulationTopLevelButtonGroup.getAddNewButton();
-		
 	}
 	
 	public PopulationsObject getPopulationsObject() {

@@ -21,6 +21,8 @@ import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
+import mat.client.clause.cqlworkspace.model.StrataDataModel;
+import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 
@@ -170,7 +172,14 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 	private void addEventHandlers() {
 		searchDisplay.setObserver(new CQLPopulationObserver() {
-
+			
+			private PopulationClauseObject buildStratum(int sequenceNumber) {
+				PopulationClauseObject stratum = new PopulationClauseObject();
+				stratum.setDisplayName(CQLWorkSpaceConstants.CQL_STRATUM + " " + sequenceNumber);
+				stratum.setSequenceNumber(sequenceNumber);
+				return stratum;
+			}
+			
 			@Override
 			public void onViewHRClick(PopulationClauseObject population) {
 				if (population.getCqlExpressionDisplayName().equals("")) {
@@ -214,37 +223,48 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onAddNewClick(FlowPanel mainFlowPanel, Grid populationGrid,
-					PopulationsObject populationsObject) {
-				int sequenceNumber = populationsObject.getLastSequenceNumber() + 1;
+			public void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject) {
+				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
 				PopulationClauseObject popClause = new PopulationClauseObject();
 				popClause.setDisplayName(displayName);
 				popClause.setSequenceNumber(sequenceNumber);
 				populationsObject.getPopulationClauseObjectList().add(popClause);
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
-					searchDisplay.getCqlMeasureObservationDetailView().populateGrid(mainFlowPanel,
-							populationsObject.getPopulationClauseObjectList(), populationGrid,
+					searchDisplay.getCqlMeasureObservationDetailView().populateGrid(populationsObject.getPopulationClauseObjectList(), populationGrid,
 							populationsObject.getPopulationClauseObjectList().size() - 1);
-					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(true);
 				} else {
-					searchDisplay.getCqlPopulationDetailView().populateGrid(mainFlowPanel,
-							populationsObject.getPopulationClauseObjectList(), populationGrid,
+					searchDisplay.getCqlPopulationDetailView().populateGrid(populationsObject.getPopulationClauseObjectList(), populationGrid,
 							populationsObject.getPopulationClauseObjectList().size() - 1);
-					searchDisplay.getCqlPopulationDetailView().setIsDirty(true);
 				}
 			}
-
+			
 			@Override
-			public void onAddNewStratificationClick() {
+			public void onAddNewStratificationClick(StrataDataModel strataDataModel) {
+				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
+				String displayName = "Stratification " + sequenceNumber;
+				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS);
+				stratificationsObject.setSequenceNumber(sequenceNumber);
+				stratificationsObject.setDisplayName(displayName);
+				strataDataModel.getStratificationObjectList().add(stratificationsObject);
+				searchDisplay.getCqlStratificationDetailView().addStratificationGrid(stratificationsObject);
+				PopulationClauseObject popClause = buildStratum(1);
+				stratificationsObject.getPopulationClauseObjectList().add(popClause);
+				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);
 			}
 
 			@Override
-			public void onAddNewStratumClick() {
+			public void onAddNewStratumClick(StratificationsObject stratificationsObject) {
+				int sequenceNumber = stratificationsObject.getLastClauseSequenceNumber() + 1;
+				PopulationClauseObject popClause = buildStratum(sequenceNumber);
+				stratificationsObject.getPopulationClauseObjectList().add(popClause);
+				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);
 			}
 
 			@Override
 			public void onSaveClick() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 

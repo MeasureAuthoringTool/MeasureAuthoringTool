@@ -234,6 +234,24 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(true);
 				}
 			}
+
+			@Override
+			public void onAddNewStratificationClick() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onAddNewStratumClick() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSaveClick() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 
 		addWarningConfirmationHandlers();

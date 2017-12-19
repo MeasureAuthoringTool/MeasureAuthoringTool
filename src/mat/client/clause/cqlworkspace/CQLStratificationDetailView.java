@@ -40,12 +40,6 @@ import mat.client.shared.CQLPopulationTopLevelButtonGroup;
  *
  */
 public class CQLStratificationDetailView implements CQLPopulationDetail{
-	
-	public  interface Observer {
-		void onDeleteStratum(PopulationClauseObject population); 
-		void onDeleteStratification(StratificationsObject stratificationsObject);
-		void onViewHRClick(PopulationClauseObject population); 
-	}
 	private CQLPopulationObserver observer; 
 	private StrataDataModel strataDataModel;
 	private PopulationDataModel populationDataModel;
@@ -98,7 +92,22 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			parentToChildGridMap.put(stratificationsObject.getDisplayName(), stratumGrid);
 			mainVP.add(stratumGrid);
 		}
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				isDirty = true;
+				observer.onAddNewStratificationClick();
+			}
+		});
 		
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				isDirty = false;
+				
+			}
+		});
 		scrollPanel.add(mainVP);
 		
 	}
@@ -181,17 +190,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 				@Override
 				public void onClick(ClickEvent event) {
 					
-					PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-					
-					if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
-						population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
-					}else {
-						population.setCqlExpressionDisplayName("");
-					}
-					
-					population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
-					
-					observer.onViewHRClick(population);
+					isDirty = true;
 				}
 			});
 
@@ -269,7 +268,8 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 			@Override
 			public void onClick(ClickEvent event) {
-
+				isDirty = true;
+				observer.onAddNewStratumClick();
 			}
 		});
 
@@ -290,7 +290,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				
+				isDirty = true;
 			}
 		});
 

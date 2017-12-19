@@ -14,4 +14,7 @@ public interface CQLPopulationObserver {
 	void onSaveClick(PopulationDataModel populationDataModel);
 	void onViewHRClick(PopulationClauseObject population);
 	void onAddNewClick(FlowPanel flowPanel, Grid populationGrid, PopulationsObject populationsObject);
+	void onAddNewStratificationClick();
+	void onAddNewStratumClick();
+	void onSaveClick();
 }

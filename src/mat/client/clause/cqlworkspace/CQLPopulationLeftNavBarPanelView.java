@@ -117,6 +117,8 @@ public class CQLPopulationLeftNavBarPanelView {
 		
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			
+			final String SCORING = "scoring";			
+			
 			setTextAndIcons(initialPopulation, "Initial Populations", IconType.PENCIL);
 			setTextAndIcons(numerator, "Numerators", IconType.PENCIL);
 			setTextAndIcons(denominator, "Denominators", IconType.PENCIL);
@@ -131,7 +133,7 @@ public class CQLPopulationLeftNavBarPanelView {
 			/**
 			 * Find Scoring type for the measure from the Measure XML.
 			 */
-			Node scoringNode = document.getElementsByTagName("scoring").item(0);
+			Node scoringNode = document.getElementsByTagName(SCORING).item(0);
 			String scoringIdAttributeValue = ((Element) scoringNode).getAttribute("id");
 			
 			addAchorsByScoring(navPills, scoringIdAttributeValue);

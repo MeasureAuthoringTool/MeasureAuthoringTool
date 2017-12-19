@@ -254,11 +254,18 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS);
 				stratificationsObject.setSequenceNumber(sequenceNumber);
 				stratificationsObject.setDisplayName(displayName);
+				
+				if(strataDataModel.getStratificationObjectList().size() <= 1) {
+					// enable the first delete button
+					Button deleteButton = (Button) searchDisplay.getCqlStratificationDetailView().getParentGridList().get(0).getWidget(0, 2);
+					deleteButton.setEnabled(true);
+				}
+				
 				strataDataModel.getStratificationObjectList().add(stratificationsObject);
 				searchDisplay.getCqlStratificationDetailView().addStratificationGrid(stratificationsObject);
 				PopulationClauseObject popClause = buildStratum(1);
 				stratificationsObject.getPopulationClauseObjectList().add(popClause);
-				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);
+				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);				
 			}
 
 			@Override
@@ -273,6 +280,44 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			public void onSaveClick() {
 				// TODO Auto-generated method stub
 				
+			}
+
+			@Override
+			public void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification) {
+				// get the view
+				CQLStratificationDetailView view = searchDisplay.getCqlStratificationDetailView();
+				
+				// remove from the view
+				stratificationGrid.removeFromParent(); 
+				Grid stratumGrid = view.getParentToChildGridMap().get(stratification.getDisplayName()); 
+				stratumGrid.removeFromParent();
+	
+				// remove from the list
+				view.getParentGridList().remove(stratificationGrid);
+				view.getParentToChildGridMap().remove(stratification.getDisplayName());
+				
+				// remove from the model
+				view.getStrataDataModel().getStratificationObjectList().remove(stratification);
+				
+				// disable delete button if there is only one left after delete
+				if(view.getStrataDataModel().getStratificationObjectList().size() <= 1) {
+					Button deleteButton = (Button) view.getParentGridList().get(0).getWidget(0, 2);
+					deleteButton.setEnabled(false);
+				}
+			}
+
+			@Override
+			public void onDeleteStratumClick(Grid stratumGrid, StratificationsObject stratification, PopulationClauseObject stratum) { 
+				int index = stratification.getPopulationClauseObjectList().indexOf(stratum);
+				
+				// get the view
+				CQLStratificationDetailView view = searchDisplay.getCqlStratificationDetailView();
+				
+				// remove from the view
+				stratumGrid.removeRow(index);
+				
+				// remove from the model	
+				stratification.getPopulationClauseObjectList().remove(stratum);
 			}
 		});
 

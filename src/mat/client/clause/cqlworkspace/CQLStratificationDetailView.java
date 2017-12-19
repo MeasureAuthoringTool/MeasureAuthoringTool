@@ -40,7 +40,7 @@ import mat.client.shared.CQLPopulationTopLevelButtonGroup;
  *
  */
 public class CQLStratificationDetailView implements CQLPopulationDetail{
-	private VerticalPanel mainVP;
+	private VerticalPanel stratificationPanel;
 	private CQLPopulationObserver observer; 
 	private StrataDataModel strataDataModel;
 	private PopulationDataModel populationDataModel;
@@ -100,18 +100,18 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	private void buildStratificationView() {
 		parentToChildGridMap.clear();
 		parentGridList.clear();
-		mainVP = new VerticalPanel();
+		stratificationPanel = new VerticalPanel();
 
 		for(StratificationsObject stratificationsObject : strataDataModel.getStratificationObjectList()) {
 			Grid parentGrid = generateStratificationGrid(stratificationsObject);
-			mainVP.add(parentGrid);
+			stratificationPanel.add(parentGrid);
 			parentGridList.add(parentGrid);
 			Grid stratumGrid = generateStratumGrid(stratificationsObject);
 			parentToChildGridMap.put(stratificationsObject.getDisplayName(), stratumGrid);
-			mainVP.add(stratumGrid);
+			stratificationPanel.add(stratumGrid);
 		}
 
-		scrollPanel.add(mainVP);
+		scrollPanel.add(stratificationPanel);
 		
 	}
 	
@@ -126,13 +126,13 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		Grid stratumsGrid = new Grid(stratumClauses.size(), 4);
 		stratumsGrid.getElement().setAttribute("style", "border-spacing:40px 10px;");
 		for (int i = 0; i < stratumClauses.size(); i++) {
-			buildStratumGrid(stratumClauses, stratumsGrid, i);
+			buildStratumGrid(stratificationsObject, stratumsGrid, i);
 		}
 		return stratumsGrid;
 	}
 
-	private void buildStratumGrid(List<PopulationClauseObject> stratumClauses, Grid stratumsGrid, int i) {
-		PopulationClauseObject populationClauseObject = stratumClauses.get(i);
+	private void buildStratumGrid(StratificationsObject stratificationsObject, Grid stratumsGrid, int i) {
+		PopulationClauseObject populationClauseObject = stratificationsObject.getPopulationClauseObjectList().get(i);
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
 		nameLabel.setText(populationClauseObject.getDisplayName());
@@ -197,8 +197,9 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				
 				isDirty = true;
+				observer.onDeleteStratumClick(stratumsGrid, stratificationsObject, populationClauseObject);
+				
 			}
 		});
 
@@ -295,7 +296,14 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				isDirty = true;
+				if(strataDataModel.getStratificationObjectList().size() <= 1) {
+					event.stopPropagation();
+				}
+				
+				else {
+					isDirty = true;
+					observer.onDeleteStratificationClick(stratificationParentGrid, stratificationsObject);
+				}
 			}
 		});
 
@@ -358,6 +366,22 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		return null;
 	}
 
+	public VerticalPanel getStratificationPanel() {
+		return stratificationPanel;
+	}
+
+	public void setStratificationPanel(VerticalPanel stratificationPanel) {
+		this.stratificationPanel = stratificationPanel;
+	}
+
+	public StrataDataModel getStrataDataModel() {
+		return strataDataModel;
+	}
+
+	public void setStrataDataModel(StrataDataModel strataDataModel) {
+		this.strataDataModel = strataDataModel;
+	}
+
 	@Override
 	public boolean isDirty() {
 		// TODO Auto-generated method stub
@@ -378,7 +402,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 	public void addStratificationGrid(StratificationsObject stratificationsObject) {
 		Grid grid = generateStratificationGrid(stratificationsObject);
-		mainVP.add(grid);
+		stratificationPanel.add(grid);
 		parentGridList.add(grid);
 	}
 
@@ -388,10 +412,10 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			//resize the grid
 			int newRowCount = existingStratumsGrid.getRowCount() + 1;
 			existingStratumsGrid.resizeRows(newRowCount);
-			buildStratumGrid(stratificationsObject.getPopulationClauseObjectList(), existingStratumsGrid, newRowCount - 1);
+			buildStratumGrid(stratificationsObject, existingStratumsGrid, newRowCount - 1);
 		} else {
 			Grid newStratumsGrid = generateStratumGrid(stratificationsObject);
-			mainVP.add(newStratumsGrid);
+			stratificationPanel.add(newStratumsGrid);
 			parentToChildGridMap.put(stratificationsObject.getDisplayName(), newStratumsGrid);
 		}
 	}

@@ -17,4 +17,6 @@ public interface CQLPopulationObserver {
 	void onSaveClick();
 	void onAddNewStratificationClick(StrataDataModel strataDataModel);
 	void onAddNewStratumClick(StratificationsObject stratificationsObject);
+	void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification); 
+	void onDeleteStratumClick(Grid stratificationGrid, StratificationsObject stratification, PopulationClauseObject stratum); 
 }

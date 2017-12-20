@@ -33,26 +33,27 @@ import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 
 public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
-	
-	private CQLPopulationObserver observer; 
+
+	private CQLPopulationObserver observer;
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
 
 	private boolean isViewDirty = false;
+
 	public CQLMeasureObservationDetailView(PopulationDataModel populationDataModel, String populationType) {
-		
+
 		setPopulationDataModel(populationDataModel);
-		setPopulationsObject(populationDataModel.getMeasureObservationsObject());		
+		setPopulationsObject(populationDataModel.getMeasureObservationsObject());
 	}
-	
+
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-				"Measure Observations" , "Measure Observations", "Save", "Add New");
+				"Measure Observations", "Measure Observations", "Save", "Add New");
 		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
-		mainFlowPanel.clear();		
+		mainFlowPanel.clear();
 		Grid populationGrid = new Grid(popClauses.size(), 5);
 		populationGrid.addStyleName("borderSpacing");
-		
+
 		for (int i = 0; i < popClauses.size(); i++) {
 			populateGrid(popClauses, populationGrid, i);
 		}
@@ -64,30 +65,30 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				observer.onAddNewClick(populationGrid, populationsObject);
 			}
 		});
-		
+
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				isViewDirty = false;
-				
+
 			}
 		});
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
 		mainFlowPanel.add(new SpacerWidget());
-		
-		HorizontalPanel btnPanel = new HorizontalPanel();		
+
+		HorizontalPanel btnPanel = new HorizontalPanel();
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		btnPanel.setStyleName("marginLeftButtons");		
-		
+		btnPanel.setStyleName("marginLeftButtons");
+
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
-		
+
 		mainFlowPanel.add(btnPanel);
-		
-		Grid headerGrid = new Grid(1,2);
-		
+
+		Grid headerGrid = new Grid(1, 2);
+
 		FocusPanel aggFuncHeaderPanel = new FocusPanel();
 		HTML aggFuncLabel = new HTML("<b><u>Aggregate Function</u></b>");
 		aggFuncLabel.setTitle("Aggregate Function");
@@ -95,11 +96,11 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		aggFuncLabel.getElement().setId("Aggregate_Function_Label");
 		aggFuncLabel.getElement().setAttribute("style", "margin-left:120px;");
 		aggFuncHeaderPanel.add(aggFuncLabel);
-		
+
 		headerGrid.getCellFormatter().setWidth(0, 0, "300px");
 		headerGrid.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT);
 		headerGrid.setWidget(0, 0, aggFuncHeaderPanel);
-		
+
 		FocusPanel funcHeaderPanel = new FocusPanel();
 		HTML funcLabel = new HTML("<b><u>Function</u></b>");
 		funcLabel.setTitle("Function");
@@ -107,13 +108,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		funcLabel.getElement().setId("Function_Label");
 		funcLabel.getElement().setAttribute("style", "margin-left:55px;");
 		funcHeaderPanel.add(funcLabel);
-		
+
 		headerGrid.getCellFormatter().setWidth(0, 1, "200px");
 		headerGrid.getCellFormatter().setHorizontalAlignment(0, 0, HasHorizontalAlignment.ALIGN_CENTER);
 		headerGrid.setWidget(0, 1, funcHeaderPanel);
-		
+
 		mainFlowPanel.add(headerGrid);
-		
+
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
@@ -121,11 +122,11 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		PopulationClauseObject populationClauseObject = popClauses.get(i);
-			
-		if(i == (populationGrid.getRowCount())) {
-			populationGrid.resizeRows(i +1);
+
+		if (i == (populationGrid.getRowCount())) {
+			populationGrid.resizeRows(i + 1);
 		}
-		
+
 		// set the name of the Initial Population clause.
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
@@ -137,24 +138,23 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		populationGrid.setWidget(i, 0, nameFocusPanel);
 		populationGrid.getCellFormatter().setWidth(i, 0, "230px");
-		
-		//set a listbox with all agg function names in it.
+
+		// set a listbox with all agg function names in it.
 		ListBox aggFuncListBox = new ListBox();
-		aggFuncListBox.setSize("140px", "30px");			
+		aggFuncListBox.setSize("140px", "30px");
 		aggFuncListBox.addItem("--Select--", "");
 		aggFuncListBox.setTitle("Select Aggregate Function");
 		aggFuncListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-
-		//Add all Aggregate function names to aggFuncListBox 
+		// Add all Aggregate function names to aggFuncListBox
 		PopulationWorkSpaceConstants.AggfuncNames.forEach(name -> aggFuncListBox.addItem(name, name));
-		
+
 		SelectElement selectAggElement = SelectElement.as(aggFuncListBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectAggElement.getOptions();
 		for (int j = 0; j < options.getLength(); j++) {
-		    options.getItem(j).setTitle(options.getItem(j).getText());
+			options.getItem(j).setTitle(options.getItem(j).getText());
 		}
-		
+
 		// select a definition name in the listbox
 		for (int j = 0; j < aggFuncListBox.getItemCount(); j++) {
 			String functionName = aggFuncListBox.getItemText(j);
@@ -163,32 +163,25 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
-		aggFuncListBox.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				isViewDirty = true;
-			}
-		});
+
 		populationGrid.setWidget(i, 1, aggFuncListBox);
 
 		// Set a listbox with all function names in it.
 		ListBox functionListBox = new ListBox();
-		functionListBox.setSize("140px", "30px");			
+		functionListBox.setSize("140px", "30px");
 		functionListBox.addItem("--Select--", "");
 		functionListBox.setTitle("Select Function List");
 		functionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-		populationDataModel.getFunctionNameList().forEach(
-									functionExpressionObject -> functionListBox.addItem(functionExpressionObject.getName(), functionExpressionObject.getUuid())
-								);
-		
+		populationDataModel.getFunctionNameList().forEach(functionExpressionObject -> functionListBox
+				.addItem(functionExpressionObject.getName(), functionExpressionObject.getUuid()));
+
 		SelectElement selectFuncElement = SelectElement.as(functionListBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> funcOptions = selectFuncElement.getOptions();
 		for (int j = 0; j < funcOptions.getLength(); j++) {
 			funcOptions.getItem(j).setTitle(funcOptions.getItem(j).getText());
 		}
-		
+
 		// select a definition name in the listbox
 		for (int j = 0; j < functionListBox.getItemCount(); j++) {
 			String functionName = functionListBox.getItemText(j);
@@ -197,14 +190,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
-		functionListBox.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				isViewDirty = true;
-				
-			}
-		});
+
 		populationGrid.setWidget(i, 2, functionListBox);
 
 		// button for Delete
@@ -221,11 +207,12 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				}
 			}
 		});
-		
+
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
-		deleteButton.setTitle("Delete");			
-		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete " +populationClauseObject.getDisplayName());		
+		deleteButton.setTitle("Delete");
+		deleteButton.getElement().setAttribute("aria-label",
+				"Click this button to delete " + populationClauseObject.getDisplayName());
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
 		if (popClauses.size() == 1) {
@@ -240,56 +227,86 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				
+
 				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-				
+
 				population.setCqlExpressionType("cqlfunction");
-				
-				if(!functionListBox.getSelectedItemText().equals("--Select--")) {
+
+				if (!functionListBox.getSelectedItemText().equals("--Select--")) {
 					population.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
 					population.setCqlExpressionUUID(functionListBox.getSelectedValue());
-				}else {
+				} else {
 					population.setCqlExpressionDisplayName("");
 					population.setCqlExpressionUUID("");
 				}
-				
-				if(!aggFuncListBox.getSelectedItemText().equals("--Select--")) {
+
+				if (!aggFuncListBox.getSelectedItemText().equals("--Select--")) {
 					population.setAggFunctionName(aggFuncListBox.getSelectedItemText());
-				}else {
+				} else {
 					population.setAggFunctionName("");
-				}				
-				
+				}
+
 				observer.onViewHRClick(population);
 			}
 		});
 		viewHRButton.setType(ButtonType.LINK);
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
-		viewHRButton.setTitle("View Human Readable");		
-		viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
-		viewHRButton.setIcon(IconType.BINOCULARS);			
+		viewHRButton.setTitle("View Human Readable");
+		viewHRButton.getElement().setAttribute("aria-label",
+				"Click this button to view Human Readable for " + populationClauseObject.getDisplayName());
+		viewHRButton.setIcon(IconType.BINOCULARS);
 		viewHRButton.setColor("black");
-					
+
 		populationGrid.setWidget(i, 4, viewHRButton);
+		addChangeHandlerEvent(aggFuncListBox, functionListBox);
 	}
-	
+
 	/**
-	 * This method returns the matching grid index based on populationClauseObject displayName and Grid zeroth column label's aria-label value.
+	 * Add Change Event Handler to the List Boxes.
+	 * @param aggFuncListBox
+	 * @param functionListBox
+	 */
+	private void addChangeHandlerEvent(ListBox aggFuncListBox, ListBox functionListBox) {
+		functionListBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				isViewDirty = true;
+
+			}
+		});
+
+		aggFuncListBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				isViewDirty = true;
+			}
+		});
+
+	}
+
+	/**
+	 * This method returns the matching grid index based on populationClauseObject
+	 * displayName and Grid zeroth column label's aria-label value.
+	 * 
 	 * @param populationGrid
 	 * @param populationClauseObject
 	 * @return integer rowIndex.
 	 */
 	private int findRowForPopulationClause(Grid populationGrid, PopulationClauseObject populationClauseObject) {
-		int rowIndex =-1;
-		for(int i=0; i< populationGrid.getRowCount();i++) {
+		int rowIndex = -1;
+		for (int i = 0; i < populationGrid.getRowCount(); i++) {
 			NodeList<Element> nodeList = populationGrid.getWidget(i, 0).getElement().getElementsByTagName("label");
-			if(nodeList.getItem(0).getAttribute("aria-label").equalsIgnoreCase(populationClauseObject.getDisplayName())) {
+			if (nodeList.getItem(0).getAttribute("aria-label")
+					.equalsIgnoreCase(populationClauseObject.getDisplayName())) {
 				rowIndex = i;
 				break;
 			}
 		}
 		return rowIndex;
 	}
-	
+
 	public PopulationsObject getPopulationsObject() {
 		return populationsObject;
 	}
@@ -297,7 +314,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	public void setPopulationsObject(PopulationsObject populationObject) {
 		this.populationsObject = populationObject;
 	}
-	
+
 	public PopulationDataModel getPopulationDataModel() {
 		return populationDataModel;
 	}
@@ -305,22 +322,21 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	public void setPopulationDataModel(PopulationDataModel populationDataModel) {
 		this.populationDataModel = populationDataModel;
 	}
-	
+
 	public void setObserver(CQLPopulationObserver observer) {
 		this.observer = observer;
-		
+
 	}
 
 	public CQLPopulationObserver getObserver() {
 		return this.observer;
 	}
 
-
 	@Override
 	public boolean isDirty() {
 		return isViewDirty;
 	}
-	
+
 	public void setIsDirty(boolean isViewDirty) {
 		this.isViewDirty = isViewDirty;
 	}

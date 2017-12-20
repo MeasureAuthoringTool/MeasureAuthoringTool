@@ -1,6 +1,5 @@
 package mat.client.clause.cqlworkspace;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,38 +38,40 @@ import mat.client.shared.CQLPopulationTopLevelButtonGroup;
  * Class CQLStratificationDetailView.
  *
  */
-public class CQLStratificationDetailView implements CQLPopulationDetail{
+public class CQLStratificationDetailView implements CQLPopulationDetail {
 	private VerticalPanel stratificationPanel;
-	private CQLPopulationObserver observer; 
+	private CQLPopulationObserver observer;
 	private StrataDataModel strataDataModel;
 	private PopulationDataModel populationDataModel;
-	
-	private Map<String, Grid> parentToChildGridMap = new HashMap<String,Grid>();
+
+	private Map<String, Grid> parentToChildGridMap = new HashMap<String, Grid>();
 	private List<Grid> parentGridList = new ArrayList<Grid>();
-	
+
 	private VerticalPanel mainPanel = new VerticalPanel();
-	
+
 	private ScrollPanel scrollPanel = new ScrollPanel();
 	private boolean isDirty = false;
-	
+
 	/**
-	 * This is a public method that is invoked to generate Stratification View for Stratification Left nav pill.
+	 * This is a public method that is invoked to generate Stratification View for
+	 * Stratification Left nav pill.
+	 * 
 	 * @param populationDataModel
 	 * @return Vertical Panel
 	 */
 	public VerticalPanel buildView(PopulationDataModel populationDataModel) {
 		mainPanel.clear();
 		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
-				"Stratifications" , "Stratifications", "Save", "Add New Stratification");
+				"Stratifications", "Stratifications", "Save", "Add New Stratification");
 		scrollPanel.clear();
 		scrollPanel.setSize("700px", "450px");
 		this.populationDataModel = populationDataModel;
 		this.strataDataModel = populationDataModel.getStrataDataModel();
-		HorizontalPanel btnPanel = new HorizontalPanel();		
+		HorizontalPanel btnPanel = new HorizontalPanel();
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		btnPanel.getElement().setAttribute("style", "margin-left:400px;");
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
-		
+
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -78,22 +79,22 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 				observer.onAddNewStratificationClick(strataDataModel);
 			}
 		});
-		
+
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				isDirty = false;
-				
+
 			}
 		});
-		
+
 		mainPanel.add(btnPanel);
 		mainPanel.add(scrollPanel);
 		buildStratificationView();
 		return mainPanel;
 	}
-	
+
 	/**
 	 * Method to generate Stratification Grid with Stratum grid.
 	 */
@@ -102,7 +103,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		parentGridList.clear();
 		stratificationPanel = new VerticalPanel();
 
-		for(StratificationsObject stratificationsObject : strataDataModel.getStratificationObjectList()) {
+		for (StratificationsObject stratificationsObject : strataDataModel.getStratificationObjectList()) {
 			Grid parentGrid = generateStratificationGrid(stratificationsObject);
 			stratificationPanel.add(parentGrid);
 			parentGridList.add(parentGrid);
@@ -112,12 +113,12 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		}
 
 		scrollPanel.add(stratificationPanel);
-		
+
 	}
-	
-	
+
 	/**
 	 * This method generates Grid for all stratums.
+	 * 
 	 * @param stratificationsObject
 	 * @return Grid.
 	 */
@@ -131,6 +132,21 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		return stratumsGrid;
 	}
 
+	/**
+	 * Add Change Event Handler to the List Box.
+	 * @param definitionListBox
+	 */
+	private void addChangeHandlerEvent(ListBox definitionListBox) {
+		definitionListBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				isDirty = true;
+
+			}
+		});
+	}
+
 	private void buildStratumGrid(StratificationsObject stratificationsObject, Grid stratumsGrid, int i) {
 		PopulationClauseObject populationClauseObject = stratificationsObject.getPopulationClauseObjectList().get(i);
 		FocusPanel nameFocusPanel = new FocusPanel();
@@ -142,34 +158,34 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		nameLabel.setWidth("100px");
 		nameLabel.setMarginLeft(20.00);
 		nameFocusPanel.add(nameLabel);
-		
+
 		stratumsGrid.setWidget(i, 0, nameFocusPanel);
 
 		// Set a listbox with all definition names in it.
 		ListBox definitionListBox = new ListBox();
-		definitionListBox.setSize("180px", "30px");			
+		definitionListBox.setSize("180px", "30px");
 		definitionListBox.addItem("--Select Definition--", "");
 		definitionListBox.setTitle("Select Definition List");
 		definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 		definitionListBox.addChangeHandler(new ChangeHandler() {
-			
+
 			@Override
 			public void onChange(ChangeEvent event) {
 				setIsDirty(true);
-				
+
 			}
 		});
 
 		for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
 			definitionListBox.addItem(definition.getName(), definition.getUuid());
 		}
-		
+
 		SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 		for (int j = 0; j < options.getLength(); j++) {
-		    options.getItem(j).setTitle(options.getItem(j).getText());
+			options.getItem(j).setTitle(options.getItem(j).getText());
 		}
-		
+
 		// select a definition name in the listbox
 		for (int j = 0; j < definitionListBox.getItemCount(); j++) {
 			String definitionName = definitionListBox.getItemText(j);
@@ -187,7 +203,8 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
-		deleteButton.getElement().setAttribute("aria-label", "click this button to delete " +  populationClauseObject.getDisplayName());
+		deleteButton.getElement().setAttribute("aria-label",
+				"click this button to delete " + populationClauseObject.getDisplayName());
 		deleteButton.setIcon(IconType.TRASH);
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
@@ -199,7 +216,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			public void onClick(ClickEvent event) {
 				isDirty = true;
 				observer.onDeleteStratumClick(stratumsGrid, stratificationsObject, populationClauseObject);
-				
+
 			}
 		});
 
@@ -211,40 +228,42 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 		viewHRButton.setTitle("View Human Readable");
 		viewHRButton.setText("View");
-		viewHRButton.getElement().setAttribute("aria-label", "Click this button to view Human Readable for " + populationClauseObject.getDisplayName() );
+		viewHRButton.getElement().setAttribute("aria-label",
+				"Click this button to view Human Readable for " + populationClauseObject.getDisplayName());
 		viewHRButton.setIcon(IconType.BINOCULARS);
 		viewHRButton.setColor("black");
-		viewHRButton.setMarginLeft(-100.00);			
+		viewHRButton.setMarginLeft(-100.00);
 		viewHRButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
 				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-				
-				if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+
+				if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
 					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
-				}else {
+				} else {
 					population.setCqlExpressionDisplayName("");
 				}
 
 				population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
-				
+
 				observer.onViewHRClick(population);
 			}
 		});
-		
 
 		stratumsGrid.setWidget(i, 3, viewHRButton);
+		addChangeHandlerEvent(definitionListBox);
 	}
 
 	/**
 	 * This method Generates Stratification Level Grid.
+	 * 
 	 * @param stratificationsObject
 	 * @return Grid.
 	 */
 	private Grid generateStratificationGrid(StratificationsObject stratificationsObject) {
 		Grid stratificationParentGrid = new Grid(1, 3);
-		stratificationParentGrid.getElement().setId("grid_"+stratificationsObject.getDisplayName());
+		stratificationParentGrid.getElement().setId("grid_" + stratificationsObject.getDisplayName());
 		stratificationParentGrid.getElement().setAttribute("style", "border-spacing:35px 10px;");
 		FocusPanel nameFocusPanel = new FocusPanel();
 		FormLabel nameLabel = new FormLabel();
@@ -253,23 +272,23 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		nameLabel.getElement().setAttribute("aria-label", stratificationsObject.getDisplayName());
 		nameLabel.setId("nameLabel" + 1);
 		nameFocusPanel.add(nameLabel);
-		
 
 		stratificationParentGrid.setWidget(0, 0, nameFocusPanel);
 		stratificationParentGrid.getCellFormatter().setWidth(0, 0, "230px");
-		
+
 		// button for Add New Stratum
 		Button addNewStratum = new Button();
 		addNewStratum.setType(ButtonType.LINK);
 		addNewStratum.getElement().setId("addNewStratumButton_" + stratificationsObject.getDisplayName());
 		addNewStratum.setTitle("Click this button to add new stratum");
 		addNewStratum.setText("Add Stratum");
-		addNewStratum.getElement().setAttribute("aria-label", "Click this button Add Stratum under "+ stratificationsObject.getDisplayName());
+		addNewStratum.getElement().setAttribute("aria-label",
+				"Click this button Add Stratum under " + stratificationsObject.getDisplayName());
 		addNewStratum.setIcon(IconType.PLUS);
 		addNewStratum.setColor("#0964A2");
 		addNewStratum.setMarginRight(150.00);
 		addNewStratum.setMarginLeft(-105.00);
-		
+
 		addNewStratum.addClickHandler(new ClickHandler() {
 
 			@Override
@@ -280,14 +299,15 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		});
 
 		stratificationParentGrid.setWidget(0, 1, addNewStratum);
-		
+
 		// button for Delete
 		Button deleteButton = new Button();
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + stratificationsObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
-		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete "+ stratificationsObject.getDisplayName() +" and stratums attached to it.");
+		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete "
+				+ stratificationsObject.getDisplayName() + " and stratums attached to it.");
 		deleteButton.setIcon(IconType.TRASH);
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
@@ -296,10 +316,10 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				if(strataDataModel.getStratificationObjectList().size() <= 1) {
+				if (strataDataModel.getStratificationObjectList().size() <= 1) {
 					event.stopPropagation();
 				}
-				
+
 				else {
 					isDirty = true;
 					observer.onDeleteStratificationClick(stratificationParentGrid, stratificationsObject);
@@ -308,7 +328,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 		});
 
 		stratificationParentGrid.setWidget(0, 2, deleteButton);
-		
+
 		return stratificationParentGrid;
 	}
 
@@ -324,12 +344,13 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	/**
 	 * Sets the observer.
 	 *
-	 * @param observer the new observer
+	 * @param observer
+	 *            the new observer
 	 */
 	public void setObserver(CQLPopulationObserver observer) {
 		this.observer = observer;
 	}
-	
+
 	public PopulationDataModel getPopulationDataModel() {
 		return populationDataModel;
 	}
@@ -357,7 +378,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -391,13 +412,13 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 	@Override
 	public void setIsDirty(boolean isDirty) {
 		this.isDirty = isDirty;
-		
+
 	}
 
 	@Override
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void addStratificationGrid(StratificationsObject stratificationsObject) {
@@ -408,8 +429,8 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 
 	public void addStratumGrid(StratificationsObject stratificationsObject) {
 		Grid existingStratumsGrid = parentToChildGridMap.get(stratificationsObject.getDisplayName());
-		if(existingStratumsGrid != null) {
-			//resize the grid
+		if (existingStratumsGrid != null) {
+			// resize the grid
 			int newRowCount = existingStratumsGrid.getRowCount() + 1;
 			existingStratumsGrid.resizeRows(newRowCount);
 			buildStratumGrid(stratificationsObject, existingStratumsGrid, newRowCount - 1);
@@ -419,5 +440,5 @@ public class CQLStratificationDetailView implements CQLPopulationDetail{
 			parentToChildGridMap.put(stratificationsObject.getDisplayName(), newStratumsGrid);
 		}
 	}
-	
+
 }

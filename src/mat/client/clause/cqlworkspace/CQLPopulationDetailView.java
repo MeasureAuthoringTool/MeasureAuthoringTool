@@ -28,26 +28,31 @@ import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 
-public class CQLPopulationDetailView implements CQLPopulationDetail{
-	
-	private CQLPopulationObserver observer; 
+public class CQLPopulationDetailView implements CQLPopulationDetail {
+
+	private CQLPopulationObserver observer;
 	private PopulationsObject populationsObject;
-	private PopulationDataModel populationDataModel; 
+	private PopulationDataModel populationDataModel;
 	boolean isViewDirty = false;
+
 	public CQLPopulationDetailView(PopulationDataModel populationDataModel) {
 		setPopulationDataModel(populationDataModel);
 	}
-	
+
 	@Override
 	public void displayPopulationDetail(FlowPanel mainFlowPanel) {
 		mainFlowPanel.clear();
-		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "", "Save", "Add New");
+		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup("", "",
+				"Save", "Add New");
 		List<PopulationClauseObject> popClauses = populationsObject.getPopulationClauseObjectList();
-		cqlPopulationTopLevelButtonGroup.getAddNewButton().setId("addNewButton_" + populationsObject.getPopulationType());
-		cqlPopulationTopLevelButtonGroup.getAddNewButton().setTitle("Click this button to add a new " + populationsObject.getPopulationType());
+		cqlPopulationTopLevelButtonGroup.getAddNewButton()
+				.setId("addNewButton_" + populationsObject.getPopulationType());
+		cqlPopulationTopLevelButtonGroup.getAddNewButton()
+				.setTitle("Click this button to add a new " + populationsObject.getPopulationType());
 		cqlPopulationTopLevelButtonGroup.getSaveButton().setId("saveButton_" + populationsObject.getPopulationType());
-		cqlPopulationTopLevelButtonGroup.getSaveButton().setTitle("Click this button to save " + populationsObject.getPopulationType()+"s");
-	
+		cqlPopulationTopLevelButtonGroup.getSaveButton()
+				.setTitle("Click this button to save " + populationsObject.getPopulationType() + "s");
+
 		Grid populationGrid = new Grid(popClauses.size(), 4);
 		populationGrid.addStyleName("borderSpacing");
 
@@ -55,7 +60,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			populateGrid(popClauses, populationGrid, i);
 
 		}
-		
+
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -64,25 +69,25 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 			}
 		});
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				isViewDirty = false;
-				
+
 			}
 		});
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
 		mainFlowPanel.add(new SpacerWidget());
-		
-		HorizontalPanel btnPanel = new HorizontalPanel();		
+
+		HorizontalPanel btnPanel = new HorizontalPanel();
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		btnPanel.setStyleName("marginLeftButtons");	
-		
+		btnPanel.setStyleName("marginLeftButtons");
+
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
-		
-		mainFlowPanel.add(btnPanel);		
+
+		mainFlowPanel.add(btnPanel);
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
@@ -90,9 +95,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
 		PopulationClauseObject populationClauseObject = popClauses.get(i);
-				
-		if(i == (populationGrid.getRowCount())) {
-			populationGrid.resizeRows(i +1);
+
+		if (i == (populationGrid.getRowCount())) {
+			populationGrid.resizeRows(i + 1);
 		}
 
 		// set the name of the Initial Population clause.
@@ -109,19 +114,20 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 
 		// Set a listbox with all definition names in it.
 		ListBox definitionListBox = new ListBox();
-		definitionListBox.setSize("180px", "30px");			
+		definitionListBox.setSize("180px", "30px");
 		definitionListBox.addItem("--Select Definition--", "");
 		definitionListBox.setTitle("Select Definition List");
 		definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
 
-		populationDataModel.getDefinitionNameList().forEach(definition -> definitionListBox.addItem(definition.getName(), definition.getUuid()));
-		
+		populationDataModel.getDefinitionNameList()
+				.forEach(definition -> definitionListBox.addItem(definition.getName(), definition.getUuid()));
+
 		SelectElement selectElement = SelectElement.as(definitionListBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 		for (int j = 0; j < options.getLength(); j++) {
-		    options.getItem(j).setTitle(options.getItem(j).getText());
+			options.getItem(j).setTitle(options.getItem(j).getText());
 		}
-		
+
 		// select a definition name in the listbox
 		for (int j = 0; j < definitionListBox.getItemCount(); j++) {
 			String definitionName = definitionListBox.getItemText(j);
@@ -132,27 +138,20 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 		}
 
 		populationGrid.setWidget(i, 1, definitionListBox);
-		definitionListBox.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				isViewDirty = true;
-				
-			}
-		});
 		// button for Delete
 		Button deleteButton = new Button("Delete", IconType.TRASH, new ClickHandler() {
-			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				isViewDirty = true;
-				//observer.onDeleteClick(definitionListBox.getSelectedItemText());
+				// observer.onDeleteClick(definitionListBox.getSelectedItemText());
 			}
 		});
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
-		deleteButton.setTitle("Delete");			
-		deleteButton.getElement().setAttribute("aria-label", "Click this button to delete "+ populationClauseObject.getDisplayName());			
+		deleteButton.setTitle("Delete");
+		deleteButton.getElement().setAttribute("aria-label",
+				"Click this button to delete " + populationClauseObject.getDisplayName());
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
 
@@ -163,31 +162,47 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 
 			@Override
 			public void onClick(ClickEvent event) {
-				
+
 				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-				
-				if(!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+
+				if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
 					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
-				}else {
+				} else {
 					population.setCqlExpressionDisplayName("");
 				}
-				
+
 				population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
-				
+
 				observer.onViewHRClick(population);
 			}
 		});
 		viewHRButton.setType(ButtonType.LINK);
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
-		viewHRButton.setTitle("View Human Readable");			
-		viewHRButton.getElement().setAttribute("aria-label", "Click this button to View Human Readable for "+ populationClauseObject.getDisplayName());
-		viewHRButton.setIcon(IconType.BINOCULARS);			
+		viewHRButton.setTitle("View Human Readable");
+		viewHRButton.getElement().setAttribute("aria-label",
+				"Click this button to View Human Readable for " + populationClauseObject.getDisplayName());
+		viewHRButton.setIcon(IconType.BINOCULARS);
 		viewHRButton.setColor("black");
 
 		populationGrid.setWidget(i, 3, viewHRButton);
+		addChangeHandlerEvent(definitionListBox);
+	}
+	
+	/**
+	 * Add Change Event Handler to the List Box.
+	 * @param definitionListBox
+	 */
+	private void addChangeHandlerEvent(ListBox definitionListBox) {
+		definitionListBox.addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				isViewDirty = true;
+
+			}
+		});
 	}
 
-	
 	public PopulationsObject getPopulationsObject() {
 		return populationsObject;
 	}
@@ -195,7 +210,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	public void setPopulationsObject(PopulationsObject populationObject) {
 		this.populationsObject = populationObject;
 	}
-	
+
 	public PopulationDataModel getPopulationDataModel() {
 		return populationDataModel;
 	}
@@ -203,7 +218,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	public void setPopulationDataModel(PopulationDataModel populationDataModel) {
 		this.populationDataModel = populationDataModel;
 	}
-	
+
 	/**
 	 * Gets the observer.
 	 *
@@ -216,12 +231,12 @@ public class CQLPopulationDetailView implements CQLPopulationDetail{
 	/**
 	 * Sets the observer.
 	 *
-	 * @param observer the new observer
+	 * @param observer
+	 *            the new observer
 	 */
 	public void setObserver(CQLPopulationObserver observer) {
 		this.observer = observer;
 	}
-
 
 	@Override
 	public boolean isDirty() {

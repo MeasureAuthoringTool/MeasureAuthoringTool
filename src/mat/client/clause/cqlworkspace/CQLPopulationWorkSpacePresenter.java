@@ -262,6 +262,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onAddNewStratificationClick(StrataDataModel strataDataModel) {
 				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
+				int initialStratumSequenceNumber = 1;
 				String displayName = "Stratification " + sequenceNumber;
 				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS);
 				stratificationsObject.setSequenceNumber(sequenceNumber);
@@ -275,7 +276,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				
 				strataDataModel.getStratificationObjectList().add(stratificationsObject);
 				searchDisplay.getCqlStratificationDetailView().addStratificationGrid(stratificationsObject);
-				PopulationClauseObject popClause = buildStratum(1);
+				PopulationClauseObject popClause = buildStratum(initialStratumSequenceNumber);
 				stratificationsObject.getPopulationClauseObjectList().add(popClause);
 				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);				
 			}

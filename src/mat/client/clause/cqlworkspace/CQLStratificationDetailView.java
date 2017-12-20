@@ -152,15 +152,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		definitionListBox.addItem("--Select Definition--", "");
 		definitionListBox.setTitle("Select Definition List");
 		definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
-		definitionListBox.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				setIsDirty(true);
-
-			}
-		});
-
+		
 		for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
 			definitionListBox.addItem(definition.getName(), definition.getUuid());
 		}
@@ -179,6 +171,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
+		// Change Event Handler on definitionListBox
 		definitionListBox.addChangeHandler(event -> setIsDirty(true));
 		stratumsGrid.setWidget(i, 1, definitionListBox);
 

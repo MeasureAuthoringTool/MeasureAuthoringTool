@@ -139,14 +139,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 
 		populationGrid.setWidget(i, 1, definitionListBox);
 		// button for Delete
-		Button deleteButton = new Button("Delete", IconType.TRASH, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				isViewDirty = true;
-				// observer.onDeleteClick(definitionListBox.getSelectedItemText());
-			}
-		});
+		Button deleteButton = new Button("Delete");
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.addClickHandler(event -> addDeleteButtonEventHandler(event, populationGrid, populationClauseObject));
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 		deleteButton.setTitle("Delete");
@@ -155,6 +150,12 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
 
+		if (popClauses.size() == 1) {
+			deleteButton.setEnabled(false);
+		} else {
+			deleteButton.setEnabled(true);
+		}
+		
 		populationGrid.setWidget(i, 2, deleteButton);
 
 		// button for View Human Readable
@@ -188,6 +189,15 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		addChangeHandlerEvent(definitionListBox);
 	}
 	
+	private void addDeleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {
+		if (populationsObject.getPopulationClauseObjectList().size() == 1) {
+			event.stopPropagation();
+		} else {
+			isViewDirty = true;
+			observer.onDeleteClick(populationGrid, populationClauseObject);
+		}
+	}
+
 	/**
 	 * Add Change Event Handler to the List Box.
 	 * @param definitionListBox

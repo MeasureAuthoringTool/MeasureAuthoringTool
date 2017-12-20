@@ -4,7 +4,6 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Grid;
@@ -234,8 +233,14 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					if (searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject().getPopulationClauseObjectList().size() == 1) {
 						((Button) grid.getWidget(0, 3)).setEnabled(false);
 					}
-				} else {
-					searchDisplay.getCqlPopulationDetailView().setIsDirty(true);
+				} else  {
+					int rowIndex =  searchDisplay.getCqlPopulationDetailView().getPopulationsObject()
+							.getPopulationClauseObjectList().indexOf(clauseObject);
+					grid.removeRow(rowIndex);
+					searchDisplay.getCqlPopulationDetailView().getPopulationsObject().getPopulationClauseObjectList().remove(clauseObject);
+					if (searchDisplay.getCqlPopulationDetailView().getPopulationsObject().getPopulationClauseObjectList().size() == 1) {
+						((Button) grid.getWidget(0, 2)).setEnabled(false);
+					}
 				}
 			}
 
@@ -256,6 +261,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				} else {
 					searchDisplay.getCqlPopulationDetailView().populateGrid(populationsObject.getPopulationClauseObjectList(), populationGrid,
 							populationsObject.getPopulationClauseObjectList().size() - 1);
+					if (searchDisplay.getCqlPopulationDetailView().getPopulationsObject().getPopulationClauseObjectList().size() > 1) {
+						((Button) populationGrid.getWidget(0, 2)).setEnabled(true);
+					}
 				}
 			}
 			
@@ -364,7 +372,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		} else if (nextSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_STRATIFICATIONS)) {
 			searchDisplay.displayStratification();
 		} else if(nextSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS)){
-			viewPopulationsEvent();
+			buildViewPopulationView();
 		} else {
 			searchDisplay.displayPopulationDetailView(nextSection);
 		}
@@ -443,7 +451,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			addLeftNavEventHandler();
 			searchDisplay.resetMessageDisplay();
 			panel.add(searchDisplay.asWidget());
-			viewPopulationsEvent();
+			buildViewPopulationView();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -453,268 +461,202 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * Adding handlers for Anchor Items.
 	 */
 	private void addLeftNavEventHandler() {
-
-		searchDisplay.getCqlLeftNavBarPanelView().getInitialPopulation().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					initialPopulationEvent();
-				}
-
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getNumerator().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					numeratorEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getNumeratorExclusions().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					numeratorExclusionEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getDenominator().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOR;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					denominatorEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExclusions().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					denominatorExclusionsEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulations().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					measurePopulationsEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulationExclusions().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					measurePopulationExclusionsEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExceptions().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					denominatorExceptionsEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getStratifications().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_STRATIFICATIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					stratificationsEvent();
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getMeasureObservations().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					measureObservationsEvent();
-					
-				}
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(isDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
-					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					viewPopulationsEvent();
-				}
-			}
-		});
-
+		searchDisplay.getCqlLeftNavBarPanelView().getInitialPopulation().addClickHandler(event -> initialPopulationEvent(event));
+		searchDisplay.getCqlLeftNavBarPanelView().getNumerator().addClickHandler(event -> numeratorEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getNumeratorExclusions().addClickHandler(event -> numeratorExclusionEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getDenominator().addClickHandler(event -> denominatorEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExclusions().addClickHandler(event -> denominatorExclusionsEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulations().addClickHandler(event -> measurePopulationsEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulationExclusions().addClickHandler(event -> measurePopulationExclusionsEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExceptions().addClickHandler(event -> denominatorExceptionsEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getStratifications().addClickHandler(event -> stratificationsEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getMeasureObservations().addClickHandler(event -> measureObservationsEvent(event) );
+		searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().addClickHandler(event -> viewPopulationsEvent(event) );
 	}
 	/**
 	 * Build View for Initial Population when Initial Population AnchorList item is
 	 * clicked.
 	 */
-	private void initialPopulationEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_INITIALPOPULATION );
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_INITIALPOPULATION);
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void initialPopulationEvent(ClickEvent event) {
+		if (isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_INITIALPOPULATION );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_INITIALPOPULATION);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
+		
 	}
 
 	
 	/**
 	 * Build View for Numerator when Numerator AnchorList item is clicked.
 	 */
-	private void numeratorEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOR );
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOR);
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void numeratorEvent(ClickEvent event) {
+		if (isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOR );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOR);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Numerator Exclusions when Numerator Exclusions AnchorList item
 	 * is clicked.
 	 */
-	private void numeratorExclusionEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS );
-		
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS);
-
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void numeratorExclusionEvent(ClickEvent event) {
+		if (isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Denominator when Denominator AnchorList item is clicked.
 	 */
-	private void denominatorEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOR );
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOR);
-
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void denominatorEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOR;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOR );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOR);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Denominator Exclusions when Denominator Exclusions AnchorList
 	 * item is clicked.
 	 */
-	private void denominatorExclusionsEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS );
-		
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS);
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void denominatorExclusionsEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Denominator Exceptions when Denominator Exceptions AnchorList
 	 * item is clicked.
 	 */
-	private void denominatorExceptionsEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS );
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS);
-
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void denominatorExceptionsEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS);
+			
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Measure Populations when Measure Populations AnchorList item
 	 * is clicked.
 	 */
-	private void measurePopulationsEvent() {
-
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS );
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS);
-
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void measurePopulationsEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS);
+	
+			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Measure Populations Exclusions when Measure Populations
 	 * Exclusions AnchorList item is clicked.
 	 */
-	private void measurePopulationExclusionsEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS );
-		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS);
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions",
+	private void measurePopulationExclusionsEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS );
+			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS);
+			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions",
 				"headingPanel");
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Stratifications when Stratifications AnchorList item is clicked.
 	 */
-	private void stratificationsEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_STRATIFICATIONS );
-		searchDisplay.displayStratification();
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void stratificationsEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_STRATIFICATIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_STRATIFICATIONS );
+			searchDisplay.displayStratification();
+			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for Measure Observations when Measure Observations AnchorList item is
 	 * clicked.
 	 */
-	private void measureObservationsEvent() {
-		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS );
-		searchDisplay.displayMeasureObservations();
-		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
-		Mat.focusSkipLists(MEASURE_COMPOSER);
+	private void measureObservationsEvent(ClickEvent event) {
+		if(isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS );
+			searchDisplay.displayMeasureObservations();
+			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}
 	}
 
 	/**
 	 * Build View for View Populations when View Populations AnchorList item is
 	 * clicked.
 	 */
-	private void viewPopulationsEvent() {
+	private void viewPopulationsEvent(ClickEvent event) {
+		if(event != null && isDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else { 
+			buildViewPopulationView();
+		}
+	}
+
+	/**
+	 * Build View Population Section
+	 */
+	private void buildViewPopulationView() {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS );
 		searchDisplay.buildViewPopulations();
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > View Populations", "headingPanel");

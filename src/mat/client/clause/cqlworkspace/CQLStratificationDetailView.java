@@ -200,7 +200,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 			deleteButton.setEnabled(false); 
 		}
 		
-		deleteButton.addClickHandler(event -> addDeleteStratumButtonEventHandler(event, stratumsGrid, stratificationsObject, populationClauseObject));
+		deleteButton.addClickHandler(event -> deleteStratumButtonEventHandler(event, stratumsGrid, stratificationsObject, populationClauseObject));
 
 		stratumsGrid.setWidget(i, 2, deleteButton);
 
@@ -215,29 +215,28 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		viewHRButton.setIcon(IconType.BINOCULARS);
 		viewHRButton.setColor("black");
 		viewHRButton.setMarginLeft(-100.00);
-		viewHRButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-
-				if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
-					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
-				} else {
-					population.setCqlExpressionDisplayName("");
-				}
-
-				population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
-
-				observer.onViewHRClick(population);
-			}
-		});
+		
+		viewHRButton.addClickHandler(event -> viewHumanReadableStratumEventHandler(definitionListBox, populationClauseObject)); 
 
 		stratumsGrid.setWidget(i, 3, viewHRButton);
 		
 	}
+	
+	private void viewHumanReadableStratumEventHandler(ListBox definitionListBox, PopulationClauseObject populationClauseObject) {
+		PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
 
-	private void addDeleteStratumButtonEventHandler(ClickEvent event , Grid stratumsGrid, StratificationsObject stratificationsObject , PopulationClauseObject populationClauseObject) {
+		if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+			population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+		} else {
+			population.setCqlExpressionDisplayName("");
+		}
+
+		population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
+
+		observer.onViewHRClick(population);
+	}
+
+	private void deleteStratumButtonEventHandler(ClickEvent event , Grid stratumsGrid, StratificationsObject stratificationsObject , PopulationClauseObject populationClauseObject) {
 		if(stratificationsObject.getPopulationClauseObjectList().size() <= 1) {
 			event.stopPropagation(); 
 		} else {
@@ -300,7 +299,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 			deleteButton.setEnabled(false);
 		}
 		
-		deleteButton.addClickHandler(event -> addDeleteStratificationButtonEventHandler(event, stratificationParentGrid, stratificationsObject));
+		deleteButton.addClickHandler(event -> deleteStratificationButtonEventHandler(event, stratificationParentGrid, stratificationsObject));
 
 		stratificationParentGrid.setWidget(0, 2, deleteButton);
 
@@ -311,8 +310,8 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		isDirty = true;
 		observer.onAddNewStratumClick(stratificationsObject);
 	}
-
-	private void addDeleteStratificationButtonEventHandler(ClickEvent event , Grid stratificationParentGrid, StratificationsObject stratificationsObject) {
+	
+	private void deleteStratificationButtonEventHandler(ClickEvent event , Grid stratificationParentGrid, StratificationsObject stratificationsObject) {
 		if (strataDataModel.getStratificationObjectList().size() <= 1) {
 			event.stopPropagation();
 		} else {

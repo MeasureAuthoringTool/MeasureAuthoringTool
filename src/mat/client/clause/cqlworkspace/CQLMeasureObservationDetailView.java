@@ -206,32 +206,9 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		populationGrid.setWidget(i, 3, deleteButton);
 
 		// button for View Human Readable
-		Button viewHRButton = new Button("View", IconType.BINOCULARS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-
-				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-
-				population.setCqlExpressionType("cqlfunction");
-
-				if (!functionListBox.getSelectedItemText().equals("--Select--")) {
-					population.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
-					population.setCqlExpressionUUID(functionListBox.getSelectedValue());
-				} else {
-					population.setCqlExpressionDisplayName("");
-					population.setCqlExpressionUUID("");
-				}
-
-				if (!aggFuncListBox.getSelectedItemText().equals("--Select--")) {
-					population.setAggFunctionName(aggFuncListBox.getSelectedItemText());
-				} else {
-					population.setAggFunctionName("");
-				}
-
-				observer.onViewHRClick(population);
-			}
-		});
+		Button viewHRButton = new Button("View");
+		viewHRButton.setIcon(IconType.BINOCULARS);
+		viewHRButton.addClickHandler(event -> viewHumanReadableEventHanddler(populationClauseObject, functionListBox, aggFuncListBox));
 		viewHRButton.setType(ButtonType.LINK);
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 		viewHRButton.setTitle("View Human Readable");
@@ -242,6 +219,28 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		populationGrid.setWidget(i, 4, viewHRButton);
 		addChangeHandlerEvent(aggFuncListBox, functionListBox);
 		
+	}
+	
+	public void viewHumanReadableEventHanddler(PopulationClauseObject populationClauseObject, ListBox functionListBox, ListBox aggFuncListBox) {
+		PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
+
+		population.setCqlExpressionType("cqlfunction");
+
+		if (!functionListBox.getSelectedItemText().equals("--Select--")) {
+			population.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+			population.setCqlExpressionUUID(functionListBox.getSelectedValue());
+		} else {
+			population.setCqlExpressionDisplayName("");
+			population.setCqlExpressionUUID("");
+		}
+
+		if (!aggFuncListBox.getSelectedItemText().equals("--Select--")) {
+			population.setAggFunctionName(aggFuncListBox.getSelectedItemText());
+		} else {
+			population.setAggFunctionName("");
+		}
+
+		observer.onViewHRClick(population);
 	}
 	
 	private void addDeleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {

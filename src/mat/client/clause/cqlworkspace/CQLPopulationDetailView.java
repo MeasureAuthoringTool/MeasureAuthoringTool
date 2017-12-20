@@ -138,7 +138,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		// button for Delete
 		Button deleteButton = new Button("Delete");
 		deleteButton.setIcon(IconType.TRASH);
-		deleteButton.addClickHandler(event -> addDeleteButtonEventHandler(event, populationGrid, populationClauseObject));
+		deleteButton.addClickHandler(event -> deleteButtonEventHandler(event, populationGrid, populationClauseObject));
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
 		deleteButton.setTitle("Delete");
@@ -156,24 +156,9 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		populationGrid.setWidget(i, 2, deleteButton);
 
 		// button for View Human Readable
-		Button viewHRButton = new Button("View", IconType.BINOCULARS, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-
-				PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
-
-				if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
-					population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
-				} else {
-					population.setCqlExpressionDisplayName("");
-				}
-
-				population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
-
-				observer.onViewHRClick(population);
-			}
-		});
+		Button viewHRButton = new Button("View");
+		viewHRButton.setIcon(IconType.BINOCULARS);
+		viewHRButton.addClickHandler(event -> viewHumanReadableEventHandler(definitionListBox, populationClauseObject));
 		viewHRButton.setType(ButtonType.LINK);
 		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
 		viewHRButton.setTitle("View Human Readable");
@@ -185,7 +170,21 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		populationGrid.setWidget(i, 3, viewHRButton);
 	}
 	
-	private void addDeleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {
+	private void viewHumanReadableEventHandler(ListBox definitionListBox, PopulationClauseObject populationClauseObject) {
+		PopulationClauseObject population = new PopulationClauseObject(populationClauseObject);
+
+		if (!definitionListBox.getSelectedItemText().equals("--Select Definition--")) {
+			population.setCqlExpressionDisplayName(definitionListBox.getSelectedItemText());
+		} else {
+			population.setCqlExpressionDisplayName("");
+		}
+
+		population.setCqlExpressionUUID(definitionListBox.getSelectedValue());
+
+		observer.onViewHRClick(population);
+	}
+	
+	private void deleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {
 		if (populationsObject.getPopulationClauseObjectList().size() == 1) {
 			event.stopPropagation();
 		} else {

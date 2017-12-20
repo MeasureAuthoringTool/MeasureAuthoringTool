@@ -154,7 +154,7 @@ public class PopulationsObject {
 	}
 
 	public int getLastClauseSequenceNumber() {
-		int lastSequenceNumber = 1;
+		int lastSequenceNumber = 0;
 		if(populationClauseObjectList.size() > 0) {
 			populationClauseObjectList.sort((PopulationClauseObject pc1, PopulationClauseObject pc2)->pc1.getSequenceNumber().compareTo(pc2.getSequenceNumber()));
 			lastSequenceNumber = populationClauseObjectList.get(populationClauseObjectList.size() - 1).getSequenceNumber();

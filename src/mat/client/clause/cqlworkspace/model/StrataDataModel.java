@@ -35,7 +35,7 @@ public class StrataDataModel {
 	}
 	
 	public int getLastPopulationSequenceNumber() {
-		int lastSequenceNumber = 1;
+		int lastSequenceNumber = 0;
 		if(stratificationObjectList.size() > 0) {
 			stratificationObjectList.sort((StratificationsObject so1, StratificationsObject so2)->so1.getSequenceNumber().compareTo(so2.getSequenceNumber()));
 			lastSequenceNumber = stratificationObjectList.get(stratificationObjectList.size() - 1).getSequenceNumber();

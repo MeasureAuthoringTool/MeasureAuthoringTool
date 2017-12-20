@@ -132,20 +132,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		return stratumsGrid;
 	}
 
-	/**
-	 * Add Change Event Handler to the List Box.
-	 * @param definitionListBox
-	 */
-	private void addChangeHandlerEvent(ListBox definitionListBox) {
-		definitionListBox.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				isDirty = true;
-
-			}
-		});
-	}
+	
 
 	private void buildStratumGrid(StratificationsObject stratificationsObject, Grid stratumsGrid, int i) {
 		PopulationClauseObject populationClauseObject = stratificationsObject.getPopulationClauseObjectList().get(i);
@@ -194,7 +181,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
-
+		definitionListBox.addChangeHandler(event -> setIsDirty(true));
 		stratumsGrid.setWidget(i, 1, definitionListBox);
 
 		// button for Delete
@@ -215,20 +202,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 			deleteButton.setEnabled(false); 
 		}
 		
-		deleteButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if(stratificationsObject.getPopulationClauseObjectList().size() <= 1) {
-					event.stopPropagation(); 
-				}
-				
-				else {
-					isDirty = true;
-					observer.onDeleteStratumClick(stratumsGrid, stratificationsObject, populationClauseObject);
-				}
-			}
-		});
+		deleteButton.addClickHandler(event -> addDeleteStratumButtonEventHandler(event, stratumsGrid, stratificationsObject, populationClauseObject));
 
 		stratumsGrid.setWidget(i, 2, deleteButton);
 
@@ -262,9 +236,17 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		});
 
 		stratumsGrid.setWidget(i, 3, viewHRButton);
-		addChangeHandlerEvent(definitionListBox);
+		
 	}
 
+	private void addDeleteStratumButtonEventHandler(ClickEvent event , Grid stratumsGrid, StratificationsObject stratificationsObject , PopulationClauseObject populationClauseObject) {
+		if(stratificationsObject.getPopulationClauseObjectList().size() <= 1) {
+			event.stopPropagation(); 
+		} else {
+			isDirty = true;
+			observer.onDeleteStratumClick(stratumsGrid, stratificationsObject, populationClauseObject);
+		}
+	}
 	/**
 	 * This method Generates Stratification Level Grid.
 	 * 
@@ -328,24 +310,20 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 			deleteButton.setEnabled(false);
 		}
 		
-		deleteButton.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (strataDataModel.getStratificationObjectList().size() <= 1) {
-					event.stopPropagation();
-				}
-
-				else {
-					isDirty = true;
-					observer.onDeleteStratificationClick(stratificationParentGrid, stratificationsObject);
-				}
-			}
-		});
+		deleteButton.addClickHandler(event -> addDeleteStratificationButtonEventHandler(event, stratificationParentGrid, stratificationsObject));
 
 		stratificationParentGrid.setWidget(0, 2, deleteButton);
 
 		return stratificationParentGrid;
+	}
+	
+	private void addDeleteStratificationButtonEventHandler(ClickEvent event , Grid stratificationParentGrid, StratificationsObject stratificationsObject) {
+		if (strataDataModel.getStratificationObjectList().size() <= 1) {
+			event.stopPropagation();
+		} else {
+			isDirty = true;
+			observer.onDeleteStratificationClick(stratificationParentGrid, stratificationsObject);
+		}
 	}
 
 	/**

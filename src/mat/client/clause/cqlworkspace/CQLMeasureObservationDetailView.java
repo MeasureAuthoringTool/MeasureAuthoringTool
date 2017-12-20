@@ -191,20 +191,9 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
 		populationGrid.setWidget(i, 2, functionListBox);
 
-		// button for Delete
-		Button deleteButton = new Button("Delete", IconType.TRASH, new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (popClauses.size() == 1) {
-					event.stopPropagation();
-				} else {
-					isViewDirty = true;
-					//int rowToRemove = findRowForPopulationClause(populationClauseObject);
-					observer.onDeleteClick(populationGrid,populationClauseObject);
-				}
-			}
-		});
+		Button deleteButton = new Button("Delete");
+		deleteButton.setIcon(IconType.TRASH);
+		deleteButton.addClickHandler(event -> addDeleteButtonEventHandler(event, populationGrid, populationClauseObject));
 
 		deleteButton.setType(ButtonType.LINK);
 		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
@@ -254,9 +243,18 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 				"Click this button to view Human Readable for " + populationClauseObject.getDisplayName());
 		viewHRButton.setIcon(IconType.BINOCULARS);
 		viewHRButton.setColor("black");
-
 		populationGrid.setWidget(i, 4, viewHRButton);
 		addChangeHandlerEvent(aggFuncListBox, functionListBox);
+		
+	}
+	
+	private void addDeleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {
+		if (populationsObject.getPopulationClauseObjectList().size() == 1) {
+			event.stopPropagation();
+		} else {
+			isViewDirty = true;
+			observer.onDeleteClick(populationGrid, populationClauseObject);
+		}
 	}
 
 	/**
@@ -265,22 +263,8 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	 * @param functionListBox
 	 */
 	private void addChangeHandlerEvent(ListBox aggFuncListBox, ListBox functionListBox) {
-		functionListBox.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				isViewDirty = true;
-
-			}
-		});
-
-		aggFuncListBox.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				isViewDirty = true;
-			}
-		});
+		functionListBox.addChangeHandler(event -> setIsDirty(true));
+		aggFuncListBox.addChangeHandler(event -> setIsDirty(true));
 
 	}
 

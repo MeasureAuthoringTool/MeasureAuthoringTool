@@ -136,7 +136,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
-
+		definitionListBox.addChangeHandler(event -> setIsDirty(true));
 		populationGrid.setWidget(i, 1, definitionListBox);
 		// button for Delete
 		Button deleteButton = new Button("Delete");
@@ -186,7 +186,6 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		viewHRButton.setColor("black");
 
 		populationGrid.setWidget(i, 3, viewHRButton);
-		addChangeHandlerEvent(definitionListBox);
 	}
 	
 	private void addDeleteButtonEventHandler(ClickEvent event , Grid populationGrid, PopulationClauseObject populationClauseObject) {
@@ -198,22 +197,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		}
 	}
 
-	/**
-	 * Add Change Event Handler to the List Box.
-	 * @param definitionListBox
-	 */
-	private void addChangeHandlerEvent(ListBox definitionListBox) {
-		definitionListBox.addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				isViewDirty = true;
-
-			}
-		});
-	}
-
-	public PopulationsObject getPopulationsObject() {
+		public PopulationsObject getPopulationsObject() {
 		return populationsObject;
 	}
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
 /**
  * Message store to prevent duplicated messages final String fields and their
  * getters.
@@ -364,7 +363,7 @@ public class MessageDelegate {
 	}
 	
 	/** The abv name required. */
-	private final String ABV_NAME_REQUIRED = "Abbreviated Name is required.";
+	private final String ABV_NAME_REQUIRED = "eCQM Abbreviated Title is required.";
 	
 	/** The account locked. */
 	private final String ACCOUNT_LOCKED = "Please contact MAT Support. We are unable to complete your request at this time.";
@@ -728,13 +727,7 @@ public class MessageDelegate {
 	/** The save error msg. */
 	private final String SAVE_ERROR_MSG = "You have unsaved changes that will be discarded if you continue. "
 			+ "Do you want to continue without saving?";
-	
-	// TODO is this such a smart policy?
-	// This makes denial of service attacks on accounts too easy.
-	// Perhaps make them answer a security question?
-	/** The seccond attempt failed. */
-	//private final String SECCOND_ATTEMPT_FAILED = "Failed 2nd attempt. Next attempt will lock the account.";
-	
+		
 	/** The security not answered. */
 	private final String SECURITY_NOT_ANSWERED = "Your security questions have not been answered.  You cannot continue. Please contact the Helpdesk";
 	
@@ -2820,7 +2813,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the successful saved cql definition.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the successful saved cql definition
 	 */
@@ -2830,7 +2823,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the successful saved cql parameter.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the successful saved cql parameter
 	 */
@@ -2867,7 +2860,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess definition modify.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the sucess definition modify
 	 */
@@ -2877,7 +2870,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess parameter modify.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the sucess parameter modify
 	 */
@@ -2887,7 +2880,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the successful saved cql functions.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the successful saved cql functions
 	 */
@@ -2906,7 +2899,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess function modify.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the sucess function modify
 	 */
@@ -2970,7 +2963,7 @@ public class MessageDelegate {
 	
 	/**
 	 * Gets the sucess definition modify with errors.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the sucess definition modify with errors
 	 */
@@ -2980,7 +2973,7 @@ public class MessageDelegate {
 
 	/**
 	 * Gets the sucess parameter modify with errors.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the sucess parameter modify with errors
 	 */
@@ -2990,7 +2983,7 @@ public class MessageDelegate {
 
 	/**
 	 * Gets the sucess function modify with errors.
-	 * @param name TODO
+	 * @param name 
 	 *
 	 * @return the sucess function modify with errors
 	 */

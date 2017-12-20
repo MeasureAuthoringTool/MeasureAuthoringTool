@@ -210,13 +210,23 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		deleteButton.setColor("#0964A2");
 		deleteButton.setMarginRight(100.00);
 		deleteButton.setMarginLeft(-20.00);
+		
+		if(stratificationsObject.getPopulationClauseObjectList().size() <= 1) {
+			deleteButton.setEnabled(false); 
+		}
+		
 		deleteButton.addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
-				isDirty = true;
-				observer.onDeleteStratumClick(stratumsGrid, stratificationsObject, populationClauseObject);
-
+				if(stratificationsObject.getPopulationClauseObjectList().size() <= 1) {
+					event.stopPropagation(); 
+				}
+				
+				else {
+					isDirty = true;
+					observer.onDeleteStratumClick(stratumsGrid, stratificationsObject, populationClauseObject);
+				}
 			}
 		});
 

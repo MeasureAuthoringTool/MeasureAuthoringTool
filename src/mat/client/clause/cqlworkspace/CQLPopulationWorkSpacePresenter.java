@@ -274,8 +274,17 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			public void onAddNewStratumClick(StratificationsObject stratificationsObject) {
 				int sequenceNumber = stratificationsObject.getLastClauseSequenceNumber() + 1;
 				PopulationClauseObject popClause = buildStratum(sequenceNumber);
+				
+				if(stratificationsObject.getPopulationClauseObjectList().size() <= 1) {
+					Button deleteButton = (Button) searchDisplay.getCqlStratificationDetailView()
+							.getParentToChildGridMap()
+							.get(stratificationsObject.getDisplayName())
+							.getWidget(0, 2);
+					deleteButton.setEnabled(true);
+				}
+				
 				stratificationsObject.getPopulationClauseObjectList().add(popClause);
-				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);
+				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);				
 			}
 
 			@Override
@@ -317,6 +326,11 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				
 				// remove from the model	
 				stratification.getPopulationClauseObjectList().remove(stratum);
+				
+				if(stratification.getPopulationClauseObjectList().size() <=1) {
+					Button button = (Button) stratumGrid.getWidget(0, 2);
+					button.setEnabled(false);
+				}
 			}
 		});
 

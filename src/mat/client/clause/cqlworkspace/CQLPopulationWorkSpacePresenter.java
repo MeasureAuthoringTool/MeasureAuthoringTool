@@ -215,8 +215,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onDeleteClick(Grid grid, PopulationClauseObject clauseObject, int rowIndex) {
+			public void onDeleteClick(Grid grid, PopulationClauseObject clauseObject) {
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
+					int rowIndex =  searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject()
+							.getPopulationClauseObjectList().indexOf(clauseObject);
 					grid.removeRow(rowIndex);
 					searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject().getPopulationClauseObjectList().remove(clauseObject);
 					if (searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject().getPopulationClauseObjectList().size() == 1) {

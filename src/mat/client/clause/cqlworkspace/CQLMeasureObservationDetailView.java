@@ -10,8 +10,6 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -202,8 +200,8 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 					event.stopPropagation();
 				} else {
 					isViewDirty = true;
-					int rowToRemove = findRowForPopulationClause(populationGrid, populationClauseObject);
-					observer.onDeleteClick(populationGrid, populationClauseObject, rowToRemove);
+					//int rowToRemove = findRowForPopulationClause(populationClauseObject);
+					observer.onDeleteClick(populationGrid,populationClauseObject);
 				}
 			}
 		});
@@ -284,27 +282,6 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 			}
 		});
 
-	}
-
-	/**
-	 * This method returns the matching grid index based on populationClauseObject
-	 * displayName and Grid zeroth column label's aria-label value.
-	 * 
-	 * @param populationGrid
-	 * @param populationClauseObject
-	 * @return integer rowIndex.
-	 */
-	private int findRowForPopulationClause(Grid populationGrid, PopulationClauseObject populationClauseObject) {
-		int rowIndex = -1;
-		for (int i = 0; i < populationGrid.getRowCount(); i++) {
-			NodeList<Element> nodeList = populationGrid.getWidget(i, 0).getElement().getElementsByTagName("label");
-			if (nodeList.getItem(0).getAttribute("aria-label")
-					.equalsIgnoreCase(populationClauseObject.getDisplayName())) {
-				rowIndex = i;
-				break;
-			}
-		}
-		return rowIndex;
 	}
 
 	public PopulationsObject getPopulationsObject() {

@@ -311,10 +311,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteStratumClick(Grid stratumGrid, StratificationsObject stratification, PopulationClauseObject stratum) { 
 				int index = stratification.getPopulationClauseObjectList().indexOf(stratum);
-				
-				// get the view
-				CQLStratificationDetailView view = searchDisplay.getCqlStratificationDetailView();
-				
+								
 				// remove from the view
 				stratumGrid.removeRow(index);
 				

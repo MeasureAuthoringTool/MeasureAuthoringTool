@@ -312,6 +312,12 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		deleteButton.setIconSize(IconSize.LARGE);
 		deleteButton.setColor("#0964A2");
 		deleteButton.setMarginLeft(-100.00);
+		
+		// disable delete button if there is only one left after delete
+		if(strataDataModel.getStratificationObjectList().size() <= 1) {
+			deleteButton.setEnabled(false);
+		}
+		
 		deleteButton.addClickHandler(new ClickHandler() {
 
 			@Override

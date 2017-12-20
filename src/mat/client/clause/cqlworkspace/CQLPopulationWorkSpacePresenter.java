@@ -32,6 +32,8 @@ import mat.client.shared.MatContext;
  */
 public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
+	private static final String MEASURE_COMPOSER = "MeasureComposer";
+
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
 
@@ -172,6 +174,14 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	}
 
 	private void addEventHandlers() {
+		addPopulationObserverEventHandlers();
+		addWarningConfirmationHandlers();
+	}
+
+	/**
+	 * CQLPopulationObserver Event Handlers.
+	 */
+	private void addPopulationObserverEventHandlers() {
 		searchDisplay.setObserver(new CQLPopulationObserver() {
 			
 			private PopulationClauseObject buildStratum(int sequenceNumber) {
@@ -333,8 +343,6 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
-
-		addWarningConfirmationHandlers();
 	}
 
 	private void addWarningConfirmationHandlers() {
@@ -417,7 +425,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					});
 
 			MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLPopulationWorkspaceView.containerPanel");
-			Mat.focusSkipLists("MeasureComposer");
+			Mat.focusSkipLists(MEASURE_COMPOSER);
 
 		}
 	}
@@ -598,7 +606,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	private void initialPopulationEvent() {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_INITIALPOPULATION );
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_INITIALPOPULATION);
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	
@@ -608,7 +616,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	private void numeratorEvent() {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOR );
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOR);
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -620,7 +628,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS);
 
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -630,7 +638,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOR );
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOR);
 
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -641,7 +649,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS );
 		
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS);
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -652,7 +660,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS );
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS);
 
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -665,7 +673,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS);
 
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -677,7 +685,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS);
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions",
 				"headingPanel");
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -687,7 +695,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_STRATIFICATIONS );
 		searchDisplay.displayStratification();
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -698,7 +706,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS );
 		searchDisplay.displayMeasureObservations();
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	/**
@@ -709,7 +717,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS );
 		searchDisplay.buildViewPopulations();
 		searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > View Populations", "headingPanel");
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists(MEASURE_COMPOSER);
 	}
 
 	

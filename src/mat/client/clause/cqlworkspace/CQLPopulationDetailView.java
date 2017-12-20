@@ -61,13 +61,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 
 		}
 
-		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isViewDirty = true;
-				observer.onAddNewClick(populationGrid, populationsObject);
-			}
-		});
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewPopulationClickHandler(populationGrid, populationsObject));
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
 
 			@Override
@@ -91,6 +85,11 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		mainFlowPanel.add(scrollPanel);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
+	}
+
+	private void onAddNewPopulationClickHandler(Grid populationGrid, PopulationsObject populationsObject) {
+		isViewDirty = true;
+		observer.onAddNewClick(populationGrid, populationsObject);
 	}
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {

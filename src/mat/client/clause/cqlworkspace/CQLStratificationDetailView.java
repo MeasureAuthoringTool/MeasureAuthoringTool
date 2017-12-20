@@ -72,14 +72,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		btnPanel.getElement().setAttribute("style", "margin-left:400px;");
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 
-		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isDirty = true;
-				observer.onAddNewStratificationClick(strataDataModel);
-			}
-		});
-
+		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewStratificationClickHander(strataDataModel));
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
 
 			@Override
@@ -93,6 +86,11 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		mainPanel.add(scrollPanel);
 		buildStratificationView();
 		return mainPanel;
+	}
+
+	private void onAddNewStratificationClickHander(StrataDataModel strataDataModel) {
+		isDirty = true;
+		observer.onAddNewStratificationClick(strataDataModel);
 	}
 
 	/**
@@ -280,15 +278,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		addNewStratum.setColor("#0964A2");
 		addNewStratum.setMarginRight(150.00);
 		addNewStratum.setMarginLeft(-105.00);
-
-		addNewStratum.addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				isDirty = true;
-				observer.onAddNewStratumClick(stratificationsObject);
-			}
-		});
+		addNewStratum.addClickHandler(event -> onAddNewStratumClickHandler(stratificationsObject));
 
 		stratificationParentGrid.setWidget(0, 1, addNewStratum);
 
@@ -317,6 +307,11 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		return stratificationParentGrid;
 	}
 	
+	private void onAddNewStratumClickHandler(StratificationsObject stratificationsObject) {
+		isDirty = true;
+		observer.onAddNewStratumClick(stratificationsObject);
+	}
+
 	private void addDeleteStratificationButtonEventHandler(ClickEvent event , Grid stratificationParentGrid, StratificationsObject stratificationsObject) {
 		if (strataDataModel.getStratificationObjectList().size() <= 1) {
 			event.stopPropagation();

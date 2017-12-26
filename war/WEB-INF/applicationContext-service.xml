@@ -101,4 +101,7 @@
         <property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
         <property name="qmdVersion" value="${mat.measure.current.qdm.version}"/>
     </bean>    
+    
+    <bean id="populationService" class="mat.server.PopulationServiceImpl">    	
+    </bean>
 </beans>

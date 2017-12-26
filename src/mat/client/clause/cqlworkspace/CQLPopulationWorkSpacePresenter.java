@@ -25,6 +25,8 @@ import mat.client.clause.cqlworkspace.model.StrataDataModel;
 import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.shared.SaveUpdateCQLResult;
 
 /**
  * The Class CQLPopulationWorkSpacePresenter.
@@ -159,6 +161,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		void setCqlMeasureObservationDetailView(CQLMeasureObservationDetailView cqlMeasureObservationDetailView);
 
 		void setCqlPopulationDetailView(CQLPopulationDetail cqlPopulationDetailView);
+		
+		public MessageAlert getSuccessMessageDisplay();
+
+		public MessageAlert getErrorMessageDisplay();
 	}
 
 	/**
@@ -214,12 +220,36 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSaveClick(PopulationDataModel populationDataModel) {
+			public void onSaveClick(PopulationsObject populationsObject) {
+
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
-					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);
+					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
+				} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_STRATIFICATIONS)) {
+					searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				} else {
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(false);
 				}
+
+				//TODO: Need to handle for saving Stratifications and Measure Observations
+				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject, 
+						new AsyncCallback<SaveUpdateCQLResult>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.getErrorMessageDisplay().createAlert(
+								MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(
+								null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {							
+						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");
+						//buildPopulationWorkspace(result.getXml());
+					}
+
+				});					
+
 
 			}
 
@@ -306,11 +336,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlStratificationDetailView().addStratumGrid(stratificationsObject);				
 			}
 
-			@Override
-			public void onSaveClick() {
-				// TODO Auto-generated method stub
-				
-			}
+			
 
 			@Override
 			public void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification) {
@@ -401,6 +427,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.setCqlPopulationDetailView(null);
 		searchDisplay.setCqlMeasureObservationDetailView(null);
 		searchDisplay.setCqlStratificationDetailView(null);
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 
 	/**
@@ -423,7 +450,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 																	// table
 						@Override
 						public void onSuccess(SortedClauseMapResult result) {
-							buildPopulationWorkspace(result);
+							buildPopulationWorkspace(result.getMeasureXmlModel().getXml());
 						}
 
 						@Override
@@ -439,9 +466,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
-	private void buildPopulationWorkspace(SortedClauseMapResult result) {
+	private void buildPopulationWorkspace(String result) {
 		try {
-			String xml = result != null ? result.getMeasureXmlModel().getXml() : null;
+			String xml = result != null ? result : null;
 			Document document = XMLParser.parse(xml);
 
 			// create a Populations Data model object from the Measure XML.
@@ -665,6 +692,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 	
 	private void setNextActiveMenuItem(String currSection, String nexSection) {
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		setActiveMenuItem(currSection, false);
 		setActiveMenuItem(nexSection, true);
 		this.currentSection= nexSection;

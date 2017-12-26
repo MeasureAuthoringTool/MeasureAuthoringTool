@@ -58,6 +58,8 @@ import mat.client.measurepackage.service.PackageService;
 import mat.client.measurepackage.service.PackageServiceAsync;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.MyAccountServiceAsync;
+import mat.client.population.service.PopulationService;
+import mat.client.population.service.PopulationServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -133,6 +135,9 @@ public class MatContext implements IsSerializable {
 	
 	/** The qds attributes service async. */
 	private QDSAttributesServiceAsync qdsAttributesServiceAsync;
+	
+	/** The Population service. */
+	private PopulationServiceAsync populationService;
 	
 	/** The event bus. */
 	private HandlerManager eventBus;
@@ -2306,15 +2311,17 @@ public class MatContext implements IsSerializable {
 		
 	}
 
-
-	/*public GlobalCopyPaste getCopyPaste() {
-		return copyPaste;
-	}
-	
-	
-	public void setCopyPaste(GlobalCopyPaste copyPaste) {
-		this.copyPaste = copyPaste;
-	}*/
-	
-	
+	/**
+	 * Gets the Population service.
+	 *
+	 * @return the Population service
+	 */
+	public PopulationServiceAsync getPopulationService() {
+		
+		if(populationService == null) {
+			populationService = GWT.create(PopulationService.class);
+		}
+		
+		return populationService; 
+	}	
 }

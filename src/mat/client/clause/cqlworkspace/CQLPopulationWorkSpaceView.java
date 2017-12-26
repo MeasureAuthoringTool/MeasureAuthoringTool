@@ -10,7 +10,10 @@ import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SuccessMessageAlert;
 
 /**
  * The Class CQLPopulationWorkSpaceView.
@@ -55,8 +58,13 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	CQLStratificationDetailView cqlStratificationDetailView;
 	CQLMeasureObservationDetailView cqlMeasureObservationDetailView;
 	
-
 	CQLPopulationDetail cqlPopulationDetailView;
+	
+	/** The success message display. */
+	private MessageAlert successMessages = new SuccessMessageAlert();
+
+	/** The error message display. */
+	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 
 	/**
 	 * Instantiates a new CQL work space view.
@@ -94,6 +102,8 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		
 		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
 		mainPanel.add(headingPanel);
+		mainPanel.add(successMessages);
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
 		mainPanel.setStyleName("cqlRightContainer");
@@ -363,5 +373,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void setCqlPopulationDetailView(CQLPopulationDetail cqlPopulationDetailView ) {
 		this.cqlPopulationDetailView = cqlPopulationDetailView;
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessages;
+	}
+
+	@Override
+	public MessageAlert getErrorMessageDisplay() {
+		return errorMessageAlert;
 	}
 }

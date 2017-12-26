@@ -1,6 +1,8 @@
 package mat.client.clause.cqlworkspace.model;
 
-public class PopulationClauseObject {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class PopulationClauseObject implements IsSerializable{
 	
 	private String displayName = "";
 	private String type = "";
@@ -10,6 +12,7 @@ public class PopulationClauseObject {
 	private String cqlExpressionType = "";
 	private String aggFunctionName = "";
 	private Integer sequenceNumber;
+	
 	public PopulationClauseObject(PopulationClauseObject population) {
 		this.displayName = population.getDisplayName(); 
 		this.type = population.getType(); 

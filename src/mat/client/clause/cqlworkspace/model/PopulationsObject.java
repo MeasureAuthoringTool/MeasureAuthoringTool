@@ -3,10 +3,11 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
-public class PopulationsObject {
+public class PopulationsObject implements IsSerializable{
 	
 	private String populationName = "";
 	private String displayName = "";
@@ -168,5 +169,9 @@ public class PopulationsObject {
 
 	public void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
+	}
+	
+	public PopulationsObject() {
+	
 	}
 }

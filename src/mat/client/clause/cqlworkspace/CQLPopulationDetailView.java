@@ -13,7 +13,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -60,14 +59,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		}
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewPopulationClickHandler(populationGrid, populationsObject));
-		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				isViewDirty = false;
-
-			}
-		});
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSavePopulationClickHandler(populationsObject));
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
@@ -88,6 +80,10 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 	private void onAddNewPopulationClickHandler(Grid populationGrid, PopulationsObject populationsObject) {
 		isViewDirty = true;
 		observer.onAddNewClick(populationGrid, populationsObject);
+	}
+
+	private void onSavePopulationClickHandler(PopulationsObject populationsObject) {
+		observer.onSaveClick(populationsObject);
 	}
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {

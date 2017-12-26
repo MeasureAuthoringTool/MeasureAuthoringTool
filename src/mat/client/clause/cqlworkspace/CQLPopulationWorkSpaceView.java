@@ -139,6 +139,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		populationDataModel.loadPopulations(document);
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
 		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
+		setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
 	}
 	
 	@Override

@@ -243,9 +243,17 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					}
 
 					@Override
-					public void onSuccess(SaveUpdateCQLResult result) {							
-						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");
-						//buildPopulationWorkspace(result.getXml());
+					public void onSuccess(SaveUpdateCQLResult result) {
+						panel.clear();
+						buildPopulationWorkspace(result.getXml(), false);
+						
+						nextSection = currentSection;
+						setNextActiveMenuItem(currentSection, nextSection);
+						searchDisplay.displayPopulationDetailView(currentSection);
+						Mat.focusSkipLists(MEASURE_COMPOSER);
+						
+						searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
+						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
 					}
 
 				});					
@@ -279,6 +287,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
 				PopulationClauseObject popClause = new PopulationClauseObject();
+				popClause.setType(populationsObject.getPopulationName());
 				popClause.setDisplayName(displayName);
 				popClause.setSequenceNumber(sequenceNumber);
 				populationsObject.getPopulationClauseObjectList().add(popClause);
@@ -450,7 +459,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 																	// table
 						@Override
 						public void onSuccess(SortedClauseMapResult result) {
-							buildPopulationWorkspace(result.getMeasureXmlModel().getXml());
+							buildPopulationWorkspace(result.getMeasureXmlModel().getXml(), true);
 						}
 
 						@Override
@@ -466,7 +475,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
-	private void buildPopulationWorkspace(String result) {
+	private void buildPopulationWorkspace(String result, boolean isDefault) {
 		try {
 			String xml = result != null ? result : null;
 			Document document = XMLParser.parse(xml);
@@ -478,7 +487,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			addLeftNavEventHandler();
 			searchDisplay.resetMessageDisplay();
 			panel.add(searchDisplay.asWidget());
-			buildViewPopulationView();
+			if(isDefault) {
+				buildViewPopulationView();	
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -500,37 +512,32 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getMeasureObservations().addClickHandler(event -> measureObservationsEvent(event) );
 		searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().addClickHandler(event -> viewPopulationsEvent(event) );
 	}
+	
+	private void buildPopulationEvent(ClickEvent event, String populationName) {
+		if (isDirty()) {
+			nextSection = populationName;
+			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			setNextActiveMenuItem(currentSection, populationName);
+			searchDisplay.displayPopulationDetailView(populationName);
+			Mat.focusSkipLists(MEASURE_COMPOSER);
+		}	
+	}
+	
 	/**
 	 * Build View for Initial Population when Initial Population AnchorList item is
 	 * clicked.
 	 */
 	private void initialPopulationEvent(ClickEvent event) {
-		if (isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_INITIALPOPULATION;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_INITIALPOPULATION );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_INITIALPOPULATION);
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
-		
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_INITIALPOPULATION);		
 	}
-
 	
 	/**
 	 * Build View for Numerator when Numerator AnchorList item is clicked.
 	 */
 	private void numeratorEvent(ClickEvent event) {
-		if (isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_NUMERATOR;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOR );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOR);
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_NUMERATOR);		
 	}
 
 	/**
@@ -538,30 +545,14 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * is clicked.
 	 */
 	private void numeratorExclusionEvent(ClickEvent event) {
-		if (isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS);
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_NUMERATOREXCLUSIONS);		
 	}
 
 	/**
 	 * Build View for Denominator when Denominator AnchorList item is clicked.
 	 */
 	private void denominatorEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOR;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOR );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOR);
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_DENOMINATOR);		
 	}
 
 	/**
@@ -569,15 +560,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * item is clicked.
 	 */
 	private void denominatorExclusionsEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS);
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_DENOMINATOREXCLUSIONS);		
 	}
 
 	/**
@@ -585,16 +568,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * item is clicked.
 	 */
 	private void denominatorExceptionsEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS);
-			
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_DENOMINATOREXCEPTIONS);
 	}
 
 	/**
@@ -602,17 +576,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * is clicked.
 	 */
 	private void measurePopulationsEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS);
-	
-			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Populations", "headingPanel");
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONS);
 	}
 
 	/**
@@ -620,17 +584,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * Exclusions AnchorList item is clicked.
 	 */
 	private void measurePopulationExclusionsEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS );
-			searchDisplay.displayPopulationDetailView(CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS);
-			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Population Exclusions",
-				"headingPanel");
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_MEASUREPOPULATIONEXCLUSIONS);
 	}
 
 	/**

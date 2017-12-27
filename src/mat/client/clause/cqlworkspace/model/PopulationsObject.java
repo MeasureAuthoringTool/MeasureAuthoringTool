@@ -39,13 +39,7 @@ public class PopulationsObject implements IsSerializable{
 			for(int i=0;i<childs.getLength();i++) {
 				
 				Node child = childs.item(i);
-				if(child.getNodeName().equals("cqldefinition")) {
-					populationClauseObject.setCqlExpressionType(child.getNodeName());
-					populationClauseObject.setCqlExpressionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
-					populationClauseObject.setCqlExpressionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
-					
-					break;
-				}else if(child.getNodeName().equals("cqlfunction")) {
+				if(child.getNodeName().equals("cqldefinition") || child.getNodeName().equals("cqlfunction")) {
 					populationClauseObject.setCqlExpressionType(child.getNodeName());
 					populationClauseObject.setCqlExpressionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
 					populationClauseObject.setCqlExpressionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
@@ -100,10 +94,6 @@ public class PopulationsObject implements IsSerializable{
 		return populationClauseObjectList;
 	}
 
-	private void setPopulationClauseObjectList(List<PopulationClauseObject> populationClauseObjectList) {
-		this.populationClauseObjectList = populationClauseObjectList;
-	}
-
 	public String getPopulationType() {
 		String popType = null;
 		if(populationName != null && !populationName.isEmpty()) {
@@ -156,7 +146,7 @@ public class PopulationsObject implements IsSerializable{
 
 	public int getLastClauseSequenceNumber() {
 		int lastSequenceNumber = 0;
-		if(populationClauseObjectList.size() > 0) {
+		if(!populationClauseObjectList.isEmpty()) {
 			populationClauseObjectList.sort((PopulationClauseObject pc1, PopulationClauseObject pc2)->pc1.getSequenceNumber().compareTo(pc2.getSequenceNumber()));
 			lastSequenceNumber = populationClauseObjectList.get(populationClauseObjectList.size() - 1).getSequenceNumber();
 		}
@@ -173,5 +163,9 @@ public class PopulationsObject implements IsSerializable{
 	
 	public PopulationsObject() {
 	
+	}
+
+	public void add(PopulationClauseObject pc) {
+		this.populationClauseObjectList.add(pc);
 	}
 }

@@ -1,5 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -59,7 +60,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		}
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewPopulationClickHandler(populationGrid, populationsObject));
-		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSavePopulationClickHandler(populationsObject));
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSavePopulationClickHandler(populationGrid, populationsObject));
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
@@ -82,8 +83,8 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		observer.onAddNewClick(populationGrid, populationsObject);
 	}
 
-	private void onSavePopulationClickHandler(PopulationsObject populationsObject) {
-		observer.onSaveClick(populationsObject);
+	private void onSavePopulationClickHandler(Grid populationGrid, PopulationsObject populationsObject) {		
+		observer.onSaveClick(preparePopulationsForSave(populationGrid, populationsObject));
 	}
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {
@@ -231,5 +232,28 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 
 	public void setIsDirty(boolean isViewDirty) {
 		this.isViewDirty = isViewDirty;
+	}
+	
+	
+	private PopulationsObject preparePopulationsForSave(Grid grid, PopulationsObject populationsObject) {
+		String populationTyp = populationsObject.getPopulationClauseObjectList().get(0).getType();
+		List<PopulationClauseObject> modifiedList = new ArrayList<>();
+		int size = grid.getRowCount();		
+		for(int row=0; row < size; row++) {
+			PopulationClauseObject pc = populationsObject.getPopulationClauseObjectList().get(row);
+			ListBox l =  (ListBox) grid.getWidget(row, 1);
+			if (!"--Select Definition--".equals(l.getSelectedItemText())){
+				pc.setCqlExpressionType(populationTyp);
+				pc.setCqlExpressionDisplayName(l.getSelectedItemText());
+				pc.setCqlExpressionUUID(l.getSelectedValue());	
+			}			
+						
+			modifiedList.add(pc);
+		}
+		
+		populationsObject.getPopulationClauseObjectList().clear(); 
+		populationsObject.getPopulationClauseObjectList().addAll(modifiedList);
+		return populationsObject;
+		
 	}
 }

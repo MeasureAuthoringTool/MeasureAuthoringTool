@@ -287,11 +287,14 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			public void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject) {
 				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
+				String populationTyp = populationsObject.getPopulationClauseObjectList().get(0).getType();
+				
 				PopulationClauseObject popClause = new PopulationClauseObject();
-				popClause.setType(populationsObject.getPopulationName());
+				popClause.setType(populationTyp);
 				popClause.setDisplayName(displayName);
 				popClause.setSequenceNumber(sequenceNumber);
 				populationsObject.getPopulationClauseObjectList().add(popClause);
+				
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					searchDisplay.getCqlMeasureObservationDetailView().populateGrid(populationsObject.getPopulationClauseObjectList(), populationGrid,
 							populationsObject.getPopulationClauseObjectList().size() - 1);

@@ -227,36 +227,37 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				} else if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_STRATIFICATIONS)) {
 					searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				} else {
+					//TODO: Need to handle for saving Stratifications and Measure Observations
+					MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject, 
+							new AsyncCallback<SaveUpdateCQLResult>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							searchDisplay.getErrorMessageDisplay().createAlert(
+									MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							MatContext.get().recordTransactionEvent(
+									null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+						}
+
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							panel.clear();
+							buildPopulationWorkspace(result.getXml(), false);
+							
+							nextSection = currentSection;
+							setNextActiveMenuItem(currentSection, nextSection);
+							searchDisplay.displayPopulationDetailView(currentSection);
+							Mat.focusSkipLists(MEASURE_COMPOSER);
+							
+							searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
+							searchDisplay.getSuccessMessageDisplay().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
+						}
+
+					});		
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(false);
 				}
 
-				//TODO: Need to handle for saving Stratifications and Measure Observations
-				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject, 
-						new AsyncCallback<SaveUpdateCQLResult>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().createAlert(
-								MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(
-								null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-					}
-
-					@Override
-					public void onSuccess(SaveUpdateCQLResult result) {
-						panel.clear();
-						buildPopulationWorkspace(result.getXml(), false);
-						
-						nextSection = currentSection;
-						setNextActiveMenuItem(currentSection, nextSection);
-						searchDisplay.displayPopulationDetailView(currentSection);
-						Mat.focusSkipLists(MEASURE_COMPOSER);
-						
-						searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
-						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
-					}
-
-				});					
+			
 
 
 			}

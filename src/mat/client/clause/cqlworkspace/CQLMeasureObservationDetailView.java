@@ -1,5 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -13,7 +14,6 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,6 +27,7 @@ import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
+import mat.shared.MatConstants;
 
 public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
@@ -55,14 +56,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		}
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewClickHandler(populationGrid, populationsObject));
-		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				isViewDirty = false;
-
-			}
-		});
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSavePopulationClickHandler(populationGrid, populationsObject));
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
@@ -112,6 +106,33 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	private void onAddNewClickHandler(Grid populationGrid, PopulationsObject populationsObject2) {
 		isViewDirty = true;
 		observer.onAddNewClick(populationGrid, populationsObject);
+	}
+	
+	private void onSavePopulationClickHandler(Grid populationGrid, PopulationsObject populationsObject) {
+		PopulationsObject newPopulationObject = buildPopulationsObjectFromGrid(populationGrid, populationsObject);
+		observer.onSaveClick(newPopulationObject);
+	}
+	
+	private PopulationsObject buildPopulationsObjectFromGrid(Grid populationGrid, PopulationsObject originalObject) {
+		PopulationsObject newPopulationsObject = originalObject;
+		newPopulationsObject.getPopulationClauseObjectList().clear();
+		List<PopulationClauseObject> popClauses = new ArrayList<PopulationClauseObject>();
+		for(int i = 0; i<populationGrid.getRowCount(); i++) {
+			PopulationClauseObject popClause = new PopulationClauseObject();
+			popClause.setType(MatConstants.MEASURE_OBS_POPULATION);
+			FocusPanel labelPanel = (FocusPanel)populationGrid.getWidget(i, 0);
+			FormLabel clauseLabel = (FormLabel)labelPanel.getWidget();
+			popClause.setDisplayName(clauseLabel.getText());
+			ListBox aggFunctionListBox = (ListBox)populationGrid.getWidget(i, 1);
+			popClause.setAggFunctionName(aggFunctionListBox.getSelectedValue());
+			ListBox functionListBox = (ListBox)populationGrid.getWidget(i, 2);
+			if(!functionListBox.getSelectedValue().isEmpty()) {
+				popClause.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+			}
+			popClauses.add(popClause);
+		}
+		newPopulationsObject.getPopulationClauseObjectList().addAll(popClauses);
+		return newPopulationsObject;
 	}
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {

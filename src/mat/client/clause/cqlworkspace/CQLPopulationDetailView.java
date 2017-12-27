@@ -242,11 +242,15 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		for(int row=0; row < size; row++) {
 			PopulationClauseObject pc = populationsObject.getPopulationClauseObjectList().get(row);
 			ListBox l =  (ListBox) grid.getWidget(row, 1);
-			if (!"--Select Definition--".equals(l.getSelectedItemText())){
+			if ("--Select Definition--".equals(l.getSelectedItemText())){
+				pc.setCqlExpressionType("");
+				pc.setCqlExpressionDisplayName("");
+				pc.setCqlExpressionUUID("");	
+			} else {
 				pc.setCqlExpressionType(populationTyp);
 				pc.setCqlExpressionDisplayName(l.getSelectedItemText());
-				pc.setCqlExpressionUUID(l.getSelectedValue());	
-			}			
+				pc.setCqlExpressionUUID(l.getSelectedValue());
+			}
 						
 			modifiedList.add(pc);
 		}

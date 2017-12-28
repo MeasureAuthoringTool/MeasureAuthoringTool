@@ -20,7 +20,11 @@ public class Clause implements IsSerializable{
 	private String displayName;
 	
 	private CQLDefinition cqldefinition;
+	
+	private CQLFunction cqlFunction;
 
+	private CQLAggFunction cqlAggFunction; 
+	
 	public String getType() {
 		return type;
 	}
@@ -52,9 +56,27 @@ public class Clause implements IsSerializable{
 		return cqldefinition;
 	}
 
-	@XmlElement
+	@XmlElement(name="cqldefinition")
 	public void setCqldefinition(CQLDefinition cqldefinition) {
 		this.cqldefinition = cqldefinition;
+	}
+
+	public CQLFunction getCqlFunction() {
+		return cqlFunction;
+	}
+	
+	@XmlElement(name="cqlfunction")
+	public void setCqlFunction(CQLFunction cqlFunction) {
+		this.cqlFunction = cqlFunction;
+	}
+
+	public CQLAggFunction getCqlAggFunction() {
+		return cqlAggFunction;
+	}
+
+	@XmlElement(name="cqlaggfunction")
+	public void setCqlAggFunction(CQLAggFunction cqlAggFunction) {
+		this.cqlAggFunction = cqlAggFunction;
 	}
 
 	public Clause(String type, String uuid, String displayName) {

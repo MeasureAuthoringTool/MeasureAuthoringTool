@@ -27,7 +27,6 @@ import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
-import mat.shared.MatConstants;
 
 public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
@@ -113,26 +112,39 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		observer.onSaveClick(newPopulationObject);
 	}
 	
-	private PopulationsObject buildPopulationsObjectFromGrid(Grid populationGrid, PopulationsObject originalObject) {
-		PopulationsObject newPopulationsObject = originalObject;
-		newPopulationsObject.getPopulationClauseObjectList().clear();
-		List<PopulationClauseObject> popClauses = new ArrayList<PopulationClauseObject>();
+	private PopulationsObject buildPopulationsObjectFromGrid(Grid populationGrid, PopulationsObject originalObject) {		
+		
+		List<PopulationClauseObject> popClauses = new ArrayList<>();
+		
 		for(int i = 0; i<populationGrid.getRowCount(); i++) {
-			PopulationClauseObject popClause = new PopulationClauseObject();
-			popClause.setType(MatConstants.MEASURE_OBS_POPULATION);
-			FocusPanel labelPanel = (FocusPanel)populationGrid.getWidget(i, 0);
-			FormLabel clauseLabel = (FormLabel)labelPanel.getWidget();
-			popClause.setDisplayName(clauseLabel.getText());
+			PopulationClauseObject popClause = originalObject.getPopulationClauseObjectList().get(i);
+			
 			ListBox aggFunctionListBox = (ListBox)populationGrid.getWidget(i, 1);
-			popClause.setAggFunctionName(aggFunctionListBox.getSelectedValue());
-			ListBox functionListBox = (ListBox)populationGrid.getWidget(i, 2);
-			if(!functionListBox.getSelectedValue().isEmpty()) {
-				popClause.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+			if(aggFunctionListBox.getSelectedValue().isEmpty()) {
+				popClause.setAggFunctionName("");
+			}else {
+				popClause.setAggFunctionName(aggFunctionListBox.getSelectedValue());	
 			}
+			
+			
+			ListBox functionListBox = (ListBox)populationGrid.getWidget(i, 2);
+			if(functionListBox.getSelectedValue().isEmpty()) {
+				popClause.setCqlExpressionDisplayName("");
+				popClause.setCqlExpressionUUID("");
+				popClause.setCqlExpressionType("");
+			} else {
+				popClause.setCqlExpressionDisplayName(functionListBox.getSelectedItemText());
+				popClause.setCqlExpressionUUID(functionListBox.getSelectedValue());
+				popClause.setCqlExpressionType("cqlfunction");
+			}
+			
 			popClauses.add(popClause);
 		}
-		newPopulationsObject.getPopulationClauseObjectList().addAll(popClauses);
-		return newPopulationsObject;
+		
+		originalObject.getPopulationClauseObjectList().clear();
+		originalObject.getPopulationClauseObjectList().addAll(popClauses);
+		
+		return originalObject;
 	}
 
 	public void populateGrid(List<PopulationClauseObject> popClauses, Grid populationGrid, int i) {

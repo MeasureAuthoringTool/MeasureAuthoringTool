@@ -5,22 +5,31 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
-public class Population {
-	
+public class Stratification {
+
 	private String displayName;
-
+	
+	private String uuid;
+	
 	List<Clause> clauses;
-		
+	
+	@XmlAttribute
 	public String getDisplayName() {
 		return displayName;
 	}
 
-	@XmlAttribute
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	@XmlAttribute
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public List<Clause> getClauses() {
@@ -39,13 +48,15 @@ public class Population {
 		this.clauses.add(clause);
 	}
 
-	public Population() {
-		super();
-	}
-
-	public Population(String displayName) {
+	
+	public Stratification(String displayName, String uuid) {
 		super();
 		this.displayName = displayName;
+		this.uuid = uuid;
 	}
-		
+
+	public Stratification() {
+		super();
+	}
+	
 }

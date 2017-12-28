@@ -13,6 +13,7 @@ public interface CQLPopulationObserver {
 	void onViewHRClick(PopulationClauseObject population);
 	void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject);
 	void onSaveClick(PopulationsObject populationsObject);
+	void onSaveClick(StrataDataModel strataDataModel);
 	void onAddNewStratificationClick(StrataDataModel strataDataModel);
 	void onAddNewStratumClick(StratificationsObject stratificationsObject);
 	void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification); 

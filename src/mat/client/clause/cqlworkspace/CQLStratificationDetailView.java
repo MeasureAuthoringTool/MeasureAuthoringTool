@@ -71,14 +71,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		btnPanel.add(cqlPopulationTopLevelButtonGroup.getButtonGroup());
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewStratificationClickHander(strataDataModel));
-		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				isDirty = false;
-
-			}
-		});
+		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSaveStratificationClickHander(strataDataModel));
 
 		mainPanel.add(btnPanel);
 		mainPanel.add(scrollPanel);
@@ -89,6 +82,10 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 	private void onAddNewStratificationClickHander(StrataDataModel strataDataModel) {
 		isDirty = true;
 		observer.onAddNewStratificationClick(strataDataModel);
+	}
+	
+	private void onSaveStratificationClickHander(StrataDataModel strataDataModel) {
+		observer.onSaveClick(strataDataModel);
 	}
 
 	/**

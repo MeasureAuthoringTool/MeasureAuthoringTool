@@ -198,6 +198,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onViewHRClick(PopulationClauseObject population) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				if (population.getCqlExpressionDisplayName().equals("")) {
 					showHumanReadableDialogBox("<html></html>", population.getDisplayName());
 				}
@@ -221,7 +225,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onSaveClick(PopulationsObject populationsObject) {
-
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
 				} else {
@@ -261,6 +268,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override			
 			public void onSaveClick(StrataDataModel strataDataModel) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				// TODO Auto-generated method stub
 				searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				
@@ -283,6 +294,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onDeleteClick(Grid grid, PopulationClauseObject clauseObject) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					int rowIndex =  searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject()
 							.getPopulationClauseObjectList().indexOf(clauseObject);
@@ -304,6 +319,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
 				String populationTyp = populationsObject.getPopulationClauseObjectList().get(0).getType();
@@ -331,6 +350,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onAddNewStratificationClick(StrataDataModel strataDataModel) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
 				int initialStratumSequenceNumber = 1;
 				String displayName = "Stratification " + sequenceNumber;
@@ -353,6 +376,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onAddNewStratumClick(StratificationsObject stratificationsObject) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				int sequenceNumber = stratificationsObject.getLastClauseSequenceNumber() + 1;
 				PopulationClauseObject popClause = buildStratum(sequenceNumber);
 				
@@ -372,6 +399,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				// get the view
 				CQLStratificationDetailView view = searchDisplay.getCqlStratificationDetailView();
 				
@@ -395,7 +426,11 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onDeleteStratumClick(Grid stratumGrid, StratificationsObject stratification, PopulationClauseObject stratum) { 
+			public void onDeleteStratumClick(Grid stratumGrid, StratificationsObject stratification, PopulationClauseObject stratum) {
+				searchDisplay.getErrorMessageDisplay().clearAlert();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
 				int index = stratification.getPopulationClauseObjectList().indexOf(stratum);
 								
 				// remove from the view

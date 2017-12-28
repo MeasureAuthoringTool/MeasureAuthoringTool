@@ -49,7 +49,7 @@ public class PopulationServiceImpl extends SpringRemoteServiceServlet implements
 
 		String parentNode = "";
 		if(isMeasureObservations(populationsObject.getDisplayName())) {
-			parentNode = "measureObservations";
+			parentNode = "measure";
 		}else {
 			parentNode = "populations";
 		}

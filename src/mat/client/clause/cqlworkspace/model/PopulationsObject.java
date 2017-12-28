@@ -3,11 +3,15 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
 
-public class PopulationsObject implements IsSerializable{
+import mat.shared.UUIDUtilClient;
+
+public class PopulationsObject {
 	
 	private String populationName = "";
 	private String displayName = "";
@@ -168,4 +172,53 @@ public class PopulationsObject implements IsSerializable{
 	public void add(PopulationClauseObject pc) {
 		this.populationClauseObjectList.add(pc);
 	}
+	
+	public String toXML(PopulationsObject populationsObject) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<").append(populationsObject.getPopulationName());
+		sb.append(" displayName=").append("\"");
+		sb.append(populationsObject.getDisplayName());
+		sb.append("\"").append(">");
+	
+		for(PopulationClauseObject pco : populationsObject.getPopulationClauseObjectList()) {
+			sb.append(pco.toXML());
+		}
+		
+		sb.append("</").append(populationsObject.getPopulationName()).append(">");
+		
+		return sb.toString();
+		
+		
+	}
+	
+	public String createXMLNodeToSave(PopulationsObject populationsObject) {
+		
+		Document doc = XMLParser.createDocument();
+		
+		Element newChild =  doc.createElement(populationsObject.getPopulationName());
+		newChild.setAttribute("displayName", populationsObject.getDisplayName());
+		
+		for(PopulationClauseObject p : populationsObject.getPopulationClauseObjectList()) {		
+			Element node =  doc.createElement("clause");
+			if(null == p.getUuid() || p.getUuid().isEmpty()) {
+				p.setUuid(UUIDUtilClient.uuid());
+			}
+			node.setAttribute("uuid", p.getUuid());
+			node.setAttribute("displayName", p.getDisplayName());
+			node.setAttribute("type", p.getType());
+			
+			if(null != p.getCqlExpressionUUID() && !(p.getCqlExpressionUUID().isEmpty())) {
+				Element subnode =  doc.createElement("cqldefinition");
+				subnode.setAttribute("uuid", p.getCqlExpressionUUID());
+				subnode.setAttribute("displayName", p.getCqlExpressionDisplayName());
+				node.appendChild(subnode);				
+			}
+			
+			newChild.appendChild(node);
+		}		
+		
+		return newChild.toString();
+		
+	}
+	
 }

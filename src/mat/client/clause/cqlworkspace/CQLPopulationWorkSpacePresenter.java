@@ -27,6 +27,7 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.UUIDUtilClient;
 
 /**
  * The Class CQLPopulationWorkSpacePresenter.
@@ -236,7 +237,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				}
 				
 				//TODO: Need to handle for saving Stratifications and Measure Observations
-				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject, 
+				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), populationsObject.toXML(populationsObject), 
 						new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
@@ -275,7 +276,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				// TODO Auto-generated method stub
 				searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				
-				MatContext.get().getPopulationService().saveStratifications(MatContext.get().getCurrentMeasureId(), strataDataModel, 
+/*				MatContext.get().getPopulationService().saveStratifications(MatContext.get().getCurrentMeasureId(), strataDataModel, 
 						new AsyncCallback<SaveUpdateCQLResult>() {
 
 							@Override
@@ -289,7 +290,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 								// TODO Auto-generated method stub
 								
 							}
-						});
+						});*/
 			}
 			
 			@Override
@@ -327,7 +328,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
 				String populationTyp = populationsObject.getPopulationClauseObjectList().get(0).getType();
 				
-				PopulationClauseObject popClause = new PopulationClauseObject();
+				PopulationClauseObject popClause = new PopulationClauseObject(UUIDUtilClient.uuid());
 				popClause.setType(populationTyp);
 				popClause.setDisplayName(displayName);
 				popClause.setSequenceNumber(sequenceNumber);

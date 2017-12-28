@@ -4,7 +4,7 @@ package mat.client.clause.cqlworkspace.model;
  * class StratificationsObject.
  *
  */
-public class StratificationsObject extends PopulationsObject {
+public class StratificationsObject extends PopulationsObject{
 	
 	/**
 	 * Constructor.

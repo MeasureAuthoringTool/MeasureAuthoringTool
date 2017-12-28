@@ -3,14 +3,12 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * Class StrataDataModel
  *
  */
 
-public class StrataDataModel implements IsSerializable {
+public class StrataDataModel {
 	
 	/**
 	 * List of StratificationsObject.

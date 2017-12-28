@@ -1,8 +1,6 @@
 package mat.client.clause.cqlworkspace.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class PopulationClauseObject implements IsSerializable{
+public class PopulationClauseObject {
 	
 	private String displayName = "";
 	private String type = "";
@@ -26,6 +24,10 @@ public class PopulationClauseObject implements IsSerializable{
 		
 	}
 	
+	public PopulationClauseObject(String uuidstr) {
+		this.uuid = uuidstr;
+	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
@@ -81,13 +83,11 @@ public class PopulationClauseObject implements IsSerializable{
 			builder.append(">");
 		}
 		
-		if(this.cqlExpressionType == null || this.cqlExpressionType.trim().length() == 0) {
-			this.setCqlExpressionType("cqldefinition");
+		if(this.cqlExpressionType != null && this.cqlExpressionType.trim().length() > 0) {
+			builder.append("<" + this.getCqlExpressionType() + " ");
+			builder.append("displayName=\"" + this.getCqlExpressionDisplayName() + "\" "); 
+			builder.append("uuid=\"" + this.getCqlExpressionUUID() + "\"/>");
 		}
-		
-		builder.append("<" + this.getCqlExpressionType() + " ");
-		builder.append("displayName=\"" + this.getCqlExpressionDisplayName() + "\" "); 
-		builder.append("uuid=\"" + this.getCqlExpressionUUID() + "\"/>"); 		
 	
 		if(this.getAggFunctionName() != null && this.getAggFunctionName().trim().length() > 0) {
 			builder.append("</cqlaggfunction>");

@@ -236,7 +236,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 	
 	
 	private PopulationsObject preparePopulationsForSave(Grid grid, PopulationsObject populationsObject) {
-		String populationTyp = populationsObject.getPopulationClauseObjectList().get(0).getType();
+
 		List<PopulationClauseObject> modifiedList = new ArrayList<>();
 		int size = grid.getRowCount();		
 		for(int row=0; row < size; row++) {
@@ -247,7 +247,7 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 				pc.setCqlExpressionDisplayName("");
 				pc.setCqlExpressionUUID("");	
 			} else {
-				pc.setCqlExpressionType(populationTyp);
+				pc.setCqlExpressionType("cqldefinition");
 				pc.setCqlExpressionDisplayName(l.getSelectedItemText());
 				pc.setCqlExpressionUUID(l.getSelectedValue());
 			}

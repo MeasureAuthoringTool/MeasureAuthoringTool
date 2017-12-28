@@ -2,13 +2,11 @@ package mat.client.clause.cqlworkspace.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
-import mat.client.clause.cqlworkspace.model.PopulationsObject;
-import mat.client.clause.cqlworkspace.model.StrataDataModel;
-import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.shared.MatContext;
 
 public class PopulationDataModel {
@@ -248,8 +246,8 @@ public class PopulationDataModel {
 				}
 			}
 		}
-		
-		return expressionNameList;		
+		expressionNameList.sort((ExpressionObject e1, ExpressionObject e2) -> e1.getName().compareTo(e2.getName()));
+		return expressionNameList;
 	}
 
 	

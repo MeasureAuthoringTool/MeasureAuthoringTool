@@ -181,7 +181,8 @@ public class PopulationDataModel {
 			int sequenceNumber;
 			Node stratificationNode = strataNode.getChildNodes().item(k);
 			String displayName = stratificationNode.getAttributes().getNamedItem(ATTRIBUTE_DISPLAY_NAME).getNodeValue();
-			StratificationsObject stratificationsObject = new StratificationsObject("stratification");
+			String uuid = stratificationNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			StratificationsObject stratificationsObject = new StratificationsObject("stratification", uuid);
 			stratificationsObject.setDisplayName(displayName);
 			
 			if(displayName != null && !displayName.isEmpty()) {

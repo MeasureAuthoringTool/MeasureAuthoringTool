@@ -237,8 +237,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				}
 				
 				//TODO: Need to handle for saving Stratifications and Measure Observations
-				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), populationsObject.toXML(populationsObject), 
-						new AsyncCallback<SaveUpdateCQLResult>() {
+				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), 
+						populationsObject.toXML(populationsObject), new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -276,21 +276,26 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				// TODO Auto-generated method stub
 				searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				
-/*				MatContext.get().getPopulationService().saveStratifications(MatContext.get().getCurrentMeasureId(), strataDataModel, 
-						new AsyncCallback<SaveUpdateCQLResult>() {
+				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), "strata", 
+						strataDataModel.toXML(strataDataModel.getStratificationObjectList()), new AsyncCallback<SaveUpdateCQLResult>() {
 
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								
-							}
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
 
-							@Override
-							public void onSuccess(SaveUpdateCQLResult result) {
-								// TODO Auto-generated method stub
-								
-							}
-						});*/
+					}
+
+					@Override
+					public void onSuccess(SaveUpdateCQLResult result) {
+						panel.clear();
+						buildPopulationWorkspace(result.getXml(), false);
+						stratificationsEvent(null);
+						searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
+						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to Stratification have been successfully saved.");
+					}
+
+				});
+
 			}
 			
 			@Override
@@ -358,7 +363,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
 				int initialStratumSequenceNumber = 1;
 				String displayName = "Stratification " + sequenceNumber;
-				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS);
+				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS, UUIDUtilClient.uuid());
 				stratificationsObject.setSequenceNumber(sequenceNumber);
 				stratificationsObject.setDisplayName(displayName);
 				

@@ -42,4 +42,31 @@ public class StrataDataModel {
 		}
 		return lastSequenceNumber;
 	}
+	
+	
+	public String toXML(List<StratificationsObject> stratificationObjectList) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<strata displayName=\"Stratification\">");
+		for(StratificationsObject s : stratificationObjectList) {
+		
+			sb.append("<").append(s.getPopulationName());
+			sb.append(" displayName=").append("\"");
+			sb.append(s.getDisplayName()).append("\"");
+			sb.append(" uuid=").append("\"");
+			sb.append(s.getUuid());
+			sb.append("\"").append(">");
+			
+			for(PopulationClauseObject pco : s.getPopulationClauseObjectList()) {
+				sb.append(pco.toXML());
+			}
+			
+			sb.append("</").append(s.getPopulationName()).append(">");
+			
+		}
+		sb.append("</strata>");
+
+		return sb.toString();
+				
+	}
+	
 }

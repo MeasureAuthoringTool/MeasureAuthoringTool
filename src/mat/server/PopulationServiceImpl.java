@@ -30,20 +30,13 @@ public class PopulationServiceImpl extends SpringRemoteServiceServlet implements
 		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
 		XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
 
-		String parentNode = "";
-		if(isMeasureObservations(nodeName)) {
-			parentNode = "measure";
-		}else {
-			parentNode = "populations";
-		}
+		String parentNode = createParentNode(nodeName);		
 		
-		String newXml = xmlProcessor.replaceNode(nodeToReplace, nodeName, parentNode);
+		String newXml = xmlProcessor.replaceNode(nodeToReplace, nodeName, parentNode);		
 		newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-
+		//Set the updated XML to the model
 		model.setXml(newXml);
-		
-		//TODO:uncomment the below line after unit testing
-		//System.out.println("NEW XML: " + newXml);
+		//Persist the Modified XML
 		getService().saveMeasureXml(model);
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -59,8 +52,13 @@ public class PopulationServiceImpl extends SpringRemoteServiceServlet implements
 		return result;
 	}
 
-	private boolean isMeasureObservations(String name) {
-		return name.equals("measureObservations");
+	private String createParentNode(String populationTyp) {
+		if(populationTyp.equals("measureObservations") || populationTyp.equals("stratification")) {
+			return "measure";
+		} else {
+			return "populations";
+		}
+		
 	}
 
 }

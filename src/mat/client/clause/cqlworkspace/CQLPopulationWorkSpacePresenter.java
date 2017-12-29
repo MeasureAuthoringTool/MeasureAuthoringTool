@@ -358,7 +358,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
 				int initialStratumSequenceNumber = 1;
 				String displayName = "Stratification " + sequenceNumber;
-				StratificationsObject stratificationsObject = new StratificationsObject(CQLWorkSpaceConstants.CQL_STRATIFICATIONS, UUIDUtilClient.uuid());
+				StratificationsObject stratificationsObject = new StratificationsObject("stratification", UUIDUtilClient.uuid());
 				stratificationsObject.setSequenceNumber(sequenceNumber);
 				stratificationsObject.setDisplayName(displayName);
 				

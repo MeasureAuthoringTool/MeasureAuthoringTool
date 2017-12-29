@@ -53,7 +53,7 @@ public class PopulationServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	private String createParentNode(String populationTyp) {
-		if(populationTyp.equals("measureObservations") || populationTyp.equals("stratification")) {
+		if(populationTyp.equals("measureObservations") || populationTyp.equals("strata")) {
 			return "measure";
 		} else {
 			return "populations";

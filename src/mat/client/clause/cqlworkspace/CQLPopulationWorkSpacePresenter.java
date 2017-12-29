@@ -191,9 +191,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.setObserver(new CQLPopulationObserver() {
 			
 			private PopulationClauseObject buildStratum(int sequenceNumber) {
-				PopulationClauseObject stratum = new PopulationClauseObject();
+				PopulationClauseObject stratum = new PopulationClauseObject(UUIDUtilClient.uuid());
 				stratum.setDisplayName(CQLWorkSpaceConstants.CQL_STRATUM + " " + sequenceNumber);
 				stratum.setSequenceNumber(sequenceNumber);
+				stratum.setType("stratum");
 				return stratum;
 			}
 			

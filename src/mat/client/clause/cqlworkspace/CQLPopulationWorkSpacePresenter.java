@@ -199,11 +199,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onViewHRClick(PopulationClauseObject population) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
-				if (population.getCqlExpressionDisplayName().equals("")) {
+				
+				clearAlerts();
+				
+				if (population.getCqlExpressionDisplayName().isEmpty()) {
 					showHumanReadableDialogBox("<html></html>", population.getDisplayName());
 				}
 
@@ -226,17 +225,15 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onSaveClick(PopulationsObject populationsObject) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
 				} else {
 					searchDisplay.getCqlPopulationDetailView().setIsDirty(false);
 				}
-				
-				//TODO: Need to handle for saving Stratifications and Measure Observations
+
 				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), 
 						populationsObject.toXML(populationsObject), new AsyncCallback<SaveUpdateCQLResult>() {
 
@@ -244,8 +241,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					public void onFailure(Throwable caught) {
 						searchDisplay.getErrorMessageDisplay().createAlert(
 								MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(
-								null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+								null, "Saving " + populationsObject.getPopulationName(), "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 					}
 
 					@Override
@@ -269,11 +266,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override			
 			public void onSaveClick(StrataDataModel strataDataModel) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
-				// TODO Auto-generated method stub
+				
+				clearAlerts();
+
 				searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				
 				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), "strata", 
@@ -281,7 +276,10 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						searchDisplay.getErrorMessageDisplay().createAlert(
+								MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+								null, "Saving Stratifications", "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 
 					}
 
@@ -300,10 +298,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onDeleteClick(Grid grid, PopulationClauseObject clauseObject) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					int rowIndex =  searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject()
 							.getPopulationClauseObjectList().indexOf(clauseObject);
@@ -325,10 +322,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
 				String populationTyp = populationsObject.getPopulationClauseObjectList().get(0).getType();
@@ -356,10 +352,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onAddNewStratificationClick(StrataDataModel strataDataModel) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
 				int initialStratumSequenceNumber = 1;
 				String displayName = "Stratification " + sequenceNumber;
@@ -382,10 +377,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onAddNewStratumClick(StratificationsObject stratificationsObject) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				int sequenceNumber = stratificationsObject.getLastClauseSequenceNumber() + 1;
 				PopulationClauseObject popClause = buildStratum(sequenceNumber);
 				
@@ -405,10 +399,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				// get the view
 				CQLStratificationDetailView view = searchDisplay.getCqlStratificationDetailView();
 				
@@ -433,10 +426,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onDeleteStratumClick(Grid stratumGrid, StratificationsObject stratification, PopulationClauseObject stratum) {
-				searchDisplay.getErrorMessageDisplay().clearAlert();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();
+				
+				clearAlerts();
+				
 				int index = stratification.getPopulationClauseObjectList().indexOf(stratum);
 								
 				// remove from the view
@@ -500,7 +492,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.setCqlPopulationDetailView(null);
 		searchDisplay.setCqlMeasureObservationDetailView(null);
 		searchDisplay.setCqlStratificationDetailView(null);
-		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		clearAlerts();
 	}
 
 	/**
@@ -578,16 +570,28 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	}
 	
 	private void buildPopulationEvent(ClickEvent event, String populationName) {
+		
 		if (isDirty()) {
 			nextSection = populationName;
 			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
 			event.stopPropagation();
-		} else {
+
+		} else {			
 			setNextActiveMenuItem(currentSection, populationName);
-			searchDisplay.displayPopulationDetailView(populationName);
+
+			if (CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS.equals(populationName)) {
+				searchDisplay.displayMeasureObservations();
+			} else if(CQLWorkSpaceConstants.CQL_STRATIFICATIONS.equals(populationName)) {
+				searchDisplay.displayStratification();
+			} else {
+				searchDisplay.displayPopulationDetailView(populationName);	
+			}			
+
 			Mat.focusSkipLists(MEASURE_COMPOSER);
 		}	
+
 	}
+
 	
 	/**
 	 * Build View for Initial Population when Initial Population AnchorList item is
@@ -655,33 +659,15 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	 * Build View for Stratifications when Stratifications AnchorList item is clicked.
 	 */
 	private void stratificationsEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_STRATIFICATIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_STRATIFICATIONS );
-			searchDisplay.displayStratification();
-			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_STRATIFICATIONS);		
 	}
-
+		
 	/**
 	 * Build View for Measure Observations when Measure Observations AnchorList item is
 	 * clicked.
 	 */
 	private void measureObservationsEvent(ClickEvent event) {
-		if(isDirty()) {
-			nextSection = CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS;
-			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
-			event.stopPropagation();
-		} else {
-			setNextActiveMenuItem(currentSection,CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS );
-			searchDisplay.displayMeasureObservations();
-			searchDisplay.setHeadingBasedOnCurrentSection("Population Workspace > Measure Observations", "headingPanel");
-			Mat.focusSkipLists(MEASURE_COMPOSER);
-		}
+		buildPopulationEvent(event, CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);		
 	}
 
 	/**
@@ -860,5 +846,12 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlPopulationDetailView().setIsDirty(isPageDirty);
 		}
 
+	}
+	
+	private void clearAlerts() {
+		searchDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
+		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();		
 	}
 }

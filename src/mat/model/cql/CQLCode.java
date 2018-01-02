@@ -2,9 +2,8 @@ package mat.model.cql;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CQLCodeSystem.
+ * The Class CQLCode.
  */
 public class CQLCode implements IsSerializable {
 

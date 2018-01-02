@@ -36,6 +36,19 @@ public class CQLCode implements IsSerializable {
 	private boolean readOnly; 
 	
 	private String suffix;
+
+	private boolean isCodeSystemVersionIncluded;
+
+	public boolean isIsCodeSystemVersionIncluded() {
+		return isCodeSystemVersionIncluded;
+	}
+
+
+
+	public void setIsCodeSystemVersionIncluded(boolean isCodeSystemVersionIncluded) {
+		this.isCodeSystemVersionIncluded = isCodeSystemVersionIncluded;
+	}
+
 	
 	/**
 	 * Gets the id.

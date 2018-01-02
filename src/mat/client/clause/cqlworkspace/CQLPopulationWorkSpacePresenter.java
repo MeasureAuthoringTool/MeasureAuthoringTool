@@ -25,7 +25,6 @@ import mat.client.clause.cqlworkspace.model.StrataDataModel;
 import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 
@@ -162,10 +161,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		void setCqlMeasureObservationDetailView(CQLMeasureObservationDetailView cqlMeasureObservationDetailView);
 
 		void setCqlPopulationDetailView(CQLPopulationDetail cqlPopulationDetailView);
-		
-		public MessageAlert getSuccessMessageDisplay();
 
-		public MessageAlert getErrorMessageDisplay();
 	}
 
 	/**
@@ -201,7 +197,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onViewHRClick(PopulationClauseObject population) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				if (population.getCqlExpressionDisplayName().isEmpty()) {
 					showHumanReadableDialogBox("<html></html>", population.getDisplayName());
@@ -227,7 +223,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onSaveClick(PopulationsObject populationsObject) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
@@ -240,7 +236,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().createAlert(
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 								MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
 								null, "Saving " + populationsObject.getPopulationName(), "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
@@ -258,7 +254,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 						}
 									
 						searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
-						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
 					}
 
 				});		
@@ -268,7 +264,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override			
 			public void onSaveClick(StrataDataModel strataDataModel) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 
 				searchDisplay.getCqlStratificationDetailView().setIsDirty(false);
 				
@@ -277,7 +273,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().createAlert(
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 								MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
 								null, "Saving Stratifications", "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
@@ -290,7 +286,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 						buildPopulationWorkspace(result.getXml(), false);
 						stratificationsEvent(null);
 						searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
-						searchDisplay.getSuccessMessageDisplay().createAlert("Changes to Stratification have been successfully saved.");
+						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Changes to Stratification have been successfully saved.");
 					}
 
 				});
@@ -300,7 +296,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteClick(Grid grid, PopulationClauseObject clauseObject) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
 					int rowIndex =  searchDisplay.getCqlMeasureObservationDetailView().getPopulationsObject()
@@ -324,7 +320,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onAddNewClick(Grid populationGrid, PopulationsObject populationsObject) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				int sequenceNumber = populationsObject.getLastClauseSequenceNumber() + 1;
 				String displayName = populationsObject.getPopulationType() + " " + (sequenceNumber);
@@ -354,7 +350,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onAddNewStratificationClick(StrataDataModel strataDataModel) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				int sequenceNumber = strataDataModel.getLastPopulationSequenceNumber() + 1;
 				int initialStratumSequenceNumber = 1;
@@ -379,7 +375,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onAddNewStratumClick(StratificationsObject stratificationsObject) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				int sequenceNumber = stratificationsObject.getLastClauseSequenceNumber() + 1;
 				PopulationClauseObject popClause = buildStratum(sequenceNumber);
@@ -401,7 +397,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteStratificationClick(Grid stratificationGrid, StratificationsObject stratification) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				// get the view
 				CQLStratificationDetailView view = searchDisplay.getCqlStratificationDetailView();
@@ -428,7 +424,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onDeleteStratumClick(Grid stratumGrid, StratificationsObject stratification, PopulationClauseObject stratum) {
 				
-				clearAlerts();
+				searchDisplay.resetMessageDisplay();
 				
 				int index = stratification.getPopulationClauseObjectList().indexOf(stratum);
 								
@@ -493,7 +489,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		searchDisplay.setCqlPopulationDetailView(null);
 		searchDisplay.setCqlMeasureObservationDetailView(null);
 		searchDisplay.setCqlStratificationDetailView(null);
-		clearAlerts();
+		searchDisplay.resetMessageDisplay();
 	}
 
 	/**
@@ -697,7 +693,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 	
 	private void setNextActiveMenuItem(String currSection, String nexSection) {
-		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		searchDisplay.resetMessageDisplay();
 		setActiveMenuItem(currSection, false);
 		setActiveMenuItem(nexSection, true);
 		this.currentSection= nexSection;
@@ -848,11 +844,5 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		}
 
 	}
-	
-	private void clearAlerts() {
-		searchDisplay.getErrorMessageDisplay().clearAlert();
-		searchDisplay.getSuccessMessageDisplay().clearAlert();
-		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationMessageAlert().clearAlert();		
-	}
+
 }

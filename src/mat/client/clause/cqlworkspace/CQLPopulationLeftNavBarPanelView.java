@@ -1,11 +1,5 @@
 package mat.client.clause.cqlworkspace;
 
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -13,8 +7,16 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
+
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants.POPULATIONS;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.shared.WarningConfirmationMessageAlert;
+import mat.client.shared.WarningMessageAlert;
 
 /**
  * The Class CQLPopulationLeftNavBarPanelView.
@@ -73,14 +75,6 @@ public class CQLPopulationLeftNavBarPanelView {
 	/** The delete confirmation messge alert. */
 	//private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
 
-	/** The dirty flag for page. */
-	private Boolean isPageDirty = false;
-
-	/** The is double click. */
-	private Boolean isDoubleClick = false;
-
-	/** The is nav bar click. */
-	private Boolean isNavBarClick = false;
 
 	/** The Loading flag for page. */
 	private Boolean isLoading = false;
@@ -95,6 +89,7 @@ public class CQLPopulationLeftNavBarPanelView {
 	 * @return the vertical panel
 	 */
 	public VerticalPanel buildMeasureLibCQLView(Document document){
+		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 		buildLeftHandNavBar(document);
 		return rightHandNavPanel;
 	}
@@ -108,7 +103,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
-
+		
 		initialPopulation = new AnchorListItem();
 		numerator = new AnchorListItem();
 		denominator = new AnchorListItem();
@@ -117,42 +112,36 @@ public class CQLPopulationLeftNavBarPanelView {
 		denominatorExceptions = new AnchorListItem();
 		measurePopulations = new AnchorListItem();
 		measurePopulationExclusions = new AnchorListItem();
-		
 		stratifications = new AnchorListItem();
-		
 		measureObservations = new AnchorListItem();
-
 		viewPopulations = new AnchorListItem();
-
-		setTextAndIcons(initialPopulation, "Initial Populations",IconType.PENCIL);
-
-		setTextAndIcons(numerator, "Numerators",IconType.PENCIL);
-		setTextAndIcons(denominator, "Denominators",IconType.PENCIL);
-		setTextAndIcons(numeratorExclusions, "Numerator Exclusions",IconType.PENCIL);
-		setTextAndIcons(denominatorExclusions, "Denominator Exclusions",IconType.PENCIL);
-		setTextAndIcons(denominatorExceptions, "Denominator Exceptions",IconType.PENCIL);
-		setTextAndIcons(measurePopulations, "Measure Populations",IconType.PENCIL);
-		setTextAndIcons(measurePopulationExclusions, "Measure Population Exclusions",IconType.PENCIL);
-		setTextAndIcons(stratifications, "Stratification",IconType.PENCIL);
-		setTextAndIcons(measureObservations, "Measure Observations",IconType.PENCIL);
-		setTextAndIcons(viewPopulations, "View Populations",IconType.BOOK);
-
-
-		/**
-		 * Find Scoring type for the measure from the Measure XML.
-		 */
-		NodeList nodeList = document.getElementsByTagName("scoring");
-
-		if ((nodeList != null) && (nodeList.getLength() > 0)) {
-			Node scoringNode = nodeList.item(0);
-			Node scoringIdAttribute = scoringNode.getAttributes()
-					.getNamedItem("id");
-			String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
-
+		
+		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			
+			setTextAndIcons(initialPopulation, POPULATIONS.INITIAL_POPULATIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(numerator, POPULATIONS.NUMERATORS.popName(), IconType.PENCIL);
+			setTextAndIcons(denominator, POPULATIONS.DENOMINATORS.popName(), IconType.PENCIL);
+			setTextAndIcons(numeratorExclusions, POPULATIONS.NUMERATOR_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(denominatorExclusions, POPULATIONS.DENOMINATOR_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(denominatorExceptions, POPULATIONS.DENOMINATOR_EXCEPTIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(measurePopulations, POPULATIONS.MEASURE_POPULATIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(measurePopulationExclusions, POPULATIONS.MEASURE_POPULATION_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(stratifications, POPULATIONS.STRATIFICATION.popName(), IconType.PENCIL);
+			setTextAndIcons(measureObservations, POPULATIONS.MEASURE_OBSERVATIONS.popName(), IconType.PENCIL);
+			
+			/**
+			 * Find Scoring type for the measure from the Measure XML.
+			 */
+			Node scoringNode = document.getElementsByTagName(CQLWorkSpaceConstants.SCORING).item(0);
+			String scoringIdAttributeValue = ((Element) scoringNode).getAttribute("id");
+			
 			addAchorsByScoring(navPills, scoringIdAttributeValue);
-		}		
+			
 
-		navPills.add(viewPopulations);//View Populations is always present
+		}
+		
+		setTextAndIcons(viewPopulations, POPULATIONS.VIEW_POPULATIONS.popName(), IconType.BOOK);
+		navPills.add(viewPopulations);// View Populations is always present
 		viewPopulations.setActive(true);// View Populations is initially selected.
 
 		navPills.setWidth("200px");
@@ -161,48 +150,40 @@ public class CQLPopulationLeftNavBarPanelView {
 		messagePanel.add(warningMessageAlert);
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
-		//messagePanel.add(globalWarningConfirmationMessageAlert);
-		//messagePanel.add(deleteConfirmationMessgeAlert);
+		messagePanel.add(globalWarningConfirmationMessageAlert);
 		messagePanel.setStyleName("marginLeft15px");
-
-		// rightHandNavPanel.add(messagePanel);
+		
 		rightHandNavPanel.add(navPills);
+		
 	}
 
 	private void addAchorsByScoring(NavPills navPills,
 			String scoringIdAttributeValue) {
-		System.out.println("Adding anchors by scoring type...");
-		if ("COHORT".equals(scoringIdAttributeValue)) {
-			navPills.add(initialPopulation);
-			navPills.add(stratifications);
-		} else if("PROPOR".equals(scoringIdAttributeValue)){
-			navPills.add(initialPopulation);
-			navPills.add(numerator);
-			navPills.add(numeratorExclusions);
-			navPills.add(denominator);
-			navPills.add(denominatorExclusions);
-			navPills.add(denominatorExceptions);
-			navPills.add(stratifications);				
-		} else if("CONTVAR".equals(scoringIdAttributeValue)){
-			navPills.add(initialPopulation);
+		navPills.add(initialPopulation);
+		//COHORT scoring has the initial population and stratifications. 
+		if("PROPOR".equals(scoringIdAttributeValue)){			
+			addNumDenoNavPills(navPills);
+			navPills.add(denominatorExceptions);							
+		} else if("CONTVAR".equals(scoringIdAttributeValue)){			
 			navPills.add(measurePopulations);
 			navPills.add(measurePopulationExclusions);
-			navPills.add(measureObservations);
-			navPills.add(stratifications);
-		} else if("RATIO".equals(scoringIdAttributeValue)){
-			navPills.add(initialPopulation);
-			navPills.add(numerator);
-			navPills.add(numeratorExclusions);
-			navPills.add(denominator);
-			navPills.add(denominatorExclusions);
-			navPills.add(measureObservations);
-			navPills.add(stratifications);
+			navPills.add(measureObservations);			
+		} else if("RATIO".equals(scoringIdAttributeValue)){			
+			addNumDenoNavPills(navPills);
+			navPills.add(measureObservations);			
 		}
+		navPills.add(stratifications);
 	}
 
+	private void addNumDenoNavPills(NavPills navPills) {
+		navPills.add(numerator);
+		navPills.add(numeratorExclusions);
+		navPills.add(denominator);
+		navPills.add(denominatorExclusions);
+	}
+	
 	private void setTextAndIcons(AnchorListItem anchorListItem, String text, IconType iconType) {
-		anchorListItem.setIcon(iconType);
-		
+		anchorListItem.setIcon(iconType);		
 		anchorListItem.setText(text);
 		anchorListItem.setTitle(text);
 		anchorListItem.setId(text+"_Anchor");	
@@ -305,89 +286,9 @@ public class CQLPopulationLeftNavBarPanelView {
 	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
 		return globalWarningConfirmationMessageAlert;
 	}
-	/**
-	 * Sets the checks if is page dirty.
-	 *
-	 * @param isPageDirty the new checks if is page dirty
-	 */
-	public void setIsPageDirty(Boolean isPageDirty) {
-		this.isPageDirty = isPageDirty;
-	}
+	
 
-	/**
-	 * Sets the checks if is double click.
-	 *
-	 * @param isDoubleClick the new checks if is double click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsDoubleClick(java.lang.Boolean)
-	 */
-	public void setIsDoubleClick(Boolean isDoubleClick) {
-		this.isDoubleClick = isDoubleClick;
-	}
 
-	/**
-	 * Checks if is double click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isDoubleClick()
-	 */
-	public Boolean isDoubleClick() {
-		return isDoubleClick;
-	}
-
-	/**
-	 * Sets the checks if is nav bar click.
-	 *
-	 * @param isNavBarClick the new checks if is nav bar click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsNavBarClick(java.lang.Boolean)
-	 */
-	public void setIsNavBarClick(Boolean isNavBarClick) {
-		this.isNavBarClick = isNavBarClick;
-	}
-
-	/**
-	 * Checks if is nav bar click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isNavBarClick()
-	 */
-	public Boolean isNavBarClick() {
-		return isNavBarClick;
-	}
-
-	/**
-	 * Gets the checks if is page dirty.
-	 *
-	 * @return the checks if is page dirty
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getIsPageDirty()
-	 */
-	public Boolean getIsPageDirty() {
-		return isPageDirty;
-	}
 
 	/**
 	 * Show unsaved changes warning.

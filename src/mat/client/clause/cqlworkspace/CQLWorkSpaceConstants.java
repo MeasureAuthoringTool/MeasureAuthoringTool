@@ -208,5 +208,30 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_STRATIFICATIONS = "stratifications";
 	public static final String CQL_MEASUREOBSERVATIONS = "measureobservations";
 	public static final String CQL_VIEWPOPULATIONS = "viewpopulations";
+	public static final String CQL_STRATUM = "Stratum";
+	public static final String SCORING = "scoring";
 	
+	public enum POPULATIONS {
+		INITIAL_POPULATIONS("Initial Populations"),
+	    NUMERATORS("Numerators"),
+	    DENOMINATORS("Denominators"),
+	    NUMERATOR_EXCLUSIONS("Numerator Exclusions"),
+	    DENOMINATOR_EXCLUSIONS("Denominator Exclusions"),
+	    DENOMINATOR_EXCEPTIONS("Denominator Exceptions"),
+	    MEASURE_POPULATIONS("Measure Populations"),
+	    MEASURE_POPULATION_EXCLUSIONS("Measure Population Exclusions"),
+	    STRATIFICATION("Stratification"),
+	    MEASURE_OBSERVATIONS("Measure Observations"),
+	    VIEW_POPULATIONS("View Populations");
+
+	    private String popName;
+
+	    POPULATIONS(String popName) {
+	        this.popName = popName;
+	    }
+
+	    public String popName() {
+	        return popName;
+	    }
+	}
 }

@@ -139,7 +139,10 @@
       <servlet-name>cqlConstantService</servlet-name>
       <servlet-class>mat.server.CQLConstantServiceImpl</servlet-class>
   </servlet>
-  
+  <servlet>
+      <servlet-name>populationService</servlet-name>
+      <servlet-class>mat.server.PopulationServiceImpl</servlet-class>
+  </servlet>
  <!--  <servlet-mapping>
     <servlet-name>FileUploadServlet</servlet-name>
     <url-pattern>/mat/uploadFormHandler</url-pattern>
@@ -220,6 +223,10 @@
    <servlet-mapping>
       <servlet-name>cqlConstantService</servlet-name>
       <url-pattern>/mat/cqlConstantService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>populationService</servlet-name>
+      <url-pattern>/mat/populationService</url-pattern>
   </servlet-mapping>
   <session-config>
         <session-timeout>70</session-timeout>

@@ -10,7 +10,10 @@ import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SuccessMessageAlert;
 
 /**
  * The Class CQLPopulationWorkSpaceView.
@@ -55,8 +58,13 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	CQLStratificationDetailView cqlStratificationDetailView;
 	CQLMeasureObservationDetailView cqlMeasureObservationDetailView;
 	
-
 	CQLPopulationDetail cqlPopulationDetailView;
+	
+	/** The success message display. */
+	private MessageAlert successMessages = new SuccessMessageAlert();
+
+	/** The error message display. */
+	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 
 	/**
 	 * Instantiates a new CQL work space view.
@@ -94,6 +102,8 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		
 		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
 		mainPanel.add(headingPanel);
+		mainPanel.add(successMessages);
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
 		mainPanel.setStyleName("cqlRightContainer");
@@ -112,6 +122,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	public void displayMeasureObservations() {
 
 		mainFlowPanel.clear();
+		populationDataModel.loadPopulations(document);
 		cqlMeasureObservationDetailView = new CQLMeasureObservationDetailView(populationDataModel, 
 				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
 		
@@ -125,30 +136,22 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 
 		mainFlowPanel.clear();
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
+		populationDataModel.loadPopulations(document);
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
 		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
+		setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
 	}
 	
 	@Override
-	public boolean displayPopulationDetailView(String populationType) {
-		boolean goForward = true;
+	public void displayPopulationDetailView(String populationType) {
 		
-		/*if(cqlPopulationDetailView != null  && cqlPopulationDetailView.isDirty()) {
-			goForward = false;
-		} else {
-			goForward = true;
-			cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
-			cqlPopulationDetailView.setObserver(cqlPopulationObserver);
-			
-			cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
-			setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		}*/
+		populationDataModel.loadPopulations(document);
 		cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
 		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		return goForward;
+		
 	}
 
 	/**
@@ -159,7 +162,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.clear();
 		headingPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
-		cqlLeftNavBarPanelView.setIsPageDirty(false);
+		//cqlLeftNavBarPanelView.setIsPageDirty(false);
 
 		this.document = null;
 		this.populationDataModel = null;
@@ -371,5 +374,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	@Override
 	public void setCqlPopulationDetailView(CQLPopulationDetail cqlPopulationDetailView ) {
 		this.cqlPopulationDetailView = cqlPopulationDetailView;
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessages;
+	}
+
+	@Override
+	public MessageAlert getErrorMessageDisplay() {
+		return errorMessageAlert;
 	}
 }

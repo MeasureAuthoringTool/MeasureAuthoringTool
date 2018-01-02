@@ -178,13 +178,13 @@ public class ManageMeasureDetailView
 		measureNameGroup.add(name);
 		
 		FormLabel shortNameLabel = new FormLabel();
-		shortNameLabel.setText("Abbreviated Name");
-		shortNameLabel.setTitle("Abbreviated Name");
+		shortNameLabel.setText("eCQM Abbreviated Title");
+		shortNameLabel.setTitle("eCQM Abbreviated Title");
 		shortNameLabel.setFor("ShortNameTextBox");
 		shortNameLabel.setShowRequiredIndicator(true);
 		shortNameLabel.setId("ShortNameTextBox_Id");
 		shortName.setId("ShortNameTextBox");
-		shortName.setTitle("Enter Abbreviated name.");;
+		shortName.setTitle("Enter eCQM Abbreviated Title");;
 		shortName.setWidth("18em");
 		shortName.setMaxLength(32);
 		shortNameGroup.add(shortNameLabel);

@@ -3,18 +3,15 @@ package mat.client.clause.cqlworkspace.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
-
-import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 
 public class PopulationsObject {
 	
 	private String populationName = "";
 	private String displayName = "";
-	
-	List<PopulationClauseObject> populationClauseObjectList = new ArrayList<PopulationClauseObject>();
+	private int sequenceNumber;
+	List<PopulationClauseObject> populationClauseObjectList = new ArrayList<>();
 
 	
 	public void addClause(Node clauseNode) {
@@ -41,13 +38,7 @@ public class PopulationsObject {
 			for(int i=0;i<childs.getLength();i++) {
 				
 				Node child = childs.item(i);
-				if(child.getNodeName().equals("cqldefinition")) {
-					populationClauseObject.setCqlExpressionType(child.getNodeName());
-					populationClauseObject.setCqlExpressionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
-					populationClauseObject.setCqlExpressionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
-					
-					break;
-				}else if(child.getNodeName().equals("cqlfunction")) {
+				if(child.getNodeName().equals("cqldefinition") || child.getNodeName().equals("cqlfunction")) {
 					populationClauseObject.setCqlExpressionType(child.getNodeName());
 					populationClauseObject.setCqlExpressionDisplayName(child.getAttributes().getNamedItem("displayName").getNodeValue());
 					populationClauseObject.setCqlExpressionUUID(child.getAttributes().getNamedItem("uuid").getNodeValue());
@@ -102,10 +93,6 @@ public class PopulationsObject {
 		return populationClauseObjectList;
 	}
 
-	private void setPopulationClauseObjectList(List<PopulationClauseObject> populationClauseObjectList) {
-		this.populationClauseObjectList = populationClauseObjectList;
-	}
-
 	public String getPopulationType() {
 		String popType = null;
 		if(populationName != null && !populationName.isEmpty()) {
@@ -156,12 +143,46 @@ public class PopulationsObject {
 		return popType;
 	}
 
-	public int getLastSequenceNumber() {
-		int lastSequenceNumber = 1;
-		if(populationClauseObjectList.size() > 1) {
+	public int getLastClauseSequenceNumber() {
+		int lastSequenceNumber = 0;
+		if(!populationClauseObjectList.isEmpty()) {
 			populationClauseObjectList.sort((PopulationClauseObject pc1, PopulationClauseObject pc2)->pc1.getSequenceNumber().compareTo(pc2.getSequenceNumber()));
+			lastSequenceNumber = populationClauseObjectList.get(populationClauseObjectList.size() - 1).getSequenceNumber();
 		}
-		lastSequenceNumber = populationClauseObjectList.get(populationClauseObjectList.size() - 1).getSequenceNumber();
 		return lastSequenceNumber;
 	}
+
+	public Integer getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+	
+	public PopulationsObject() {
+	
+	}
+
+	public void add(PopulationClauseObject pc) {
+		this.populationClauseObjectList.add(pc);
+	}
+	
+	public String toXML(PopulationsObject populationsObject) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<").append(populationsObject.getPopulationName());
+		sb.append(" displayName=").append("\"");
+		sb.append(populationsObject.getDisplayName());
+		sb.append("\"").append(">");
+	
+		for(PopulationClauseObject pco : populationsObject.getPopulationClauseObjectList()) {
+			sb.append(pco.toXML());
+		}
+		
+		sb.append("</").append(populationsObject.getPopulationName()).append(">");
+		
+		return sb.toString();
+				
+	}
+	
 }

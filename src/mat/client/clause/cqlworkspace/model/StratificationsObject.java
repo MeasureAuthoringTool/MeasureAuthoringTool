@@ -4,14 +4,24 @@ package mat.client.clause.cqlworkspace.model;
  * class StratificationsObject.
  *
  */
-public class StratificationsObject extends PopulationsObject {
+public class StratificationsObject extends PopulationsObject{
 	
 	/**
 	 * Constructor.
 	 */
-	public StratificationsObject(String name) {
+	public StratificationsObject(String name, String uuid) {
 		super(name);
+		this.uuid = uuid;
 	}
 	
-		
+	private String uuid;
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 }

@@ -92,7 +92,6 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.xml.XMLSerializer;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLServiceImpl.
  */
@@ -706,10 +705,8 @@ public class CQLServiceImpl implements CQLService {
 						e.printStackTrace();
 
 					} catch (SAXException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					logger.debug(" CQLServiceImpl: saveAndModifyParameters End :  ");
@@ -1002,10 +999,8 @@ public class CQLServiceImpl implements CQLService {
 						result.setSuccess(false);
 						e.printStackTrace();
 					} catch (SAXException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					logger.debug(" CQLServiceImpl: saveAndModifyDefinitions End :  ");
@@ -1238,7 +1233,6 @@ public class CQLServiceImpl implements CQLService {
 						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 					}
 				} catch (XPathExpressionException | SAXException | IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} 
 				
@@ -1288,13 +1282,10 @@ public class CQLServiceImpl implements CQLService {
 						}
 
 					} catch (XPathExpressionException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (SAXException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 
@@ -1359,7 +1350,6 @@ public class CQLServiceImpl implements CQLService {
 
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -2600,7 +2590,7 @@ public class CQLServiceImpl implements CQLService {
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();
-			String errorMsg = (cqlError.getErrorMessage() == null) ? "" : cqlError.getErrorMessage();
+		//	String errorMsg = (cqlError.getErrorMessage() == null) ? "" : cqlError.getErrorMessage();
 
 			if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
 				cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine - 1);
@@ -2762,45 +2752,6 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
-		// SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		// List<CqlTranslatorException> cqlErrorsList = new
-		// ArrayList<CqlTranslatorException>();
-		// List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		// if (!StringUtils.isBlank(cqlFileString)) {
-		//
-		// CQLtoELM cqlToElm = new CQLtoELM(cqlFileString);
-		// try {
-		// cqlToElm.doTranslation(true, false, false);
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// if (cqlToElm.getErrors() != null) {
-		// cqlErrorsList.addAll(cqlToElm.getErrors());
-		// }
-		// }
-		//
-		// for (CqlTranslatorException cte : cqlErrorsList) {
-		//
-		// CQLErrors cqlErrors = new CQLErrors();
-		//
-		// cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-		//
-		// cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-		// cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-		//
-		// cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-		// cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-		//
-		// cqlErrors.setErrorMessage(cte.getMessage());
-		// errors.add(cqlErrors);
-		// System.out.println(cte.getMessage());
-		//
-		// }
-		//
-		// result.setCqlErrors(errors);
-		//
 		return null;
 	}
 
@@ -2811,6 +2762,7 @@ public class CQLServiceImpl implements CQLService {
 	 *            the value set transfer object
 	 * @return the save update code list result
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public final SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -2885,26 +2837,14 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-	private List<CQLCode> sortCodeList(final List<CQLCode> finalList) {
-
-		Collections.sort(finalList, new Comparator<CQLCode>() {
-			@Override
-			public int compare(final CQLCode o1, final CQLCode o2) {
-				return o1.getCodeName().compareToIgnoreCase(o2.getCodeName());
-			}
-		});
-
-		return finalList;
-
-	}
-
-	/*
+		/*
 	 * (non-Javadoc)
 	 *
 	 * @see
 	 * mat.client.measure.service.CQLService#saveUserDefinedQDStoMeasure(mat.
 	 * model.CQLValueSetTransferObject)
 	 */
+	@SuppressWarnings("static-access")
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -3004,7 +2944,6 @@ public class CQLServiceImpl implements CQLService {
 					result.setXml(codeXMLString);
 				}
 			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -3046,7 +2985,6 @@ public class CQLServiceImpl implements CQLService {
 				result.setXml(codeSystemXMLString);
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		logger.info("::: CQLServiceImpl saveCQLCodeSystem End :::");
@@ -3679,7 +3617,6 @@ public class CQLServiceImpl implements CQLService {
 			rdr.close();
 		   // cqlFile.deleteOnExit();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return fileStartLine;

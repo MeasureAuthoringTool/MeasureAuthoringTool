@@ -1146,7 +1146,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * Checks if is valid.
 	 *
 	 * @param validatGroupingList the validate grouping list
-	 * @param buttonType TODO
+	 * @param buttonType
 	 * @return true, if is valid
 	 */
 	private boolean isValid(ArrayList<MeasurePackageClauseDetail> validatGroupingList,

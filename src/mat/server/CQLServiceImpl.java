@@ -175,10 +175,10 @@ public class CQLServiceImpl implements CQLService {
 			"<codes>"
 
 					+ "<code codeName=\"Birthdate\" codeOID=\"21112-8\" codeSystemName=\"LOINC\" "
-					+ "displayName=\"Birth date\" " + "codeSystemVersion=\"2.46\" id=\"777\" " + "/>"
+					+ "displayName=\"Birth date\" " + "codeSystemVersion=\"2.46\" id=\"777\" isCodeSystemVersionIncluded =\"false\"" + "/>"
 
 					+ "<code codeName=\"Dead\" codeOID=\"419099009\" codeSystemName=\"SNOMEDCT\" "
-					+ "displayName=\"Dead\" " + "codeSystemVersion=\"2016-03\" id=\"777\" " + "/>"
+					+ "displayName=\"Dead\" " + "codeSystemVersion=\"2016-03\" id=\"777\" isCodeSystemVersionIncluded =\"false\" " + "/>"
 
 					+ "</codes>";
 

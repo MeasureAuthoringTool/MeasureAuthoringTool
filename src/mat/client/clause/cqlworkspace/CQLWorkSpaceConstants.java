@@ -16,17 +16,11 @@ public class CQLWorkSpaceConstants {
 	public static int VALID_INCLUDE_COUNT =10;
 	
 	private static final ArrayList<String> AVAILABLE_ITEM_TO_INSERT = new ArrayList<String>();
-	
-	private static final ArrayList<String> PRIMARY_TIMINGS = new ArrayList<String>();
-	
+		
 	private static final ArrayList<String> TIMING_PRECISIONS = new ArrayList<String>();
 	
 	private static final ArrayList<String> QUANTITY_OFFSET_UNITS = new ArrayList<String>();
-	
-	private static final ArrayList<String> RELATIVE_QUALIFIER = new ArrayList<String>();
-	
-	private static final ArrayList<String> WITHIN_TIMING_EXP = new ArrayList<String>();	
-	
+			
 	/** The element look up name. */
 	public static Map<String, String> elementLookUpName;
 	
@@ -190,7 +184,7 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_ATTRIBUTE_RESULT = "result";
 	public static final String CQL_ATTRIBUTE_TARGET_OUTCOME = "targetOutcome";
 	public static final String CQL_INSERT_AS_CODE_IN = " as Code in ";
-	public static final String CQL_INSERT_AS_CODE = " as Code ~ ";
+	public static final String CQL_INSERT_AS_CODE = " ~ ";
 	public static final String CQL_INSERT_IN = " in ";
 	public static final String CQL_EQUALS = " = ";
 	public static final String CQL_CODE_EQUALS = " ~ "; 

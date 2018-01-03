@@ -12,6 +12,7 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -34,6 +35,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -61,7 +63,6 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
-import mat.shared.ConstantMessages;
 
 
 
@@ -171,6 +172,8 @@ public class CQLCodesView {
 	
 	private static final int TABLE_ROW_COUNT = 10;
 	
+	private CheckBox includeCodeSystemVersionCheckBox;
+
 	HTML heading = new HTML();
 	
 	/**
@@ -377,8 +380,24 @@ public class CQLCodesView {
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
-
-
+		
+		FlowPanel includeCodeSystemPanel = new FlowPanel();
+		includeCodeSystemPanel.getElement().getStyle().setProperty("width", "100%");
+		includeCodeSystemPanel.getElement().getStyle().setProperty("textAlign", "right");
+		includeCodeSystemPanel.getElement().getStyle().setProperty("verticalAlign", "middle");
+		FormLabel includeCodeSystemVersionLabel = new FormLabel();
+		includeCodeSystemVersionLabel.setText("Include Code System Version");
+		includeCodeSystemVersionLabel.setTitle("Include Code System Version");
+		includeCodeSystemVersionLabel.setHeight("30px");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginRight", "10px");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("fontWeight", "700");
+		includeCodeSystemVersionLabel.setFor("includeCodeSystemversion_CheckBox");
+		includeCodeSystemVersionCheckBox = new CheckBox();
+		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
+		includeCodeSystemVersionCheckBox.setTitle("Click checkbox to select");
+		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
+		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
+		
 		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
 		//searchGrid.setWidget(1, 0, codeDescriptorGroup);
 		searchGrid.setStyleName("secondLabel");
@@ -390,6 +409,8 @@ public class CQLCodesView {
 		codeGrid.setWidget(0, 1, codeSystemGroup);
 		codeGrid.setWidget(0, 2, versionFormGroup);
 		codeGrid.setWidget(1, 0, buttonFormGroup);
+		codeGrid.getCellFormatter().getElement(1, 1).setAttribute("colspan", "2");
+		codeGrid.setWidget(1, 1, includeCodeSystemPanel);
 		codeGrid.setStyleName("code-grid");
 
 		VerticalPanel codeFormGroup = new VerticalPanel();
@@ -635,7 +656,7 @@ public class CQLCodesView {
 		getCodeSystemVersionInput().setEnabled(false);
 		getRetrieveFromVSACButton().setEnabled(editable);
 		getCancelCodeButton().setEnabled(editable);
-	
+		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
 		getSaveButton().setEnabled(false);
 		
 	}
@@ -651,6 +672,7 @@ public class CQLCodesView {
 		getSuffixTextBox().setValue("");
 		getCodeSystemVersionInput().setValue("");
 		getSaveButton().setEnabled(false);
+		getIncludeCodeSystemVersionCheckBox().setValue(false);
 	}
 	
 	/**
@@ -724,6 +746,7 @@ public class CQLCodesView {
 		setCodeSystemOid("");
 		getSuffixTextBox().setValue("");
 		getSaveButton().setEnabled(false);
+		getIncludeCodeSystemVersionCheckBox().setValue(false);
 	}
 
 	public void buildCodesCellTable(List<CQLCode> codesTableList, boolean checkForEditPermission) {
@@ -1118,6 +1141,7 @@ public class CQLCodesView {
 	 * @param isEditable
 	 */
 	public void setReadOnly(boolean isEditable) {		
+		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
 		getSaveButton().setEnabled(isEditable);
 		getCancelCodeButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
@@ -1138,5 +1162,13 @@ public class CQLCodesView {
 		}
 		return codesToPaste;
 	}	
+	
+	public CheckBox getIncludeCodeSystemVersionCheckBox() {
+		return includeCodeSystemVersionCheckBox;
+	}
+
+	public void setIncludeCodeSystemVersionCheckBox(CheckBox includeCodeSystemVersionCheckBox) {
+		this.includeCodeSystemVersionCheckBox = includeCodeSystemVersionCheckBox;
+	}
 	
 }

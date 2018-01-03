@@ -4448,6 +4448,7 @@ private void addCodeSearchPanelHandlers() {
 	 * Adds the new codes.
 	 */
 	private void addNewCodes() {
+		boolean isCodeSystemVersionIncluded = searchDisplay.getCodesView().getIncludeCodeSystemVersionCheckBox().getValue();
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		MatCodeTransferObject transferObject = new MatCodeTransferObject();
 		CQLCode refCode = new CQLCode();
@@ -4458,6 +4459,7 @@ private void addCodeSearchPanelHandlers() {
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
 		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
+		refCode.setIsCodeSystemVersionIncluded(isCodeSystemVersionIncluded);
 		
 		final String codeSystemName = refCode.getCodeSystemName();
 		final String codeId = refCode.getCodeOID();

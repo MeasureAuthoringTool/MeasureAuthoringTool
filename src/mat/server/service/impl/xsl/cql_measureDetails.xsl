@@ -208,13 +208,18 @@
 		</xsl:comment>
 		<xsl:text>
       </xsl:text>
-		<definition>
-			<cql-ext:code code="{@oid}" codeSystem="{@codeSystemOID}"
-				codeSystemName="{@taxonomy}" codeSystemVersion="{@codeSystemVersion}"
-				xmlns:cql-ext="urn:hhs-cql:hqmf-n1-extensions:v1">
-				<displayName value="{@name}" />
-			</cql-ext:code>
-		</definition>
+			<definition>
+					<cql-ext:code code="{@oid}" codeSystem="{@codeSystemOID}"
+						codeSystemName="{@taxonomy}"
+						xmlns:cql-ext="urn:hhs-cql:hqmf-n1-extensions:v1">
+						<xsl:if test="@isCodeSystemVersionIncluded = 'true'">
+							<xsl:attribute name="codeSystemVersion">
+								<xsl:value-of select="@codeSystemVersion"/>
+							</xsl:attribute>
+						</xsl:if>
+						<displayName value="{@name}" />
+					</cql-ext:code>
+				</definition>
 	</xsl:if>
 
 </xsl:for-each>
@@ -861,5 +866,4 @@
     <xsl:template name="constructExt">
     	
     </xsl:template>
-
 </xsl:stylesheet>

@@ -3,8 +3,10 @@ package mat.server.simplexml.cql;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -157,7 +159,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		generateDefinitionsSection(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult, usedCQLArtifactHolder);
 		generateFunctionsSection(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult, usedCQLArtifactHolder);
-		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
+		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlResult);
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 		generateSupplementalDataVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
@@ -173,7 +175,7 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param cqlResult the cql result, which contains information about used artifacts
 	 * @throws XPathExpressionException 
 	 */
-	private static void generateTerminology(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult) throws XPathExpressionException {
+	private static void generateTerminology(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, SaveUpdateCQLResult cqlResult) throws XPathExpressionException {
 		definitionsOrFunctionsAlreadyDisplayed.clear();
 		Element bodyElement = humanReadableHTMLDocument.body(); 
 		bodyElement.append("<h3><a name=\"d1e555\" href=\"#toc\">Terminology</a></h3>");
@@ -237,24 +239,31 @@ public class CQLHumanReadableHTMLCreator {
 	 */
 	private static void generateTerminologyCode(Element mainListElement, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
-
+		
+		Set<String> tempSet = new HashSet<>(); 
 		ArrayList<String> codeStringList = new ArrayList<>(); 
 		for(int i = 0; i < elements.getLength(); i++) {
 			Node current = elements.item(i);
 			String codeName = current.getAttributes().getNamedItem("name").getNodeValue(); 
 			String codeOID = current.getAttributes().getNamedItem("oid").getNodeValue();
 			String codeSystemName = current.getAttributes().getNamedItem("taxonomy").getNodeValue(); 
+			String isCodeSystemVersionIncluded = current.getAttributes().getNamedItem("isCodeSystemVersionIncluded").getNodeValue();
 			
-			String codeSystemVersion = current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
-			String codeOutput = "code \"" + codeName + "\" (\"" + codeSystemName + " version " + codeSystemVersion + " Code (" + codeOID +")\")";
+			String codeSystemVersion = "";
+			if(isCodeSystemVersionIncluded != null && isCodeSystemVersionIncluded.equals("true")) {
+				codeSystemVersion = " version " + current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+			}
 			
+			String codeOutput = "code \"" + codeName + "\" (\"" + codeSystemName  + codeSystemVersion + " Code (" + codeOID +")\")";
+			
+			// output strings will be unique due the suffix constraint. No code can have the same identifier
 			// no duplicates should appear
-			if(!codeStringList.contains(codeOutput)) {
+			if(tempSet.add(codeOutput)) {
 				codeStringList.add(codeOutput);
 			}
 		}
 		
-		Collections.sort(codeStringList, String.CASE_INSENSITIVE_ORDER);
+		codeStringList.sort(String::compareToIgnoreCase);
 		
 		for(String listItem : codeStringList) {
 			Element codeLIelement = mainListElement.appendElement(HTML_LI);

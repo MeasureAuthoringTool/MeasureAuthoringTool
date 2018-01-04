@@ -64,9 +64,6 @@ import mat.client.util.MatTextBox;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
 
-
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
@@ -86,9 +83,6 @@ public class CQLCodesView {
 		void onDeleteClicked(CQLCode result, int index);
 		
 	}
-	private static final String BIRTHDATE = "Birthdate";
-
-	private static final String DEAD = "Dead";
 	
 	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
 	
@@ -141,7 +135,7 @@ public class CQLCodesView {
 	
 	private CustomQuantityTextBox suffixTextBox = new CustomQuantityTextBox(4);
 	
-	private String CodeSystemOid;
+	private String codeSystemOid;
 	
 	/** The is editable. */
 	private boolean isEditable;
@@ -279,7 +273,6 @@ public class CQLCodesView {
 
 
 		searchPanel.add(searchHeader);
-		/*searchPanel.setWidth("550px");*/
 		searchPanel.setHeight("350px");
 		searchPanelBody.add(new SpacerWidget());
 
@@ -348,7 +341,6 @@ public class CQLCodesView {
 		codeDescriptorInput.setTitle("Code Descriptor");
 		codeDescriptorInput.setWidth("450px");
 		codeDescriptorInput.getElement().setId("codeDescriptorInput_TextBox");
-		/*codeDescriptorInput.setHeight("30px");*/
 
 		codeDescriptorGroup.add(codeDescriptorLabel);
 		codeDescriptorGroup.add(codeDescriptorInput);
@@ -362,9 +354,6 @@ public class CQLCodesView {
 		suffixLabel.setFor("suffixInput_TextBox");
 		suffixTextBox.setTitle("Suffix must be an integer between 1-4 characters");
 		suffixTextBox.getElement().setId("suffixInput_TextBox");
-		/*suffixTextBox.setWidth("50px");*/
-		/*codeDescriptorInput.setWidth("510px");
-		codeDescriptorInput.setHeight("30px");*/
 
 		suffixGroup.add(suffixLabel);
 		suffixGroup.add(suffixTextBox);
@@ -399,7 +388,7 @@ public class CQLCodesView {
 		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
 		
 		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
-		//searchGrid.setWidget(1, 0, codeDescriptorGroup);
+		
 		searchGrid.setStyleName("secondLabel");
 		
 		codeDescriptorAndSuffixGrid.setWidget(0, 0, codeDescriptorGroup);
@@ -620,14 +609,6 @@ public class CQLCodesView {
 		return table;
 	}
 	
-	/**
-	 * Gets the pager.
-	 *
-	 * @return the pager
-	 */
-	public MatSimplePager getPager(){
-		return spager;
-	}
 	
 	/**
 	 * Gets the main panel.
@@ -763,13 +744,13 @@ public class CQLCodesView {
 		codesElementsHeader.add(searchHeaderText);
 		cellTablePanel.add(codesElementsHeader);
 		if ((codesTableList != null)
-				&& (codesTableList.size() > 0)) {
+				&& (!codesTableList.isEmpty())) {
 			codesSelectedList = new ArrayList<CQLCode>();
 			table = new CellTable<CQLCode>();
 			setEditable(checkForEditPermission);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			listDataProvider = new ListDataProvider<CQLCode>();
-			/*qdmSelectedList = new ArrayList<CQLCode>();*/
+
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
@@ -777,7 +758,7 @@ public class CQLCodesView {
 			ListHandler<CQLCode> sortHandler = new ListHandler<CQLCode>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
-			table = addColumnToTable(table, sortHandler, isEditable);
+			table = addColumnToTable();
 			listDataProvider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT
 					.create(CustomPager.Resources.class);
@@ -822,8 +803,7 @@ public class CQLCodesView {
 		
 	}
 
-	private CellTable<CQLCode> addColumnToTable(CellTable<CQLCode> table2, ListHandler<CQLCode> sortHandler,
-			boolean isEditable2) {
+	private CellTable<CQLCode> addColumnToTable() {
 		
 		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
 			Label searchHeader = new Label("Applied Codes");
@@ -835,8 +815,6 @@ public class CQLCodesView {
 			caption.appendChild(searchHeader.getElement());
 			selectionModel = new MultiSelectionModel<CQLCode>();
 			table.setSelectionModel(selectionModel);
-			
-			//table.setSelectionModel(selectionModel);
 			
 			// Descriptor Column
 			Column<CQLCode, SafeHtml> nameColumn = new Column<CQLCode, SafeHtml>(
@@ -917,7 +895,7 @@ public class CQLCodesView {
 			table.setColumnWidth(2, 15.0, Unit.PCT);
 			table.setColumnWidth(3, 15.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
-			/*table.setColumnWidth(5, 2.0, Unit.PCT);*/
+			
 		}
 		
 		return table;
@@ -983,7 +961,7 @@ public class CQLCodesView {
 			@Override
 			public Boolean getValue(CQLCode object) {
 				boolean isSelected = false;
-				if (codesSelectedList.size() > 0) {
+				if (!codesSelectedList.isEmpty()) {
 					for (int i = 0; i < codesSelectedList.size(); i++) {
 						if (codesSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
 							isSelected = true;
@@ -992,7 +970,6 @@ public class CQLCodesView {
 						}
 					}
 				} else {
-					isSelected = false;
 					selectionModel.setSelected(object, isSelected);
 				}
 
@@ -1095,11 +1072,11 @@ public class CQLCodesView {
 	}
 
 	public String getCodeSystemOid() {
-		return CodeSystemOid;
+		return codeSystemOid;
 	}
 
 	public void setCodeSystemOid(String codeSystemOid) {
-		CodeSystemOid = codeSystemOid;
+		this.codeSystemOid = codeSystemOid;
 	}
 
 	public CustomQuantityTextBox getSuffixTextBox() {

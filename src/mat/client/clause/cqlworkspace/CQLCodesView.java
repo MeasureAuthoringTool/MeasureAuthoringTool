@@ -876,6 +876,30 @@ public class CQLCodesView {
 			};
 			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));			
 		
+			Column<CQLCode, SafeHtml> isVersionIncludedColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
+
+				@Override
+				public SafeHtml getValue(CQLCode object) {
+					
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					
+					if (object.isIsCodeSystemVersionIncluded()) {
+						sb.appendHtmlConstant("<div title=\"Version Included\" align=\"right\">");						
+						sb.appendHtmlConstant("<i class=\"fa fa-check\" aria-hidden=\"true\" style=\"color:limegreen;\"></i>");
+						sb.appendHtmlConstant("<span style=\"color: transparent;\">Yes</span>");
+						
+					} else {
+						sb.appendHtmlConstant("<div title=\"Version Not Included\">");								
+						sb.appendHtmlConstant("&nbsp;");						
+					}
+					sb.appendHtmlConstant("</div>");
+					
+					return sb.toSafeHtml();
+				}
+				
+			};
+			table.addColumn(isVersionIncludedColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version Included\">" + "Version Included" + "</span>"));
+			
 			String colName = "Modify";
 			if(!isEditable){
 				colName = "Select";

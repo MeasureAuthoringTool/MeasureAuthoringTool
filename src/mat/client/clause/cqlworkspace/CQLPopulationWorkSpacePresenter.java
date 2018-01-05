@@ -572,8 +572,9 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			nextSection = populationName;
 			searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
 			event.stopPropagation();
-
+			showSearchingBusy(false);
 		} else {			
+			showSearchingBusy(true);
 			setNextActiveMenuItem(currentSection, populationName);
 
 			if (CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS.equals(populationName)) {
@@ -585,6 +586,7 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 			}			
 
 			Mat.focusSkipLists(MEASURE_COMPOSER);
+			showSearchingBusy(false);
 		}	
 
 	}
@@ -804,11 +806,18 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 
-		}
-		searchDisplay.getCqlLeftNavBarPanelView().setIsLoading(busy);
-
+		searchDisplay.getCqlLeftNavBarPanelView().getInitialPopulation().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getNumerator().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getDenominator().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getNumeratorExclusions().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExclusions().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getDenominatorExceptions().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getStratifications().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getMeasureObservations().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulations().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().getMeasurePopulationExclusions().setEnabled(!busy);
+		searchDisplay.getCqlLeftNavBarPanelView().setIsLoading(!busy);
 	}
 
 	/**

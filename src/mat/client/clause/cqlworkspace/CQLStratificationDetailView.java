@@ -13,6 +13,7 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -133,7 +134,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		nameLabel.setText(populationClauseObject.getDisplayName());
 		nameLabel.setTitle(populationClauseObject.getDisplayName());
 		nameLabel.getElement().setAttribute("aria-label", populationClauseObject.getDisplayName());
-		nameLabel.setId("nameLabel" + i);
+		nameLabel.setId("nameLabel" + stratificationsObject.getSequenceNumber() + "_" + i);
 		nameLabel.setWidth("100px");
 		nameLabel.setMarginLeft(20.00);
 		nameFocusPanel.add(nameLabel);
@@ -145,7 +146,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		definitionListBox.setSize("180px", "30px");
 		definitionListBox.addItem("--Select Definition--", "");
 		definitionListBox.setTitle("Select Definition List");
-		definitionListBox.setId("definitionList_" + populationClauseObject.getDisplayName());
+		definitionListBox.setId("definitionList_" + stratificationsObject.getSequenceNumber() + "_" + populationClauseObject.getDisplayName());
 
 		for (ExpressionObject definition : populationDataModel.getDefinitionNameList()) {
 			definitionListBox.addItem(definition.getName(), definition.getUuid());
@@ -172,7 +173,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		// button for Delete
 		Button deleteButton = new Button();
 		deleteButton.setType(ButtonType.LINK);
-		deleteButton.getElement().setId("deleteButton_" + populationClauseObject.getDisplayName());
+		deleteButton.getElement().setId("deleteButton_" + stratificationsObject.getSequenceNumber() + "_" + populationClauseObject.getDisplayName());
 		deleteButton.setTitle("Delete");
 		deleteButton.setText("Delete");
 		deleteButton.getElement().setAttribute("aria-label",
@@ -194,7 +195,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		// button for View Human Readable
 		Button viewHRButton = new Button();
 		viewHRButton.setType(ButtonType.LINK);
-		viewHRButton.getElement().setId("viewHRButton_" + populationClauseObject.getDisplayName());
+		viewHRButton.getElement().setId("viewHRButton_" + stratificationsObject.getSequenceNumber() + "_" + populationClauseObject.getDisplayName());
 		viewHRButton.setTitle("View Human Readable");
 		viewHRButton.setText("View");
 		viewHRButton.getElement().setAttribute("aria-label",

@@ -772,19 +772,20 @@ public class CQLCodesView {
 						.buildInvisibleLabel(
 								"appliedCodeTableSummary",
 								"In the Following Applied Codes table Descriptor in First Column"
-										+ "Identifier in Second Column, Code in Third Column, Code System in Fourth Column,"
-										+ "Version in Fifth Column And Modify in Sixth Column where the user can Edit and Delete "
-										+ "the existing code. The Applied codes are listed alphabetically in a table.");
+										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
+										+ "Version Included in Fifth Column And Modify in Sixth Column where the user can Delete "
+										+ "the existing code and select checkbox to copy the code. The Applied codes are listed alphabetically in a table.");
 				
 				
 			} else {
 				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
 						.buildInvisibleLabel(
-								"appliedQDMTableSummary",
+								"appliedCodeTableSummary",
 								"In the Following Applied Codes table Descriptor in First Column"
-										+ "Identifier in Second Column, Code in Third Column, Code System in Fourth Column,"
-										+ "Version in Fifth Column. The Applied Codes are listed alphabetically in a table.");
+										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
+										+ "Version Included in Fifth Column. The Applied Codes are listed alphabetically in a table.");
 			}
+			
 			table.getElement().setAttribute("id", "AppliedCodeTable");
 			table.getElement().setAttribute("aria-describedby",
 					"appliedCodeTableSummary");
@@ -914,12 +915,12 @@ public class CQLCodesView {
 			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
 					+ colName + "</span>"));
 			
-			table.setColumnWidth(0, 55.0, Unit.PCT);
-			table.setColumnWidth(1, 15.0, Unit.PCT);
+			table.setColumnWidth(0, 50.0, Unit.PCT);
+			table.setColumnWidth(1, 10.0, Unit.PCT);
 			table.setColumnWidth(2, 15.0, Unit.PCT);
 			table.setColumnWidth(3, 15.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
-			
+			table.setColumnWidth(5, 5.0, Unit.PCT);
 		}
 		
 		return table;

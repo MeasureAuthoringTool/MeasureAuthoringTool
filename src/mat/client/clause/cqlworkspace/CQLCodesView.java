@@ -371,21 +371,22 @@ public class CQLCodesView {
 		buttonFormGroup.add(new SpacerWidget());
 		
 		FlowPanel includeCodeSystemPanel = new FlowPanel();
+		includeCodeSystemPanel.setHeight("30px");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("width", "100%");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("textAlign", "right");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("verticalAlign", "middle");
 		FormLabel includeCodeSystemVersionLabel = new FormLabel();
 		includeCodeSystemVersionLabel.setText("Include Code System Version");
 		includeCodeSystemVersionLabel.setTitle("Include Code System Version");
-		includeCodeSystemVersionLabel.setHeight("30px");
-		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginRight", "10px");
 		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("fontWeight", "700");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginLeft", "3px");
 		includeCodeSystemVersionLabel.setFor("includeCodeSystemversion_CheckBox");
 		includeCodeSystemVersionCheckBox = new CheckBox();
 		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
 		includeCodeSystemVersionCheckBox.setTitle("Click checkbox to select");
-		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
 		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
+		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
+		
 		
 		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
 		

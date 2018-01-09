@@ -371,21 +371,22 @@ public class CQLCodesView {
 		buttonFormGroup.add(new SpacerWidget());
 		
 		FlowPanel includeCodeSystemPanel = new FlowPanel();
+		includeCodeSystemPanel.setHeight("30px");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("width", "100%");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("textAlign", "right");
 		includeCodeSystemPanel.getElement().getStyle().setProperty("verticalAlign", "middle");
 		FormLabel includeCodeSystemVersionLabel = new FormLabel();
 		includeCodeSystemVersionLabel.setText("Include Code System Version");
 		includeCodeSystemVersionLabel.setTitle("Include Code System Version");
-		includeCodeSystemVersionLabel.setHeight("30px");
-		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginRight", "10px");
 		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("fontWeight", "700");
+		includeCodeSystemVersionLabel.getElement().getStyle().setProperty("marginLeft", "3px");
 		includeCodeSystemVersionLabel.setFor("includeCodeSystemversion_CheckBox");
 		includeCodeSystemVersionCheckBox = new CheckBox();
 		includeCodeSystemVersionCheckBox.getElement().setId("includeCodeSystemversion_CheckBox");
 		includeCodeSystemVersionCheckBox.setTitle("Click checkbox to select");
-		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
 		includeCodeSystemPanel.add(includeCodeSystemVersionCheckBox);
+		includeCodeSystemPanel.add(includeCodeSystemVersionLabel);
+		
 		
 		searchGrid.setWidget(0, 0, searchWidgetFormGroup);
 		
@@ -772,19 +773,20 @@ public class CQLCodesView {
 						.buildInvisibleLabel(
 								"appliedCodeTableSummary",
 								"In the Following Applied Codes table Descriptor in First Column"
-										+ "Identifier in Second Column, Code in Third Column, Code System in Fourth Column,"
-										+ "Version in Fifth Column And Modify in Sixth Column where the user can Edit and Delete "
-										+ "the existing code. The Applied codes are listed alphabetically in a table.");
+										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
+										+ "Version Included in Fifth Column And Modify in Sixth Column where the user can Delete "
+										+ "the existing code and select checkbox to copy the code. The Applied codes are listed alphabetically in a table.");
 				
 				
 			} else {
 				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
 						.buildInvisibleLabel(
-								"appliedQDMTableSummary",
+								"appliedCodeTableSummary",
 								"In the Following Applied Codes table Descriptor in First Column"
-										+ "Identifier in Second Column, Code in Third Column, Code System in Fourth Column,"
-										+ "Version in Fifth Column. The Applied Codes are listed alphabetically in a table.");
+										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
+										+ "Version Included in Fifth Column. The Applied Codes are listed alphabetically in a table.");
 			}
+			
 			table.getElement().setAttribute("id", "AppliedCodeTable");
 			table.getElement().setAttribute("aria-describedby",
 					"appliedCodeTableSummary");
@@ -914,12 +916,12 @@ public class CQLCodesView {
 			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
 					+ colName + "</span>"));
 			
-			table.setColumnWidth(0, 55.0, Unit.PCT);
-			table.setColumnWidth(1, 15.0, Unit.PCT);
+			table.setColumnWidth(0, 50.0, Unit.PCT);
+			table.setColumnWidth(1, 10.0, Unit.PCT);
 			table.setColumnWidth(2, 15.0, Unit.PCT);
 			table.setColumnWidth(3, 15.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
-			
+			table.setColumnWidth(5, 5.0, Unit.PCT);
 		}
 		
 		return table;

@@ -694,8 +694,8 @@ public class CQLIncludeLibraryView {
 				
 				if ((object != null)) {
 					if(includedList != null && includedList.contains(object.getId())){
-						sb.appendHtmlConstant("<img src =\"images/bullet_tick.png\" alt=\"Library already in use.\""
-					+ "title = \"Library already in use.\"/>");
+						sb.appendHtmlConstant("<i class=\"fa fa-check\" aria-hidden=\"true\" style=\"color:limegreen;\"></i>");
+						sb.appendHtmlConstant("<span style=\"color: transparent;\">Yes</span>");
 					} else {
 						cell.render(context, hasCell.getValue(object), sb);
 					}

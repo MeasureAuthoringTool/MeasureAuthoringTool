@@ -1092,9 +1092,10 @@ public class CQLHumanReadableHTMLCreator {
 		Element liElement = ulElement.appendElement("li");
 		Element divElement = liElement.appendElement("div");
 		String id = "test-None_" + (int) (Math.random() * 1000);
-		Element noneLabelElement = divElement.appendElement("label");
-		noneLabelElement.attr("for", id);
-		Element strongElement = noneLabelElement.appendElement("strong");
+		divElement.attr("id", id);
+		//Element noneLabelElement = divElement.appendElement("label");
+		//noneLabelElement.attr("for", id);
+		Element strongElement = divElement.appendElement("strong");
 		strongElement.attr("class","cql-class");
 		strongElement.appendText("None");
 	}

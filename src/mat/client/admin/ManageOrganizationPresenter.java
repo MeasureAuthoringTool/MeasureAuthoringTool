@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -26,6 +27,7 @@ import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.ManageOrganizationView.Observer;
 import mat.client.admin.service.SaveUpdateOrganizationResult;
+import mat.client.clause.cqlworkspace.DeleteConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.search.SearchResultUpdate;
@@ -120,6 +122,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		 * @param title the new title
 		 */
 		void setTitle(String title);
+		
+	
 	}
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
@@ -348,16 +352,44 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	}
 	
 	private void deleteOrganization(Result result) {
-		MatContext.get().getAdminService().deleteOrganization(result, new AsyncCallback<Void>() {
+		
+		searchDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		
+		DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
+		deleteConfirmationDialogBox.getMessageAlert().
+			createAlert("You have selected to delete an organization " + 
+					(result.getOrgName().length()>60 ? result.getOrgName().substring(0, 59) : result.getOrgName()) + ". Please confirm that you want to remove this organization.");
+		
+		deleteConfirmationDialogBox.show();
+		
+		deleteConfirmationDialogBox.getYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
-			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().createAlert("Organization cannot be deleted.");
+			public void onClick(ClickEvent event) {
+				
+				MatContext.get().getAdminService().deleteOrganization(result, new AsyncCallback<Void>() {
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.getErrorMessageDisplay().createAlert("Organization cannot be deleted.");
+					}
+					@Override
+					public void onSuccess(Void result) {
+						displaySearch();
+						searchDisplay.getSuccessMessageDisplay().createAlert("Organization successfully deleted.");
+					}
+				});
+				
 			}
+		});
+		
+				
+		deleteConfirmationDialogBox.getNoButton().addClickHandler(new ClickHandler() {
+			
 			@Override
-			public void onSuccess(Void result) {
-				displaySearch();
-				searchDisplay.getSuccessMessageDisplay().createAlert("Organization successfully deleted.");
+			public void onClick(ClickEvent event) {
+				deleteConfirmationDialogBox.hide();
 			}
 		});
 		

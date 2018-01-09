@@ -470,7 +470,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	}
 	
 	
-	private void isOrganizationDetailModified() {
+	private void isOrganizationDetailModified() { 
 			
 		if(currentDetails.getOrganization()!=null && 
 				!currentDetails.getOrganization().equalsIgnoreCase(updatedDetails.getOrganization())){

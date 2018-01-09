@@ -14,7 +14,6 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -358,8 +357,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		
 		DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 		deleteConfirmationDialogBox.getMessageAlert().
-			createAlert("You have selected to delete an organization " + 
-					(result.getOrgName().length()>60 ? result.getOrgName().substring(0, 59) : result.getOrgName()) + ". Please confirm that you want to remove this organization.");
+			createAlert("You have selected to delete organization " + 
+					(result.getOrgName().length()>60 ? result.getOrgName().substring(0, 59) : result.getOrgName()) + ". Please confirm that you want to remove this organization permanently.");
 		
 		deleteConfirmationDialogBox.show();
 		
@@ -375,9 +374,9 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						searchDisplay.getErrorMessageDisplay().createAlert("Organization cannot be deleted.");
 					}
 					@Override
-					public void onSuccess(Void result) {
+					public void onSuccess(Void res) {
 						displaySearch();
-						searchDisplay.getSuccessMessageDisplay().createAlert("Organization successfully deleted.");
+						searchDisplay.getSuccessMessageDisplay().createAlert(result.getOrgName()+" successfully deleted.");
 					}
 				});
 				

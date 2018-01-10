@@ -1,8 +1,5 @@
 package mat.client.measurepackage;
 
-import java.util.ArrayList;
-import java.util.List;
-import mat.model.QualityDataSetDTO;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc

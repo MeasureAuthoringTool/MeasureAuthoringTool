@@ -201,6 +201,8 @@ public class PackagerServiceImpl implements PackagerService {
 							clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(),
 									displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION, associatedClauseUUID,
 									qdmSelectedList));
+						} else {
+							continue;
 						}
 						
 					} else if (typeNode == null || typeNode.getNodeValue().equalsIgnoreCase(MEASURE_OBSERVATION)) {

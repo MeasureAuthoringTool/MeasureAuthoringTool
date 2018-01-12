@@ -476,14 +476,7 @@ implements MeasureCloningService {
 				}
 			}
 			for(int i=0;i<cqlValuesetsNode.getChildNodes().getLength();i++){
-				Node valueSetNode = cqlValuesetsNode.getChildNodes().item(i);
-
-				Node originalNameNode = valueSetNode.getAttributes().getNamedItem(ORIGINAL_NAME);
-				if(originalNameNode == null) {
-					Attr originalNameAttr = xmlProcessor.getOriginalDoc().createAttribute(ORIGINAL_NAME);
-					originalNameAttr.setNodeValue(valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue());
-					valueSetNode.getAttributes().setNamedItem(originalNameAttr);
-				}
+				Node valueSetNode = addOriginalNameAttributeIfNotPresent(cqlValuesetsNode.getChildNodes().item(i), xmlProcessor);
 				cqlValuesetsNodeList.add(valueSetNode);
 			}
 		}
@@ -555,6 +548,16 @@ implements MeasureCloningService {
 		return true;
 	}
 	
+
+	private Node addOriginalNameAttributeIfNotPresent(Node valueSetNode, XmlProcessor xmlProcessor) {
+		Node originalNameNode = valueSetNode.getAttributes().getNamedItem(ORIGINAL_NAME);
+		if(originalNameNode == null) {
+			Attr originalNameAttr = xmlProcessor.getOriginalDoc().createAttribute(ORIGINAL_NAME);
+			originalNameAttr.setNodeValue(valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue());
+			valueSetNode.getAttributes().setNamedItem(originalNameAttr);
+		}
+		return valueSetNode;
+	}
 
 	/**
 	 * Append cql definitions.

@@ -247,21 +247,27 @@ public class CQLHumanReadableHTMLCreator {
 			String codeName = current.getAttributes().getNamedItem("name").getNodeValue(); 
 			String codeOID = current.getAttributes().getNamedItem("oid").getNodeValue();
 			String codeSystemName = current.getAttributes().getNamedItem("taxonomy").getNodeValue(); 
-			String isCodeSystemVersionIncluded = current.getAttributes().getNamedItem("isCodeSystemVersionIncluded").getNodeValue();
-			
+
+			Node isCodeSystemVersionIncludedNode = current.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+			// by default the code system should be included if the isCodeSystemIncluded tag does not exist
+			String isCodeSystemVersionIncluded = "true";
+			if(isCodeSystemVersionIncludedNode != null) {
+				isCodeSystemVersionIncluded = isCodeSystemVersionIncludedNode.getNodeValue();
+			} 
+
 			String codeSystemVersion = "";
-			if(isCodeSystemVersionIncluded != null && isCodeSystemVersionIncluded.equals("true")) {
+			if("true".equals(isCodeSystemVersionIncluded)) {
 				codeSystemVersion = " version " + current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
 			}
-			
+
 			String codeOutput = "code \"" + codeName + "\" (\"" + codeSystemName  + codeSystemVersion + " Code (" + codeOID +")\")";
-			
+
 			// output strings will be unique due the suffix constraint. No code can have the same identifier
 			// no duplicates should appear
 			if(tempSet.add(codeOutput)) {
 				codeStringList.add(codeOutput);
 			}
-		}
+		}  
 		
 		codeStringList.sort(String::compareToIgnoreCase);
 		

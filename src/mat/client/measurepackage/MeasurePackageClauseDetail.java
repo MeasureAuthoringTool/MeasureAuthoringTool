@@ -2,7 +2,6 @@ package mat.client.measurepackage;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseDetail.
  */

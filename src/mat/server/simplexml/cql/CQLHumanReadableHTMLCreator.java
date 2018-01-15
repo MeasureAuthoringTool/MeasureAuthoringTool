@@ -3,8 +3,10 @@ package mat.server.simplexml.cql;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -157,7 +159,7 @@ public class CQLHumanReadableHTMLCreator {
 		
 		generateDefinitionsSection(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult, usedCQLArtifactHolder);
 		generateFunctionsSection(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult, usedCQLArtifactHolder);
-		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
+		generateTerminology(humanReadableHTMLDocument, simpleXMLProcessor, cqlResult);
 		generateQDMDataElements(humanReadableHTMLDocument, simpleXMLProcessor); 
 		generateSupplementalDataVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
 		generateRiskAdjustmentVariables(humanReadableHTMLDocument, simpleXMLProcessor, cqlModel, cqlResult);
@@ -173,7 +175,7 @@ public class CQLHumanReadableHTMLCreator {
 	 * @param cqlResult the cql result, which contains information about used artifacts
 	 * @throws XPathExpressionException 
 	 */
-	private static void generateTerminology(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, CQLModel cqlModel, SaveUpdateCQLResult cqlResult) throws XPathExpressionException {
+	private static void generateTerminology(Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor, SaveUpdateCQLResult cqlResult) throws XPathExpressionException {
 		definitionsOrFunctionsAlreadyDisplayed.clear();
 		Element bodyElement = humanReadableHTMLDocument.body(); 
 		bodyElement.append("<h3><a name=\"d1e555\" href=\"#toc\">Terminology</a></h3>");
@@ -183,7 +185,7 @@ public class CQLHumanReadableHTMLCreator {
 		mainListElement.attr("style","padding-left: 50px;");
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm"); 	
 		if(elements.getLength() > 0) {
-			generateTerminologyCodeAndCodesystem(mainListElement, simpleXMLProcessor);
+			generateTerminologyCode(mainListElement, simpleXMLProcessor);
 			generateTerminologyValuesets(mainListElement, simpleXMLProcessor);
 		}
 		
@@ -230,49 +232,44 @@ public class CQLHumanReadableHTMLCreator {
 	}
 	
 	/**
-	 * Generates the the code and codesystem parts of the terminology section
+	 * Generates the the code part of the terminology section
 	 * @param mainListElement the list element for the terminology section
 	 * @param simpleXMLProcessor the xml processor
 	 * @throws XPathExpressionException
 	 */
-	private static void generateTerminologyCodeAndCodesystem(Element mainListElement, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+	private static void generateTerminologyCode(Element mainListElement, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
-
+		
+		Set<String> tempSet = new HashSet<>(); 
 		ArrayList<String> codeStringList = new ArrayList<>(); 
-		ArrayList<String> codeSystemStringList = new ArrayList<>(); 
 		for(int i = 0; i < elements.getLength(); i++) {
 			Node current = elements.item(i);
 			String codeName = current.getAttributes().getNamedItem("name").getNodeValue(); 
 			String codeOID = current.getAttributes().getNamedItem("oid").getNodeValue();
 			String codeSystemName = current.getAttributes().getNamedItem("taxonomy").getNodeValue(); 
-			
-			String codeSystemOID = "";
-			if(current.getAttributes().getNamedItem("codeSystemOID") != null) {
-				codeSystemOID = current.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+
+			Node isCodeSystemVersionIncludedNode = current.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+			// by default the code system should be included if the isCodeSystemIncluded tag does not exist
+			String isCodeSystemVersionIncluded = "true";
+			if(isCodeSystemVersionIncludedNode != null) {
+				isCodeSystemVersionIncluded = isCodeSystemVersionIncludedNode.getNodeValue();
+			} 
+
+			String codeSystemVersion = "";
+			if("true".equals(isCodeSystemVersionIncluded)) {
+				codeSystemVersion = " version " + current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
 			}
-			
-			String codeSystemVersion = current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
-			String codeOutput = "code \"" + codeName + "\" (\"" + codeSystemName + " version " + codeSystemVersion + " Code (" + codeOID +")\")";
-			String codeSystemOutput = "codesystem \"" + codeSystemName + "\" (" + codeSystemOID + " version " + codeSystemVersion + ")";
-			
+
+			String codeOutput = "code \"" + codeName + "\" (\"" + codeSystemName  + codeSystemVersion + " Code (" + codeOID +")\")";
+
+			// output strings will be unique due the suffix constraint. No code can have the same identifier
 			// no duplicates should appear
-			if(!codeStringList.contains(codeOutput)) {
+			if(tempSet.add(codeOutput)) {
 				codeStringList.add(codeOutput);
 			}
-			
-			if(!codeSystemStringList.contains(codeSystemOutput)) {
-				codeSystemStringList.add(codeSystemOutput);
-			}
-		}
+		}  
 		
-		Collections.sort(codeStringList, String.CASE_INSENSITIVE_ORDER);
-		Collections.sort(codeSystemStringList, String.CASE_INSENSITIVE_ORDER);
-		
-		for(String listItem : codeSystemStringList) {
-			Element codeSystemLIelement = mainListElement.appendElement(HTML_LI);
-			codeSystemLIelement.attr("style", "width:80%");		
-			codeSystemLIelement.append(listItem);
-		}
+		codeStringList.sort(String::compareToIgnoreCase);
 		
 		for(String listItem : codeStringList) {
 			Element codeLIelement = mainListElement.appendElement(HTML_LI);
@@ -1101,9 +1098,10 @@ public class CQLHumanReadableHTMLCreator {
 		Element liElement = ulElement.appendElement("li");
 		Element divElement = liElement.appendElement("div");
 		String id = "test-None_" + (int) (Math.random() * 1000);
-		Element noneLabelElement = divElement.appendElement("label");
-		noneLabelElement.attr("for", id);
-		Element strongElement = noneLabelElement.appendElement("strong");
+		divElement.attr("id", id);
+		//Element noneLabelElement = divElement.appendElement("label");
+		//noneLabelElement.attr("for", id);
+		Element strongElement = divElement.appendElement("strong");
 		strongElement.attr("class","cql-class");
 		strongElement.appendText("None");
 	}

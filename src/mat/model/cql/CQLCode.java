@@ -2,9 +2,8 @@ package mat.model.cql;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CQLCodeSystem.
+ * The Class CQLCode.
  */
 public class CQLCode implements IsSerializable {
 
@@ -36,6 +35,19 @@ public class CQLCode implements IsSerializable {
 	private boolean readOnly; 
 	
 	private String suffix;
+
+	private boolean isCodeSystemVersionIncluded;
+
+	public boolean isIsCodeSystemVersionIncluded() {
+		return isCodeSystemVersionIncluded;
+	}
+
+
+
+	public void setIsCodeSystemVersionIncluded(boolean isCodeSystemVersionIncluded) {
+		this.isCodeSystemVersionIncluded = isCodeSystemVersionIncluded;
+	}
+
 	
 	/**
 	 * Gets the id.

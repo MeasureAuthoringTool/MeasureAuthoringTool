@@ -5052,6 +5052,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	private void addNewCodes() {
+		boolean isCodeSystemVersionIncluded = searchDisplay.getCodesView().getIncludeCodeSystemVersionCheckBox().getValue();
 		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 		searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -5066,7 +5067,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
 		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
-
+		refCode.setIsCodeSystemVersionIncluded(isCodeSystemVersionIncluded);
 		final String codeSystemName = refCode.getCodeSystemName();
 		final String codeId = refCode.getCodeOID();
 

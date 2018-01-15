@@ -1167,13 +1167,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-			//Check if onClick is not for Cloning or Editing existing Measure
-				if(!isClone && currentDetails.getId() == null){
-				detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
-				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
-				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText("Continue");
-				detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
-				}else{
+				
+				// create new measure flow
+				if(!isClone && currentDetails.getId() == null) {
+					updateDetailsFromView();
+					if(isValid(currentDetails)) { // validate before popup
+						detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
+						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText("Continue");
+						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
+					}
+				
+				} else { // edit or clone
 					update();
 				}
 			

@@ -125,6 +125,9 @@
 					<field name="readOnly" type="java.lang.Boolean">
 						<bind-xml name="readOnly" node="attribute" />
 					</field>
+					<field name="isCodeSystemVersionIncluded" type="java.lang.Boolean">
+						<bind-xml name="isCodeSystemVersionIncluded" node="attribute" />
+					</field>
 				</class>
 			</bind-xml>
 		</field>

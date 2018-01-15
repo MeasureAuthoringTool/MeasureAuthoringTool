@@ -50,6 +50,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.dom.ElementImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -102,6 +103,10 @@ implements MeasureCloningService {
 	
 	/** The Constant UU_ID. */
 	private static final String UU_ID = "uuid";
+	
+	private static final String OID = "oid";
+	
+	private static final String DATATYPE = "datatype";
 	
 	/** The Constant TITLE. */
 	private static final String TITLE = "title";
@@ -159,6 +164,9 @@ implements MeasureCloningService {
 	
 	/** The Constant TIMING_ELEMENT. */
 	private static final String TIMING_ELEMENT ="Timing ELement";
+	
+	private static final String ORIGINAL_NAME = "originalName";
+	private static final String NAME = "name";
 
 	
 	/** The cloned doc. */
@@ -422,9 +430,9 @@ implements MeasureCloningService {
 			for(int i=0;i<qdmNodes.getLength();i++){
 				Node qdmNode = qdmNodes.item(i);
 				boolean isClonable = true;
-				String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
-				String qdmName = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
-				String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+				String oid = qdmNode.getAttributes().getNamedItem(OID).getNodeValue();
+				String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
+				String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
 				if(oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
 					//expiredtimingQDMNode = qdmNode;
 					qdmNodeList.add(qdmNode);
@@ -460,15 +468,16 @@ implements MeasureCloningService {
 					Node clonedqdmNode = qdmNode.cloneNode(true);
 					xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
 					//MAT-8770
-					if(clonedqdmNode.getAttributes().getNamedItem("datatype") != null){
-						clonedqdmNode.getAttributes().removeNamedItem("datatype");
+					if(clonedqdmNode.getAttributes().getNamedItem(DATATYPE) != null){
+						clonedqdmNode.getAttributes().removeNamedItem(DATATYPE);
 					}
 					
 					cqlValuesetsNode.appendChild(clonedqdmNode);
 				}
 			}
 			for(int i=0;i<cqlValuesetsNode.getChildNodes().getLength();i++){
-				cqlValuesetsNodeList.add(cqlValuesetsNode.getChildNodes().item(i));
+				Node valueSetNode = addOriginalNameAttributeIfNotPresent(cqlValuesetsNode.getChildNodes().item(i), xmlProcessor);
+				cqlValuesetsNodeList.add(valueSetNode);
 			}
 		}
 		
@@ -480,8 +489,8 @@ implements MeasureCloningService {
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
-				String valuesetName = cqlNode.getAttributes().getNamedItem("name").getTextContent();
-				String valuesetOID = cqlNode.getAttributes().getNamedItem("oid").getTextContent();
+				String valuesetName = cqlNode.getAttributes().getNamedItem(NAME).getTextContent();
+				String valuesetOID = cqlNode.getAttributes().getNamedItem(OID).getTextContent();
 				if(!valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 					if(!cqlVSACValueSets.contains(valuesetName)){
 					cqlVSACValueSets.add(valuesetName);
@@ -502,7 +511,7 @@ implements MeasureCloningService {
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
-				String valuesetOID = cqlNode.getAttributes().getNamedItem("oid").getTextContent();
+				String valuesetOID = cqlNode.getAttributes().getNamedItem(OID).getTextContent();
 				if(valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 					for (String userDefName : cqlUserDefValueSets) {
 						if(cqlVSACValueSets.contains(userDefName)){
@@ -539,6 +548,16 @@ implements MeasureCloningService {
 		return true;
 	}
 	
+
+	private Node addOriginalNameAttributeIfNotPresent(Node valueSetNode, XmlProcessor xmlProcessor) {
+		Node originalNameNode = valueSetNode.getAttributes().getNamedItem(ORIGINAL_NAME);
+		if(originalNameNode == null) {
+			Attr originalNameAttr = xmlProcessor.getOriginalDoc().createAttribute(ORIGINAL_NAME);
+			originalNameAttr.setNodeValue(valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue());
+			valueSetNode.getAttributes().setNamedItem(originalNameAttr);
+		}
+		return valueSetNode;
+	}
 
 	/**
 	 * Append cql definitions.
@@ -603,8 +622,8 @@ implements MeasureCloningService {
 				}
 				
 				Element cqlDefinitionRefNode = xmlProcessor.getOriginalDoc().createElement("cqldefinition");
-				cqlDefinitionRefNode.setAttribute("displayName", supplNode.getAttributes().getNamedItem("name").getNodeValue());
-				cqlDefinitionRefNode.setAttribute("uuid", supplNode.getAttributes().getNamedItem("id").getNodeValue());
+				cqlDefinitionRefNode.setAttribute("displayName", supplNode.getAttributes().getNamedItem(NAME).getNodeValue());
+				cqlDefinitionRefNode.setAttribute(UU_ID, supplNode.getAttributes().getNamedItem("id").getNodeValue());
 				supplementalDataNode.appendChild(cqlDefinitionRefNode);
 				
 			}
@@ -855,8 +874,8 @@ implements MeasureCloningService {
 				for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
 					Node newNode = nodesElementLookUpAll.item(i);
 					String nodeName = newNode.getAttributes()
-							.getNamedItem("name").getNodeValue().toString();
-					String uuid = newNode.getAttributes().getNamedItem("uuid")
+							.getNamedItem(NAME).getNodeValue().toString();
+					String uuid = newNode.getAttributes().getNamedItem(UU_ID)
 							.getNodeValue().toString();
 					supplementalUUIdMap.put(nodeName, uuid);
 				}
@@ -912,7 +931,7 @@ implements MeasureCloningService {
 		Node measurementPeriodNode = clonedDoc.createElement(MEASUREMENT_PERIOD);
 		ElementImpl element = (ElementImpl) measurementPeriodNode;
 		element.setAttribute("calenderYear","true");
-		element.setAttribute("uuid",UUID.randomUUID().toString());
+		element.setAttribute(UU_ID,UUID.randomUUID().toString());
 		Node startDateNode = clonedDoc.createElement(START_DATE);
 		startDateNode.setTextContent("01/01/20XX");
 		Node stopDateNode = clonedDoc.createElement(STOP_DATE);

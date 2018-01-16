@@ -868,11 +868,11 @@ public class CQLCodesView {
 			// Version Profile Column
 			Column<CQLCode, SafeHtml> versionColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public SafeHtml getValue(CQLCode code) {
+				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
 					String value = "";
-					if (!isBirthdayOrDead(code.getCodeOID(), code.getCodeSystemOID())) {
-						value = code.getCodeSystemVersion();
+					if (!isBirthdayOrDead(object.getCodeOID(), object.getCodeSystemOID())) {
+						value = object.getCodeSystemVersion();
 						title.append("Version : ").append(value);
 					}					
 					title.append("");

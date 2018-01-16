@@ -1740,7 +1740,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 					
 					cqlLibraryShare.setShareLevel(sLevel);
 					cqlLibraryShareDAO.save(cqlLibraryShare);
-				} else if (!ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+				} else if (cqlLibraryShare != null && !ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
 					recordRevokeShareEvent = true;
 					cqlLibraryShareDAO.delete(cqlLibraryShare.getId());
 					logger.info("Removing Sharing " + cqlLibraryShare.getCqlLibrary().getId()
@@ -1764,8 +1764,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			} else if (recordRevokeShareEvent) {
 				auditLogAdditionlInfo = new StringBuffer(auditLogForModifyRemove);
 			}
-			cqlLibraryAuditLogDAO.recordCQLLibraryEvent(cqlLibraryShare.getCqlLibrary(),
-					"CQL Library Shared", auditLogAdditionlInfo.toString());
+			if(cqlLibraryShare != null && cqlLibraryShare.getCqlLibrary() != null) {
+				cqlLibraryAuditLogDAO.recordCQLLibraryEvent(cqlLibraryShare.getCqlLibrary(),
+						"CQL Library Shared", auditLogAdditionlInfo.toString());
+			}
 		}
 	}
 

@@ -596,7 +596,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 					
 					measureShare.setShareLevel(sLevel);
 					measureShareDAO.save(measureShare);
-				} else if (!ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+				} else if (measureShare != null && !ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
 					recordRevokeShareEvent = true;
 					measureShareDAO.delete(measureShare.getId());
 					logger.info("Removing Sharing " + measureShare.getMeasure().getId()
@@ -620,8 +620,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			} else if (recordRevokeShareEvent) {
 				auditLogAdditionlInfo = new StringBuffer(auditLogForModifyRemove);
 			}
-			measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),
-					"Measure Shared", auditLogAdditionlInfo.toString());
+			if(measureShare != null && measureShare.getMeasure() != null) {
+				measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),
+						"Measure Shared", auditLogAdditionlInfo.toString());
+			}
 		}
 	}
 	

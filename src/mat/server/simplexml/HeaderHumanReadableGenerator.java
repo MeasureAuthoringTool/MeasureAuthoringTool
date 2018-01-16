@@ -1,5 +1,7 @@
 package mat.server.simplexml;
 
+import java.nio.charset.StandardCharsets;
+
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.simplexml.cql.MATCssCQLUtil;
@@ -786,7 +788,7 @@ public class HeaderHumanReadableGenerator {
 		
 		// Must be added first for proper formating and styling
 		DocumentType doc = new
-				DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
+				DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd");
 		htmlDocument.appendChild(doc);
 		
 		Element html = htmlDocument.appendElement("html");
@@ -803,17 +805,21 @@ public class HeaderHumanReadableGenerator {
 	
 	private static org.jsoup.nodes.Document createBaseHTMLDocumentCQL(String title) {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
-
+		htmlDocument.charset(StandardCharsets.UTF_8);
+		
 		// Must be added first for proper formating and styling
 		DocumentType doc = new DocumentType("html",
 				"-//W3C//DTD HTML 4.01 Transitional//EN",
-				"http://www.w3.org/TR/html4/loose.dtd", "");
+				"http://www.w3.org/TR/html4/loose.dtd");
 		htmlDocument.appendChild(doc);
 
 		Element html = htmlDocument.appendElement("html");
 		// POC - Added language attribute in html tag as asked by Matt.
 		html.attributes().put(new Attribute("lang", "en"));
-		html.appendElement("head");
+		
+		Element headElement = html.appendElement("head");
+		headElement.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
+		
 		html.appendElement("body");
 
 		Element head = htmlDocument.head();

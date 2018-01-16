@@ -557,8 +557,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 */
 	@Override
 	public void updateUsersShare(final ManageMeasureShareModel model) {
-		StringBuffer auditLogAdditionlInfo = new StringBuffer("Measure shared with ");
-		StringBuffer auditLogForModifyRemove = new StringBuffer("Measure shared status revoked with ");
+		StringBuilder auditLogAdditionlInfo = new StringBuilder("Measure shared with ");
+		StringBuilder auditLogForModifyRemove = new StringBuilder("Measure shared status revoked with ");
 		MeasureShare measureShare = null;
 		boolean first = true;
 		boolean firstRemove = true;
@@ -602,8 +602,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 					logger.info("Removing Sharing " + measureShare.getMeasure().getId()
 							+ " with " + user.getId()
 							+ " at level " + sLevel.getDescription());
-					System.out.println("Removing Sharing " + measureShare.getMeasure().getId()
-							+ " with " + user.getId() + " at level " + sLevel.getDescription());
 					if (!firstRemove) { //first time, don't add the comma.
 						auditLogForModifyRemove.append(", ");
 					}
@@ -618,7 +616,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			if (recordShareEvent && recordRevokeShareEvent) {
 				auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
 			} else if (recordRevokeShareEvent) {
-				auditLogAdditionlInfo = new StringBuffer(auditLogForModifyRemove);
+				auditLogAdditionlInfo = new StringBuilder(auditLogForModifyRemove);
 			}
 			if(measureShare != null && measureShare.getMeasure() != null) {
 				measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),

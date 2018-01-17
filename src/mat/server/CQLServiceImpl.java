@@ -47,6 +47,7 @@ import org.xml.sax.SAXException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
+import mat.client.shared.MatException;
 import mat.client.shared.ValueSetNameInputValidator;
 import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
@@ -1507,11 +1508,16 @@ public class CQLServiceImpl implements CQLService {
 		try {
 			String xpathforCodeNode = "//cqlLookUp//code[@id='" + toBeDeletedCodeId + "']";
 			Node codeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforCodeNode);
-			//List<CQLCode> cqlCodeListBeforeDeletion = getCQLCodes(xml).getCqlCodeList();
 
             if (codeNode != null) {
                 String cqlOID = codeNode.getAttributes().getNamedItem("codeOID").getNodeValue();
                 String cqlCodeName = codeNode.getAttributes().getNamedItem("codeName").getNodeValue();
+                String codeSystemOID = codeNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+                String codeSystemVersion = codeNode.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+                if(!isCodeSystemUsedByAnotherCode(codeSystemOID, codeSystemVersion, toBeDeletedCodeId, xmlProcessor)) {
+                	deleteCodeSystem(xmlProcessor, codeSystemOID, codeSystemVersion);
+                }
+                
                 CQLCode cqlCode = new CQLCode();
                 cqlCode.setCodeName(cqlCodeName);
                 cqlCode.setCodeOID(cqlOID);
@@ -1529,11 +1535,44 @@ public class CQLServiceImpl implements CQLService {
 		} catch (XPathExpressionException e) {
 			result.setSuccess(false);
 			logger.info("Error in method deleteCode: " + e.getMessage());
+		} catch (MatException e) {
+			result.setSuccess(false);
+			logger.info("Error in method deleteCode: " + e.getMessage());
 		}
 
 		logger.info("END deleteCode : ");
 
 		return result;
+	}
+
+	private void deleteCodeSystem(XmlProcessor xmlProcessor, String codeSystemOID, String codeSystemVersion) throws XPathExpressionException, MatException {
+		String xpathforCodeSystemNode = "//cqlLookUp//codeSystem[@codeSystem='" + codeSystemOID +  "' and @codeSystemVersion='" + codeSystemVersion + "']";
+		Node codeSystemNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xpathforCodeSystemNode);
+		if(codeSystemNode != null) {
+			Node codeSystemParentNode = codeSystemNode.getParentNode();
+			codeSystemParentNode.removeChild(codeSystemNode);
+		} else {
+			throw new MatException("Unable to find the selected CodeSystem element with id:" + codeSystemOID + " and version: " + codeSystemVersion);
+		}
+	}
+
+	private boolean isCodeSystemUsedByAnotherCode(String codeSystemOID, String codeSystemVersion, String toBeDeletedCodeId, XmlProcessor xmlProcessor) throws XPathExpressionException {
+		boolean isCodeSystemUsed = false;
+		String xpathforCodeNodes = "//cqlLookUp//code[@id!='" + toBeDeletedCodeId  + "']";
+		NodeList nodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xpathforCodeNodes);
+		for(int i = 0; i<nodeList.getLength(); i++) {
+			Node curCodeNode = nodeList.item(i);
+			if(curCodeNode != null) {
+				String curCodeSystemOID = curCodeNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+				String curCodeSystemVersion = curCodeNode.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+				if(codeSystemOID.equalsIgnoreCase(curCodeSystemOID) && curCodeSystemVersion.equals(codeSystemVersion)) {
+					isCodeSystemUsed = true;
+					break;
+				}
+			}	
+		}
+		
+		return isCodeSystemUsed;
 	}
 
 	/*

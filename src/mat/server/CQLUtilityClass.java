@@ -35,7 +35,15 @@ public class CQLUtilityClass {
 
 	/** The Constant POPULATION. */
 	private static final String POPULATION = "Population";
-
+	
+	private static final String BIRTHDATE_CODE_ID = "21112-8";
+	
+	private static final String DEAD_CODE_ID = "419099009";
+	
+	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
+	
+	private static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
+	
 	private static StringBuilder toBeInsertedAtEnd;
 
 	private static int size;
@@ -141,8 +149,12 @@ public class CQLUtilityClass {
 			for(CQLCode codes : codeList){
 				String codesStr = '"'+codes.getDisplayName()+'"'+ ": "
 			                          +"'" +codes.getCodeOID()+"'";
-				String codeSysStr = codes.getCodeSystemName() + ":"
-                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");
+				String codeSysStr = codes.getCodeSystemName();
+				if(codes.isIsCodeSystemVersionIncluded() || CQLUtilityClass.isBirthdayOrDead(codes.getCodeOID(), codes.getCodeSystemOID())) {
+					codeSysStr = codeSysStr + ":"
+	                          + codes.getCodeSystemVersion().replaceAll(" ", "%20");	
+				}
+				
 				//boolean containsSearchStr = codesAlreadyUsed.stream().filter(s -> s.equalsIgnoreCase(codesStr)).findFirst().isPresent();
 				//System.out.println("Code is :: "+ codesStr + ": " + containsSearchStr);
 				if(!codesAlreadyUsed.contains(codesStr)){
@@ -751,6 +763,10 @@ public class CQLUtilityClass {
 
 	}*/
 
+	private static boolean isBirthdayOrDead(String codeOID, String codeSystemOID) {
 
+		return (BIRTHDATE_CODE_ID.equals(codeOID) && BIRTHDATE_CODE_SYSTEM_OID.equals(codeSystemOID)) ||
+				(DEAD_CODE_ID.equals(codeOID) && DEAD_CODE_SYSTEM_OID.equals(codeSystemOID)) ? true : false;		
+	}
 
 }

@@ -100,12 +100,12 @@ public class CQLUtilityClass {
 					codeSysVersion = "version 'urn:hl7:version:" + codes.getCodeSystemVersion() + "'";
 				}
 				
-				if(!codeSystemAlreadyUsed.contains(codesStr)){
+				if(!codeSystemAlreadyUsed.contains(codeSysStr)){
 					cqlStr.append("codesystem \"" + codeSysStr +'"').append(": ").append("'urn:oid:" + codes.getCodeSystemOID() + "' ");
 					cqlStr.append(codeSysVersion);
 					cqlStr.append("\n");
 					
-					codeSystemAlreadyUsed.add(codesStr);
+					codeSystemAlreadyUsed.add(codeSysStr);
 				}
 
 			}

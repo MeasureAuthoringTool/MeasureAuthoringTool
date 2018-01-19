@@ -443,7 +443,8 @@ public class MessageDelegate {
 	private final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping may only contain a user-defined function that has exactly 1 argument in the argument list.";
 	
 	//MAT-8626 validations for Argument Type for Measure Observation Function Must Match Return Type of Associated Population.	
-	private final String MEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must have an argument that returns the same type as the definition directly applied to the Measure Population associated with the Measure Observation.";
+	//MAT-8960 Updating the validation message.
+	private final String MEASURE_OBSERVATION_RETURN_SAME_TYPE_VALIDATION_MESSAGE = "A Measure Observation must have an argument that returns the same type as the items in the list that was returned for the definition applied to the associated measure population.";
 		
 	//MAT-8627 validations for functions attached to Measure Observations.
 	private final String MEASURE_OBSERVATION_USER_DEFINED_FUNC_REURN_TYPE_VALIDATION_MESSAGE = "Measure Observations added to a measure grouping must contain a user-defined function that returns an integer, a decimal, or a quantity.";

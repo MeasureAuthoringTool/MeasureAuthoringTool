@@ -3520,6 +3520,14 @@ public class MessageDelegate {
 		return "You have created a new measure "+(measureName.length()>60 ? measureName.substring(0, 59) : measureName)+". Please click continue to navigate to the Measure Details page.";
 	}
 	
+	public String getEditMeasureSuccessfulMessage(String measureName) {
+		return "You have successfully edited measure "+(measureName.length()>60 ? measureName.substring(0, 59) : measureName)+". Please click continue to navigate to the Measure Library page.";
+	}
+	
+	public String getCloneMeasureSuccessfulMessage(String measureName) {
+		return "You have successfully cloned measure "+(measureName.length()>60 ? measureName.substring(0, 59) : measureName)+". Please click continue to navigate to the Measure Details page.";
+	}
+	
 	public String getCreateNewLibrarySuccessfulMessage(String libraryName){
 		return "You have created a new library "+(libraryName.length()>60 ? libraryName.substring(0, 59) : libraryName)+". Please click continue to navigate to the CQL Composer.";
 	}

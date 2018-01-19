@@ -74,7 +74,7 @@ public class ManageMeasureDetailView
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/**  The edit confirmation box. */
-	EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
+	EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
 	
 	/** The yes patient based radio button. *//*
 	private RadioButton radioBtnYes;
@@ -500,8 +500,8 @@ public class ManageMeasureDetailView
 	/**
 	 * @return the createNewConfirmationDialogBox
 	 */
-	public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
-		return createNewConfirmationDialogBox;
+	public EditConfirmationDialogBox getConfirmationDialogBox() {
+		return confirmationDialogBox;
 	}
 
 }

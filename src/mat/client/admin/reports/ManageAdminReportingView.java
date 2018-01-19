@@ -103,12 +103,12 @@ public class ManageAdminReportingView implements ManageAdminReportingPresenter.D
 		table.addColumn(nameColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title=\"Report Name\">" + "Report Name"
 						+ "</span>"));
-		MatButtonCell buttonCell = new MatButtonCell("Generate CSV Report", "customReport");
+		 MatButtonCell buttonCell = new MatButtonCell("Generate CSV Report", "btn btn-link", "fa fa-file-text", "Generate CSV Report");
 		Column<ReportModel, String> buttonColumn = new Column<ReportModel, String>(buttonCell) {
 			@Override
 			public String getValue(ReportModel object) {
 				// The value to display in the button.
-				return object.getButtonLabel();
+				return "";
 			}
 		};
 		buttonColumn.setFieldUpdater(new FieldUpdater<ReportModel, String>() {

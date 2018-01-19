@@ -638,8 +638,17 @@ public class CQLHumanReadableHTMLCreator {
 					String oid = qdmCodeElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
 					String codeSystemVersion = qdmCodeElementList.item(i).getAttributes().getNamedItem("codeSystemVersion").getNodeValue();					
 					String codeSystemName = qdmCodeElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue();
-										
-					String output = String.format("\"%s: %s\" using \"%s (%s version %s Code %s)\"", dataTypeName, name, name, codeSystemName, codeSystemVersion, oid);
+					boolean isCodeSystemVersionIncluded = false;
+					String output = "";
+					Node isCodeSystemVersionIncludedNode = qdmCodeElementList.item(i).getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+					if(isCodeSystemVersionIncludedNode != null) {
+						isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+					} 
+					if(isCodeSystemVersionIncluded) {
+						output = String.format("\"%s: %s\" using \"%s (%s version %s Code %s)\"", dataTypeName, name, name, codeSystemName, codeSystemVersion, oid);
+					} else {
+						output = String.format("\"%s: %s\" using \"%s (%s Code %s)\"", dataTypeName, name, name, codeSystemName, oid);
+					}
 													
 					qdmCodeElementStringList.add(output); 
 				}

@@ -225,16 +225,18 @@ public class PackagerServiceImpl implements PackagerService {
 					// adding all Clause type uuid's
 					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
 				}
-				xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]");
-				// delete groups which doesn't have the measure clauses.
-				NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid);
-				// if the UUID's of Clause nodes does not match the UUID's
-				// of Group/Package Clause, remove the Grouping completely
-				if ((toRemoveGroups != null) && (toRemoveGroups.getLength() > 0)) {
-					Node measureGroupingNode = toRemoveGroups.item(0).getParentNode();
-					for (int i = 0; i < toRemoveGroups.getLength(); i++) {
-						measureGroupingNode.removeChild(toRemoveGroups.item(i));
-						isGroupRemoved = true;
+				if(xpathGrpUuid.indexOf(" and") != -1) {
+					xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]");
+					// delete groups which doesn't have the measure clauses.
+					NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid);
+					// if the UUID's of Clause nodes does not match the UUID's
+					// of Group/Package Clause, remove the Grouping completely
+					if ((toRemoveGroups != null) && (toRemoveGroups.getLength() > 0)) {
+						Node measureGroupingNode = toRemoveGroups.item(0).getParentNode();
+						for (int i = 0; i < toRemoveGroups.getLength(); i++) {
+							measureGroupingNode.removeChild(toRemoveGroups.item(i));
+							isGroupRemoved = true;
+						}
 					}
 				}
 			}

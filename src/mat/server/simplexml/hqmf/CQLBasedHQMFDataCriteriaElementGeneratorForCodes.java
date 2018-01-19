@@ -296,8 +296,14 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 				valueElem.setAttribute("code", codeOID);
 				valueElem.setAttribute("codeSystem", codeSystemOID);
 				valueElem.setAttribute("codeSystemName", codeSystemName);
-				valueElem.setAttribute("codeSystemVersion", codeSystemVersion);
-
+				
+				Node isCodeSystemVersionIncludedNode = qdmNode.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+				if(isCodeSystemVersionIncludedNode != null) {
+					boolean isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+					if(isCodeSystemVersionIncluded) {
+						valueElem.setAttribute("codeSystemVersion", codeSystemVersion);
+					}
+				} 
 			}
 
 			dataCriteriaElem.appendChild(valueElem);

@@ -640,7 +640,7 @@ public class CQLHumanReadableHTMLCreator {
 					String oid = attributeMap.getNamedItem("oid").getNodeValue(); 
 					String codeSystemVersion = attributeMap.getNamedItem("codeSystemVersion").getNodeValue();					
 					String codeSystemName = attributeMap.getNamedItem("taxonomy").getNodeValue();
-					boolean isCodeSystemVersionIncluded = false;
+					boolean isCodeSystemVersionIncluded = true;
 					String output = "";
 					Node isCodeSystemVersionIncludedNode = attributeMap.getNamedItem("isCodeSystemVersionIncluded");
 					if(isCodeSystemVersionIncludedNode != null) {

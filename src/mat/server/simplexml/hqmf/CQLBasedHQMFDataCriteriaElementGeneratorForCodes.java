@@ -297,13 +297,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 				valueElem.setAttribute("codeSystem", codeSystemOID);
 				valueElem.setAttribute("codeSystemName", codeSystemName);
 				
-				Node isCodeSystemVersionIncludedNode = qdmNode.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
-				if(isCodeSystemVersionIncludedNode != null) {
-					boolean isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
-					if(isCodeSystemVersionIncluded) {
-						valueElem.setAttribute("codeSystemVersion", codeSystemVersion);
-					}
-				} 
+				setCodeSystemVersion(qdmNode, valueElem, codeSystemVersion);
 			}
 
 			dataCriteriaElem.appendChild(valueElem);
@@ -320,6 +314,18 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 
 		//}
 
+	}
+
+
+	private void setCodeSystemVersion(Node qdmNode, Element valueElem, String codeSystemVersion) {
+		Node isCodeSystemVersionIncludedNode = qdmNode.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+		boolean isCodeSystemVersionIncluded = true;
+		if(isCodeSystemVersionIncludedNode != null) {
+			isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+		} 
+		if(isCodeSystemVersionIncluded) {
+			valueElem.setAttribute("codeSystemVersion", codeSystemVersion);
+		}
 	}
 
 	/**
@@ -363,7 +369,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			codeElem.setAttribute("code", codeOID);
 			codeElem.setAttribute("codeSystem", codeSystemOID);
 			codeElem.setAttribute("codeSystemName", codeSystemName);
-			codeElem.setAttribute("codeSystemVersion", codeSystemVersion);
+			setCodeSystemVersion(qdmNode, codeElem, codeSystemVersion);
 
 			// }
 			dataCriteriaElem.appendChild(codeElem);
@@ -379,8 +385,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			codeElem.setAttribute("code", codeOID);
 			codeElem.setAttribute("codeSystem", codeSystemOID);
 			codeElem.setAttribute("codeSystemName", codeSystemName);
-			codeElem.setAttribute("codeSystemVersion", codeSystemVersion);
-			
+			setCodeSystemVersion(qdmNode, codeElem, codeSystemVersion);
 			dataCriteriaElem.appendChild(codeElem);
 		} else if (isIntervention) {
 			Element codeElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(CODE);
@@ -392,8 +397,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			codeElem.setAttribute("code", codeOID);
 			codeElem.setAttribute("codeSystem", codeSystemOID);
 			codeElem.setAttribute("codeSystemName", codeSystemName);
-			codeElem.setAttribute("codeSystemVersion", codeSystemVersion);
-
+			setCodeSystemVersion(qdmNode, codeElem, codeSystemVersion);
 			dataCriteriaElem.appendChild(codeElem);
 		} else {
 			Element codeElement = createCodeForDatatype(templateNode, dataCriteriaXMLProcessor);
@@ -449,7 +453,13 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 						String codeSystemName = qdmNode.getAttributes().getNamedItem("taxonomy").getNodeValue();
 						String codeSystemVersion = qdmNode.getAttributes().getNamedItem("codeSystemVersion")
 								.getNodeValue();
+						Node isCodeSystemVersionIncludedNode = qdmNode.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+						boolean isCodeSystemVersionIncluded = true;
+						if(isCodeSystemVersionIncludedNode != null) {
+							isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+						}
 
+				
 						if (attributedToBeChangedInNode.item(0).getAttributes()
 								.getNamedItem("valueSetVersion") != null) {
 							attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
@@ -474,12 +484,12 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 						attrNodeCodeSystemName.setNodeValue(codeSystemName);
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNodeCodeSystemName);
 
-						Attr attrNodeCodeSystemVersion = attributedToBeChangedInNode.item(0).getOwnerDocument()
-								.createAttribute("codeSystemVersion");
-						attrNodeCodeSystemVersion.setNodeValue(codeSystemVersion);
-						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNodeCodeSystemVersion);
-					
-
+						if(isCodeSystemVersionIncluded) {
+							Attr attrNodeCodeSystemVersion = attributedToBeChangedInNode.item(0).getOwnerDocument()
+									.createAttribute("codeSystemVersion");
+							attrNodeCodeSystemVersion.setNodeValue(codeSystemVersion);
+							attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNodeCodeSystemVersion);
+						}
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("value")
 							.setNodeValue(HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName) + " "

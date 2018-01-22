@@ -181,17 +181,17 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private SafeHtml getDeleteColumnToolTip(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
-		String cssClass;
+		//MAT-9000. Changes to Account Management -> Manage Organization table to use bootstrap delete icon. 
+		String cssClass = "btn btn-link";
+		String iconCss ="fa fa-trash fa-lg";
 		if (!object.isUsed()) {
-			title = "Delete";
-			cssClass = "customDeleteButton";
+			title = "Delete";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Delete</button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
 		} else {
-			title = "Organization in use.";
-			cssClass = "customDeleteDisableButton";
+			title = "Organization in use.";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' disabled tabindex=\"0\" class=\" " + cssClass + "\" disabled>Organization already in use.</button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Organization already in use.</span></button>");
 		}
 		return sb.toSafeHtml();
 	}

@@ -11,7 +11,7 @@ public class ClickableSafeHtmlCell extends AbstractCell<SafeHtml> {
 	 * Construct a new ClickableSafeHtmlCell.
 	 */
 	public ClickableSafeHtmlCell() {
-		super("click", "keydown");
+		super("click");
 	}
 	
 	@Override

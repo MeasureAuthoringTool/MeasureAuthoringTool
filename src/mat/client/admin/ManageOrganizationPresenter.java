@@ -333,7 +333,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			public void onSuccess(ManageOrganizationSearchModel result) {
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (MatTextBox) searchDisplay.getSearchString(), lastSearchKey);
-				sru = null;
+				
 				searchDisplay.setObserver(new Observer() {
 					@Override
 					public void onDeleteClicked(Result result) {

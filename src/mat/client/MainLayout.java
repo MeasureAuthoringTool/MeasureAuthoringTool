@@ -472,11 +472,9 @@ public abstract class MainLayout {
 		final Panel topBanner = buildTopPanel();
 		final Panel footerPanel = buildFooterPanel();
 		final Panel contentPanel = buildContentPanel();
-		//final Panel loadingPanel = buildLoadingPanel();
 		
 		final FlowPanel container = new FlowPanel();
 		container.add(topBanner);
-		//container.add(loadingPanel);
 		container.add(contentPanel);
 		container.add(footerPanel);
 		

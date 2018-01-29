@@ -31,7 +31,6 @@ import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.TextAreaWithMaxLength;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureDetailView.
  */
@@ -74,7 +73,7 @@ public class ManageMeasureDetailView
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
 	/**  The edit confirmation box. */
-	EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
+	EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
 	
 	/** The yes patient based radio button. *//*
 	private RadioButton radioBtnYes;
@@ -158,9 +157,6 @@ public class ManageMeasureDetailView
 		
 		Form createMeasureForm = new Form();
 		
-		/*messageFormGrp.add(helpBlock);
-		messageFormGrp.getElement().setAttribute("role", "alert");
-		createMeasureForm.add(messageFormGrp);*/
 		
 		FormLabel measureNameLabel = new FormLabel();
 		measureNameLabel.setText("Name");
@@ -250,31 +246,6 @@ public class ManageMeasureDetailView
 		mainPanel.add(fPanel);
 				
 	}
-
-	/*@Override
-	public FormGroup getMeasureNameGroup() {
-		return measureNameGroup;
-	}
-
-	@Override	
-	public FormGroup getShortNameGroup() {
-		return shortNameGroup;
-	}
-
-	@Override
-	public FormGroup getScoringGroup() {
-		return scoringGroup;
-	}*/
-
-	/*@Override
-	public FormGroup getMessageFormGrp() {
-		return messageFormGrp;
-	}*/
-
-	/*@Override
-	public FormGroup getPatientBasedFormGrp() {
-		return patientBasedFormGrp;
-	}*/
 
 	
 	/* (non-Javadoc)
@@ -415,7 +386,6 @@ public class ManageMeasureDetailView
 	 */
 	@Override
 	public HasValue<String> getMeasureVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -434,27 +404,6 @@ public class ManageMeasureDetailView
 		}
 	}
 
-
-	/**
-	 * Gets the yes patient based radio button.
-	 *
-	 * @return the invisible radio alert yes
-	 */
-	/*@Override
-	public RadioButton getPatientBasedYesRadioButton() {
-		return radioBtnYes;
-	}
-
-
-	*//**
-	 * Gets the no patient based radio button
-	 *//*
-	@Override
-	public RadioButton getPatientBasedNoRadioButton() {
-		return radioBtnNo;
-	}*/
-	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getPatientBasedInput()
 	 */
@@ -500,8 +449,8 @@ public class ManageMeasureDetailView
 	/**
 	 * @return the createNewConfirmationDialogBox
 	 */
-	public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
-		return createNewConfirmationDialogBox;
+	public EditConfirmationDialogBox getConfirmationDialogBox() {
+		return confirmationDialogBox;
 	}
 
 }

@@ -29,6 +29,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -629,17 +630,27 @@ public class CQLHumanReadableHTMLCreator {
 				//make HTML output strings for qdm code elements 
 				//Pattern: "{Datatype}: {code name}" using "{code name} ({code system name} version {code system version} Code {code})"
 				for(int i = 0; i < qdmCodeElementList.getLength(); i++) {
-					String dataTypeName = qdmCodeElementList.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+					NamedNodeMap attributeMap = qdmCodeElementList.item(i).getAttributes();
+					String dataTypeName = attributeMap.getNamedItem("datatype").getNodeValue(); 
 					if("attribute".equals(dataTypeName)){
 						dataTypeName = "Attribute";
 					}
 					
-					String name = qdmCodeElementList.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
-					String oid = qdmCodeElementList.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
-					String codeSystemVersion = qdmCodeElementList.item(i).getAttributes().getNamedItem("codeSystemVersion").getNodeValue();					
-					String codeSystemName = qdmCodeElementList.item(i).getAttributes().getNamedItem("taxonomy").getNodeValue();
-										
-					String output = String.format("\"%s: %s\" using \"%s (%s version %s Code %s)\"", dataTypeName, name, name, codeSystemName, codeSystemVersion, oid);
+					String name = attributeMap.getNamedItem("name").getNodeValue(); 
+					String oid = attributeMap.getNamedItem("oid").getNodeValue(); 
+					String codeSystemVersion = attributeMap.getNamedItem("codeSystemVersion").getNodeValue();					
+					String codeSystemName = attributeMap.getNamedItem("taxonomy").getNodeValue();
+					boolean isCodeSystemVersionIncluded = true;
+					String output = "";
+					Node isCodeSystemVersionIncludedNode = attributeMap.getNamedItem("isCodeSystemVersionIncluded");
+					if(isCodeSystemVersionIncludedNode != null) {
+						isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+					} 
+					if(isCodeSystemVersionIncluded) {
+						output = String.format("\"%s: %s\" using \"%s (%s version %s Code %s)\"", dataTypeName, name, name, codeSystemName, codeSystemVersion, oid);
+					} else {
+						output = String.format("\"%s: %s\" using \"%s (%s Code %s)\"", dataTypeName, name, name, codeSystemName, oid);
+					}
 													
 					qdmCodeElementStringList.add(output); 
 				}

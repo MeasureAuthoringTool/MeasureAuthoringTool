@@ -22,7 +22,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -35,14 +34,12 @@ import mat.client.CustomPager;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
@@ -57,8 +54,6 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
-	/** Cell Table Columns width - 50% each. */
-	private static final double CELLTABLE_COLUMN_WIDTH = 50.0;
 	/** MARGIN Constant value. */
 	private static final int MARGIN_VALUE = 4;
 	/** Cell Table Page Size. */
@@ -69,18 +64,10 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	/** The create new button. */
 	private Button createNewButton = new Button("Add New Organization");
-	/** The generate csv file button. */
-	//private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
-	/** The search button. */
-//	private Button searchButton = new SecondaryButton("Search");
-	/** The search text. */
-//	private TextBox searchText = new TextBox();
-	/** The search label. */
-	//private Widget searchTextLabel = LabelBuilder.buildLabel(searchText, "Search for a Organization");
 	/** The observer. */
 	private Observer observer;
 	/**
@@ -93,21 +80,13 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private MessageAlert errorMessageDisplay = new ErrorMessageAlert();
 	/** Constructor. **/
 	public ManageOrganizationView() {
-		//searchText.setWidth("256px");
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
-		//buttonPanel.add(generateCSVFileButton);
-		//generateCSVFileButton.setTitle("Generate CSV file of Active OID's.");
 		buttonPanel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(buttonPanel);
 		mainPanel.add(new SpacerWidget());
-		//searchTextLabel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-	//	mainPanel.add(searchTextLabel);
-	//	searchText.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
-	//	searchButton.addStyleName("userSearchButton");
-//		mainPanel.add(searchButton);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessageDisplay);
 		mainPanel.add(errorMessageDisplay);
@@ -181,17 +160,17 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private SafeHtml getDeleteColumnToolTip(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title;
-		String cssClass;
+		//MAT-9000. Changes to Account Management -> Manage Organization table to use bootstrap delete icon. 
+		String cssClass = "btn btn-link";
+		String iconCss ="fa fa-trash fa-lg";
 		if (!object.isUsed()) {
-			title = "Delete";
-			cssClass = "customDeleteButton";
+			title = "Delete";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">Delete</button>");
+					+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" style=\"margin-left: 0px;\" > <i class=\"" + iconCss + "\"></i><span style=\"font-size:0;\">Delete</button>");
 		} else {
-			title = "Organization in use.";
-			cssClass = "customDeleteDisableButton";
+			title = "Organization in use.";			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' disabled tabindex=\"0\" class=\" " + cssClass + "\" disabled>Organization already in use.</button>");
+					+ title + "' tabindex=\"0\" class=\"" + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\""+iconCss + "\"></i> <span style=\"font-size:0;\">Organization already in use.</span></button>");
 		}
 		return sb.toSafeHtml();
 	}
@@ -223,14 +202,13 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		cellTable.redraw();
 		listDataProvider.refresh();
 		listDataProvider.getList().addAll(((ManageOrganizationSearchModel) results).getData());
-		cellTable = addColumnToTable(cellTable);
+		addColumnToTable(cellTable);
 		listDataProvider.addDataDisplay(cellTable);
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"organization");
 		spager.setPageStart(0);
 		spager.setDisplay(cellTable);
 		spager.setPageSize(PAGE_SIZE);
-		/* spager.setToolTipAndTabIndex(spager); */
 		cellTable.setWidth("100%");
 		cellTable.setColumnWidth(0, 40, Unit.PCT);
 		cellTable.setColumnWidth(1, 40, Unit.PCT);
@@ -258,10 +236,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	public HasClickHandlers getCreateNewButton() {
 		return createNewButton;
 	}
-	/*@Override
-	public Button getGenerateCSVFileButton() {
-		return generateCSVFileButton;
-	}*/
+
 	/*
 	 * (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#getSearchButton()

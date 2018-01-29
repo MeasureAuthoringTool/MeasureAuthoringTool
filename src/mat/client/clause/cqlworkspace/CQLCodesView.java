@@ -870,8 +870,11 @@ public class CQLCodesView {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
-					String value = object.getCodeSystemVersion();
-					title = title.append("Version : ").append(value);
+					String value = "";
+					if (!isBirthdayOrDead(object.getCodeOID(), object.getCodeSystemOID())) {
+						value = object.getCodeSystemVersion();
+						title.append("Version : ").append(value);
+					}					
 					title.append("");
 					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
@@ -1067,8 +1070,7 @@ public class CQLCodesView {
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 				// Delete button is not created for default codes - Dead and Birthdate.
-				if((object == null) || (object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
-						|| (object.getCodeOID().equals(DEAD_OID) && object.getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID))){
+				if((object == null) || isBirthdayOrDead(object.getCodeOID(), object.getCodeSystemOID())){
 					sb.appendHtmlConstant("<span></span>");
 				}else if (object.isUsed()) {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
@@ -1174,4 +1176,9 @@ public class CQLCodesView {
 		this.includeCodeSystemVersionCheckBox = includeCodeSystemVersionCheckBox;
 	}
 	
+	
+	private boolean isBirthdayOrDead(String codeOID, String codeSysOID) {
+		return (codeOID.equals(BIRTHDATE_OID) && codeSysOID.equals(BIRTHDATE_CODE_SYSTEM_OID)) 
+				|| (codeOID.equals(DEAD_OID) && codeSysOID.equals(DEAD_CODE_SYSTEM_OID)) ? true : false;
+	}
 }

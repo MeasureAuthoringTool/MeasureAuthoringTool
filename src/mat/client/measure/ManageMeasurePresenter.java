@@ -214,7 +214,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		void setPatientBasedInput(ListBoxMVP patientBasedInput);
 		
-		EditConfirmationDialogBox getCreateNewConfirmationDialogBox();
+		EditConfirmationDialogBox getConfirmationDialogBox();
 	}
 
 	/**
@@ -1156,7 +1156,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
 		
-		detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
+		detailDisplay.getConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1168,20 +1168,30 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				
+				updateDetailsFromView();
+				if(!isValid(currentDetails)){
+					return;
+				}
+				
 				// create new measure flow
 				if(!isClone && currentDetails.getId() == null) {
-					updateDetailsFromView();
-					if(isValid(currentDetails)) { // validate before popup
-						detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
-						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
-						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setText("Continue");
-						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setFocus(true);
-					}
-				
-				} else { // edit or clone
-					update();
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCreateNewMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+					
+				} else if(isClone) { // if clone
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+					
+				} else { //if edit
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
+					
 				}
 			
+			}
+
+			private void showConfirmationDialog(final String message) {
+				detailDisplay.getConfirmationDialogBox().show(message);
+				detailDisplay.getConfirmationDialogBox().getYesButton().setTitle("Continue");
+				detailDisplay.getConfirmationDialogBox().getYesButton().setText("Continue");
+				detailDisplay.getConfirmationDialogBox().getYesButton().setFocus(true);
 			}
 		});
 

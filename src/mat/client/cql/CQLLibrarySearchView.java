@@ -56,9 +56,8 @@ import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.shared.ClickableSafeHtmlCell;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class CQLLibrarySearchView.
+ * The Class CQLLibrarySearchView is used to build the CQL Library Ownership table.
  */
 public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryDataSetObject> {
 
@@ -72,8 +71,6 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private List<CQLLibraryDataSetObject> availableLibrariesList;
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	/** The data. */
-	private CQLLibraryDataSetObject data = new CQLLibraryDataSetObject();
 	/** The observer. */
 	private Observer observer;
 	/** The admin observer. */
@@ -308,16 +305,11 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private CellTable<CQLLibraryDataSetObject> addColumnToAdminTable() {
 		Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
 		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
-		//cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
 		cqlLibrarySearchHeader.setStyleName("invisible");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
-		/*
-		 * selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
-		 * table.setSelectionModel(selectionModel);
-		 */
 
 		// CQL Library Name Column
 		Column<CQLLibraryDataSetObject, SafeHtml> cqlLibraryName = new Column<CQLLibraryDataSetObject, SafeHtml>(
@@ -327,14 +319,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				return getCQLLibraryNameColumnToolTip(object);
 			}
 		};
-		/*
-		 * cqlLibraryName.setFieldUpdater(new
-		 * FieldUpdater<CQLLibraryDataSetObject, SafeHtml>() {
-		 * 
-		 * @Override public void update(int index, CQLLibraryDataSetObject
-		 * object, SafeHtml value) {
-		 * SelectionEvent.fire(CQLLibrarySearchView.this, object); } });
-		 */
+
 		table.addColumn(cqlLibraryName,
 				SafeHtmlUtils.fromSafeConstant("<span title='CQL Library Name'>" + "CQL Library Name" + "</span>"));
 
@@ -363,12 +348,13 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				.fromSafeConstant("<span title='Owner E-mail Address'>" + "Owner E-mail Address" + "</span>"));
 
 		// History
-		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
+		//MAT-9000. Changes for CQL Library Ownership table to use the bootstrap history column icon.
+		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
 				historyButton) {
 			@Override
 			public String getValue(CQLLibraryDataSetObject object) {
-				return "History";
+				return "";
 			}
 		};
 		historyColumn.setFieldUpdater(new FieldUpdater<CQLLibraryDataSetObject, String>() {
@@ -471,7 +457,6 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 
 			@Override
 			public String getValue(CQLLibraryDataSetObject object) {
-				// TODO Auto-generated method stub
 				return object.getCqlName();
 			}
 			
@@ -493,8 +478,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			@Override
 			public void onBrowserEvent(Context context, Element elem, CQLLibraryDataSetObject object,
 					NativeEvent event) {
-				// TODO Auto-generated method stub
-				//super.onBrowserEvent(context, elem, object, event);
+
 				String type = event.getType();
 				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
 					if(!object.isDraftable() && !object.isVersionable()){
@@ -517,7 +501,6 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 				
 		
 		// History
-		/*Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");*/
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
 		Column<CQLLibraryDataSetObject, String> historyColumn = new Column<CQLLibraryDataSetObject, String>(
 				historyButton) {
@@ -625,35 +608,15 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * @return the history column tool tip
 	 */
 	private SafeHtml getShareColumnToolTip(CQLLibraryDataSetObject object) {
-		/*SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title;
-		String cssClass;
-		if (object.isSharable()) {
-			title = "Shareable";
-			cssClass = "customShareButton";
-			sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
-					+ "\">Shareable</button>");
-		} else {
-			title = "Shareable";
-			cssClass = "customGrayedShareButton";
-			sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
-					+ "\" disabled>Shareable</button>");
-		}
 
-		return sb.toSafeHtml();*/
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title;
+		String title = "Shareable";
 		String cssClass = "btn btn-link";
 		String iconCss = "fa fa-share-square fa-lg";
-		if (object.isSharable()) {
-			title = "Shareable";
-			//cssClass = "customShareButton";
+		if (object.isSharable()) {			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkseagreen;\"><i class=\" " + iconCss + "\"></i> <span style=\"font-size:0;\">Shareable</span></button>");
-			//<span class=\"invisibleButtonText\">Shareable</span>
-		} else {
-			title = "Shareable";
-			//cssClass = "customGrayedShareButton";
+		} else {			
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Shareable</span></button>");
 		}

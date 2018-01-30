@@ -119,10 +119,10 @@ public class CQLPopulationLeftNavBarPanelView {
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			
 			setTextAndIcons(initialPopulation, POPULATIONS.INITIAL_POPULATIONS.popName(), IconType.PENCIL);
-			setTextAndIcons(numerator, POPULATIONS.NUMERATORS.popName(), IconType.PENCIL);
 			setTextAndIcons(denominator, POPULATIONS.DENOMINATORS.popName(), IconType.PENCIL);
-			setTextAndIcons(numeratorExclusions, POPULATIONS.NUMERATOR_EXCLUSIONS.popName(), IconType.PENCIL);
 			setTextAndIcons(denominatorExclusions, POPULATIONS.DENOMINATOR_EXCLUSIONS.popName(), IconType.PENCIL);
+			setTextAndIcons(numerator, POPULATIONS.NUMERATORS.popName(), IconType.PENCIL);
+			setTextAndIcons(numeratorExclusions, POPULATIONS.NUMERATOR_EXCLUSIONS.popName(), IconType.PENCIL);
 			setTextAndIcons(denominatorExceptions, POPULATIONS.DENOMINATOR_EXCEPTIONS.popName(), IconType.PENCIL);
 			setTextAndIcons(measurePopulations, POPULATIONS.MEASURE_POPULATIONS.popName(), IconType.PENCIL);
 			setTextAndIcons(measurePopulationExclusions, POPULATIONS.MEASURE_POPULATION_EXCLUSIONS.popName(), IconType.PENCIL);
@@ -163,23 +163,26 @@ public class CQLPopulationLeftNavBarPanelView {
 		//COHORT scoring has the initial population and stratifications. 
 		if("PROPOR".equals(scoringIdAttributeValue)){			
 			addNumDenoNavPills(navPills);
-			navPills.add(denominatorExceptions);							
+			navPills.add(denominatorExceptions);			
+			navPills.add(stratifications);
 		} else if("CONTVAR".equals(scoringIdAttributeValue)){			
 			navPills.add(measurePopulations);
 			navPills.add(measurePopulationExclusions);
+			navPills.add(stratifications);
 			navPills.add(measureObservations);			
 		} else if("RATIO".equals(scoringIdAttributeValue)){			
 			addNumDenoNavPills(navPills);
+			navPills.add(stratifications);
 			navPills.add(measureObservations);			
 		}
-		navPills.add(stratifications);
+
 	}
 
 	private void addNumDenoNavPills(NavPills navPills) {
-		navPills.add(numerator);
-		navPills.add(numeratorExclusions);
 		navPills.add(denominator);
 		navPills.add(denominatorExclusions);
+		navPills.add(numerator);
+		navPills.add(numeratorExclusions);
 	}
 	
 	private void setTextAndIcons(AnchorListItem anchorListItem, String text, IconType iconType) {

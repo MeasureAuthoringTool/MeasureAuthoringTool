@@ -174,6 +174,8 @@ public class CQLPopulationLeftNavBarPanelView {
 			addNumDenoNavPills(navPills);
 			navPills.add(stratifications);
 			navPills.add(measureObservations);			
+		} else if("COHORT".equals(scoringIdAttributeValue)) {
+			navPills.add(stratifications);
 		}
 
 	}

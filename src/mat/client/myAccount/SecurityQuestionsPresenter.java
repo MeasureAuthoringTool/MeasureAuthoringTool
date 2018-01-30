@@ -20,6 +20,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
@@ -74,7 +75,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the answer1
 		 */
-		TextBox getAnswer1();
+		PasswordTextBox getAnswer1();
 		
 		/**
 		 * Gets the question2.
@@ -88,7 +89,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the answer2
 		 */
-		TextBox getAnswer2();
+		PasswordTextBox getAnswer2();
 		
 		/**
 		 * Gets the question3.
@@ -102,7 +103,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the answer3
 		 */
-		TextBox getAnswer3();
+		PasswordTextBox getAnswer3();
 		
 		/**
 		 * Gets the password.
@@ -269,7 +270,8 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
 				}
-				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
+				//display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
+				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().getAnswerText1());
 			}
 		});
 		
@@ -289,7 +291,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
 				}
 				
-				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText2()));
+				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().getAnswerText2());
 			}
 		});
 		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
@@ -306,7 +308,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
 				}
-				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
+				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().getAnswerText3());
 			}
 		});
 		
@@ -480,16 +482,19 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	 */
 	private void setValues(SecurityQuestionsModel result) {
 		display.setAnswerText1(result.getQuestion1Answer());
-		display.getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion1Answer()));
+		//display.getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion1Answer()));
+		display.getAnswer1().setText(result.getQuestion1Answer());
 		
 		display.getQuestion1().setValue(result.getQuestion1());
 		
 		display.setAnswerText2(result.getQuestion2Answer());
-		display.getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion2Answer()));
+		//display.getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion2Answer()));
+		display.getAnswer2().setText(result.getQuestion2Answer());
 		display.getQuestion2().setValue(result.getQuestion2());
 		
 		display.setAnswerText3(result.getQuestion3Answer());
-		display.getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion3Answer()));
+		//display.getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion3Answer()));
+		display.getAnswer3().setText(result.getQuestion3Answer());
 		display.getQuestion3().setValue(result.getQuestion3());
 		display.getPassword().setValue("");
 	}

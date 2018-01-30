@@ -258,8 +258,7 @@ public class FirstLoginPresenter {
 				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
 				}
-				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(
-						display.getSecurityQuestionsWidget().getAnswerText1()));
+				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().getAnswerText1());
 			}
 		});
 		
@@ -279,8 +278,7 @@ public class FirstLoginPresenter {
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
 				}
 				
-				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(
-						display.getSecurityQuestionsWidget().getAnswerText2()));
+				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().getAnswerText2());
 			}
 		});
 		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
@@ -297,8 +295,7 @@ public class FirstLoginPresenter {
 				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
 				}
-				display.getSecurityQuestionsWidget().getAnswer3().setText(
-						display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
+				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().getAnswerText3());
 			}
 		});
 		display.getSubmit().addClickHandler(new ClickHandler() {

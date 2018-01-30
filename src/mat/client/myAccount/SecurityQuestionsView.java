@@ -144,7 +144,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer1()
 	 */
 	@Override
-	public TextBox getAnswer1() {
+	public PasswordTextBox getAnswer1() {
 		return securityQuestionsWidget.getAnswer1();
 	}
 	
@@ -160,7 +160,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer2()
 	 */
 	@Override
-	public TextBox getAnswer2() {
+	public PasswordTextBox getAnswer2() {
 		return securityQuestionsWidget.getAnswer2();
 	}
 	
@@ -176,7 +176,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer3()
 	 */
 	@Override
-	public TextBox getAnswer3() {
+	public PasswordTextBox getAnswer3() {
 		return securityQuestionsWidget.getAnswer3();
 	}
 	

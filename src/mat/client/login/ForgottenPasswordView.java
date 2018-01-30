@@ -22,6 +22,7 @@ import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -42,7 +43,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private Label securityQuestion;
 	
 	/** The security answer. */
-	private TextBox securityAnswer;
+	private PasswordTextBox securityAnswer;
 	
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("forgotPwd");
@@ -54,7 +55,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private VerticalPanel securityQuestionAnsPanel = new  VerticalPanel();
 	
 	/** The security answer hidden. */
-	Hidden securityAnswerHidden = new Hidden();
+	//Hidden securityAnswerHidden = new Hidden();
 	
 	/** The is user id submit. */
 	public static boolean isUserIdSubmit = true;
@@ -128,7 +129,8 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	 */
 	@Override
 	public String getSecurityAnswer() {
-		return securityAnswerHidden.getValue();
+		//return securityAnswerHidden.getValue();
+		return securityAnswer.getValue();
 	}
 
 	/* (non-Javadoc)
@@ -194,11 +196,11 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 			securityQuestionAnsPanel.add(securityQuestion);
 			securityQuestionAnsPanel.add(new SpacerWidget());
 			
-			securityAnswer = new TextBox();
+			securityAnswer = new PasswordTextBox();
 			securityAnswer.setTitle("Enter Security Question Answer");
 			securityQuestionAnsPanel.add(LabelBuilder.buildLabel(securityAnswer, "Security Question Answer"));
 			securityQuestionAnsPanel.add(securityAnswer);
-			securityQuestionAnsPanel.add(securityAnswerHidden);
+			//securityQuestionAnsPanel.add(securityAnswerHidden);
 			securityQuestionAnsPanel.add(new SpacerWidget());
 			
 			
@@ -220,18 +222,18 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 			
 			setFocus(true);
 			
-			securityAnswer.addBlurHandler(new BlurHandler() {
-				@Override
-				public void onBlur(BlurEvent event) {
-					String ans = securityAnswer.getText();
-					securityAnswerHidden.setValue(ans);
-					String asterisks = "";
-					for (int i = 0; i < ans.length(); i++) {
-						asterisks += "*";
-					}
-					securityAnswer.setText(asterisks);
-				}
-			});
+//			securityAnswer.addBlurHandler(new BlurHandler() {
+//				@Override
+//				public void onBlur(BlurEvent event) {
+//					String ans = securityAnswer.getText();
+//					securityAnswerHidden.setValue(ans);
+//					String asterisks = "";
+//					for (int i = 0; i < ans.length(); i++) {
+//						asterisks += "*";
+//					}
+//					securityAnswer.setText(asterisks);
+//				}
+//			});
 			
 			securityAnswer.addFocusHandler(new FocusHandler() {
 				@Override

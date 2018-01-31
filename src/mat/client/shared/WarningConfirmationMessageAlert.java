@@ -57,10 +57,6 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 	private void createButtons() {
 		add(new SpacerWidget());
 		
-		//creating buttons anew so that all the old listeners are not hanging on.
-		yesButton = new Button();
-		noButton = new Button();
-		
 		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.EXTRA_SMALL);
 		yesButton.setTitle("Yes");

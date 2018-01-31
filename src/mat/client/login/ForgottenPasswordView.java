@@ -9,7 +9,9 @@ import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
+import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.InputType;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -43,7 +45,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private Label securityQuestion;
 	
 	/** The security answer. */
-	private PasswordTextBox securityAnswer;
+	private Input securityAnswer;
 	
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("forgotPwd");
@@ -129,7 +131,6 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	 */
 	@Override
 	public String getSecurityAnswer() {
-		//return securityAnswerHidden.getValue();
 		return securityAnswer.getValue();
 	}
 
@@ -196,7 +197,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 			securityQuestionAnsPanel.add(securityQuestion);
 			securityQuestionAnsPanel.add(new SpacerWidget());
 			
-			securityAnswer = new PasswordTextBox();
+			securityAnswer = new Input(InputType.PASSWORD);
 			securityAnswer.setTitle("Enter Security Question Answer");
 			securityQuestionAnsPanel.add(LabelBuilder.buildLabel(securityAnswer, "Security Question Answer"));
 			securityQuestionAnsPanel.add(securityAnswer);

@@ -13,7 +13,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
+import mat.client.shared.SecurityQuestionAnswerWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.PasswordRules;
 
@@ -38,8 +38,8 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	private VerticalPanel mainPanel;
 	
 	/** The security questions widget. */
-	private SecurityQuestionWithMaskedAnswerWidget securityQuestionsWidget = 
-			new SecurityQuestionWithMaskedAnswerWidget();
+	private SecurityQuestionAnswerWidget securityQuestionsWidget = 
+			new SecurityQuestionAnswerWidget();
 	
 	/** The change password widget. */
 	private ChangePasswordWidget changePasswordWidget = 
@@ -280,7 +280,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	/* (non-Javadoc)
 	 * @see mat.client.login.FirstLoginPresenter.Display#getSecurityQuestionsWidget()
 	 */
-	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
+	public SecurityQuestionAnswerWidget getSecurityQuestionsWidget() {
 		return securityQuestionsWidget;
 	}
 
@@ -289,7 +289,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 */
 	@Override
 	public String getAnswerText1() {
-		return securityQuestionsWidget.getAnswerText1();
+		return securityQuestionsWidget.getAnswer1().getValue();
 	}
 
 	/* (non-Javadoc)
@@ -297,7 +297,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 */
 	@Override
 	public String getAnswerText2() {
-		return securityQuestionsWidget.getAnswerText2();
+		return securityQuestionsWidget.getAnswer2().getValue();
 		}
 
 	/* (non-Javadoc)
@@ -305,33 +305,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	 */
 	@Override
 	public String getAnswerText3() {
-		return securityQuestionsWidget.getAnswerText3();
+		return securityQuestionsWidget.getAnswer3().getValue();
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.FirstLoginPresenter.Display#setAnswerText1(java.lang.String)
-	 */
-	@Override
-	public void setAnswerText1(String answerText1) {
-		securityQuestionsWidget.setAnswerText1(answerText1);
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.FirstLoginPresenter.Display#setAnswerText2(java.lang.String)
-	 */
-	@Override
-	public void setAnswerText2(String answerText2) {
-		securityQuestionsWidget.setAnswerText2(answerText2);
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.FirstLoginPresenter.Display#setAnswerText3(java.lang.String)
-	 */
-	@Override
-	public void setAnswerText3(String answerText3) {
-		securityQuestionsWidget.setAnswerText3(answerText3);
-		
-	}	
+	
 }

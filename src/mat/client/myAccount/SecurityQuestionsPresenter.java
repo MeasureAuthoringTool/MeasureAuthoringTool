@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Input;
-import org.gwtbootstrap3.client.ui.TextBox;
-
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -20,7 +16,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
@@ -30,7 +25,7 @@ import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
-import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
+import mat.client.shared.SecurityQuestionAnswerWidget;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityQuestions;
 import mat.shared.SecurityQuestionVerifier;
@@ -75,7 +70,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the answer1
 		 */
-		PasswordTextBox getAnswer1();
+		Input getAnswer1();
 		
 		/**
 		 * Gets the question2.
@@ -89,7 +84,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the answer2
 		 */
-		PasswordTextBox getAnswer2();
+		Input getAnswer2();
 		
 		/**
 		 * Gets the question3.
@@ -103,7 +98,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the answer3
 		 */
-		PasswordTextBox getAnswer3();
+		Input getAnswer3();
 		
 		/**
 		 * Gets the password.
@@ -145,7 +140,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * 
 		 * @return the security questions widget
 		 */
-		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
+		SecurityQuestionAnswerWidget getSecurityQuestionsWidget();
 		
 		/**
 		 * Gets the answer text1.
@@ -167,38 +162,6 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 * @return the answer text3
 		 */
 		public String getAnswerText3();
-		
-		/**
-		 * Sets the answer text1.
-		 * 
-		 * @param answerText1
-		 *            the new answer text1
-		 */
-		public void setAnswerText1(String answerText1);
-		
-		/**
-		 * Sets the answer text2.
-		 * 
-		 * @param answerText2
-		 *            the new answer text2
-		 */
-		public void setAnswerText2(String answerText2);
-		
-		/**
-		 * Sets the answer text3.
-		 * 
-		 * @param answerText3
-		 *            the new answer text3
-		 */
-		public void setAnswerText3(String answerText3);
-		
-		/**
-		 * Gets the password edit info widget.
-		 * 
-		 * @return the password edit info widget
-		 */
-		//PasswordEditInfoWidget getPasswordEditInfoWidget();
-		
 		
 	}
 	
@@ -263,7 +226,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				
 			}
 		});
-		display.getSecurityQuestionsWidget().getAnswer1().addBlurHandler(new BlurHandler() {
+		/*display.getSecurityQuestionsWidget().getAnswer1().addBlurHandler(new BlurHandler() {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
@@ -273,7 +236,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				//display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
 				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().getAnswerText1());
 			}
-		});
+		});*/
 		
 		display.getSecurityQuestionsWidget().getAnswer2().addFocusHandler(new FocusHandler() {
 			
@@ -282,7 +245,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				display.getSecurityQuestionsWidget().getAnswer2().setText("");
 			}
 		});
-		display.getSecurityQuestionsWidget().getAnswer2().addBlurHandler(new BlurHandler() {
+		/*display.getSecurityQuestionsWidget().getAnswer2().addBlurHandler(new BlurHandler() {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
@@ -293,7 +256,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				
 				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().getAnswerText2());
 			}
-		});
+		});*/
 		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
 			
 			@Override
@@ -301,7 +264,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				display.getSecurityQuestionsWidget().getAnswer3().setText("");
 			}
 		});
-		display.getSecurityQuestionsWidget().getAnswer3().addBlurHandler(new BlurHandler() {
+		/*display.getSecurityQuestionsWidget().getAnswer3().addBlurHandler(new BlurHandler() {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
@@ -310,7 +273,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				}
 				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().getAnswerText3());
 			}
-		});
+		});*/
 		
 		
 		display.getCancelButton().addClickHandler(new ClickHandler() {
@@ -481,19 +444,14 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	 *            the new values
 	 */
 	private void setValues(SecurityQuestionsModel result) {
-		display.setAnswerText1(result.getQuestion1Answer());
-		//display.getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion1Answer()));
+		
 		display.getAnswer1().setText(result.getQuestion1Answer());
 		
 		display.getQuestion1().setValue(result.getQuestion1());
 		
-		display.setAnswerText2(result.getQuestion2Answer());
-		//display.getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion2Answer()));
 		display.getAnswer2().setText(result.getQuestion2Answer());
 		display.getQuestion2().setValue(result.getQuestion2());
 		
-		display.setAnswerText3(result.getQuestion3Answer());
-		//display.getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion3Answer()));
 		display.getAnswer3().setText(result.getQuestion3Answer());
 		display.getQuestion3().setValue(result.getQuestion3());
 		display.getPassword().setValue("");

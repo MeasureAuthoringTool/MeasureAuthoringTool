@@ -12,17 +12,14 @@ import mat.client.event.SuccessfulLoginEvent;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.SecurityQuestionsModel;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
-import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
+import mat.client.shared.SecurityQuestionAnswerWidget;
 import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -169,35 +166,11 @@ public class TempPwdLoginPresenter {
 		public String getAnswerText3();
 		
 		/**
-		 * Sets the answer text1.
-		 * 
-		 * @param answerText1
-		 *            the new answer text1
-		 */
-		public void setAnswerText1(String answerText1);
-		
-		/**
-		 * Sets the answer text2.
-		 * 
-		 * @param answerText2
-		 *            the new answer text2
-		 */
-		public void setAnswerText2(String answerText2);
-		
-		/**
-		 * Sets the answer text3.
-		 * 
-		 * @param answerText3
-		 *            the new answer text3
-		 */
-		public void setAnswerText3(String answerText3);
-		
-		/**
 		 * Gets the security questions widget.
 		 * 
 		 * @return the security questions widget
 		 */
-		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
+		SecurityQuestionAnswerWidget getSecurityQuestionsWidget();
 		
 	}
 	
@@ -230,17 +203,7 @@ public class TempPwdLoginPresenter {
 				
 			}
 		});
-		display.getSecurityQuestionsWidget().getAnswer1().addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
-					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
-				}
-				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().getAnswerText1());
-			}
-		});
-		
+				
 		display.getSecurityQuestionsWidget().getAnswer2().addFocusHandler(new FocusHandler() {
 			
 			@Override
@@ -248,18 +211,7 @@ public class TempPwdLoginPresenter {
 				display.getSecurityQuestionsWidget().getAnswer2().setText("");
 			}
 		});
-		display.getSecurityQuestionsWidget().getAnswer2().addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				
-				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty()) {
-					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
-				}
-				
-				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().getAnswerText2());
-			}
-		});
+		
 		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
 			
 			@Override
@@ -267,16 +219,7 @@ public class TempPwdLoginPresenter {
 				display.getSecurityQuestionsWidget().getAnswer3().setText("");
 			}
 		});
-		display.getSecurityQuestionsWidget().getAnswer3().addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
-					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
-				}
-				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().getAnswerText3());
-			}
-		});
+		
 		
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			@Override
@@ -472,11 +415,11 @@ public class TempPwdLoginPresenter {
 		model.setLoginId(MatContext.get().getLoggedinLoginId());
 		model.setPassword(display.getPassword().getText());
 		model.setQuestion1(display.getSecurityQuestionsWidget().getSecurityQuestion1().getValue());
-		model.setQuestion1Answer(display.getSecurityQuestionsWidget().getAnswerText1());
+		model.setQuestion1Answer(display.getSecurityQuestionsWidget().getAnswer1().getValue());
 		model.setQuestion2(display.getSecurityQuestionsWidget().getSecurityQuestion2().getValue());
-		model.setQuestion2Answer(display.getSecurityQuestionsWidget().getAnswerText2());
+		model.setQuestion2Answer(display.getSecurityQuestionsWidget().getAnswer2().getValue());
 		model.setQuestion3(display.getSecurityQuestionsWidget().getSecurityQuestion3().getValue());
-		model.setQuestion3Answer(display.getSecurityQuestionsWidget().getAnswerText3());
+		model.setQuestion3Answer(display.getSecurityQuestionsWidget().getAnswer3().getValue());
 		model.scrubForMarkUp();
 		return model;
 	}
@@ -511,17 +454,13 @@ public class TempPwdLoginPresenter {
 			@Override
 			public void onSuccess(List<UserSecurityQuestion> result) {
 				if((result !=null) && (result.size()>0)){
-					display.setAnswerText1(result.get(0).getSecurityAnswer());
+					
 					display.getQuestion1Answer().setValue(result.get(0).getSecurityAnswer());
 					display.getQuestion1Text().setValue(result.get(0).getSecurityQuestions().getQuestion());
 					
-					
-					display.setAnswerText2(result.get(1).getSecurityAnswer());
 					display.getQuestion2Answer().setValue(result.get(1).getSecurityAnswer());
 					display.getQuestion2Text().setValue(result.get(1).getSecurityQuestions().getQuestion());
 					
-					
-					display.setAnswerText3(result.get(2).getSecurityAnswer());
 					display.getQuestion3Answer().setValue(result.get(2).getSecurityAnswer());
 					display.getQuestion3Text().setValue(result.get(2).getSecurityQuestions().getQuestion());
 					

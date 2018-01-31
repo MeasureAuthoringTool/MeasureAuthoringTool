@@ -18,11 +18,15 @@ import javax.xml.xpath.XPathFactory;
 
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
+import mat.model.cql.CQLParameter;
 import mat.server.CQLUtilityClass;
-import mat.server.cqlparser.CQLFilter;
 import mat.shared.CQLErrors;
+import mat.shared.CQLExpressionObject;
+import mat.shared.CQLExpressionOprandObject;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.CQLObject;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -33,6 +37,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cqframework.cql.cql2elm.CQLtoELM;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.cqframework.cql.cql2elm.MATCQLFilter;
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.OperandDef;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -552,33 +559,89 @@ public class CQLUtil {
 	 */
 
 	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
-		if (cqlToElm != null) {
+		if (cqlToElm != null && cqlToElm.getErrors().isEmpty()) {
+			String parentLibraryString = cqlToElm.getParentCQLLibraryString();
 
-			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, cqlToElm.getLibraryHolderMap(), cqlModel);
-			cqlFilter.findUsedExpressions();
-			CQLObject cqlObject = cqlFilter.getCqlObject();
+			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
+						
+			try {
+				cqlFilter.filter();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			CQLObject cqlObject = new CQLObject(); 
+			for(CQLDefinition definition : cqlModel.getDefinitionList()) {
+				String definitionName = definition.getDefinitionName(); 
+				CQLExpressionObject expression = new CQLExpressionObject("Definition", definitionName);
+				expression.setReturnType(cqlToElm.getExpression(definitionName).getResultType().toString());		
+				expression.setCodeDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToCodeDataTypeMap().get(definitionName)));
+				expression.setValueSetDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToValuesetDataTypeMap().get(definitionName)));
+				cqlObject.getCqlDefinitionObjectList().add(expression);
+			}
+			
+			for(CQLFunctions function : cqlModel.getCqlFunctions()) {
+				String functionName = function.getFunctionName(); 
+				FunctionDef functionDef = (FunctionDef) cqlToElm.getExpression(functionName);
+							
+				CQLExpressionObject expression = new CQLExpressionObject("Function", functionName);
+				expression.setReturnType(cqlToElm.getExpressionReturnType(functionName));		
+				expression.setCodeDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToCodeDataTypeMap().get(functionName)));
+				expression.setValueSetDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToValuesetDataTypeMap().get(functionName)));
+				
+				for (OperandDef expressionDef : functionDef.getOperand()) {
+					CQLExpressionOprandObject cqlExpressionOprandObject = new CQLExpressionOprandObject();
+					cqlExpressionOprandObject.setName(expressionDef.getName());
+					cqlExpressionOprandObject.setReturnType(expressionDef.getResultType().toString());
+					expression.getOprandList().add(cqlExpressionOprandObject);
+				}
+				
+				cqlObject.getCqlFunctionObjectList().add(expression);
+			}
+			
+			
+			for(CQLParameter parameter : cqlModel.getCqlParameters()) {
+				String parameterName = parameter.getParameterName(); 
+				CQLExpressionObject expression = new CQLExpressionObject("Parameter", parameterName);
+				cqlObject.getCqlParameterObjectList().add(expression);
+			}
+			
+			
+			
 			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
 			usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
 			usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
-			usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedExpressions());
+			usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedDefinitions());
 			usedArtifacts.setUsedCQLFunctions(cqlFilter.getUsedFunctions());
 			usedArtifacts.setUsedCQLParameters(cqlFilter.getUsedParameters());
 			usedArtifacts.setUsedCQLValueSets(cqlFilter.getUsedValuesets());
 			usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
-			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValueSetDataTypeMap());
+			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValuesetDataTypeMap());
 			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
-			usedArtifacts.setIncludeLibMap(cqlFilter.getUsedLibrariesMap());
 			
+			Map<String, CQLIncludeLibrary> includedLibraries = new HashMap<>();
+			for(String library : cqlFilter.getUsedLibraries()) {
+				includedLibraries.put(library, cqlModel.getIncludedCQLLibXMLMap().get(library).getCqlLibrary());
+			}
+			usedArtifacts.setIncludeLibMap(includedLibraries);
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 			parsedCQL.setCqlObject(cqlObject);
-
-			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
-			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
-			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
-			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
-			
-			System.out.println(usedArtifacts.toString());
 		}
+	}
+	
+	private static Map<String, List<String>> mapSetValueToListValue(Map<String, Set<String>> mapWithSet) {
+		Map<String, List<String>> mapWithList = new HashMap<>(); 
+		if(mapWithSet == null) {
+			return mapWithList; 
+		}
+		
+		for(String key : mapWithSet.keySet()) {
+			List<String> newList = new ArrayList<>(mapWithSet.get(key));
+			mapWithList.put(key, newList);
+		}
+		
+		return mapWithList; 
 	}
 
 	/**

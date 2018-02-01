@@ -196,7 +196,7 @@ public class TempPwdLoginPresenter {
 			}
 		});
 		
-		display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
+		/*display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(FocusEvent event) {
 				display.getSecurityQuestionsWidget().getAnswer1().setText("");
@@ -218,7 +218,7 @@ public class TempPwdLoginPresenter {
 			public void onFocus(FocusEvent event) {
 				display.getSecurityQuestionsWidget().getAnswer3().setText("");
 			}
-		});
+		});*/
 		
 		
 		display.getSubmit().addClickHandler(new ClickHandler() {

@@ -1,7 +1,5 @@
 package mat.server.util;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,6 +7,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -634,29 +633,12 @@ public class CQLUtil {
 			return mapWithList; 
 		}
 		
-		for(String key : mapWithSet.keySet()) {
-			List<String> newList = new ArrayList<>(mapWithSet.get(key));
-			mapWithList.put(key, newList);
-		}
-		
-		return mapWithList; 
-	}
+		for(Entry<String, Set<String>> entry : mapWithSet.entrySet()) {
+            List<String> newList = new ArrayList<>(entry.getValue());
+            mapWithList.put(entry.getKey(), newList);
+		}  
 
-	/**
-	 * Creates the CQL temp file.
-	 *
-	 * @param cqlFileString the cql file string
-	 * @param name the name
-	 * @param parentFolder the parent folder
-	 * @return the file
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 */
-	private static File createCQLTempFile(String cqlFileString, String name, File parentFolder) throws IOException {
-		File cqlFile = new File(parentFolder, name + ".cql");
-		FileWriter fw = new FileWriter(cqlFile);
-		fw.write(cqlFileString);
-		fw.close();
-		return cqlFile;
+		return mapWithList; 
 	}
 
 	/**

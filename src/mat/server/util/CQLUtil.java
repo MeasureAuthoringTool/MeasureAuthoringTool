@@ -45,7 +45,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLUtil.
  */
@@ -559,19 +558,18 @@ public class CQLUtil {
 	 */
 
 	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
+		CQLObject cqlObject = new CQLObject(); 
 		if (cqlToElm != null && cqlToElm.getErrors().isEmpty()) {
 			String parentLibraryString = cqlToElm.getParentCQLLibraryString();
 
 			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
-						
+
 			try {
 				cqlFilter.filter();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			CQLObject cqlObject = new CQLObject(); 
+
 			for(CQLDefinition definition : cqlModel.getDefinitionList()) {
 				String definitionName = definition.getDefinitionName(); 
 				CQLExpressionObject expression = new CQLExpressionObject("Definition", definitionName);
@@ -580,35 +578,35 @@ public class CQLUtil {
 				expression.setValueSetDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToValuesetDataTypeMap().get(definitionName)));
 				cqlObject.getCqlDefinitionObjectList().add(expression);
 			}
-			
+
 			for(CQLFunctions function : cqlModel.getCqlFunctions()) {
 				String functionName = function.getFunctionName(); 
 				FunctionDef functionDef = (FunctionDef) cqlToElm.getExpression(functionName);
-							
+
 				CQLExpressionObject expression = new CQLExpressionObject("Function", functionName);
 				expression.setReturnType(cqlToElm.getExpressionReturnType(functionName));		
 				expression.setCodeDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToCodeDataTypeMap().get(functionName)));
 				expression.setValueSetDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToValuesetDataTypeMap().get(functionName)));
-				
+
 				for (OperandDef expressionDef : functionDef.getOperand()) {
 					CQLExpressionOprandObject cqlExpressionOprandObject = new CQLExpressionOprandObject();
 					cqlExpressionOprandObject.setName(expressionDef.getName());
 					cqlExpressionOprandObject.setReturnType(expressionDef.getResultType().toString());
 					expression.getOprandList().add(cqlExpressionOprandObject);
 				}
-				
+
 				cqlObject.getCqlFunctionObjectList().add(expression);
 			}
-			
-			
+
+
 			for(CQLParameter parameter : cqlModel.getCqlParameters()) {
 				String parameterName = parameter.getParameterName(); 
 				CQLExpressionObject expression = new CQLExpressionObject("Parameter", parameterName);
 				cqlObject.getCqlParameterObjectList().add(expression);
 			}
-			
-			
-			
+
+
+
 			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
 			usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
 			usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
@@ -619,15 +617,15 @@ public class CQLUtil {
 			usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
 			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValuesetDataTypeMap());
 			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
-			
+
 			Map<String, CQLIncludeLibrary> includedLibraries = new HashMap<>();
 			for(String library : cqlFilter.getUsedLibraries()) {
 				includedLibraries.put(library, cqlModel.getIncludedCQLLibXMLMap().get(library).getCqlLibrary());
 			}
 			usedArtifacts.setIncludeLibMap(includedLibraries);
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
-			parsedCQL.setCqlObject(cqlObject);
 		}
+		parsedCQL.setCqlObject(cqlObject);
 	}
 	
 	private static Map<String, List<String>> mapSetValueToListValue(Map<String, Set<String>> mapWithSet) {
@@ -692,11 +690,6 @@ public class CQLUtil {
 
 		}
 
-		/*System.out.println("Included Definition names:" + cqlModel.getIncludedDefNames());
-              System.out.println("Included Function names:" + cqlModel.getIncludedFuncNames());
-              System.out.println("Included Value-Set names:" + cqlModel.getIncludedValueSetNames());
-              System.out.println("Included Parameter names:" + cqlModel.getIncludedParamNames());
-              System.out.println("Included Code names:" + cqlModel.getIncludedCodeNames());*/
 	}
 
 	/**
@@ -722,7 +715,6 @@ public class CQLUtil {
 				}			}                    
 
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -971,7 +963,7 @@ public class CQLUtil {
 	}
 
 	/**
-	 * Adds the un used grand childrento simple XML.
+	 * Adds the unused grand children to simple XML.
 	 *
 	 * @param originalDoc the original doc
 	 * @param result the result
@@ -992,7 +984,6 @@ public class CQLUtil {
 			List<CQLIncludeLibrary> cqlChildLibs = cqlModel.getCqlIncludeLibrarys();
 
 			for(CQLIncludeLibrary library:cqlChildLibs){
-				String libId = library.getCqlLibraryId();
 				String libAlias = library.getAliasName();
 				String libName = library.getCqlLibraryName();
 				String libVersion = library.getVersion();                          
@@ -1011,7 +1002,7 @@ public class CQLUtil {
 
 						for(CQLIncludeLibrary grandChildLib : cqlGrandChildLibs){
 
-							boolean gcFound = childs.contains(grandChildLib);// foundCQLLib(childs, grandChildLib);
+							boolean gcFound = childs.contains(grandChildLib);
 
 							if(!gcFound){
 								Element libNode = originalDoc.createElement("lib");

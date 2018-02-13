@@ -68,7 +68,7 @@ public final class CQLUtilityClass {
 		cqlStr.append(CQLUtilityClass.createCodesSection(cqlModel.getCodeList()));
 
 		// parameters
-		cqlStr.append(CQLUtilityClass.createParameterSection(cqlModel.getCqlParameters(), toBeInserted));
+		CQLUtilityClass.createParameterSection(cqlModel.getCqlParameters(), cqlStr, toBeInserted);
 
 		// Definitions and Functions by Context
 		if(!cqlModel.getDefinitionList().isEmpty() || !cqlModel.getCqlFunctions().isEmpty()){
@@ -501,9 +501,8 @@ public final class CQLUtilityClass {
 		return sb.toString();
 	}
 
-	private static String createParameterSection(List<CQLParameter> paramList, String toBeInserted) {
-		StringBuilder sb = new StringBuilder();
-
+	private static StringBuilder createParameterSection(List<CQLParameter> paramList, StringBuilder cqlStr, String toBeInserted) {
+		
 		if (paramList != null) {
 
 			for (CQLParameter parameter : paramList) {
@@ -511,26 +510,26 @@ public final class CQLUtilityClass {
 				String param = "parameter " + "\"" + parameter.getParameterName() + "\"";
 
 				if(StringUtils.isNotBlank(parameter.getCommentString())) {
-					sb.append("/*").append(parameter.getCommentString()).append("*/");
-					sb.append("\n");
+					cqlStr.append("/*").append(parameter.getCommentString()).append("*/");
+					cqlStr.append("\n");
 				}
 				
-				sb.append(param + " " + parameter.getParameterLogic());
-				sb.append("\n");
+				cqlStr.append(param + " " + parameter.getParameterLogic());
+				cqlStr.append("\n");
 
 				// if the the param we just appended is the current one, then
 				// find the size of the file at that time.
 				// This will give us the end line of the parameter we are trying to insert.
 				if(param.equalsIgnoreCase(toBeInserted)) {
-					size = getEndLine(sb.toString());
+					size = getEndLine(cqlStr.toString());
 				}
 
 			}
 
-			sb.append("\n");
+			cqlStr.append("\n");
 		}
 
-		return sb.toString();
+		return cqlStr;
 
 	}
 

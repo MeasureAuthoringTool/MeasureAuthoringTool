@@ -3,30 +3,20 @@ package mat.client.myAccount;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.FieldSet;
-import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.Input;
-import org.gwtbootstrap3.client.ui.TextBox;
-
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
+import mat.client.shared.SecurityQuestionAnswerWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -50,7 +40,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	private ContentWithHeadingWidget headingPanel;
 	
 	/** The security questions widget. */
-	protected SecurityQuestionWithMaskedAnswerWidget securityQuestionsWidget = new SecurityQuestionWithMaskedAnswerWidget();
+	protected SecurityQuestionAnswerWidget securityQuestionsWidget = new SecurityQuestionAnswerWidget();
 	
 	/** The password edit info widget. */
 	protected PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
@@ -144,7 +134,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer1()
 	 */
 	@Override
-	public TextBox getAnswer1() {
+	public Input getAnswer1() {
 		return securityQuestionsWidget.getAnswer1();
 	}
 	
@@ -160,7 +150,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer2()
 	 */
 	@Override
-	public TextBox getAnswer2() {
+	public Input getAnswer2() {
 		return securityQuestionsWidget.getAnswer2();
 	}
 	
@@ -176,7 +166,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer3()
 	 */
 	@Override
-	public TextBox getAnswer3() {
+	public Input getAnswer3() {
 		return securityQuestionsWidget.getAnswer3();
 	}
 	
@@ -216,7 +206,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getSecurityQuestionsWidget()
 	 */
 	@Override
-	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
+	public SecurityQuestionAnswerWidget getSecurityQuestionsWidget() { 
 		return securityQuestionsWidget;
 	}
 	
@@ -243,7 +233,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	@Override
 	public String getAnswerText1() {
 		
-		return  securityQuestionsWidget.getAnswerText1();
+		return  securityQuestionsWidget.getAnswer1().getValue();
 	}
 	
 	/* (non-Javadoc)
@@ -251,7 +241,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 */
 	@Override
 	public String getAnswerText2() {
-		return  securityQuestionsWidget.getAnswerText2();
+		return  securityQuestionsWidget.getAnswer2().getValue();
 	}
 	
 	/* (non-Javadoc)
@@ -259,34 +249,9 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 */
 	@Override
 	public String getAnswerText3() {
-		return  securityQuestionsWidget.getAnswerText3();
+		return  securityQuestionsWidget.getAnswer3().getValue();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#setAnswerText1(java.lang.String)
-	 */
-	@Override
-	public void setAnswerText1(String answerText1) {
-		 securityQuestionsWidget.setAnswerText1(answerText1);
-		
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#setAnswerText2(java.lang.String)
-	 */
-	@Override
-	public void setAnswerText2(String answerText2) {
-		 securityQuestionsWidget.setAnswerText2(answerText2);
-		
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#setAnswerText3(java.lang.String)
-	 */
-	@Override
-	public void setAnswerText3(String answerText3) {
-		 securityQuestionsWidget.setAnswerText3(answerText3);
-		
-	}
 	
 }

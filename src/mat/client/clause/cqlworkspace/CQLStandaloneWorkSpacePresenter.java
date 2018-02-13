@@ -4341,8 +4341,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						showSearchingBusy(false);
 					}
 				});
-				MatContext.get().getGlobalCopyPaste().getCopiedCodeList().clear();
+			} else {
+					showSearchingBusy(false);
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().SUCCESSFULLY_PASTED_CODES_IN_MEASURE);
 			}
+			MatContext.get().getGlobalCopyPaste().getCopiedCodeList().clear();
 		} else {
 			showSearchingBusy(false);
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().

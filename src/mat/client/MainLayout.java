@@ -301,6 +301,7 @@ public abstract class MainLayout {
 	 */
 	private Panel buildLoadingPanel() {
 		loadingPanel = new HorizontalPanel();
+		loadingPanel.setHeight("30px");
 		loadingPanel.getElement().setAttribute("id", "loadingContainer");
 		loadingPanel.getElement().setAttribute("aria-role", "loadingwidget");
 		loadingPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
@@ -333,10 +334,12 @@ public abstract class MainLayout {
 	 * @return the panel
 	 */
 	private Panel buildTopPanel() {
-		final HorizontalPanel topBanner = new HorizontalPanel();
-		topBanner.getElement().setId("topBanner_HorizontalPanel");
-		setId(topBanner, "title");
-		topBanner.setStylePrimaryName("topBanner");
+		final VerticalPanel topPanel = new VerticalPanel();
+		topPanel.setStylePrimaryName("topBanner");
+		HorizontalPanel horizontalBanner = new HorizontalPanel();
+		horizontalBanner.getElement().setId("topBanner_HorizontalPanel");
+		horizontalBanner.getElement().getStyle().setProperty("width", "100%");
+		setId(horizontalBanner, "title");
 		final FocusableImageButton titleImage= new FocusableImageButton(ImageResources.INSTANCE.g_header_title(),"Measure Authoring Tool");
 		titleImage.getElement().setId("titleImage_FocusableImageButton");
 		titleImage.setStylePrimaryName("topBannerImage");
@@ -351,7 +354,7 @@ public abstract class MainLayout {
 		titleVerticalPanel.addStyleName("versionPanel");
 		titleVerticalPanel.add(titleImage);
 		titleVerticalPanel.add(versionPanel);
-		topBanner.add(titleVerticalPanel);
+		horizontalBanner.add(titleVerticalPanel);
 		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
@@ -366,8 +369,12 @@ public abstract class MainLayout {
 		vp.add(welcomeUserPanel);
 		vp.add(new SpacerWidget());
 		vp.addStyleName("logoutAndUMLSPanel");
-		topBanner.add(vp);
-		return topBanner;
+		horizontalBanner.add(vp);
+
+		topPanel.add(horizontalBanner);
+		topPanel.add(buildLoadingPanel());
+		return topPanel;
+
 	}
 	
 	/**
@@ -465,11 +472,9 @@ public abstract class MainLayout {
 		final Panel topBanner = buildTopPanel();
 		final Panel footerPanel = buildFooterPanel();
 		final Panel contentPanel = buildContentPanel();
-		final Panel loadingPanel = buildLoadingPanel();
 		
 		final FlowPanel container = new FlowPanel();
 		container.add(topBanner);
-		container.add(loadingPanel);
 		container.add(contentPanel);
 		container.add(footerPanel);
 		

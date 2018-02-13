@@ -3,16 +3,16 @@ package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
-import org.gwtbootstrap3.client.ui.TextBox;
-
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.constants.InputType;
 
 /**
  * The Class SecurityQuestionWithMaskedAnswerWidget.
  */
-public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
+public class SecurityQuestionAnswerWidget extends Composite {
 	
 	/** The security question1. */
 	private ListBoxMVP securityQuestion1 = new ListBoxMVP();
@@ -24,22 +24,25 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	private ListBoxMVP securityQuestion3 = new ListBoxMVP();
 	
 	/** The answer1. */
-	private TextBox answer1 = new TextBox();
+	//private PasswordTextBox answer1 = new PasswordTextBox();//new TextBox();
+	private Input answer1 = new Input(InputType.PASSWORD);
 	
 	/** The answer2. */
-	private TextBox answer2 = new TextBox();
+	//private PasswordTextBox answer2 = new PasswordTextBox();//new TextBox();
+	private Input answer2 = new Input(InputType.PASSWORD);
 	
 	/** The answer3. */
-	private TextBox answer3 = new TextBox();
+	//private PasswordTextBox answer3 = new PasswordTextBox();//new TextBox();
+	private Input answer3 = new Input(InputType.PASSWORD);
 	
 	/** The answer text1. */
-	private String answerText1;
+	//private String answerText1;
 	
 	/** The answer text2. */
-	private String answerText2;
+	//private String answerText2;
 	
 	/** The answer text3. */
-	private String answerText3;
+	//private String answerText3;
 	
 	FormGroup rulesGroup = new FormGroup();
 	FormGroup Question1FormGroup = new FormGroup();
@@ -52,7 +55,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	/**
 	 * Instantiates a new security question with masked answer widget.
 	 */
-	public SecurityQuestionWithMaskedAnswerWidget() {
+	public SecurityQuestionAnswerWidget() {
 		answer1.getElement().setId("answer1TextBox");
 		answer2.getElement().setId("answer2TextBox");
 		answer3.getElement().setId("answer3TextBox");
@@ -140,15 +143,15 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 		securityQuestion1.setWidth("320px");
 		securityQuestion2.setWidth("320px");
 		securityQuestion3.setWidth("320px");
-		answer1.setPlaceholder("Enter Answer 1 here.");
+		//answer1.setPlaceholder("Enter Answer 1 here.");
 		answer1.setWidth("320px");
 		answer1.setMaxLength(100);
 		answer2.setWidth("320px");
 		answer2.setMaxLength(100);
-		answer2.setPlaceholder("Enter Answer 2 here.");
+		//answer2.setPlaceholder("Enter Answer 2 here.");
 		answer3.setWidth("320px");
 		answer3.setMaxLength(100);
-		answer3.setPlaceholder("Enter Answer 3 here.");
+		//answer3.setPlaceholder("Enter Answer 3 here.");
 		
 		Question1FormGroup.add(labelQns1);
 		Question1FormGroup.add(securityQuestion1);
@@ -272,7 +275,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * 
 	 * @return the answer1
 	 */
-	public TextBox getAnswer1() {
+	public Input getAnswer1() {
 		return answer1;
 	}
 	
@@ -282,7 +285,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * @param answer1
 	 *            the new answer1
 	 */
-	public void setAnswer1(TextBox answer1) {
+	public void setAnswer1(Input answer1) {
 		this.answer1 = answer1;
 	}
 	
@@ -291,7 +294,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * 
 	 * @return the answer2
 	 */
-	public TextBox getAnswer2() {
+	public Input getAnswer2() {
 		return answer2;
 	}
 	
@@ -301,7 +304,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * @param answer2
 	 *            the new answer2
 	 */
-	public void setAnswer2(TextBox answer2) {
+	public void setAnswer2(Input answer2) {
 		this.answer2 = answer2;
 	}
 	
@@ -310,7 +313,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * 
 	 * @return the answer3
 	 */
-	public TextBox getAnswer3() {
+	public Input getAnswer3() {
 		return answer3;
 	}
 	
@@ -320,7 +323,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * @param answer3
 	 *            the new answer3
 	 */
-	public void setAnswer3(TextBox answer3) {
+	public void setAnswer3(Input answer3) {
 		this.answer3 = answer3;
 	}
 	
@@ -329,9 +332,9 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * 
 	 * @return the answer text1
 	 */
-	public String getAnswerText1() {
+	/*public String getAnswerText1() {
 		return answerText1;
-	}
+	}*/
 	
 	/**
 	 * Sets the answer text1.
@@ -339,18 +342,18 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * @param answerText1
 	 *            the new answer text1
 	 */
-	public void setAnswerText1(String answerText1) {
+	/*public void setAnswerText1(String answerText1) {
 		this.answerText1 = answerText1;
-	}
+	}*/
 	
 	/**
 	 * Gets the answer text2.
 	 * 
 	 * @return the answer text2
 	 */
-	public String getAnswerText2() {
+	/*public String getAnswerText2() {
 		return answerText2;
-	}
+	}*/
 	
 	/**
 	 * Sets the answer text2.
@@ -358,18 +361,18 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * @param answerText2
 	 *            the new answer text2
 	 */
-	public void setAnswerText2(String answerText2) {
+	/*public void setAnswerText2(String answerText2) {
 		this.answerText2 = answerText2;
-	}
+	}*/
 	
 	/**
 	 * Gets the answer text3.
 	 * 
 	 * @return the answer text3
 	 */
-	public String getAnswerText3() {
+	/*public String getAnswerText3() {
 		return answerText3;
-	}
+	}*/
 	
 	/**
 	 * Sets the answer text3.
@@ -377,25 +380,10 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	 * @param answerText3
 	 *            the new answer text3
 	 */
-	public void setAnswerText3(String answerText3) {
+	/*public void setAnswerText3(String answerText3) {
 		this.answerText3 = answerText3;
-	}
+	}*/
 	
-	/**
-	 * Mask answers.
-	 * 
-	 * @param answer
-	 *            the answer
-	 * @return the string
-	 */
-	public String maskAnswers(String answer){
-		String maskedAnswer = new String();
-		for(int i=0;i<answer.length();i++){
-			maskedAnswer=maskedAnswer.concat("*");
-		}
-		return maskedAnswer;
-	}
-
 	public FormGroup getQuestionAns1FormGroup() {
 		return Question1FormGroup;
 	}

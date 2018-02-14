@@ -130,6 +130,11 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
+		
+		definitionListBox.addChangeHandler(event -> {
+			observer.clearMessagesOnDropdown();
+		});
+		
 		definitionListBox.addChangeHandler(event -> setIsDirty(true));
 		populationGrid.setWidget(i, 1, definitionListBox);
 		// button for Delete

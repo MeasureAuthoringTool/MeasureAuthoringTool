@@ -439,6 +439,11 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					button.setEnabled(false);
 				}
 			}
+			
+			@Override
+			public void clearMessagesOnDropdown() {
+				searchDisplay.resetMessageDisplay();
+			}
 		});
 	}
 

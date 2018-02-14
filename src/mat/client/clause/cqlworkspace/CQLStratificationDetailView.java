@@ -167,6 +167,9 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 			}
 		}
 		// Change Event Handler on definitionListBox
+		definitionListBox.addChangeHandler(event -> {
+			observer.clearMessagesOnDropdown();
+		});
 		definitionListBox.addChangeHandler(event -> setIsDirty(true));
 		stratumsGrid.setWidget(i, 1, definitionListBox);
 

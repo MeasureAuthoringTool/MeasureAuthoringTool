@@ -163,6 +163,7 @@ public class CQLXmlTreeView extends Composite implements  CQLXmlTreeDisplay, Tre
 			treePanel.add(cellTree);
 			addHandlers();;
 			cellTreeHandlers();
+			openAllNodes(cellTree.getRootTreeNode()); // all nodes should be open on load
 		} else {
 			treePanel.setHeight("100%");
 		}

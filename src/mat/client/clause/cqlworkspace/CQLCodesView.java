@@ -62,6 +62,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLCode;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 
 /**
@@ -934,6 +935,7 @@ public class CQLCodesView {
 	private CompositeCell<CQLCode> getCompositeCell(boolean isEditable) {
 		final List<HasCell<CQLCode, ?>> cells = new LinkedList<HasCell<CQLCode, ?>>();
 		if(isEditable){
+			cells.add(getModifyButtonCell());
 			cells.add(getDeleteButtonCell());
 		}
 		cells.add(getCheckBoxCell());
@@ -1032,10 +1034,63 @@ public class CQLCodesView {
 		return hasCell;
 	}
 	
+	
 	/**
-	 * Gets the delete qdm button cell.
+	 * Gets the modify code button cell.
 	 * 
-	 * @return the delete qdm button cell
+	 * @return the modify code button cell
+	 */
+	private HasCell<CQLCode, ?> getModifyButtonCell() {
+		
+		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
+			
+			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
+			
+			@Override
+			public Cell<SafeHtml> getCell() {
+				return modifyButonCell;
+			}
+			
+			@Override
+			public FieldUpdater<CQLCode, SafeHtml> getFieldUpdater() {
+				
+				return new FieldUpdater<CQLCode, SafeHtml>() {
+					@Override
+					public void update(int index, CQLCode object,
+							SafeHtml value) {
+						if ((object != null)) {
+							//delegator.onModifyClicked(object);
+						}
+					}
+				};
+			}
+			
+			@Override
+			public SafeHtml getValue(CQLCode object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to modify code";
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-pencil fa-lg";
+				if(isEditable){
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+				} else {
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+				}
+				
+				return sb.toSafeHtml();
+			}
+		};
+		
+		return hasCell;
+	}
+	
+	
+	/**
+	 * Gets the delete code button cell.
+	 * 
+	 * @return the delete code button cell
 	 */
 	private HasCell<CQLCode, SafeHtml> getDeleteButtonCell() {
 		

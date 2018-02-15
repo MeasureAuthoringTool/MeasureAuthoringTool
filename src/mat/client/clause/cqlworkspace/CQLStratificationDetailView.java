@@ -166,11 +166,8 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 				break;
 			}
 		}
-		// Change Event Handler on definitionListBox
-		definitionListBox.addChangeHandler(event -> {
-			observer.clearMessagesOnDropdown();
-		});
-		definitionListBox.addChangeHandler(event -> setIsDirty(true));
+
+		definitionListBox.addChangeHandler(event -> onDefinitionListBoxChange());
 		stratumsGrid.setWidget(i, 1, definitionListBox);
 
 		// button for Delete
@@ -210,7 +207,11 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		viewHRButton.addClickHandler(event -> viewHumanReadableStratumEventHandler(definitionListBox, populationClauseObject)); 
 
 		stratumsGrid.setWidget(i, 3, viewHRButton);
-
+	}
+	
+	private void onDefinitionListBoxChange() {
+		observer.clearMessagesOnDropdown();
+		setIsDirty(true);
 	}
 
 	private void viewHumanReadableStratumEventHandler(ListBox definitionListBox, PopulationClauseObject populationClauseObject) {

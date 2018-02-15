@@ -290,16 +290,14 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 	 * @param aggFuncListBox
 	 * @param functionListBox
 	 */
-	private void addChangeHandlerEvent(ListBox aggFuncListBox, ListBox functionListBox) {
-		functionListBox.addChangeHandler(event -> {
-			observer.clearMessagesOnDropdown();
-		});
-		aggFuncListBox.addChangeHandler(event -> {
-			observer.clearMessagesOnDropdown();
-		});
-		
-		functionListBox.addChangeHandler(event -> setIsDirty(true));
-		aggFuncListBox.addChangeHandler(event -> setIsDirty(true));
+	private void addChangeHandlerEvent(ListBox aggFuncListBox, ListBox functionListBox) {		
+		functionListBox.addChangeHandler(event -> onListBoxChange());
+		aggFuncListBox.addChangeHandler(event -> onListBoxChange());
+	}
+	
+	private void onListBoxChange() {
+		observer.clearMessagesOnDropdown();
+		setIsDirty(true);
 	}
 
 	public PopulationsObject getPopulationsObject() {

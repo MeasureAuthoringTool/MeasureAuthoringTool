@@ -2,7 +2,6 @@ package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -56,10 +55,6 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 		
 	private void createButtons() {
 		add(new SpacerWidget());
-		
-		//creating buttons anew so that all the old listeners are not hanging on.
-		yesButton = new Button();
-		noButton = new Button();
 		
 		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.EXTRA_SMALL);

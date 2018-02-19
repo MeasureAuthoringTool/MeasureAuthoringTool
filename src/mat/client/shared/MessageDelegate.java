@@ -750,6 +750,9 @@ public class MessageDelegate {
 	/** The successful modify applied qdm. */
 	private final String SUCCESSFUL_MODIFY_APPLIED_VALUESET = "Selected value set has been modified successfully.";
 	
+	/** The successful modify applied qdm. */
+	private final String SUCCESSFUL_MODIFY_APPLIED_CODE = "Selected code has been modified successfully.";
+	
 	/** The system error. */
 	private final String SYSTEM_ERROR = "Import failed due to system error. Please try again.";
 	
@@ -3560,6 +3563,10 @@ public class MessageDelegate {
 
 	public static String getLibrarySuccessfullyShared(String cqlLibraryName) {
 		return cqlLibraryName + SUCCESSFULLY_SHARED;
+	}
+
+	public String getSUCCESSFUL_MODIFY_APPLIED_CODE() {
+		return SUCCESSFUL_MODIFY_APPLIED_CODE;
 	}
 
 }

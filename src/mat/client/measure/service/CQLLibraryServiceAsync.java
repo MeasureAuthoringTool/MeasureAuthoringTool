@@ -125,6 +125,9 @@ public interface CQLLibraryServiceAsync {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId,
 			AsyncCallback<CQLQualityDataModelWrapper> callback);
 
+	void modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
 	//void searchForStandaloneIncludes(String setId, String searchText,
 		//	AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 }

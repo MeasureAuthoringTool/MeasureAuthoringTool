@@ -734,4 +734,7 @@ public interface MeasureServiceAsync {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId,
 			AsyncCallback<CQLQualityDataModelWrapper> callback);
 
+	void modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId,
+			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
 }

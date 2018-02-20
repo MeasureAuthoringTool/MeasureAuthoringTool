@@ -4477,12 +4477,12 @@ private void addCodeSearchPanelHandlers() {
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					isCodeModified = true;
 					modifyCQLCode = object;
-					String displayName = object.getCodeName();
+					String displayName = object.getCodeOID();
 					// Substring at 60th character length.
 					if(displayName.length() >=60){
 						displayName = displayName.substring(0, 59);
 					}
-					HTML searchHeaderText = new HTML("<strong>Modify code ( "+displayName +")</strong>");
+					HTML searchHeaderText = new HTML("<strong>Modify Code ( "+displayName +")</strong>");
 					searchDisplay.getCodesView().getSearchHeader().clear();
 					searchDisplay.getCodesView().getSearchHeader().add(searchHeaderText);
 					searchDisplay.getCodesView().getMainPanel().getElement().focus();

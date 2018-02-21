@@ -109,6 +109,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/** The modify value set dto. */
 	private CQLQualityDataSetDTO modifyValueSetDTO;
+	
+	/** The modify code */
+	private CQLCode modifyCQLCode;
 
 	/** The validator. */
 	CQLModelValidator validator = new CQLModelValidator();
@@ -128,6 +131,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/** The is modfied. */
 	private boolean isModified = false;
+	private boolean isCodeModified = false;
 
 	/** The current mat value set. */
 	private MatValueSet currentMatValueSet = null;
@@ -3293,7 +3297,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
 		isModified = false;
-		
+		isCodeModified = false;
 		setId = null;
 		currentIncludeLibrarySetId = null;
 		currentIncludeLibraryId = null;
@@ -4946,7 +4950,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					MatContext.get().clearDVIMessages();
-					addNewCodes();
+					if(isCodeModified && modifyCQLCode != null) {
+						modifyCodes();
+					} else {
+						addNewCodes();	
+					}
 					searchDisplay.resetMessageDisplay();
 					// 508 Compliance for Codes section
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
@@ -4960,6 +4968,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					isCodeModified = false;
 					searchDisplay.resetMessageDisplay();
 					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 					// 508 Compliance for Codes section
@@ -4977,6 +4986,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 					if (result != null) {
+						isCodeModified = false;
+						modifyCQLCode = null;
 						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
 						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
 								.createAlert(MatContext.get().getMessageDelegate()
@@ -4990,9 +5001,48 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 
 			}
+
+			@Override
+			public void onModifyClicked(CQLCode object) {
+				if(!searchDisplay.getValueSetView().getIsLoading()){
+					searchDisplay.resetMessageDisplay();
+					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+					isCodeModified = true;
+					modifyCQLCode = object;
+					String displayName = object.getCodeOID();
+					// Substring at 60th character length.
+					if(displayName.length() >=60){
+						displayName = displayName.substring(0, 59);
+					}
+					HTML searchHeaderText = new HTML("<strong>Modify Code ( "+displayName +")</strong>");
+					searchDisplay.getCodesView().getSearchHeader().clear();
+					searchDisplay.getCodesView().getSearchHeader().add(searchHeaderText);
+					searchDisplay.getCodesView().getMainPanel().getElement().focus();
+					
+					onModifyCode(object);
+					//508 Compliance for Value Sets section
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+				} else {
+					//do nothing when loading.
+				}
+			}
 		});
 	}
 
+	private void onModifyCode(CQLCode cqlCode) {
+		CQLCodesView codesView = searchDisplay.getCodesView();
+		codesView.getCodeSearchInput().setEnabled(true);
+		codesView.getCodeSearchInput().setValue(cqlCode.getCodeIdentifier());
+		codesView.getSuffixTextBox().setValue(cqlCode.getSuffix());
+		codesView.getCodeDescriptorInput().setValue(cqlCode.getCodeName());
+		codesView.getCodeInput().setValue(cqlCode.getCodeOID());
+		codesView.getCodeSystemInput().setValue(cqlCode.getCodeSystemName());
+		codesView.setCodeSystemOid(cqlCode.getCodeSystemOID());
+		codesView.getCodeSystemVersionInput().setValue(cqlCode.getCodeSystemVersion());
+		codesView.getIncludeCodeSystemVersionCheckBox().setValue(cqlCode.isIsCodeSystemVersionIncluded());
+		codesView.getSaveButton().setEnabled(true);
+	}
+	
 	private void copyCodes() {
 		searchDisplay.resetMessageDisplay();
 		if (searchDisplay.getCodesView().getCodesSelectedList() != null && searchDisplay.getCodesView().getCodesSelectedList().size() > 0) {
@@ -5055,32 +5105,56 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * modify codes
+	 */
+	private void modifyCodes() {
+		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
+		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
+		if(!searchDisplay.getCodesView().checkCodeInAppliedCodeTableList(refCode, appliedCodeTableList)) {
+			String measureId = MatContext.get().getCurrentMeasureId();
+			showSearchingBusy(true);
+			service.modifyCQLCodeInMeasure(modifyCQLCode, refCode, measureId, new AsyncCallback<SaveUpdateCQLResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+					showSearchingBusy(false);
+				}
+
+				@Override
+				public void onSuccess(SaveUpdateCQLResult result) {
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(MatContext.get().
+							getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_CODE());
+					searchDisplay.getCodesView().resetCQLCodesSearchPanel();
+					appliedCodeTableList.clear();
+					appliedCodeTableList.addAll(result.getCqlCodeList());
+					searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getMeasureLockService().checkForEditPermission());
+					searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
+					if (result != null && result.getCqlModel().getAllValueSetList() != null) {
+						setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetList());
+					}
+					//Temporary fix to update codes for insert Icon.
+					getAppliedValueSetList();
+					showSearchingBusy(false);
+				}
+			});
+		} else {
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+			.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(refCode.getDisplayName()));
+		}
+	}
+	
 	private void addNewCodes() {
-		boolean isCodeSystemVersionIncluded = searchDisplay.getCodesView().getIncludeCodeSystemVersionCheckBox().getValue();
 		searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 		searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 		String measureId = MatContext.get().getCurrentMeasureId();
 		MatCodeTransferObject transferObject = new MatCodeTransferObject();
-		CQLCode refCode = new CQLCode();
 		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
+		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 
-		refCode.setCodeOID(searchDisplay.getCodesView().getCodeInput().getValue());
-		refCode.setCodeName(codeName);
-
-		refCode.setCodeSystemName(searchDisplay.getCodesView().getCodeSystemInput().getValue());
-		refCode.setCodeSystemVersion(searchDisplay.getCodesView().getCodeSystemVersionInput().getValue());
-		refCode.setCodeIdentifier(searchDisplay.getCodesView().getCodeSearchInput().getValue());
-		refCode.setCodeSystemOID(searchDisplay.getCodesView().getCodeSystemOid());
-		refCode.setIsCodeSystemVersionIncluded(isCodeSystemVersionIncluded);
 		final String codeSystemName = refCode.getCodeSystemName();
 		final String codeId = refCode.getCodeOID();
-
-		if (!searchDisplay.getCodesView().getSuffixTextBox().getValue().isEmpty()) {
-			refCode.setSuffix(searchDisplay.getCodesView().getSuffixTextBox().getValue());
-			refCode.setDisplayName(codeName + " (" + searchDisplay.getCodesView().getSuffixTextBox().getValue() + ")");
-		} else {
-			refCode.setDisplayName(codeName);
-		}
 
 		transferObject.setCqlCode(refCode);
 		transferObject.setId(measureId);
@@ -5139,6 +5213,28 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		}
 
+	}
+	
+	private CQLCode buildCQLCodeFromCodesView(String codeName) {
+		CQLCode refCode = new CQLCode();
+		CQLCodesView codesView = searchDisplay.getCodesView();
+		boolean isCodeSystemVersionIncluded = codesView.getIncludeCodeSystemVersionCheckBox().getValue();
+		refCode.setCodeOID(codesView.getCodeInput().getValue());
+		refCode.setCodeName(codesView.getCodeDescriptorInput().getValue());
+		refCode.setCodeSystemName(codesView.getCodeSystemInput().getValue());
+		refCode.setCodeSystemVersion(codesView.getCodeSystemVersionInput().getValue());
+		refCode.setCodeIdentifier(codesView.getCodeSearchInput().getValue());
+		refCode.setCodeSystemOID(codesView.getCodeSystemOid());
+		refCode.setIsCodeSystemVersionIncluded(isCodeSystemVersionIncluded);
+		
+		if (!codesView.getSuffixTextBox().getValue().isEmpty()) {
+			refCode.setSuffix(codesView.getSuffixTextBox().getValue());
+			refCode.setDisplayName(codeName + " (" + codesView.getSuffixTextBox().getValue() + ")");
+		} else {
+			refCode.setDisplayName(codeName);
+		}
+		
+		return refCode;
 	}
 
 	/**
@@ -5843,7 +5939,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 *            the is user defined
 	 */
 	private void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {
-
 		String oid = isUserDefined ? "" : result.getOid();
 		searchDisplay.getValueSetView().getOIDInput().setEnabled(true);
 

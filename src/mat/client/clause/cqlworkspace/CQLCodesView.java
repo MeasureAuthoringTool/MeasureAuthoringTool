@@ -62,7 +62,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.cql.CQLCode;
-import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 
 /**
@@ -82,6 +81,8 @@ public class CQLCodesView {
 		 * @param index the index
 		 */
 		void onDeleteClicked(CQLCode result, int index);
+
+		void onModifyClicked(CQLCode object);
 		
 	}
 	
@@ -1059,7 +1060,7 @@ public class CQLCodesView {
 					public void update(int index, CQLCode object,
 							SafeHtml value) {
 						if ((object != null)) {
-							//delegator.onModifyClicked(object);
+							delegator.onModifyClicked(object);
 						}
 					}
 				};
@@ -1235,5 +1236,14 @@ public class CQLCodesView {
 	private boolean isBirthdayOrDead(String codeOID, String codeSysOID) {
 		return (codeOID.equals(BIRTHDATE_OID) && codeSysOID.equals(BIRTHDATE_CODE_SYSTEM_OID)) 
 				|| (codeOID.equals(DEAD_OID) && codeSysOID.equals(DEAD_CODE_SYSTEM_OID)) ? true : false;
+	}
+
+	public boolean checkCodeInAppliedCodeTableList(CQLCode refCode, List<CQLCode> appliedCodeTableList) {
+		for(CQLCode cqlCode: appliedCodeTableList) {
+			if(cqlCode.getDisplayName().equalsIgnoreCase(refCode.getDisplayName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

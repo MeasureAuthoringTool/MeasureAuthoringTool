@@ -338,19 +338,17 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 
 	/**
-	 * Check if measure obeservation is valid.
+	 * Check if measure observation is valid.
 	 *
-	 * @param measureObeservationNode the measure obeservation node
+	 * @param measureObeservationNode the measure observation node
 	 * @return true, if successful
 	 */
 	private boolean checkIfMeasureObeservationIsValid(Node measureObeservationNode) {
-		boolean isUserDefineFunc = true;
+		boolean isUserDefineFunc = false;
 		if(measureObeservationNode.hasChildNodes()){
 			Node childNode = measureObeservationNode.getFirstChild();
-			if (childNode.getNodeName().equalsIgnoreCase("cqlaggfunction")) {
-				if (!childNode.hasChildNodes()) {
-					isUserDefineFunc = false;
-				}
+			if (childNode.getNodeName().equalsIgnoreCase("cqlaggfunction") && childNode.hasChildNodes()) {
+				isUserDefineFunc = true;
 			}
 		}
 		

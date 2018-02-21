@@ -1835,7 +1835,7 @@ public class CQLServiceImpl implements CQLService {
 
 		// do the filtering
 		if(exprList != null){
-			CQLUtil.filterCQLArtifacts(cqlModel, result, cqlToELM, exprList, libraryMap);
+			CQLUtil.filterCQLArtifacts(cqlModel, result, cqlToELM, exprList);
 		}
 
 		// add in the errors, if any

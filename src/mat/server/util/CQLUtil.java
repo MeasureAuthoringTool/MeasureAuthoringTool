@@ -518,7 +518,7 @@ public class CQLUtil {
 		
 		// do the filtering
 		if(exprList != null){
-			filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList, libraryMap);
+			filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList);
 		}
 		
 		// set the elm string
@@ -556,12 +556,12 @@ public class CQLUtil {
 	 * @param exprList the expr list
 	 */
 
-	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList, Map<String, String> libraryMap) {
+	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
 		CQLObject cqlObject = new CQLObject(); 
 		if (cqlToElm != null && cqlToElm.getErrors().isEmpty()) {
 			String parentLibraryString = cqlToElm.getParentCQLLibraryString();
-			
-			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, libraryMap, exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
+
+			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
 
 			try {
 				cqlFilter.filter();
@@ -575,9 +575,6 @@ public class CQLUtil {
 				expression.setReturnType(cqlToElm.getExpression(definitionName).getResultType().toString());		
 				expression.setCodeDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToCodeDataTypeMap().get(definitionName)));
 				expression.setValueSetDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToValuesetDataTypeMap().get(definitionName)));
-				System.out.println("Defn name:"+definitionName);
-				System.out.println(expression.getValueSetDataTypeMap());
-				System.out.println();
 				cqlObject.getCqlDefinitionObjectList().add(expression);
 			}
 

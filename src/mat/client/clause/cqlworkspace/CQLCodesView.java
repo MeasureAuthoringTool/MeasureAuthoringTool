@@ -720,6 +720,7 @@ public class CQLCodesView {
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		getSearchHeader().clear();
 		getSearchHeader().add(searchHeaderText);
+		getRetrieveFromVSACButton().setEnabled(true);
 		getCodeSearchInput().setEnabled(true);
 		getCodeSearchInput().setValue("");
 		

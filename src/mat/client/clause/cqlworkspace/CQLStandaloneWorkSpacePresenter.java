@@ -660,7 +660,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
 	private void onModifyCode(CQLCode cqlCode) {
 		CQLCodesView codesView = searchDisplay.getCodesView();
-		codesView.getCodeSearchInput().setEnabled(true);
+		codesView.getCodeSearchInput().setEnabled(false);
+		codesView.getRetrieveFromVSACButton().setEnabled(false);
 		codesView.getCodeSearchInput().setValue(cqlCode.getCodeIdentifier());
 		codesView.getSuffixTextBox().setValue(cqlCode.getSuffix());
 		codesView.getCodeDescriptorInput().setValue(cqlCode.getCodeName());
@@ -4504,6 +4505,7 @@ private void addCodeSearchPanelHandlers() {
 	private void modifyCodes() {
 		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
+		modifyCodeList(modifyCQLCode);
 		if(!searchDisplay.getCodesView().checkCodeInAppliedCodeTableList(refCode, appliedCodeTableList)) {
 			String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
 			showSearchingBusy(true);
@@ -4513,6 +4515,7 @@ private void addCodeSearchPanelHandlers() {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
 					showSearchingBusy(false);
+					appliedCodeTableList.add(modifyCQLCode);
 				}
 
 				@Override
@@ -4954,6 +4957,22 @@ private void addCodeSearchPanelHandlers() {
 				appliedValueSetTableList.remove(i);
 				break;
 
+			}
+		}
+	}
+	
+	
+	/**
+	 * Modify Code list.
+	 *
+	 * @param CQLCodeO
+	 *            the code to remove
+	 */
+	private void modifyCodeList(CQLCode codeToRemove) {
+		for(CQLCode cqlCode: appliedCodeTableList) {
+			if(cqlCode.getDisplayName().equals(codeToRemove.getDisplayName())) {
+				appliedCodeTableList.remove(cqlCode);
+				break;
 			}
 		}
 	}

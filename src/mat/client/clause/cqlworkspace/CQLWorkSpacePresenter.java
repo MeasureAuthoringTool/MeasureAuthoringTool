@@ -4950,12 +4950,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					MatContext.get().clearDVIMessages();
+					searchDisplay.resetMessageDisplay();
 					if(isCodeModified && modifyCQLCode != null) {
 						modifyCodes();
 					} else {
 						addNewCodes();	
 					}
-					searchDisplay.resetMessageDisplay();
 					// 508 Compliance for Codes section
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
 				}
@@ -5031,7 +5031,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	private void onModifyCode(CQLCode cqlCode) {
 		CQLCodesView codesView = searchDisplay.getCodesView();
-		codesView.getCodeSearchInput().setEnabled(true);
+		codesView.getCodeSearchInput().setEnabled(false);
+		codesView.getRetrieveFromVSACButton().setEnabled(false);
 		codesView.getCodeSearchInput().setValue(cqlCode.getCodeIdentifier());
 		codesView.getSuffixTextBox().setValue(cqlCode.getSuffix());
 		codesView.getCodeDescriptorInput().setValue(cqlCode.getCodeName());
@@ -5111,6 +5112,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void modifyCodes() {
 		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
+		modifyCodeList(modifyCQLCode);
 		if(!searchDisplay.getCodesView().checkCodeInAppliedCodeTableList(refCode, appliedCodeTableList)) {
 			String measureId = MatContext.get().getCurrentMeasureId();
 			showSearchingBusy(true);
@@ -5120,6 +5122,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
 					showSearchingBusy(false);
+					appliedCodeTableList.add(modifyCQLCode);
 				}
 
 				@Override
@@ -5821,6 +5824,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				appliedValueSetTableList.remove(i);
 				break;
 
+			}
+		}
+	}
+	
+	/**
+	 * Modify Code list.
+	 *
+	 * @param CQLCodeO
+	 *            the code to remove
+	 */
+	private void modifyCodeList(CQLCode codeToRemove) {
+		for(CQLCode cqlCode: appliedCodeTableList) {
+			if(cqlCode.getDisplayName().equals(codeToRemove.getDisplayName())) {
+				appliedCodeTableList.remove(cqlCode);
+				break;
 			}
 		}
 	}

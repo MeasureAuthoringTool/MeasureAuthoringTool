@@ -445,9 +445,16 @@ public class ExportSimpleXML {
 
 		Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
 		if(isValueSet) {
-			dataCriteriaValueSetMap = new HashMap<String, List<String>>(result.getUsedCQLArtifacts().getValueSetDataTypeMap());
+			
+			for(String usedValueSet : result.getUsedCQLArtifacts().getUsedCQLValueSets()) {
+				dataCriteriaValueSetMap.put(usedValueSet, result.getUsedCQLArtifacts().getValueSetDataTypeMap().get(usedValueSet));
+			}
+			
 		}else {
-			dataCriteriaValueSetMap = new HashMap<String, List<String>>(result.getUsedCQLArtifacts().getCodeDataTypeMap());
+			
+			for(String usedValueCode : result.getUsedCQLArtifacts().getUsedCQLcodes()) {
+				dataCriteriaValueSetMap.put(usedValueCode, result.getUsedCQLArtifacts().getCodeDataTypeMap().get(usedValueCode));
+			}
 		}
 		
 		List<String> usedDefinitions = new ArrayList<String>();		

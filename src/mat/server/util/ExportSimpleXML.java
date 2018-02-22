@@ -444,9 +444,13 @@ public class ExportSimpleXML {
 			Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
 
 		Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
+		if(isValueSet) {
+			dataCriteriaValueSetMap = new HashMap<String, List<String>>(result.getUsedCQLArtifacts().getValueSetDataTypeMap());
+		}else {
+			dataCriteriaValueSetMap = new HashMap<String, List<String>>(result.getUsedCQLArtifacts().getCodeDataTypeMap());
+		}
 		
-		List<String> usedDefinitions = result.getUsedCQLArtifacts().getUsedCQLDefinitions();
-		List<String> usedFunctions = result.getUsedCQLArtifacts().getUsedCQLFunctions();
+		List<String> usedDefinitions = new ArrayList<String>();		
 		
 		/**
 		 * Find and add all Supplemental Data definitions to the usedDefinitionList
@@ -519,45 +523,7 @@ public class ExportSimpleXML {
 				}
 			}
 		}
-		
-		for(String functionName : usedFunctions) {
-			
-			List<CQLExpressionObject> functionObjects = result.getCqlObject().getCqlFunctionObjectList();
-			for (CQLExpressionObject expressionObject : functionObjects) {
 				
-				if (expressionObject.getName().equals(functionName)) {
-
-					Map<String, List<String>> usedValueSetMap = new HashMap<String, List<String>>();
-
-					if (isValueSet) {
-						usedValueSetMap = expressionObject.getValueSetDataTypeMap();
-					} else {
-						usedValueSetMap = expressionObject.getCodeDataTypeMap();
-					}
-					System.out.println(functionName + " usedValueSetMap:"+usedValueSetMap);
-					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, usedValueSetMap);
-					System.out.println("mergedValueSetMap:"+dataCriteriaValueSetMap);
-					break;
-				}
-			}
-		}
-
-		/*String groupingDefinitionXPath = "/measure/measureGrouping//cqldefinition";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingDefinitionXPath, isValueSet);
-		System.out.println("dataCriteriaValueSetMap usedCQLDefs:"+dataCriteriaValueSetMap);
-
-		String groupingFunctionXPath = "/measure/measureGrouping//cqlfunction";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingFunctionXPath, isValueSet);
-		System.out.println("dataCriteriaValueSetMap usedCQLFuncs:"+dataCriteriaValueSetMap);
-
-		String supplementalDefinitionXPath = "/measure/supplementalDataElements/cqldefinition";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, supplementalDefinitionXPath, isValueSet);
-		System.out.println("dataCriteriaValueSetMap usedCQLDefsSupplemental:"+dataCriteriaValueSetMap);
-
-		String riskAdjustmentDefinitionXPath = "/measure/riskAdjustmentVariables//cqldefinition";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, riskAdjustmentDefinitionXPath, isValueSet);
-		System.out.println("dataCriteriaValueSetMap usedCQLDefsRiskAdjustment:"+dataCriteriaValueSetMap);*/	
-		
 		resolve_ValueSets_Codes_WithDataTypes(originalDoc, dataCriteriaValueSetMap, cqlModel, elementLookUpNode,
 				isValueSet);
 
@@ -852,7 +818,7 @@ public class ExportSimpleXML {
 
 		Document returnDoc = null;
 		String[] nameSplitArr = valueSetName.split(Pattern.quote("|"));
-
+		
 		if (nameSplitArr.length == 3) {
 			String includedLibName = nameSplitArr[0];
 

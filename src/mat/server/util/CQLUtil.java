@@ -518,7 +518,7 @@ public class CQLUtil {
 		
 		// do the filtering
 		if(exprList != null){
-			filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList, libraryMap);
+			filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList);
 		}
 		
 		// set the elm string
@@ -545,6 +545,36 @@ public class CQLUtil {
 
 		parsedCQL.setCqlErrors(errors);
 	}
+	
+	/*public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
+		if (cqlToElm != null) {
+
+			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, cqlToElm.getLibraryHolderMap(), cqlModel);
+			cqlFilter.findUsedExpressions();
+			CQLObject cqlObject = cqlFilter.getCqlObject();
+			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
+			usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
+			usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
+			usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedExpressions());
+			usedArtifacts.setUsedCQLFunctions(cqlFilter.getUsedFunctions());
+			usedArtifacts.setUsedCQLParameters(cqlFilter.getUsedParameters());
+			usedArtifacts.setUsedCQLValueSets(cqlFilter.getUsedValuesets());
+			usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
+			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValueSetDataTypeMap());
+			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
+			usedArtifacts.setIncludeLibMap(cqlFilter.getUsedLibrariesMap());
+			
+			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
+			parsedCQL.setCqlObject(cqlObject);
+
+			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
+			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
+			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
+			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
+			
+			System.out.println(usedArtifacts.toString());
+		}
+	}*/
 
 	/**
 	 * Filter CQL artifacts.
@@ -556,13 +586,13 @@ public class CQLUtil {
 	 * @param exprList the expr list
 	 */
 
-	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList, Map<String, String> libraryMap) {
+	public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
 		CQLObject cqlObject = new CQLObject(); 
 		if (cqlToElm != null && cqlToElm.getErrors().isEmpty()) {
 			String parentLibraryString = cqlToElm.getParentCQLLibraryString();
-			
-			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, libraryMap, exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
-
+						
+			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, cqlToElm.getCqlLibraryMapping() , exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
+						
 			try {
 				cqlFilter.filter();
 			} catch (IOException e) {
@@ -607,8 +637,6 @@ public class CQLUtil {
 				cqlObject.getCqlParameterObjectList().add(expression);
 			}
 
-
-
 			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
 			usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
 			usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
@@ -620,10 +648,12 @@ public class CQLUtil {
 			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValuesetDataTypeMap());
 			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
 
-			Map<String, CQLIncludeLibrary> includedLibraries = new HashMap<>();
+			Map<String, CQLIncludeLibrary> includedLibraries = new HashMap<>();			
+			
 			for(String library : cqlFilter.getUsedLibraries()) {
 				includedLibraries.put(library, cqlModel.getIncludedCQLLibXMLMap().get(library).getCqlLibrary());
 			}
+			
 			usedArtifacts.setIncludeLibMap(includedLibraries);
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 		}

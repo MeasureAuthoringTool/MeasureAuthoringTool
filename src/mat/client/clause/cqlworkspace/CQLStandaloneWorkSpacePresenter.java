@@ -4594,7 +4594,7 @@ private void addCodeSearchPanelHandlers() {
 					showSearchingBusy(false);
 					//508 : Shift focus to code search panel.
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
-					searchDisplay.getCodesView().getSaveButton().setEnabled(false);
+					searchDisplay.getCodesView().getSaveButton().setEnabled(!result.isSuccess());
 				}
 				
 				@Override

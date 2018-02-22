@@ -4534,6 +4534,8 @@ private void addCodeSearchPanelHandlers() {
 					getAppliedValueSetList();
 					showSearchingBusy(false);
 					searchDisplay.getCodesView().getSaveButton().setEnabled(false);
+					isCodeModified = false;
+					modifyCQLCode = null;
 				}
 			});
 		} else {

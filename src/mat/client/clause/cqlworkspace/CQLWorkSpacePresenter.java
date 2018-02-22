@@ -5140,6 +5140,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					//Temporary fix to update codes for insert Icon.
 					getAppliedValueSetList();
 					showSearchingBusy(false);
+					searchDisplay.getCodesView().getSaveButton().setEnabled(false);
 				}
 			});
 		} else {

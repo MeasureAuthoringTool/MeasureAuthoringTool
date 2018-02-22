@@ -5205,6 +5205,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					// 508 : Shift focus to code search panel.
 					searchDisplay.getCqlLeftNavBarPanelView()
 							.setFocus(searchDisplay.getCodesView().getCodeSearchInput());
+					searchDisplay.getCodesView().getSaveButton().setEnabled(false);
 
 				}
 

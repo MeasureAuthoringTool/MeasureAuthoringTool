@@ -647,6 +647,8 @@ public class CQLUtil {
 			usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
 			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValuesetDataTypeMap());
 			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
+			usedArtifacts.setExpressionNameToValuesetDataTypeMap(cqlFilter.getExpressionNameToValuesetDataTypeMap());
+			usedArtifacts.setExpressionNameToCodeDataTypeMap(cqlFilter.getExpressionNameToCodeDataTypeMap());
 
 			Map<String, CQLIncludeLibrary> includedLibraries = new HashMap<>();			
 			
@@ -660,7 +662,7 @@ public class CQLUtil {
 		parsedCQL.setCqlObject(cqlObject);
 	}
 	
-	private static Map<String, List<String>> mapSetValueToListValue(Map<String, Set<String>> mapWithSet) {
+	public static Map<String, List<String>> mapSetValueToListValue(Map<String, Set<String>> mapWithSet) {
 		Map<String, List<String>> mapWithList = new HashMap<>(); 
 		if(mapWithSet == null) {
 			return mapWithList; 

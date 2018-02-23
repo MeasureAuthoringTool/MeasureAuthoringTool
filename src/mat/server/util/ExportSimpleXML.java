@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -446,17 +447,45 @@ public class ExportSimpleXML {
 		Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
 		if(isValueSet) {
 			
-			for(String usedValueSet : result.getUsedCQLArtifacts().getUsedCQLValueSets()) {
-				if(result.getUsedCQLArtifacts().getValueSetDataTypeMap().containsKey(usedValueSet)) {
-					dataCriteriaValueSetMap.put(usedValueSet, result.getUsedCQLArtifacts().getValueSetDataTypeMap().get(usedValueSet));
+			for(String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(definitionName) != null) {
+				
+					Map<String, Set<String>> usedValueSetDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(definitionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedValueSetDataTypeMap));
+					
+				}
+			}
+			
+			for(String functionName : result.getUsedCQLArtifacts().getUsedCQLFunctions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(functionName) != null) {
+				
+					Map<String, Set<String>> usedValueSetDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(functionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedValueSetDataTypeMap));
+					
 				}
 			}
 			
 		}else {
 			
-			for(String usedValueCode : result.getUsedCQLArtifacts().getUsedCQLcodes()) {
-				if(result.getUsedCQLArtifacts().getCodeDataTypeMap().containsKey(usedValueCode)) {
-					dataCriteriaValueSetMap.put(usedValueCode, result.getUsedCQLArtifacts().getCodeDataTypeMap().get(usedValueCode));
+			for(String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(definitionName) != null) {
+				
+					Map<String, Set<String>> usedCodeDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(definitionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedCodeDataTypeMap));
+					
+				}
+			}
+			
+			for(String functionName : result.getUsedCQLArtifacts().getUsedCQLFunctions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(functionName) != null) {
+				
+					Map<String, Set<String>> usedCodeDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(functionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedCodeDataTypeMap));
+					
 				}
 			}
 		}

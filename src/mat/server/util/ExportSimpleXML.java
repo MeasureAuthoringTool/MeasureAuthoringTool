@@ -447,13 +447,17 @@ public class ExportSimpleXML {
 		if(isValueSet) {
 			
 			for(String usedValueSet : result.getUsedCQLArtifacts().getUsedCQLValueSets()) {
-				dataCriteriaValueSetMap.put(usedValueSet, result.getUsedCQLArtifacts().getValueSetDataTypeMap().get(usedValueSet));
+				if(result.getUsedCQLArtifacts().getValueSetDataTypeMap().containsKey(usedValueSet)) {
+					dataCriteriaValueSetMap.put(usedValueSet, result.getUsedCQLArtifacts().getValueSetDataTypeMap().get(usedValueSet));
+				}
 			}
 			
 		}else {
 			
 			for(String usedValueCode : result.getUsedCQLArtifacts().getUsedCQLcodes()) {
-				dataCriteriaValueSetMap.put(usedValueCode, result.getUsedCQLArtifacts().getCodeDataTypeMap().get(usedValueCode));
+				if(result.getUsedCQLArtifacts().getCodeDataTypeMap().containsKey(usedValueCode)) {
+					dataCriteriaValueSetMap.put(usedValueCode, result.getUsedCQLArtifacts().getCodeDataTypeMap().get(usedValueCode));
+				}
 			}
 		}
 		

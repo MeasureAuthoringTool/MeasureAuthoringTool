@@ -20,7 +20,6 @@ import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.MetaDataPresenter;
-import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.shared.ui.MATTabPanel;
@@ -500,11 +499,13 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		//MetaDataPresenter
 		if (selectedIndex == 0) {
 			//Measure Details - focus needs to come back to save button
-			saveBtnMeasureDtls.setFocus(true);	
+			if (null != saveBtnMeasureDtls)
+				saveBtnMeasureDtls.setFocus(true);	
 		} else if (selectedIndex == 3) {
 			//MeasurePackagePresenter. 
 			//TODO: This is a com.google.gwt.user.client.ui.Button and needs to be bootstrapped
-			saveButton.setFocus(true);	
+			if (null != saveButton)
+				saveButton.setFocus(true);	
 		}else {
 			selectTab(selectedIndex);
 		}

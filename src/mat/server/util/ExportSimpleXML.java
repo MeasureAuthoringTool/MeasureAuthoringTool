@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -378,14 +379,17 @@ public class ExportSimpleXML {
 		expressionList.addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		expressionList.addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
-
+		
+			
 		result.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(usedCQLArtifactHolder.getCqlDefFromPopSet());
 		result.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(usedCQLArtifactHolder.getCqlFuncFromPopSet());
 
 		CQLUtil.removeUnusedCQLDefinitions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLDefinitions());
+				
 		CQLUtil.removeUnusedCQLFunctions(originalDoc, result.getUsedCQLArtifacts().getUsedCQLFunctions());
+				
 		CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
-
+		
 		resolveAllValueSets_Codes(originalDoc, result, cqlModel);
 
 		CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
@@ -417,9 +421,11 @@ public class ExportSimpleXML {
 			originalDoc.importNode(elementLookUpNode, true);
 			parentNode.appendChild(elementLookUpNode);
 		}
-
+		System.out.println("resolveValueSets_Codes true");
 		// resolve all value-sets
 		resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, true);
+		
+		System.out.println("resolveValueSets_Codes false");
 		// resolve all codes (direct reference codes)
 		resolveValueSets_Codes(originalDoc, result, cqlModel, elementLookUpNode, false);
 
@@ -439,19 +445,125 @@ public class ExportSimpleXML {
 			Node elementLookUpNode, boolean isValueSet) throws XPathExpressionException {
 
 		Map<String, List<String>> dataCriteriaValueSetMap = new HashMap<String, List<String>>();
-
-		String groupingDefinitionXPath = "/measure/measureGrouping//cqldefinition";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingDefinitionXPath, isValueSet);
-
-		String groupingFunctionXPath = "/measure/measureGrouping//cqlfunction";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, groupingFunctionXPath, isValueSet);
-
+		if(isValueSet) {
+			
+			for(String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(definitionName) != null) {
+				
+					Map<String, Set<String>> usedValueSetDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(definitionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedValueSetDataTypeMap));
+					
+				}
+			}
+			
+			for(String functionName : result.getUsedCQLArtifacts().getUsedCQLFunctions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(functionName) != null) {
+				
+					Map<String, Set<String>> usedValueSetDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToValuesetDataTypeMap().get(functionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedValueSetDataTypeMap));
+					
+				}
+			}
+			
+		}else {
+			
+			for(String definitionName : result.getUsedCQLArtifacts().getUsedCQLDefinitions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(definitionName) != null) {
+				
+					Map<String, Set<String>> usedCodeDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(definitionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedCodeDataTypeMap));
+					
+				}
+			}
+			
+			for(String functionName : result.getUsedCQLArtifacts().getUsedCQLFunctions()) {
+				
+				if(result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(functionName) != null) {
+				
+					Map<String, Set<String>> usedCodeDataTypeMap = result.getUsedCQLArtifacts().getExpressionNameToCodeDataTypeMap().get(functionName);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, CQLUtil.mapSetValueToListValue(usedCodeDataTypeMap));
+					
+				}
+			}
+		}
+		
+		List<String> usedDefinitions = new ArrayList<String>();		
+		
+		/**
+		 * Find and add all Supplemental Data definitions to the usedDefinitionList
+		 */
 		String supplementalDefinitionXPath = "/measure/supplementalDataElements/cqldefinition";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, supplementalDefinitionXPath, isValueSet);
+		NodeList supplementalDefinitionNodeList = (NodeList) xPath.evaluate(supplementalDefinitionXPath,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
+		if (supplementalDefinitionNodeList != null && supplementalDefinitionNodeList.getLength() > 0) {
+			for (int i = 0; i < supplementalDefinitionNodeList.getLength(); i++) {
+				Node supplementalNode = supplementalDefinitionNodeList.item(i);
+				
+				String nodeUUID = supplementalNode.getAttributes().getNamedItem("uuid").getNodeValue();
+
+				String definitionXPath = "//cqlLookUp/definitions/definition[@id='" + nodeUUID + "']";
+				Node definitionNode = (Node) xPath.evaluate(definitionXPath, originalDoc.getDocumentElement(),
+						XPathConstants.NODE);
+
+				if (definitionNode != null) {
+					String supplementalDefinitionName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
+					System.out.println("Supplemental Definition Name:"+supplementalDefinitionName);
+					usedDefinitions.add(supplementalDefinitionName);
+				}
+			}
+		}
+		
+		/**
+		 * Find and add all Risk Adjustment Data definitions to the usedDefinitionList
+		 */
 		String riskAdjustmentDefinitionXPath = "/measure/riskAdjustmentVariables//cqldefinition";
-		getUsedValueSetMap(originalDoc, result, dataCriteriaValueSetMap, riskAdjustmentDefinitionXPath, isValueSet);
+		NodeList riskAdjDefinitionNodeList = (NodeList) xPath.evaluate(riskAdjustmentDefinitionXPath,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
+		if (riskAdjDefinitionNodeList != null && riskAdjDefinitionNodeList.getLength() > 0) {
+			for (int i = 0; i < riskAdjDefinitionNodeList.getLength(); i++) {
+				Node riskAdjNode = riskAdjDefinitionNodeList.item(i);
+				
+				String nodeUUID = riskAdjNode.getAttributes().getNamedItem("uuid").getNodeValue();
+
+				String definitionXPath = "//cqlLookUp/definitions/definition[@id='" + nodeUUID + "']";
+				Node definitionNode = (Node) xPath.evaluate(definitionXPath, originalDoc.getDocumentElement(),
+						XPathConstants.NODE);
+
+				if (definitionNode != null) {
+					String riskAdjDefinitionName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
+					System.out.println("Risk Adj Definition Name:"+riskAdjDefinitionName);
+					usedDefinitions.add(riskAdjDefinitionName);
+				}
+			}
+		}
+		
+		for(String definitionName : usedDefinitions) {
+			
+			List<CQLExpressionObject> definitionObjects = result.getCqlObject().getCqlDefinitionObjectList();
+			for (CQLExpressionObject expressionObject : definitionObjects) {
+				
+				if (expressionObject.getName().equals(definitionName)) {
+
+					Map<String, List<String>> usedValueSetMap = new HashMap<String, List<String>>();
+
+					if (isValueSet) {
+						usedValueSetMap = expressionObject.getValueSetDataTypeMap();
+					} else {
+						usedValueSetMap = expressionObject.getCodeDataTypeMap();
+					}
+					System.out.println(definitionName + " usedValueSetMap:"+usedValueSetMap);
+					CQLExpressionObject.mergeValueSetMap(dataCriteriaValueSetMap, usedValueSetMap);
+					System.out.println("mergedValueSetMap:"+dataCriteriaValueSetMap);
+					break;
+				}
+			}
+		}
+				
 		resolve_ValueSets_Codes_WithDataTypes(originalDoc, dataCriteriaValueSetMap, cqlModel, elementLookUpNode,
 				isValueSet);
 
@@ -465,6 +577,7 @@ public class ExportSimpleXML {
 		// remove all the used value-sets/codes that are present in the
 		// retrieval list
 		usedValueSetsCodes_NotRetrieves.removeAll(dataCriteriaValueSetMap.keySet());
+		
 		resolve_ValueSets_Codes_WithoutDataTypes(originalDoc, usedValueSetsCodes_NotRetrieves, cqlModel,
 				elementLookUpNode, isValueSet);
 
@@ -602,12 +715,12 @@ public class ExportSimpleXML {
 
 				if (definitionNode != null) {
 					String definitionName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
-
+					System.out.println("Definition Name:"+definitionName);
 					// find the used value-sets (with their datatypes) for this
 					// definition
 					List<CQLExpressionObject> definitionObjects = result.getCqlObject().getCqlDefinitionObjectList();
 					for (CQLExpressionObject expressionObject : definitionObjects) {
-
+						
 						if (expressionObject.getName().equals(definitionName)) {
 
 							Map<String, List<String>> usedValueSetMap = new HashMap<String, List<String>>();
@@ -617,9 +730,9 @@ public class ExportSimpleXML {
 							} else {
 								usedValueSetMap = expressionObject.getCodeDataTypeMap();
 							}
-
+							System.out.println("usedValueSetMap:"+usedValueSetMap);
 							CQLExpressionObject.mergeValueSetMap(mergedValueSetMap, usedValueSetMap);
-
+							System.out.println("mergedValueSetMap:"+mergedValueSetMap);
 							break;
 						}
 					}
@@ -745,7 +858,7 @@ public class ExportSimpleXML {
 
 		Document returnDoc = null;
 		String[] nameSplitArr = valueSetName.split(Pattern.quote("|"));
-
+		
 		if (nameSplitArr.length == 3) {
 			String includedLibName = nameSplitArr[0];
 

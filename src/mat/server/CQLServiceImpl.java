@@ -2601,12 +2601,18 @@ public class CQLServiceImpl implements CQLService {
 		int size = 0;
 		int startLine = 0;
 		int endLine = CQLUtilityClass.getSize();
-
+		
+				
 		if(expressionType.equalsIgnoreCase("parameter")) {
 			endLine = endLine + 1; // for parameters, the size is actually 1 more than reporetd.
 			wholeDef = cqlExpressionName + " " + logic;
 			size = countLines(wholeDef);
-			startLine = endLine - size;
+			
+			if(size > 1) {
+				startLine = endLine - size;
+			}else {
+				startLine = endLine;
+			}
 		}
 
 		else {
@@ -2630,10 +2636,21 @@ public class CQLServiceImpl implements CQLService {
 		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();
 		//	String errorMsg = (cqlError.getErrorMessage() == null) ? "" : cqlError.getErrorMessage();
-
+			
 			if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
-				cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine - 1);
-				cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine - 1);
+				
+				if(cqlError.getStartErrorInLine() == startLine) {
+					cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine);
+				}else {
+					cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine - 1);
+				}
+				
+				if(cqlError.getEndErrorInLine() == startLine) {
+					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine);
+				}else {
+					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine - 1);
+				}
+				
 				cqlError.setErrorMessage(cqlError.getErrorMessage());
 				errors.add(cqlError);
 			}

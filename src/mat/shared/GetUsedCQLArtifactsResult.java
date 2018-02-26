@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLIncludeLibrary;
@@ -46,7 +47,10 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
        
        private Map<String, CQLIncludeLibrary> includeLibMap;
        
-       private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>(); 
+       private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
+
+       private Map<String, Map<String, Set<String>>> expressionNameToCodeDataTypeMap; 
+       private Map<String, Map<String, Set<String>>> expressionNameToValuesetDataTypeMap;
 
 
        public List<String> getUsedCQLDefinitions() {
@@ -187,6 +191,24 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setCqlErrorsPerExpression(Map<String, List<CQLErrors>> cqlErrorsPerExpression) {
 		this.cqlErrorsPerExpression = cqlErrorsPerExpression;
+	}
+
+	public void setExpressionNameToCodeDataTypeMap(
+			Map<String, Map<String, Set<String>>> expressionNameToCodeDataTypeMap) {
+		this.expressionNameToCodeDataTypeMap = expressionNameToCodeDataTypeMap;
+		
+	}
+	
+	public Map<String, Map<String, Set<String>>> getExpressionNameToCodeDataTypeMap(){
+		return this.expressionNameToCodeDataTypeMap;
+	}
+
+	public Map<String, Map<String, Set<String>>> getExpressionNameToValuesetDataTypeMap() {
+		return expressionNameToValuesetDataTypeMap;
+	}
+
+	public void setExpressionNameToValuesetDataTypeMap(Map<String, Map<String, Set<String>>> expressionNameToValuesetDataTypeMap) {
+		this.expressionNameToValuesetDataTypeMap = expressionNameToValuesetDataTypeMap;
 	}
 
 }

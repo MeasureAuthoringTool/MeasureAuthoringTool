@@ -1,5 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
@@ -222,44 +224,47 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onSaveClick(PopulationsObject populationsObject) {
-				
+
 				searchDisplay.resetMessageDisplay();
 				
-				if (currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS)) {
-					searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
+				//MAT-9042. Validation Message for Aggregate function.
+				if(hasFuncWithNoAggFunc(populationsObject.getPopulationClauseObjectList())) {
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("An Aggregate Function is required for a measure observation.");					
 				} else {
-					searchDisplay.getCqlPopulationDetailView().setIsDirty(false);
-				}
-
-				MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), 
-						populationsObject.toXML(populationsObject), new AsyncCallback<SaveUpdateCQLResult>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-								MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
-								null, "Saving " + populationsObject.getPopulationName(), "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+					if (CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS.equalsIgnoreCase(currentSection)) {
+						searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
+					} else {
+						searchDisplay.getCqlPopulationDetailView().setIsDirty(false);
 					}
 
-					@Override
-					public void onSuccess(SaveUpdateCQLResult result) {
-						panel.clear();
-						buildPopulationWorkspace(result.getXml(), false);
-						
-						if(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS.equals(currentSection)) {
-							measureObservationsEvent(null);	
-						}else {
-							buildPopulationEvent(null, currentSection);							
+					MatContext.get().getPopulationService().savePopulations(MatContext.get().getCurrentMeasureId(), populationsObject.getPopulationName(), 
+							populationsObject.toXML(populationsObject), new AsyncCallback<SaveUpdateCQLResult>() {
+
+						@Override
+						public void onFailure(Throwable caught) {
+							searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+									MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+									null, "Saving " + populationsObject.getPopulationName(), "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 						}
-									
-						searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
-						searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
-					}
 
-				});		
+						@Override
+						public void onSuccess(SaveUpdateCQLResult result) {
+							panel.clear();
+							buildPopulationWorkspace(result.getXml(), false);
 
-			}
+							if(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS.equals(currentSection)) {
+								measureObservationsEvent(null);	
+							}else {
+								buildPopulationEvent(null, currentSection);							
+							}
+
+							searchDisplay.getCqlLeftNavBarPanelView().getViewPopulations().setActive(false);
+							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Changes to " + populationsObject.getDisplayName() +" have been successfully saved.");						
+						}
+
+					});		
+				}}
 
 			@Override			
 			public void onSaveClick(StrataDataModel strataDataModel) {
@@ -438,6 +443,11 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 					Button button = (Button) stratumGrid.getWidget(0, 2);
 					button.setEnabled(false);
 				}
+			}
+			
+			@Override
+			public void clearMessagesOnDropdown() {
+				searchDisplay.resetMessageDisplay();
 			}
 		});
 	}
@@ -851,6 +861,24 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 		} else if (!currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_VIEWPOPULATIONS)) {
 			searchDisplay.getCqlPopulationDetailView().setIsDirty(isPageDirty);
 		}
+
+	}
+	
+	/**
+	 * This method is to used to check if Function is selected with no corresponding selection for Aggregate Function
+	 * for Measure Observation only.
+	 * Conditions : 1. Has to be in Measure Observation section.
+	 * 	            2. Function is selected but Aggregate function is NOT selected 
+	 * 				   from the corresponding dropdown for any one Measure Observation
+	 * 
+	 * @param populationClauseObjectList
+	 * @return true if conditions 1 and 2 above are met 
+	 * 		   false if any one of the above conditions are not met 
+	 */
+	private boolean hasFuncWithNoAggFunc(List<PopulationClauseObject> populationClauseObjectList) {
+		return currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS) &&				
+				populationClauseObjectList.stream().anyMatch(
+						pco -> pco.getCqlExpressionDisplayName() != null && !pco.getCqlExpressionDisplayName().isEmpty() && pco.getAggFunctionName().isEmpty());
 
 	}
 

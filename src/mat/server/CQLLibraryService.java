@@ -1417,6 +1417,47 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		return result;
 	}
 	
+	@Override
+	public SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode,
+			String cqlLibraryId) {
+		SaveUpdateCQLResult cqlResult = new SaveUpdateCQLResult();
+		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, cqlLibraryId)) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlLibraryId);
+			if (cqlLibrary != null) {
+				String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+				if(!cqlLibraryXml.isEmpty()){
+					cqlResult = cqlService.deleteCode(getCQLLibraryXml(cqlLibrary), codeToReplace.getId());
+					if (cqlResult != null && cqlResult.isSuccess()) {
+						cqlLibraryXml = cqlResult.getXml();
+						
+						MatCodeTransferObject transferObject = new MatCodeTransferObject();
+						transferObject.setCqlCode(replacementCode);
+						transferObject.setId(cqlLibraryId);
+						SaveUpdateCQLResult codeResult = cqlService.saveCQLCodes(cqlLibraryXml,transferObject);
+						if(codeResult != null && codeResult.isSuccess()) {
+							cqlLibraryXml = appendCQLCodeInLibrary(cqlLibraryXml, codeResult);
+							SaveUpdateCQLResult updatedResult = updateCodeSystem(cqlLibraryXml, transferObject.getCqlCode());
+							if(updatedResult.isSuccess()) {
+								cqlLibraryXml = appendCQLCodeSystemInLibrary(cqlLibraryXml, updatedResult);
+							}
+							cqlResult.setXml(cqlLibraryXml);
+							cqlLibrary.setCQLByteArray(cqlResult.getXml().getBytes());
+							save(cqlLibrary);
+							cqlResult.setCqlCodeList(getSortedCQLCodes(cqlResult.getXml()).getCqlCodeList());
+							CQLModel cqlModel = ((SaveUpdateCQLResult)cqlService.getCQLData(cqlResult.getXml())).getCqlModel();
+							cqlResult.setCqlModel(cqlModel);
+						} else {
+							cqlResult.setSuccess(false);
+						}
+					}
+				}
+
+			}
+		}
+		return cqlResult;
+	}
+	
+	
 	/**
 	 * @param cqlLibrary
 	 * @param codeResult

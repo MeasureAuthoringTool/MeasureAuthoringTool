@@ -4,10 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,7 +20,6 @@ import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.MetaDataPresenter;
-import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.shared.ui.MATTabPanel;
@@ -58,6 +56,12 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	
 	/** The save button. */
 	private Button saveButton;
+	
+	private org.gwtbootstrap3.client.ui.Button saveBtnMeasureDtls;
+	
+	//MAT-9041. Added HandlerRegistration for clickHandler
+	HandlerRegistration yesHandler;
+	HandlerRegistration noHandler;
 	
 	/**
 	 * NOTE: do not use this constructor use MatTabLayoutPanel(boolean
@@ -153,7 +157,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
 		currentSelection =  event.getItem();
 		if (!getSelectedIndex().equals(currentSelection)) {
-			if (!isUnsavedDataOnTab(getSelectedIndex(), currentSelection)) {
+			if (!isUnsavedDataOnTab(getSelectedIndex())) {
 				updateOnBeforeSelection();
 			} else {
 				setSelectedIndex(getSelectedIndex());
@@ -175,13 +179,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			presenter.beforeDisplay();
 		}
 	}
-	
-	//TODO refactor some methods so we can 	pass through the two strings without overwriting GWT's interface
-	//	public void add(Widget w, String tabText, String abbrText) {
-	//		int index = getWidgetCount() - 1;
-	//		fmt.insertTitle(index, tabText, abbrText);
-	//		add(w, tabText);
-	//	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.ui.MATTabPanel#add(com.google.gwt.user.client.ui.Widget, java.lang.String)
@@ -222,15 +219,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		return getWidgetIndex(widget) == selectedIndex;
 	}
 	
-	//TODO need to remove this method once everything has been tested, keeping this  still if something is  breaking.
-	/*public void selectTab(Widget widget) {
-		int widgetIndex = getWidgetIndex(widget);
-		if(widgetIndex == -1){//TODO;- why it is -1 here???
-			widgetIndex = 0;
-		}
-		selectTab(widgetIndex);
-		getTabBar().setTabHTML(widgetIndex, fmt.getSelectedTitle(widgetIndex));
-	}*/
 	/**
 	 * Select tab.
 	 * 
@@ -289,9 +277,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		return selectedIndex != 0;
 	}
 	
-	/*
-	 * TODO may not need
-	 */
 	/**
 	 * Force select tab.
 	 * 
@@ -332,7 +317,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 *            the current index
 	 * @return true, if is unsaved data on tab
 	 */
-	private boolean isUnsavedDataOnTab(int selectedIndex, int currentIndex) {
+	private boolean isUnsavedDataOnTab(int selectedIndex) {
 		MatContext.get().setErrorTabIndex(-1);
 		MatPresenter previousPresenter = presenterMap.get(selectedIndex);
 		if ((selectedIndex == 1) && (previousPresenter instanceof MeasureComposerPresenter)) {
@@ -341,15 +326,14 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
 				validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
 			} 
-			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 1) {
-				int CQLWorkspaceTab = 1;
+			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 1) {				
 				CQLWorkSpacePresenter cqlWorkspacePresenter = (CQLWorkSpacePresenter)
-						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(CQLWorkspaceTab);
+						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(1);
 				validateCQLWorkspaceTab(cqlWorkspacePresenter, selectedIndex);
 			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2) {
 				int populationWorkspaceTab = 2;
-				CQLPopulationWorkSpacePresenter popWorkspacePresenter = (CQLPopulationWorkSpacePresenter) composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);;
-				validatePopulationWorkSpaceTab(selectedIndex, popWorkspacePresenter);
+				CQLPopulationWorkSpacePresenter popWorkspacePresenter = (CQLPopulationWorkSpacePresenter) composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
+				validatePopulationWorkSpaceTab(popWorkspacePresenter);
 			}
 			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
 				int measurePackagerTab = 3;
@@ -367,34 +351,22 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			validateCQLWorkspaceTab(cqlPresenter, selectedIndex);
 		} else if ((selectedIndex == 2) && (previousPresenter instanceof CQLPopulationWorkSpacePresenter)) {
 			CQLPopulationWorkSpacePresenter popWorkspacePresenter = (CQLPopulationWorkSpacePresenter) previousPresenter;
-			validatePopulationWorkSpaceTab(selectedIndex, popWorkspacePresenter);
-		//	validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
-		} /*else if (previousPresenter instanceof PopulationClausePresenter) {
-			PopulationClausePresenter clauseWorkspacePresenter = (PopulationClausePresenter) previousPresenter;
-			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
-		}else if (previousPresenter instanceof StratificationClausePresenter) {
-			StratificationClausePresenter clauseWorkspacePresenter = (StratificationClausePresenter) previousPresenter;
-			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
-		}else if (previousPresenter instanceof MeasureObsClausePresenter) {
-			MeasureObsClausePresenter clauseWorkspacePresenter = (MeasureObsClausePresenter) previousPresenter;
-			validatePopWorkspaceSubTabs(clauseWorkspacePresenter.getSelectedTreeMap(), selectedIndex);
-		}*/else if (previousPresenter instanceof MeasurePackagePresenter) {
+			validatePopulationWorkSpaceTab(popWorkspacePresenter);
+		} else if (previousPresenter instanceof MeasurePackagePresenter) {
 			MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) previousPresenter;
 			validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);
 		} else if((selectedIndex ==3) && previousPresenter instanceof CqlComposerPresenter){
 			CqlComposerPresenter composerPresenter = (CqlComposerPresenter) previousPresenter;
-			if (composerPresenter.getCqlComposerTabLayout().getSelectedIndex() == 0) {
-				int CQLWorkspaceTab = 0;
+			if (composerPresenter.getCqlComposerTabLayout().getSelectedIndex() == 0) {				
 				CQLStandaloneWorkSpacePresenter cqlWorkspacePresenter = (CQLStandaloneWorkSpacePresenter)
-						composerPresenter.getCqlComposerTabLayout().presenterMap.get(CQLWorkspaceTab);
+						composerPresenter.getCqlComposerTabLayout().presenterMap.get(0);
 				validateCQLLibraryWorkSpaceTab(cqlWorkspacePresenter, selectedIndex);
 			} 
 		}
 		return isUnsavedData;
 	}
 	
-	private void validatePopulationWorkSpaceTab(int selectedIndex2,
-			CQLPopulationWorkSpacePresenter popWorkspacePresenter) {
+	private void validatePopulationWorkSpaceTab(CQLPopulationWorkSpacePresenter popWorkspacePresenter) {
 		popWorkspacePresenter.getSearchDisplay().resetMessageDisplay();
 		if (popWorkspacePresenter.isDirty()) {
 			isUnsavedData = true;
@@ -424,7 +396,6 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				&&!isMeasureDetailsSame(metaDataPresenter)) {
 			saveErrorMessageAlert = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
 			saveErrorMessageAlert.clearAlert();
-			//saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
 			if (metaDataPresenter.isSubView()) {
 				metaDataPresenter.backToDetail();
 				metaDataPresenter.getMetaDataDisplay().setSaveButtonEnabled(
@@ -436,9 +407,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay2().clearAlert();
 			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay().clearAlert();
 			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay2().clearAlert();
+			saveBtnMeasureDtls = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
 			showErrorMessageAlert(saveErrorMessageAlert);
 			saveErrorMessageAlert.getWarningConfirmationYesButton().setFocus(true);
-			handleClickEventsOnUnsavedErrorMsgAlert(selectedIndex, metaDataPresenter.getMetaDataDisplay(), null);
+			handleClickEventsOnUnsavedChangesMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg(), null);
 		} else {
 			isUnsavedData = false;
 		}
@@ -458,10 +430,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			saveErrorMessageAlert.clearAlert();
 			
 			saveButton = measurePackagerPresenter.getView().getPackageGroupingWidget().getSaveGrouping();
-			//saveButton = (PrimaryButton)measurePackagerPresenter.getView().getAddQDMElementsToMeasureButton();
 			showErrorMessageAlert(saveErrorMessageAlert);
 			saveErrorMessageAlert.getWarningConfirmationYesButton().setFocus(true);
-			handleClickEventsOnUnsavedErrorMsgAlert(selectedIndex, measurePackagerPresenter.getView().getSaveErrorMessageDisplay(), null);
+			handleClickEventsOnUnsavedChangesMsg(selectedIndex, measurePackagerPresenter.getView().getSaveErrorMessageDisplay(), null);
 		} else {
 			isUnsavedData = false;
 		}
@@ -508,123 +479,37 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		
 	}
 	
-	
-	/**
-	 * Validate clause workspace tab.
-	 * 
-	 * @param xmlTreePresenter
-	 *            the xml tree presenter
-	 * @param selectedIndex
-	 *            the selected index
-	 *//*
-	private void validateClauseWorkspaceTab(XmlTreePresenter xmlTreePresenter, int selectedIndex) {
-		if (null ==	xmlTreePresenter.getXmlTreeDisplay()) {// this will happen when there is any errors on Clause Workspace Tabs
-			return;
-		}
-		xmlTreePresenter.getXmlTreeDisplay().clearMessages();
-		if (xmlTreePresenter.getXmlTreeDisplay().isDirty()
-				|| xmlTreePresenter.getXmlTreeDisplay().isQdmVariableDirty()) {
-			isUnsavedData = true;
-			saveButton = xmlTreePresenter.getXmlTreeDisplay().getSaveButton();
-			showErrorMessage(xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay());
-			xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons().get(0).setFocus(true);
-			String auditMessage = xmlTreePresenter.getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
-			handleClickEventsOnUnsavedErrorMsg(selectedIndex, xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons(),
-					xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay(),auditMessage);
-		} else {
-			isUnsavedData = false;
-		}
-	}
-	
-	*//**
-	 * Validate population workspace sub tabs.
-	 * 
-	 * @param map
-	 *            the xml tree presenter
-	 * @param selectedIndex
-	 *            the selected index
-	 *//*
-	private void validatePopWorkspaceSubTabs(Map<Integer, MatPresenter> map, int selectedIndex) {
-		if(!map.isEmpty() && map != null){
-			XmlTreePresenter xmlTreePresenter = (XmlTreePresenter)map.get(selectedIndex);
+	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
 
-			if (null ==	xmlTreePresenter.getXmlTreeDisplay()) {// this will happen when there is any errors on Clause Workspace Tabs
-				return;
-			}
-			xmlTreePresenter.getXmlTreeDisplay().clearMessages();
-			if (xmlTreePresenter.getXmlTreeDisplay().isDirty()
-					|| xmlTreePresenter.getXmlTreeDisplay().isQdmVariableDirty()) {
-				isUnsavedData = true;
-				saveButton = xmlTreePresenter.getXmlTreeDisplay().getSaveButton();
-				showErrorMessage(xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay());
-				xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons().get(0).setFocus(true);
-				String auditMessage = xmlTreePresenter.getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
-				handleClickEventsOnUnsavedErrorMsg(selectedIndex, xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons(),
-						xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay(),auditMessage);
-			} else {
-				isUnsavedData = false;
-			}
+		isUnsavedData = false;
+		if (auditMessage != null) {
+			MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+					null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
 		}
-	}*/
-	private void handleClickEventsOnUnsavedErrorMsgAlert(int selIndex, final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
-		isUnsavedData = true;
-		
-		saveErrorMessage.getWarningConfirmationYesButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent arg0) {
-				isUnsavedData = false;
-				if (auditMessage != null) {
-					MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
-							null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
-				}
-				saveErrorMessage.clearAlert();
-				updateOnBeforeSelection();
-				selectTab(selectedIndex);
-				
-			}
-		});
-		
-		
-		saveErrorMessage.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent arg0) {
-				isUnsavedData = false;
-				saveErrorMessage.clearAlert();
-				saveButton.setFocus(true);
-				
-			}
-		});
-		
-		/*ClickHandler clickHandler = new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isUnsavedData = false;
-				SecondaryButton button = (SecondaryButton) event.getSource();
-				if ("Yes".equals(button.getText())) { // navigate to the tab select
-					//Audit If Yes is clicked and changes are discarded on clauseWorkspace.
-					if (auditMessage != null) {
-						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
-								null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
-					}
-					saveErrorMessage.clear();
-					updateOnBeforeSelection();
-					selectTab(selectedIndex);
-				} else if ("No".equals(button.getText())) { // do not navigate, set focus to the Save button on the Page
-					saveErrorMessage.clear();
-					saveButton.setFocus(true);
-				}
-			}
-		};
-		for (SecondaryButton secondaryButton : btns) {
-			secondaryButton.addClickHandler(clickHandler);
-		}*/
-		
-		if (isUnsavedData) {
-			MatContext.get().setErrorTabIndex(selIndex);
-			MatContext.get().setErrorTab(true);
+		saveErrorMessage.clearAlert();
+		updateOnBeforeSelection();
+		selectTab(selectedIndex);
+	}
+	
+	private void onNoButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage) {
+
+		isUnsavedData = false;
+		saveErrorMessage.clearAlert();
+
+		//MetaDataPresenter
+		if (selectedIndex == 0) {
+			//Measure Details - focus needs to come back to save button
+			if (null != saveBtnMeasureDtls)
+				saveBtnMeasureDtls.setFocus(true);	
+		} else if (selectedIndex == 3) {
+			//MeasurePackagePresenter. 
+			//TODO: This is a com.google.gwt.user.client.ui.Button and needs to be bootstrapped
+			if (null != saveButton)
+				saveButton.setFocus(true);	
+		}else {
+			selectTab(selectedIndex);
 		}
+
 	}
 	
 	/**
@@ -639,31 +524,15 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 * @param auditMessage
 	 *            the audit message
 	 */
-	private void handleClickEventsOnUnsavedChangesMsg(int selIndex, final WarningConfirmationMessageAlert globalWarningAlert, final String auditMessage) {
+	private void handleClickEventsOnUnsavedChangesMsg(int selIndex, final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
 		isUnsavedData = true;
-		ClickHandler clickHandler = new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isUnsavedData = false;
-				org.gwtbootstrap3.client.ui.Button button = (org.gwtbootstrap3.client.ui.Button) event.getSource();
-				if ("Yes".equals(button.getText())) { // navigate to the tab select
-					//Audit If Yes is clicked and changes are discarded on cqlWorkspace.
-					if (auditMessage != null) {
-						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
-								null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
-					}
-					globalWarningAlert.clearAlert();
-					updateOnBeforeSelection();
-					selectTab(selectedIndex);
-				} else if ("No".equals(button.getText())) { // do not navigate, set focus to the Save button on the Page
-					selectTab(selectedIndex);
-					globalWarningAlert.clearAlert();
-				}
-			}
-		};
 		
-		globalWarningAlert.getWarningConfirmationYesButton().addClickHandler(clickHandler);
-		globalWarningAlert.getWarningConfirmationNoButton().addClickHandler(clickHandler);
+		//Remove old click handlers
+		removeHandlers();
+		
+		yesHandler = saveErrorMessage.getWarningConfirmationYesButton().addClickHandler(event -> onYesButtonClicked(saveErrorMessage, auditMessage));
+		
+		noHandler = saveErrorMessage.getWarningConfirmationNoButton().addClickHandler(event -> onNoButtonClicked(saveErrorMessage));
 		
 		if (isUnsavedData) {
 			MatContext.get().setErrorTabIndex(selIndex);
@@ -671,103 +540,14 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		}
 	}
 	
-	/**
-	 * On Click Events.
-	 * 
-	 * @param selIndex
-	 *            the sel index
-	 * @param btns
-	 *            the btns
-	 * @param saveErrorMessage
-	 *            the save error message
-	 * @param auditMessage
-	 *            the audit message
-	 */
-/*	private void handleClickEventsOnUnsavedErrorMsg(int selIndex, List<SecondaryButton> btns,
-			final ErrorMessageDisplay saveErrorMessage, final String auditMessage) {
-		isUnsavedData = true;
-		ClickHandler clickHandler = new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isUnsavedData = false;
-				SecondaryButton button = (SecondaryButton) event.getSource();
-				if ("Yes".equals(button.getText())) { // navigate to the tab select
-					//Audit If Yes is clicked and changes are discarded on clauseWorkspace.
-					if (auditMessage != null) {
-						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
-								null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
-					}
-					saveErrorMessage.clear();
-					updateOnBeforeSelection();
-					selectTab(selectedIndex);
-				} else if ("No".equals(button.getText())) { // do not navigate, set focus to the Save button on the Page
-					saveErrorMessage.clear();
-					saveButton.setFocus(true);
-				}
-			}
-		};
-		for (SecondaryButton secondaryButton : btns) {
-			secondaryButton.addClickHandler(clickHandler);
+	private void removeHandlers() {
+		if(yesHandler!=null) {
+			yesHandler.removeHandler();
 		}
-		
-		if (isUnsavedData) {
-			MatContext.get().setErrorTabIndex(selIndex);
-			MatContext.get().setErrorTab(true);
-		}
-	}*/
-	
-	private void handleClickEventsOnUnsavedErrorMsgAlert(int selIndex,final MetaDataDetailDisplay metaDataDetailDisplay, final String auditMessage) {
-		isUnsavedData = true;
-		
-		metaDataDetailDisplay.getSaveErrorMsg().getWarningConfirmationYesButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent arg0) {
-				isUnsavedData = false;
-				if (auditMessage != null) {
-					MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
-							null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
-				}
-				metaDataDetailDisplay.getSaveErrorMsg().clear();
-				updateOnBeforeSelection();
-				selectTab(selectedIndex);
-				
-			}
-		});
-		
-		
-		metaDataDetailDisplay.getSaveErrorMsg().getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent arg0) {
-				isUnsavedData = false;
-				metaDataDetailDisplay.getSaveErrorMsg().clearAlert();
-				metaDataDetailDisplay.getSaveBtn().setFocus(true);
-				
-			}
-		});
-		
-		
-		if (isUnsavedData) {
-			MatContext.get().setErrorTabIndex(selIndex);
-			MatContext.get().setErrorTab(true);
+		if(noHandler!=null) {	
+			noHandler.removeHandler();
 		}
 	}
-	
-	/**
-	 * Show error message.
-	 * 
-	 * @param errorMessageDisplay
-	 *            the error message display
-	 */
-	/*private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay) {
-		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
-		List<String> btn = new ArrayList<String>();
-		btn.add("Yes");
-		btn.add("No");
-		errorMessageDisplay.setMessageWithButtons(msg, btn);
-	}*/
-	
 	
 	private void showErrorMessageAlert(WarningConfirmationMessageAlert errorMessageDisplay) {
 		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();

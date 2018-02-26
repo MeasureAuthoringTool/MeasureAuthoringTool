@@ -430,9 +430,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					currentDetails = updatedDetails;
 					currentDetails.setExistingOrg(true);
 					if (result.isSuccess()) {
-						//displaySearch();
-						detailDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
-								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 						detailDisplay.getOid().setValue(currentDetails.getOid());
 						detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 						if(isOrgDetailsModified){
@@ -441,6 +438,9 @@ public class ManageOrganizationPresenter implements MatPresenter {
 							MatContext.get().recordUserEvent(MatContext.get().getLoggedinLoginId(), event, "", false);
 							isOrgDetailsModified = false;
 						}
+						displaySearch();
+						searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
+								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 					} else {
 						List<String> messages = new ArrayList<String>();
 						switch (result.getFailureReason()) {
@@ -456,30 +456,14 @@ public class ManageOrganizationPresenter implements MatPresenter {
 								messages.add(MatContext.get().getMessageDelegate()
 										.getUnknownErrorMessage(result.getFailureReason()));
 						}
-						detailDisplay.getErrorMessageDisplay().createAlert(messages);
-						
-//						List<String> event = new ArrayList<String>();
-//						event.add("Oraganization Modified");
-						
-						
+						detailDisplay.getErrorMessageDisplay().createAlert(messages);		
 					}
 				}
 			});
 		}
 	}
 	
-	
-	private void isOrganizationDetailModified() { 
-			
-		if(currentDetails.getOrganization()!=null && 
-				!currentDetails.getOrganization().equalsIgnoreCase(updatedDetails.getOrganization())){
-			isOrgDetailsModified = true;
-		} else if(currentDetails.getOid()!=null && 
-				!currentDetails.getOid().equalsIgnoreCase(updatedDetails.getOid()) ) {
-			isOrgDetailsModified = true;
-		}
-	}
-	
+
 	/** Update Organization details from view. */
 	private void updateOrganizationDetailsFromView() {
 		updatedDetails = new ManageOrganizationDetailModel();

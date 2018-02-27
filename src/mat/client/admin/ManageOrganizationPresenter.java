@@ -423,13 +423,13 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 					currentDetails = updatedDetails;
-					currentDetails.setExistingOrg(true);
+					currentDetails.setExistingOrg(false);
 				}
 				@Override
 				public void onSuccess(SaveUpdateOrganizationResult result) {
 					currentDetails = updatedDetails;
-					currentDetails.setExistingOrg(true);
 					if (result.isSuccess()) {
+						currentDetails.setExistingOrg(true);
 						detailDisplay.getOid().setValue(currentDetails.getOid());
 						detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 						if(isOrgDetailsModified){
@@ -442,6 +442,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 						searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 					} else {
+						currentDetails.setExistingOrg(false);
 						List<String> messages = new ArrayList<String>();
 						switch (result.getFailureReason()) {
 							case

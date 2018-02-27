@@ -413,7 +413,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
-		//isOrganizationDetailModified();
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		detailDisplay.getSuccessMessageDisplay().clearAlert();
 		if (isValid(updatedDetails)) {

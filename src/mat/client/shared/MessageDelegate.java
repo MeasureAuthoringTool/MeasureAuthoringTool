@@ -415,6 +415,9 @@ public class MessageDelegate {
 	/** The organization success message. */
 	private final String ORGANIZATION_SUCCESS_MESSAGE = "Organization successfully added.";
 	
+	/** The organization modified success message. */
+	private final String ORGANIZATION_MODIFIED_SUCCESS_MESSAGE = "Organization successfully modified.";
+	
 	/** The user success message. */
 	private final String USER_SUCCESS_MESSAGE = "User information saved successfully.";
 	
@@ -2512,6 +2515,15 @@ public class MessageDelegate {
 	 */
 	public String getORGANIZATION_SUCCESS_MESSAGE() {
 		return ORGANIZATION_SUCCESS_MESSAGE;
+	}
+	
+	/**
+	 * Gets the organization success message.
+	 *
+	 * @return the oRGANIZATION_SUCCESS_MESSAGE
+	 */
+	public String getORGANIZATION_MODIFIED_SUCCESS_MESSAGE() {
+		return ORGANIZATION_MODIFIED_SUCCESS_MESSAGE;
 	}
 	
 	/**

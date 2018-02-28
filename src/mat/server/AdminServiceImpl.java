@@ -313,56 +313,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	}
 	
 	
-	/** Save update organization.
-	 * 
-	 * @param currentModel the current model
-	 * @param updatedModel the updated model
-	 * @return the save update organization result */
-	@Override
-	public SaveUpdateOrganizationResult saveUpdateOrganization(ManageOrganizationDetailModel currentModel,
-			ManageOrganizationDetailModel updatedModel) {
-		SaveUpdateOrganizationResult saveUpdateOrganizationResult = new SaveUpdateOrganizationResult();
-		Organization organization = null;
-		// Remove Mark Ups if any
-		updatedModel.scrubForMarkUp();
-		AdminManageOrganizationModelValidator test = new AdminManageOrganizationModelValidator();
-		List<String> messages = test.isValidOrganizationDetail(updatedModel);
-		SaveUpdateUserResult result = new SaveUpdateUserResult();
-		if (messages.size() != 0) {
-			for (String message: messages) {
-				logger.info("Server-Side Validation failed for"
-						+ " SaveUpdateOrganizationResult And failure Message is :" + message);
-			}
-			result.setSuccess(false);
-			result.setMessages(messages);
-			result.setFailureReason(SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION);
-		} else {
-			
-			if (currentModel.isExistingOrg()) {
-				organization = getOrganizationDAO().findByOid(currentModel.getOid());
-				organization.setOrganizationName(updatedModel.getOrganization());
-				organization.setOrganizationOID(updatedModel.getOid());
-			} else {
-				organization = new Organization();
-				if (getOrganizationDAO().findByOid(updatedModel.getOid()) != null) {
-					saveUpdateOrganizationResult.setSuccess(false);
-					saveUpdateOrganizationResult.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
-					return saveUpdateOrganizationResult;
-				}
-				organization.setOrganizationName(updatedModel.getOrganization());
-				organization.setOrganizationOID(updatedModel.getOid());
-			}
-			try {
-				getOrganizationDAO().saveOrganization(organization);
-				saveUpdateOrganizationResult.setSuccess(true);
-			} catch (Exception exception) {
-				saveUpdateOrganizationResult.setSuccess(false);
-				saveUpdateOrganizationResult.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
-			}
-		}
-		return saveUpdateOrganizationResult;
-	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.service.AdminService#saveUpdateUser(mat.client.admin.ManageUsersDetailModel)
 	 */
@@ -449,10 +399,78 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	}
 	
 	@Override
-	public ManageUsersDetailModel getUserByEmail(String emailId) throws InCorrectUserRoleException{
+	public ManageUsersDetailModel getUserByEmail(String emailId) throws InCorrectUserRoleException {
 		checkAdminUser();
 		logger.info("Retrieving user " + emailId);
 		User user = getUserService().findByEmailID(emailId);
 		return extractUserModel(user);
+	}
+	
+	@Override
+	public SaveUpdateOrganizationResult saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel) {
+		AdminManageOrganizationModelValidator organizationValidator = new AdminManageOrganizationModelValidator();
+		SaveUpdateOrganizationResult result = new SaveUpdateOrganizationResult();
+		if(organizationValidator.isManageOrganizationDetailModelValid(updatedOrganizationDetailModel)) { 
+			if (organizationAlreadyExists(updatedOrganizationDetailModel)) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+			} else {
+				try {
+					Organization organization = new Organization();
+					organization.setOrganizationName(updatedOrganizationDetailModel.getOrganization());
+					organization.setOrganizationOID(updatedOrganizationDetailModel.getOid());
+					getOrganizationDAO().saveOrganization(organization);
+					result.setSuccess(true);
+				} catch (Exception exception) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+				}
+			}
+		} else {
+			result.setSuccess(false);
+			result.setMessages(organizationValidator.getValidationErrors(updatedOrganizationDetailModel));
+			result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
+		}
+		return result;
+	}
+	
+	@Override
+	public SaveUpdateOrganizationResult updateOrganization(ManageOrganizationDetailModel currentOrganizationDetailModel, ManageOrganizationDetailModel updatedOrganizationDetailModel) {
+		SaveUpdateOrganizationResult result = new SaveUpdateOrganizationResult();
+		AdminManageOrganizationModelValidator organizationValidator = new AdminManageOrganizationModelValidator();
+		if(organizationValidator.isManageOrganizationDetailModelValid(updatedOrganizationDetailModel)) { 
+			if(!organizationAlreadyExists(updatedOrganizationDetailModel) || organizationsHaveTheSameOID(currentOrganizationDetailModel, updatedOrganizationDetailModel)) {
+				try {
+					Organization organization = getOrganizationDAO().findByOid(currentOrganizationDetailModel.getOid());
+					organization.setOrganizationName(updatedOrganizationDetailModel.getOrganization());
+					organization.setOrganizationOID(updatedOrganizationDetailModel.getOid());
+					getOrganizationDAO().updateOrganization(organization);
+					result.setSuccess(true);
+				} catch (Exception exception) {
+					result.setSuccess(false);
+					result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+				}
+			} else {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+			}
+		} else {
+			result.setSuccess(false);
+			result.setMessages(organizationValidator.getValidationErrors(updatedOrganizationDetailModel));
+			result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
+		}
+		return result;
+	}
+	
+	private boolean organizationsHaveTheSameOID(ManageOrganizationDetailModel currentOrganizationDetailModel, ManageOrganizationDetailModel updatedOrganizationDetailModel) {
+		boolean result = false;
+		if(currentOrganizationDetailModel.getOid() != null) {
+			result = currentOrganizationDetailModel.getOid().equals(updatedOrganizationDetailModel.getOid());
+		}
+		return result;
+	}
+	
+	private boolean organizationAlreadyExists(ManageOrganizationDetailModel model) {
+		return (getOrganizationDAO().findByOid(model.getOid()) != null);
 	}
 }

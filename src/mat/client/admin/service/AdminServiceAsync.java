@@ -50,14 +50,6 @@ public interface AdminServiceAsync {
 	 */
 	public void resetUserPassword(String userid, AsyncCallback<Void> callback);
 	
-	/** Save update organization.
-	 * 
-	 * @param currentModel the current model
-	 * @param updatedModel the updated model
-	 * @param callback the callback */
-	void saveUpdateOrganization(ManageOrganizationDetailModel currentModel, ManageOrganizationDetailModel updatedModel,
-			AsyncCallback<SaveUpdateOrganizationResult> callback);
-	
 	/**
 	 * Save update user.
 	 * 
@@ -93,4 +85,11 @@ public interface AdminServiceAsync {
 	void deleteOrganization(ManageOrganizationSearchModel.Result organization, AsyncCallback<Void> callback);
 	
 	void getUserByEmail(String emailId, AsyncCallback<ManageUsersDetailModel> callback);
+
+	public void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
+			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
+
+	public void updateOrganization(ManageOrganizationDetailModel currentOrganizationDetails,
+			ManageOrganizationDetailModel updatedOrganizationDetailModel,
+			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 }

@@ -912,8 +912,35 @@ public class CQLCodesView {
 			if(!isEditable){
 				colName = "Select";
 			}
+			
+			// Edit Cell
+			colName = "Edit";
 			table.addColumn(new Column<CQLCode, CQLCode>(
-					getCompositeCell(isEditable)) {
+					getCompositeCell(isEditable, getModifyButtonCell())) {
+				
+				@Override
+				public CQLCode getValue(CQLCode object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+					+ colName + "</span>"));
+			
+			// Delete Cell
+			colName = "Delete";
+			table.addColumn(new Column<CQLCode, CQLCode>(
+					getCompositeCell(isEditable, getDeleteButtonCell())) {
+				
+				@Override
+				public CQLCode getValue(CQLCode object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
+					+ colName + "</span>"));	
+			
+			// Copy Cell
+			colName = "Copy";
+			table.addColumn(new Column<CQLCode, CQLCode>(
+					getCompositeCell(true, getCheckBoxCell())) {
 				
 				@Override
 				public CQLCode getValue(CQLCode object) {
@@ -927,20 +954,22 @@ public class CQLCodesView {
 			table.setColumnWidth(2, 15.0, Unit.PCT);
 			table.setColumnWidth(3, 15.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
-			table.setColumnWidth(5, 5.0, Unit.PCT);
+			table.setColumnWidth(5, 2.33, Unit.PCT);
+			table.setColumnWidth(6, 2.33, Unit.PCT);
+			table.setColumnWidth(7, 2.33, Unit.PCT);
+
 		}
 		
 		return table;
 	}
 	
 	
-	private CompositeCell<CQLCode> getCompositeCell(boolean isEditable) {
+	private CompositeCell<CQLCode> getCompositeCell(boolean isEditable, HasCell<CQLCode, ?> cellToAdd) {
 		final List<HasCell<CQLCode, ?>> cells = new LinkedList<HasCell<CQLCode, ?>>();
-		if(isEditable){
-			cells.add(getModifyButtonCell());
-			cells.add(getDeleteButtonCell());
+		if(isEditable) {
+			cells.add(cellToAdd);
 		}
-		cells.add(getCheckBoxCell());
+		
 		CompositeCell<CQLCode> cell = new CompositeCell<CQLCode>(
 				cells) {
 			@Override

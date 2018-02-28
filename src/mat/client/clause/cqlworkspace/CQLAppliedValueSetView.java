@@ -485,7 +485,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private CellTable<CQLQualityDataSetDTO> addColumnToTable(
 			final CellTable<CQLQualityDataSetDTO> table,
 			ListHandler<CQLQualityDataSetDTO> sortHandler, final boolean isEditable) {
-		if (table.getColumnCount() != TABLE_ROW_COUNT ) {
+		if (table.getColumnCount() != TABLE_ROW_COUNT) {
 			Label searchHeader = new Label("Value Sets");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.getElement().setAttribute("tabIndex", "0");
@@ -495,7 +495,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			caption.appendChild(searchHeader.getElement());
 			selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
 			table.setSelectionModel(selectionModel);
-			
+
 			// Name Column
 			Column<CQLQualityDataSetDTO, SafeHtml> nameColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -504,7 +504,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					StringBuilder title = new StringBuilder();
 					StringBuilder value = new StringBuilder();
 					String qdmType = new String();
-					// if the QDM element is not user defined, add (G) for Grouping or (E) for extensional.
+					// if the QDM element is not user defined, add (G) for Grouping or (E) for
+					// extensional.
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 						if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
 							qdmType = GROUPING_QDM;
@@ -512,19 +513,17 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 							qdmType = EXTENSIONAL_QDM;
 						}
 					}
-					
-						value = value.append(object.getCodeListName()).append(qdmType);
-						title = title.append("Name : ").append(value);
-					
+
+					value = value.append(object.getCodeListName()).append(qdmType);
+					title = title.append("Name : ").append(value);
+
 					title.append("");
-					
+
 					return CellTableUtility.getNameColumnToolTip(value.toString(), title.toString());
 				}
 			};
-			table.addColumn(nameColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Name\">" + "Name"
-							+ "</span>"));
-			
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
+
 			// OID Column
 			Column<CQLQualityDataSetDTO, SafeHtml> oidColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -532,23 +531,17 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				public SafeHtml getValue(CQLQualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					String oid = null;
-					if (object.getOid().equalsIgnoreCase(
-							ConstantMessages.USER_DEFINED_QDM_OID)) {
-						title = title.append("OID : ").append(
-								ConstantMessages.USER_DEFINED_QDM_NAME);
+					if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						title = title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
 						oid = ConstantMessages.USER_DEFINED_CONTEXT_DESC;
 					} else {
 						title = title.append("OID : ").append(object.getOid());
 						oid = object.getOid();
 					}
-					return getOIDColumnToolTip(oid, title,
-							object.isHasModifiedAtVSAC(),
-							object.isNotFoundInVSAC());
+					return getOIDColumnToolTip(oid, title, object.isHasModifiedAtVSAC(), object.isNotFoundInVSAC());
 				}
 			};
-			table.addColumn(oidColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"OID\">" + "OID"
-							+ "</span>"));
+			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			// Version Column
 			Column<CQLQualityDataSetDTO, SafeHtml> versionColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -556,66 +549,81 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				public SafeHtml getValue(CQLQualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					String version = null;
-					if (!object.getOid().equalsIgnoreCase(
-							ConstantMessages.USER_DEFINED_QDM_OID) ) {
-						//if(object.getExpansionIdentifier()==null || object.getExpansionIdentifier().isEmpty()){
-							if ((object.getVersion()!=null)  &&
-									(object.getVersion().equalsIgnoreCase("1.0")
-											|| object.getVersion().equalsIgnoreCase("1"))) {
-								title = title.append("Version : ").append(
-										"Most Recent");
-								version = "Most Recent";
-							} else {
-								title = title.append("Version : ").append(object.getVersion());
-								version = object.getVersion();
-							}
-						/*} else {
-							version = "";
-						}*/
-					}else {
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						// if(object.getExpansionIdentifier()==null ||
+						// object.getExpansionIdentifier().isEmpty()){
+						if ((object.getVersion() != null) && (object.getVersion().equalsIgnoreCase("1.0")
+								|| object.getVersion().equalsIgnoreCase("1"))) {
+							title = title.append("Version : ").append("Most Recent");
+							version = "Most Recent";
+						} else {
+							title = title.append("Version : ").append(object.getVersion());
+							version = object.getVersion();
+						}
+						/*
+						 * } else { version = ""; }
+						 */
+					} else {
 						version = "";
 					}
-					return CellTableUtility.getColumnToolTip(version,
-							title.toString());
+					return CellTableUtility.getColumnToolTip(version, title.toString());
 				}
 			};
-			table.addColumn(versionColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Version\">" + "Version"
-							+ "</span>"));
-			String colName = "Modify";
-			if(!isEditable){
-				colName = "Select";
-			}
-		
-		// Modify by Delete Column
-		table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
-				getCompositeCell(isEditable)) {
+			table.addColumn(versionColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
+			String colName = "";
+			// Edit Column
+			colName = "Edit";
+			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+					getCompositeCell(isEditable, getModifyButtonCell())) {
+
+				@Override
+				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
+
+			// Delete Column
+			colName = "Delete";
+			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+					getCompositeCell(isEditable, getDeleteButtonCell())) {
+
+				@Override
+				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 			
-			@Override
-			public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
-				return object;
-			}
-		}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-				+ colName + "</span>"));
-			
+			// Copy Column
+			colName = "Copy";
+			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+					getCompositeCell(true, getCheckBoxCell())) {
+
+				@Override
+				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
+
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 14.0, Unit.PCT);
-			table.setColumnWidth(3, 8.0, Unit.PCT);
-			/*table.setColumnWidth(4, 8.0, Unit.PCT);*/
+			table.setColumnWidth(2, 17.0, Unit.PCT);
+			table.setColumnWidth(3, 2.0, Unit.PCT);
+			table.setColumnWidth(4, 2.0, Unit.PCT);
+			table.setColumnWidth(5, 2.0, Unit.PCT);
 		}
-		
+
 		return table;
 	}
 	
 	
-	private CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable) {
+	private CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable,  HasCell<CQLQualityDataSetDTO, ?> cellToAdd) {
 		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<HasCell<CQLQualityDataSetDTO, ?>>();
+		
 		if(isEditable){
-			cells.add(getModifyButtonCell());
-			cells.add(getDeleteButtonCell());
+			cells.add(cellToAdd);
 		}
-		cells.add(getCheckBoxCell());
+		
 		CompositeCell<CQLQualityDataSetDTO> cell = new CompositeCell<CQLQualityDataSetDTO>(
 				cells) {
 			@Override

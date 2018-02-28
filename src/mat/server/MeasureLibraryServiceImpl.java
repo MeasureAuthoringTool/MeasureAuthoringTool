@@ -3868,8 +3868,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					+ "[not(@uuid = preceding:: group/packageClause/@uuid)]";
 
 			List<String> measureGroupingIDList = new ArrayList<String>();
-			;
-
+			
 			try {
 				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING,
 						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
@@ -3917,12 +3916,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						}
 						// aggregate function should have user define function
 						// as a child
-						if (childNode.getNodeName().equalsIgnoreCase("cqlaggfunction")) {
-							if (!childNode.hasChildNodes()) {
-								result.setValid(false);
-								result.setValidationMessages(message);
-								break;
-							}
+						if ((childNode.getNodeName().equalsIgnoreCase("cqlaggfunction") 
+								|| childNode.getNodeName().equalsIgnoreCase("cqlfunction")) 
+								&& !childNode.hasChildNodes()) {
+							result.setValid(false);
+							message.clear();
+							message.add("Measure Observations within a Measure Grouping must contain both an Aggregate Function and a valid User Defined Function.");
+							result.setValidationMessages(message);
+							break;
 						}
 					} else {
 						result.setValid(false);

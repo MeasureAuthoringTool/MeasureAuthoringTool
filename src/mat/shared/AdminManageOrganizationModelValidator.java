@@ -20,7 +20,7 @@ public class AdminManageOrganizationModelValidator {
 	 * 
 	 * @param model the model
 	 * @return the list */
-	public List<String> isValidOrganizationDetail(ManageOrganizationDetailModel model) {
+	public List<String> getValidationErrors(ManageOrganizationDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		if ("".equals(model.getOrganization().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
@@ -33,5 +33,18 @@ public class AdminManageOrganizationModelValidator {
 			message.add(MatContext.get().getMessageDelegate().getOIDTooLongMessage());
 		}
 		return message;
+	}
+	
+	/** Checks if is valid Organization detail.
+	 * 
+	 * @param model the model
+	 * @return boolean */
+	public boolean isManageOrganizationDetailModelValid(ManageOrganizationDetailModel model) {
+		boolean isModelValid = true;
+		List<String> validationErrors = getValidationErrors(model);
+		if(validationErrors.size() > 0) {
+			isModelValid = false;
+		}
+		return isModelValid;
 	}
 }

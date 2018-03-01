@@ -82,7 +82,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		if (organization != null) {
 			model.setOid(organization.getOrganizationOID());
 			model.setOrganization(organization.getOrganizationName());
-			model.setExistingOrg(true);
 		}
 		return model;
 	}

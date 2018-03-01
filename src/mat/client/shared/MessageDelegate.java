@@ -626,6 +626,8 @@ public class MessageDelegate {
 	/** The oid in use. */
 	private final String OID_IN_USE = "OID is already in use.";
 	
+	private final String OID_EXISTS = "OID already exists.";
+	
 	/** The package success. */
 	private final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
 	
@@ -1694,6 +1696,11 @@ public class MessageDelegate {
 	 */
 	public String getOIDInUseMessage() {
 		return OID_IN_USE;
+	}
+	
+	
+	public String getOIDExistsMessage() {
+		return OID_EXISTS;
 	}
 	
 	/**

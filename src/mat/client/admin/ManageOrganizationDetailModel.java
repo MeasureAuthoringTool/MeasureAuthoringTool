@@ -6,10 +6,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /** The Class ManageUsersDetailModel. */
 public class ManageOrganizationDetailModel implements IsSerializable , BaseModel {
 	
-	/** The oid. */
+	private Long id;
 	private String oid;
-	
-	/** The organization. */
 	private String organization;
 	
 	/** Do trim.
@@ -58,15 +56,23 @@ public class ManageOrganizationDetailModel implements IsSerializable , BaseModel
 		String markupRegExp = "<[^>]+>";
 		
 		String noMarkupText = this.getOrganization().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
+		//System.out.println(noMarkupText);
 		if (this.getOrganization().trim().length() > noMarkupText.length()) {
 			this.setOrganization(noMarkupText);
 		}
 		noMarkupText = getOid().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);
+		//System.out.println(noMarkupText);
 		if (this.getOid().trim().length() > noMarkupText.length()) {
 			this.setOid(noMarkupText);
 		}
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	

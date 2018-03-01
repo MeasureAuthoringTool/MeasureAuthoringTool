@@ -80,6 +80,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	private ManageOrganizationDetailModel extractOrganizationModel(Organization organization) {
 		ManageOrganizationDetailModel model = new ManageOrganizationDetailModel();
 		if (organization != null) {
+			model.setId(organization.getId());
 			model.setOid(organization.getOrganizationOID());
 			model.setOrganization(organization.getOrganizationName());
 		}
@@ -434,22 +435,22 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	}
 	
 	@Override
-	public SaveUpdateOrganizationResult updateOrganization(ManageOrganizationDetailModel currentOrganizationDetailModel, ManageOrganizationDetailModel updatedOrganizationDetailModel) {
+	public SaveUpdateOrganizationResult updateOrganization(Long currentOrganizationId, ManageOrganizationDetailModel updatedOrganizationDetailModel) {
 		SaveUpdateOrganizationResult result = new SaveUpdateOrganizationResult();
 		AdminManageOrganizationModelValidator organizationValidator = new AdminManageOrganizationModelValidator();
 		if(organizationValidator.isManageOrganizationDetailModelValid(updatedOrganizationDetailModel)) { 
-			if(!organizationAlreadyExists(updatedOrganizationDetailModel) || organizationsHaveTheSameOID(currentOrganizationDetailModel, updatedOrganizationDetailModel)) {
-				try {
-					Organization organization = getOrganizationDAO().findByOid(currentOrganizationDetailModel.getOid());
+			try {
+				Organization organization = getOrganizationDAO().find(currentOrganizationId);
+				if(organization != null && !organizationAlreadyExists(updatedOrganizationDetailModel) || organizationsHaveTheSameOID(organization.getOrganizationOID(), updatedOrganizationDetailModel)) {
 					organization.setOrganizationName(updatedOrganizationDetailModel.getOrganization());
 					organization.setOrganizationOID(updatedOrganizationDetailModel.getOid());
 					getOrganizationDAO().updateOrganization(organization);
 					result.setSuccess(true);
-				} catch (Exception exception) {
+				} else {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
 				}
-			} else {
+			} catch (Exception exception) {
 				result.setSuccess(false);
 				result.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
 			}
@@ -461,10 +462,10 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return result;
 	}
 	
-	private boolean organizationsHaveTheSameOID(ManageOrganizationDetailModel currentOrganizationDetailModel, ManageOrganizationDetailModel updatedOrganizationDetailModel) {
+	private boolean organizationsHaveTheSameOID(String currentOid, ManageOrganizationDetailModel updatedOrganizationDetailModel) {
 		boolean result = false;
-		if(currentOrganizationDetailModel.getOid() != null) {
-			result = currentOrganizationDetailModel.getOid().equals(updatedOrganizationDetailModel.getOid());
+		if(currentOid != null) {
+			result = currentOid.equals(updatedOrganizationDetailModel.getOid());
 		}
 		return result;
 	}

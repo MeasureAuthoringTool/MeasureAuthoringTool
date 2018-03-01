@@ -394,7 +394,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		ManageOrganizationDetailModel updatedOrganizationDetailModel = buildOrganizationDetailModelFromView();
 		AdminManageOrganizationModelValidator organizationValidator = new AdminManageOrganizationModelValidator();
 		if(organizationValidator.isManageOrganizationDetailModelValid(updatedOrganizationDetailModel)) {
-			MatContext.get().getAdminService().updateOrganization(currentOrganizationDetails, updatedOrganizationDetailModel, new AsyncCallback<SaveUpdateOrganizationResult>() {
+			MatContext.get().getAdminService().updateOrganization(currentOrganizationDetails.getId(), updatedOrganizationDetailModel, new AsyncCallback<SaveUpdateOrganizationResult>() {
 				@Override
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
@@ -454,7 +454,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		switch (result.getFailureReason()) {
 			case
 			SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
-				messages.add("OID already exists.");
+				messages.add(MatContext.get().getMessageDelegate().getOIDExistsMessage());
 				break;
 			case
 			SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION:

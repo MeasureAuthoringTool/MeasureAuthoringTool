@@ -106,6 +106,7 @@ mat.dao.OrganizationDAO {
 	 * 
 	 * @see mat.dao.OrganizationDAO#searchOrganization(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Organization> searchOrganization(String name) {
 		Criteria criteria = createSearchCriteria(name);

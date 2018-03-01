@@ -70,7 +70,7 @@ public interface AdminService extends RemoteService {
 	 * @param currentModel the current model
 	 * @param updatedModel the updated model
 	 * @return the save update organization result */
-	SaveUpdateOrganizationResult updateOrganization(ManageOrganizationDetailModel currentOrganizationDetails,
+	SaveUpdateOrganizationResult updateOrganization(Long currentOrganizationDetailId,
 			ManageOrganizationDetailModel updatedOrganizationDetailModel);
 	
 	/**

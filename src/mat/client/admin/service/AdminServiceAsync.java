@@ -89,7 +89,7 @@ public interface AdminServiceAsync {
 	public void saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 
-	public void updateOrganization(ManageOrganizationDetailModel currentOrganizationDetails,
+	public void updateOrganization(Long currentOrganizationId,
 			ManageOrganizationDetailModel updatedOrganizationDetailModel,
 			AsyncCallback<SaveUpdateOrganizationResult> asyncCallback);
 }

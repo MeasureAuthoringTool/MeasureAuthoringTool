@@ -1400,6 +1400,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 						view.getInProgressMessageDisplay().clear();
 					}
 				}
+				
+				//record Package created Audit event
+				if (result.isValid()) {	
+					MatContext.get().getAuditService().recordMeasureEvent(measureId, "Measure Package Created",
+							"", false, new AsyncCallback<Boolean>() {
+	
+								@Override
+								public void onFailure(Throwable caught) {
+	
+								}
+	
+								@Override
+								public void onSuccess(Boolean result) {
+	
+								}
+							});
+				}
 			}
 		});
 	}

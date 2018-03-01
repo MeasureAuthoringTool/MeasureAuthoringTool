@@ -85,10 +85,11 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	private boolean shouldAudit(Object obj, String event) {
 		if(event.equals(ConstantMessages.INSERT)){
 			return obj instanceof Measure ||  
-				obj instanceof QualityDataSet || obj instanceof CQLLibrary || obj instanceof MeasureExport;
+				obj instanceof QualityDataSet || obj instanceof CQLLibrary; //|| obj instanceof MeasureExport;
 		}else{
 			//Production Error fix subsequent measurePackaging update information is not logged.
-			return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
+			//return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
+			return obj instanceof QualityDataSet;
 		}
 	}
 	
@@ -123,10 +124,12 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 			if(obj instanceof Measure){
 				measureAuditLog.setActivityType("Measure Created");
 				measureAuditLog.setMeasure((Measure)obj);
-			}else if (obj instanceof MeasureExport){
-				measureAuditLog.setActivityType("Measure Package Created");
-				measureAuditLog.setMeasure(((MeasureExport)obj).getMeasure());
 			}
+//			else if (obj instanceof MeasureExport){
+//				measureAuditLog.setActivityType("Measure Package Created");
+//				measureAuditLog.setMeasure(((MeasureExport)obj).getMeasure());
+//				
+//			}
 			returnObject = measureAuditLog;
 		} else if(obj instanceof CQLLibrary) {
 			CQLAuditLog cqlAuditLog = new CQLAuditLog();
@@ -166,6 +169,16 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	 */
 	private void saveOrUpdate(EventSource eventSource, Object obj){
 		Session session = eventSource.getSessionFactory().openSession();
+		if(obj instanceof MeasureAuditLog) {
+			MeasureAuditLog log = (MeasureAuditLog)obj;
+			System.out.println("Measure Audit logging:"+log.getActivityType());
+		}else if(obj instanceof CQLAuditLog) {
+			CQLAuditLog log = (CQLAuditLog)obj;
+			System.out.println("CQL Audit logging:"+log.getActivityType());
+		}else if(obj instanceof AuditLog) {
+			AuditLog log = (AuditLog)obj;
+			System.out.println("Audit logging:"+log.getActivityType());
+		}
 		try{			
 			session.getTransaction().begin();
 			session.saveOrUpdate(obj);

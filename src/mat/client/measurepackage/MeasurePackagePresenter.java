@@ -462,7 +462,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					clearMessages();
 					view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-					System.out.println("Overview Object"+ packageOverview.getClauses().size());
 					setNewMeasurePackage();
 				}
 			}

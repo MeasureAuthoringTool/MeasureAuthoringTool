@@ -462,7 +462,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					clearMessages();
 					view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-					System.out.println("Overview Object"+ packageOverview.getClauses().size());
 					setNewMeasurePackage();
 				}
 			}
@@ -1399,6 +1398,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 						((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 						view.getInProgressMessageDisplay().clear();
 					}
+				}
+				
+				//record Package created Audit event
+				if (result.isValid()) {	
+					MatContext.get().getAuditService().recordMeasureEvent(measureId, "Measure Package Created",
+							"", false, new AsyncCallback<Boolean>() {
+	
+								@Override
+								public void onFailure(Throwable caught) {
+	
+								}
+	
+								@Override
+								public void onSuccess(Boolean result) {
+	
+								}
+							});
 				}
 			}
 		});

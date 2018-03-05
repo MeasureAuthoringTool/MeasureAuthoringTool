@@ -3,7 +3,6 @@ package mat.client;
 import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.clause.cqlworkspace.CQLPopulationWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLPopulationWorkSpaceView;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
@@ -35,11 +34,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-// TODO: Auto-generated Javadoc
-//MAT-4898
-//import mat.client.measure.metadata.AddEditAuthorsView;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureComposerPresenter.
  */
@@ -99,9 +94,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 * The Clause Workspace presenter.
 	 */
 	private ClauseWorkSpacePresenter clauseWorkSpacePresenter = new ClauseWorkSpacePresenter();
-	/** The Population workspace presenter. */
-	private PopulationWorkspacePresenter populationWorkspacePresenter = new PopulationWorkspacePresenter();
-	
+
 	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
 	
@@ -140,12 +133,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
 		//measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
 		measureComposerTabLayout.addPresenter(buildCQLWorkSpaceTab(), "CQL Workspace");
-		measureComposerTabLayout.addPresenter(buildCQLPopulationWorkspaceTab(), "Population Workspace (new)");
+		measureComposerTabLayout.addPresenter(buildCQLPopulationWorkspaceTab(), "Population Workspace");
 		//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
-		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 		measureComposerTabLayout.setHeight("98%");
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(measureComposerTab, measureComposerTabLayout);

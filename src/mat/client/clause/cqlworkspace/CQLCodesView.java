@@ -777,8 +777,8 @@ public class CQLCodesView {
 								"appliedCodeTableSummary",
 								"In the Following Applied Codes table Descriptor in First Column"
 										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
-										+ "Version Included in Fifth Column And Modify in Sixth Column where the user can Delete "
-										+ "the existing code and select checkbox to copy the code. The Applied codes are listed alphabetically in a table.");
+										+ "Version Included in Fifth Column, Edit in the Sixth Column, Delete in the Seventh Column, and Copy in the Eigth column."
+										+ "The Applied Codes are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -787,7 +787,8 @@ public class CQLCodesView {
 								"appliedCodeTableSummary",
 								"In the Following Applied Codes table Descriptor in First Column"
 										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
-										+ "Version Included in Fifth Column. The Applied Codes are listed alphabetically in a table.");
+										+ "Version Included in Fifth Column, Edit in the Sixth Column, Delete in the Seventh Column, and Copy in the Eigth column."
+										+ "The Applied Codes are listed alphabetically in a table.");
 			}
 			
 			table.getElement().setAttribute("id", "AppliedCodeTable");
@@ -829,15 +830,13 @@ public class CQLCodesView {
 					StringBuilder title = new StringBuilder();
 					String value = object.getDisplayName();
 					
-					title = title.append("Descriptor : ").append(value);
+					title.append("Descriptor : ").append(value);
 					title.append("");
 					
 					return CellTableUtility.getCodeDescriptorColumnToolTip(value, title.toString(),object.getSuffix());
 				}
 			};
-			table.addColumn(nameColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"
-							+ "</span>"));
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"+ "</span>"));
 			// Code Profile Column
 			Column<CQLCode, SafeHtml> codeColumn = new Column<CQLCode, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -845,14 +844,12 @@ public class CQLCodesView {
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
 					String value = object.getCodeOID();
-					title = title.append("Code : ").append(value);
+					title.append("Code : ").append(value);
 					title.append("");
 					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
 			};
-			table.addColumn(codeColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title=\"Code\">"
-							+ "Code" + "</span>"));
+			table.addColumn(codeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Code\">"+ "Code" + "</span>"));
 			
 			// CodeSystem Profile Column
 			Column<CQLCode, SafeHtml> codeSystemColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
@@ -860,7 +857,7 @@ public class CQLCodesView {
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
 					String value = object.getCodeSystemName();
-					title = title.append("CodeSystem : ").append(value);
+					title.append("CodeSystem : ").append(value);
 					title.append("");
 					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
@@ -908,46 +905,36 @@ public class CQLCodesView {
 			};
 			table.addColumn(isVersionIncludedColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version Included\">" + "Version Included" + "</span>"));
 			
-			String colName = "Modify";
-			if(!isEditable){
-				colName = "Select";
-			}
-			
+			String colName = "";
 			// Edit Cell
 			colName = "Edit";
-			table.addColumn(new Column<CQLCode, CQLCode>(
-					getCompositeCell(isEditable, getModifyButtonCell())) {
+			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(isEditable, getModifyButtonCell())) {
 				
 				@Override
 				public CQLCode getValue(CQLCode object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-					+ colName + "</span>"));
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));
 			
 			// Delete Cell
 			colName = "Delete";
-			table.addColumn(new Column<CQLCode, CQLCode>(
-					getCompositeCell(isEditable, getDeleteButtonCell())) {
+			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(isEditable, getDeleteButtonCell())) {
 				
 				@Override
 				public CQLCode getValue(CQLCode object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-					+ colName + "</span>"));	
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));	
 			
 			// Copy Cell
 			colName = "Copy";
-			table.addColumn(new Column<CQLCode, CQLCode>(
-					getCompositeCell(true, getCheckBoxCell())) {
+			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(true, getCheckBoxCell())) {
 				
 				@Override
 				public CQLCode getValue(CQLCode object) {
 					return object;
 				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-					+ colName + "</span>"));
+			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));
 			
 			table.setColumnWidth(0, 50.0, Unit.PCT);
 			table.setColumnWidth(1, 10.0, Unit.PCT);

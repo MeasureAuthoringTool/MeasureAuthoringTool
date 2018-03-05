@@ -445,9 +445,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, TableCaptionElement in Third Column, Version in Fourth Column,"
-										+ "And Modify in Fifth Column where the user can Edit and Delete "
-										+ "the existing Value set. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
+										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -455,8 +454,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Expansion Profile in Third Column, Version in Fourth Column,"
-										+ "and Select in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
+										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -514,8 +513,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						}
 					}
 
-					value = value.append(object.getCodeListName()).append(qdmType);
-					title = title.append("Name : ").append(value);
+					value.append(object.getCodeListName()).append(qdmType);
+					title.append("Name : ").append(value);
 
 					title.append("");
 
@@ -532,16 +531,17 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					StringBuilder title = new StringBuilder();
 					String oid = null;
 					if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						title = title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
+						title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
 						oid = ConstantMessages.USER_DEFINED_CONTEXT_DESC;
 					} else {
-						title = title.append("OID : ").append(object.getOid());
+						title.append("OID : ").append(object.getOid());
 						oid = object.getOid();
 					}
 					return getOIDColumnToolTip(oid, title, object.isHasModifiedAtVSAC(), object.isNotFoundInVSAC());
 				}
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
+			
 			// Version Column
 			Column<CQLQualityDataSetDTO, SafeHtml> versionColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -550,19 +550,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					StringBuilder title = new StringBuilder();
 					String version = null;
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						// if(object.getExpansionIdentifier()==null ||
-						// object.getExpansionIdentifier().isEmpty()){
-						if ((object.getVersion() != null) && (object.getVersion().equalsIgnoreCase("1.0")
-								|| object.getVersion().equalsIgnoreCase("1"))) {
-							title = title.append("Version : ").append("Most Recent");
+						if ((object.getVersion() != null) && (object.getVersion().equals("1.0")
+								|| object.getVersion().equals("1"))) {
+							title.append("Version : ").append("Most Recent");
 							version = "Most Recent";
 						} else {
-							title = title.append("Version : ").append(object.getVersion());
+							title.append("Version : ").append(object.getVersion());
 							version = object.getVersion();
 						}
-						/*
-						 * } else { version = ""; }
-						 */
 					} else {
 						version = "";
 					}
@@ -571,6 +566,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			};
 			table.addColumn(versionColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
+			
 			String colName = "";
 			// Edit Column
 			colName = "Edit";
@@ -587,7 +583,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			colName = "Delete";
 			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
 					getCompositeCell(isEditable, getDeleteButtonCell())) {
-
+				
 				@Override
 				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
 					return object;
@@ -1473,7 +1469,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					if(!cqlQualityDataSetDTO.getVersion().equalsIgnoreCase("1.0") || !cqlQualityDataSetDTO.getVersion().equalsIgnoreCase("1")) {
+					if(!cqlQualityDataSetDTO.getVersion().equals("1.0") || !cqlQualityDataSetDTO.getVersion().equals("1")) {
 						cqlValueSetTransferObject.setVersion(true);
 						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
 					}

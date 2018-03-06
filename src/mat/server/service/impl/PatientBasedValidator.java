@@ -40,6 +40,8 @@ public class PatientBasedValidator {
 
 	private static final String SYSTEM_BOOLEAN = "System.Boolean";
 
+	private static final String CQLFUNCTION = "cqlfunction";
+	
 	private static final String CQLAGGFUNCTION = "cqlaggfunction";
 
 	private static final String DISPLAY_NAME = "displayName";
@@ -64,13 +66,8 @@ public class PatientBasedValidator {
 		
 		List<String> errorMessages = new ArrayList<String>();
 		
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXmlL);
 		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlL);
 
-		Node patientBasedIndicatorNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_FOR_PATIENT_BASED_INDICATOR);
-		String patientBasedIndicator = patientBasedIndicatorNode.getTextContent();
-		boolean isPatientBasedIndicator = patientBasedIndicator.equals("true");
-		
 		Node scoringNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_FOR_MEASURE_SCORING);
 		String scoringType = scoringNode.getTextContent();
 		
@@ -95,10 +92,12 @@ public class PatientBasedValidator {
 				//find the cqlfunction here
 				Node firstChildNode = clauseNode.getFirstChild();
 				
-				if(firstChildNode.getNodeName().equals(CQLAGGFUNCTION)){
+				if(firstChildNode.getNodeName().equals(CQLAGGFUNCTION) || firstChildNode.getNodeName().equals(CQLFUNCTION)){
 					if(firstChildNode.hasChildNodes()){
 						firstChildNode = firstChildNode.getFirstChild();
 					}else{
+						//MAT-9070 changes
+						errorMessages.add(name + " must contain both an Aggregate Function and a valid User Defined Function.");
 						continue;
 					}
 				}				
@@ -112,8 +111,7 @@ public class PatientBasedValidator {
 					expressionPopMap.put(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue(),arraylist); 
 				}
 				 
-				
-				
+								
 				String associatedClauseNodeUUID  = null;
 				if(scoringType.equalsIgnoreCase(SCORING_CONTINUOUS_VARIABLE)){
 					associatedClauseNodeUUID = findMeasurePopInGrouping(packageClauses);
@@ -156,78 +154,88 @@ public class PatientBasedValidator {
 			}
 		}
 		
-		List<String> usedExprList = new ArrayList<String>();
-		usedExprList.addAll(exprList);
-		usedExprList.addAll(msrObsFunctionList);
-		usedExprList.addAll(moAssociatedPopUsedExpression);
-		
-		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
-		
-		List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getCqlDefinitionObjectList();
-		List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<CQLExpressionObject>();
-		List<CQLExpressionObject> expressionsToBeCheckedForMO = new ArrayList<CQLExpressionObject>();
-		
-		for(CQLExpressionObject cqlExpressionObject : expressions){
-			String name = cqlExpressionObject.getName();
-			
-			if(exprList.contains(name)){
-				expressionsToBeChecked.add(cqlExpressionObject);
-			}
-			
-			if(moAssociatedPopUsedExpression.contains(name)) {
-				expressionsToBeCheckedForMO.add(cqlExpressionObject);
-			}
-		}
-		
-		if(isPatientBasedIndicator){
-			
-			//Check for MAT-8606 validations.			
-			List<String> messages = checkReturnType(expressionsToBeChecked, CQL_RETURN_TYPE_BOOLEAN, expressionPopMap);
-			if(messages.size() > 0){
-				errorMessages.addAll(messages);
-			}
-			//Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
-			if(msrObsFunctionList.size() >0 && scoringType.equalsIgnoreCase(SCORING_RATIO) ){
-				String message = MatContext.get().getMessageDelegate().getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE();
-				errorMessages.add(message);
-			}
-			
-		}else{
-			
-			//Check for MAT-8608 validations.			
-			List<String> messages = checkSimilarReturnTypes(expressionsToBeChecked,expressionPopMap);
-			if(messages.size() > 0){
-				errorMessages.addAll(messages);
-			}
-			
-		}
-		//check for MAT-8627 validations for functions attached to Measure Observations.
-		if(!isPatientBasedIndicator || !scoringType.equalsIgnoreCase(SCORING_RATIO)){
-			List<CQLExpressionObject> functions = cqlResult.getCqlObject().getCqlFunctionObjectList();
-			List<CQLExpressionObject> functionsToBeChecked = new ArrayList<CQLExpressionObject>();
-			
-			for(CQLExpressionObject cqlExpressionObject : functions){
+		if (errorMessages.isEmpty()) {
+			//MAT-9070 changes
+			List<String> usedExprList = new ArrayList<String>();
+			usedExprList.addAll(exprList);
+			usedExprList.addAll(msrObsFunctionList);
+			usedExprList.addAll(moAssociatedPopUsedExpression);
+
+			CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXmlL);
+			SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
+
+			List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getCqlDefinitionObjectList();
+			List<CQLExpressionObject> expressionsToBeChecked = new ArrayList<CQLExpressionObject>();
+			List<CQLExpressionObject> expressionsToBeCheckedForMO = new ArrayList<CQLExpressionObject>();
+
+			for(CQLExpressionObject cqlExpressionObject : expressions){
 				String name = cqlExpressionObject.getName();
-			
-				if(msrObsFunctionList.contains(name)){
-					functionsToBeChecked.add(cqlExpressionObject);
+
+				if(exprList.contains(name)){
+					expressionsToBeChecked.add(cqlExpressionObject);
+				}
+
+				if(moAssociatedPopUsedExpression.contains(name)) {
+					expressionsToBeCheckedForMO.add(cqlExpressionObject);
 				}
 			}
-			//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
-			List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked, expressionsToBeCheckedForMO,expressionPopMap, assoExpressionPopMap);
-			if(moArgumentMessage.size() > 0){
-				errorMessages.addAll(moArgumentMessage);
-			}
+
+			Node patientBasedIndicatorNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), XPATH_FOR_PATIENT_BASED_INDICATOR);
+			String patientBasedIndicator = patientBasedIndicatorNode.getTextContent();
+			boolean isPatientBasedIndicator = patientBasedIndicator.equals("true");
 			
-			List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC, expressionPopMap);
-			if(messages.size() > 0){
-				errorMessages.addAll(messages);
+			if(isPatientBasedIndicator){
+
+				//Check for MAT-8606 validations.			
+				List<String> messages = checkReturnType(expressionsToBeChecked, CQL_RETURN_TYPE_BOOLEAN, expressionPopMap);
+				if(messages.size() > 0){
+					errorMessages.addAll(messages);
+				}
+				//Check for MAT-8622 Measure Observation and Patient-based Measure Indicator in Ratio scoring type.
+				if(msrObsFunctionList.size() >0 && scoringType.equalsIgnoreCase(SCORING_RATIO) ){
+					String message = MatContext.get().getMessageDelegate().getEPISODE_BASED_RATIO_MEASURE_SAVE_GROUPING_VALIDATION_MESSAGE();
+					errorMessages.add(message);
+				}
+
+			}else{
+
+				//Check for MAT-8608 validations.			
+				List<String> messages = checkSimilarReturnTypes(expressionsToBeChecked,expressionPopMap);
+				if(messages.size() > 0){
+					errorMessages.addAll(messages);
+				}
+
 			}
+			//check for MAT-8627 validations for functions attached to Measure Observations.
+			if(!isPatientBasedIndicator || !scoringType.equalsIgnoreCase(SCORING_RATIO)){
+				List<CQLExpressionObject> functions = cqlResult.getCqlObject().getCqlFunctionObjectList();
+				List<CQLExpressionObject> functionsToBeChecked = new ArrayList<CQLExpressionObject>();
+
+				for(CQLExpressionObject cqlExpressionObject : functions){
+					String name = cqlExpressionObject.getName();
+
+					if(msrObsFunctionList.contains(name)){
+						functionsToBeChecked.add(cqlExpressionObject);
+					}
+				}
+				//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
+				List<String> moArgumentMessage = checkForMOFunctionArgumentCount(functionsToBeChecked, expressionsToBeCheckedForMO,expressionPopMap, assoExpressionPopMap);
+				if(moArgumentMessage.size() > 0){
+					errorMessages.addAll(moArgumentMessage);
+				}
+
+				List<String> messages = checkReturnType(functionsToBeChecked, CQL_RETURN_TYPE_NUMERIC, expressionPopMap);
+				if(messages.size() > 0){
+					errorMessages.addAll(messages);
+				}
+
+			}
+
+		}	
 			
-		}
-		
 		return errorMessages;
 	}
+	
 	private static  String findMeasurePopInGrouping(List<MeasurePackageClauseDetail> packageClauses) {
 		String measurePopUUID = null;
 		for(MeasurePackageClauseDetail measurePackageClauseDetail : packageClauses){
@@ -238,6 +246,7 @@ public class PatientBasedValidator {
 		}
 		return measurePopUUID;
 	}
+	
 	//MAT-8624 Single Argument Required for Measure Observation User-defined Function .
 	private static List<String> checkForMOFunctionArgumentCount(List<CQLExpressionObject> functionsToBeChecked , List<CQLExpressionObject> associatedPopExpressionTobeChecked, Map<String, List<String>> expressionPopMap, Map<String, List<String>> assoExpressionPopMap) {
 		List<String> returnMessages = new ArrayList<String>();

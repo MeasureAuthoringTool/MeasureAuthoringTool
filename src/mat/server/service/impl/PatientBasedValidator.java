@@ -106,9 +106,9 @@ public class PatientBasedValidator {
 				 if(expressionPopMap.containsKey(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue())){
 					 expressionPopMap.get(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()).add(name); 
 				} else {
-					List<String> arraylist = new ArrayList<String>();
-					arraylist.add(name);
-					expressionPopMap.put(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue(),arraylist); 
+					List<String> populationTypes = new ArrayList<String>();
+					populationTypes.add(name);
+					expressionPopMap.put(firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue(), populationTypes); 
 				}
 				 
 								
@@ -126,9 +126,9 @@ public class PatientBasedValidator {
 					 if(assoExpressionPopMap.containsKey(definitionName)){
 						 assoExpressionPopMap.get(definitionName).add(name); 
 					} else {
-						List<String> arraylist = new ArrayList<String>();
-						arraylist.add(name);
-						assoExpressionPopMap.put(definitionName,arraylist); 
+						List<String> populationTypes = new ArrayList<String>();
+						populationTypes.add(name);
+						assoExpressionPopMap.put(definitionName, populationTypes); 
 					}
 					
 				}
@@ -143,9 +143,9 @@ public class PatientBasedValidator {
 				if(expressionPopMap.containsKey(definitionName)){
 					expressionPopMap.get(definitionName).add(name);
 				} else {
-					List<String> arraylist = new ArrayList<String>();
-					arraylist.add(name);
-					expressionPopMap.put(definitionName,arraylist);
+					List<String> populationTypes = new ArrayList<String>();
+					populationTypes.add(name);
+					expressionPopMap.put(definitionName, populationTypes);
 				}
 				
 				if(!exprList.contains(definitionName)){

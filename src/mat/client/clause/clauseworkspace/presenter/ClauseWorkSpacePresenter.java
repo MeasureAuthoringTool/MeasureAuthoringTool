@@ -29,7 +29,6 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.MatContext;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ClauseWorkSpacePresenter.
  */

@@ -8,20 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.codelist.service.CodeListServiceAsync;
-import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.MatContext;
-import mat.client.shared.JSONAttributeModeUtility;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -32,7 +19,16 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
-// TODO: Auto-generated Javadoc
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.JSONAttributeModeUtility;
+import mat.client.shared.MatContext;
+
 /**
  * The Class ClauseWorkSpacePresenter.
  */

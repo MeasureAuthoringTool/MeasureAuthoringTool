@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ClauseConstants.
  */

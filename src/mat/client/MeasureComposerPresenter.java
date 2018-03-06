@@ -1,9 +1,21 @@
 package mat.client;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
+
 import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.clause.cqlworkspace.CQLPopulationWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLPopulationWorkSpaceView;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
@@ -23,23 +35,6 @@ import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SkipListBuilder;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
-// TODO: Auto-generated Javadoc
-//MAT-4898
-//import mat.client.measure.metadata.AddEditAuthorsView;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureComposerPresenter.
  */
@@ -99,9 +94,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 * The Clause Workspace presenter.
 	 */
 	private ClauseWorkSpacePresenter clauseWorkSpacePresenter = new ClauseWorkSpacePresenter();
-	/** The Population workspace presenter. */
-	private PopulationWorkspacePresenter populationWorkspacePresenter = new PopulationWorkspacePresenter();
-	
+
 	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
 	
@@ -120,8 +113,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	/** The meta data presenter. */
 	private MetaDataPresenter metaDataPresenter;
 	
-	//private MatClausePresenter clauseWorkspace = new MatClausePresenter();
-	
 	
 	/**
 	 * Instantiates a new measure composer presenter.
@@ -132,20 +123,16 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
-		//		measurePackagePresenter_old = (MeasurePackagePresenter_Old) buildOldMeasurePackageWidget(); // Commented to hide the Old measure Packager Tab menu
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
-		//measureComposerTabLayout.addPresenter(qdmPresenter, "Old QDM Elements");
 		measureComposerTabLayout.addPresenter(buildCQLWorkSpaceTab(), "CQL Workspace");
-		measureComposerTabLayout.addPresenter(buildCQLPopulationWorkspaceTab(), "Population Workspace (new)");
-		//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // Commented to hide the Old measure Packager Tab menu
+		measureComposerTabLayout.addPresenter(buildCQLPopulationWorkspaceTab(), "Population Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
-		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 		measureComposerTabLayout.setHeight("98%");
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(measureComposerTab, measureComposerTabLayout);

@@ -24,7 +24,6 @@ import mat.client.Mat;
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNode;
 import mat.client.clause.clauseworkspace.model.CQLCellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
-import mat.client.clause.clauseworkspace.presenter.CQLXmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
@@ -66,52 +65,9 @@ public class CQLViewPopulationsDisplay {
 	}
 	
 	private void buildView(String scoringType) {
-		CQLCellTreeNode parentNode = new CQLCellTreeNodeImpl();
-		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
-		
-		parentNode.setName(MatContext.get().getCurrentShortName());
-		parentNode.setLabel(MatContext.get().getCurrentShortName());
-		parentNode.setNodeType(CQLCellTreeNode.MAIN_NODE);
-		
-		if ("PROPOR".equals(scoringType)
-				|| "COHORT".equals(scoringType)) {
-			
-			CQLCellTreeNode populationsNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "populations");
-			populationsNode.setLabel("Populations");
-			parentchilds.add(populationsNode.getChilds().get(0));
-			populationsNode.setParent(parentNode);
-			populationsNode.setOpen(true);
-			
-			CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "strata");
-			stratificationNode.setLabel("Stratification");
-			parentchilds.add(stratificationNode.getChilds().get(0));
-			stratificationNode.setParent(parentNode);
-			stratificationNode.setOpen(true);
-			
-			parentNode.setChilds(parentchilds);
-			parentNode.setOpen(true);
-			
-		} else {
-			CQLCellTreeNode populationsNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "populations");
-			populationsNode.setLabel("Populations");
-			parentchilds.add(populationsNode.getChilds().get(0));
-			populationsNode.setParent(parentNode);
-			populationsNode.setOpen(true);
-			
-			CQLCellTreeNode moNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "measureObservations");
-			moNode.setLabel("Measure Observations");
-			parentchilds.add(moNode.getChilds().get(0));
-			moNode.setParent(parentNode);
-			moNode.setOpen(true);
-			
-			CQLCellTreeNode stratificationNode = CQLXmlConversionlHelper.createCQLCellTreeNode(document, "strata");
-			stratificationNode.setLabel("Stratification");
-			parentchilds.add(stratificationNode.getChilds().get(0));
-			stratificationNode.setParent(parentNode);
-			stratificationNode.setOpen(true);
-			parentNode.setChilds(parentchilds);
-			parentNode.setOpen(true);
-		}
+		PopulationTreeBuilderStrategyFactory populationTreeBuilderStrategyFactory = new PopulationTreeBuilderStrategyFactory();
+		PopulationTreeBuilderStrategy populationTreeBuilderStrategy = populationTreeBuilderStrategyFactory.getPopulationTreeBuilderStrategy(scoringType);
+		CQLCellTreeNode parentNode = populationTreeBuilderStrategy.buildCQLTreeNode(scoringType, document);
 		
 		CQLCellTreeNode topmainNode = new CQLCellTreeNodeImpl();
 		List<CQLCellTreeNode> topchilds = new ArrayList<CQLCellTreeNode>();

@@ -540,21 +540,6 @@ public class UserServiceImpl implements UserService {
 	 *            the user
 	 */
 	public void notifyUserOfNewAccount(User user) {
-		/*logger.info("In notifyUserOfNewAccount(User user)..........");
-		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
-		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
-		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
-		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
-		msg.setTo(user.getEmailAddress());
-		msg.setText(text);
-		
-		try {
-			mailSender.send(msg);
-		}
-		catch(MailException exc) {
-			logger.error(exc);
-		}*/
 		logger.info("In notifyUserOfNewAccount(User user)..........");
 		MimeMessage message = mailSender.createMimeMessage();
 		try {

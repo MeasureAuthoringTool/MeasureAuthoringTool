@@ -108,6 +108,7 @@ public class CheckUserLastLoginTask {
 		
 		final Map<String, Object> model= new HashMap<String, Object>();
 		final Map<String, String> content= new HashMap<String, String>();
+		final String envirUrl = ServerConstants.getEnvURL();
 		
 		for(User user:emailUsers){
 			
@@ -129,7 +130,7 @@ public class CheckUserLastLoginTask {
 			content.put("rolename",userRole);
 			
 			content.put(ConstantMessages.LOGINID, user.getLoginId());
-			content.put(ConstantMessages.URL, ServerConstants.getEnvURL());
+			content.put(ConstantMessages.URL, envirUrl);
 			
 			model.put("content", content);
 			String text = null;

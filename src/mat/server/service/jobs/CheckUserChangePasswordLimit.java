@@ -15,6 +15,7 @@ import mat.model.EmailAuditLog;
 import mat.model.User;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -336,6 +337,7 @@ public class CheckUserChangePasswordLimit {
 				
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
+				final String envirUrl = ServerConstants.getEnvURL();
 				
 				for(User user:emailUsers){
 					
@@ -354,6 +356,9 @@ public class CheckUserChangePasswordLimit {
 						userRole = "("+user.getSecurityRole().getDescription()+")";
 					}
 					content.put("rolename",userRole);
+					
+					content.put(ConstantMessages.LOGINID, user.getLoginId());
+					content.put(ConstantMessages.URL, envirUrl);
 					
 					//5 days Expiry Date
 				     if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
@@ -412,9 +417,6 @@ public class CheckUserChangePasswordLimit {
 	    logger.info(passwordDayLimit + "passwordDaysAgo:"+passwordDaysAgo);
 		
 	    for(User user:users){
-	    	if(user.getId().equals("8ae455ea4e4023fb014e40258ced0004")){
-	    		System.out.println("");
-	    	}
 			Date lastPasswordCreatedDate = user.getPassword().getCreatedDate();
 			
 			if(lastPasswordCreatedDate == null || !checkValidUser(user)){

@@ -327,6 +327,9 @@ public  class ConstantMessages {
 	/** The Constant LOGINID. */
 	public static final String LOGINID = "loginId";
 	
+	/** The Constant URL. */
+	public static final String URL = "url";
+	
 	/** The Constant ROOT_PATH. */
 	public static final String ROOT_PATH = "/";
 	

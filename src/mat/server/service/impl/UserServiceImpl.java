@@ -562,6 +562,7 @@ public class UserServiceImpl implements UserService {
 			BodyPart body = new MimeBodyPart();
 			HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 			paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
+			paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 			String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
 			body.setContent(text, "text/html");
 			Multipart multipart = new MimeMultipart();

@@ -14,6 +14,7 @@ import mat.model.EmailAuditLog;
 import mat.model.Status;
 import mat.model.User;
 import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -126,6 +127,9 @@ public class CheckUserLastLoginTask {
 				userRole = "("+user.getSecurityRole().getDescription()+")";
 			}
 			content.put("rolename",userRole);
+			
+			content.put(ConstantMessages.LOGINID, user.getLoginId());
+			content.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 			
 			model.put("content", content);
 			String text = null;

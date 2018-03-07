@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ClauseConstants.
  */
@@ -72,6 +71,13 @@ public class PopulationWorkSpaceConstants {
 	
 	/** The Constant MASTER_ROOT_NODE_POPULATION. */
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
+	
+	public static final String ROOT_NODE_POPULATIONS = "populations";
+	public static final String ROOT_NODE_MEASURE_OBSERVATIONS = "measureObservations";
+	public static final String SCORING_TYPE_PROPORTION = "PROPOR";
+	public static final String SCORING_TYPE_RATIO = "RATIO";
+	public static final String SCORING_TYPE_CONTINOUS_VARIABLE = "CONTVAR";
+	public static final String SCORING_TYPE_COHORT = "COHORT";
 	
 	/** The Constant MASTER_ROOT_NODE_STRATA. */
 	public static final String MASTER_ROOT_NODE_STRATA = "strata";

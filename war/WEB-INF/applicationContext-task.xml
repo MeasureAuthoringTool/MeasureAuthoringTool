@@ -96,13 +96,13 @@
 	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<property name="jobDetail" ref="sendEmailTaskDetail" />
 		<!-- <property name="cronExpression" value="0 0 0 * * ?" /> --> 
-		<property name="cronExpression" value="0 20 14 * * ?" />
+		<property name="cronExpression" value="0 32 16 * * ?" />
  	</bean> 
 	
 	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />
 		<!-- <property name="cronExpression" value="0 30 2 * * ?" />  -->
-		<property name="cronExpression" value="0 15 14 * * ?" />
+		<property name="cronExpression" value="0 30 16 * * ?" />
  	</bean> 
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

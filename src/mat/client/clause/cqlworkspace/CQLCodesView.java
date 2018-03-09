@@ -862,6 +862,7 @@ public class CQLCodesView {
 					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
 			};
+			
 			table.addColumn(codeSystemColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"CodeSystem\">" + "CodeSystem" + "</span>"));
 			
 			
@@ -936,15 +937,16 @@ public class CQLCodesView {
 				}
 			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));
 			
-			table.setColumnWidth(0, 50.0, Unit.PCT);
-			table.setColumnWidth(1, 10.0, Unit.PCT);
-			table.setColumnWidth(2, 15.0, Unit.PCT);
-			table.setColumnWidth(3, 15.0, Unit.PCT);
-			table.setColumnWidth(4, 5.0, Unit.PCT);
-			table.setColumnWidth(5, 2.33, Unit.PCT);
-			table.setColumnWidth(6, 2.33, Unit.PCT);
-			table.setColumnWidth(7, 2.33, Unit.PCT);
-
+			table.setWidth("100%", true);
+			table.setColumnWidth(0, 30.0, Unit.PCT);
+			table.setColumnWidth(1, 15.0, Unit.PCT);
+			table.setColumnWidth(2, 14.0, Unit.PCT);
+			table.setColumnWidth(3, 10.0, Unit.PCT);
+			table.setColumnWidth(4, 9.00, Unit.PCT);
+			table.setColumnWidth(5, 6.00, Unit.PCT);
+			table.setColumnWidth(6, 8.00, Unit.PCT);	
+			table.setColumnWidth(7, 7.00, Unit.PCT);	
+			table.setStyleName("tableWrap");
 		}
 		
 		return table;

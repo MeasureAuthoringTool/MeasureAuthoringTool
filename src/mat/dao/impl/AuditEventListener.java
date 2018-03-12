@@ -2,19 +2,6 @@ package mat.dao.impl;
 
 import java.util.Date;
 
-import mat.model.AuditLog;
-import mat.model.CQLAuditLog;
-import mat.model.CodeListAuditLog;
-import mat.model.CodeSystem;
-import mat.model.ListObject;
-import mat.model.MeasureAuditLog;
-import mat.model.QualityDataSet;
-import mat.model.clause.CQLLibrary;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureExport;
-import mat.server.LoggedInUserUtil;
-import mat.shared.ConstantMessages;
-
 import org.hibernate.Session;
 import org.hibernate.event.EventSource;
 import org.hibernate.event.PreDeleteEvent;
@@ -24,6 +11,17 @@ import org.hibernate.event.PreInsertEventListener;
 import org.hibernate.event.PreUpdateEvent;
 import org.hibernate.event.PreUpdateEventListener;
 import org.springframework.transaction.annotation.Transactional;
+
+import mat.model.AuditLog;
+import mat.model.CQLAuditLog;
+import mat.model.ListObject;
+import mat.model.MeasureAuditLog;
+import mat.model.QualityDataSet;
+import mat.model.clause.CQLLibrary;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
+import mat.server.LoggedInUserUtil;
+import mat.shared.ConstantMessages;
 
 /**
  * This class has been re-factored completely to support US 170 and 383.
@@ -85,10 +83,11 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	private boolean shouldAudit(Object obj, String event) {
 		if(event.equals(ConstantMessages.INSERT)){
 			return obj instanceof Measure ||  
-				obj instanceof QualityDataSet || obj instanceof CQLLibrary || obj instanceof MeasureExport;
+				obj instanceof QualityDataSet || obj instanceof CQLLibrary; //|| obj instanceof MeasureExport;
 		}else{
 			//Production Error fix subsequent measurePackaging update information is not logged.
-			return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
+			//return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
+			return obj instanceof QualityDataSet;
 		}
 	}
 	
@@ -123,10 +122,12 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 			if(obj instanceof Measure){
 				measureAuditLog.setActivityType("Measure Created");
 				measureAuditLog.setMeasure((Measure)obj);
-			}else if (obj instanceof MeasureExport){
-				measureAuditLog.setActivityType("Measure Package Created");
-				measureAuditLog.setMeasure(((MeasureExport)obj).getMeasure());
 			}
+//			else if (obj instanceof MeasureExport){
+//				measureAuditLog.setActivityType("Measure Package Created");
+//				measureAuditLog.setMeasure(((MeasureExport)obj).getMeasure());
+//				
+//			}
 			returnObject = measureAuditLog;
 		} else if(obj instanceof CQLLibrary) {
 			CQLAuditLog cqlAuditLog = new CQLAuditLog();
@@ -166,6 +167,16 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	 */
 	private void saveOrUpdate(EventSource eventSource, Object obj){
 		Session session = eventSource.getSessionFactory().openSession();
+		if(obj instanceof MeasureAuditLog) {
+			MeasureAuditLog log = (MeasureAuditLog)obj;
+			
+		}else if(obj instanceof CQLAuditLog) {
+			CQLAuditLog log = (CQLAuditLog)obj;
+			
+		}else if(obj instanceof AuditLog) {
+			AuditLog log = (AuditLog)obj;
+			
+		}
 		try{			
 			session.getTransaction().begin();
 			session.saveOrUpdate(obj);

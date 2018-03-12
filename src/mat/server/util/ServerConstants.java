@@ -1,5 +1,7 @@
 package mat.server.util;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * The Class ServerConstants.
  */
@@ -23,6 +25,11 @@ public class ServerConstants {
 														 "If you did not initiate a \"Forgot Password\" request, please contact the MAT Support Desk as soon as possible. This could be an indicator that an unauthorized individual is attempting to gain access to your account. The MAT Support Desk will work with you to ensure that your account remains under your control.\r\n\r\n" +
 														 "This e-mail contains no web links. Please use the URL or bookmark that you have on file to access the MAT web site.";
 	
+	private final static String PROD_URL = "https://www.emeasuretool.cms.gov/MeasureAuthoringTool/Login.html";
+	
+	
+	
+	
 	/**
 	 * This method will fetch the "ENVIRONMENT" variable set in the Glassfish system properties.
 	 * If not found then it will return blank String, else the value of "ENVIRONMENT" variable
@@ -35,5 +42,13 @@ public class ServerConstants {
 			return " [" + envName + "]";
 		}
 		return "";
+	}
+	
+	public static final String getEnvURL() {
+		String envURL = System.getProperty("ENVIRONMENTURL");
+		if(!StringUtils.isBlank(envURL)){
+			return envURL;
+		}
+		return PROD_URL;
 	}
 }

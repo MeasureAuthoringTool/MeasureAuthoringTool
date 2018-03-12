@@ -6,14 +6,15 @@
  */
 package mat.client.admin.service;
 
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.ManageUsersSearchModel;
 import mat.shared.InCorrectUserRoleException;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * The Interface AdminService.
@@ -58,13 +59,20 @@ public interface AdminService extends RemoteService {
 	 */
 	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
 	
-	/** Save update organization.
+	/**update organization.
+	 * 
+	 * @param updatedModel the updated model
+	 * @return the save update organization result */
+	SaveUpdateOrganizationResult saveOrganization(ManageOrganizationDetailModel updatedOrganizationDetailModel);
+	
+	/** update organization.
 	 * 
 	 * @param currentModel the current model
 	 * @param updatedModel the updated model
 	 * @return the save update organization result */
-	SaveUpdateOrganizationResult saveUpdateOrganization(ManageOrganizationDetailModel currentModel,
-			ManageOrganizationDetailModel updatedModel);
+	SaveUpdateOrganizationResult updateOrganization(Long currentOrganizationDetailId,
+			ManageOrganizationDetailModel updatedOrganizationDetailModel);
+	
 	/**
 	 * Save update user.
 	 * 

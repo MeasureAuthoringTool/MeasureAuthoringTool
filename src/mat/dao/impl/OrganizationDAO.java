@@ -91,7 +91,7 @@ mat.dao.OrganizationDAO {
 		try {
 			session = getSessionFactory().openSession();
 			transaction = session.beginTransaction();
-			session.saveOrUpdate(entity);
+			session.save(entity);
 			transaction.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -106,6 +106,7 @@ mat.dao.OrganizationDAO {
 	 * 
 	 * @see mat.dao.OrganizationDAO#searchOrganization(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Organization> searchOrganization(String name) {
 		Criteria criteria = createSearchCriteria(name);
@@ -123,6 +124,22 @@ mat.dao.OrganizationDAO {
 		Organization org = find(entity.getId());
 		delete(org);
 		
+	}
+	@Override
+	public void updateOrganization(Organization organization) {
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = getSessionFactory().openSession();
+			transaction = session.beginTransaction();
+			session.update(organization);
+			transaction.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			rollbackUncommitted(transaction);
+			closeSession(session);
+		}
 	}
 	
 }

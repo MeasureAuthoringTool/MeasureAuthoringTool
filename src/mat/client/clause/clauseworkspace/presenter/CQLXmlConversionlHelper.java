@@ -20,7 +20,6 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class XmlConversionlHelper.
  */
@@ -656,7 +655,6 @@ public class CQLXmlConversionlHelper {
 			case CellTreeNode.FUNCTIONS_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.FUNC_NAME);
 				
-				@SuppressWarnings("unchecked")
 				HashMap<String, String> functionMap = (HashMap<String, String>) CQLCellTreeNode.getExtraInformation(
 						PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				if (functionMap != null) {

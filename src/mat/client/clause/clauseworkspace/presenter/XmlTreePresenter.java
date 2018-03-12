@@ -44,7 +44,6 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class XmlTreePresenter.
  */

@@ -1093,10 +1093,10 @@ public class CQLCodesView {
 				String iconCss = "fa fa-pencil fa-lg";
 				if(isEditable){
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod; margin-left: -15px;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
 				} else {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black; margin-left: -15px\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
 				}
 				
 				return sb.toSafeHtml();

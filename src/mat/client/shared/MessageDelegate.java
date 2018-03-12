@@ -415,6 +415,9 @@ public class MessageDelegate {
 	/** The organization success message. */
 	private final String ORGANIZATION_SUCCESS_MESSAGE = "Organization successfully added.";
 	
+	/** The organization modified success message. */
+	private final String ORGANIZATION_MODIFIED_SUCCESS_MESSAGE = "Organization successfully modified.";
+	
 	/** The user success message. */
 	private final String USER_SUCCESS_MESSAGE = "User information saved successfully.";
 	
@@ -622,6 +625,8 @@ public class MessageDelegate {
 	
 	/** The oid in use. */
 	private final String OID_IN_USE = "OID is already in use.";
+	
+	private final String OID_EXISTS = "OID already exists.";
 	
 	/** The package success. */
 	private final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
@@ -1693,6 +1698,11 @@ public class MessageDelegate {
 		return OID_IN_USE;
 	}
 	
+	
+	public String getOIDExistsMessage() {
+		return OID_EXISTS;
+	}
+	
 	/**
 	 * Gets the oID required message.
 	 * 
@@ -2512,6 +2522,15 @@ public class MessageDelegate {
 	 */
 	public String getORGANIZATION_SUCCESS_MESSAGE() {
 		return ORGANIZATION_SUCCESS_MESSAGE;
+	}
+	
+	/**
+	 * Gets the organization success message.
+	 *
+	 * @return the oRGANIZATION_SUCCESS_MESSAGE
+	 */
+	public String getORGANIZATION_MODIFIED_SUCCESS_MESSAGE() {
+		return ORGANIZATION_MODIFIED_SUCCESS_MESSAGE;
 	}
 	
 	/**

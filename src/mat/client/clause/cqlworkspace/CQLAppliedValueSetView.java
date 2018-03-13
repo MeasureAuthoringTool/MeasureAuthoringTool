@@ -14,7 +14,9 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -78,8 +80,6 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
 
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
@@ -162,9 +162,15 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	/** The version list box. */
 	private ListBox versionListBox = new ListBox();
 	
+	private ListBox programListBox = new ListBox();
 	
-	/** The name input. */
+	private ListBox releaseListBox = new ListBox();
+	
 	private MatTextBox nameInput = new MatTextBox();
+	
+	private MatTextBox oidInput = new MatTextBox();
+	
+	private Button goButton = new Button("Retrieve OID");
 	
 	/** The Suffix input. */
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
@@ -189,7 +195,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private Button cancelButton = new Button("Cancel");
 	
 	/** The s widget. */
-	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve OID","Enter OID");
+	//private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve OID","Enter OID");
 	
 	/** The main panel. */
 	private VerticalPanel mainPanel;
@@ -346,9 +352,47 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("500px");
-		searchWidgetFormGroup.add(sWidget.getSearchWidget());
+		FormLabel oidLabel = new FormLabel();
+		//TODO use some constants here
+		oidLabel.setText("OID");
+		oidLabel.setTitle("OID");
+		searchWidgetFormGroup.add(oidLabel);
+		oidInput.setWidth("600px");
+		searchWidgetFormGroup.add(oidInput);
 		searchWidgetFormGroup.add(new SpacerWidget());
+		
+		Grid programReleaseGrid = new Grid(1,3);
+		
+		VerticalPanel programPanel = new VerticalPanel();
+		FormLabel programLabel = new FormLabel();
+		programLabel.setText("Program");
+		programLabel.setTitle("Program");
+		programPanel.add(programLabel);
+		programListBox.setTitle("Program selection list");
+		programListBox.setWidth("200px");
+		programPanel.add(programListBox);
+		
+		VerticalPanel releasePanel = new VerticalPanel();
+		FormLabel releaseLabel = new FormLabel();
+		releaseLabel.setText("Release");
+		releaseLabel.setTitle("Release");
+		releasePanel.add(releaseLabel);
+		releaseListBox.setTitle("Release selection list");
+		releaseListBox.setWidth("200px");
+		releasePanel.add(releaseListBox);
+		
+		goButton.setType(ButtonType.PRIMARY);
+		goButton.setIcon(IconType.SEARCH);
+		goButton.setIconPosition(IconPosition.LEFT);
+		goButton.setSize(ButtonSize.SMALL);
+		goButton.setTitle("Retrieve OID");
+		goButton.setPull(Pull.LEFT);
+		
+		programReleaseGrid.setWidget(0, 0, programPanel);
+		programReleaseGrid.setWidget(0, 1, releasePanel);
+		programReleaseGrid.setWidget(0, 2, goButton);
+		programReleaseGrid.setWidth("600px");
+		searchWidgetFormGroup.add(programReleaseGrid);
 
 		VerticalPanel namePanel = new VerticalPanel();
 		FormLabel nameLabel = new FormLabel();
@@ -956,7 +1000,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 		if(checkForEnable()){
 			versionListBox.setEnabled(false);
-			sWidget.getSearchBox().setTitle("Enter OID");
+			//TODO here
+			oidInput.setTitle("Enter OID");
 			nameInput.setTitle("Enter Name");
 			
 		}
@@ -1096,7 +1141,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 */
 	//@Override
 	public org.gwtbootstrap3.client.ui.Button getRetrieveFromVSACButton(){
-		return sWidget.getGo();
+		return goButton;
 	}
 	
 	/* (non-Javadoc)
@@ -1148,7 +1193,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 * @return the OID input
 	 */
 	public TextBox getOIDInput() {
-		return sWidget.getSearchBox();
+		return oidInput;
 	}
 	
 	/**

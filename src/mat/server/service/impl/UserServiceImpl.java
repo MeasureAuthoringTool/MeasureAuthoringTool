@@ -199,7 +199,7 @@ public class UserServiceImpl implements UserService {
 	public void notifyUserOfTemporaryPassword(User user, String newPassword) {
 		logger.info("In notifyUserOfTemporaryPassword(User user, String newPassword).....");
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
+		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
 		msg.setTo(user.getEmailAddress());
 		
 		String expiryDateString = getFormattedExpiryDate(new Date(),5);
@@ -208,6 +208,7 @@ public class UserServiceImpl implements UserService {
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
+		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_TEMP_PASSWORD, paramsMap);
 		System.out.println(text);
 		msg.setText(text);
@@ -417,13 +418,14 @@ public class UserServiceImpl implements UserService {
 	private void sendResetPassword(String email, String newPassword) {
 		logger.info("In sendResetPassword(String email, String newPassword)........" +newPassword);
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
+		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT + ServerConstants.getEnvName());
 		msg.setTo(email);
 		String expiryDateString = getFormattedExpiryDate(new Date(), 5);
 		//US 440. Re-factored to use template based framework
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
+		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD, paramsMap);
 		msg.setText(text);
 		logger.info("Sending email to " + email);
@@ -575,6 +577,7 @@ public class UserServiceImpl implements UserService {
 		msg.setSubject(ServerConstants.FORGOT_LOGINID_SUBJECT + ServerConstants.getEnvName());
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
+		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID, paramsMap);
 		msg.setTo(user.getEmailAddress());
 		msg.setText(text);

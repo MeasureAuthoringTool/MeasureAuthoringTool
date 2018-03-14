@@ -567,6 +567,23 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.addColumn(versionColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
 			
+			// Release Column
+			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLQualityDataSetDTO object) {
+					StringBuilder title = new StringBuilder();
+					String release = null;
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						title.append("Release : ").append(object.getRelease());
+						release = object.getRelease() != null ? object.getRelease() : "";
+					}
+					return CellTableUtility.getColumnToolTip(release, title.toString());
+				}
+			};
+			table.addColumn(releaseColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
+			
 			String colName = "";
 			// Edit Column
 			colName = "Edit";

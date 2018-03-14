@@ -87,6 +87,9 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	/** The version. */
 	private String version;
 	
+	/** The release. */
+	private String release;
+	
 	/** The data type has removed. */
 	private boolean dataTypeHasRemoved;
 	
@@ -231,6 +234,16 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	
 	
 	/**
+	 * Gets the release
+	 * 
+	 * @return the release
+	 */
+	public String getRelease() {
+		return release;
+	}
+
+
+	/**
 	 * Checks if is supp data element.
 	 * 
 	 * @return true, if is supp data element
@@ -352,6 +365,17 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 		this.version = version;
 	}
 	
+
+
+	/**
+	 * Sets the release
+	 * 
+	 * @param release
+	 * 			the new release
+	 */
+	public void setRelease(String release) {
+		this.release = release;
+	}
 	
 	/**
 	 * @return the dataTypeHasRemoved

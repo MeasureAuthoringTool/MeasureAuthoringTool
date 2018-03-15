@@ -610,12 +610,15 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				}
 			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
+			table.setWidth("100%", true);
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 17.0, Unit.PCT);
-			table.setColumnWidth(3, 2.0, Unit.PCT);
-			table.setColumnWidth(4, 2.0, Unit.PCT);
-			table.setColumnWidth(5, 2.0, Unit.PCT);
+			table.setColumnWidth(2, 14.0, Unit.PCT);
+			table.setColumnWidth(3, 14.0, Unit.PCT);
+			table.setColumnWidth(4, 7.0, Unit.PCT);
+			table.setColumnWidth(5, 8.0, Unit.PCT);
+			table.setColumnWidth(6, 7.0, Unit.PCT);
+			table.setStyleName("tableWrap");
 		}
 
 		return table;

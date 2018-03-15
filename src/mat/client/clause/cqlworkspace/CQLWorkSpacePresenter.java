@@ -4875,7 +4875,29 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
 			}
 		});
+		
+		searchDisplay.getValueSetView().getProgramListBox().addChangeHandler(new ChangeHandler() {
 
+			@Override
+			public void onChange(ChangeEvent event) {
+				searchDisplay.resetMessageDisplay();
+				boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+											&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+				searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+			}
+		});
+		
+		searchDisplay.getValueSetView().getReleaseListBox().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				searchDisplay.resetMessageDisplay();
+				boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+						&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+				searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+			}
+		});
+		
 		/**
 		 * value Change Handler for Version listBox in Search Panel
 		 */

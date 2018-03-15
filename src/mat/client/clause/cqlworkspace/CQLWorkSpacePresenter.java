@@ -4884,7 +4884,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				searchDisplay.resetMessageDisplay();
-
+				boolean versionNotSelectedEnableProgramReleaseFields = isListValueNotSelected(searchDisplay.getValueSetView().getVersionListBox().getSelectedValue());
+				searchDisplay.getValueSetView().getProgramListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
+				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
 			}
 		});
 
@@ -5446,12 +5448,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getValueSetView().getUserDefinedInput().setValue(valueSetName);
 					searchDisplay.getValueSetView().getUserDefinedInput().setTitle(valueSetName);
 
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
-
 					searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
-
 					getVSACVersionListByOID(oid);
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
+					
+					boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+							&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+					
 					showSearchingBusy(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate()
@@ -6142,6 +6145,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedValueSetTableList,
 				MatContext.get().getMeasureLockService().checkForEditPermission());
 		searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+	}
+	
+	private static final boolean isListValueNotSelected(String selectedValueFromList) {
+		return MatContext.PLEASE_SELECT.equals(selectedValueFromList) || selectedValueFromList == null || selectedValueFromList.isEmpty();
 	}
 
 }

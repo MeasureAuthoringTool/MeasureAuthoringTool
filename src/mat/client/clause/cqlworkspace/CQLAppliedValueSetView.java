@@ -1153,6 +1153,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return versionListBox;
 	}
 	
+	public ListBox getProgramListBox() {
+		return programListBox;
+	}
+	
+	public ListBox getReleaseListBox() {
+		return releaseListBox;
+	}
+	
 	/**
 	 * Gets the OID input.
 	 *

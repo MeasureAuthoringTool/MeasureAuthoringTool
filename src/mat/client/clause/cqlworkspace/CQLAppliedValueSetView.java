@@ -559,6 +559,23 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.addColumn(versionColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
 			
+			// Release Column
+			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLQualityDataSetDTO object) {
+					StringBuilder title = new StringBuilder();
+					String release = null;
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						title.append("Release : ").append(object.getRelease());
+						release = object.getRelease() != null ? object.getRelease() : "";
+					}
+					return CellTableUtility.getColumnToolTip(release, title.toString());
+				}
+			};
+			table.addColumn(releaseColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
+			
 			String colName = "";
 			// Edit Column
 			colName = "Edit";
@@ -593,12 +610,15 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				}
 			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
+			table.setWidth("100%", true);
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 17.0, Unit.PCT);
-			table.setColumnWidth(3, 2.0, Unit.PCT);
-			table.setColumnWidth(4, 2.0, Unit.PCT);
-			table.setColumnWidth(5, 2.0, Unit.PCT);
+			table.setColumnWidth(2, 14.0, Unit.PCT);
+			table.setColumnWidth(3, 14.0, Unit.PCT);
+			table.setColumnWidth(4, 7.0, Unit.PCT);
+			table.setColumnWidth(5, 8.0, Unit.PCT);
+			table.setColumnWidth(6, 7.0, Unit.PCT);
+			table.setStyleName("tableWrap");
 		}
 
 		return table;

@@ -1,10 +1,14 @@
 package mat.server.service.impl;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
 
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
@@ -82,19 +86,30 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				.getSecurityQuestionObj(newQuestion1);
 		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 		secQuestions.get(0).setSecurityQuestions(secQue1);
-		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
+		String salt1 = UUID.randomUUID().toString();
+		secQuestions.get(0).setSalt(salt1);
+		String answer1 = getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+		secQuestions.get(0).setSecurityAnswer(answer1);
+		
 		String newQuestion2 = model.getQuestion2();
 		SecurityQuestions secQue2 = securityQuestionsService
 				.getSecurityQuestionObj(newQuestion2);
 		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
 		secQuestions.get(1).setSecurityQuestions(secQue2);
-		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
+		String salt2 = UUID.randomUUID().toString();
+		secQuestions.get(1).setSalt(salt2);
+		String answer2 = getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+		secQuestions.get(1).setSecurityAnswer(answer2);
+		
 		String newQuestion3 = model.getQuestion3();
 		SecurityQuestions secQue3 = securityQuestionsService
 				.getSecurityQuestionObj(newQuestion3);
 		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 		secQuestions.get(2).setSecurityQuestions(secQue3);
-		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
+		String salt3 = UUID.randomUUID().toString();
+		secQuestions.get(2).setSalt(salt3);
+		String answer3 = getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+		secQuestions.get(2).setSecurityAnswer(answer3);
 		user.setSecurityQuestions(secQuestions);
 
 		userService.saveExisting(user);
@@ -111,6 +126,33 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		return result;
 	}
 
+	private String getSecurityQuestionHash(String salt, String planTextAnswer) {
+		String hashed = hash(salt + planTextAnswer);
+		return hashed;
+	}
+	
+	/**
+	 * Hash.
+	 * 
+	 * @param s
+	 *            the s
+	 * @return the string
+	 */
+	private String hash(String s) {
+		try {
+			if(s == null) {
+				s = "";
+			}
+			//MessageDigest m=MessageDigest.getInstance("MD5");
+			MessageDigest m=MessageDigest.getInstance("SHA-256");
+			m.update(s.getBytes(),0,s.length());
+			return new BigInteger(1,m.digest()).toString(16);
+		}
+		catch(NoSuchAlgorithmException exc) {
+			throw new RuntimeException(exc);
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see mat.server.service.LoginCredentialService#changeTempPassword(java.lang.String, java.lang.String)

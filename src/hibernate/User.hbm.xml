@@ -39,7 +39,7 @@
 		<index column="ROW_ID" type="integer"/>
 		<composite-element class="mat.model.UserSecurityQuestion">
 			 <many-to-one name="securityQuestions" class="mat.model.SecurityQuestions"
-   			 column="QUESTION_ID" unique="false" cascade="none" insert="false" update="false" />
+   			 column="QUESTION_ID" unique="false" cascade="all" insert="false" update="true" />
 			<property name="securityAnswer" column="ANSWER"/>
 		</composite-element>
 	</list>

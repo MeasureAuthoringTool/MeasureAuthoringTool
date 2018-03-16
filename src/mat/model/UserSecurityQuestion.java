@@ -19,8 +19,8 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 
 	private int id;
 
-	/** The user id. */
-	private String userId;
+	/** The user */
+	private User user;
 	
 	/** The row id. */
 	private String rowId;
@@ -34,6 +34,8 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 	/** The security questions. */
 	private SecurityQuestions securityQuestions;
 	
+	private String salt;
+
 	/**
 	 * Gets the security question id.
 	 * 
@@ -90,6 +92,10 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 		return id;
 	}
 	
+	public String getSalt() {
+		return salt;
+	}
+	
 	/**
 	 * Sets the row id.
 	 * 
@@ -135,8 +141,8 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 	 * 
 	 * @return the user id
 	 */
-	public String getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 	
 	/**
@@ -145,7 +151,12 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 	 * @param userId
 	 *            the new user id
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 }

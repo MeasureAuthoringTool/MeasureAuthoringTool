@@ -815,10 +815,10 @@ public class VSACApiServImpl implements VSACApiService{
 
 				} else {
 					
-					HashMap<String, List<String>> programToReleases = new HashMap<>();
+					Map<String, List<String>> programToReleases = new HashMap<>();
 					
 					for (String program : vsacResponseResult.getPgmRels()) {
-						programToReleases.put(program, getReleasesListForProfile(program));
+						programToReleases.put(program, getReleasesListForProgram(program));
 					}
 					
 					result.setProgramToReleases(programToReleases);
@@ -834,11 +834,11 @@ public class VSACApiServImpl implements VSACApiService{
 
 	}
 
-	private List<String> getReleasesListForProfile(String program) {
+	private List<String> getReleasesListForProgram(String programName) {
 		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
 		VSACResponseResult vsacResponseResult = null;
 		try {
-			vsacResponseResult = vGroovyClient.getReleasesOfProgram(program);
+			vsacResponseResult = vGroovyClient.getReleasesOfProgram(programName);
 		} catch (Exception ex) {
 			LOGGER.info("VSACAPIServiceImpl failed in method :: getProgramsList");
 		}

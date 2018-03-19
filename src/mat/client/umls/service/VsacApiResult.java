@@ -60,7 +60,7 @@ public class VsacApiResult implements IsSerializable {
 	private DirectReferenceCode directReferenceCode;
 	
 	//VSAC Programs and Releases 
-	private HashMap<String, List<String>> programToReleases = new HashMap<>();
+	private Map<String, List<String>> programToReleases = new HashMap<>();
 	
 	/**
 	 * Gets the failure reason.
@@ -198,7 +198,7 @@ public class VsacApiResult implements IsSerializable {
 	}
 
 	public void setProgramToReleases(Map<String, List<String>> programToReleases) {
-		this.programToReleases = (HashMap<String, List<String>>) programToReleases;
+		this.programToReleases = programToReleases;
 	}
 
 }

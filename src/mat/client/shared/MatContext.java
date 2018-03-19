@@ -19,8 +19,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
-// TODO: Auto-generated Javadoc
-//import mat.client.measure.AdminManageMeasureSearchView;
 
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
@@ -70,7 +68,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MatContext.
  */
@@ -172,11 +169,6 @@ public class MatContext implements IsSerializable {
 	/** The user role. */
 	private String userRole;
 	
-	
-	/** The zoom factor service. */
-//	private ZoomFactorService zoomFactorService = new ZoomFactorService();
-	
-	
 	/** The qds view. */
 	private QDSCodeListSearchView qdsView;
 	
@@ -188,20 +180,10 @@ public class MatContext implements IsSerializable {
 	
 	/** The manage measure search view. */
 	private ManageMeasureSearchView manageMeasureSearchView;
-	
-	/** The admin manage measure search view. */
-	//private AdminManageMeasureSearchView adminManageMeasureSearchView;
-	
+		
 	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
-	
-	/** The manage code list search view. */
-	//private ManageCodeListSearchView manageCodeListSearchView;
-	
-	/** The manage code list search model. */
-	//private AdminManageCodeListSearchModel manageCodeListSearchModel;
-	
-	
+		
 	/** The synchronization delegate. */
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
 	
@@ -282,11 +264,9 @@ public class MatContext implements IsSerializable {
 	/** The cql constant container. */
 	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 	
-	//private GlobalCopyPaste copyPaste;
-	
-	/*
-	 * POC Global Copy Paste.
-	 * public CellTreeNode copiedNode;*/
+	//VSAC Programs and Releases 
+	private HashMap<String, List<String>> programToReleases = new HashMap<>();
+
 	/**
 	 * Clear dvi messages.
 	 */
@@ -309,26 +289,6 @@ public class MatContext implements IsSerializable {
 			modifyQDMPopUpWidget.getErrorMessagePanel().clear();
 		}
 	}
-	
-	/**
-	 * Gets the admin manage measure search view.
-	 *
-	 * @param view the new QDS view
-	 * @return the admin manage measure search view
-	 */
-	/*public AdminManageMeasureSearchView getAdminManageMeasureSearchView() {
-		return adminManageMeasureSearchView;
-	}*/
-	
-	/**
-	 * Sets the admin manage measure search view.
-	 * 
-	 * @param view
-	 *            the new admin manage measure search view
-	 */
-	/*public void setAdminManageMeasureSearchView(AdminManageMeasureSearchView view){
-		adminManageMeasureSearchView=view;
-	}*/
 	
 	/**
 	 * Sets the qDS view.
@@ -357,9 +317,6 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
 	}
-	
-	//register the Value Set search messages
-	//register the property editor messages
 	
 	/**
 	 * Sets the error message1.
@@ -407,7 +364,6 @@ public class MatContext implements IsSerializable {
 		this.userEmail = userEmail;
 		this.userRole = userRole;
 		this.loginId=loginId;
-		//setUserSignInDate(userId);
 	}
 	
 	/**
@@ -519,39 +475,6 @@ public class MatContext implements IsSerializable {
 	public LoginServiceAsync getLoginService(){
 		if(loginService == null){
 			loginService = (LoginServiceAsync) GWT.create(LoginService.class);
-			/*ServiceDefTarget target = (ServiceDefTarget) loginService;
-			RpcRequestBuilder reqBuilder = new RpcRequestBuilder() {
-				@Override
-				protected RequestBuilder doCreate(String serviceEntryPoint) {
-					RequestBuilder rb = super.doCreate(serviceEntryPoint);
-					rb.setHeader("HEADER_SIGNATURE", "your token");
-					return rb;
-				}
-				@Override
-				protected void doSetCallback(final RequestBuilder rb, final RequestCallback callback) {
-					// TODO Auto-generated method stub
-					super.doSetCallback(rb, new RequestCallback() {
-						
-						@Override
-						public void onResponseReceived(Request request, Response response) {
-							// TODO Auto-generated method stub
-							String headerValue = response.getHeader("Set-Cookie");
-							Window.alert(headerValue);
-							rb.setHeader("Set-Cookie", "Secure;HttpOnly");
-							Window.alert("new header :"+rb.getHeader("Set-Cookie"));
-							// do sth...
-							callback.onResponseReceived(request, response);
-						}
-						
-						@Override
-						public void onError(Request request, Throwable exception) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-				}
-			};
-			target.setRpcRequestBuilder(reqBuilder);*/
 		}
 		return loginService;
 	}
@@ -1016,7 +939,6 @@ public class MatContext implements IsSerializable {
 		path=path.substring(0, path.lastIndexOf('/'));
 		path += html;
 		urlBuilder.setPath(path);
-		//		Window.open(urlBuilder.buildString(),"_self",windowFeatures);
 		Window.open(urlBuilder.buildString(),"_blank",windowFeatures);
 	}
 	
@@ -1055,7 +977,6 @@ public class MatContext implements IsSerializable {
 	 * @param visible Widget's rendering status
 	 */
 	public void setVisible(Widget widget, Boolean visible){
-		// TODO likely we will change this invocation
 		widget.setVisible(visible);
 		// disable the widget, maybe best to check if this is a FocusWidget and make an explicit setEnabled call
 		DOM.setElementPropertyBoolean(widget.getElement(), "disabled", !visible);
@@ -1068,15 +989,6 @@ public class MatContext implements IsSerializable {
 	
 	/** The tab registry. */
 	public HashMap tabRegistry = new HashMap<String, TabPanel>();
-	
-	/**
-	 * Gets the zoom factor service.
-	 * 
-	 * @return the zoom factor service
-	 */
-	/*public ZoomFactorService getZoomFactorService(){
-		return zoomFactorService;
-	}*/
 	
 	/**
 	 * Gets the current measure info.
@@ -1532,28 +1444,6 @@ public class MatContext implements IsSerializable {
 		this.errorTabIndex = errorTabIndex;
 	}
 	
-	
-	/**
-	 * Sets the manage code list search view.
-	 *
-	 * @param activityType the activity type
-	 * @param isRedirect the is redirect
-	 */
-	//	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
-	//		this.manageCodeListSearchView = manageCodeListSearchView;
-	//	}
-	//
-	//
-	//	/**
-	//	 * Gets the manage code list search view.
-	//	 *
-	//	 * @return the manageCodeListSearchView
-	//	 */
-	//	public ManageCodeListSearchView getManageCodeListSearchView() {
-	//		return manageCodeListSearchView;
-	//	}
-	
-	
 	/**
 	 * Method is called on SignOut/ X out / Time Out.
 	 * 
@@ -1663,33 +1553,6 @@ public class MatContext implements IsSerializable {
 	}
 	
 	/**
-	 * Gets the all profile list.
-	 *
-	 * @return the all profile list
-	 */
-	/*public void getAllExpProfileList(){
-		vsacapiServiceAsync
-		.getAllExpProfileList(new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onSuccess(
-					VsacApiResult result) {
-				if (result.getVsacExpProfileResp() != null) {
-					vsacExpProfileList = result.getVsacExpProfileResp();
-					expProfileList = getExpProfileList(result.getVsacExpProfileResp());
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-			}
-		});
-	}*/
-	
-	
-	
-	/**
 	 * Sets the modify qdm pop up widget.
 	 * 
 	 * @param modifyQDMPopUpWidget
@@ -1763,29 +1626,6 @@ public class MatContext implements IsSerializable {
 		return allowedPopulationsInPackage;
 	}
 	
-	/**
-	 * Gets the profile list.
-	 *
-	 * @param list the list
-	 * @return the copiedNode
-	 */
-	/*
-	 * POC Global Copy Paste
-	 * public CellTreeNode getCopiedNode() {
-		return copiedNode;
-	}*/
-	
-	
-	
-	
-	/**
-	 * @param copiedNode the copiedNode to set
-	 */
-	/*
-	 * POC GLobal Copy Paste.
-	 * public void setCopiedNode(CellTreeNode copiedNode) {
-		this.copiedNode = copiedNode;
-	}*/
 	private List<String> getExpProfileList(List<VSACExpansionProfile> list) {
 		List<String> expProfile = new ArrayList<String>();
 		for (int i = 0; i < list.size(); i++) {
@@ -2323,5 +2163,16 @@ public class MatContext implements IsSerializable {
 		}
 		
 		return populationService; 
-	}	
+	}
+
+	public Map<String, List<String>> getProgramToReleases() {
+		return programToReleases;
+	}
+
+
+	public void setProgramToReleases(Map<String, List<String>> programToReleases) {
+		this.programToReleases = (HashMap<String, List<String>>) programToReleases;
+	}
+
+	
 }

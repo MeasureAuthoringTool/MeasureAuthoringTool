@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -3689,6 +3690,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView().getPasteButton()
 					.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 			buildAppliedQDMTable();
+			//On load of Value Sets page, set the program and releases from VSAC 
+			getProgramsAndReleases();			
 		}
 
 		searchDisplay.getValueSetView().setHeading("CQL Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
@@ -5393,6 +5396,39 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * MAT-8977. 
+	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
+	 * the first time the value sets page is loaded.
+	 * If the values have been loaded previously, no calls are made.
+	 */
+	private void getProgramsAndReleases() {
+
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+		
+		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
+			//Get the program and releases from VSAC using REST
+			vsacapiService.getVSACProgramsAndReleases(new AsyncCallback<VsacApiResult>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					showSearchingBusy(false);
+				}
+
+				@Override
+				public void onSuccess(VsacApiResult result) {
+					if(result != null) {
+						//set the values in the MatContext
+						MatContext.get().setProgramToReleases(result.getProgramToReleases());					
+					}
+					
+				}
+			});
+
+		}		
+		
+	}
+	
 	/**
 	 * Search value set in vsac.
 	 *

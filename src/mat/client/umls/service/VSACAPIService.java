@@ -47,6 +47,8 @@ public interface VSACAPIService extends RemoteService {
 
 	VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId);
 
-	VsacApiResult getDirectReferenceCode(String url); 
+	VsacApiResult getDirectReferenceCode(String url);
+
+	VsacApiResult getVSACProgramsAndReleases();
 	
 }

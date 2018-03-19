@@ -3,6 +3,9 @@ package mat.client.umls.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.DirectReferenceCode;
 import mat.model.MatValueSet;
@@ -10,8 +13,6 @@ import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.model.cql.CQLQualityDataSetDTO;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 /**
@@ -57,6 +58,9 @@ public class VsacApiResult implements IsSerializable {
 	private HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> cqlQualityDataSetMap;
 	
 	private DirectReferenceCode directReferenceCode;
+	
+	//VSAC Programs and Releases 
+	private HashMap<String, List<String>> programToReleases = new HashMap<>();
 	
 	/**
 	 * Gets the failure reason.
@@ -188,5 +192,13 @@ public class VsacApiResult implements IsSerializable {
 	public void setDirectReferenceCode(DirectReferenceCode directReferenceCode) {
 		this.directReferenceCode = directReferenceCode;
 	}
-	
+
+	public Map<String, List<String>> getProgramToReleases() {
+		return programToReleases;
+	}
+
+	public void setProgramToReleases(Map<String, List<String>> programToReleases) {
+		this.programToReleases = (HashMap<String, List<String>>) programToReleases;
+	}
+
 }

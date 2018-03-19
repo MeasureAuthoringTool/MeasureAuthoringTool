@@ -27,7 +27,6 @@ import mat.dao.DataTypeDAO;
 import mat.model.DataType;
 import mat.model.DirectReferenceCode;
 import mat.model.MatValueSet;
-import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfileWrapper;
 import mat.model.VSACValueSetWrapper;
@@ -780,44 +779,6 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 
 	/**
-	 * Gets the default expansion id from Mat.properties file
-	 *
-	 * @return the default expansion id
-	 */
-	/*private String getDefaultExpansionId(){
-		String defaultExpansionId = null;
-		Properties prop = new Properties();
-		InputStream input = null;
-		try {
-			
-			String filename = "Mat.properties";
-			input = VSACAPIServiceImpl.class.getClassLoader().getResourceAsStream(filename);
-			if(input == null){
-				System.out.println("Could'nt find the file " + filename);
-				return null;
-			}
-			
-			//load a properties file from class path, inside static method
-			prop.load(input);
-			
-			defaultExpansionId = prop.getProperty("mat.qdm.default.expansion.id");
-			
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally{
-			if(input!=null){
-				try {
-					input.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		
-		return defaultExpansionId;
-	}*/
-	/**
 	 * MeasureLibrary Service Object.
 	 * @return MeasureLibraryService.
 	 * */
@@ -831,6 +792,57 @@ public class VSACApiServImpl implements VSACApiService{
 	 * */
 	public final CQLLibraryService getLibraryService() {
 		return (CQLLibraryService) context.getBean("cqlLibraryService");
+	}
+
+	@Override
+	public VsacApiResult getVSACProgramsAndReleases() {
+
+		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
+		VsacApiResult result = new VsacApiResult();
+		
+		try {		
+			
+			VSACResponseResult vsacResponseResult = vGroovyClient.getAllPrograms();
+			
+			if(vsacResponseResult != null && vsacResponseResult.getPgmRels() != null) {				
+				if (vsacResponseResult.getIsFailResponse()
+						&& (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
+					LOGGER.info("Program List retrieval failed at VSAC with Failure Reason: "
+							+ vsacResponseResult.getFailReason());
+					result.setSuccess(false);
+					result.setFailureReason(vsacResponseResult.getFailReason());
+					return result;
+
+				} else {
+					
+					Map<String, List<String>> programToReleases = new HashMap<>();
+					
+					for (String program : vsacResponseResult.getPgmRels()) {
+						programToReleases.put(program, getReleasesListForProgram(program));
+					}
+					
+					result.setProgramToReleases(programToReleases);
+				}
+
+			}				
+
+		} catch (Exception ex) {
+			LOGGER.info("VSACAPIServiceImpl failed in method :: getProgramsList");
+		}
+
+		return result;
+
+	}
+
+	private List<String> getReleasesListForProgram(String programName) {
+		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
+		VSACResponseResult vsacResponseResult = null;
+		try {
+			vsacResponseResult = vGroovyClient.getReleasesOfProgram(programName);
+		} catch (Exception ex) {
+			LOGGER.info("VSACAPIServiceImpl failed in method :: getProgramsList");
+		}
+		return vsacResponseResult != null ? vsacResponseResult.getPgmRels() : null;
 	}
 
 

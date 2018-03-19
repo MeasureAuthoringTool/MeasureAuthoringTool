@@ -6,7 +6,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.cql.CQLQualityDataSetDTO;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureLibraryService.
  */
@@ -28,4 +27,7 @@ public interface VSACApiService {
 			String sessionId);
 
 	VsacApiResult getDirectReferenceCode(String oid, String sessionId);
+	
+	VsacApiResult getVSACProgramsAndReleases();
+	
 }

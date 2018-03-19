@@ -2841,6 +2841,9 @@ public class CQLServiceImpl implements CQLService {
 		qds.setCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
 		qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
 		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
+		qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
+		qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
+
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -2938,7 +2941,10 @@ public class CQLServiceImpl implements CQLService {
 				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setVersion("1.0");
+				qds.setRelease("");
+				qds.setProgram("");
 				wrapper.getQualityDataDTO().add(qds);
+				
 				String qdmXMLString = generateXmlForAppliedValueset(wrapper);
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));

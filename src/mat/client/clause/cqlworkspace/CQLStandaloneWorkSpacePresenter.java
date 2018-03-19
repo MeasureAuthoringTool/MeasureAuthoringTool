@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
@@ -514,7 +515,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		CQLView getViewCQLView();
 
 		void setGeneralInfoHeading();
-
+		
+		HelpBlock getHelpBlock();
 	}
 
 	/**
@@ -4156,7 +4158,33 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
-			/**
+		searchDisplay.getValueSetView().getProgramListBox().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				searchDisplay.resetMessageDisplay();
+				boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+											&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+				searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+				searchDisplay.getHelpBlock().setColor("transparent");
+				searchDisplay.getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
+			}
+		});
+		
+		searchDisplay.getValueSetView().getReleaseListBox().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				searchDisplay.resetMessageDisplay();
+				boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+						&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+				searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+				searchDisplay.getHelpBlock().setColor("transparent");
+				searchDisplay.getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
+			}
+		});
+		
+		/**
 		 * value Change Handler for Version listBox in Search Panel
 		 */
 		searchDisplay.getValueSetView().getVersionListBox().addChangeHandler(new ChangeHandler() {
@@ -4789,11 +4817,14 @@ private void addCodeSearchPanelHandlers() {
 							.setValue(matValueSets.get(0).getDisplayName());
 					searchDisplay.getValueSetView().getUserDefinedInput()
 							.setTitle(matValueSets.get(0).getDisplayName());
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
 
 					searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
 					getVSACVersionListByOID(oid);
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
+					boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+							&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+					searchDisplay.getHelpBlock().setColor("transparent");
+					searchDisplay.getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
 					
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getValuesetSuccessfulReterivalMessage(matValueSets.get(0).getDisplayName()));
@@ -6178,4 +6209,7 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 	}
 
+	private static final boolean isListValueNotSelected(String selectedValueFromList) {
+		return MatContext.PLEASE_SELECT.equals(selectedValueFromList) || selectedValueFromList == null || selectedValueFromList.isEmpty();
+	}
 }

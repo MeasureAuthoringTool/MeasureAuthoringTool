@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import java.util.List;
 import java.util.Map;
 
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.InlineRadio;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
@@ -75,6 +76,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	
 	private HorizontalPanel lockedButtonHPanel = new HorizontalPanel();
 	
+	private HelpBlock helpBlock = new HelpBlock();
 	/**
 	 * Instantiates a new CQL standalone work space view.
 	 */
@@ -756,4 +758,12 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		Mat.focusSkipLists("CqlComposer");
 	}
 
+	@Override
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+
+	public void setHelpBlock(HelpBlock helpBlock) {
+		this.helpBlock = helpBlock;
+	}
 }

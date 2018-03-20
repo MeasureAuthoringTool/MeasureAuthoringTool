@@ -41,6 +41,7 @@
 			 <many-to-one name="securityQuestions" class="mat.model.SecurityQuestions"
    			 column="QUESTION_ID" unique="false" cascade="all" insert="false" update="true" />
 			<property name="securityAnswer" column="ANSWER"/>
+			<property name="salt" column="SALT"/>
 		</composite-element>
 	</list>
 	<set name="passwordHistory" table="USER_PASSWORD_HISTORY" cascade="all-delete-orphan" 

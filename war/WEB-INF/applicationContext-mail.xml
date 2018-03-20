@@ -10,7 +10,7 @@
 >
 	
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="mail.ifmc.org"/>
+        <property name="host" value="dmcorpmail01.telligen.us"/>
     </bean>
     
     <!-- this is a template message that we can pre-load with default state -->

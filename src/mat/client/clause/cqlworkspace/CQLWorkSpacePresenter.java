@@ -154,6 +154,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean isFormatable = true;
 	
 	
+<<<<<<< HEAD
 	private boolean isProgramListBoxEnabled = true; 
 	private boolean isReleaseListBoxEnabled = false;
 	private boolean isRetrieveButtonEnabled = true; 
@@ -165,6 +166,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean previousIsRetrieveButtonEnabled = true; 
 	private boolean previousIsVersionListBoxEnabled; 
 	private boolean previousIsApplyButtonEnabled = false; 
+=======
+	private boolean isProgramListBoxEnabled; 
+	private boolean isReleaseListBoxEnabled;
+	private boolean isRetrieveButtonEnabled; 
+	private boolean isVersionListBoxEnabled; 
+	private boolean isApplyButtonEnabled; 
+	
+	private boolean previousIsProgramListBoxEnabled; 
+	private boolean previousIsReleaseListBoxEnabled;
+	private boolean previousIsRetrieveButtonEnabled; 
+	private boolean previousIsVersionListBoxEnabled; 
+	private boolean previousIsApplyButtonEnabled; 
+>>>>>>> c38f4f4d9a08640076fc4813b3700e1f8af51854
 
 	/**
 	 * The Interface ViewDisplay.

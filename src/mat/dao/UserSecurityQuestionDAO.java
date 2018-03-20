@@ -1,6 +1,5 @@
 package mat.dao;
 
-import mat.model.User;
 import mat.model.UserSecurityQuestion;
 
 /**
@@ -8,5 +7,4 @@ import mat.model.UserSecurityQuestion;
  */
 public interface UserSecurityQuestionDAO extends IDAO<UserSecurityQuestion, String> {
 
-	void saveSecurityQuestions(UserSecurityQuestion userSecurityQuestion, User user);
 }

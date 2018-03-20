@@ -126,8 +126,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		return result;
 	}
 
-	private String getSecurityQuestionHash(String salt, String planTextAnswer) {
-		String hashed = hash(salt + planTextAnswer);
+	private String getSecurityQuestionHash(String salt, String plainTextAnswer) {
+		String hashed = hash(salt + plainTextAnswer.toUpperCase());
 		return hashed;
 	}
 	

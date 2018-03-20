@@ -16,7 +16,6 @@ import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.dao.UserDAO;
-import mat.dao.UserSecurityQuestionDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
@@ -189,8 +188,7 @@ MyAccountService {
 			result.setSuccess(false);
 			result.setMessages(sverifier.getMessages());
 			result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
-		}
-		else {
+		} else {
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 			List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
@@ -198,9 +196,7 @@ MyAccountService {
 				UserSecurityQuestion newQuestion = new UserSecurityQuestion();
 				secQuestions.add(newQuestion);
 			}
-			
-			UserSecurityQuestionDAO userSecurityQuestionDAO = (UserSecurityQuestionDAO)context.getBean("userSecurityQuestionDAO");
-			
+						
 			String newQuestion1 = model.getQuestion1();
 			SecurityQuestions secQue1 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion1);
 			secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
@@ -210,7 +206,6 @@ MyAccountService {
 			String answer1 = getSecurityQuestionHash(salt1, model.getQuestion1Answer());
 			secQuestions.get(0).setSecurityAnswer(answer1);
 			secQuestions.get(0).setRowId("0");
-			userSecurityQuestionDAO.saveSecurityQuestions(secQuestions.get(0), user);
 			
 			String newQuestion2 = model.getQuestion2();
 			SecurityQuestions secQue2 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion2);
@@ -221,7 +216,6 @@ MyAccountService {
 			String answer2 = getSecurityQuestionHash(salt2, model.getQuestion2Answer());
 			secQuestions.get(1).setSecurityAnswer(answer2);
 			secQuestions.get(1).setRowId("1");
-			userSecurityQuestionDAO.saveSecurityQuestions(secQuestions.get(1), user);
 			
 			String newQuestion3 = model.getQuestion3();
 			SecurityQuestions secQue3 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion3);
@@ -232,12 +226,10 @@ MyAccountService {
 			String answer3 = getSecurityQuestionHash(salt3, model.getQuestion3Answer());
 			secQuestions.get(2).setSecurityAnswer(answer3);
 			secQuestions.get(2).setRowId("2");
-			userSecurityQuestionDAO.saveSecurityQuestions(secQuestions.get(2), user);
 			
 			user.setUserSecurityQuestions(secQuestions);
 			
-			
-			//userService.saveExisting(user);
+			userService.saveExisting(user);
 
 			result.setSuccess(true);
 		}
@@ -245,8 +237,8 @@ MyAccountService {
 	}
 	
 	
-	private String getSecurityQuestionHash(String salt, String planTextAnswer) {
-		String hashed = hash(salt + planTextAnswer);
+	private String getSecurityQuestionHash(String salt, String plainTextAnswer) {
+		String hashed = hash(salt + plainTextAnswer.toUpperCase());
 		return hashed;
 	}
 	

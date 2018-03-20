@@ -256,8 +256,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		FormGroup messageFormGroup = new FormGroup(); 
 		messageFormGroup.add(helpBlock);
+		messageFormGroup.getElement().setAttribute("role", "alert");
 		helpBlock.setColor("transparent");
 		helpBlock.setHeight("0px");
+		
+		searchPanelBody.add(messageFormGroup);
 		
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");

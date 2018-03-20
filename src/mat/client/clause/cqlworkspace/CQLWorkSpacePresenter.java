@@ -154,17 +154,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean isFormatable = true;
 	
 	
-	private boolean isProgramListBoxEnabled; 
-	private boolean isReleaseListBoxEnabled;
-	private boolean isRetrieveButtonEnabled; 
+	private boolean isProgramListBoxEnabled = true; 
+	private boolean isReleaseListBoxEnabled = false;
+	private boolean isRetrieveButtonEnabled = true; 
 	private boolean isVersionListBoxEnabled; 
-	private boolean isApplyButtonEnabled; 
+	private boolean isApplyButtonEnabled = false; 
 	
-	private boolean previousIsProgramListBoxEnabled; 
-	private boolean previousIsReleaseListBoxEnabled;
-	private boolean previousIsRetrieveButtonEnabled; 
+	private boolean previousIsProgramListBoxEnabled = true; 
+	private boolean previousIsReleaseListBoxEnabled = false;
+	private boolean previousIsRetrieveButtonEnabled = true; 
 	private boolean previousIsVersionListBoxEnabled; 
-	private boolean previousIsApplyButtonEnabled; 
+	private boolean previousIsApplyButtonEnabled = false; 
 
 	/**
 	 * The Interface ViewDisplay.
@@ -4859,6 +4859,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 				// 508 compliance for Value Sets
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
+				
+				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+				isProgramListBoxEnabled = true; 
+				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				isReleaseListBoxEnabled = false; 
+				alert508StateChanges();
 			}
 		});
 
@@ -4981,10 +4987,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	private void enabelOrDisableVersionListBoxBasedOnProgramReleaseListBoxes() {
 		searchDisplay.resetMessageDisplay();
-		boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+		previousIsVersionListBoxEnabled = isVersionListBoxEnabled; 
+		isVersionListBoxEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
 									&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
-		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
-		searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
+		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionListBoxEnabled);
 	}
 	
 	private void enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes() {
@@ -5033,6 +5039,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if(isProgramListBoxEnabled != previousIsProgramListBoxEnabled) {
 			helpTextBuilder.append("Program List Box has been ".concat(Boolean.TRUE.equals(isReleaseListBoxEnabled) ? "enabled" : "disabled"));
 		}	
+		
+		if(isVersionListBoxEnabled != previousIsVersionListBoxEnabled) {
+			helpTextBuilder.append("Version List Box has been ".concat(Boolean.TRUE.equals(isVersionListBoxEnabled) ? "enabled" : "disabled"));
+		}
+		
+		if(isRetrieveButtonEnabled != previousIsRetrieveButtonEnabled) {
+			helpTextBuilder.append("Retrieve Button has been ".concat(Boolean.TRUE.equals(isVersionListBoxEnabled) ? "enabled" : "disabled"));
+		}
 		
 		searchDisplay.getValueSetView().getHelpBlock().setText(helpTextBuilder.toString());
 	}

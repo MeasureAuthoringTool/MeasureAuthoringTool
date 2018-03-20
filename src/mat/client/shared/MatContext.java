@@ -19,9 +19,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
-// TODO: Auto-generated Javadoc
-//import mat.client.measure.AdminManageMeasureSearchView;
-
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -70,7 +67,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MatContext.
  */
@@ -519,39 +515,6 @@ public class MatContext implements IsSerializable {
 	public LoginServiceAsync getLoginService(){
 		if(loginService == null){
 			loginService = (LoginServiceAsync) GWT.create(LoginService.class);
-			/*ServiceDefTarget target = (ServiceDefTarget) loginService;
-			RpcRequestBuilder reqBuilder = new RpcRequestBuilder() {
-				@Override
-				protected RequestBuilder doCreate(String serviceEntryPoint) {
-					RequestBuilder rb = super.doCreate(serviceEntryPoint);
-					rb.setHeader("HEADER_SIGNATURE", "your token");
-					return rb;
-				}
-				@Override
-				protected void doSetCallback(final RequestBuilder rb, final RequestCallback callback) {
-					// TODO Auto-generated method stub
-					super.doSetCallback(rb, new RequestCallback() {
-						
-						@Override
-						public void onResponseReceived(Request request, Response response) {
-							// TODO Auto-generated method stub
-							String headerValue = response.getHeader("Set-Cookie");
-							Window.alert(headerValue);
-							rb.setHeader("Set-Cookie", "Secure;HttpOnly");
-							Window.alert("new header :"+rb.getHeader("Set-Cookie"));
-							// do sth...
-							callback.onResponseReceived(request, response);
-						}
-						
-						@Override
-						public void onError(Request request, Throwable exception) {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-				}
-			};
-			target.setRpcRequestBuilder(reqBuilder);*/
 		}
 		return loginService;
 	}
@@ -1662,31 +1625,6 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
-	/**
-	 * Gets the all profile list.
-	 *
-	 * @return the all profile list
-	 */
-	/*public void getAllExpProfileList(){
-		vsacapiServiceAsync
-		.getAllExpProfileList(new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onSuccess(
-					VsacApiResult result) {
-				if (result.getVsacExpProfileResp() != null) {
-					vsacExpProfileList = result.getVsacExpProfileResp();
-					expProfileList = getExpProfileList(result.getVsacExpProfileResp());
-				}
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-			}
-		});
-	}*/
-	
 	
 	
 	/**
@@ -1761,39 +1699,7 @@ public class MatContext implements IsSerializable {
 		allowedPopulationsInPackage.add("numerator");
 		allowedPopulationsInPackage.add("numeratorExclusions");
 		return allowedPopulationsInPackage;
-	}
-	
-	/**
-	 * Gets the profile list.
-	 *
-	 * @param list the list
-	 * @return the copiedNode
-	 */
-	/*
-	 * POC Global Copy Paste
-	 * public CellTreeNode getCopiedNode() {
-		return copiedNode;
-	}*/
-	
-	
-	
-	
-	/**
-	 * @param copiedNode the copiedNode to set
-	 */
-	/*
-	 * POC GLobal Copy Paste.
-	 * public void setCopiedNode(CellTreeNode copiedNode) {
-		this.copiedNode = copiedNode;
-	}*/
-	private List<String> getExpProfileList(List<VSACExpansionProfile> list) {
-		List<String> expProfile = new ArrayList<String>();
-		for (int i = 0; i < list.size(); i++) {
-			expProfile.add(list.get(i).getName());
-		}
-		return expProfile;
-	}
-	
+	}	
 	
 	
 	/**

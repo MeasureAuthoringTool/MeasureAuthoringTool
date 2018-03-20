@@ -73,7 +73,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		userService.setUserPassword(user, model.getPassword(), false);
 		user.getPassword().setInitial(false);
 		logger.info("Saving security questions");
-		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+		List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 //		for (UserSecurityQuestion question: secQuestions) {
 //			logger.info("Question ID: " +  question.getSecurityQuestionId()  + "Question Answer: " + question.getSecurityAnswer());
 //		}
@@ -110,7 +110,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		secQuestions.get(2).setSalt(salt3);
 		String answer3 = getSecurityQuestionHash(salt3, model.getQuestion3Answer());
 		secQuestions.get(2).setSecurityAnswer(answer3);
-		user.setSecurityQuestions(secQuestions);
+		user.setUserSecurityQuestions(secQuestions);
 
 		userService.saveExisting(user);
 		MatUserDetails userDetails = (MatUserDetails) hibernateUserService

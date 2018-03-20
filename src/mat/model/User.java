@@ -74,7 +74,7 @@ public class User  {
 	private SecurityRole securityRole;	
 	
 	/** The security questions. */
-	private List<UserSecurityQuestion> securityQuestions = new ArrayList<UserSecurityQuestion>();
+	private List<UserSecurityQuestion> userSecurityQuestions = new ArrayList<UserSecurityQuestion>();
 	
 	/** The measure shares. */
 	private Set<MeasureShare> measureShares = new HashSet<MeasureShare>();
@@ -414,8 +414,8 @@ public class User  {
 	 * 
 	 * @return the security questions
 	 */
-	public List<UserSecurityQuestion> getSecurityQuestions() {
-		return securityQuestions;
+	public List<UserSecurityQuestion> getUserSecurityQuestions() {
+		return userSecurityQuestions;
 	}
 	
 	/**
@@ -424,8 +424,8 @@ public class User  {
 	 * @param securityQuestions
 	 *            the new security questions
 	 */
-	public void setSecurityQuestions(List<UserSecurityQuestion> securityQuestions) {
-		this.securityQuestions = securityQuestions;
+	public void setUserSecurityQuestions(List<UserSecurityQuestion> securityQuestions) {
+		this.userSecurityQuestions = securityQuestions;
 	}			
 	
 	/**

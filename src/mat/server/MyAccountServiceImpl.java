@@ -8,7 +8,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
-import mat.client.admin.service.SaveUpdateUserResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
@@ -19,16 +21,11 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
-import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The server side implementation of the RPC service.
@@ -78,12 +75,7 @@ MyAccountService {
 		user.setLastName(model.getLastName());
 		user.setEmailAddress(model.getEmailAddress());
 		user.setPhoneNumber(model.getPhoneNumber());
-		user.setTitle(model.getTitle());
-		//user.setOrganizationName(model.getOrganisation());
-		//user.setOrgOID(model.getOid());
-		//user.setRootOID(model.getRootoid());
-		//user.setLoginId(model.getLoginId());
-		
+		user.setTitle(model.getTitle());	
 	}
 	
 	/**
@@ -161,7 +153,7 @@ MyAccountService {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 		System.out.println("User ID in MyAccountServiceImpl is:::" + user.getLoginId());
-		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+		List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 		
 		SecurityQuestionsModel model = new SecurityQuestionsModel();
 		if(secQuestions.size() > 0) {
@@ -201,7 +193,7 @@ MyAccountService {
 		else {
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-			List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+			List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 			while(secQuestions.size() < 3) {
 				UserSecurityQuestion newQuestion = new UserSecurityQuestion();
 				secQuestions.add(newQuestion);
@@ -242,7 +234,7 @@ MyAccountService {
 			secQuestions.get(2).setRowId("2");
 			userSecurityQuestionDAO.saveSecurityQuestions(secQuestions.get(2), user);
 			
-			user.setSecurityQuestions(secQuestions);
+			user.setUserSecurityQuestions(secQuestions);
 			
 			
 			//userService.saveExisting(user);
@@ -326,7 +318,7 @@ MyAccountService {
 	 * Call check dictionary word in password.
 	 * 
 	 * @param changedpassword
-	 *            the changedpassword
+	 * 
 	 * @return the string
 	 */
 	private String callCheckDictionaryWordInPassword(String changedpassword){
@@ -353,20 +345,7 @@ MyAccountService {
 		
 		
 	}
-	/**
-	 * Escape an html string. Escaping data received from the client helps to
-	 * prevent cross-site script vulnerabilities.
-	 * 
-	 * @param html the html string to escape
-	 * @return the escaped string
-	 */
-	private String escapeHtml(String html) {
-		if (html == null) {
-			return null;
-		}
-		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;");
-	}
+
 	//US212
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.service.MyAccountService#setUserSignInDate(java.lang.String)

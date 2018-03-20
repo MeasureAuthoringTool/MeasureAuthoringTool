@@ -281,7 +281,7 @@ public class UserServiceImpl implements UserService {
 		if(user == null) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 		}
-		else if(user.getSecurityQuestions().size() != 3) {
+		else if(user.getUserSecurityQuestions().size() != 3) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_NOT_SET);
 		}
 		else if(user.getLockedOutDate() != null) {
@@ -397,7 +397,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	private boolean securityQuestionMatch(User user,
 			String securityQuestion, String securityAnswer) {
-		for(UserSecurityQuestion usq : user.getSecurityQuestions()) {
+		for(UserSecurityQuestion usq : user.getUserSecurityQuestions()) {
 			if(securityQuestion.equalsIgnoreCase(usq.getSecurityQuestions().getQuestion()) &&
 					securityAnswer.equalsIgnoreCase(usq.getSecurityAnswer())) {
 				return true;
@@ -658,7 +658,7 @@ public class UserServiceImpl implements UserService {
 		options.setSecurityQuestions(new ArrayList<NameValuePair>());
 		if(user != null) {
 			options.setUserFound(true);
-			for(UserSecurityQuestion q : user.getSecurityQuestions()) {
+			for(UserSecurityQuestion q : user.getUserSecurityQuestions()) {
 				NameValuePair nvp =
 						new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
 				options.getSecurityQuestions().add(nvp);
@@ -680,7 +680,7 @@ public class UserServiceImpl implements UserService {
 		options.setSecurityQuestions(new ArrayList<NameValuePair>());
 		if(user != null) {
 			options.setUserFound(true);
-			for(UserSecurityQuestion q : user.getSecurityQuestions()) {
+			for(UserSecurityQuestion q : user.getUserSecurityQuestions()) {
 				NameValuePair nvp =
 						new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
 				options.getSecurityQuestions().add(nvp);

@@ -543,7 +543,7 @@ LoginService {
 		UserService userService = (UserService) context.getBean("userService");
 		User user = userService.getById(userID);
 		List<UserSecurityQuestion> secQuestions = new ArrayList<UserSecurityQuestion>(
-				user.getSecurityQuestions());
+				user.getUserSecurityQuestions());
 		logger.info("secQuestions Length " + secQuestions.size());
 		return secQuestions;
 	}

@@ -34,7 +34,7 @@
 		class="mat.model.AuditLog" unique="true" cascade="all" />
 	<many-to-one name="securityRole" column="SECURITY_ROLE_ID"
 		class="mat.model.SecurityRole" unique="false" lazy="false" cascade="none" />
-	<list name="securityQuestions" table="USER_SECURITY_QUESTIONS" cascade="all-delete-orphan">
+	<list name="userSecurityQuestions" table="USER_SECURITY_QUESTIONS" cascade="all-delete-orphan">
 		<key column="USER_ID" not-null="true" update="false"/>
 		<index column="ROW_ID" type="integer"/>
 		<composite-element class="mat.model.UserSecurityQuestion">

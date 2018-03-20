@@ -6,7 +6,6 @@ import mat.model.BaseModel;
 import mat.model.SecurityRole;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class LoginModel.
  */

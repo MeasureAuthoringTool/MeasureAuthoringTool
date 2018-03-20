@@ -49,7 +49,6 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.admin.ManageOrganizationPresenter.SearchDisplay;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
@@ -70,7 +69,6 @@ import mat.model.CodeListSearchDTO;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
@@ -154,7 +152,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean isFormatable = true;
 	
 	
-<<<<<<< HEAD
 	private boolean isProgramListBoxEnabled = true; 
 	private boolean isReleaseListBoxEnabled = false;
 	private boolean isRetrieveButtonEnabled = true; 
@@ -166,19 +163,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean previousIsRetrieveButtonEnabled = true; 
 	private boolean previousIsVersionListBoxEnabled; 
 	private boolean previousIsApplyButtonEnabled = false; 
-=======
-	private boolean isProgramListBoxEnabled; 
-	private boolean isReleaseListBoxEnabled;
-	private boolean isRetrieveButtonEnabled; 
-	private boolean isVersionListBoxEnabled; 
-	private boolean isApplyButtonEnabled; 
-	
-	private boolean previousIsProgramListBoxEnabled; 
-	private boolean previousIsReleaseListBoxEnabled;
-	private boolean previousIsRetrieveButtonEnabled; 
-	private boolean previousIsVersionListBoxEnabled; 
-	private boolean previousIsApplyButtonEnabled; 
->>>>>>> c38f4f4d9a08640076fc4813b3700e1f8af51854
+
+
 
 	/**
 	 * The Interface ViewDisplay.
@@ -3363,6 +3349,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
+		//Load VSAC Programs and Releases
+		getProgramsAndReleases();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -3722,10 +3710,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView().getPasteButton()
 					.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 			buildAppliedQDMTable();
-			//On load of Value Sets page, set the program and releases from VSAC 
-			getProgramsAndReleases();			
 		}
-
+		//On load of Value Sets page, set the Programs from VSAC 
+		loadProgramReleases();		
 		searchDisplay.getValueSetView().setHeading("CQL Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -5565,30 +5552,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void getProgramsAndReleases() {
 
 		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
-		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k, k)); 
-		
+
 		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
-			//Get the program and releases from VSAC using REST
-			vsacapiService.getVSACProgramsAndReleases(new AsyncCallback<VsacApiResult>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					showSearchingBusy(false);
-				}
-
-				@Override
-				public void onSuccess(VsacApiResult result) {
-					if(result != null) {
-						//set the values in the MatContext
-						MatContext.get().setProgramToReleases(result.getProgramToReleases());
-						result.getProgramToReleases().forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k, k)); 
-					}
-					
-				}
-			});
-
+			MatContext.get().getProgramsAndReleasesFromVSAC();	
 		}		
-		
+
+	}
+
+	private void loadProgramReleases() {
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();	
+		//TODO: Need to uncomment this once merged with changes from MAT-9079 
+		//pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
 	}
 	
 	/**

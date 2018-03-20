@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -3755,24 +3756,24 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	public void beforeDisplay() {
 
 		if ((MatContext.get().getCurrentCQLLibraryId() == null)
-				|| MatContext.get().getCurrentCQLLibraryId().equals("")) {
+				|| MatContext.get().getCurrentCQLLibraryId().isEmpty()) {
 			displayEmpty();
 		} else {
 			panel.clear();
 			searchDisplay.getLockedButtonVPanel();
 			panel.add(searchDisplay.asWidget());
-			if (!isCQLWorkSpaceLoaded) { // this check is made so that when CQL
-											// is
-											// clicked from CQL library, its not
-											// called twice.
-
+			if (!isCQLWorkSpaceLoaded) { 
+				// this check is made so that when CQL is clicked from CQL library, its not called twice.
 				displayCQLView();
 
 			} else {
 				isCQLWorkSpaceLoaded = false;
 			}
 		}
-
+		
+		//Load VSAC Programs and Releases
+		getProgramsAndReleases();
+		
 		CqlComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 		Mat.focusSkipLists("CqlComposer");
 
@@ -5515,7 +5516,9 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getValueSetView().getPasteButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
 			currentSection = CQLWorkSpaceConstants.CQL_APPLIED_QDM;
 			buildAppliedQDMTable();
-		}
+		}		
+		//On load of Value Sets page, set the Programs from VSAC 
+		loadProgramReleases();		
 		searchDisplay.getValueSetView().setHeading("CQL Library Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
 		Mat.focusSkipLists("CqlComposer");
 	}
@@ -6331,4 +6334,26 @@ private void addCodeSearchPanelHandlers() {
 	private static final boolean isListValueNotSelected(String selectedValueFromList) {
 		return MatContext.PLEASE_SELECT.equals(selectedValueFromList) || selectedValueFromList == null || selectedValueFromList.isEmpty();
 	}
+
+	/**
+	 * MAT-8977. 
+	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
+	 * the first time the value sets page is loaded.
+	 * If the values have been loaded previously, no calls are made.
+	 */
+	private void getProgramsAndReleases() {
+
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+
+		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
+			MatContext.get().getProgramsAndReleasesFromVSAC();	
+		}				
+	}
+
+	private void loadProgramReleases() {
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+		//TODO: Need to uncomment this once merged with changes from MAT-9079 
+		//pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
+	}
+
 }

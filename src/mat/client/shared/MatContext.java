@@ -2165,7 +2165,7 @@ public class MatContext implements IsSerializable {
 		return populationService; 
 	}
 
-	public Map<String, List<String>> getProgramToReleases() {
+	public Map<String, List<String>> getProgramToReleases() {		
 		return programToReleases;
 	}
 
@@ -2174,5 +2174,26 @@ public class MatContext implements IsSerializable {
 		this.programToReleases = (HashMap<String, List<String>>) programToReleases;
 	}
 
+	public void getProgramsAndReleasesFromVSAC() {
+		
+		//Get the program and releases from VSAC using REST
+		MatContext.get().getVsacapiServiceAsync().getVSACProgramsAndReleases(new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				if(result != null) {
+					//set the values in the MatContext
+					MatContext.get().setProgramToReleases(result.getProgramToReleases());					
+				}
+				
+			}
+		});
+	
+	}
 	
 }

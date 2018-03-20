@@ -565,7 +565,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				@Override
 				public SafeHtml getValue(CQLQualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
-					String release = null;
+					String release = "";
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 						title.append("Release : ").append(object.getRelease());
 						release = object.getRelease() != null ? object.getRelease() : "";

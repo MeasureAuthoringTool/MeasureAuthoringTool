@@ -412,10 +412,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private void initProgramListBoxContent() {
 		getProgramListBox().clear();
 		List<String> programs = new ArrayList<>(); 
-		programs.add(MatContext.PLEASE_SELECT);
-		programs.add("program1");
-		programs.add("program2");
-		
+		programs.add(MatContext.PLEASE_SELECT);		
 		for(String program : programs) {
 			getProgramListBox().addItem(program, program);
 		}
@@ -1453,8 +1450,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getVersionListBox().setEnabled(false);
 		getSaveButton().setEnabled(false);
 		
-		initProgramListBoxContent();
 		initializeReleaseListBoxContent();
+		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
 		
 		getUpdateFromVSACButton().setEnabled(true);
 	}

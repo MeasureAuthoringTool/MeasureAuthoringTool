@@ -8,7 +8,9 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -147,6 +149,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private Button cancelButton = new Button(TEXT_CANCEL);
 	private VerticalPanel mainPanel;
 	private PanelHeader searchHeader = new PanelHeader();
+	private HelpBlock helpBlock = new HelpBlock(); 
 	SimplePanel cellTableMainPanel = new SimplePanel();
 	HTML heading = new HTML();
 	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("valueset");
@@ -184,6 +187,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("cqlqdsContentPanel");
 	}
+
 	
 	/**
 	 * Builds the cell table widget.
@@ -250,6 +254,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		searchPanel.add(searchHeader);
 		searchPanelBody.add(new SpacerWidget());
 		
+		FormGroup messageFormGroup = new FormGroup(); 
+		messageFormGroup.add(helpBlock);
+		messageFormGroup.getElement().setAttribute("role", "alert");
+		helpBlock.setColor("transparent");
+		helpBlock.setHeight("0px");
+		searchPanelBody.add(messageFormGroup);
+
+		
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");
 		
@@ -310,6 +322,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		programListBox.setTitle("Program selection list");
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
+		initProgramListBoxContent();
+			
 		
 		VerticalPanel releasePanel = new VerticalPanel();
 		releasePanel.setWidth("225px");
@@ -320,6 +334,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		releaseListBox.setTitle("Release selection list");
 		releaseListBox.setWidth("200px");
 		releasePanel.add(releaseListBox);
+		initializeReleaseListBoxContent();
 		
 		VerticalPanel goPanel = new VerticalPanel();
 		goPanel.setWidth("150px");
@@ -391,6 +406,23 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}
+	
+	private void initializeReleaseListBoxContent() {
+		getReleaseListBox().clear();
+		getReleaseListBox().setEnabled(false);
+		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+	}
+	
+	
+	private void initProgramListBoxContent() {
+		getProgramListBox().clear();
+		List<String> programs = new ArrayList<>(); 
+		programs.add(MatContext.PLEASE_SELECT);		
+		for(String program : programs) {
+			getProgramListBox().addItem(program, program);
+		}
+	}
+	
 	
 	/**
 	 * Builds the cell table.
@@ -1420,10 +1452,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getSuffixInput().setTitle("Suffix must be an integer between 1-4 characters");
 		
 		getVersionListBox().clear();
-		
 		getVersionListBox().setEnabled(false);
-		
 		getSaveButton().setEnabled(false);
+		
+		initializeReleaseListBoxContent();
+		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
 		
 		getUpdateFromVSACButton().setEnabled(true);
 	}
@@ -1538,5 +1571,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 		return false;
+	}
+
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+
+	public void setHelpBlock(HelpBlock helpBlock) {
+		this.helpBlock = helpBlock;
 	}
 }

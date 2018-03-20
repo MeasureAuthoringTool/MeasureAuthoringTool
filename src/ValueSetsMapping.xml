@@ -35,9 +35,12 @@
 					<field name="version" type="java.lang.String">
 						<bind-xml name="version" node="attribute" />
 					</field>
-					<!-- <field name="effectiveDate" type="java.lang.String">
-                        <bind-xml name="effectiveDate" node="attribute" />
-                    </field> -->
+					<field name="release" type="java.lang.String">
+						<bind-xml name="release" node="attribute" />
+					</field>
+					<field name="program" type="java.lang.String">
+						<bind-xml name="program" node="attribute" />
+					</field>
 					<field name="codeSystemName" type="java.lang.String">
 						<bind-xml name="codeSystemName" node="attribute" />
 					</field>
@@ -50,9 +53,6 @@
 					<field name="suppDataElement" type="java.lang.Boolean">
 						<bind-xml name="suppDataElement" node="attribute" />
 					</field>
-					<!-- <field name="expansionIdentifier" type="java.lang.String">
-						<bind-xml name="expansionIdentifier" node="attribute" />
-					</field> -->
 				</class>
 			</bind-xml>
 		</field>

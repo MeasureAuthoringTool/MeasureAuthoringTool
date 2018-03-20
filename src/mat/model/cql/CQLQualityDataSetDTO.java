@@ -44,6 +44,7 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	private String uuid;
 	private String version;
 	private String release;
+	private String program; 
 	private boolean dataTypeHasRemoved;
 	
 	/* (non-Javadoc)
@@ -117,6 +118,10 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	public String getRelease() {
 		return release;
 	}
+	
+	public String getProgram() {
+		return program; 
+	}
 
 	public boolean isSuppDataElement() {
 		return suppDataElement;
@@ -164,6 +169,10 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	
 	public void setRelease(String release) {
 		this.release = release;
+	}
+	
+	public void setProgram(String program) {
+		this.program = program;
 	}
 	
 	public boolean isDataTypeHasRemoved() {
@@ -243,4 +252,8 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	public void setReadOnly(boolean isReadOnly) {
 		this.isReadOnly = isReadOnly;
 	}
+
+
+	
+	
 }

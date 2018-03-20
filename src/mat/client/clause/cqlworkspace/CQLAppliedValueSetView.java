@@ -294,7 +294,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		oidLabel.setText(TEXT_OID);
 		oidLabel.setTitle(TEXT_OID);
 		searchWidgetFormGroup.add(oidLabel);
-		oidInput.setWidth("590px");
+		oidInput.setWidth("595px");
 		oidInput.setTitle(ENTER_OID);
 		searchWidgetFormGroup.add(oidInput);
 		searchWidgetFormGroup.add(new SpacerWidget());
@@ -331,7 +331,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		goButton.setSize(ButtonSize.SMALL);
 		goButton.setTitle(RETRIEVE_OID);
 		goButton.setPull(Pull.RIGHT);
-		goButton.getElement().getStyle().setProperty("marginRight", "10px");
+		goButton.getElement().getStyle().setProperty("marginRight", "5px");
 		goPanel.add(goButton);
 		
 		programReleaseGrid.setWidget(0, 0, programPanel);
@@ -378,9 +378,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		Grid nameGrid = new Grid(1, 2);
 		nameGrid.setWidget(0, 0, namePanel);
 		nameGrid.setWidget(0, 1, suffixPanel);
+		nameGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 		Grid versionGrid = new Grid(2, 1);
 		versionGrid.setWidget(0, 0, versionFormGroup);
 		versionGrid.setWidget(1, 0, buttonFormGroup);
+		versionGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 
 		searchPanelBody.add(oidGrid);
 		searchPanelBody.add(nameGrid);

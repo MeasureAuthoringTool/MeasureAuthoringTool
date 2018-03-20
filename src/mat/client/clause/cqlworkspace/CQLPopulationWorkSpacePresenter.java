@@ -1,7 +1,8 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.List;
-
+import java.util.function.Predicate;
+	
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
@@ -36,6 +37,8 @@ import mat.shared.UUIDUtilClient;
 public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 	private static final String MEASURE_COMPOSER = "MeasureComposer";
+	
+	private static final String FUNC_AGG_FUNC_RQD_MSG = "Both an Aggregate Function and a User Defined Function are required for a measure observation.";
 
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
@@ -228,8 +231,8 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				
 				//MAT-9042. Validation Message for Aggregate function.
-				if(hasFuncWithNoAggFunc(populationsObject.getPopulationClauseObjectList())) {
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("An Aggregate Function is required for a measure observation.");					
+				if(funcOrAggFuncExistAlone(populationsObject.getPopulationClauseObjectList())) {
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(FUNC_AGG_FUNC_RQD_MSG);					
 				} else {
 					if (CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS.equalsIgnoreCase(currentSection)) {
 						searchDisplay.getCqlMeasureObservationDetailView().setIsDirty(false);					
@@ -865,20 +868,25 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 	}
 	
 	/**
-	 * This method is to used to check if Function is selected with no corresponding selection for Aggregate Function
-	 * for Measure Observation only.
+	 * This method is to used to check if when a Function is selected there is a corresponding selection
+	 * for Aggregate Function for a given Measure Observation.
 	 * Conditions : 1. Has to be in Measure Observation section.
-	 * 	            2. Function is selected but Aggregate function is NOT selected 
+	 * 	            2. Both Aggregate Function and Function are selected 
 	 * 				   from the corresponding dropdown for any one Measure Observation
-	 * 
+	 * 				
 	 * @param populationClauseObjectList
-	 * @return true if conditions 1 and 2 above are met 
-	 * 		   false if any one of the above conditions are not met 
+	 * @return true if only one of aggregate function or function is selected for a given measure observation 
+	 * 		   false if both are selected or if both are not selected 
 	 */
-	private boolean hasFuncWithNoAggFunc(List<PopulationClauseObject> populationClauseObjectList) {
+	private boolean funcOrAggFuncExistAlone(List<PopulationClauseObject> populationClauseObjectList) {
+		
+		//Either Func or Agg Func is selected
+		Predicate<PopulationClauseObject> p1 = pco -> !pco.getAggFunctionName().isEmpty() || !pco.getCqlExpressionDisplayName().isEmpty() ;
+		//Either Func or Agg Func has no selection
+		Predicate<PopulationClauseObject> p2 = pco -> pco.getAggFunctionName().isEmpty() || pco.getCqlExpressionDisplayName().isEmpty() ;
+		
 		return currentSection.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS) &&				
-				populationClauseObjectList.stream().anyMatch(
-						pco -> pco.getCqlExpressionDisplayName() != null && !pco.getCqlExpressionDisplayName().isEmpty() && pco.getAggFunctionName().isEmpty());
+				populationClauseObjectList.stream().anyMatch(p1.and(p2));
 
 	}
 

@@ -3334,6 +3334,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
+		//Load VSAC Programs and Releases
+		getProgramsAndReleases();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -3693,10 +3695,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView().getPasteButton()
 					.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 			buildAppliedQDMTable();
-			//On load of Value Sets page, set the program and releases from VSAC 
-			getProgramsAndReleases();			
 		}
-
+		//On load of Value Sets page, set the Programs from VSAC 
+		loadProgramReleases();		
 		searchDisplay.getValueSetView().setHeading("CQL Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -5438,28 +5439,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void getProgramsAndReleases() {
 
 		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
-		
+
 		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
-			//Get the program and releases from VSAC using REST
-			vsacapiService.getVSACProgramsAndReleases(new AsyncCallback<VsacApiResult>() {
-
-				@Override
-				public void onFailure(Throwable caught) {
-					showSearchingBusy(false);
-				}
-
-				@Override
-				public void onSuccess(VsacApiResult result) {
-					if(result != null) {
-						//set the values in the MatContext
-						MatContext.get().setProgramToReleases(result.getProgramToReleases());					
-					}
-					
-				}
-			});
-
+			MatContext.get().getProgramsAndReleasesFromVSAC();	
 		}		
-		
+
+	}
+
+	private void loadProgramReleases() {
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();	
+		//TODO: Need to uncomment this once merged with changes from MAT-9079 
+		//pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
 	}
 	
 	/**

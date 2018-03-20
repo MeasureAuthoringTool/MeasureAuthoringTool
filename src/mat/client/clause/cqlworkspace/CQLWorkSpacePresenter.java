@@ -4819,6 +4819,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
 
 				List<String> releases = new ArrayList<>();
 				releases.add(MatContext.PLEASE_SELECT);
@@ -4828,6 +4829,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}	
 				
 				else {
+					releases.addAll(MatContext.get().getProgramToReleases().get(program));
 					isReleaseListBoxEnabled = true;
 				}
 				
@@ -5535,6 +5537,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private void getProgramsAndReleases() {
 
 		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k, k)); 
 		
 		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
 			//Get the program and releases from VSAC using REST
@@ -5549,7 +5552,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				public void onSuccess(VsacApiResult result) {
 					if(result != null) {
 						//set the values in the MatContext
-						MatContext.get().setProgramToReleases(result.getProgramToReleases());					
+						MatContext.get().setProgramToReleases(result.getProgramToReleases());
+						result.getProgramToReleases().forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k, k)); 
 					}
 					
 				}

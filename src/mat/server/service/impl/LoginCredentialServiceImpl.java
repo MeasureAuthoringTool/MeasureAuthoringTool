@@ -1,14 +1,21 @@
 package mat.server.service.impl;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
@@ -23,16 +30,7 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
+import mat.shared.HashUtility;
 
 // TODO: Auto-generated Javadoc
 /** The Class LoginCredentialServiceImpl. */
@@ -88,7 +86,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		secQuestions.get(0).setSecurityQuestions(secQue1);
 		String salt1 = UUID.randomUUID().toString();
 		secQuestions.get(0).setSalt(salt1);
-		String answer1 = getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+		String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
 		secQuestions.get(0).setSecurityAnswer(answer1);
 		
 		String newQuestion2 = model.getQuestion2();
@@ -98,7 +96,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		secQuestions.get(1).setSecurityQuestions(secQue2);
 		String salt2 = UUID.randomUUID().toString();
 		secQuestions.get(1).setSalt(salt2);
-		String answer2 = getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+		String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
 		secQuestions.get(1).setSecurityAnswer(answer2);
 		
 		String newQuestion3 = model.getQuestion3();
@@ -108,7 +106,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		secQuestions.get(2).setSecurityQuestions(secQue3);
 		String salt3 = UUID.randomUUID().toString();
 		secQuestions.get(2).setSalt(salt3);
-		String answer3 = getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+		String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
 		secQuestions.get(2).setSecurityAnswer(answer3);
 		user.setUserSecurityQuestions(secQuestions);
 
@@ -126,33 +124,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		return result;
 	}
 
-	private String getSecurityQuestionHash(String salt, String plainTextAnswer) {
-		String hashed = hash(salt + plainTextAnswer.toUpperCase());
-		return hashed;
-	}
-	
-	/**
-	 * Hash.
-	 * 
-	 * @param s
-	 *            the s
-	 * @return the string
-	 */
-	private String hash(String s) {
-		try {
-			if(s == null) {
-				s = "";
-			}
-			//MessageDigest m=MessageDigest.getInstance("MD5");
-			MessageDigest m=MessageDigest.getInstance("SHA-256");
-			m.update(s.getBytes(),0,s.length());
-			return new BigInteger(1,m.digest()).toString(16);
-		}
-		catch(NoSuchAlgorithmException exc) {
-			throw new RuntimeException(exc);
-		}
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see mat.server.service.LoginCredentialService#changeTempPassword(java.lang.String, java.lang.String)

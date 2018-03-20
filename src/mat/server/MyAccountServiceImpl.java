@@ -2,9 +2,6 @@ package mat.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +19,7 @@ import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
+import mat.shared.HashUtility;
 import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
@@ -203,7 +201,7 @@ MyAccountService {
 			secQuestions.get(0).setSecurityQuestions(secQue1);
 			String salt1 = UUID.randomUUID().toString();
 			secQuestions.get(0).setSalt(salt1);
-			String answer1 = getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+			String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
 			secQuestions.get(0).setSecurityAnswer(answer1);
 			secQuestions.get(0).setRowId("0");
 			
@@ -213,7 +211,7 @@ MyAccountService {
 			secQuestions.get(1).setSecurityQuestions(secQue2);
 			String salt2 = UUID.randomUUID().toString();
 			secQuestions.get(1).setSalt(salt2);
-			String answer2 = getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+			String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
 			secQuestions.get(1).setSecurityAnswer(answer2);
 			secQuestions.get(1).setRowId("1");
 			
@@ -223,7 +221,7 @@ MyAccountService {
 			secQuestions.get(2).setSecurityQuestions(secQue3);
 			String salt3 = UUID.randomUUID().toString();
 			secQuestions.get(2).setSalt(salt3);
-			String answer3 = getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+			String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
 			secQuestions.get(2).setSecurityAnswer(answer3);
 			secQuestions.get(2).setRowId("2");
 			
@@ -237,32 +235,9 @@ MyAccountService {
 	}
 	
 	
-	private String getSecurityQuestionHash(String salt, String plainTextAnswer) {
-		String hashed = hash(salt + plainTextAnswer.toUpperCase());
-		return hashed;
-	}
+
 	
-	/**
-	 * Hash.
-	 * 
-	 * @param s
-	 *            the s
-	 * @return the string
-	 */
-	private String hash(String s) {
-		try {
-			if(s == null) {
-				s = "";
-			}
-			//MessageDigest m=MessageDigest.getInstance("MD5");
-			MessageDigest m=MessageDigest.getInstance("SHA-256");
-			m.update(s.getBytes(),0,s.length());
-			return new BigInteger(1,m.digest()).toString(16);
-		}
-		catch(NoSuchAlgorithmException exc) {
-			throw new RuntimeException(exc);
-		}
-	}
+
 	
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.service.MyAccountService#changePassword(java.lang.String)

@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -22,6 +23,15 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -41,21 +51,14 @@ import mat.model.User;
 import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
-import mat.server.service.CodeListService;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.server.util.TemplateUtil;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
+import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -111,10 +114,6 @@ public class UserServiceImpl implements UserService {
 	/** The organization dao. */
 	@Autowired
 	private OrganizationDAO organizationDAO;
-	
-	/** The code list service. */
-	@Autowired
-	private CodeListService codeListService;
 	
 	/** The accessibility url. */
 	private String accessibilityUrl;
@@ -397,9 +396,10 @@ public class UserServiceImpl implements UserService {
 	 */
 	private boolean securityQuestionMatch(User user,
 			String securityQuestion, String securityAnswer) {
-		for(UserSecurityQuestion usq : user.getUserSecurityQuestions()) {
-			if(securityQuestion.equalsIgnoreCase(usq.getSecurityQuestions().getQuestion()) &&
-					securityAnswer.equalsIgnoreCase(usq.getSecurityAnswer())) {
+		for(UserSecurityQuestion userSecurityQuestion : user.getUserSecurityQuestions()) {
+			String hashedSecurityAnswer = HashUtility.getSecurityQuestionHash(userSecurityQuestion.getSalt(), securityAnswer);
+			if(securityQuestion.equalsIgnoreCase(userSecurityQuestion.getSecurityQuestions().getQuestion()) &&
+					hashedSecurityAnswer.equalsIgnoreCase(userSecurityQuestion.getSecurityAnswer())) {
 				return true;
 			}
 		}

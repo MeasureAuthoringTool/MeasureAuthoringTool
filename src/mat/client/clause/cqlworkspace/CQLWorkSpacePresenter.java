@@ -4950,6 +4950,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onValueChange(ValueChangeEvent<String> event) {
 				searchDisplay.resetMessageDisplay();
 				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
+				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
+					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
+					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
+					searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
+					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
+				}
 			}
 		});
 		
@@ -4964,7 +4970,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				boolean versionNotSelectedEnableProgramReleaseFields = isListValueNotSelected(searchDisplay.getValueSetView().getVersionListBox().getSelectedValue());
 				searchDisplay.getValueSetView().getProgramListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
 				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
-				searchDisplay.getHelpBlock().setColor("transparent");
+				searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
+				searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(versionNotSelectedEnableProgramReleaseFields) ? "enabled" : "disabled"));
 			}
 		});
 
@@ -5626,8 +5633,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
 							&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
 					searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
-					searchDisplay.getHelpBlock().setColor("transparent");
-					searchDisplay.getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
+					searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
+					searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
 					
 					
 					showSearchingBusy(false);

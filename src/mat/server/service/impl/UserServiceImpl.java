@@ -60,7 +60,6 @@ import mat.shared.ForgottenPasswordResult;
 import mat.shared.HashUtility;
 import mat.shared.PasswordVerifier;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UserServiceImpl.
  */
@@ -560,7 +559,6 @@ public class UserServiceImpl implements UserService {
 			
 			mailSender.send(message);
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

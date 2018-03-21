@@ -298,14 +298,10 @@ MyAccountService {
 			
 		} catch (FileNotFoundException e) {
 			returnMessage="EXCEPTION";
-			//loginModel.setLoginFailedEvent(true);
-			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			e.printStackTrace();
 			
 		} catch (IOException e) {
 			returnMessage="EXCEPTION";
-			//loginModel.setLoginFailedEvent(true);
-			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			e.printStackTrace();
 		}
 		return returnMessage;

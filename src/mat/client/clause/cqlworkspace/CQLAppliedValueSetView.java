@@ -407,14 +407,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return searchPanel;
 	}
 	
-	private void initializeReleaseListBoxContent() {
+	public void initializeReleaseListBoxContent() {
 		getReleaseListBox().clear();
 		getReleaseListBox().setEnabled(false);
 		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 	}
 	
 	
-	private void initProgramListBoxContent() {
+	public void initProgramListBoxContent() {
 		getProgramListBox().clear();
 		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
 	}

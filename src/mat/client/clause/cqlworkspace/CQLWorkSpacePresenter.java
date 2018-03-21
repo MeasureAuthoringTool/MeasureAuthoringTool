@@ -5566,7 +5566,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
-	private void loadPrograms() {		 
+	private void loadPrograms() {
+		searchDisplay.getValueSetView().initProgramListBoxContent();
+		searchDisplay.getValueSetView().initializeReleaseListBoxContent();
 		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
 		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
 	}

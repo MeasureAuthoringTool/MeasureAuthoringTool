@@ -19,6 +19,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -168,11 +169,6 @@ public class MatContext implements IsSerializable {
 	/** The user role. */
 	private String userRole;
 	
-	
-	/** The zoom factor service. */
-//	private ZoomFactorService zoomFactorService = new ZoomFactorService();
-	
-	
 	/** The qds view. */
 	private QDSCodeListSearchView qdsView;
 	
@@ -184,20 +180,10 @@ public class MatContext implements IsSerializable {
 	
 	/** The manage measure search view. */
 	private ManageMeasureSearchView manageMeasureSearchView;
-	
-	/** The admin manage measure search view. */
-	//private AdminManageMeasureSearchView adminManageMeasureSearchView;
-	
+		
 	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
-	
-	/** The manage code list search view. */
-	//private ManageCodeListSearchView manageCodeListSearchView;
-	
-	/** The manage code list search model. */
-	//private AdminManageCodeListSearchModel manageCodeListSearchModel;
-	
-	
+		
 	/** The synchronization delegate. */
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
 	
@@ -278,11 +264,9 @@ public class MatContext implements IsSerializable {
 	/** The cql constant container. */
 	private CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 	
-	//private GlobalCopyPaste copyPaste;
-	
-	/*
-	 * POC Global Copy Paste.
-	 * public CellTreeNode copiedNode;*/
+	//VSAC Programs and Releases 
+	private HashMap<String, List<String>> programToReleases = new HashMap<>();
+
 	/**
 	 * Clear dvi messages.
 	 */
@@ -305,26 +289,6 @@ public class MatContext implements IsSerializable {
 			modifyQDMPopUpWidget.getErrorMessagePanel().clear();
 		}
 	}
-	
-	/**
-	 * Gets the admin manage measure search view.
-	 *
-	 * @param view the new QDS view
-	 * @return the admin manage measure search view
-	 */
-	/*public AdminManageMeasureSearchView getAdminManageMeasureSearchView() {
-		return adminManageMeasureSearchView;
-	}*/
-	
-	/**
-	 * Sets the admin manage measure search view.
-	 * 
-	 * @param view
-	 *            the new admin manage measure search view
-	 */
-	/*public void setAdminManageMeasureSearchView(AdminManageMeasureSearchView view){
-		adminManageMeasureSearchView=view;
-	}*/
 	
 	/**
 	 * Sets the qDS view.
@@ -353,9 +317,6 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
 	}
-	
-	//register the Value Set search messages
-	//register the property editor messages
 	
 	/**
 	 * Sets the error message1.
@@ -403,7 +364,6 @@ public class MatContext implements IsSerializable {
 		this.userEmail = userEmail;
 		this.userRole = userRole;
 		this.loginId=loginId;
-		//setUserSignInDate(userId);
 	}
 	
 	/**
@@ -979,7 +939,6 @@ public class MatContext implements IsSerializable {
 		path=path.substring(0, path.lastIndexOf('/'));
 		path += html;
 		urlBuilder.setPath(path);
-		//		Window.open(urlBuilder.buildString(),"_self",windowFeatures);
 		Window.open(urlBuilder.buildString(),"_blank",windowFeatures);
 	}
 	
@@ -1018,7 +977,6 @@ public class MatContext implements IsSerializable {
 	 * @param visible Widget's rendering status
 	 */
 	public void setVisible(Widget widget, Boolean visible){
-		// TODO likely we will change this invocation
 		widget.setVisible(visible);
 		// disable the widget, maybe best to check if this is a FocusWidget and make an explicit setEnabled call
 		DOM.setElementPropertyBoolean(widget.getElement(), "disabled", !visible);
@@ -1031,15 +989,6 @@ public class MatContext implements IsSerializable {
 	
 	/** The tab registry. */
 	public HashMap tabRegistry = new HashMap<String, TabPanel>();
-	
-	/**
-	 * Gets the zoom factor service.
-	 * 
-	 * @return the zoom factor service
-	 */
-	/*public ZoomFactorService getZoomFactorService(){
-		return zoomFactorService;
-	}*/
 	
 	/**
 	 * Gets the current measure info.
@@ -1495,28 +1444,6 @@ public class MatContext implements IsSerializable {
 		this.errorTabIndex = errorTabIndex;
 	}
 	
-	
-	/**
-	 * Sets the manage code list search view.
-	 *
-	 * @param activityType the activity type
-	 * @param isRedirect the is redirect
-	 */
-	//	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
-	//		this.manageCodeListSearchView = manageCodeListSearchView;
-	//	}
-	//
-	//
-	//	/**
-	//	 * Gets the manage code list search view.
-	//	 *
-	//	 * @return the manageCodeListSearchView
-	//	 */
-	//	public ManageCodeListSearchView getManageCodeListSearchView() {
-	//		return manageCodeListSearchView;
-	//	}
-	
-	
 	/**
 	 * Method is called on SignOut/ X out / Time Out.
 	 * 
@@ -1625,8 +1552,6 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
-	
-	
 	/**
 	 * Sets the modify qdm pop up widget.
 	 * 
@@ -1699,7 +1624,16 @@ public class MatContext implements IsSerializable {
 		allowedPopulationsInPackage.add("numerator");
 		allowedPopulationsInPackage.add("numeratorExclusions");
 		return allowedPopulationsInPackage;
-	}	
+	}
+	
+	private List<String> getExpProfileList(List<VSACExpansionProfile> list) {
+		List<String> expProfile = new ArrayList<String>();
+		for (int i = 0; i < list.size(); i++) {
+			expProfile.add(list.get(i).getName());
+		}
+		return expProfile;
+	}
+	
 	
 	
 	/**
@@ -2229,5 +2163,37 @@ public class MatContext implements IsSerializable {
 		}
 		
 		return populationService; 
-	}	
+	}
+
+	public Map<String, List<String>> getProgramToReleases() {		
+		return programToReleases;
+	}
+
+
+	public void setProgramToReleases(Map<String, List<String>> programToReleases) {
+		this.programToReleases = (HashMap<String, List<String>>) programToReleases;
+	}
+
+	public void getProgramsAndReleasesFromVSAC() {
+		
+		//Get the program and releases from VSAC using REST
+		MatContext.get().getVsacapiServiceAsync().getVSACProgramsAndReleases(new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				if(result != null) {
+					//set the values in the MatContext
+					MatContext.get().setProgramToReleases(result.getProgramToReleases());					
+				}
+				
+			}
+		});
+	
+	}
+	
 }

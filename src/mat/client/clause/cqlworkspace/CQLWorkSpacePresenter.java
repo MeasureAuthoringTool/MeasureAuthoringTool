@@ -49,7 +49,6 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.admin.ManageOrganizationPresenter.SearchDisplay;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
@@ -70,7 +69,6 @@ import mat.model.CodeListSearchDTO;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
 import mat.model.VSACVersion;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
@@ -3714,7 +3712,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			buildAppliedQDMTable();
 		}
 		//On load of Value Sets page, set the Programs from VSAC 
-		loadProgramReleases();		
+		loadPrograms();		
 		searchDisplay.getValueSetView().setHeading("CQL Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -4892,10 +4890,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-					searchDisplay.resetMessageDisplay();
-					String version = null;
-					String expansionProfile = null;
-					searchValueSetInVsac(version, expansionProfile);
+					searchDisplay.resetMessageDisplay();					
+					String expansionProfile = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+					expansionProfile = MatContext.PLEASE_SELECT.equals(expansionProfile) ? null : expansionProfile;
+					searchValueSetInVsac(expansionProfile);
 					// 508 compliance for Value Sets
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
 				}
@@ -5561,10 +5559,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
-	private void loadProgramReleases() {
-		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();	
-		//TODO: Need to uncomment this once merged with changes from MAT-9079 
-		//pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
+	private void loadPrograms() {		 
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
 	}
 	
 	/**
@@ -5575,7 +5572,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param expansionProfile
 	 *            the expansion profile
 	 */
-	private void searchValueSetInVsac(String version, String expansionProfile) {
+	private void searchValueSetInVsac(String expansionProfile) {
 		currentMatValueSet = null;
 		showSearchingBusy(true);
 		final String oid = searchDisplay.getValueSetView().getOIDInput().getValue();
@@ -5596,7 +5593,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 
-		vsacapiService.getMostRecentValueSetByOID(oid, null, new AsyncCallback<VsacApiResult>() {
+		vsacapiService.getMostRecentValueSetByOID(oid, expansionProfile, new AsyncCallback<VsacApiResult>() {
 
 			@Override
 			public void onFailure(final Throwable caught) {

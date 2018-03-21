@@ -4123,10 +4123,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					searchDisplay.resetMessageDisplay();
-					String version = null;
-					String expansionProfile = null;
-					searchValueSetInVsac(version, expansionProfile);
+					searchDisplay.resetMessageDisplay();					
+					String expansionProfile = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+					expansionProfile = MatContext.PLEASE_SELECT.equals(expansionProfile) ? null : expansionProfile;
+					searchValueSetInVsac(expansionProfile);
 					//508 compliance for Value Sets
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
 				}
@@ -4879,7 +4879,7 @@ private void addCodeSearchPanelHandlers() {
 	 * @param expansionProfile
 	 *            the expansion profile
 	 */
-	private void searchValueSetInVsac(String version, String expansionProfile) {
+	private void searchValueSetInVsac(String expansionProfile) {
 		showSearchingBusy(true);
 		currentMatValueSet = null;
 		final String oid = searchDisplay.getValueSetView().getOIDInput().getValue();
@@ -5518,7 +5518,7 @@ private void addCodeSearchPanelHandlers() {
 			buildAppliedQDMTable();
 		}		
 		//On load of Value Sets page, set the Programs from VSAC 
-		loadProgramReleases();		
+		loadPrograms();		
 		searchDisplay.getValueSetView().setHeading("CQL Library Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
 		Mat.focusSkipLists("CqlComposer");
 	}
@@ -6350,10 +6350,9 @@ private void addCodeSearchPanelHandlers() {
 		}				
 	}
 
-	private void loadProgramReleases() {
-		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
-		//TODO: Need to uncomment this once merged with changes from MAT-9079 
-		//pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
+	private void loadPrograms() {
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases(); 
+		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
 	}
 
 }

@@ -416,11 +416,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	private void initProgramListBoxContent() {
 		getProgramListBox().clear();
-		List<String> programs = new ArrayList<>(); 
-		programs.add(MatContext.PLEASE_SELECT);		
-		for(String program : programs) {
-			getProgramListBox().addItem(program, program);
-		}
+		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
 	}
 	
 	

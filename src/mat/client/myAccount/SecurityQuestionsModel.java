@@ -14,17 +14,23 @@ public class SecurityQuestionsModel implements IsSerializable , BaseModel {
 	/** The question1 answer. */
 	private String question1Answer;
 	
+	private String question1Salt;
+	
 	/** The question2. */
 	private String question2;
 	
 	/** The question2 answer. */
 	private String question2Answer;
 	
+	private String question2Salt;
+	
 	/** The question3. */
 	private String question3;
 	
 	/** The question3 answer. */
 	private String question3Answer;
+	
+	private String question3Salt;
 	
 	public SecurityQuestionsModel(String question1, String question1Answer, String question2, String question2Answer, String question3, String question3Answer) {
 		this.question1 = question1;
@@ -154,6 +160,30 @@ public class SecurityQuestionsModel implements IsSerializable , BaseModel {
 		this.question3Answer = question3Answer;
 	}
 	
+	public String getQuestion1Salt() {
+		return question1Salt;
+	}
+
+	public void setQuestion1Salt(String question1Salt) {
+		this.question1Salt = question1Salt;
+	}
+
+	public String getQuestion2Salt() {
+		return question2Salt;
+	}
+
+	public void setQuestion2Salt(String question2Salt) {
+		this.question2Salt = question2Salt;
+	}
+
+	public String getQuestion3Salt() {
+		return question3Salt;
+	}
+
+	public void setQuestion3Salt(String question3Salt) {
+		this.question3Salt = question3Salt;
+	}
+
 	@Override
 	public void scrubForMarkUp() {
 		String markupRegExp = "<[^>]+>";

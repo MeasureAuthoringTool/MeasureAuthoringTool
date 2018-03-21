@@ -3,8 +3,11 @@ package mat.server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
-import mat.client.admin.service.SaveUpdateUserResult;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
@@ -14,16 +17,12 @@ import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.SecurityQuestionsService;
-import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
+import mat.shared.HashUtility;
 import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * The server side implementation of the RPC service.
@@ -73,12 +72,7 @@ MyAccountService {
 		user.setLastName(model.getLastName());
 		user.setEmailAddress(model.getEmailAddress());
 		user.setPhoneNumber(model.getPhoneNumber());
-		user.setTitle(model.getTitle());
-		//user.setOrganizationName(model.getOrganisation());
-		//user.setOrgOID(model.getOid());
-		//user.setRootOID(model.getRootoid());
-		//user.setLoginId(model.getLoginId());
-		
+		user.setTitle(model.getTitle());	
 	}
 	
 	/**
@@ -156,7 +150,7 @@ MyAccountService {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 		System.out.println("User ID in MyAccountServiceImpl is:::" + user.getLoginId());
-		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+		List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 		
 		SecurityQuestionsModel model = new SecurityQuestionsModel();
 		if(secQuestions.size() > 0) {
@@ -192,43 +186,58 @@ MyAccountService {
 			result.setSuccess(false);
 			result.setMessages(sverifier.getMessages());
 			result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
-		}
-		else {
+		} else {
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-			List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+			List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 			while(secQuestions.size() < 3) {
 				UserSecurityQuestion newQuestion = new UserSecurityQuestion();
 				secQuestions.add(newQuestion);
 			}
-			
+						
 			String newQuestion1 = model.getQuestion1();
 			SecurityQuestions secQue1 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion1);
 			secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 			secQuestions.get(0).setSecurityQuestions(secQue1);
-			secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
+			String salt1 = UUID.randomUUID().toString();
+			secQuestions.get(0).setSalt(salt1);
+			String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+			secQuestions.get(0).setSecurityAnswer(answer1);
+			secQuestions.get(0).setRowId("0");
 			
 			String newQuestion2 = model.getQuestion2();
 			SecurityQuestions secQue2 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion2);
 			secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
 			secQuestions.get(1).setSecurityQuestions(secQue2);
-			secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
-			
+			String salt2 = UUID.randomUUID().toString();
+			secQuestions.get(1).setSalt(salt2);
+			String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+			secQuestions.get(1).setSecurityAnswer(answer2);
+			secQuestions.get(1).setRowId("1");
 			
 			String newQuestion3 = model.getQuestion3();
 			SecurityQuestions secQue3 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion3);
 			secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 			secQuestions.get(2).setSecurityQuestions(secQue3);
-			secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
-			user.setSecurityQuestions(secQuestions);
+			String salt3 = UUID.randomUUID().toString();
+			secQuestions.get(2).setSalt(salt3);
+			String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+			secQuestions.get(2).setSecurityAnswer(answer3);
+			secQuestions.get(2).setRowId("2");
 			
-
+			user.setUserSecurityQuestions(secQuestions);
+			
 			userService.saveExisting(user);
 
 			result.setSuccess(true);
 		}
 		return result;
 	}
+	
+	
+
+	
+
 	
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.service.MyAccountService#changePassword(java.lang.String)
@@ -276,7 +285,7 @@ MyAccountService {
 	 * Call check dictionary word in password.
 	 * 
 	 * @param changedpassword
-	 *            the changedpassword
+	 * 
 	 * @return the string
 	 */
 	private String callCheckDictionaryWordInPassword(String changedpassword){
@@ -289,34 +298,17 @@ MyAccountService {
 			
 		} catch (FileNotFoundException e) {
 			returnMessage="EXCEPTION";
-			//loginModel.setLoginFailedEvent(true);
-			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			e.printStackTrace();
 			
 		} catch (IOException e) {
 			returnMessage="EXCEPTION";
-			//loginModel.setLoginFailedEvent(true);
-			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			e.printStackTrace();
 		}
 		return returnMessage;
 		
 		
 	}
-	/**
-	 * Escape an html string. Escaping data received from the client helps to
-	 * prevent cross-site script vulnerabilities.
-	 * 
-	 * @param html the html string to escape
-	 * @return the escaped string
-	 */
-	private String escapeHtml(String html) {
-		if (html == null) {
-			return null;
-		}
-		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;");
-	}
+
 	//US212
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.service.MyAccountService#setUserSignInDate(java.lang.String)

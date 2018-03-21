@@ -5,6 +5,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.UUID;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
@@ -19,16 +30,7 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
-import org.springframework.security.core.userdetails.UserDetails;
+import mat.shared.HashUtility;
 
 // TODO: Auto-generated Javadoc
 /** The Class LoginCredentialServiceImpl. */
@@ -69,10 +71,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		userService.setUserPassword(user, model.getPassword(), false);
 		user.getPassword().setInitial(false);
 		logger.info("Saving security questions");
-		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
-//		for (UserSecurityQuestion question: secQuestions) {
-//			logger.info("Question ID: " +  question.getSecurityQuestionId()  + "Question Answer: " + question.getSecurityAnswer());
-//		}
+		List<UserSecurityQuestion> secQuestions = user.getUserSecurityQuestions();
 		while (secQuestions.size() < 3) {
 			UserSecurityQuestion newQuestion = new UserSecurityQuestion();
 			secQuestions.add(newQuestion);
@@ -82,20 +81,31 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				.getSecurityQuestionObj(newQuestion1);
 		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 		secQuestions.get(0).setSecurityQuestions(secQue1);
-		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
+		String salt1 = UUID.randomUUID().toString();
+		secQuestions.get(0).setSalt(salt1);
+		String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+		secQuestions.get(0).setSecurityAnswer(answer1);
+		
 		String newQuestion2 = model.getQuestion2();
 		SecurityQuestions secQue2 = securityQuestionsService
 				.getSecurityQuestionObj(newQuestion2);
 		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
 		secQuestions.get(1).setSecurityQuestions(secQue2);
-		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
+		String salt2 = UUID.randomUUID().toString();
+		secQuestions.get(1).setSalt(salt2);
+		String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+		secQuestions.get(1).setSecurityAnswer(answer2);
+		
 		String newQuestion3 = model.getQuestion3();
 		SecurityQuestions secQue3 = securityQuestionsService
 				.getSecurityQuestionObj(newQuestion3);
 		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 		secQuestions.get(2).setSecurityQuestions(secQue3);
-		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
-		user.setSecurityQuestions(secQuestions);
+		String salt3 = UUID.randomUUID().toString();
+		secQuestions.get(2).setSalt(salt3);
+		String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+		secQuestions.get(2).setSecurityAnswer(answer3);
+		user.setUserSecurityQuestions(secQuestions);
 
 		userService.saveExisting(user);
 		MatUserDetails userDetails = (MatUserDetails) hibernateUserService

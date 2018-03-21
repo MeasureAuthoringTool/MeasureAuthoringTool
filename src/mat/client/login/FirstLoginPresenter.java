@@ -9,8 +9,6 @@ import org.gwtbootstrap3.client.ui.Input;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
@@ -30,7 +28,6 @@ import mat.model.SecurityQuestions;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class FirstLoginPresenter.
  */
@@ -183,32 +180,6 @@ public class FirstLoginPresenter {
 	public FirstLoginPresenter(Display displayArg) {
 		display = displayArg;
 		
-		/*{
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<SecurityQuestions> result) {
-				// TODO Auto-generated method stub
-				List<NameValuePair> retList = new ArrayList<NameValuePair>();
-				for(int i=0; i < result.size();i++){
-						SecurityQuestions securityQues = result.get(i);
-						NameValuePair nvp = new NameValuePair();
-						nvp.setName(securityQues.getQuestion());
-						nvp.setValue(securityQues.getQuestion());
-						retList.add(nvp);
-				}
-					
-				if(retList!=null){
-					//display.addQuestionTexts(retList);
-					display.addSecurityQuestionTexts(retList);
-				}
-			}
-		});*/
 		
 		display.getReset().addClickHandler(new ClickHandler() {
 			
@@ -218,60 +189,6 @@ public class FirstLoginPresenter {
 			}
 		});
 		
-		/*display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
-			@Override
-			public void onFocus(FocusEvent event) {
-				display.getSecurityQuestionsWidget().getAnswer1().setText("");
-				
-			}
-		});*/
-		/*display.getSecurityQuestionsWidget().getAnswer1().addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty()) {
-					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
-				}
-				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().getAnswerText1());
-			}
-		});*/
-		
-		/*display.getSecurityQuestionsWidget().getAnswer2().addFocusHandler(new FocusHandler() {
-			
-			@Override
-			public void onFocus(FocusEvent event) {
-				display.getSecurityQuestionsWidget().getAnswer2().setText("");
-			}
-		});*/
-		/*display.getSecurityQuestionsWidget().getAnswer2().addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				
-				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty()) {
-					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
-				}
-				
-				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().getAnswerText2());
-			}
-		});*/
-		/*display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
-			
-			@Override
-			public void onFocus(FocusEvent event) {
-				display.getSecurityQuestionsWidget().getAnswer3().setText("");
-			}
-		});*/
-		/*display.getSecurityQuestionsWidget().getAnswer3().addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty()) {
-					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
-				}
-				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().getAnswerText3());
-			}
-		});*/
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -412,7 +329,6 @@ public class FirstLoginPresenter {
 			
 			@Override
 			public void onSuccess(List<SecurityQuestions> result) {
-				// TODO Auto-generated method stub
 				if(result != null){
 					List<NameValuePair> retList = new ArrayList<NameValuePair>();
 					for(int i=0; i < result.size();i++){
@@ -424,7 +340,6 @@ public class FirstLoginPresenter {
 					}
 					
 					if(retList!=null){
-						//display.addQuestionTexts(retList);
 						display.addSecurityQuestionTexts(retList);
 					}
 				}

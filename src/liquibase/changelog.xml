@@ -223,4 +223,7 @@
         <include file="classpath:/liquibase/deploy_Sprint-125_MAT-8795_ALTER_TABLE_CQL_LIBRARY.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-127_MAT-8835_DROP_TABLE_MEASURE_NOTES.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-130_MAT-8901_EmailAuditLog.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/>
+        
+        
    	</databaseChangeLog>

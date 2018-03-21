@@ -34,13 +34,14 @@
 		class="mat.model.AuditLog" unique="true" cascade="all" />
 	<many-to-one name="securityRole" column="SECURITY_ROLE_ID"
 		class="mat.model.SecurityRole" unique="false" lazy="false" cascade="none" />
-	<list name="securityQuestions" table="USER_SECURITY_QUESTIONS" cascade="all-delete-orphan">
+	<list name="userSecurityQuestions" table="USER_SECURITY_QUESTIONS" cascade="all-delete-orphan">
 		<key column="USER_ID" not-null="true" update="false"/>
 		<index column="ROW_ID" type="integer"/>
 		<composite-element class="mat.model.UserSecurityQuestion">
 			 <many-to-one name="securityQuestions" class="mat.model.SecurityQuestions"
-   			 column="QUESTION_ID" unique="false" cascade="none" insert="false" update="false" />
+   			 column="QUESTION_ID" unique="false" cascade="all" insert="false" update="true" />
 			<property name="securityAnswer" column="ANSWER"/>
+			<property name="salt" column="SALT"/>
 		</composite-element>
 	</list>
 	<set name="passwordHistory" table="USER_PASSWORD_HISTORY" cascade="all-delete-orphan" 

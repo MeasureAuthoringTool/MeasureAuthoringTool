@@ -155,13 +155,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private boolean isProgramListBoxEnabled = true; 
 	private boolean isReleaseListBoxEnabled = false;
 	private boolean isRetrieveButtonEnabled = true; 
-	private boolean isVersionListBoxEnabled; 
+	private boolean isVersionListBoxEnabled = false; 
 	private boolean isApplyButtonEnabled = false; 
 	
 	private boolean previousIsProgramListBoxEnabled = true; 
 	private boolean previousIsReleaseListBoxEnabled = false;
 	private boolean previousIsRetrieveButtonEnabled = true; 
-	private boolean previousIsVersionListBoxEnabled; 
+	private boolean previousIsVersionListBoxEnabled = false; 
 	private boolean previousIsApplyButtonEnabled = false; 
 
 
@@ -4806,7 +4806,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
-				enabelOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
+				enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
 				
 				previousIsApplyButtonEnabled = isApplyButtonEnabled;
 				isApplyButtonEnabled = false;
@@ -4837,7 +4837,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				setReleaseListBoxContent(releases);
 
 				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(isReleaseListBoxEnabled);
-				enabelOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
+				enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
 				enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
 				
 				previousIsApplyButtonEnabled = isApplyButtonEnabled;
@@ -4862,10 +4862,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
 				
 				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-				isProgramListBoxEnabled = true; 
 				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				isProgramListBoxEnabled = true;
 				isReleaseListBoxEnabled = false; 
-				alert508StateChanges();
+				searchDisplay.getValueSetView().initializeReleaseListBoxContent();
+				searchDisplay.getValueSetView().initProgramListBoxContent();
+				loadPrograms(); 
 			}
 		});
 
@@ -4920,6 +4922,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					// 508 compliance for Value Sets
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
+					
+					
+					previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+					previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+					isProgramListBoxEnabled = true;
+					isReleaseListBoxEnabled = false; 
+					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
+					searchDisplay.getValueSetView().initProgramListBoxContent();
+					loadPrograms(); 
 				}
 			}
 		});
@@ -4951,7 +4962,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
 					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
 					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
 					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
 				}
 			}
@@ -4993,7 +5003,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
-	private void enabelOrDisableVersionListBoxBasedOnProgramReleaseListBoxes() {
+	private void enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes() {
 		searchDisplay.resetMessageDisplay();
 		previousIsVersionListBoxEnabled = isVersionListBoxEnabled; 
 		isVersionListBoxEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
@@ -5001,62 +5011,43 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionListBoxEnabled);
 	}
 	
-	private void enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes() {
+	private void enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes() {		
 		previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
 
-		// if release box is please select, and the program list box isn't, disable retrieve.
-		if(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT) && 
-				!searchDisplay.getValueSetView().getProgramListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT)) {
-			isRetrieveButtonEnabled = false; 
-		}
-		
-		// if release box is not please select, and the program list box is, disable retrieve.
-		if(!searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT) && 
-				searchDisplay.getValueSetView().getProgramListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT)) {
-			isRetrieveButtonEnabled = false; 
-		}	
-		
-		// if they are both please select, retrieve enable button
-		if((searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT) && 
-				searchDisplay.getValueSetView().getProgramListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT))) {
+		String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+		String release = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+		if ((release.equals(MatContext.PLEASE_SELECT) && program.equals(MatContext.PLEASE_SELECT))
+				|| (!release.equals(MatContext.PLEASE_SELECT) && !program.equals(MatContext.PLEASE_SELECT))) {
 			isRetrieveButtonEnabled = true;
+		} else {
+			isRetrieveButtonEnabled = false;
 		}
 		
-		// if they are both not please select, enable retrieve button
-		if(!searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT) && 
-				!searchDisplay.getValueSetView().getProgramListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT)) {
-			isRetrieveButtonEnabled = true; 
-		}
 		
 		searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
-
 	}
 	
 	
 	private void alert508StateChanges() {
-		StringBuilder helpTextBuilder = new StringBuilder(); 
+		StringBuilder helpTextBuilder = new StringBuilder();
 		
-		if(previousIsApplyButtonEnabled != isApplyButtonEnabled) {
-			helpTextBuilder.append("Apply button has been ".concat(Boolean.TRUE.equals(isApplyButtonEnabled) ? "enabled" : "disabled"));
-		}
-		
-		if(isReleaseListBoxEnabled != previousIsReleaseListBoxEnabled) {
-			helpTextBuilder.append("Release List Box has been ".concat(Boolean.TRUE.equals(isReleaseListBoxEnabled) ? "enabled" : "disabled"));
-		}
-		
-		if(isProgramListBoxEnabled != previousIsProgramListBoxEnabled) {
-			helpTextBuilder.append("Program List Box has been ".concat(Boolean.TRUE.equals(isReleaseListBoxEnabled) ? "enabled" : "disabled"));
-		}	
-		
-		if(isVersionListBoxEnabled != previousIsVersionListBoxEnabled) {
-			helpTextBuilder.append("Version List Box has been ".concat(Boolean.TRUE.equals(isVersionListBoxEnabled) ? "enabled" : "disabled"));
-		}
-		
-		if(isRetrieveButtonEnabled != previousIsRetrieveButtonEnabled) {
-			helpTextBuilder.append("Retrieve Button has been ".concat(Boolean.TRUE.equals(isVersionListBoxEnabled) ? "enabled" : "disabled"));
-		}
+		helpTextBuilder.append(build508HelpString(previousIsReleaseListBoxEnabled, isReleaseListBoxEnabled, "Release List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsVersionListBoxEnabled, isVersionListBoxEnabled, "Version List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsProgramListBoxEnabled, isProgramListBoxEnabled, "Program List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsRetrieveButtonEnabled, isRetrieveButtonEnabled, "Retrieve Button"));
+		helpTextBuilder.append(build508HelpString(previousIsApplyButtonEnabled, isApplyButtonEnabled, "Apply Button"));
 		
 		searchDisplay.getValueSetView().getHelpBlock().setText(helpTextBuilder.toString());
+	}
+	
+	private String build508HelpString(boolean previousState, boolean currentState, String elementName) {
+		
+		String helpString = "";
+		if(currentState != previousState) {
+			helpString = elementName.concat(" ").concat(Boolean.TRUE.equals(currentState) ? "enabled" : "disabled");
+		}
+		
+		return helpString; 
 	}
 
 	private void addCodeSearchPanelHandlers() {

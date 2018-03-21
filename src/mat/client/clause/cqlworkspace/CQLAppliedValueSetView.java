@@ -1453,6 +1453,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		initializeReleaseListBoxContent();
 		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
+		getProgramListBox().setEnabled(true);
 		
 		getUpdateFromVSACButton().setEnabled(true);
 	}
@@ -1491,6 +1492,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getCancelQDMButton().setEnabled(isEditable);
 		getUpdateFromVSACButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
+		getProgramListBox().setEnabled(isEditable);
 		this.setIsLoading(!isEditable);
 	}
 

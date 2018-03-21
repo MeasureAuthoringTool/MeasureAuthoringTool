@@ -4368,29 +4368,25 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	}
 	
 	private void alert508StateChanges() {
-		StringBuilder helpTextBuilder = new StringBuilder(); 
+		StringBuilder helpTextBuilder = new StringBuilder();
 		
-		if(previousIsApplyButtonEnabled != isApplyButtonEnabled) {
-			helpTextBuilder.append("Apply button has been ".concat(Boolean.TRUE.equals(isApplyButtonEnabled) ? "enabled" : "disabled"));
-		}
-		
-		if(isReleaseListBoxEnabled != previousIsReleaseListBoxEnabled) {
-			helpTextBuilder.append("Release List Box has been ".concat(Boolean.TRUE.equals(isReleaseListBoxEnabled) ? "enabled" : "disabled"));
-		}
-		
-		if(isProgramListBoxEnabled != previousIsProgramListBoxEnabled) {
-			helpTextBuilder.append("Program List Box has been ".concat(Boolean.TRUE.equals(isReleaseListBoxEnabled) ? "enabled" : "disabled"));
-		}	
-		
-		if(isVersionListBoxEnabled != previousIsVersionListBoxEnabled) {
-			helpTextBuilder.append("Version List Box has been ".concat(Boolean.TRUE.equals(isVersionListBoxEnabled) ? "enabled" : "disabled"));
-		}
-		
-		if(isRetrieveButtonEnabled != previousIsRetrieveButtonEnabled) {
-			helpTextBuilder.append("Retrieve Button has been ".concat(Boolean.TRUE.equals(isVersionListBoxEnabled) ? "enabled" : "disabled"));
-		}
+		helpTextBuilder.append(build508HelpString(previousIsReleaseListBoxEnabled, isReleaseListBoxEnabled, "Release List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsVersionListBoxEnabled, isVersionListBoxEnabled, "Version List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsProgramListBoxEnabled, isProgramListBoxEnabled, "Program List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsRetrieveButtonEnabled, isRetrieveButtonEnabled, "Retrieve Button"));
+		helpTextBuilder.append(build508HelpString(previousIsApplyButtonEnabled, isApplyButtonEnabled, "Apply Button"));
 		
 		searchDisplay.getValueSetView().getHelpBlock().setText(helpTextBuilder.toString());
+	}
+	
+	private String build508HelpString(boolean previousState, boolean currentState, String elementName) {
+		
+		String helpString = "";
+		if(currentState != previousState) {
+			helpString = elementName.concat(" ").concat(Boolean.TRUE.equals(currentState) ? "enabled" : "disabled");
+		}
+		
+		return helpString; 
 	}
 	
 	private void enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes() {

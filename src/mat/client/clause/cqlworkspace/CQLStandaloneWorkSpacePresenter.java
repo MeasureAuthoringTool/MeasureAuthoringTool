@@ -4244,6 +4244,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					isReleaseListBoxEnabled = false; 
 					searchDisplay.getValueSetView().initProgramListBoxContent();
 					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
+					searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
 					loadPrograms();
 				} else {
 					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();

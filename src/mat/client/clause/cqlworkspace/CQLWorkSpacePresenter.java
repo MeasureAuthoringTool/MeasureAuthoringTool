@@ -4958,13 +4958,22 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
+				previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				
 				searchDisplay.resetMessageDisplay();
 				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
 				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
-					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
-				}
+					isRetrieveButtonEnabled = true;
+					isProgramListBoxEnabled = true;
+					isReleaseListBoxEnabled = false; 
+					searchDisplay.getValueSetView().initProgramListBoxContent();
+					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
+					loadPrograms();
+					alert508StateChanges();
+				} 
+				
 			}
 		});
 		

@@ -4213,7 +4213,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
 					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
 					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
 					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
+					searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is disabled");
 				}
 			}
 		});
@@ -4228,9 +4230,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				boolean versionNotSelectedEnableProgramReleaseFields = isListValueNotSelected(searchDisplay.getValueSetView().getVersionListBox().getSelectedValue());
 				searchDisplay.getValueSetView().getProgramListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
-				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
+				if (!versionNotSelectedEnableProgramReleaseFields) {
+					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(false);
+				}
 				searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
-				searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(versionNotSelectedEnableProgramReleaseFields) ? "enabled" : "disabled"));
+				searchDisplay.getValueSetView().getHelpBlock().setText("Program selection is ".concat(Boolean.TRUE.equals(versionNotSelectedEnableProgramReleaseFields) ? "enabled" : "disabled"));
 			}
 		});
 

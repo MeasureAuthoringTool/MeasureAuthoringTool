@@ -4971,9 +4971,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getValueSetView().initProgramListBoxContent();
 					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
 					loadPrograms();
-					alert508StateChanges();
-				} 
+				} else {
+					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
+				}
 				
+				alert508StateChanges();
 			}
 		});
 		

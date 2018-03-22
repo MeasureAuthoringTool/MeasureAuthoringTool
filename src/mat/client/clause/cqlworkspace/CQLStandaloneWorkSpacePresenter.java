@@ -4239,23 +4239,17 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
 				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
-<<<<<<< HEAD
-					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
-					searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is disabled");
-=======
 					isRetrieveButtonEnabled = true;
 					isProgramListBoxEnabled = true;
 					isReleaseListBoxEnabled = false; 
 					searchDisplay.getValueSetView().initProgramListBoxContent();
 					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
 					loadPrograms();
-					alert508StateChanges();
->>>>>>> MAT-9079 fixes issue where clearing oid box would not put program list box, release list box back to their original states
+				} else {
+					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
 				}
-
+				
+				alert508StateChanges();
 			}
 		});
 		

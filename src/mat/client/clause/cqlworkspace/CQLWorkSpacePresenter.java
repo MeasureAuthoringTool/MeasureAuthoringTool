@@ -4977,7 +4977,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				boolean versionNotSelectedEnableProgramReleaseFields = isListValueNotSelected(searchDisplay.getValueSetView().getVersionListBox().getSelectedValue());
 				searchDisplay.getValueSetView().getProgramListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
-				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
+				if (!versionNotSelectedEnableProgramReleaseFields) {
+					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(false);
+				}
 				searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
 				searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(versionNotSelectedEnableProgramReleaseFields) ? "enabled" : "disabled"));
 			}
@@ -6188,6 +6190,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getReleaseListBox().clear();
 		searchDisplay.getValueSetView().getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 		searchDisplay.getValueSetView().getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+
 		if(result.getProgram().isEmpty()) {
 			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
 		} else {

@@ -4213,7 +4213,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
 					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
 					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
 					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
+					searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is disabled");
 				}
 			}
 		});

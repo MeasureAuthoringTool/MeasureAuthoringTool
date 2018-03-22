@@ -665,36 +665,60 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getSuffixInput().setValue(result.getSuffix());
 		searchDisplay.getValueSetView().getSuffixInput().setTitle(result.getSuffix());
 		
-		setReleaseAndProgramFieldOnEdit(result);
-
-	
-		searchDisplay.getValueSetView().getVersionListBox().clear();
-		searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-
-	
+		setReleaseAndProgramAndVersionFieldsOnEdit(result);
 		searchDisplay.getValueSetView().getSaveButton().setEnabled(isUserDefined);
+		alert508StateChanges();
 	}
 	
-	private void setReleaseAndProgramFieldOnEdit(CQLQualityDataSetDTO result) {
-		searchDisplay.getValueSetView().getProgramListBox().setEnabled(false);
-		searchDisplay.getValueSetView().getReleaseListBox().setEnabled(false);
+	private void setReleaseAndProgramAndVersionFieldsOnEdit(CQLQualityDataSetDTO result) {
+		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+		previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+		previousIsVersionListBoxEnabled = isVersionListBoxEnabled;
 		searchDisplay.getValueSetView().getProgramListBox().clear();
 		searchDisplay.getValueSetView().getReleaseListBox().clear();
-		searchDisplay.getValueSetView().getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
-		searchDisplay.getValueSetView().getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+		
+		loadPrograms();
 		if(result.getProgram().isEmpty()) {
+			// if the valueset that was being edited has no program, put the selected index to the '--Select' field. 
+			// and put the release box in it's original state. 
 			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
+			searchDisplay.getValueSetView().initializeReleaseListBoxContent(); 
+			isProgramListBoxEnabled = false; 
+			isReleaseListBoxEnabled = false; 
+			isVersionListBoxEnabled = true; 
+
 		} else {
-			searchDisplay.getValueSetView().getProgramListBox().addItem(result.getProgram(), result.getProgram());
-			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(1);
+			// if the valueset that is being edited has a program, find that value and set it as the selected index. 
+			// set the release values based on the programs and then find the value and set it as the selected value
+			isProgramListBoxEnabled = true; 
+			isReleaseListBoxEnabled = true; 
+			isVersionListBoxEnabled = false; 
+			
+			for(int i = 0; i < searchDisplay.getValueSetView().getProgramListBox().getItemCount(); i++) {
+				String listBoxValue = searchDisplay.getValueSetView().getProgramListBox().getValue(i);
+				if(listBoxValue.equals(result.getProgram())) {
+					searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(i);
+					break; 
+				}
+			}
+			
+			List<String> releases = new ArrayList<>(); 
+			releases.add(MatContext.PLEASE_SELECT);
+			releases.addAll(MatContext.get().getProgramToReleases().get(result.getProgram()));
+			setReleaseListBoxContent(releases);
+			
+			for(int i = 0; i < searchDisplay.getValueSetView().getReleaseListBox().getItemCount(); i++) {
+				String releaseLixBoxValue = searchDisplay.getValueSetView().getReleaseListBox().getValue(i);
+				if(releaseLixBoxValue.equals(result.getRelease())) {
+					searchDisplay.getValueSetView().getReleaseListBox().setSelectedIndex(i);
+					break; 
+				}
+			}
 		}
 		
-		if(result.getRelease().isEmpty()) {
-			searchDisplay.getValueSetView().getReleaseListBox().setSelectedIndex(0);
-		} else {
-			searchDisplay.getValueSetView().getReleaseListBox().addItem(result.getRelease(), result.getRelease());
-			searchDisplay.getValueSetView().getReleaseListBox().setSelectedIndex(1);
-		}
+		searchDisplay.getValueSetView().getProgramListBox().setEnabled(isProgramListBoxEnabled);
+		searchDisplay.getValueSetView().getReleaseListBox().setEnabled(isReleaseListBoxEnabled);
+		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionListBoxEnabled);
 	}
 
 	
@@ -4208,15 +4232,23 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
+				previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				
 				searchDisplay.resetMessageDisplay();
 				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
 				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
-					searchDisplay.getValueSetView().getProgramListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(true);
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-					searchDisplay.getValueSetView().getHelpBlock().setText("Program and Release selection is enabled");
-					searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is disabled");
+					isRetrieveButtonEnabled = true;
+					isProgramListBoxEnabled = true;
+					isReleaseListBoxEnabled = false; 
+					searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+					loadPrograms();
+				} else {
+					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
 				}
+				
+				alert508StateChanges();
 			}
 		});
 		

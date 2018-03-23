@@ -683,7 +683,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			// and put the release box in it's original state. 
 			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
 			searchDisplay.getValueSetView().initializeReleaseListBoxContent(); 
-			isProgramListBoxEnabled = false; 
+			isProgramListBoxEnabled = true; 
 			isReleaseListBoxEnabled = false; 
 			isVersionListBoxEnabled = true; 
 
@@ -4196,15 +4196,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						addNewValueSet(isUserDefined);
 					}
 					//508 compliance for Value Sets
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
-					
-					previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-					previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
-					isProgramListBoxEnabled = true;
-					isReleaseListBoxEnabled = false; 
-					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
-					searchDisplay.getValueSetView().initProgramListBoxContent();
-					loadPrograms(); 
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput()); 
 				}
 			}
 		});
@@ -5134,6 +5126,17 @@ private void addCodeSearchPanelHandlers() {
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
 			}
+			
+			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setRelease(releaseValue);
+			}
+			
+			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setProgram(programValue);
+			}
+			
 			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName,appliedValueSetTableList)) {
 
@@ -5328,6 +5331,13 @@ private void addCodeSearchPanelHandlers() {
 									searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 											.createAlert(message);
+									
+									previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+									previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+									isProgramListBoxEnabled = true;
+									isReleaseListBoxEnabled = false; 
+									searchDisplay.getValueSetView().initProgramListBoxContent();
+									loadPrograms(); 
 									getAppliedValueSetList();
 								} else {
 									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {

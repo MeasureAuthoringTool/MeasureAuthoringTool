@@ -5134,6 +5134,17 @@ private void addCodeSearchPanelHandlers() {
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
 			}
+			
+			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setRelease(releaseValue);
+			}
+			
+			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setProgram(programValue);
+			}
+			
 			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName,appliedValueSetTableList)) {
 

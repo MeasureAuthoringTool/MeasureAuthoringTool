@@ -4924,7 +4924,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					// 508 compliance for Value Sets
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
 					
-					
 					previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
 					previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
 					isProgramListBoxEnabled = true;
@@ -5851,6 +5850,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
+			}
+			
+			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setRelease(releaseValue);
+			}
+			
+			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setProgram(programValue);
 			}
 			
 			modifyValueSetList(modifyValueSetDTO);

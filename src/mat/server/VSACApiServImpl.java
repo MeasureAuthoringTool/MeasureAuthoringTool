@@ -619,18 +619,19 @@ public class VSACApiServImpl implements VSACApiService{
 		VsacApiResult result = new VsacApiResult();
 		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
 		
-		if(expansionId == null){
-			expansionId = getDefaultExpId();
-		}
 		if (eightHourTicket != null) {
 			if ((oid != null) && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
 				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
 				VSACResponseResult vsacResponseResult = null;
-				
-				vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket,
-						expansionId);
-				
+		
+				if (StringUtils.isNotBlank(expansionId)){					
+					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(), expansionId, fiveMinServiceTicket);
+				}else {
+					expansionId = getDefaultExpId();
+					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket, expansionId);
+				}
+								
 				if((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)
 						&& (!StringUtils.isEmpty(vsacResponseResult.getXmlPayLoad()))) {
 					result.setSuccess(true);

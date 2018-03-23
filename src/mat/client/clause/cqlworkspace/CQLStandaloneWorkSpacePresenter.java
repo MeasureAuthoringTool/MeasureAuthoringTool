@@ -4196,15 +4196,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						addNewValueSet(isUserDefined);
 					}
 					//508 compliance for Value Sets
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
-					
-					previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-					previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
-					isProgramListBoxEnabled = true;
-					isReleaseListBoxEnabled = false; 
-					searchDisplay.getValueSetView().initializeReleaseListBoxContent();
-					searchDisplay.getValueSetView().initProgramListBoxContent();
-					loadPrograms(); 
+					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput()); 
 				}
 			}
 		});
@@ -5339,6 +5331,13 @@ private void addCodeSearchPanelHandlers() {
 									searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 											.createAlert(message);
+									
+									previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+									previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+									isProgramListBoxEnabled = true;
+									isReleaseListBoxEnabled = false; 
+									searchDisplay.getValueSetView().initProgramListBoxContent();
+									loadPrograms(); 
 									getAppliedValueSetList();
 								} else {
 									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {

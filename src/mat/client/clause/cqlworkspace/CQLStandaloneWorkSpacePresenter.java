@@ -5130,11 +5130,15 @@ private void addCodeSearchPanelHandlers() {
 			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
 			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setRelease(releaseValue);
+			} else {
+				modifyValueSetDTO.setRelease("");
 			}
 			
 			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
 			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setProgram(programValue);
+			} else {
+				modifyValueSetDTO.setProgram("");
 			}
 			
 			modifyValueSetList(modifyValueSetDTO);

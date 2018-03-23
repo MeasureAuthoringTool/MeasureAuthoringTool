@@ -6205,7 +6205,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			// and put the release box in it's original state. 
 			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
 			searchDisplay.getValueSetView().initializeReleaseListBoxContent(); 
-			isProgramListBoxEnabled = false; 
+			isProgramListBoxEnabled = true; 
 			isReleaseListBoxEnabled = false; 
 			isVersionListBoxEnabled = true; 
 

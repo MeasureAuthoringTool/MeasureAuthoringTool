@@ -2841,6 +2841,9 @@ public class CQLServiceImpl implements CQLService {
 		qds.setCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
 		qds.setSuffix(valueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
 		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
+		qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
+		qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
+
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -2938,7 +2941,10 @@ public class CQLServiceImpl implements CQLService {
 				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 				qds.setUuid(UUID.randomUUID().toString());
 				qds.setVersion("1.0");
+				qds.setRelease("");
+				qds.setProgram("");
 				wrapper.getQualityDataDTO().add(qds);
+				
 				String qdmXMLString = generateXmlForAppliedValueset(wrapper);
 				result.setSuccess(true);
 				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
@@ -3138,11 +3144,7 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				qds.setVersion("1.0");
 			}
-			/*if (matValueSetTransferObject.isExpansionProfile()) {
-				//qds.setExpansionIdentifier(matValueSetTransferObject.getMatValueSet().getExpansionProfile());
-			} else {
-				//qds.setExpansionIdentifier(null);
-			}*/
+			
 			CQLQualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
 					(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 
@@ -3190,6 +3192,9 @@ public class CQLServiceImpl implements CQLService {
 				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
 				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
 				newNode.getAttributes().getNamedItem("version").setNodeValue(modifyWithDTO.getVersion());
+				newNode.getAttributes().getNamedItem("release").setNodeValue(modifyWithDTO.getRelease());
+				newNode.getAttributes().getNamedItem("program").setNodeValue(modifyWithDTO.getProgram());
+
 				if (modifyWithDTO.isSuppDataElement()) {
 					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
 				} else {

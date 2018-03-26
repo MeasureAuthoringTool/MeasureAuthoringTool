@@ -96,5 +96,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsoup-1.11.2.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/groovy-json-2.4.14.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

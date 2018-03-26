@@ -40,7 +40,7 @@ public class UserDAOTestHelper{
 		secQues.setSecurityAnswer("test answer");
 		List<UserSecurityQuestion> securityQuestions = new ArrayList<UserSecurityQuestion>();
 		securityQuestions.add(secQues);
-		user.setSecurityQuestions(securityQuestions);
+		user.setUserSecurityQuestions(securityQuestions);
 		return user;
 	}
 	

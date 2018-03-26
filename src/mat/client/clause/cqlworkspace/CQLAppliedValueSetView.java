@@ -8,13 +8,17 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -45,6 +49,7 @@ import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -62,7 +67,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.umls.service.VsacApiResult;
@@ -78,20 +82,23 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
 
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAppliedSelectionView.
  */
 public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
-	
-	/** The Constant GROUPING_QDM. */
 	static final String GROUPING_QDM = " (G)";
-	
-	/** The Constant EXTENSIONAL_QDM. */
 	static final String EXTENSIONAL_QDM = " (E)";
-	/** The Loading flag for page. */
 	private Boolean isLoading = false;
+	private final String TEXT_APPLY = "Apply";
+	private final String TEXT_CANCEL = "Cancel";
+	private final String TEXT_OID = "OID";
+	private final String TEXT_NAME = "Name";
+	private final String TEXT_PROGRAM = "Program";
+	private final String TEXT_RELEASE = "Release";
+	private final String TEXT_VERSION = "Version";
+	private final String ENTER_OID = "Enter OID";
+	private final String ENTER_NAME = "Enter Name";
+	private final String RETRIEVE_OID = "Retrieve OID";
 	/**
 	 * The Interface Observer.
 	 */
@@ -115,93 +122,36 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 	}
 	
-	/** The observer. */
 	private Observer observer;
-	
-	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
-	
-		
-	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	
-	/** The cell table panel. */
 	private Panel cellTablePanel = new Panel();
-	
-	/** The cell table panel body. */
 	private PanelBody cellTablePanelBody = new PanelBody();
-	/** Cell Table Row Count. */
 	private static final int TABLE_ROW_COUNT = 10;
-	
-	/** The table. */
 	private CellTable<CQLQualityDataSetDTO> table;
-	
-	/** The qdm selected list. */
 	private List<CQLQualityDataSetDTO> qdmSelectedList;
-	
-
-	/** The selection model. */
 	private MultiSelectionModel<CQLQualityDataSetDTO> selectionModel;
-	
-	
-	/** The sort provider. */
 	private ListDataProvider<CQLQualityDataSetDTO> listDataProvider;
-	
-	/** The update button. */
 	private Button updateVSACButton = new Button("Update From VSAC ");
-	
-	
-	/** The version list. */
 	private List<String> versionList = new ArrayList<String>();
-	
-	
-	
-	/** The last selected object. */
 	private CQLQualityDataSetDTO lastSelectedObject;
-	
-	/** The version list box. */
 	private ListBox versionListBox = new ListBox();
-	
-	
-	/** The name input. */
+	private ListBox programListBox = new ListBox();
+	private ListBox releaseListBox = new ListBox();
 	private MatTextBox nameInput = new MatTextBox();
-	
-	/** The Suffix input. */
+	private MatTextBox oidInput = new MatTextBox();
+	private Button goButton = new Button(RETRIEVE_OID);
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
-	
-	/** The is editable. */
 	private boolean isEditable;
-	
-	/** The specific occurrence check box. */
 	private CheckBox specificOcurChkBox;
-	
-	
-	/** The vsac profile header. */
-	//private Label defaultExpProfileHeader = new Label(LabelType.INFO,"Apply Expansion Profile");
-	
-	/** The spager. */
 	private MatSimplePager spager;
-	
-	/** The save cancel button bar. */
-	private Button saveValueSet = new Button("Apply");
-	
-	/** The cancel button. */
-	private Button cancelButton = new Button("Cancel");
-	
-	/** The s widget. */
-	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve OID","Enter OID");
-	
-	/** The main panel. */
+	private Button saveValueSet = new Button(TEXT_APPLY);
+	private Button cancelButton = new Button(TEXT_CANCEL);
 	private VerticalPanel mainPanel;
-	
-	/** The search header. */
 	private PanelHeader searchHeader = new PanelHeader();
-	
-	/** The cell table main panel. */
+	private HelpBlock helpBlock = new HelpBlock(); 
 	SimplePanel cellTableMainPanel = new SimplePanel();
-	
 	HTML heading = new HTML();
-	
 	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("valueset");
 	
 	/**
@@ -237,6 +187,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("cqlqdsContentPanel");
 	}
+
 	
 	/**
 	 * Builds the cell table widget.
@@ -296,23 +247,25 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		Panel searchPanel = new Panel();
 		PanelBody searchPanelBody = new PanelBody();
-		
-		
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
 		
 		searchHeader.setStyleName("CqlWorkSpaceTableHeader");
-		
-		
 		searchPanel.add(searchHeader);
-		searchPanel.setWidth("650px");
-		searchPanel.setHeight("355px");
 		searchPanelBody.add(new SpacerWidget());
+		
+		FormGroup messageFormGroup = new FormGroup(); 
+		messageFormGroup.add(helpBlock);
+		messageFormGroup.getElement().setAttribute("role", "alert");
+		helpBlock.setColor("transparent");
+		helpBlock.setHeight("0px");
+		searchPanelBody.add(messageFormGroup);
+
 		
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");
 		
-		nameInput.setTitle("Enter Name");
+		nameInput.setTitle(ENTER_NAME);
 		nameInput.setWidth("450px");
 		nameInput.setHeight("30px");
 		
@@ -327,12 +280,12 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		versionListBox.setEnabled(false);
 		versionListBox.setWidth("600px");
 		
-		saveValueSet.setText("Apply");
-		saveValueSet.setTitle("Apply");
+		saveValueSet.setText(TEXT_APPLY);
+		saveValueSet.setTitle(TEXT_APPLY);
 		saveValueSet.setType(ButtonType.PRIMARY);
 		
 		cancelButton.setType(ButtonType.DANGER);
-		cancelButton.setTitle("Cancel");
+		cancelButton.setTitle(TEXT_CANCEL);
 		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);
@@ -344,16 +297,69 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		buttonPanel.add(new SpacerWidget());
 		
 		
-		
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
-		sWidget.setSearchBoxWidth("500px");
-		searchWidgetFormGroup.add(sWidget.getSearchWidget());
+		searchWidgetFormGroup.getElement().getStyle().setProperty("padding", "10px");
+		searchWidgetFormGroup.getElement().getStyle().setProperty("border", "solid 1px #e8eff7");
+		searchWidgetFormGroup.getElement().getStyle().setProperty("marginBottom", "10px");
+		FormLabel oidLabel = new FormLabel();
+
+		oidLabel.setText(TEXT_OID);
+		oidLabel.setTitle(TEXT_OID);
+		searchWidgetFormGroup.add(oidLabel);
+		oidInput.setWidth("595px");
+		oidInput.setTitle(ENTER_OID);
+		searchWidgetFormGroup.add(oidInput);
+		searchWidgetFormGroup.add(new SpacerWidget());
+		
+		Grid programReleaseGrid = new Grid(1,3);
+		
+		VerticalPanel programPanel = new VerticalPanel();
+		programPanel.setWidth("225px");
+		FormLabel programLabel = new FormLabel();
+		programLabel.setText(TEXT_PROGRAM);
+		programLabel.setTitle(TEXT_PROGRAM);
+		programPanel.add(programLabel);
+		programListBox.setTitle("Program selection list");
+		programListBox.setWidth("200px");
+		programPanel.add(programListBox);
+		initProgramListBoxContent();
+			
+		
+		VerticalPanel releasePanel = new VerticalPanel();
+		releasePanel.setWidth("225px");
+		FormLabel releaseLabel = new FormLabel();
+		releaseLabel.setText(TEXT_RELEASE);
+		releaseLabel.setTitle(TEXT_RELEASE);
+		releasePanel.add(releaseLabel);
+		releaseListBox.setTitle("Release selection list");
+		releaseListBox.setWidth("200px");
+		releasePanel.add(releaseListBox);
+		initializeReleaseListBoxContent();
+		
+		VerticalPanel goPanel = new VerticalPanel();
+		goPanel.setWidth("150px");
+		goPanel.add(new SpacerWidget());
+		goPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		goButton.setType(ButtonType.PRIMARY);
+		goButton.setIcon(IconType.SEARCH);
+		goButton.setIconPosition(IconPosition.LEFT);
+		goButton.setSize(ButtonSize.SMALL);
+		goButton.setTitle(RETRIEVE_OID);
+		goButton.setPull(Pull.RIGHT);
+		goButton.getElement().getStyle().setProperty("marginRight", "5px");
+		goPanel.add(goButton);
+		
+		programReleaseGrid.setWidget(0, 0, programPanel);
+		programReleaseGrid.setWidget(0, 1, releasePanel);
+		programReleaseGrid.setWidget(0, 2, goPanel);
+		programReleaseGrid.setWidth("600px");
+		searchWidgetFormGroup.add(programReleaseGrid);
 		searchWidgetFormGroup.add(new SpacerWidget());
 
 		VerticalPanel namePanel = new VerticalPanel();
 		FormLabel nameLabel = new FormLabel();
-		nameLabel.setText("Name");
-		nameLabel.setTitle("Name");
+		nameLabel.setText(TEXT_NAME);
+		nameLabel.setTitle(TEXT_NAME);
 		nameLabel.setFor("nameInput_TextBox");
 		namePanel.add(nameLabel);
 		namePanel.add(nameInput);
@@ -370,8 +376,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 		VerticalPanel versionFormGroup = new VerticalPanel();
 		FormLabel verLabel = new FormLabel();
-		verLabel.setText("Version");
-		verLabel.setTitle("Version");
+		verLabel.setText(TEXT_VERSION);
+		verLabel.setTitle(TEXT_VERSION);
 		verLabel.setFor("Version_ListBox");
 		versionFormGroup.add(verLabel);
 		versionFormGroup.add(versionListBox);
@@ -380,15 +386,18 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
-
+		
+		
 		Grid oidGrid = new Grid(1, 1);
 		oidGrid.setWidget(0, 0, searchWidgetFormGroup);
 		Grid nameGrid = new Grid(1, 2);
 		nameGrid.setWidget(0, 0, namePanel);
 		nameGrid.setWidget(0, 1, suffixPanel);
+		nameGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 		Grid versionGrid = new Grid(2, 1);
 		versionGrid.setWidget(0, 0, versionFormGroup);
 		versionGrid.setWidget(1, 0, buttonFormGroup);
+		versionGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 
 		searchPanelBody.add(oidGrid);
 		searchPanelBody.add(nameGrid);
@@ -397,6 +406,19 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}
+	
+	public void initializeReleaseListBoxContent() {
+		getReleaseListBox().clear();
+		getReleaseListBox().setEnabled(false);
+		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+	}
+	
+	
+	public void initProgramListBoxContent() {
+		getProgramListBox().clear();
+		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
+	}
+	
 	
 	/**
 	 * Builds the cell table.
@@ -567,6 +589,23 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.addColumn(versionColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
 			
+			// Release Column
+			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLQualityDataSetDTO object) {
+					StringBuilder title = new StringBuilder();
+					String release = "";
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						title.append("Release : ").append(object.getRelease());
+						release = object.getRelease() != null ? object.getRelease() : "";
+					}
+					return CellTableUtility.getColumnToolTip(release, title.toString());
+				}
+			};
+			table.addColumn(releaseColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
+			
 			String colName = "";
 			// Edit Column
 			colName = "Edit";
@@ -601,12 +640,15 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				}
 			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
+			table.setWidth("100%", true);
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 25.0, Unit.PCT);
-			table.setColumnWidth(2, 17.0, Unit.PCT);
-			table.setColumnWidth(3, 2.0, Unit.PCT);
-			table.setColumnWidth(4, 2.0, Unit.PCT);
-			table.setColumnWidth(5, 2.0, Unit.PCT);
+			table.setColumnWidth(2, 14.0, Unit.PCT);
+			table.setColumnWidth(3, 14.0, Unit.PCT);
+			table.setColumnWidth(4, 7.0, Unit.PCT);
+			table.setColumnWidth(5, 8.0, Unit.PCT);
+			table.setColumnWidth(6, 7.0, Unit.PCT);
+			table.setStyleName("tableWrap");
 		}
 
 		return table;
@@ -956,9 +998,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 		if(checkForEnable()){
 			versionListBox.setEnabled(false);
-			sWidget.getSearchBox().setTitle("Enter OID");
-			nameInput.setTitle("Enter Name");
-			
+			oidInput.setTitle(ENTER_OID);
+			nameInput.setTitle(ENTER_NAME);	
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();
@@ -1096,7 +1137,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 */
 	//@Override
 	public org.gwtbootstrap3.client.ui.Button getRetrieveFromVSACButton(){
-		return sWidget.getGo();
+		return goButton;
 	}
 	
 	/* (non-Javadoc)
@@ -1142,13 +1183,21 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return versionListBox;
 	}
 	
+	public ListBox getProgramListBox() {
+		return programListBox;
+	}
+	
+	public ListBox getReleaseListBox() {
+		return releaseListBox;
+	}
+	
 	/**
 	 * Gets the OID input.
 	 *
 	 * @return the OID input
 	 */
 	public TextBox getOIDInput() {
-		return sWidget.getSearchBox();
+		return oidInput;
 	}
 	
 	/**
@@ -1322,7 +1371,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			getSaveButton().setEnabled(true);
 		} else {
 			isUserDefined = false;
-			getUserDefinedInput().setTitle("Enter Name");
+			getUserDefinedInput().setTitle(ENTER_NAME);
 			getOIDInput().setEnabled(true);
 			getRetrieveFromVSACButton().setEnabled(true);
 			getSaveButton().setEnabled(false);
@@ -1388,21 +1437,23 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		getOIDInput().setEnabled(true);
 		getOIDInput().setValue("");
-		getOIDInput().setTitle("Enter OID");
+		getOIDInput().setTitle(ENTER_OID);
 		
 		getUserDefinedInput().setEnabled(true);
 		getUserDefinedInput().setValue("");
-		getUserDefinedInput().setTitle("Enter Name");
+		getUserDefinedInput().setTitle(ENTER_NAME);
 		
 		getSuffixInput().setEnabled(true);
 		getSuffixInput().setValue("");
 		getSuffixInput().setTitle("Suffix must be an integer between 1-4 characters");
 		
 		getVersionListBox().clear();
-		
 		getVersionListBox().setEnabled(false);
-		
 		getSaveButton().setEnabled(false);
+		
+		initializeReleaseListBoxContent();
+		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
+		getProgramListBox().setEnabled(true);
 		
 		getUpdateFromVSACButton().setEnabled(true);
 	}
@@ -1441,6 +1492,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getCancelQDMButton().setEnabled(isEditable);
 		getUpdateFromVSACButton().setEnabled(isEditable);
 		getRetrieveFromVSACButton().setEnabled(isEditable);
+		getProgramListBox().setEnabled(isEditable);
 		this.setIsLoading(!isEditable);
 	}
 
@@ -1517,5 +1569,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 		return false;
+	}
+
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+
+	public void setHelpBlock(HelpBlock helpBlock) {
+		this.helpBlock = helpBlock;
 	}
 }

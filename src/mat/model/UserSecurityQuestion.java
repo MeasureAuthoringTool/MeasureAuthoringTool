@@ -10,16 +10,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class UserSecurityQuestion.
  */
 public class UserSecurityQuestion implements IsSerializable, Serializable {
-	
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1467684755533301014L;
 
 	private int id;
 
-	/** The user id. */
+	/** The user */
 	private String userId;
 	
 	/** The row id. */
@@ -34,6 +29,8 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 	/** The security questions. */
 	private SecurityQuestions securityQuestions;
 	
+	private String salt;
+
 	/**
 	 * Gets the security question id.
 	 * 
@@ -90,6 +87,10 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 		return id;
 	}
 	
+	public String getSalt() {
+		return salt;
+	}
+	
 	/**
 	 * Sets the row id.
 	 * 
@@ -130,21 +131,15 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 		this.securityQuestions = securityQuestions;
 	}
 	
-	/**
-	 * Gets the user id.
-	 * 
-	 * @return the user id
-	 */
+
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
-	
-	/**
-	 * Sets the user id.
-	 * 
-	 * @param userId
-	 *            the new user id
-	 */
+
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}

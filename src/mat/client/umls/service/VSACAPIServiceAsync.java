@@ -60,4 +60,6 @@ public interface VSACAPIServiceAsync {
 
 	void getDirectReferenceCode(String url, AsyncCallback<VsacApiResult> callback);
 	
+	void getVSACProgramsAndReleases(AsyncCallback<VsacApiResult> callback);	
+	
 }

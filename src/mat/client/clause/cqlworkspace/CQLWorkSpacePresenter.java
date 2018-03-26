@@ -1,14 +1,17 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -148,6 +151,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * now this flag will always be set to true.
 	 */
 	private boolean isFormatable = true;
+	
+	
+	private boolean isProgramListBoxEnabled = true; 
+	private boolean isReleaseListBoxEnabled = false;
+	private boolean isRetrieveButtonEnabled = true; 
+	private boolean isVersionListBoxEnabled = false; 
+	private boolean isApplyButtonEnabled = false; 
+	
+	private boolean previousIsProgramListBoxEnabled = true; 
+	private boolean previousIsReleaseListBoxEnabled = false;
+	private boolean previousIsRetrieveButtonEnabled = true; 
+	private boolean previousIsVersionListBoxEnabled = false; 
+	private boolean previousIsApplyButtonEnabled = false; 
+
+
 
 	/**
 	 * The Interface ViewDisplay.
@@ -330,6 +348,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		void hideInformationDropDown();
 
 		void setGeneralInfoHeading();
+		
+		HelpBlock getHelpBlock();
 
 	}
 
@@ -2389,7 +2409,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Adds the Value Set observer handler.
 	 */
-	private void addValuSetObserverHandler() {
+	private void addValueSetObserverHandler() {
 
 		searchDisplay.getValueSetView().setObserver(new CQLAppliedValueSetView.Observer() {
 			@Override
@@ -3330,6 +3350,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
+		//Load VSAC Programs and Releases
+		getProgramsAndReleases();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -3690,7 +3712,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 			buildAppliedQDMTable();
 		}
-
+		//On load of Value Sets page, set the Programs from VSAC 
+		loadPrograms();		
 		searchDisplay.getValueSetView().setHeading("CQL Workspace > Value Sets", "subQDMAPPliedListContainerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -4778,6 +4801,53 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 			}
 		});
+		
+		searchDisplay.getValueSetView().getReleaseListBox().addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
+				enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
+				
+				previousIsApplyButtonEnabled = isApplyButtonEnabled;
+				isApplyButtonEnabled = false;
+				searchDisplay.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
+				alert508StateChanges();
+			}
+		});
+		
+		searchDisplay.getValueSetView().getProgramListBox().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+
+				List<String> releases = new ArrayList<>();
+				releases.add(MatContext.PLEASE_SELECT);
+
+				if(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue().equals(MatContext.PLEASE_SELECT)) {
+					isReleaseListBoxEnabled = false; 
+				}	
+				
+				else {
+					releases.addAll(MatContext.get().getProgramToReleases().get(program));
+					isReleaseListBoxEnabled = true;
+				}
+				
+				setReleaseListBoxContent(releases);
+
+				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(isReleaseListBoxEnabled);
+				enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
+				enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
+				
+				previousIsApplyButtonEnabled = isApplyButtonEnabled;
+				isApplyButtonEnabled = false; 
+				searchDisplay.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
+				
+				alert508StateChanges();
+			}
+		});
 
 		/**
 		 * this functionality is to clear the content on the ValueSet Search Panel.
@@ -4791,6 +4861,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 				// 508 compliance for Value Sets
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
+				
+				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				isProgramListBoxEnabled = true;
+				isReleaseListBoxEnabled = false; 
+				searchDisplay.getValueSetView().initializeReleaseListBoxContent();
+				searchDisplay.getValueSetView().initProgramListBoxContent();
+				loadPrograms(); 
 			}
 		});
 
@@ -4815,10 +4893,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-					searchDisplay.resetMessageDisplay();
-					String version = null;
-					String expansionProfile = null;
-					searchValueSetInVsac(version, expansionProfile);
+					searchDisplay.resetMessageDisplay();					
+					String expansionProfile = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+					expansionProfile = MatContext.PLEASE_SELECT.equals(expansionProfile) ? null : expansionProfile;
+					searchValueSetInVsac(expansionProfile);
 					// 508 compliance for Value Sets
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
 				}
@@ -4871,11 +4949,27 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
+				previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+				
 				searchDisplay.resetMessageDisplay();
 				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
+				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
+					isRetrieveButtonEnabled = true;
+					isProgramListBoxEnabled = true;
+					isReleaseListBoxEnabled = false;
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
+					searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+					loadPrograms();
+				} else {
+					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
+				}
+				
+				alert508StateChanges();
 			}
 		});
-
+		
 		/**
 		 * value Change Handler for Version listBox in Search Panel
 		 */
@@ -4884,7 +4978,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onChange(ChangeEvent event) {
 				searchDisplay.resetMessageDisplay();
-
+				boolean versionNotSelectedEnableProgramReleaseFields = isListValueNotSelected(searchDisplay.getValueSetView().getVersionListBox().getSelectedValue());
+				searchDisplay.getValueSetView().getProgramListBox().setEnabled(versionNotSelectedEnableProgramReleaseFields);
+				if (!versionNotSelectedEnableProgramReleaseFields) {
+					searchDisplay.getValueSetView().getReleaseListBox().setEnabled(false);
+				}
+				searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
+				searchDisplay.getValueSetView().getHelpBlock().setText("Program selection is ".concat(Boolean.TRUE.equals(versionNotSelectedEnableProgramReleaseFields) ? "enabled" : "disabled"));
 			}
 		});
 
@@ -4898,8 +4998,61 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
-		addValuSetObserverHandler();
+		addValueSetObserverHandler();
+	}
+		
+	public void setReleaseListBoxContent(List<String> releases) {
+		searchDisplay.getValueSetView().getReleaseListBox().clear();
+		for(String release : releases) {
+			searchDisplay.getValueSetView().getReleaseListBox().addItem(release, release);
+		}
+	}
 
+	private void enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes() {
+		searchDisplay.resetMessageDisplay();
+		previousIsVersionListBoxEnabled = isVersionListBoxEnabled; 
+		isVersionListBoxEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+									&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionListBoxEnabled);
+	}
+	
+	private void enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes() {		
+		previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+
+		String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+		String release = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+		if ((release.equals(MatContext.PLEASE_SELECT) && program.equals(MatContext.PLEASE_SELECT))
+				|| (!release.equals(MatContext.PLEASE_SELECT) && !program.equals(MatContext.PLEASE_SELECT))) {
+			isRetrieveButtonEnabled = true;
+		} else {
+			isRetrieveButtonEnabled = false;
+		}
+		
+		
+		searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+	}
+	
+	
+	private void alert508StateChanges() {
+		StringBuilder helpTextBuilder = new StringBuilder();
+		
+		helpTextBuilder.append(build508HelpString(previousIsReleaseListBoxEnabled, isReleaseListBoxEnabled, "Release List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsVersionListBoxEnabled, isVersionListBoxEnabled, "Version List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsProgramListBoxEnabled, isProgramListBoxEnabled, "Program List Box"));
+		helpTextBuilder.append(build508HelpString(previousIsRetrieveButtonEnabled, isRetrieveButtonEnabled, "Retrieve Button"));
+		helpTextBuilder.append(build508HelpString(previousIsApplyButtonEnabled, isApplyButtonEnabled, "Apply Button"));
+		
+		searchDisplay.getValueSetView().getHelpBlock().setText(helpTextBuilder.toString());
+	}
+	
+	private String build508HelpString(boolean previousState, boolean currentState, String elementName) {
+		
+		String helpString = "";
+		if(currentState != previousState) {
+			helpString = elementName.concat(" ").concat(Boolean.TRUE.equals(currentState) ? "enabled" : "disabled");
+		}
+		
+		return helpString; 
 	}
 
 	private void addCodeSearchPanelHandlers() {
@@ -5394,6 +5547,29 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	/**
+	 * MAT-8977. 
+	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
+	 * the first time the value sets page is loaded.
+	 * If the values have been loaded previously, no calls are made.
+	 */
+	private void getProgramsAndReleases() {
+
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+
+		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
+			MatContext.get().getProgramsAndReleasesFromVSAC();	
+		}		
+
+	}
+
+	private void loadPrograms() {
+		searchDisplay.getValueSetView().initProgramListBoxContent();
+		searchDisplay.getValueSetView().initializeReleaseListBoxContent();
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
+	}
+	
+	/**
 	 * Search value set in vsac.
 	 *
 	 * @param version
@@ -5401,7 +5577,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param expansionProfile
 	 *            the expansion profile
 	 */
-	private void searchValueSetInVsac(String version, String expansionProfile) {
+	private void searchValueSetInVsac(String expansionProfile) {
 		currentMatValueSet = null;
 		showSearchingBusy(true);
 		final String oid = searchDisplay.getValueSetView().getOIDInput().getValue();
@@ -5422,7 +5598,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 
-		vsacapiService.getMostRecentValueSetByOID(oid, null, new AsyncCallback<VsacApiResult>() {
+		vsacapiService.getMostRecentValueSetByOID(oid, expansionProfile, new AsyncCallback<VsacApiResult>() {
 
 			@Override
 			public void onFailure(final Throwable caught) {
@@ -5446,12 +5622,16 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getValueSetView().getUserDefinedInput().setValue(valueSetName);
 					searchDisplay.getValueSetView().getUserDefinedInput().setTitle(valueSetName);
 
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
-
 					searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
-
 					getVSACVersionListByOID(oid);
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(true);
+					
+					boolean isVersionEnabled = isListValueNotSelected(searchDisplay.getValueSetView().getProgramListBox().getSelectedValue()) 
+							&& isListValueNotSelected(searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue());
+					searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionEnabled);
+					searchDisplay.getValueSetView().getHelpBlock().setColor("transparent");
+					searchDisplay.getValueSetView().getHelpBlock().setText("Version selection is ".concat(Boolean.TRUE.equals(isVersionEnabled) ? "enabled" : "disabled"));
+					
+					
 					showSearchingBusy(false);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate()
@@ -5513,6 +5693,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 											.createAlert(message);
+									previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+									previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+									isProgramListBoxEnabled = true;
+									isReleaseListBoxEnabled = false; 
+									searchDisplay.getValueSetView().initProgramListBoxContent();
+									loadPrograms(); 
+									
 									getAppliedValueSetList();
 								} else {
 									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
@@ -5662,6 +5849,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
+			}
+			
+			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setRelease(releaseValue);
+			} else {
+				modifyValueSetDTO.setRelease("");
+			}
+			
+			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setProgram(programValue);
+			} else {
+				modifyValueSetDTO.setProgram("");
 			}
 			
 			modifyValueSetList(modifyValueSetDTO);
@@ -5902,7 +6103,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(originalCodeListName);
 		}
+		
+		// set them to empty strings to begin with
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease("");
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram("");
+		String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue(); 
+		if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
+		}
+		
+		String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+		if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
+		}
 
+		
 		CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
 		codeListSearchDTO.setName(searchDisplay.getValueSetView().getUserDefinedInput().getText());
 		matValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
@@ -5976,11 +6191,60 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getSuffixInput().setEnabled(true);
 		searchDisplay.getValueSetView().getSuffixInput().setValue(result.getSuffix());
 		searchDisplay.getValueSetView().getSuffixInput().setTitle(result.getSuffix());
-
-		searchDisplay.getValueSetView().getVersionListBox().clear();
-		searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-
+		
+		setReleaseAndProgramAndVersionFieldsOnEdit(result);
 		searchDisplay.getValueSetView().getSaveButton().setEnabled(isUserDefined);
+		alert508StateChanges();
+	}
+	
+	private void setReleaseAndProgramAndVersionFieldsOnEdit(CQLQualityDataSetDTO result) {
+		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+		previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+		previousIsVersionListBoxEnabled = isVersionListBoxEnabled;
+		searchDisplay.getValueSetView().getProgramListBox().clear();
+		searchDisplay.getValueSetView().getReleaseListBox().clear();		
+		loadPrograms();
+		if(result.getProgram().isEmpty()) {
+			// if the valueset that was being edited has no program, put the selected index to the '--Select' field. 
+			// and put the release box in it's original state. 
+			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
+			searchDisplay.getValueSetView().initializeReleaseListBoxContent(); 
+			isProgramListBoxEnabled = true; 
+			isReleaseListBoxEnabled = false; 
+			isVersionListBoxEnabled = true; 
+
+		} else {
+			// if the valueset that is being edited has a program, find that value and set it as the selected index. 
+			// set the release values based on the programs and then fidn the value and set it as the selected value
+			isProgramListBoxEnabled = true; 
+			isReleaseListBoxEnabled = true; 
+			isVersionListBoxEnabled = false; 
+			
+			for(int i = 0; i < searchDisplay.getValueSetView().getProgramListBox().getItemCount(); i++) {
+				String listBoxValue = searchDisplay.getValueSetView().getProgramListBox().getValue(i);
+				if(listBoxValue.equals(result.getProgram())) {
+					searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(i);
+					break; 
+				}
+			}
+			
+			List<String> releases = new ArrayList<>(); 
+			releases.add(MatContext.PLEASE_SELECT);
+			releases.addAll(MatContext.get().getProgramToReleases().get(result.getProgram()));
+			setReleaseListBoxContent(releases);
+			
+			for(int i = 0; i < searchDisplay.getValueSetView().getReleaseListBox().getItemCount(); i++) {
+				String releaseLixBoxValue = searchDisplay.getValueSetView().getReleaseListBox().getValue(i);
+				if(releaseLixBoxValue.equals(result.getRelease())) {
+					searchDisplay.getValueSetView().getReleaseListBox().setSelectedIndex(i);
+					break; 
+				}
+			}
+		}
+		
+		searchDisplay.getValueSetView().getProgramListBox().setEnabled(isProgramListBoxEnabled);
+		searchDisplay.getValueSetView().getReleaseListBox().setEnabled(isReleaseListBoxEnabled);
+		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionListBoxEnabled);
 	}
 
 	/**
@@ -6142,6 +6406,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().buildAppliedValueSetCellTable(appliedValueSetTableList,
 				MatContext.get().getMeasureLockService().checkForEditPermission());
 		searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
+	}
+	
+	private static final boolean isListValueNotSelected(String selectedValueFromList) {
+		return MatContext.PLEASE_SELECT.equals(selectedValueFromList) || selectedValueFromList == null || selectedValueFromList.isEmpty();
 	}
 
 }

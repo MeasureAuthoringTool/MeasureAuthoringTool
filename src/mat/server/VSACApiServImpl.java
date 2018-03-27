@@ -460,11 +460,11 @@ public class VSACApiServImpl implements VSACApiService{
 							if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
 									cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
-							}else if (!(cqlQualityDataSetDTO.getVersion().equals("1.0") 
+							} else if (!(cqlQualityDataSetDTO.getVersion().equals("1.0") 
 									|| cqlQualityDataSetDTO.getVersion().equals("1"))) {
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(
 										cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
-							}else{
+							} else {
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 										cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
 							}
@@ -487,7 +487,6 @@ public class VSACApiServImpl implements VSACApiService{
 						}
 						if ((vsacResponseResult.getXmlPayLoad() != null)
 								&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
-							LOGGER.info("VSAC Response result : " + vsacResponseResult.getXmlPayLoad());
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							if (matValueSet != null) {

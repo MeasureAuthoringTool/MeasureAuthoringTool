@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -27,7 +25,6 @@ import mat.dao.DataTypeDAO;
 import mat.model.DataType;
 import mat.model.DirectReferenceCode;
 import mat.model.MatValueSet;
-import mat.model.QualityDataSetDTO;
 import mat.model.VSACExpansionProfileWrapper;
 import mat.model.VSACValueSetWrapper;
 import mat.model.VSACVersionWrapper;
@@ -62,8 +59,6 @@ public class VSACApiServImpl implements VSACApiService{
 	/** The profile service. */
 	private String profileService;
 	
-	/** The Constant REQUEST_FAILURE_CODE. */
-	private static final int VSAC_REQUEST_FAILURE_CODE = 4;
 	/** The Constant TIME_OUT_FAILURE_CODE. */
 	private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
 	
@@ -72,12 +67,6 @@ public class VSACApiServImpl implements VSACApiService{
 	
 	/** The version service. */
 	private String versionService;
-	
-	/** The mat value set list. */
-	private ArrayList<MatValueSet> matValueSetList;
-	
-	/** The update in measure xml. */
-	private HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml;
 	
 	/** The default exp id. */
 	private String defaultExpId;
@@ -96,13 +85,7 @@ public class VSACApiServImpl implements VSACApiService{
 		versionService = System.getProperty("VERSION_SERVICE");
 		vsacServerDRCUrl = System.getProperty("VSAC_DRC_URL");
 		
-		/*if(vsacServerDRCUrl == null || vsacServerDRCUrl.isEmpty()){
-			LOGGER.info("DRC URL is null and is not set in system properties....");
-			vsacServerDRCUrl ="https://vsac.nlm.nih.gov/vsac";
-		}*/
 		vGroovyClient = new VSACGroovyClient(PROXY_HOST, PROXY_PORT, server,service,retieriveMultiOIDSService,profileService,versionService,vsacServerDRCUrl);
-		
-		//defaultExpId = getDefaultExpansionId();
 	}
 	
 	/**
@@ -281,40 +264,6 @@ public class VSACApiServImpl implements VSACApiService{
 		return eightHourTicketForUser != null;
 	}
 	
-	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
-	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
-	 * @param map - HaspMap
-	 * @param measureId - String */
-	private void updateAllInMeasureXml(HashMap<QualityDataSetDTO, QualityDataSetDTO> map, String measureId) {
-		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
-		Iterator<Entry<QualityDataSetDTO, QualityDataSetDTO>> it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<QualityDataSetDTO, QualityDataSetDTO> entrySet = it.next();
-			LOGGER.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
-			getMeasureLibraryService().updateMeasureXML(entrySet.getKey(),
-					entrySet.getValue(), measureId);
-			LOGGER.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
-		}
-		LOGGER.info("End VSACAPIServiceImpl updateAllInMeasureXml :");
-	}
-	
-	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
-	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
-	 * @param map - HaspMap
-	 * @param id - String */
-	private void updateAllCQLInLibraryXml(HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> map, String libraryId) {
-		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
-		Iterator<Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO>> it = map.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<CQLQualityDataSetDTO, CQLQualityDataSetDTO> entrySet = it.next();
-			LOGGER.info("Calling updateLibraryXML for : " + entrySet.getKey().getOid());
-			getLibraryService().updateCQLLookUpTagWithModifiedValueSet(entrySet.getKey(),
-					entrySet.getValue(), libraryId);
-			LOGGER.info("Successfully updated Library XML for  : " + entrySet.getKey().getOid());
-		}
-		LOGGER.info("End VSACAPIServiceImpl updateAllInLibraryXml :");
-	}
-	
 	/**
 	 * Method to retrive All Profile List from VSAC.
 	 *
@@ -353,7 +302,7 @@ public class VSACApiServImpl implements VSACApiService{
 			}
 		} else {
 			result.setSuccess(false);
-			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
 			LOGGER.info("VSACAPIServiceImpl getAllExpIdentifierList :: UMLS Login is required");
 		}
 		LOGGER.info("End VSACAPIServiceImpl getAllExpIdentifierList method :");
@@ -398,7 +347,7 @@ public class VSACApiServImpl implements VSACApiService{
 			}
 		} else {
 			result.setSuccess(false);
-			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
 			LOGGER.info("VSACAPIServiceImpl getAllVersionListByOID :: UMLS Login is required");
 		}
 		LOGGER.info("End VSACAPIServiceImpl getAllVersionListByOID method :");
@@ -519,12 +468,6 @@ public class VSACApiServImpl implements VSACApiService{
 						toBeModifiedQDM.setNotFoundInVSAC(true);
 					}
 				}
-				//to validate removed DataTypes in Applied QDM ELements
-				/*DataType qdmDataType = getDataTypeDAO().findByDataTypeName(toBeModifiedQDM.getDataType());
-				if((qdmDataType == null) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(cqlQualityDataSetDTO.getDataType())
-						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(cqlQualityDataSetDTO.getDataType())){
-					toBeModifiedQDM.setDataTypeHasRemoved(true);
-				}*/
 				modifiedQDMList.add(toBeModifiedQDM);
 			}
 			result.setCqlQualityDataSetMap(updateInMeasureXml);
@@ -532,7 +475,7 @@ public class VSACApiServImpl implements VSACApiService{
 			result.setUpdatedCQLQualityDataDTOLIst(modifiedQDMList);
 		} else {
 			result.setSuccess(false);
-			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
 			LOGGER.info("VSACAPIServiceImpl updateCQLVSACValueSets :: UMLS Login is required");
 		}
 		LOGGER.info("End VSACAPIServiceImpl updateCQLVSACValueSets method :");
@@ -548,7 +491,6 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final boolean validateVsacUser(final String userName, final String password, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
-		//String eightHourTicketForUser = new VSACTicketService(PROXY_HOST, PROXY_PORT).getTicketGrantingTicket(userName, password);
 		String eightHourTicketForUser = vGroovyClient.getTicketGrantingTicket(userName, password);
 		UMLSSessionTicket.put(sessionId, eightHourTicketForUser);
 		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
@@ -573,7 +515,7 @@ public class VSACApiServImpl implements VSACApiService{
 		
 		if(validator.validateForCodeIdentifier(url)){
 			result.setSuccess(false);
-			result.setFailureReason(result.INVALID_CODE_URL);
+			result.setFailureReason(VsacApiResult.INVALID_CODE_URL);
 			return result;
 		}  
 		
@@ -599,12 +541,12 @@ public class VSACApiServImpl implements VSACApiService{
 				}
 			}  else {
 				result.setSuccess(false);
-				result.setFailureReason(result.CODE_URL_REQUIRED);
+				result.setFailureReason(VsacApiResult.CODE_URL_REQUIRED);
 				LOGGER.info("URL is required");
 			}
 		} else {
 			result.setSuccess(false);
-			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
 			LOGGER.info("UMLS Login is required");
 		}
 		
@@ -647,12 +589,12 @@ public class VSACApiServImpl implements VSACApiService{
 				}
 			} else {
 				result.setSuccess(false);
-				result.setFailureReason(result.OID_REQUIRED);
+				result.setFailureReason(VsacApiResult.OID_REQUIRED);
 				LOGGER.info("OID is required");
 			}
 		} else {
 			result.setSuccess(false);
-			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
 			LOGGER.info("UMLS Login is required");
 		}
 		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
@@ -660,102 +602,6 @@ public class VSACApiServImpl implements VSACApiService{
 		return result;
 	}
 	
-	/**
-	 * Gets the update measure xml list.
-	 *
-	 * @param vsacResponseResult the vsac response result
-	 * @param qualityDataSetDTO the quality data set dto
-	 * @param eightHourTicket the eight hour ticket
-	 * @param defaultExpId the default exp id
-	 * @return the update measure xml list
-	 */
-	private void getUpdateMeasureXMLList(VSACResponseResult vsacResponseResult, QualityDataSetDTO qualityDataSetDTO,
-			String eightHourTicket, String defaultExpId){
-		if ((vsacResponseResult.getXmlPayLoad() != null)
-				&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
-			VSACValueSetWrapper wrapper = convertXmltoValueSet(
-					vsacResponseResult.getXmlPayLoad());
-			MatValueSet matValueSet = wrapper.getValueSetList().get(0);
-			QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
-			if (matValueSet != null) {
-				matValueSet.setQdmId(qualityDataSetDTO.getId());
-				qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
-				if(qualityDataSetDTO.getVersion().equals("1.0")
-						|| qualityDataSetDTO.getVersion().equals("1")){
-					matValueSet.setVersion("Draft"); // If expansion Profile is used or most recent search is done , version should not show up in value set sheet.
-				} else {
-					matValueSet.setVersion(qualityDataSetDTO.getVersion());
-				}
-				
-				if (qualityDataSetDTO.getExpansionIdentifier() != null) {
-					matValueSet.setExpansionProfile(qualityDataSetDTO.
-							getExpansionIdentifier());
-				}
-				if (matValueSet.isGrouping()) {
-					qualityDataSetDTO.setTaxonomy(ConstantMessages.
-							GROUPING_CODE_SYSTEM);
-					handleVSACGroupedValueSet(eightHourTicket, matValueSet, defaultExpId);
-					if (matValueSet.getGroupedValueSet().size() != 0) {
-						matValueSetList.add(matValueSet);
-					}
-				} else {
-					if (matValueSet.getConceptList().getConceptList() != null) {
-						qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
-								getConceptList().get(0).
-								getCodeSystemName());
-						matValueSetList.add(matValueSet);
-					} else {
-						qualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
-					}
-				}
-				updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
-			}
-		}
-	}
-	/**
-	 * Private method to Handle Grouped type Value set.
-	 * @param eightHourTicket
-	 *            - String.
-	 * @param valueSet
-	 *            - MatValueSet.
-	 * @param defaultExpId TODO
-	 */
-	private void handleVSACGroupedValueSet(final String eightHourTicket, final MatValueSet valueSet, String defaultExpId) {
-		if (!valueSet.isGrouping()) {
-			return;
-		}
-		valueSet.setGroupedValueSet(new ArrayList<MatValueSet>());
-		String definitation = valueSet.getDefinition();
-		if ((definitation != null) && StringUtils.isNotBlank(definitation)) {
-			// Definition format is
-			// (oid:SourceName),(oid:sourceName).
-			// Below code is removing '(' ')' and splitting
-			// on ':' to find oid's.
-			definitation = definitation.replace("(", "");
-			definitation = definitation.replace(")", "");
-			String[] newDefinitation = definitation.split(",");
-			for (String element : newDefinitation) {
-				String[] groupedValueSetOid = element.split(":");
-				// If Check To avoid junk data.
-				if (groupedValueSetOid.length == 2) {
-					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
-					String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
-					VSACResponseResult vsacResponseResult = vGroovyClient.
-							getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim(),fiveMinServiceTicket,
-									defaultExpId);
-					
-					if(vsacResponseResult != null) {
-						
-						VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
-						MatValueSet valueSetGrouping = wrapperGrouped.getValueSetList().get(0);
-						valueSetGrouping.setVersion(valueSet.getVersion()); 
-						valueSetGrouping.setExpansionProfile(valueSet.getExpansionProfile());
-						valueSet.getGroupedValueSet().add(valueSetGrouping);
-					}
-				}
-			}
-		}
-	}
 	/**
 	 * Gets the default exp id.
 	 *

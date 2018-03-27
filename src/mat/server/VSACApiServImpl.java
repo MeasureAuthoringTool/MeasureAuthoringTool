@@ -457,15 +457,18 @@ public class VSACApiServImpl implements VSACApiService{
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
 								UMLSSessionTicket.getTicket(sessionId));
-							if (!(cqlQualityDataSetDTO.getVersion().equals("1.0")
+							if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
+								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
+									cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
+							}else if (!(cqlQualityDataSetDTO.getVersion().equals("1.0") 
 									|| cqlQualityDataSetDTO.getVersion().equals("1"))) {
-								vsacResponseResult = vGroovyClient.
-										getMultipleValueSetsResponseByOIDAndVersion(cqlQualityDataSetDTO.getOid(),
-												cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
-							} else {
+								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(
+										cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
+							}else{
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(
 										cqlQualityDataSetDTO.getOid(), fiveMinuteServiceTicket, defaultExpId);
 							}
+							
 					} catch (Exception ex) {
 						LOGGER.info("VSACAPIServiceImpl updateCQLVSACValueSets :: Value Set reterival failed at "
 								+ "VSAC for OID :" + cqlQualityDataSetDTO.getOid() + " with Data Type : "
@@ -484,6 +487,7 @@ public class VSACApiServImpl implements VSACApiService{
 						}
 						if ((vsacResponseResult.getXmlPayLoad() != null)
 								&& StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
+							LOGGER.info("VSAC Response result : " + vsacResponseResult.getXmlPayLoad());
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							if (matValueSet != null) {

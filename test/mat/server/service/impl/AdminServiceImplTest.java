@@ -2,20 +2,15 @@ package mat.server.service.impl;
 
 import java.util.List;
 
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.dao.ListObjectDAO;
 import mat.dao.SpringInitializationTest;
 import mat.dao.UserDAO;
-import mat.model.CodeListSearchDTO;
 import mat.model.User;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class AdminServiceImplTest extends SpringInitializationTest {
 	

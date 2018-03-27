@@ -1,17 +1,15 @@
 package mat.server.service.impl;
 
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.dao.SecurityRoleDAO;
 import mat.dao.SpringInitializationTest;
 import mat.dao.UserDAO;
 import mat.model.SecurityRole;
 import mat.model.User;
-import mat.model.UserPassword;
 import mat.server.service.UserService;
 import mat.shared.PasswordVerifier;
-
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import static org.junit.Assert.*;
 
 public class UserServiceImplTest extends SpringInitializationTest {
 	

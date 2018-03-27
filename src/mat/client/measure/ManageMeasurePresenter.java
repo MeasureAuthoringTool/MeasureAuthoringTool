@@ -2300,8 +2300,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 					searchDisplay.getErrorMessageDisplayForBulkExport()
 							.createAlert(MatContext.get().getMessageDelegate().getMeasureSelectionError());
 				} else {
-
-					int filter = searchDisplay.getSelectedFilter();
 					bulkExport(manageMeasureSearchModel.getSelectedExportIds());
 					searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
 

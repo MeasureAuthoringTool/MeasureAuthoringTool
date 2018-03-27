@@ -6,10 +6,6 @@ import mat.shared.MatConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface Generator.
- */
 public interface Generator extends MatConstants {
 	
 	/** The Constant HIGH. */

@@ -2,13 +2,6 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.List;
 
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay;
-import mat.client.shared.DropDownSubMenu;
-import mat.client.shared.JSONCQLTimingExpressionUtility;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
-
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Button;
@@ -43,6 +36,11 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.shared.DropDownSubMenu;
+import mat.client.shared.JSONCQLTimingExpressionUtility;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
 
 // TODO: Auto-generated Javadoc
 /**

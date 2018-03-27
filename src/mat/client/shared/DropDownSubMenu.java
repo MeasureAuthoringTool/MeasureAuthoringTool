@@ -22,10 +22,6 @@ package mat.client.shared;
 
 import javax.swing.ButtonGroup;
 
-import org.gwtbootstrap3.client.ui.base.mixin.PullMixin;
-import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.client.ui.html.UnorderedList;
-
 /**
  * Container for drop down menu items.
  * <p/>

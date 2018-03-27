@@ -28,11 +28,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ManageUserHistoryView.
  */
-@SuppressWarnings("deprecation")
+
 public class ManageUserHistoryView implements
 		ManageUsersPresenter.HistoryDisplay {
 

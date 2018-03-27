@@ -2,7 +2,6 @@ package mat.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -51,77 +50,69 @@ public class LogToChart {
     "</body>\n"+ 
     "</html>\n";
 	
-	
-static public String appendLogItem(String time, String permGen, String heap, String threads){
+
+   static public String appendLogItem(String time, String permGen, String heap, String threads){
 	   String s = "[new Date("+time+"), "+permGen+", "+heap+", "+threads+"]";
 	   return s;
    }
-   
-   
-    public static void main(String[] av) {
-    	ArrayList<String> logItems = new ArrayList<String>();
-    	
-  
-    	
-    	 try {
-    		 File f = new File("log.txt");
-    		// System.out.println(f.getCanonicalPath());
-			Scanner fileScanner = new Scanner(f);
-		
-     	 
-			String line;
-			while(fileScanner.hasNext()){
-			line = fileScanner.nextLine();
-			
-			Pattern chartPattern = Pattern.compile("CHARTREPORT");
-		    Matcher chartMatcher = chartPattern.matcher(line);
-	 
-	    	   if (chartMatcher.find()) {
-	    	    	
-	    	    //    String match = chartMatcher.group();
-	    	       // System.out.println(chartMatcher.end()+" hit "+match);
-	    	        String logLine = line.substring(chartMatcher.end());
-	    	       // System.out.println(logLine);
-	    	        
-	    	        Scanner scan = new Scanner(logLine);
-	    	        //System.out.println("* "+logLine);
-	    	        
-	    	        String permGen ="";
-	    	        String heap = "";
-	    	        String threads = "";
-	    	        String time = "";
-	    	        
-	    	    	BigInteger bigBoy;
-	    	    	bigBoy = scan.nextBigInteger();
-	    	    	permGen = bigBoy.toString();
-	    	    	bigBoy = scan.nextBigInteger();
-	    	    	heap = bigBoy.toString();
-	    	    	bigBoy = scan.nextBigInteger();
-	    	    	threads = bigBoy.toString();
-	    	    	bigBoy = scan.nextBigInteger();
-	    	    	time = bigBoy.toString();
-	    	    	
-	    	    	logItems.add(appendLogItem(time, permGen, heap, threads));
-	    	    		
-	    	    
-	    	    }
-    	 
-    	 
-			}
-    	 
-    	 
-    	 
-    	 
-    	 
-    	 
-    	 } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}  
-    	
+
+
+   public static void main(String[] av) {
+	   ArrayList<String> logItems = new ArrayList<String>();
+
+
+
+	   try {
+		   File f = new File("log.txt");
+		   // System.out.println(f.getCanonicalPath());
+		   Scanner fileScanner = new Scanner(f);
+
+
+		   String line;
+		   while(fileScanner.hasNext()){
+			   line = fileScanner.nextLine();
+
+			   Pattern chartPattern = Pattern.compile("CHARTREPORT");
+			   Matcher chartMatcher = chartPattern.matcher(line);
+
+			   if (chartMatcher.find()) {
+
+				   //    String match = chartMatcher.group();
+				   // System.out.println(chartMatcher.end()+" hit "+match);
+				   String logLine = line.substring(chartMatcher.end());
+				   // System.out.println(logLine);
+
+				   Scanner scan = new Scanner(logLine);
+				   //System.out.println("* "+logLine);
+
+				   String permGen ="";
+				   String heap = "";
+				   String threads = "";
+				   String time = "";
+
+				   BigInteger bigBoy;
+				   bigBoy = scan.nextBigInteger();
+				   permGen = bigBoy.toString();
+				   bigBoy = scan.nextBigInteger();
+				   heap = bigBoy.toString();
+				   bigBoy = scan.nextBigInteger();
+				   threads = bigBoy.toString();
+				   bigBoy = scan.nextBigInteger();
+				   time = bigBoy.toString();
+
+				   logItems.add(appendLogItem(time, permGen, heap, threads));
+
+				   scan.close();
+			   }
+
+			   fileScanner.close();
+		   }
+
+	   } catch (FileNotFoundException e) {
+		   // TODO Auto-generated catch block
+		   e.printStackTrace();
+	   }
+
 		
 		
     	/*

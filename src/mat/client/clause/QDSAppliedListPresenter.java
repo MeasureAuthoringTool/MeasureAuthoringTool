@@ -243,25 +243,6 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		
 	}
 	
-	/**
-	 * Method to get Message against failure reason.
-	 * @param id
-	 *            - {@link Integer}
-	 * @return {@link String}
-	 */
-	private String convertMessage(int id) {
-		String message;
-		switch (id) {
-			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_NOT_LOGGEDIN();
-				break;
-			default:
-				message = MatContext.get().getMessageDelegate()
-				.getUnknownFailMessage();
-		}
-		return message;
-	}
 	
 	/**
 	 * Method to put view on Main Panel.

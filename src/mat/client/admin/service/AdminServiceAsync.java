@@ -1,12 +1,11 @@
 package mat.client.admin.service;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.ManageUsersSearchModel;
-import mat.model.User;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The Interface AdminServiceAsync.

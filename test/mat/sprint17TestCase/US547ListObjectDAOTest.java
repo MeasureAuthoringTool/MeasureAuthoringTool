@@ -7,13 +7,12 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.dao.ListObjectDAO;
 import mat.dao.SpringInitializationTest;
 import mat.model.ListObject;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author vandavar

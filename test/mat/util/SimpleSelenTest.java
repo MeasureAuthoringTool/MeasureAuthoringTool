@@ -1,20 +1,4 @@
 package mat.util;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-//import org.openqa.selenium.By;
-//import org.openqa.selenium.OutputType;
-//import org.openqa.selenium.TakesScreenshot;
-//import org.openqa.selenium.WebDriver;
-//import org.openqa.selenium.WebElement;
-//import org.openqa.selenium.firefox.FirefoxDriver;
-//import org.openqa.selenium.remote.Augmenter;
-//import org.openqa.selenium.support.ui.ExpectedCondition;
-//import org.openqa.selenium.support.ui.WebDriverWait;
-
 
 public class SimpleSelenTest {
 

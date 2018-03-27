@@ -615,30 +615,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Convert message.
-	 *
-	 * @param id
-	 *            - {@link Integer}.
-	 * @return String - {@link String}.
-	 */
-	private String convertMessage(final int id) {
-		String message;
-		switch (id) {
-			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_NOT_LOGGEDIN();
-				break;
-			case VsacApiResult.OID_REQUIRED:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_OID_REQUIRED();
-				break;
-			default:
-				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
-		}
-		return message;
-	}
-	
-	/**
 	 * Creates the value set transfer object.
 	 *
 	 * @param dataType the data type

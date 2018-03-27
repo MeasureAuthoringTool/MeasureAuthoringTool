@@ -44,10 +44,7 @@ public class AddFunctionArgumentDialogBox {
 	 * String Message - Argument name is not unique.
 	 */
 	private static final String ARGUMENT_NAME_IS_NOT_UNIQUE = "Argument name already exists.";
-	/**
-	 * String Message - Argument name is not unique.
-	 */
-	private static final String ARGUMENT_NAME_IS_INVALID = "Invalid Argument Name. Duplicate name or use of restricted character(s).";
+
 	/**
 	 * String Message - CQL datatype is required.
 	 */
@@ -280,19 +277,6 @@ public class AddFunctionArgumentDialogBox {
 				argumentNameFormGroup.setValidationState(ValidationState.NONE);
 				selectFormGroup.setValidationState(ValidationState.NONE);
 				helpBlock.setText("");
-				//attributeListBox.clear();
-				int selectedIndex = listSelectItem.getSelectedIndex();
-				String itemValue = new String();
-				if (selectedIndex != -1) {
-					itemValue = listSelectItem.getItemText(selectedIndex);
-				}
-				/*if (!itemValue.contains(SELECT)) {
-					//getAttributesForDataType(itemValue, attributeListBox);
-					//attributeListBox.setEnabled(true);
-				} else {
-					//	attributeListBox.setEnabled(false);
-					//attributeListBox.clear();
-				}*/
 			}
 		});
 		//Argument Text Area click handler

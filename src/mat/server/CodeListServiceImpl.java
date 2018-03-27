@@ -3,9 +3,7 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,42 +162,10 @@ implements mat.client.codelist.service.CodeListService {
 		return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
 	}
 	
-	
-	
-	/**
-	 * Invoke MeasureLibrary Service to save global paste qdm Elements in MeasureXml.
-	 * @param result - {@link SaveUpdateCodeListResult}
-	 * @param measureId - Current Measure Id
-	 */
-	/*private void saveAndAppendElementLookup(SaveUpdateCodeListResult result, String measureId) {
-		String nodeName = "qdm";
-		String newNodeName = "valueset";
-		MeasureXmlModel exportModal = new MeasureXmlModel();
-		exportModal.setMeasureId(measureId);
-		exportModal.setParentNode("/measure/elementLookUp");
-		exportModal.setToReplaceNode("qdm");
-		MeasureXmlModel newExportModal = new MeasureXmlModel();
-		newExportModal.setMeasureId(measureId);
-		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
-		newExportModal.setToReplaceNode("valueset");
-		MeasureXmlModel codeSystemModal = new MeasureXmlModel();
-		codeSystemModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		codeSystemModal.setParentNode("/measure/cqlLookUp/codeSystems");
-		codeSystemModal.setToReplaceNode("codeSystem");
-		System.out.println("XML " + result.getXmlString());
-		exportModal.setXml(result.getXmlString());
-		newExportModal.setXml(result.getnewXmlString());
-		System.out.println("New XML " + result.getnewXmlString());
-		
-		
-		MeasureLibraryServiceImpl measureService = (MeasureLibraryServiceImpl) context.getBean("measureLibraryService");
-		measureService.appendAndSaveNode(exportModal,nodeName);
-	}*/
 
 	@Override
 	public List<UnitDTO> getAllCqlUnits() {
 		logger.info("getAllCqlUnits");
-		Map<String, String> cqlUnits = new LinkedHashMap<String, String>();
 		List<UnitDTO> data =  getCodeListService().getAllUnits();
 		
 		return data;

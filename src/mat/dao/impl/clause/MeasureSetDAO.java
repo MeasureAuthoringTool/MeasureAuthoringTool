@@ -17,9 +17,6 @@ import org.springframework.context.ApplicationContext;
  */
 public class MeasureSetDAO extends GenericDAO<MeasureSet, String> implements mat.dao.clause.MeasureSetDAO {
 	
-	/** The lock threshold. */
-	private final long lockThreshold = 3*60*1000; //3 minutes   
-	
 	/** The d ao service. */
 	private DAOService dAOService = null;
 	

@@ -6,6 +6,15 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Input;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.Widget;
+
 import mat.client.Mat;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
@@ -20,16 +29,6 @@ import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
 /**

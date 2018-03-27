@@ -6,17 +6,6 @@ import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.Input;
 
-import mat.client.shared.ChangePasswordWidget;
-import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.NameValuePair;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecurityQuestionAnswerWidget;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.PasswordRules;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -27,6 +16,15 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.shared.ChangePasswordWidget;
+import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MessageAlert;
+import mat.client.shared.NameValuePair;
+import mat.client.shared.PasswordRules;
+import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SecurityQuestionAnswerWidget;
+import mat.client.shared.SpacerWidget;
 
 
 /**

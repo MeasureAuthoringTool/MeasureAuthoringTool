@@ -3,19 +3,17 @@ package mat.client.shared;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.ImageResources;
-
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO: Auto-generated Javadoc
+import mat.client.ImageResources;
+
 /**
  * The Class InformationMessageDisplay.
  */

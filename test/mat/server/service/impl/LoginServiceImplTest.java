@@ -1,14 +1,13 @@
 package mat.server.service.impl;
 
+import org.junit.Test;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import mat.dao.SpringInitializationTest;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.UserPassword;
 import mat.server.model.MatUserDetails;
-import mat.server.service.UserIDNotUnique;
-
-import org.junit.Test;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class LoginServiceImplTest extends SpringInitializationTest {
 	String username = "firsttimeuser";

@@ -418,28 +418,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 	
 	/**
-	 * Convert message.
-	 *
-	 * @param id
-	 *            the id
-	 * @return String
-	 */
-	private String convertMessage(int id) {
-		String message;
-		switch(id) {
-			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
-				break;
-			case VsacApiResult.OID_REQUIRED:
-				message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
-				break;
-			default:
-				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
-		}
-		return message;
-	}
-	
-	/**
 	 * This method shows AvailableValueSet Widget in pop up.
 	 * */
 	private void displaySearch() {

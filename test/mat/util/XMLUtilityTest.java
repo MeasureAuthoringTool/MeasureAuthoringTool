@@ -3,15 +3,11 @@
  */
 package mat.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.StringReader;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
@@ -27,11 +23,6 @@ public class XMLUtilityTest {
 		String fs = File.separator;
 		String xslt = ud+fs+"test"+fs+"XSLT Resources"+fs+"db2hqmf_08262010_1.xsl";
 		System.out.println("Printing XSLT path: " + xslt);
-		//String xslt = "db2hqmf_08262010_1.xsl";
-		//String input = "";
-		String result = null;
-		ByteArrayOutputStream outStream = null;
-		outStream = new ByteArrayOutputStream();
 		//This system property sets the TransformFactory to use the Saxon TransformerFactoryImpl method
 		//This line is needed to prevent issues with XSLT transform.
 		System.setProperty("javax.xml.transform.TransformerFactory","net.sf.saxon.TransformerFactoryImpl"); 
@@ -43,10 +34,7 @@ public class XMLUtilityTest {
 		}catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Error Configuring XML Transformer:", e.getCause());
-		} catch (TransformerException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Error Transforming XML:", e.getCause());
-		}catch(Exception e){
+		} catch(Exception e){
 			e.printStackTrace();
 		}
 		if(transformer != null)

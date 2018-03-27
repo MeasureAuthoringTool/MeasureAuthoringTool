@@ -717,7 +717,6 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public String getSetIdForCQLLibrary(String cqlLibraryId) {
 
 		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);

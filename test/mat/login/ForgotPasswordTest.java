@@ -1,10 +1,9 @@
 package mat.login;
 
+import org.junit.Test;
+
 import mat.dao.SpringInitializationTest;
 import mat.shared.ForgottenPasswordResult;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class ForgotPasswordTest extends SpringInitializationTest{
 

@@ -1,8 +1,6 @@
 package mat.client.clause.cqlworkspace;
 
 
-import java.util.ArrayList;
-
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;

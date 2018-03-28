@@ -574,11 +574,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 						if ((object.getVersion() != null) && (object.getVersion().equals("1.0")
 								|| object.getVersion().equals("1"))) {
-							title.append("Version : ").append(object.getRelease() != null ? "" : "Most Recent");
-							version = object.getRelease() != null ? "" : "Most Recent";
+							version = (object.getRelease() == null || object.getRelease().isEmpty()) ? "Most Recent" : "";
+							GWT.log("Version:" + version);
+							title.append("Version : ").append(version);
+							
 						} else {
-							title.append("Version : ").append(object.getVersion());
 							version = object.getVersion();
+							title.append("Version : ").append(version);
 						}
 					} else {
 						version = "";

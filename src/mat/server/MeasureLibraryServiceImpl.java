@@ -78,6 +78,7 @@ import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
@@ -98,6 +99,7 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
@@ -217,6 +219,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Autowired
 	private CQLLibraryService cqlLibraryService;
+	
+	@Autowired
+	private MeasureExportDAO measureExportDAO; 
+
 
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -2087,47 +2093,59 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 
-	/**
-	 * Method to set version in measureDetail/version tag and cqlLookUp/version
-	 * tag when measure is versioned.
-	 * 
-	 * @param meas
-	 *            - Measure
-	 * @param versionStr
-	 */
-	private void setVersionInMeasureDetailsAndCQLLookUp(final Measure meas, String versionStr) {
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(meas.getId());
-		if ((measureXmlModel != null) && StringUtils.isNotBlank(measureXmlModel.getXml())) {
+    /**
+    * Method to set version in measureDetail/version tag and cqlLookUp/version
+    * tag when measure is versioned.
+    * 
+     * @param meas
+    *            - Measure
+    * @param versionStr
+    */
+    private void setVersionInMeasureDetailsAndCQLLookUp(final Measure meas, String versionStr) {
+           MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(meas.getId());
+           if ((measureXmlModel != null) && StringUtils.isNotBlank(measureXmlModel.getXml())) {
+                  String measureXML = measureXmlModel.getXml();
+                  String updatedXML;
+                  try {
+                        updatedXML = replaceVersionInXMLString(measureXML, versionStr, meas.getId());
+                        measureXmlModel.setXml(updatedXML);
+                        getService().saveMeasureXml(measureXmlModel);
+                  } catch (XPathExpressionException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                  }
+           }
+    }
 
-			XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
-			String cqlVersionXPath = "//cqlLookUp/version";
-			String measureVersionXPath = "//measureDetails/version";
-			try {
-				Node measureVersionNode = (Node) xPath.evaluate(measureVersionXPath,
-						xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
-				if (measureVersionNode != null) {
-					measureVersionNode.setTextContent(MeasureUtility.formatVersionText(versionStr));
-				} else {
-					logger.info("measureDetails Node not found. This is in measure : " + meas.geteMeasureId());
-				}
+    private String replaceVersionInXMLString(String measureXML, String versionStr, String measureId) throws XPathExpressionException {
+    	XmlProcessor xmlProcessor = new XmlProcessor(measureXML);
+    	String cqlVersionXPath = "//cqlLookUp/version";
+    	String measureVersionXPath = "//measureDetails/version";
+    	Node measureVersionNode = (Node) xPath.evaluate(measureVersionXPath,
+    			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+    	if (measureVersionNode != null) {
+    		measureVersionNode.setTextContent(MeasureUtility.formatVersionText(versionStr));
+    	} else {
+    		logger.info("measureDetails Node not found. This is in measure : " + measureId);
+    	}
 
-				Node cqlVersionNode = (Node) xPath.evaluate(cqlVersionXPath,
-						xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
-				if (cqlVersionNode != null) {
-					cqlVersionNode
-							.setTextContent(MeasureUtility.formatVersionText(meas.getRevisionNumber(), versionStr));
-				} else {
-					logger.info("CQLLookUp Node not found. This is in measure : " + meas.geteMeasureId());
-				}
-				measureXmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-				getService().saveMeasureXml(measureXmlModel);
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    	Node cqlVersionNode = (Node) xPath.evaluate(cqlVersionXPath,
+    			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+    	System.err.println("here here");
+    	if (cqlVersionNode != null) {
+    		System.err.println("here not null");
 
-		}
-	}
+    		System.err.println(cqlVersionNode.getTextContent());
+    		cqlVersionNode
+    		.setTextContent(MeasureUtility.formatVersionText(versionStr));
+    		System.err.println(cqlVersionNode.getTextContent());
+    	} else {
+    		logger.info("CQLLookUp Node not found. This is in measure : " + measureId);
+    	}
+    	String updatedXML = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+    	return updatedXML;
+    }
+
 
 	// TODO refactor this logic into a shared location: see MeasureDAO.
 	/**
@@ -2377,7 +2395,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
 		}
-		
+
 		String versionNumber = null;
 		if (isMajor) {
 			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());
@@ -2405,23 +2423,48 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			String[] versionArr = versionNumber.split("\\.");
 			if (isMajor) {
 				if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
-					return incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
+					rs = incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
+					if(rs.isSuccess()) {
+						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+						String simpleXML = measureExport.getSimpleXML();
+						saveSimpleXML(m, measureExport, simpleXML);
+					}
 				} else {
-					return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
+					rs =  returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
 				}
 
 			} else {
 				if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
 					versionNumber = versionArr[0] + "." + versionArr[1];
-					return incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
+					rs = incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
+					if(rs.isSuccess()) {
+						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+						String simpleXML = measureExport.getSimpleXML();
+						saveSimpleXML(m, measureExport, simpleXML);
+					}
 				} else {
-					return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
+					rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
 				}
 			}
 
 		} else {
-			return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+			rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
 		}
+		return rs;
+	}
+
+
+	private void saveSimpleXML(Measure measure, MeasureExport measureExport, String simpleXML) {
+		String finalVersion = measure.getMajorVersionInt() + "." + measure.getMinorVersionInt() + "."  + measure.getRevisionNumber();
+		String updatedSimpleXML = "";
+		try {
+			updatedSimpleXML = replaceVersionInXMLString(simpleXML, finalVersion, measure.getId());
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		measureExport.setSimpleXML(updatedSimpleXML);
+		measureExportDAO.save(measureExport);		
 	}
 
 	/**

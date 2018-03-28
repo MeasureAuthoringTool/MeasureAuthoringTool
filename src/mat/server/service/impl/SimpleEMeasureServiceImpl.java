@@ -852,26 +852,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 					+ emeasureXMLStr.substring(offset + repee.length());
 			measureExport.setSimpleXML(emeasureXMLStr);
 		}
-		// 2 add version field
-		final String versionStart = "<version>";
-		final String versionEnd = "</version>";
-		String vStr = measure.getMajorVersionStr() + "." + measure.getMinorVersionStr() + "." + measure.getRevisionNumber();
-		if (emeasureXMLStr.contains(versionStart)) {
-			int start = emeasureXMLStr.indexOf(versionStart)
-					+ versionStart.length();
-			int end = emeasureXMLStr.indexOf(versionEnd);
-			emeasureXMLStr = emeasureXMLStr.substring(0, start) + vStr
-					+ emeasureXMLStr.substring(end);
-			measureExport.setSimpleXML(emeasureXMLStr);
-		} else {
-			String repee = "</measureDetails>";
-			String repor = su.nl + versionStart + vStr + versionEnd + su.nl
-					+ "</measureDetails>";
-			int offset = emeasureXMLStr.indexOf(repee);
-			emeasureXMLStr = emeasureXMLStr.substring(0, offset) + repor
-					+ emeasureXMLStr.substring(offset + repee.length());
-			measureExport.setSimpleXML(emeasureXMLStr);
-		}
 		
 		return measureExport;
 	}

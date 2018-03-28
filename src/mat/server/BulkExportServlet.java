@@ -11,15 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 import mat.model.clause.Measure;
-import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.shared.FileNameUtility;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /**
  * The Class BulkExportServlet.
@@ -50,11 +49,9 @@ public class BulkExportServlet extends HttpServlet {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		String[] measureIds = req.getParameterValues("id");
 		MeasurePackageService service = getMeasurePackageService();
-		MeasureLibraryService measureLibraryService = getMeasureLibraryService();
-		//Date releaseDate = measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate());
 		Date[] exportDates = new Date[measureIds.length]; 
 		Measure measure;
-		int count = measureIds.length;
+
 		for(int i=0;i<measureIds.length;i++){
 			measure = service.getById(measureIds[i]);
 			exportDates[i] = measure.getExportedDate();
@@ -95,10 +92,6 @@ public class BulkExportServlet extends HttpServlet {
 	
 	private MeasurePackageService getMeasurePackageService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
-	}
-	
-	private MeasureLibraryService getMeasureLibraryService(){
-		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 	
 	/**

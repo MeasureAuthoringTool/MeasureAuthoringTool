@@ -279,7 +279,6 @@ public class ExportServlet extends HttpServlet {
 			}
 			System.out.println("Release version zip " + currentReleaseVersion);
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					//+ fnu.getELMFileName(export.getCqlLibraryName()));
 					+ export.getCqlLibraryName() + ".json");
 			resp.getOutputStream().write(export.export.getBytes());
 		} else {
@@ -313,7 +312,6 @@ public class ExportServlet extends HttpServlet {
 			}
 			System.out.println("Release version zip " + currentReleaseVersion);
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					//+ fnu.getCQLFileName(export.getCqlLibraryName()));
 					+ export.getCqlLibraryName()+".cql");
 			resp.getOutputStream().write(export.export.getBytes());
 		} else {

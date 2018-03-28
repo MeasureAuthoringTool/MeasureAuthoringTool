@@ -750,7 +750,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 */
 	private void saveMeasureXML(final String qdmXMLString, final String valuesetXMLString) {
 		final String nodeName = "qdm";
-		final String newNodeName = "valueset";
 		
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());

@@ -575,7 +575,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						if ((object.getVersion() != null) && (object.getVersion().equals("1.0")
 								|| object.getVersion().equals("1"))) {
 							version = (object.getRelease() == null || object.getRelease().isEmpty()) ? "Most Recent" : "";
-							GWT.log("Version:" + version);
 							title.append("Version : ").append(version);
 							
 						} else {

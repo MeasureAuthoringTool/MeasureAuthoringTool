@@ -1,8 +1,8 @@
 package mat.server.simplexml;
 
+import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.server.simplexml.cql.CQLHumanReadableGenerator;
-import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 
 public class HumanReadableGenerator {
@@ -34,7 +34,7 @@ public class HumanReadableGenerator {
 		
 		String html = "";
 		System.out.println("Generating human readable for ver:"+measureReleaseVersion);
-		if(measureReleaseVersion.equals(MATPropertiesService.get().getCurrentReleaseVersion())){
+		if(MatContext.get().isCQLMeasure(measureReleaseVersion)){
 			html = CQLHumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, cqlLibraryDAO);
 		}else{
 			html = HQMFHumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);

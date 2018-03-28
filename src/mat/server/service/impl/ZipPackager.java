@@ -6,18 +6,14 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.xpath.XPathExpressionException;
-
-import mat.server.service.SimpleEMeasureService.ExportResult;
-import mat.server.util.XmlProcessor;
-import mat.shared.FileNameUtility;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
-import org.w3c.dom.Node;
 
-// TODO: Auto-generated Javadoc
+import mat.client.shared.MatContext;
+import mat.server.service.SimpleEMeasureService.ExportResult;
+import mat.shared.FileNameUtility;
+
 /**
  * User Story ID 357 
  * Delegate creation of a zip file containing eMeasure artifacts for export
@@ -151,7 +147,7 @@ public class ZipPackager {
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 						
-			if(releaseVersion.startsWith("v5")){
+			if(MatContext.get().isCQLMeasure(releaseVersion)){
 				addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
 				  
@@ -241,8 +237,6 @@ public class ZipPackager {
 			String parentPath = "";
 			String emeasureHumanReadablePath = "";
 			String emeasureXMLPath = "";
-			String cqlFilePath = "";
-			String elmFilePath = "";
 			
 			if (currentReleaseVersion.contains(".")){
 				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
@@ -251,20 +245,11 @@ public class ZipPackager {
 			parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + "_" + currentReleaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion);
 			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
-			
-			String cqlLibraryName = getCQLLibraryName(simpleXmlStr); 
-			if(cqlLibraryName.isEmpty()) {
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(emeasureName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(emeasureName);
-			} else {			
-				cqlFilePath = parentPath+File.separator+fnu.getCQLFileName(cqlLibraryName);
-				elmFilePath = parentPath+File.separator+fnu.getELMFileName(cqlLibraryName);
-			}
 
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			
-			if(currentReleaseVersion.startsWith("v5")){
+			if(MatContext.get().isCQLMeasure(currentReleaseVersion)){
 				addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
 			
@@ -332,29 +317,6 @@ public class ZipPackager {
 		}
 	}	 
 	
-	private String getCQLLibraryName(String simpleXMLString) {
-		
-		// get the name from the simple xml
-		String xPathName = "/measure/cqlLookUp[1]/library[1]"; 
-		XmlProcessor xmlProcessor = new XmlProcessor(simpleXMLString); 
-		Node cqlFileName = null;
-		try {
-			cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName);
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		
-		if(cqlFileName == null) {
-			return ""; 
-		}
-		
-		else {
-			return cqlFileName.getTextContent(); 
-		}
-		
-		
-	}
 
 	public byte[] getCQLZipBarr(ExportResult export, String extension) {
 		byte[] ret = null;

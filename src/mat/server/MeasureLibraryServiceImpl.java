@@ -1287,8 +1287,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
-		/*detail.setEditable(
-				(isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());*/
 		
 		detail.setExportable(dto.isPackaged());
 		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
@@ -1498,16 +1496,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setScoringType(measure.getMeasureScoring());
 			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
 			detail.setMeasureLocked(isLocked);
-			// Prod issue fixed - Measure Shared with Regular users not loaded
-			// as editable measures.
-			/*List<MeasureShareDTO> measureShare = getMeasureDAO().getMeasureShareInfoForMeasureAndUser(currentUserId,
-					measure.getId());*/
-			/*if (measureShare.size() > 0) {
-				detail.setEditable(((currentUserId.equals(measure.getOwner().getId()) || isSuperUser
-						|| ShareLevel.MODIFY_ID.equals(measureShare.get(0).getShareLevel()))) && measure.isDraft());
-			} else {
-			*/	detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
-			//}
+			detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
+
 			if (isLocked && (measure.getLockedUser() != null)) {
 				LockedUserInfo lockedUserInfo = new LockedUserInfo();
 				lockedUserInfo.setUserId(measure.getLockedUser().getId());
@@ -2083,7 +2073,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// version tag and cqlLookUp version tag.
 		setVersionInMeasureDetailsAndCQLLookUp(meas, versionStr);
 
-		if (MATPropertiesService.get().getCurrentReleaseVersion().equals(meas.getReleaseVersion())) {
+		if (MatContext.get().isCQLMeasure(meas.getReleaseVersion())) {
 			MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(meas.getId());
 			exportCQLibraryFromMeasure(meas, mDetail, xmlModel);
 		}

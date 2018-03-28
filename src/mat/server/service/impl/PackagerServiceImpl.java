@@ -13,6 +13,20 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -30,27 +44,11 @@ import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
 import mat.server.service.PackagerService;
-import mat.server.util.MATPropertiesService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class PackagerServiceImpl.
  */
@@ -318,8 +316,7 @@ public class PackagerServiceImpl implements PackagerService {
 			overview.setClauses(clauses);
 			overview.setPackages(pkgs);
 			overview.setReleaseVersion(measure.getReleaseVersion());
-			if (measure.getReleaseVersion() != null && (measure.getReleaseVersion()
-					.equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion()))) {
+			if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
 				qdmAndSupplDataforMeasurePackager(overview, processor);
 				getNewRiskAdjVariablesForMeasurePackager(overview, processor);
 			} else {
@@ -755,7 +752,6 @@ public class PackagerServiceImpl implements PackagerService {
 				}
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return datetimeDif;
@@ -1149,7 +1145,7 @@ public class PackagerServiceImpl implements PackagerService {
 	public void saveQDMData(MeasurePackageDetail detail) {
 		Measure measure = measureDAO.find(detail.getMeasureId());
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measure.getId());
-		if (MATPropertiesService.get().getCurrentReleaseVersion().equalsIgnoreCase(measure.getReleaseVersion())) {
+		if (measure.getReleaseVersion() != null &&  MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
 			saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
 		} else {
 			saveQDMData(measureXML, detail.getSuppDataElements());
@@ -1170,13 +1166,6 @@ public class PackagerServiceImpl implements PackagerService {
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		if (supplementDataElementsAll.size() > 0) {
 			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
-			// try {
-			// setSupplementalDataForQDMs(processor.getOriginalDoc(),
-			// detail.getSuppDataElements(), detail.getQdmElements());
-			// } catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
 		} else {
 
 			try {
@@ -1260,8 +1249,7 @@ public class PackagerServiceImpl implements PackagerService {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
 		Measure measure = measureDAO.find(measureXML.getMeasure_id());
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-		if (measure.getReleaseVersion() != null && (MATPropertiesService.get().getCurrentReleaseVersion()
-				.equalsIgnoreCase(measure.getReleaseVersion()))) {
+		if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
 			saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
 		} else {
 			saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);

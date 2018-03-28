@@ -149,7 +149,6 @@ public class CQLUtil {
 	 * @return true if it valid, false if it is not.
 	 */
 	private static boolean isValidDataTypeCombination(String name, List<String> dataTypeList) {
-		boolean isValid = true;
 
 		// check if the birthdate valueset is being used with something other
 		// than then Patient Characteristic Birthdate datatype

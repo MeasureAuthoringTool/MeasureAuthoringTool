@@ -3,8 +3,6 @@ package mat.util;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-
 import junit.framework.TestCase;
 
 public class TimeStampComparatorTest extends TestCase {

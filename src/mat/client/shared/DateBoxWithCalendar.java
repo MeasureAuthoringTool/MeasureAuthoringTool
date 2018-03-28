@@ -53,8 +53,6 @@ public class DateBoxWithCalendar extends Composite{
 	private BlurHandler blurHandler = new BlurHandler() {
 		@Override
 		public void onBlur(BlurEvent event) {
-			Widget source = (Widget)event.getSource();
-		//	source.setStylePrimaryName("no-border");
 			if(!isDateValid()) {
 				showInvalidDateMessage();
 			}
@@ -168,7 +166,6 @@ public class DateBoxWithCalendar extends Composite{
 		element.setAttribute("aria-invalid", "false");
 		element.setAttribute("role", "alert");
 		dateBox.setMaxLength(maxLength);
-		int width = maxLength == MDYHMA ? 150 : 100;
 		dateBox.setWidth("150");
 		if(maxLength == MDY) {
 			dateBox.setTitle("Enter a date in MM/DD/YYYY");

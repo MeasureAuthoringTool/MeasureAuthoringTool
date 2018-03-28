@@ -4,12 +4,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.shared.search.SearchResults;
-import mat.model.LockedUserInfo;
-import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.shared.search.SearchResults;
+import mat.model.LockedUserInfo;
 
 // TODO: Auto-generated Javadoc
 /**

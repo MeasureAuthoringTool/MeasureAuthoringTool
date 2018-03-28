@@ -5,19 +5,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import mat.client.ImageResources;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.event.ClauseSpecificOccurenceEvent;
-import mat.client.shared.MatContext;
-import mat.shared.MatConstants;
-import mat.shared.UUIDUtilClient;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -28,6 +17,16 @@ import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.xml.client.Node;
+
+import mat.client.ImageResources;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.event.ClauseSpecificOccurenceEvent;
+import mat.client.shared.MatContext;
+import mat.shared.MatConstants;
+import mat.shared.UUIDUtilClient;
 
 // TODO: Auto-generated Javadoc
 /**

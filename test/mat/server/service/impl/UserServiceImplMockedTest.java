@@ -2,18 +2,17 @@ package mat.server.service.impl;
 
 import java.util.Date;
 
+import org.easymock.EasyMock;
+import org.junit.After;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.dao.UserDAO;
 import mat.dao.impl.StatusDAO;
 import mat.model.Status;
 import mat.model.User;
 import mat.model.UserPassword;
-import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
-
-import org.easymock.EasyMock;
-import org.junit.After;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserServiceImplMockedTest extends BaseServiceMockedTest {
 	

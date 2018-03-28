@@ -13,7 +13,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AuthorDAO.
  */
@@ -30,7 +29,6 @@ public class AuthorDAO extends GenericDAO<Author, String> implements mat.dao.Aut
 		List<AuthorDTO> AuthorDTOList = new ArrayList<AuthorDTO>();
 		logger.info("Getting all the rows from the Steward table");
 		Session session = getSessionFactory().getCurrentSession();
-		@SuppressWarnings("unchecked")
 		Criteria authorCriteria = session.createCriteria(Author.class);
 		authorCriteria.add(Restrictions.ne("authorName", "other"));
 		List<Author> AuthorList = authorCriteria.list();

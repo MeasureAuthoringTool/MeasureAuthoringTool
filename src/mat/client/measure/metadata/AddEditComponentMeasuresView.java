@@ -24,10 +24,8 @@ import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -48,12 +46,9 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 

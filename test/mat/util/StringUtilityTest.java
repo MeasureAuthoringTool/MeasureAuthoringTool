@@ -3,8 +3,6 @@
  */
 package mat.util;
 
-import org.apache.commons.lang.NumberUtils;
-
 /**
  * @author vandavar
  *

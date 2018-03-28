@@ -326,8 +326,6 @@ implements MeasureCloningService {
 			result.setName(currentDetails.getName());
 			result.setShortName(currentDetails.getShortName());
 			result.setScoringType(currentDetails.getMeasScoring());
-			/*String formattedVersion = MeasureUtility.getVersionText(
-					measure.getVersion(), measure.isDraft());*/
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(), 
 					clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
 			result.setVersion(formattedVersion);

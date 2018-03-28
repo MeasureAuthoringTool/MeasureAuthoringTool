@@ -764,7 +764,7 @@ public class CQLXmlConversionlHelper {
 	 * @return Sentence Case String
 	 */
 	private static String capWords(String strToConvert , String operator) {
-		if ((strToConvert == null) && strToConvert.isEmpty()) {
+		if ((strToConvert == null)) {
 			return strToConvert;
 		} else {
 			StringBuilder sb = new StringBuilder();

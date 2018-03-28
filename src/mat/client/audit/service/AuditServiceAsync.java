@@ -3,12 +3,11 @@ package mat.client.audit.service;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import mat.DTO.SearchHistoryDTO;
 import mat.DTO.UserAuditLogDTO;
 import mat.client.login.service.AsynchronousService;
-import mat.model.UserAuditLog;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The Interface AuditServiceAsync.

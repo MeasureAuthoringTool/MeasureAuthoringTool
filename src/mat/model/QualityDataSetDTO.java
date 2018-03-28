@@ -1,12 +1,7 @@
 package mat.model;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.model.cql.CQLCodeSystem;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class QualityDataSetDTO.
  */

@@ -81,7 +81,6 @@ public class Sprint22Tests extends SpringInitializationTest{
 				mid = m.getId();
 		}
 		if(mid != null){
-			MeasureDAO measureDAO = getService().getMeasureDAO();
 			String emeasureHTML = eMeasureService.getEMeasureHTML(mid).export;
 			boolean hasEmeasureIdentifier = emeasureHTML.contains("eMeasure Identifier<br>(Measure Authoring Tool)");
 			boolean hasGUID = emeasureHTML.contains("GUID");

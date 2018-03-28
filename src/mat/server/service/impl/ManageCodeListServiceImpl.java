@@ -2,11 +2,9 @@ package mat.server.service.impl;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -31,7 +29,6 @@ import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.shared.ValueSetNameInputValidator;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
 import mat.dao.CodeDAO;
@@ -53,29 +50,21 @@ import mat.dao.UserDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.model.Category;
 import mat.model.Code;
-import mat.model.CodeList;
 import mat.model.CodeListSearchDTO;
 import mat.model.CodeSystem;
 import mat.model.DataType;
 import mat.model.GroupedCodeList;
-import mat.model.GroupedCodeListDTO;
 import mat.model.ListObject;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
-import mat.model.MeasureSteward;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.model.User;
-import mat.server.LoggedInUserUtil;
 import mat.server.service.CodeListService;
-import mat.server.service.InvalidLastModifiedDateException;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.ResourceLoader;
 import mat.shared.ConstantMessages;
-import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageCodeListServiceImpl.
  */
@@ -91,7 +80,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	private static final int ASCII_START = 65;
 
 	/** The Constant DEFAULT_PAGE_SIZE. */
-	private static final int DEFAULT_PAGE_SIZE = 50;
+//	private static final int DEFAULT_PAGE_SIZE = 50;
 
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
@@ -209,31 +198,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		logger.debug("addNewAppliedQDMInMeasureXML Method Call xmlString :: "
 				+ xmlString);
 		return xmlString;
-	}
-
-	/**
-	 * Check for duplicate code list.
-	 * 
-	 * @param currentcodeList
-	 *            the currentcode list
-	 * @param listObject
-	 *            the list object
-	 * @return true, if successful
-	 */
-	private boolean checkForDuplicateCodeList(CodeList currentcodeList,
-			ListObject listObject) {
-		boolean duplicateExists = false;
-		for (GroupedCodeList gcl : listObject.getCodesLists()) {
-			String existingOID = gcl.getCodeList().getOid();
-			String currentOID = currentcodeList.getOid();
-			if ((existingOID != null) && (currentOID != null)
-					&& existingOID.trim().equalsIgnoreCase(currentOID.trim())) {
-				duplicateExists = true;
-				logger.info("Trying to add a CodeList with same name and Taxonomy which was already added in the Grouped CodeList.");
-				return duplicateExists;
-			}
-		}
-		return duplicateExists;
 	}
 
 	/**
@@ -627,54 +591,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
-	/**
-	 * Find page count for code lists.
-	 * 
-	 * @param codeLists
-	 *            the code lists
-	 * @return the int
-	 */
-	private int findPageCountForCodeLists(List<GroupedCodeListDTO> codeLists) {
-		int totalRows = codeLists.size();
-		int numberOfRowsPerPage = DEFAULT_PAGE_SIZE;
-		int mod = totalRows % numberOfRowsPerPage;
-		int pageCount = totalRows / numberOfRowsPerPage;
-		pageCount = ((mod > 0) ? (pageCount + 1) : pageCount);
-		return pageCount;
-	}
 
-	/**
-	 * Find page count for codes.
-	 * 
-	 * @param codes
-	 *            the codes
-	 * @return the int
-	 */
-	private int findPageCountForCodes(List<Code> codes) {
-		int totalRows = codes.size();
-		int numberOfRowsPerPage = DEFAULT_PAGE_SIZE;
-		int mod = totalRows % numberOfRowsPerPage;
-		int pageCount = totalRows / numberOfRowsPerPage;
-		pageCount = (mod > 0) ? (pageCount + 1) : pageCount;
-		return pageCount;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#generateUniqueOid(mat.client.codelist
-	 * .ManageCodeListDetailModel)
-	 */
-	/*@Override
-	public String generateUniqueOid(ManageCodeListDetailModel currentDetails) {
-		User user = (currentDetails != null)
-				&& (currentDetails.getID() != null) ? listObjectDAO.find(
-				currentDetails.getID()).getObjectOwner() : getLoggedInUser();
-		String oid = listObjectDAO.generateUniqueOid(user);
-		return oid;
-	}
-*/
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -720,63 +637,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return data;
 	}
 
-	/**
-	 * Gets the and validate last modified date.
-	 * 
-	 * @param lastModifiedStr
-	 *            the last modified str
-	 * @return the and validate last modified date
-	 * @throws InvalidLastModifiedDateException
-	 *             the invalid last modified date exception
-	 */
-	private Timestamp getAndValidateLastModifiedDate(String lastModifiedStr)
-			throws InvalidLastModifiedDateException {
-		Timestamp ts = null;
-		DateStringValidator dsv = new DateStringValidator();
-		int validationCode = dsv.isValidDateString(lastModifiedStr);
-		if (validationCode != DateStringValidator.VALID) {
-			throw new InvalidLastModifiedDateException();
-		}
-		try {
-			Date lastModifiedDt = DateUtility
-					.convertStringToDate(lastModifiedStr);
-			ts = new Timestamp(lastModifiedDt.getTime());
-		} catch (Exception e) {
-			throw new InvalidLastModifiedDateException();
-		}
-		// cannot be a future date
-		if (System.currentTimeMillis() < ts.getTime()) {
-			throw new InvalidLastModifiedDateException();
-		}
-		// else do not care
-		return ts;
-	}
 
-	/**
-	 * Gets the category.
-	 * 
-	 * @param value
-	 *            the value
-	 * @return the category
-	 */
-	private Category getCategory(String value) {
-		Category category = categoryDAO.find(value);
-		return category;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getCodeList(java.lang.String)
-	 */
-	/*@Override
-	public ManageCodeListDetailModel getCodeList(String key) {
-		ManageCodeListDetailModel codeListModel = new ManageCodeListDetailModel();
-		CodeList codeList = codeListDAO.find(key);
-		setCodeListonModel(codeList, codeListModel);
-		return codeListModel;
-	}
-*/
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -787,17 +648,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public List<? extends HasListBox> getCodeListsForCategory(String categoryId) {
 		List<HasListBoxDTO> retList = new ArrayList<HasListBoxDTO>();
-		/*if ((categoryId != null) && !"".equals(categoryId)) {
-			List<CodeList> searchResults = new ArrayList<CodeList>();
-			searchResults = codeListDAO.getValueSetsForCategory(categoryId);
-			for (CodeList searchResult : searchResults) {
-				HasListBoxDTO dto = new HasListBoxDTO();
-				dto.setId(searchResult.getId());
-				dto.setDescription(searchResult.getName());
-				dto.setOid(searchResult.getOid());
-				retList.add(dto);
-			}
-		}*/
 		return retList;
 	}
 
@@ -810,18 +660,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public List<Code> getCodes(String codeListId, int startIndex, int pageSize) {
 		return codeDAO.searchCodes(codeListId, startIndex, pageSize);
-	}
-
-	/**
-	 * Gets the code system.
-	 * 
-	 * @param value
-	 *            the value
-	 * @return the code system
-	 */
-	private CodeSystem getCodeSystem(String value) {
-		CodeSystem codeSystem = codeSystemDAO.find(value);
-		return codeSystem;
 	}
 
 	/*
@@ -923,40 +761,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return data;
 	}
 
-	/**
-	 * Gets the logged in user.
-	 * 
-	 * @return the logged in user
-	 */
-	private User getLoggedInUser() {
-		String userId = LoggedInUserUtil.getLoggedInUser();
-		User user = userDAO.find(userId);
-		return user;
-	}
-
-	/**
-	 * Gets the only filtered codes.
-	 * 
-	 * @param pageSize
-	 *            the page size
-	 * @param codes
-	 *            the codes
-	 * @return the only filtered codes
-	 */
-	private ArrayList<Code> getOnlyFilteredCodes(int pageSize,
-			ArrayList<Code> codes) {
-		ArrayList<Code> codesList = new ArrayList<Code>();
-		int counter = 1;
-		for (Code code : codes) {
-			if (counter > pageSize) {
-				break;
-			} else {
-				counter++;
-				codesList.add(code);
-			}
-		}
-		return codesList;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -993,324 +797,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return qualityDataSetDAO.getQDSElements(false, measureId);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getRelAssociationsOperators()
-	 */
-	/*@Override
-	public List<OperatorDTO> getRelAssociationsOperators() {
-		return operatorDAO.getRelAssociationsOperators();
-	}*/
-
-	/**
-	 * Gets the steward.
-	 * 
-	 * @param value
-	 *            the value
-	 * @return the steward
-	 */
-	private MeasureSteward getSteward(String value) {
-		MeasureSteward stewardOrg = stewardDAO.find(value);
-		return stewardOrg;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getSupplimentalCodeList()
-	 */
-	/*@Override
-	public List<ListObject> getSupplimentalCodeList() {
-		List<ListObject> listOfSuppElements = listObjectDAO
-				.getSupplimentalCodeList();
-		return listOfSuppElements;
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getTimingOperators()
-	 */
-	/*@Override
-	public List<OperatorDTO> getTimingOperators() {
-		return operatorDAO.getRelTimingperators();
-	}
-*/
-	/**
-	 * Insert default code list.
-	 * 
-	 * @param createdUser
-	 *            the created user
-	 * @param codeListName
-	 *            the code list name
-	 */
-	/*private void insertdefaultCodeList(final User createdUser,
-			final String codeListName) {
-		CodeList codeList = new CodeList();
-		String oid = generateUniqueOid(null);
-		codeList.setOid(oid);
-		ListObject defaultObject = codeList;
-		defaultObject.setName(codeListName);
-		Category defaultCategory = new Category();
-		defaultCategory.setId("22");
-		defaultObject.setCategory(defaultCategory);
-		defaultObject.setObjectOwner(createdUser);
-		CodeSystem defaultCodeSystem = new CodeSystem();
-		defaultCodeSystem.setId("60");
-		defaultObject.setCodeSystem(defaultCodeSystem);
-		MeasureSteward steward = new MeasureSteward();
-		steward.setOrgName(createdUser.getOrganizationName());
-		steward.setId("80");
-		defaultObject.setSteward(steward);
-		defaultObject.setDraft(true);
-		// Should we have a default lastModified timestamp?
-		defaultObject.setCodeSystemVersion("1");
-		defaultObject.setRationale("N/A");
-		listObjectDAO.save(defaultObject);
-	}
-*/
-	/**
-	 * Insert ready to use code list.
-	 * 
-	 * @param createdUser
-	 *            the created user
-	 * @param codeListName
-	 *            the code list name
-	 */
-	private void insertReadyToUseCodeList(User createdUser, String codeListName) {
-		CodeList codeList = new CodeList();
-		if (codeListName
-				.equalsIgnoreCase(ConstantMessages.ADMINISTRATIVE_GENDER_MALE)) {
-			codeList.setOid(ConstantMessages.GENDER_MALE_OID);
-		} else if (codeListName
-				.equalsIgnoreCase(ConstantMessages.ADMINISTRATIVE_GENDER_FEMALE)) {
-			codeList.setOid(ConstantMessages.GENDER_FEMALE_OID);
-		} else if (codeListName
-				.equalsIgnoreCase(ConstantMessages.ADMINISTRATIVE_GENDER_UNDIFFERENTIATED)) {
-			codeList.setOid(ConstantMessages.GENDER_UNDIFFERENTIATED_OID);
-		} else {
-			codeList.setOid(ConstantMessages.BIRTH_DATE_OID);
-		}
-		ListObject defaultObject = codeList;
-		defaultObject.setName(codeListName);
-		Category defaultCategory = new Category();
-		defaultCategory.setId("9");
-		defaultObject.setCategory(defaultCategory);
-		defaultObject.setObjectOwner(createdUser);
-		CodeSystem defaultCodeSystem = new CodeSystem();
-		if (codeListName.equalsIgnoreCase(ConstantMessages.BIRTH_DATE)) {
-			defaultCodeSystem.setId("94");// LOINC
-			defaultObject.setCodeSystemVersion("2.36");
-		} else {
-			defaultCodeSystem.setId("93");// HL7 Administrative Gender
-			defaultObject.setCodeSystemVersion("v3");
-		}
-		defaultObject.setCodeSystem(defaultCodeSystem);
-		MeasureSteward steward = new MeasureSteward();
-		steward.setOrgName(createdUser.getOrganizationName());
-		steward.setId("80");
-		defaultObject.setSteward(steward);
-		defaultObject.setDraft(true);
-		// Should we have a default lastModified timestamp?
-		defaultObject.setRationale("N/A");
-		listObjectDAO.save(defaultObject);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#isCodeAlreadyExists(java.lang.String,
-	 * mat.model.Code)
-	 */
-	/*@Override
-	public boolean isCodeAlreadyExists(String codeListId, Code code) {
-		CodeList codeList = codeListDAO.find(codeListId);
-		ArrayList<Code> existingCodes = new ArrayList<Code>(codeList.getCodes());
-		boolean codeExists = false;
-		for (Code existingCode : existingCodes) {
-			if (existingCode.getCode().equalsIgnoreCase(code.getCode())) {
-				codeExists = true;
-			}
-		}
-		return codeExists;
-	}*/
-
-	/**
-	 * Checks if is code list last modified date unique.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @param ts
-	 *            the ts
-	 * @return true, if is code list last modified date unique
-	 */
-	/*boolean isCodeListLastModifiedDateUnique(
-			ManageCodeListDetailModel currentDetails, Timestamp ts) {
-		List<CodeList> cls = codeListDAO.getCodeList(currentDetails, ts);
-		return cls.isEmpty();
-	}*/
-
-	// US 413. Added Steward Other parameter
-	/**
-	 * Checks if is code list unique.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @return true, if is code list unique
-	 */
-	/*public boolean isCodeListUnique(ManageCodeListDetailModel currentDetails) {
-		boolean unique = true;
-		// US 413 added parameter steward other
-		// check for an already existing code with that info and a different oid
-		CodeList existingCodeList = codeListDAO.getCodeList(currentDetails,
-				LoggedInUserUtil.getLoggedInUser());
-		if (existingCodeList != null) {
-			if (!currentDetails.isExistingCodeList()
-					|| !existingCodeList.getId().equals(currentDetails.getID())) {
-				unique = false;
-			}
-		}
-		return unique;
-	}*/
-
-	/**
-	 * Checks if is grouped code list last modified date unique.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @param ts
-	 *            the ts
-	 * @return true, if is grouped code list last modified date unique
-	 */
-	/*boolean isGroupedCodeListLastModifiedDateUnique(
-			ManageCodeListDetailModel currentDetails, Timestamp ts) {
-		List<ListObject> los = listObjectDAO.getListObject(currentDetails, ts);
-		return los.isEmpty();
-	}*/
-
-	// US 413. Added Steward Other parameter
-	/**
-	 * Checks if is grouped code list unique.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @return true, if is grouped code list unique
-	 */
-	/*public boolean isGroupedCodeListUnique(
-			ManageCodeListDetailModel currentDetails) {
-		boolean unique = true;
-		ListObject existingListObject = listObjectDAO.getListObject(
-				currentDetails, LoggedInUserUtil.getLoggedInUser());
-		if (existingListObject != null) {
-			if ((currentDetails.getID() == null)
-					|| !existingListObject.getId().equals(
-							currentDetails.getID())) {
-				unique = false;
-			}
-		}
-		return unique;
-	}*/
-
-	// US 551. check if last modified date changed for event logging purpose.
-	/**
-	 * Checks if is last modified date change.
-	 * 
-	 * @param oldDate
-	 *            the old date
-	 * @param newDate
-	 *            the new date
-	 * @return true, if is last modified date change
-	 */
-	private boolean isLastModifiedDateChange(String oldDate, String newDate) {
-		if (StringUtils.isNotBlank(oldDate) && StringUtils.isNotBlank(newDate)) {
-			if (!oldDate.equalsIgnoreCase(newDate)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	// US 551. check if name changed for event logging purpose.
-	/**
-	 * Checks if is name change.
-	 * 
-	 * @param oldName
-	 *            the old name
-	 * @param newName
-	 *            the new name
-	 * @return true, if is name change
-	 */
-	private boolean isNameChange(String oldName, String newName) {
-		if (StringUtils.isNotBlank(oldName) && StringUtils.isNotBlank(newName)) {
-			if (!oldName.equalsIgnoreCase(newName)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	// US 383. check if oid changed for event logging purpose.
-	/**
-	 * Checks if is oid change.
-	 * 
-	 * @param oldOID
-	 *            the old oid
-	 * @param newOID
-	 *            the new oid
-	 * @return true, if is oid change
-	 */
-	private boolean isOidChange(String oldOID, String newOID) {
-		if (StringUtils.isNotBlank(oldOID) && StringUtils.isNotBlank(newOID)) {
-			if (!oldOID.equalsIgnoreCase(newOID)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Log complete event.
-	 * 
-	 * @param codeList
-	 *            the code list
-	 */
-	private void logCompleteEvent(CodeList codeList) {
-		if ((codeList.getCodeSystem() != null)
-				&& (codeList.getCodeSystem().getDescription() != null)
-				&& codeList
-						.getCodeSystem()
-						.getDescription()
-						.equalsIgnoreCase(ConstantMessages.GROUPED_CODE_LIST_CS)) {
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Group Value Set Saved", null);
-		} else {
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set Saved", null);
-		}
-	}
-
-	/**
-	 * Log group complete event.
-	 * 
-	 * @param codeList
-	 *            the code list
-	 */
-	private void logGroupCompleteEvent(ListObject codeList) {
-		if ((codeList.getCodeSystem() != null)
-				&& (codeList.getCodeSystem().getDescription() != null)
-				&& codeList
-						.getCodeSystem()
-						.getDescription()
-						.equalsIgnoreCase(ConstantMessages.GROUPED_CODE_LIST_CS)) {
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Group Value Set Saved", null);
-		} else {
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set Saved", null);
-		}
-	}
 
 	/**
 	 * Modify applied element list.
@@ -1329,8 +815,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		while (iterator.hasNext()) {
 			QualityDataSetDTO qualityDataSetDTO = iterator.next();
 			if (qualityDataSetDTO.getUuid().equals(dataSetDTO.getUuid())) {
-				QualityDataSetDTO qdm = qualityDataSetDTO;
-
 				iterator.remove();
 				break;
 			}
@@ -1726,9 +1210,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		matValueSetTransferObject.scrubForMarkUp();
-		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		List<String> errorMessages = new ArrayList<String>();
-		//errorMessages = validator.validate(matValueSetTransferObject);
 		if (errorMessages.size() == 0) {
 			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 			List<QualityDataSetDTO> existingQDSList = matValueSetTransferObject
@@ -2119,9 +1601,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			MatValueSetTransferObject matValueSetTransferObject) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		List<String> messageList = new ArrayList<String>();
-		//validator.validate(matValueSetTransferObject);
 		if (messageList.size() == 0) {
 			if (!isDuplicate(matValueSetTransferObject, false, false)) {
 				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
@@ -2435,98 +1915,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	@Override
 	public int countSearchResultsWithFilter(String searchText, boolean defaultCodeList, int filter) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	/*@Override
-	public ManageValueSetSearchModel createClone(String id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ManageValueSetSearchModel createDraft(String id, String oid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ManageCodeListDetailModel deleteCodes(String key, List<Code> Codes) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String generateUniqueOid(ManageCodeListDetailModel currentDetails) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ManageCodeListDetailModel getCodeList(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ManageCodeListDetailModel getGroupedCodeList(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<ListObject> getSupplimentalCodeList() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SaveUpdateCodeListResult saveDefaultCodeList(User user) throws CodeListNotUniqueException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SaveUpdateCodeListResult saveorUpdateCodeList(ManageCodeListDetailModel currentDetails)
-			throws CodeListNotUniqueException, CodeListOidNotUniqueException, ExcelParsingException,
-			InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails)
-			throws CodeListNotUniqueException, CodeListOidNotUniqueException, InvalidLastModifiedDateException,
-			ValueSetLastModifiedDateNotUniqueException {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
 
 	@Override
 	public List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn,
 			boolean isAsc, boolean defaultCodeList, int filter) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-	/*@Override
-	public List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn,
-			boolean isAsc, boolean defaultCodeList, int filter, String categoryId) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
-	/*@Override
-	public ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
-
-	/*@Override
-	public void transferOwnerShipToUser(List<String> list, String toEmail) {
-		// TODO Auto-generated method stub
-		
-	}*/
-
 }

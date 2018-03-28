@@ -22,7 +22,6 @@ package edu.ycp.cs.dh.acegwt.client.ace;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -42,7 +41,6 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import mat.client.shared.MatContext;
 import mat.shared.CQLIdentifierObject;
 
-// TODO: Auto-generated Javadoc
 /**
  * A GWT widget for the Ajax.org Code Editor (ACE).
  *
@@ -1033,7 +1031,6 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 	 *
 	 * @return the js array string
 	 */
-	@SuppressWarnings("unchecked")
 	private static JsArrayString createValueSetJsArrayString() {
 		List<CQLIdentifierObject> valueSetList = new ArrayList<CQLIdentifierObject>();
 		valueSetList.addAll(MatContext.get().getValuesets());
@@ -1067,7 +1064,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		
 		for(String string: dataTypeList) {
 			
-			if(!string.equals(MatContext.get().PLEASE_SELECT)) {
+			if(!string.equals(MatContext.PLEASE_SELECT)) {
 				jsArray.push("[\"" +string + "\"]");
 			}
 		}

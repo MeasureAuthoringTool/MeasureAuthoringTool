@@ -2,12 +2,9 @@ package mat.server.service;
 
 import java.util.List;
 
-import mat.DTO.SearchHistoryDTO;
 import mat.DTO.UserAuditLogDTO;
-import mat.model.UserAuditLog;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface UserAuditService.
  */

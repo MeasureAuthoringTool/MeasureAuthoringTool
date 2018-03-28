@@ -7,7 +7,6 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.UserService;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SessionManagementServImpl.
  */

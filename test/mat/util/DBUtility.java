@@ -1,10 +1,8 @@
 package mat.util;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,7 +10,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +18,6 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.taglibs.standard.lang.jstl.parser.ParseException;
 
 public class DBUtility {
 
@@ -39,7 +35,6 @@ public class DBUtility {
 	
 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 	DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-	DateFormat fromCal = new SimpleDateFormat("dd/MM/yyyy");
 	
 	try{
 		System.out.println("Enter begin date(MM/dd/yyyy): ");

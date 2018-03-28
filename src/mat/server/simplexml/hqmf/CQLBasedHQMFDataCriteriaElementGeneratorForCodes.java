@@ -14,12 +14,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
-import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLBasedHQMFDataCriteriaElementGenerator.
  */
@@ -57,16 +56,8 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 	private String getHQMFXmlString(MeasureExport me) {
 		getExtensionValueBasedOnVersion(me);
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
-		//me.setHQMFXmlProcessor(dataCriteriaXMLProcessor);
-		
-		/*String simpleXMLStr = me.getSimpleXML();
-		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
-		me.setSimpleXMLProcessor(simpleXmlprocessor);*/
-		
-	//	prepHQMF(me);
 		
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, me.getSimpleXMLProcessor());
-	//	addDataCriteriaComment(dataCriteriaXMLProcessor);
 		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
 	}
 	
@@ -76,7 +67,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			String releaseVersion = me.getMeasure().getReleaseVersion();
 			if (releaseVersion.equalsIgnoreCase("v4")) {
 				return VERSION_4_1_2_ID;
-			} else if (releaseVersion.equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
+			} else if (MatContext.get().isCQLMeasure(releaseVersion)) {
 				return VERSION_5_0_ID;
 			} else {
 				return VERSION_4_3_ID;
@@ -199,23 +190,14 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 		String statusValue = templateNode.getAttributes().getNamedItem("status").getNodeValue();
 		String rootValue = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID).getNodeValue();
 
-		// String isCodeType =
-		// qdmNode.getAttributes().getNamedItem("code").getNodeValue();
-
-		//String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		Node actionNegInd = templateNode.getAttributes().getNamedItem("actionNegationInd");
-	//	String entryCommentText = dataType;
 		String codeOID = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 		// Stan wants to generate unique id ( extension and root combination
 		// which is different from Value set).
 		String qdmLocalVariableName = codeOID + "_" + dataType;
-		// String localVariableName = qdmLocalVariableName;
-		
 
 		qdmLocalVariableName = StringUtils.deleteWhitespace(qdmLocalVariableName);
-		// localVariableName = StringUtils.deleteWhitespace(localVariableName);
 
 		Element dataCriteriaSectionElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
 				.getElementsByTagName("dataCriteriaSection").item(0);
@@ -303,19 +285,13 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			}
 
 			dataCriteriaElem.appendChild(valueElem);
-
-			
-			/*appendEntryElem = true;*/
 		}
 		if (templateNode.getAttributes().getNamedItem("includeSubTemplate") != null) {
 			appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,
 					qdmNode);
 		}
-		/*if (appendEntryElem) {*/
-			dataCriteriaSectionElem.appendChild(entryElem);
 
-		//}
-
+		dataCriteriaSectionElem.appendChild(entryElem);
 	}
 
 
@@ -373,7 +349,6 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			codeElem.setAttribute("codeSystemName", codeSystemName);
 			setCodeSystemVersion(qdmNode, codeElem, codeSystemVersion);
 
-			// }
 			dataCriteriaElem.appendChild(codeElem);
 
 		} else if (isPatientChar) {
@@ -431,9 +406,6 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
 		Node subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/subtemplates/" + subTemplateName);
-		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(),
-				"/templates/subtemplates/" + subTemplateName + "/child::node()");
-		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID).getNodeValue();
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();

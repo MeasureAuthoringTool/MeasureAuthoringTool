@@ -115,7 +115,7 @@ public class ReportGenerator {
 		
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings("unchecked")
 	public void generateQDMElementsReport(String startDate, String endDate){
 		
 		LinkedHashMap<String, Object> data = dataAccess.retrieveQDMElementsData(startDate, endDate);

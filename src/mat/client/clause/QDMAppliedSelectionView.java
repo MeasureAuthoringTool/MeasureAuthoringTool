@@ -1,19 +1,13 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /*import mat.shared.CustomBootStrapCheckBox;*/
 import org.gwtbootstrap3.client.ui.CheckBox;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
@@ -36,11 +30,8 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -61,11 +52,9 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -73,7 +62,6 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.QualityDataSetDTO;
-import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
 
 
@@ -204,15 +192,8 @@ HasSelectionHandlers<Boolean> {
 	
 	/** The search header. */
 	private  Label searchHeader = new Label("Search");
-	
-	/** The vsac profile header. */
-	private Label defaultExpIdentifierHeader = new Label("Apply Expansion Identifier");
-	
-	/** The spager. */
+
 	private MatSimplePager spager;
-	
-	/** The save cancel button bar. */
-	private SaveCancelButtonBar saveCancelButtonBar = new SaveCancelButtonBar("qdmApplied");
 	
 	/** The search widget. */
 	private SearchWidget searchWidget = new SearchWidget("Retrieve OID",
@@ -418,57 +399,6 @@ HasSelectionHandlers<Boolean> {
 	
 	
 	
-	
-	/**
-	 * Builds the vsac exp identifier panel.
-	 *
-	 * @return the widget
-	 */
-	private Widget buildDefaultExpIdentifierPanel() {
-		/*defaultExpIdentifierSel.getElement().setId("ExpansionIdentifierSelection_ChkBox");*/
-		defaultExpIdentifierListBox.setWidth("200px");
-		defaultExpIdentifierListBox.getElement().setId("DefaultExpansionIdentifier_ListBox");
-		defaultExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
-		applyDefaultExpansionIdButton.setTitle("Apply Expansion Identifier to all the QDM Element(s).");
-		applyDefaultExpansionIdButton.getElement().setId("applyToQDM_button");
-		defaultExpIdentifierListBox.addItem("--Select--");
-		VerticalPanel searchPanel = new VerticalPanel();
-		searchPanel.setWidth("450px");
-		searchPanel.setHeight("227px");
-		searchPanel.getElement().setId("searchPanel_VerticalPanel");
-		searchPanel.setStyleName("valueSetSearchPanel");
-		defaultExpIdentifierHeader.getElement().setId("searchHeader_Label");
-		defaultExpIdentifierHeader.setStyleName("valueSetHeader");
-		defaultExpIdentifierHeader.getElement().setAttribute("tabIndex", "0");
-		defaultExpIdentifierHeader.getElement().setTitle("Apply VSAC Expansion Identifier to Measure.");
-		searchPanel.add(defaultExpIdentifierHeader);
-		searchPanel.add(new SpacerWidget());
-		Grid queryGrid = new Grid(5, 1);
-		
-		HorizontalPanel qdmHorizontalPanel = new HorizontalPanel();
-		qdmHorizontalPanel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-		qdmHorizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
-		InlineLabel defaultExpIdentifierLabel = new InlineLabel("Add Default Expansion Identifier");
-		/*toggleSwitch.setOnIcon(IconType.CHECK);
-		toggleSwitch.setOffIcon(IconType.TIMES);
-		 */
-		defaultExpIdentifierLabel.setStyleName("qdmLabel");
-		defaultExpIdentifierSel.setStyleName("gwt-CheckBox");
-		qdmHorizontalPanel.add(defaultExpIdentifierLabel);
-		qdmHorizontalPanel.add(defaultExpIdentifierSel);
-		qdmHorizontalPanel.setStyleName("horizontalPanel");
-		queryGrid.setWidget(0, 0, qdmHorizontalPanel);
-		queryGrid.setWidget(1, 0, new SpacerWidget());
-		queryGrid.setWidget(2, 0, defaultExpIdentifierListBox);
-		queryGrid.setWidget(3, 0, new SpacerWidget());
-		queryGrid.setWidget(4, 0, applyDefaultExpansionIdButton);
-		//queryGrid.setStyleName("secondLabel");
-		searchPanel.add(queryGrid);
-		return searchPanel;
-	}
-	
-	
-	
 	/**
 	 * Builds the element with vsac value set widget.
 	 *
@@ -478,71 +408,11 @@ HasSelectionHandlers<Boolean> {
 		mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
 		mainPanel.setWidth("95%");
-//		mainPanel.add(buildSearchPanel());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		return mainPanel;
 	}
 	
-	
-	/**
-	 * Builds the search panel.
-	 *
-	 * @return the widget
-	 */
-	private Widget buildSearchPanel() {
-		HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
-		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		VerticalPanel searchPanel = new VerticalPanel();
-		searchPanel.getElement().setId("searchPanel_VerticalPanel");
-		searchPanel.setStyleName("valueSetSearchPanel");
-		
-		searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("valueSetHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
-		searchHeader.getElement().setTitle("Search by OID and Name");
-		searchPanel.add(searchHeader);
-		searchPanel.add(new SpacerWidget());
-		
-		nameInput.getElement().setId("nameInput_TextBox");
-		nameInput.getElement().setAttribute("tabIndex", "0");
-		nameInput.setTitle("Enter Name");
-		nameInput.setWidth("200px");
-		
-		qdmExpIdentifierListBox.getElement().setId("QDMExpansionIdentifier_ListBox");
-		qdmExpIdentifierListBox.getElement().setTitle("Expansion Identifier Selection List");
-		qdmExpIdentifierListBox.setEnabled(false);
-		qdmExpIdentifierListBox.setWidth("200px");
-		versionListBox.getElement().setId("Version_ListBox");
-		versionListBox.getElement().setTitle("Version Selection List");
-		versionListBox.setEnabled(false);
-		versionListBox.setWidth("200px");
-		dataTypeListBox.setWidth("200px");
-		dataTypeListBox.getElement().setId("DataType_ListBox");
-		dataTypeListBox.getElement().setTitle("DataType Selection List");
-		
-				
-		saveCancelButtonBar.getSaveButton().setText("Apply");
-		searchWidget.getSearchInput().setWidth("270px");
-		searchWidget.getSearchInput().setHeight("20px");
-		searchWidget.getSearchInput().setTitle("Enter OID");
-		Grid queryGrid = new Grid(5, 4);
-		queryGrid.setWidget(0, 0, LabelBuilder.buildLabel(new Label(), "Name"));
-		queryGrid.setWidget(1, 0, nameInput);
-		queryGrid.setWidget(0, 1, LabelBuilder.buildLabel("Datatype", "Datatype"));
-		queryGrid.setWidget(1, 1, dataTypeListBox);
-		queryGrid.setWidget(2, 0, LabelBuilder.buildLabel("Expansion Identifier", "Expansion Identifier"));
-		queryGrid.setWidget(2, 1, LabelBuilder.buildLabel("Version", "Version"));
-		queryGrid.setWidget(3, 0, qdmExpIdentifierListBox);
-		queryGrid.setWidget(3, 1, versionListBox);
-		queryGrid.setWidget(4, 0, saveCancelButtonBar);
-		queryGrid.setStyleName("secondLabel");
-		searchPanel.add(searchWidget);
-		searchPanel.add(new SpacerWidget());
-		searchPanel.add(queryGrid);
-		return searchPanel;
-	}
 	
 	/**
 	 * Builds the cell table.
@@ -766,23 +636,6 @@ HasSelectionHandlers<Boolean> {
 			table.addColumn(versionColumn, SafeHtmlUtils
 					.fromSafeConstant("<span title=\"Version\">" + "Version"
 							+ "</span>"));
-			
-			String colName = "Modify";
-			
-//			if(!isEditable){
-//				colName = "Select";
-//			}
-//			
-//			// Modify by Delete Column
-//			table.addColumn(new Column<QualityDataSetDTO, QualityDataSetDTO>(
-//					getCompositeCellForQDMModifyAndDelete(isEditable)) {
-//				
-//				@Override
-//				public QualityDataSetDTO getValue(QualityDataSetDTO object) {
-//					return object;
-//				}
-//			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "
-//					+ colName + "</span>"));
 			
 			
 			table.setColumnWidth(0, 25.0, Unit.PCT);
@@ -1188,218 +1041,7 @@ HasSelectionHandlers<Boolean> {
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
-	
-	/**
-	 * Gets the composite cell for bulk export.
-	 *
-	 * @param isEditable the is editable
-	 * @return the composite cell for bulk export
-	 */
-	private CompositeCell<QualityDataSetDTO> getCompositeCellForQDMModifyAndDelete(boolean isEditable) {
-		final List<HasCell<QualityDataSetDTO, ?>> cells = new LinkedList<HasCell<QualityDataSetDTO, ?>>();
-		if(isEditable){
-			cells.add(getModifyQDMButtonCell());
-			cells.add(getDeleteQDMButtonCell());
-			cells.add(getQDMCheckBoxCell());
 
-		}
-		CompositeCell<QualityDataSetDTO> cell = new CompositeCell<QualityDataSetDTO>(
-				cells) {
-			@Override
-			public void render(Context context, QualityDataSetDTO object,
-					SafeHtmlBuilder sb) {
-				sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
-				for (HasCell<QualityDataSetDTO, ?> hasCell : cells) {
-					render(context, object, sb, hasCell);
-				}
-				sb.appendHtmlConstant("</tr></tbody></table>");
-			}
-			
-			@Override
-			protected <X> void render(Context context,
-					QualityDataSetDTO object, SafeHtmlBuilder sb,
-					HasCell<QualityDataSetDTO, X> hasCell) {
-				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
-				if ((object != null)) {
-					cell.render(context, hasCell.getValue(object), sb);
-				} else {
-					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
-				}
-				sb.appendHtmlConstant("</td>");
-			}
-			
-			@Override
-			protected Element getContainerElement(Element parent) {
-				return parent.getFirstChildElement().getFirstChildElement()
-						.getFirstChildElement();
-			}
-		};
-		return cell;
-	}
-	
-	/**
-	 * Gets the modify qdm button cell.
-	 * 
-	 * @return the modify qdm button cell
-	 */
-	private HasCell<QualityDataSetDTO, SafeHtml> getModifyQDMButtonCell() {
-		
-		HasCell<QualityDataSetDTO, SafeHtml> hasCell = new HasCell<QualityDataSetDTO, SafeHtml>() {
-			
-			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
-			
-			@Override
-			public Cell<SafeHtml> getCell() {
-				return modifyButonCell;
-			}
-			
-			@Override
-			public FieldUpdater<QualityDataSetDTO, SafeHtml> getFieldUpdater() {
-				
-				return new FieldUpdater<QualityDataSetDTO, SafeHtml>() {
-					@Override
-					public void update(int index, QualityDataSetDTO object,
-							SafeHtml value) {
-						if ((object != null)) {
-							observer.onModifyClicked(object);
-						}
-					}
-				};
-			}
-			
-			@Override
-			public SafeHtml getValue(QualityDataSetDTO object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Modify QDM";
-				String cssClass = "customEditButton";
-				if(isEditable){
-					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-							+ "' class=\" " + cssClass + "\">Editable</button>");
-				} else {
-					sb.appendHtmlConstant("<button tabindex=\"0\" type=\"button\" title='" + title
-							+ "' class=\" " + cssClass + "\" disabled/>Editable</button>");
-				}
-				
-				return sb.toSafeHtml();
-			}
-		};
-		
-		return hasCell;
-	}
-	
-	/**
-	 * Gets the delete qdm button cell.
-	 * 
-	 * @return the delete qdm button cell
-	 */
-	private HasCell<QualityDataSetDTO, SafeHtml> getDeleteQDMButtonCell() {
-		
-		HasCell<QualityDataSetDTO, SafeHtml> hasCell = new HasCell<QualityDataSetDTO, SafeHtml>() {
-			
-			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
-			
-			@Override
-			public Cell<SafeHtml> getCell() {
-				return deleteButonCell;
-			}
-			
-			@Override
-			public FieldUpdater<QualityDataSetDTO, SafeHtml> getFieldUpdater() {
-				
-				return new FieldUpdater<QualityDataSetDTO, SafeHtml>() {
-					@Override
-					public void update(int index, QualityDataSetDTO object,
-							SafeHtml value) {
-						if ((object != null) && !object.isUsed()) {
-							lastSelectedObject = object;
-							observer.onDeleteClicked(object, index);
-						}
-					}
-				};
-			}
-			
-			@Override
-			public SafeHtml getValue(QualityDataSetDTO object) {
-				SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String title = "Click to Delete QDM";
-				String cssClass;
-				//Disabling the delete button from 5.0 onwards
-				object.setUsed(true);
-				if (object.isUsed()) {
-					cssClass = "customDeleteDisableButton";
-					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass
-							+ "\"disabled/>Delete</button>");
-				} else {
-					cssClass = "customDeleteButton";
-					sb.appendHtmlConstant("<button tabindex=\"0\"type=\"button\" title='"
-							+ title + "' class=\" " + cssClass
-							+ "\"/>Delete</button>");
-				}
-				return sb.toSafeHtml();
-			}
-		};
-		
-		return hasCell;
-	}
-	
-	
-	/**
-	 * Gets the QDM check box cell.
-	 *
-	 * @return the QDM check box cell
-	 */
-	private HasCell<QualityDataSetDTO, Boolean> getQDMCheckBoxCell(){
-		HasCell<QualityDataSetDTO, Boolean> hasCell = new HasCell<QualityDataSetDTO, Boolean>() {
-			
-			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
-			@Override
-			public Cell<Boolean> getCell() {
-				return cell;
-			}
-			@Override
-			public Boolean getValue(QualityDataSetDTO object) {
-				boolean isSelected = false;
-				if (qdmSelectedList.size() > 0) {
-					for (int i = 0; i < qdmSelectedList.size(); i++) {
-						if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-							isSelected = true;
-							selectionModel.setSelected(object, isSelected);
-							break;
-						}
-					}
-				} else {
-					isSelected = false;
-					selectionModel.setSelected(object, isSelected);
-				}
-				return isSelected;
-			}
-			@Override
-			public FieldUpdater<QualityDataSetDTO, Boolean> getFieldUpdater() {
-				return new FieldUpdater<QualityDataSetDTO, Boolean>() {
-					@Override
-					public void update(int index, QualityDataSetDTO object,
-							Boolean isCBChecked) {
-						if(isCBChecked) {
-							qdmSelectedList.add(object);
-						} else{
-							for (int i = 0; i < qdmSelectedList.size(); i++) {
-								if (qdmSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-									qdmSelectedList.remove(i);
-									break;
-								}
-							}
-						}
-						selectionModel.setSelected(object, isCBChecked);
-					}
-				};
-			}
-		};
-		return hasCell;
-	}
-	
-	
 	
 	/**
 	 * Gets the OID column tool tip.

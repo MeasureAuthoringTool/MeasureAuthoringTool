@@ -4,11 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
-import mat.client.shared.MatContext;
-import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gwt.xml.client.Document;
@@ -18,6 +13,11 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
+
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
+import mat.client.shared.MatContext;
+import mat.shared.UUIDUtilClient;
 
 /**
  * The Class XmlConversionlHelper.
@@ -124,7 +124,6 @@ public class XmlConversionlHelper {
 	public static CellTreeNode createOccurenceClauseNode(CellTreeNode clauseNode) {
 		//CellTreeNode parent = new CellTreeNodeImpl();
 		CellTreeNode occurrenceNode = new CellTreeNodeImpl();
-		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
 		List<CellTreeNode> parentchilds = new ArrayList<CellTreeNode>();
 		occurrenceNode.setName(clauseNode.getName());
 		occurrenceNode.setLabel(clauseNode.getLabel());
@@ -464,52 +463,6 @@ public class XmlConversionlHelper {
 	}
 	
 	/**
-	 * Append attribute to qdm name.
-	 * 
-	 * @param node
-	 *            the node
-	 * @return the string
-	 */
-	private static String appendAttributeToQdmName(Node node) {
-		NamedNodeMap namedNodeMap = node.getChildNodes().item(0).getAttributes();
-		StringBuilder stringBuilder = new StringBuilder(namedNodeMap.getNamedItem("name").getNodeValue());
-		String modeName = namedNodeMap.getNamedItem("mode") != null ? namedNodeMap.getNamedItem("mode").getNodeValue() : "";
-		
-		if ("Check if Present".equalsIgnoreCase(modeName)) {
-			stringBuilder.append(" is present ");
-		} else if ("Value Set".equalsIgnoreCase(modeName)) {
-			Node qdm = namedNodeMap.getNamedItem("qdmUUID");
-			if (null != qdm) {
-				String qdmId = namedNodeMap.getNamedItem("qdmUUID").getNodeValue();
-				String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(qdmId);
-				stringBuilder.append(": '").append(qdmName).append("'");
-			}
-		} else {
-			if ("Less Than".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" < ");
-			} else if ("Less Than Or Equal To".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" <= ");
-			} else if ("Greater Than".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" > ");
-			} else if ("Greater Than Or Equal To".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" >= ");
-			} else if ("Equal To".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" = ");
-			}
-			
-			Node comparisonValue = namedNodeMap.getNamedItem("comparisonValue");
-			if (null != comparisonValue) {
-				stringBuilder.append(comparisonValue.getNodeValue());
-			}
-			Node unit = namedNodeMap.getNamedItem("unit");
-			if (null != unit) {
-				stringBuilder.append(" ").append(unit.getNodeValue());
-			}
-		}
-		return stringBuilder.toString();
-	}
-	
-	/**
 	 * Gets the node name. Recently added code for SubTree Node.
 	 * 
 	 * @param cellTreeNode
@@ -654,7 +607,6 @@ public class XmlConversionlHelper {
 			case CellTreeNode.FUNCTIONS_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.FUNC_NAME);
 				
-				@SuppressWarnings("unchecked")
 				HashMap<String, String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(
 						PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				if (functionMap != null) {
@@ -764,7 +716,7 @@ public class XmlConversionlHelper {
 	 * @return Sentence Case String
 	 */
 	private static String capWords(String strToConvert , String operator) {
-		if ((strToConvert == null) && strToConvert.isEmpty()) {
+		if ((strToConvert == null)) {
 			return strToConvert;
 		} else {
 			StringBuilder sb = new StringBuilder();

@@ -71,7 +71,6 @@ import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
@@ -2559,7 +2558,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 *            the row index
 	 */
 	private void removeRow(FlexTable reference, int rowIndex) {
-		int numRows = reference.getRowCount();
 		if (referenceTable.getWidget(rowIndex, 0) instanceof HorizontalPanel) {
 			HorizontalPanel horizontalPanel =  (HorizontalPanel) referenceTable.getWidget(rowIndex, 0);
 			TextAreaWithMaxLength areaWithMaxLength = (TextAreaWithMaxLength) horizontalPanel.getWidget(1);
@@ -2842,7 +2840,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public WarningConfirmationMessageAlert getSaveErrorMsg() {
-		// TODO Auto-generated method stub
 		return saveErrorDisplay;
 	}
 	
@@ -2966,49 +2963,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setAuthorsSelectedList(List<Author> authorsSelectedList) {
 		this.authorsSelectedList = authorsSelectedList;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildStewardCellTable(java.util.List, boolean)
-	 */
-//	@Override
-	/*public void buildStewardCellTable(List<MeasureSteward> currentStewardList,
-			boolean editable) {
-		
-		stewardSPanel.clear();
-		stewardSPanel.setStyleName("cellTablePanel");
-		stewardCellTable = new CellTable<MeasureSteward>();
-		stewardCellTable
-		.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<MeasureSteward> sortProvider = new ListDataProvider<MeasureSteward>();
-		if(stewardId!=null) {
-			List<MeasureSteward> measureStewardSelectedList = new ArrayList<MeasureSteward>();
-			measureStewardSelectedList.addAll(swapMeasureStewardList(currentStewardList));
-			stewardCellTable.setRowData(measureStewardSelectedList);
-			stewardCellTable.setRowCount(measureStewardSelectedList.size(), true);
-			sortProvider.refresh();
-			sortProvider.getList().addAll(measureStewardSelectedList);
-		} else {
-			stewardCellTable.setRowData(currentStewardList);
-			stewardCellTable.setRowCount(currentStewardList.size(), true);
-			sortProvider.refresh();
-			sortProvider.getList().addAll(currentStewardList);
-		}
-		
-		addStewardColumnToTable(editable);
-		sortProvider.addDataDisplay(stewardCellTable);
-		stewardCellTable.setWidth("100%");
-		Label invisibleLabel = (Label) LabelBuilder
-				.buildInvisibleLabel(
-						"stewardListSummary",
-						"In the following Steward List table, Select is given in first Column and Steward is given in Second column");
-		stewardSPanel.getElement().setAttribute("id", "StewardListCellTable");
-		stewardSPanel.getElement().setAttribute("aria-describedby",
-				"stewardListSummary");
-		stewardSPanel.setSize("500px", "150px");
-		stewardSPanel.add(invisibleLabel);
-		stewardSPanel.setWidget(stewardCellTable);
-	}*/
 	
 	
 	/* (non-Javadoc)

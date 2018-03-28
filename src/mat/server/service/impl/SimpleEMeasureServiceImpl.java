@@ -24,6 +24,20 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.tools.zip.ZipOutputStream;
+import org.cqframework.cql.tools.formatter.CQLFormatter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import mat.client.shared.MatContext;
 import mat.dao.ListObjectDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -45,7 +59,6 @@ import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.simplexml.hqmf.CQLBasedHQMFGenerator;
 import mat.server.simplexml.hqmf.HQMFGenerator;
 import mat.server.util.CQLUtil;
-import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
@@ -53,21 +66,6 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import net.sf.saxon.TransformerFactoryImpl;
 
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.tools.zip.ZipOutputStream;
-import org.cqframework.cql.tools.formatter.CQLFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-
-// TODO: Auto-generated Javadoc
 /** SimpleEMeasureServiceImpl.java **/
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
@@ -75,7 +73,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private static final String conversionFile1 = "xsl/New_HQMF.xsl";
 	/** Constant for mat_narrGen.xsl. **/
 	private static final String conversionFile2 = "xsl/mat_narrGen.xsl";
-	private static final String conversionFileForHQMF_Header = "xsl/new_measureDetails.xsl";
 	/** Constant for eMeasure.xsl. **/
 	private static final String conversionFileHtml = "xsl/eMeasure.xsl";
 	/** Filtered User Defined QDM's as these are dummy QDM's created by user and
@@ -360,7 +357,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			try {
 				cqlFileString = CQLFormatter.format(cqlFileString);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			ExportResult includeResult = new ExportResult();
@@ -720,7 +716,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion());
-				//String emeasureXML = getEMeasureXML(me);
+				
 				ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
 				String emeasureXML = emeasureExportResult.export;
 				
@@ -756,7 +752,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	    
 	    String measureXML = ""; 
 
-	    if(measure.getReleaseVersion().equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
+	    if(measure.getReleaseVersion() != null &&  MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
 			measureXML = getCQLBasedEMeasureXML(measureExport);  
 		} else {
 			 measureXML = getNewEMeasureXML(measureExport);
@@ -945,11 +941,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			if(me.getMeasure().getReleaseVersion().equals("v3")){
 				createFilesInBulkZip(measureId,exportDate, me, filesMap,
 					format.format(fileNameCounter++));
-			}
-			else{
+			} else{
 				createFilesInBulkZip(measureId, me, filesMap,
 						format.format(fileNameCounter++));
-
 			}
 		}
 
@@ -983,11 +977,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			final String seqNum) throws Exception {
 		
 		byte[] wkbkbarr = null;
-		/*if (me.getCodeList() == null) {
-			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
-		} else {
-			wkbkbarr = me.getCodeListBarr();
-		}*/
 		
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion());
@@ -1041,10 +1030,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 		ExportResult cqlExportResult = getCQLLibraryFile(measureId);
-		String cqlFileStr = cqlExportResult.export;
 		ExportResult elmExportResult = getELMFile(measureId);
 		ExportResult jsonExportResult = getJSONFile(measureId); 
-		String elmFileStr = elmExportResult.export;
 		
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName,exportDate, wkbkbarr, emeasureXMLStr,

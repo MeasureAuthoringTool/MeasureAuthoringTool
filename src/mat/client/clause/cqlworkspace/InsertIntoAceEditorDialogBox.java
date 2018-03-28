@@ -229,7 +229,7 @@ public class InsertIntoAceEditorDialogBox {
 				int selectedItemIndex = availableItemToInsert.getSelectedIndex();
 				if (selectedItemIndex != 0) {
 					String itemTypeName = availableItemToInsert.getItemText (selectedItemIndex);
-					if (!itemTypeName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
+					if (!itemTypeName.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 						//For Attributes
 						if(itemTypeName.equalsIgnoreCase("Attributes")) {
 							
@@ -237,7 +237,7 @@ public class InsertIntoAceEditorDialogBox {
 							if (selectedIndex != 0) {
 								String attributeNameToBeInserted = availableAttributesToInsert.getValue(selectedIndex);
 								
-								if (attributeNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
+								if (attributeNameToBeInserted.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ATTRIBUTE_NAME());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
@@ -260,7 +260,7 @@ public class InsertIntoAceEditorDialogBox {
 							int selectedIndex = listAllItemNames.getSelectedIndex();
 							if (selectedIndex != 0) {
 								String itemNameToBeInserted = listAllItemNames.getValue(selectedIndex);
-								if (itemNameToBeInserted.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)) {
+								if (itemNameToBeInserted.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 									selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 									helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
 									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_NAME());
@@ -272,7 +272,7 @@ public class InsertIntoAceEditorDialogBox {
 										int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
 										String dataType =null;
 										if (selectedDatatypeIndex != 0) {
-											if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+											if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
 											}
 										}
@@ -327,7 +327,7 @@ public class InsertIntoAceEditorDialogBox {
 									int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
 									String dataType =null;
 									if (selectedDatatypeIndex != 0) {
-										if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+										if(!allQDMDatatypes.getValue(selectedDatatypeIndex).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 											dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
 											StringBuilder sb = new StringBuilder();
 											sb = sb.append("[\"" + dataType + "\"]");
@@ -417,7 +417,7 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 						List<CQLIdentifierObject> parameters = new ArrayList<>(); 
 						parameters.addAll(MatContext.get().getParameters());
 						parameters.addAll(MatContext.get().getIncludedParamNames());
@@ -434,7 +434,7 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 						List<CQLIdentifierObject> functions = new ArrayList<>(); 
 						functions.addAll(MatContext.get().getFuncs());
 						functions.addAll(MatContext.get().getIncludedFuncNames());
@@ -453,7 +453,7 @@ public class InsertIntoAceEditorDialogBox {
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
 						
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 						ArrayList<CQLIdentifierObject> definitions = new ArrayList<>(); 
 						definitions.addAll(MatContext.get().getDefinitions());
 						definitions.addAll(MatContext.get().getIncludedDefNames());
@@ -469,7 +469,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 						for (int i = 0; i < cqlFunctionsList.size(); i++) {
 							listAllItemNames.addItem(cqlFunctionsList.get(i));
 						}
@@ -484,7 +484,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 						
 						List<CQLIdentifierObject> terminologies = new ArrayList<>(); 
 						terminologies.addAll(MatContext.get().getValuesets());
@@ -524,7 +524,7 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.setEnabled(true);
 						availableDatatypes.setEnabled(false);
 						availableAttributesToInsert.setEnabled(false);
-						listAllItemNames.addItem(MatContext.get().PLEASE_SELECT);
+						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 						for(int i = 0; i < allTimings.size(); i++) {
 							listAllItemNames.addItem(allTimings.get(i));
 						}
@@ -632,27 +632,6 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 		});
 	}
 	
-	/**
-	 * Method to Reterive Instance of Ace Editor based on current Section in CQL WorkSpace.
-	 * @param searchDisplay - ViewDisplay.
-	 * @param currentSection - String.
-	 * @return AceEditor.
-	 *//*
-	private static AceEditor getAceEditorBasedOnCurrentSection(ViewDisplay searchDisplay, String currentSection) {
-		AceEditor editor = null;
-		switch(currentSection) {
-			case CQLWorkSpaceConstants.CQL_DEFINE_MENU:
-				editor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
-				break;
-			case CQLWorkSpaceConstants.CQL_FUNCTION_MENU:
-				editor = searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor();
-				break;
-			default:
-				editor = searchDisplay.getCQlDefinitionsView().getDefineAceEditor();
-				break;
-		}
-		return editor;
-	}*/
 	
 	/**
 	 * This method populates first drop down of the pop up.
@@ -662,9 +641,9 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 */
 	private static void addAvailableItems(ListBoxMVP availableItemToInsert, 
 			List<String> availableInsertItemList) {
-		availableItemToInsert.addItem(MatContext.get().PLEASE_SELECT);
+		availableItemToInsert.addItem(MatContext.PLEASE_SELECT);
 		for (int i = 0; i < availableInsertItemList.size(); i++) {
-			if(!availableInsertItemList.get(i).equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+			if(!availableInsertItemList.get(i).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 				availableItemToInsert.addItem(availableInsertItemList.get(i));
 			}
 		}

@@ -989,15 +989,7 @@ public class XmlProcessor {
 			.insertBefore(riskAdjustmentVariablesElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
-		/*if (findNode(originalDoc, XPATH_CQL_LOOKUP) == null) {
-			Element cqlLookUpElement = originalDoc
-					.createElement("cqlLookUp");
-			((Element) supplementaDataElementsElement.getParentNode())
-			.appendChild(cqlLookUpElement
-					);
-			
-			createCQLLookUpElements(releaseVersion);
-		}*/
+
 		System.out.println("Original Doc: "+originalDoc.toString());
 	}
 	

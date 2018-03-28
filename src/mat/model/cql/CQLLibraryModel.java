@@ -2,8 +2,6 @@ package mat.model.cql;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import mat.model.LockedUserInfo;
-
 public class CQLLibraryModel implements IsSerializable{
 	private String libraryName;
 	private String versionUsed;

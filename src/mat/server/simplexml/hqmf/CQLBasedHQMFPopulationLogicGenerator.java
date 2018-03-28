@@ -1,9 +1,7 @@
 package mat.server.simplexml.hqmf;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 import javax.xml.xpath.XPathConstants;

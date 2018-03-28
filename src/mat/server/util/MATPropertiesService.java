@@ -1,6 +1,5 @@
 package mat.server.util;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MATPropertiesService.
  */

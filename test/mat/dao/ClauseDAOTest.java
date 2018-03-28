@@ -1,7 +1,5 @@
 package mat.dao;
 
-import java.util.UUID;
-
 import org.junit.Test;
 /*import mat.model.clause.Clause;
 import mat.model.clause.Decision;
@@ -529,8 +527,5 @@ public class ClauseDAOTest extends SpringInitializationTest {
 //	}
 	
 /////////////////////////////////////////////////////////////	
-	private String getId() {
-		return UUID.randomUUID().toString();
-	}
 	
 }

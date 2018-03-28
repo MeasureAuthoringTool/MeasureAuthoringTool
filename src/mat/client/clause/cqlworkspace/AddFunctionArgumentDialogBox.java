@@ -108,7 +108,7 @@ public class AddFunctionArgumentDialogBox {
 		ModalBody modalBody = new ModalBody();
 		final ListBoxMVP listAllDataTypes = new ListBoxMVP();
 		listAllDataTypes.setWidth("290px");
-		listAllDataTypes.addItem(MatContext.get().PLEASE_SELECT);
+		listAllDataTypes.addItem(MatContext.PLEASE_SELECT);
 		for (int i = 0; i < allCqlDataType.size(); i++) {
 			listAllDataTypes.addItem(allCqlDataType.get(i));
 		}

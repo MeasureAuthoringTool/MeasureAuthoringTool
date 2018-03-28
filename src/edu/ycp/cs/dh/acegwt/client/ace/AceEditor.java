@@ -1064,7 +1064,7 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 		
 		for(String string: dataTypeList) {
 			
-			if(!string.equals(MatContext.get().PLEASE_SELECT)) {
+			if(!string.equals(MatContext.PLEASE_SELECT)) {
 				jsArray.push("[\"" +string + "\"]");
 			}
 		}

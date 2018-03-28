@@ -475,15 +475,13 @@ public class InsertTimingExpressionIntoAceEditor {
 		dialogModal.setId("InsertItemToAceEditor_Modal");
 		dialogModal.setWidth("400px");
 		dialogModal.setRemoveOnHide(true);
-		//dialogModal.setSize(ModalSize.SMALL);
 		ModalBody modalBody = new ModalBody();
 		modalBody.setHeight("250px");
 		final ListBoxMVP unitList = new ListBoxMVP();
 		unitList.getElement().setId("ListBox_unitList");
 		unitList.clear();
-		//unitList.setWidth("250px");
 		List<String> units = CQLWorkSpaceConstants.getQuantityOffsetUnits();
-		unitList.addItem(MatContext.get().PLEASE_SELECT);
+		unitList.addItem(MatContext.PLEASE_SELECT);
 		for(int i=0;i< units.size();i++){
 			unitList.addItem(units.get(i));
 		}
@@ -494,7 +492,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		relativeQualifier.getElement().setId("ListBox_relativeQualifier");
 		relativeQualifier.clear();
 		List<String> relativeQualifierList = primaryTimingList;
-		relativeQualifier.addItem(MatContext.get().PLEASE_SELECT);
+		relativeQualifier.addItem(MatContext.PLEASE_SELECT);
 		for(int i=0;i< relativeQualifierList.size();i++){
 			relativeQualifier.addItem(relativeQualifierList.get(i));
 		}
@@ -613,7 +611,7 @@ public class InsertTimingExpressionIntoAceEditor {
 				int selectedItemIndex = unitList.getSelectedIndex();
 				if(selectedItemIndex !=0){
 					String unitName = unitList.getItemText(selectedItemIndex);
-					if(!unitName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+					if(!unitName.equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 						displayName = displayName.append(unitName).append(" ");
 					} else {
 						isInValid = true;
@@ -633,7 +631,7 @@ public class InsertTimingExpressionIntoAceEditor {
 				int selectedRelativeQualifierIndex = relativeQualifier.getSelectedIndex();
 				if(selectedRelativeQualifierIndex !=0){
 					String relativeQualifierName = relativeQualifier.getItemText(selectedRelativeQualifierIndex);
-					if(!relativeQualifierName.equalsIgnoreCase(MatContext.get().PLEASE_SELECT)){
+					if(!relativeQualifierName.equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 						displayName = displayName.append(relativeQualifierName).append(" ");
 					} else {
 						

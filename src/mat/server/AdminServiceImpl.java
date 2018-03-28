@@ -31,7 +31,7 @@ import mat.shared.AdminManageOrganizationModelValidator;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AdminServiceImpl.
  */
@@ -142,20 +142,16 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		String revokedDate = null;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar calendar = Calendar.getInstance();
-		boolean revoked = false;
-		// if user revoked
 		if (user.getStatus().getId().equals("2")) {
 			calendar.setTime(user.getTerminationDate());
 			revokedDate = "(" + dateFormat.format(calendar.getTime()) + ")";
 		} else {
 			if (user.getSignInDate() != null) {
 				calendar.setTime(user.getSignInDate());
-				//String tempDate = dateFormat.format(calendar.getTime());
-				//System.out.println("Last Signed In Date: " + tempDate);
 				calendar.add(Calendar.DATE, 180);
 				revokedDate = "(" + dateFormat.format(calendar.getTime()) + ")";
-				//System.out.println("Revoked Date: " + revokedDate);
-			} else {  // since user has never signed in yet, put "(Not Activated)"
+			} else {  
+				// since user has never signed in yet, put "(Not Activated)"
 				revokedDate = "(Not Activated)";
 			}
 		}
@@ -210,7 +206,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		try {
 			currentDate = currentDateFormat.parse(currentDateFormat.format(currentDate));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return currentDate;

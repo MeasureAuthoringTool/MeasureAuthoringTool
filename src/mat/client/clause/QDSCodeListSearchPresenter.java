@@ -4,27 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.event.QDSElementCreatedEvent;
-import mat.client.codelist.HasListBox;
-import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.umls.service.VSACAPIServiceAsync;
-import mat.client.umls.service.VsacApiResult;
-import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -42,7 +21,26 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO: Auto-generated Javadoc
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.event.QDSElementCreatedEvent;
+import mat.client.codelist.HasListBox;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.model.MatValueSet;
+import mat.model.MatValueSetTransferObject;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
+
 /**QDSCodeListSearchPresenter.java.**/
 public class QDSCodeListSearchPresenter implements MatPresenter {
 	

@@ -618,12 +618,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']");
 
 			if (defaultCodeSystemNodes != null) {
-				System.out.println("suppl data elems..setting ids");
 				for (int i = 0; i < defaultCodeSystemNodes.getLength(); i++) {
 					Node codeSystemNode = defaultCodeSystemNodes.item(i);
-					System.out.println(
-							"name:" + codeSystemNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
-					System.out.println("id:" + codeSystemNode.getAttributes().getNamedItem("id").getNodeValue());
 					codeSystemNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
 				}
 			}
@@ -660,13 +656,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					"/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']");
 
 			if (defaultCodeNodes != null) {
-				System.out.println("suppl data elems..setting ids");
 				for (int i = 0; i < defaultCodeNodes.getLength(); i++) {
 					Node codeNode = defaultCodeNodes.item(i);
-					System.out.println("codename:" + codeNode.getAttributes().getNamedItem("codeName").getNodeValue());
-					System.out.println(
-							"codesystemname:" + codeNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
-					System.out.println("id:" + codeNode.getAttributes().getNamedItem("id").getNodeValue());
 					codeNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
 				}
 			}
@@ -691,7 +682,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		String defStr = getCqlService().getSupplementalDefinitions();
-		System.out.println("defStr:" + defStr);
 		try {
 			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
 
@@ -699,11 +689,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
 
 			if (supplementalDefnNodes != null) {
-				System.out.println("suppl data elems..setting ids");
 				for (int i = 0; i < supplementalDefnNodes.getLength(); i++) {
 					Node supplNode = supplementalDefnNodes.item(i);
-					System.out.println("name:" + supplNode.getAttributes().getNamedItem("name").getNodeValue());
-					System.out.println("id:" + supplNode.getAttributes().getNamedItem("id").getNodeValue());
 					supplNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
 				}
 			}
@@ -946,8 +933,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName("measure");
 		}
 		try {
-			if (xml == null) {// TODO: This Check should be replaced when the
-				// DataConversion is complete.
+			if (xml == null) {
 				logger.info("xml is null or xml doesn't contain elementlookup tag");
 
 			} else {
@@ -1000,14 +986,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		exportModal.setMeasureId(measureID);
 		exportModal.setParentNode("/measure");
 		exportModal.setToReplaceNode("elementLookUp");
-		System.out.println("XML " + xmlString);
 
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureID);
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))
 				&& ((nodeName != null) && StringUtils.isNotBlank(nodeName))) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			String result = xmlProcessor.replaceNode(xmlString, nodeName, "measure");
-			System.out.println("result" + result);
 			exportModal.setXml(result);
 			getService().saveMeasureXml(exportModal);
 		}
@@ -1039,14 +1023,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		exportModal.setMeasureId(measureID);
 		exportModal.setParentNode("/measure");
 		exportModal.setToReplaceNode("cqlLookUp");
-		System.out.println("XML " + xmlString);
 
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureID);
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))
 				&& ((nodeName != null) && StringUtils.isNotBlank(nodeName))) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			String result = xmlProcessor.replaceNode(xmlString, nodeName, "measure");
-			System.out.println("result" + result);
 			exportModal.setXml(result);
 			getService().saveMeasureXml(exportModal);
 		}
@@ -1630,10 +1612,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		ManageMeasureDetailModel manageMeasureDetailModel = convertXmltoModel(xml, measure);
 		manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
-		
-		System.out.println(measureDetailResult.getAllAuthorList());
-		System.out.println(measureDetailResult.getUsedSteward().getOrgName());
-		System.out.println(manageMeasureDetailModel.getName());
+	
 		return manageMeasureDetailModel;
 
 	}
@@ -2031,7 +2010,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
                         measureXmlModel.setXml(updatedXML);
                         getService().saveMeasureXml(measureXmlModel);
                   } catch (XPathExpressionException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                   }
            }
@@ -3537,7 +3515,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public String getHumanReadableForNode(final String measureId, final String populationSubXML) {
-		System.out.println(populationSubXML);
 		String humanReadableHTML = "";
 		try {
 			humanReadableHTML = getService().getHumanReadableForNode(measureId, populationSubXML);
@@ -3659,8 +3636,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 
 			uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" or"));
-			System.out.println("UUID: " + uuidXPathString);
-
 			String XPATH_POPULATION = "/measure//clause[" + uuidXPathString + "]";
 
 			try {
@@ -4018,9 +3993,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					return result;
 				}
 
-			} catch (XPathExpressionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
 			}
 
 			// start clause validation
@@ -4477,11 +4451,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// to get Used SubTreeRef form Risk Adjustment Variables
 		subTreeIdsAtStrat.removeAll(subTreeIdsAtRAV);
 		subTreeIdsAtRAV.addAll(subTreeIdsAtStrat);
-
-		for (int i = 0; i < subTreeIdsAtRAV.size(); i++) {
-			System.out.println("SUBTREE NODES " + subTreeIdsAtRAV.get(i));
-		}
-
+		
 		return subTreeIdsAtRAV;
 	}
 

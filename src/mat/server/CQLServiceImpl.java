@@ -3192,20 +3192,10 @@ public class CQLServiceImpl implements CQLService {
 				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
 				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
 				newNode.getAttributes().getNamedItem("version").setNodeValue(modifyWithDTO.getVersion());
-				if (newNode.getAttributes().getNamedItem("release") != null && StringUtils.isNotBlank(modifyWithDTO.getRelease())) {
+				if (newNode.getAttributes().getNamedItem("release") != null) {
 					newNode.getAttributes().getNamedItem("release").setNodeValue(modifyWithDTO.getRelease());
-				}else if (newNode.getAttributes().getNamedItem("release") == null && StringUtils.isNotBlank(modifyWithDTO.getRelease())) {
-					Attr releaseAttrNode = processor.getOriginalDoc().createAttribute("release");
-					releaseAttrNode.setNodeValue(modifyWithDTO.getRelease());
-					newNode.getAttributes().setNamedItem(releaseAttrNode);
-				}	
-				if (newNode.getAttributes().getNamedItem("program") != null && StringUtils.isNotBlank(modifyWithDTO.getProgram())) {
 					newNode.getAttributes().getNamedItem("program").setNodeValue(modifyWithDTO.getProgram());
-				}else if (newNode.getAttributes().getNamedItem("program") == null && StringUtils.isNotBlank(modifyWithDTO.getProgram())) {
-					Attr programAttrNode = processor.getOriginalDoc().createAttribute("program");
-					programAttrNode.setNodeValue(modifyWithDTO.getProgram());
-					newNode.getAttributes().setNamedItem(programAttrNode);
-				}
+				}	
 				
 				if (modifyWithDTO.isSuppDataElement()) {
 					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");

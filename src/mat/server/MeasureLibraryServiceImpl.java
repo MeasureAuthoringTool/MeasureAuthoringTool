@@ -2318,8 +2318,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					rs = incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
 					if(rs.isSuccess()) {
 						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
-						String simpleXML = measureExport.getSimpleXML();
-						saveSimpleXML(m, measureExport, simpleXML);
+						if(measureExport != null) {
+							String simpleXML = measureExport.getSimpleXML();
+							saveSimpleXML(m, measureExport, simpleXML);
+						}
+
 					}
 				} else {
 					rs =  returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
@@ -2331,8 +2334,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					rs = incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
 					if(rs.isSuccess()) {
 						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
-						String simpleXML = measureExport.getSimpleXML();
-						saveSimpleXML(m, measureExport, simpleXML);
+						if(measureExport != null) {
+							String simpleXML = measureExport.getSimpleXML();
+							saveSimpleXML(m, measureExport, simpleXML);
+						}
 					}
 				} else {
 					rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
@@ -4222,7 +4227,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						}
 
 					} catch (XPathExpressionException e) {
-
 						e.printStackTrace();
 					}
 				}
@@ -4595,7 +4599,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			usedSubTreeIdsMap.put("subTreeIDAtStrat", usedSubtreeIdsAtStrat);
 
 		} catch (XPathExpressionException e) {
-
 			e.printStackTrace();
 		}
 
@@ -4842,9 +4845,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						}
 
 					}
-				} catch (XPathExpressionException e2) {
-
-					e2.printStackTrace();
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();
 				}
 			}
 		}

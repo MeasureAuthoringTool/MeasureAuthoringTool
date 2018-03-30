@@ -40,7 +40,6 @@ import org.xml.sax.SAXException;
 
 import mat.shared.UUIDUtilClient;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class XmlProcessor.
  */
@@ -86,9 +85,6 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_CQL_LOOKUP. */
 	private static final String XPATH_CQL_LOOKUP = "/measure/cqlLookUp";
-	
-	/** The Constant XPATH_DETAILS_ITEM_COUNT. */
-	//private static final String XPATH_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
 	
 	/** The Constant XPATH_DTLS_COMPONENT_MEASURE. */
 	private static final String XPATH_DTLS_COMPONENT_MEASURE = "/measure/measureDetails/componentMeasures";
@@ -325,7 +321,6 @@ public class XmlProcessor {
 			originalDoc = docBuilder.parse(file);
 			LOG.info("Document Object created successfully for the XML String");
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
@@ -1228,11 +1223,6 @@ public class XmlProcessor {
 		return ((Double) expr.evaluate(document, XPathConstants.NUMBER)).intValue();
 	}
 	
-	//	public void addEmptyItemCountNode(){
-	//		NodeList nodes=originalDoc.getElementsByTagName("scoring");
-	//		Element itemCountElement=originalDoc.createElement("itemCount");
-	//		nodes.item(0).getParentNode().insertBefore(itemCountElement,null);
-	//	}
 	/**
 	 * Gets the original doc.
 	 * 
@@ -1279,92 +1269,6 @@ public class XmlProcessor {
 	private static String toProperCase(String str) {
 		return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
 	}
-	
-	
-	
-	/**
-	 * This method will check for the timing element to be present in
-	 * 'elementLookUp/qdm' tag based on its OID's. That element is,
-	 * 
-	 * 2.16.840.1.113883.3.67.1.101.1.53 : Measurement Period
-	 * 
-	 * And will return a string of the timing element OID's missing from
-	 * 'elementLookUp/qdm'
-	 * 
-	 * @return String
-	 */
-	/*public List<String> checkForTimingElements() {
-		List<String> missingTimingElementList = new ArrayList<String>();
-		
-		if (originalDoc != null) {
-			try {
-				// Measurement Period commented - MAT-7104.
-				// Default Measurement Period is created in Parameter section so it is not required in Elementlookup.
-				Node measurementPeriodNode = this.findNode(originalDoc,
-						"/measure/elementLookUp/qdm[@oid='"
-								+ MEASUREMENT_PERIOD_OID + "']");
-				if (measurementPeriodNode == null) {
-					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
-				}
-				
-				//Patient Characteristic Birth Data
-				Node patientCharacteristicBirthDateNode = this.findNode(originalDoc,
-						"/measure/elementLookUp/qdm[@oid='"
-								+ PATIENT_CHARACTERISTIC_BIRTH_DATE_OID + "']");
-				if (patientCharacteristicBirthDateNode == null) {
-					missingTimingElementList.add(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID);
-				}
-				
-				//Patient Characteristic Expired
-				Node patientCharacteristicExpiredNode = this.findNode(originalDoc,
-						"/measure/elementLookUp/qdm[@oid='"
-								+ PATIENT_CHARACTERISTIC_EXPIRED_OID + "']");
-				if (patientCharacteristicExpiredNode == null) {
-					missingTimingElementList.add(PATIENT_CHARACTERISTIC_EXPIRED_OID);
-				}
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return missingTimingElementList;
-	}
-	
-	*//**
-	 * Check for qdm id and update.
-	 *
-	 * @return the string
-	 *//*
-	public String checkForQdmIDAndUpdate() {
-		if (originalDoc == null) {
-			return "";
-		}
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		try {
-			
-			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(
-					XPATH_MEASURE_ELEMENT_LOOKUP_QDM,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			List<String> idList = new ArrayList<String>();
-			for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
-				Node newNode = nodesElementLookUpAll.item(i);
-				
-				String id = newNode.getAttributes().getNamedItem("id").getNodeValue().toString();
-				
-				if(idList.contains(id))
-				{
-					newNode.getAttributes().getNamedItem("id").setNodeValue(UUID.randomUUID().toString().replaceAll("-", ""));
-				}
-				else
-				{
-					idList.add(id);
-				}
-			}
-		}catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-		return transform(originalDoc);
-	}*/
 	
 	/**
 	 * Transform.
@@ -1545,19 +1449,6 @@ public class XmlProcessor {
 			cqlLibraryNode.setTextContent(libraryName);
 		}
 	}
-	
-	/**
-	 * Method to set latest QDM Version in Draft's or clones of CQL type measure or CQL Stand Alone Library.
-	 * 
-	 * **/
-	/*public void updateLatestQDMVersion() throws XPathExpressionException {
-
-		Node cqlLibraryQdmVersionNode = findNode(originalDoc, "//cqlLookUp/usingModelVersion");
-
-		if (cqlLibraryQdmVersionNode != null) {
-			cqlLibraryQdmVersionNode.setTextContent(MATPropertiesService.get().getQmdVersion());
-		}
-	}*/
 	
 	/**
 	 * This method will take a String and remove all non-alphabet/non-numeric characters 

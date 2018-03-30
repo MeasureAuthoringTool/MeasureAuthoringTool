@@ -43,16 +43,6 @@ public class ManageMeasureDetailView
 	/** The measure name label. */
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
-/*	*//** The name label. *//*
-	private String nameLabel = "Name";
-	
-	*//** The short name label. *//*
-	private String shortNameLabel = "Abbreviated Name";
-	
-	//US 421. Measure scoring choice is now part of measure creation process.
-	*//** The scoring label. *//*
-	private String scoringLabel = "Measure Scoring";
-	*/
 	/** The name. */
 	private TextAreaWithMaxLength name = new TextAreaWithMaxLength();
 	
@@ -74,12 +64,6 @@ public class ManageMeasureDetailView
 	
 	/**  The edit confirmation box. */
 	EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
-	
-	/** The yes patient based radio button. *//*
-	private RadioButton radioBtnYes;
-	
-	*//** The no patient based radio button. *//*
-	private RadioButton radioBtnNo;*/
 	
 	/** The instructions. */
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");

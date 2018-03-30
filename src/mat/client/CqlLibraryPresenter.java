@@ -61,10 +61,9 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLLibraryShareDTO;
-import mat.model.cql.CQLModel;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
-// TODO: Auto-generated Javadoc
+
 
 /**
  * The Class CqlLibraryPresenter.
@@ -103,9 +102,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 	boolean isSearchVisibleOnDraft = true;
 	
 	boolean isLoading = false;
-
-	/** The cql model. */
-	private CQLModel cqlModel;
 
 	/** The validator. */
 	CQLModelValidator validator = new CQLModelValidator();
@@ -969,11 +965,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
 						showSearchingBusy(false);
 						versionDisplay.getErrorMessages()
 								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						//versionDisplay.getZoomButton().setEnabled(true);
 						((Button) versionDisplay.getSaveButton()).setEnabled(true);
 						((Button) versionDisplay.getCancelButton()).setEnabled(true);
 					}
@@ -1375,7 +1369,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * This method is called when New Library Option is selected from CreateNewItemWidget. 
 	 */
 	private void createNew() {
-		cqlModel = new CQLModel();
 		panel.getButtonPanel().clear();
 		panel.setHeading("My CQL Library > Create New CQL Library", "CQLLibrary");
 		panel.setContent(detailDisplay.asWidget());

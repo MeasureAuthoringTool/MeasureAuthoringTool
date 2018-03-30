@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +16,19 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.dom.ElementImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -36,7 +48,6 @@ import mat.model.cql.CQLParameter;
 import mat.server.CQLLibraryService;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
-import mat.server.service.MeasureLibraryService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
@@ -45,20 +56,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.xerces.dom.ElementImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureCloningServiceImpl.
  */
@@ -89,8 +86,6 @@ implements MeasureCloningService {
 	
 	private CQLService cqlService;
 	
-	private MeasureLibraryService measureLibraryService;
-	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(MeasureCloningServiceImpl.class);
@@ -120,9 +115,6 @@ implements MeasureCloningService {
 	/** The Constant VERSION. */
 	private static final String VERSION = "version";
 	
-	/** The Constant MEASURE_STATUS. */
-	private static final String MEASURE_STATUS = "status";
-	
 	/** The Constant MEASURE_SCORING. */
 	private static final String MEASURE_SCORING = "scoring";
 	
@@ -147,9 +139,6 @@ implements MeasureCloningService {
 	/** The Constant TRUE. */
 	private static final boolean TRUE = true;
 	
-	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
-	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm [@suppDataElement='true']";
-	
 	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
 	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
 	
@@ -167,6 +156,9 @@ implements MeasureCloningService {
 	
 	private static final String ORIGINAL_NAME = "originalName";
 	private static final String NAME = "name";
+	
+	private static final String PROGRAM = "program";
+	private static final String RELEASE = "release";
 
 	
 	/** The cloned doc. */
@@ -180,16 +172,14 @@ implements MeasureCloningService {
 	 * @see mat.client.measure.service.MeasureCloningService#clone(mat.client.measure.ManageMeasureDetailModel, java.lang.String, boolean)
 	 */
 	@Override
-	public ManageMeasureSearchModel.Result clone(
-			ManageMeasureDetailModel currentDetails, String loggedinUserId,
-			boolean creatingDraft) throws MatException {
+	public ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, String loggedinUserId, boolean creatingDraft) throws MatException {
 		logger.info("In MeasureCloningServiceImpl.clone() method..");
 		measureDAO = (MeasureDAO) context.getBean("measureDAO");
 		measureXmlDAO = (MeasureXMLDAO) context.getBean("measureXMLDAO");
 		measureSetDAO = (MeasureSetDAO) context.getBean("measureSetDAO");
 		userDAO = (UserDAO) context.getBean("userDAO");
 		cqlService = (CQLService) context.getBean("cqlService");
-		measureLibraryService = (MeasureLibraryService) context.getBean("measureLibraryService");
+
 		cqlLibraryService = (CQLLibraryService) context.getBean("cqlLibraryService");
 		
 		boolean isMeasureClonable = false;
@@ -295,7 +285,7 @@ implements MeasureCloningService {
 			if ((currentDetails.getMeasScoring() != null)
 					&& !currentDetails.getMeasScoring().equals(
 							measure.getMeasureScoring())) {
-				
+
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
@@ -399,15 +389,11 @@ implements MeasureCloningService {
 			try {
 				xmlProcessor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");
 			} catch (SAXException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
-		//xmlProcessor.checkForStratificationAndAdd();
 		
 		//copy qdm to cqlLookup/valuesets
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");		
@@ -475,6 +461,8 @@ implements MeasureCloningService {
 			}
 			for(int i=0;i<cqlValuesetsNode.getChildNodes().getLength();i++){
 				Node valueSetNode = addOriginalNameAttributeIfNotPresent(cqlValuesetsNode.getChildNodes().item(i), xmlProcessor);
+				valueSetNode = addProgramAttributeIfNotPresent(valueSetNode, xmlProcessor);
+				valueSetNode = addReleaseAttributeIfNotPresent(valueSetNode, xmlProcessor);
 				cqlValuesetsNodeList.add(valueSetNode);
 			}
 		}
@@ -531,11 +519,6 @@ implements MeasureCloningService {
 				parentNode.removeChild(qNode);
 			}
 		}
-		//Re-factored MAT-8295 : birthdate is not removed from QDM. This is to keep uuid same for ClauseWorkspace references to birthdate qdm.
-		/*if(birthDataQDMNode != null){
-			Node parentNode = birthDataQDMNode.getParentNode();
-			parentNode.removeChild(birthDataQDMNode);
-		}*/
 		
 		//checkForTimingElementsAndAppend(xmlProcessor);
 		checkForDefaultCQLParametersAndAppend(xmlProcessor);
@@ -557,6 +540,27 @@ implements MeasureCloningService {
 		return valueSetNode;
 	}
 
+	
+	private Node addProgramAttributeIfNotPresent(Node nodeToUpdate, XmlProcessor xmlProcessor) {
+		Node programNode = nodeToUpdate.getAttributes().getNamedItem(PROGRAM);
+		if(programNode == null) {
+			Attr programAttr = xmlProcessor.getOriginalDoc().createAttribute(PROGRAM);
+			programAttr.setNodeValue("");
+			nodeToUpdate.getAttributes().setNamedItem(programAttr);
+		}
+		return nodeToUpdate;
+	}
+	
+	private Node addReleaseAttributeIfNotPresent(Node nodeToUpdate, XmlProcessor xmlProcessor) {
+		Node releaseNode = nodeToUpdate.getAttributes().getNamedItem(RELEASE);
+		if(releaseNode == null) {
+			Attr releaseAttr = xmlProcessor.getOriginalDoc().createAttribute(RELEASE);
+			releaseAttr.setNodeValue("");
+			nodeToUpdate.getAttributes().setNamedItem(releaseAttr);
+		}
+		return nodeToUpdate;
+	}
+	
 	/**
 	 * Append cql definitions.
 	 *
@@ -577,7 +581,6 @@ implements MeasureCloningService {
 					appendSupplementalDefinitions(xmlProcessor, true);
 				}
 			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return;
@@ -594,7 +597,6 @@ implements MeasureCloningService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -647,42 +649,6 @@ implements MeasureCloningService {
 			}
 		}
 		return returnNodeList;
-	}
-	
-	private void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
-		
-		/*List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
-		
-		if (missingMeasurementPeriod.isEmpty()) {
-			logger.info("All timing elements present in the measure while cloning.");
-			return;
-		}
-		logger.info("While cloning, found the following timing elements missing:" + missingMeasurementPeriod);
-		
-		//		List<String> missingOIDList = new ArrayList<String>();
-		//		missingOIDList.add(missingMeasurementPeriod);
-		
-		QualityDataModelWrapper wrapper = measureXmlDAO.createTimingElementQDMs(missingMeasurementPeriod);
-		
-		// Object to XML for elementLookUp
-		ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
-		
-		String filteredString = removePatternFromXMLString(streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)),
-				"<measure>", "");
-		filteredString = removePatternFromXMLString(filteredString, "</measure>", "");
-		
-		try {
-			System.out.println("timing qdm String:"+filteredString);
-			xmlProcessor.appendNode(filteredString, "qdm", "/measure/elementLookUp");
-			String cqlValueSetString = filteredString.replaceAll("<qdm", "<valueset");
-			System.out.println("timing cql valueset string:"+cqlValueSetString);
-			xmlProcessor.appendNode(cqlValueSetString, "valueset", "/measure/cqlLookUp/valuesets");
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-		
 	}
 	
 	/**
@@ -855,34 +821,6 @@ implements MeasureCloningService {
 		}
 	}
 	
-	/**
-	 * Gets the supplemental uu ids.
-	 * 
-	 * @return the supplemental uu ids
-	 */
-	private HashMap<String, String> getSupplementalUUIds() {
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		HashMap<String, String> supplementalUUIdMap = null;
-		try {
-			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(
-					XPATH_MEASURE_ELEMENT_LOOKUP_QDM,
-					clonedDoc.getDocumentElement(), XPathConstants.NODESET);
-			if (nodesElementLookUpAll != null) {
-				supplementalUUIdMap = new HashMap<String, String>();
-				for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
-					Node newNode = nodesElementLookUpAll.item(i);
-					String nodeName = newNode.getAttributes()
-							.getNamedItem(NAME).getNodeValue().toString();
-					String uuid = newNode.getAttributes().getNamedItem(UU_ID)
-							.getNodeValue().toString();
-					supplementalUUIdMap.put(nodeName, uuid);
-				}
-			}
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-		return supplementalUUIdMap;
-	}
 	
 	/**
 	 * Creates the new measure details.
@@ -1004,25 +942,5 @@ implements MeasureCloningService {
 			throw new Exception(e.getMessage());
 		}
 		
-	}
-	
-	/**
-	 * Removes the pattern from xml string.
-	 * 
-	 * @param xmlString
-	 *            the xml string
-	 * @param patternStart
-	 *            the pattern start
-	 * @param replaceWith
-	 *            the replace with
-	 * @return the string
-	 */
-	private String removePatternFromXMLString(String xmlString,
-			String patternStart, String replaceWith) {
-		String newString = xmlString;
-		if (patternStart != null) {
-			newString = newString.replaceAll(patternStart, replaceWith);
-		}
-		return newString;
 	}
 }

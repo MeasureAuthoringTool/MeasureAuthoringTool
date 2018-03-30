@@ -55,7 +55,6 @@ import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.event.MeasureVersionEvent;
-import mat.client.history.HistoryModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -82,7 +81,7 @@ import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ManageMeasurePresenter.
  */
@@ -392,9 +391,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param manageMeasureSearchModel
 		 *            the manage measure search model
 		 * @param filter
-		 *            TODO
+		 *            
 		 * @param searchText
-		 *            TODO
+		 *            
 		 */
 		public void buildDataTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
 
@@ -755,9 +754,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/** The history display. */
 	private HistoryDisplay historyDisplay;
 
-	/** The history model. */
-	private HistoryModel historyModel;
-
 	/** The is clone. */
 	private boolean isClone;
 
@@ -823,10 +819,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	/** The share display. */
 	private ShareDisplay shareDisplay;
-
-	/** The share start index. */
-	private int shareStartIndex = 1;
-
+	
 	/** The start index. */
 	private int startIndex = 1;
 
@@ -1647,7 +1640,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @return the share details
 	 */
 	private void getShareDetails(String userName, String id, int startIndex) {
-		shareStartIndex = startIndex;
 		searchDisplay.resetMessageDisplay();
 		shareDisplay.resetMessageDisplay();
 		MatContext.get().getMeasureService().getUsersForShare(userName, id, startIndex, Integer.MAX_VALUE,
@@ -2390,7 +2382,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(SearchHistoryDTO data) {
-						historyModel = new HistoryModel(data.getLogs());
 						historyDisplay.buildCellTable(data.getLogs());
 					}
 				});

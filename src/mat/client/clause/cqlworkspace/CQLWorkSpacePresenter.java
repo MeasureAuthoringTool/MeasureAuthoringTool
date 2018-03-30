@@ -4936,7 +4936,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				searchDisplay.resetMessageDisplay();
-				isUserDefined = searchDisplay.getValueSetView().validateUserDefinedInput(isUserDefined);
+				isUserDefined = searchDisplay.getValueSetView().validateUserDefinedInput();
 			}
 		});
 
@@ -4944,30 +4944,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		 * Adding value change handler for OID input in Search Panel in QDM elements Tab
 		 */
 
-		searchDisplay.getValueSetView().getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
-				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
-				
-				searchDisplay.resetMessageDisplay();
-				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
-				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
-					isRetrieveButtonEnabled = true;
-					isProgramListBoxEnabled = true;
-					isReleaseListBoxEnabled = false;
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-					searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
-					loadPrograms();
-				} else {
-					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
-				}
-				
-				alert508StateChanges();
-			}
-		});
+		searchDisplay.getValueSetView().getOIDInput().addValueChangeHandler(event -> clearOID());
+		
+		searchDisplay.getValueSetView().getOIDInput().sinkBitlessEvent("input");
 		
 		/**
 		 * value Change Handler for Version listBox in Search Panel
@@ -5000,6 +4979,30 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addValueSetObserverHandler();
 	}
 		
+	private void clearOID() {
+
+		previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+		previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+		
+		searchDisplay.resetMessageDisplay();		
+		isUserDefined = searchDisplay.getValueSetView().validateOIDInput();
+		
+		if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
+			isRetrieveButtonEnabled = true;
+			isProgramListBoxEnabled = true;
+			isReleaseListBoxEnabled = false;
+			searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
+			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+			loadPrograms();
+		} else {
+			enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
+		}
+		
+		alert508StateChanges();
+		
+	}
+	
 	public void setReleaseListBoxContent(List<String> releases) {
 		searchDisplay.getValueSetView().getReleaseListBox().clear();
 		for(String release : releases) {
@@ -6200,14 +6203,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
 		previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
 		previousIsVersionListBoxEnabled = isVersionListBoxEnabled;
-		searchDisplay.getValueSetView().getProgramListBox().clear();
-		searchDisplay.getValueSetView().getReleaseListBox().clear();		
+				
 		loadPrograms();
-		if(result.getProgram().isEmpty()) {
+		
+		if (null != result && (null == result.getProgram() || result.getProgram().isEmpty())) {
 			// if the valueset that was being edited has no program, put the selected index to the '--Select' field. 
 			// and put the release box in it's original state. 
 			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
-			searchDisplay.getValueSetView().initializeReleaseListBoxContent(); 
+			 
 			isProgramListBoxEnabled = true; 
 			isReleaseListBoxEnabled = false; 
 			isVersionListBoxEnabled = true; 

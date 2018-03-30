@@ -4211,7 +4211,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
 				searchDisplay.resetMessageDisplay();
-				isUserDefined = searchDisplay.getValueSetView().validateUserDefinedInput(isUserDefined);
+				isUserDefined = searchDisplay.getValueSetView().validateUserDefinedInput();
 			}
 		});
 
@@ -4219,31 +4219,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		 * Adding value change handler for OID input in Search Panel in QDM
 		 * elements Tab
 		 */
-
-		searchDisplay.getValueSetView().getOIDInput().addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
-				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-				previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
-				
-				searchDisplay.resetMessageDisplay();
-				isUserDefined = searchDisplay.getValueSetView().validateOIDInput(isUserDefined);
-				if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
-					isRetrieveButtonEnabled = true;
-					isProgramListBoxEnabled = true;
-					isReleaseListBoxEnabled = false;
-					searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
-					searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
-					loadPrograms();
-				} else {
-					enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
-				}
-				
-				alert508StateChanges();
-			}
-		});
+		searchDisplay.getValueSetView().getOIDInput().addValueChangeHandler(event -> clearOID());
+		
+		searchDisplay.getValueSetView().getOIDInput().sinkBitlessEvent("input");
 		
 		/**
 		 * value Change Handler for Version listBox in Search Panel
@@ -4394,6 +4372,29 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				alert508StateChanges();
 			}
 		});
+	}
+	
+	private void clearOID() {
+		
+		previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+		previousIsReleaseListBoxEnabled = isReleaseListBoxEnabled;
+
+		searchDisplay.resetMessageDisplay();
+		isUserDefined = searchDisplay.getValueSetView().validateOIDInput();
+		
+		if (searchDisplay.getValueSetView().getOIDInput().getValue().length() <= 0 ) {
+			isRetrieveButtonEnabled = true;
+			isProgramListBoxEnabled = true;
+			isReleaseListBoxEnabled = false;
+			searchDisplay.getValueSetView().getVersionListBox().setEnabled(false);
+			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+			loadPrograms();
+		} else {
+			enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
+		}
+
+		alert508StateChanges();
 	}
 	
 	private void alert508StateChanges() {

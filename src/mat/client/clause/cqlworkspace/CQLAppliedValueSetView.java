@@ -37,6 +37,7 @@ import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -47,6 +48,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -139,7 +141,15 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private ListBox programListBox = new ListBox();
 	private ListBox releaseListBox = new ListBox();
 	private MatTextBox nameInput = new MatTextBox();
-	private MatTextBox oidInput = new MatTextBox();
+	private MatTextBox oidInput = new MatTextBox() {
+		@Override
+		public void onBrowserEvent(Event event) {
+			super.onBrowserEvent(event);
+			if("input".equals(event.getType())){
+				ValueChangeEvent.fire(this, this.getText());
+			}
+		}
+	};
 	private Button goButton = new Button(RETRIEVE_OID);
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
 	private boolean isEditable;
@@ -430,7 +440,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		PanelHeader qdmElementsHeader = new PanelHeader();//new Label("QDM Elements");
+		PanelHeader qdmElementsHeader = new PanelHeader();
 		qdmElementsHeader.getElement().setId("searchHeader_Label");
 		qdmElementsHeader.setStyleName("CqlWorkSpaceTableHeader");
 		qdmElementsHeader.getElement().setAttribute("tabIndex", "0");
@@ -1359,25 +1369,31 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 * the fields in Search Panel except Name
 	 * which are required to create new UserDefined QDM Element.
 	 */
-	public boolean validateUserDefinedInput(boolean isUserDefined) {
-		if (getUserDefinedInput().getValue().length() > 0) {
-			isUserDefined = true;
-			getOIDInput().setEnabled(true);
-			getUserDefinedInput()
-					.setTitle(getUserDefinedInput().getValue());
-		
-			getVersionListBox().setEnabled(false);
+	public boolean validateUserDefinedInput() {
 
+		boolean hasName = (getUserDefinedInput().getValue().length() > 0) ? true : false ;
+
+		if (hasName) {
+			getOIDInput().setEnabled(false);
+			getProgramListBox().setEnabled(false);
+			getReleaseListBox().setEnabled(false);
 			getRetrieveFromVSACButton().setEnabled(false);
+			
 			getSaveButton().setEnabled(true);
+			
+			getUserDefinedInput().setTitle(getUserDefinedInput().getValue());
+			
 		} else {
-			isUserDefined = false;
-			getUserDefinedInput().setTitle(ENTER_NAME);
 			getOIDInput().setEnabled(true);
+			getProgramListBox().setEnabled(true);
 			getRetrieveFromVSACButton().setEnabled(true);
+			
 			getSaveButton().setEnabled(false);
+			
+			getUserDefinedInput().setTitle(ENTER_NAME);
 		}
-		return isUserDefined;
+
+		return hasName;
 	}
 	
 	
@@ -1385,23 +1401,25 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 * Validate oid input. depending on the OID input we are disabling and
 	 * enabling the fields in Search Panel
 	 */
-	public boolean validateOIDInput(boolean isUserDefined) {
-		if (getOIDInput().getValue().length() > 0) {
-			isUserDefined = false;
+	public boolean validateOIDInput() {
+
+		boolean hasOID = (getUserDefinedInput().getValue().length() > 0) ? true : false ;
+
+		if (hasOID) {			
 			getUserDefinedInput().setEnabled(false);
 			getSaveButton().setEnabled(false);
 			getRetrieveFromVSACButton().setEnabled(true);
-		} else if (getUserDefinedInput().getValue().length() > 0) {
-			isUserDefined = true;
-			//getQDMExpProfileListBox().clear();
+			getOIDInput().setTitle(getOIDInput().getValue());
+
+		} else {
+			
 			getVersionListBox().clear();
 			getUserDefinedInput().setEnabled(true);
 			getSaveButton().setEnabled(true);
+			getOIDInput().setTitle(ENTER_OID);
+		} 
 
-		} else {
-			getUserDefinedInput().setEnabled(true);
-		}
-		return isUserDefined;
+		return !hasOID;
 	}
 	
 	/**

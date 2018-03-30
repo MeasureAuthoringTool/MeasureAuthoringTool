@@ -9,7 +9,7 @@
 	        <sql>
 				UPDATE unit
 				SET CQL_UNIT = '{beats}/min'
-				WHERE NAME = 'bpm' AND CQL_UNIT = '{H.B}/min';
+				WHERE NAME = 'bpm' AND CQL_UNIT = '{H.B.}/min';
 		   </sql>
 	    </changeSet>
     

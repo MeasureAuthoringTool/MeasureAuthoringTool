@@ -6,6 +6,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.cql.CQLQualityDataSetDTO;
 
+import org.apache.commons.lang.StringUtils;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class CQLValueSetTransferObject.
@@ -222,6 +224,8 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 			if(this.getMatValueSet().getDisplayName()!= null && this.getMatValueSet().getDisplayName().trim().isEmpty()){
 				isValid = false;
 			} else if(this.getMatValueSet().getDisplayName()== null){
+				isValid = false;
+			} else if ((StringUtils.isNotBlank(this.cqlQualityDataSetDTO.getProgram()) || StringUtils.isNotBlank(this.cqlQualityDataSetDTO.getRelease())) && this.isVersion) {
 				isValid = false;
 			}
 		} else if(this.getUserDefinedText().trim().isEmpty()){

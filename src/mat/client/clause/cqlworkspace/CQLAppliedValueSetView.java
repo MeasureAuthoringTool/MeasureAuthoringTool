@@ -145,7 +145,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		@Override
 		public void onBrowserEvent(Event event) {
 			super.onBrowserEvent(event);
-			if("input".equals(event.getType())){
+			if("input".equals(event.getType()) && this.getText().trim().isEmpty()){
 				ValueChangeEvent.fire(this, this.getText());
 			}
 		}
@@ -1402,24 +1402,26 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 * enabling the fields in Search Panel
 	 */
 	public boolean validateOIDInput() {
-
-		boolean hasOID = (getUserDefinedInput().getValue().length() > 0) ? true : false ;
-
-		if (hasOID) {			
+		
+		boolean isUserDefined = false;
+		
+		if (getOIDInput().getValue().length() > 0) {					
 			getUserDefinedInput().setEnabled(false);
 			getSaveButton().setEnabled(false);
 			getRetrieveFromVSACButton().setEnabled(true);
 			getOIDInput().setTitle(getOIDInput().getValue());
 
-		} else {
-			
+		} else if (getUserDefinedInput().getValue().length() > 0) {
+			isUserDefined = true;
 			getVersionListBox().clear();
 			getUserDefinedInput().setEnabled(true);
 			getSaveButton().setEnabled(true);
 			getOIDInput().setTitle(ENTER_OID);
-		} 
+		} else {
+			getUserDefinedInput().setEnabled(true);
+		}
 
-		return !hasOID;
+		return isUserDefined;
 	}
 	
 	/**

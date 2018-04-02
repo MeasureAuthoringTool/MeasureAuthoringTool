@@ -2853,7 +2853,7 @@ public class CQLServiceImpl implements CQLService {
 		if (valueSetTransferObject.isVersion()) {
 			qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
 		} else {
-			qds.setVersion("1.0");
+			qds.setVersion(StringUtils.isNotBlank(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease()) ? "" : "1.0");
 		}
 		
 		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject

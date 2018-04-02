@@ -82,6 +82,7 @@ import mat.model.MatValueSet;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
+import mat.shared.StringUtility;
 
 
 /**
@@ -1542,7 +1543,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					if(!cqlQualityDataSetDTO.getVersion().equals("1.0") || !cqlQualityDataSetDTO.getVersion().equals("1")) {
+					if(!cqlQualityDataSetDTO.getVersion().equals("1.0") || !cqlQualityDataSetDTO.getVersion().equals("1")
+							|| !cqlQualityDataSetDTO.getVersion().isEmpty()) {
 						cqlValueSetTransferObject.setVersion(true);
 						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
 					}

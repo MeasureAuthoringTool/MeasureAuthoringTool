@@ -2851,15 +2851,8 @@ public class CQLServiceImpl implements CQLService {
 		}
 		qds.setUuid(UUID.randomUUID().toString());
 		
-		if(StringUtils.isNotBlank(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease())){
-			qds.setVersion("");
-		} else {
-			if (valueSetTransferObject.isVersion()) {
-				qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
-			} else {
-				qds.setVersion("1.0");
-			}
-		}
+		qds.setVersion(getValueSetVersion(valueSetTransferObject.isVersion(), 
+				valueSetTransferObject.getCqlQualityDataSetDTO().getRelease(), valueSetTransferObject.getMatValueSet().getVersion()));
 		
 		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject
 				.getAppliedQDMList();
@@ -2879,6 +2872,16 @@ public class CQLServiceImpl implements CQLService {
 		}
 
 		return result;
+	}
+	
+	private String getValueSetVersion(boolean hasVersion, String release, String version) {	
+				
+		if (StringUtils.isNotBlank(release)){
+			return "" ;
+		} else {
+			return hasVersion ? version : "1.0" ;			
+		}
+		
 	}
 
 	/**
@@ -3144,11 +3147,9 @@ public class CQLServiceImpl implements CQLService {
 			} else {
 				qds.setTaxonomy(matValueSet.getCodeSystemName());
 			}
-			if (matValueSetTransferObject.isVersion()) {
-				qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
-			} else {
-				qds.setVersion("1.0");
-			}
+			
+			qds.setVersion(getValueSetVersion(matValueSetTransferObject.isVersion(), 
+					matValueSetTransferObject.getCqlQualityDataSetDTO().getRelease(), matValueSetTransferObject.getMatValueSet().getVersion()));
 			
 			CQLQualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
 					(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());

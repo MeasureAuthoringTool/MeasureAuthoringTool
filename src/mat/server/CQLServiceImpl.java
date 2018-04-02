@@ -2850,10 +2850,15 @@ public class CQLServiceImpl implements CQLService {
 			qds.setTaxonomy(matValueSet.getCodeSystemName());
 		}
 		qds.setUuid(UUID.randomUUID().toString());
-		if (valueSetTransferObject.isVersion()) {
-			qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
+		
+		if(StringUtils.isNotBlank(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease())){
+			qds.setVersion("");
 		} else {
-			qds.setVersion(StringUtils.isNotBlank(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease()) ? "" : "1.0");
+			if (valueSetTransferObject.isVersion()) {
+				qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
+			} else {
+				qds.setVersion("1.0");
+			}
 		}
 		
 		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject

@@ -5119,11 +5119,6 @@ private void addCodeSearchPanelHandlers() {
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String displayName = (!originalName.isEmpty() ? originalName : "")  + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
 
-			String version = searchDisplay.getValueSetView()
-					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-			if (version == null) {
-				version = "";
-			}
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
 			}
@@ -5131,6 +5126,7 @@ private void addCodeSearchPanelHandlers() {
 			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
 			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setRelease(releaseValue);
+				modifyValueSetDTO.setVersion("");
 			} else {
 				modifyValueSetDTO.setRelease("");
 			}

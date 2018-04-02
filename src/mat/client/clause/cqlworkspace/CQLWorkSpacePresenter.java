@@ -5839,16 +5839,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		// Normal Available QDM Flow
 		MatValueSet modifyWithDTO = currentMatValueSet;
 		if ((modifyValueSetDTO != null) && (modifyWithDTO != null)) {
-			String version = searchDisplay.getValueSetView()
-			.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-
 			String originalName = searchDisplay.getValueSetView().getUserDefinedInput().getText();
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String displayName = (!originalName.isEmpty() ? originalName : "")
 					+ (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-			if (version == null) {
-				version = "";
-			}
 			if (modifyValueSetDTO.getVersion() == null) {
 				modifyValueSetDTO.setVersion("");
 			}
@@ -5856,6 +5850,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
 			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setRelease(releaseValue);
+				modifyValueSetDTO.setVersion("");
 			} else {
 				modifyValueSetDTO.setRelease("");
 			}

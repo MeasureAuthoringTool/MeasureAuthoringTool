@@ -456,7 +456,7 @@ public final class CQLUtilityClass {
 					sb.append("valueset ").append('"').append(valueset.getCodeListName()).append('"');
 					sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
 					//Check if QDM has expansion identifier or not.
-					if(!version.equals("1.0")){
+					if(!version.equals("1.0") || StringUtils.isNotBlank(version)){
 						sb.append("version 'urn:hl7:version:").append(version).append("' ");
 					}
 					sb.append("\n");

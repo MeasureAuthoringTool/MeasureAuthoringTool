@@ -3197,7 +3197,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
 				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
-				newNode.getAttributes().getNamedItem("version").setNodeValue(modifyWithDTO.getVersion());
+				newNode.getAttributes().getNamedItem("version").setNodeValue(getValueSetVersion(true, modifyWithDTO.getRelease(), modifyWithDTO.getVersion()));
 				if (newNode.getAttributes().getNamedItem("release") != null) {
 					newNode.getAttributes().getNamedItem("release").setNodeValue(modifyWithDTO.getRelease());
 					newNode.getAttributes().getNamedItem("program").setNodeValue(modifyWithDTO.getProgram());

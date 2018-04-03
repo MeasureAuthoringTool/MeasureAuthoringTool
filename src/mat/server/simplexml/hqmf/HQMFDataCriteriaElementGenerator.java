@@ -885,7 +885,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		 */
 		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
-		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isNotBlank(valueSetVersion)) {
+		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
 				valueSetVersion = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;

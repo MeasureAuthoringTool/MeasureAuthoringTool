@@ -574,32 +574,17 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		 * VSAC.
 		 */
 		boolean addVersionToValueTag = false;
-	//	if (qdmNode.getAttributes().getNamedItem("version") != null) {
-
 			String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 
-			if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
-				/*
-				 * if
-				 * (qdmNode.getAttributes().getNamedItem("expansionIdentifier")
-				 * != null) { valueSetVersion = "urn:hl7:profile:" +
-				 * qdmNode.getAttributes().getNamedItem("expansionIdentifier").
-				 * getNodeValue().replaceAll(" ", "%20"); addVersionToValueTag =
-				 * true; } else {
-				 */
+			if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
 				addVersionToValueTag = false;
-				// }
 			} else {
-				// valueSetVersion = "urn:hl7:version:" +
-				// qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll("
-				// ", "%20");
 				valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 				addVersionToValueTag = true;
 			}
 			if (addVersionToValueTag) {
 				valueElem.setAttribute("valueSetVersion", valueSetVersion);
 			}
-		//}
 	}
 	
 	/**
@@ -741,11 +726,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	private String valueSetVersionStringValue(Node qdmNode){
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
-		if (!"1.0".equals(version) && !"1".equals(version)) {
-			/*if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue().replaceAll(" ", "%20");
-			}
-		} else {*/
+		if (!"1.0".equals(version) && !"1".equals(version) && StringUtils.isNotBlank(version)) {
 			version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		}  else {
 			version = null;

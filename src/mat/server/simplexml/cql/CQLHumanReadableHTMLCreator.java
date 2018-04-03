@@ -24,6 +24,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.DocumentType;
@@ -212,11 +213,9 @@ public class CQLHumanReadableHTMLCreator {
 			String version = current.getAttributes().getNamedItem("version").getNodeValue(); 
 			
 			String output = "";
-			if(version != null && !version.isEmpty() && !version.equalsIgnoreCase("1.0")) {
+			if(StringUtils.isNotBlank(version) && !version.equalsIgnoreCase("1.0")) {
 				output = "valueset \"" + name + "\" (" + oid + ", version " + version + ")";
-			} 
-			
-			else {
+			} else {
 				output = "valueset \"" + name + "\" (" + oid + ")";
 			}
 			
@@ -611,7 +610,7 @@ public class CQLHumanReadableHTMLCreator {
 										
 					String output = String.format("\"%s: %s\" using \"%s (%s)\"", dataTypeName, name, name, oid);
 					
-					if(version != null && !version.equals("1.0") && !version.equals("1")){
+					if(StringUtils.isNotBlank(version) && !version.equals("1.0") && !version.equals("1")){
 						output = String.format("\"%s: %s\" using \"%s (%s, version %s)\"", dataTypeName, name, name, oid, version);
 					}
 								

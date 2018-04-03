@@ -2757,7 +2757,7 @@ public class CQLServiceImpl implements CQLService {
 		
 		if(!valueSetTransferObject.validateModel()){
 			result.setSuccess(false);
-			result.setFailureReason(result.SERVER_SIDE_VALIDATION);
+			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
 		
@@ -2990,7 +2990,7 @@ public class CQLServiceImpl implements CQLService {
 		matValueSetTransferObject.scrubForMarkUp();
 		if(!matValueSetTransferObject.validateModel()){
 			result.setSuccess(false);
-			result.setFailureReason(result.SERVER_SIDE_VALIDATION);
+			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
 		if (matValueSetTransferObject.getMatValueSet() != null) {

@@ -195,9 +195,7 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 		}
 	}
 	
-	public boolean validateModel(){
-		//boolean isValid = true;
-		
+	public boolean validateModel(){		
 		CQLValueSetTransferObjectValidator validator = new CQLValueSetTransferObjectValidator();
 		
 		return validator.isValid(this);

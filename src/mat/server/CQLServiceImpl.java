@@ -2840,7 +2840,7 @@ public class CQLServiceImpl implements CQLService {
 		
 		if(!matValueSetTransferObject.validateModel()){
 			result.setSuccess(false);
-			result.setFailureReason(result.SERVER_SIDE_VALIDATION);
+			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
 		
@@ -2849,38 +2849,26 @@ public class CQLServiceImpl implements CQLService {
 		String errorMessage = validator.validate(matValueSetTransferObject);
 		if (errorMessage.isEmpty()) {
 			ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
-			List<CQLQualityDataSetDTO> existingQDSList = matValueSetTransferObject.getAppliedQDMList();
-			boolean isQDSExist = false;
-			for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
-				if (dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID) && dataSetDTO
-						.getCodeListName().equalsIgnoreCase(matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName())) {
-					isQDSExist = true;
-					break;
-				}
-			}
-			if (!isQDSExist) {
-				wrapper.setQualityDataDTO(qdsList);
-				CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
-				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
-				qds.setId(UUID.randomUUID().toString());
-				qds.setCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
-				qds.setSuffix(matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
-				qds.setOriginalCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
-				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
-				qds.setUuid(UUID.randomUUID().toString());
-				qds.setVersion("1.0");
-				qds.setRelease("");
-				qds.setProgram("");
-				wrapper.getQualityDataDTO().add(qds);
-				
-				String qdmXMLString = generateXmlForAppliedValueset(wrapper);
-				result.setSuccess(true);
-				result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-				result.setXml(qdmXMLString);
-			} else {
-				result.setSuccess(false);
-				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
-			}
+			
+			wrapper.setQualityDataDTO(qdsList);
+			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
+			qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+			qds.setId(UUID.randomUUID().toString());
+			qds.setCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName());
+			qds.setSuffix(matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
+			qds.setOriginalCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
+			qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+			qds.setUuid(UUID.randomUUID().toString());
+			qds.setVersion("1.0");
+			qds.setRelease("");
+			qds.setProgram("");
+			wrapper.getQualityDataDTO().add(qds);
+			
+			String qdmXMLString = generateXmlForAppliedValueset(wrapper);
+			result.setSuccess(true);
+			result.setCqlAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
+			result.setXml(qdmXMLString);
+			
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION);

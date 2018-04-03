@@ -5787,9 +5787,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														.createAlert(MatContext.get().getMessageDelegate()
 																.getDuplicateAppliedValueSetMsg(result
 																		.getCqlQualityDataSetDTO().getCodeListName()));
-											} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
-												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-														.createAlert("Invalid input data.");
 											}
 										}
 									}

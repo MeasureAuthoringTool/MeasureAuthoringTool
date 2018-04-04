@@ -583,8 +583,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					StringBuilder title = new StringBuilder();
 					String version = null;
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if ((object.getVersion() != null) && (object.getVersion().equals("1.0")
-								|| object.getVersion().equals("1"))) {
+						if (isVersionNotAvailable(object.getVersion())) {
 							version = (object.getRelease() == null || object.getRelease().isEmpty()) ? "Most Recent" : "";
 							title.append("Version : ").append(version);
 							
@@ -1320,7 +1319,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getUpdateFromVSACButton().setEnabled(editable);
 		getSaveButton().setEnabled(false);
 		getVersionListBox().setEnabled(false);
-		
+		getProgramListBox().setEnabled(editable);
 	}
 	
 	/**
@@ -1543,8 +1542,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					if(!cqlQualityDataSetDTO.getVersion().equals("1.0") || !cqlQualityDataSetDTO.getVersion().equals("1")
-							|| !cqlQualityDataSetDTO.getVersion().isEmpty()) {
+					if(!isVersionNotAvailable(cqlQualityDataSetDTO.getVersion())) {
 						cqlValueSetTransferObject.setVersion(true);
 						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
 					}
@@ -1572,6 +1570,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 		
 		return cqlValueSetTransferObjectsList;
+	}
+	
+	private boolean isVersionNotAvailable(String version) {
+		return !(version == null || version.isEmpty() || version.equals("1.0") || version.equals("1"));
 	}
 	
 	/**

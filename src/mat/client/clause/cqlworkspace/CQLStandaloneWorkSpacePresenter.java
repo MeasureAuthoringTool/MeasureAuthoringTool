@@ -1732,7 +1732,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
-				// TODO Auto-generated method stub
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 				searchDisplay.resetMessageDisplay();
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {
@@ -3074,121 +3073,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().setText("");
 			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 		}
-	}
-
-	/**
-	 * This method Clears parameter view on Erase Button click when isPageDirty
-	 * is not set.
-	 */
-	private void clearParameter() {
-		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
-		searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
-		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-		if ((searchDisplay.getCQLParametersView().getParameterAceEditor().getText() != null)) {
-			searchDisplay.getCQLParametersView().getParameterAceEditor().setText("");
-		}
-		if ((searchDisplay.getCQLParametersView().getParameterNameTxtArea() != null)) {
-			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText("");
-		}
-
-		if ((searchDisplay.getCQLParametersView().getParameterCommentTextArea() != null)) {
-			searchDisplay.getCQLParametersView().getParameterCommentTextArea().setText("");
-		}
-		
-		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-			searchDisplay.getCQLParametersView()
-					.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-				searchDisplay.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-		}
-		// Below lines are to clear search suggestion textbox and listbox
-		// selection after erase.
-		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestParamTextBox().setText("");
-		if (searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex() >= 0) {
-			searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().setItemSelected(
-					searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex(), false);
-		}
-
-		searchDisplay.getParameterButtonBar().getDeleteButton().setEnabled(false);
-	}
-
-	/**
-	 * This method Clears Definition view on Erase Button click when isPageDirty
-	 * is not set.
-	 */
-	private void clearDefinition() {
-		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
-		searchDisplay.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
-		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-		if ((searchDisplay.getCQLDefinitionsView().getDefineAceEditor().getText() != null)) {
-			searchDisplay.getCQLDefinitionsView().getDefineAceEditor().setText("");
-		}
-		if ((searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea() != null)) {
-			searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea().setText("");
-		}
-		if ((searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea() != null)) {
-			searchDisplay.getCQLDefinitionsView().getDefineCommentTextArea().setText("");
-		}
-		searchDisplay.getCQLDefinitionsView().getReturnTypeTextBox().setText("");
-		
-		// Below lines are to clear search suggestion textbox and listbox
-		// selection after erase.
-		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestDefineTextBox().setText("");
-		if (searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex() >= 0) {
-			searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().setItemSelected(
-					searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex(), false);
-		}
-
-		// Functionality to reset the disabled features for supplemental data
-		// definitions when erased.
-		searchDisplay.getCQLDefinitionsView().getDefineNameTxtArea().setEnabled(true);
-		searchDisplay.getCQLDefinitionsView().getDefineAceEditor().setReadOnly(false);
-		searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn().setEnabled(true);
-		searchDisplay.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setEnabled(true);
-		searchDisplay.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
-		searchDisplay.getDefineButtonBar().getSaveButton().setEnabled(true);
-		searchDisplay.getDefineButtonBar().getDeleteButton().setEnabled(false);
-		searchDisplay.getDefineButtonBar().getInsertButton().setEnabled(true);
-		searchDisplay.getDefineButtonBar().getTimingExpButton().setEnabled(true);
-		searchDisplay.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(true);
-		searchDisplay.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(false);
-	}
-
-	/**
-	 * This method Clears Function view on Erase Button click when isPageDirty
-	 * is not set.
-	 */
-	private void clearFunction() {
-		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionObjId(null);
-		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
-		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
-		searchDisplay.getCQLFunctionsView().getFunctionArgumentList().clear();
-		searchDisplay.getCQLFunctionsView().getFunctionArgNameMap().clear();
-		searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
-		searchDisplay.createAddArgumentViewForFunctions(new ArrayList<CQLFunctionArgument>());
-		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-		if ((searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().getText() != null)) {
-			searchDisplay.getCQLFunctionsView().getFunctionBodyAceEditor().setText("");
-		}
-		if ((searchDisplay.getCQLFunctionsView().getFuncNameTxtArea() != null)) {
-			searchDisplay.getCQLFunctionsView().getFuncNameTxtArea().setText("");
-		}
-		if ((searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea() != null)) {
-			searchDisplay.getCQLFunctionsView().getFunctionCommentTextArea().setText("");
-		}
-		
-		searchDisplay.getCQLFunctionsView().getReturnTypeTextBox().setText("");
-		
-		// Below lines are to clear search suggestion textbox and listbox
-		// selection after erase.
-		searchDisplay.getCqlLeftNavBarPanelView().getSearchSuggestFuncTextBox().setText("");
-		if (searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().getSelectedIndex() >= 0) {
-			searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().setItemSelected(
-					searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().getSelectedIndex(), false);
-		}
-		searchDisplay.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
-		searchDisplay.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
-		searchDisplay.getFunctionButtonBar().getDeleteButton().setEnabled(false);
-		searchDisplay.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(true);
 	}
 
 	/**
@@ -4979,15 +4863,14 @@ private void addCodeSearchPanelHandlers() {
 				// to get the VSAC version list corresponding the OID
 				if (result.isSuccess()) {
 					List<MatValueSet> matValueSets = result.getVsacResponse();
-					if (matValueSets != null) {
-						MatValueSet matValueSet = matValueSets.get(0);
-						currentMatValueSet = matValueSet;
+					if (matValueSets != null) {						
+						currentMatValueSet = matValueSets.get(0);
 					}
 					searchDisplay.getValueSetView().getOIDInput().setTitle(oid);
 					searchDisplay.getValueSetView().getUserDefinedInput()
-							.setValue(matValueSets.get(0).getDisplayName());
+							.setValue(currentMatValueSet.getDisplayName());
 					searchDisplay.getValueSetView().getUserDefinedInput()
-							.setTitle(matValueSets.get(0).getDisplayName());
+							.setTitle(currentMatValueSet.getDisplayName());
 
 					searchDisplay.getValueSetView().getSaveButton().setEnabled(true);
 					getVSACVersionListByOID(oid);
@@ -5149,7 +5032,7 @@ private void addCodeSearchPanelHandlers() {
 					modifyValueSetDTO.setSuffix(null);
 				}
 				modifyValueSetDTO.setOriginalCodeListName(originalName);
-				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO, false);
+				updateAppliedValueSetsList(modifyWithDTO, null, modifyValueSetDTO);
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 				.createAlert(MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(displayName));
@@ -5207,7 +5090,7 @@ private void addCodeSearchPanelHandlers() {
 	 *            the is U ser defined
 	 */
 	private void updateAppliedValueSetsList(final MatValueSet matValueSet, final CodeListSearchDTO codeListSearchDTO,
-			final CQLQualityDataSetDTO qualityDataSetDTO, final boolean isUSerDefined) {
+			final CQLQualityDataSetDTO qualityDataSetDTO) {
 
 		String version = searchDisplay.getValueSetView()
 				.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
@@ -5299,11 +5182,7 @@ private void addCodeSearchPanelHandlers() {
 		String originalCodeListName = matValueSetTransferObject.getMatValueSet().getDisplayName(); 
 		String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 		final String codeListName = (originalCodeListName!=null ? originalCodeListName : "") + (!suffix.isEmpty() ? " (" + suffix + ")" : "");
-		
-		String version = matValueSetTransferObject.getMatValueSet().getVersion();
-		if (version == null) {
-			version = "";
-		}
+
 		// Check if QDM name already exists in the list.
 		if (!searchDisplay.getValueSetView().checkNameInValueSetList(codeListName,appliedValueSetTableList)) {
 			showSearchingBusy(true);
@@ -5313,8 +5192,8 @@ private void addCodeSearchPanelHandlers() {
 						@Override
 						public void onFailure(Throwable caught) {
 							showSearchingBusy(false);
-							if (appliedValueSetTableList.size() > 0) {
-								appliedValueSetTableList.removeAll(appliedValueSetTableList);
+							if (!appliedValueSetTableList.isEmpty()) {
+								appliedValueSetTableList.clear();
 							}
 							currentMatValueSet = null;
 							searchDisplay.getValueSetView().getSaveButton().setEnabled(false);
@@ -5375,13 +5254,7 @@ private void addCodeSearchPanelHandlers() {
 			String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
 			if (message.isEmpty()) {
 				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName(); 
-				
-				String version = searchDisplay.getValueSetView()
-						.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-				
-				if (version == null) {
-					version = "";
-				}
+
 				// Check if QDM name already exists in the list.
 				if (!searchDisplay.getValueSetView().checkNameInValueSetList(userDefinedInput,appliedValueSetTableList)) {
 					showSearchingBusy(true);
@@ -5410,10 +5283,13 @@ private void addCodeSearchPanelHandlers() {
 												getAppliedValueSetList();
 											}
 										} else {
-											if (result.getFailureReason() == result.ALREADY_EXISTS) {
+											if (result.getFailureReason() == SaveUpdateCQLResult.ALREADY_EXISTS) {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert(MatContext.get().getMessageDelegate()
 																.getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getCodeListName()));
+											} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+														.createAlert("Invalid input data.");
 											}
 										}
 									}
@@ -5511,11 +5387,6 @@ private void addCodeSearchPanelHandlers() {
 			String suffix = searchDisplay.getValueSetView().getSuffixInput().getValue();
 			String usrDefDisplayName = (!originalName.isEmpty() ? originalName : "") + (!suffix.isEmpty() ? " (" + suffix + ")" : ""); 
 
-			String version = searchDisplay.getValueSetView()
-					.getVersionValue(searchDisplay.getValueSetView().getVersionListBox());
-			if (version == null) {
-				version = "";
-			}
 			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(usrDefDisplayName,appliedValueSetTableList)) {
 
@@ -5532,7 +5403,7 @@ private void addCodeSearchPanelHandlers() {
 					modifyValueSetDTO.setOriginalCodeListName(originalName);
 					modifyValueSetDTO.setSuffix(suffix);
 					modifyValueSetDTO.setCodeListName(usrDefDisplayName);
-					updateAppliedValueSetsList(null, modifyWithDTO, modifyValueSetDTO, true);
+					updateAppliedValueSetsList(null, modifyWithDTO, modifyValueSetDTO);
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
 				}
@@ -5608,7 +5479,6 @@ private void addCodeSearchPanelHandlers() {
 	 */
 	private void buildAppliedQDMTable() {
 		searchDisplay.buildAppliedQDM();
-       // setExpansionProfilePanelValues();
 		boolean isEditable = MatContext.get().getLibraryLockService().checkForEditPermission();
 		
 		// initialize the valuesets to be used, getUsedArtifacts() will update with the proper value
@@ -6246,13 +6116,13 @@ private void addCodeSearchPanelHandlers() {
 	private void clearViewIfDirtyNotSet() {
 		switch (currentSection) {
 		case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
-			clearFunction();
+			addNewFunction();
 			break;
 		case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
-			clearParameter();
+			addNewParameter();
 			break;
 		case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
-			clearDefinition();
+			addNewDefinition();
 			break;
 		default:
 			break;
@@ -6272,9 +6142,7 @@ private void addCodeSearchPanelHandlers() {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-						System.out.println("Error retrieving data type attributes. " + caught.getMessage());
-
+						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					}
 
 					@Override

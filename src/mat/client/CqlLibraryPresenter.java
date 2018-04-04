@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -1547,7 +1548,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		
 		cqlLibraryView.buildDefaultView();
 		Command waitForUnlock = new Command() {
 			@Override

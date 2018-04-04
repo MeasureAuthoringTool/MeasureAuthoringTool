@@ -3291,6 +3291,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		GWT.log("CQLWorkspacePresenter->beforeClosingDisplay()");
 		searchDisplay.getCqlGeneralInformationView().clearAllGeneralInfoOfLibrary();
 		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
@@ -3340,6 +3341,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
+		GWT.log("CQLWorkspacePresenter->beforeDisplay()");
 		currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 		searchDisplay.buildView();
 		addLeftNavEventHandler();
@@ -5785,12 +5787,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												getAppliedValueSetList();
 											}
 										} else {
-											if (result.getFailureReason() == result.ALREADY_EXISTS) {
+											if (result.getFailureReason() == SaveUpdateCQLResult.ALREADY_EXISTS) {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert(MatContext.get().getMessageDelegate()
 																.getDuplicateAppliedValueSetMsg(result
 																		.getCqlQualityDataSetDTO().getCodeListName()));
-											} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
+											} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert("Invalid input data.");
 											}
@@ -6412,6 +6414,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	
 	private static final boolean isListValueNotSelected(String selectedValueFromList) {
 		return MatContext.PLEASE_SELECT.equals(selectedValueFromList) || selectedValueFromList == null || selectedValueFromList.isEmpty();
+	}
+
+	public boolean isCQLWorkspaceValid() {
+		if (getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }

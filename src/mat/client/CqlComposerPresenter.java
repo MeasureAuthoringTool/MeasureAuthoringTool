@@ -5,6 +5,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
@@ -20,12 +21,11 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.shared.ConstantMessages;
-/**
- * The Class CqlComposerPresenter.
- */
-@SuppressWarnings("deprecation")
-public class CqlComposerPresenter implements MatPresenter, Enableable {
+
+
+public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserver {
 	/**
 	 * The Class EnterKeyDownHandler.
 	 */
@@ -53,6 +53,12 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			}
 		}
 	}
+	
+	MatTabLayoutPanel targetTabLayout;
+	MatPresenter targetPresenter;
+	MatPresenter sourcePresenter;
+	HandlerRegistration yesHandler;
+	HandlerRegistration noHandler;
 	
 	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
@@ -98,9 +104,10 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 	public CqlComposerPresenter() {
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		cqlStandaloneWorkSpacePresenter = (CQLStandaloneWorkSpacePresenter) buildCQLWorkSpaceTab();
-		cqlComposerTabLayout = new MatTabLayoutPanel(true);
-		cqlComposerTabLayout.setId("cqlComposerTabLayout");
-		cqlComposerTabLayout.addPresenter(cqlStandaloneWorkSpacePresenter, "CQL Library Workspace");
+		cqlComposerTabLayout = new MatTabLayoutPanel(this);
+		cqlComposerTabLayout.getElement().setAttribute("id", "cqlComposerTabLayout");
+		cqlComposerTabLayout.add(cqlStandaloneWorkSpacePresenter.getWidget(), "CQL Library Workspace");
+		
 		cqlComposerTabLayout.setHeight("98%");
 		cqlComposerTab = ConstantMessages.CQL_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(cqlComposerTab, cqlComposerTabLayout);
@@ -112,7 +119,6 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				String newToken = cqlComposerTab + index;
 				if (!History.getToken().equals(newToken)) {
-					//TODO: create CqlLibrarySelectedEvent and get its info
 					CQLLibrarySelectedEvent cse = MatContext.get().getCurrentLibraryInfo();
 					String msg = " [CQL] " + cse.getLibraryName() + " [version] " + cse.getCqlLibraryVersion();
 					String cid = cse.getCqlLibraryId();
@@ -133,7 +139,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
-		cqlComposerTabLayout.close();
+		notifyCurrentTabOfClosing();
 		cqlComposerTabLayout.updateHeaderSelection(0);
 		cqlComposerTabLayout.setSelectedIndex(0);
 		
@@ -146,7 +152,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			@Override
 			public void execute() {
 				if (!MatContext.get().getLibraryLockService().isResettingLock()) {
-					cqlComposerTabLayout.close();
+					notifyCurrentTabOfClosing();
 					cqlComposerTabLayout.updateHeaderSelection(0);
 					cqlComposerTabLayout.setSelectedIndex(0);
 					/*buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
@@ -162,7 +168,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 				MatContext.get().getCurrentLibraryInfo().setCqlLibraryId("");
 			}
 		} else {
-			cqlComposerTabLayout.close();
+			notifyCurrentTabOfClosing();
 			cqlComposerTabLayout.updateHeaderSelection(0);
 			cqlComposerTabLayout.setSelectedIndex(0);
 			/*buttonBar.state = measureComposerTabLayout.getSelectedIndex();
@@ -180,14 +186,13 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 	 */
 	@Override
 	public void beforeDisplay() {
-		//TODO: Write a code in MatContext to get currentLibraryID
 		String currentLibraryId = MatContext.get().getCurrentCQLLibraryId();
 		
 		if ((currentLibraryId != null) && !"".equals(currentLibraryId)) {
 			if (MatContext.get().isCurrentLibraryEditable()) {
 				MatContext.get().getLibraryLockService().setLibraryLock();
 			}
-			//TODO: Get Library name and version from MatContext.
+
 			setContentHeading();
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
@@ -195,18 +200,13 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 			fp.add(subSkipContentHolder);
 			fp.add(cqlComposerTabLayout);
 			cqlComposerContent.setContent(fp);
-		//	MatContext.get().setVisible(buttonBar, true);
-		//	MatContext.get().getZoomFactorService().resetFactorArr();
-			cqlComposerTabLayout.selectTab(cqlStandaloneWorkSpacePresenter);
+			cqlComposerTabLayout.selectTab(0);
 			cqlStandaloneWorkSpacePresenter.beforeDisplay();
 		} else {
 			cqlComposerContent.setHeading("No Library Selected", "CqlComposer");
 			cqlComposerContent.setContent(emptyWidget);
-			//MatContext.get().setVisible(buttonBar, false);
 		}
 		Mat.focusSkipLists("CqlComposer");
-		//buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
-		//buttonBar.setPageNamesOnState();
 	}
 
 	/**
@@ -236,15 +236,6 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 		return cqlPresenter;
 	}
 	
-	/**
-	 * Gets the measure composer tab layout.
-	 *
-	 * @return the measureComposerTabLayout
-	 */
-	public MatTabLayoutPanel getCqlComposerTabLayout() {
-		return cqlComposerTabLayout;
-	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
@@ -265,14 +256,94 @@ public class CqlComposerPresenter implements MatPresenter, Enableable {
 		cqlComposerTabLayout.setEnabled(enabled);
 	}
 	
-	/**
-	 * Sets the cql composer tab layout.
-	 *
-	 * @param cqlComposerTabLayout the cqlComposerTabLayout to set
-	 */
-	public void setCqlComposerTabLayout(
-			MatTabLayoutPanel cqlComposerTabLayout) {
-		this.cqlComposerTabLayout = cqlComposerTabLayout;
+	private void showErrorMessageAlert(WarningConfirmationMessageAlert errorMessageDisplay) {
+		errorMessageDisplay.createAlert();
+		errorMessageDisplay.getWarningConfirmationYesButton().setFocus(true);
 	}
 	
+	private void handleClickEventsOnUnsavedChangesMsg(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
+		removeHandlers();
+		yesHandler = saveErrorMessage.getWarningConfirmationYesButton().addClickHandler(event -> onYesButtonClicked(saveErrorMessage, auditMessage));
+		noHandler = saveErrorMessage.getWarningConfirmationNoButton().addClickHandler(event -> onNoButtonClicked(saveErrorMessage));
+	}
+	
+	private void onNoButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage) {
+		saveErrorMessage.clearAlert();
+	}
+	
+	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
+		if (auditMessage != null) {
+			MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+					null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
+		};
+		saveErrorMessage.clearAlert();
+		notifyCurrentTabOfClosing();
+
+		if(targetPresenter == null && targetTabLayout == null) {
+			targetPresenter = cqlStandaloneWorkSpacePresenter;
+			targetTabLayout = cqlComposerTabLayout;
+		}
+
+		targetTabLayout.setIndexFromTargetSelection();
+		MatContext.get().setAriaHidden(targetPresenter.getWidget(),  "false");
+		targetPresenter.beforeDisplay();
+
+		if(sourcePresenter != null) {
+			sourcePresenter.beforeClosingDisplay();
+		}
+
+		targetTabLayout = null;
+		targetPresenter = null;
+		sourcePresenter = null;
+	}
+	
+
+	@Override
+	public boolean isValid() {
+		boolean isValid = true;
+		cqlStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+		if (cqlStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty()) {
+			isValid = false;
+		}
+		return isValid;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {
+		cqlStandaloneWorkSpacePresenter.beforeDisplay();	
+	}
+
+	@Override
+	public void showUnsavedChangesError() {
+		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
+		String auditMessage = null;
+		saveErrorMessageAlert = cqlStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+		if(saveErrorMessageAlert != null) {
+			showErrorMessageAlert(saveErrorMessageAlert);
+		}
+		
+		handleClickEventsOnUnsavedChangesMsg(saveErrorMessageAlert, auditMessage);
+	}
+
+	@Override
+	public void notifyCurrentTabOfClosing() {
+		MatContext.get().setAriaHidden(cqlStandaloneWorkSpacePresenter.getWidget(), "true");
+		cqlStandaloneWorkSpacePresenter.beforeClosingDisplay();
+	}
+	
+	private void removeHandlers() {
+		if(yesHandler!=null) {
+			yesHandler.removeHandler();
+		}
+		if(noHandler!=null) {	
+			noHandler.removeHandler();
+		}
+	}
+	
+	//TODO should we handle this differently?
+	public void setYesTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
+		this.targetTabLayout = targetTabLayout;
+		this.targetPresenter = targetPresenter;
+		this.sourcePresenter = sourcePresenter;
+	}
 }

@@ -49,7 +49,6 @@ import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseCellListWidget.
  */

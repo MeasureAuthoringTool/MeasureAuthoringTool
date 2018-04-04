@@ -10,10 +10,9 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-
+import org.gwtbootstrap3.client.ui.Button;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -40,7 +39,6 @@ import mat.model.cql.CQLDefinition;
 import mat.shared.MeasurePackageClauseValidator;
 import mat.shared.SaveUpdateCQLResult;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackagePresenter.
  */
@@ -554,10 +552,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getPackageGroupingWidget().getSaveGrouping().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
+				GWT.log("getSaveGrouping");
 				clearMessages();
+				GWT.log("getSaveGrouping 2");
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				GWT.log("getSaveGrouping 3");
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-				
+				GWT.log("getSaveGrouping 4");
 				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
 				updateDetailsFromView(tempMeasurePackageDetails);
 			
@@ -835,19 +836,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
-	
-	/**
-	 * Show error message.
-	 *
-	 * @param errorMessageDisplay the error message display
-	 *//*
-	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay) {
-		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
-		List<String> btn = new ArrayList<String>();
-		btn.add("Yes");
-		btn.add("No");
-		errorMessageDisplay.setMessageWithButtons(msg, btn);
-	}*/
 	
 	/**
 	 * Handle click events on unsaved error msg.
@@ -1441,6 +1429,41 @@ public class MeasurePackagePresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?id=" + model.getId()
 				+ "&format=zip";
 		Window.Location.replace(url + "&type=save");
+	}
+
+	/**
+	 * Checks if is measure package details same.
+	 *
+	 * @param measurePackagePresenter the measure package presenter
+	 * @return true, if is measure package details same
+	 */
+	public boolean isMeasurePackageDetailsSame(){
+		if(getCurrentDetail() == null){
+			return true;
+		}
+		
+		MeasurePackageDetail pageData = new MeasurePackageDetail();
+		updateDetailsFromView(pageData);
+		updateSuppDataDetailsFromView(pageData);
+		updateRiskAdjFromView(pageData);
+		MeasurePackageDetail dbData = getCurrentDetail();
+		pageData.setToComparePackageClauses(pageData.getPackageClauses());
+		dbData.setToComparePackageClauses(getDbPackageClauses());
+		pageData.setToCompareSuppDataElements(pageData.getSuppDataElements());
+		dbData.setToCompareSuppDataElements(getDbSuppDataElements());
+		pageData.setToCompareCqlSuppDataElements(pageData.getCqlSuppDataElements());
+		dbData.setToCompareCqlSuppDataElements(getDbCQLSuppDataElements());
+		pageData.setToCompareRiskAdjVars(pageData.getRiskAdjVars());
+		dbData.setToCompareRiskAdjVars(getDbRiskAdjVars());
+		return pageData.equals(dbData);
+	}
+
+	public boolean isMeasurePackageValid() {
+		if (!isMeasurePackageDetailsSame()) {			
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 }

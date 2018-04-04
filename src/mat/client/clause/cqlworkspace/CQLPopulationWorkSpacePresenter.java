@@ -890,4 +890,13 @@ public class CQLPopulationWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	public boolean isPopulationWorkSpaceValid() {
+		getSearchDisplay().resetMessageDisplay();
+		if (isDirty()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }

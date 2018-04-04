@@ -1,11 +1,17 @@
 package mat.client;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
@@ -33,13 +39,14 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SkipListBuilder;
+import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.shared.ConstantMessages;
 
 /**
  * The Class MeasureComposerPresenter.
  */
 @SuppressWarnings("deprecation")
-public class MeasureComposerPresenter implements MatPresenter, Enableable {
+public class MeasureComposerPresenter implements MatPresenter, Enableable, TabObserver {
 	/**
 	 * The Class EnterKeyDownHandler.
 	 */
@@ -68,6 +75,12 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		}
 	}
 	
+	MatTabLayoutPanel targetTabLayout;
+	MatPresenter targetPresenter;
+	MatPresenter sourcePresenter;
+	HandlerRegistration yesHandler;
+	HandlerRegistration noHandler;
+	
 	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
 	
@@ -86,6 +99,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		subSkipContentHolder.add(w);
 		subSkipContentHolder.setFocus(true);
 	}
+	
+	private List<MatPresenter> presenterList;
 	
 	/** The button bar. */
 	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
@@ -119,20 +134,31 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 */
 	@SuppressWarnings("unchecked")
 	public MeasureComposerPresenter() {
+		presenterList = new LinkedList<MatPresenter>();
 		buttonBar.getElement().setId("buttonBar_PreviousContinueButtonBar");
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		
-		measureComposerTabLayout = new MatTabLayoutPanel(true);
-		measureComposerTabLayout.setId("measureComposerTabLayout");
-		measureComposerTabLayout.addPresenter(metaDataPresenter, "Measure Details");
-		measureComposerTabLayout.addPresenter(buildCQLWorkSpaceTab(), "CQL Workspace");
-		measureComposerTabLayout.addPresenter(buildCQLPopulationWorkspaceTab(), "Population Workspace");
-		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
-		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
-		measureComposerTabLayout.addPresenter(buildAppliedQDMPresenter(), "QDM Elements");
+		measureComposerTabLayout = new MatTabLayoutPanel(this);
+		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
+		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details");
+		presenterList.add(metaDataPresenter);
+		MatPresenter cqlWorkspacePresenter = buildCQLWorkSpaceTab();
+		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace");
+		presenterList.add(cqlWorkspacePresenter);
+		MatPresenter cqlPopulationWorkspacePresenter = buildCQLPopulationWorkspaceTab();
+		measureComposerTabLayout.add(cqlPopulationWorkspacePresenter.getWidget(), "Population Workspace");
+		presenterList.add(cqlPopulationWorkspacePresenter);
+		MatPresenter measurePackagePresenter = buildMeasurePackageWidget();
+		measureComposerTabLayout.add(measurePackagePresenter.getWidget(), "Measure Packager");
+		presenterList.add(measurePackagePresenter);
+		measureComposerTabLayout.add(clauseWorkSpacePresenter.getWidget(), "Clause Workspace");
+		presenterList.add(clauseWorkSpacePresenter);
+		MatPresenter appliedQDMPresenter = buildAppliedQDMPresenter();
+		measureComposerTabLayout.add(appliedQDMPresenter.getWidget(), "QDM Elements");
+		presenterList.add(appliedQDMPresenter);
 		measureComposerTabLayout.setHeight("98%");
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(measureComposerTab, measureComposerTabLayout);
@@ -228,7 +254,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			@Override
 			public void execute() {
 				if (!MatContext.get().getMeasureLockService().isResettingLock()) {
-					measureComposerTabLayout.close();
+					notifyCurrentTabOfClosing();
 					measureComposerTabLayout.updateHeaderSelection(0);
 					measureComposerTabLayout.setSelectedIndex(0);
 					buttonBar.state = measureComposerTabLayout.getSelectedIndex();
@@ -245,7 +271,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 				MatContext.get().getCurrentMeasureInfo().setMeasureId("");
 			}
 		} else {
-			measureComposerTabLayout.close();
+			notifyCurrentTabOfClosing();
 			measureComposerTabLayout.updateHeaderSelection(0);
 			measureComposerTabLayout.setSelectedIndex(0);
 			buttonBar.state = measureComposerTabLayout.getSelectedIndex();
@@ -286,8 +312,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			fp.add(measureComposerTabLayout);
 			measureComposerContent.setContent(fp);
 			MatContext.get().setVisible(buttonBar, true);
-			//MatContext.get().getZoomFactorService().resetFactorArr();
-			measureComposerTabLayout.selectTab(metaDataPresenter); //This for some reason not calling the metaDataPresenter.beforeDisplay. So explicitly calling that
+			measureComposerTabLayout.selectTab(presenterList.indexOf(metaDataPresenter));
 			metaDataPresenter.beforeDisplay();
 		} else {
 			measureComposerContent.setHeading("No Measure Selected", "MeasureComposer");
@@ -391,15 +416,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	}
 	
 	/**
-	 * Gets the measure composer tab layout.
-	 *
-	 * @return the measureComposerTabLayout
-	 */
-	public MatTabLayoutPanel getMeasureComposerTabLayout() {
-		return measureComposerTabLayout;
-	}
-	
-	/**
 	 * Gets the meta data presenter.
 	 *
 	 * @return the metaDataPresenter
@@ -428,16 +444,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		buttonBar.setEnabled(enabled);
 		measureComposerTabLayout.setEnabled(enabled);
 	}
-	
-	/**
-	 * Sets the measure composer tab layout.
-	 *
-	 * @param measureComposerTabLayout the measureComposerTabLayout to set
-	 */
-	public void setMeasureComposerTabLayout(
-			MatTabLayoutPanel measureComposerTabLayout) {
-		this.measureComposerTabLayout = measureComposerTabLayout;
-	}
+
 	
 	/**
 	 * Sets the meta data presenter.
@@ -447,5 +454,140 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	public void setMetaDataPresenter(MetaDataPresenter metaDataPresenter) {
 		this.metaDataPresenter = metaDataPresenter;
 	}
+
+	@Override
+	public boolean isValid() {
+		MatContext.get().setErrorTabIndex(-1);
+		MatContext.get().setErrorTab(false);
+		int selectedIndex = measureComposerTabLayout.getSelectedIndex();
+		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
+			MetaDataPresenter presenter = (MetaDataPresenter) presenterList.get(selectedIndex);
+			return presenter.isMeasureDetailsValid();
+		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
+			CQLWorkSpacePresenter presenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
+			return presenter.isCQLWorkspaceValid();
+		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
+			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
+			return presenter.isPopulationWorkSpaceValid();
+		} else if(presenterList.get(selectedIndex) instanceof MeasurePackagePresenter) {
+			MeasurePackagePresenter presenter = (MeasurePackagePresenter) presenterList.get(selectedIndex);
+			return presenter.isMeasurePackageValid();
+		}
+		
+		return true;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {
+		MatPresenter presenter = presenterList.get(measureComposerTabLayout.getSelectedIndex());
+		if (presenter != null) {
+			MatContext.get().setAriaHidden(presenter.getWidget(),  "false");
+			presenter.beforeDisplay();
+		}
+	}
 	
+	@Override
+	public void showUnsavedChangesError() {
+		int selectedIndex = measureComposerTabLayout.getSelectedIndex();
+		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
+		String auditMessage = null;
+		Button saveButton = null;
+		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
+			saveErrorMessageAlert = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
+			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay2().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay2().clearAlert();
+			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
+		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
+			CQLWorkSpacePresenter presenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
+			presenter.getSearchDisplay().resetMessageDisplay();
+			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+			auditMessage = presenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
+			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
+			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+			auditMessage = presenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+		} else if(presenterList.get(selectedIndex) instanceof MeasurePackagePresenter) {
+			MeasurePackagePresenter presenter = (MeasurePackagePresenter) presenterList.get(selectedIndex);
+			presenter.getView().getSaveErrorMessageDisplayOnEdit().clearAlert();
+			saveErrorMessageAlert = presenter.getView().getSaveErrorMessageDisplay();
+			saveButton = presenter.getView().getPackageGroupingWidget().getSaveGrouping();
+		}
+		
+		if(saveErrorMessageAlert != null) {
+			showErrorMessageAlert(saveErrorMessageAlert);
+		}
+		
+		handleClickEventsOnUnsavedChangesMsg(saveErrorMessageAlert, auditMessage, saveButton);
+	}
+
+	
+	private void showErrorMessageAlert(WarningConfirmationMessageAlert errorMessageDisplay) {
+		errorMessageDisplay.createAlert();
+		errorMessageDisplay.getWarningConfirmationYesButton().setFocus(true);
+	}
+	
+	public void notifyCurrentTabOfClosing() {
+		MatPresenter oldPresenter = presenterList.get(measureComposerTabLayout.getSelectedIndex());
+		if (oldPresenter != null) {
+			MatContext.get().setAriaHidden(oldPresenter.getWidget(), "true");
+			oldPresenter.beforeClosingDisplay();
+		}
+		if(sourcePresenter != null) {
+			MatContext.get().setAriaHidden(sourcePresenter.getWidget(), "true");
+			sourcePresenter.beforeClosingDisplay();
+		}
+	}
+	
+	private void handleClickEventsOnUnsavedChangesMsg(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage, Button saveButton) {
+		removeHandlers();
+		yesHandler = saveErrorMessage.getWarningConfirmationYesButton().addClickHandler(event -> onYesButtonClicked(saveErrorMessage, auditMessage));
+		noHandler = saveErrorMessage.getWarningConfirmationNoButton().addClickHandler(event -> onNoButtonClicked(saveErrorMessage, saveButton));
+	}
+	
+	private void onNoButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, Button saveButton) {
+		saveErrorMessage.clearAlert();
+		if(saveButton != null) {
+			saveButton.setFocus(true);
+		}
+	}
+	
+	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
+		if (auditMessage != null) {
+			MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
+					null, auditMessage, auditMessage, ConstantMessages.DB_LOG);
+		}
+		saveErrorMessage.clearAlert();
+		notifyCurrentTabOfClosing();
+		
+		if(targetPresenter == null && targetTabLayout == null) {
+			targetTabLayout = measureComposerTabLayout;
+			targetPresenter = presenterList.get(measureComposerTabLayout.getTargetSelection());
+		}
+		
+		targetTabLayout.setIndexFromTargetSelection();
+		MatContext.get().setAriaHidden(targetPresenter.getWidget(),  "false");
+		targetPresenter.beforeDisplay();
+
+		targetPresenter = null;
+		targetTabLayout = null;
+		sourcePresenter = null;
+	}
+	
+	private void removeHandlers() {
+		if(yesHandler!=null) {
+			yesHandler.removeHandler();
+		}
+		if(noHandler!=null) {	
+			noHandler.removeHandler();
+		}
+	}
+
+	//TODO should we handle this differently?
+	public void setYesTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
+		this.targetPresenter = targetPresenter;
+		this.targetTabLayout = targetTabLayout;		
+		this.sourcePresenter = sourcePresenter;
+	}
 }

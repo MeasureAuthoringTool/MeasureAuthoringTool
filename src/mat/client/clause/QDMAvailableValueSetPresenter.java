@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -13,13 +15,11 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
@@ -32,14 +32,12 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
 /**
  * QDMAvailableValueSetPresenter class.
  */
@@ -282,10 +280,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * SearchDisplay instance.
 	 */
 	private final SearchDisplay searchDisplay;
-	
-	/** The vsacapi service. {@link VSACAPIServiceAsync} instance. */
-	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
-			.getVsacapiServiceAsync();
 	
 	/**
 	 * Constructor.
@@ -704,29 +698,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				showSearchingBusy(false);
 			}
 		});*/
-	}
-	
-	/**
-	 * This method is used in searching all available Value sets for pop up.
-	 *
-	 * @param busy
-	 *            the busy
-	 */
-	private void showSearchingBusy(final boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		busyLoading = busy;
-		searchDisplay.getRetrieveButton().setEnabled(!busy);
-		searchDisplay.getOIDInput().setEnabled(!busy);
-		searchDisplay.getVersion().setEnabled(!busy);
-		searchDisplay.getEffectiveDate().setEnabled(!busy);
-		if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
-				|| searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
-			searchDisplay.getDateInput().setEnabled(!busy);
-		}
 	}
 	
 	/**

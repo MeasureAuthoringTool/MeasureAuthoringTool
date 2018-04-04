@@ -6069,43 +6069,29 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 		loadPrograms();
 		
+		isProgramListBoxEnabled = true;
+		
 		if (null != result && (null == result.getProgram() || result.getProgram().isEmpty())) {
 			// if the valueset that was being edited has no program, put the selected index to the '--Select' field. 
 			// and put the release box in it's original state. 
-			searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(0);
-			 
-			isProgramListBoxEnabled = true; 
 			isReleaseListBoxEnabled = false; 
-			isVersionListBoxEnabled = false; 
 
 		} else {
 			// if the valueset that is being edited has a program, find that value and set it as the selected index. 
-			// set the release values based on the programs and then fidn the value and set it as the selected value
-			isProgramListBoxEnabled = true; 
+			// set the release values based on the programs and then fidn the value and set it as the selected value			 
 			isReleaseListBoxEnabled = true; 
-			isVersionListBoxEnabled = false; 
-			
-			for(int i = 0; i < searchDisplay.getValueSetView().getProgramListBox().getItemCount(); i++) {
-				String listBoxValue = searchDisplay.getValueSetView().getProgramListBox().getValue(i);
-				if(listBoxValue.equals(result.getProgram())) {
-					searchDisplay.getValueSetView().getProgramListBox().setSelectedIndex(i);
-					break; 
-				}
-			}
 			
 			List<String> releases = new ArrayList<>(); 
 			releases.add(MatContext.PLEASE_SELECT);
 			releases.addAll(MatContext.get().getProgramToReleases().get(result.getProgram()));
 			setReleaseListBoxContent(releases);
 			
-			for(int i = 0; i < searchDisplay.getValueSetView().getReleaseListBox().getItemCount(); i++) {
-				String releaseLixBoxValue = searchDisplay.getValueSetView().getReleaseListBox().getValue(i);
-				if(releaseLixBoxValue.equals(result.getRelease())) {
-					searchDisplay.getValueSetView().getReleaseListBox().setSelectedIndex(i);
-					break; 
-				}
-			}
+			searchDisplay.getValueSetView().setSelectedValueIndex(searchDisplay.getValueSetView().getProgramListBox(), result.getProgram());
+			searchDisplay.getValueSetView().setSelectedValueIndex(searchDisplay.getValueSetView().getReleaseListBox(), result.getRelease());
+			
 		}
+		
+		isVersionListBoxEnabled = false;		
 		
 		searchDisplay.getValueSetView().getProgramListBox().setEnabled(isProgramListBoxEnabled);
 		searchDisplay.getValueSetView().getReleaseListBox().setEnabled(isReleaseListBoxEnabled);

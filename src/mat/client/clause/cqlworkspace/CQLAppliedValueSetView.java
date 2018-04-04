@@ -82,7 +82,6 @@ import mat.model.MatValueSet;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
-import mat.shared.StringUtility;
 
 
 /**
@@ -1598,4 +1597,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
 	}
+	
+	public void setSelectedValueIndex(final ListBox listbox, final String value) {
+		for (int i = 0; i < listbox.getItemCount(); i++) {
+            if (listbox.getValue(i).equals(value)) {
+                listbox.setSelectedIndex(i);
+                return;
+            }
+        }
+	}
+	
 }

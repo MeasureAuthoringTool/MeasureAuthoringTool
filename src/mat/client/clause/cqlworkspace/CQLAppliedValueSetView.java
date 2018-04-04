@@ -583,7 +583,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					StringBuilder title = new StringBuilder();
 					String version = null;
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if (isVersionNotAvailable(object.getVersion())) {
+						if ((object.getVersion() != null) && (object.getVersion().equals("1.0")
+								|| object.getVersion().equals("1"))) {
 							version = (object.getRelease() == null || object.getRelease().isEmpty()) ? "Most Recent" : "";
 							title.append("Version : ").append(version);
 							
@@ -1542,7 +1543,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					if(!isVersionNotAvailable(cqlQualityDataSetDTO.getVersion())) {
+					if(!cqlQualityDataSetDTO.getVersion().isEmpty() && !cqlQualityDataSetDTO.getVersion().equals("1.0") && !cqlQualityDataSetDTO.getVersion().equals("1")) {
 						cqlValueSetTransferObject.setVersion(true);
 						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
 					}
@@ -1563,17 +1564,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				codeListSearchDTO.setName(cqlQualityDataSetDTO.getOriginalCodeListName());
 				cqlValueSetTransferObject.setCodeListSearchDTO(codeListSearchDTO);
 				cqlValueSetTransferObjectsList.add(cqlValueSetTransferObject);
-			} else {
-				System.out.println("Duplicate value set ==== " + cqlQualityDataSetDTO.getCodeListName());
 			}
 			
 		}
 		
 		return cqlValueSetTransferObjectsList;
-	}
-	
-	private boolean isVersionNotAvailable(String version) {
-		return !(version == null || version.isEmpty() || version.equals("1.0") || version.equals("1"));
 	}
 	
 	/**

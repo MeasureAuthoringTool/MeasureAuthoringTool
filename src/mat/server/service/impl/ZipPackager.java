@@ -234,9 +234,11 @@ public class ZipPackager {
 			FileNameUtility fnu = new FileNameUtility();
 
 		try{
+			boolean isCQLMeasure = false;
 			String parentPath = "";
 			String emeasureHumanReadablePath = "";
 			String emeasureXMLPath = "";
+			isCQLMeasure = MatContext.get().isCQLMeasure(currentReleaseVersion);
 			
 			if (currentReleaseVersion.contains(".")){
 				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
@@ -249,7 +251,7 @@ public class ZipPackager {
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			
-			if(MatContext.get().isCQLMeasure(currentReleaseVersion)){
+			if(isCQLMeasure){
 				addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
 			

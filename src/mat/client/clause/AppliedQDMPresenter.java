@@ -10,17 +10,15 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.TabObserver;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SpacerWidget;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AppliedQDMPresenter.
- */
-public class AppliedQDMPresenter implements MatPresenter {
+
+public class AppliedQDMPresenter implements MatPresenter, TabObserver {
 
 	/** The tab layout. */
 	private MatTabLayoutPanel tabLayout;
@@ -44,11 +42,7 @@ public class AppliedQDMPresenter implements MatPresenter {
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
 	@Override
-	public void beforeClosingDisplay() {
-//		tabLayout.close();
-//		tabLayout.updateHeaderSelection(1);
-//		tabLayout.setSelectedIndex(1);
-	}
+	public void beforeClosingDisplay() {}
 
 	/*
 	 * (non-Javadoc)
@@ -58,8 +52,8 @@ public class AppliedQDMPresenter implements MatPresenter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeDisplay() {
-		tabLayout = new MatTabLayoutPanel(true);
-		tabLayout.setId("qdmElementTabLayout");
+		tabLayout = new MatTabLayoutPanel(this);
+		tabLayout.getElement().setAttribute("id", "qdmElementTabLayout");
 		tabLayout.setHeight("98%");
 		MatContext.get().tabRegistry.put("QDM Elements", tabLayout);
 		MatContext.get().enableRegistry.put(tabLayout, this);
@@ -108,5 +102,19 @@ public class AppliedQDMPresenter implements MatPresenter {
 	public Widget getWidget() {
 		return QDMContentWidget;
 	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {}
+
+	@Override
+	public void showUnsavedChangesError() {}
+
+	@Override
+	public void notifyCurrentTabOfClosing() {}
 
 }

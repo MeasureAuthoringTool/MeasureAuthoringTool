@@ -1,6 +1,7 @@
 package mat.client.shared;
 
-import com.google.gwt.user.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 

@@ -1547,7 +1547,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		
 		cqlLibraryView.buildDefaultView();
 		Command waitForUnlock = new Command() {
 			@Override

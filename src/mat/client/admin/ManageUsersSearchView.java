@@ -40,8 +40,6 @@ import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SearchWidgetBootStrap;
-/*import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;*/
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,7 +14,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.Button;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -552,13 +554,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getPackageGroupingWidget().getSaveGrouping().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				GWT.log("getSaveGrouping");
 				clearMessages();
-				GWT.log("getSaveGrouping 2");
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				GWT.log("getSaveGrouping 3");
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-				GWT.log("getSaveGrouping 4");
 				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
 				updateDetailsFromView(tempMeasurePackageDetails);
 			
@@ -866,34 +864,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 			@Override
 			public void onClick(ClickEvent arg0) {
-				// TODO Auto-generated method stub
 				saveErrorMessage.clearAlert();
 				view.getPackageGroupingWidget().getSaveGrouping().setFocus(true);
 			}
 		});
-		
-		/*ClickHandler clickHandler = new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				SecondaryButton button = (SecondaryButton) event.getSource();
-				// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
-				// // Else -do not navigate, set focus to the Save button on the Page
-				if ("Yes".equals(button.getText())) {
-					saveErrorMessage.clear();
-					currentDetail = new MeasurePackageDetail();
-					currentDetail = detail;
-					clearMessages();
-					setMeasurePackageDetailsOnView();
-					
-				} else if ("No".equals(button.getText())) {
-					saveErrorMessage.clear();
-					view.getPackageGroupingWidget().getSaveGrouping().setFocus(true);
-				}
-			}
-		};
-		for (SecondaryButton secondaryButton : btns) {
-			secondaryButton.addClickHandler(clickHandler);
-		}*/
 	}
 	
 	/**

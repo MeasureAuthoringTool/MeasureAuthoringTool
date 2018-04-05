@@ -551,6 +551,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		if(saveButton != null) {
 			saveButton.setFocus(true);
 		}
+		targetPresenter = null;
+		targetTabLayout = null;
+		sourcePresenter = null;
 	}
 	
 	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {

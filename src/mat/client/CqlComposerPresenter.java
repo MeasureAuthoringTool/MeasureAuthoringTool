@@ -269,6 +269,9 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	
 	private void onNoButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage) {
 		saveErrorMessage.clearAlert();
+		targetPresenter = null;
+		targetTabLayout = null;
+		sourcePresenter = null;
 	}
 	
 	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {

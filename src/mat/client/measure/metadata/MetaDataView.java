@@ -2922,7 +2922,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		if (ts == null) {
 			tsStr = "";
 		} else {
-			//TODO use calendar here
 			int hours = ts.getHours();
 			String ap = hours < 12 ? "AM" : "PM";
 			int modhours = hours % 12;

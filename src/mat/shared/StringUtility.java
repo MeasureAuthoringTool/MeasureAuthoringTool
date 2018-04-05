@@ -51,7 +51,7 @@ public class StringUtility {
 	 * @return true, if is empty or null
 	 */
 	public static boolean isEmptyOrNull(String str){
-		return str == null || str.isEmpty();
+		return str == null || str.trim().isEmpty();
 	}
 	
 	public static boolean isNotBlank(String str) {

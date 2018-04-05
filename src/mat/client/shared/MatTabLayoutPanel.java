@@ -15,9 +15,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	private int targetSelection;
 	private TabObserver tabObserver;
 	
-	public MatTabLayoutPanel(TabObserver matValidator) {
+	public MatTabLayoutPanel(TabObserver tabObserver) {
 		addBeforeSelectionHandler(this);
-		this.tabObserver = matValidator;
+		this.tabObserver = tabObserver;
 	}
 	
 	public Integer getSelectedIndex() {

@@ -551,9 +551,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		if(saveButton != null) {
 			saveButton.setFocus(true);
 		}
-		targetPresenter = null;
-		targetTabLayout = null;
-		sourcePresenter = null;
+		resetTabTargets();
 	}
 	
 	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
@@ -572,10 +570,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		targetTabLayout.setIndexFromTargetSelection();
 		MatContext.get().setAriaHidden(targetPresenter.getWidget(),  "false");
 		targetPresenter.beforeDisplay();
-
-		targetPresenter = null;
-		targetTabLayout = null;
-		sourcePresenter = null;
+		resetTabTargets();
 	}
 	
 	private void removeHandlers() {
@@ -587,10 +582,15 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		}
 	}
 
-	//TODO should we handle this differently?
-	public void setYesTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
+	public void setTabTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
 		this.targetPresenter = targetPresenter;
 		this.targetTabLayout = targetTabLayout;		
 		this.sourcePresenter = sourcePresenter;
+	}
+	
+	private void resetTabTargets() {
+		targetPresenter = null;
+		targetTabLayout = null;
+		sourcePresenter = null;
 	}
 }

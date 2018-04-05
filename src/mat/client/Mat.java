@@ -722,9 +722,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			MatPresenter targetPresenter = presenterList.get(mainTabLayout.getTargetSelection());
 			if(targetPresenter != null) {
 				if(presenter instanceof MeasureComposerPresenter) {
-					((MeasureComposerPresenter) presenter).setYesTargets(mainTabLayout, presenter, targetPresenter);
+					((MeasureComposerPresenter) presenter).setTabTargets(mainTabLayout, presenter, targetPresenter);
 				} else if(presenter instanceof CqlComposerPresenter) {
-					((CqlComposerPresenter) presenter).setYesTargets(mainTabLayout, presenter, targetPresenter);
+					((CqlComposerPresenter) presenter).setTabTargets(mainTabLayout, presenter, targetPresenter);
 				}
 			}
 			((TabObserver) presenter).showUnsavedChangesError();

@@ -269,9 +269,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	
 	private void onNoButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage) {
 		saveErrorMessage.clearAlert();
-		targetPresenter = null;
-		targetTabLayout = null;
-		sourcePresenter = null;
+		resetTabTargets();
 	}
 	
 	private void onYesButtonClicked(final WarningConfirmationMessageAlert saveErrorMessage, final String auditMessage) {
@@ -295,11 +293,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 			sourcePresenter.beforeClosingDisplay();
 		}
 
-		targetTabLayout = null;
-		targetPresenter = null;
-		sourcePresenter = null;
+		resetTabTargets();
 	}
-	
 
 	@Override
 	public boolean isValid() {
@@ -343,8 +338,13 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		}
 	}
 	
-	//TODO should we handle this differently?
-	public void setYesTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
+	private void resetTabTargets() {
+		targetTabLayout = null;
+		targetPresenter = null;
+		sourcePresenter = null;
+	}
+	
+	public void setTabTargets(MatTabLayoutPanel targetTabLayout, MatPresenter sourcePresenter, MatPresenter targetPresenter) {
 		this.targetTabLayout = targetTabLayout;
 		this.targetPresenter = targetPresenter;
 		this.sourcePresenter = sourcePresenter;

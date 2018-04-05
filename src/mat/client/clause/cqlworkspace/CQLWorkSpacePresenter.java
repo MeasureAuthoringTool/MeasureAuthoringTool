@@ -882,7 +882,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			// Modify functionality for Function Arguments
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
-				// TODO Auto-generated method stub
 				searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
 				searchDisplay.resetMessageDisplay();
 				if (result.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)) {

@@ -29,6 +29,7 @@ import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
@@ -741,7 +742,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 								ErrorMessageAlert errorMessageAlert = new ErrorMessageAlert();
 								panel.add(errorMessageAlert);
 																
-								errorMessageAlert.createAlert(MatContext.get().getMessageDelegate().getPACKAGER_CQL_ERROR());
+								MatContext.get().getMessageDelegate();
+								errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
 																								
 								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 							}		

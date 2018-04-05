@@ -4,6 +4,7 @@ import mat.client.TabObserver;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -29,6 +30,7 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 	/** Instantiates a new Admin presenter. */
 	@SuppressWarnings("unchecked")
 	public ManageAdminPresenter() {
+		presenterList = new ArrayList<MatPresenter>();
 		ManageUsersSearchView musd = new ManageUsersSearchView();
 		ManageUsersDetailView mudd = new ManageUsersDetailView();
 		ManageUserHistoryView muhd = new ManageUserHistoryView();

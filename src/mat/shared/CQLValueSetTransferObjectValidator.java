@@ -2,8 +2,6 @@ package mat.shared;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import mat.model.CQLValueSetTransferObject;
 import mat.model.cql.CQLQualityDataSetDTO;
 
@@ -11,17 +9,17 @@ public class CQLValueSetTransferObjectValidator {
 	public boolean isValid(CQLValueSetTransferObject object) {
 		boolean isValid = true;
 		if(object.getMatValueSet() != null){
-			if(StringUtils.isBlank(object.getMatValueSet().getDisplayName())) {
+			if(StringUtility.isEmptyOrNull(object.getMatValueSet().getDisplayName())) {
 				isValid = false;
-			} else if((StringUtils.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) && StringUtils.isBlank(object.getCqlQualityDataSetDTO().getRelease())) || (StringUtils.isBlank(object.getCqlQualityDataSetDTO().getProgram()) && StringUtils.isNotBlank(object.getCqlQualityDataSetDTO().getRelease()))) {
+			} else if((StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) && StringUtility.isEmptyOrNull(object.getCqlQualityDataSetDTO().getRelease())) || (StringUtility.isEmptyOrNull(object.getCqlQualityDataSetDTO().getProgram()) && StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getRelease()))) {
 				isValid = false;
-			} else if ((StringUtils.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) || StringUtils.isNotBlank(object.getCqlQualityDataSetDTO().getRelease())) && object.isVersion()) {
+			} else if((StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) || StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getRelease())) && object.isVersion()){
 				isValid = false;
 			}
 		} else if(object.getUserDefinedText().trim().isEmpty()){
 			isValid = false;
 		} else {
-			if(StringUtils.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) || StringUtils.isNotBlank(object.getCqlQualityDataSetDTO().getRelease()) || object.isVersion()) {
+			if(StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) || StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getRelease()) || object.isVersion()){
 				isValid = false;
 			}
 		}

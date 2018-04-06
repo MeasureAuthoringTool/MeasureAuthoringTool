@@ -340,20 +340,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	}
 	
 	/**
-	 * Builds the Old measure package widget.
-	 *
-	 * @return the mat presenter
-	 */
-	
-	//commented to hide the Old_measure Packager from Tab menu
-	/*private MatPresenter buildOldMeasurePackageWidget() {
-		MeasurePackageView mpv = new MeasurePackageView();
-		MeasurePackagePresenter_Old mpp = new MeasurePackagePresenter_Old(mpv);
-		mpp.getWidget();
-		return mpp;
-	}*/
-	
-	/**
 	 * Builds the  measure package widget.
 	 *
 	 * @return the mat presenter
@@ -365,21 +351,13 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		return measurePackagePresenter;
 	}
 	
-	
-	/*public MatClausePresenter getClauseWorkspace() {
-		return clauseWorkspace;
-	}
-	public void setClauseWorkspace(MatClausePresenter clauseWorkspace) {
-		this.clauseWorkspace = clauseWorkspace;
-	}*/
+
 	
 	/**
 	 * Builds the qdm presenter.
 	 *
 	 * @return the qDM presenter
 	 */
-	
-	
 	private MatPresenter buildAppliedQDMPresenter(){
 		QDMAppliedSelectionView vascProfileSelectionView = new QDMAppliedSelectionView();
 		QDMAppliedSelectionPresenter vsacProfileSelectionPresenter =

@@ -2,12 +2,10 @@ package mat.client.clause.clauseworkspace.model;
 
 import java.util.List;
 
-import mat.client.measure.ManageMeasureDetailModel;
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 import mat.model.Author;
 import mat.model.MeasureSteward;
-import mat.model.Organization;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**

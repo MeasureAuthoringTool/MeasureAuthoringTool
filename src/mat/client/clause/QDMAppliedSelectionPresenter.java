@@ -39,14 +39,12 @@ import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.MatTextBox;
 import mat.model.CodeListSearchDTO;
-import mat.model.GlobalCopyPasteObject;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
@@ -55,7 +53,6 @@ import mat.model.VSACExpansionProfile;
 import mat.model.VSACVersion;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class VSACProfileSelectionPresenter.
  */
@@ -1791,7 +1788,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 				MatValueSetTransferObject object = new MatValueSetTransferObject();
 				object.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
 				object.scrubForMarkUp();
-				ValueSetNameInputValidator qdmInputValidator = new ValueSetNameInputValidator();
 				List<String> meStrings = new ArrayList<String>();
 				//qdmInputValidator.validate(object);
 				if (meStrings.size() == 0) {
@@ -2264,30 +2260,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	private void paste() {
 		
 		resetQDSMsgPanel();
-		GlobalCopyPasteObject gbCopyPaste = MatContext.get().getGlobalCopyPaste();
-		//if( (gbCopyPaste != null) && (gbCopyPaste.getCopiedQDMList().size()>0) ){
-			//gbCopyPaste.setMatValueSetListFromQDS(expIdentifierToAllQDM);
-			/*MatContext.get().getCodeListService().saveCopiedQDMListToMeasure(gbCopyPaste, appliedQDMList,MatContext.get().getCurrentMeasureId(),
-					new AsyncCallback<SaveUpdateCodeListResult>() {
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					searchDisplay.getErrorMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());
-				}
-				
-				@Override
-				public void onSuccess(
-						SaveUpdateCodeListResult result) {
-					
-					getAppliedQDMList(true);
-					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getSUCCESSFULLY_PASTED_QDM_ELEMENTS_IN_MEASURE());
-				}
-			});
-			*/
-		//}
 	}
 	
 	/**

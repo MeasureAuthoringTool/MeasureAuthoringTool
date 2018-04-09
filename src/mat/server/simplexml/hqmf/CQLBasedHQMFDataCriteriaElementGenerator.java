@@ -8,11 +8,6 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.model.clause.MeasureExport;
-import mat.server.util.MATPropertiesService;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +16,11 @@ import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import mat.client.shared.MatContext;
+import mat.model.clause.MeasureExport;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -122,7 +122,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			String releaseVersion = me.getMeasure().getReleaseVersion();
 			if(releaseVersion.equalsIgnoreCase("v4")){
 				return VERSION_4_1_2_ID;
-			}else if(releaseVersion.equalsIgnoreCase(MATPropertiesService.get().getCurrentReleaseVersion())) {
+			}else if(MatContext.get().isCQLMeasure(releaseVersion)) {
 				return VERSION_5_0_ID; 
 			} else {
 				return VERSION_4_3_ID;
@@ -574,32 +574,17 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 		 * VSAC.
 		 */
 		boolean addVersionToValueTag = false;
-	//	if (qdmNode.getAttributes().getNamedItem("version") != null) {
-
 			String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 
-			if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
-				/*
-				 * if
-				 * (qdmNode.getAttributes().getNamedItem("expansionIdentifier")
-				 * != null) { valueSetVersion = "urn:hl7:profile:" +
-				 * qdmNode.getAttributes().getNamedItem("expansionIdentifier").
-				 * getNodeValue().replaceAll(" ", "%20"); addVersionToValueTag =
-				 * true; } else {
-				 */
+			if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
 				addVersionToValueTag = false;
-				// }
 			} else {
-				// valueSetVersion = "urn:hl7:version:" +
-				// qdmNode.getAttributes().getNamedItem("version").getNodeValue().replaceAll("
-				// ", "%20");
 				valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 				addVersionToValueTag = true;
 			}
 			if (addVersionToValueTag) {
 				valueElem.setAttribute("valueSetVersion", valueSetVersion);
 			}
-		//}
 	}
 	
 	/**
@@ -741,11 +726,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	private String valueSetVersionStringValue(Node qdmNode){
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
-		if (!"1.0".equals(version) && !"1".equals(version)) {
-			/*if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
-				version = "urn:hl7:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue().replaceAll(" ", "%20");
-			}
-		} else {*/
+		if (!"1.0".equals(version) && !"1".equals(version) && StringUtils.isNotBlank(version)) {
 			version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		}  else {
 			version = null;

@@ -342,7 +342,6 @@ public class XmlTreePresenter {
 								xmlTreeDisplay.getErrorMessageDisplay().clear();
 								showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
 								xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
-								String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
 								
 								ClickHandler clickHandler = new ClickHandler() {
 									@Override
@@ -559,26 +558,6 @@ public class XmlTreePresenter {
 							String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
 
 							final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
-							/*service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
-									new AsyncCallback<SortedClauseMapResult>() {
-								@Override
-								public void onFailure(final Throwable caught) {
-								}
-								@Override
-								public void onSuccess(SortedClauseMapResult result) {
-									xmlTreeDisplay.getWarningMessageDisplay().clear();
-									xmlTreeDisplay
-									.getSuccessMessageDisplay()
-									.setMessage(
-											"Changes are successfully saved.");
-									setOriginalXML(result.getMeasureXmlModel().getXml());
-									updateSubTreeElementsMap(getOriginalXML(), result.getClauseMap());
-									xmlTreeDisplay.clearAndAddClauseNamesToListBox();
-									xmlTreeDisplay.updateSuggestOracle();
-									System.out.println("originalXML is:"
-											+ getOriginalXML());
-								}
-							});*/
 						} else {
 							xmlTreeDisplay.getErrorMessageDisplay().setMessage(
 									"Unable to save clause as no subTree found under it.");
@@ -611,36 +590,6 @@ public class XmlTreePresenter {
 							return;
 						}
 					}
-
-					/*service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<HashMap<String,String>>() {
-						@Override
-						public void onSuccess(HashMap<String,String> result) {
-							if (!result.entrySet().isEmpty()) {
-								xmlTreeDisplay.getSearchSuggestTextBox().setText("Search");
-								xmlTreeDisplay
-								.getSuccessMessageDisplay()
-								.setMessage(
-										"Clause(s) successfully deleted.");
-								xmlTreeDisplay.getClauseNamesListBox().removeItem(selectedClauseindex);
-								for (Entry<String, String> entry : result.entrySet()) {
-									String key = entry.getKey();
-									Object value = entry.getValue();
-									PopulationWorkSpaceConstants.subTreeLookUpNode.remove(value);
-									PopulationWorkSpaceConstants.subTreeLookUpName.remove(key);
-								}
-								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
-								xmlTreeDisplay.updateSuggestOracle();
-							} else {
-								xmlTreeDisplay.getErrorMessageDisplay().setMessage(
-										"Unable to delete clause as it is referenced in populations.");
-							}
-
-						}
-						@Override
-						public void onFailure(Throwable caught) {
-						}
-					});
-					enableDisableQDMVariableCheckBox(currentSelectedClause);*/
 				}
 			}
 		});

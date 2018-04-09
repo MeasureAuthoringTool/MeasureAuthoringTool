@@ -1,15 +1,8 @@
 package mat.dao;
 
 import java.util.HashMap;
-import java.util.List;
 
-import mat.dao.PropertyOperator;
-import mat.dao.search.CriteriaQuery;
 import mat.dao.search.SearchCriteria;
-import mat.model.Status;
-import mat.model.User;
-
-import org.junit.Test;
 
 public class DAOSearchTestHelper{
 	

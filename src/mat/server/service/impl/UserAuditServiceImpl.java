@@ -2,15 +2,13 @@ package mat.server.service.impl;
 
 import java.util.List;
 
-import mat.DTO.SearchHistoryDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.DTO.UserAuditLogDTO;
 import mat.dao.UserAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.User;
-import mat.model.UserAuditLog;
 import mat.server.service.UserAuditService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserAuditServiceImpl implements UserAuditService{
 

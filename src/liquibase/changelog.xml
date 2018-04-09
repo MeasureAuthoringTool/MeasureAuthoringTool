@@ -195,9 +195,7 @@
 		<include file="classpath:/liquibase/deploy_Sprint-101_USMAT-7926_Add_Attributes_for_qdm5.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-102_USMAT-7441_Modify_Expired.xml" />
 		<include file="classpath:/liquibase/deploy_Sprint-102_USMAT-8038_Datatype_Changes.xml" />
-		<!-- <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8318_Add_Unit.xml"/> -->
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Add_New_Units.xml"/>
-        <!--  deploy_Sprint-107_MAT-8267_8279_02022017_CQL_Add_All_Attributes.xml is moved up in order so  deploy_Sprint-106_MAT-8230_12202016_Mode.xml can execute.-->
          <include file="classpath:/liquibase/deploy_Sprint-107_MAT-8267_8279_02022017_CQL_Add_All_Attributes.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_MAT-8230_12202016_Mode.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-106_USMAT-8246_Change_L_to_Liter.xml"/>
@@ -212,7 +210,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-111_MAT-8395_ALTER_TABLE_CQL_LIBRARY_COLUMN.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-112_MAT-8463_ALTER_TABLE_CQL_LIBRARY.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-113_MAT-8468_ALTER_TABLE_CQL_LIBRARY.xml"/>
-       <!--  <include file="classpath:/liquibase/deploy_Sprint-113_MAT-8468_ALTER_TABLE_CQL_LIBRARY_ASSOCIATION.xml"/> -->
         <include file="classpath:/liquibase/deploy_Sprint-123_MAT-8727_07182017_CQL_Add_Component_Attributes.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-123_MAT-8708_8713_8714_ADD_REMOVE_DATATYPE4_ATTRIBUTES.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-123_Add_Abbr_Name_To_Measure_Type.xml"/>
@@ -224,6 +221,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-127_MAT-8835_DROP_TABLE_MEASURE_NOTES.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-130_MAT-8901_EmailAuditLog.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/>
-        
+        <include file="classpath:/liquibase/deploy_Sprint-140_MAT-9117_bpm_cql_unit_update.xml"/>
         
    	</databaseChangeLog>

@@ -80,9 +80,6 @@ public class QDMAttributeDialogBox {
 	/** The Constant QDM_UUID. */
 	private static final String QDM_UUID = "qdmUUID";
 	
-	/** The Constant ID. */
-	private static final String ID = "id";
-	
 	/** The Constant MODE. */
 	private static final String MODE = "mode";
 	

@@ -4,7 +4,6 @@ public class CQLQueryUtil {
 	
 	//private static final String OPEN_PARANTHESIS = "(";
 	private static final String CLOSED_PARANTHESIS = ")";
-	private static final String SEMICOLON = ";";
 	private static final String NEWLINE = "\n";
 	
 	public static String buildQuery(String qdmVersion, String setId, int level) {
@@ -80,8 +79,6 @@ public class CQLQueryUtil {
 			
 			for (int i=0; i<=level; i++)
 				result = result + CLOSED_PARANTHESIS;
-
-			//result = result + SEMICOLON;
 		} else {
 			result = null;
 		}

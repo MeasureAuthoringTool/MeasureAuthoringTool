@@ -26,13 +26,6 @@ public class XlsToSQL {
 	 * @param args
 	 */
 	
-	private static int get_hash(){
-		long nt = System.nanoTime();
-		String snt = ""+nt;
-		String next = "";
-		return (snt+next).hashCode();
-	}
-	
 	public static String createRandomString(int length) {
 		Random random = new Random();
 		StringBuilder sb = new StringBuilder();

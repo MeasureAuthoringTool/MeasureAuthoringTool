@@ -12,7 +12,6 @@ import mat.server.util.XmlProcessor;
 
 import org.w3c.dom.Node;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HQMFMeasureDetailsGenerator.
  */
@@ -29,20 +28,6 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 		
 		String simpleXML = me.getSimpleXML();
 		String releaseVersion = me.getMeasure().getReleaseVersion();
-		/*XmlProcessor test = new XmlProcessor(simpleXMLTemp);
-		String xpath = "/measure";
-		Document tempDoc = test.getOriginalDoc();
-		Node measure = test.findNode(tempDoc, xpath);
-		
-		String version = me.getMeasure().getReleaseVersion();
-		version = formatRealeaseVersion(version);
-		Node child = tempDoc.createElement("realeaseVersion");
-		Node attribute = tempDoc.createAttribute("version");
-		attribute.setNodeValue(version);
-		child.getAttributes().setNamedItem(attribute);
-		measure.appendChild(child);
-		
-		simpleXMLTemp = test.transform(measure);*/
 		
 		simpleXML = addReleaseVersionToSimpleXML(simpleXML,releaseVersion);
 		

@@ -188,7 +188,7 @@
 				<valueSet classCode="OBS" moodCode="DEF">
 					<id root="{@oid}" /> <!-- {Value Set OID} -->
 					<title value="{@name}" /> <!-- {Value Set Name} -->
-					<xsl:if test="@version != '1.0' and  @version != '1'">
+					<xsl:if test="@version != '1.0' and  @version != '1' and @version != ''">
 						 <cql-ext:version xmlns:cql-ext="urn:hhs-cql:hqmf-n1-extensions:v1" value="{@version}"/> <!-- {Value Set Version} -->
 					</xsl:if>
 					

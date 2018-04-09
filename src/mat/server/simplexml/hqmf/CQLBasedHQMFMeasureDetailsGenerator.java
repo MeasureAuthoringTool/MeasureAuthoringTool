@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.MATPropertiesService;
@@ -72,7 +73,7 @@ public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 		}else if("v4.3".equals(version)){
 			//This is 4.2 because were on qdm version 4.2 and export 4.3. The QDM version needs to appear in the comments
 			formatVersion = "4.2";
-		}else if(MATPropertiesService.get().getCurrentReleaseVersion().equals(version)) {
+		}else if(MatContext.get().isCQLMeasure(version)) {
 			formatVersion = MATPropertiesService.get().getQmdVersion();
 		}
 		return formatVersion;

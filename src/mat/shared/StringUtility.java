@@ -50,8 +50,12 @@ public class StringUtility {
 	 *            the str
 	 * @return true, if is empty or null
 	 */
-	public boolean isEmptyOrNull(String str){
-		return str == null || str.isEmpty();
+	public static boolean isEmptyOrNull(String str){
+		return str == null || str.trim().isEmpty();
+	}
+	
+	public static boolean isNotBlank(String str) {
+		return !isEmptyOrNull(str);
 	}
 	
 	/**

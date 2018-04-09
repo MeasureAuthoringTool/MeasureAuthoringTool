@@ -44,7 +44,7 @@ public class LoginTest extends SpringInitializationTest{
 	@Test
 	public void initialSetup() {
 		try {
-			User user = createUser(username);
+			createUser(username);
 			User initialUser = createUser(initialUsername);
 			initialUser.getPassword().setInitial(true);
 			User tempUser = createUser(tempUsername);

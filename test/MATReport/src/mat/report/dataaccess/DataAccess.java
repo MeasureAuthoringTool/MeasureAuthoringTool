@@ -232,8 +232,7 @@ public LinkedHashMap<String, Object> retrieveQDMElementsData(String startDate, S
 			LinkedHashMap<String, Object> msrList = new LinkedHashMap<String, Object>();
 			ArrayList measuresList = resultSetToArrayList(mResultSet); 
 			for(int m=0;m<measuresList.size();m++){
-				ArrayList<String> msrKeysList = new ArrayList<String>();
-				LinkedHashMap<String, Object> mRow = new LinkedHashMap<String, Object>();				
+				ArrayList<String> msrKeysList = new ArrayList<String>();				
 			    HashMap measuresMap =(HashMap) measuresList.get(m);
 				String measureId =(String) measuresMap.get("ID");
 				String measureDesc = (String)measuresMap.get("DESCRIPTION");
@@ -563,28 +562,16 @@ public LinkedHashMap<String, Object> retrieveQDMElementsData(String startDate, S
 		int newUserAccounts =0;
 		Set<String> orgOIDs = new HashSet<String>();
 		
-		//Set<String> completeMeasures = new HashSet<String>();
-		
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		
 		
 		try{
-			//Date sDate = df.parse(startDate);
-			//Date eDate = df.parse(endDate);
 			init();
 			
-			//String sql = "SELECT ACTIVATION_DATE, ORG_OID FROM  USER"; 
-			//Statement st = connect.createStatement();
-			//ResultSet mResultSet = st.executeQuery(sql);
-			
-			/////
 			String sql = "SELECT ORG_OID FROM USER us where cast(us.activation_date as Date) between ? and ?";
 			mPreparedStmt = connect.prepareStatement(sql);
 			mPreparedStmt.setString(1, startDate);
 			mPreparedStmt.setString(2, endDate);
 			ResultSet mResultSet = mPreparedStmt.executeQuery();
 			
-			/////
 			while(mResultSet.next()){
 				newUserAccounts++;
 			}
@@ -613,10 +600,7 @@ public LinkedHashMap<String, Object> retrieveQDMElementsData(String startDate, S
 		}catch(SQLException sqlE){
 			sqlE.printStackTrace();
 		}
-		//catch(ParseException e){
-		//	e.printStackTrace();
-		//}
-		
+
 		results.put("NEW_USER_ACCOUNTS", Integer.toString(newUserAccounts));
 		results.put("MEASURES_COMPLETE", Integer.toString(measuresComplete));
 		results.put("ORG_OIDS", Integer.toString(orgOIDs.size()));

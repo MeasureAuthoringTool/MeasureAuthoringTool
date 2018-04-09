@@ -4,27 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mat.client.Mat;
-import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.event.QDSElementCreatedEvent;
-import mat.client.codelist.HasListBox;
-import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.DateBoxWithCalendar;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.MatContext;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.umls.service.VSACAPIServiceAsync;
-import mat.client.umls.service.VsacApiResult;
-import mat.model.MatValueSet;
-import mat.model.MatValueSetTransferObject;
-import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -42,7 +21,26 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO: Auto-generated Javadoc
+import mat.client.Mat;
+import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.event.QDSElementCreatedEvent;
+import mat.client.codelist.HasListBox;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.model.MatValueSet;
+import mat.model.MatValueSetTransferObject;
+import mat.model.QualityDataModelWrapper;
+import mat.model.QualityDataSetDTO;
+
 /**QDSCodeListSearchPresenter.java.**/
 public class QDSCodeListSearchPresenter implements MatPresenter {
 	
@@ -615,30 +613,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Convert message.
-	 *
-	 * @param id
-	 *            - {@link Integer}.
-	 * @return String - {@link String}.
-	 */
-	private String convertMessage(final int id) {
-		String message;
-		switch (id) {
-			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_NOT_LOGGEDIN();
-				break;
-			case VsacApiResult.OID_REQUIRED:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_OID_REQUIRED();
-				break;
-			default:
-				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
-		}
-		return message;
-	}
-	
-	/**
 	 * Creates the value set transfer object.
 	 *
 	 * @param dataType the data type
@@ -774,7 +748,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 */
 	private void saveMeasureXML(final String qdmXMLString, final String valuesetXMLString) {
 		final String nodeName = "qdm";
-		final String newNodeName = "valueset";
 		
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());

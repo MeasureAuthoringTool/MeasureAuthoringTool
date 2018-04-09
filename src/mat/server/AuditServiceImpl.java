@@ -2,21 +2,18 @@ package mat.server;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import mat.DTO.SearchHistoryDTO;
 import mat.DTO.UserAuditLogDTO;
 import mat.client.audit.service.AuditService;
-import mat.model.UserAuditLog;
 import mat.server.service.CQLLibraryAuditService;
 import mat.server.service.CodeListAuditService;
 import mat.server.service.MeasureAuditService;
 import mat.server.service.TransactionAuditService;
 import mat.server.service.UserAuditService;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-// TODO: Auto-generated Javadoc
 /**
  * Client implementation of Audit Service Implementation.
  */

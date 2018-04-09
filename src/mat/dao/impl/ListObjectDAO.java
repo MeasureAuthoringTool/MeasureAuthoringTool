@@ -1,32 +1,14 @@
 package mat.dao.impl;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
 
 import mat.dao.search.GenericDAO;
-import mat.model.CodeList;
-import mat.model.CodeListSearchDTO;
 import mat.model.ListObject;
-import mat.model.User;
-import mat.model.clause.Measure;
-import mat.server.LoggedInUserUtil;
-import mat.shared.ConstantMessages;
-import mat.shared.DateUtility;
 
 /**
  * The Class ListObjectDAO.

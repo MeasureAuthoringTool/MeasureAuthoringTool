@@ -316,7 +316,7 @@ public class HQMFGenerator implements Generator {
 	private Node getNarrativeListNode(Node humanReadableNode, XmlProcessor xmlProcessor) {		
 		Node narrativeListNode = null;
 		String nodeName = humanReadableNode.getNodeName();
-		if(humanReadableNode.getNodeType() == humanReadableNode.TEXT_NODE){
+		if(humanReadableNode.getNodeType() == Node.TEXT_NODE){
 			narrativeListNode = xmlProcessor.getOriginalDoc().createTextNode(humanReadableNode.getNodeValue());
 		}
 		else if("ul".equals(nodeName)){

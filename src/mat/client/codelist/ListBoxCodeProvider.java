@@ -18,11 +18,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class ListBoxCodeProvider.
  */
-@SuppressWarnings("rawtypes")
+
 public class ListBoxCodeProvider implements IsSerializable {
-	
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
 	
 	/** The Constant NONE. */
 	private static final String NONE = " ";
@@ -207,7 +204,6 @@ public class ListBoxCodeProvider implements IsSerializable {
 				pendingAssocOperatorList.clear();
 			}
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void onSuccess(CodeListService.ListBoxData listBoxResults) {
 				categoryList = listBoxResults.getCategoryList();

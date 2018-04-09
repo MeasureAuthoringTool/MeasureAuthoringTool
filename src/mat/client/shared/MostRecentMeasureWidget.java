@@ -176,40 +176,19 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 
 				@Override
 				public SafeHtml getValue(Result object) {
-					/*SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					String title = "";
-					String cssClass = "";
-					if ((object != null) && object.isExportable() && (object.getHqmfReleaseVersion() != null)) {
-						if (object.getHqmfReleaseVersion().equals("v3")) {
-							title = "Click to Export MATv3";
-							cssClass = "customExportButton";
-							sb.appendHtmlConstant("<button type=\"button\" title='" + title
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\">Click to Export MATv3</button>");
-						} else {
-							cssClass = "customExportButtonRed";
-							title = "Click to Export MAT " + object.getHqmfReleaseVersion();
-							sb.appendHtmlConstant(
-									"<button  type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass
-											+ "\">Export MAT " + object.getHqmfReleaseVersion() + "</button>");
-						}
-					}*/
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
 					String title = "";
 					String cssClass = "btn btn-link";
 					String iconClass = "fa fa-download fa-lg";
 					if((object != null) && object.isExportable() && (object.getHqmfReleaseVersion() != null)) {
 						if(object.getHqmfReleaseVersion().equalsIgnoreCase("v3")){
-							//cssClass = "customExportButton";
 							title = "Click to Export MAT v3";
 							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: gray;\"/> <i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">Export MAT v3 </span></button>");	
-							//<span class=\"invisibleButtonText\">Export MAT v3</span>
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: gray;\"/> <i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">Export MAT v3 </span></button>");
 						} else {
-							//cssClass = "customExportButtonRed";
 							title = "Click to Export MAT " +  object.getHqmfReleaseVersion();
 							sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
 									+ "' tabindex=\"0\" class=\" " + cssClass + "\" ><i class=\" " + iconClass  + "\"></i><span style=\"font-size:0;\">"+"Export MAT "+object.getHqmfReleaseVersion()+"</span></button>");
-							//<span class=\"invisibleButtonText\">Export MAT "+object.getHqmfReleaseVersion()+"</span>
 						}
 					}
 					return sb.toSafeHtml();

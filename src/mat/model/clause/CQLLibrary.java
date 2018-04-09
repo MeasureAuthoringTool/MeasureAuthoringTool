@@ -1,19 +1,17 @@
 package mat.model.clause;
 
-import java.sql.Timestamp;
-import java.util.Set;
-
-import org.hibernate.Hibernate;
-
-import mat.model.LockedUserInfo;
-import mat.model.User;
-import mat.model.cql.CQLLibraryShare;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Set;
+
+import org.hibernate.Hibernate;
+
+import mat.model.User;
+import mat.model.cql.CQLLibraryShare;
 
 public class CQLLibrary {
 

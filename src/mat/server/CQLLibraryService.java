@@ -82,7 +82,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLLibraryService.
  */
@@ -351,7 +350,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			newLibraryObject.setOwnerId(existingLibrary.getOwnerId());
 			newLibraryObject.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			newLibraryObject.setQdmVersion(MATPropertiesService.get().getQmdVersion());
-		// Update QDM Version to latest QDM Version.
+			// Update QDM Version to latest QDM Version.
 			String versionLibraryXml = getCQLLibraryXml(existingLibrary);
 			if(versionLibraryXml != null){
 				XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
@@ -359,7 +358,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 					MeasureUtility.updateLatestQDMVersion(processor);
 					versionLibraryXml = processor.transform(processor.getOriginalDoc());
 				} catch (XPathExpressionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -370,9 +368,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			result.setSuccess(true);
 			result.setId(newLibraryObject.getId());
 			result.setCqlLibraryName(newLibraryObject.getName());
-			/*String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(existingLibrary.getVersion(), 
-					newLibraryObject.getRevisionNumber(), existingLibrary.isDraft());
-			*/
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(newLibraryObject.getVersion(), 
 					newLibraryObject.getRevisionNumber(), newLibraryObject.isDraft());
 			result.setVersionStr(formattedVersion);
@@ -577,7 +572,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				library.setOwnerId(currentUser);
 			} else {
 				result.setSuccess(false);
-				result.setFailureReason(result.INVALID_USER);
+				result.setFailureReason(SaveCQLLibraryResult.INVALID_USER);
 				return result;
 			}
 			String cqlLookUpString = createCQLLookUpTag(cqlLibraryDataSetObject.getCqlName(),library.getVersion()+"."+library.getRevisionNumber());
@@ -593,7 +588,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						.isCurrentCQLLibraryEditable(cqlLibraryDAO, library.getId()));
 			} else {
 				result.setSuccess(false);
-				result.setFailureReason(result.INVALID_CQL);
+				result.setFailureReason(SaveCQLLibraryResult.INVALID_CQL);
 				return result;
 			}
 			return result;
@@ -714,7 +709,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			System.out.println(xmlProcessor.transform(cqlLookUpNode));
 			cqlLookUp = xmlProcessor.transform(cqlLookUpNode);
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -758,7 +752,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			//dataSetObject.setCqlModel(cqlModel);
 			//dataSetObject.setCqlErrors(result.getCqlErrors());;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return cqlFileString;
@@ -808,12 +801,10 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
 	private String getCQLLibraryXml(CQLLibrary library){
 		String xmlString = null;
-		//CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 		if(library != null ){
 			try {
 				xmlString = new String(library.getCqlXML().getBytes(1l, (int) library.getCqlXML().length()));
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

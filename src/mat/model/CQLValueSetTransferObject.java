@@ -5,8 +5,8 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLValueSetTransferObjectValidator;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLValueSetTransferObject.
  */
@@ -31,9 +31,6 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	
 	/** The user defined text. */
 	String userDefinedText;
-	
-	/** The is expansion profile. */
-	//boolean isExpansionProfile;
 	
 	/** The is version. */
 	boolean isVersion;
@@ -147,24 +144,6 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 	}
 
 	/**
-	 * Checks if is expansion profile.
-	 *
-	 * @return true, if is expansion profile
-	 */
-	/*public boolean isExpansionProfile() {
-		return isExpansionProfile;
-	}*/
-
-	/**
-	 * Sets the expansion profile.
-	 *
-	 * @param isExpansionProfile the new expansion profile
-	 */
-	/*public void setExpansionProfile(boolean isExpansionProfile) {
-		this.isExpansionProfile = isExpansionProfile;
-	}
-*/
-	/**
 	 * Checks if is version.
 	 *
 	 * @return true, if is version
@@ -188,49 +167,38 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 		String markupRegExp = "<[^>]+>";
 		if ((this.getUserDefinedText() != null) && !this.getUserDefinedText().isEmpty()) {
 			String noMarkupText = this.getUserDefinedText().trim().replaceAll(markupRegExp, "");
-			System.out.println("QDM User defined name:" + noMarkupText);
+			//System.out.println("QDM User defined name:" + noMarkupText);
 			if (this.getUserDefinedText().trim().length() > noMarkupText.length()) {
 				this.setUserDefinedText(noMarkupText);
 			}
 		}
 		if (this.getMatValueSet() != null && this.getMatValueSet().getDisplayName()!= null) {
 			String noMarkupText = this.getMatValueSet().getDisplayName().trim().replaceAll(markupRegExp, "");
-			System.out.println("QDM VSAC Value set name:" + noMarkupText);
+			//System.out.println("QDM VSAC Value set name:" + noMarkupText);
 			if (this.getMatValueSet().getDisplayName().trim().length() > noMarkupText.length()) {
 				this.getMatValueSet().setDisplayName(noMarkupText);
 			}
 		}
 		if (this.getCqlQualityDataSetDTO() != null) {
 			String noMarkupText = this.getCqlQualityDataSetDTO().getCodeListName().trim().replaceAll(markupRegExp, "");
-			System.out.println("QDM To Be Modified VSAC Value set name:" + noMarkupText);
+			//System.out.println("QDM To Be Modified VSAC Value set name:" + noMarkupText);
 			if (this.getCqlQualityDataSetDTO().getCodeListName().trim().length() > noMarkupText.length()) {
 				this.getCqlQualityDataSetDTO().setCodeListName(noMarkupText);
 			}
 		}
 		if (this.getCodeListSearchDTO() != null) {
 			String noMarkupText = this.getCodeListSearchDTO().getName().trim().replaceAll(markupRegExp, "");
-			System.out.println("QDM To Be Modified USD Value set name:" + noMarkupText);
+			//System.out.println("QDM To Be Modified USD Value set name:" + noMarkupText);
 			if (this.getCodeListSearchDTO().getName().trim().length() > noMarkupText.length()) {
 				this.getCodeListSearchDTO().setName(noMarkupText);
 			}
 		}
 	}
 	
-	public boolean validateModel(){
-		boolean isValid = true;
-		if(this.matValueSet != null){
-			if(this.getMatValueSet().getDisplayName()!= null && this.getMatValueSet().getDisplayName().trim().isEmpty()){
-				isValid = false;
-			} else if(this.getMatValueSet().getDisplayName()== null){
-				isValid = false;
-			}
-		} else if(this.getUserDefinedText().trim().isEmpty()){
-			isValid = false;
-		}
+	public boolean validateModel(){		
+		CQLValueSetTransferObjectValidator validator = new CQLValueSetTransferObjectValidator();
 		
-		
-		
-		return isValid;
+		return validator.isValid(this);
 	}
 
 	public String getCqlLibraryId() {

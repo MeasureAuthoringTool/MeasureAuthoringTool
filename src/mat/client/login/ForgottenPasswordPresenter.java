@@ -1,12 +1,5 @@
 package mat.client.login;
 
-import mat.client.event.PasswordEmailSentEvent;
-import mat.client.event.ReturnToLoginEvent;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
-import mat.shared.ForgottenPasswordResult;
-
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,8 +7,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
-
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.event.PasswordEmailSentEvent;
+import mat.client.event.ReturnToLoginEvent;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
+import mat.shared.ForgottenPasswordResult;
 
 /**
  * The Class ForgottenPasswordPresenter.

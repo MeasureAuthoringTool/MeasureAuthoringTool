@@ -18,7 +18,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
@@ -886,7 +885,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		 */
 		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
-		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion)) {
+		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
 				valueSetVersion = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 				addVersionToValueTag = true;
@@ -1043,7 +1042,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private String valueSetVersionStringValue(Node qdmNode){
 		String version = qdmNode.getAttributes().getNamedItem("version")
 				.getNodeValue();
-		if ("1.0".equals(version) || "1".equals(version)) {
+		if ("1.0".equals(version) || "1".equals(version) || StringUtils.isBlank(version)) {
 			if (qdmNode.getAttributes().getNamedItem("expansionIdentifier") != null) {
 				version = "vsac:profile:" + qdmNode.getAttributes().getNamedItem("expansionIdentifier").getNodeValue();
 			}

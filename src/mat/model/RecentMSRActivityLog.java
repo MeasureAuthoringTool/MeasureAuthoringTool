@@ -3,8 +3,6 @@ package mat.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import mat.model.clause.Measure;
-
 /**
  * The Class RecentMeasureActivityLog.
  */

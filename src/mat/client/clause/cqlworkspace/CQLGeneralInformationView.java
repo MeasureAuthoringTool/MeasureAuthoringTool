@@ -20,42 +20,21 @@ import mat.client.util.MatTextBox;
  * The Class CQLGeneralInformationView.
  */
 public class CQLGeneralInformationView {
-	
 	private String version = new String();
 	private String libraryName = new String();
 	private String modelUsed = new String();
 	private String qdmVersionUsed = new String();
 	
-	/** The general info main V panel. */
 	private HorizontalPanel generalInfoMainHPanel = new HorizontalPanel();
-	
-	/** The library name value. */
 	private MatTextBox libraryNameValue = new MatTextBox();
-	
-	/** The library version value. */
 	private MatTextBox libraryVersionValue = new MatTextBox();
-	
-	/** The using model value. */
 	private MatTextBox usingModelValue = new MatTextBox();
-	
-	/** The model version value. */
 	private MatTextBox modelVersionValue = new MatTextBox();
-	
-	/** The save and delete btn. */
 	private CQLButtonToolBar saveAndDeleteBtn = new CQLButtonToolBar("GeneralInfo");
-	
-	/** The lib name group. */
 	private FormGroup libNameGroup = new FormGroup();
-	
-	/** The using model group. */
 	private FormGroup usingModelGroup = new FormGroup();
-	
-	/** The lib version group. */
 	private FormGroup libVersionGroup = new FormGroup();
-	
-	/** The model version group. */
 	private FormGroup modelVersionGroup = new FormGroup();
-	
 	HTML heading = new HTML();
 	
 	/**
@@ -65,9 +44,6 @@ public class CQLGeneralInformationView {
 		generalInfoMainHPanel.clear();
 	}
 
-	/**
-	 * Builds the view.
-	 */
 	private void buildView() {
 		
 		libNameGroup.clear();
@@ -77,7 +53,6 @@ public class CQLGeneralInformationView {
 		heading.addStyleName("leftAligned");
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
-		//Label libraryNameLabel = new Label(LabelType.INFO, "CQL Library Name");
 		FormLabel libraryNameLabel = new FormLabel();
 		libraryNameLabel.setText("CQL Library Name");
 		libraryNameLabel.setTitle("CQL Library Name");
@@ -87,17 +62,14 @@ public class CQLGeneralInformationView {
 		libraryNameLabel.setFor("libraryNameValue_TextBox");
 		
 		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
-		//libraryNameValue.setText(createCQLLibraryName(MatContext.get().getCurrentMeasureName()));
 		libraryNameValue.getElement().setId("libraryNameValue_TextBox");
 		
 		libNameGroup.add(libraryNameLabel);
-		//libNameGroup.add(new SpacerWidget());
 		libNameGroup.add(libraryNameValue);
 		
-		//Label libraryVersionLabel = new Label(LabelType.INFO, "Version");
 		FormLabel libraryVersionLabel = new FormLabel();
-		libraryVersionLabel.setText("Version");
-		libraryVersionLabel.setTitle("Version");
+		libraryVersionLabel.setText("CQL Library Version");
+		libraryVersionLabel.setTitle("CQL Library Version");
 		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
 		libraryVersionLabel.setWidth("150px");
 		libraryVersionLabel.setId("libraryVersionLabel_Label");
@@ -108,10 +80,8 @@ public class CQLGeneralInformationView {
 		libraryVersionValue.setReadOnly(true);
 		
 	     libVersionGroup.add(libraryVersionLabel);
-	   //  libVersionGroup.add(new SpacerWidget());
 	     libVersionGroup.add(libraryVersionValue);
 		
-		//Label usingModeLabel = new Label(LabelType.INFO, "Using Model");
 		FormLabel usingModeLabel = new FormLabel();
 		usingModeLabel.setText("Using Model");
 		usingModeLabel.setTitle("Using Model");
@@ -125,13 +95,11 @@ public class CQLGeneralInformationView {
 		usingModelValue.setReadOnly(true);
 		
 		usingModelGroup.add(usingModeLabel);
-		//usingModelGroup.add(new SpacerWidget());
 		usingModelGroup.add(usingModelValue);
 		
-		//Label modelVersionLabel = new Label(LabelType.INFO, "Version");
 		FormLabel modelVersionLabel = new FormLabel();
-		modelVersionLabel.setText("Version");
-		modelVersionLabel.setTitle("Version");
+		modelVersionLabel.setText("Model Version");
+		modelVersionLabel.setTitle("Model Version");
 		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
 		modelVersionLabel.getElement().setId("modelVersionLabel_Label");
 		modelVersionLabel.setWidth("150px");
@@ -142,7 +110,6 @@ public class CQLGeneralInformationView {
 		modelVersionValue.setReadOnly(true);
 		
 		modelVersionGroup.add(modelVersionLabel);
-		//modelVersionGroup.add(new SpacerWidget());
 		modelVersionGroup.add(modelVersionValue);
 		
 		generalInfoTopPanel.add(heading);
@@ -150,28 +117,15 @@ public class CQLGeneralInformationView {
 		generalInfoTopPanel.add(new SpacerWidget());
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-		//generalInfoTopPanel.add(libraryNameLabel);
-		//generalInfoTopPanel.add(new SpacerWidget());
-		//generalInfoTopPanel.add(libraryNameValue);
 		generalInfoTopPanel.add(libNameGroup);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-		/*generalInfoTopPanel.add(libraryVersionLabel);
-		generalInfoTopPanel.add(new SpacerWidget());
-		generalInfoTopPanel.add(libraryVersionValue);*/
 		generalInfoTopPanel.add(libVersionGroup);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-		/*generalInfoTopPanel.add(usingModeLabel);
-		generalInfoTopPanel.add(new SpacerWidget());
-		generalInfoTopPanel.add(usingModelValue);
-		*/
 		generalInfoTopPanel.add(usingModelGroup);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
-		/*generalInfoTopPanel.add(modelVersionLabel);
-		generalInfoTopPanel.add(new SpacerWidget());
-		generalInfoTopPanel.add(modelVersionValue);*/
 		generalInfoTopPanel.add(modelVersionGroup);
 		generalInfoTopPanel.add(new SpacerWidget());
 		
@@ -182,11 +136,6 @@ public class CQLGeneralInformationView {
 		generalInfoMainHPanel.add(generalInfoTopPanel);
 	}
 	
-	
-	
-	/**
-	 * Builds the button layout panel.
-	 */
 	public void buildButtonLayoutPanel(){
 		
 		saveAndDeleteBtn.getSaveButton().setVisible(true);
@@ -229,11 +178,6 @@ public class CQLGeneralInformationView {
 		return cleanedString;
 	}
 
-	/**
-	 * Gets the view.
-	 *
-	 * @return the view
-	 */
 	public HorizontalPanel getView(){
 		generalInfoMainHPanel.clear();
 		buildView();
@@ -241,11 +185,6 @@ public class CQLGeneralInformationView {
 		return generalInfoMainHPanel;
 	}
 	
-	/**
-	 * Gets the CQL view.
-	 *
-	 * @return the CQL view
-	 */
 	public HorizontalPanel getCQLView(){
 		generalInfoMainHPanel.clear();
 		buildView();	
@@ -254,101 +193,46 @@ public class CQLGeneralInformationView {
 		return generalInfoMainHPanel;
 	}
 
-	/**
-	 * Gets the library name value.
-	 *
-	 * @return the library name value
-	 */
 	public MatTextBox getLibraryNameValue() {
 		return libraryNameValue;
 	}
 
-	/**
-	 * Sets the library name value.
-	 *
-	 * @param libraryNameValue the new library name value
-	 */
 	public void setLibraryNameValue(MatTextBox libraryNameValue) {
 		this.libraryNameValue = libraryNameValue;
 	}
 
-	/**
-	 * Gets the library version value.
-	 *
-	 * @return the library version value
-	 */
 	public MatTextBox getLibraryVersionValue() {
 		return libraryVersionValue;
 	}
 
-	/**
-	 * Sets the library version value.
-	 *
-	 * @param libraryVersionValue the new library version value
-	 */
 	public void setLibraryVersionValue(MatTextBox libraryVersionValue) {
 		this.libraryVersionValue = libraryVersionValue;
 	}
 
-	/**
-	 * Gets the using model value.
-	 *
-	 * @return the using model value
-	 */
 	public MatTextBox getUsingModelValue() {
 		return usingModelValue;
 	}
 
-	/**
-	 * Sets the using model value.
-	 *
-	 * @param usingModelValue the new using model value
-	 */
 	public void setUsingModelValue(MatTextBox usingModelValue) {
 		this.usingModelValue = usingModelValue;
 	}
 
-	/**
-	 * Gets the model version value.
-	 *
-	 * @return the model version value
-	 */
 	public MatTextBox getModelVersionValue() {
 		return modelVersionValue;
 	}
 
-	/**
-	 * Sets the model version value.
-	 *
-	 * @param modelVersionValue the new model version value
-	 */
 	public void setModelVersionValue(MatTextBox modelVersionValue) {
 		this.modelVersionValue = modelVersionValue;
 	}
 	
-	/**
-	 * Gets the save button.
-	 *
-	 * @return the save button
-	 */
 	public Button getSaveButton(){
 		return saveAndDeleteBtn.getSaveButton();
 	}
 	
-	/**
-	 * Gets the cancel button.
-	 *
-	 * @return the cancel button
-	 */
 	public Button getCancelButton(){
 		return saveAndDeleteBtn.getCloseButton();
 	}
 	
-	/**
-	 * Sets the widget read only.
-	 *
-	 * @param isEditable the new widget read only
-	 */
 	public void setWidgetReadOnly(boolean isEditable){
 		getLibraryNameValue().setReadOnly(!isEditable);
 		getSaveButton().setEnabled(isEditable);
@@ -356,9 +240,6 @@ public class CQLGeneralInformationView {
 
 	}
 	
-	/**
-	 * Reset all.
-	 */
 	public void resetAll(){
 		getLibraryNameValue().setText("");
 		getLibraryVersionValue().setText("");
@@ -366,81 +247,38 @@ public class CQLGeneralInformationView {
 		getModelVersionValue().setText("");
 	}
 	
-	/**
-	 * Reset form group.
-	 */
 	public void resetFormGroup(){
 		getLibNameGroup().setValidationState(ValidationState.NONE);
 	}
 
-	/**
-	 * Gets the lib name group.
-	 *
-	 * @return the lib name group
-	 */
 	public FormGroup getLibNameGroup() {
 		return libNameGroup;
 	}
 
-	/**
-	 * Sets the lib name group.
-	 *
-	 * @param libNameGroup the new lib name group
-	 */
 	public void setLibNameGroup(FormGroup libNameGroup) {
 		this.libNameGroup = libNameGroup;
 	}
 
-	/**
-	 * Gets the using model group.
-	 *
-	 * @return the using model group
-	 */
 	public FormGroup getUsingModelGroup() {
 		return usingModelGroup;
 	}
 
-	/**
-	 * Sets the using model group.
-	 *
-	 * @param usingModelGroup the new using model group
-	 */
 	public void setUsingModelGroup(FormGroup usingModelGroup) {
 		this.usingModelGroup = usingModelGroup;
 	}
 
-	/**
-	 * Gets the lib version group.
-	 *
-	 * @return the lib version group
-	 */
 	public FormGroup getLibVersionGroup() {
 		return libVersionGroup;
 	}
 
-	/**
-	 * Sets the lib version group.
-	 *
-	 * @param libVersionGroup the new lib version group
-	 */
 	public void setLibVersionGroup(FormGroup libVersionGroup) {
 		this.libVersionGroup = libVersionGroup;
 	}
 
-	/**
-	 * Gets the model version group.
-	 *
-	 * @return the model version group
-	 */
 	public FormGroup getModelVersionGroup() {
 		return modelVersionGroup;
 	}
 
-	/**
-	 * Sets the model version group.
-	 *
-	 * @param modelVersionGroup the new model version group
-	 */
 	public void setModelVersionGroup(FormGroup modelVersionGroup) {
 		this.modelVersionGroup = modelVersionGroup;
 	}

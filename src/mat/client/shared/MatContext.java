@@ -1895,7 +1895,7 @@ public class MatContext implements IsSerializable {
 	 */
 	public void setCurrentCQLLibraryVersion(String s) {
 		if(currentLibraryInfo != null) {
-			currentLibraryInfo.setCqlLibraryVersion(s);;
+			currentLibraryInfo.setCqlLibraryVersion(s);
 		}
 	}
 
@@ -1921,8 +1921,8 @@ public class MatContext implements IsSerializable {
 	public boolean isCQLMeasure(String releaseVersion) {
 		
 		String str[] = releaseVersion.replace("v", "").split("\\.");
-		int version_int = Integer.parseInt(str[0]);
-		if(version_int<5){
+		int versionInt = Integer.parseInt(str[0]);
+		if(versionInt<5){
 			return false;
 		}
 		

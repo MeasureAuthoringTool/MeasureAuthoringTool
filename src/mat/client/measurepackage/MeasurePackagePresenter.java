@@ -1435,11 +1435,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 
 	public boolean isMeasurePackageValid() {
-		if (!isMeasurePackageDetailsSame()) {			
-			return false;
-		} else {
-			return true;
-		}
+		return isMeasurePackageDetailsSame();
 	}
 	
 }

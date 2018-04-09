@@ -6264,11 +6264,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	public boolean isCQLWorkspaceValid() {
-		if (getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty()) {
-			return false;
-		} else {
-			return true;
-		}
+		return !(getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty());
 	}
 
 }

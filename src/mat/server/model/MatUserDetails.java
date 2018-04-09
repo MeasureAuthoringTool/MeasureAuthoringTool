@@ -233,7 +233,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
  * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
  */
 public Collection<GrantedAuthority> getAuthorities() {
-       List<GrantedAuthority> list = new ArrayList();
+       List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
        list.add(new GrantedAuthorityImpl(roles.getDescription()));
        return list;
 }

@@ -65,7 +65,6 @@ import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MetaDataPresenter.
  */
@@ -2535,6 +2534,47 @@ public class MetaDataPresenter  implements MatPresenter {
 		} 			
 		return true;
 		
+	}
+
+	/**
+	 * Checked to see if the Measure Details page Data and the DB data are the
+	 * same.
+	 * 
+	 * @param metaDataPresenter
+	 *            the meta data presenter
+	 * @return true, if is measure details same
+	 */
+	public boolean isMeasureDetailsSame() {
+		ManageMeasureDetailModel pageData = new ManageMeasureDetailModel();
+		updateModelDetailsFromView(pageData, getMetaDataDisplay());
+		ManageMeasureDetailModel dbData = getCurrentMeasureDetail();
+		if (dbData.isDeleted() || !dbData.isEditable()) {
+			//dont show dirty check message when measure is deleted.
+			return true;
+		} else {
+			pageData.setToCompareAuthor(pageData.getAuthorSelectedList());
+			pageData.setToCompareMeasure(pageData.getMeasureTypeSelectedList());
+			pageData.setToCompareComponentMeasures(pageData.getComponentMeasuresSelectedList());
+			dbData.setToCompareAuthor(getDbAuthorList());
+			dbData.setToCompareMeasure(getDbMeasureTypeList());
+			dbData.setToCompareComponentMeasures(getDbComponentMeasuresSelectedList());
+			return pageData.equals(dbData);
+		}
+	}
+	
+	public boolean isMeasureDetailsValid() {
+		if ((MatContext.get().getCurrentMeasureId() != null) && !MatContext.get().getCurrentMeasureId().equals("")
+				&&!isMeasureDetailsSame()) {
+			if (isSubView()) {
+				backToDetail();
+				getMetaDataDisplay().setSaveButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+				getComponentMeasures();
+				setStewardAndMeasureDevelopers();
+			}
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,7 +16,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -23,12 +23,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
-import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDMAppliedSelectionView.Observer;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -40,17 +37,12 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.ValueSetNameInputValidator;
-import mat.client.umls.service.VSACAPIServiceAsync;
-import mat.client.umls.service.VsacApiResult;
 import mat.client.util.MatTextBox;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
-import mat.model.VSACExpansionProfile;
-import mat.model.VSACVersion;
 import mat.shared.ConstantMessages;
 
 /**
@@ -416,13 +408,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
-	/** The vsacapi service. */
-	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
-			.getVsacapiServiceAsync();
-	
-	/** The is u ser defined. */
-	private boolean isUserDefined = false;
-	
 	/** The applied qdm list. */
 	private List<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
 	
@@ -438,10 +423,8 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	/** The modify value set dto. */
 	private QualityDataSetDTO modifyValueSetDTO;
 	
-	/** The is expansion profile. */
-	private boolean isExpansionIdentifier = false;
 	
-	/** The is all oi ds updated. */
+	/** The is all oids updated. */
 	private boolean  isAllOIDsUpdated = false;
 	
 	/**
@@ -511,11 +494,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							//ToggleSwitch chkBox = searchDisplay.getToggleSwitch();
 							searchDisplay.getDefaultExpIdentifierSel().setValue(true);
 							searchDisplay.getDefaultExpIdentifierSel().setEnabled(false);
-							isExpansionIdentifier = true;
 							expIdentifierToAllQDM = result.getVsacExpIdentifier();
 						} else {
 							expIdentifierToAllQDM = "";
-							isExpansionIdentifier = false;
 						}
 					} else {
 						if(result.getVsacExpIdentifier()!=null){
@@ -536,11 +517,9 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 							searchDisplay.getDefaultExpIdentifierSel().setValue(true);
 							
 							expIdentifierToAllQDM = result.getVsacExpIdentifier();
-							isExpansionIdentifier = true;
 						} else {
 							searchDisplay.getDefaultExpIdentifierSel().setEnabled(true);
 							expIdentifierToAllQDM = "";
-							isExpansionIdentifier = false;
 						}
 					}
 				}
@@ -548,85 +527,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		}
 	}
 	
-	/**
-	 * Save measure xml.
-	 *
-	 * @param qdmXMLString the qdm xml string
-	 * @param codeSystemXMLString TODO
-	 */
-	private void saveMeasureXML(final String qdmXMLString, final String valuesetXMLString) {
-		final String nodeName = "qdm";
-		final String newNodeName = "valueset";
-		
-		MeasureXmlModel exportModal = new MeasureXmlModel();
-		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		exportModal.setParentNode("/measure/elementLookUp");
-		exportModal.setToReplaceNode("qdm");
-		
-		MeasureXmlModel newExportModal = new MeasureXmlModel();
-		newExportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		newExportModal.setParentNode("/measure/cqlLookUp/valuesets");
-		newExportModal.setToReplaceNode("valueset");
-		
-		System.out.println("XML " + qdmXMLString);
-		exportModal.setXml(qdmXMLString);
-		System.out.println("NEW XML " + valuesetXMLString);
-		newExportModal.setXml(valuesetXMLString);
-		
-		service.appendAndSaveNode(exportModal, nodeName,
-				new AsyncCallback<Void>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate()
-						.getGenericErrorMessage());
-			}
-			
-			@Override
-			public void onSuccess(final Void result) {
-				getAppliedQDMList(true);
-			}
-		});
-	}
-	
-		
-	/**
-	 * Save measure xml.
-	 *
-	 * @param list            the list
-	 * @param indexOf the index of
-	 */
-	private void deleteAndSaveMeasureXML(final List<QualityDataSetDTO> list , final int indexOf) {
-		service.createAndSaveElementLookUp(list, MatContext.get()
-				.getCurrentMeasureId(), expIdentifierToAllQDM, new AsyncCallback<Void>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate()
-						.getGenericErrorMessage());
-			}
-			
-			@Override
-			public void onSuccess(final Void result) {
-				modifyValueSetDTO = null;
-				searchDisplay.getCelltable().setVisibleRangeAndClearData(searchDisplay
-						.getCelltable().getVisibleRange(), true);
-				searchDisplay.getListDataProvider().getList().remove(indexOf);
-				if(searchDisplay.getListDataProvider().getList().size()>0){
-					searchDisplay.getListDataProvider().refresh();
-					searchDisplay.getPager().setPageStart(searchDisplay.getCelltable().getVisibleRange().getStart(),
-							searchDisplay.getListDataProvider().getList().size());
-				} else {
-					searchDisplay.buildAppliedQDMCellTable(new QDSAppliedListModel(), isModified);
-				}
-				
-				searchDisplay.getSuccessMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG());
-			}
-			
-		});
-	}
 	
 	/**
 	 * Load applied list data.
@@ -644,166 +544,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getUpdateVSACSuccessMessagePanel().clear();
 		searchDisplay.getUpdateVSACErrorMessagePanel().clear();
-	}
-	
-	
-	/**
-	 * Search value set in vsac.
-	 *
-	 * @param version            the version
-	 * @param expansionProfile the expansion profile
-	 */
-	private void searchValueSetInVsac(String version, String expansionProfile) {
-		
-		final String oid = searchDisplay.getOIDInput().getValue();
-		if (!MatContext.get().isUMLSLoggedIn()) {
-			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate()
-					.getUMLS_NOT_LOGGEDIN());
-			return;
-		}
-		
-		// OID validation.
-		if ((oid == null) || oid.trim().isEmpty()) {
-			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate()
-					.getUMLS_OID_REQUIRED());
-			return;
-		}
-		showSearchingBusy(true);
-		
-		if(expIdentifierToAllQDM.isEmpty()){
-			expansionProfile = null;
-		} else {
-			expansionProfile = expIdentifierToAllQDM;
-		}
-		
-		vsacapiService.getMostRecentValueSetByOID(oid,
-				expansionProfile, new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onFailure(final Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate()
-						.getVSAC_RETRIEVE_FAILED());
-				showSearchingBusy(false);
-			}
-			
-			/**
-			 * On success.
-			 * 
-			 * @param result
-			 *            the result
-			 */
-			@Override
-			public void onSuccess(final VsacApiResult result) {
-				//to get the VSAC version list corresponding the OID
-				if(result.isSuccess()){
-					List<MatValueSet> matValueSets = result.getVsacResponse();
-					if (matValueSets != null) {
-						MatValueSet matValueSet = matValueSets.get(0);
-						currentMatValueSet = matValueSet;
-					}
-					searchDisplay.getOIDInput().setTitle(oid);
-					searchDisplay.getUserDefinedInput().setValue(matValueSets.get(0).getDisplayName());
-					searchDisplay.getUserDefinedInput().setTitle(matValueSets.get(0).getDisplayName());
-					searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
-					searchDisplay.getVersionListBox().setEnabled(true);
-					searchDisplay.getDataTypesListBox().setEnabled(true);
-					
-					//searchDisplay.getSaveButton().setEnabled(true);
-					
-					if(isExpansionIdentifier){
-						searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
-						searchDisplay.getVersionListBox().setEnabled(false);
-						searchDisplay.getQDMExpIdentifierListBox().clear();
-						searchDisplay.getQDMExpIdentifierListBox().addItem(expIdentifierToAllQDM,
-								expIdentifierToAllQDM);
-					} else {
-						/*searchDisplay.setQDMExpIdentifierListBox(getProfileList(
-								MatContext.get().getVsacExpProfileList()));*/
-						getVSACVersionListByOID(oid);
-						searchDisplay.getQDMExpIdentifierListBox().setEnabled(true);
-						searchDisplay.getVersionListBox().setEnabled(true);
-					}
-					showSearchingBusy(false);
-					searchDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-							.getMessageDelegate().getVSAC_RETRIEVAL_SUCCESS());
-					
-				} else {
-					String message = convertMessage(result.getFailureReason());
-					searchDisplay.getErrorMessageDisplay().setMessage(message);
-					showSearchingBusy(false);
-				}
-			}
-		});
-	}
-	
-	/**
-	 * Gets the VSAC version list by oid.
-	 * if the default Expansion Identifier is present then
-	 * we are not making this VSAC call.
-	 * 
-	 * @param oid
-	 *            the oid
-	 * @return the VSAC version list by oid
-	 */
-	private void getVSACVersionListByOID(String oid) {
-		vsacapiService.getAllVersionListByOID(oid,
-				new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onSuccess(VsacApiResult result) {
-				
-				if (result.getVsacVersionResp() != null) {
-					searchDisplay.setQDMVersionListBoxOptions(getVersionList(result
-							.getVsacVersionResp()));
-				}
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
-						.getVSAC_RETRIEVE_FAILED());
-				showSearchingBusy(false);
-			}
-		});
-		
-	}
-	
-	
-	/**
-	 * Gets the profile list.
-	 *
-	 * @param list the list
-	 * @return the profile list
-	 */
-	private List<? extends HasListBox> getProfileList(List<VSACExpansionProfile> list){
-		return list;
-	}
-	
-	/**
-	 * Convert message.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the string
-	 */
-	private String convertMessage(final int id) {
-		String message;
-		switch (id) {
-			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_NOT_LOGGEDIN();
-				break;
-			case VsacApiResult.OID_REQUIRED:
-				message = MatContext.get().getMessageDelegate()
-				.getUMLS_OID_REQUIRED();
-				break;
-			default:
-				message = MatContext.get().getMessageDelegate()
-				.getVSAC_RETRIEVE_FAILED();
-		}
-		return message;
 	}
 	
 	/**
@@ -886,14 +626,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 						+" : "+result.getDataType()+" )");
 				searchDisplay.getMainPanel().getElement().focus();
 				if(result.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
-					isUserDefined = true;
-					//set UserDefined value in Modify Panel
 					onModifyUserDefined(result);
 					
 				} else {
-					
 					//set OID Based QDM's in Modify Panel
-					isUserDefined = false;
 					onModifyValueSetQDM(result);
 				}
 				
@@ -1365,22 +1101,16 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void validateUserDefinedInput(){
 		if(searchDisplay.getUserDefinedInput().getValue().length()>0){
-			isUserDefined = true;
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getUserDefinedInput().setTitle(searchDisplay.getUserDefinedInput().getValue());
 			searchDisplay.getQDMExpIdentifierListBox().setEnabled(false);
 			searchDisplay.getVersionListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setEnabled(true);
-			//searchDisplay.getRetrieveFromVSACButton().setEnabled(false);
-		//	searchDisplay.getSaveButton().setEnabled(true);
 		} else {
-			isUserDefined = false;
 			searchDisplay.getUserDefinedInput().setTitle("Enter Name");
 			searchDisplay.getOIDInput().setEnabled(true);
 			searchDisplay.getDataTypesListBox().setEnabled(false);
 			searchDisplay.getDataTypesListBox().setSelectedIndex(0);
-		//	searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
-			//searchDisplay.getSaveButton().setEnabled(false);
 		}
 	}
 	
@@ -1392,12 +1122,10 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void validateOIDInput(){
 		if (searchDisplay.getOIDInput().getValue().length()>0) {
-			isUserDefined = false;
 			searchDisplay.getUserDefinedInput().setEnabled(false);
 			//searchDisplay.getSaveButton().setEnabled(false);
 			//searchDisplay.getRetrieveFromVSACButton().setEnabled(true);
 		} else if(searchDisplay.getUserDefinedInput().getValue().length()>0){
-			isUserDefined = true;
 			searchDisplay.getQDMExpIdentifierListBox().clear();
 			searchDisplay.getVersionListBox().clear();
 			searchDisplay.getUserDefinedInput().setEnabled(true);
@@ -1410,113 +1138,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 		}
 	}
 	
-	
-	/**
-	 * Adds the selected code list to measure.
-	 *
-	 * @param isUserDefinedQDM the is user defined qdm
-	 */
-	private void addSelectedCodeListtoMeasure(final boolean isUserDefinedQDM) {
-		if (!isUserDefinedQDM) {
-			addQDSWithValueSet();
-		} else {
-			addQDSWithOutValueSet();
-		}
-	}
-	
-	/**
-	 * Adds the qds with out value set.
-	 */
-	private void addQDSWithOutValueSet() {
-
-		MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(null, MatContext.get().getCurrentMeasureId());
-		matValueSetTransferObject.scrubForMarkUp();
-
-		if ((matValueSetTransferObject.getUserDefinedText().length() > 0)
-				&& !searchDisplay.getDataTypeText(
-						searchDisplay.getDataTypesListBox()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			ValueSetNameInputValidator qdmInputValidator = new ValueSetNameInputValidator();
-			List<String> messList = new ArrayList<String>(); 
-			//qdmInputValidator.validate(matValueSetTransferObject);
-			if (messList.size() == 0) {
-				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
-				matValueSetTransferObject.setDatatype(dataType);
-				final String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
-				final String userDefinedInput = matValueSetTransferObject.getUserDefinedText();
-				final String dataTypeName = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
-				String expIdentifier = searchDisplay.getExpansionIdentifierValue(searchDisplay.getDataTypesListBox());
-				String version = searchDisplay.getVersionValue(searchDisplay.getDataTypesListBox());
-				if(expIdentifier == null){
-					expIdentifier = "";
-				}
-				if(version == null){
-					version = "";
-				}
-				//Check if QDM name already exists in the list.
-				if(!CheckNameInQDMList(userDefinedInput,userDefinedOID,dataTypeName,expIdentifier,version,isModified)){
-					MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
-							matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
-								@Override
-								public void onFailure(final Throwable caught) {
-									Window.alert(MatContext.get()
-											.getMessageDelegate()
-											.getGenericErrorMessage());
-								}
-
-								@SuppressWarnings("static-access")
-								@Override
-								public void onSuccess(
-										final SaveUpdateCodeListResult result) {
-									if(result.isSuccess()) {
-										if (result.getXmlString() != null && result.getnewXmlString() != null) {
-											saveMeasureXML(result.getXmlString(), result.getnewXmlString());
-											String message = MatContext
-													.get()
-													.getMessageDelegate()
-													.getQDMSuccessMessage(
-															userDefinedInput,
-															searchDisplay
-															.getDataTypeText(searchDisplay
-																	.getDataTypesListBox()));
-											searchDisplay
-											.getSuccessMessageDisplay()
-											.setMessage(message);
-											searchDisplay.getUserDefinedInput()
-											.setText("");
-											searchDisplay.getDataTypesListBox()
-											.setSelectedIndex(0);
-
-										}
-									} else {
-										if (result.getFailureReason() == result.ALREADY_EXISTS) {
-											searchDisplay
-											.getErrorMessageDisplay()
-											.setMessage(
-													MatContext
-													.get()
-													.getMessageDelegate()
-													.getDuplicateAppliedValueSetMsg(result.getCodeListName()));
-										} else if (result.getFailureReason() == result.SERVER_SIDE_VALIDATION) {
-											searchDisplay
-											.getErrorMessageDisplay()
-											.setMessage("Invalid input data.");
-										}
-									}
-								}
-							});
-
-				}
-			} else {
-				searchDisplay.getErrorMessageDisplay().setMessages(messList);
-			}
-
-		} else {
-			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate()
-					.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
-		}
-
-	}
 	
 	/*
 	 * checks if existing QDMList already has the name you are about to save.
@@ -1608,146 +1229,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 			}
 		}
 		return count;
-	}
-
-	/**
-	 * Adds the qds with value set.
-	 */
-	private void addQDSWithValueSet() {
-		final String dataType;
-		final String dataTypeText;
-		dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
-
-		if (searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).equalsIgnoreCase("--Select--")) {
-			dataTypeText = dataType;
-		} else {
-			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
-		}
-
-		String measureID = MatContext.get().getCurrentMeasureId();
-		if (!dataType.isEmpty() && !dataType.equals("")) {
-
-			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, measureID);
-			matValueSetTransferObject.scrubForMarkUp();
-			final String codeListName = matValueSetTransferObject.getMatValueSet().getDisplayName();
-			final String oidCode = matValueSetTransferObject.getMatValueSet().getID();
-			String expIdentifier = matValueSetTransferObject.getMatValueSet().getExpansionProfile();
-			String version = matValueSetTransferObject.getMatValueSet().getVersion();
-			if(expIdentifier == null){
-				expIdentifier = "";
-			}
-			if(version == null){
-				version = "";
-			}
-			//Check if QDM name already exists in the list.
-			if(!CheckNameInQDMList(codeListName,oidCode,dataTypeText,expIdentifier,version,isModified)){
-				MatContext.get().getCodeListService().saveQDStoMeasure(
-						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								if (appliedQDMList.size() > 0) {
-									appliedQDMList
-									.removeAll(appliedQDMList);
-								}
-							}
-
-							@Override
-							public void onSuccess(SaveUpdateCodeListResult result) {
-								String message = "";
-								if (result.getXmlString() != null && result.getnewXmlString() != null) {
-									saveMeasureXML(result.getXmlString(), result.getnewXmlString());
-								}
-								if (result.isSuccess()) {
-									if ((result.getOccurrenceMessage() != null)
-											&& !result
-											.getOccurrenceMessage()
-											.equals("")) {
-										message = MatContext
-												.get()
-												.getMessageDelegate()
-												.getQDMOcurrenceSuccessMessage(
-														codeListName,
-														dataTypeText,
-														result.getOccurrenceMessage());
-									} else {
-										message = MatContext
-												.get()
-												.getMessageDelegate()
-												.getQDMSuccessMessage(
-														codeListName,
-														dataTypeText);
-									}
-									MatContext.get()
-									.getEventBus().fireEvent(
-											new QDSElementCreatedEvent(
-													codeListName));
-									resetQDMSearchPanel();
-									searchDisplay
-									.getSuccessMessageDisplay()
-									.setMessage(message);
-								} else {
-									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-										searchDisplay.getErrorMessageDisplay().setMessage(
-												MatContext.get().getMessageDelegate()
-												.getDuplicateAppliedValueSetMsg(result.getCodeListName()));
-									}
-								}
-
-							}
-						});
-			}
-		} else {
-			searchDisplay
-			.getErrorMessageDisplay()
-			.setMessage(MatContext.get().getMessageDelegate()
-					.getVALIDATION_MSG_DATA_TYPE_VSAC());
-		}
-	}
-	
-	
-	/**
-	 * Creates the value set transfer object.
-	 *
-	 * @param dataType the data type
-	 * @param isSpecificOccurrence the is specific occurrence
-	 * @param measureID the measure id
-	 * @return the mat value set transfer object
-	 */
-	private MatValueSetTransferObject createValueSetTransferObject(final String dataType, String measureID) {
-		String version = searchDisplay.getVersionValue(searchDisplay.getVersionListBox());
-		String expansionProfile = searchDisplay.getExpansionIdentifierValue(
-				searchDisplay.getQDMExpIdentifierListBox());
-		MatValueSetTransferObject matValueSetTransferObject = new MatValueSetTransferObject();
-		matValueSetTransferObject.setMeasureId(measureID);
-		matValueSetTransferObject.setDatatype(dataType);
-		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
-		if((version != null) || (expansionProfile != null) ){
-			if (!expansionProfile.equalsIgnoreCase(MatContext.PLEASE_SELECT)
-					&& !expansionProfile.equalsIgnoreCase("")) {
-				matValueSetTransferObject.setExpansionProfile(true);
-				matValueSetTransferObject.setVersionDate(false);
-				currentMatValueSet.setExpansionProfile(searchDisplay
-						.getQDMExpIdentifierListBox().getValue());
-				
-			} else if (!version.equalsIgnoreCase(MatContext.PLEASE_SELECT)
-					&& !version.equalsIgnoreCase("")){
-				matValueSetTransferObject.setVersionDate(true);
-				matValueSetTransferObject.setExpansionProfile(false);
-				currentMatValueSet.setVersion(searchDisplay.getVersionListBox().getValue());
-			}
-		}
-		
-		
-		if (!expIdentifierToAllQDM.isEmpty() && !isUserDefined) {
-			currentMatValueSet.setExpansionProfile(expIdentifierToAllQDM);
-			matValueSetTransferObject.setExpansionProfile(true);
-			matValueSetTransferObject.setVersionDate(false);
-		}
-		matValueSetTransferObject.setMatValueSet(currentMatValueSet);
-		matValueSetTransferObject.setMeasureId(measureID);
-		matValueSetTransferObject.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
-		return matValueSetTransferObject;
 	}
 	
 	
@@ -2085,16 +1566,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	}
 	
 	
-	/**
-	 * Gets the version list.
-	 *
-	 * @param list the list
-	 * @return the version list
-	 */
-	private List<? extends HasListBox> getVersionList(List<VSACVersion> list) {
-		return list;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -2215,24 +1686,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	}
 	
 	
-	
-	//
-	/**
-	 * Show searching busy.
-	 *
-	 * @param busy the busy
-	 */
-	private void showSearchingBusy(final boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		searchDisplay.getUpdateFromVSACButton().setEnabled(!busy);
-		//searchDisplay.getRetrieveFromVSACButton().setEnabled(!busy);
-	}
-	
-	
 	/**
 	 * Copy. This is to copy selected QDM elements from Applied QDM Elements and can be
 	 * available to paste it globally for multiple measures.
@@ -2241,15 +1694,6 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 	 */
 	private void copy() {
 		resetQDSMsgPanel();
-		/*if(searchDisplay.getQdmSelectedList().size() > 0){
-			mat.model.GlobalCopyPasteObject gbCopyPaste = new GlobalCopyPasteObject();
-			gbCopyPaste.setCopiedQDMList(searchDisplay.getQdmSelectedList());
-			gbCopyPaste.setCurrentMeasureId(MatContext.get().getCurrentMeasureId());
-			MatContext.get().setGlobalCopyPaste(gbCopyPaste);
-		} else {
-			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate().getCOPY_QDM_SELECT_ATLEAST_ONE());
-		}*/
 	}
 	
 	

@@ -24,6 +24,7 @@ import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -61,7 +62,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -84,10 +84,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
-//import mat.client.clause.clauseworkspace.model.GlobalCopyPaste;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class XmlTreeView.
  */

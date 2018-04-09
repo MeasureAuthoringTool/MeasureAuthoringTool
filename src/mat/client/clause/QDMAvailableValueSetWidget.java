@@ -20,6 +20,8 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
 import org.apache.commons.lang.StringUtils;
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -34,7 +36,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -47,7 +48,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAvailableValueSetWidget.
  */

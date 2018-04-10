@@ -10,10 +10,12 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
+
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
@@ -273,7 +275,6 @@ public class LoginView implements LoginPresenter.Display  {
 	 */
 	@Override
 	public HasClickHandlers getForgotLoginId() {
-		// TODO Auto-generated method stub
 		return forgotLoginId;
 	}
 	@Override

@@ -1,7 +1,12 @@
 package mat.client.myAccount;
 
+import mat.client.MatPresenter;
+import mat.client.TabObserver;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -15,19 +20,13 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The Class MyAccountView.
  */
-public class MyAccountView implements MyAccountPresenter.Display {
+public class MyAccountView implements MyAccountPresenter.Display, TabObserver {
 	
-	/** The fp. */
 	private FlowPanel fp = new FlowPanel();
-	
-	/** The tab layout. */
 	private MatTabLayoutPanel tabLayout;
-	
-	/** The pip. */
 	private PersonalInformationPresenter pip;
-	
-	/** The my account tab. */
 	private final String MY_ACCOUNT_TAB = "accountTab";
+	private List<MatPresenter> presenterList;
 	
 	/**
 	 * Instantiates a new my account view.
@@ -42,21 +41,25 @@ public class MyAccountView implements MyAccountPresenter.Display {
 	public MyAccountView(PersonalInformationPresenter pip,
 			SecurityQuestionsPresenter sqp, 
 			ChangePasswordPresenter cpp) {
+		presenterList = new LinkedList<MatPresenter>();
 		this.pip = pip;
-		tabLayout = new MatTabLayoutPanel(true);
+		tabLayout = new MatTabLayoutPanel(this);
 		
 		String title;
 		
 		title = "Personal Information";
-		tabLayout.addPresenter(pip,	title);
+		tabLayout.add(pip.getWidget(),	title);
+		presenterList.add(pip);
 		
 		title = "Security Questions";
-		tabLayout.addPresenter(sqp, title);
+		tabLayout.add(sqp.getWidget(), title);
+		presenterList.add(sqp);
 		
 		title = "Password";
-		tabLayout.addPresenter(cpp, title);
+		tabLayout.add(cpp.getWidget(), title);
+		presenterList.add(cpp);
 		
-		tabLayout.setId("myAccountTabLayout");
+		tabLayout.getElement().setAttribute("id", "myAccountTabLayout");
 		MatContext.get().tabRegistry.put(MY_ACCOUNT_TAB,tabLayout);
 		tabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
 			public void onSelection(SelectionEvent<Integer> event) {
@@ -76,7 +79,7 @@ public class MyAccountView implements MyAccountPresenter.Display {
 	public void beforeDisplay() {
 		fp.add(tabLayout);
 		pip.beforeDisplay();
-		tabLayout.selectTab(pip);
+		tabLayout.selectTab(presenterList.indexOf(pip));
 	}
 
 	/**
@@ -114,5 +117,31 @@ public class MyAccountView implements MyAccountPresenter.Display {
 	@Override
 	public Widget getWidget() {
 		return fp;
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {
+		MatPresenter presenter = presenterList.get(tabLayout.getSelectedIndex());
+		if (presenter != null) {
+			MatContext.get().setAriaHidden(presenter.getWidget(),  "false");
+			presenter.beforeDisplay();
+		}
+	}
+
+	@Override
+	public void showUnsavedChangesError() {}
+
+	@Override
+	public void notifyCurrentTabOfClosing() {
+		MatPresenter oldPresenter = presenterList.get(tabLayout.getSelectedIndex());
+		if (oldPresenter != null) {
+			MatContext.get().setAriaHidden(oldPresenter.getWidget(), "true");
+			oldPresenter.beforeClosingDisplay();
+		}	
 	}
 }

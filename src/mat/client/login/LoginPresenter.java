@@ -1,13 +1,7 @@
 package mat.client.login;
 
-import mat.client.Login;
-import mat.client.event.FirstLoginPageEvent;
-import mat.client.event.ForgotLoginIDEvent;
-import mat.client.event.ForgottenPasswordEvent;
-import mat.client.event.SuccessfulLoginEvent;
-import mat.client.event.TemporaryPasswordLoginEvent;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -16,11 +10,19 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.Login;
+import mat.client.event.FirstLoginPageEvent;
+import mat.client.event.ForgotLoginIDEvent;
+import mat.client.event.ForgottenPasswordEvent;
+import mat.client.event.SuccessfulLoginEvent;
+import mat.client.event.TemporaryPasswordLoginEvent;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MatContext;
 
 
 

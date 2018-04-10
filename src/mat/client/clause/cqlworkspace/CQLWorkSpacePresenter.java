@@ -6263,4 +6263,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		return MatContext.PLEASE_SELECT.equals(selectedValueFromList) || selectedValueFromList == null || selectedValueFromList.isEmpty();
 	}
 
+	public boolean isCQLWorkspaceValid() {
+		return !(getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty());
+	}
+
 }

@@ -754,8 +754,6 @@ public class ManageUsersPresenter implements MatPresenter {
 											onNewUserCreation(updatedDetails.getEmailAddress());
 										}
 										
-
-										// displaySearch();
 										currentDetails = updatedDetails;
 										
 										detailDisplay.getFirstName().setValue(
@@ -781,7 +779,7 @@ public class ManageUsersPresenter implements MatPresenter {
 																.getPhoneNumber());
 										detailDisplay.getOid().setValue(
 												currentDetails.getOid());
-
+										displaySearch();
 									} else {
 										List<String> messages = new ArrayList<String>();
 										switch (result.getFailureReason()) {

@@ -44,7 +44,6 @@ import mat.client.util.MatTextBox;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageUsersPresenter.
  */
@@ -61,13 +60,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * @return the creates the new button
 		 */
 		HasClickHandlers getCreateNewButton();
-
-		/**
-		 * Gets the generate csv file button.
-		 * 
-		 * @return the generate csv file button
-		 */
-		/* Button getGenerateCSVFileButton(); */
 
 		/**
 		 * Gets the select id for edit tool.
@@ -145,8 +137,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * @return the cancel button
 		 */
 		HasClickHandlers getCancelButton();
-
-		// public HasClickHandlers getDeleteUserButton();
 
 		/**
 		 * Gets the first name.
@@ -241,8 +231,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		TextBox getOid();
 
-		// public HasValue<String> getRootOid();
-
 		/**
 		 * Gets the checks if is active.
 		 * 
@@ -286,7 +274,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		void setUserIsActiveEditable(boolean b);
 
-		// public void setUserIsDeletable(boolean b);
 		/**
 		 * Sets the user locked.
 		 * 
@@ -325,8 +312,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		 *            the new title
 		 */
 		void setTitle(String title);
-
-		// Label getExpLabel();
 
 		/**
 		 * Gets the information message display.
@@ -420,14 +405,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		public void setUserName(String name);
 
 		/**
-		 * Sets the page size.
-		 * 
-		 * @param s
-		 *            the new return to link text
-		 */
-		// public void setPageSize(int pageNumber);
-
-		/**
 		 * Sets the return to link text.
 		 * 
 		 * @param s
@@ -461,9 +438,6 @@ public class ManageUsersPresenter implements MatPresenter {
 	/** The current details. */
 	private ManageUsersDetailModel currentDetails;
 
-	/** The start index. */
-	private int startIndex = 1;
-
 	/** The last search key. */
 	private String lastSearchKey;
 
@@ -492,10 +466,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 
 		searchDisplay.setObserver(new ManageUsersSearchView.Observer() {
-
 			@Override
-			public void onHistoryClicked(
-					mat.client.admin.ManageUsersSearchModel.Result result) {
+			public void onHistoryClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
 				historyDisplay.setReturnToLinkText("<< Return to Manage Users");
 				displayHistory(result.getKey(), result.getFirstName());
 			}
@@ -516,6 +488,7 @@ public class ManageUsersPresenter implements MatPresenter {
 				createNew();
 			}
 		});
+		
 		MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			@Override
@@ -552,14 +525,10 @@ public class ManageUsersPresenter implements MatPresenter {
 										new AsyncCallback<Void>() {
 											@Override
 											public void onSuccess(Void result) {
-												detailDisplay
-														.getSuccessMessageDisplay()
-														.createAlert(
-																"Temporary Password E-mail has been sent.");
+												detailDisplay.getSuccessMessageDisplay().createAlert("Temporary Password E-mail has been sent.");
 												List<String> event = new ArrayList<String>();
 												event.add("Reset Password");
-												MatContext
-														.get()
+												MatContext.get()
 														.recordUserEvent(
 																currentDetails
 																		.getUserID(),
@@ -570,13 +539,7 @@ public class ManageUsersPresenter implements MatPresenter {
 											@Override
 											public void onFailure(
 													Throwable caught) {
-												detailDisplay
-														.getErrorMessageDisplay()
-														.createAlert(
-																MatContext
-																		.get()
-																		.getMessageDelegate()
-																		.getGenericErrorMessage());
+												detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 												MatContext
 														.get()
 														.recordTransactionEvent(
@@ -590,6 +553,7 @@ public class ManageUsersPresenter implements MatPresenter {
 										});
 					}
 				});
+		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -603,7 +567,6 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * Display search.
 	 */
 	private void displaySearch() {
-		// panel.clear();
 		panel.setContent(searchDisplay.asWidget());
 		panel.setHeading("", "");
 		searchDisplay.setTitle("");
@@ -616,7 +579,6 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void displayDetail() {
 		resetMessages();
 		populateOrganizations();
-		// panel.clear();
 		panel.setContent(detailDisplay.asWidget());
 		Mat.focusSkipLists("Manage Users");
 	}
@@ -682,8 +644,8 @@ public class ManageUsersPresenter implements MatPresenter {
 													.getText().length() > 0) {
 												event.add("Administrator Notes");
 												addInfo = updatedDetails.getAdditionalInfo();
-												detailDisplay.getAddInfoArea()
-														.setText("");
+												detailDisplay.getAddInfoArea().setText("");
+												
 												//Adding Message if the User Account it activated by Admin.
 												if ( !(detailDisplay.getIsActive()
 														.getValue() == currentDetails
@@ -720,7 +682,6 @@ public class ManageUsersPresenter implements MatPresenter {
 																		.getRole()))) {
 													event.add("Security Role Changed");
 												}
-
 												
 												// maintaining logs for active and
 												// revoked activity
@@ -738,79 +699,51 @@ public class ManageUsersPresenter implements MatPresenter {
 											}
 
 											if (event.size() > 0) {
-												MatContext.get().recordUserEvent(
-														currentDetails.getUserID(),
-														event, addInfo, false);
+												MatContext.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
 											}
 											 
-											detailDisplay
-											.getSuccessMessageDisplay()
-											.createAlert(
-													MatContext
-															.get()
-															.getMessageDelegate()
-															.getUSER_SUCCESS_MESSAGE() + actMsg);
+											detailDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
 										} else {
 											onNewUserCreation(updatedDetails.getEmailAddress());
 										}
 										
 										currentDetails = updatedDetails;
 										
-										detailDisplay.getFirstName().setValue(
-												currentDetails.getFirstName());
-										detailDisplay.getLastName().setValue(
-												currentDetails.getLastName());
-										detailDisplay.getTitle().setValue(
-												currentDetails.getTitle());
-										detailDisplay
-												.getMiddleInitial()
-												.setValue(
-														currentDetails
-																.getMiddleInitial());
-										detailDisplay
-												.getEmailAddress()
-												.setValue(
-														currentDetails
-																.getEmailAddress());
-										detailDisplay
-												.getPhoneNumber()
-												.setValue(
-														currentDetails
-																.getPhoneNumber());
-										detailDisplay.getOid().setValue(
-												currentDetails.getOid());
+										detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
+										detailDisplay.getLastName().setValue(currentDetails.getLastName());
+										detailDisplay.getTitle().setValue(currentDetails.getTitle());
+										detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
+										detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
+										detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
+										detailDisplay.getOid().setValue(currentDetails.getOid());
 										displaySearch();
 									} else {
 										List<String> messages = new ArrayList<String>();
 										switch (result.getFailureReason()) {
-										case SaveUpdateUserResult.ID_NOT_UNIQUE:
-											messages.add(MatContext
-													.get()
-													.getMessageDelegate()
-													.getEmailAlreadyExistsMessage());
-											break;
-										case SaveUpdateUserResult.SERVER_SIDE_VALIDATION:
-											messages = result.getMessages();
-											break;
-										default:
-											messages.add(MatContext
-													.get()
-													.getMessageDelegate()
-													.getUnknownErrorMessage(
-															result.getFailureReason()));
+											case SaveUpdateUserResult.ID_NOT_UNIQUE:
+												messages.add(MatContext
+														.get()
+														.getMessageDelegate()
+														.getEmailAlreadyExistsMessage());
+												break;
+											case SaveUpdateUserResult.SERVER_SIDE_VALIDATION:
+												messages = result.getMessages();
+												break;
+											default:
+												messages.add(MatContext
+														.get()
+														.getMessageDelegate()
+														.getUnknownErrorMessage(
+																result.getFailureReason()));
 										}
-										detailDisplay.getErrorMessageDisplay()
-												.createAlert(messages);
+										detailDisplay.getErrorMessageDisplay().createAlert(messages);
 									}
 
 								}
 
 								@Override
 								public void onFailure(Throwable caught) {
-									detailDisplay
-											.getErrorMessageDisplay()
-											.createAlert(
-													caught.getLocalizedMessage());
+									detailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
 								}
 							});
 		}
@@ -832,20 +765,11 @@ public class ManageUsersPresenter implements MatPresenter {
 			public void onSuccess(ManageUsersDetailModel result) {
 				currentDetails = result;
 				displayDetail();
-				detailDisplay
-				.getSuccessMessageDisplay()
-				.createAlert(
-						MatContext
-								.get()
-								.getMessageDelegate()
-								.getUSER_SUCCESS_MESSAGE());
+				detailDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE());
 				
 				List<String> event = new ArrayList<String>();
 				event.add("User Created");
-				MatContext.get().recordUserEvent(
-						currentDetails.getUserID(),
-						event , null, false);
-				
+				MatContext.get().recordUserEvent(currentDetails.getUserID(), event, null, false);
 			}
 			
 			@Override
@@ -887,7 +811,6 @@ public class ManageUsersPresenter implements MatPresenter {
 				isPersonalInfoModified = true;
 			}
 		}
-
 	}
 
 	/**
@@ -909,17 +832,6 @@ public class ManageUsersPresenter implements MatPresenter {
 	}
 
 	/**
-	 * Generate csv of active user emails.
-	 *
-	 * @param name the name
-	 */
-	/*
-	 * private void generateCSVOfActiveUserEmails() { String url =
-	 * GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
-	 * Window.open(url + "&type=save", "_self", ""); }
-	 */
-
-	/**
 	 * Edits the.
 	 * 
 	 * @param name
@@ -939,15 +851,8 @@ public class ManageUsersPresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						detailDisplay.getErrorMessageDisplay().createAlert(
-								MatContext.get().getMessageDelegate()
-										.getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(
-								null,
-								null,
-								null,
-								"Unhandled Exception: "
-										+ caught.getLocalizedMessage(), 0);
+						detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 					}
 				});
 	}
@@ -961,37 +866,27 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void search(String key) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
-		MatContext.get().getAdminService()
-				.searchUsers(key, new AsyncCallback<ManageUsersSearchModel>() {
-					@Override
-					public void onSuccess(ManageUsersSearchModel result) {
-						SearchResultUpdate sru = new SearchResultUpdate();
-						sru.update(result,
-								 (com.google.gwt.user.client.ui.TextBox)searchDisplay.getSearchString(),
-								lastSearchKey);
-						sru = null;
-						searchDisplay.buildDataTable(result);
-						showSearchingBusy(false);
-						Mat.focusSkipLists("Manage Users");
-					}
+		MatContext.get().getAdminService().searchUsers(key, new AsyncCallback<ManageUsersSearchModel>() {
+			@Override
+			public void onSuccess(ManageUsersSearchModel result) {
+				SearchResultUpdate sru = new SearchResultUpdate();
+				sru.update(result, (com.google.gwt.user.client.ui.TextBox)searchDisplay.getSearchString(), lastSearchKey);
+				sru = null;
+				searchDisplay.buildDataTable(result);
+				showSearchingBusy(false);
+				Mat.focusSkipLists("Manage Users");
+			}
 
-					@Override
-					public void onFailure(Throwable caught) {
-						detailDisplay.getErrorMessageDisplay().createAlert(
-								MatContext.get().getMessageDelegate()
-										.getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(
-								null,
-								null,
-								null,
-								"Unhandled Exception: "
-										+ caught.getLocalizedMessage(), 0);
-						showSearchingBusy(false);
-						if (caught instanceof InCorrectUserRoleException) {
-							callSignOut();
-						}
-					}
-				});
+			@Override
+			public void onFailure(Throwable caught) {
+				detailDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				showSearchingBusy(false);
+				if (caught instanceof InCorrectUserRoleException) {
+					callSignOut();
+				}
+			}
+		});
 	}
 
 	/**
@@ -1080,14 +975,11 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void setUserDetailsToView() {
 		detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
 		detailDisplay.getLastName().setValue(currentDetails.getLastName());
-		detailDisplay.getMiddleInitial().setValue(
-				currentDetails.getMiddleInitial());
-		// detailDisplay.getLoginId().setText(currentDetails.getLoginId());
+		detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
-		detailDisplay.getEmailAddress().setValue(
-				currentDetails.getEmailAddress());
-		detailDisplay.getPhoneNumber()
-				.setValue(currentDetails.getPhoneNumber());
+		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
+		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
+		
 		List<String> messages = new ArrayList<String>();
 		messages.add("User ID : " + currentDetails.getLoginId());
 		messages.add(currentDetails.getPasswordExpirationMsg());
@@ -1109,8 +1001,7 @@ public class ManageUsersPresenter implements MatPresenter {
 					// (User Story 755)
 			detailDisplay.getIsRevoked().setValue(false);
 			detailDisplay.getOrganizationListBox().setEnabled(true);
-			detailDisplay.getOrganizationListBox().setValue(
-					currentDetails.getOrganizationId());
+			detailDisplay.getOrganizationListBox().setValue(currentDetails.getOrganizationId());
 			detailDisplay.getOid().setEnabled(true);
 			detailDisplay.getOid().setValue(currentDetails.getOid());
 			detailDisplay.getOid().setTitle(currentDetails.getOid());
@@ -1118,28 +1009,18 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getRevokeDate().setText(currentDetails.getRevokeDate());
 		detailDisplay.setUserLocked(currentDetails.isLocked());
 		if (currentDetails.isExistingUser()) {
-			detailDisplay.setShowRevokedStatus(currentDetails
-					.isCurrentUserCanChangeAccountStatus());
+			detailDisplay.setShowRevokedStatus(currentDetails.isCurrentUserCanChangeAccountStatus());
 			detailDisplay.setShowAdminNotes(true);
 			if (!currentDetails.isCurrentUserCanChangeAccountStatus()) {
 				detailDisplay.getRevokeDate().setText("");
 			}
-			// detailDisplay.setUserIsDeletable(currentDetails.isCurrentUserCanChangeAccountStatus());
 		} else {
 			detailDisplay.setShowRevokedStatus(false);
 			detailDisplay.setShowAdminNotes(false);
-			// detailDisplay.setUserIsDeletable(false);
 		}
-		detailDisplay.setUserIsActiveEditable(currentDetails
-				.isCurrentUserCanChangeAccountStatus());
-		detailDisplay.setShowUnlockOption(currentDetails
-				.isCurrentUserCanUnlock() && currentDetails.isActive());
+		detailDisplay.setUserIsActiveEditable(currentDetails.isCurrentUserCanChangeAccountStatus());
+		detailDisplay.setShowUnlockOption(currentDetails.isCurrentUserCanUnlock() && currentDetails.isActive());
 		detailDisplay.getRole().setValue(currentDetails.getRole());
-		/*
-		 * detailDisplay.getOid().setValue(currentDetails.getOid());
-		 * detailDisplay.getOid().setTitle(currentDetails.getOid());
-		 */
-		// detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
 	}
 
 	/**
@@ -1154,15 +1035,11 @@ public class ManageUsersPresenter implements MatPresenter {
 
 		updatedDetails.setFirstName(detailDisplay.getFirstName().getValue());
 		updatedDetails.setLastName(detailDisplay.getLastName().getValue());
-		updatedDetails.setMiddleInitial(detailDisplay.getMiddleInitial()
-				.getValue());
+		updatedDetails.setMiddleInitial(detailDisplay.getMiddleInitial().getValue());
 		updatedDetails.setTitle(detailDisplay.getTitle().getValue());
-		updatedDetails.setEmailAddress(detailDisplay.getEmailAddress()
-				.getValue());
-		updatedDetails
-				.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());
+		updatedDetails.setEmailAddress(detailDisplay.getEmailAddress().getValue());
+		updatedDetails.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());
 		updatedDetails.setActive(detailDisplay.getIsActive().getValue());
-		// currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
 		updatedDetails.setRole(detailDisplay.getRole().getValue());
 		updatedDetails.setRevokeDate(detailDisplay.getRevokeDate().getText());
 		updatedDetails.setOid(detailDisplay.getOid().getValue());
@@ -1174,11 +1051,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		} else {
 			updatedDetails.setOrganization("");
 		}
-		if (!(detailDisplay.getIsActive()
-				.getValue() == currentDetails
-				.isActive())) {
-			if (detailDisplay.getIsActive()
-					.getValue()) {
+		if (!(detailDisplay.getIsActive().getValue() == currentDetails.isActive())) {
+			if (detailDisplay.getIsActive().getValue()) {
 				updatedDetails.setBeingActivated(true);
 			} else {
 				updatedDetails.setBeingRevoked(true);
@@ -1222,7 +1096,6 @@ public class ManageUsersPresenter implements MatPresenter {
 				displaySearch();
 			}
 		});
-
 	}
 
 	/**
@@ -1268,24 +1141,16 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	private void searchUserHistory(String userId) {
 
-		MatContext
-				.get()
-				.getAuditService()
-				.executeUserLogSearch(userId,
-						new AsyncCallback<List<UserAuditLogDTO>>() {
+		MatContext.get().getAuditService().executeUserLogSearch(userId, new AsyncCallback<List<UserAuditLogDTO>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				//do nothing
+			}
 
-							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-
-							}
-
-							@Override
-							public void onSuccess(List<UserAuditLogDTO> result) {
-								historyDisplay.buildCellTable(result);
-							}
-						});
-
+			@Override
+			public void onSuccess(List<UserAuditLogDTO> result) {
+				historyDisplay.buildCellTable(result);
+			}
+		});
 	}
-
 }

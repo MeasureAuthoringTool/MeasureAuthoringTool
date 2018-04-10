@@ -110,6 +110,13 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * @param title the new title
 		 */
 		void setTitle(String title);
+		
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
+		MessageAlert getSuccessMessageDisplay();
 	}
 
 	/**
@@ -454,13 +461,12 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * @param dDisplayArg            the d display arg
 	 * @param hDisplayArg the h display arg
 	 */
-	public ManageUsersPresenter(SearchDisplay sDisplayArg,
-			DetailDisplay dDisplayArg, HistoryDisplay hDisplayArg) {
+	public ManageUsersPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, HistoryDisplay hDisplayArg) {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
 		historyDisplay = hDisplayArg;
 		displaySearch();
-
+		
 		if (historyDisplay != null) {
 			historyDisplayHandlers(historyDisplay);
 		}
@@ -476,8 +482,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(
 				new SelectionHandler<ManageUsersSearchModel.Result>() {
 					@Override
-					public void onSelection(
-							SelectionEvent<ManageUsersSearchModel.Result> event) {
+					public void onSelection(SelectionEvent<ManageUsersSearchModel.Result> event) {
 						edit(event.getSelectedItem().getKey());
 					}
 				});
@@ -486,6 +491,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				createNew();
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 			}
 		});
 		
@@ -495,6 +501,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					((Button)searchDisplay.getSearchButton()).click();
+					searchDisplay.getSuccessMessageDisplay().clearAlert();
 				}
 			}
 		});
@@ -559,6 +566,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				String key = searchDisplay.getSearchString().getValue();
 				search(key);
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 			}
 		});
 	}
@@ -701,8 +709,6 @@ public class ManageUsersPresenter implements MatPresenter {
 											if (event.size() > 0) {
 												MatContext.get().recordUserEvent(currentDetails.getUserID(), event, addInfo, false);
 											}
-											 
-											detailDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
 										} else {
 											onNewUserCreation(updatedDetails.getEmailAddress());
 										}
@@ -717,6 +723,7 @@ public class ManageUsersPresenter implements MatPresenter {
 										detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 										detailDisplay.getOid().setValue(currentDetails.getOid());
 										displaySearch();
+										searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
 									} else {
 										List<String> messages = new ArrayList<String>();
 										switch (result.getFailureReason()) {
@@ -749,23 +756,22 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 	}
 	
-	
 	/**
 	 * On new user creation.
 	 *
 	 * @param emailId the email id
 	 */
-	public void onNewUserCreation(String emailId){
+	private void onNewUserCreation(String emailId){
 		detailDisplay.setTitle("Update a User");
 		detailDisplay.getAddInfoArea().setText("");
 		detailDisplay.getAddInfoArea().setEnabled(true);
+		
 		MatContext.get().getAdminService().getUserByEmail(emailId, new AsyncCallback<ManageUsersDetailModel>() {
-			
 			@Override
 			public void onSuccess(ManageUsersDetailModel result) {
 				currentDetails = result;
-				displayDetail();
-				detailDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE());
+				displaySearch();
+				searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE());
 				
 				List<String> event = new ArrayList<String>();
 				event.add("User Created");
@@ -774,6 +780,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				//do nothing
 			}
 		});
 	}

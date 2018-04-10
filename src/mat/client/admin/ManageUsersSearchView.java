@@ -39,8 +39,10 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
@@ -74,6 +76,8 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	//private Widget searchLabel = LabelBuilder.buildLabel(search, "Search for a User");
 	private Observer observer;
 	
+	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
+	
 	
 	/**
 	 * The Interface Observer.
@@ -105,6 +109,8 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		//mainPanel.add(search);
 		//searchButton.addStyleName("userSearchButton");
 		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageDisplay);
 		mainPanel.add(new SpacerWidget());
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		mainPanel.add(cellTablePanel);
@@ -304,4 +310,12 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		containerPanel.setHeading(title, "Manage Users");
 	}
 	
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessageDisplay;
+	}
+	
+	public void setSuccessMessageDisplay(MessageAlert successMessageDisplay) {
+		this.successMessageDisplay = successMessageDisplay;
+	}
 }

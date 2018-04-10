@@ -236,6 +236,7 @@ public class HeaderHumanReadableGenerator {
 		// Measure Scoring
 		createRowAndColumns(table, "Measure Scoring");
 		String measureScoring = getInfo(processor, "scoring");
+		String patientbasedIndicator = getInfo(processor, "patientBasedIndicator");
 		column.appendText(measureScoring);
 		
 		// Measure Type
@@ -327,7 +328,7 @@ public class HeaderHumanReadableGenerator {
 					column);
 		}
 		if (measureScoring.equalsIgnoreCase("Continuous Variable")
-				|| measureScoring.equalsIgnoreCase("Ratio")) {
+				|| (measureScoring.equalsIgnoreCase("Ratio") && !"true".equalsIgnoreCase(patientbasedIndicator))) {
 			// Measure Observations
 			createRowAndColumns(table, "Measure Observations");
 			createDiv(getInfo(processor, "measureObservationsDescription"), column);

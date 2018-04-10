@@ -204,6 +204,7 @@ public class CQLWorkSpaceConstants {
 	public static final String CQL_VIEWPOPULATIONS = "viewpopulations";
 	public static final String CQL_STRATUM = "Stratum";
 	public static final String SCORING = "scoring";
+	public static final String PATIENT_BASED_INDICATOR = "patientBasedIndicator";
 	
 	public enum POPULATIONS {
 		INITIAL_POPULATIONS("Initial Populations"),

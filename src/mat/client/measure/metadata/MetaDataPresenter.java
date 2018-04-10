@@ -759,6 +759,8 @@ public class MetaDataPresenter  implements MatPresenter {
 
 		void setOptionsInStewardList(List<MeasureSteward> allStewardList, boolean editable);
 		
+		void setPatientBasedMeasure(boolean isPatientBasedMeasure);
+		
 	}
 	
 	/**
@@ -1592,6 +1594,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		previousContinueButtons.setVisible(true);
 		panel.clear();
 		metaDataDisplay.setMeasureScoringType(currentMeasureDetail.getMeasScoring());
+		metaDataDisplay.setPatientBasedMeasure(currentMeasureDetail.isPatientBased());
+		
 		//panel.add(metaDataDisplay.asWidget());
 		metaDataDisplay.buildForm();
 		prepopulateFields();

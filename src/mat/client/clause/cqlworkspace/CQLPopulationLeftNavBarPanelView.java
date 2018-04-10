@@ -48,39 +48,21 @@ public class CQLPopulationLeftNavBarPanelView {
 
 	private AnchorListItem viewPopulations;
 
-
-
-
-	/** The message panel. */
 	private VerticalPanel messagePanel = new VerticalPanel();
 
-	/** The CQL success message. */
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 
-	/**  The CQL warning message. */
 	private MessageAlert warningMessageAlert = new WarningMessageAlert();
 
-	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 
-	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 
-	/**  The delete confirmation box. */
-	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
+	private DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 
-	/** The CQL warning message. */
-	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
+	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;
 
-	/** The delete confirmation messge alert. */
-	//private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
-
-
-	/** The Loading flag for page. */
 	private Boolean isLoading = false;
-
-
-
 
 	/**
 	 * Builds the measure lib CQL view.
@@ -93,7 +75,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		buildLeftHandNavBar(document);
 		return rightHandNavPanel;
 	}
-
 
 	/**
 	 * Builds the left hand nav nar.
@@ -135,9 +116,9 @@ public class CQLPopulationLeftNavBarPanelView {
 			Node scoringNode = document.getElementsByTagName(CQLWorkSpaceConstants.SCORING).item(0);
 			String scoringIdAttributeValue = ((Element) scoringNode).getAttribute("id");
 			
-			addAchorsByScoring(navPills, scoringIdAttributeValue);
-			
+			Node patientBasedMeasureNode = document.getElementsByTagName(CQLWorkSpaceConstants.PATIENT_BASED_INDICATOR).item(0);
 
+			addAchorsByScoring(navPills, scoringIdAttributeValue, ("true").equals(patientBasedMeasureNode.getFirstChild().getNodeValue()));
 		}
 		
 		setTextAndIcons(viewPopulations, POPULATIONS.VIEW_POPULATIONS.popName(), IconType.BOOK);
@@ -157,8 +138,7 @@ public class CQLPopulationLeftNavBarPanelView {
 		
 	}
 
-	private void addAchorsByScoring(NavPills navPills,
-			String scoringIdAttributeValue) {
+	private void addAchorsByScoring(NavPills navPills, String scoringIdAttributeValue, boolean isPatientBasedMeasure) {
 		navPills.add(initialPopulation);
 		//COHORT scoring has the initial population and stratifications. 
 		if("PROPOR".equals(scoringIdAttributeValue)){			
@@ -173,7 +153,11 @@ public class CQLPopulationLeftNavBarPanelView {
 		} else if("RATIO".equals(scoringIdAttributeValue)){			
 			addNumDenoNavPills(navPills);
 			navPills.add(stratifications);
-			navPills.add(measureObservations);			
+			//Measure Observations are not available 
+			//for Patient based Ratio Measures
+			if (!isPatientBasedMeasure) {
+				navPills.add(measureObservations);
+			}
 		} else if("COHORT".equals(scoringIdAttributeValue)) {
 			navPills.add(stratifications);
 		}
@@ -212,7 +196,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		return messagePanel;
 	}
 
-
 	/**
 	 * Sets the message panel.
 	 *
@@ -221,7 +204,6 @@ public class CQLPopulationLeftNavBarPanelView {
 	public void setMessagePanel(VerticalPanel messagePanel) {
 		this.messagePanel = messagePanel;
 	}
-
 
 	/**
 	 * Gets the delete confirmation dialog box.
@@ -232,7 +214,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		return deleteConfirmationDialogBox;
 	}
 
-
 	/**
 	 * Sets the delete confirmation dialog box.
 	 *
@@ -241,7 +222,6 @@ public class CQLPopulationLeftNavBarPanelView {
 	public void setDeleteConfirmationDialogBox(DeleteConfirmationDialogBox deleteConfirmationDialogBox) {
 		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
 	}
-
 
 	/**
 	 * Gets the success message alert.
@@ -252,7 +232,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		return successMessageAlert;
 	}
 
-
 	/**
 	 * Gets the warning message alert.
 	 *
@@ -261,7 +240,6 @@ public class CQLPopulationLeftNavBarPanelView {
 	public MessageAlert getWarningMessageAlert() {
 		return warningMessageAlert;
 	}
-
 
 	/**
 	 * Gets the error message alert.
@@ -272,7 +250,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		return errorMessageAlert;
 	}
 
-
 	/**
 	 * Gets the warning confirmation message alert.
 	 *
@@ -282,7 +259,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		return warningConfirmationMessageAlert;
 	}
 
-
 	/**
 	 * Gets the global warning confirmation message alert.
 	 *
@@ -291,9 +267,6 @@ public class CQLPopulationLeftNavBarPanelView {
 	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
 		return globalWarningConfirmationMessageAlert;
 	}
-	
-
-
 
 	/**
 	 * Show unsaved changes warning.
@@ -302,8 +275,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
-	//	getGlobalWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -322,11 +293,9 @@ public class CQLPopulationLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
-
 
 	/**
 	 * Show delete confirmation message alert.
@@ -338,8 +307,6 @@ public class CQLPopulationLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().createWarningAlert(message);
-		//getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 
 	/**
@@ -405,31 +372,9 @@ public class CQLPopulationLeftNavBarPanelView {
 		return deleteConfirmationDialogBox.getNoButton();
 	}
 
-	/**
-	 * Gets the delete confirmation yes button.
-	 *
-	 * @return the delete confirmation yes button
-	 */
-	/*public Button getDeleteConfirmationYesButton() {
-		return deleteConfirmationMessgeAlert.getWarningConfirmationYesButton();
-	}*/
-
-	/**
-	 * Gets the delete confirmation no button.
-	 *
-	 * @return the delete confirmation no button
-	 */
-	/*public Button getDeleteConfirmationNoButton() {
-		return deleteConfirmationMessgeAlert.getWarningConfirmationNoButton();
-	}*/
-
-
-
-
 	public Boolean getIsLoading() {
 		return isLoading;
 	}
-
 
 	public void setIsLoading(Boolean isLoading) {
 		this.isLoading = isLoading;
@@ -439,56 +384,45 @@ public class CQLPopulationLeftNavBarPanelView {
 		return initialPopulation;
 	}
 
-
 	public AnchorListItem getNumerator() {
 		return numerator;
 	}
-
 
 	public AnchorListItem getDenominator() {
 		return denominator;
 	}
 
-
 	public AnchorListItem getNumeratorExclusions() {
 		return numeratorExclusions;
 	}
-
 
 	public void setNumeratorExclusions(AnchorListItem numeratorExclusions) {
 		this.numeratorExclusions = numeratorExclusions;
 	}
 
-
 	public AnchorListItem getDenominatorExclusions() {
 		return denominatorExclusions;
 	}
-
 
 	public AnchorListItem getStratifications() {
 		return stratifications;
 	}
 
-
 	public AnchorListItem getMeasureObservations() {
 		return measureObservations;
 	}
-
 
 	public AnchorListItem getViewPopulations() {
 		return viewPopulations;
 	}
 
-
 	public AnchorListItem getDenominatorExceptions() {
 		return denominatorExceptions;
 	}
 
-
 	public AnchorListItem getMeasurePopulations() {
 		return measurePopulations;
 	}
-
 
 	public AnchorListItem getMeasurePopulationExclusions() {
 		return measurePopulationExclusions;

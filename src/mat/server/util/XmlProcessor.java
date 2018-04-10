@@ -247,6 +247,8 @@ public class XmlProcessor {
 	/** The Constant PARAMETER_MEASUREMENT_PERIOD. */
 	private static final String PARAMETER_MEASUREMENT_PERIOD = "Measurement Period";
 	
+	private static final String XPATH_FOR_PATIENT_BASED_INDICATOR = "/measure/measureDetails/patientBasedIndicator";
+	
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {
 		INITIAL_POPULATIONS, NUMERATORS, NUMERATOR_EXCLUSIONS, DENOMINATORS,
@@ -607,10 +609,9 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public void removeNodesBasedOnScoring(String scoringType)
-			throws XPathExpressionException {
+	public void removeNodesBasedOnScoring(String scoringType) throws XPathExpressionException {
 		List<String> xPathList = new ArrayList<String>();
-		
+		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
 		if (RATIO.equalsIgnoreCase(scoringType)) {
 			// Denominator Exceptions, Measure Populations
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
@@ -620,10 +621,12 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS);
-			/*xPathList.add(XPATH_MEASURE_OBSERVATIONS);*/
+			
+			if (patientBasedMeasureNode != null && "true".equals(patientBasedMeasureNode.getTextContent())) {
+				xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+			}
 		} else if (PROPOR.equalsIgnoreCase(scoringType)) {
 			// Measure Population Exlusions, Measure Populations
-			//xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
@@ -794,6 +797,7 @@ public class XmlProcessor {
 			throws XPathExpressionException {
 		List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
 		Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
+		
 		if (populationsNode == null) {
 			populationsNode = addPopulationsNode();
 		}
@@ -803,10 +807,10 @@ public class XmlProcessor {
 		 * Add Measure Observations node after Populations node if not present
 		 * and scoring type is Continuous Variable.
 		 */
-		Node measureObservationsNode = findNode(originalDoc,
-				XPATH_MEASURE_OBSERVATIONS);
-		if ((SCORING_TYPE_CONTVAR.equals(scoringType)
-				|| RATIO.equals(scoringType)) && (measureObservationsNode == null)) {
+		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
+		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
+		if ((SCORING_TYPE_CONTVAR.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
+				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;
 			String displayName = constantsMap.get(nodeName);

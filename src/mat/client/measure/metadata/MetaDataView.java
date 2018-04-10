@@ -371,6 +371,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private CheckBox calenderYear = new CheckBox();
 	
 	private String measureScoringType ;
+	
+	private boolean isPatientBasedMeasure;
+	
 	/**
 	 * Instantiates a new meta data view.
 	 */
@@ -599,7 +602,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 		
 		if((measureScoringType != null) &&(measureScoringType.equalsIgnoreCase("Continuous Variable")
-				|| measureScoringType.equalsIgnoreCase("Ratio"))){
+				|| (measureScoringType.equalsIgnoreCase("Ratio") && !isPatientBasedMeasure))){
 			buildMeasureObservationInputComponent(moreMeasureDetailsVP);
 			//measureObservationsInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
@@ -3548,6 +3551,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public Button getDeleteMeasure2() {
 		return deleteMeasure2;
+	}
+
+
+	public boolean isPatientBasedMeasure() {
+		return isPatientBasedMeasure;
+	}
+	
+	@Override
+	public void setPatientBasedMeasure(boolean isPatientBasedMeasure) {
+		this.isPatientBasedMeasure = isPatientBasedMeasure;
 	}
 	
 }

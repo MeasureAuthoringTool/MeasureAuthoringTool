@@ -39,15 +39,17 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 
-// TODO: Auto-generated Javadoc
 /**ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay.**/
 public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay, HasSelectionHandlers<ManageUsersSearchModel.Result> {
+	
 	/** MARGIN Value used in constructor for button panel , search label and search text box. */
 	private static final int MARGIN_VALUE = 4;
 	/** Cell Table Page Size. */
@@ -58,21 +60,13 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	/** The create new button. */
 	private Button createNewButton = new Button("Add New User");
-	/** The generate csv file button. */
-	//private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
-	/** The search text. */
-	//private TextBox search = new TextBox();
-	/** The search button. */
-	//private Button searchButton = new Button("Search");
-	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
-	/** The search label. */
-	//private Widget searchLabel = LabelBuilder.buildLabel(search, "Search for a User");
 	private Observer observer;
+	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
 	
 	
 	/**
@@ -90,21 +84,15 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	
 	/**Constructor.**/
 	public ManageUsersSearchView() {
-		//search.setWidth("256px");
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
-		/*buttonPanel.add(generateCSVFileButton);
-		generateCSVFileButton.setTitle("Generate CSV file of Email Addresses.");*/
 		buttonPanel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(buttonPanel);
 		mainPanel.add(new SpacerWidget());
-		//searchLabel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-		//mainPanel.add(searchLabel);
-		//search.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
-		//mainPanel.add(search);
-		//searchButton.addStyleName("userSearchButton");
 		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageDisplay);
 		mainPanel.add(new SpacerWidget());
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		mainPanel.add(cellTablePanel);
@@ -126,6 +114,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
 		cellTableCaption.getElement().setAttribute("tabIndex", "0");
+		
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -138,6 +127,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				return safeHtmlBuilder.toSafeHtml();
 			}
 		};
+		
 		nameColumn.setFieldUpdater(new FieldUpdater<Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
@@ -146,6 +136,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 			}
 		});
 		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
+		
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -161,26 +152,24 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				return CellTableUtility.getColumnToolTip(object.getUserRole(), "User Role: " + object.getUserRole());
 			}
 		};
-		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant(
-				"<span title=\"User Role\">" + "User Role" + "</span>"));
+		cellTable.addColumn(userRoleColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"User Role\">" + "User Role" + "</span>"));
 		
 		//MAT-9000. Changes to Account Management -> Manage Users table to use bootstrap history column icon.
 		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
-		Column<Result, String> historyColumn = new Column<Result, 
-				String>(historyButton) {
+		Column<Result, String> historyColumn = new Column<Result, String>(historyButton) {
 			@Override
 			public String getValue(Result object) {
 				return "";
 			}
-				};
-				historyColumn.setFieldUpdater(new FieldUpdater<Result, String>() {
-					@Override
-					public void update(int index, Result object, String value) {
-						observer.onHistoryClicked(object);
-					}
-				});
-			cellTable.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
-						+ "History" + "</span>"));
+		};
+		
+		historyColumn.setFieldUpdater(new FieldUpdater<Result, String>() {
+			@Override
+			public void update(int index, Result object, String value) {
+				observer.onHistoryClicked(object);
+			}
+		});
+		cellTable.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
 		
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
@@ -199,6 +188,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public HandlerRegistration addSelectionHandler(SelectionHandler<ManageUsersSearchModel.Result> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#asWidget()
 	 */
@@ -206,6 +196,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public Widget asWidget() {
 		return containerPanel;
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
@@ -252,6 +243,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getCreateNewButton()
 	 */
@@ -259,13 +251,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public HasClickHandlers getCreateNewButton() {
 		return createNewButton;
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getGenerateCSVFileButton()
-	 */
-	/*@Override
-	public Button getGenerateCSVFileButton() {
-		return generateCSVFileButton;
-	}*/
+	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#getSearchButton()
 	 */
@@ -273,6 +259,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public HasClickHandlers getSearchButton() {
 		return searchWidgetBootStrap.getGo();
 	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchDisplay#getSearchString()
 	 */
@@ -280,6 +267,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getSelectIdForEditTool()
 	 */
@@ -304,4 +292,11 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		containerPanel.setHeading(title, "Manage Users");
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getSuccessMessageDisplay()
+	 */
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessageDisplay;
+	}
 }

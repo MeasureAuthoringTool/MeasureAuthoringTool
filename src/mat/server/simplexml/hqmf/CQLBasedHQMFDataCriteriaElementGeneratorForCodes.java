@@ -409,8 +409,8 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
-		
-		List<Node> nodesToBeAdded = new ArrayList<Node>();
+		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
+				+ subTemplateName + "/child::node()");
 		
 		if (subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
 			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute")
@@ -422,18 +422,16 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 				NodeList attributedToBeChangedInNode = null;
 				attributedToBeChangedInNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(),
 						"/templates/subtemplates/" + subTemplateName + "//" + changeAttribute);
-				
 											
 				if (changeAttribute.equalsIgnoreCase(ID)) {
 					String rootId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					
 					Node clonedNode = attributedToBeChangedInNode.item(0).cloneNode(true);
-					
 					clonedNode.getAttributes().getNamedItem("root").setNodeValue(rootId);
 					clonedNode.getAttributes().getNamedItem("extension")
 							.setNodeValue(UUIDUtilClient.uuid());
 					
-					nodesToBeAdded.add(clonedNode);
+					replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(0), clonedNode);
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 						String codeOID = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 						String codeSystemOID = qdmNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
@@ -478,8 +476,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 							attrNodeCodeSystemVersion.setNodeValue(codeSystemVersion);
 							clonedNode.getAttributes().setNamedItem(attrNodeCodeSystemVersion);
 						}
-						
-						nodesToBeAdded.add(clonedNode);
+						replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(0), clonedNode);
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
 					Node clonedNode = attributedToBeChangedInNode.item(0).cloneNode(true);
 					
@@ -487,14 +484,14 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 							.setNodeValue(HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName) + " "
 									+ qdmTaxonomy + " value set");
 					
-					nodesToBeAdded.add(clonedNode);
+					replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(0), clonedNode);
 				} else if (changeAttribute.equalsIgnoreCase(TITLE)) {
 					Node clonedNode = attributedToBeChangedInNode.item(0).cloneNode(true);
 					
 					clonedNode.getAttributes().getNamedItem("value")
 							.setNodeValue(qdmNameDataType);
 					
-					nodesToBeAdded.add(clonedNode);
+					replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(0), clonedNode);
 				} else if (changeAttribute.equalsIgnoreCase(ITEM)) {
 					for (int count = 0; count < attributedToBeChangedInNode.getLength(); count++) {
 						
@@ -503,17 +500,24 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 						
 						clonedNode.getAttributes().getNamedItem("extension").setNodeValue(extensionValue);
 						
-						nodesToBeAdded.add(clonedNode);
+						replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(count), clonedNode);
 					}
 
 				}
 			}
 		}
-		for (Node node:nodesToBeAdded) {
-			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(node, true);
+		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
+			Node childNode = subTemplateNodeChilds.item(i);
+			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);
 			XmlProcessor.clean(nodeToAttach);
 			dataCriteriaElem.appendChild(nodeToAttach);
 		}
+	}
+
+
+	private void replaceParentNodeWithClonedNode(Node toBeChangedNode, Node clonedNode) {
+		Node parentNode = toBeChangedNode.getParentNode();
+		parentNode.replaceChild(clonedNode, toBeChangedNode);
 	}
 
 	/**

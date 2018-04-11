@@ -1320,6 +1320,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getSaveButton().setEnabled(false);
 		getVersionListBox().setEnabled(false);
 		getProgramListBox().setEnabled(editable);
+		getSuffixInput().setEnabled(editable);
 	}
 	
 	/**

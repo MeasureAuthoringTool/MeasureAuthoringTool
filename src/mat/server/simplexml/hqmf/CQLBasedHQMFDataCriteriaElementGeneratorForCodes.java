@@ -411,7 +411,6 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 		String qdmTaxonomy = qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
 		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/"
 				+ subTemplateName + "/child::node()");
-		List<Node> nodesToBeAdded = new ArrayList<Node>();
 		
 		if (subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
 			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute")
@@ -432,7 +431,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 					clonedNode.getAttributes().getNamedItem("extension")
 							.setNodeValue(UUIDUtilClient.uuid());
 					
-					nodesToBeAdded.add(clonedNode);
+					replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(0), clonedNode);
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 						String codeOID = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 						String codeSystemOID = qdmNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();

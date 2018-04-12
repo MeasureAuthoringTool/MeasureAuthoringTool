@@ -146,66 +146,6 @@
 		<function>Truncate()</function>
 		<function>Variance()</function>
 	</functions>
-	<!-- CQL Reserved Keyword List -->
-	<!-- <keywords> <keyword>Abs</keyword> <keyword>after</keyword> <keyword>AgeInDays</keyword> 
-		<keyword>AgeInDaysAt</keyword> <keyword>AgeInHours</keyword> <keyword>AgeInHoursAt</keyword> 
-		<keyword>AgeInMinutes</keyword> <keyword>AgeInMinutesAt</keyword> <keyword>AgeInMonths</keyword> 
-		<keyword>AgeInMonthsAt</keyword> <keyword>AgeInSeconds</keyword> <keyword>AgeInSecondsAt</keyword> 
-		<keyword>AgeInYears</keyword> <keyword>AgeInYearsAt</keyword> <keyword>all</keyword> 
-		<keyword>AllTrue</keyword> <keyword>and</keyword> <keyword>Any</keyword> 
-		<keyword>AnyTrue</keyword> <keyword>as</keyword> <keyword>asc</keyword> <keyword>ascending</keyword> 
-		<keyword>Avg</keyword> <keyword>before</keyword> <keyword>between</keyword> 
-		<keyword>Boolean</keyword> <keyword>by</keyword> <keyword>CalculateAgeInDays</keyword> 
-		<keyword>CalculateAgeInDaysAt</keyword> <keyword>CalculateAgeInHours</keyword> 
-		<keyword>CalculateAgeInHoursAt</keyword> <keyword>CalculateAgeInMinutes</keyword> 
-		<keyword>CalculateAgeInMinutesAt</keyword> <keyword>CalculateAgeInMonths</keyword> 
-		<keyword>CalculateAgeInMonthsAt</keyword> <keyword>CalculateAgeInSeconds</keyword> 
-		<keyword>CalculateAgeInSecondsAt</keyword> <keyword>CalculateAgeInYears</keyword> 
-		<keyword>CalculateAgeInYearsAt</keyword> <keyword>called</keyword> <keyword>case</keyword> 
-		<keyword>cast</keyword> <keyword>Ceiling</keyword> <keyword>Coalesce</keyword> 
-		<keyword>Code</keyword> <keyword>codesystem</keyword> <keyword>codesystems</keyword> 
-		<keyword>collapse</keyword> <keyword>combine</keyword> <keyword>Concept</keyword> 
-		<keyword>contains</keyword> <keyword>context</keyword> <keyword>convert</keyword> 
-		<keyword>Count</keyword> <keyword>date</keyword> <keyword>DateTime</keyword> 
-		<keyword>day</keyword> <keyword>days</keyword> <keyword>Decimal</keyword> 
-		<keyword>default</keyword> <keyword>define</keyword> <keyword>desc</keyword> 
-		<keyword>descending</keyword> <keyword>difference</keyword> <keyword>display</keyword> 
-		<keyword>distinct</keyword> <keyword>div</keyword> <keyword>duration</keyword> 
-		<keyword>during</keyword> <keyword>else</keyword> <keyword>end</keyword> 
-		<keyword>ends</keyword> <keyword>except</keyword> <keyword>exists</keyword> 
-		<keyword>expand</keyword> <keyword>false</keyword> <keyword>First</keyword> 
-		<keyword>Floor</keyword> <keyword>from</keyword> <keyword>function</keyword> 
-		<keyword>hour</keyword> <keyword>hours</keyword> <keyword>if</keyword> <keyword>in</keyword> 
-		<keyword>include</keyword> <keyword>includes</keyword> <keyword>Indexer</keyword> 
-		<keyword>IndexOf</keyword> <keyword>Integer</keyword> <keyword>intersect</keyword> 
-		<keyword>Interval</keyword> <keyword>is</keyword> <keyword>IsFalse</keyword> 
-		<keyword>IsNull</keyword> <keyword>IsTrue</keyword> <keyword>Last</keyword> 
-		<keyword>library</keyword> <keyword>List</keyword> <keyword>Ln</keyword> 
-		<keyword>Log</keyword> <keyword>matches</keyword> <keyword>Max</keyword> 
-		<keyword>maximum</keyword> <keyword>Median</keyword> <keyword>meets</keyword> 
-		<keyword>millisecond</keyword> <keyword>milliseconds</keyword> <keyword>Min</keyword> 
-		<keyword>minimum</keyword> <keyword>minute</keyword> <keyword>minutes</keyword> 
-		<keyword>mod</keyword> <keyword>Mode</keyword> <keyword>month</keyword> <keyword>months</keyword> 
-		<keyword>not</keyword> <keyword>Now</keyword> <keyword>null</keyword> <keyword>occurs</keyword> 
-		<keyword>of</keyword> <keyword>or</keyword> <keyword>overlaps</keyword> <keyword>parameter</keyword> 
-		<keyword>PopulationStdDev</keyword> <keyword>PopulationVariance</keyword> 
-		<keyword>predecessor</keyword> <keyword>private</keyword> <keyword>properly</keyword> 
-		<keyword>public</keyword> <keyword>Quantity</keyword> <keyword>return</keyword> 
-		<keyword>round</keyword> <keyword>same</keyword> <keyword>second</keyword> 
-		<keyword>seconds</keyword> <keyword>singleton</keyword> <keyword>sort</keyword> 
-		<keyword>start</keyword> <keyword>starts</keyword> <keyword>StdDev</keyword> 
-		<keyword>String</keyword> <keyword>successor</keyword> <keyword>Sum</keyword> 
-		<keyword>then</keyword> <keyword>time</keyword> <keyword>TimeOfDay</keyword> 
-		<keyword>timezone</keyword> <keyword>to</keyword> <keyword>ToBoolean</keyword> 
-		<keyword>ToConcept</keyword> <keyword>ToDateTime</keyword> <keyword>Today</keyword> 
-		<keyword>ToDecimal</keyword> <keyword>ToInteger</keyword> <keyword>ToQuantity</keyword> 
-		<keyword>ToString</keyword> <keyword>ToTime</keyword> <keyword>true</keyword> 
-		<keyword>truncate</keyword> <keyword>Tuple</keyword> <keyword>union</keyword> 
-		<keyword>using</keyword> <keyword>valueset</keyword> <keyword>Variance</keyword> 
-		<keyword>version</keyword> <keyword>when</keyword> <keyword>where</keyword> 
-		<keyword>width</keyword> <keyword>with</keyword> <keyword>within</keyword> 
-		<keyword>without</keyword> <keyword>xor</keyword> <keyword>year</keyword> 
-		<keyword>years</keyword> </keywords> -->
 
 	<keywords>
 		<keyword>after</keyword>
@@ -285,6 +225,8 @@
 		<keyword>or more</keyword>
 		<keyword>overlaps</keyword>
 		<keyword>parameter</keyword>
+		<keyword>patient</keyword>
+		<keyword>population</keyword>
 		<keyword>predecessor</keyword>
 		<keyword>private</keyword>
 		<keyword>properly</keyword>

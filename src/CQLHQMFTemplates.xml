@@ -490,12 +490,11 @@
 </participation>
  </substance-order>
  <provider-char changeAttribute="code">
- <participation>
+ <participation typeCode="DRIV">
     <role classCode="ASSIGNED">
-        <playingDevice classCode="DEV" determinerCode="KIND">
-       <!--  <code valueSet="$QDMElementValueSetOID"/> -->
-       <code />
-    </playingDevice>
+        <playingEntity classCode="PSN" determinerCode="KIND">
+	       <code valueSet="$QDMElementValueSetOID"/>
+    	</playingEntity>
     </role>
 </participation>
  </provider-char>

@@ -2241,39 +2241,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				search(searchDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
 			}
 		});
-//		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-//				searchDisplay.getErrorMessageDisplay().clearAlert();
-//				if (isCreateMeasureWidgetVisible) {
-//					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
-//					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
-//				}
-//				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-//				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-//
-//			}
-//		});
-//
-//		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
-//
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-//				searchDisplay.getErrorMessageDisplay().clearAlert();
-//				if (isMeasureSearchFilterVisible) {
-//					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-//					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-//				}
-//				isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
-//				searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
-//			}
-//		});
+
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

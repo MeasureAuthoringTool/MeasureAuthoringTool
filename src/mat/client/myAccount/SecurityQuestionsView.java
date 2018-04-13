@@ -50,9 +50,7 @@ public class SecurityQuestionsView implements SecurityQuestionsDisplay {
 	 * Instantiates a new security questions view.
 	 */
 	public SecurityQuestionsView() {
-		Label required = new Label("All fields are required");
 		container.addStyleName("leftAligned");
-		container.add(required);
 		container.add(new SpacerWidget());
 		container.add(errorMessages);
 		container.add(successMessages);

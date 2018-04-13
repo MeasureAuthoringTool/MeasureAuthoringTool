@@ -475,15 +475,15 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 */
 	private SafeHtml getCloneColumnToolTip(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String title = "Clonable";
+		String title = "Cloneable";
 		String cssClass = "btn btn-link";
 		String iconCss = "fa fa-clone fa-lg";
 		if (object.isClonable()) {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Clonable</span> </button>");
+				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span> </button>");
 		} else {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Clonable</span></button>");
+					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span></button>");
 		}
 		
 		return sb.toSafeHtml();

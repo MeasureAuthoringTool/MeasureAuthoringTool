@@ -12,7 +12,8 @@ import mat.shared.ConstantMessages;
  */
 public class MessageDelegate {
 	
-	
+	public static final String DEFAULT_SECURITY_QUESTION_VALUE = "********";
+	public static final String EMPTY_VALUE = "";
 	
 	/** The Constant WELCOME_MESSAGE. */
 	public static final String WELCOME_MESSAGE = "You have successfully logged into the MAT.";
@@ -176,6 +177,10 @@ public class MessageDelegate {
 	/** The Constant RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED. */
 	public static final String RATIO_MEASURE_OBS_ASSOCIATION_REQUIRED = "For Ratio Measures, each Measure Observation requires an association be made to the Numerator or the Denominator.";
 
+	public static final String SECURITY_QUESTION_ANSWERS_MUST_CONTAIN_AT_LEAST_THREE_CHARACTERS = "Security question answers must contain at least three characters.";
+	
+	public static final String ALL_SECURITY_QUESTIONS_MUST_CONTAIN_A_VALID_SECURITY_ANSWER = "All security questions must contain a valid security answer";
+	
 	/** The Constant ERROR_IN_SAVING_QDM_ELEMENTS. */
 	private static final String ERROR_IN_SAVING_QDM_ELEMENTS = "Valuesets with different OIDs can not have the same valueset name.";
 
@@ -499,11 +504,8 @@ public class MessageDelegate {
 	/** The descriptor required. */
 	private final String DESCRIPTOR_REQUIRED = "Descriptor is required.";
 	
-	/** The doesnt follow rules. */
+	/** The doesn't follow rules. */
 	private final String DOESNT_FOLLOW_RULES = "The new password you entered does not match the following rules:";
-	
-	/** The duplicate applied qdm. */
-	private final String DUPLICATE_APPLIED_VALUE_SET = "Value set name already exists.";
 	
 	/** The duplicate codes msg. */
 	private final String DUPLICATE_CODES_MSG = "All code(s) were identified as duplicates to code(s) already in the value set and were ignored upon import.";
@@ -1361,8 +1363,6 @@ public class MessageDelegate {
 		return IMPORT_SUCCESS;
 	}
 	
-	// public static final String x = "";
-	// ASK STAN
 	/**
 	 * Gets the import success message.
 	 * 
@@ -1985,28 +1985,6 @@ public class MessageDelegate {
 	 */
 	public String getSaveErrorMsg() {
 		return SAVE_ERROR_MSG;
-	}
-	
-	/**
-	 * Gets the second attempt failed message.
-	 *
-	 * @param index the index
-	 * @return String
-	 */
-	/*	public String getSecondAttemptFailedMessage() {
-		return SECCOND_ATTEMPT_FAILED;
-	}
-	 */
-	
-	/**
-	 * Gets the security answer too short message.
-	 * 
-	 * @param index
-	 *            the index
-	 * @return String
-	 */
-	public String getSecurityAnswerTooShortMessage(int index) {
-		return "Security Answer " + index + " is too short.";
 	}
 	
 	/**

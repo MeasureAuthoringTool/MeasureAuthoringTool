@@ -7,29 +7,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * The Class SecurityQuestionsModel.
  */
 public class SecurityQuestionsModel implements IsSerializable , BaseModel {
-	
-	/** The question1. */
 	private String question1;
-	
-	/** The question1 answer. */
 	private String question1Answer;
-	
 	private String question1Salt;
-	
-	/** The question2. */
 	private String question2;
-	
-	/** The question2 answer. */
 	private String question2Answer;
-	
 	private String question2Salt;
-	
-	/** The question3. */
 	private String question3;
-	
-	/** The question3 answer. */
-	private String question3Answer;
-	
+	private String question3Answer;	
 	private String question3Salt;
 	
 	public SecurityQuestionsModel(String question1, String question1Answer, String question2, String question2Answer, String question3, String question3Answer) {
@@ -39,11 +24,9 @@ public class SecurityQuestionsModel implements IsSerializable , BaseModel {
 		this.question1Answer = question1Answer;
 		this.question2Answer = question2Answer;
 		this.question3Answer = question3Answer;
-		// TODO Auto-generated constructor stub
 	}
 	
 	public SecurityQuestionsModel() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**

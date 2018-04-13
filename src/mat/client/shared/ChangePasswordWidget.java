@@ -20,18 +20,10 @@ public class ChangePasswordWidget extends Composite {
 	
 	private FormGroup confirmPasswordGroup = new FormGroup();
 	
-	/** The password. */
-	//private PasswordTextBox password;
-	
-	/** The confirm password. */
-	//private PasswordTextBox confirmPassword;
-	
 	/**
 	 * Instantiates a new change password widget.
 	 */
 	public ChangePasswordWidget() {
-		
-		
 		FormLabel label = new FormLabel();
 		label.setText("New Password");
 		label.setTitle("New Password");
@@ -48,7 +40,6 @@ public class ChangePasswordWidget extends Composite {
 		passwordGroup.add(label);
 		passwordGroup.add(password);
 		
-		
 		FormLabel confirmPwdlabel = new FormLabel();
 		confirmPwdlabel.setText("Confirm New Password");
 		confirmPwdlabel.setTitle("Confirm New Password");
@@ -62,30 +53,8 @@ public class ChangePasswordWidget extends Composite {
 		confirmPassword.setPlaceholder("Confirm Password here.");
 		confirmPasswordGroup.add(confirmPwdlabel);
 		confirmPasswordGroup.add(confirmPassword);
-		
-		
-		//FlowPanel mainPanel = new FlowPanel();
-		//mainPanel.getElement().setId("mainPanel_FlowPanel");
-		
-		//password = new PasswordTextBox();
+
 		password.getElement().setId("password_PasswordTextBox");
-		
-		
-	//	mainPanel.add(LabelBuilder.buildRequiredLabel(password, "New Password"));
-	//	mainPanel.add(password);
-	//	mainPanel.add(new SpacerWidget());
-		
-		//confirmPassword = new PasswordTextBox();
-	//	confirmPassword.getElement().setId("confirmPassword_PasswordTextBox");
-		//confirmPassword.setTitle("Enter New Password again to confirm");
-	//	mainPanel.add(LabelBuilder.buildRequiredLabel(confirmPassword, "Confirm New Password"));
-	//	mainPanel.add(confirmPassword);
-	//	mainPanel.add(new SpacerWidget());
-		
-		
-		//confirmPassword.setWidth("100px");
-		
-		//initWidget(mainPanel);
 	}
 
 	/**

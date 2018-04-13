@@ -24,13 +24,14 @@ import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionAnswerWidget;
+import mat.client.shared.SecurityQuestionsDisplay;
 import mat.client.shared.SpacerWidget;
 
 
 /**
  * The Class FirstLoginView.
  */
-public class FirstLoginView implements FirstLoginPresenter.Display {
+public class FirstLoginView implements SecurityQuestionsDisplay {
 	
 	/** The main panel. */
 	private VerticalPanel mainPanel;
@@ -95,10 +96,6 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		fieldSet.add(changePasswordWidget.getConfirmPasswordGroup());
 		formPassword.add(fieldSet);
 		hPanel.add(formPassword);
-		//bluePanel.add(buildInstructions("Change Password"));
-		
-		//hPanel.add(changePasswordWidget);
-		
 		
 		PasswordRules rules = new PasswordRules();
 		rules.addStyleName("leftAligned_small_text");
@@ -123,9 +120,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		fieldSetQnA.add(securityQuestionsWidget.getQuestionAns3FormGroup());
 		fieldSetQnA.add(securityQuestionsWidget.getAns3FormGroup());
 		formSecurityQuestionAnswer.add(fieldSetQnA);
-		
-		
-		
+
 		bluePanel.add(formSecurityQuestionAnswer);
 		buttonBar.getSaveButton().setText("Submit");
 		bluePanel.add(buttonBar);
@@ -304,6 +299,21 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 	@Override
 	public String getAnswerText3() {
 		return securityQuestionsWidget.getAnswer3().getValue();
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return null;
+	}
+
+	@Override
+	public HasClickHandlers getSaveButton() {
+		return null;
+	}
+
+	@Override
+	public HasClickHandlers getCancelButton() {
+		return null;
 	}
 	
 }

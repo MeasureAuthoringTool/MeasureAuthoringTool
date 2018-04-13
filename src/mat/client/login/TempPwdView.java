@@ -24,12 +24,13 @@ import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionAnswerWidget;
+import mat.client.shared.SecurityQuestionsDisplay;
 import mat.client.shared.SpacerWidget;
 
 /**
  * The Class TempPwdView.
  */
-public class TempPwdView implements TempPwdLoginPresenter.Display {
+public class TempPwdView implements SecurityQuestionsDisplay {
 
 	/** The main panel. */
 	private VerticalPanel mainPanel;
@@ -91,7 +92,6 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		bluePanel.add(buildInstructions("Change Password"));
-		//hPanel.add(changePasswordWidget);
 		Form form = new Form();
 		FieldSet fieldSet = new FieldSet();
 		fieldSet.add(changePasswordWidget.getPasswordGroup());
@@ -301,6 +301,24 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 	@Override
 	public String getAnswerText3() {
 		return securityQuestionsWidget.getAnswer3().getValue();
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HasClickHandlers getSaveButton() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public HasClickHandlers getCancelButton() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/* (non-Javadoc)

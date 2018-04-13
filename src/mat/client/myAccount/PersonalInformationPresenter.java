@@ -111,7 +111,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		 * @return the oid
 		 */
 		TextBox getOID();
-		//HasValue<String> getRootOID();
 		/**
 		 * Gets the password.
 		 * 
@@ -148,13 +147,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		public MessageAlert getSuccessMessageDisplay();
 
 		Input getPasswordInput();
-		
-		/**
-		 * Gets the password edit info widget.
-		 * 
-		 * @return the password edit info widget
-		 */
-		//PasswordEditInfoWidget getPasswordEditInfoWidget();
 	}
 	
 	/** The submit on enter handler. */
@@ -174,17 +166,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 	/** The current model. */
 	private MyAccountModel currentModel;
 	
-	
-	
-	/*private HibernateUserDetailService  getHibernateUserService(){
-		return (HibernateUserDetailService)context.getBean("hibernateUserDetailService");
-	}
-	
-	private UserService  getUserService(){
-		return (UserService)context.getBean("userService");
-	}
-	 */
-	
 	/**
 	 * Instantiates a new personal information presenter.
 	 * 
@@ -198,9 +179,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				beforeDisplay();
-				//if(currentModel != null) {
-				//	setValues(currentModel);
-				//}
 			}
 		});
 		display.getSaveButton().addClickHandler(new ClickHandler() {
@@ -350,7 +328,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getOID().setValue(model.getOid());
 		display.getOID().setTitle(model.getOid());
 		display.getOID().setWidth(getRequiredWidth(display.getOID().getValue().length()));
-		//display.getRootOID().setValue(model.getRootoid());
 		display.getPassword().setValue("");
 	}
 	
@@ -377,7 +354,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		model.setPhoneNumber(display.getPhoneNumber().getValue());
 		model.setOrganisation(display.getOrganisation().getValue());
 		model.setOid(display.getOID().getValue());
-		//model.setRootoid(display.getRootOID().getValue());
 		model.scrubForMarkUp();
 		return model;
 	}

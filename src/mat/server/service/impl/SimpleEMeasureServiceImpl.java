@@ -276,7 +276,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 
 		if (cqlFileString != null && !cqlFileString.isEmpty()) {
-			cqlFileString = CQLFormatter.format(cqlFileString);
+			CQLFormatter formatter = new CQLFormatter(); 
+			cqlFileString = formatter.format(cqlFileString);
 		}
 
 		ExportResult result = new ExportResult();
@@ -312,7 +313,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			String cqlFileString = CQLUtilityClass
 					.getCqlString(CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString), "").toString();
 			try {
-				cqlFileString = CQLFormatter.format(cqlFileString);
+				CQLFormatter formatter = new CQLFormatter(); 
+				cqlFileString = formatter.format(cqlFileString);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

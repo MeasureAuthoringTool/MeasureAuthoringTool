@@ -23,6 +23,7 @@ import mat.shared.HashUtility;
 import mat.shared.MyAccountModelValidator;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
+import mat.shared.StringUtility;
 
 /**
  * The server side implementation of the RPC service.
@@ -199,36 +200,46 @@ MyAccountService {
 			SecurityQuestions secQue1 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion1);
 			secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 			secQuestions.get(0).setSecurityQuestions(secQue1);
-			String salt1 = UUID.randomUUID().toString();
-			secQuestions.get(0).setSalt(salt1);
-			String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
-			secQuestions.get(0).setSecurityAnswer(answer1);
-			secQuestions.get(0).setRowId("0");
+
+			String originalAnswer1 = secQuestions.get(0).getSecurityAnswer();
+			if(!StringUtility.isEmptyOrNull(originalAnswer1) && !originalAnswer1.equalsIgnoreCase(model.getQuestion1Answer())) {
+				String salt1 = UUID.randomUUID().toString();
+				secQuestions.get(0).setSalt(salt1);
+				String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+				secQuestions.get(0).setSecurityAnswer(answer1);
+				secQuestions.get(0).setRowId("0");
+			}
 			
 			String newQuestion2 = model.getQuestion2();
 			SecurityQuestions secQue2 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion2);
 			secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
 			secQuestions.get(1).setSecurityQuestions(secQue2);
-			String salt2 = UUID.randomUUID().toString();
-			secQuestions.get(1).setSalt(salt2);
-			String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
-			secQuestions.get(1).setSecurityAnswer(answer2);
-			secQuestions.get(1).setRowId("1");
+			
+			String originalAnswer2 = secQuestions.get(1).getSecurityAnswer();
+			if(!StringUtility.isEmptyOrNull(originalAnswer2) && !originalAnswer2.equalsIgnoreCase(model.getQuestion2Answer())) {
+				String salt2 = UUID.randomUUID().toString();
+				secQuestions.get(1).setSalt(salt2);
+				String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+				secQuestions.get(1).setSecurityAnswer(answer2);
+				secQuestions.get(1).setRowId("1");
+			}
 			
 			String newQuestion3 = model.getQuestion3();
 			SecurityQuestions secQue3 = getSecurityQuestionsService().getSecurityQuestionObj(newQuestion3);
 			secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 			secQuestions.get(2).setSecurityQuestions(secQue3);
-			String salt3 = UUID.randomUUID().toString();
-			secQuestions.get(2).setSalt(salt3);
-			String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
-			secQuestions.get(2).setSecurityAnswer(answer3);
-			secQuestions.get(2).setRowId("2");
+
+			String originalAnswer3 = secQuestions.get(2).getSecurityAnswer();
+			if(!StringUtility.isEmptyOrNull(originalAnswer3) && !originalAnswer3.equalsIgnoreCase(model.getQuestion3Answer())) {
+				String salt3 = UUID.randomUUID().toString();
+				secQuestions.get(2).setSalt(salt3);
+				String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+				secQuestions.get(2).setSecurityAnswer(answer3);
+				secQuestions.get(2).setRowId("2");
+			}
 			
 			user.setUserSecurityQuestions(secQuestions);
-			
 			userService.saveExisting(user);
-
 			result.setSuccess(true);
 		}
 		return result;

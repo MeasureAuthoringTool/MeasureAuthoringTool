@@ -24,12 +24,13 @@ import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionAnswerWidget;
+import mat.client.shared.SecurityQuestionsDisplay;
 import mat.client.shared.SpacerWidget;
 
 /**
  * The Class TempPwdView.
  */
-public class TempPwdView implements TempPwdLoginPresenter.Display {
+public class TempPwdView implements SecurityQuestionsDisplay {
 
 	/** The main panel. */
 	private VerticalPanel mainPanel;
@@ -91,7 +92,6 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		bluePanel.add(buildInstructions("Change Password"));
-		//hPanel.add(changePasswordWidget);
 		Form form = new Form();
 		FieldSet fieldSet = new FieldSet();
 		fieldSet.add(changePasswordWidget.getPasswordGroup());
@@ -303,30 +303,18 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		return securityQuestionsWidget.getAnswer3().getValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.login.TempPwdLoginPresenter.Display#setAnswerText1(java.lang.String)
-	 */
-	/*@Override
-	public void setAnswerText1(String answerText1) {
-		securityQuestionsWidget.setAnswerText1(answerText1);
-		
-	}*/
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return null;
+	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.login.TempPwdLoginPresenter.Display#setAnswerText2(java.lang.String)
-	 */
-	/*@Override
-	public void setAnswerText2(String answerText2) {
-		securityQuestionsWidget.setAnswerText2(answerText2);
-		
-	}*/
+	@Override
+	public HasClickHandlers getSaveButton() {
+		return null;
+	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.login.TempPwdLoginPresenter.Display#setAnswerText3(java.lang.String)
-	 */
-	/*@Override 
-	public void setAnswerText3(String answerText3) {
-		securityQuestionsWidget.setAnswerText3(answerText3);
-		
-	}	*/
+	@Override
+	public HasClickHandlers getCancelButton() {
+		return null;
+	}
 }

@@ -2172,7 +2172,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public final SaveMeasureResult save(ManageMeasureDetailModel model) {
-		// Scrubing out Mark Up.
+		// Scrubbing out Mark Up.
 		if (model != null) {
 			model.scrubForMarkUp();
 		}

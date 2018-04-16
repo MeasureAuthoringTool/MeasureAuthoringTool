@@ -12,11 +12,11 @@ import mat.shared.model.util.MeasureDetailsUtil;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class ManageMeasureDetailModel.
  */
-public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
+public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	
 	/** The id. */
 	private String id;
@@ -53,19 +53,10 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	/** The meas scoring. */
 	private String measScoring;
 	
-	/** The meas steward. */
-	//private String measSteward;
 	private String stewardValue;
-	
-	//US 413. Support Steward Other
-	/** The meas steward other. */
-	//private String measStewardOther;
 	
 	/** The endorse by nqf. */
 	private Boolean endorseByNQF;
-	
-	/** The measure status. */
-	/*private String measureStatus;*/
 	
 	/** The nqf id. */
 	private String nqfId;
@@ -181,9 +172,6 @@ public class ManageMeasureDetailModel implements IsSerializable , BaseModel{
 	
 	/** The steward uuid. */
 	private String stewardId;
-	
-	/** The steward value. */
-	//private String stewardValue;
 	
 	/** The scoring abbr. */
 	private String scoringAbbr;

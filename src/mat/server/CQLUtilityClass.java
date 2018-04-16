@@ -265,17 +265,16 @@ public final class CQLUtilityClass {
 				logger.info("Error while getting codesystems :" + e.getMessage());
 			}
 		}
-		if(!cqlModel.getValueSetList().isEmpty()){
-			List<CQLQualityDataSetDTO> filterVS  = filterValuesets(cqlModel.getValueSetList());
-			cqlModel.setValueSetList(filterVS);
+		
+		if(!cqlModel.getValueSetList().isEmpty()){			
+			cqlModel.setValueSetList(filterValuesets(cqlModel.getValueSetList()));
 			ArrayList<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
 			valueSetsList.addAll(cqlModel.getValueSetList());
-			// sorting out CQL all Value sets and codes
-			sortCQLQualityDataSetDto(valueSetsList);
 			cqlModel.setAllValueSetList(valueSetsList);
 		}
-		sortCQLCodeDTO(cqlModel.getCodeList());
+		
 		if(!cqlModel.getCodeList().isEmpty()){
+			sortCQLCodeDTO(cqlModel.getCodeList());
 			//Combine Codes and Value sets in allValueSetList for UI
 			List<CQLQualityDataSetDTO> dtoList = convertCodesToQualityDataSetDTO(cqlModel.getCodeList());
 			if(!dtoList.isEmpty()){
@@ -374,22 +373,13 @@ public final class CQLUtilityClass {
 
 	private static List<CQLQualityDataSetDTO> filterValuesets(List<CQLQualityDataSetDTO> cqlValuesets){
 
-		List<CQLQualityDataSetDTO> filteredValuesets = new ArrayList<CQLQualityDataSetDTO>();
-
-		for(int i=0; i<cqlValuesets.size(); i++){
-			CQLQualityDataSetDTO cqlQualityDataSetDTO = cqlValuesets.get(i);
-			if(cqlQualityDataSetDTO.getDataType()!= null){
-				if(!cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Birthdate")
-						&& !cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
-					filteredValuesets.add(cqlQualityDataSetDTO);
-				}
-			} else {
-				filteredValuesets.add(cqlQualityDataSetDTO);
-			}
-		}
-
-		return filteredValuesets;
-
+		cqlValuesets.removeIf(c -> c.getDataType() != null && 
+				(c.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") 
+						|| c.getDataType().equalsIgnoreCase("Patient characteristic Expired")));
+		
+		sortCQLQualityDataSetDto(cqlValuesets);
+		
+		return cqlValuesets;
 	}
 
 	private static String createIncludesSection(List<CQLIncludeLibrary> includeLibList) {

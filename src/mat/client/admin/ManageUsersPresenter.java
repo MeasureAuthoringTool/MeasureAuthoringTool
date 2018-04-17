@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,10 +20,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-/*import com.google.gwt.user.client.ui.Button;*/
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.UserAuditLogDTO;
@@ -465,7 +463,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
 		historyDisplay = hDisplayArg;
-		displaySearch();
+		displaySearch("");
 		
 		if (historyDisplay != null) {
 			historyDisplayHandlers(historyDisplay);
@@ -516,7 +514,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				displaySearch();
+				displaySearch(lastSearchKey);
 			}
 		});
 
@@ -574,11 +572,11 @@ public class ManageUsersPresenter implements MatPresenter {
 	/**
 	 * Display search.
 	 */
-	private void displaySearch() {
+	private void displaySearch(String name) {
 		panel.setContent(searchDisplay.asWidget());
 		panel.setHeading("", "");
 		searchDisplay.setTitle("");
-		search("");
+		search(name);
 	}
 
 	/**
@@ -722,7 +720,7 @@ public class ManageUsersPresenter implements MatPresenter {
 										detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 										detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 										detailDisplay.getOid().setValue(currentDetails.getOid());
-										displaySearch();
+										displaySearch(lastSearchKey);
 										searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE() + actMsg);
 									} else {
 										List<String> messages = new ArrayList<String>();
@@ -770,7 +768,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ManageUsersDetailModel result) {
 				currentDetails = result;
-				displaySearch();
+				displaySearch(lastSearchKey);
 				searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUSER_SUCCESS_MESSAGE());
 				
 				List<String> event = new ArrayList<String>();
@@ -878,7 +876,6 @@ public class ManageUsersPresenter implements MatPresenter {
 			public void onSuccess(ManageUsersSearchModel result) {
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (com.google.gwt.user.client.ui.TextBox)searchDisplay.getSearchString(), lastSearchKey);
-				sru = null;
 				searchDisplay.buildDataTable(result);
 				showSearchingBusy(false);
 				Mat.focusSkipLists("Manage Users");
@@ -963,7 +960,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		displaySearch();
+		displaySearch("");
 		Mat.focusSkipLists("Manage Users");
 	}
 
@@ -974,6 +971,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		searchDisplay.getSearchString().setValue("");
 	}
 
 	/**
@@ -1100,7 +1098,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				displaySearch();
+				displaySearch(lastSearchKey);
 			}
 		});
 	}

@@ -98,7 +98,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		 *
 		 * @param observer the new observer
 		 */
-		//Button getGenerateCSVFileButton();
 		void setObserver(Observer observer);
 		
 		/**
@@ -142,7 +141,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	public ManageOrganizationPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
-		displaySearch();
+		displaySearch("");
 		searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -182,7 +181,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				isOrgDetailsModified = false;
 				searchDisplay.getErrorMessageDisplay().clearAlert();
 				searchDisplay.getSuccessMessageDisplay().clearAlert();
-				displaySearch();
+				displaySearch(lastSearchKey);
 			}
 		});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
@@ -211,6 +210,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	@Override
 	public void beforeClosingDisplay() {
 		isOrgDetailsModified = false;
+		searchDisplay.getSearchString().setValue("");
 	}
 	/*
 	 * (non-Javadoc)
@@ -218,7 +218,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
-		displaySearch();
+		displaySearch("");
 		Mat.focusSkipLists("Manage Organizations");
 	}
 	/** Creates the new. */
@@ -236,13 +236,13 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		Mat.focusSkipLists("Manage Organizations");
 	}
 	/** Display search. */
-	private void displaySearch() {
+	private void displaySearch(String organization) {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		searchDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		searchDisplay.setTitle("");
-		search("");
+		search(organization);
 	}
 	/** Edits the.
 	 * @param key the key */
@@ -354,7 +354,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					}
 					@Override
 					public void onSuccess(Void res) {
-						displaySearch();
+						displaySearch(lastSearchKey);
 						searchDisplay.getSuccessMessageDisplay().createAlert(result.getOrgName()+" successfully deleted.");
 					}
 				});
@@ -406,7 +406,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					if(result.isSuccess()) {
 						currentOrganizationDetails = updatedOrganizationDetailModel;
 						setOrganizationDetailsToView();
-						displaySearch();
+						displaySearch(lastSearchKey);
 						searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_MODIFIED_SUCCESS_MESSAGE());
 					} else {
@@ -436,7 +436,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					if(result.isSuccess()) {
 						currentOrganizationDetails = updatedOrganizationDetailModel;
 						setOrganizationDetailsToView();
-						displaySearch();
+						displaySearch(lastSearchKey);
 						searchDisplay.getSuccessMessageDisplay().createAlert(MatContext.get()
 								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 					} else {

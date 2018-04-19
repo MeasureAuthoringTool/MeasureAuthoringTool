@@ -498,8 +498,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			public void onKeyUp(KeyUpEvent event) {
 				searchDisplay.getSuccessMessageDisplay().clearAlert();
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button)searchDisplay.getSearchButton()).click();
-					searchDisplay.getSuccessMessageDisplay().clearAlert();
+					((Button)searchDisplay.getSearchButton()).click();					
 				}
 			}
 		});

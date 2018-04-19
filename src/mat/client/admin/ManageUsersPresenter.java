@@ -489,7 +489,6 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				createNew();
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
 			}
 		});
 		
@@ -576,6 +575,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		panel.setContent(searchDisplay.asWidget());
 		panel.setHeading("", "");
 		searchDisplay.setTitle("");
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		search(name);
 	}
 
@@ -972,6 +972,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	@Override
 	public void beforeClosingDisplay() {
 		searchDisplay.getSearchString().setValue("");
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 
 	/**

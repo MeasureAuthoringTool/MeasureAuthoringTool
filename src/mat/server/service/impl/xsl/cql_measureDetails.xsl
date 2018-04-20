@@ -575,6 +575,9 @@
         <xsl:variable name="scoring_value">
             <xsl:value-of select="scoring"></xsl:value-of>
         </xsl:variable>
+        <xsl:variable name="patient_based_indicator">
+            <xsl:value-of select="patientBasedIndicator"></xsl:value-of>
+        </xsl:variable>
         <!-- Denominator Description -->
         <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Proportion'">
             <xsl:call-template name="subjOfOrigText">
@@ -661,7 +664,7 @@
             <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
         </xsl:if>
-        <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Continuous Variable'">
+        <xsl:if test="($scoring_value = 'Ratio' and @patient_based_indicator = 'false') or $scoring_value ='Continuous Variable'">
         <!-- Measure Observations Description -->
             <xsl:call-template name="subjOfOrigText">
                 <xsl:with-param name="origText">
@@ -824,38 +827,40 @@
                 <xsl:otherwise>ED</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <subjectOf>
-            <measureAttribute>
-                <code>
-                    <xsl:choose>
-                        <xsl:when test="string-length($code)=0 or string-length($codeSystem)=0">
-                            <xsl:attribute name="nullFlavor">OTH</xsl:attribute>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:attribute name="code">
-                        <xsl:value-of select="normalize-space($code)" />
-                     </xsl:attribute>
-                            <xsl:attribute name="codeSystem">
-                        <xsl:value-of select="normalize-space($codeSystem)" />
-                     </xsl:attribute>
-                        </xsl:otherwise>
-                    </xsl:choose>
-                    <displayName>
-                        <xsl:attribute name="value">    
-                        <xsl:value-of select="normalize-space($origText)" />
-                  </xsl:attribute>
-                    </displayName>
-                </code>
-                <value xsi:type="{$xsitype}" mediaType="text/plain">
-                    <xsl:attribute name="value">
-                  <xsl:call-template name="trim">
-                     <xsl:with-param name="textString"
-                        select="$text" />
-                  </xsl:call-template>
-                </xsl:attribute>
-                </value>
-            </measureAttribute>
-        </subjectOf>
+        <xsl:if test="$text != ''">
+	        <subjectOf>
+	            <measureAttribute>
+	                <code>
+	                    <xsl:choose>
+	                        <xsl:when test="string-length($code)=0 or string-length($codeSystem)=0">
+	                            <xsl:attribute name="nullFlavor">OTH</xsl:attribute>
+	                        </xsl:when>
+	                        <xsl:otherwise>
+	                            <xsl:attribute name="code">
+	                        <xsl:value-of select="normalize-space($code)" />
+	                     </xsl:attribute>
+	                            <xsl:attribute name="codeSystem">
+	                        <xsl:value-of select="normalize-space($codeSystem)" />
+	                     </xsl:attribute>
+	                        </xsl:otherwise>
+	                    </xsl:choose>
+	                    <displayName>
+	                        <xsl:attribute name="value">    
+	                        <xsl:value-of select="normalize-space($origText)" />
+	                  </xsl:attribute>
+	                    </displayName>
+	                </code>
+	                <value xsi:type="{$xsitype}" mediaType="text/plain">
+	                    <xsl:attribute name="value">
+	                  <xsl:call-template name="trim">
+	                     <xsl:with-param name="textString"
+	                        select="$text" />
+	                  </xsl:call-template>
+	                </xsl:attribute>
+	                </value>
+	            </measureAttribute>
+	        </subjectOf>
+        </xsl:if>
     </xsl:template>
 
     <xsl:template name="trim">

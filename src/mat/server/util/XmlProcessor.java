@@ -620,6 +620,7 @@ public class XmlProcessor {
 			//Patient Based Ratio Measures. Hence adding to Remove list 
 			if (patientBasedMeasureNode != null && "true".equals(patientBasedMeasureNode.getTextContent())) {
 				xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+				xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
 			}
 		} else if (PROPOR.equalsIgnoreCase(scoringType)) {
 			// Measure Population Exlusions, Measure Populations

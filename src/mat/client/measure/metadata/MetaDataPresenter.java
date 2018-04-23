@@ -1878,8 +1878,8 @@ public class MetaDataPresenter  implements MatPresenter {
 			currentMeasureDetail.setDenominatorExceptions(null);
 		}
 		if ((currentMeasureDetail.getMeasScoring() != null)
-				&& (currentMeasureDetail.getMeasScoring().equalsIgnoreCase("Ratio") && (!currentMeasureDetail.isPatientBased())
-						|| currentMeasureDetail.getMeasScoring().equalsIgnoreCase("Continuous Variable"))) {
+				&& (currentMeasureDetail.getMeasScoring().equalsIgnoreCase("Ratio") && !currentMeasureDetail.isPatientBased())
+						|| currentMeasureDetail.getMeasScoring().equalsIgnoreCase("Continuous Variable")) {
 			currentMeasureDetail.setMeasureObservations(metaDataDisplay.getMeasureObservations().getValue() != ""
 					? metaDataDisplay.getMeasureObservations().getValue() : null);
 		} else {

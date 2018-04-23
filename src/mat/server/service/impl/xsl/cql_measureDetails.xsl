@@ -827,40 +827,38 @@
                 <xsl:otherwise>ED</xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
-        <xsl:if test="$text != ''">
-	        <subjectOf>
-	            <measureAttribute>
-	                <code>
-	                    <xsl:choose>
-	                        <xsl:when test="string-length($code)=0 or string-length($codeSystem)=0">
-	                            <xsl:attribute name="nullFlavor">OTH</xsl:attribute>
-	                        </xsl:when>
-	                        <xsl:otherwise>
-	                            <xsl:attribute name="code">
-	                        <xsl:value-of select="normalize-space($code)" />
-	                     </xsl:attribute>
-	                            <xsl:attribute name="codeSystem">
-	                        <xsl:value-of select="normalize-space($codeSystem)" />
-	                     </xsl:attribute>
-	                        </xsl:otherwise>
-	                    </xsl:choose>
-	                    <displayName>
-	                        <xsl:attribute name="value">    
-	                        <xsl:value-of select="normalize-space($origText)" />
-	                  </xsl:attribute>
-	                    </displayName>
-	                </code>
-	                <value xsi:type="{$xsitype}" mediaType="text/plain">
-	                    <xsl:attribute name="value">
-	                  <xsl:call-template name="trim">
-	                     <xsl:with-param name="textString"
-	                        select="$text" />
-	                  </xsl:call-template>
-	                </xsl:attribute>
-	                </value>
-	            </measureAttribute>
-	        </subjectOf>
-        </xsl:if>
+        <subjectOf>
+            <measureAttribute>
+                <code>
+                    <xsl:choose>
+                        <xsl:when test="string-length($code)=0 or string-length($codeSystem)=0">
+                            <xsl:attribute name="nullFlavor">OTH</xsl:attribute>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:attribute name="code">
+                        <xsl:value-of select="normalize-space($code)" />
+                     </xsl:attribute>
+                            <xsl:attribute name="codeSystem">
+                        <xsl:value-of select="normalize-space($codeSystem)" />
+                     </xsl:attribute>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    <displayName>
+                        <xsl:attribute name="value">    
+                        <xsl:value-of select="normalize-space($origText)" />
+                  </xsl:attribute>
+                    </displayName>
+                </code>
+                <value xsi:type="{$xsitype}" mediaType="text/plain">
+                    <xsl:attribute name="value">
+                  <xsl:call-template name="trim">
+                     <xsl:with-param name="textString"
+                        select="$text" />
+                  </xsl:call-template>
+                </xsl:attribute>
+                </value>
+            </measureAttribute>
+        </subjectOf>
     </xsl:template>
 
     <xsl:template name="trim">

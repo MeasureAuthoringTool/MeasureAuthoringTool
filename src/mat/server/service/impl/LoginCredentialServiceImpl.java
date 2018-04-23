@@ -31,6 +31,7 @@ import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 import mat.server.twofactorauth.TwoFactorValidationService;
 import mat.shared.HashUtility;
+import mat.shared.StringUtility;
 
 // TODO: Auto-generated Javadoc
 /** The Class LoginCredentialServiceImpl. */
@@ -81,31 +82,43 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				.getSecurityQuestionObj(newQuestion1);
 		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 		secQuestions.get(0).setSecurityQuestions(secQue1);
-		String salt1 = UUID.randomUUID().toString();
-		secQuestions.get(0).setSalt(salt1);
-		String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
-		secQuestions.get(0).setSecurityAnswer(answer1);
+		
+		String originalAnswer1 = secQuestions.get(0).getSecurityAnswer();
+		if(StringUtility.isEmptyOrNull(originalAnswer1) ||  (!StringUtility.isEmptyOrNull(originalAnswer1) && !originalAnswer1.equalsIgnoreCase(model.getQuestion1Answer()))) {
+			String salt1 = UUID.randomUUID().toString();
+			secQuestions.get(0).setSalt(salt1);
+			String answer1 = HashUtility.getSecurityQuestionHash(salt1, model.getQuestion1Answer());
+			secQuestions.get(0).setSecurityAnswer(answer1);
+		}
 		
 		String newQuestion2 = model.getQuestion2();
 		SecurityQuestions secQue2 = securityQuestionsService
 				.getSecurityQuestionObj(newQuestion2);
 		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
 		secQuestions.get(1).setSecurityQuestions(secQue2);
-		String salt2 = UUID.randomUUID().toString();
-		secQuestions.get(1).setSalt(salt2);
-		String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
-		secQuestions.get(1).setSecurityAnswer(answer2);
+		String originalAnswer2 = secQuestions.get(1).getSecurityAnswer();
+		if(StringUtility.isEmptyOrNull(originalAnswer2) ||  (!StringUtility.isEmptyOrNull(originalAnswer2) && !originalAnswer2.equalsIgnoreCase(model.getQuestion2Answer()))) {
+			String salt2 = UUID.randomUUID().toString();
+			secQuestions.get(1).setSalt(salt2);
+			String answer2 = HashUtility.getSecurityQuestionHash(salt2, model.getQuestion2Answer());
+			secQuestions.get(1).setSecurityAnswer(answer2);
+		}
+
 		
 		String newQuestion3 = model.getQuestion3();
 		SecurityQuestions secQue3 = securityQuestionsService
 				.getSecurityQuestionObj(newQuestion3);
 		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 		secQuestions.get(2).setSecurityQuestions(secQue3);
-		String salt3 = UUID.randomUUID().toString();
-		secQuestions.get(2).setSalt(salt3);
-		String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
-		secQuestions.get(2).setSecurityAnswer(answer3);
-		user.setUserSecurityQuestions(secQuestions);
+		
+		String originalAnswer3 = secQuestions.get(2).getSecurityAnswer();
+		if(StringUtility.isEmptyOrNull(originalAnswer3) ||  (!StringUtility.isEmptyOrNull(originalAnswer3) && !originalAnswer3.equalsIgnoreCase(model.getQuestion3Answer()))) {
+			String salt3 = UUID.randomUUID().toString();
+			secQuestions.get(2).setSalt(salt3);
+			String answer3 = HashUtility.getSecurityQuestionHash(salt3, model.getQuestion3Answer());
+			secQuestions.get(2).setSecurityAnswer(answer3);
+			user.setUserSecurityQuestions(secQuestions);
+		}
 
 		userService.saveExisting(user);
 		MatUserDetails userDetails = (MatUserDetails) hibernateUserService

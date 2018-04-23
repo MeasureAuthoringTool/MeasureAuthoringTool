@@ -106,19 +106,15 @@ public class ManageMeasureDetailView
 	/** The help block. */
 	private HelpBlock helpBlock = new HelpBlock();
 
-	/** The caution patientbased msg str. */
 	private String cautionPatientbasedMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the Measure Scoring type will "
 			+ "reset the Patient-based Measure to its default setting.<br/>";
 
-	/** The caution patientbased msg place holder. */
 	protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
 	
 	/**
 	 * Instantiates a new manage measure detail view.
 	 */
 	public ManageMeasureDetailView() {
-		
-		
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.getElement().setId("mainPanel_SimplePanel");

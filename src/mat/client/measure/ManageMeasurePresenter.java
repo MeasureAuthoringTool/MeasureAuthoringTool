@@ -1174,8 +1174,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					showConfirmationDialog(MatContext.get().getMessageDelegate().getCloneMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
 					
 				} else { //if edit
-					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getName().getValue()));
-					
+					showConfirmationDialog(MatContext.get().getMessageDelegate().getEditMeasureSuccessfulMessage(detailDisplay.getName().getValue()));	
 				}
 			
 			}
@@ -1828,7 +1827,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		// This to fetch all Measures if user role is Admin. This will go away
 		// when Pagination will be implemented in Measure Library.
 		if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
-			// pageSize = Integer.MAX_VALUE;
 			pageSize = 25;
 			showSearchingBusy(true);
 			MatContext.get().getMeasureService().search(searchText, startIndex, pageSize, filter,
@@ -2241,39 +2239,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				search(searchDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
 			}
 		});
-//		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-//				searchDisplay.getErrorMessageDisplay().clearAlert();
-//				if (isCreateMeasureWidgetVisible) {
-//					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
-//					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
-//				}
-//				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-//				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-//
-//			}
-//		});
-//
-//		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
-//
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				searchDisplay.getSuccessMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMeasureDeletion().clearAlert();
-//				searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-//				searchDisplay.getErrorMessageDisplay().clearAlert();
-//				if (isMeasureSearchFilterVisible) {
-//					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-//					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
-//				}
-//				isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
-//				searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
-//			}
-//		});
+
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

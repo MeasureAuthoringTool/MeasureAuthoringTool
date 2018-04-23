@@ -36,7 +36,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.DOM;
 //import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -83,7 +82,7 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class MetaDataView.
  */
@@ -397,16 +396,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		errorMessages2.setWidth("900px");
 		saveErrorDisplay.setWidth("900px");
 		addEditCmponentMeasures.setType(ButtonType.PRIMARY);
-	//	addEditMeasureType.setType(ButtonType.PRIMARY);
 		addEditCmponentMeasures.setTitle("Add or Edit Component Measures.");
 		
 		addClickHandlers();
 		searchString.setHeight("20px");
 		
 		saveErrorDisplay.clearAlert();
-		//mainPanel.add(mainContent);
 		mainPanel.setStyleName("contentPanel");
-		DOM.setElementAttribute(mainPanel.getElement(), "id", "MetaDataView.containerPanel");
+		mainPanel.getElement().setAttribute("id", "MetaDataView.containerPanel");
 		focusPanel.add(mainPanel);
 		focusPanel.getElement().setId("focusPanel_FocusPanel01");
 	}
@@ -2489,7 +2486,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	private TextAreaWithMaxLength createReferenceInput() {
 		TextAreaWithMaxLength newReferenceBox = new TextAreaWithMaxLength();
-		DOM.setElementAttribute(newReferenceBox.getElement(), "id", "Reference");
+		newReferenceBox.getElement().setAttribute("id", "Reference");
 		newReferenceBox.setSize("750px", "60px");
 		newReferenceBox.setMaxLength(2000);
 		newReferenceBox.addKeyDownHandler(new KeyDownHandler() {
@@ -2706,7 +2703,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public HasValue<String> getEmeasureId(){
-		// TODO Auto-generated method stub
 		return eMeasureIdentifierInput;
 	}
 	
@@ -2715,7 +2711,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void setGenerateEmeasureIdButtonEnabled(boolean b) {
-		// TODO Auto-generated method stub
 		generateeMeasureIDButton.setEnabled(b);
 	}
 	
@@ -2724,7 +2719,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public HasClickHandlers getGenerateEmeasureIdButton() {
-		// TODO Auto-generated method stub
 		return generateeMeasureIDButton;
 	}
 	

@@ -4,11 +4,16 @@ package mat.client.clause;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.TabObserver;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SpacerWidget;
 import mat.shared.ConstantMessages;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.History;
@@ -20,19 +25,12 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The Class QDMPresenter.
  */
-public class QDMPresenter implements MatPresenter{
-	
-	/** The code list search presenter. */
+public class QDMPresenter implements MatPresenter, TabObserver{
 	private QDSCodeListSearchPresenter codeListSearchPresenter;
-	
-	/** The qds applied list presenter. */
 	private QDSAppliedListPresenter qdsAppliedListPresenter;
-	
-	/** The QDM content widget. */
 	private SimplePanel QDMContentWidget = new SimplePanel();
-	
-	/** The tab layout. */
 	private MatTabLayoutPanel tabLayout;
+	private List<MatPresenter> presenterList;
 	
 	/**
 	 * Instantiates a new qDM presenter.
@@ -59,10 +57,13 @@ public class QDMPresenter implements MatPresenter{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeDisplay() {
-		tabLayout = new MatTabLayoutPanel(true);
-		tabLayout.setId("qdmElementTabLayout");
-		tabLayout.addPresenter(codeListSearchPresenter,"Create Element");
-		tabLayout.addPresenter(qdsAppliedListPresenter,"Applied Elements");
+		presenterList = new LinkedList<MatPresenter>();
+		tabLayout = new MatTabLayoutPanel(this);
+		tabLayout.getElement().setAttribute("id", "qdmElementTabLayout");
+		tabLayout.add(codeListSearchPresenter.getWidget(),"Create Element");
+		presenterList.add(codeListSearchPresenter);
+		tabLayout.add(qdsAppliedListPresenter.getWidget(),"Applied Elements");
+		presenterList.add(qdsAppliedListPresenter);
 		tabLayout.setHeight("98%");
 		MatContext.get().tabRegistry.put("Old QDM Elements",tabLayout);
 		MatContext.get().enableRegistry.put(tabLayout,this);
@@ -91,7 +92,7 @@ public class QDMPresenter implements MatPresenter{
 			QDMContentWidget.add(fp);
 			MeasureComposerPresenter.setSubSkipEmbeddedLink("subContainerPanel");
 			Mat.focusSkipLists("MeasureComposure");
-			tabLayout.selectTab(codeListSearchPresenter);
+			tabLayout.selectTab(presenterList.indexOf(codeListSearchPresenter));
 			codeListSearchPresenter.beforeDisplay();
 		}
 	}
@@ -101,10 +102,35 @@ public class QDMPresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeClosingDisplay() {
-		tabLayout.close();
+		notifyCurrentTabOfClosing();
 		tabLayout.updateHeaderSelection(0);
 		tabLayout.setSelectedIndex(0);
 		
 	}
 
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
+	@Override
+	public void updateOnBeforeSelection() {
+		MatPresenter presenter = presenterList.get(tabLayout.getSelectedIndex());
+		if (presenter != null) {
+			MatContext.get().setAriaHidden(presenter.getWidget(),  "false");
+			presenter.beforeDisplay();
+		}
+	}
+
+	@Override
+	public void showUnsavedChangesError() {}
+
+	@Override
+	public void notifyCurrentTabOfClosing() {
+		MatPresenter oldPresenter = presenterList.get(tabLayout.getSelectedIndex());
+		if (oldPresenter != null) {
+			MatContext.get().setAriaHidden(oldPresenter.getWidget(), "true");
+			oldPresenter.beforeClosingDisplay();
+		}	
+	}
 }

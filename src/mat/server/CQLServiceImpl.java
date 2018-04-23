@@ -567,7 +567,8 @@ public class CQLServiceImpl implements CQLService {
 
 		String functionLogic = "";
 		if(function.getFunctionLogic() != null && !function.getFunctionLogic().isEmpty()) {
-			String formattedFunction = CQLFormatter.format(tempFunctionString);
+			CQLFormatter formatter = new CQLFormatter();
+			String formattedFunction = formatter.format(tempFunctionString);
 			functionLogic = parseOutBody(formattedFunction, definitionStatement);
 		}
 
@@ -816,7 +817,8 @@ public class CQLServiceImpl implements CQLService {
 
 		String parameterLogic = "";
 		if(parameter.getParameterLogic() != null && !parameter.getParameterLogic().isEmpty()) {
-			String formattedParameter = CQLFormatter.format(tempParameterString);
+			CQLFormatter formatter = new CQLFormatter(); 
+			String formattedParameter = formatter.format(tempParameterString);
 			parameterLogic = parseOutParameterBody(formattedParameter, parameter.getParameterName());
 		}
 
@@ -1118,7 +1120,8 @@ public class CQLServiceImpl implements CQLService {
 
 		String definitionLogic = "";
 		if(definition.getDefinitionLogic() != null && !definition.getDefinitionLogic().isEmpty()) {
-			String formattedDefinition = CQLFormatter.format(tempDefinitionString);
+			CQLFormatter formatter = new CQLFormatter(); 
+			String formattedDefinition = formatter.format(tempDefinitionString);
 			definitionLogic = parseOutBody(formattedDefinition, definitionStatement);
 		}
 
@@ -1835,7 +1838,8 @@ public class CQLServiceImpl implements CQLService {
 
 		if(errors.isEmpty()) {
 			try {
-				result.setCqlString(CQLFormatter.format(parentCQLString));
+				CQLFormatter formatter = new CQLFormatter();
+				result.setCqlString(formatter.format(parentCQLString));
 			} catch (IOException e) {
 				result.setCqlString(parentCQLString);
 			}

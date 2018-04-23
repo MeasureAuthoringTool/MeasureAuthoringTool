@@ -11,6 +11,7 @@ import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionAnswerWidget;
+import mat.client.shared.SecurityQuestionsDisplay;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -22,13 +23,10 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The Class SecurityQuestionsView.
  */
-public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display {
+public class SecurityQuestionsView implements SecurityQuestionsDisplay {
 	
 	/** The container. */
 	private FlowPanel container = new FlowPanel();
-	
-	/** The password. */
-	//private PasswordTextBox password = new PasswordTextBox();
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
@@ -52,9 +50,7 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	 * Instantiates a new security questions view.
 	 */
 	public SecurityQuestionsView() {
-		Label required = new Label("All fields are required");
 		container.addStyleName("leftAligned");
-		container.add(required);
 		container.add(new SpacerWidget());
 		container.add(errorMessages);
 		container.add(successMessages);
@@ -72,11 +68,6 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		
 		container.add(fieldSetQnA);
 		container.add(new SpacerWidget());
-		/*password.getElement().setId("password_ExistingPasswordTextBox");
-		container.add(LabelBuilder.buildRequiredLabel(password, "Enter existing password to confirm changes"));
-		container.add(new SpacerWidget());
-		container.add (password);
-		container.add(new SpacerWidget());*/
 		buttons.getCancelButton().setText("Undo");
 		buttons.getCancelButton().setTitle("Undo");
 		buttons.getSaveButton().setTitle("Save");
@@ -93,82 +84,6 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		return headingPanel;
 	}
 	
-	/**
-	 * Gets the password text box.
-	 * 
-	 * @return the password text box
-	 */
-/*	public PasswordTextBox getPasswordTextBox() {
-		return password;
-	}*/
-	
-	/**
-	 * Gets the password text box.
-	 * 
-	 * @param password
-	 *            the password
-	 * @return the password text box
-	 */
-	/*public void getPasswordTextBox(PasswordTextBox password) {
-		this.password = password;
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#addQuestionTexts(java.util.List)
-	 */
-	public void addQuestionTexts(List<NameValuePair> texts) {
-		securityQuestionsWidget.getSecurityQuestion1().setDropdownOptions(texts);
-		securityQuestionsWidget.getSecurityQuestion2().setDropdownOptions(texts);
-		securityQuestionsWidget.getSecurityQuestion3().setDropdownOptions(texts);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getQuestion1()
-	 */
-	@Override
-	public HasValue<String> getQuestion1() {
-		return securityQuestionsWidget.getSecurityQuestion1();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer1()
-	 */
-	@Override
-	public Input getAnswer1() {
-		return securityQuestionsWidget.getAnswer1();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getQuestion2()
-	 */
-	@Override
-	public HasValue<String> getQuestion2() {
-		return securityQuestionsWidget.getSecurityQuestion2();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer2()
-	 */
-	@Override
-	public Input getAnswer2() {
-		return securityQuestionsWidget.getAnswer2();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getQuestion3()
-	 */
-	@Override
-	public HasValue<String> getQuestion3() {
-		return securityQuestionsWidget.getSecurityQuestion3();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getAnswer3()
-	 */
-	@Override
-	public Input getAnswer3() {
-		return securityQuestionsWidget.getAnswer3();
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getSaveButton()
@@ -187,14 +102,6 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getErrorMessageDisplay()
-	 */
-	@Override
-	public MessageAlert getErrorMessageDisplay() {
-		return errorMessages;
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getSuccessMessageDisplay()
 	 */
 	@Override
@@ -210,14 +117,6 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		return securityQuestionsWidget;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getPasswordEditInfoWidget()
-	 */
-	/*@Override
-	public PasswordEditInfoWidget getPasswordEditInfoWidget() {
-		return passwordEditInfoWidget;
-	}*/
 		
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.SecurityQuestionsPresenter.Display#getPassword()
@@ -251,7 +150,66 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	public String getAnswerText3() {
 		return  securityQuestionsWidget.getAnswer3().getValue();
 	}
-	
-	
-	
+
+	@Override
+	public HasClickHandlers getSubmit() {
+		return null;
+	}
+
+	@Override
+	public HasClickHandlers getReset() {
+		return null;
+	}
+
+	@Override
+	public HasValue<String> getQuestion1Answer() {
+		return securityQuestionsWidget.getAnswer1();
+	}
+
+	@Override
+	public HasValue<String> getQuestion2Answer() {
+		return securityQuestionsWidget.getAnswer2();
+	}
+
+	@Override
+	public HasValue<String> getQuestion3Answer() {
+		return securityQuestionsWidget.getAnswer3();
+	}
+
+	@Override
+	public HasValue<String> getQuestion1Text() {
+		return securityQuestionsWidget.getSecurityQuestion1();
+	}
+
+	@Override
+	public HasValue<String> getQuestion2Text() {
+		return securityQuestionsWidget.getSecurityQuestion2();
+	}
+
+	@Override
+	public HasValue<String> getQuestion3Text() {
+		return securityQuestionsWidget.getSecurityQuestion3();
+	}
+
+	@Override
+	public Input getConfirmPassword() {
+		return null;
+	}
+
+	@Override
+	public MessageAlert getPasswordErrorMessageDisplay() {
+		return errorMessages;
+	}
+
+	@Override
+	public MessageAlert getSecurityErrorMessageDisplay() {
+		return errorMessages;
+	}
+
+	@Override
+	public void addSecurityQuestionTexts(List<NameValuePair> texts) {
+		securityQuestionsWidget.getSecurityQuestion1().setDropdownOptions(texts);
+		securityQuestionsWidget.getSecurityQuestion2().setDropdownOptions(texts);
+		securityQuestionsWidget.getSecurityQuestion3().setDropdownOptions(texts);
+	}
 }

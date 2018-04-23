@@ -2582,7 +2582,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		} else {
 			searchDisplay.getCQLFunctionsView().getFuncNameGroup().setValidationState(ValidationState.ERROR);
-			MatContext.get().getMessageDelegate();
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(functionName.isEmpty() 
 					? MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_FUNCTION()
 					: "Invalid Function Name. " + MessageDelegate.DEFINED_KEYWORD_EXPRESION_ERROR_MESSAGE);

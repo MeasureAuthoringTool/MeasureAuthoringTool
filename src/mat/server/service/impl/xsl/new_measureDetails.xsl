@@ -598,7 +598,6 @@
             <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
         </xsl:if>
-        <!-- <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Continuous Variable'"> -->
         <xsl:if test="(($scoring_value = 'Ratio' and @patient_based_indicator = 'false') or $scoring_value ='Continuous Variable') and measureObservationsDescription/text() != ''">
         <!-- Measure Observations Description -->
             <xsl:call-template name="subjOfOrigText">

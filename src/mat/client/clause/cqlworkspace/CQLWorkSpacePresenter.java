@@ -61,6 +61,7 @@ import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.ValueSetNameInputValidator;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
@@ -2633,7 +2634,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			funcContext = "Population";
 		}
-		if (!functionName.isEmpty()) {
+		
+		boolean isFunctionNameValid = isValidExpressionName(functionName);
+		if (isFunctionNameValid) {
 			if (validator.validateForSpecialChar(functionName.trim())) {
 				searchDisplay.getCqlFunctionsView().getFuncNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -2820,8 +2823,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-					.createAlert(MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_FUNCTION());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(functionName.isEmpty() 
+					? MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_FUNCTION()
+					: "Invalid Function Name. " + MessageDelegate.DEFINED_KEYWORD_EXPRESION_ERROR_MESSAGE);
 			searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText(functionName.trim());
 		}
 
@@ -2835,8 +2839,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		final String parameterName = searchDisplay.getCQLParametersView().getParameterNameTxtArea().getText();
 		String parameterLogic = searchDisplay.getCQLParametersView().getParameterAceEditor().getText();
 		String parameterComment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
-		if (!parameterName.isEmpty()) {
-
+		
+		boolean isParamaterNameValid = isValidExpressionName(parameterName);
+		if (isParamaterNameValid) {
 			if (validator.validateForSpecialChar(parameterName.trim())) {
 				searchDisplay.getCQLParametersView().getParamNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -2963,8 +2968,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-					.createAlert(MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_PARAMETER());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(parameterName.isEmpty() 
+					? MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_PARAMETER()
+					: "Invalid Parameter Name. " + MessageDelegate.DEFINED_KEYWORD_EXPRESION_ERROR_MESSAGE);
 			searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 		}
 
@@ -2985,8 +2991,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			defineContext = "Population";
 		}
-		if (!definitionName.isEmpty()) {
-
+		
+		boolean isValidDefinitionName = isValidExpressionName(definitionName);
+		if (isValidDefinitionName) {
 			if (validator.validateForSpecialChar(definitionName.trim())) {
 				searchDisplay.getCQlDefinitionsView().getDefineNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -3156,8 +3163,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		} else {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-					.createAlert(MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_DEFINITION());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(definitionName.isEmpty() 
+					? MatContext.get().getMessageDelegate().getERROR_SAVE_CQL_DEFINITION()
+					: "Invalid Definition Name. " + MessageDelegate.DEFINED_KEYWORD_EXPRESION_ERROR_MESSAGE);
 			searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
 		}
 
@@ -3231,6 +3239,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
+		
+		//Load CQL Constants
+		MatContext.get().getCQLConstants();
+		
 		//Load VSAC Programs and Releases
 		getProgramsAndReleases();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
@@ -6267,4 +6279,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		return !(getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty());
 	}
 
+	private boolean isValidExpressionName(String expressionName) {
+		return !expressionName.isEmpty() && !expressionName.equalsIgnoreCase("Patient") && !expressionName.equalsIgnoreCase("Population")
+				&& MatContext.get().getCqlConstantContainer() != null 
+				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList() != null
+				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null
+				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(expressionName));
+	}
 }

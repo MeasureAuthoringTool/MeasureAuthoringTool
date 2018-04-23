@@ -3683,9 +3683,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		}
 		
-		//Load CQL Constants
-		MatContext.get().getCQLConstants();
-		
 		//Load VSAC Programs and Releases
 		getProgramsAndReleases();
 		

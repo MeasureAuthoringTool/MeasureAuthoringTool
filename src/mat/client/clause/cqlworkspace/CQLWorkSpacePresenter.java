@@ -3240,9 +3240,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
 		
-		//Load CQL Constants
-		MatContext.get().getCQLConstants();
-		
 		//Load VSAC Programs and Releases
 		getProgramsAndReleases();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");

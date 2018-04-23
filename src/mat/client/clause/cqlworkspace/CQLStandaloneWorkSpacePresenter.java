@@ -3592,8 +3592,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-
+						// Do Nothing
 					}
 
 					@Override
@@ -5265,7 +5264,6 @@ private void addCodeSearchPanelHandlers() {
 									searchDisplay.getValueSetView().getSaveButton().setEnabled(false);
 								}
 
-								@SuppressWarnings("static-access")
 								@Override
 								public void onSuccess(final SaveUpdateCQLResult result) {
 									if (result != null) {

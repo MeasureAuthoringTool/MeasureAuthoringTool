@@ -3,15 +3,6 @@ package mat.client.shared;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-
-import mat.client.clause.QDSAttributesService;
-import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
-import mat.model.ModeDetailModel;
-import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.CQLIdentifierObject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONArray;
@@ -21,10 +12,15 @@ import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.xml.client.NamedNodeMap;
-import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
-// TODO: Auto-generated Javadoc
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.model.ModeDetailModel;
+import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.CQLIdentifierObject;
+
 /**
  * The Class JSONAttributeModeUtility.
  */
@@ -33,8 +29,6 @@ public class JSONAttributeModeUtility {
 	/** The qds attributes service. */
 	private static QDSAttributesServiceAsync qdsAttributesService;
 	
-	/** The json object. */
-	//	private static JSONObject jsonObject;
 	private static HashMap<String, JSONArray> jsonObjectMap = new HashMap<String, JSONArray>();
 	private static HashMap<String, JSONArray> jsonModeDetailsMap = new HashMap<String, JSONArray>();
 	
@@ -59,8 +53,6 @@ public class JSONAttributeModeUtility {
 	/** The Constant ATTRIBUTE. */
 	static final String ATTRIBUTE = "attribute";
 	
-	/** The Constant UUID. */
-	private static final String UUID = "uuid";
 	/**
 	 * Gets the all attr mode list.
 	 *
@@ -72,8 +64,7 @@ public class JSONAttributeModeUtility {
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
+						// Do nothing
 					}
 					
 					@Override
@@ -82,7 +73,6 @@ public class JSONAttributeModeUtility {
 						
 					}
 				});
-		
 	}
 	
 	/**
@@ -96,8 +86,7 @@ public class JSONAttributeModeUtility {
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
-						
+						// Do nothing
 					}
 					
 					@Override
@@ -106,7 +95,6 @@ public class JSONAttributeModeUtility {
 						
 					}
 				});
-		
 	}
 	
 	/**
@@ -119,8 +107,7 @@ public class JSONAttributeModeUtility {
 		if (jsonString != null) {
 			JSONValue jsonValue = JSONParser.parse(jsonString);
 			if (jsonValue.isObject() != null) {
-				JSONArray attributeJsonArray = (JSONArray) jsonValue.isObject().get(
-						"matattributes");
+				JSONArray attributeJsonArray = (JSONArray) jsonValue.isObject().get("matattributes");
 				jsonObjectMap.put("attribute", attributeJsonArray);
 			}
 		}
@@ -141,10 +128,9 @@ public class JSONAttributeModeUtility {
 							"modedetails");
 					jsonModeDetailsMap.put("mode", modeJsonArray);
 				}
-				}catch(Exception e){
-				  System.out.println("Exception while extracting mode details from XML : "+e.getMessage());
-				}  
-			
+			}catch(Exception e){
+			  System.out.println("Exception while extracting mode details from XML : "+e.getMessage());
+			}  
 		}
 	}
 	
@@ -207,17 +193,8 @@ public class JSONAttributeModeUtility {
 									mode.setModeValue(modeDetail);
 									modeDetailsList.add(mode);
 								}
-							} /*else if (attrJSONObject.get("details").isObject() != null) {
-								JSONObject modeObject = attrJSONObject.get("details")
-										.isObject();
-								JSONString modeStrObject = modeObject.get(
-										"@detail").isString();
-								String modeDetail = modeStrObject.toString();
-								modeDetail = modeDetail.replace("\"", "");
-								modeDetailsList.add(modeDetail);
-							}*/
+							}
 						}
-						
 					}
 				}
 			}
@@ -275,28 +252,6 @@ public class JSONAttributeModeUtility {
 		return modeList;
 	}
 	
-	/**
-	 * Creates the qdm list box.
-	 * 
-	 * @return the list box
-	 */
-	private static List<String> createQdmList() {
-		List<String> qdmList = new ArrayList<String>();
-		for (Entry<String, Node> qdm : CQLWorkSpaceConstants.getElementLookUpNode()
-				.entrySet()) {
-			Node qdmNode = qdm.getValue();
-			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE)
-					.getNodeValue();
-			String uuid = qdmNode.getAttributes().getNamedItem(UUID)
-					.getNodeValue();
-			if (ATTRIBUTE.equals(dataType)) {
-				String result = CQLWorkSpaceConstants.getElementLookUpName().get(uuid).substring(0, CQLWorkSpaceConstants.getElementLookUpName().get(uuid).indexOf(':'));
-				qdmList.add(result);
-			}
-		}
-		return qdmList;
-	}
-	
 	public void setupElementLookupQDMNodes(NodeList nodeList) {
 		if ((null != nodeList) && (nodeList.getLength() > 0)) {
 			NodeList qdms = nodeList.item(0).getChildNodes();
@@ -306,10 +261,9 @@ public class JSONAttributeModeUtility {
 					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
 					if (isSupplementData.equals("false")) { //filter supplementDataElements from elementLookUp
 						String name = namedNodeMap.getNamedItem("name").getNodeValue();
-						// Prod Issue fixed : qdm name has trailing spaces which is reterived frm VSAC.
+						//Prod Issue fixed : qdm name has trailing spaces which is retrieved from VSAC.
 						//So QDM attribute dialog box is throwing error in FF.To fix that spaces are removed from start and end.
 						name = name.trim();
-						//name = name.replaceAll("^\\s+|\\s+$", "");
 						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 						if (namedNodeMap.getNamedItem("instance") != null) {
 							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
@@ -329,39 +283,6 @@ public class JSONAttributeModeUtility {
 		}
 	}	
 	
-	/**
-	 * Validate qdm attribute.
-	 *
-	 * @param attrName the attr name
-	 * @param attrMode the attr mode
-	 * @return true, if successful
-	 */
-	/*public static boolean validateQDMAttribute(String attrName, String attrMode){
-		List<String> modeList = getAttrModeList(attrName,null);
-		for(int i =0; i<modeList.size(); i++){
-			if(modeList.get(i).equals(attrMode)){
-				return true;
-			}
-		}
-		return false;
-	}*/
-	
-	/*private static boolean findDataType(String dataType, JSONArray jsonArray) {
-		boolean foundInArray = false;
-		if (jsonArray.isArray() != null) {
-			for (int i = 0; i < jsonArray.size(); i++) {
-				String dataTypeInArray = (jsonArray.get(i).isString()).toString();
-				dataTypeInArray = dataTypeInArray.replace("\"", "");
-				System.out.println("array " + dataTypeInArray);
-				if(dataType.equalsIgnoreCase(dataTypeInArray)){
-					foundInArray = true;
-					break;
-				}
-			}
-		}
-		return foundInArray;
-		
-	}*/
 	private static  String getAttrMode(String mode){
 		String attrMode="";
 		if(mode.equals("Comparison")){

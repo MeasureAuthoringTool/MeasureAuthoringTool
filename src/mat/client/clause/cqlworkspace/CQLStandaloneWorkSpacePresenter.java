@@ -2410,8 +2410,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			funcContext = "Population";
 		}
 		
-		boolean isFunctionNameValid = isValidExpressionName(functionName);
-		if (isFunctionNameValid) {
+		boolean isValidFunctionName = isValidExpressionName(functionName);
+		if (isValidFunctionName) {
 			if (validator.validateForSpecialChar(functionName.trim())) {
 				searchDisplay.getCQLFunctionsView().getFuncNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -2600,8 +2600,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		String parameterLogic = searchDisplay.getCQLParametersView().getParameterAceEditor().getText();
 		String parameterComment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
 		
-		boolean isParamaterNameValid = isValidExpressionName(parameterName);
-		if (isParamaterNameValid) {
+		boolean isValidParamaterName = isValidExpressionName(parameterName);
+		if (isValidParamaterName) {
 			if (validator.validateForSpecialChar(parameterName.trim())) {
 				searchDisplay.getCQLParametersView().getParamNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()

@@ -338,6 +338,8 @@ public class MessageDelegate {
 	
 	private static final String SUCCESSFULLY_SHARED = " sharing status has been successfully updated.";
 	
+	public static final String DEFINED_KEYWORD_EXPRESION_ERROR_MESSAGE = "Name can not be an exact match to a defined CQL keyword.";
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 

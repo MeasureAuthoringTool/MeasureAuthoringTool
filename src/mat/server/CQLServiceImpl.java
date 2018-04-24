@@ -97,22 +97,6 @@ import net.sf.json.xml.XMLSerializer;
  * The Class CQLServiceImpl.
  */
 public class CQLServiceImpl implements CQLService {
-
-	public static final String PATIENT_CHARACTERSTICS_EXPIRED = "Patient Characteristic Expired";
-
-	public static final String DEAD = "Dead";
-
-	public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-
-	public static final String BIRTHDATE = "Birthdate";
-
-	private static final String BIRTHDATE_CODE_ID = "21112-8";
-	
-	private static final String DEAD_CODE_ID = "419099009";
-	
-	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
-	
-	private static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
 	
 	/** The cql dao. */
 	@Autowired
@@ -2894,13 +2878,7 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		codeTransferObject.scrubForMarkUp();
 		if (codeTransferObject.isValidModel() ) {
-			if(((codeTransferObject.getCqlCode().getCodeOID().equals(BIRTHDATE_CODE_ID)) && (codeTransferObject.getCqlCode().getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID)))
-					|| ((codeTransferObject.getCqlCode().getCodeOID().equals(DEAD_CODE_ID)) && (codeTransferObject.getCqlCode().getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID)))) {
-				result.setFailureReason(result.getBirthdateOrDeadError());
-				result.setSuccess(false);
-				return result; 
-			}
-			
+
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);
 			CQLCode appliedCode = codeTransferObject.getCqlCode();
 			appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));

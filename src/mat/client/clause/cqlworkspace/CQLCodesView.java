@@ -86,17 +86,6 @@ public class CQLCodesView {
 		
 	}
 	
-	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
-	
-	private static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
-
-	/** The Constant EXPIRED_OID. */
-	private static final String DEAD_OID = "419099009";
-	
-	/** The Constant BIRTHDATE. */
-	private static final String BIRTHDATE_OID = "21112-8";
-	
-	
 	/** The observer. */
 	private Delegator delegator;
 	
@@ -771,36 +760,25 @@ public class CQLCodesView {
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			com.google.gwt.user.client.ui.Label invisibleLabel;
-			if(isEditable){
-				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
-						.buildInvisibleLabel(
-								"appliedCodeTableSummary",
-								"In the Following Applied Codes table Descriptor in First Column"
-										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
-										+ "Version Included in Fifth Column, Edit in the Sixth Column, Delete in the Seventh Column, and Copy in the Eigth column."
-										+ "The Applied Codes are listed alphabetically in a table.");
-				
-				
-			} else {
-				invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
-						.buildInvisibleLabel(
-								"appliedCodeTableSummary",
-								"In the Following Applied Codes table Descriptor in First Column"
-										+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
-										+ "Version Included in Fifth Column, Edit in the Sixth Column, Delete in the Seventh Column, and Copy in the Eigth column."
-										+ "The Applied Codes are listed alphabetically in a table.");
-			}
-			
+
+			invisibleLabel = (com.google.gwt.user.client.ui.Label) LabelBuilder
+					.buildInvisibleLabel(
+							"appliedCodeTableSummary",
+							"In the Following Applied Codes table Descriptor in First Column"
+									+ "Code in Second Column, Code System in Third Column, Version in Fourth Column,"
+									+ "Version Included in Fifth Column, Edit in the Sixth Column, Delete in the Seventh Column, and Copy in the Eigth column."
+									+ "The Applied Codes are listed alphabetically in a table.");
+
 			table.getElement().setAttribute("id", "AppliedCodeTable");
 			table.getElement().setAttribute("aria-describedby",
 					"appliedCodeTableSummary");
-			
+
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
 			cellTablePanel.add(spager);
 			cellTablePanel.add(cellTablePanelBody);
-			
-			
+
+
 		} else {
 			HTML desc = new HTML("<p> No Codes.</p>");
 			cellTablePanelBody.add(desc);
@@ -871,13 +849,9 @@ public class CQLCodesView {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
 					StringBuilder title = new StringBuilder();
-					String value = "";
-					if (!isBirthdayOrDead(object.getCodeOID(), object.getCodeSystemOID())) {
-						value = object.getCodeSystemVersion();
-						title.append("Version : ").append(value);
-					}					
+					title.append("Version : ").append(object.getCodeSystemVersion());
 					title.append("");
-					return CellTableUtility.getColumnToolTip(value, title.toString());
+					return CellTableUtility.getColumnToolTip(object.getCodeSystemVersion(), title.toString());
 				}
 			};
 			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));			
@@ -958,9 +932,8 @@ public class CQLCodesView {
 		if(isEditable) {
 			cells.add(cellToAdd);
 		}
-		
-		CompositeCell<CQLCode> cell = new CompositeCell<CQLCode>(
-				cells) {
+
+		return new CompositeCell<CQLCode>(cells) {
 			@Override
 			public void render(Context context, CQLCode object,
 					SafeHtmlBuilder sb) {
@@ -970,30 +943,27 @@ public class CQLCodesView {
 				}
 				sb.appendHtmlConstant("</tr></tbody></table>");
 			}
-			
+
 			@Override
 			protected <X> void render(Context context,
 					CQLCode object, SafeHtmlBuilder sb,
 					HasCell<CQLCode, X> hasCell) {
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
-				if((object == null) || (object.getCodeOID().equals(BIRTHDATE_OID)) && (object.getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID))
-						|| (object.getCodeOID().equals(DEAD_OID) && object.getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID))) {
-					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
-				} else {
+				if(object != null) {
 					cell.render(context, hasCell.getValue(object), sb);
 				}
-				
+
 				sb.appendHtmlConstant("</td>");
 			}
-			
+
 			@Override
 			protected Element getContainerElement(Element parent) {
 				return parent.getFirstChildElement().getFirstChildElement()
 						.getFirstChildElement();
 			}
 		};
-		return cell;
+
 	}
 	
 	/**
@@ -1002,8 +972,8 @@ public class CQLCodesView {
 	 * @return the QDM check box cell
 	 */
 	private HasCell<CQLCode, Boolean> getCheckBoxCell(){
-		HasCell<CQLCode, Boolean> hasCell = new HasCell<CQLCode, Boolean>() {
-			
+		return new HasCell<CQLCode, Boolean>() {
+
 			private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 			@Override
 			public Cell<Boolean> getCell() {
@@ -1032,7 +1002,7 @@ public class CQLCodesView {
 					@Override
 					public void update(int index, CQLCode object,
 							Boolean isCBChecked) {
-						
+
 						if (isCBChecked) {
 							codesSelectedList.add(object);
 						} else {
@@ -1048,10 +1018,10 @@ public class CQLCodesView {
 
 				};
 			}
-			
-			
+
+
 		};
-		return hasCell;
+
 	}
 	
 	
@@ -1061,19 +1031,19 @@ public class CQLCodesView {
 	 * @return the modify code button cell
 	 */
 	private HasCell<CQLCode, ?> getModifyButtonCell() {
-		
-		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
-			
+
+		return new HasCell<CQLCode, SafeHtml>() {
+
 			ClickableSafeHtmlCell modifyButonCell = new ClickableSafeHtmlCell();
-			
+
 			@Override
 			public Cell<SafeHtml> getCell() {
 				return modifyButonCell;
 			}
-			
+
 			@Override
 			public FieldUpdater<CQLCode, SafeHtml> getFieldUpdater() {
-				
+
 				return new FieldUpdater<CQLCode, SafeHtml>() {
 					@Override
 					public void update(int index, CQLCode object,
@@ -1084,7 +1054,7 @@ public class CQLCodesView {
 					}
 				};
 			}
-			
+
 			@Override
 			public SafeHtml getValue(CQLCode object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
@@ -1098,12 +1068,11 @@ public class CQLCodesView {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
 							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: black; margin-left: -15px\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Edit</span></button>");
 				}
-				
+
 				return sb.toSafeHtml();
 			}
 		};
-		
-		return hasCell;
+
 	}
 	
 	
@@ -1114,7 +1083,7 @@ public class CQLCodesView {
 	 */
 	private HasCell<CQLCode, SafeHtml> getDeleteButtonCell() {
 		
-		HasCell<CQLCode, SafeHtml> hasCell = new HasCell<CQLCode, SafeHtml>() {
+		return new HasCell<CQLCode, SafeHtml>() {
 			
 			ClickableSafeHtmlCell deleteButonCell = new ClickableSafeHtmlCell();
 			
@@ -1144,10 +1113,7 @@ public class CQLCodesView {
 				String title = "Click to delete Code";
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
-				// Delete button is not created for default codes - Dead and Birthdate.
-				if((object == null) || isBirthdayOrDead(object.getCodeOID(), object.getCodeSystemOID())){
-					sb.appendHtmlConstant("<span></span>");
-				}else if (object.isUsed()) {
+				if (object.isUsed()) {
 					sb.appendHtmlConstant("<button type=\"button\" title='"
 							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
 				} else {
@@ -1158,8 +1124,7 @@ public class CQLCodesView {
 				return sb.toSafeHtml();
 			}
 		};
-		
-		return hasCell;
+				
 	}
 	
 	public void clearSelectedCheckBoxes(){
@@ -1249,12 +1214,6 @@ public class CQLCodesView {
 
 	public void setIncludeCodeSystemVersionCheckBox(CheckBox includeCodeSystemVersionCheckBox) {
 		this.includeCodeSystemVersionCheckBox = includeCodeSystemVersionCheckBox;
-	}
-	
-	
-	private boolean isBirthdayOrDead(String codeOID, String codeSysOID) {
-		return (codeOID.equals(BIRTHDATE_OID) && codeSysOID.equals(BIRTHDATE_CODE_SYSTEM_OID)) 
-				|| (codeOID.equals(DEAD_OID) && codeSysOID.equals(DEAD_CODE_SYSTEM_OID)) ? true : false;
 	}
 
 	public boolean checkCodeInAppliedCodeTableList(CQLCode refCode, List<CQLCode> appliedCodeTableList) {

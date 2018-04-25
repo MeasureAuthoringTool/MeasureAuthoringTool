@@ -10,13 +10,11 @@ import mat.model.Status;
 import mat.model.UserPassword;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class MatUserDetails.
  */
@@ -58,18 +56,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	/** The activation date. */
 	private Timestamp activationDate;
     
-  	/** The account non expired. */
-	  private boolean accountNonExpired;
-    
-    /** The account non locked. */
-    private boolean accountNonLocked;
-    
-    /** The credentials non expired. */
-    private boolean credentialsNonExpired;
-    
-    /** The enabled. */
-    private boolean enabled;
-    
     /** The login id. */
     private String loginId;
     
@@ -80,11 +66,8 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * Instantiates a new mat user details.
 	 */
     public MatUserDetails() {
+    	
     }
-
-
-	
-
 
 	/**
 	 * Gets the email address.
@@ -95,10 +78,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		return emailAddress;
 	}
 
-
-
-
-
 	/**
 	 * Sets the email address.
 	 * 
@@ -108,11 +87,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
-
-
-
-
-
 	
 	/**
 	 * Gets the roles.
@@ -122,7 +96,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	public SecurityRole getRoles() {
 		return roles;
 	}
-
 
 	/**
 	 * Sets the roles.
@@ -143,7 +116,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 			return id;
 	}
 
-
 	/**
 	 * Sets the id.
 	 * 
@@ -163,10 +135,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		return userPassword;
 	}
 
-
-
-
-
 	/**
 	 * Sets the user password.
 	 * 
@@ -177,10 +145,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		this.userPassword = userPassword;
 	}
 
-
-
-
-	  
     /**
 	 * Gets the status.
 	 * 
@@ -189,10 +153,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
     public Status getStatus() {
 		return status;
 	}
-
-
-
-
 
 	/**
 	 * Sets the status.
@@ -204,16 +164,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		this.status = status;
 	}
 
-	
-
-	
-    
-
-    
-    
-
-	
-
 	/**
 	 * Sets the username.
 	 * 
@@ -224,21 +174,14 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 		this.username = username;
 	}
 
- 
-	
-
-
-
-/* (non-Javadoc)
- * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
- */
-public Collection<GrantedAuthority> getAuthorities() {
-       List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
-       list.add(new GrantedAuthorityImpl(roles.getDescription()));
-       return list;
-}
-
-
+	/* (non-Javadoc)
+	 * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
+	 */
+	public Collection<GrantedAuthority> getAuthorities() {
+	       List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
+	       list.add(new SimpleGrantedAuthority(roles.getDescription()));
+	       return list;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#getUsername()
@@ -280,22 +223,13 @@ public Collection<GrantedAuthority> getAuthorities() {
 		return false;
 	}
 
-
-
-
-
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#getPassword()
 	 */
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-
-
 
 	/**
 	 * Sets the sign in date.
@@ -307,10 +241,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		this.signInDate = signInDate;
 	}
 
-
-
-
-
 	/**
 	 * Gets the sign in date.
 	 * 
@@ -319,10 +249,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public Timestamp getSignInDate() {
 		return signInDate;
 	}
-
-
-
-
 
 	/**
 	 * Sets the sign out date.
@@ -334,10 +260,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		this.signOutDate = signOutDate;
 	}
 
-
-
-
-
 	/**
 	 * Gets the sign out date.
 	 * 
@@ -346,10 +268,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public Timestamp getSignOutDate() {
 		return signOutDate;
 	}
-
-
-
-
 
 	/**
 	 * Sets the locked out date.
@@ -361,10 +279,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		this.lockedOutDate = lockedOutDate;
 	}
 
-
-
-
-
 	/**
 	 * Gets the locked out date.
 	 * 
@@ -373,10 +287,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public Timestamp getLockedOutDate() {
 		return lockedOutDate;
 	}
-
-
-
-
 
 	/**
 	 * Sets the termination date.
@@ -388,10 +298,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		this.terminationDate = terminationDate;
 	}
 
-
-
-
-
 	/**
 	 * Gets the termination date.
 	 * 
@@ -400,10 +306,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public Timestamp getTerminationDate() {
 		return terminationDate;
 	}
-
-
-
-
 
 	/**
 	 * Sets the activation date.
@@ -415,10 +317,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		this.activationDate = activationDate;
 	}
 
-
-
-
-
 	/**
 	 * Gets the activation date.
 	 * 
@@ -427,10 +325,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public Timestamp getActivationDate() {
 		return activationDate;
 	}
-
-
-
-
 
 	/**
 	 * Sets the login id.
@@ -442,10 +336,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		this.loginId = loginId;
 	}
 
-
-
-
-
 	/**
 	 * Gets the login id.
 	 * 
@@ -454,8 +344,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public String getLoginId() {
 		return loginId;
 	}
-
-
 	
 	/**
 	 * Gets the user last name.
@@ -466,7 +354,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 		return userLastName;
 	}
 
-
 	/**
 	 * Sets the user last name.
 	 *
@@ -475,8 +362,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	public void setUserLastName(String userLastName) {
 		this.userLastName = userLastName;
 	}
-
-
 }
 
 

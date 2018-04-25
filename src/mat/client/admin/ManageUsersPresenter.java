@@ -359,6 +359,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * @param b the new show admin notes
 		 */
 		void setShowAdminNotes(boolean b);
+
+		void populateNotes(List<UserAuditLogDTO> result);
 	}
 
 	/**
@@ -478,12 +480,12 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(
-				new SelectionHandler<ManageUsersSearchModel.Result>() {
-					@Override
-					public void onSelection(SelectionEvent<ManageUsersSearchModel.Result> event) {
-						edit(event.getSelectedItem().getKey());
-					}
-				});
+			new SelectionHandler<ManageUsersSearchModel.Result>() {
+				@Override
+				public void onSelection(SelectionEvent<ManageUsersSearchModel.Result> event) {
+					edit(event.getSelectedItem().getKey());
+				}
+			});
 
 		searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -585,6 +587,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void displayDetail() {
 		resetMessages();
 		populateOrganizations();
+		buildNotesHistory(currentDetails.getUserID());
 		panel.setContent(detailDisplay.asWidget());
 		Mat.focusSkipLists("Manage Users");
 	}
@@ -839,15 +842,15 @@ public class ManageUsersPresenter implements MatPresenter {
 	/**
 	 * Edits the.
 	 * 
-	 * @param name
-	 *            the name
+	 * @param userKey
+	 *            the user key
 	 */
-	private void edit(String name) {
+	private void edit(String userKey) {
 		detailDisplay.setTitle("Update a User");
 		detailDisplay.getAddInfoArea().setText("");
 		detailDisplay.getAddInfoArea().setEnabled(true);
 		MatContext.get().getAdminService()
-				.getUser(name, new AsyncCallback<ManageUsersDetailModel>() {
+				.getUser(userKey, new AsyncCallback<ManageUsersDetailModel>() {
 					@Override
 					public void onSuccess(ManageUsersDetailModel result) {
 						currentDetails = result;
@@ -1140,6 +1143,21 @@ public class ManageUsersPresenter implements MatPresenter {
 		Mat.focusSkipLists("UserLibrary");
 	}
 
+	private void buildNotesHistory(String userId) {
+
+		MatContext.get().getAuditService().executeUserLogSearch(userId, new AsyncCallback<List<UserAuditLogDTO>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				//do nothing
+			}
+
+			@Override
+			public void onSuccess(List<UserAuditLogDTO> result) {
+				detailDisplay.populateNotes(result);
+			}
+		});
+	}
+	
 	/**
 	 * Search user history.
 	 *

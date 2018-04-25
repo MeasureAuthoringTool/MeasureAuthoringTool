@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class MatUserDetails.
  */
@@ -58,18 +56,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	/** The activation date. */
 	private Timestamp activationDate;
     
-  	/** The account non expired. */
-	  private boolean accountNonExpired;
-    
-    /** The account non locked. */
-    private boolean accountNonLocked;
-    
-    /** The credentials non expired. */
-    private boolean credentialsNonExpired;
-    
-    /** The enabled. */
-    private boolean enabled;
-    
     /** The login id. */
     private String loginId;
     
@@ -81,10 +67,6 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 */
     public MatUserDetails() {
     }
-
-
-	
-
 
 	/**
 	 * Gets the email address.
@@ -289,7 +271,6 @@ public Collection<GrantedAuthority> getAuthorities() {
 	 */
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -31,9 +31,10 @@
        	
     </http>
 	
+	<beans:bean id="bcrypt" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	<authentication-manager>
 	 <authentication-provider>
-       <password-encoder hash="md5"/>
+       <password-encoder ref="bcrypt"/>
        <user-service>
                 <user name="dude" password="blahblah" authorities="ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER" />
        </user-service>

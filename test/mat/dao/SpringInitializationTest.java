@@ -2,16 +2,8 @@ package mat.dao;
 
 
 
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
 import junit.framework.TestCase;
+
 import mat.dao.service.DAOService;
 import mat.model.User;
 import mat.server.LoggedInUserUtil;
@@ -20,13 +12,22 @@ import mat.server.service.CodeListService;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 //ApplicationContext will be loaded from "/applicationContext.xml" and "/applicationContext-test.xml"
 //in the root of the classpath
 @ContextConfiguration({"file:**/applicationContext-mail.xml", "file:**/war/WEB-INF/mat-persistence.xml",
 	"file:**/applicationContext-service.xml"})
-@Rollback(false)
-@Transactional(transactionManager="txManager")
+@TransactionConfiguration(transactionManager="txManager", defaultRollback=false)
+@Transactional
 public abstract class SpringInitializationTest extends TestCase {
 	
 	@Autowired

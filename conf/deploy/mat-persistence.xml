@@ -31,7 +31,7 @@
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="dataSource">
 		<property name="dataSource">
-			<ref bean="dataSource" />
+			<ref local="dataSource" />
 		</property>
         <property name="eventListeners">
           <map>
@@ -50,6 +50,7 @@
 				<prop key="hibernate.connection.release_mode">auto</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>	
+                <!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->		
 			</props>
 		</property>
 		<property name="mappingLocations">
@@ -187,6 +188,14 @@
 			class="mat.dao.impl.CodeListAuditLogDAO" parent="baseDAO">
 	</bean>
 	
+	<!-- <bean id="clauseDAO"
+		class="mat.dao.impl.clause.ClauseDAO" parent="baseDAO">
+	</bean>	 -->		
+	
+	<!-- <bean id="contextDAO"
+		class="mat.dao.impl.clause.ContextDAO" parent="baseDAO">
+	</bean>	 -->		
+	
 	<bean id="measureDAO"
 		class="mat.dao.impl.clause.MeasureDAO" parent="baseDAO">
 	</bean>	
@@ -194,10 +203,38 @@
 		class="mat.dao.impl.clause.MeasureSetDAO" parent="baseDAO">
 	</bean>		
 	
+	<!-- <bean id="metadataDAO"
+		class="mat.dao.impl.clause.MetadataDAO" parent="baseDAO">
+	</bean> -->			
+	
 	<bean id="operatorDAO"
 		class="mat.dao.impl.clause.OperatorDAO" parent="baseDAO">
 	</bean>			
 	
+	<!-- <bean id="qDSElementDAO"
+		class="mat.dao.impl.clause.QDSElementDAO" parent="baseDAO">
+	</bean>	 		
+	
+	<bean id="qDSPropertyDAO"
+		class="mat.dao.impl.clause.QDSPropertyDAO" parent="baseDAO">
+	</bean>			
+	
+	<bean id="staticElementDAO"
+		class="mat.dao.impl.clause.StaticElementDAO" parent="baseDAO">
+	</bean>	-->		
+	
+	<!-- <bean id="decisionDAO"
+		class="mat.dao.impl.clause.DecisionDAO" parent="baseDAO">
+	</bean>	 -->		
+
+	<!-- <bean id="measurementTermDAO"
+		class="mat.dao.impl.clause.MeasurementTermDAO" parent="baseDAO">
+	</bean>	 -->		
+
+	<!-- <bean id="qDSTermDAO"
+		class="mat.dao.impl.clause.QDSTermDAO" parent="baseDAO">
+	</bean> -->
+
 	<bean id="shareLevelDAO"
         class="mat.dao.impl.clause.ShareLevelDAO" parent="baseDAO">
     </bean>
@@ -306,14 +343,19 @@
 		<property name="listObjectLTDAO" ref="listObjectLTDAO"/>
 		<property name="objectStatusDAO" ref="objectStatusDAO"/>
 		<property name="qualityDataSetDAO" ref="qualityDataSetDAO"/>
+		<!-- <property name="decisionDAO" ref="decisionDAO"/>
+		<property name="measurementTermDAO" ref="measurementTermDAO"/>
+		<property name="qDSTermDAO" ref="qDSTermDAO"/> -->
 		<property name="operatorDAO" ref="operatorDAO"/>
 		<property name="measureDAO" ref="measureDAO"/>
 		<property name="measureSetDAO" ref="measureSetDAO"/>
+		<!-- <property name="clauseDAO" ref="clauseDAO"/> -->
 		<property name="qDSAttributesDAO" ref="qDSAttributesDAO"/>
         <property name="attributesDAO" ref="attributesDAO"/>
         <property name="modesDAO" ref="modesDAO"/>
         <property name="modesAttributesDAO" ref="modesAttributesDAO"/>
 		<property name="qDSAttributeDetailsDAO" ref="qDSAttributeDetailsDAO"/>
+		<!-- <property name="contextDAO" ref="contextDAO"/> -->
 		<property name="measureScoreDAO" ref="measureScoreDAO"/>
 		<property name="unitDAO" ref="unitDAO"/>
 		<property name="unitTypeDAO" ref="unitTypeDAO"/>

@@ -1,5 +1,6 @@
 package mat.client.admin;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -29,6 +31,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.DTO.UserAuditLogDTO;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CustomTextAreaWithMaxLength;
@@ -46,9 +49,7 @@ import mat.client.shared.SuccessMessageAlert;
 /**
  * The Class ManageUsersDetailView.
  */
-public class ManageUsersDetailView
-implements ManageUsersPresenter.DetailDisplay {
-	
+public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay {
 	private TextBox firstNameTextBox = new TextBox();
 	private TextBox middleNameTextBox = new TextBox();
 	private TextBox lastNameTextBox = new TextBox();
@@ -128,6 +129,8 @@ implements ManageUsersPresenter.DetailDisplay {
 	
 	private CustomTextAreaWithMaxLength addInfoArea = new CustomTextAreaWithMaxLength(ADD_INFO_MAX_LENGTH);
 	
+	private HTML notesHistoryArea = new HTML();
+	
 	private MessageAlert informationMessage = new InformationMessageAlert();
 
 
@@ -174,32 +177,45 @@ implements ManageUsersPresenter.DetailDisplay {
 		fPanel.add(successMessages);
 		fPanel.add(errorMessages);
 		
-		FlowPanel rightPanel = new FlowPanel();
-		rightPanel.addStyleName("floatLeft");
-		rightPanel.addStyleName("manageUserRightPanel");
 		FlowPanel leftPanel = new FlowPanel();
 		leftPanel.addStyleName("floatLeft");
+		leftPanel.setWidth("30%");
+		
+		FlowPanel centerPanel = new FlowPanel();
+		centerPanel.addStyleName("floatLeft");
+		centerPanel.addStyleName("manageUserRightPanel");
+		centerPanel.setWidth("30%");
+		
+		FlowPanel notesPanel = new FlowPanel();
+		notesPanel.addStyleName("manageUserRightPanel");
+		notesPanel.addStyleName("floatRight");
+		notesPanel.setWidth("30%");
 		
 		fPanel.add(leftPanel);
-		fPanel.add(rightPanel);
+		fPanel.add(centerPanel);
+		fPanel.add(notesPanel);
 		
 		SimplePanel clearPanel = new SimplePanel();
 		clearPanel.addStyleName("clearBoth");
 		fPanel.add(clearPanel);
 		
 		Form leftSideForm = buildLeftSideForm();
-		
 		leftPanel.add(leftSideForm);
 		leftPanel.add(new SpacerWidget());
 		
 				
-		Form rightSideForm = buildRightSideForm();
+		Form centerForm = buildCenterForm();
+		centerPanel.add(centerForm);
+		centerPanel.add(new SpacerWidget());
 		
-		rightPanel.add(rightSideForm);
-		rightPanel.add(new SpacerWidget());
+		Form notesForm = buildNotesForm();
+		notesPanel.add(notesForm);
+		notesPanel.add(new SpacerWidget());
+		
 		SimplePanel buttonPanel = new SimplePanel();
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
+		buttonPanel.getElement().getStyle().setProperty("textAlign", "right");
 		fPanel.add(buttonPanel);
 		mainPanel.add(fPanel);
 		containerPanel.setContent(mainPanel);
@@ -207,9 +223,48 @@ implements ManageUsersPresenter.DetailDisplay {
 		addEventHandlers();
 	}
 	
+	private Form buildNotesForm() {
+		Form notesForm = new Form();
+		notesForm.getElement().getStyle().setProperty("height", "400px");
+		FieldSet formFieldSet = new FieldSet();
+		FormLabel additionaInfoLabel = new FormLabel();
+		additionaInfoLabel.setId("addInfoLabel");
+		additionaInfoLabel.setFor("addInfoContent");
+		additionaInfoLabel.setText("Notes");
+		addInfoArea.getElement().setAttribute("maxlength", "250");
+		addInfoArea.getElement().setAttribute("id", "addInfoContent");
+		addInfoArea.setText("");
+		addInfoArea.setHeight("80px");
+		addInfoArea.setWidth("250px");
+		
+		additionalInfoGroup.add(additionaInfoLabel);
+		additionalInfoGroup.add(addInfoArea);	
+		
+		FormLabel notesHistoryLabel = new FormLabel();
+		notesHistoryLabel.setId("notesHistoryLabel");
+		notesHistoryLabel.setFor("notesHistoryContent");
+		notesHistoryLabel.setText("Notes History");
+		
+		notesHistoryArea.getElement().setAttribute("maxlength", "250");
+		notesHistoryArea.getElement().setAttribute("id", "notesHistoryContent");
+		notesHistoryArea.setText("");
+		notesHistoryArea.setHTML("");
+		notesHistoryArea.setHeight("200px");
+		notesHistoryArea.setWidth("250px");
+		notesHistoryArea.addStyleName("form-control");
+		notesHistoryArea.getElement().getStyle().setProperty("overflowY", "auto");
+		additionalInfoGroup.add(new SpacerWidget());
+		additionalInfoGroup.add(notesHistoryLabel);
+		additionalInfoGroup.add(notesHistoryArea);
+
+		formFieldSet.add(additionalInfoGroup);
+		notesForm.add(formFieldSet);
+		return notesForm;
+	}
 	
-	private Form buildRightSideForm(){
-		Form rightSideForm = new Form();
+	private Form buildCenterForm(){
+		Form centerForm = new Form();
+		centerForm.getElement().setAttribute("height", "400px");
 		FormGroup roleGroup = new FormGroup();
 		FormGroup organizationGroup = new FormGroup();
 		FormGroup oidGroup = new FormGroup();
@@ -290,7 +345,6 @@ implements ManageUsersPresenter.DetailDisplay {
 		statusGroup.add(hzRevokePanel);
 		
 		resetPassword.setTitle("Reset Password");
-		//resetPassword.setType(ButtonType.INFO);
 		resetButtonGroup.add(resetPassword);
 		
 		FieldSet fieldSet = new FieldSet();
@@ -300,8 +354,8 @@ implements ManageUsersPresenter.DetailDisplay {
 		fieldSet.add(statusGroup);
 		fieldSet.add(resetButtonGroup);
 		
-		rightSideForm.add(fieldSet);
-		return rightSideForm;
+		centerForm.add(fieldSet);
+		return centerForm;
 	}
 
 
@@ -336,7 +390,6 @@ implements ManageUsersPresenter.DetailDisplay {
 			
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				// TODO Auto-generated method stub
 				if(event.getValue()) {
 					organizationListBox.setEnabled(false);
 					organizationListBox.setValue("");
@@ -361,6 +414,7 @@ implements ManageUsersPresenter.DetailDisplay {
 	private Form buildLeftSideForm(){
 		
 		Form userNameForm = new Form();
+		userNameForm.getElement().getStyle().setProperty("height", "400px");
 		FormGroup firstNameGroup = new FormGroup();
 		FormGroup middleNameGroup = new FormGroup();
 		FormGroup lastNameGroup = new FormGroup();
@@ -384,7 +438,6 @@ implements ManageUsersPresenter.DetailDisplay {
 		firstNameGroup.add(firstNameLabel);
 		firstNameGroup.add(firstNameTextBox);
 	
-		//middleNameTextBox.setPlaceholder("M.I.");
 		middleNameTextBox.setTitle("MiddleName");
 		middleNameTextBox.setId("MiddleNameTextBox");
 		middleNameTextBox.setWidth("32px");
@@ -421,7 +474,6 @@ implements ManageUsersPresenter.DetailDisplay {
 		FormLabel titleLabel = new FormLabel();
 		titleLabel.setId("titleLabel");
 		titleLabel.setFor("titleTextBox");
-		//titleLabel.setShowRequiredIndicator(true);	
 		titleLabel.setText("Title");
 		title.setPlaceholder("Enter Title");
 		title.setTitle("Title");
@@ -459,28 +511,11 @@ implements ManageUsersPresenter.DetailDisplay {
 		phoneNumberGroup.add(phoneNumberLabel);
 		phoneNumberGroup.add(phoneWidget);
 		
-		
-		FormLabel additionaInfoLabel = new FormLabel();
-		additionaInfoLabel.setId("addInfoLabel");
-		additionaInfoLabel.setFor("addInfoContent");
-		additionaInfoLabel.setText("Notes");
-		addInfoArea.getElement().setAttribute("maxlength", "250");
-		addInfoArea.getElement().setAttribute("id", "addInfoContent");
-		addInfoArea.setText("");
-		addInfoArea.setHeight("80px");
-		addInfoArea.setWidth("250px");
-		
-		additionalInfoGroup.add(additionaInfoLabel);
-		additionalInfoGroup.add(addInfoArea);
-		
-		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(nameGrid);
 		formFieldSet.add(titleGroup);
 		formFieldSet.add(emailAddressGroup);
 		formFieldSet.add(phoneNumberGroup);
-		formFieldSet.add(additionalInfoGroup);
-		
 		
 		userNameForm.add(formFieldSet);
 		return userNameForm;
@@ -735,11 +770,6 @@ implements ManageUsersPresenter.DetailDisplay {
 	}
 	
 	
-	/*@Override
-	public HasValue<String> getRootOid() {
-		return rootOid;
-	}*/
-	
 	/** Sets the organizations map.
 	 * 
 	 * @param organizationsMap the organizationsMap to set */
@@ -812,5 +842,25 @@ implements ManageUsersPresenter.DetailDisplay {
 	@Override
 	public void setShowAdminNotes(boolean b) {
 		additionalInfoGroup.setVisible(b);
+	}
+
+	@Override
+	public void populateNotes(List<UserAuditLogDTO> result) {
+		String htmlContent = "";
+		for(UserAuditLogDTO auditLog: result) {
+			if(auditLog.getActivityType().equalsIgnoreCase("Administrator Notes")) {
+				Date activityDate = auditLog.getTime();
+				String dateString = "";
+				if (activityDate != null) {
+					DateTimeFormat formatter = DateTimeFormat
+							.getFormat("MM'/'dd'/'yyyy h:mm:ss a");
+					dateString = formatter.format(activityDate);
+					dateString += " CST";
+				}
+				htmlContent += "<div style=\"margin-top: 3px; margin-bottom:3px; color: black;\"><b>" + dateString + "</b>";
+				htmlContent += "<br/>" + auditLog.getAdditionalInfo() + "</div>";
+			}
+		}
+		notesHistoryArea.setHTML(htmlContent);
 	}
 }

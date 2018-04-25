@@ -3,7 +3,6 @@ package mat.client.admin;
 import mat.model.BaseModel;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageUsersDetailModel.
  */
@@ -42,7 +41,6 @@ public class ManageUsersDetailModel implements IsSerializable , BaseModel {
 	/** The oid. */
 	private String oid;
 	
-	//private String rootOid;
 	/** The role. */
 	private String role;
 	

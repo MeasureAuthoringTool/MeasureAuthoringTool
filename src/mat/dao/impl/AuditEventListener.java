@@ -52,7 +52,6 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	@Override
 	public boolean onPreUpdate(PreUpdateEvent arg0) {
 		if(shouldAudit(arg0.getEntity(), ConstantMessages.UPDATE)) {
-			EventSource session = arg0.getSession();
 			Object logObj = createLogObject(arg0.getEntity(), ConstantMessages.UPDATE);
 			saveOrUpdate(arg0.getSession(), logObj);
 		}
@@ -167,16 +166,6 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	 */
 	private void saveOrUpdate(EventSource eventSource, Object obj){
 		Session session = eventSource.getSessionFactory().openSession();
-		if(obj instanceof MeasureAuditLog) {
-			MeasureAuditLog log = (MeasureAuditLog)obj;
-			
-		}else if(obj instanceof CQLAuditLog) {
-			CQLAuditLog log = (CQLAuditLog)obj;
-			
-		}else if(obj instanceof AuditLog) {
-			AuditLog log = (AuditLog)obj;
-			
-		}
 		try{			
 			session.getTransaction().begin();
 			session.saveOrUpdate(obj);

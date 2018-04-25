@@ -97,22 +97,6 @@ import net.sf.json.xml.XMLSerializer;
  * The Class CQLServiceImpl.
  */
 public class CQLServiceImpl implements CQLService {
-
-	public static final String PATIENT_CHARACTERSTICS_EXPIRED = "Patient Characteristic Expired";
-
-	public static final String DEAD = "Dead";
-
-	public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-
-	public static final String BIRTHDATE = "Birthdate";
-
-	private static final String BIRTHDATE_CODE_ID = "21112-8";
-	
-	private static final String DEAD_CODE_ID = "419099009";
-	
-	private static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
-	
-	private static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
 	
 	/** The cql dao. */
 	@Autowired
@@ -2561,8 +2545,7 @@ public class CQLServiceImpl implements CQLService {
 		result.setEndLine(endLine);
 
 		List<String> expressionList = getExpressionListFromCqlModel(cqlModel);
-		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
-		parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
+		SaveUpdateCQLResult parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
 		if(!parsedCQL.getCqlErrors().isEmpty()){
 			result.setValidCQLWhileSavingExpression(false);
@@ -2691,18 +2674,18 @@ public class CQLServiceImpl implements CQLService {
 		List<String> exprList = new ArrayList<String>();
 
 		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
-			System.out.println("name:" + cqlDefinition.getDefinitionName());
+			logger.info("name:" + cqlDefinition.getDefinitionName());
 			exprList.add(cqlDefinition.getDefinitionName());
 		}
 
 		for (CQLFunctions cqlFunction : cqlModel.getCqlFunctions()) {
-			System.out.println("name:" + cqlFunction.getFunctionName());
+			logger.info("name:" + cqlFunction.getFunctionName());
 			exprList.add(cqlFunction.getFunctionName());
 		}
 		
 		
 		for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {
-			System.out.println("name:" + cqlParameter.getParameterName());
+			logger.info("name:" + cqlParameter.getParameterName());
 			exprList.add(cqlParameter.getParameterName());
 		}
 
@@ -2720,7 +2703,7 @@ public class CQLServiceImpl implements CQLService {
 					.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
-			System.out.println("USED LIBRARY: " + cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries());
+			logger.info("USED LIBRARY: " + cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries());
 
 			setReturnTypes(cqlResult, cqlModel);
 
@@ -2894,13 +2877,7 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		codeTransferObject.scrubForMarkUp();
 		if (codeTransferObject.isValidModel() ) {
-			if(((codeTransferObject.getCqlCode().getCodeOID().equals(BIRTHDATE_CODE_ID)) && (codeTransferObject.getCqlCode().getCodeSystemOID().equals(BIRTHDATE_CODE_SYSTEM_OID)))
-					|| ((codeTransferObject.getCqlCode().getCodeOID().equals(DEAD_CODE_ID)) && (codeTransferObject.getCqlCode().getCodeSystemOID().equals(DEAD_CODE_SYSTEM_OID)))) {
-				result.setFailureReason(result.getBirthdateOrDeadError());
-				result.setSuccess(false);
-				return result; 
-			}
-			
+
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);
 			CQLCode appliedCode = codeTransferObject.getCqlCode();
 			appliedCode.setId(UUID.randomUUID().toString().replaceAll("-", ""));
@@ -3156,7 +3133,7 @@ public class CQLServiceImpl implements CQLService {
 		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		List<String> messageList = new ArrayList<String>();
 		validator.validate(matValueSetTransferObject);
-		if (messageList.size() == 0) {
+		if (messageList.isEmpty()) {
 			if (!isDuplicate(matValueSetTransferObject, false)) {
 				ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
 				wrapper.setQualityDataDTO(qdsList);
@@ -3409,7 +3386,7 @@ public class CQLServiceImpl implements CQLService {
 			List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		System.out.println("DELETE Include CLICK " + toBeModifiedIncludeObj.getAliasName());
+		logger.info("DELETE Include CLICK " + toBeModifiedIncludeObj.getAliasName());
 
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
@@ -3418,16 +3395,16 @@ public class CQLServiceImpl implements CQLService {
 		if (xml != null) {
 			String XPATH_EXPRESSION_CQLLOOKUP_INCLUDE = "//cqlLookUp//includeLibrary[@id='"
 					+ toBeModifiedIncludeObj.getId() + "']";
-			System.out.println("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
+			logger.info("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
 			try {
 				Node includeNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
 
 				if (includeNode != null) {
-					System.out.println("FOUND NODE");
+					logger.info("FOUND NODE");
 
 					// remove from xml
 					Node deletedNode = includeNode.getParentNode().removeChild(includeNode);
-					System.out.println(deletedNode.getAttributes().getNamedItem("name").toString());
+					logger.debug(deletedNode.getAttributes().getNamedItem("name").toString());
 					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 					result.setXml(processor.getOriginalXml());
 
@@ -3440,22 +3417,22 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				else {
-					System.out.println("NOT FOUND NODE");
+					logger.info("NOT FOUND NODE");
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 				}
 
 			} catch (XPathExpressionException e) {
 				result.setSuccess(false);
-				e.printStackTrace();
+				logger.error("deleteInclude" + e.getMessage());
 			}
 		}
 
 		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
 			result.getCqlModel().setCqlIncludeLibrarys(sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
 			CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
-			System.out.println(result.getXml());
-			System.out.println(result.isSuccess());
+			logger.info(result.getXml());
+			logger.info(result.isSuccess());
 		}
 
 		return result;
@@ -3494,7 +3471,7 @@ public class CQLServiceImpl implements CQLService {
 			int fileStartLine = -1;
 			int fileEndLine = -1;
 			int size = 0;
-			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, expressionObject.getName()).toString();
+			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, expressionObject.getName());
 			
 			String wholeDef = ""; 
 			String expressionToFind = null;
@@ -3527,8 +3504,8 @@ public class CQLServiceImpl implements CQLService {
 			}
 			
 			
-			System.out.println("fileStartLine of expression ===== "+ fileStartLine);
-			System.out.println("fileEndLine of expression ===== "+ fileEndLine);
+			logger.debug("fileStartLine of expression ===== "+ fileStartLine);
+			logger.debug("fileEndLine of expression ===== "+ fileEndLine);
 		
 			List<CQLErrors> errors = new ArrayList<CQLErrors>();
 			for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
@@ -3567,7 +3544,7 @@ public class CQLServiceImpl implements CQLService {
 		try {
 			LineNumberReader rdr = new LineNumberReader(new StringReader(cqlFileString));
 			String line = null;
-			System.out.println("Expression to Find :: " + expressionToFind);
+			logger.debug("Expression to Find :: " + expressionToFind);
 			while((line = rdr.readLine()) != null) {
 				if (line.indexOf(expressionToFind) >= 0) {
 		        	fileStartLine =rdr.getLineNumber();
@@ -3575,9 +3552,9 @@ public class CQLServiceImpl implements CQLService {
 		        }
 			}
 			rdr.close();
-		   // cqlFile.deleteOnExit();
+
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("findStartLineForCQLExpressionInCQLFile" + e.getMessage());
 		}
 		return fileStartLine;
 	}

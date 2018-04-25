@@ -27,8 +27,28 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mail.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mysql-connector-java-5.1.6-bin.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.aop-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.asm-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.aspects-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.beans-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.context-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.context.support-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.core-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.expression-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.jdbc-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.orm-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.oxm-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.test-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.transaction-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.web-3.0.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.web.servlet-3.0.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-log4j12-1.6.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-acl-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-config-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-core-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-taglibs-3.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-web-3.0.3.RELEASE.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/standard-1.1.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/easymock-3.0.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/cglib-2.2.jar"/>
@@ -74,25 +94,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-5.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/asm-tree-5.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsoup-1.11.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/groovy-json-2.4.14.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-acl-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-config-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-core-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-taglibs-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-web-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-web-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-webmvc-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-core-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-beans-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-aop-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-context-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-expression-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-tx-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-jdbc-5.0.4.RELEASE.jar"/>
-	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER/GWT 2.8.1"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-test-5.0.5.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.orm-3.0.4.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/org.springframework.context.support-3.0.4.RELEASE.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

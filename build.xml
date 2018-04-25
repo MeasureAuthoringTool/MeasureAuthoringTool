@@ -283,7 +283,7 @@
 			<auxClasspath>
 				<fileset file="${output.dir}/WEB-INF/lib/gwt-user.jar" />
 				<fileset file="${output.dir}/WEB-INF/lib/hibernate-3.5.6.jar" />
-				<fileset file="${output.dir}/WEB-INF/lib/spring-security-core-3.0.3.RELEASE.jar" />
+				<fileset file="${output.dir}/WEB-INF/lib/spring-security-core-5.0.4.RELEASE.jar" />
 				<fileset file="${output.dir}/WEB-INF/lib/vt-password-3.1.1.jar" />
 				<fileset file="${output.dir}/WEB-INF/lib/vt-dictionary-3.0.jar" />
 				<fileset file="${output.dir}/WEB-INF/lib/http*.jar" />

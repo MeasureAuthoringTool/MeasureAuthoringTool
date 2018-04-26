@@ -183,10 +183,6 @@ public class CQLUtil {
 	 * @return true if it valid, false if it is not.
 	 */
 	private static boolean isValidDataTypeCombination(String codeOID, String codesystemOID, List<String> dataTypeList) {
-		System.out.println("Code OID: " + codeOID);
-		System.out.println("Code System OID: " + codesystemOID);
-		System.out.println("+================");
-
 		// check if the birthdate valueset is being used with something other
 		// than then Patient Characteristic Birthdate datatype
 		if (codeOID.equals(BIRTHDATE_OID) && codesystemOID.equals(BIRTHDATE_CODESYTEM_OID)) {
@@ -200,7 +196,6 @@ public class CQLUtil {
 		// check if the dead valueset is being used with something other than
 		// the Patient Characteristic Expired datatype
 		else if (codeOID.equals(DEAD_OID) && codesystemOID.equals(DEAD_CODESYSTEM_OID)) {
-			System.out.println("I'm DEAD");
 			for (String dataType : dataTypeList) {
 				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
 					return false;

@@ -1,48 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-  - Sample namespace-based configuration
-  -
-  -->
-
 <beans:beans xmlns="http://www.springframework.org/schema/security"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-    <global-method-security pre-post-annotations="enabled">
-    </global-method-security>
+    <global-method-security pre-post-annotations="enabled" />
 
     <http use-expressions="true">
-       <!--  <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="https" />
-         <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="https" /> -->
-         <!-- Above is commented as proxy changes are done to not use https. -->
-         <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="any" />
-         <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="any" />
+    	<csrf disabled="true"/>
+        <!-- Above is commented as proxy changes are done to not use https. -->
+        <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="any" />
+        <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="any" />
         <form-login default-target-url="/Mat.html" login-page="/Login.html"/>
-        <!-- <logout invalidate-session="true" success-handler-ref="logoutSuccessHandler" /> -->
-         <logout/>
-       
+        <logout/>
         <session-management invalid-session-url="/Login.html">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
         </session-management>
-        <!--  <custom-filter after="SECURITY_CONTEXT_FILTER" ref="preventCachingFilter"/> -->
-       	
     </http>
 	
+	<beans:bean id="bcrypt" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
 	<authentication-manager>
 	 <authentication-provider>
-       <password-encoder hash="md5"/>
+       <password-encoder ref="bcrypt"/>
        <user-service>
                 <user name="dude" password="blahblah" authorities="ROLE_SUPERVISOR, ROLE_USER, ROLE_TELLER" />
        </user-service>
 	</authentication-provider>    
    </authentication-manager>
-   <!-- <beans:bean id="logoutSuccessHandler" class="mat.server.GWTLogoutSuccessHandler"/> -->
-   
-    <!--  <beans:bean id="preventCachingFilter" class="mat.server.PreventCachingFilter">
-    </beans:bean> -->
    
 </beans:beans>
 

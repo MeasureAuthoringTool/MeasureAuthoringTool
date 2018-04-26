@@ -346,19 +346,6 @@ public final class CQLUtilityClass {
 		return endLine;
 	}
 
-	public static int countLines(String str) {
-		if(StringUtils.isBlank(str))
-		{
-			return 0;
-		}
-		int lines = 1;
-		int pos = 0;
-		while ((pos = str.indexOf("\n\n", pos) + 1) != 0) {
-			lines = lines + 2;
-		}
-		return lines;
-	}
-
 	public static List<CQLQualityDataSetDTO> sortCQLQualityDataSetDto(List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs){
 
 		cqlQualityDataSetDTOs.sort((c1, c2) -> c1.getCodeListName().compareToIgnoreCase(c2.getCodeListName()));

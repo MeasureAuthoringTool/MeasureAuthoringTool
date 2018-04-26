@@ -17,11 +17,13 @@ import javax.xml.xpath.XPathFactory;
 
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
+import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
+import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLUtilityClass;
 import mat.shared.CQLErrors;
 import mat.shared.CQLExpressionObject;
@@ -61,7 +63,15 @@ public class CQLUtil {
 
     public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
 
-    public static final String BIRTHDATE = "Birthdate";
+    private static final String BIRTHDATE = "Birthdate";
+    
+    private static final String BIRTHDATE_OID = "21112-8";
+    
+    private static final String BIRTHDATE_CODESYTEM_OID = "2.16.840.1.113883.6.1";
+    
+    private static final String DEAD_OID = "419099009";
+    
+    private static final String DEAD_CODESYSTEM_OID = "2.16.840.1.113883.6.96";
 
 
 	/**
@@ -109,7 +119,7 @@ public class CQLUtil {
 		return cqlArtifactHolder;
 	}
 	
-	public static boolean isValidDataTypeUsed(Map<String, List<String>> valueSetDataTypeMap,
+	public static boolean isValidDataTypeUsed(List<CQLQualityDataSetDTO> valuests, List<CQLCode> codes, Map<String, List<String>> valueSetDataTypeMap,
 			Map<String, List<String>> codeDataTypeMap) {
 		if (valueSetDataTypeMap != null && !valueSetDataTypeMap.isEmpty()) {
 			for (String valueSetName : valueSetDataTypeMap.keySet()) {
@@ -119,7 +129,7 @@ public class CQLUtil {
 					valueSetName = valueSetNameArray[2];
 				}
 
-				if (!isValidDataTypeCombination(valueSetName, dataTypeList)) {
+				if (!isValidDataTypeCombination(dataTypeList)) {
 					return false;
 				}
 			}
@@ -127,14 +137,15 @@ public class CQLUtil {
 
 		if (codeDataTypeMap != null && !codeDataTypeMap.isEmpty()) {
 			for (String codeName : codeDataTypeMap.keySet()) {
-				
+				findCodeByName(codeName, codes);
 				List<String> dataTypeList = codeDataTypeMap.get(codeName);
 				String[] codeNameArray = codeName.split(Pattern.quote("|"));
 				if (codeNameArray.length == 3) {
 					codeName = codeNameArray[2];
 				}
 
-				if (!isValidDataTypeCombination(codeName, dataTypeList)) {
+				CQLCode code = findCodeByName(codeName, codes);
+				if (!isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), dataTypeList)) {
 					return false;
 				}
 			}
@@ -142,17 +153,39 @@ public class CQLUtil {
 
 		return true;
 	}
+	
+	private static CQLCode findCodeByName(String codeName, List<CQLCode> codes) {
+		for(CQLCode code : codes) {
+			if(code.getDisplayName().equals(codeName)) {
+				return code; 
+			}
+		}
+		
+		return null; 
+	}
+	
+	/**
+	 * Checks if the datatype list contains "Patient Characteristic Birthdate or Patient Characteristic Dead.
+	 * 
+	 * If it does, return false, otherwise return true
+	 * 
+	 * @param dataTypeList
+	 * @return
+	 */
+	private static boolean isValidDataTypeCombination(List<String> dataTypeList) {
+		return !(dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE) || dataTypeList.contains(PATIENT_CHARACTERSTICS_EXPIRED));
+	}
+	
 
 	/**
 	 * Checks if the valueset/code has a valid datatype combination.
 	 * 
 	 * @return true if it valid, false if it is not.
 	 */
-	private static boolean isValidDataTypeCombination(String name, List<String> dataTypeList) {
-
+	private static boolean isValidDataTypeCombination(String codeOID, String codesystemOID, List<String> dataTypeList) {
 		// check if the birthdate valueset is being used with something other
 		// than then Patient Characteristic Birthdate datatype
-		if (name.equals(BIRTHDATE)) {
+		if (codeOID.equals(BIRTHDATE_OID) && codesystemOID.equals(BIRTHDATE_CODESYTEM_OID)) {
 			for (String dataType : dataTypeList) {
 				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
 					return false;
@@ -162,21 +195,21 @@ public class CQLUtil {
 
 		// check if the dead valueset is being used with something other than
 		// the Patient Characteristic Expired datatype
-		else if (name.equals(DEAD)) {
+		else if (codeOID.equals(DEAD_OID) && codesystemOID.equals(DEAD_CODESYSTEM_OID)) {
 			for (String dataType : dataTypeList) {
 				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
 					return false;
 				}
 			}
-		}
-
+		} 
+		
 		// if not birthdate or dead, check if the datatype list contains Patient
 		// Characteristic Birthdate or Dead, any non Birthdate or Dead code
 		// cannot use these datatypes.
-		else if (dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE)
-				|| dataTypeList.contains(PATIENT_CHARACTERSTICS_EXPIRED)) {
-			return false;
+		else {
+			return isValidDataTypeCombination(dataTypeList);
 		}
+
 
 		return true;
 	}
@@ -476,8 +509,6 @@ public class CQLUtil {
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
 			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
-			System.out.println("Include lib version for " + cqlIncludeLibrary.getCqlLibraryName() + " is:"
-					+ cqlIncludeLibrary.getVersion());
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
@@ -529,15 +560,11 @@ public class CQLUtil {
 		// add in the errors, if any
 		for (CqlTranslatorException cte : cqlTranslatorExceptions) {
 			CQLErrors cqlErrors = new CQLErrors();
-
 			cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-
 			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
 			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-
 			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
 			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-			System.err.println(cte.getMessage());
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
 		}
@@ -545,36 +572,6 @@ public class CQLUtil {
 		parsedCQL.setCqlErrors(errors);
 	}
 	
-	/*public static void filterCQLArtifacts(CQLModel cqlModel, SaveUpdateCQLResult parsedCQL, CQLtoELM cqlToElm, List<String> exprList) {
-		if (cqlToElm != null) {
-
-			CQLFilter cqlFilter = new CQLFilter(cqlToElm.getLibrary(), exprList, cqlToElm.getLibraryHolderMap(), cqlModel);
-			cqlFilter.findUsedExpressions();
-			CQLObject cqlObject = cqlFilter.getCqlObject();
-			GetUsedCQLArtifactsResult usedArtifacts = new GetUsedCQLArtifactsResult();
-			usedArtifacts.setUsedCQLcodes(cqlFilter.getUsedCodes());
-			usedArtifacts.setUsedCQLcodeSystems(cqlFilter.getUsedCodeSystems());
-			usedArtifacts.setUsedCQLDefinitions(cqlFilter.getUsedExpressions());
-			usedArtifacts.setUsedCQLFunctions(cqlFilter.getUsedFunctions());
-			usedArtifacts.setUsedCQLParameters(cqlFilter.getUsedParameters());
-			usedArtifacts.setUsedCQLValueSets(cqlFilter.getUsedValuesets());
-			usedArtifacts.setUsedCQLLibraries(cqlFilter.getUsedLibraries());
-			usedArtifacts.setValueSetDataTypeMap(cqlFilter.getValueSetDataTypeMap());
-			usedArtifacts.setCodeDataTypeMap(cqlFilter.getCodeDataTypeMap());
-			usedArtifacts.setIncludeLibMap(cqlFilter.getUsedLibrariesMap());
-			
-			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
-			parsedCQL.setCqlObject(cqlObject);
-
-			usedArtifacts.setDefinitionToDefinitionMap(cqlFilter.getDefinitionToDefinitionMap());
-			usedArtifacts.setDefinitionToFunctionMap(cqlFilter.getDefinitionToFunctionMap());
-			usedArtifacts.setFunctionToDefinitionMap(cqlFilter.getFunctionToDefinitionMap());
-			usedArtifacts.setFunctionToFunctionMap(cqlFilter.getFunctionToFunctionMap());
-			
-			System.out.println(usedArtifacts.toString());
-		}
-	}*/
-
 	/**
 	 * Filter CQL artifacts.
 	 *
@@ -604,9 +601,6 @@ public class CQLUtil {
 				expression.setReturnType(cqlToElm.getExpression(definitionName).getResultType().toString());		
 				expression.setCodeDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToCodeDataTypeMap().get(definitionName)));
 				expression.setValueSetDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToValuesetDataTypeMap().get(definitionName)));
-				System.out.println("Defn name:"+definitionName);
-				System.out.println(expression.getValueSetDataTypeMap());
-				System.out.println();
 				cqlObject.getCqlDefinitionObjectList().add(expression);
 			}
 

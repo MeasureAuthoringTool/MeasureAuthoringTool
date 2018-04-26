@@ -1720,16 +1720,13 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 
-		SaveUpdateCQLResult parsedCQL = null;
-
-
-		 parsedCQL = parseCQLLibraryForErrors(cqlModel);
+		SaveUpdateCQLResult parsedCQL = parseCQLLibraryForErrors(cqlModel);
 
 		if (parsedCQL.getCqlErrors().isEmpty()) {
 			parsedCQL.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
 			setUsedValuesets(parsedCQL, cqlModel);
 			setUsedCodes(parsedCQL, cqlModel);
-			boolean isValid = CQLUtil.isValidDataTypeUsed(parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(),
+			boolean isValid = CQLUtil.isValidDataTypeUsed(cqlModel.getValueSetList(), cqlModel.getCodeList(), parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(),
 					parsedCQL.getUsedCQLArtifacts().getCodeDataTypeMap());
 			parsedCQL.setDatatypeUsedCorrectly(isValid);
 
@@ -1770,57 +1767,19 @@ public class CQLServiceImpl implements CQLService {
 		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 
-		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
-		Map<String, String> libraryMap = new HashMap<>();
-
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 
-		libraryMap.put(cqlModel.getName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
-		for (String cqlLibName : cqlLibNameMap.keySet()) {
-			CQLModel includedCQLModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
-			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
-			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();
-			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
-		}
-
-		// do the parsing
-		CQLtoELM cqlToELM = new CQLtoELM(parentCQLString, libraryMap);
-		cqlToELM.doTranslation(true);
-		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		cqlTranslatorExceptions.addAll(cqlToELM.getErrors());
-
-		List<String> exprList = getExpressionListFromCqlModel(cqlModel);
-
-		// do the filtering
-		if(exprList != null){
-			CQLUtil.filterCQLArtifacts(cqlModel, result, cqlToELM, exprList);
-		}
-
-		// add in the errors, if any
-		for (CqlTranslatorException cte : cqlTranslatorExceptions) {
-			CQLErrors cqlErrors = new CQLErrors();
-
-			cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-
-			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-
-			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-
-			cqlErrors.setErrorMessage(cte.getMessage());
-			errors.add(cqlErrors);
-		}
+		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 
 		setUsedValuesets(result, cqlModel);
 		setUsedCodes(result, cqlModel);
-		boolean isValid = CQLUtil.isValidDataTypeUsed(result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
+		boolean isValid = CQLUtil.isValidDataTypeUsed(cqlModel.getValueSetList(), cqlModel.getCodeList(), result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
 				result.getUsedCQLArtifacts().getCodeDataTypeMap());
 		result.setDatatypeUsedCorrectly(isValid);
 
-		if(errors.isEmpty()) {
+		// if there is no cql errors
+		if(result.getCqlErrors().isEmpty()) {
 			try {
 				CQLFormatter formatter = new CQLFormatter();
 				result.setCqlString(formatter.format(parentCQLString));
@@ -1832,9 +1791,10 @@ public class CQLServiceImpl implements CQLService {
 		else {
 			result.setCqlString(parentCQLString);
 		}
+		
 		result.setCqlString(parentCQLString);
-		result.setCqlErrors(errors);
 		result.setLibraryName(parentLibraryName);
+		
 		return result;
 	}
 
@@ -2508,7 +2468,7 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-		public SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
+	private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
 			String cqlExpressionName, String logic, String expressionName, String expressionType) {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml);
@@ -2520,16 +2480,15 @@ public class CQLServiceImpl implements CQLService {
 		int size = 0;
 		int startLine = 0;
 		int endLine = CQLUtilityClass.getSize();
-		
-				
-		if(expressionType.equalsIgnoreCase("parameter")) {
+
+		if (expressionType.equalsIgnoreCase("parameter")) {
 			endLine = endLine + 1; // for parameters, the size is actually 1 more than reporetd.
 			wholeDef = cqlExpressionName + " " + logic;
 			size = countLines(wholeDef);
-			
-			if(size > 1) {
+
+			if (size > 1) {
 				startLine = endLine - size;
-			}else {
+			} else {
 				startLine = endLine;
 			}
 		}
@@ -2547,27 +2506,27 @@ public class CQLServiceImpl implements CQLService {
 		List<String> expressionList = getExpressionListFromCqlModel(cqlModel);
 		SaveUpdateCQLResult parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
-		if(!parsedCQL.getCqlErrors().isEmpty()){
+		if (!parsedCQL.getCqlErrors().isEmpty()) {
 			result.setValidCQLWhileSavingExpression(false);
 		}
 		List<CQLErrors> errors = new ArrayList<CQLErrors>();
 		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();
-			
+
 			if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
-				
-				if(cqlError.getStartErrorInLine() == startLine) {
+
+				if (cqlError.getStartErrorInLine() == startLine) {
 					cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine);
-				}else {
+				} else {
 					cqlError.setStartErrorInLine(cqlError.getStartErrorInLine() - startLine - 1);
 				}
-				
-				if(cqlError.getEndErrorInLine() == startLine) {
+
+				if (cqlError.getEndErrorInLine() == startLine) {
 					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine);
-				}else {
+				} else {
 					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - startLine - 1);
 				}
-				
+
 				cqlError.setErrorMessage(cqlError.getErrorMessage());
 				errors.add(cqlError);
 			}
@@ -2576,7 +2535,7 @@ public class CQLServiceImpl implements CQLService {
 		if (errors.isEmpty()) {
 			result.setCqlObject(parsedCQL.getCqlObject());
 
-			boolean isValid = findValidDataTypeUsage(expressionName, expressionType, parsedCQL);
+			boolean isValid = findValidDataTypeUsage(cqlModel, expressionName, expressionType, parsedCQL);
 			result.setDatatypeUsedCorrectly(isValid);
 			if (isValid) {
 				XmlProcessor xmlProcessor = new XmlProcessor(xml);
@@ -2593,8 +2552,7 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 
-	private boolean findValidDataTypeUsage(String expressionName, String expressionType,
-			SaveUpdateCQLResult parsedCQL) {
+	private boolean findValidDataTypeUsage(CQLModel model, String expressionName, String expressionType, SaveUpdateCQLResult parsedCQL) {
 		List<CQLExpressionObject> expressionList = null;
 		switch (expressionType) {
 		case "Function":
@@ -2608,10 +2566,11 @@ public class CQLServiceImpl implements CQLService {
 			break;
 
 		}
+		
 		CQLExpressionObject cqlExpressionObject = findExpressionObject(expressionName, expressionList);
 		boolean isValid = true;
 		if (cqlExpressionObject != null) {
-			isValid = CQLUtil.isValidDataTypeUsed(cqlExpressionObject.getValueSetDataTypeMap(),
+			isValid = CQLUtil.isValidDataTypeUsed(model.getValueSetList(), model.getCodeList(), cqlExpressionObject.getValueSetDataTypeMap(),
 					cqlExpressionObject.getCodeDataTypeMap());
 		}
 		return isValid;
@@ -2703,8 +2662,6 @@ public class CQLServiceImpl implements CQLService {
 					.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
-			logger.info("USED LIBRARY: " + cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries());
-
 			setReturnTypes(cqlResult, cqlModel);
 
 		} else {

@@ -61,6 +61,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
+import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
 
@@ -111,6 +112,8 @@ public class CQLCodesView {
 	
 	/** The last selected object. */
 	private CQLCode lastSelectedObject;
+	
+	private CQLCode validateCodeObject;
 	
 	/** the Code Descriptor input */
 	private MatTextBox codeDescriptorInput = new MatTextBox();
@@ -1216,12 +1219,30 @@ public class CQLCodesView {
 		this.includeCodeSystemVersionCheckBox = includeCodeSystemVersionCheckBox;
 	}
 
-	public boolean checkCodeInAppliedCodeTableList(CQLCode refCode, List<CQLCode> appliedCodeTableList) {
-		for(CQLCode cqlCode: appliedCodeTableList) {
-			if(cqlCode.getDisplayName().equalsIgnoreCase(refCode.getDisplayName())) {
-				return true;
-			}
-		}
-		return false;
+	public boolean checkCodeInAppliedCodeTableList(String displayName, List<CQLCode> appliedCodeTableList) {
+		
+		return appliedCodeTableList.stream().anyMatch(code -> code.getDisplayName().equalsIgnoreCase(displayName));		
+	}
+
+	public CQLCode getValidateCodeObject() {
+		return validateCodeObject;
+	}
+
+	public void setValidateCodeObject(CQLCode validateCodeObject) {
+		this.validateCodeObject = validateCodeObject;
+	}
+	
+	public MatCodeTransferObject getCodeTransferObject(String libraryId, CQLCode refCode) {
+		MatCodeTransferObject transferObject = new MatCodeTransferObject();
+		transferObject.setCqlCode(refCode);
+		transferObject.setId(libraryId);
+		transferObject.scrubForMarkUp();
+		
+		 if (transferObject.isValidModel() && 
+				 transferObject.isValidCodeData(this.getValidateCodeObject())){
+			 return transferObject;
+		 }
+		 
+		 return null;
 	}
 }

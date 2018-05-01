@@ -350,8 +350,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
 				try {
 					MeasureUtility.updateLatestQDMVersion(processor);
-					
-					//TODO here - test this
 					SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
 					List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
 					processor.removeUnusedCodes(usedCodeList);

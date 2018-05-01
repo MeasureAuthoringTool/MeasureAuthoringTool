@@ -38,8 +38,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.sun.org.apache.bcel.internal.classfile.Code;
-
 import mat.shared.UUIDUtilClient;
 
 /**
@@ -246,6 +244,11 @@ public class XmlProcessor {
 	
 	private static final String XPATH_FOR_PATIENT_BASED_INDICATOR = "/measure/measureDetails/patientBasedIndicator";
 	
+	private static final String XPATH_FOR_CODES = "//cqlLookUp/codes/code";
+	
+	private static final String ATTRIBUTE_CODE_OID = "codeOID";
+	private static final String ATTRIBUTE_CODE_NAME = "codeName";
+	private static final String ATTRIBUTE_CODE_SYSTEM_OID = "codeSystemOID";
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {
 		INITIAL_POPULATIONS, NUMERATORS, NUMERATOR_EXCLUSIONS, DENOMINATORS,
@@ -1478,17 +1481,16 @@ public class XmlProcessor {
 	}
 
 	public void removeUnusedCodes(List<String> usedCodeList) {
-		String xPathString = "//cqlLookUp/codes/code";
 		try {
-			NodeList nodeList = findNodeList(getOriginalDoc(), xPathString);
+			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_CODES);
 			List<String> codeSystemOIDsToRemove = new ArrayList<String>();
 			for(int i = 0; i<nodeList.getLength(); i++) {
 				Node currentNode = nodeList.item(i);
-				String codeOID = currentNode.getAttributes().getNamedItem("codeOID").getNodeValue();
+				String codeOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_OID).getNodeValue();
 				if(codeOID.equals(CQLUtil.BIRTHDATE_OID) || codeOID.equals(CQLUtil.DEAD_OID)) {
-					String codeName = currentNode.getAttributes().getNamedItem("codeName").getNodeValue();
+					String codeName = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_NAME).getNodeValue();
 					if(!usedCodeList.contains(codeName)) {
-						String codeSystemOID = currentNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+						String codeSystemOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_SYSTEM_OID).getNodeValue();
 						codeSystemOIDsToRemove.add(codeSystemOID);
 						Node parentNode = currentNode.getParentNode();
 						parentNode.removeChild(currentNode);	
@@ -1496,16 +1498,15 @@ public class XmlProcessor {
 				}
 			}
 			removeUnusedCodeSystems(codeSystemOIDsToRemove);
-		} catch (XPathExpressionException e) {/* do nothing */}
+		} catch (XPathExpressionException e) {LOG.error(e.getMessage());}
 	}
 
 	private void removeUnusedCodeSystems(List<String> codeSystemOIDsToRemove) {
-		String xPathString = "//cqlLookUp/codes/code";
 		try {
-			NodeList nodeList = findNodeList(getOriginalDoc(), xPathString);
+			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_CODES);
 			for(int i = 0; i<nodeList.getLength(); i++) {
 				Node currentNode = nodeList.item(i);
-				String codeSystemOID = currentNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+				String codeSystemOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_SYSTEM_OID).getNodeValue();
 				if(codeSystemOIDsToRemove.contains(codeSystemOID)) {
 					codeSystemOIDsToRemove.remove(codeSystemOIDsToRemove.indexOf(codeSystemOID));
 				}		
@@ -1517,6 +1518,6 @@ public class XmlProcessor {
 				Node parentNode = codeSystemNode.getParentNode();
 				parentNode.removeChild(codeSystemNode);
 			}
-		} catch (Exception e) {/* do nothing */}
+		} catch (Exception e) {LOG.error(e.getMessage());}
 	}
 }

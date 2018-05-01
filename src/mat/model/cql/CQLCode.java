@@ -1,5 +1,7 @@
 package mat.model.cql;
 
+import java.util.Objects;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -182,5 +184,20 @@ public class CQLCode implements IsSerializable {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
-	
+
+	@Override
+	public boolean equals(final Object other) {
+		if ( !(other instanceof CQLCode) ){
+			return false;
+		}
+		CQLCode castOther = (CQLCode) other;
+		return Objects.equals(codeName, castOther.codeName) && Objects.equals(codeSystemName, castOther.codeSystemName) 
+				&& Objects.equals(codeSystemVersion, castOther.codeSystemVersion) && Objects.equals(codeSystemOID, castOther.codeSystemOID) 
+				&& Objects.equals(codeOID, castOther.codeOID) && Objects.equals(codeIdentifier, castOther.codeIdentifier);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codeName, codeSystemName, codeSystemVersion, codeSystemOID, codeOID, codeIdentifier);
+	}
 }

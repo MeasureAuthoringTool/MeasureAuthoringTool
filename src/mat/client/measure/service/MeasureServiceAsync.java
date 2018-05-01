@@ -686,8 +686,6 @@ public interface MeasureServiceAsync {
 	
 	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
 
-	void parseCQLForErrors(String cqlString, AsyncCallback<SaveUpdateCQLResult> callback);
-
 	void parseCQLStringForError(String cqlFileString, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getCQLValusets(String measureID, AsyncCallback<CQLQualityDataModelWrapper> callback);

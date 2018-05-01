@@ -561,15 +561,6 @@ MeasureService {
 		this.getMeasureLibraryService().createAndSaveCQLLookUp(list, measureID, expProfileToAllQDM);
 		
 	}
-
-	@Override
-	public SaveUpdateCQLResult parseCQLForErrors(String measureId) {
-		
-		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getXml()),"").toString();
-		
-		return parseCQLStringForError(cqlFileString);
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#parseCQLStringForError(java.lang.String)

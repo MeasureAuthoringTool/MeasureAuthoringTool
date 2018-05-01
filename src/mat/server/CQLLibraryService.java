@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.annotation.processing.Processor;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -331,7 +332,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
 	@Override
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId){
-		
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		CQLLibrary existingLibrary = cqlLibraryDAO.find(libraryId);
 		boolean isDraftable = MatContextServiceUtil.get().isCurrentCQLLibraryDraftable(
@@ -350,11 +350,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
 				try {
 					MeasureUtility.updateLatestQDMVersion(processor);
+					SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
+					List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+					processor.removeUnusedCodes(usedCodeList);
+					
 					versionLibraryXml = processor.transform(processor.getOriginalDoc());
 				} catch (XPathExpressionException e) {
 					e.printStackTrace();
 				}
 			}
+			
 			newLibraryObject.setCQLByteArray(versionLibraryXml.getBytes());
 			newLibraryObject.setVersion(existingLibrary.getVersion());
 			newLibraryObject.setRevisionNumber("000");

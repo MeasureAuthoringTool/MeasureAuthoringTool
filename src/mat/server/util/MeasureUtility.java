@@ -9,7 +9,6 @@ import org.w3c.dom.Node;
 
 import mat.shared.StringUtility;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureUtility.
  * 
@@ -130,49 +129,6 @@ public class MeasureUtility {
 		String modifiedVersion =  majorVersion + "." + minorVersion + "." + revisionNumber;
 		return modifiedVersion;
 	}
-	
-	
-	/**
-	 * Method to create XML from QualityDataModelWrapper object for
-	 * elementLookUp.
-	 * 
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @return the org.apache.commons.io.output. byte array output stream
-	 *//*
-	public static ByteArrayOutputStream convertQualityDataDTOToXML(
-			CQLQualityDataModelWrapper qualityDataSetDTO) {
-		LOG.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader()
-			.getResourceAsURL("ValueSetsMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
-					stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(qualityDataSetDTO);
-			LOG.debug("Marshalling of QualityDataSetDTO is successful.."
-					+ stream.toString());
-		}catch(IOException e) {
-			LOG.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method"
-					+ e, e);
-		}catch(MappingException e) {
-			LOG.info("Mapping Failed in convertQualityDataDTOToXML method"
-					+ e, e);
-		}catch(MarshalException e) {
-			LOG.info("Unmarshalling Failed in convertQualityDataDTOToXML method"
-					+ e, e);
-		}catch(ValidationException e) {
-			LOG.info("Validation Exception in convertQualityDataDTOToXML method"
-					+ e, e);
-		}catch(Exception e) {
-			LOG.info("Other Exception in convertQualityDataDTOToXML method "
-					+ e, e);
-		}
-		LOG.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
-		return stream;
-	}*/
 	
 	/**
 	 * This method will take a String and remove all non-alphabet/non-numeric characters 

@@ -94,7 +94,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 
 	@Override
 	public SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId) {
-		// TODO Auto-generated method stub
 		return this.getCQLLibraryService().getAllRecentCQLLibrariesForUser(userId);
 	}
 	
@@ -120,7 +119,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 
 	@Override
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId) {
-		// TODO Auto-generated method stub
 		return this.getCQLLibraryService().saveDraftFromVersion(libraryId);
 	}
 	

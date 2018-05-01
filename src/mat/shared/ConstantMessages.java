@@ -260,9 +260,6 @@ public  class ConstantMessages {
 	/** The Constant ADMINISTRATIVE_GENDER_UNDIFFERENTIATED. */
 	public static final String ADMINISTRATIVE_GENDER_UNDIFFERENTIATED = "Administrative Gender Undifferentiated";
 	
-	/** The Constant BIRTH_DATE. */
-	public static final String BIRTH_DATE = "birth date";
-	
 	/** The Constant GENDER_MALE_OID. */
 	public static final String GENDER_MALE_OID = "2.16.840.1.113883.3.560.100.1";
 	

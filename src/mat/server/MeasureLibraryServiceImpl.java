@@ -594,77 +594,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// empty method body
 	}
 
-	/**
-	 * Check for default CQL code systems and append.
-	 *
-	 * @param processor
-	 *            the processor
-	 */
-	private void checkForDefaultCQLCodeSystemsAndAppend(XmlProcessor processor) {
-
-		String codeSystemStr = getCqlService().getDefaultCodeSystems();
-
-		NodeList defaultCQLCodeSystemsList = findDefaultCodeSystems(processor);
-
-		if (defaultCQLCodeSystemsList.getLength() > 0) {
-			logger.info("All Default codesystems elements present in the measure.");
-			return;
-		}
-
-		try {
-			processor.appendNode(codeSystemStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
-
-			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(),
-					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']");
-
-			if (defaultCodeSystemNodes != null) {
-				for (int i = 0; i < defaultCodeSystemNodes.getLength(); i++) {
-					Node codeSystemNode = defaultCodeSystemNodes.item(i);
-					codeSystemNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
-				}
-			}
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Check for default CQL codes and append.
-	 *
-	 * @param processor
-	 *            the processor
-	 */
-	private void checkForDefaultCQLCodesAndAppend(XmlProcessor processor) {
-
-		String codeStr = getCqlService().getDefaultCodes();
-
-		NodeList defaultCQLCodesList = findDefaultCodes(processor);
-
-		if (defaultCQLCodesList.getLength() > 0) {
-			logger.info("All Default code elements present in the measure.");
-			return;
-		}
-
-		try {
-			processor.appendNode(codeStr, "code", "/measure/cqlLookUp/codes");
-
-			NodeList defaultCodeNodes = processor.findNodeList(processor.getOriginalDoc(),
-					"/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']");
-
-			if (defaultCodeNodes != null) {
-				for (int i = 0; i < defaultCodeNodes.getLength(); i++) {
-					Node codeNode = defaultCodeNodes.item(i);
-					codeNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
-				}
-			}
-		}  catch (SAXException | IOException| XPathExpressionException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Append cql parameters.
@@ -722,49 +651,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return returnNodeList;
 	}
 
-	/**
-	 * This method will look into XPath "/measure/cqlLookUp/codeSystems/" and
-	 * try and NodeList for Definitions with the following names;
-	 * 
-	 * @param xmlProcessor
-	 * @return
-	 */
-	public NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
-		NodeList returnNodeList = null;
-		Document originalDoc = xmlProcessor.getOriginalDoc();
-
-		if (originalDoc != null) {
-			try {
-				String defaultCodeSystemsXPath = "/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']";
-				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodeSystemsXPath);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		return returnNodeList;
-	}
-
-	/**
-	 * This method will look into XPath "/measure/cqlLookUp/codes/" and try and
-	 * NodeList for Definitions with the following names;
-	 * 
-	 * @param xmlProcessor
-	 * @return
-	 */
-	public NodeList findDefaultCodes(XmlProcessor xmlProcessor) {
-		NodeList returnNodeList = null;
-		Document originalDoc = xmlProcessor.getOriginalDoc();
-
-		if (originalDoc != null) {
-			try {
-				String defaultCodesXPath = "/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']";
-				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodesXPath);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		return returnNodeList;
-	}
 
 	/**
 	 * Check for default cql parameters and append.
@@ -2029,14 +1915,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
     	Node cqlVersionNode = (Node) xPath.evaluate(cqlVersionXPath,
     			xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
-    	System.err.println("here here");
     	if (cqlVersionNode != null) {
-    		System.err.println("here not null");
-
-    		System.err.println(cqlVersionNode.getTextContent());
     		cqlVersionNode
     		.setTextContent(MeasureUtility.formatVersionText(versionStr));
-    		System.err.println(cqlVersionNode.getTextContent());
     	} else {
     		logger.info("CQLLookUp Node not found. This is in measure : " + measureId);
     	}
@@ -2495,8 +2376,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					xmlProcessor.updateCQLLibraryName();
 					checkForDefaultCQLParametersAndAppend(xmlProcessor);
 					checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
-					checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
-					checkForDefaultCQLCodesAndAppend(xmlProcessor);
 					updateCQLVersion(xmlProcessor);
 					if (!scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml)) {
 						deleteExistingGroupings(xmlProcessor);
@@ -3810,33 +3689,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				if(exportedXML != null &&  !exportedXML.isEmpty()) {
 					XmlProcessor processor = new XmlProcessor(exportedXML);
-					String xPathForValueSetBirthDate = "//qdm[@name='Birthdate']";
+					String xPathForValueSetBirthDate = "//qdm[@oid='21112-8' and codeSystemOID='2.16.840.1.113883.6.1']";
 					try {
-						//Check for Birth date value set with data type
 						isInvalid = validateDataTypeAndValueSet(xPathForValueSetBirthDate,processor,"datatype","Patient Characteristic Birthdate");
-						//Check for Dead value set with data type if Birth date is good
 						if(!isInvalid){
-							String xPathForValueSetDead = "//qdm[@name='Dead']";
+							String xPathForValueSetDead = "//qdm[@oid='419099009' and codeSystemOID='2.16.840.1.113883.6.96']";
 							isInvalid = validateDataTypeAndValueSet(xPathForValueSetDead,processor,"datatype","Patient Characteristic Expired");
 						}
-						//Check for Patient Characterstic Expired with value set if both birth date and dead combination are good.
-						if(!isInvalid){
-							String xPathForExpiredDataType = "//qdm[@datatype='Patient Characteristic Expired']";
-							isInvalid = validateDataTypeAndValueSet(xPathForExpiredDataType,processor,"name","Dead");
-						}
-						//Check for Patient Characterstic Birth date with value set if both birth date and dead combination are good and 
-						// Patient Characterstic Expired data type combination with value set is good too.
-						if(!isInvalid){
-							String xPathForBirthdateDataType = "//qdm[@datatype='Patient Characteristic Birthdate']";
-							isInvalid = validateDataTypeAndValueSet(xPathForBirthdateDataType,processor,"name","Birthdate");
-						}
-						
 					} catch (XPathExpressionException e) {
 						logger.info("Issue in parseCQLFile while packaging. ExportSimpleXml is null or blank or Xpath breaking");
 						e.printStackTrace();
 					}
 				}
-				
 			}
 		} else {
 			isInvalid = true;
@@ -3847,7 +3711,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	private boolean validateDataTypeAndValueSet(String xPathToEval, XmlProcessor processor, String namedItem, String compareTo) throws XPathExpressionException{
 		boolean isInvalid = false;
-		
 		NodeList valueSetNodeList = (NodeList) xPath.evaluate(xPathToEval,
 				processor.getOriginalDoc(), XPathConstants.NODESET);
 		for(int i=0; i<valueSetNodeList.getLength();i++){

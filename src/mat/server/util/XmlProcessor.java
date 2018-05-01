@@ -38,6 +38,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.sun.org.apache.bcel.internal.classfile.Code;
+
 import mat.shared.UUIDUtilClient;
 
 /**
@@ -1258,7 +1260,7 @@ public class XmlProcessor {
 	 * Convert xml document to string.
 	 *
 	 * @param node the node
-	 * @param isFormatted TODO
+	 * @param isFormatted
 	 * @return the string
 	 */
 	public String transform(Node node, boolean isFormatted) {
@@ -1473,5 +1475,48 @@ public class XmlProcessor {
 			}
 		}
 		return missingDefaultParameterList;
+	}
+
+	public void removeUnusedCodes(List<String> usedCodeList) {
+		String xPathString = "//cqlLookUp/codes/code";
+		try {
+			NodeList nodeList = findNodeList(getOriginalDoc(), xPathString);
+			List<String> codeSystemOIDsToRemove = new ArrayList<String>();
+			for(int i = 0; i<nodeList.getLength(); i++) {
+				Node currentNode = nodeList.item(i);
+				String codeOID = currentNode.getAttributes().getNamedItem("codeOID").getNodeValue();
+				if(codeOID.equals(CQLUtil.BIRTHDATE_OID) || codeOID.equals(CQLUtil.DEAD_OID)) {
+					String codeName = currentNode.getAttributes().getNamedItem("codeName").getNodeValue();
+					if(!usedCodeList.contains(codeName)) {
+						String codeSystemOID = currentNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+						codeSystemOIDsToRemove.add(codeSystemOID);
+						Node parentNode = currentNode.getParentNode();
+						parentNode.removeChild(currentNode);	
+					} 
+				}
+			}
+			removeUnusedCodeSystems(codeSystemOIDsToRemove);
+		} catch (XPathExpressionException e) {/* do nothing */}
+	}
+
+	private void removeUnusedCodeSystems(List<String> codeSystemOIDsToRemove) {
+		String xPathString = "//cqlLookUp/codes/code";
+		try {
+			NodeList nodeList = findNodeList(getOriginalDoc(), xPathString);
+			for(int i = 0; i<nodeList.getLength(); i++) {
+				Node currentNode = nodeList.item(i);
+				String codeSystemOID = currentNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
+				if(codeSystemOIDsToRemove.contains(codeSystemOID)) {
+					codeSystemOIDsToRemove.remove(codeSystemOIDsToRemove.indexOf(codeSystemOID));
+				}		
+			}
+			
+			for(String codeSystemOID: codeSystemOIDsToRemove) {
+				String codeSystemXPathString = "[@codeSystemOID =\"" + codeSystemOID + "\"]";
+				Node codeSystemNode = findNode(getOriginalDoc(), codeSystemXPathString);
+				Node parentNode = codeSystemNode.getParentNode();
+				parentNode.removeChild(codeSystemNode);
+			}
+		} catch (Exception e) {/* do nothing */}
 	}
 }

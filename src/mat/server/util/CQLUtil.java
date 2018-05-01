@@ -62,14 +62,12 @@ public class CQLUtil {
     public static final String DEAD = "Dead";
 
     public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-
-    private static final String BIRTHDATE = "Birthdate";
     
-    private static final String BIRTHDATE_OID = "21112-8";
+    public static final String BIRTHDATE_OID = "21112-8";
     
     private static final String BIRTHDATE_CODESYTEM_OID = "2.16.840.1.113883.6.1";
     
-    private static final String DEAD_OID = "419099009";
+    public static final String DEAD_OID = "419099009";
     
     private static final String DEAD_CODESYSTEM_OID = "2.16.840.1.113883.6.96";
 
@@ -182,7 +180,7 @@ public class CQLUtil {
 	 * 
 	 * @return true if it valid, false if it is not.
 	 */
-	private static boolean isValidDataTypeCombination(String codeOID, String codesystemOID, List<String> dataTypeList) {
+	public static boolean isValidDataTypeCombination(String codeOID, String codesystemOID, List<String> dataTypeList) {
 		// check if the birthdate valueset is being used with something other
 		// than then Patient Characteristic Birthdate datatype
 		if (codeOID.equals(BIRTHDATE_OID) && codesystemOID.equals(BIRTHDATE_CODESYTEM_OID)) {
@@ -321,14 +319,13 @@ public class CQLUtil {
 
 		String xPathForUnusedCodes = "//cqlLookUp//code" + nameXPathString;
 
-		NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET); ;
-				for (int i = 0; i < unusedCqlCodesNodeList.getLength(); i++) {
-					Node current = unusedCqlCodesNodeList.item(i);
-					Node parent = current.getParentNode();
-					parent.removeChild(current);
-				}
-				removeUnsedCodeSystems(originalDoc); 
+		NodeList unusedCqlCodesNodeList = (NodeList) xPath.evaluate(xPathForUnusedCodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for (int i = 0; i < unusedCqlCodesNodeList.getLength(); i++) {
+			Node current = unusedCqlCodesNodeList.item(i);
+			Node parent = current.getParentNode();
+			parent.removeChild(current);
+		}
+		removeUnsedCodeSystems(originalDoc); 
 	}
 
 	/**
@@ -349,7 +346,7 @@ public class CQLUtil {
 			String name = codeSystemNameList.item(i).getAttributes().getNamedItem("codeSystemName").getNodeValue();
 			String version = codeSystemNameList.item(i).getAttributes().getNamedItem("codeSystemVersion").getNodeValue(); 
 
-			// if the codeystem doesn't match the name or the version, we'll want to rmeove it
+			// if the code system doesn't match the name or the version, we'll want to remove it
 			nameXPathString += "[@codeSystemName !=\"" + name + "\" or @codeSystemVersion !=\"" + version +"\"]";
 		}
 

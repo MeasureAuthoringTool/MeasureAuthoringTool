@@ -26,8 +26,6 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
 import org.cqframework.cql.tools.formatter.CQLFormatter;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
@@ -153,18 +151,6 @@ public class CQLServiceImpl implements CQLService {
 
 					+ "</codeSystems>";
 
-	/** The cql default code system XML string. */
-	private String cqlDefaultCodesXMLString =
-
-			"<codes>"
-
-					+ "<code codeName=\"Birthdate\" codeOID=\"21112-8\" codeSystemName=\"LOINC\" "
-					+ "displayName=\"Birth date\" " + "codeSystemVersion=\"2.46\" id=\"777\" isCodeSystemVersionIncluded =\"false\"" + "/>"
-
-					+ "<code codeName=\"Dead\" codeOID=\"419099009\" codeSystemName=\"SNOMEDCT\" "
-					+ "displayName=\"Dead\" " + "codeSystemVersion=\"2016-03\" id=\"777\" isCodeSystemVersionIncluded =\"false\" " + "/>"
-
-					+ "</codes>";
 
 	/*
 	 * (non-Javadoc)
@@ -1759,7 +1745,6 @@ public class CQLServiceImpl implements CQLService {
 	
 	@Override
 	public SaveUpdateCQLResult getCQLLibraryData(String xmlString) {
-
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString);
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
@@ -1769,8 +1754,8 @@ public class CQLServiceImpl implements CQLService {
 
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
-
-		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
+		List<String> expressionList = getExpressionListFromCqlModel(cqlModel);
+		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
 		setUsedValuesets(result, cqlModel);
 		setUsedCodes(result, cqlModel);
@@ -1786,9 +1771,7 @@ public class CQLServiceImpl implements CQLService {
 			} catch (IOException e) {
 				result.setCqlString(parentCQLString);
 			}
-		}
-
-		else {
+		} else {
 			result.setCqlString(parentCQLString);
 		}
 		
@@ -2607,16 +2590,6 @@ public class CQLServiceImpl implements CQLService {
 			lines = lines + 1;
 		}
 		return lines;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getDefaultCodes()
-	 */
-	@Override
-	public String getDefaultCodes() {
-		return cqlDefaultCodesXMLString;
 	}
 
 	/*

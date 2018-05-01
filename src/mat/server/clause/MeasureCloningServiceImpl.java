@@ -53,6 +53,7 @@ import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
+import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
 
@@ -181,7 +182,7 @@ implements MeasureCloningService {
 		cqlService = (CQLService) context.getBean("cqlService");
 
 		cqlLibraryService = (CQLLibraryService) context.getBean("cqlLibraryService");
-		
+
 		boolean isMeasureClonable = false;
 		if(creatingDraft){
 			isMeasureClonable = MatContextServiceUtil.get().isCurrentMeasureDraftable(measureDAO, userDAO, currentDetails.getId());
@@ -207,8 +208,10 @@ implements MeasureCloningService {
 			
 			MeasureXML xml = measureXmlDAO.findForMeasure(currentDetails
 					.getId());
+
 			clonedMeasure = new Measure();
 			String originalXml = xml.getMeasureXMLAsString();
+			
 			InputSource oldXmlstream = new InputSource(new StringReader(
 					originalXml));
 			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
@@ -233,6 +236,7 @@ implements MeasureCloningService {
 				clonedMeasure.setOwner(currentUser);
 			}
 			// when creating a draft of a shared version  Measure then the Measure Owner should not change
+			List<String> usedCodeList = null;
 			if (creatingDraft) {
 				clonedMeasure.setOwner(measure.getOwner());
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
@@ -241,6 +245,9 @@ implements MeasureCloningService {
 				clonedMeasure.seteMeasureId(measure.geteMeasureId());
 				measureDAO.saveMeasure(clonedMeasure);
 				createNewMeasureDetailsForDraft();
+				
+				SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
+				usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
 			} else { 
 				// Clear the measureDetails tag
 				if (LoggedInUserUtil.getLoggedInUser() != null) {
@@ -279,8 +286,13 @@ implements MeasureCloningService {
 			MeasureXML clonedXml = new MeasureXML();
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
 			clonedXml.setMeasure_id(clonedMeasure.getId());
+			
 			XmlProcessor xmlProcessor = new XmlProcessor(
 					clonedXml.getMeasureXMLAsString());
+			
+			if(usedCodeList != null && !usedCodeList.isEmpty()) {
+				xmlProcessor.removeUnusedCodes(usedCodeList);
+			}
 			
 			if ((currentDetails.getMeasScoring() != null)
 					&& !currentDetails.getMeasScoring().equals(
@@ -523,8 +535,6 @@ implements MeasureCloningService {
 		//checkForTimingElementsAndAppend(xmlProcessor);
 		checkForDefaultCQLParametersAndAppend(xmlProcessor);
 		checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
-		checkForDefaultCQLCodeSystemsAndAppend(xmlProcessor);
-		checkForDefaultCQLCodesAndAppend(xmlProcessor);
 		
 		return true;
 	}
@@ -683,126 +693,6 @@ implements MeasureCloningService {
 		
 	}
 	
-	/**
-	 * Check for default CQL code systems and append.
-	 *
-	 * @param processor the processor
-	 */
-	private void checkForDefaultCQLCodeSystemsAndAppend(XmlProcessor processor) {
-		
-		String codeSystemStr = cqlService.getDefaultCodeSystems();
-		
-		NodeList defaultCQLCodeSystemsList = findDefaultCodeSystems(processor);
-		
-		if (defaultCQLCodeSystemsList.getLength() > 0) {
-			logger.info("All Default codesystems elements present in the measure.");
-			return;
-		}
-		
-		try {
-			processor.appendNode(codeSystemStr, "codeSystem", "/measure/cqlLookUp/codeSystems");
-			
-			NodeList defaultCodeSystemNodes = processor.findNodeList(processor.getOriginalDoc(), 
-					"/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']");
-			
-			if(defaultCodeSystemNodes != null){
-				System.out.println("suppl data elems..setting ids");
-				for(int i=0;i<defaultCodeSystemNodes.getLength();i++){
-					Node codeSystemNode = defaultCodeSystemNodes.item(i);
-				    System.out.println("name:"+codeSystemNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
-				    System.out.println("id:"+codeSystemNode.getAttributes().getNamedItem("id").getNodeValue());
-				    codeSystemNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
-				}
-			}
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Check for default CQL codes and append.
-	 *
-	 * @param processor the processor
-	 */
-	private void checkForDefaultCQLCodesAndAppend(XmlProcessor processor) {
-		
-		String codeStr = cqlService.getDefaultCodes();
-		
-		NodeList defaultCQLCodesList = findDefaultCodes(processor);
-		
-		if (defaultCQLCodesList.getLength() > 0) {
-			logger.info("All Default code elements present in the measure.");
-			return;
-		}
-		
-		try {
-			processor.appendNode(codeStr, "code", "/measure/cqlLookUp/codes");
-			
-			NodeList defaultCodeNodes = processor.findNodeList(processor.getOriginalDoc(), 
-					"/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']");
-			
-			if(defaultCodeNodes != null){
-				System.out.println("suppl data elems..setting ids");
-				for(int i=0;i<defaultCodeNodes.getLength();i++){
-					Node codeNode = defaultCodeNodes.item(i);
-					System.out.println("codename:"+codeNode.getAttributes().getNamedItem("codeName").getNodeValue());
-				    System.out.println("codesystemname:"+codeNode.getAttributes().getNamedItem("codeSystemName").getNodeValue());
-				    System.out.println("id:"+codeNode.getAttributes().getNamedItem("id").getNodeValue());
-				    codeNode.getAttributes().getNamedItem("id").setNodeValue(UUIDUtilClient.uuid());
-				}
-			}
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * This method will look into XPath "/measure/cqlLookUp/codeSystems/" and try and NodeList for Definitions with the following names;
-	 * @param xmlProcessor
-	 * @return
-	 */
-	private NodeList findDefaultCodeSystems(XmlProcessor xmlProcessor) {
-		NodeList returnNodeList = null;
-		Document originalDoc = xmlProcessor.getOriginalDoc();
-		
-		if (originalDoc != null) {
-			try {				
-				String defaultCodeSystemsXPath = "/measure/cqlLookUp/codeSystems/codeSystem[@codeSystemName='LOINC' or @codeSystemName='SNOMEDCT']";
-				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodeSystemsXPath);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		return returnNodeList;
-	}
-	
-	/**
-	 * This method will look into XPath "/measure/cqlLookUp/codes/" and try and NodeList for Definitions with the following names;
-	 * @param xmlProcessor
-	 * @return
-	 */
-	private NodeList findDefaultCodes(XmlProcessor xmlProcessor) {
-		NodeList returnNodeList = null;
-		Document originalDoc = xmlProcessor.getOriginalDoc();
-		
-		if (originalDoc != null) {
-			try {				
-				String defaultCodesXPath = "/measure/cqlLookUp/codes/code[@codeName='Birthdate' or @codeName='Dead']";
-				returnNodeList = xmlProcessor.findNodeList(originalDoc, defaultCodesXPath);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-		}
-		return returnNodeList;
-	}
 	
 	/**
 	 * Clear child nodes.
@@ -887,9 +777,6 @@ implements MeasureCloningService {
 		.setTextContent(clonedMeasure.getDescription());
 		clonedDoc.getElementsByTagName(SHORT_TITLE).item(0)
 		.setTextContent(clonedMeasure.getaBBRName());
-		/*clonedDoc.getElementsByTagName(MEASURE_STATUS).item(0)
-		.setTextContent(clonedMeasure.getMeasureStatus());*/
-		
 	}
 	
 	/**

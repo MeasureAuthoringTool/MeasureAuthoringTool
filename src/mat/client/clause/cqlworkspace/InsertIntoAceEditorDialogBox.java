@@ -79,16 +79,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * List of cqlFunctionsList.
 	 */
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
-	
-	/** The Constant INSERT_AT_END. */
-	private static final int INSERT_AT_END = -1;
-	
 	private static AceEditor curEditor; 
-	
-	private static final String BIRTH_DATE = "Birthdate";
-	private static final String DEAD = "Dead";
-	private static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-	private static final String PATIENT_CHARACTERISTIC_EXPIRED = "Patient Characteristic Expired";
 
 	/**
 	 * Public static method to build Pop up for Insert into Ace Editor.
@@ -278,33 +269,12 @@ public class InsertIntoAceEditorDialogBox {
 										}
 
 										StringBuilder sb = new StringBuilder();
-										boolean isNotValidCode = false;
 										if(dataType != null){
-											String modifiedItemNameToBeInserted = modifyQuotesInString(itemNameToBeInserted);
-											if(modifiedItemNameToBeInserted.equals(DEAD) 
-													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)){
-												isNotValidCode = true;											
-											} else if(modifiedItemNameToBeInserted.equals(BIRTH_DATE) 
-													&& !dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)){
-												isNotValidCode = true;
-											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)
-												&& !modifiedItemNameToBeInserted.equals(BIRTH_DATE)){
-												isNotValidCode = true;
-											} else if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_EXPIRED)
-												&& !modifiedItemNameToBeInserted.equals(DEAD)){
-												isNotValidCode = true;
-											}
-											if(isNotValidCode){
-												helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-												helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_CODE_DATA_TYPE());
-												messageFormgroup.setValidationState(ValidationState.ERROR);
-												itemNameToBeInserted = "";
-											} else {
-												sb = sb.append("[\"" + dataType + "\": ");
-												sb= sb.append(itemNameToBeInserted).append("]");
-												itemNameToBeInserted = sb.toString();
-											}
-										
+											sb = sb.append("[\"" + dataType + "\": ");
+											sb= sb.append(itemNameToBeInserted).append("]");
+											itemNameToBeInserted = sb.toString();
+
+
 										} else {
 											sb= sb.append(itemNameToBeInserted);
 											itemNameToBeInserted = sb.toString();	

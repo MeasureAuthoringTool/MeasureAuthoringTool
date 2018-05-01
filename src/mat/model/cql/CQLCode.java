@@ -1,5 +1,7 @@
 package mat.model.cql;
 
+import java.util.Objects;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -151,65 +153,6 @@ public class CQLCode implements IsSerializable {
 		this.isUsed = isUsed;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((codeIdentifier == null) ? 0 : codeIdentifier.hashCode());
-		result = prime * result + ((codeName == null) ? 0 : codeName.hashCode());
-		result = prime * result + ((codeOID == null) ? 0 : codeOID.hashCode());
-		result = prime * result + ((codeSystemName == null) ? 0 : codeSystemName.hashCode());
-		result = prime * result + ((codeSystemOID == null) ? 0 : codeSystemOID.hashCode());
-		result = prime * result + ((codeSystemVersion == null) ? 0 : codeSystemVersion.hashCode());
-		return result;
-	}
-
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CQLCode other = (CQLCode) obj;
-		if (codeIdentifier == null) {
-			if (other.codeIdentifier != null)
-				return false;
-		} else if (!codeIdentifier.equals(other.codeIdentifier))
-			return false;
-		if (codeName == null) {
-			if (other.codeName != null)
-				return false;
-		} else if (!codeName.equals(other.codeName))
-			return false;
-		if (codeOID == null) {
-			if (other.codeOID != null)
-				return false;
-		} else if (!codeOID.equals(other.codeOID))
-			return false;
-		if (codeSystemName == null) {
-			if (other.codeSystemName != null)
-				return false;
-		} else if (!codeSystemName.equals(other.codeSystemName))
-			return false;
-		if (codeSystemOID == null) {
-			if (other.codeSystemOID != null)
-				return false;
-		} else if (!codeSystemOID.equals(other.codeSystemOID))
-			return false;
-		if (codeSystemVersion == null) {
-			if (other.codeSystemVersion != null)
-				return false;
-		} else if (!codeSystemVersion.equals(other.codeSystemVersion))
-			return false;
-		return true;
-	}
-
-
-
 	public String getCodeIdentifier() {
 		return codeIdentifier;
 	}
@@ -241,5 +184,20 @@ public class CQLCode implements IsSerializable {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
-	
+
+	@Override
+	public boolean equals(final Object other) {
+		if ( !(other instanceof CQLCode) ){
+			return false;
+		}
+		CQLCode castOther = (CQLCode) other;
+		return Objects.equals(codeName, castOther.codeName) && Objects.equals(codeSystemName, castOther.codeSystemName) 
+				&& Objects.equals(codeSystemVersion, castOther.codeSystemVersion) && Objects.equals(codeSystemOID, castOther.codeSystemOID) 
+				&& Objects.equals(codeOID, castOther.codeOID) && Objects.equals(codeIdentifier, castOther.codeIdentifier);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codeName, codeSystemName, codeSystemVersion, codeSystemOID, codeOID, codeIdentifier);
+	}
 }

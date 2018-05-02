@@ -14,38 +14,19 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLButtonToolBar.
  */
 public class CQLButtonToolBar extends Composite {
-	
-	/** The Insert button. */
 	private Button insertButton = new Button();
-	
 	private Button editButton = new Button();
-	
-	/** The save button. */
 	private Button saveButton = new Button();
-	
-	/** The delete button. */
 	private Button deleteButton = new Button();
-		
-	/** The erase button. */
 	private Button eraseButton = new Button();
-	
-	/** The close button. */
 	private Button closeButton = new Button();
-	
-	/** The info button. */
 	private Button infoButton = new Button();
-	
-	/** The timing exp icon. */
 	private Button timingExpIcon = new Button();
-	
-	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
-	
 	ButtonGroup infoButtonGroup = new ButtonGroup();
 	
 	/**
@@ -131,23 +112,11 @@ public class CQLButtonToolBar extends Composite {
 		closeButton.setSize("70px", "30px");
 		closeButton.getElement().setAttribute("aria-label", "Cancel");
 		
-		
-		
-		/*timingExpIcon.setType(ButtonType.LINK);
-		timingExpIcon.getElement().setId("timingExpButton_"+sectionName);
-		timingExpIcon.setMarginTop(10);
-		timingExpIcon.setTitle("Timing Expression");
-		timingExpIcon.setIcon(IconType.TEXT_WIDTH);
-		timingExpIcon.setIconSize(IconSize.LARGE);
-		timingExpIcon.setColor("#0964A2");
-		timingExpIcon.setSize("30px", "30px");
-		timingExpIcon.getElement().setAttribute("aria-label", "Timing Expression");*/
 		editButton.setVisible(false);
 		buttonLayout.add(editButton);
 		buttonLayout.add(saveButton);
 		buttonLayout.add(eraseButton);
 		buttonLayout.add(insertButton);
-		//buttonLayout.add(timingExpIcon);
 		
 		buttonLayout.add(deleteButton);
 		buttonLayout.add(closeButton);

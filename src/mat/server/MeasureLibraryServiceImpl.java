@@ -3729,10 +3729,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if(!node.getAttributes().getNamedItem("codeSystemOID").getNodeValue().equalsIgnoreCase(codeSystemOID)) {
 					isInvalid = true;
 				}
-				if(!isInvalid && node.getAttributes().getNamedItem("oid") != null) {
-					if(!node.getAttributes().getNamedItem("oid").getNodeValue().equalsIgnoreCase(oid)) {
-						isInvalid = true;
-					}
+			}
+			if(!isInvalid && node.getAttributes().getNamedItem("oid") != null) {
+				if(!node.getAttributes().getNamedItem("oid").getNodeValue().equalsIgnoreCase(oid)) {
+					isInvalid = true;
 				}
 			}
 		}

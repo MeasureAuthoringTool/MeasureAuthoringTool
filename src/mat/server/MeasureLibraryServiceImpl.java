@@ -3689,11 +3689,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				if(exportedXML != null &&  !exportedXML.isEmpty()) {
 					XmlProcessor processor = new XmlProcessor(exportedXML);
-					String xPathForValueSetBirthDate = "//qdm[@oid='21112-8' and codeSystemOID='2.16.840.1.113883.6.1']";
+					String xPathForValueSetBirthDate = "//qdm[@oid='21112-8' and @codeSystemOID='2.16.840.1.113883.6.1']";
 					try {
 						isInvalid = validateDataTypeAndValueSet(xPathForValueSetBirthDate,processor,"datatype",CQLUtil.PATIENT_CHARACTERISTIC_BIRTHDATE);
 						if(!isInvalid){
-							String xPathForValueSetDead = "//qdm[@oid='419099009' and codeSystemOID='2.16.840.1.113883.6.96']";
+							String xPathForValueSetDead = "//qdm[@oid='419099009' and @codeSystemOID='2.16.840.1.113883.6.96']";
 							isInvalid = validateDataTypeAndValueSet(xPathForValueSetDead,processor,"datatype",CQLUtil.PATIENT_CHARACTERSTICS_EXPIRED);
 						}
 						

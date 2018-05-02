@@ -13,6 +13,7 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
@@ -352,8 +353,12 @@ public class CQLIncludeLibraryView {
 	private CQLButtonToolBar createReadOnlyViewIncludesButtonBar() {
 		includesModifyButtonBar.getDeleteButton().setVisible(true);
 		includesModifyButtonBar.getEditButton().setVisible(true);
-		includesModifyButtonBar.getEditButton().setMarginLeft(-50.00);
-		//includesModifyButtonBar.getEditButton()
+		includesModifyButtonBar.getEditButton().setIcon(IconType.RETWEET);
+		includesModifyButtonBar.getEditButton().setText("Replace");
+		includesModifyButtonBar.getEditButton().setTitle("Replace");
+		includesModifyButtonBar.getEditButton().setWidth("90px");
+		includesModifyButtonBar.getEditButton().getElement().setAttribute("aria-label", "Replace");
+		includesModifyButtonBar.getEditButton().setMarginLeft(-70.00);
 		
 		includesModifyButtonBar.getCloseButton().setMarginLeft(10.00);
 		includesModifyButtonBar.getDeleteButton().setEnabled(false);

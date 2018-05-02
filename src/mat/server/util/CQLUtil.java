@@ -65,11 +65,11 @@ public class CQLUtil {
     
     public static final String BIRTHDATE_OID = "21112-8";
     
-    private static final String BIRTHDATE_CODESYTEM_OID = "2.16.840.1.113883.6.1";
+    public static final String BIRTHDATE_CODESYTEM_OID = "2.16.840.1.113883.6.1";
     
     public static final String DEAD_OID = "419099009";
     
-    private static final String DEAD_CODESYSTEM_OID = "2.16.840.1.113883.6.96";
+    public static final String DEAD_CODESYSTEM_OID = "2.16.840.1.113883.6.96";
 
 
 	/**
@@ -143,7 +143,7 @@ public class CQLUtil {
 				}
 
 				CQLCode code = findCodeByName(codeName, codes);
-				if (!isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), dataTypeList)) {
+				if (code != null && !isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), dataTypeList)) {
 					return false;
 				}
 			}

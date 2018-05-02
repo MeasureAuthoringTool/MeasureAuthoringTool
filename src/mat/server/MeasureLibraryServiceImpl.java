@@ -3689,12 +3689,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				if(exportedXML != null &&  !exportedXML.isEmpty()) {
 					XmlProcessor processor = new XmlProcessor(exportedXML);
-					String xPathForValueSetBirthDate = "//qdm[@oid='21112-8' and @codeSystemOID='2.16.840.1.113883.6.1']";
+					String xPathForValueSetBirthDate = "//qdm[@oid='21112-8' and codeSystemOID='2.16.840.1.113883.6.1']";
 					try {
-						isInvalid = validateDataTypeAndValueSet(xPathForValueSetBirthDate,processor,"datatype","Patient Characteristic Birthdate");
+						isInvalid = validateDataTypeAndValueSet(xPathForValueSetBirthDate,processor,"datatype",CQLUtil.PATIENT_CHARACTERISTIC_BIRTHDATE);
 						if(!isInvalid){
-							String xPathForValueSetDead = "//qdm[@oid='419099009' and @codeSystemOID='2.16.840.1.113883.6.96']";
-							isInvalid = validateDataTypeAndValueSet(xPathForValueSetDead,processor,"datatype","Patient Characteristic Expired");
+							String xPathForValueSetDead = "//qdm[@oid='419099009' and codeSystemOID='2.16.840.1.113883.6.96']";
+							isInvalid = validateDataTypeAndValueSet(xPathForValueSetDead,processor,"datatype",CQLUtil.PATIENT_CHARACTERSTICS_EXPIRED);
+						}
+						
+						if(!isInvalid) {
+							isInvalid = validateOIDandCodeSystemOIDForDataType(processor, CQLUtil.PATIENT_CHARACTERSTICS_EXPIRED, CQLUtil.DEAD_OID, CQLUtil.DEAD_CODESYSTEM_OID);
+						}
+						if(!isInvalid) {
+							isInvalid = validateOIDandCodeSystemOIDForDataType(processor, CQLUtil.PATIENT_CHARACTERISTIC_BIRTHDATE, CQLUtil.BIRTHDATE_OID, CQLUtil.BIRTHDATE_CODESYTEM_OID);
 						}
 					} catch (XPathExpressionException e) {
 						logger.info("Issue in parseCQLFile while packaging. ExportSimpleXml is null or blank or Xpath breaking");
@@ -3709,6 +3716,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	
+	private boolean validateOIDandCodeSystemOIDForDataType(XmlProcessor processor, String dataType, String oid,
+			String codeSystemOID) throws XPathExpressionException {
+		boolean isInvalid = false;
+		
+		String xPathToEval = "//qdm[@datatype='" + dataType + "']";
+		NodeList nodeList = (NodeList) xPath.evaluate(xPathToEval,
+				processor.getOriginalDoc(), XPathConstants.NODESET);
+		for(int i=0; i<nodeList.getLength();i++){
+			Node node = nodeList.item(i);
+			if(node.getAttributes().getNamedItem("codeSystemOID") != null) {
+				if(!node.getAttributes().getNamedItem("codeSystemOID").getNodeValue().equalsIgnoreCase(codeSystemOID)) {
+					isInvalid = true;
+				}
+				if(!isInvalid && node.getAttributes().getNamedItem("oid") != null) {
+					if(!node.getAttributes().getNamedItem("oid").getNodeValue().equalsIgnoreCase(oid)) {
+						isInvalid = true;
+					}
+				}
+			}
+		}
+		return isInvalid;
+	}
+
 	private boolean validateDataTypeAndValueSet(String xPathToEval, XmlProcessor processor, String namedItem, String compareTo) throws XPathExpressionException{
 		boolean isInvalid = false;
 		NodeList valueSetNodeList = (NodeList) xPath.evaluate(xPathToEval,

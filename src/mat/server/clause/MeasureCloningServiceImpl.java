@@ -245,9 +245,6 @@ implements MeasureCloningService {
 				clonedMeasure.seteMeasureId(measure.geteMeasureId());
 				measureDAO.saveMeasure(clonedMeasure);
 				createNewMeasureDetailsForDraft();
-				
-				SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
-				usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
 			} else { 
 				// Clear the measureDetails tag
 				if (LoggedInUserUtil.getLoggedInUser() != null) {
@@ -277,6 +274,9 @@ implements MeasureCloningService {
 				measureDetailsNode.appendChild(patientBasedIndicatorNode);
 			}
 			
+			SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
+			usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+			
 			// Create the measureGrouping tag
 			clearChildNodes(MEASURE_GROUPING);
 			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
@@ -290,9 +290,8 @@ implements MeasureCloningService {
 			XmlProcessor xmlProcessor = new XmlProcessor(
 					clonedXml.getMeasureXMLAsString());
 			
-			if(usedCodeList != null && !usedCodeList.isEmpty()) {
-				xmlProcessor.removeUnusedCodes(usedCodeList);
-			}
+			
+			xmlProcessor.removeUnusedCodes(usedCodeList);
 			
 			if ((currentDetails.getMeasScoring() != null)
 					&& !currentDetails.getMeasScoring().equals(

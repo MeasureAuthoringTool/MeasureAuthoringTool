@@ -693,7 +693,7 @@ public class CQLUtil {
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/functions/function/@name", cqlModel.getIncludedFuncNames());
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset[@suppDataElement=\"false\"]/@name", cqlModel.getIncludedValueSetNames());
 			addNamesToList(alias, xmlProcessor, "//cqlLookUp/parameters/parameter[@readOnly=\"false\"]/@name", cqlModel.getIncludedParamNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code[@readOnly=\"false\"]/@displayName", cqlModel.getIncludedCodeNames());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@displayName", cqlModel.getIncludedCodeNames());
 
 		}
 

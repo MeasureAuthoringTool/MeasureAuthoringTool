@@ -88,6 +88,10 @@ public class ExportServlet extends HttpServlet {
 	/** The Constant EMEASURE. */
 	private static final String EMEASURE = "emeasure";
 	
+	private static final String HQMF = "hqmf";
+	
+	private static final String HUMAN_READABLE = "humanreadable";
+	
 	/** The Constant SIMPLEXML. */
 	private static final String SIMPLEXML = "simplexml";
 	
@@ -134,7 +138,7 @@ public class ExportServlet extends HttpServlet {
 		ExportResult export = null;
 		Date exportDate = null;
 		
-		logger.info("FOMAT: " + format);
+		logger.info("FORMAT: " + format);
 		
 		if (id!= null) {
 			measure = service.getById(id);
@@ -149,6 +153,10 @@ public class ExportServlet extends HttpServlet {
 			} else if (EMEASURE.equals(format)) {
 				export = exportEmeasureXML(resp, measureLibraryService, id,
 						type,  measure, export, fnu);
+			} else if (HQMF.equals(format)) {
+				export = exportHQMFForNewMeasures(resp, id, type, export, fnu, measure);
+			} else if (HUMAN_READABLE.equals(format)) {
+				export = exportHumanReadableForNewMeasures(resp, id, type, export, fnu, measure);	
 			} else if (CODELIST.equals(format)) {
 				export = exportCodeListXLS(resp, measureLibraryService, id,
 						measure, fnu);
@@ -489,7 +497,6 @@ public class ExportServlet extends HttpServlet {
 		return export;
 	}
 
-
 	/**
 	 * Export Human Readable (HTML) or HQMF XML for measures > v3.0
 	 * 
@@ -514,6 +521,38 @@ public class ExportServlet extends HttpServlet {
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
 					+ fnu.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
 		}
+		return export;
+	}
+	
+	private ExportResult exportHQMFForNewMeasures(HttpServletResponse resp, String id, String type, 
+			ExportResult export, FileNameUtility fnu, Measure measure) throws Exception {
+		export = getService().getNewEMeasureXML(id);
+		if (SAVE.equals(type)) {
+			String currentReleaseVersion = measure.getReleaseVersion();
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+			}
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
+		} else {
+			resp.setHeader(CONTENT_TYPE, TEXT_XML);
+		}
+		resp.getOutputStream().write(export.export.getBytes());
+		return export;
+	}
+	
+	private ExportResult exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, 
+			ExportResult export, FileNameUtility fnu, Measure measure) throws Exception {
+		export = getService().getNewEMeasureHTML(id, measure.getReleaseVersion());
+		if (SAVE.equals(type)) {
+			String currentReleaseVersion = measure.getReleaseVersion();
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+			}
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getEmeasureHumanReadableName(export.measureName + "_" + currentReleaseVersion));
+		} else {
+			resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+		}
+		resp.getOutputStream().write(export.export.getBytes());
 		return export;
 	}
 	

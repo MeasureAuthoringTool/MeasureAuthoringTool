@@ -242,19 +242,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getSaveButton();
 
-		/**
-		 * Checks if is code list.
-		 * 
-		 * @return true, if is code list
-		 */
-		// public boolean isCodeList();
-
-		/**
-		 * Checks if is e measure.
-		 * 
-		 * @return true, if is e measure
-		 */
-		public boolean isEMeasure();
+		public boolean isHQMF();
+		
+		public boolean isHumanReadable();
 
 		/**
 		 * Checks if is ELM
@@ -988,9 +978,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?id=" + currentExportId + "&format=";
 		System.out.println("URL: " + url);
 
-		url += (exportDisplay.isEMeasure() ? "emeasure" : exportDisplay.isSimpleXML() ? "simplexml" :
-		// exportDisplay.isCodeList() ? "codelist" :
-				exportDisplay.isCQLLibrary() ? "cqlLibrary" : exportDisplay.isELM() ? "elm" : exportDisplay.isJSON() ? "json" : "zip");
+		url += (exportDisplay.isHQMF() ? "hqmf" : exportDisplay.isHumanReadable() ? "humanreadable" : exportDisplay.isSimpleXML() ? "simplexml" : 
+			exportDisplay.isCQLLibrary() ? "cqlLibrary" : exportDisplay.isELM() ? "elm" : exportDisplay.isJSON() ? "json" : "zip");
 		return url;
 	}
 

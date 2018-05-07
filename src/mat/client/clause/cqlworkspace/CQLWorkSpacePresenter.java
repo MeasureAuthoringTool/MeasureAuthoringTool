@@ -6280,10 +6280,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	private boolean isValidExpressionName(String expressionName) {
-		return !expressionName.isEmpty() && !expressionName.equalsIgnoreCase("Patient") && !expressionName.equalsIgnoreCase("Population")
+		final String trimedExpression = expressionName.trim();
+		return !trimedExpression.isEmpty() && !trimedExpression.equalsIgnoreCase("Patient") && !trimedExpression.equalsIgnoreCase("Population")
 				&& MatContext.get().getCqlConstantContainer() != null 
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList() != null
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null
-				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(expressionName));
+				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
 	}
 }

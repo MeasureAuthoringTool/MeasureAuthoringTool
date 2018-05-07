@@ -402,8 +402,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				}
 				@Override
 				public void onSuccess(SaveUpdateOrganizationResult result) {
-					isOrgDetailsModified = false;
 					if(result.isSuccess()) {
+						isOrgDetailsModified = false;
 						currentOrganizationDetails = updatedOrganizationDetailModel;
 						setOrganizationDetailsToView();
 						displaySearch(lastSearchKey);
@@ -432,8 +432,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				}
 				@Override
 				public void onSuccess(SaveUpdateOrganizationResult result) {
-					isOrgDetailsModified = false;
 					if(result.isSuccess()) {
+						isOrgDetailsModified = false;
 						currentOrganizationDetails = updatedOrganizationDetailModel;
 						setOrganizationDetailsToView();
 						displaySearch(lastSearchKey);

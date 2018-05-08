@@ -59,10 +59,9 @@ public class BulkExportServlet extends HttpServlet {
 		
 		ExportResult export = null;
 		
-		FileNameUtility fnu = new FileNameUtility();
 		try {
 				export = getService().getBulkExportZIP(measureIds,exportDates);
-				resp.setHeader("Content-Disposition", "attachment; filename="+ fnu.getBulkZipName("Export"));
+				resp.setHeader("Content-Disposition", "attachment; filename="+ FileNameUtility.getBulkZipName("Export"));
 				resp.setContentType("application/zip");
 				resp.getOutputStream().write(export.zipbarr);
 				resp.getOutputStream().close();

@@ -242,19 +242,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getSaveButton();
 
-		/**
-		 * Checks if is code list.
-		 * 
-		 * @return true, if is code list
-		 */
-		// public boolean isCodeList();
-
-		/**
-		 * Checks if is e measure.
-		 * 
-		 * @return true, if is e measure
-		 */
-		public boolean isEMeasure();
+		public boolean isHQMF();
+		
+		public boolean isHumanReadable();
 
 		/**
 		 * Checks if is ELM
@@ -347,14 +337,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the new measure name
 		 */
 		public void setMeasureName(String name);
-
-		/**
-		 * Sets the page size.
-		 *
-		 * @param s
-		 *            the new return to link text
-		 */
-		// public void setPageSize(int pageNumber);
 
 		/**
 		 * Sets the return to link text.
@@ -906,8 +888,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 					System.out.println("Event - is Deleted : " + isMeasureDeleted + measureDeletion);
 					System.out.println("Event - message : " + measureDelMessage);
 				} else {
-					// searchDisplay.getErrorMeasureDeletion().setMessage("Measure
-					// deletion Failed.");
 					isMeasureDeleted = false;
 					measureDeletion = true;
 					isMeasureVersioned = false;
@@ -988,9 +968,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		String url = GWT.getModuleBaseURL() + "export?id=" + currentExportId + "&format=";
 		System.out.println("URL: " + url);
 
-		url += (exportDisplay.isEMeasure() ? "emeasure" : exportDisplay.isSimpleXML() ? "simplexml" :
-		// exportDisplay.isCodeList() ? "codelist" :
-				exportDisplay.isCQLLibrary() ? "cqlLibrary" : exportDisplay.isELM() ? "elm" : exportDisplay.isJSON() ? "json" : "zip");
+		url += (exportDisplay.isHQMF() ? "hqmf" : exportDisplay.isHumanReadable() ? "humanreadable" : exportDisplay.isSimpleXML() ? "simplexml" : 
+			exportDisplay.isCQLLibrary() ? "cqlLibrary" : exportDisplay.isELM() ? "elm" : exportDisplay.isJSON() ? "json" : "zip");
 		return url;
 	}
 
@@ -1083,28 +1062,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 		fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
 				result.getShortName(), result.getScoringType(), result.isEditable(),
 				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()));
-		// fireMeasureEditEvent();
 		showSearchingBusy(false);
 		isClone = false;
 	}
 	
 	private void auditMeasureSelected(ManageMeasureSearchModel.Result result){
-		
-			MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created",
-					"Draft created based on Version " + result.getVersionValue(), false,
-					new AsyncCallback<Boolean>() {
+		MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created",
+				"Draft created based on Version " + result.getVersionValue(), false,
+				new AsyncCallback<Boolean>() {
 
-						@Override
-						public void onFailure(Throwable caught) {
+					@Override
+					public void onFailure(Throwable caught) {
 
-						}
+					}
 
-						@Override
-						public void onSuccess(Boolean result) {
+					@Override
+					public void onSuccess(Boolean result) {
 
-						}
-					});
-
+					}
+				});
 	}
 	
 	/**
@@ -1351,10 +1327,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		setSubSkipEmbeddedLink("measureserachView_mainPanel");
 		FlowPanel fp = new FlowPanel();
 		fp.getElement().setId("fp_FlowPanel");
-		/*
-		 * setSubSkipEmbeddedLink("measureserachView_mainPanel");
-		 * fp.add(subSkipContentHolder);
-		 */
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())) {
 			heading = "";
 			filter = 1;// ALL Measures
@@ -1926,13 +1898,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 								@Override
 								public void onEditClicked(ManageMeasureSearchModel.Result result) {
-									// When edit has been clicked, no need to
-									// fire measureSelected
-									// Event.
-									// fireMeasureSelectedEvent(result.getId(),
-									// result.getName(), result.getShortName(),
-									// result.getScoringType(),result.isEditable(),result.isMeasureLocked(),
-									// result.getLockedUserId(result.getLockedUserInfo()));
 									measureDeletion = false;
 									measureShared = false;
 									isMeasureDeleted = false;
@@ -2046,7 +2011,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 														@Override
 														public void onSuccess(ManageMeasureDetailModel result) {
-															//showSearchingBusy(false);
 															searchDisplay.getErrorMessageDisplay().clearAlert();
 															currentDetails = result;
 															createDraftOfSelectedVersion(currentDetails);
@@ -2670,9 +2634,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		String measureScoring = detailDisplay.getMeasScoringValue();
 		
 		// US 421. Update the Measure scoring choice from the UI.
-		// if (isValidValue(measureScoring)) {
 		currentDetails.setMeasScoring(measureScoring);
-		// }
 		
 		// update the current measure details model based on the patient based radio buttons
 		if(detailDisplay.getPatientBasedInput().getItemText(detailDisplay.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
@@ -2734,13 +2696,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				selectedIdList.add(result.getId());
 			}
 		} else {
-			// if(selectedIdList.size()>9){
-			// searchDisplay
-			// .getErrorMessageDisplayForBulkExport()
-			// .setMessage(
-			// "Export file has a limit of 90 measures");
-			// searchDisplay.getExportSelectedButton().setFocus(true);
-			// }
 			for (int i = 0; i < model.getSelectedExportIds().size(); i++) {
 				if (result.getId().equals(model.getSelectedExportResults().get(i).getId())) {
 					model.getSelectedExportIds().remove(i);

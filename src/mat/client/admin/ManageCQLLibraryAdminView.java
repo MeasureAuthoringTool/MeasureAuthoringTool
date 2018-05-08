@@ -71,7 +71,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public ManageCQLLibraryAdminView() {
 		mainPanel.setWidth("100%");
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
-		buttonLayout.getElement().setAttribute("style", "margin-left:750px");
 		transferButton.setType(ButtonType.PRIMARY);
 		transferButton.getElement().setId("transferButton");
 		transferButton.setTitle("Transfer");
@@ -79,7 +78,7 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		transferButton.getElement().setAttribute("aria-label", "Transfer");
 		
 		
-		clearAllButton.setType(ButtonType.PRIMARY);
+		clearAllButton.setType(ButtonType.DANGER);
 		clearAllButton.getElement().setId("clearAllButton");
 		clearAllButton.setMarginLeft(10.00);
 		clearAllButton.setTitle("Clear All");
@@ -94,7 +93,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public Widget asWidget() {
 		widgetVP.clear();
 		widgetVP.add(searchWidgetBootStrap.getSearchWidget());
-		
 		return mainPanel;
 	}
 
@@ -110,7 +108,7 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		mainPanel.getElement().setId("CQLLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
 		
-		widgetVP.getElement().setAttribute("style", "width:100px;padding-left:620px;margin-top:20px;");
+		widgetVP.getElement().setAttribute("style", "width:100px;margin-top:20px;");
 		widgetVP.getElement().setId("panel_VP_CQL");
 		mainHorizontalPanel.add(widgetVP);
 		mainHorizontalPanel.add(new SpacerWidget());
@@ -118,13 +116,10 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(buttonLayout);;
-		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
-
+		mainPanel.add(buttonLayout);
 	}
 
 	@Override
@@ -190,15 +185,4 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		return transferButton;
 	}
 
-	/*@Override
-	public void clearTransferCheckBoxes() {
-		for ( CQLLibraryDataSetObject result : cqlLibrarySearchView.getAvailableLibrariesList()) {
-			result.setTransferable(false);
-		}
-		selectedId.clear();
-		selectedLibraries.clear();
-		
-		cqlLibrarySearchView.getTable().redraw();// TODO Auto-generated method stub
-		
-	}*/
 }

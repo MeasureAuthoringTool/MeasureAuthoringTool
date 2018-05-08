@@ -242,6 +242,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 			spager.setPageSize(PAGE_SIZE);
 			table.setWidth("100%");
 			if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())) {
+				setCQLLibraryListLabel("Select Libraries to Transfer Ownership.");
 				addColumnToAdminTable();
 				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("CQLLibraryTransferOwnershipSummary",
 						"In the following CQL Library Transfer Ownership Cell table, CQL Library Name is given in first column,"
@@ -305,7 +306,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private CellTable<CQLLibraryDataSetObject> addColumnToAdminTable() {
 		Label cqlLibrarySearchHeader = new Label(getCQLlibraryListLabel());
 		cqlLibrarySearchHeader.getElement().setId("cqlLibrarySearchHeader_Label");
-		cqlLibrarySearchHeader.setStyleName("invisible");
+		cqlLibrarySearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		cqlLibrarySearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();

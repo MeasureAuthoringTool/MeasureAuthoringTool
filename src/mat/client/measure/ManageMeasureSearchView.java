@@ -1,8 +1,11 @@
 package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -211,9 +214,9 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.add(errorMessageDisplay);
 		transferButton.setTitle("Transfer");
-		clearButton.setTitle("Clear");
+		clearButton.setTitle("Clear All");
 		transferButton.setType(ButtonType.PRIMARY);
-		clearButton.setType(ButtonType.PRIMARY);
+		clearButton.setType(ButtonType.DANGER);
 		clearButton.setMarginLeft(10.00);
 		flowPanel.add(transferButton);
 		flowPanel.add(clearButton);
@@ -228,14 +231,17 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	public Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
-		//FlowPanel fp1 = new FlowPanel();
-		searchInput.setHeight("32px");
-		searchButton.setHeight("32px");
-		searchButton.setMarginLeft(5.00);
+		searchInput.setWidth("225px");
+		searchInput.setHeight("30px");
+		searchButton.setHeight("30px");
 		hp.add(searchInput);
 		searchInput.getElement().setId("searchInput_TextBox");
 		searchButton.setTitle("Search");
 		searchButton.setType(ButtonType.PRIMARY);
+		searchButton.setIcon(IconType.SEARCH);
+		searchButton.setIconPosition(IconPosition.LEFT);
+		searchButton.setPull(Pull.LEFT);
+		searchButton.setSize(ButtonSize.SMALL);
 		
 		hp.add(searchButton);
 		searchButton.getElement().setId("searchButton_Button");

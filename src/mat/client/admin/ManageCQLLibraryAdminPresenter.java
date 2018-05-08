@@ -44,6 +44,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 	/** The cql library view. */
 	ViewDisplay cqlLibraryAdminView;
+	
 	/** The history display. */
 	CQLLibraryHistoryView historyDisplay;
 
@@ -86,8 +87,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 		VerticalPanel getWidgetVP();
 
-		//CustomButton getZoomButton();
-
 		SearchWidgetBootStrap getSearchWidgetBootStrap();
 
 		List<String> getSelectedId();
@@ -101,8 +100,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		Button getClearAllButton();
 
 		Button getTransferButton();
-
-		//void clearTransferCheckBoxes();
 
 	}
 
@@ -140,7 +137,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		search(cqlLibraryAdminView.getSearchString().getValue(), filter, 1, Integer.MAX_VALUE);
 
 		panel.getButtonPanel().clear();
-	//	panel.setButtonPanel(null, null, cqlLibraryAdminView.getZoomButton(), "searchButton_cqlLib");
 		isSearchBarVisible = true;
 		fp.add(cqlLibraryAdminView.asWidget());
 
@@ -178,26 +174,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				displaySearch();
-				//cqlLibraryAdminView.clearTransferCheckBoxes();
 			}
 		});
-		/*cqlLibraryAdminView.getZoomButton().addClickHandler(new ClickHandler() {
-
-		@Override
-		public void onClick(ClickEvent event) {
-			cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
-
-			isSearchBarVisible = !isSearchBarVisible;
-
-			if (isSearchBarVisible) {
-				cqlLibraryAdminView.getWidgetVP()
-						.add(cqlLibraryAdminView.getSearchWidgetBootStrap().getSearchWidget());
-			} else {
-				cqlLibraryAdminView.getWidgetVP().clear();
-			}
-
-		}
-	});*/
 	}
 
 	/**
@@ -222,7 +200,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 			@Override
 			public void onTransferSelectedClicked(CQLLibraryDataSetObject result) {
 				updateTransferIDs(result);
-
 			}
 
 			@Override
@@ -511,8 +488,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 	@Override
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
 		return panel;
 	}
-
 }

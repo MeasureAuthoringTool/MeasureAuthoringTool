@@ -397,17 +397,11 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	private void exportHQMFForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		ExportResult export = new ExportResult();
 		String currentReleaseVersion = measure.getReleaseVersion();
-		
+		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureXML(id) : getService().getNewEMeasureXML(id);
 		if (SAVE.equals(type)) {
-			if (currentReleaseVersion.equals("v3")) {
-				export = getService().getEMeasureXML(id);
-			}else {
-				export = getService().getNewEMeasureXML(id);
-				if(currentReleaseVersion.contains(".")){
-					currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-				}
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
 			}
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
 		} else {
@@ -417,17 +411,11 @@ public class ExportServlet extends HttpServlet {
 	}
 	
 	private void exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		ExportResult export = new ExportResult();
 		String currentReleaseVersion = measure.getReleaseVersion();
-		
+		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureHTML(id) : getService().getNewEMeasureHTML(id, currentReleaseVersion);
 		if (SAVE.equals(type)) {
-			if (currentReleaseVersion.equals("v3")) {
-				export = getService().getEMeasureHTML(id);
-			}else {
-				export = getService().getNewEMeasureHTML(id, measure.getReleaseVersion());
-				if(currentReleaseVersion.contains(".")){
-					currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-				}
+			if(currentReleaseVersion.contains(".")){
+				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
 			}
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureHumanReadableName(export.measureName + "_" + currentReleaseVersion));
 		} else {

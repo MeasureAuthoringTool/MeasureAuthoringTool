@@ -2553,7 +2553,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				transferDisplay.getSuccessMessageDisplay().clearAlert();
 				transferDisplay.getErrorMessageDisplay().clearAlert();
 				int filter = 1;
-				search("", 1, Integer.MAX_VALUE, filter);
+				search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			}
 		});
 

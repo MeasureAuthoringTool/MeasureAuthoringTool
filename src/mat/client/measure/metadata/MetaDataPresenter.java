@@ -1929,8 +1929,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setCopyright(metaDataDisplay.getCopyright().getValue());
 		if(metaDataDisplay.getEndorsedByListBox().getItemText(metaDataDisplay.getEndorsedByListBox().getSelectedIndex()).equalsIgnoreCase("Yes")){
 			currentMeasureDetail.setEndorseByNQF(true);
+			currentMeasureDetail.setNqfId(metaDataDisplay.getNqfId().getValue());
 		} else {
 			currentMeasureDetail.setEndorseByNQF(false);
+			currentMeasureDetail.setNqfId("");
 		}
 
 		currentMeasureDetail.setGuidance(metaDataDisplay.getGuidance().getValue());
@@ -1967,7 +1969,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		currentMeasureDetail.setToCompareAuthor(dbAuthorList);
 		currentMeasureDetail.setToCompareMeasure(dbMeasureTypeList);
 		currentMeasureDetail.setToCompareComponentMeasures(dbComponentMeasuresSelectedList);
-		currentMeasureDetail.setNqfId(metaDataDisplay.getNqfId().getValue());
 		
 		if ((metaDataDisplay.getEmeasureId().getValue() != null) && !metaDataDisplay.getEmeasureId().getValue().equals("")) {
 			currentMeasureDetail.seteMeasureId(new Integer(metaDataDisplay.getEmeasureId().getValue()));

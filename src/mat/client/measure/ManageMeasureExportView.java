@@ -117,9 +117,9 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
 		}
-
-		vp.add(hqmfRadio);
+		
 		vp.add(humanReadableRadio);
+		vp.add(hqmfRadio);
 		if(releaseVersion.startsWith("v5")){
 			vp.add(cqlLibraryRadio);
 			vp.add(elmRadio);

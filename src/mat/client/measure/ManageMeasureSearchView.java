@@ -1,6 +1,8 @@
 package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.InputGroup;
+import org.gwtbootstrap3.client.ui.InputGroupButton;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
@@ -122,7 +124,7 @@ ManageMeasurePresenter.SearchDisplay {
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())){
 			mainPanel.add(new SpacerWidget());
-			mainPanel.add(buildSearchWidget());
+			mainPanel.add(getSearchWidget());
 			mainPanel.add(new SpacerWidget());
 			mainPanel.add(measureSearchView.asWidget());
 			mainPanel.setStyleName("contentPanel");
@@ -219,28 +221,20 @@ ManageMeasurePresenter.SearchDisplay {
 		return form;
 	}
 	
-	/**
-	 * Builds the search widget.
-	 *
-	 * @return the widget
-	 */
-	public Widget buildSearchWidget() {
-		HorizontalPanel hp = new HorizontalPanel();
-		searchInput.setWidth("225px");
-		searchInput.setHeight("30px");
-		searchButton.setHeight("30px");
-		hp.add(searchInput);
-		searchInput.getElement().setId("searchInput_TextBox");
-		searchButton.setTitle("Search");
+	private InputGroup getSearchWidget(){
+		InputGroup iGroup = new InputGroup();
+		InputGroupButton iGroupButton = new InputGroupButton();
 		searchButton.setType(ButtonType.PRIMARY);
 		searchButton.setIcon(IconType.SEARCH);
 		searchButton.setIconPosition(IconPosition.LEFT);
 		searchButton.setPull(Pull.LEFT);
 		searchButton.setSize(ButtonSize.SMALL);
-		
-		hp.add(searchButton);
-		searchButton.getElement().setId("searchButton_Button");
-		return hp;
+		iGroupButton.add(searchButton);
+		searchInput.setHeight("30px");
+		iGroup.add(searchInput);
+		iGroup.add(iGroupButton);
+		iGroup.setWidth("300px");
+		return iGroup;
 	}
 	
 	/* (non-Javadoc)

@@ -6,6 +6,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.simplexml.cql.MATCssCQLUtil;
 import mat.server.util.XmlProcessor;
+import mat.shared.MatConstants;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
@@ -540,9 +541,10 @@ public class HeaderHumanReadableGenerator {
 		}
 		// else the node does not exist
 		// if were looking for "endorsement return None
-		else if (lookUp.equalsIgnoreCase("endorsement")
-				|| lookUp.equalsIgnoreCase("nqfid/@extension")) {
-			returnVar = "None";
+		else if (lookUp.equalsIgnoreCase("endorsement")) {
+			returnVar = MatConstants.NONE;
+		} else if(lookUp.equalsIgnoreCase("nqfid/@extension")) {
+			returnVar = MatConstants.NOT_APPLICABLE;
 		}
 		// if we were looking for guid return Pending
 		else if (lookUp.equalsIgnoreCase("guid")) {

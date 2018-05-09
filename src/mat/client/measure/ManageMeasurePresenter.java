@@ -1725,7 +1725,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
 		boolean valid = message.size() == 0;
 		if (!valid) {
-			detailDisplay.getErrorMessageDisplay().createAlert(message);
+			String errorMessage = "";
+			if(message.size() > 0) {
+				errorMessage = message.get(0);
+			}
+			detailDisplay.getErrorMessageDisplay().createAlert(errorMessage);
 			Mat.hideLoadingMessage();
 		} else {
 			detailDisplay.getErrorMessageDisplay().clearAlert();

@@ -79,280 +79,103 @@ import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
+import mat.shared.MatConstants;
 
 /**
  * The Class MetaDataView.
  */
 public class MetaDataView implements MetaDataDetailDisplay{
-	
 	private ListBoxMVP stewardListBox = new ListBoxMVP();
-	
 	private ListBoxMVP endorsedByListBox = new ListBoxMVP();
-	
-	/** The main panel. */
 	protected FlowPanel mainPanel = new FlowPanel();
-	
-	/** The focus panel. */
 	protected FocusPanel focusPanel = new FocusPanel();
-	
-	/** The cell table panel. */
 	protected FlowPanel cellTablePanel=new  FlowPanel();
-	
-	/** The success messages. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
-	
-	/** The success messages. */
 	private MessageAlert successMessages2 = new SuccessMessageAlert();
-	/** The abbr input. */
 	protected TextBox abbrInput = new TextBox();
-	
-	/** The patient based input */
 	protected TextBox patientBasedInput = new TextBox(); 
-	
-	/** The meas scoring input. */
 	protected TextBox measScoringInput = new TextBox();
-	
-	/** The finalized date. */
 	protected TextBox finalizedDate = new TextBox();
-	
-	/** The rationale input. */
 	protected TextAreaWithMaxLength rationaleInput = new TextAreaWithMaxLength();
-	
-	/** The version input. */
 	protected TextBox versionInput = new TextBox();
-	
-	/** The author input. */
 	protected ListBoxMVP authorInput = new ListBoxMVP();
-	
-	/** The empty authors panel. */
 	protected SimplePanel emptyAuthorsPanel = new SimplePanel();
-	
-	/** The author list box. */
 	protected ListBox authorListBox =new ListBox();
-	
-	/** The measure type list box. */
 	protected ListBox measureTypeListBox = new ListBox();
-	
-	/** The empty text box holder. */
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
-	
-	/** The qdm item count list v panel. */
 	protected VerticalPanel qdmItemCountListVPanel = new VerticalPanel();
-	
-	/** The component measures list s panel. */
 	protected ScrollPanel componentMeasuresListSPanel = new ScrollPanel();
-	
-	/** The measure type s panel. */
 	protected ScrollPanel measureTypeSPanel = new ScrollPanel();
-	
-	/** The author s panel. */
 	protected ScrollPanel authorSPanel = new ScrollPanel();
-	
-	/** The steward s panel. */
 	protected ScrollPanel stewardSPanel = new ScrollPanel();
-	
-	/** The measure steward other input. */
 	protected TextBox measureStewardOtherInput = new TextBox();
-	
-	/** The description input. */
 	protected TextAreaWithMaxLength  descriptionInput = new TextAreaWithMaxLength ();
-	
-	/** The copyright input. */
 	protected TextAreaWithMaxLength  copyrightInput = new TextAreaWithMaxLength ();
-	
-	/** The disclaimer input. */
 	protected TextAreaWithMaxLength  disclaimerInput = new TextAreaWithMaxLength ();
-	
-	/** The stratification input. */
 	protected TextAreaWithMaxLength  stratificationInput = new TextAreaWithMaxLength ();
-	
-	/** The risk adjustment input. */
 	protected TextAreaWithMaxLength  riskAdjustmentInput  = new TextAreaWithMaxLength ();
-	
-	/** The rate aggregation input. */
 	protected TextAreaWithMaxLength  rateAggregationInput  = new TextAreaWithMaxLength ();
-	
-	/** The initial patient pop input. */
 	protected TextAreaWithMaxLength  initialPopInput  = new TextAreaWithMaxLength ();
-	
-	/** The denominator input. */
 	protected TextAreaWithMaxLength  denominatorInput = new TextAreaWithMaxLength ();
-	
-	/** The denominator exclusions input. */
 	protected TextAreaWithMaxLength  denominatorExclusionsInput  = new TextAreaWithMaxLength ();
-	
-	/** The numerator input. */
 	protected TextAreaWithMaxLength  numeratorInput = new TextAreaWithMaxLength ();
-	
-	/** The numerator exclusions input. */
 	protected TextAreaWithMaxLength  numeratorExclusionsInput = new TextAreaWithMaxLength ();
-	
-	/** The denominator exceptions input. */
 	protected TextAreaWithMaxLength  denominatorExceptionsInput = new TextAreaWithMaxLength ();
-	
-	/** The measure population input. */
 	protected TextAreaWithMaxLength  measurePopulationInput = new TextAreaWithMaxLength ();
-	
-	/** The measure population exclusions input. */
 	protected TextAreaWithMaxLength  measurePopulationExclusionsInput = new TextAreaWithMaxLength ();
-	
-	/** The measure observations input. */
 	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
-	
-	/** The measure type input. */
 	protected ListBoxMVP measureTypeInput = new ListBoxMVP();
-	
-	/** The empty measure type panel. */
 	protected SimplePanel emptyMeasureTypePanel = new SimplePanel();
-	
-	/** The error messages. */
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
-	
-	/** The error messages. */
 	protected MessageAlert errorMessages2 = new ErrorMessageAlert();
-	
-	/** The measure period from input. */
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
-	
-	/** The measure period to input. */
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
-	
-	/** The supplemental data input. */
 	protected TextAreaWithMaxLength  supplementalDataInput  = new TextAreaWithMaxLength ();
-	
-	/** The code system version input. */
 	protected TextBox codeSystemVersionInput = new TextBox();
-	
-	/** The NQFID input. */
-	protected TextBox NQFIDInput = new TextBox();
-		
-	/** The set name input. */
+	protected TextBox nQFIDInput = new TextBox();
 	protected TextAreaWithMaxLength setNameInput = new TextAreaWithMaxLength();
-	
-	/** The e measure identifier input. */
 	protected TextBox eMeasureIdentifierInput = new TextBox();
-	
-	/** The e measure identifier. */
 	protected TextBox eMeasureIdentifier  = new TextBox();
-	
-	/** The endorsed by nqf. */
 	protected FormLabel endorsedByNQF = new FormLabel();
-	
-	/** The component measures FormLabel. */
 	protected FormLabel componentMeasuresLabel = new FormLabel();
-	
-	/** The clinical stmt input. */
 	protected TextAreaWithMaxLength  clinicalStmtInput = new TextAreaWithMaxLength ();
-	
-	/** The improvement notation input. */
 	protected TextAreaWithMaxLength  improvementNotationInput = new TextAreaWithMaxLength ();
-	
-	/** The reference input. */
 	protected TextAreaWithMaxLength  referenceInput = createReferenceInput();
-	
-	/** The definitions input. */
 	protected TextAreaWithMaxLength  definitionsInput = new TextAreaWithMaxLength ();
-	
-	/** The guidance input. */
 	protected TextAreaWithMaxLength guidanceInput = new TextAreaWithMaxLength();
-	
-	/** The transmission format input. */
 	protected TextAreaWithMaxLength transmissionFormatInput = new TextAreaWithMaxLength();
-	
-	/** The add edit cmponent measures. */
 	private Button addEditCmponentMeasures = new Button("Add/Edit Component Measures");
-	
-	/** The Add row button. */
 	private Button AddRowButton = new Button("Add Reference");
-	
-	/** The save button. */
 	private Button saveButton = new Button("Save");
-	
-	/** The save button. */
 	private Button saveButton2 = new Button("Save");
-	
-	/** The generatee measure id button. */
 	private Button generateeMeasureIDButton = new Button("Generate Identifier");
-	
-	/** The delete measure. */
 	private Button deleteMeasure = new Button("Delete Measure");
-	
-	/** The delete measure. */
 	private Button deleteMeasure2 = new Button("Delete Measure");
-	
-	/** The reference array list. */
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
-	
-	/** The reference place holder. */
 	private SimplePanel referencePlaceHolder = new SimplePanel();
-	
-	/** The reference table. */
 	private final FlexTable referenceTable = new FlexTable();
-	
 	private WarningConfirmationMessageAlert saveErrorDisplay = new WarningConfirmationMessageAlert();
-	
-	/** The measure selection model. */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> measureSelectionModel;
-	
-	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
-
-	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
-	
-	/** The search string. */
 	private TextBox searchString = new TextBox();
-	
-	/** The component measure selected list. */
 	private List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
-	
-	/** The component measure cell table. */
 	private CellTable<ManageMeasureSearchModel.Result> componentMeasureCellTable;
-	
-	/** The measure type cell table. */
 	private CellTable<MeasureType> measureTypeCellTable;
-	
-	/** The author cell table. */
 	private CellTable<Author> authorCellTable;
-	
-	/** The selected measure list. */
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
-	
-	/** The component measures list panel. */
 	VerticalPanel componentMeasuresListPanel = new VerticalPanel();
-	
-	/** The measures list selection model. */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> measuresListSelectionModel;
-	
-	/** The measure type selection model. */
 	private MultiSelectionModel<MeasureType> measureTypeSelectioModel;
-	
-	/** The author selection model. */
 	private MultiSelectionModel<Author> authorSelectionModel;
-	
-	/** The search button. */
 	private PrimaryButton searchButton = new PrimaryButton("Go");
-	
-	/** The dialog box. */
 	private static DialogBox dialogBox = new DialogBox(true,true);
-	
-	/** The measure type selected list. */
 	private List<MeasureType> measureTypeSelectedList = new ArrayList<MeasureType>();
-	
-	/** The authors selected list. */
 	private List<Author> authorsSelectedList = new ArrayList<Author>();
-	
-	/** The steward id. */
 	private String stewardId;
-	
-	/** The steward value. */
 	private String stewardValue;
-	
-	/** The calender year. */
-	private CheckBox calenderYear = new CheckBox();
-	
+	private CheckBox calenderYear = new CheckBox();	
 	private String measureScoringType ;
-	
 	private boolean isPatientBasedMeasure;
 	
 	/**
@@ -1050,14 +873,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		nQFIDInputLabel.setText("NQF Number");
 		nqfNumberRightVP.add(nQFIDInputLabel);
 		nqfNumberRightVP.add(new SpacerWidget());
-		nqfNumberRightVP.add(NQFIDInput);
+		nqfNumberRightVP.add(nQFIDInput);
 		
 		nQFIDInputLabel.setId("nQFIDInputLabel");
 		nQFIDInputLabel.setFor("NQFIDInput_TextBox");
-		NQFIDInput.setId("NQFIDInput_TextBox");
-		NQFIDInput.setPlaceholder("Enter NQF Number");
-		NQFIDInput.setTitle("Enter NQF Number");
-		NQFIDInput.getElement().setAttribute("style", "width:150px;margin-top:-10px;");
+		nQFIDInput.setId("NQFIDInput_TextBox");
+
+		nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
+		nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+		nQFIDInput.getElement().setAttribute("style", "width:150px;margin-top:-10px;");
 		
 		FormLabel endorsedByNQFLabel = new FormLabel();
 		endorsedByNQFLabel.setText("Endorsed By NQF");
@@ -1293,7 +1117,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private void setMaxWidthAndSize() {
 		codeSystemVersionInput.setMaxLength(255);
 		rationaleInput.setMaxLength(15000);
-		NQFIDInput.setMaxLength(64);
+		nQFIDInput.setMaxLength(64);
 		descriptionInput.setSize("750px", "60px");
 		descriptionInput.setMaxLength(15000);
 		copyrightInput.setSize("750px", "60px");
@@ -1966,7 +1790,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public HasValue<String> getNqfId() {
-		return NQFIDInput;
+		return nQFIDInput;
 	}
 	
 	/* (non-Javadoc)
@@ -2888,7 +2712,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public TextBox getNQFIDInput() {
-		return NQFIDInput;
+		return nQFIDInput;
 	}
 	
 	/**

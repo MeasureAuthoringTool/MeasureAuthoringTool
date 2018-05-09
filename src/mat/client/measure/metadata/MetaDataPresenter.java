@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -63,6 +64,7 @@ import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import mat.shared.MatConstants;
 
 /**
  * The Class MetaDataPresenter.
@@ -849,6 +851,8 @@ public class MetaDataPresenter  implements MatPresenter {
 	/** The meta data display. */
 	private MetaDataDetailDisplay metaDataDisplay;
 	
+	private HandlerRegistration nqfHandlerRegistration;
+	
 	/** The add edit component measures display. */
 	private AddEditComponentMeasuresDisplay addEditComponentMeasuresDisplay;
 	
@@ -1451,6 +1455,15 @@ public class MetaDataPresenter  implements MatPresenter {
 		
 		metaDataDisplay.buildForm();
 		prepopulateFields();
+		if(nqfHandlerRegistration == null) {
+			nqfHandlerRegistration = metaDataDisplay.getEndorsedByListBox().addChangeHandler(new ChangeHandler() {
+				@Override
+				public void onChange(ChangeEvent event) {
+					setNQFTitle();
+				}
+			});
+		}
+
 		if (editable) {
 			if ("0".equals(metaDataDisplay.getEmeasureId().getValue())) {
 				metaDataDisplay.setGenerateEmeasureIdButtonEnabled(true);
@@ -1466,6 +1479,16 @@ public class MetaDataPresenter  implements MatPresenter {
 		}
 		
 		panel.add(metaDataDisplay.asWidget());
+	}
+	
+	private void setNQFTitle() {
+		if(metaDataDisplay.getEndorsedByListBox().getSelectedIndex() == 0) {
+			metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.NOT_APPLICABLE);
+			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.NOT_APPLICABLE);
+		} else {
+			metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
+			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.ENTER_NQF_NUMBER);
+		}
 	}
 	
 	/**
@@ -1504,7 +1527,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getPatientBasedInput().setTitle("No");		
 		}
 		
-		
+		setNQFTitle();
 		
 		metaDataDisplay.getClinicalRecommendation().setValue(currentMeasureDetail.getClinicalRecomms());
 		metaDataDisplay.getDefinitions().setValue(currentMeasureDetail.getDefinitions());
@@ -1733,9 +1756,16 @@ public class MetaDataPresenter  implements MatPresenter {
 									.getMeasureSaveServerErrorMessage(result.getFailureReason()));
 							metaDataDisplay.getSaveBtn().setFocus(true);
 						} else {
-						metaDataDisplay.getErrorMessageDisplay2().createAlert(MessageDelegate
-								.getMeasureSaveServerErrorMessage(result.getFailureReason()));
-						metaDataDisplay.getSaveButton2().setFocus(true);
+							String alertMessage = MessageDelegate
+									.getMeasureSaveServerErrorMessage(result.getFailureReason());
+							for(String errorMessage: result.getMessages()) {
+								if(errorMessage.equals(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR)) {
+									alertMessage = errorMessage;
+									break;
+								}
+							}
+							metaDataDisplay.getErrorMessageDisplay2().createAlert(alertMessage);
+							metaDataDisplay.getSaveButton2().setFocus(true);
 						}
 					}
 				}

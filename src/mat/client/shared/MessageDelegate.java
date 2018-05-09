@@ -139,6 +139,8 @@ public class MessageDelegate {
 	/** The Constant s_ERR_RETRIEVE_SCORING_CHOICES. */
 	public static final String s_ERR_RETRIEVE_SCORING_CHOICES = "Problem while retrieving measure scoring choices.";
 	
+	public static final String NQF_NUMBER_REQUIRED_ERROR = "NQF Number is required when a measure is Endorsed by NQF.";
+	
 	// US 602
 	/** The Constant s_ERR_RETRIEVE_STATUS. */
 	public static final String s_ERR_RETRIEVE_STATUS = "Problem while retrieving status.";

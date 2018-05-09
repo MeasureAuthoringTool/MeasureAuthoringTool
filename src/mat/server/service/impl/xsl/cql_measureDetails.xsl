@@ -289,7 +289,14 @@
                         <xsl:with-param name="textString" select="nqfid/@extension" />
                     </xsl:call-template>
                 </xsl:variable>
-                <value xsi:type="ED" mediaType="text/plain" value="{$NQFText}" />
+                <xsl:choose>
+                <xsl:when test="$NQFText = '' ">
+                		<value xsi:type="ED" mediaType="text/plain" value="Not Applicable"/>
+                </xsl:when>
+                <xsl:otherwise>
+                		<value xsi:type="ED" mediaType="text/plain" value="{$NQFText}"/>
+                </xsl:otherwise>
+                </xsl:choose>
             </measureAttribute>
         </subjectOf>
 

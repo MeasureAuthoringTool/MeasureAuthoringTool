@@ -2,6 +2,8 @@ package mat.client.shared;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
@@ -21,7 +23,7 @@ public class ManageMeasureModelValidator {
 					.getAbvNameRequiredMessage());
 		}
 		
-		if(model.getEndorseByNQF()) {
+		if(Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) { 
 			if(StringUtility.isEmptyOrNull(model.getNqfId())) {
 				message.add(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR);
 			}

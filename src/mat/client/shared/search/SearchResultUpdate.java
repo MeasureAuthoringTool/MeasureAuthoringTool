@@ -21,42 +21,38 @@ public class SearchResultUpdate {
 	 *            the last search text
 	 */
 	public void update(SearchResults<?> result, TextBox searchTextBox, String lastSearchText){
+		String searchTitle = null;
 		if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
-			String searchTitle = "No Records returned.";
-			searchTextBox.setTitle(searchTitle);
+			searchTitle = "No Records returned.";
 		}else{
-			StringUtility su = new StringUtility();
-			if(!su.isEmptyOrNull(searchTextBox.getValue())){
+			if(!StringUtility.isEmptyOrNull(searchTextBox.getValue())){
 				String trimmedSearchString = searchTextBox.getValue().trim();
-				String searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ trimmedSearchString+".";
-				searchTextBox.setTitle(searchTitle);
+				searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ trimmedSearchString+".";
 				searchTextBox.setText(trimmedSearchString);
 			}
 			else{
-				String searchTitle = "No search string entered";
-				searchTextBox.setTitle(searchTitle);
+				searchTitle = "No search string entered";
 			}
 		}
+		searchTextBox.setTitle(searchTitle);
 	}
 	
 	
 	public void update(SaveCQLLibraryResult result, TextBox searchTextBox, String lastSearchText){
+		String searchTitle = null;
 		if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
-			String searchTitle = "No Records returned.";
-			searchTextBox.setTitle(searchTitle);
+			searchTitle = "No Records returned.";
 		}else{
-			StringUtility su = new StringUtility();
-			if(!su.isEmptyOrNull(searchTextBox.getValue())){
+			if(!StringUtility.isEmptyOrNull(searchTextBox.getValue())){
 				String trimmedSearchString = searchTextBox.getValue().trim();
-				String searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ trimmedSearchString+".";
-				searchTextBox.setTitle(searchTitle);
+				searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ trimmedSearchString+".";
 				searchTextBox.setText(trimmedSearchString);
 			}
 			else{
-				String searchTitle = "No search string entered";
-				searchTextBox.setTitle(searchTitle);
+				searchTitle = "No search string entered";
 			}
 		}
+		searchTextBox.setTitle(searchTitle);
 	}
 	
 }

@@ -78,6 +78,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
+import mat.client.util.MatTextBox;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
@@ -927,7 +928,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 			detailDisplay.getMessageFormGrp().setValidationState(ValidationState.NONE);
 			detailDisplay.getHelpBlock().setText("");
 		}
-		
+		searchDisplay.getAdminSearchString().setValue("");
+		if (transferDisplay != null)
+			transferDisplay.getSearchString().setValue("");
 	}
 
 	/*
@@ -1427,6 +1430,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 						@Override
 						public void onSuccess(TransferOwnerShipModel result) {
+							SearchResultUpdate sru = new SearchResultUpdate();
+							sru.update(result, (MatTextBox) transferDisplay.getSearchString(), searchString);
 
 							transferDisplay.buildHTMLForMeasures(transferMeasureResults);
 							transferDisplay.buildCellTable(result);
@@ -2258,6 +2263,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 
+		MatTextBox searchWidget = (MatTextBox) searchDisplay.getAdminSearchString();
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) searchDisplay.getAdminSearchButton()).click();
+				}				
+			}
+		});
+
 		// added by hari
 		searchDisplay.getAdminSearchButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -2561,6 +2577,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 
+		MatTextBox searchWidget = (MatTextBox) transferDisplay.getSearchString();
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) transferDisplay.getSearchButton()).click();	
+				}				
+			}
+		});
+				
 		transferDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

@@ -1,22 +1,31 @@
 package mat.client.shared;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.constants.InputType;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 
 import mat.shared.StringUtility;
-
-import org.gwtbootstrap3.client.ui.Input;
-import org.gwtbootstrap3.client.ui.constants.InputType;
 
 /**
  * The Class SecurityQuestionWithMaskedAnswerWidget.
@@ -31,9 +40,9 @@ public class SecurityQuestionAnswerWidget extends Composite {
 	
 	/** The security question3. */
 	private ListBoxMVP securityQuestion3 = new ListBoxMVP();
-	private Input answer1 = new Input(InputType.PASSWORD);
-	private Input answer2 = new Input(InputType.PASSWORD);
-	private Input answer3 = new Input(InputType.PASSWORD);
+	private Input answer1 = new Input(InputType.TEXT);
+	private Input answer2 = new Input(InputType.TEXT);
+	private Input answer3 = new Input(InputType.TEXT);
 	
 	private Hidden answer1Value = new Hidden();
 	private Hidden answer2Value = new Hidden();
@@ -47,10 +56,19 @@ public class SecurityQuestionAnswerWidget extends Composite {
 	FormGroup question3FormGroup = new FormGroup();
 	FormGroup answer3FormGroup = new FormGroup();
 	private FlowPanel rulesPanel = new FlowPanel();
+	
+	private boolean isCtrlKey = false;
+	private Map<String, String> securityAnswers = new HashMap<String, String>();
+	private List<Integer> validKeysList = new ArrayList<Integer>();
 	/**
 	 * Instantiates a new security question with masked answer widget.
 	 */
 	public SecurityQuestionAnswerWidget() {
+		securityAnswers.put("answer1", "");
+		securityAnswers.put("answer2", "");
+		securityAnswers.put("answer3", "");
+		buildValidKeysList();
+		
 		answer1.getElement().setId("answer1TextBox");
 		answer2.getElement().setId("answer2TextBox");
 		answer3.getElement().setId("answer3TextBox");
@@ -140,6 +158,7 @@ public class SecurityQuestionAnswerWidget extends Composite {
 			@Override
 			public void onFocus(FocusEvent event) {
 				getAnswer1().setText(MessageDelegate.EMPTY_VALUE);
+				securityAnswers.put("answer1", MessageDelegate.EMPTY_VALUE);
 			}
 		});
 			
@@ -147,6 +166,7 @@ public class SecurityQuestionAnswerWidget extends Composite {
 			@Override
 			public void onFocus(FocusEvent event) {
 				getAnswer2().setText(MessageDelegate.EMPTY_VALUE);
+				securityAnswers.put("answer2", MessageDelegate.EMPTY_VALUE);
 			}
 		});
 
@@ -154,6 +174,7 @@ public class SecurityQuestionAnswerWidget extends Composite {
 			@Override
 			public void onFocus(FocusEvent event) {
 				getAnswer3().setText(MessageDelegate.EMPTY_VALUE);
+				securityAnswers.put("answer3", MessageDelegate.EMPTY_VALUE);
 			}
 		});
 		
@@ -162,6 +183,9 @@ public class SecurityQuestionAnswerWidget extends Composite {
 				if(StringUtility.isEmptyOrNull((getAnswer1().getValue())) && !StringUtility.isEmptyOrNull(getAnswer1Value())) {
 					getAnswer1().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
 				}
+				//Replacing the last character of the string with '*'
+				String answer1Text = getAnswer1().getText();
+				getAnswer1().setText(answer1Text.substring(0, answer1Text.length()-1).concat("*"));
 			}
 		});
 		
@@ -170,6 +194,9 @@ public class SecurityQuestionAnswerWidget extends Composite {
 				if(StringUtility.isEmptyOrNull((getAnswer2().getValue())) && !StringUtility.isEmptyOrNull(getAnswer2Value())) {
 					getAnswer2().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
 				}
+				//Replacing the last character of the string with '*'
+				String answer2Text = getAnswer2().getText();
+				getAnswer2().setText(answer2Text.substring(0, answer2Text.length()-1).concat("*"));
 			}
 		});
 		
@@ -178,10 +205,113 @@ public class SecurityQuestionAnswerWidget extends Composite {
 				if(StringUtility.isEmptyOrNull((getAnswer3().getValue())) && !StringUtility.isEmptyOrNull(getAnswer3Value())) {
 					getAnswer3().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
 				}
+				//Replacing the last character of the string with '*'
+				String answer3Text = getAnswer3().getText();
+				getAnswer3().setText(answer3Text.substring(0, answer3Text.length()-1).concat("*"));
+			}
+		});
+		
+		getAnswer1().addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				handleBackSpace("answer1", event.getNativeKeyCode());
+				getAnswer1().setText(displayValueAsAsterix(getAnswer1().getText(), "answer1", event.getNativeKeyCode()));
+			}
+		});
+		
+		getAnswer2().addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				handleBackSpace("answer2", event.getNativeKeyCode());
+				getAnswer2().setText(displayValueAsAsterix(getAnswer2().getText(), "answer2", event.getNativeKeyCode()));
+			}
+		});
+		
+		getAnswer3().addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				handleBackSpace("answer3", event.getNativeKeyCode());
+				getAnswer3().setText(displayValueAsAsterix(getAnswer3().getText(), "answer3", event.getNativeKeyCode()));
+			}
+		});
+		
+		getAnswer1().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (KeyCodes.KEY_CTRL == event.getNativeKeyCode()) {
+					isCtrlKey = true;
+				}
+			}
+		});
+		
+		getAnswer2().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (KeyCodes.KEY_CTRL == event.getNativeKeyCode()) {
+					isCtrlKey = true;
+				}
+			}
+		});
+		
+		getAnswer3().addKeyDownHandler(new KeyDownHandler() {
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if (KeyCodes.KEY_CTRL == event.getNativeKeyCode()) {
+					isCtrlKey = true;
+				}
 			}
 		});
 	}
+	
+	private String displayValueAsAsterix(String temporaryValue, String currentField, int charCode) {
+		String formattedValue = "";
+		if (validKeysList.contains(charCode)) {
+			if (isCtrlKey) {
+				securityAnswers.put(currentField, temporaryValue);
+				formattedValue = temporaryValue;
+				isCtrlKey = false;
+			}else {
+				char newChar = temporaryValue.charAt(temporaryValue.length() - 1);
+				String securityAnswer = securityAnswers.get(currentField); 
+				securityAnswer += newChar;
+				securityAnswers.put(currentField, securityAnswer);
+				formattedValue = temporaryValue.length() == 2 ? "*" : "";
+				if(temporaryValue.length() > 2) {
+					formattedValue = temporaryValue.substring(0, securityAnswer.length()-2);
+					formattedValue += "*";
+				}
+				formattedValue += newChar;
+			}
+		}else if (KeyCodes.KEY_RIGHT == charCode || KeyCodes.KEY_LEFT == charCode) {
+			formattedValue = temporaryValue.substring(0, temporaryValue.length()-1).concat("*");
+		}else if (KeyCodes.KEY_SHIFT == charCode) {
+			formattedValue = temporaryValue;
+		}else if (KeyCodes.KEY_CTRL == charCode) {
+			formattedValue = temporaryValue.replaceAll(".", "*");
+		}
+		return formattedValue;
+	}
 
+	private void handleBackSpace(String currentField, int charCode) {
+		if (KeyCodes.KEY_BACKSPACE == charCode) {
+			String securityAnswer = securityAnswers.get(currentField);
+			securityAnswers.put(currentField, securityAnswer.substring(0, securityAnswer.length()-1));
+		}
+	}
+	
+	private List<Integer> buildValidKeysList() {
+		Integer[] keys = {KeyCodes.KEY_A, KeyCodes.KEY_B, KeyCodes.KEY_C, KeyCodes.KEY_D, KeyCodes.KEY_E, KeyCodes.KEY_F, KeyCodes.KEY_G, 
+				KeyCodes.KEY_H, KeyCodes.KEY_I, KeyCodes.KEY_J, KeyCodes.KEY_K, KeyCodes.KEY_L, KeyCodes.KEY_M, KeyCodes.KEY_N, KeyCodes.KEY_O, 
+				KeyCodes.KEY_P, KeyCodes.KEY_Q, KeyCodes.KEY_R, KeyCodes.KEY_S, KeyCodes.KEY_T, KeyCodes.KEY_U, KeyCodes.KEY_V, KeyCodes.KEY_W, 
+				KeyCodes.KEY_X, KeyCodes.KEY_Y, KeyCodes.KEY_Z, KeyCodes.KEY_ONE, KeyCodes.KEY_TWO, KeyCodes.KEY_THREE, KeyCodes.KEY_FOUR, KeyCodes.KEY_FIVE, 
+				KeyCodes.KEY_SIX, KeyCodes.KEY_SEVEN, KeyCodes.KEY_EIGHT, KeyCodes.KEY_NINE, KeyCodes.KEY_ZERO};
+		
+		for (int index=0; index< keys.length; index++) {
+			validKeysList.add(keys[index]);
+		}
+		return validKeysList;
+	}
+	
 	/**
 	 * @return
 	 */
@@ -354,5 +484,9 @@ public class SecurityQuestionAnswerWidget extends Composite {
 
 	public void setAnswer3Value(String answer3Value) {
 		this.answer3Value.setValue(answer3Value);
+	}
+	
+	public Map<String, String> getSecurityAnswers(){
+		return securityAnswers;
 	}
 }

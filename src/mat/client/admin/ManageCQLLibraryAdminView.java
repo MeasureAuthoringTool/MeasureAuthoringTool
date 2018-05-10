@@ -114,10 +114,10 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		mainHorizontalPanel.add(new SpacerWidget());
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(errorMessageAlert);
-		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buttonLayout);
 	}

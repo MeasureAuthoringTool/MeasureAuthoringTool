@@ -9,7 +9,6 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Anchor;
-//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -32,7 +31,6 @@ import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.ClientConstants;
-import mat.client.util.MatTextBox;
 
 /**
  * The Class ManageMeasureSearchView.
@@ -90,12 +88,6 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
-	/** The search button. */
-	private Button searchButton = new Button("Search");
-	
-	/** The search input. */
-	private MatTextBox searchInput = new MatTextBox();
-	
 	/** The success measure deletion. */
 	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
 	
@@ -135,8 +127,6 @@ ManageMeasurePresenter.SearchDisplay {
 		
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
-		searchInput.getElement().setId("searchInput_TextBox");
-		searchButton.getElement().setId("searchButton_Button");
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");

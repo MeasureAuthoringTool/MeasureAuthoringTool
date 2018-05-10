@@ -351,8 +351,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			detailList.add(r);
 		}
 		model.setData(detailList);
-		//model.setStartIndex(startIndex);
-		//model.setResultsTotal(getOrganizationDAO().countSearchResults(key));
+		model.setResultsTotal(getOrganizationDAO().countSearchResults(key));
 		logger.info("Searching Organization on " + key);
 		return model;
 	}
@@ -384,6 +383,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			detailList.add(r);
 		}
 		model.setData(detailList);
+		model.setResultsTotal(getUserService().countSearchResults(key));
 		logger.info("Searching users on " + key);
 		
 		return model;

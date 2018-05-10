@@ -2622,7 +2622,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		result.setData(detailList);
 		result.setStartIndex(startIndex);
-		result.setResultsTotal(getUserService().countSearchResultsNonAdmin(""));
+		result.setResultsTotal(getUserService().countSearchResultsNonAdmin(searchText));
 
 		return result;
 

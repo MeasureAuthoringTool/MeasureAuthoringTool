@@ -1,13 +1,8 @@
 package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.InputGroup;
-import org.gwtbootstrap3.client.ui.InputGroupButton;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -32,6 +27,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
+import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -86,6 +82,8 @@ ManageMeasurePresenter.SearchDisplay {
 	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter",
 			"measureLibraryFilterDisclosurePanel","forMeasure");
 	
+	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
+	
 	/** The most recent measure widget. */
 	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
 	
@@ -124,7 +122,7 @@ ManageMeasurePresenter.SearchDisplay {
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())){
 			mainPanel.add(new SpacerWidget());
-			mainPanel.add(getSearchWidget());
+			mainPanel.add(buildSearchWidget());
 			mainPanel.add(new SpacerWidget());
 			mainPanel.add(measureSearchView.asWidget());
 			mainPanel.setStyleName("contentPanel");
@@ -221,20 +219,16 @@ ManageMeasurePresenter.SearchDisplay {
 		return form;
 	}
 	
-	private InputGroup getSearchWidget(){
-		InputGroup iGroup = new InputGroup();
-		InputGroupButton iGroupButton = new InputGroupButton();
-		searchButton.setType(ButtonType.PRIMARY);
-		searchButton.setIcon(IconType.SEARCH);
-		searchButton.setIconPosition(IconPosition.LEFT);
-		searchButton.setPull(Pull.LEFT);
-		searchButton.setSize(ButtonSize.SMALL);
-		iGroupButton.add(searchButton);
-		searchInput.setHeight("30px");
-		iGroup.add(searchInput);
-		iGroup.add(iGroupButton);
-		iGroup.setWidth("300px");
-		return iGroup;
+	/**
+	 * Builds the search widget.
+	 *
+	 * @return the widget
+	 */
+	public Widget buildSearchWidget() {
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.add(searchWidgetBootStrap.getSearchWidget());
+
+		return hp;
 	}
 	
 	/* (non-Javadoc)
@@ -572,7 +566,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public HasClickHandlers getAdminSearchButton() {		
-		return searchButton;
+		return searchWidgetBootStrap.getGo();
 	}
 
 	/* (non-Javadoc)
@@ -580,7 +574,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public HasValue<String> getAdminSearchString() {		
-		return searchInput;
+		return searchWidgetBootStrap.getSearchBox();
 	}
 
 	@Override

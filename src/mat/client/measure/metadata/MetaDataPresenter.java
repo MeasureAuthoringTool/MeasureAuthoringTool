@@ -7,6 +7,7 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.TextBox;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,6 +66,7 @@ import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
+import mat.shared.StringUtility;
 
 /**
  * The Class MetaDataPresenter.
@@ -1452,7 +1454,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		panel.clear();
 		metaDataDisplay.setMeasureScoringType(currentMeasureDetail.getMeasScoring());
 		metaDataDisplay.setPatientBasedMeasure(currentMeasureDetail.isPatientBased());
-		
 		metaDataDisplay.buildForm();
 		prepopulateFields();
 		if(nqfHandlerRegistration == null) {
@@ -1485,9 +1486,18 @@ public class MetaDataPresenter  implements MatPresenter {
 		if(metaDataDisplay.getEndorsedByListBox().getSelectedIndex() == 0) {
 			metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.NOT_APPLICABLE);
 			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.NOT_APPLICABLE);
+			metaDataDisplay.getNQFIDInput().setText("");
+			metaDataDisplay.getNQFIDInput().setEnabled(false);
 		} else {
-			metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
-			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.ENTER_NQF_NUMBER);
+			if(!StringUtility.isEmptyOrNull(metaDataDisplay.getNQFIDInput().getText())) {
+				String placeHolderText = metaDataDisplay.getNQFIDInput().getText();
+				metaDataDisplay.getNQFIDInput().setPlaceholder(placeHolderText);
+				metaDataDisplay.getNQFIDInput().setTitle(placeHolderText);
+			} else {
+				metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
+				metaDataDisplay.getNQFIDInput().setTitle(MatConstants.ENTER_NQF_NUMBER);
+			}
+			metaDataDisplay.getNQFIDInput().setEnabled(true);
 		}
 	}
 	
@@ -1527,8 +1537,6 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getPatientBasedInput().setTitle("No");		
 		}
 		
-		setNQFTitle();
-		
 		metaDataDisplay.getClinicalRecommendation().setValue(currentMeasureDetail.getClinicalRecomms());
 		metaDataDisplay.getDefinitions().setValue(currentMeasureDetail.getDefinitions());
 		metaDataDisplay.getDescription().setValue(currentMeasureDetail.getDescription());
@@ -1552,6 +1560,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		} else {
 			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(0);
 		}
+		
+		setNQFTitle();
 		
 		metaDataDisplay.getCopyright().setValue(currentMeasureDetail.getCopyright());
 		
@@ -1707,11 +1717,14 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getSuccessMessageDisplay2().clearAlert();
 		
 		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear(fromButton)) {
-			updateModelDetailsFromView();
+			ManageMeasureDetailModel modelToSave = new ManageMeasureDetailModel();
+			modelToSave.setName(currentMeasureDetail.getName());
+			modelToSave.setId(currentMeasureDetail.getId());
+			updateModelDetailsFromView(modelToSave, metaDataDisplay);
 			Mat.showLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(true);
-			currentMeasureDetail.scrubForMarkUp();
-			MatContext.get().getMeasureService().saveMeasureDetails(currentMeasureDetail,
+			modelToSave.scrubForMarkUp();
+			MatContext.get().getMeasureService().saveMeasureDetails(modelToSave,
 					new AsyncCallback<SaveMeasureResult>() {
 				
 				@Override
@@ -1849,14 +1862,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		return valid;
 	}
 	
-	
-	
-	/**
-	 * Update model details from view.
-	 */
-	private void updateModelDetailsFromView() {
-		updateModelDetailsFromView(currentMeasureDetail, metaDataDisplay);
-	}
 	
 	/**
 	 * Update model details from view.
@@ -2223,17 +2228,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public ManageMeasureDetailModel getCurrentMeasureDetail() {
 		return currentMeasureDetail;
-	}
-	
-	/**
-	 * Sets the current measure detail.
-	 * 
-	 * @param currentMeasureDetail
-	 *            the currentMeasureDetail to set
-	 */
-	public void setCurrentMeasureDetail(
-			ManageMeasureDetailModel currentMeasureDetail) {
-		this.currentMeasureDetail = currentMeasureDetail;
 	}
 	
 	/**

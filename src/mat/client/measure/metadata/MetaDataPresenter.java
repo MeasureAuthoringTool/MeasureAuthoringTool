@@ -1716,14 +1716,11 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.getSuccessMessageDisplay2().clearAlert();
 		
 		if (MatContext.get().getMeasureLockService().checkForEditPermission() && checkIfCalenderYear(fromButton)) {
-			ManageMeasureDetailModel modelToSave = new ManageMeasureDetailModel();
-			modelToSave.setName(currentMeasureDetail.getName());
-			modelToSave.setId(currentMeasureDetail.getId());
-			updateModelDetailsFromView(modelToSave, metaDataDisplay);
+			updateModelDetailsFromView();
 			Mat.showLoadingMessage();
 			MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(true);
-			modelToSave.scrubForMarkUp();
-			MatContext.get().getMeasureService().saveMeasureDetails(modelToSave,
+			currentMeasureDetail.scrubForMarkUp();
+			MatContext.get().getMeasureService().saveMeasureDetails(currentMeasureDetail,
 					new AsyncCallback<SaveMeasureResult>() {
 				
 				@Override
@@ -1763,19 +1760,18 @@ public class MetaDataPresenter  implements MatPresenter {
 					} else {
 						Mat.hideLoadingMessage();
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
+						String alertMessage = MessageDelegate
+								.getMeasureSaveServerErrorMessage(result.getFailureReason());
+						for(String errorMessage: result.getMessages()) {
+							if(errorMessage.equals(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR)) {
+								alertMessage = errorMessage;
+								break;
+							}
+						}
 						if(fromButton.equalsIgnoreCase("bottomButton")){
-							metaDataDisplay.getErrorMessageDisplay().createAlert(MessageDelegate
-									.getMeasureSaveServerErrorMessage(result.getFailureReason()));
+							metaDataDisplay.getErrorMessageDisplay().createAlert(alertMessage);
 							metaDataDisplay.getSaveBtn().setFocus(true);
 						} else {
-							String alertMessage = MessageDelegate
-									.getMeasureSaveServerErrorMessage(result.getFailureReason());
-							for(String errorMessage: result.getMessages()) {
-								if(errorMessage.equals(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR)) {
-									alertMessage = errorMessage;
-									break;
-								}
-							}
 							metaDataDisplay.getErrorMessageDisplay2().createAlert(alertMessage);
 							metaDataDisplay.getSaveButton2().setFocus(true);
 						}
@@ -1790,6 +1786,13 @@ public class MetaDataPresenter  implements MatPresenter {
 				}
 			});
 		}
+	}
+	
+	/**
+	 * Update model details from view.
+	 */
+	private void updateModelDetailsFromView() {
+		updateModelDetailsFromView(currentMeasureDetail, metaDataDisplay);
 	}
 	
 	/**
@@ -2396,9 +2399,14 @@ public class MetaDataPresenter  implements MatPresenter {
 			dbData.setToCompareAuthor(getDbAuthorList());
 			dbData.setToCompareMeasure(getDbMeasureTypeList());
 			dbData.setToCompareComponentMeasures(getDbComponentMeasuresSelectedList());
-			return pageData.equals(dbData);
+			return pageData.equals(dbData) && isNQFIDExists(pageData.getEndorseByNQF(), pageData.getNqfId());
 		}
 	}
+
+	private boolean isNQFIDExists(boolean endorseByNQF, String nqfId) {
+		return (endorseByNQF && !StringUtility.isEmptyOrNull(nqfId) || !endorseByNQF);
+	}
+
 	
 	public boolean isMeasureDetailsValid() {
 		if ((MatContext.get().getCurrentMeasureId() != null) && !MatContext.get().getCurrentMeasureId().equals("")

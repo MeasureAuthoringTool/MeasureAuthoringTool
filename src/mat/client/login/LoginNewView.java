@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.shared.ChangePasswordWidget;
+
 /**
  * The Class LoginView.
  */
@@ -45,7 +47,6 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 	private Anchor forgotPassword;
 	
 	private Input userIdText = new Input(InputType.TEXT);
-	private Input passwordInput = new Input(InputType.PASSWORD);
 	private TextBox securityCodeInput = new TextBox();
 	private Button submitButton = new Button("Sign In");
 	private FormGroup passwordGroup = new FormGroup();
@@ -57,6 +58,8 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 	
 	private Panel successMessagePanel = new Panel();
 	private PanelBody successMessageBody = new PanelBody();
+	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
+	
 	/**
 	 * Instantiates a new login view.
 	 */
@@ -122,14 +125,11 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		passwordLabel.setText("Password");
 		passwordLabel.setTitle("Password");
 		passwordLabel.setFor("inputPwd");
-		passwordInput.setWidth("250px");
-		passwordInput.setHeight("27px");
-		passwordInput.setId("inputPwd");
-		passwordInput.setPlaceholder("Enter Password");
-		passwordInput.setTitle("Enter Password");
-		passwordInput.setValidateOnBlur(true);
+		changePasswordWidget.getPassword().setPlaceholder("Enter Password");
+		changePasswordWidget.getPassword().setTitle("Enter Password");
+		changePasswordWidget.getPassword().setValidateOnBlur(true);
 		passwordGroup.add(passwordLabel);
-		passwordGroup.add(passwordInput);
+		passwordGroup.add(changePasswordWidget.getPassword());
 		
 		FormLabel authLabel = new FormLabel();
 		authLabel.setText("Security Code");
@@ -237,12 +237,12 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 	
 	@Override
 	public Input getPasswordInput() {
-		return passwordInput;
+		return changePasswordWidget.getPassword();
 	}
 	
 	@Override
 	public void setPasswordInput(Input passwordInput) {
-		this.passwordInput = passwordInput;
+		this.changePasswordWidget.setPassword(passwordInput);
 	}
 	
 	@Override

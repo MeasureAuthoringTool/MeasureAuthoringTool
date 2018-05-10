@@ -1,16 +1,5 @@
 package mat.client.login;
 
-import mat.client.ImageResources;
-import mat.client.Mat;
-import mat.client.shared.EmailAddressTextBox;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableImageButton;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatContext;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SpacerWidget;
-
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -23,17 +12,27 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.ImageResources;
+import mat.client.Mat;
+import mat.client.shared.ChangePasswordWidget;
+import mat.client.shared.EmailAddressTextBox;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.FocusableImageButton;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatContext;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SpacerWidget;
+
 /**
  * The Class LoginView.
  */
 public class LoginView implements LoginPresenter.Display  {
-	
 	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
@@ -50,15 +49,11 @@ public class LoginView implements LoginPresenter.Display  {
 	/** The userid. */
 	private TextBox userid;
 	
-	/** The password. */
-	private TextBox password;
-	
 	/** One time password */
 	private TextBox oneTimePassword;
 	
 	/** The submit button. */
 	private Button submitButton;
-	
 	
 	/** The forgot login id. */
 	private Anchor forgotLoginId;
@@ -71,6 +66,8 @@ public class LoginView implements LoginPresenter.Display  {
 	
 	/** The success. */
 	Label success = new Label();
+	
+	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	
 	/**
 	 * Instantiates a new login view.
@@ -107,14 +104,12 @@ public class LoginView implements LoginPresenter.Display  {
 		
 		userid = new EmailAddressTextBox();
 		userid.getElement().setAttribute("id", "UserID");
-		//loginPanel.add(LabelBuilder.buildLabel(userid, "E-mail Address"));
 		loginPanel.add(LabelBuilder.buildLabel(userid, "User ID"));
 		loginPanel.add(userid);
 		loginPanel.add(new SpacerWidget());
 		
-		password = new PasswordTextBox();
-		loginPanel.add(LabelBuilder.buildLabel(password, "Password"));
-		loginPanel.add(password);
+		loginPanel.add(LabelBuilder.buildLabel(changePasswordWidget.getPasswordGroup(), "Password"));
+		loginPanel.add(changePasswordWidget.getPasswordGroup());
 		loginPanel.add(new SpacerWidget());
 		
 		oneTimePassword = new EmailAddressTextBox();
@@ -144,7 +139,6 @@ public class LoginView implements LoginPresenter.Display  {
 		hPanel.add(forgotPassword);
 		loginPanel.add(hPanel);
 		
-		password.setWidth("200px");
 		oneTimePassword.setWidth("200px");
 		mainPanel.add(loginPanel);
 		
@@ -185,7 +179,7 @@ public class LoginView implements LoginPresenter.Display  {
 	 */
 	@Override
 	public HasValue<String> getPassword() {
-		return password;
+		return changePasswordWidget.getPassword();
 	}
 	
 	@Override
@@ -259,7 +253,7 @@ public class LoginView implements LoginPresenter.Display  {
 	 */
 	@Override
 	public HasKeyDownHandlers getPasswordField() {
-		return password;
+		return null;
 	}
 	
 	/* (non-Javadoc)
@@ -273,10 +267,12 @@ public class LoginView implements LoginPresenter.Display  {
 	/* (non-Javadoc)
 	 * @see mat.client.login.LoginPresenter.Display#getForgotLoginId()
 	 */
+	
 	@Override
 	public HasClickHandlers getForgotLoginId() {
 		return forgotLoginId;
 	}
+	
 	@Override
 	public Button getSubmitButton() {
 		return submitButton;

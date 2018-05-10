@@ -6,7 +6,6 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.InputType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -17,6 +16,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
@@ -56,12 +56,10 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	/** The organization. */
 	private TextBox organization = new TextBox();
 					
-
-	
 	/** The phone widget. */
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
 	
-	private Input passwordInput = new Input(InputType.PASSWORD);
+	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	
 	/** The buttons. */
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("personalInfo");
@@ -76,7 +74,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	 * Instantiates a new personal information view.
 	 */
 	public PersonalInformationView() {
-		
 		
 		vPanel = new FlowPanel();
 
@@ -101,10 +98,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		buttons.getSaveButton().setTitle("Save");
 		vPanel.add(buttons);
 		
-		
 		vPanel.setStyleName("contentPanel");
 		headingPanel = new ContentWithHeadingWidget(vPanel, "Update Personal Information","PersonalInfo");
-		
 	}
 	
 	private Form buildView(){
@@ -122,7 +117,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 		FormGroup passwordGroup = new FormGroup();
 		
-		
 		firstNameTextBox.setPlaceholder("Enter First Name");
 		firstNameTextBox.setTitle("FirstName");
 		firstNameTextBox.setId("FirstNameTextBox");
@@ -137,7 +131,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		firstNameGroup.add(firstNameLabel);
 		firstNameGroup.add(firstNameTextBox);
 	
-		//middleNameTextBox.setPlaceholder("M.I.");
 		middleNameTextBox.setTitle("MiddleName");
 		middleNameTextBox.setId("MiddleNameTextBox");
 		middleNameTextBox.setWidth("32px");
@@ -147,7 +140,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		middleNameLabel.setId("MiddleNameLabel");
 		middleNameLabel.setFor("MiddleNameTextBox");
 		middleNameLabel.setText("M.I.");
-		
 		
 		middleNameGroup.add(middleNameLabel);
 		middleNameGroup.add(middleNameTextBox);
@@ -183,7 +175,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		titleGroup.add(titleLabel);
 		titleGroup.add(title);
 		
-		
 		FormLabel organizationLabel = new FormLabel();
 		organizationLabel.setText("Organization");
 		organizationLabel.setId("OrganizationLabel");
@@ -196,7 +187,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		organization.setTitle("Organization");
 		organizationGroup.add(organizationLabel);
 		organizationGroup.add(organization);
-		
 		
 		FormLabel organizationOidLabel = new FormLabel();
 		organizationOidLabel.setText("Organization OID");
@@ -211,7 +201,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		organizationOidGroup.add(organizationOidLabel);
 		organizationOidGroup.add(oid);
 		
-		
 		FormLabel emailAddressLabel = new FormLabel();
 		emailAddressLabel.setId("emailAddressLabel");
 		emailAddressLabel.setFor("emailTextBox");
@@ -225,7 +214,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		emailAddressGroup.add(emailAddressLabel);
 		emailAddressGroup.add(emailAddress);
 		
-		
 		FormLabel phoneNumberLabel = new FormLabel();
 		phoneNumberLabel.setId("phoneNumberLabel");
 		phoneNumberLabel.setFor("phoneNumber_TextBox");
@@ -233,22 +221,18 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		phoneNumberLabel.setText("Phone Number");
 		phoneWidget.setTitle("Phone Number");
 		
-		
 		phoneNumberGroup.add(phoneNumberLabel);
 		phoneNumberGroup.add(phoneWidget);
-		
 		
 		FormLabel passwordLabel = new FormLabel();
 		passwordLabel.setId("passwordLabel");
 		passwordLabel.setFor("password_TextBox");
 		passwordLabel.setShowRequiredIndicator(true);	
 		passwordLabel.setText("Enter existing password to confirm changes");
-		passwordInput.setTitle("Enter existing password to confirm changes");
-		passwordInput.setId("password_TextBox");
-		passwordInput.setWidth("200px");
 		passwordGroup.add(passwordLabel);
-		passwordGroup.add(passwordInput);
-		
+		changePasswordWidget.getPassword().setTitle("Enter existing password to confirm changes");
+		changePasswordWidget.getPassword().setPlaceholder("Enter existing password here.");
+		passwordGroup.add(changePasswordWidget.getPassword());
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(nameGrid);
@@ -258,7 +242,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		formFieldSet.add(emailAddressGroup);
 		formFieldSet.add(phoneNumberGroup);
 		formFieldSet.add(passwordGroup);
-		
 		
 		userNameForm.add(formFieldSet);
 		return userNameForm;
@@ -304,7 +287,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	public HasValue<String> getMiddleInitial() {
 		return middleNameTextBox;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getTitle()
@@ -375,7 +357,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	 */
 	@Override
 	public HasValue<String> getPassword() {
-		return passwordInput;
+		return changePasswordWidget.getPassword();
 	}
 	
 	/* (non-Javadoc)
@@ -385,9 +367,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	public Label getLoginId() {
 		return loginId;
 	}
+	
 	@Override
 	public Input getPasswordInput() {
-		return passwordInput;
+		return changePasswordWidget.getPassword();
 	}
-
 }

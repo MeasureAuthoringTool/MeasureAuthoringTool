@@ -1,12 +1,7 @@
 package mat.client.measure.metadata;
 
-import mat.client.shared.DialogBoxWithCloseButton;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.MatContext;
-import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SpacerWidget;
-
 import org.apache.commons.lang.StringUtils;
+import org.gwtbootstrap3.client.ui.Input;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -19,9 +14,16 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import mat.client.shared.ChangePasswordWidget;
+import mat.client.shared.DialogBoxWithCloseButton;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.MatContext;
+import mat.client.shared.RequiredIndicator;
+import mat.client.shared.SpacerWidget;
+import mat.shared.StringUtility;
 
 /**
  * The Class DeleteMeasureConfirmationBox.
@@ -92,7 +94,8 @@ public class DeleteMeasureConfirmationBox {
 	 * Show deletion confimation dialog.
 	 */
 	public static void showDeletionConfimationDialog() {
-
+		ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
+		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Warning");
@@ -111,8 +114,10 @@ public class DeleteMeasureConfirmationBox {
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
 		final HTML passwordText = new HTML(
 				"To confirm deletion enter your password below:");
-		final PasswordTextBox password = new PasswordTextBox();
-		password.getElement().setId("password_PasswordTextBox");
+		final Input password = changePasswordWidget.getPassword();
+		password.setId("password_PasswordTextBox");
+		password.setTitle("Enter your password");
+		password.setPlaceholder("Enter your password.");
 		passwordPanel.add(passwordText);
 		passwordPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
@@ -139,8 +144,7 @@ public class DeleteMeasureConfirmationBox {
 						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE) {
 					confirm.setEnabled(true);
 					setPasswordEntered(password.getText());
-				} else if (password.getText() == null
-						|| password.getText().trim().length() == 0) {
+				} else if (StringUtility.isEmptyOrNull(password.getText())) {
 					confirm.setEnabled(false);
 				}
 

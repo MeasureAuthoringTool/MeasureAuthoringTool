@@ -125,8 +125,8 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		passwordLabel.setText("Password");
 		passwordLabel.setTitle("Password");
 		passwordLabel.setFor("inputPwd");
-		changePasswordWidget.setWidth("250px");
-		changePasswordWidget.setHeight("27px");
+		changePasswordWidget.getPassword().setWidth("250px");
+		changePasswordWidget.getPassword().setHeight("27px");
 		changePasswordWidget.getPassword().setPlaceholder("Enter Password");
 		changePasswordWidget.getPassword().setTitle("Enter Password");
 		changePasswordWidget.getPassword().setValidateOnBlur(true);

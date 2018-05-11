@@ -108,8 +108,9 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(userid);
 		loginPanel.add(new SpacerWidget());
 		
-		loginPanel.add(LabelBuilder.buildLabel(changePasswordWidget.getPasswordGroup(), "Password"));
-		loginPanel.add(changePasswordWidget.getPasswordGroup());
+		loginPanel.add(LabelBuilder.buildLabel(changePasswordWidget.getPassword(), "Password"));
+		changePasswordWidget.getPassword().setWidth("200px");
+		loginPanel.add(changePasswordWidget.getPassword());
 		loginPanel.add(new SpacerWidget());
 		
 		oneTimePassword = new EmailAddressTextBox();

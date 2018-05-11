@@ -230,6 +230,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		passwordLabel.setShowRequiredIndicator(true);	
 		passwordLabel.setText("Enter existing password to confirm changes");
 		passwordGroup.add(passwordLabel);
+		changePasswordWidget.getPassword().setId("password_TextBox");
+		changePasswordWidget.getPassword().setWidth("200px");
 		changePasswordWidget.getPassword().setTitle("Enter existing password to confirm changes");
 		changePasswordWidget.getPassword().setPlaceholder("Enter existing password here.");
 		passwordGroup.add(changePasswordWidget.getPassword());

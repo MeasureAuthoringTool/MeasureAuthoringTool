@@ -1487,6 +1487,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.NOT_APPLICABLE);
 			metaDataDisplay.getNQFIDInput().setText("");
 			metaDataDisplay.getNQFIDInput().setEnabled(false);
+			metaDataDisplay.getNQFIDInput().setReadOnly(true);
 		} else {
 			if(!StringUtility.isEmptyOrNull(metaDataDisplay.getNQFIDInput().getText())) {
 				String placeHolderText = metaDataDisplay.getNQFIDInput().getText();
@@ -1496,6 +1497,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
 				metaDataDisplay.getNQFIDInput().setTitle(MatConstants.ENTER_NQF_NUMBER);
 			}
+			metaDataDisplay.getNQFIDInput().setReadOnly(false);
 			metaDataDisplay.getNQFIDInput().setEnabled(true);
 		}
 	}

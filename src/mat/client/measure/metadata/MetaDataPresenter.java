@@ -2404,7 +2404,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	}
 
 	private boolean isNQFIDExists(boolean endorseByNQF, String nqfId) {
-		return (endorseByNQF && !StringUtility.isEmptyOrNull(nqfId) || !endorseByNQF);
+		return ((endorseByNQF && !StringUtility.isEmptyOrNull(nqfId)) || !endorseByNQF);
 	}
 
 	

@@ -1336,21 +1336,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		} else if (!trimToNull(measFromPeriod).equals(trimToNull(other.measFromPeriod))) {
 			return false;
 		}
-		/*if (trimToNull(measSteward) == null) {
-			if (trimToNull(other.measSteward) != null) {
-				return false;
-			}
-		} else if(trimToNull(measSteward).equals("Other")){
-			if (trimToNull(measStewardOther) == null) {
-				if (trimToNull(other.measStewardOther) != null) {
-					return false;
-				}
-			} else if (!trimToNull(measStewardOther).equals(trimToNull(other.measStewardOther))) {
-				return false;
-			}
-		}else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
-			return false;
-		}*/
+
 		if (trimToNull(stewardValue) == null) {
 			if (trimToNull(other.stewardValue) != null) {
 				return false;
@@ -1403,13 +1389,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		} else if (!trimToNull(measureSetId).equals(trimToNull(other.measureSetId))) {
 			return false;
 		}
-		/*if (trimToNull(measureStatus) == null) {
-			if (trimToNull(other.measureStatus) != null) {
-				return false;
-			}
-		} else if (!trimToNull(measureStatus).equals(trimToNull(other.measureStatus))) {
-			return false;
-		}*/
+
 		if (toCompareMeasure == null) {
 			if (other.toCompareMeasure != null) {
 				return false;
@@ -1427,20 +1407,16 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 			return false;
 		}
 		
-		//		if (trimToNull(name) == null) {
-		//			if (trimToNull(other.name) != null) {
-		//				return false;
-		//			}
-		//		} else if (!trimToNull(name).equals(trimToNull(other.name))) {
-		//			return false;
-		//		}
-		if (trimToNull(nqfId) == null) {
-			if (trimToNull(other.nqfId) != null) {
+		if(endorseByNQF) {
+			if (trimToNull(nqfId) == null) {
+				if (trimToNull(other.nqfId) != null) {
+					return false;
+				}
+			} else if (!trimToNull(nqfId).equals(trimToNull(other.nqfId))) {
 				return false;
 			}
-		} else if (!trimToNull(nqfId).equals(trimToNull(other.nqfId))) {
-			return false;
 		}
+
 		if (trimToNull(numerator) == null) {
 			if (trimToNull(other.numerator) != null) {
 				return false;

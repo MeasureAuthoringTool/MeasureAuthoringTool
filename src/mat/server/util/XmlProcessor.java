@@ -248,6 +248,7 @@ public class XmlProcessor {
 	
 	private static final String ATTRIBUTE_CODE_OID = "codeOID";
 	private static final String ATTRIBUTE_CODE_NAME = "codeName";
+	private static final String ATTRIBUTE_READ_ONLY = "readOnly";
 	private static final String ATTRIBUTE_CODE_SYSTEM_OID = "codeSystemOID";
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {
@@ -1480,14 +1481,16 @@ public class XmlProcessor {
 		return missingDefaultParameterList;
 	}
 
-	public void removeUnusedCodes(List<String> usedCodeList) {
+	public void removeUnusedDefaultCodes(List<String> usedCodeList) {
 		try {
 			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_CODES);
 			List<String> codeSystemOIDsToRemove = new ArrayList<String>();
 			for(int i = 0; i<nodeList.getLength(); i++) {
 				Node currentNode = nodeList.item(i);
 				String codeOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_OID).getNodeValue();
-				if(codeOID.equals(CQLUtil.BIRTHDATE_OID) || codeOID.equals(CQLUtil.DEAD_OID)) {
+				Boolean readOnly = Boolean.parseBoolean(currentNode.getAttributes().getNamedItem(ATTRIBUTE_READ_ONLY).getNodeValue());
+				
+				if(readOnly && (codeOID.equals(CQLUtil.BIRTHDATE_OID) || codeOID.equals(CQLUtil.DEAD_OID))) {
 					String codeName = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_NAME).getNodeValue();
 					if(!usedCodeList.contains(codeName)) {
 						String codeSystemOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_SYSTEM_OID).getNodeValue();

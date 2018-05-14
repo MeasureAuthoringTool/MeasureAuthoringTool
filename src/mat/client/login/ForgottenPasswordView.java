@@ -103,7 +103,6 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		
 	}	
 
-
 	/* (non-Javadoc)
 	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getSecurityQuestion()
 	 */
@@ -183,7 +182,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 			securityQuestionAnsPanel.add(securityQuestion);
 			securityQuestionAnsPanel.add(new SpacerWidget());
 			
-			securityAnswer = securityQuestionsWidget.getAnswer1(); //new Input(InputType.PASSWORD);
+			securityAnswer = securityQuestionsWidget.getAnswer1();
 			securityAnswer.setTitle("Enter Security Question Answer");
 			securityQuestionAnsPanel.add(LabelBuilder.buildLabel(securityAnswer, "Security Question Answer"));
 			securityQuestionAnsPanel.add(securityAnswer);

@@ -291,7 +291,7 @@ implements MeasureCloningService {
 					clonedXml.getMeasureXMLAsString());
 			
 			
-			xmlProcessor.removeUnusedCodes(usedCodeList);
+			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
 			
 			if ((currentDetails.getMeasScoring() != null)
 					&& !currentDetails.getMeasScoring().equals(

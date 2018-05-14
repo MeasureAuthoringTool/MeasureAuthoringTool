@@ -352,7 +352,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 					MeasureUtility.updateLatestQDMVersion(processor);
 					SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
 					List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
-					processor.removeUnusedCodes(usedCodeList);
+					processor.removeUnusedDefaultCodes(usedCodeList);
 					
 					versionLibraryXml = processor.transform(processor.getOriginalDoc());
 				} catch (XPathExpressionException e) {

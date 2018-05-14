@@ -184,8 +184,8 @@ public class SecurityQuestionAnswerWidget extends Composite {
 					getAnswer1().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
 				}
 				//Replacing the last character of the string with '*'
-				String answer1Text = getAnswer1().getText();
-				getAnswer1().setText(answer1Text.substring(0, answer1Text.length()-1).concat("*"));
+				String answer1Text = getAnswer1().getText().replaceAll(".", "*");
+				getAnswer1().setText(answer1Text);
 			}
 		});
 		
@@ -195,8 +195,8 @@ public class SecurityQuestionAnswerWidget extends Composite {
 					getAnswer2().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
 				}
 				//Replacing the last character of the string with '*'
-				String answer2Text = getAnswer2().getText();
-				getAnswer2().setText(answer2Text.substring(0, answer2Text.length()-1).concat("*"));
+				String answer2Text = getAnswer2().getText().replaceAll(".", "*");
+				getAnswer2().setText(answer2Text);
 			}
 		});
 		
@@ -206,8 +206,8 @@ public class SecurityQuestionAnswerWidget extends Composite {
 					getAnswer3().setText(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE);
 				}
 				//Replacing the last character of the string with '*'
-				String answer3Text = getAnswer3().getText();
-				getAnswer3().setText(answer3Text.substring(0, answer3Text.length()-1).concat("*"));
+				String answer3Text = getAnswer3().getText().replaceAll(".", "*");
+				getAnswer3().setText(answer3Text);
 			}
 		});
 		
@@ -286,7 +286,7 @@ public class SecurityQuestionAnswerWidget extends Composite {
 			formattedValue = temporaryValue.substring(0, temporaryValue.length()-1).concat("*");
 		}else if (KeyCodes.KEY_SHIFT == charCode) {
 			formattedValue = temporaryValue;
-		}else if (KeyCodes.KEY_CTRL == charCode) {
+		}else if (KeyCodes.KEY_CTRL == charCode || KeyCodes.KEY_SPACE == charCode) {
 			formattedValue = temporaryValue.replaceAll(".", "*");
 		}
 		return formattedValue;
@@ -294,8 +294,7 @@ public class SecurityQuestionAnswerWidget extends Composite {
 
 	private void handleBackSpace(String currentField, int charCode) {
 		if (KeyCodes.KEY_BACKSPACE == charCode) {
-			String securityAnswer = securityAnswers.get(currentField);
-			securityAnswers.put(currentField, securityAnswer.substring(0, securityAnswer.length()-1));
+			securityAnswers.put(currentField, MessageDelegate.EMPTY_VALUE);
 		}
 	}
 	

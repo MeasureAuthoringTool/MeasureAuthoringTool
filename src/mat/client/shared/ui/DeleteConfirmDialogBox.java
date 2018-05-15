@@ -21,9 +21,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
+import mat.shared.StringUtility;
 
 /**
  * The Class DeleteConfirmDialogBox.
@@ -40,7 +42,8 @@ public class DeleteConfirmDialogBox {
 	
 	FocusPanel focusPanel = new FocusPanel();
 	
-	Input password = new Input(InputType.PASSWORD);
+	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
+	
 	/**
 	 * showDeletionConfimationDialog.
 	 *
@@ -79,32 +82,30 @@ public class DeleteConfirmDialogBox {
 				"<h4>To confirm deletion enter your password below:<h4>");
 		
 		
-		password.setId("password_PasswordTextBox");
-		password.setPlaceholder("Enter Password");
-		password.setTitle( message + "To confirm deletion enter your password.");
-		//password.setValidateOnBlur(true);
-		password.setFocus(true);
+		changePasswordWidget.getPassword().setId("password_PasswordTextBox");
+		changePasswordWidget.getPassword().setPlaceholder("Enter Password");
+		changePasswordWidget.getPassword().setTitle( message + "To confirm deletion enter your password.");
+		changePasswordWidget.getPassword().setFocus(true);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get());
-		hp.add(password);
+		hp.add(changePasswordWidget.getPassword());
 		hp.add(required);
 		passwordPanel.add(new SpacerWidget());
 		passwordPanel.add(passwordText);
 		passwordPanel.add(new SpacerWidget());
 		passwordPanel.add(hp);
 		
-		password.addKeyUpHandler(new KeyUpHandler() {
+		getPassword().addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
 			public void onKeyUp(final KeyUpEvent event) {
-				if (password.getText() != null
+				if (getPassword().getText() != null
 						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_TAB
 						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE) {
 					confirmButton.setEnabled(true);
-					setPasswordEntered(password.getText());
-				} else if (password.getText() == null
-						|| password.getText().trim().length() == 0) {
+					setPasswordEntered(getPassword().getText());
+				} else if (StringUtility.isEmptyOrNull(getPassword().getText())) {
 					confirmButton.setEnabled(false);
 				}
 			}
@@ -167,7 +168,7 @@ public class DeleteConfirmDialogBox {
 	}
 
 	public Input getPassword() {
-		return password;
+		return changePasswordWidget.getPassword();
 	}
 
 }

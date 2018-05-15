@@ -360,7 +360,7 @@
                                 <displayName value="Measure Type" />
                             </code>
                             <xsl:variable name="nameVar" select="@id" />
-                            <value xsi:type="CD" code="{$nameVar}" codeSystem="2.16.840.1.113883.1.11.20368">
+                            <value xsi:type="CD" code="{$nameVar}" codeSystem="2.16.840.1.113883.5.1063">
                                 <displayName value="{$nameVar}" />
                             </value>
                         </measureAttribute>

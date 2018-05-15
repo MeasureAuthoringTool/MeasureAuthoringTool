@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
@@ -5434,15 +5435,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					CQLCode code = buildCQLCodeFromCodesView(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 					searchDisplay.getCodesView().setValidateCodeObject(code);
 					
-				} else if (result.getFailureReason() == 5) {
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
-
 				} else {
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+					String message = searchDisplay.getCodesView().convertMessage(result.getFailureReason());
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
 				}
-
+				
 				showSearchingBusy(false);
 				// 508 : Shift focus to code search panel.
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
@@ -5487,8 +5485,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		showSearchingBusy(true);
 		final String oid = searchDisplay.getValueSetView().getOIDInput().getValue();
 		if (!MatContext.get().isUMLSLoggedIn()) {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-					.createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
 			showSearchingBusy(false);
 			return;
@@ -5507,9 +5504,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(final Throwable caught) {
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);				
 				showSearchingBusy(false);
 			}
 

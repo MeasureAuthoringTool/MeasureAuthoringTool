@@ -4966,12 +4966,11 @@ private void addCodeSearchPanelHandlers() {
 					CQLCode code = buildCQLCodeFromCodesView(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 					searchDisplay.getCodesView().setValidateCodeObject(code);
 					
-				} else if (result.getFailureReason() == 5) { 
-					 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_INVALID_CODE_IDENTIFIER());
-					 
-				 } else {
-					 searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				 }
+				} else {
+					String message = searchDisplay.getCodesView().convertMessage(result.getFailureReason());
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
+					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().setVisible(true);
+				}
 				
 				showSearchingBusy(false);
 				//508 : Shift focus to code search panel.

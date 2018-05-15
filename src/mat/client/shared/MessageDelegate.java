@@ -828,9 +828,10 @@ public class MessageDelegate {
 	/** The vsac retrieve failed. */
 	private final String VSAC_RETRIEVE_FAILED = "Unable to retrieve from VSAC. Please check the data and try again.";
 	
+	private final String VSAC_RETRIEVE_TIMEOUT = "Your request to VSAC has timed-out. Please attempt your retrieve again. If the problem persists, please contact the MAT Support Desk.";
+	
 	/** The vsac update successfull. */
 	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied Value Set list with VSAC data.";
-	
 	
 	/** The comment added successfully. */
 	private final String COMMENT_ADDED_SUCCESSFULLY ="Comment Changes Added.";
@@ -3568,6 +3569,10 @@ public class MessageDelegate {
 
 	public String getSUCCESSFUL_MODIFY_APPLIED_CODE() {
 		return SUCCESSFUL_MODIFY_APPLIED_CODE;
+	}
+
+	public String getVSAC_RETRIEVE_TIMEOUT() {
+		return VSAC_RETRIEVE_TIMEOUT;
 	}
 
 }

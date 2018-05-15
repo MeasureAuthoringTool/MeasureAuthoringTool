@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -509,6 +515,23 @@ public class VSACApiServImpl implements VSACApiService{
 	
 	@Override
 	public final VsacApiResult getDirectReferenceCode (String url, String sessionId) {
+		Callable<VsacApiResult> getCodeTask = new Callable<VsacApiResult>() {
+			public VsacApiResult call() {
+				return getCodeFromVsac(url, sessionId);
+			}
+		};
+		
+		
+		return taskExecutor(getCodeTask);
+	}
+	
+	/**
+	 * Fetches a direct reference code from vsac
+	 * @param url the url to fetch
+	 * @param sessionId the user's session id
+	 * @return the result of the vsac api call
+	 */
+	private VsacApiResult getCodeFromVsac(String url, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl getDirectReferenceCode method : url entered :" + url);
 		VsacApiResult result = new VsacApiResult();
 		CQLModelValidator validator = new CQLModelValidator();
@@ -554,11 +577,58 @@ public class VSACApiServImpl implements VSACApiService{
 		return result;
 	}
 	
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.service.VSACAPIService#getMostRecentValueSetByOID(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId, String sessionId) {
+		Callable<VsacApiResult> getValuesetTask = new Callable<VsacApiResult>() {
+			public VsacApiResult call() {
+				return getMostRecentValuesetByOID(oid, expansionId, sessionId);
+			}
+		};
+		
+		
+		return taskExecutor(getValuesetTask);
+	}
+	
+	/**
+	 * Executes a task which returns the VsacApiResult. This request will timeout after 60 seconds. 
+	 * @param task the task to execute
+	 * @return the VsacApiResult which was created during the call to the future
+	 */
+	private VsacApiResult taskExecutor(Callable<VsacApiResult> task) {
+		ExecutorService executor = Executors.newCachedThreadPool();
+		Future<VsacApiResult> futureGetValuesetTask = executor.submit(task);
+		VsacApiResult result = new VsacApiResult();
+		try {
+			result = futureGetValuesetTask.get(60, TimeUnit.SECONDS);
+			result.setSuccess(true);
+			return result;
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		} catch (java.util.concurrent.TimeoutException e) {
+			LOGGER.info("VSACAPIServiceIMpl: Call to the VSAC API timed out.");
+			result.setSuccess(false);
+			result.setFailureReason(VsacApiResult.VSAC_REQUEST_TIMEOUT);
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Calls the VSAC Api to get a valueset with a timeout
+	 * @param oid the oid of the valueset
+	 * @param expansionId the expansion id
+	 * @param sessionId the session id 
+	 * @param timeout the timeout in seconds
+	 * @return
+	 */
+	private final VsacApiResult getMostRecentValuesetByOID(final String oid, String expansionId, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid
 				+ "for Expansion Identifier :" + expansionId);
 		VsacApiResult result = new VsacApiResult();
@@ -572,7 +642,7 @@ public class VSACApiServImpl implements VSACApiService{
 		
 				if (StringUtils.isNotBlank(expansionId)){					
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(), expansionId, fiveMinServiceTicket);
-				}else {
+				}else {  
 					expansionId = getDefaultExpId();
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket, expansionId);
 				}

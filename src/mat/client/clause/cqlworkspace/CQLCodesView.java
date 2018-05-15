@@ -692,14 +692,17 @@ public class CQLCodesView {
 	public String convertMessage(final int id) {
 		String message;
 		switch (id) {
-		case VsacApiResult.UMLS_NOT_LOGGEDIN:
-			message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
-			break;
-		case VsacApiResult.CODE_URL_REQUIRED:
-			message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
-			break;
-		default:
-			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
+			case VsacApiResult.UMLS_NOT_LOGGEDIN:
+				message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
+				break;
+			case VsacApiResult.CODE_URL_REQUIRED:
+				message = MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED();
+				break;
+			case VsacApiResult.VSAC_REQUEST_TIMEOUT:
+				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
+				break;
+			default:
+				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
 		}
 		return message;
 	}

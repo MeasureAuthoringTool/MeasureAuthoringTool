@@ -40,7 +40,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	private Input userIdText = new Input(InputType.TEXT);
 	private ChangePasswordWidget passwordInput = new ChangePasswordWidget();
 	
-	//private FormGroup passwordGroup = new FormGroup();
 	private FormGroup userIdGroup = new FormGroup();
 	private FormGroup passwordGroup = new FormGroup();
 	
@@ -85,8 +84,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		focusPanel.clear();
 	    panel = new Modal();
 	    panel.setWidth("300px");
-	    //panel.setMarginTop(300);
-	    //panel.setMarginLeft(300.00);
+
 		ModalBody modalBody = new ModalBody();
 		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
@@ -220,8 +218,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		panel.add(modalFooter);
 		panel.getElement().focus();
 		
-		
-		//panel.show();
 	}
 
 	public void showModal() {

@@ -991,6 +991,21 @@ left:50px;
     margin-right:auto;
 }
 
+.widgitDisclaimer {
+    border: 1px solid #0964A2;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    width:250px;
+    padding: 10px;
+    font-size:.8em;
+    margin-left:auto; 
+    margin-right:auto;
+    margin-top:10px;
+}
+
 .loginHeader {
     font-size:1.2em;
     border-bottom:10px;
@@ -1298,13 +1313,13 @@ padding: 2px;
 .umlsStatePanel{
 	float: right;
 	position: relative;
-	padding-top: 12px;
+	padding-top: 20px;
 	font-size:small;
 }
 .versionPanel{
 	float: left;
 	position: relative;
-	padding: 2px 0 0 4px;
+	padding: 7px 0 0 4px;
 	font-size:small;
 	text-align:left;
 	margin-top: -8px;
@@ -1312,7 +1327,6 @@ padding: 2px;
 .welcomeUserPanel{
 	float: right;
 	position: relative;
-	padding-top: 12px;
 	font-size:small;	
 }
 .logoutAndUMLSPanel{

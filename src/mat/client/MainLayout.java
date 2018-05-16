@@ -7,18 +7,10 @@ import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 import org.gwtbootstrap3.client.ui.constants.ProgressType;
 
-import mat.client.shared.FocusableImageButton;
-import mat.client.shared.FocusableWidget;
-import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.MatContext;
-import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.VerticalFlowPanel;
-import mat.client.util.ClientConstants;
-import mat.client.util.FooterPanelBuilderUtility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,6 +20,16 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.shared.FocusableImageButton;
+import mat.client.shared.FocusableWidget;
+import mat.client.shared.HorizontalFlowPanel;
+import mat.client.shared.MatContext;
+import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.VerticalFlowPanel;
+import mat.client.util.ClientConstants;
+import mat.client.util.FooterPanelBuilderUtility;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,7 +68,7 @@ public abstract class MainLayout {
 	static HTML umlsActiveStatusLabel;
 	
 	/** The umls inactive status label. */
-	static HTML umlsInactiveStatusLabel;
+	static Anchor umlsInactiveStatusLabel;
 	
 	/** The welcome user label. */
 	static HTML welcomeUserLabel;
@@ -110,7 +112,7 @@ public abstract class MainLayout {
 	protected static Panel getShowUMLSState(){
 		return showUMLSState;
 	}
-	
+
 	/**
 	 * Gets the skip list.
 	 *
@@ -172,52 +174,20 @@ public abstract class MainLayout {
 	 */
 	public static void showLoadingMessage(){
 		getLoadingPanel().clear();
-		/*alertImage.getElement().setId("LoadingImage");
-		getLoadingPanel().add(alertImage);
-		loadingWidget.getElement().setAttribute("id", "LoadingPanel");
-		getLoadingPanel().add(loadingWidget);
-		getLoadingPanel().setStyleName("msg-alert");
-		getLoadingPanel().getElement().setAttribute("role", "alert");*/
 		
 		progress.setActive(true);
 		progress.setType(ProgressType.STRIPED);
 		
-	//	bar.setText("Loading Please Wait...");
 		bar.setType(ProgressBarType.INFO);
 		bar.setWidth("100%");
 		bar.setPercent(50.00);
 		bar.setText("Please wait.Loaded " +50+"% ");
 		
 		
-		
-		
-		/*bar.getElement().setAttribute("role", "progressbar");
-		bar.getElement().setAttribute("aria-valuenow", "90");
-		bar.getElement().setAttribute("aria-valuemin", "0");
-		bar.getElement().setAttribute("aria-valuemax", "100");
-		bar.getElement().setAttribute("aria-valuetext", "Loading Please wait");*/
 		progress.add(bar);
 		progress.setId("LoadingPanel");
 		getLoadingPanel().add(progress);
-		/*int delay = 50;
-		
-		if(delay > 0){
-			
-			final Timer timer = new Timer() {
-				@Override
-				public void run() {
-					 double percentage = bar.getPercent();
-					 percentage+= 10.00;
-					 bar.setPercent(percentage);
-					 bar.setText("Please wait.Loaded " +(int)percentage+"%.");
-					 if(percentage == 100) {
-						 percentage =50.00;
-					 }
-				}
-			};
-			timer.schedule(delay);
-		}*/
-		//getLoadingPanel().setStyleName("msg-alert");
+
 		getLoadingPanel().setWidth("99%");
 		getLoadingPanel().getElement().setAttribute("role", "alert");
 		MatContext.get().getLoadingQueue().add("node");
@@ -344,29 +314,30 @@ public abstract class MainLayout {
 		titleImage.getElement().setId("titleImage_FocusableImageButton");
 		titleImage.setStylePrimaryName("topBannerImage");
 		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
-		HTML desc = new HTML("<h4 style=\"font-size:0;\">Measure Authoring Tool</h4>");// Doing this for 508 when CSS turned off
+		HTML desc = new HTML("<h4 style=\"font-size:0;\"><b>Measure Authoring Tool</b></h4>");// Doing this for 508 when CSS turned off
 		com.google.gwt.user.client.Element heading = desc.getElement();
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		versionPanel = new VerticalFlowPanel();
 		versionPanel.getElement().setId("versionPanel_VerticalalFlowPanel");
 		versionPanel.setStyleName("versionPanel");
+		welcomeUserPanel = new HorizontalFlowPanel();
+		welcomeUserPanel.getElement().setId("welcomeUserPanel_HorizontalFlowPanel");
+		welcomeUserPanel.setStyleName("welcomeUserPanel");
 		VerticalPanel titleVerticalPanel = new VerticalPanel();
 		titleVerticalPanel.addStyleName("versionPanel");
 		titleVerticalPanel.add(titleImage);
 		titleVerticalPanel.add(versionPanel);
+		titleVerticalPanel.add(welcomeUserPanel);
 		horizontalBanner.add(titleVerticalPanel);
 		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
-		welcomeUserPanel = new HorizontalFlowPanel();
-		welcomeUserPanel.getElement().setId("welcomeUserPanel_HorizontalFlowPanel");
-		welcomeUserPanel.setStyleName("welcomeUserPanel");
+		
 		showUMLSState = buildUMLStatePanel();
 		showUMLSState.addStyleName("umlsStatePanel");
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(logOutPanel);
 		vp.add(showUMLSState);
-		vp.add(welcomeUserPanel);
 		vp.add(new SpacerWidget());
 		vp.addStyleName("logoutAndUMLSPanel");
 		horizontalBanner.add(vp);
@@ -397,9 +368,10 @@ public abstract class MainLayout {
 		umlsActiveStatusLabel.setStylePrimaryName("htmlDescription");
 		inActiveUmlsImage = new Image(ImageResources.INSTANCE.bullet_red());
 		inActiveUmlsImage.setStylePrimaryName("imageMiddleAlign");
-		umlsInactiveStatusLabel = new HTML("<h9>UMLS Inactive</h9>");
+		umlsInactiveStatusLabel = new Anchor("Sign into UMLS");
+		umlsInactiveStatusLabel.setTitle("Sign into UMLS");
 		umlsInactiveStatusLabel.getElement().setAttribute("tabIndex", "0");
-		umlsInactiveStatusLabel.setStylePrimaryName("htmlDescription");
+		umlsInactiveStatusLabel.getElement().setAttribute("id", "Anchor_signInUMLS");
 		return showUMLSState;
 	}
 	/**
@@ -455,6 +427,10 @@ public abstract class MainLayout {
 		return null;
 	}
 	
+	protected Anchor getSigninLink() {
+		return umlsInactiveStatusLabel;
+	}
+	
 	
 	
 	/**
@@ -486,9 +462,8 @@ public abstract class MainLayout {
 		RootPanel.get("mainContent").add(container);
 		
 		initEntryPoint();
-		
 	}
-	
+
 	/**
 	 * Sets the id.
 	 *
@@ -515,10 +490,11 @@ public abstract class MainLayout {
 	 * @return the welcome user panel
 	 */
 	public HorizontalFlowPanel getWelcomeUserPanel(String userFirstName) {
-		welcomeUserLabel = new HTML("<h9><b>Welcome, "+ userFirstName+"</b></h9>");
+		welcomeUserLabel = new HTML("<h9><b>Successful login - Welcome, "+ userFirstName+"!</b></h9>");
 		welcomeUserLabel.getElement().setId("welcomeUserLabel_HTML");
 		welcomeUserLabel.getElement().setAttribute("tabIndex", "0");
 		welcomeUserLabel.setStylePrimaryName("htmlDescription");
+		
 		welcomeUserPanel.add(welcomeUserLabel);
 		return welcomeUserPanel;
 	}

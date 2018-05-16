@@ -115,60 +115,12 @@
 				<path location="${web.output.dir}/WEB-INF/classes"/>
 			</classpath>
 			<batchtest fork="yes" todir="${web.output.dir}/test-results">
-				<fileset dir="${web.output.dir}/test-classes" includes="**/FileUploadValidationTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ManageCodeListServiceImplOidTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ExcelSheetParserTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/SortUtilityTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/US547ListObjectDAOTest.class" />
-
-				<fileset dir="${web.output.dir}/test-classes" includes="**/CodeListExportTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/AdminServiceImplTest.class" />
-				<!--<fileset dir="${web.output.dir}/test-classes" includes="**/LoginServiceImplTest.class" />-->
 				<fileset dir="${web.output.dir}/test-classes" includes="**/PasswordVerifierTest.class" />
 				<fileset dir="${web.output.dir}/test-classes" includes="**/SecurityQuestionVerifierTest.class" />
-
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ManageCodeListServiceImplTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ManageQDMElementTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ValidationTestForCloning.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/DotNotationTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/SortUtilityTest.class" />
-
-				<fileset dir="${web.output.dir}/test-classes" includes="**/CodeListRequiredFieldTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/SimpleEMeasureServiceImplTest.class" />
-				<!--<fileset dir="${web.output.dir}/test-classes" includes="**/ResetUserPasswordTest.class" />-->
-				<fileset dir="${web.output.dir}/test-classes" includes="**/UserServiceImplTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ManageQDSImplTest.class" />
-
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ClauseServiceImplTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/QDSAttributesServiceImplTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ManageCodeListServiceImplMockedTest.class" />
 				<fileset dir="${web.output.dir}/test-classes" includes="**/PagingToolHelperTest.class" />
-
-				<fileset dir="${web.output.dir}/test-classes" includes="**/DAOTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/ForgotPasswordTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/V1_0_2_US7_US8_SimpleEMeasureServiceImplTest.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/V1_0_2_US4_MeasureLibraryServiceImplTest.class" />
-
-				<fileset dir="${web.output.dir}/test-classes" includes="**/Sprint21Tests.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/Sprint22Tests.class" />
-				<fileset dir="${web.output.dir}/test-classes" includes="**/Sprint23Tests.class" />
-				<!--
-                <fileset dir="${web.output.dir}/test-classes" includes="**/ReportsDataAccessTestCase.class" />
-                -->
-				<!-- broken tests -->
-				<!--
-                <fileset dir="${web.output.dir}/test-classes" includes="**/ClauseDAOTest.class" />
-                <fileset dir="${web.output.dir}/test-classes" includes="**/ManageCodeListServiceImpl2Test.class" />
-                <fileset dir="${web.output.dir}/test-classes" includes="**/UserServiceImplMockedTest.class" />
-                <fileset dir="${web.output.dir}/test-classes" includes="**/PackagerServiceImplMockedTest.class" />
-                
-                <fileset dir="${web.output.dir}/test-classes" includes="**/MeasureDAOTest.class" />
-                
-                <fileset dir="${web.output.dir}/test-classes" includes="**/ExcelFileParsingTest" />
-                -->
-
-
-
+				<fileset dir="${web.output.dir}/test-classes" includes="**/ValueSetNameInputValidatorTest.class" />
+				<fileset dir="${web.output.dir}/test-classes" includes="**/NormalizeNodeForSpacesTest.class" />
+				<fileset dir="${web.output.dir}/test-classes" includes="**/IdToUuidTest.class" />
 			</batchtest>
 		</junit>
 	</target>

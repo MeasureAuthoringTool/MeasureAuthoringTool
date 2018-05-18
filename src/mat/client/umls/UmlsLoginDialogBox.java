@@ -53,11 +53,15 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 	/** The close button. */
 	private  Button closeButton;
+	
+	private Button continueButton;
 
 	/** The password entered. */
 	private  String passwordEntered;
 	
 	private  Modal panel;
+	
+	private ModalFooter modalFooter;
 	
 	FocusPanel focusPanel = new FocusPanel();
 	
@@ -158,10 +162,18 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		closeButton.setSize(ButtonSize.DEFAULT);
 		closeButton.setMarginLeft(10.00);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
+		
+		continueButton = new Button("Continue");
+		continueButton.setType(ButtonType.PRIMARY);
+		continueButton.setSize(ButtonSize.DEFAULT);
+		continueButton.setMarginLeft(10.00);
+		continueButton.setDataDismiss(ButtonDismiss.MODAL);
+		continueButton.setVisible(false);
 
 		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		hp.add(submitButton);
 		hp.add(closeButton);
+		hp.add(continueButton);
 		
 		VerticalPanel vp = new VerticalPanel();
 		
@@ -179,7 +191,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		modalBody.add(focusPanel);
 		panel.add(modalBody);
 		
-		ModalFooter modalFooter = new ModalFooter();
+		modalFooter = new ModalFooter();
 		VerticalPanel vPanel = new VerticalPanel();
 		umlsExternalLink = new Anchor("Need a UMLS license?");
 		umlsTroubleLogging = new Anchor("Trouble signing in?");
@@ -317,7 +329,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 
 	@Override
 	public FormGroup getPasswordGroup() {
-		return passwordInput.getPasswordGroup();
+		return passwordGroup;
 	}
 
 	@Override
@@ -344,5 +356,20 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	public Modal getModel() {
 		return panel;
 		
+	}
+
+	@Override
+	public Button getCancel() {
+		return closeButton;
+	}
+
+	@Override
+	public ModalFooter getFooter() {
+		return modalFooter;
+	}
+
+	@Override
+	public Button getContinue() {
+		return continueButton;
 	}
 }

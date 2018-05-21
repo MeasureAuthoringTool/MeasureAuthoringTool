@@ -2134,7 +2134,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the password
 	 */
 	private void checkPasswordForMeasureDeletion(String password) {
-		
+		Window.alert("Password : " + password);
 		MatContext.get().getLoginService().isValidPassword(MatContext.get()
 				.getLoggedinLoginId(), password, new AsyncCallback<Boolean>() {
 			

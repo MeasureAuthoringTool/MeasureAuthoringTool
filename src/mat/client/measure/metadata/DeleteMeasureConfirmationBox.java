@@ -165,13 +165,12 @@ public class DeleteMeasureConfirmationBox {
 		if (handlerRegistration != null) {
 			handlerRegistration.removeHandler();
 		}
-		handlerRegistration = dialogBox
-				.addCloseHandler(new CloseHandler<PopupPanel>() {
-					@Override
-					public void onClose(final CloseEvent<PopupPanel> event) {
+		handlerRegistration = dialogBox.addCloseHandler(new CloseHandler<PopupPanel>() {
+			@Override
+			public void onClose(final CloseEvent<PopupPanel> event) {
 
-					}
-				});
+			}
+		});
 
 	}
 

@@ -35,22 +35,10 @@ public class Login extends MainLayout implements EntryPoint {
 	
 	/** The content. */
 	private Panel content;
-	
-	/** The forgotten login id presenter. */
-	//private ForgottenLoginIdPresenter forgottenLoginIdPresenter;
 	private ForgottenLoginIdNewPresenter forgottenLoginIdNewPresenter;
-	/** The forgotten pwd presenter. */
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
-	
-	/** The login presenter. */
-	//private LoginPresenter loginPresenter;
-	
 	private LoginNewPresenter loginNewPresenter;
-	
-	/** The security questions presenter. */
 	private FirstLoginPresenter securityQuestionsPresenter;
-	
-	/** The temp pwd loging presenter. */
 	private TempPwdLoginPresenter tempPwdLogingPresenter;
 	
 	//US 439.  Signing out and redirects to Login.html
@@ -73,8 +61,8 @@ public class Login extends MainLayout implements EntryPoint {
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MainLayout#initEntryPoint()
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void initEntryPoint() {
@@ -83,15 +71,11 @@ public class Login extends MainLayout implements EntryPoint {
 		content = getContentPanel();
 		initPresenters();
 		loginNewPresenter.go(content);
-		//loginPresenter.go(content);
 		MatContext.get().getEventBus().addHandler(PasswordEmailSentEvent.TYPE, new PasswordEmailSentEvent.Handler() {
 			
 			@Override
 			public void onPasswordEmailSent(final PasswordEmailSentEvent event) {
 				content.clear();
-				/*loginPresenter.go(content);
-				loginPresenter.displayForgottenPasswordMessage();
-				 */
 				loginNewPresenter.go(content);
 				loginNewPresenter.displayForgottenPasswordMessage();
 			}
@@ -102,9 +86,7 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onForgotLoginIdEmailSent(final ForgotLoginIDEmailSentEvent event) {
 				content.clear();
-				/*loginPresenter.go(content);
-				loginPresenter.displayForgottenLoginIDMessage();
-				 */loginNewPresenter.go(content);
+				 loginNewPresenter.go(content);
 				 loginNewPresenter.displayForgottenLoginIDMessage();
 			}
 		});
@@ -123,7 +105,6 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onForgottenLoginID(final ForgotLoginIDEvent event) {
 				content.clear();
-				//forgottenLoginIdPresenter.go(content);
 				forgottenLoginIdNewPresenter.go(content);
 			}
 		});
@@ -132,7 +113,6 @@ public class Login extends MainLayout implements EntryPoint {
 			
 			@Override
 			public void onSuccessfulLogin(final SuccessfulLoginEvent event) {
-				//				MatContext.get().openNewHtmlPage("/Mat.html");
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 			}
 		});
@@ -142,7 +122,6 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onReturnToLogin(final ReturnToLoginEvent event) {
 				content.clear();
-				//loginPresenter.go(content);
 				loginNewPresenter.go(content);
 			}
 		});
@@ -191,29 +170,20 @@ public class Login extends MainLayout implements EntryPoint {
 	 * Inits the presenters.
 	 */
 	private void initPresenters() {
-		/*final LoginView unamePasswordView = new LoginView();
-		loginPresenter = new LoginPresenter(unamePasswordView);*/
 		LoginNewView loginView = new LoginNewView();
 		loginNewPresenter = new LoginNewPresenter(loginView);
-		
 		
 		final FirstLoginView securityQuesView = new FirstLoginView();
 		securityQuestionsPresenter = new FirstLoginPresenter(securityQuesView);
 		
 		final ForgottenPasswordView forgottenPwdView = new ForgottenPasswordView();
 		forgottenPwdPresenter = new ForgottenPasswordPresenter(forgottenPwdView);
-		
-		/*final ForgottenLoginIdView forgottenLoginIdView = new ForgottenLoginIdView();
-		forgottenLoginIdPresenter = new ForgottenLoginIdPresenter(forgottenLoginIdView);
-		 */
+
 		ForgottenLoginIdNewView forgottenLoginIdNewView = new ForgottenLoginIdNewView();
 		forgottenLoginIdNewPresenter = new ForgottenLoginIdNewPresenter(forgottenLoginIdNewView);
 		final TempPwdView temPwdview = new TempPwdView();
 		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
-		
 	}
-	
-	
 	
 	/**
 	 * Redirects to the Login.html

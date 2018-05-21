@@ -2,11 +2,13 @@ package mat.server;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.service.VSACApiService;
 
-// TODO: Auto-generated Javadoc
 /** VSACAPIServiceImpl class. **/
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 	/**
@@ -14,14 +16,15 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@Autowired VSACApiService vsacapi;
 	
 	/**
 	 * MeasureLibrary Service Object.
 	 * @return MeasureLibraryService.
 	 * */
-	public final VSACApiServImpl getVsacApiService() {
+	/*public final VSACApiServImpl getVsacApiService() {
 		return (VSACApiServImpl) context.getBean("vsacapi");
-	}
+	}*/
 	
 	
 	/**
@@ -30,7 +33,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public final void inValidateVsacUser() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		this.getVsacApiService().inValidateVsacUser(sessionId);
+		this.vsacapi.inValidateVsacUser(sessionId);
 	}
 	/**
 	 *Method to check if User already signed in at VSAC.
@@ -39,7 +42,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public final boolean isAlreadySignedIn() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().isAlreadySignedIn(sessionId);
+		return this.vsacapi.isAlreadySignedIn(sessionId);
 	}
 	
 	
@@ -50,7 +53,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public final VsacApiResult getAllVersionListByOID(String oid) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().getAllVersionListByOID(oid,sessionId);
+		return this.vsacapi.getAllVersionListByOID(oid,sessionId);
 	}
 	
 	
@@ -64,7 +67,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public final boolean validateVsacUser(final String userName, final String password) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().validateVsacUser(userName, password,sessionId);
+		return this.vsacapi.validateVsacUser(userName, password,sessionId);
 	}
 	
 	
@@ -74,14 +77,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().getMostRecentValueSetByOID(oid, expansionId,sessionId);
+		return this.vsacapi.getMostRecentValueSetByOID(oid, expansionId,sessionId);
 	}
 
 
 	@Override
 	public VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().updateCQLVSACValueSets(appliedQDMList, defaultExpId, sessionId);
+		return this.vsacapi.updateCQLVSACValueSets(appliedQDMList, defaultExpId, sessionId);
 	}
 
 
@@ -89,14 +92,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public VsacApiResult getDirectReferenceCode(String url) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.getVsacApiService().getDirectReferenceCode(url, sessionId);
+		return this.vsacapi.getDirectReferenceCode(url, sessionId);
 	}
 
 
 	@Override
 	public VsacApiResult getVSACProgramsAndReleases() {
 		
-		return this.getVsacApiService().getVSACProgramsAndReleases();
+		return this.vsacapi.getVSACProgramsAndReleases();
 	}
 
 	

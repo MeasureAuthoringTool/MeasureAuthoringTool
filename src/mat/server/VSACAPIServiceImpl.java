@@ -11,52 +11,38 @@ import mat.server.service.VSACApiService;
 
 /** VSACAPIServiceImpl class. **/
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired VSACApiService vsacapi;
 	
 	/**
-	 * MeasureLibrary Service Object.
-	 * @return MeasureLibraryService.
-	 * */
-	/*public final VSACApiServImpl getVsacApiService() {
-		return (VSACApiServImpl) context.getBean("vsacapi");
-	}*/
-	
-	
-	/**
-	 *Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.
+	 *	Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.
 	 * **/
 	@Override
 	public final void inValidateVsacUser() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		this.vsacapi.inValidateVsacUser(sessionId);
 	}
+	
 	/**
-	 *Method to check if User already signed in at VSAC.
-	 *@return Boolean.
-	 ***/
+	 *	Method to check if User already signed in at VSAC.
+	 *	@return Boolean.
+	 **/
 	@Override
 	public final boolean isAlreadySignedIn() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.isAlreadySignedIn(sessionId);
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.umls.service.VSACAPIService#getAllVersionListByOID(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final VsacApiResult getAllVersionListByOID(String oid) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.getAllVersionListByOID(oid,sessionId);
 	}
-	
-	
 	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
@@ -70,9 +56,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		return this.vsacapi.validateVsacUser(userName, password,sessionId);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.umls.service.VSACAPIService#getMostRecentValueSetByOID(java.lang.String, java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId) {
@@ -80,27 +65,20 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		return this.vsacapi.getMostRecentValueSetByOID(oid, expansionId,sessionId);
 	}
 
-
 	@Override
 	public VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.updateCQLVSACValueSets(appliedQDMList, defaultExpId, sessionId);
 	}
 
-
-	
 	@Override
 	public VsacApiResult getDirectReferenceCode(String url) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.getDirectReferenceCode(url, sessionId);
 	}
 
-
 	@Override
 	public VsacApiResult getVSACProgramsAndReleases() {
-		
 		return this.vsacapi.getVSACProgramsAndReleases();
 	}
-
-	
 }

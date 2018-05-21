@@ -462,16 +462,6 @@ public class VSACApiServImpl implements VSACApiService{
 		return eightHourTicketForUser != null;
 	}
 	
-	/**
-	 * Gets the data type dao.
-	 *
-	 * @return the data type dao
-	 */
-	/*private DataTypeDAO getDataTypeDAO(){
-		return (DataTypeDAO)context.getBean("dataTypeDAO");
-	}*/
-	
-	
 	@Override
 	public final VsacApiResult getDirectReferenceCode (String url, String sessionId) {
 		Callable<VsacApiResult> getCodeTask = new Callable<VsacApiResult>() {
@@ -652,22 +642,6 @@ public class VSACApiServImpl implements VSACApiService{
 	public void setVsacServerUrl(String vsacServerUrl) {
 		this.vsacServerDRCUrl = vsacServerUrl;
 	}
-
-	/**
-	 * MeasureLibrary Service Object.
-	 * @return MeasureLibraryService.
-	 * */
-	/*public final MeasureLibraryService getMeasureLibraryService() {
-		return (MeasureLibraryService) context.getBean("measureLibraryService");
-	}*/
-	
-	/**
-	 * CQL Library Service Object.
-	 * @return cqlLibraryService.
-	 * */
-	/*public final CQLLibraryService getLibraryService() {
-		return (CQLLibraryService) context.getBean("cqlLibraryService");
-	}*/
 
 	@Override
 	public VsacApiResult getVSACProgramsAndReleases() {

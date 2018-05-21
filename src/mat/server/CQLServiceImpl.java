@@ -34,7 +34,6 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -95,25 +94,13 @@ import net.sf.json.xml.XMLSerializer;
  * The Class CQLServiceImpl.
  */
 public class CQLServiceImpl implements CQLService {
-	
-	/** The cql dao. */
-	@Autowired
-	private CQLDAO cqlDAO;
 
-	/** The cql library dao. */
-	@Autowired
-	private CQLLibraryDAO cqlLibraryDAO;
-
-	/** The context. */
-	@Autowired
-	private ApplicationContext context;
-
-	/** The cql library association DAO. */
-	@Autowired
-	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
-
-	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
+	
+	@Autowired private CQLDAO cqlDAO;
+	@Autowired private CQLLibraryDAO cqlLibraryDAO;
+	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
+	@Autowired private MeasurePackageService measurePackageService;
 
 	/** The cql supplemental definition XML string. */
 	private String cqlSupplementalDefinitionXMLString =
@@ -153,25 +140,16 @@ public class CQLServiceImpl implements CQLService {
 
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveCQL(mat.model.cql.CQLModel)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public CQLData getCQL(String measureId) {
-
 		CQLData cqlData = cqlDAO.findByID(measureId);
 		return cqlData;
 	}
 
-	
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveAndModifyCQLGeneralInfo(java
-	 * .lang.String, java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String xml, String libraryName) {
@@ -218,16 +196,10 @@ public class CQLServiceImpl implements CQLService {
 		}
 
 		return expressionList;
-
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveAndModifyFunctions(java.lang
-	 * .String, mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions,
-	 * java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String xml, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
@@ -548,12 +520,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveAndModifyParameters(java.lang
-	 * .String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter,
-	 * java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String xml, CQLParameter toBeModifiedObj,
@@ -814,14 +781,8 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveAndModifyDefinitions(java.lang
-	 * .String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition,
-	 * java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj,
@@ -1137,15 +1098,8 @@ public class CQLServiceImpl implements CQLService {
 		return builder.toString();
 	}
 
-	
-	
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveAndModifyIncludeLibray(java.
-	 * lang.String, mat.model.cql.CQLIncludeLibrary,
-	 * mat.model.cql.CQLIncludeLibrary, java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String xml, CQLIncludeLibrary toBeModifiedObj,
@@ -1353,11 +1307,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#deleteDefinition(java.lang.String,
-	 * mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult deleteDefinition(String xml, CQLDefinition toBeDeletedObj, 
@@ -1531,11 +1481,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#deleteFunctions(java.lang.String,
-	 * mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult deleteFunctions(String xml, CQLFunctions toBeDeletedObj, 
@@ -1595,11 +1541,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#deleteParameter(java.lang.String,
-	 * mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult deleteParameter(String xml, CQLParameter toBeDeletedObj, 
@@ -1696,10 +1638,9 @@ public class CQLServiceImpl implements CQLService {
 		logger.debug(" CQLServiceImpl: updateRiskAdjustmentVariables End :  ");
 
 	}
+	
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getCQLData(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult getCQLData(String xmlString) {
@@ -1724,9 +1665,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 	
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getCQLData(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult getCQLDataForLoad(String xmlString) {
@@ -1808,8 +1747,7 @@ public class CQLServiceImpl implements CQLService {
 
 			}
 		}
-
-}
+	}
 
 	private void setUsedCodes(SaveUpdateCQLResult parsedCQL, CQLModel cqlModel) {
 
@@ -1819,7 +1757,6 @@ public class CQLServiceImpl implements CQLService {
 			boolean isUsed = usedCodes.contains(cqlCode.getDisplayName());
 			cqlCode.setUsed(isUsed);
 		}
-
 	}
 
 	private void setUsedValuesets(SaveUpdateCQLResult parsedCQL, CQLModel cqlModel) {
@@ -1830,14 +1767,12 @@ public class CQLServiceImpl implements CQLService {
 			boolean isUsed = usedValuesets.contains(valueset.getCodeListName());
 			valueset.setUsed(isUsed);
 		}
-
 	}
 
 	@Override
 	public SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel) {
 		return CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), null);
 	}
-
 
 	/**
 	 * Gets the CQL definitions from measure xml.
@@ -1848,7 +1783,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	public CQLDefinitionsWrapper getCQLDefinitionsFromMeasureXML(String measureId) {
 
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);
+		MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 		CQLDefinitionsWrapper wrapper = null;
 		if (measureXmlModel != null) {
 			wrapper = convertXmltoCQLDefinitionModel(measureXmlModel);
@@ -1986,7 +1921,6 @@ public class CQLServiceImpl implements CQLService {
 		}
 		logger.info("Exiting CQLServiceImpl.createFunctionsXML()");
 		return stream.toString();
-
 	}
 
 	/**
@@ -2028,14 +1962,10 @@ public class CQLServiceImpl implements CQLService {
 		}
 		logger.info("Exiting CQLServiceImpl.createDefinitionsXML()");
 		return stream.toString();
-
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#getCQLFileData(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult getCQLFileData(String xmlString) {
@@ -2065,11 +1995,8 @@ public class CQLServiceImpl implements CQLService {
 		return CQLUtilityClass.getCqlString(cqlModel, "");
 	}
 
-
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getCQLKeyWords()
+	 * {@inheritDoc}
 	 */
 	@Override
 	public CQLKeywords getCQLKeyWords() {
@@ -2362,9 +2289,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getJSONObjectFromXML()
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getJSONObjectFromXML() {
@@ -2418,37 +2343,20 @@ public class CQLServiceImpl implements CQLService {
 		return sb.toString();
 	}
 
-	/**
-	 * Gets the service.
-	 *
-	 * @return the service
-	 */
-	private MeasurePackageService getService() {
-		return (MeasurePackageService) context.getBean("measurePackageService");
-	}
-
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getSupplementalDefinitions()
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getSupplementalDefinitions() {
-
 		return cqlSupplementalDefinitionXMLString;
-
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getDefaultCodeSystems()
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getDefaultCodeSystems() {
-
 		return cqlDefaultCodeSystemXMLString;
-
 	}
 
 	private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
@@ -2593,10 +2501,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#getUsedCQlArtifacts(java.lang.
-	 * String)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
@@ -2644,12 +2549,8 @@ public class CQLServiceImpl implements CQLService {
 		return cqlResult.getUsedCQLArtifacts();
 	}
 
-		/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#parseCQLStringForError(java.lang.
-	 * String)
+	/*
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError(String cqlFileString) {
@@ -2663,7 +2564,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the value set transfer object
 	 * @return the save update code list result
 	 */
-	@SuppressWarnings("static-access")
 	@Override
 	public final SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -2726,7 +2626,6 @@ public class CQLServiceImpl implements CQLService {
 		} else {
 			return hasVersion ? version : "1.0" ;			
 		}
-		
 	}
 
 	/**
@@ -2749,14 +2648,9 @@ public class CQLServiceImpl implements CQLService {
 
 	}
 
-		/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#saveUserDefinedQDStoMeasure(mat.
-	 * model.CQLValueSetTransferObject)
+	/*
+	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("static-access")
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
@@ -2768,7 +2662,6 @@ public class CQLServiceImpl implements CQLService {
 			result.setFailureReason(SaveUpdateCQLResult.SERVER_SIDE_VALIDATION);
 			return result;
 		}
-		
 		
 		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		String errorMessage = validator.validate(matValueSetTransferObject);
@@ -2898,10 +2791,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see mat.client.measure.service.CQLService#updateQDStoMeasure(mat.model.
-	 * CQLValueSetTransferObject)
+	 * {@inheritDoc}
 	 */
 	@Override
 	public final SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject) {
@@ -3259,18 +3149,13 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * mat.client.measure.service.CQLService#getCQLValusets(java.lang.String)
+	 * {@inheritDoc}
 	 */
 	@Override
-	public CQLQualityDataModelWrapper getCQLValusets(String measureId,
-			CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
-		MeasureXmlModel model = getService().getMeasureXmlForMeasure(measureId);
+	public CQLQualityDataModelWrapper getCQLValusets(String measureId, CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
+		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
 		String xmlString = model.getXml();
-		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-				.sortCQLQualityDataSetDto(getCQLData(xmlString).getCqlModel().getAllValueSetList());
+		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(xmlString).getCqlModel().getAllValueSetList());
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 
 		return cqlQualityDataModelWrapper;
@@ -3312,8 +3197,7 @@ public class CQLServiceImpl implements CQLService {
 	}
 
 	@Override
-	public SaveUpdateCQLResult deleteInclude(String xml, CQLIncludeLibrary toBeModifiedIncludeObj,
-			List<CQLIncludeLibrary> viewIncludeLibrarys) {
+	public SaveUpdateCQLResult deleteInclude(String xml, CQLIncludeLibrary toBeModifiedIncludeObj, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
 		logger.info("DELETE Include CLICK " + toBeModifiedIncludeObj.getAliasName());
@@ -3337,7 +3221,6 @@ public class CQLServiceImpl implements CQLService {
 					logger.debug(deletedNode.getAttributes().getNamedItem("name").toString());
 					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 					result.setXml(processor.getOriginalXml());
-
 
 					// remove from library list
 					viewIncludeLibrarys.remove(toBeModifiedIncludeObj);
@@ -3383,7 +3266,6 @@ public class CQLServiceImpl implements CQLService {
 		cqlLibraryAssociation.setAssociationId(associatedWithId);
 		cqlLibraryAssociationDAO.deleteAssociation(cqlLibraryAssociation);
 	}
-	
 	
 	/**
 	 * Find CQL Parsing Errors per CQL Expression.
@@ -3457,8 +3339,6 @@ public class CQLServiceImpl implements CQLService {
 		}
 
 		return expressionMapWithError;
-		
-		
 	}
 
 	/**
@@ -3496,8 +3376,6 @@ public class CQLServiceImpl implements CQLService {
 	 * @return List<CQLExpressionObject>.
 	 */
 	private List<CQLExpressionObject> getCQLExpressionObjectListFromCQLModel(CQLModel cqlModel) {
-		
-		
 
 		List<CQLExpressionObject> cqlExpressionObjects = new ArrayList<CQLExpressionObject>();
 		
@@ -3520,7 +3398,6 @@ public class CQLServiceImpl implements CQLService {
 		}
 		
 		return cqlExpressionObjects;
-		
 	}
 
 	@Override

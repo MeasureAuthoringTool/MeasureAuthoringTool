@@ -4582,7 +4582,8 @@ private void addCodeSearchPanelHandlers() {
 	 */
 	private void modifyCodes() {
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();	
-		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
+		String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
+		codeName = CQLCodesView.removeEscapedCharsFromString(codeName);
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 	
 		MatCodeTransferObject transferObject = searchDisplay.getCodesView().getCodeTransferObject(cqlLibraryId, refCode);
@@ -4634,7 +4635,7 @@ private void addCodeSearchPanelHandlers() {
 	 */
 	private void addNewCodes() {
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
-		final String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
+		final String codeName = CQLCodesView.removeEscapedCharsFromString(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 		final String codeSystemName = refCode.getCodeSystemName();
 		final String codeId = refCode.getCodeOID();
@@ -4697,6 +4698,7 @@ private void addCodeSearchPanelHandlers() {
 		boolean isCodeSystemVersionIncluded = codesView.getIncludeCodeSystemVersionCheckBox().getValue();
 		refCode.setCodeOID(codesView.getCodeInput().getValue());
 		refCode.setCodeName(codesView.getCodeDescriptorInput().getValue());
+		refCode.setDisplayName(CQLCodesView.removeEscapedCharsFromString(codeName));
 		refCode.setCodeSystemName(codesView.getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(codesView.getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(codesView.getCodeSearchInput().getValue());
@@ -4963,7 +4965,7 @@ private void addCodeSearchPanelHandlers() {
 					
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code "+result.getDirectReferenceCode().getCode()+" successfully retrieved from VSAC.");
 					
-					CQLCode code = buildCQLCodeFromCodesView(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
+					CQLCode code = buildCQLCodeFromCodesView(CQLCodesView.removeEscapedCharsFromString(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
 					searchDisplay.getCodesView().setValidateCodeObject(code);
 					
 				} else {

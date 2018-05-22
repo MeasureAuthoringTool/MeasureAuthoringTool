@@ -64,6 +64,7 @@ import mat.client.util.MatTextBox;
 import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.StringUtility;
 
 /**
  * The Class QDMAppliedSelectionView.
@@ -744,6 +745,7 @@ public class CQLCodesView {
 		cellTablePanel.add(codesElementsHeader);
 		if ((codesTableList != null)
 				&& (!codesTableList.isEmpty())) {
+			StringUtility.removeEscapedCharsFromList(codesTableList);
 			codesSelectedList = new ArrayList<CQLCode>();
 			table = new CellTable<CQLCode>();
 			setEditable(checkForEditPermission);
@@ -1248,4 +1250,5 @@ public class CQLCodesView {
 		 
 		 return null;
 	}
+	
 }

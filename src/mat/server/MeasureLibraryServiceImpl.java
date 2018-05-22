@@ -1859,7 +1859,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (mVersion.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0) {
 			versionStr = versionStr.concat(".0");
 		}
+		
+		versionStr = versionStr.concat(".000");
 
+		
 		// This code is added to update version value for both measureDetails
 		// version tag and cqlLookUp version tag.
 		setVersionInMeasureDetailsAndCQLLookUp(meas, versionStr);

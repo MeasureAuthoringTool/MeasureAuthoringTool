@@ -90,6 +90,7 @@ import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.StringUtility;
 /**
  * The Class CQLStandaloneWorkSpacePresenter.
  */
@@ -4583,7 +4584,7 @@ private void addCodeSearchPanelHandlers() {
 	private void modifyCodes() {
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();	
 		String codeName = searchDisplay.getCodesView().getCodeDescriptorInput().getValue();
-		codeName = CQLCodesView.removeEscapedCharsFromString(codeName);
+		codeName = StringUtility.removeEscapedCharsFromString(codeName);
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 	
 		MatCodeTransferObject transferObject = searchDisplay.getCodesView().getCodeTransferObject(cqlLibraryId, refCode);
@@ -4635,7 +4636,7 @@ private void addCodeSearchPanelHandlers() {
 	 */
 	private void addNewCodes() {
 		String cqlLibraryId = MatContext.get().getCurrentCQLLibraryId();
-		final String codeName = CQLCodesView.removeEscapedCharsFromString(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
+		final String codeName = StringUtility.removeEscapedCharsFromString(searchDisplay.getCodesView().getCodeDescriptorInput().getValue());
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 		final String codeSystemName = refCode.getCodeSystemName();
 		final String codeId = refCode.getCodeOID();
@@ -4698,7 +4699,7 @@ private void addCodeSearchPanelHandlers() {
 		boolean isCodeSystemVersionIncluded = codesView.getIncludeCodeSystemVersionCheckBox().getValue();
 		refCode.setCodeOID(codesView.getCodeInput().getValue());
 		refCode.setCodeName(codesView.getCodeDescriptorInput().getValue());
-		refCode.setDisplayName(CQLCodesView.removeEscapedCharsFromString(codeName));
+		refCode.setDisplayName(StringUtility.removeEscapedCharsFromString(codeName));
 		refCode.setCodeSystemName(codesView.getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(codesView.getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(codesView.getCodeSearchInput().getValue());
@@ -4965,7 +4966,7 @@ private void addCodeSearchPanelHandlers() {
 					
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert("Code "+result.getDirectReferenceCode().getCode()+" successfully retrieved from VSAC.");
 					
-					CQLCode code = buildCQLCodeFromCodesView(CQLCodesView.removeEscapedCharsFromString(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
+					CQLCode code = buildCQLCodeFromCodesView(StringUtility.removeEscapedCharsFromString(searchDisplay.getCodesView().getCodeDescriptorInput().getValue()));
 					searchDisplay.getCodesView().setValidateCodeObject(code);
 					
 				} else {

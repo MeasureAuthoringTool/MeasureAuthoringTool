@@ -64,6 +64,7 @@ import mat.client.util.MatTextBox;
 import mat.model.MatCodeTransferObject;
 import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.StringUtility;
 
 /**
  * The Class QDMAppliedSelectionView.
@@ -744,7 +745,7 @@ public class CQLCodesView {
 		cellTablePanel.add(codesElementsHeader);
 		if ((codesTableList != null)
 				&& (!codesTableList.isEmpty())) {
-			removeEscapedCharsFromList(codesTableList);
+			StringUtility.removeEscapedCharsFromList(codesTableList);
 			codesSelectedList = new ArrayList<CQLCode>();
 			table = new CellTable<CQLCode>();
 			setEditable(checkForEditPermission);
@@ -1250,32 +1251,4 @@ public class CQLCodesView {
 		 return null;
 	}
 	
-	/**
-	 * Removes double quotes, single quotes, and backslashes from given string (" ' \)
-	 * @param word 
-	 * 			given word to remove escaped characters from
-	 * @return new word without escaped characters
-	 */
-	public static String removeEscapedCharsFromString(String word) {
-		word = word.replaceAll("\'", "");
-		word = word.replaceAll("\\"+"\\", " ");
-		word = word.replaceAll('\\'+"\"", "");
-		return word;
-	}
-	
-	/**
-	 * Iterates through given CQLCode list and calls removeEscapedCharsFromString() to
-	 * remove escaped characters from the code display names
-	 * @param list
-	 * 		list of codes with names to be updated
-	 * 
-	 * @return list after it has been updated
-	 */
-	public static List<CQLCode> removeEscapedCharsFromList(List<CQLCode> list) {
-		for(CQLCode code : list) {
-			code.setDisplayName(removeEscapedCharsFromString(code.getDisplayName()));
-			code.setCodeName(code.getDisplayName());
-		}
-		return list;
-	}
 }

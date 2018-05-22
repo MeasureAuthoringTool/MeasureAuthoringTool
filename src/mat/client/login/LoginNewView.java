@@ -296,6 +296,11 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 	public PanelBody getSuccessMessageBody() {
 		return successMessageBody;
 	}
+
+
+	public ChangePasswordWidget getChangePasswordWidget() {
+		return changePasswordWidget;
+	}
 	
 	
 	

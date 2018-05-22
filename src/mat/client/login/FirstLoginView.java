@@ -322,4 +322,9 @@ public class FirstLoginView implements SecurityQuestionsDisplay {
 		return null;
 	}
 	
+	@Override
+	public ChangePasswordWidget getChangePasswordWidget() {
+		return changePasswordWidget;
+	}
+	
 }

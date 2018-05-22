@@ -53,9 +53,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 	/** The close button. */
 	private  Button closeButton;
-
-	/** The password entered. */
-	private  String passwordEntered;
 	
 	private  Modal panel;
 	
@@ -234,24 +231,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	}
 
 	/**
-	 * Gets the password entered.
-	 *
-	 * @return the password entered
-	 */
-	public  String getPasswordEntered() {
-		return passwordEntered;
-	}
-
-	/**
-	 * Sets the password entered.
-	 *
-	 * @param passwordEntered the new password entered
-	 */
-	public  void setPasswordEntered(String passwordEntered) {
-		this.passwordEntered = passwordEntered;
-	}
-
-	/**
 	 * Gets the confirmbutton.
 	 *
 	 * @return the confirmbutton
@@ -311,8 +290,8 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	}
 
 	@Override
-	public Input getPasswordInput() {
-		return passwordInput.getPassword();
+	public ChangePasswordWidget getPasswordInput() {
+		return passwordInput;
 	}
 
 	@Override

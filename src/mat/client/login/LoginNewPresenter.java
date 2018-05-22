@@ -114,7 +114,6 @@ public class LoginNewPresenter {
 		});
 		
 		view.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
-		//view.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
 		view.getSecurityCodeInput().addKeyDownHandler(submitOnEnterHandler);
 	}
 	

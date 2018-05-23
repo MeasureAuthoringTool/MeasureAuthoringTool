@@ -160,6 +160,4 @@ public interface SecurityQuestionsDisplay {
 	HasClickHandlers getCancelButton();
 	
 	public Map<String, String> getSecurityAnswers();
-	
-	ChangePasswordWidget getChangePasswordWidget();
 }

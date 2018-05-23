@@ -33,11 +33,14 @@ import com.google.gwt.user.client.ui.Widget;
 public class LoginNewPresenter {
 	
 	private LoginNewView view;
+	/** The login model. */
 	private LoginModel loginModel;
 	
 	interface LoginViewDisplay {
 		
 		Widget asWidget();
+		
+		
 		
 		Anchor getForgotLoginId();
 		
@@ -69,11 +72,18 @@ public class LoginNewPresenter {
 		
 		HelpBlock getHelpBlock();
 		
+		
+		
 		Heading getWelcomeHeading();
+		
+		
 		
 		Panel getSuccessMessagePanel();
 		
+		
+		
 		PanelBody getSuccessMessageBody();
+		
 	}
 	
 	/** The submit on enter handler. */
@@ -87,17 +97,21 @@ public class LoginNewPresenter {
 	};
 	
 	public LoginNewPresenter(LoginNewView loginView) {
+		// TODO Auto-generated constructor stub
 		view = loginView;
 		
 		loginModel = new LoginModel();
 		view.getSubmitButton().addClickHandler(new ClickHandler() {
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				submit();
 			}
+			
+			
 		});
-		
 		view.getForgotPassword().addClickHandler(new ClickHandler() {
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				reset();
@@ -106,13 +120,13 @@ public class LoginNewPresenter {
 		});
 		
 		view.getForgotLoginId().addClickHandler(new ClickHandler() {
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				reset();
 				MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
 			}
 		});
-		
 		view.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
 		view.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
 		view.getSecurityCodeInput().addKeyDownHandler(submitOnEnterHandler);
@@ -124,6 +138,7 @@ public class LoginNewPresenter {
 		view.getSuccessMessagePanel().setVisible(false);
 		view.getWelcomeHeading().setVisible(true);
 		Login.hideLoadingMessage();
+		
 	}
 	
 	public void reset() {
@@ -143,15 +158,13 @@ public class LoginNewPresenter {
 		view.getHelpBlock().setText("");
 		view.getSubmitButton().setEnabled(false);
 		
-		String enteredPassword = view.getChangePasswordWidget().getPasswords().get("password");
-		
 		if (view.getUserIdText().getText().isEmpty()) {
 			view.getUserIdGroup().setValidationState(ValidationState.ERROR);
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 			view.getSubmitButton().setEnabled(true);
-		} else if (enteredPassword.isEmpty()) {
+		} else if (view.getPasswordInput().getText().isEmpty()) {
 			view.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			view.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 			view.getMessageFormGrp().setValidationState(ValidationState.ERROR);
@@ -170,11 +183,12 @@ public class LoginNewPresenter {
 			view.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			view.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			view.getAuthTokenGroup().setValidationState(ValidationState.SUCCESS);
-			MatContext.get().isValidUser(view.getUserIdText().getText(), enteredPassword, view.getSecurityCodeInput().getText(), contextcallback);
+			MatContext.get().isValidUser(view.getUserIdText().getText(), view.getPasswordInput().getText(),
+					view.getSecurityCodeInput().getText(), contextcallback);
 		}
 	}
-	
-	private final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){
+	private  final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){
+		
 		@Override
 		public void onFailure(Throwable cause) {
 			cause.printStackTrace();

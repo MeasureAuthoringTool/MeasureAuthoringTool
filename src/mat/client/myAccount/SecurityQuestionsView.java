@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
@@ -219,10 +218,5 @@ public class SecurityQuestionsView implements SecurityQuestionsDisplay {
 	@Override
 	public Map<String, String> getSecurityAnswers() {
 		return securityQuestionsWidget.getSecurityAnswers();
-	}
-
-	@Override
-	public ChangePasswordWidget getChangePasswordWidget() {
-		return null;
 	}
 }

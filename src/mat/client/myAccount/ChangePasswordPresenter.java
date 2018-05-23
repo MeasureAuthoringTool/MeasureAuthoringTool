@@ -21,7 +21,6 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
-import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PasswordEditInfoWidget;
@@ -105,7 +104,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 		 */
 		PasswordEditInfoWidget getPasswordEditInfoWidget();
 		
-		ChangePasswordWidget getPasswordWidget();
 	}
 	
 	
@@ -114,7 +112,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				saveChangedPassword(display.getPasswordEditInfoWidget().getPasswords().get("exisitingPassword"));
+				saveChangedPassword(display.getCurrentPassword().getText());
 			}
 		}
 	};
@@ -147,8 +145,8 @@ public class ChangePasswordPresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				String newPassword = display.getPasswordWidget().getPasswords().get("password");
-				String confirmPassword = display.getPasswordWidget().getPasswords().get("confirmPassword");
+				String newPassword = display.getPassword().getText();
+				String confirmPassword = display.getConfirmPassword().getText();
 				if ((newPassword == null) || newPassword.equals("") || (confirmPassword == null)
 						|| confirmPassword.equals("")) {
 					display.getErrorMessageDisplay().clearAlert();
@@ -156,8 +154,8 @@ public class ChangePasswordPresenter implements MatPresenter {
 					display.getErrorMessageDisplay().createAlert(
 							MatContext.get().getMessageDelegate().getAllPasswordFieldsRequired());
 				} else {
-					saveChangedPassword(display.getPasswordEditInfoWidget().getPasswords().get("exisitingPassword"));
-					display.getPasswordEditInfoWidget().getPasswords().put("exisitingPassword", "");
+					saveChangedPassword(display.getCurrentPassword().getText());
+					display.getCurrentPassword().setText("");
 				}
 			}
 		});
@@ -222,9 +220,9 @@ public class ChangePasswordPresenter implements MatPresenter {
 	 * Clear values.
 	 */
 	private void clearValues() {
-		display.getPasswordWidget().getPasswords().put("password", "");
-		display.getPasswordWidget().getPasswords().put("confirmPassword", "");
-		display.getPasswordEditInfoWidget().getPasswords().put("exisitingPassword", "");
+		display.getPassword().setText("");
+		display.getConfirmPassword().setText("");
+		display.getCurrentPassword().setText("");
 		display.getErrorMessageDisplay().clearAlert();
 		display.getSuccessMessageDisplay().clearAlert();
 	}

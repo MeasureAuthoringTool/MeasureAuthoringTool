@@ -40,7 +40,6 @@
 		<property name="warningMailSubject" value="${mat.warning.email.subject}"/>
 		<property name="expiryMailTemplate" value="${mat.expiry.email.template}"/>
 		<property name="expiryMailSubject" value="${mat.expiry.email.subject}"/>
-		<property name="velocityEngine" ref="velocityEngine"/>
 	</bean>
 	
 	<!-- bean for scheduling password change warning email for 45 day limit and expiry email for 60 day limit -->
@@ -56,27 +55,7 @@
 		<property name="warningMailSubject" value="${mat.password.warning.email.subject}"/>
 		<property name="expiryMailTemplate" value="${mat.password.expiry.email.template}"/>
 		<property name="expiryMailSubject" value="${mat.password.expiry.email.subject}"/>
-		<property name="velocityEngine" ref="velocityEngine"/>
 	</bean>
-	
-	<!-- <bean id="checkUserLoginTask" class="mat.server.service.jobs.TestLoginForUser" >
-		<property name="userDAO" ref="userDAO"/>
-		<property name="loginService" ref="loginService"/>
-	</bean>
-	
-	<bean id="checkUserLoginJob" 
- 	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	 	<property name="targetObject" ref="checkUserLoginTask" />
-		<property name="targetMethod" value="testLogin" />
- 	</bean> 
-	
-	<bean id="simpleLoginTrigger" 
-                class="org.springframework.scheduling.quartz.SimpleTriggerBean">
- 		<property name="jobDetail" ref="checkUserLoginJob" />
-		<property name="repeatCount" value="2000" />
-		<property name="startDelay" value="2000" />
-		
- 	</bean>-->
 	
 	<bean id="userLastLoginTemplateMessage" class="org.springframework.mail.SimpleMailMessage">
       <property name="from" value="${mat.from.emailAddress}"/>
@@ -93,16 +72,14 @@
 		<property name="targetMethod" value="CheckUserPasswordLimitDays" />
  	</bean>
 	
-	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
  		<property name="jobDetail" ref="sendEmailTaskDetail" />
 		<property name="cronExpression" value="0 0 0 * * ?" /> 
-		<!-- <property name="cronExpression" value="0 32 16 * * ?" /> -->
  	</bean> 
 	
-	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
  		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />
-		<property name="cronExpression" value="0 30 2 * * ?" /> 
-		<!-- <property name="cronExpression" value="0 0 11 * * ?" /> -->
+		<property name="cronExpression" value="0 30 0 * * ?" /> 
  	</bean> 
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -110,60 +87,7 @@
 			<list>
 				<ref bean="cronTrigger" />
 				 <ref bean="cronPasswordChangeEmailTrigger" /> 
-<!-- 				<ref bean="simpleTrigger" /> -->
-				
-<!-- 				<ref bean="simpleLoginTrigger"/> -->
 			</list>
 		</property>
 	</bean>
-	
-	<!-- Bean Details for Email Scheduler End -->
-
-	<!-- One time scheduled task for sending emails. -->
-	
-	<!-- <bean id="onetimeUserNotificationTask" class="mat.server.service.jobs.OnetimeUserNotificationTask">
-	    <property name="userDAO" ref="userDAO"/>
-	    <property name="userService" ref="userService"/>
-		<property name="matFlagDAO" ref="matFlagDAO"/>
-	</bean>
-	
-	<bean id="oneTimeUserNotificationJob" 
- 	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	 	<property name="targetObject" ref="onetimeUserNotificationTask" />
-		<property name="targetMethod" value="sendOnetimeUserNotificationEmails" />
- 	</bean>
- 	
-	<bean id="simpleTrigger" 
-                class="org.springframework.scheduling.quartz.SimpleTriggerBean">
- 		<property name="jobDetail" ref="oneTimeUserNotificationJob" />
-		<property name="repeatCount" value="0" />
-		<property name="startDelay" value="2000" />
-		
- 	</bean> -->
-	
-	<!-- One time scheduled task for sending emails end. -->
-	
-	<!-- One time update all measures.  -->
-	
-	<!-- <bean id="onetimeMeasureXMLUpdateTask" class="mat.server.service.jobs.temprory.OnetimeMeasureXMLUpdateTask">
-	    <property name="measureDAO" ref="measureDAO"/>
-	    <property name="measurePackageService" ref="measurePackageService"/>
-	    <property name="measureLibraryService" ref="measureLibraryService"/>
-		<property name="matFlagDAO" ref="matFlagDAO"/>
-	</bean>
-	
-	<bean id="oneTimeMeasureXMLUpdateJob" 
- 	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	 	<property name="targetObject" ref="onetimeMeasureXMLUpdateTask" />
-		<property name="targetMethod" value="updateMeasureXMLs" />
- 	</bean>
- 	
-	<bean id="simpleTrigger" 
-                class="org.springframework.scheduling.quartz.SimpleTriggerBean">
- 		<property name="jobDetail" ref="oneTimeMeasureXMLUpdateJob" />
-		<property name="repeatCount" value="0" />
-		<property name="startDelay" value="2000" />
-	</bean>	 -->
-	
-	
 </beans>

@@ -1,5 +1,6 @@
 package mat.server.service.impl;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,7 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -53,7 +57,6 @@ import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
-import mat.server.util.TemplateUtil;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
@@ -68,71 +71,28 @@ public class UserServiceImpl implements UserService {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UserServiceImpl.class);
 	
-	/** The Constant ALPHABET. */
 	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-	
-	/** The Constant NUMERIC. */
 	private static final String NUMERIC = "1234567890";
-	
-	/** The Constant EMAIL_PATTERN. */
 	private static final String EMAIL_PATTERN =
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 					+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	//private static Random ID = new Random(99999);
-	/** The id. */
 	private static Random ID = new Random(System.currentTimeMillis());
 	
-	//US 440
-	/** The template util. */
-	TemplateUtil templateUtil = TemplateUtil.getInstance();
+	@Autowired private JavaMailSender mailSender;
+	@Autowired private SimpleMailMessage templateMessage;
+	@Autowired private UserDAO userDAO;
+	@Autowired private StatusDAO statusDAO;
+	@Autowired private SecurityRoleDAO securityRoleDAO;
+	@Autowired private TransactionAuditLogDAO transactionAuditLogDAO;
+	@Autowired private OrganizationDAO organizationDAO;
+	@Autowired private UserPasswordHistoryDAO userPasswordHistoryDAO;
+	@Autowired private Configuration freemarkerConfiguration;
 	
-	/** The mail sender. */
-	@Autowired
-	private JavaMailSender mailSender;
-	
-	/** The template message. */
-	@Autowired
-	private SimpleMailMessage templateMessage;
-	
-	/** The user dao. */
-	@Autowired
-	private UserDAO userDAO;
-	
-	/** The status dao. */
-	@Autowired
-	private StatusDAO statusDAO;
-	
-	/** The security role dao. */
-	@Autowired
-	private SecurityRoleDAO securityRoleDAO;
-	
-	/** The transaction audit log dao. */
-	@Autowired
-	private TransactionAuditLogDAO transactionAuditLogDAO;
-	
-	/** The organization dao. */
-	@Autowired
-	private OrganizationDAO organizationDAO;
-	
-	/** The accessibility url. */
 	private String accessibilityUrl;
-	
-	/** The terms of use url. */
 	private String termsOfUseUrl;
-	
-	/** The privacy policy use url. */
 	private String privacyPolicyUseUrl;
-	
-	/** The user guide url. */
 	private String userGuideUrl;
-	
-	/** The pawd history size. */
 	private final int PASSWORD_HISTORY_SIZE = 5;
-	
-	/** The user password history dao. */
-	@Autowired
-	private UserPasswordHistoryDAO userPasswordHistoryDAO;
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#generateRandomPassword()
@@ -164,8 +124,8 @@ public class UserServiceImpl implements UserService {
 		return password;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#requestResetLockedPassword(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void requestResetLockedPassword(String userid) {
@@ -207,14 +167,14 @@ public class UserServiceImpl implements UserService {
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
 		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_TEMP_PASSWORD, paramsMap);
-		System.out.println(text);
-		msg.setText(text);
+		
 		logger.info("Sending email to " + user.getEmailAddress());
 		try {
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_TEMP_PASSWORD), paramsMap);
+			System.out.println(text);
+			msg.setText(text);
 			mailSender.send(msg);
-		}
-		catch(MailException exc) {
+		} catch(IOException | TemplateException exc) {
 			logger.error(exc);
 		}
 		
@@ -425,13 +385,12 @@ public class UserServiceImpl implements UserService {
 		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD, paramsMap);
-		msg.setText(text);
-		logger.info("Sending email to " + email);
 		try {
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD), paramsMap);
+			msg.setText(text);
+			logger.info("Sending email to " + email);
 			mailSender.send(msg);
-		}
-		catch(MailException exc) {
+		}catch(MailException | IOException | TemplateException exc) {
 			logger.error(exc);
 		}
 	}
@@ -549,7 +508,7 @@ public class UserServiceImpl implements UserService {
 			HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 			paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 			paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-			String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_WELCOME), paramsMap);
 			body.setContent(text, "text/html");
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(body);
@@ -558,7 +517,7 @@ public class UserServiceImpl implements UserService {
 			message.setContent(multipart);
 			
 			mailSender.send(message);
-		} catch (MessagingException e) {
+		} catch (MessagingException | IOException | TemplateException e) {
 			e.printStackTrace();
 		}
 		
@@ -570,26 +529,24 @@ public class UserServiceImpl implements UserService {
 	 * @param user
 	 *            the user
 	 */
-	public void notifyUserOfForgottenLoginId(User user) {
+	private void notifyUserOfForgottenLoginId(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
 		msg.setSubject(ServerConstants.FORGOT_LOGINID_SUBJECT + ServerConstants.getEnvName());
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID, paramsMap);
-		msg.setTo(user.getEmailAddress());
-		msg.setText(text);
-		
 		try {
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID), paramsMap);
+			msg.setTo(user.getEmailAddress());
+			msg.setText(text);
 			mailSender.send(msg);
-		}
-		catch(MailException exc) {
+		}catch(MailException | IOException | TemplateException exc) {
 			logger.error(exc);
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getPasswordHash(java.lang.String, java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getPasswordHash(String salt, String password) {
@@ -609,7 +566,6 @@ public class UserServiceImpl implements UserService {
 			if(s == null) {
 				s = "";
 			}
-			//MessageDigest m=MessageDigest.getInstance("MD5");
 			MessageDigest m=MessageDigest.getInstance("SHA-256");
 			m.update(s.getBytes(),0,s.length());
 			return new BigInteger(1,m.digest()).toString(16);
@@ -619,16 +575,16 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#saveExisting(mat.model.User)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void saveExisting(User user) {
 		userDAO.save(user);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#isAdminForUser(mat.model.User, mat.model.User)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean isAdminForUser(User admin, User user) {
@@ -638,16 +594,16 @@ public class UserServiceImpl implements UserService {
 		return isAdmin && !isSelf;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#deleteUser(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void deleteUser(String userid) {
 		userDAO.delete(userid);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getSecurityQuestionOptions(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptions(String loginId) {
@@ -657,8 +613,7 @@ public class UserServiceImpl implements UserService {
 		if(user != null) {
 			options.setUserFound(true);
 			for(UserSecurityQuestion q : user.getUserSecurityQuestions()) {
-				NameValuePair nvp =
-						new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
+				NameValuePair nvp = new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
 				options.getSecurityQuestions().add(nvp);
 			}
 		}
@@ -668,8 +623,8 @@ public class UserServiceImpl implements UserService {
 		return options;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getSecurityQuestionOptionsForEmail(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email) {
@@ -679,8 +634,7 @@ public class UserServiceImpl implements UserService {
 		if(user != null) {
 			options.setUserFound(true);
 			for(UserSecurityQuestion q : user.getUserSecurityQuestions()) {
-				NameValuePair nvp =
-						new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
+				NameValuePair nvp = new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
 				options.getSecurityQuestions().add(nvp);
 			}
 		}
@@ -690,8 +644,8 @@ public class UserServiceImpl implements UserService {
 		return options;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#saveUpdateUser(mat.client.admin.ManageUsersDetailModel)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) {
@@ -699,8 +653,7 @@ public class UserServiceImpl implements UserService {
 		User user = null;
 		if(model.isExistingUser()) {
 			user = getById(model.getKey());
-		}
-		else {
+		} else {
 			user = new User();
 		}
 		
@@ -712,23 +665,16 @@ public class UserServiceImpl implements UserService {
 		if((exsitingUser != null) && (!(exsitingUser.getId().equals(user.getId()) ) )) {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateUserResult.ID_NOT_UNIQUE);
-		}
-		else{
+		} else {
 			setModelFieldsOnUser(model, user);
-			
-			
 			if(model.isExistingUser()) {
 				if(reactivatingUser) {
 					requestResetLockedPassword(user.getId());
 				}
-				
 				saveExisting(user);
 				
-			}
-			else {
+			} else {
 				saveNew(user);
-				//codeListService.saveDefaultCodeList(user);
-				
 			}
 			result.setSuccess(true);
 		}
@@ -736,8 +682,8 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getFooterURLs()
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<String> getFooterURLs(){
@@ -766,9 +712,6 @@ public class UserServiceImpl implements UserService {
 		user.setPhoneNumber(model.getPhoneNumber());
 		user.setStatus(getStatusObject(model.isActive()));
 		user.setSecurityRole(getRole(model.getRole()));
-		//user.setOrgOID(model.getOid());
-		//user.setRootOID(model.getRootOid());
-		//user.setOrganizationName(model.getOrganization());
 		
 		if(model.isActive()){
 			Organization organization = organizationDAO.find(Long.parseLong(model.getOrganizationId()));
@@ -784,10 +727,7 @@ public class UserServiceImpl implements UserService {
 			user.setSignInDate(null);
 			user.setSignOutDate(null);
 			user.setActivationDate(new Date());
-		}
-		
-		// if the user is being revoked/terminated, update the termination date
-		else if(model.isBeingRevoked()) {
+		} else if(model.isBeingRevoked()) { // if the user is being revoked/terminated, update the termination date
 			user.setTerminationDate(new Date());
 		}
 	}
@@ -821,21 +761,23 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	//US212
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#setUserSignInDate(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setUserSignInDate(String userid) {
 		userDAO.setUserSignInDate(userid);
 	}
+	
 	//US212
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#setUserSignOutDate(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void setUserSignOutDate(String userid) {
 		userDAO.setUserSignOutDate(userid);
 	}
+	
 	/*
 	 * 
 	 * Algorithm to Generated Unique login ID for new User
@@ -880,8 +822,6 @@ public class UserServiceImpl implements UserService {
 		this.accessibilityUrl = accessibilityUrl;
 	}
 	
-	
-	
 	/**
 	 * Gets the accessibility url.
 	 * 
@@ -890,8 +830,6 @@ public class UserServiceImpl implements UserService {
 	public String getAccessibilityUrl() {
 		return accessibilityUrl;
 	}
-	
-	
 	
 	/**
 	 * Sets the terms of use url.
@@ -903,8 +841,6 @@ public class UserServiceImpl implements UserService {
 		this.termsOfUseUrl = termsOfUseUrl;
 	}
 	
-	
-	
 	/**
 	 * Gets the terms of use url.
 	 * 
@@ -913,8 +849,6 @@ public class UserServiceImpl implements UserService {
 	public String getTermsOfUseUrl() {
 		return termsOfUseUrl;
 	}
-	
-	
 	
 	/**
 	 * Sets the privacy policy use url.
@@ -925,8 +859,6 @@ public class UserServiceImpl implements UserService {
 	public void setPrivacyPolicyUseUrl(String privacyPolicyUseUrl) {
 		this.privacyPolicyUseUrl = privacyPolicyUseUrl;
 	}
-	
-	
 	
 	/**
 	 * Gets the privacy policy use url.
@@ -956,8 +888,8 @@ public class UserServiceImpl implements UserService {
 		return userGuideUrl;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#updateOnSignOut(java.lang.String, java.lang.String, java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String updateOnSignOut(String userId, String email, String activityType) {
@@ -980,16 +912,16 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getSecurityQuestion(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getSecurityQuestion(String userLoginID) {
 		return userDAO.getRandomSecurityQuestion(userLoginID);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#getAllNonAdminActiveUsers()
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<User> getAllNonAdminActiveUsers(){
@@ -1007,7 +939,7 @@ public class UserServiceImpl implements UserService {
 	 * @param user
 	 *            the user
 	 */
-	public void notifyUserOfAccountLocked(User user) {
+	private void notifyUserOfAccountLocked(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
 		msg.setSubject(ServerConstants.ACCOUNT_LOCKED_SUBJECT + ServerConstants.getEnvName());
 		String text = ServerConstants.ACCOUNT_LOCKED_MESSAGE;
@@ -1021,8 +953,8 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#isLockedUser(java.lang.String)
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean isLockedUser(String loginId) {
@@ -1033,8 +965,8 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#searchForNonTerminatedUsers()
+	/* 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public List<User> searchForNonTerminatedUsers() {

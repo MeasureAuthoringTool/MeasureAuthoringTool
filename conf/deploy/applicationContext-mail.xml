@@ -18,13 +18,7 @@
       <property name="from" value="NO-REPLY-Support@emeasuretool.org"/>
     </bean>
     
-     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
-     	<property name="velocityProperties">
-         <value>
-            resource.loader=class
-            class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
-         </value>
-      </property>
-    </bean>
-    
+    <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+	    <property name="templateLoaderPath" value="classpath:/"/>
+	</bean>
 </beans>

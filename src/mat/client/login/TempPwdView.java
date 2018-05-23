@@ -323,9 +323,4 @@ public class TempPwdView implements SecurityQuestionsDisplay {
 	public Map<String, String> getSecurityAnswers() {
 		return null;
 	}
-
-	@Override
-	public ChangePasswordWidget getChangePasswordWidget() {
-		return changePasswordWidget;
-	}
 }

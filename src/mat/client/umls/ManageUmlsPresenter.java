@@ -21,11 +21,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.MessageDelegate;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
@@ -100,7 +98,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 
 		Input getUserIdText();
 
-		Input getPassword();
+		Input getPasswordInput();
 
 		FormGroup getPasswordGroup();
 
@@ -113,8 +111,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 		MessageAlert getSuccessMessageAlert();
 
 		Modal getModel();
-		
-		ChangePasswordWidget getPasswordInput();
 	}
 	
 	/** The display. */
@@ -159,7 +155,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 			
 		});
 		display.getUserIdText().addKeyDownHandler(submitOnEnterHandler);
-		display.getPassword().addKeyDownHandler(submitOnEnterHandler);
+		display.getPasswordInput().addKeyDownHandler(submitOnEnterHandler);
 		display.getUmlsExternalLink().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -212,7 +208,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		resetWidget();		
 		if(showWelcomeMessage){
 			showWelcomeMessage = false;
-			display.getSuccessMessageAlert().createAlert(MessageDelegate.getWelcomeMessage(userFirstName));
+			display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getWelcomeMessage(userFirstName));
 		} else {
 			display.getSuccessMessageAlert().clearAlert();
 		}
@@ -250,7 +246,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageAlert().clear();
 		display.getExternalLinkDisclaimer().setVisible(false);
-		display.getPasswordInput().getPasswords().put("password", "");
+		display.getPasswordInput().setText("");
 		display.getUserIdText().setText("");
 		display.getUserIdGroup().setValidationState(ValidationState.NONE);
 		display.getPasswordGroup().setValidationState(ValidationState.NONE);
@@ -270,7 +266,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 			display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
 			display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 			display.getSubmit().setEnabled(true);
-		} else if (display.getPasswordInput().getPasswords().get("password").isEmpty()) {
+		} else if (display.getPasswordInput().getText().isEmpty()) {
 			display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 			display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 			display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
@@ -281,7 +277,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 			display.getUserIdGroup().setValidationState(ValidationState.SUCCESS);
 			display.getPasswordGroup().setValidationState(ValidationState.SUCCESS);
 			vsacapiService.validateVsacUser(display.getUserIdText().getText(),
-					display.getPasswordInput().getPasswords().get("password"), new AsyncCallback<Boolean>() {
+					display.getPasswordInput().getText(), new AsyncCallback<Boolean>() {
 				@Override
 				public void onFailure(final Throwable caught) {
 					display.getErrorMessageDisplay().setMessage(
@@ -298,7 +294,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getHelpBlock().setText("");
 						Mat.showUMLSActive();
 						display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
-						display.getPasswordInput().getPasswords().put("password", "");
+						display.getPasswordInput().setText("");
 						display.getUserIdText().setText("");
 						MatContext.get().restartUMLSSignout();
 						MatContext.get().setUMLSLoggedIn(true);

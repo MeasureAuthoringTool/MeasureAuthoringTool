@@ -374,9 +374,4 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	public Input getPasswordInput() {
 		return changePasswordWidget.getPassword();
 	}
-	
-	@Override
-	public ChangePasswordWidget getChangePasswordWidget() {
-		return changePasswordWidget;
-	}
 }

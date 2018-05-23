@@ -23,7 +23,6 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
-import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.util.ClientConstants;
@@ -148,7 +147,6 @@ public class PersonalInformationPresenter implements MatPresenter {
 		public MessageAlert getSuccessMessageDisplay();
 
 		Input getPasswordInput();
-		ChangePasswordWidget getChangePasswordWidget();
 	}
 	
 	/** The submit on enter handler. */
@@ -156,7 +154,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				savePersonalInformation(display.getChangePasswordWidget().getPasswords().get("password"));
+				savePersonalInformation(display.getPassword().getValue());
 			}
 		}
 	};
@@ -186,8 +184,8 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				savePersonalInformation(display.getChangePasswordWidget().getPasswords().get("password"));
-				display.getChangePasswordWidget().getPasswords().put("password", "");
+				savePersonalInformation(display.getPassword().getValue());
+				display.getPassword().setValue("");
 			}
 		});
 		
@@ -330,7 +328,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getOID().setValue(model.getOid());
 		display.getOID().setTitle(model.getOid());
 		display.getOID().setWidth(getRequiredWidth(display.getOID().getValue().length()));
-		display.getChangePasswordWidget().getPasswords().put("password", "");
+		display.getPassword().setValue("");
 	}
 	
 	private String getRequiredWidth(int length) {

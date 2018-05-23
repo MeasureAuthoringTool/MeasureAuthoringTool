@@ -62,15 +62,15 @@ public class TempPwdLoginPresenter {
 				
 				PasswordVerifier verifier = null;
 				String markupRegExp = "<[^>]+>";
-				String noMarkupTextPwd = display.getChangePasswordWidget().getPasswords().get("password").trim().replaceAll(markupRegExp, "");
+				String noMarkupTextPwd = display.getPassword().getText().trim().replaceAll(markupRegExp, "");
 				display.getPassword().setText(noMarkupTextPwd);
 				
-				String noMarkupTextConfirm = display.getChangePasswordWidget().getPasswords().get("confirmPassword").trim().replaceAll(markupRegExp, "");
+				String noMarkupTextConfirm = display.getConfirmPassword().getText().trim().replaceAll(markupRegExp, "");
 				display.getConfirmPassword().setText(noMarkupTextConfirm);
 				verifier = new PasswordVerifier(
 						MatContext.get().getLoggedinLoginId(),
-						display.getChangePasswordWidget().getPasswords().get("password"),
-						display.getChangePasswordWidget().getPasswords().get("confirmPassword"));
+						display.getPassword().getText(),
+						display.getConfirmPassword().getText());
 				if(!verifier.isValid()) {
 					display.getPasswordErrorMessageDisplay().createAlert(verifier.getMessages());
 				}else{
@@ -151,7 +151,7 @@ public class TempPwdLoginPresenter {
 	 * @param sverifier the sverifier
 	 */
 	public void validateChangedPassword(final PasswordVerifier verifier,final SecurityQuestionVerifier sverifier){
-		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getChangePasswordWidget().getPasswords().get("password"),
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getText(),
 				new AsyncCallback<HashMap<String,String>>(){
 			
 			@Override
@@ -173,6 +173,7 @@ public class TempPwdLoginPresenter {
 			}
 		});
 	}
+	
 	
 	/**
 	 * On success temp pwd login.
@@ -214,6 +215,10 @@ public class TempPwdLoginPresenter {
 		}
 	}
 	
+
+
+
+
 	/**
 	 * Load security questions.
 	 */
@@ -254,8 +259,8 @@ public class TempPwdLoginPresenter {
 	private void reset() {
 		display.getPasswordErrorMessageDisplay().clearAlert();
 		display.getSecurityErrorMessageDisplay().clearAlert();
-		display.getChangePasswordWidget().getPasswords().put("password", "");
-		display.getChangePasswordWidget().getPasswords().put("confirmPassword", "");
+		display.getPassword().setText("");
+		display.getConfirmPassword().setText("");
 		display.getQuestion1Answer().setValue("");
 		display.getQuestion2Answer().setValue("");
 		display.getQuestion3Answer().setValue("");
@@ -271,7 +276,7 @@ public class TempPwdLoginPresenter {
 		model.setUserId(MatContext.get().getLoggedinUserId());
 		model.setEmail(MatContext.get().getLoggedInUserEmail());
 		model.setLoginId(MatContext.get().getLoggedinLoginId());
-		model.setPassword(display.getChangePasswordWidget().getPasswords().get("password"));
+		model.setPassword(display.getPassword().getText());
 		
 		model.setQuestion1(display.getSecurityQuestionsWidget().getSecurityQuestion1().getValue());
 		String textBox1Value= display.getAnswerText1();

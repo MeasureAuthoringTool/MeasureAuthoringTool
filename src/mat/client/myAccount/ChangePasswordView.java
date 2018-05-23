@@ -179,9 +179,4 @@ public class ChangePasswordView implements ChangePasswordPresenter.Display {
 		return successMessages;
 	}
 	
-	@Override
-	public ChangePasswordWidget getPasswordWidget() {
-		return passwordWidget;
-	}
-	
 }

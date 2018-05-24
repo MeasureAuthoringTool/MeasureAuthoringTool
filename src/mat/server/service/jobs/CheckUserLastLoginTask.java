@@ -1,6 +1,7 @@
 package mat.server.service.jobs;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,9 +21,13 @@ import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.app.VelocityEngine;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.ui.velocity.VelocityEngineUtils;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 
 
 
@@ -71,6 +76,8 @@ public class CheckUserLastLoginTask {
 	
 	/** The Constant EXPIRY_EMAIL_FLAG. */
 	private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
+	
+	@Autowired private Configuration freemarkerConfiguration;
 	
 	/**
 	 * Method to Send 
@@ -135,21 +142,22 @@ public class CheckUserLastLoginTask {
 			model.put("content", content);
 			String text = null;
 			
-			if(WARNING_EMAIL_FLAG.equals(emailType)){
-				text = VelocityEngineUtils.mergeTemplateIntoString(
-			               velocityEngine, warningMailTemplate, model);
-				simpleMailMessage.setText(text);
-				simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+			try {
+				if(WARNING_EMAIL_FLAG.equals(emailType)){
+					text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(warningMailTemplate), model);
+					simpleMailMessage.setText(text);
+					simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+				}else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
+					text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(expiryMailTemplate), model);
+					simpleMailMessage.setText(text);
+					simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
+					
+					//Update Termination Date for User.
+					updateUserTerminationDate(user);
+				}
+			} catch (IOException | TemplateException e) {
+				e.printStackTrace();
 			}
-			else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
-				text = VelocityEngineUtils.mergeTemplateIntoString(
-			               velocityEngine, expiryMailTemplate, model);
-				simpleMailMessage.setText(text);
-				simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
-				
-				//Update Termination Date for User.
-				updateUserTerminationDate(user);
-			}	
 			
 			mailSender.send(simpleMailMessage);
 			EmailAuditLog emailAudit = new EmailAuditLog();

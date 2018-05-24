@@ -4,9 +4,9 @@
        xmlns:task="http://www.springframework.org/schema/task"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
        http://www.springframework.org/schema/task
-       http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+       http://www.springframework.org/schema/task/spring-task-4.3.xsd"
 >
 	
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
@@ -18,13 +18,7 @@
       <property name="from" value="NO-REPLY-Support@emeasuretool.org"/>
     </bean>
     
-     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
-     	<property name="velocityProperties">
-         <value>
-            resource.loader=class
-            class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
-         </value>
-      </property>
-    </bean>
-    
+    <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
+	    <property name="templateLoaderPath" value="classpath:/"/>
+	</bean>
 </beans>

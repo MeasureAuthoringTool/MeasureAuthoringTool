@@ -64,6 +64,7 @@ import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
+import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
@@ -221,7 +222,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private MeasureExportDAO measureExportDAO; 
-
 
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -2154,8 +2154,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * String, boolean, java.lang.String)
 	 */
 	@Override
-	public final SaveMeasureResult saveFinalizedVersion(final String measureId, final boolean isMajor,
-			final String version) {
+	public final SaveMeasureResult saveFinalizedVersion(final String measureId, final boolean isMajor, final String version, boolean shouldPackage) {
 
 		logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
 		Measure m = getService().getById(measureId);
@@ -2168,14 +2167,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		SaveUpdateCQLResult cqlResult =  getMeasureCQLFileData(measureId);
-		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
+		if(cqlResult.getCqlErrors().size() > 0 || !cqlResult.isDatatypeUsedCorrectly()){
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
 		}
 
+		if(shouldPackage) {
+			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId));
+			if(!validatePackageResult.isSuccess()) {
+				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
+				return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
+			}
+		}
+
 		String versionNumber = null;
 		if (isMajor) {
-			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());
+			versionNumber = findOutMaximumVersionNumber(measureId);
 			// For new measure's only draft entry will be
 			// available.findOutMaximumVersionNumber will return null.
 			if (versionNumber == null) {
@@ -3364,8 +3371,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * lang.String, java.util.ArrayList)
 	 */
 	@Override
-	public final ValidateMeasureResult validateMeasureForExport(final String key,
-			final List<MatValueSet> matValueSetList) throws MatException {
+	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList) throws MatException {
 		try {
 			return getService().validateMeasureForExport(key, matValueSetList);
 		} catch (Exception exc) {
@@ -6049,5 +6055,42 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
 		}
 		logger.info("End VSACAPIServiceImpl updateAllInMeasureXml :");
+	}
+
+	@Override
+	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model) {
+		SaveMeasureResult result = new SaveMeasureResult();
+		String measureId = model.getId();
+		try {
+			
+			ValidateMeasureResult validateGroupResult = validateForGroup(model);
+			if(!validateGroupResult.isValid()) {
+				result.setSuccess(false);
+				result.setValidateResult(validateGroupResult);
+				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				return result;
+			}
+			
+			ValidateMeasureResult validatePackageGroupingResult = validatePackageGrouping(model);
+			if(!validatePackageGroupingResult.isValid()) {
+				result.setSuccess(false);
+				result.setValidateResult(validateGroupResult);
+				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				return result;
+			}
+			
+			result = saveMeasureAtPackage(model);
+			if(!result.isSuccess()) {
+				return result; 
+			}
+			
+			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
+			validateMeasureForExport(measureId, null);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.setSuccess(false);
+			return result;
+		}		
 	}
 }

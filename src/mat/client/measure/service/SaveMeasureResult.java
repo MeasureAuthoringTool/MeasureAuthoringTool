@@ -32,6 +32,10 @@ public class SaveMeasureResult extends GenericResult {
 	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_CQL_DATA = ConstantMessages.INVALID_CQL_DATA;
 	
+	public static final int PACKAGE_VALIDATION_FAIL = 1;
+	
+	public static final int PACKAGE_FAIL = -1;
+	
 	/** The id. */
 	private String id;
 	
@@ -43,6 +47,8 @@ public class SaveMeasureResult extends GenericResult {
 	
 	/** The version str. */
 	private String versionStr;
+		
+	private ValidateMeasureResult validateResult; 
 	
 	/**
 	 * Gets the author list.
@@ -52,7 +58,15 @@ public class SaveMeasureResult extends GenericResult {
 	public List<Author> getAuthorList() {
 		return authorList;
 	}
-	
+
+	public ValidateMeasureResult getValidateResult() {
+		return validateResult;
+	}
+
+	public void setValidateResult(ValidateMeasureResult validateResult) {
+		this.validateResult = validateResult;
+	}
+
 	/**
 	 * Sets the author list.
 	 * 

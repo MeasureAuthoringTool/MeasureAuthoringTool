@@ -502,4 +502,6 @@ public  class ConstantMessages {
 	public static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
 	
 	public static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
+	
+	public static int PACKAGE_VALIDATION_FAIL = 30;
 }

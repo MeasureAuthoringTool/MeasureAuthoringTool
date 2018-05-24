@@ -64,6 +64,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Autowired CQLLibraryService cqlLibraryService;
 	
 	public VSACApiServImpl(){
+		
 		PROXY_HOST = System.getProperty("vsac_proxy_host");
 		if(PROXY_HOST !=null) {
 			PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));

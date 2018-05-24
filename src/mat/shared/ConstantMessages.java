@@ -336,10 +336,10 @@ public  class ConstantMessages {
 	public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_RESET_PASSWORD. */
-	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.vm";
+	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_FORGOT_LOGINID. */
-	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.vm";
+	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.ftl";
 	
 	
 	//events

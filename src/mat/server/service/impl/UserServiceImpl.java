@@ -171,7 +171,6 @@ public class UserServiceImpl implements UserService {
 		logger.info("Sending email to " + user.getEmailAddress());
 		try {
 			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_TEMP_PASSWORD), paramsMap);
-			System.out.println(text);
 			msg.setText(text);
 			mailSender.send(msg);
 		} catch(IOException | TemplateException exc) {

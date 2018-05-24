@@ -336,14 +336,13 @@ public class CheckUserChangePasswordLimit {
 		
 		logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 		//Get all the Users
-				/*final List<User> users = userDAO.find();
-				final List<User> emailUsers=checkUsersLastPassword(noOfDaysPasswordLimit,users);*/
-				User user = userDAO.find("2c91c286621bd81301621fcef5280004");
+				final List<User> users = userDAO.find();
+				final List<User> emailUsers=checkUsersLastPassword(noOfDaysPasswordLimit,users);
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
 				final String envirUrl = ServerConstants.getEnvURL();
 				
-				//for(User user:emailUsers){
+				for(User user:emailUsers){
 					
 					//Send 45 days password limit email for all the users in the list.
 					logger.info("Sending email to "+user.getFirstName());
@@ -396,7 +395,7 @@ public class CheckUserChangePasswordLimit {
 					content.clear();
 					model.clear();
 					logger.info("Email Sent to "+user.getFirstName());
-				//}
+				}
 			
 				logger.info(" :: CheckUserLoginPasswordDays Method END :: ");
 				

@@ -383,7 +383,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @see mat.server.service.CQLLibraryServiceInterface#saveFinalizedVersion(java.lang.String, boolean, java.lang.String)
 	 */
 	@Override
-	public SaveCQLLibraryResult saveFinalizedVersion (String libraryId,  boolean isMajor,
+	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId,  boolean isMajor,
 			 String version){
 		logger.info("Inside saveFinalizedVersion: Start");
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
@@ -397,12 +397,20 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		SaveUpdateCQLResult cqlResult  = getCQLData(libraryId);
+
 		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
 			result.setSuccess(false);
 			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
 			return result;
 		}
 		
+		//TODO here, check for unused libraries, display error message here
+		List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
+		if(cqlLibraryContainsUnusedCQLLibraries(libraryId, usedLibraries)){
+		    result.setSuccess(false);
+		    result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
+		    return result;
+	    }
 		
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);
 		if(library != null){
@@ -419,7 +427,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				String selectedVersion = version.substring(versionIndex + 1);
 				logger.info("Min Version number after trim: " + selectedVersion);
 				versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getSet_id(), selectedVersion);
-
 			}
 			
 			int endIndex = versionNumber.indexOf('.');
@@ -436,7 +443,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						result.setSuccess(false);
 						return result;
 					}
-
 				} else {
 					if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
 						versionNumber = versionArr[0] + "." + versionArr[1];
@@ -449,7 +455,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						return result;
 					}
 				}
-
 			} else {
 				logger.info("Inside saveFinalizedVersion: returnFailureReason MAX Major Minor Reached");
 				result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_VERSION);
@@ -457,19 +462,51 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				return result;
 				
 			}
-			
-			
 		} else {
-			
 			result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
 			result.setSuccess(false);
 			return result;
-		}
-		
-		
+		}	
 	}
 	
 	
+	private boolean cqlLibraryContainsUnusedCQLLibraries(String libraryId, List<String> usedLibraries) {
+		boolean containsUnusedLibraries = false;
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+		XmlProcessor xmlProcessor = new XmlProcessor(cqlLibraryXml);
+		String includeLibrariesXPath = "//cqlLookUp/includeLibrarys";
+		try {
+			Node node = (Node) xPath.evaluate(includeLibrariesXPath, xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			if (node != null) {
+				NodeList childNodes = node.getChildNodes();
+				for(int i = 0; i<childNodes.getLength(); i++) {
+					String refName = null;
+					String alias = null;
+					String version = null;
+					if(childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName") != null) {
+						refName = childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName").getNodeValue();
+					}
+					if(childNodes.item(i).getAttributes().getNamedItem("name") != null) {
+						alias = childNodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					}
+					if(childNodes.item(i).getAttributes().getNamedItem("cqlVersion") != null) {
+						version = childNodes.item(i).getAttributes().getNamedItem("cqlVersion").getNodeValue();
+					}
+					String libraryKey = refName + "-" + version + "|" + alias;
+					if(!usedLibraries.contains(libraryKey)) {
+						containsUnusedLibraries = true;
+						break;
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+		
+		return containsUnusedLibraries;
+	}
+
 	/**
 	 * Increment version number and save.
 	 *

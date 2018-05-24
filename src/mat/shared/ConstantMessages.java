@@ -36,6 +36,8 @@ public  class ConstantMessages {
 	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_CQL_DATA = 7;
 	
+	public static final int INVALID_CQL_LIBRARIES = 8;
+	
 	/** The Constant FILE_NOT_SELECTED. */
 	public static final String FILE_NOT_SELECTED ="Please Select a File.";
 	

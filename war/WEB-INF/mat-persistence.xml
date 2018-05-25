@@ -30,31 +30,25 @@
 		<property name="contexts" value="prod" />
 	</bean>
     
-   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+   <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://localhost:3306/MAT_APP"/>
-        <property name="username" value="username"/>
-        <property name="password" value="password"/>
+		<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_PROD_01312018_UPDATED"/>
+        <property name="username" value="cthondapu"/>
+        <property name="password" value="$1password"/>
     </bean>
     
     <context:annotation-config />
-    
+    <context:component-scan base-package="mat.hibernate"/>
+    	
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="dataSource">
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="dataSource">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
-        <property name="eventListeners">
-          <map>
-              <entry key="pre-insert" value-ref="auditEventListener"/>
-              <entry key="pre-update" value-ref="auditEventListener"/>
-              <entry key="pre-delete" value-ref="auditEventListener"/>
-          </map>
-        </property>		
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.show_sql">false</prop>
@@ -83,7 +77,7 @@
    </bean>
     
     <tx:annotation-driven transaction-manager="txManager"/>
-    <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 	<!-- DAO objects -->

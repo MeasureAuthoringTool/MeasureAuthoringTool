@@ -12,7 +12,7 @@ import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Comment;

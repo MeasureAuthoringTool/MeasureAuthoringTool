@@ -1,6 +1,6 @@
 package mat.client.measure.metadata;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Input;
 
 import com.google.gwt.event.dom.client.KeyCodes;

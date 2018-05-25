@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-          version="3.0">
+          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee webapp_4_0.xsd"
+          version="4.0">
   
   <!-- Default page to serve -->
  
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-             /WEB-INF/applicationContext-service.xml
-              /WEB-INF/applicationContext-security.xml
+           /WEB-INF/applicationContext-service.xml
+           /WEB-INF/applicationContext-security.xml
            /WEB-INF/mat-persistence.xml
            /WEB-INF/applicationContext-mail.xml
            /WEB-INF/applicationContext-task.xml
@@ -26,7 +26,7 @@
     </filter>
     <filter>
         <filter-name>hibernateFilter</filter-name>
-        <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+        <filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
     </filter>
  <filter>
     <filter-name>PreventCachingFilter</filter-name>
@@ -95,14 +95,6 @@
     <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
   </servlet>
 
-  <!-- <servlet>
-    <servlet-name>clauseServiceImpl</servlet-name>
-    <servlet-class>mat.server.clause.ClauseServiceImpl</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>clauseCloningServiceImpl</servlet-name>
-    <servlet-class>mat.server.clause.ClauseCloningServiceImpl</servlet-class>
-  </servlet> -->
   <servlet>
     <servlet-name>packageServiceImpl</servlet-name>
     <servlet-class>mat.server.PackageServiceImpl</servlet-class>
@@ -123,10 +115,6 @@
     <servlet-name>bulkExportServlet</servlet-name>
     <servlet-class>mat.server.BulkExportServlet</servlet-class>
   </servlet>
-   <!-- <servlet>
-    <servlet-name>FileUploadServlet</servlet-name>
-    <servlet-class>mat.server.servlet.FileUploadServlet</servlet-class>
-  </servlet> -->
   <servlet>
    <servlet-name>auditServiceImpl</servlet-name>
    <servlet-class>mat.server.AuditServiceImpl</servlet-class>
@@ -143,11 +131,6 @@
       <servlet-name>populationService</servlet-name>
       <servlet-class>mat.server.PopulationServiceImpl</servlet-class>
   </servlet>
- <!--  <servlet-mapping>
-    <servlet-name>FileUploadServlet</servlet-name>
-    <url-pattern>/mat/uploadFormHandler</url-pattern>
-  </servlet-mapping> -->
-  
   <servlet-mapping>
     <servlet-name>exportServlet</servlet-name>
     <url-pattern>/mat/export</url-pattern>
@@ -188,14 +171,6 @@
       <servlet-name>cqlConstantService</servlet-name>
       <url-pattern>/mat/cqlconstant</url-pattern>
   </servlet-mapping>
- <!--  <servlet-mapping>
-    <servlet-name>clauseServiceImpl</servlet-name>
-    <url-pattern>/mat/clause</url-pattern>
-  </servlet-mapping> -->
- <!--  <servlet-mapping>
-    <servlet-name>clauseCloningServiceImpl</servlet-name>
-    <url-pattern>/mat/clauseCloning</url-pattern>
-  </servlet-mapping> -->
   <servlet-mapping>
     <servlet-name>packageServiceImpl</servlet-name>
     <url-pattern>/mat/package</url-pattern>

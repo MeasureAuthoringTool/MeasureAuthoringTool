@@ -10,7 +10,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;

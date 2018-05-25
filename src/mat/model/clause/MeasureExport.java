@@ -6,9 +6,10 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 
-import mat.server.util.XmlProcessor;
-
 import org.hibernate.Hibernate;
+
+import mat.hibernate.HibernateConf;
+import mat.server.util.XmlProcessor;
 
 
 /**
@@ -108,7 +109,7 @@ public class MeasureExport {
 	 *            the new code list barr
 	 */
 	public void setCodeListBarr(byte[] codeListBarr) {
-		this.codeList = Hibernate.createBlob(codeListBarr);
+		this.codeList = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(codeListBarr);
 	}
 	
 	  /**

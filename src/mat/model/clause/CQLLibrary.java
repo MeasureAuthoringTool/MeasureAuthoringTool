@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.hibernate.Hibernate;
 
+import mat.hibernate.HibernateConf;
 import mat.model.User;
 import mat.model.cql.CQLLibraryShare;
 
@@ -34,15 +35,6 @@ public class CQLLibrary {
 	 * The owner id
 	 */
 	private User ownerId;
-
-	/**
-	 * The measure set id
-	 */
-	/*private MeasureSet measureSet;
-
-	 * The cql set id
-	 *//*
-	private CQLLibrarySet cqlSet;*/
 	
 	private String set_id;
 
@@ -164,7 +156,7 @@ public class CQLLibrary {
 	}
 
 	public void setCQLByteArray(byte[] cqlByteArray) {
-		this.cqlXML = Hibernate.createBlob(cqlByteArray);
+		this.cqlXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(cqlByteArray);
 	}
 
 	public byte[] getCQLByteArray() {
@@ -256,22 +248,6 @@ public class CQLLibrary {
 		this.lockedOutDate = lockedOutDate;
 	}
 
-	/*public MeasureSet getMeasureSet() {
-		return measureSet;
-	}
-
-	public void setMeasureSet(MeasureSet measureSetId) {
-		this.measureSet = measureSetId;
-	}
-
-	public CQLLibrarySet getCqlSet() {
-		return cqlSet;
-	}
-
-	public void setCqlSet(CQLLibrarySet cqlSet) {
-		this.cqlSet = cqlSet;
-	}*/
-
 	public String getRevisionNumber() {
 		return revisionNumber;
 	}
@@ -283,7 +259,7 @@ public class CQLLibrary {
 	public double getVersionNumber(){
 		double versionNumber = 0;
 		if ((version != null) && !version.isEmpty()) {
-			versionNumber = Double.valueOf(version).doubleValue();
+			versionNumber = Double.parseDouble(version);
 		}
 		return versionNumber;
 	}

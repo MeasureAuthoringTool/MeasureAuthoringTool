@@ -19,7 +19,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;
 
 import com.google.gwt.core.client.GWT;

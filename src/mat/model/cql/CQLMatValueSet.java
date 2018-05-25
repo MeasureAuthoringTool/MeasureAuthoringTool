@@ -2,7 +2,7 @@ package mat.model.cql;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

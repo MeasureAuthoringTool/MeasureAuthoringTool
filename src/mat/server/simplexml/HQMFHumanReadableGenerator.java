@@ -15,7 +15,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

@@ -25,24 +25,18 @@
 	</bean>
 
 	<context:annotation-config transaction-manager="txManager"/>
+	<context:component-scan base-package="mat.hibernate"/>
 	<tx:annotation-driven transaction-manager="txManager"/>
 	
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="dataSource">
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="dataSource">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
-        <property name="eventListeners">
-          <map>
-              <entry key="pre-insert" value-ref="auditEventListener"/>
-              <entry key="pre-update" value-ref="auditEventListener"/>
-              <entry key="pre-delete" value-ref="auditEventListener"/>
-          </map>
-        </property> 		
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.show_sql">false</prop>
@@ -50,6 +44,7 @@
 				<prop key="hibernate.connection.release_mode">auto</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>	
+                <!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->		
 			</props>
 		</property>
 		<property name="mappingLocations">

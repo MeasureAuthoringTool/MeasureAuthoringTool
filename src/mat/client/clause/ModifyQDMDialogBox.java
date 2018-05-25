@@ -2,7 +2,7 @@ package mat.client.clause;
 
 import mat.client.shared.DialogBoxWithCloseButton;
 import mat.model.QualityDataSetDTO;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;

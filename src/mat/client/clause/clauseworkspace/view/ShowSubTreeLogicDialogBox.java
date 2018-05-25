@@ -7,7 +7,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.DialogBoxWithCloseButton;
 import mat.client.shared.SpacerWidget;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;

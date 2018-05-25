@@ -15,6 +15,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -234,7 +235,7 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 	 *            the transaction
 	 */
 	protected void rollbackUncommitted(Transaction transaction) {
-	    if (transaction != null && !transaction.wasCommitted()) {
+	    if (transaction != null && transaction.getStatus() != TransactionStatus.COMMITTED) {
 	    	transaction.rollback();
 	    }
 	}

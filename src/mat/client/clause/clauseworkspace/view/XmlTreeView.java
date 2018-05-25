@@ -23,7 +23,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 

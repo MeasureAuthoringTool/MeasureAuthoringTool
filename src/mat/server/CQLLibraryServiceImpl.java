@@ -45,8 +45,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
-	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version){
-		return this.getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version);
+	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries){
+		return this.getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries);
 	}
 	/**
 	 * Gets the measure library service.

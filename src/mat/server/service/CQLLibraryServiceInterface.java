@@ -50,7 +50,7 @@ public interface CQLLibraryServiceInterface {
 	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
 
 
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 

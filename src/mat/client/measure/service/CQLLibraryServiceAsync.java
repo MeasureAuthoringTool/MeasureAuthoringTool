@@ -44,7 +44,7 @@ public interface CQLLibraryServiceAsync {
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId, AsyncCallback<Void> callback);
 
 
-	void saveFinalizedVersion(String libraryId, boolean isMajor, String version,
+	void saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
 

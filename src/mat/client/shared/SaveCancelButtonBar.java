@@ -22,16 +22,6 @@ public class SaveCancelButtonBar extends Composite {
 	 * Instantiates a new save cancel button bar.
 	 */
 	public SaveCancelButtonBar(String uniqueSection) {
-		/*HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
-		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		saveButton.getElement().setId("saveButton_Button");
-		cancelButton.getElement().setId("cancelButton_Button");
-		saveButton.setTitle("Save");
-		cancelButton.setTitle("Cancel");
-		buttonLayout.add(saveButton);
-		buttonLayout.add(cancelButton);*/
-		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		saveButton.setId("ButtonPanel_SaveAndContinueButton_"+uniqueSection);
 		saveButton.setType(ButtonType.PRIMARY);

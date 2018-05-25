@@ -540,6 +540,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 				cqlLibrary.setCQLByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
 				save(cqlLibrary);
+				cqlLibraryDAO.refresh(cqlLibrary);
 			}
 		} catch (XPathExpressionException e) {
 			logger.error(e.getMessage());

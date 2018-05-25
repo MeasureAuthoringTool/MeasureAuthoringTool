@@ -405,12 +405,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
-		if(cqlLibraryContainsUnusedCQLLibraries(libraryId, usedLibraries) && !ignoreUnusedLibraries){
-		    result.setSuccess(false);
-		    result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
-		    return result;
-	    } else if(cqlLibraryContainsUnusedCQLLibraries(libraryId, usedLibraries)) {
-	    	removeUnusedLibraries(libraryId, usedLibraries);
+		if(cqlLibraryContainsUnusedCQLLibraries(libraryId, usedLibraries)){
+			if(!ignoreUnusedLibraries) {
+			    result.setSuccess(false);
+			    result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
+			    return result;
+			} else {
+		    	removeUnusedLibraries(libraryId, usedLibraries);
+			}
 	    }
 		
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);

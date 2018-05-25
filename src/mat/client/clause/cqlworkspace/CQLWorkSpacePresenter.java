@@ -106,7 +106,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	/** The search display. */
-	private ViewDisplay searchDisplay;
+	private static ViewDisplay searchDisplay;
 
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
@@ -4088,7 +4088,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * 
 	 * @return ViewDisplay.
 	 */
-	public ViewDisplay getSearchDisplay() {
+	public static ViewDisplay getSearchDisplay() {
 		return searchDisplay;
 	}
 

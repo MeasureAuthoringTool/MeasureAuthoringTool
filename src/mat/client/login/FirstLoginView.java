@@ -1,7 +1,6 @@
 package mat.client.login;
 
 import java.util.List;
-import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
@@ -314,11 +313,6 @@ public class FirstLoginView implements SecurityQuestionsDisplay {
 
 	@Override
 	public HasClickHandlers getCancelButton() {
-		return null;
-	}
-
-	@Override
-	public Map<String, String> getSecurityAnswers() {
 		return null;
 	}
 	

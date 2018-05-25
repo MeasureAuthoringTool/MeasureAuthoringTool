@@ -1,7 +1,6 @@
 package mat.client.shared;
 
 import java.util.List;
-import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Input;
 
@@ -158,6 +157,4 @@ public interface SecurityQuestionsDisplay {
 	 * @return the cancel button
 	 */
 	HasClickHandlers getCancelButton();
-	
-	public Map<String, String> getSecurityAnswers();
 }

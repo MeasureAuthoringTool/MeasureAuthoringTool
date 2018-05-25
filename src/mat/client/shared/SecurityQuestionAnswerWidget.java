@@ -16,8 +16,6 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -57,7 +55,6 @@ public class SecurityQuestionAnswerWidget extends Composite {
 	FormGroup answer3FormGroup = new FormGroup();
 	private FlowPanel rulesPanel = new FlowPanel();
 	
-	private boolean isCtrlKey = false;
 	private Map<String, String> securityAnswers = new HashMap<String, String>();
 	private List<Integer> validKeysList = new ArrayList<Integer>();
 	/**
@@ -234,61 +231,27 @@ public class SecurityQuestionAnswerWidget extends Composite {
 				getAnswer3().setText(displayValueAsAsterix(getAnswer3().getText(), "answer3", event.getNativeKeyCode()));
 			}
 		});
-		
-		getAnswer1().addKeyDownHandler(new KeyDownHandler() {
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (KeyCodes.KEY_CTRL == event.getNativeKeyCode()) {
-					isCtrlKey = true;
-				}
-			}
-		});
-		
-		getAnswer2().addKeyDownHandler(new KeyDownHandler() {
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (KeyCodes.KEY_CTRL == event.getNativeKeyCode()) {
-					isCtrlKey = true;
-				}
-			}
-		});
-		
-		getAnswer3().addKeyDownHandler(new KeyDownHandler() {
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (KeyCodes.KEY_CTRL == event.getNativeKeyCode()) {
-					isCtrlKey = true;
-				}
-			}
-		});
 	}
 	
 	private String displayValueAsAsterix(String temporaryValue, String currentField, int charCode) {
 		String formattedValue = "";
 		if (validKeysList.contains(charCode)) {
-			if (isCtrlKey) {
-				securityAnswers.put(currentField, temporaryValue);
-				formattedValue = temporaryValue;
-				isCtrlKey = false;
-			}else {
-				char newChar = temporaryValue.charAt(temporaryValue.length() - 1);
-				String securityAnswer = securityAnswers.get(currentField); 
-				securityAnswer += newChar;
-				securityAnswers.put(currentField, securityAnswer);
-				formattedValue = temporaryValue.length() == 2 ? "*" : "";
-				if(temporaryValue.length() > 2) {
-					formattedValue = temporaryValue.substring(0, securityAnswer.length()-2);
-					formattedValue += "*";
-				}
-				formattedValue += newChar;
+			char newChar = temporaryValue.charAt(temporaryValue.length() - 1);
+			String securityAnswer = securityAnswers.get(currentField); 
+			securityAnswer += newChar;
+			securityAnswers.put(currentField, securityAnswer);
+			formattedValue = temporaryValue.length() == 2 ? "*" : "";
+			if(temporaryValue.length() > 2) {
+				formattedValue = temporaryValue.substring(0, securityAnswer.length()-2);
+				formattedValue += "*";
 			}
+			formattedValue += newChar;
 		}else if (KeyCodes.KEY_RIGHT == charCode || KeyCodes.KEY_LEFT == charCode) {
 			formattedValue = temporaryValue.substring(0, temporaryValue.length()-1).concat("*");
 		}else if (KeyCodes.KEY_SHIFT == charCode) {
 			formattedValue = temporaryValue;
-		}else if (KeyCodes.KEY_CTRL == charCode) {
-			formattedValue = temporaryValue.replaceAll(".", "*");
 		}
+			
 		return formattedValue;
 	}
 

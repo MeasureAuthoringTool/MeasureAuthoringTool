@@ -10,8 +10,6 @@ import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.base.button.AbstractButton;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -20,13 +18,11 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -60,8 +56,6 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	private  Button closeButton;
 	
 	private Button continueButton;
-	
-	private Button XClose;
 
 	/** The password entered. */
 	private  String passwordEntered;
@@ -107,32 +101,24 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
 		
-		panel.setClosable(false);
+		panel.setClosable(true);
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
+		panel.getElement().setAttribute("tabindex", "0");
 		
 		ModalHeader modalHeader = new ModalHeader();
 		
 		HorizontalPanel header = new HorizontalPanel();
 		header.setWidth("250px");
 		HTML loginText = new HTML("<strong>Please sign in to UMLS</strong>");
-		XClose = new Button();
-		XClose.setText("X     ");
-		XClose.setPull(Pull.RIGHT);
-		XClose.setTitle("Close");
-		XClose.setType(ButtonType.DANGER);
-		XClose.setSize(ButtonSize.EXTRA_SMALL);
-		XClose.setDataDismiss(ButtonDismiss.MODAL);
 		header.add(loginText);
-		header.add(XClose);
 		header.setHeight("30px");
 		modalHeader.setStyleName("loginNewBlueTitleHolder");
 		modalHeader.setHeight("40px");
 		modalHeader.add(header);
-		modalHeader.setClosable(false);
 				
 		panel.add(modalHeader);
 		

@@ -20,7 +20,6 @@ import mat.shared.ConstantMessages;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -66,9 +65,6 @@ public class CheckUserLastLoginTask {
 	/** The expiry mail subject. */
 	private String expiryMailSubject;
 	
-	/** The velocity engine. */
-	private VelocityEngine velocityEngine;
-
 	private EmailAuditLogDAO emailAuditLogDAO;
 
 	/** The Constant WARNING_EMAIL_FLAG. */
@@ -461,25 +457,6 @@ public class CheckUserLastLoginTask {
 		return expiryMailTemplate;
 	}
 
-	/**
-	 * Gets the velocity engine.
-	 * 
-	 * @return the velocity engine
-	 */
-	public VelocityEngine getVelocityEngine() {
-		return velocityEngine;
-	}
-
-	/**
-	 * Sets the velocity engine.
-	 * 
-	 * @param velocityEngine
-	 *            the new velocity engine
-	 */
-	public void setVelocityEngine(final VelocityEngine velocityEngine) {
-		this.velocityEngine = velocityEngine;
-	}
-	
 	public EmailAuditLogDAO getEmailAuditLogDAO() {
 		return emailAuditLogDAO;
 	}

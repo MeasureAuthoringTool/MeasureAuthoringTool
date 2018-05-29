@@ -38,7 +38,7 @@
     </bean>
     
     <context:annotation-config />
-    
+
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="dataSource">

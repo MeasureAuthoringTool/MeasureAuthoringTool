@@ -606,8 +606,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * Validate group.
 	 */
 	protected void validateGroup() {
-		MatContext.get().getMeasureService()
-		.validateForGroup(model,new AsyncCallback<ValidateMeasureResult>() {
+		MatContext.get().getMeasureService().validateForGroup(model,new AsyncCallback<ValidateMeasureResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				
@@ -1108,7 +1107,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void displayMeasurePackageWorkspace() {
 		panel.clear();
 		panel.add(view.asWidget());
-		// view.setTabIndex();
 	}
 	/**
 	 * Gets the max sequence.
@@ -1220,8 +1218,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 						view.getInProgressMessageDisplay().clear();
 					}
 				}
-				
-				
 			}
 		});
 		
@@ -1245,13 +1241,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(Void result) {
-				String measureId = MatContext.get()
-						.getCurrentMeasureId();
-				/*if (view.getIncludeVSACData().getValue().equals(Boolean.TRUE)) {
-					updateValueSetsBeforePackaging(measureId);
-				} else {*/
-					validateMeasureAndExport(measureId, null);
-				//}
+				String measureId = MatContext.get().getCurrentMeasureId();
+				validateMeasureAndExport(measureId, null);
 			}
 		});
 	}
@@ -1261,24 +1252,20 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param measureId - String.
 	 * @param updateVsacResult - VsacApiResult.
 	 */
-	private void validateMeasureAndExport(final String measureId,
-			final VsacApiResult updateVsacResult) {
+	private void validateMeasureAndExport(final String measureId, final VsacApiResult updateVsacResult) {
 		List<MatValueSet> vsacResponse = null;
 		if (updateVsacResult != null) {
 			vsacResponse = updateVsacResult.getVsacResponse();
 		}
 		
-		MatContext.get().getMeasureService()
-		.validateMeasureForExport(measureId, vsacResponse,
-				new AsyncCallback<ValidateMeasureResult>() {
+		MatContext.get().getMeasureService().validateMeasureForExport(measureId, vsacResponse, new AsyncCallback<ValidateMeasureResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				Mat.hideLoadingMessage();
 				((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 				view.getInProgressMessageDisplay().clear();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				view.getPackageErrorMessageDisplay().createAlert(
-						MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+				view.getPackageErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
 			}
 			
 			@Override
@@ -1291,9 +1278,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();
 							} else {
-								view.getMeasurePackageSuccessMsg()
-								.createAlert(MatContext.get().getMessageDelegate()
-										.getPackageSuccessAmberMessage());
+								view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessAmberMessage());
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								view.getInProgressMessageDisplay().clear();
 								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
@@ -1303,9 +1288,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();
 							} else {
-								view.getMeasurePackageSuccessMsg()
-								.createAlert(MatContext.get().getMessageDelegate()
-										.getPackageSuccessMessage());
+								view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 								view.getInProgressMessageDisplay().clear();
@@ -1313,30 +1296,24 @@ public class MeasurePackagePresenter implements MatPresenter {
 						}
 						
 					} else if (result.isValid() && !updateVsacResult.isSuccess()) {
-						if (updateVsacResult.getFailureReason()
-								== VsacApiResult.UMLS_NOT_LOGGEDIN) {
+						if (updateVsacResult.getFailureReason() == VsacApiResult.UMLS_NOT_LOGGEDIN) {
 							if (isMeasurePackageExportSuccess) {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();
 							} else {
-								view.getMeasurePackageWarningMsg()
-								.createAlert(MatContext.get().getMessageDelegate()
-										.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
+								view.getMeasurePackageWarningMsg().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 								view.getInProgressMessageDisplay().clear();
 							}
 						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
-							view.getMeasureErrorMessageDisplay()
-							.createAlert(MatContext.get().getMessageDelegate()
-									.getMEASURE_PACKAGE_VSAC_TIMEOUT());
+							view.getMeasureErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PACKAGE_VSAC_TIMEOUT());
 							((Button) view.getPackageMeasureButton()).setEnabled(true);
 							((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 							view.getInProgressMessageDisplay().clear();
 						}
 					} else {
-						view.getMeasureErrorMessageDisplay()
-						.createAlert(result.getValidationMessages());
+						view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
 						((Button) view.getPackageMeasureButton()).setEnabled(true);
 						((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 						view.getInProgressMessageDisplay().clear();
@@ -1348,16 +1325,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 							((Button) view.getPackageMeasureButton()).setEnabled(true);
 							saveExport();
 						} else {
-							view.getMeasurePackageSuccessMsg()
-							.createAlert(MatContext.get().getMessageDelegate()
-									.getPackageSuccessMessage());
+							view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
 							((Button) view.getPackageMeasureButton()).setEnabled(true);
 							((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 							view.getInProgressMessageDisplay().clear();
 						}
 					} else {
-						view.getMeasureErrorMessageDisplay()
-						.createAlert(result.getValidationMessages());
+						view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
 						((Button) view.getPackageMeasureButton()).setEnabled(true);
 						((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 						view.getInProgressMessageDisplay().clear();

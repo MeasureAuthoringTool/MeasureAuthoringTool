@@ -3540,6 +3540,14 @@ public class MessageDelegate {
 	public String getVersionSuccessfulMessage(String name, String version){
 		return name + " v" + (version.length()>60 ? version.substring(0, 59) : version) + " has been successfully created.";
 	}
+	
+	public String getVersionAndPackageUnsuccessfulMessage() {
+		return "Your measure could not be packaged. Select Cancel and return to the measure composer to correct any issues or select Continue to create a version without a measure package.";
+	}
+	
+	public String getVersionAndPackageSuccessfulMessage(String name, String version){
+		return name + " has been successfully packaged and v" + (version.length()>60 ? version.substring(0, 59) : version) + " has been successfully created."; 
+	}
 
 	public String getINVALID_QDM_VERSION_IN_INCLUDES() {
 		return INVALID_QDM_VERSION_IN_INCLUDES;

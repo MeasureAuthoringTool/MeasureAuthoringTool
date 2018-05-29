@@ -244,7 +244,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void saveFinalizedVersion(String measureid,boolean isMajor,String version, AsyncCallback<SaveMeasureResult> callback);
+	void saveFinalizedVersion(String measureid, boolean isMajor,String version, boolean shouldPackage, AsyncCallback<SaveMeasureResult> callback);
 	
 	/**
 	 * Save measure details.
@@ -453,6 +453,13 @@ public interface MeasureServiceAsync {
 	 */
 	void validateForGroup(ManageMeasureDetailModel model,
 			AsyncCallback<ValidateMeasureResult> asyncCallback);
+	
+	/**
+	 * Validates and packages the measure when the user versions or packages a measure
+	 * @param mode the measure details
+	 * @param asyncCallback
+	 */
+	void validateAndPackageMeasure(ManageMeasureDetailModel mode, AsyncCallback<SaveMeasureResult> asyncCallback);
 	
 	/**
 	 * Gets the all measure types.

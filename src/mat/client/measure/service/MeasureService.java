@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -229,7 +230,7 @@ public interface MeasureService extends RemoteService {
 	 *            the version
 	 * @return the save measure result
 	 */
-	SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) ;
+	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor,String version, boolean shouldPackage) ;
 	
 	/**
 	 * Save measure details.
@@ -410,6 +411,11 @@ public interface MeasureService extends RemoteService {
 	 */
 	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
 	
+	/**
+	 * Validates and packages the measure when the user versions or packages a measure
+	 * @param mode the measure details
+	 */
+	SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel mode);
 	
 	/**
 	 * Gets the all measure types.

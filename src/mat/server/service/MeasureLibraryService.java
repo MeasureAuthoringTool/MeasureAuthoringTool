@@ -232,8 +232,7 @@ public interface MeasureLibraryService {
 	 *            the version
 	 * @return the save measure result
 	 */
-	SaveMeasureResult saveFinalizedVersion(String measureId,
-			boolean isMajor, String version);
+	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version, boolean shouldPackage);
 	
 	/**
 	 * Save measure details.
@@ -735,5 +734,7 @@ public interface MeasureLibraryService {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
 
 	SaveUpdateCQLResult modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId);
+
+	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model);
 
 }

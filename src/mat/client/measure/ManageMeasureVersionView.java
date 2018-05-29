@@ -78,8 +78,8 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		mainPanel.add(new SpacerWidget());
 		
 		SimplePanel buttonPanel = new SimplePanel();
-		buttonBar.getSaveButton().setText("Save and Continue");
-		buttonBar.getSaveButton().setTitle("Save and Continue");
+		buttonBar.getSaveButton().setText("Package and Version");
+		buttonBar.getSaveButton().setTitle("Package and version");
 		buttonBar.getCancelButton().setTitle("Cancel");
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
@@ -92,7 +92,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		if(selectedMeasure != null){
 			String selectedItemName = selectedMeasure.getName();
 			String selectedItemDraftText = selectedMeasure.getVersion();
-			StringBuilder paragraph = new StringBuilder("<p>You are creating version of <b>\""+ selectedItemName + " " + selectedItemDraftText +"\"</b>");
+			StringBuilder paragraph = new StringBuilder("<p>You are packaging and creating a version of <b>\""+ selectedItemName + " " + selectedItemDraftText +"\"</b>");
 			paragraph.append("</p>");
 			HTML paragraphHtml = new HTML(paragraph.toString());
 			cellTablePanel.add(paragraphHtml);

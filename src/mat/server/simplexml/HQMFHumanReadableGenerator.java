@@ -66,8 +66,8 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 	private static final String[] POPULATION_NAME_ARRAY = {"initialPopulation",
 		"denominator", "denominatorExclusions", "numerator",
 		"numeratorExclusions", "denominatorExceptions",
-		"measurePopulation", "measurePopulationExclusions",
-		"measureObservation", "stratum" };
+		"measurePopulation", "measurePopulationExclusions", "stratum" ,
+		"measureObservation"};
 	
 	/** The Constant subsetFunctions */
 	private static List<String> subSetFunctionsList = new ArrayList<String>();

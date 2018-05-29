@@ -1325,8 +1325,10 @@ padding: 2px;
 	margin-top: -8px;
 }
 .welcomeUserPanel{
-	float: right;
+	float: left;
+	padding: 7px 0 0 4px;
 	position: relative;
+	text-align:left;
 	font-size:small;	
 }
 .logoutAndUMLSPanel{

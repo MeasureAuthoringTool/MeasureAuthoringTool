@@ -786,7 +786,7 @@ public class MessageDelegate {
 	private final String UML_LOGIN_UNAVAILABLE = "Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.";
 	
 	/** The umls not loggedin. */
-	private final String UMLS_NOT_LOGGEDIN = "You are not logged in to UMLS. Please access the UMLS Account tab to continue.";
+	private final String UMLS_NOT_LOGGEDIN = "You are not logged in to UMLS. Please sign in to UMLS.";
 	
 	/** The umls oid required. */
 	private final String UMLS_OID_REQUIRED = "Please enter an OID.";

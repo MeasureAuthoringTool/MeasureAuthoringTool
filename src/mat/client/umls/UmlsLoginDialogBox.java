@@ -10,7 +10,6 @@ import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -26,6 +25,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
+import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
@@ -53,11 +54,15 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 	/** The close button. */
 	private  Button closeButton;
+	
+	private Button continueButton;
 
 	/** The password entered. */
 	private  String passwordEntered;
 	
 	private  Modal panel;
+	
+	private ModalFooter modalFooter;
 	
 	FocusPanel focusPanel = new FocusPanel();
 	
@@ -81,6 +86,10 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	 *            the message
 	 */
 	public void showUMLSLogInDialog() {
+		
+		CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
+		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+		
 		focusPanel.clear();
 	    panel = new Modal();
 	    panel.setWidth("300px");
@@ -92,17 +101,18 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		messageAlert.clear();
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
-
+		
 		panel.setClosable(true);
 		panel.setFade(true);
 		panel.setDataBackdrop(ModalBackdrop.STATIC);
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
+		panel.getElement().setAttribute("tabindex", "0");
 		
 		ModalHeader modalHeader = new ModalHeader();
 		
-		PanelHeader header = new PanelHeader();
+		HorizontalPanel header = new HorizontalPanel();
 		header.setWidth("250px");
 		HTML loginText = new HTML("<strong>Please sign in to UMLS</strong>");
 		header.add(loginText);
@@ -158,10 +168,18 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		closeButton.setSize(ButtonSize.DEFAULT);
 		closeButton.setMarginLeft(10.00);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
+		
+		continueButton = new Button("Continue");
+		continueButton.setType(ButtonType.PRIMARY);
+		continueButton.setSize(ButtonSize.DEFAULT);
+		continueButton.setMarginLeft(10.00);
+		continueButton.setDataDismiss(ButtonDismiss.MODAL);
+		continueButton.setVisible(false);
 
 		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		hp.add(submitButton);
 		hp.add(closeButton);
+		hp.add(continueButton);
 		
 		VerticalPanel vp = new VerticalPanel();
 		
@@ -177,9 +195,13 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		vp.add(hp);
 		focusPanel.add(vp);
 		modalBody.add(focusPanel);
+		
+		
+		
+		
 		panel.add(modalBody);
 		
-		ModalFooter modalFooter = new ModalFooter();
+		modalFooter = new ModalFooter();
 		VerticalPanel vPanel = new VerticalPanel();
 		umlsExternalLink = new Anchor("Need a UMLS license?");
 		umlsTroubleLogging = new Anchor("Trouble signing in?");
@@ -268,6 +290,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	public Widget asWidget() {
 		return panel;
 	}
+	
 
 	@Override
 	public SaveCancelButtonBar getButtonBar() {
@@ -317,7 +340,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 
 	@Override
 	public FormGroup getPasswordGroup() {
-		return passwordInput.getPasswordGroup();
+		return passwordGroup;
 	}
 
 	@Override
@@ -344,5 +367,20 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	public Modal getModel() {
 		return panel;
 		
+	}
+
+	@Override
+	public Button getCancel() {
+		return closeButton;
+	}
+
+	@Override
+	public ModalFooter getFooter() {
+		return modalFooter;
+	}
+
+	@Override
+	public Button getContinue() {
+		return continueButton;
 	}
 }

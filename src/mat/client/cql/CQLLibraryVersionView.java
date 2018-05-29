@@ -10,7 +10,6 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -27,8 +26,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
+import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
@@ -39,7 +38,6 @@ import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay{
-
 	/** CellTable Page Size. */
 	private static final int PAGE_SIZE = 25;
 	
@@ -55,18 +53,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	/** The minor radio. */
 	private RadioButton minorRadio = new RadioButton("group", "Minor");
 	
-	/** The measure search filter widget. */
-	/*private SearchWidget searchWidget = new SearchWidget("Search", 
-            "Search", "searchWidget");*/
-	
-	/** Zoom Button for Showing Search Widget. */
-	/*private CustomButton zoomButton = (CustomButton) getImage("Search",
-			ImageResources.INSTANCE.search_zoom(), "Search");*/
-	
 	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
-	
-	//private Button saveButton = new Button("Save and Continue");
-	//private Button cancelButton = new Button("Cancel");
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
@@ -74,20 +61,14 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	CQLLibraryDataSetObject selectedLibraryObject;
 	
+	ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox();
+	
 	public CQLLibraryVersionView(){
-		//zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
-		//zoomButton.getElement().setId("CqlzoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		majorRadio.getElement().setId("CQL_MajorRadioButton");
-		minorRadio.getElement().setId("CQL_MinorRadioButton");
-		//mainPanel.add(searchWidget);		
+		minorRadio.getElement().setId("CQL_MinorRadioButton");		
 		mainPanel.add(new SpacerWidget());
-		
-		//cellTablePanel.getElement().setId("cqlcellTablePanel_VerticalPanel");
-		//cellTablePanel.setWidth("99%");
-		//mainPanel.add(cellTablePanel);
-		//mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
@@ -163,15 +144,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 				+ "Version" + "</span>"));
 		return cellTable;
 	}
-	private Widget getImage(String action, ImageResource url, String key) {
-		CustomButton image = new CustomButton();
-		image.removeStyleName("gwt-button");
-		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
-		image.setTitle(action);
-		image.setResource(url, action);
-		image.getElement().setAttribute("id", "CQLLibVersionViewSearchButton");
-		return image;
-	}
+
 	@Override
 	public void buildDataTable(SaveCQLLibraryResult result) {
 		cellTablePanel.clear();
@@ -305,5 +278,13 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	public void clearRadioButtonSelection() {
 		getMajorRadioButton().setValue(false);
 		getMinorRadio().setValue(false);
+	}
+
+
+
+	@Override
+	public ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
+		confirmationDialogBox = new ConfirmationDialogBox(messageText, yesButtonText, noButtonText, observer);
+		return confirmationDialogBox;
 	}
 }

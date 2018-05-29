@@ -1441,6 +1441,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		case VsacApiResult.OID_REQUIRED:
 			message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
 			break;
+		case VsacApiResult.VSAC_REQUEST_TIMEOUT:
+			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_TIMEOUT();
+			break;
 		default:
 			message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
 		}

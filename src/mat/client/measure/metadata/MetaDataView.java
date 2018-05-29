@@ -36,7 +36,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-//import com.google.gwt.user.client.ui.Button;
+
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -50,11 +50,9 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-//import com.google.gwt.user.client.ui.FormLabel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-//import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -81,295 +79,105 @@ import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
-
+import mat.shared.MatConstants;
 
 /**
  * The Class MetaDataView.
  */
 public class MetaDataView implements MetaDataDetailDisplay{
-	
 	private ListBoxMVP stewardListBox = new ListBoxMVP();
-	
 	private ListBoxMVP endorsedByListBox = new ListBoxMVP();
-	
-	/** The main panel. */
 	protected FlowPanel mainPanel = new FlowPanel();
-	
-	/** The focus panel. */
 	protected FocusPanel focusPanel = new FocusPanel();
-	
-	/** The cell table panel. */
 	protected FlowPanel cellTablePanel=new  FlowPanel();
-	
-	/** The success messages. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
-	
-	/** The success messages. */
 	private MessageAlert successMessages2 = new SuccessMessageAlert();
-	/** The abbr input. */
 	protected TextBox abbrInput = new TextBox();
-	
-	/** The patient based input */
 	protected TextBox patientBasedInput = new TextBox(); 
-	
-	/** The meas scoring input. */
 	protected TextBox measScoringInput = new TextBox();
-	
-	/** The finalized date. */
 	protected TextBox finalizedDate = new TextBox();
-	
-	/** The rationale input. */
 	protected TextAreaWithMaxLength rationaleInput = new TextAreaWithMaxLength();
-	
-	/** The version input. */
 	protected TextBox versionInput = new TextBox();
-	
-	/** The author input. */
 	protected ListBoxMVP authorInput = new ListBoxMVP();
-	
-	/** The empty authors panel. */
 	protected SimplePanel emptyAuthorsPanel = new SimplePanel();
-	
-	/** The author list box. */
 	protected ListBox authorListBox =new ListBox();
-	
-	/** The measure type list box. */
 	protected ListBox measureTypeListBox = new ListBox();
-	
-	/** The empty text box holder. */
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
-	
-	/** The qdm item count list v panel. */
 	protected VerticalPanel qdmItemCountListVPanel = new VerticalPanel();
-	
-	/** The component measures list v panel. */
-	//protected VerticalPanel componentMeasuresListVPanel = new VerticalPanel();
-	
-	
-	/** The component measures list s panel. */
 	protected ScrollPanel componentMeasuresListSPanel = new ScrollPanel();
-	
-	/** The measure type s panel. */
 	protected ScrollPanel measureTypeSPanel = new ScrollPanel();
-	
-	/** The author s panel. */
 	protected ScrollPanel authorSPanel = new ScrollPanel();
-	
-	/** The steward s panel. */
 	protected ScrollPanel stewardSPanel = new ScrollPanel();
-	
-	/** The measure steward other input. */
 	protected TextBox measureStewardOtherInput = new TextBox();
-	
-	/** The description input. */
 	protected TextAreaWithMaxLength  descriptionInput = new TextAreaWithMaxLength ();
-	
-	/** The copyright input. */
 	protected TextAreaWithMaxLength  copyrightInput = new TextAreaWithMaxLength ();
-	
-	/** The disclaimer input. */
 	protected TextAreaWithMaxLength  disclaimerInput = new TextAreaWithMaxLength ();
-	
-	/** The stratification input. */
 	protected TextAreaWithMaxLength  stratificationInput = new TextAreaWithMaxLength ();
-	
-	/** The risk adjustment input. */
 	protected TextAreaWithMaxLength  riskAdjustmentInput  = new TextAreaWithMaxLength ();
-	
-	/** The rate aggregation input. */
 	protected TextAreaWithMaxLength  rateAggregationInput  = new TextAreaWithMaxLength ();
-	
-	/** The initial patient pop input. */
 	protected TextAreaWithMaxLength  initialPopInput  = new TextAreaWithMaxLength ();
-	
-	/** The denominator input. */
 	protected TextAreaWithMaxLength  denominatorInput = new TextAreaWithMaxLength ();
-	
-	/** The denominator exclusions input. */
 	protected TextAreaWithMaxLength  denominatorExclusionsInput  = new TextAreaWithMaxLength ();
-	
-	/** The numerator input. */
 	protected TextAreaWithMaxLength  numeratorInput = new TextAreaWithMaxLength ();
-	
-	/** The numerator exclusions input. */
 	protected TextAreaWithMaxLength  numeratorExclusionsInput = new TextAreaWithMaxLength ();
-	
-	/** The denominator exceptions input. */
 	protected TextAreaWithMaxLength  denominatorExceptionsInput = new TextAreaWithMaxLength ();
-	
-	/** The measure population input. */
 	protected TextAreaWithMaxLength  measurePopulationInput = new TextAreaWithMaxLength ();
-	
-	/** The measure population exclusions input. */
 	protected TextAreaWithMaxLength  measurePopulationExclusionsInput = new TextAreaWithMaxLength ();
-	
-	/** The measure observations input. */
 	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
-	
-	/** The measure type input. */
 	protected ListBoxMVP measureTypeInput = new ListBoxMVP();
-	
-	/** The empty measure type panel. */
 	protected SimplePanel emptyMeasureTypePanel = new SimplePanel();
-	
-	/** The error messages. */
 	protected MessageAlert errorMessages = new ErrorMessageAlert();
-	
-	/** The error messages. */
 	protected MessageAlert errorMessages2 = new ErrorMessageAlert();
-	
-	/** The measure period from input. */
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
-	
-	/** The measure period to input. */
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
-	
-	/** The supplemental data input. */
 	protected TextAreaWithMaxLength  supplementalDataInput  = new TextAreaWithMaxLength ();
-	
-	/** The code system version input. */
 	protected TextBox codeSystemVersionInput = new TextBox();
-	
-	/** The NQFID input. */
-	protected TextBox NQFIDInput = new TextBox();
-		
-	/** The set name input. */
+	protected TextBox nQFIDInput = new TextBox();
 	protected TextAreaWithMaxLength setNameInput = new TextAreaWithMaxLength();
-	
-	/** The e measure identifier input. */
 	protected TextBox eMeasureIdentifierInput = new TextBox();
-	
-	/** The e measure identifier. */
 	protected TextBox eMeasureIdentifier  = new TextBox();
-	
-	/** The endorsed by nqf. */
 	protected FormLabel endorsedByNQF = new FormLabel();
-	
-	/** The component measures FormLabel. */
 	protected FormLabel componentMeasuresLabel = new FormLabel();
-	
-	/** The counter. */
-	//private int counter = 0;
-	
-	/** The clinical stmt input. */
 	protected TextAreaWithMaxLength  clinicalStmtInput = new TextAreaWithMaxLength ();
-	
-	/** The improvement notation input. */
 	protected TextAreaWithMaxLength  improvementNotationInput = new TextAreaWithMaxLength ();
-	
-	/** The reference input. */
 	protected TextAreaWithMaxLength  referenceInput = createReferenceInput();
-	
-	/** The definitions input. */
 	protected TextAreaWithMaxLength  definitionsInput = new TextAreaWithMaxLength ();
-	
-	/** The guidance input. */
 	protected TextAreaWithMaxLength guidanceInput = new TextAreaWithMaxLength();
-	
-	/** The transmission format input. */
 	protected TextAreaWithMaxLength transmissionFormatInput = new TextAreaWithMaxLength();
-	
-	
-	/** The add edit cmponent measures. */
 	private Button addEditCmponentMeasures = new Button("Add/Edit Component Measures");
-	
-	/** The Add row button. */
 	private Button AddRowButton = new Button("Add Reference");
-	
-	/** The save button. */
 	private Button saveButton = new Button("Save");
-	
-	/** The save button. */
 	private Button saveButton2 = new Button("Save");
-	
-	/** The generatee measure id button. */
 	private Button generateeMeasureIDButton = new Button("Generate Identifier");
-	
-	/** The delete measure. */
 	private Button deleteMeasure = new Button("Delete Measure");
-	
-	/** The delete measure. */
 	private Button deleteMeasure2 = new Button("Delete Measure");
-	
-	/** The reference array list. */
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
-	
-	/** The reference place holder. */
 	private SimplePanel referencePlaceHolder = new SimplePanel();
-	
-	/** The reference table. */
 	private final FlexTable referenceTable = new FlexTable();
-	
 	private WarningConfirmationMessageAlert saveErrorDisplay = new WarningConfirmationMessageAlert();
-	
-	
-	/** The measure selection model. */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> measureSelectionModel;
-	
-	/** The horz component measure panel. */
-//	private HorizontalPanel horzComponentMeasurePanel = new HorizontalPanel();
-	
-	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
-	
-	/** The component measures selected list v panel. */
-	//VerticalPanel componentMeasuresSelectedListVPanel = new VerticalPanel();
-
-	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
-	
-	/** The search string. */
 	private TextBox searchString = new TextBox();
-	
-	/** The component measure selected list. */
 	private List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
-	
-	/** The component measure cell table. */
 	private CellTable<ManageMeasureSearchModel.Result> componentMeasureCellTable;
-	
-	/** The measure type cell table. */
 	private CellTable<MeasureType> measureTypeCellTable;
-	
-	/** The author cell table. */
 	private CellTable<Author> authorCellTable;
-	
-	/** The selected measure list. */
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
-	
-	/** The component measures list panel. */
 	VerticalPanel componentMeasuresListPanel = new VerticalPanel();
-	
-	/** The measures list selection model. */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> measuresListSelectionModel;
-	
-	/** The measure type selection model. */
 	private MultiSelectionModel<MeasureType> measureTypeSelectioModel;
-	
-	/** The author selection model. */
 	private MultiSelectionModel<Author> authorSelectionModel;
-	
-	/** The search button. */
 	private PrimaryButton searchButton = new PrimaryButton("Go");
-	
-	/** The dialog box. */
 	private static DialogBox dialogBox = new DialogBox(true,true);
-	
-	/** The measure type selected list. */
 	private List<MeasureType> measureTypeSelectedList = new ArrayList<MeasureType>();
-	
-	/** The authors selected list. */
 	private List<Author> authorsSelectedList = new ArrayList<Author>();
-	
-	/** The steward id. */
 	private String stewardId;
-	
-	/** The steward value. */
 	private String stewardValue;
-	
-	/** The calender year. */
-	private CheckBox calenderYear = new CheckBox();
-	
+	private CheckBox calenderYear = new CheckBox();	
 	private String measureScoringType ;
+	private boolean isPatientBasedMeasure;
+	
 	/**
 	 * Instantiates a new meta data view.
 	 */
@@ -408,7 +216,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		focusPanel.getElement().setId("focusPanel_FocusPanel01");
 	}
 	
-	
 	/**
 	 * Builds the left side form.
 	 * 
@@ -429,7 +236,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureTypeListBox.setVisibleItemCount(5);
 		measureTypeListBox.getElement().setId("measureTypeListBox_ListBox");
 		
-		
 		VerticalPanel fPanel = new VerticalPanel();
 		fPanel.setStyleName("leftSideForm");
 		fPanel.getElement().setId("fPanel_FlowPanelLeft");
@@ -437,7 +243,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(errorMessages);
 		
 		PanelGroup metadataPanelGroup = buildMeasureMetadeta();
-		
 		
 		fPanel.add(metadataPanelGroup);
 		fPanel.add(new SpacerWidget());
@@ -496,7 +301,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		
 		buildDescriptionInputComponent(moreMeasureDetailsVP);
-		//descriptionInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildCopyWriteComponent(moreMeasureDetailsVP);
@@ -507,7 +311,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		// Measure Type Table
 		buildMeasureTypeTableComponent(moreMeasureDetailsVP);
-		//fPanel.add(addEditMeasureType);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 	
 		buildComponentMeasureTableComponent(moreMeasureDetailsVP);
@@ -517,96 +320,73 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildRiskAdjustmentInputComponent(moreMeasureDetailsVP);
-		//riskAdjustmentInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		//Rate Aggregation riskAggregationInput
 		buildRateAggregationInputComponent(moreMeasureDetailsVP);
-		//rateAggregationInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildRationaleInputComponent(moreMeasureDetailsVP);
-		//rationaleInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildClinicalStatementInputComponent(moreMeasureDetailsVP);
-		//clinicalStmtInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildImprovementNotationInputComponent(moreMeasureDetailsVP);
-		//improvementNotationInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildReferencesComponent(moreMeasureDetailsVP);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
-		//fPanel.add(new SpacerWidget());
-		
 		buildDefinitionComponent(moreMeasureDetailsVP);
-		//definitionsInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildGuidanceComponent(moreMeasureDetailsVP);
-		//guidanceInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildTransmissionFormatInputComponent(moreMeasureDetailsVP);
-		//transmissionFormatInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildInitialPopulationInputComponent(moreMeasureDetailsVP);
-		//initialPopInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		if ((measureScoringType != null) && (measureScoringType.equalsIgnoreCase("Ratio")
 				|| measureScoringType.equalsIgnoreCase("Proportion"))) {
 			buildDenominatorInputComponent(moreMeasureDetailsVP);
-			//	denominatorInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 			
 			buildDenominatorExclusionInputComponent(moreMeasureDetailsVP);
-			//	denominatorExclusionsInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 			
 			buildNumneratorInputComponent(moreMeasureDetailsVP);
-			//numeratorInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 			
 			buildNumeratorExclusionInputComponent(moreMeasureDetailsVP);
-			//numeratorExclusionsInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
-			
 		}
 		
-		
 		if ((measureScoringType != null) && ((measureScoringType.equalsIgnoreCase("Proportion")))) {
-			
 			buildDenominatorExceptionInputComponent(moreMeasureDetailsVP);
-			//denominatorExceptionsInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 		}
 		if((measureScoringType != null) && measureScoringType.equalsIgnoreCase("Continuous Variable")){
 			buildMeasurePopulationInputComponent(moreMeasureDetailsVP);
-			//measurePopulationInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 			
 			buildMeasurePopExclusionInputComponent(moreMeasureDetailsVP);
-			//measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 		}
 		
 		if((measureScoringType != null) &&(measureScoringType.equalsIgnoreCase("Continuous Variable")
-				|| measureScoringType.equalsIgnoreCase("Ratio"))){
+				|| (measureScoringType.equalsIgnoreCase("Ratio") && !isPatientBasedMeasure))){
 			buildMeasureObservationInputComponent(moreMeasureDetailsVP);
-			//measureObservationsInput.addKeyDownHandler(keyDownHandler);
 			moreMeasureDetailsVP.add(new SpacerWidget());
 		}
+
 		buildSupplementalDataElementInputComponent(moreMeasureDetailsVP);
-		//supplementalDataInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildMeasureSetInputComponent(moreMeasureDetailsVP);
-		//setNameInput.addKeyDownHandler(keyDownHandler);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		setMaxWidthAndSize();
@@ -627,196 +407,173 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(panelGroup);
 		mainPanel.add(fPanel);
-		
-		
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildMeasureSetInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel measureSetNameLable = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(setNameInput, "Measure Set");
+		FormLabel measureSetNameLable = new FormLabel();
 		measureSetNameLable.setText("Measure Set");
 		measureSetNameLable.setId("measureSetNameLable");
 		measureSetNameLable.setFor("setNameInput_TextAreaWithMaxLength");
 		measureSetNameLable.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(measureSetNameLable);
-		//fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(setNameInput);
 		setNameInput.setPlaceholder("Enter Measure Set");
 		setNameInput.setTitle("Enter Measure Set");
 		setNameInput.getElement().setId("setNameInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildSupplementalDataElementInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel supplementdalDataInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(supplementalDataInput, "Supplemental Data Elements");
+		FormLabel supplementdalDataInputLabel = new FormLabel();
 		supplementdalDataInputLabel.setText("Supplemental Data Elements");
 		supplementdalDataInputLabel.setId("supplementdalDataInputLabel");
 		supplementdalDataInputLabel.setFor("supplementalDataInput_TextAreaWithMaxLength");
 		supplementdalDataInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(supplementdalDataInputLabel);
-		//fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(supplementalDataInput);
 		supplementalDataInput.setPlaceholder("Enter Supplemental Data Elements");
 		supplementalDataInput.setTitle("Enter Supplemental Data Elements");
 		supplementalDataInput.setId("supplementalDataInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildMeasureObservationInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel measureObInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(measureObservationsInput, "Measure Observations");
+		FormLabel measureObInputLabel = new FormLabel();
 		measureObInputLabel.setText("Measure Observations");
 		measureObInputLabel.setId("measureObInputLabel");
 		measureObInputLabel.setFor("measureObservationsInput_TextAreaWithMaxLength");
 		measureObInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(measureObInputLabel);
-		//	fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(measureObservationsInput);
 		measureObservationsInput.setPlaceholder("Enter Measure Observations");
 		measureObservationsInput.setTitle("Enter Measure Observations");
 		measureObservationsInput.setId("measureObservationsInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildMeasurePopExclusionInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel measurePopExclInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions");
+		FormLabel measurePopExclInputLabel = new FormLabel();
 		measurePopExclInputLabel.setText("Measure Population Exclusions");
 		measurePopExclInputLabel.setId("measurePopExclInputLabel");
 		measurePopExclInputLabel.setFor("MeasurePopulationExclusionsInput_TextAreaWithMaxLength");
 		measurePopExclInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(measurePopExclInputLabel);
-		//	fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(measurePopulationExclusionsInput);
 		measurePopulationExclusionsInput.setPlaceholder("Enter Measure Population Exclusions");
 		measurePopulationExclusionsInput.setTitle("Enter Measure Population Exclusions");
 		measurePopulationExclusionsInput.setId("MeasurePopulationExclusionsInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildMeasurePopulationInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel measurePopInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(measurePopulationInput, "Measure Population");
+		FormLabel measurePopInputLabel = new FormLabel();
 		measurePopInputLabel.setText("Measure Population");
 		measurePopInputLabel.setId("measurePopInputLabel");
 		measurePopInputLabel.setFor("measurePopulationInput_TextAreaWithMaxLength");
 		measurePopInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(measurePopInputLabel);
-		//fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(measurePopulationInput);
 		measurePopulationInput.setPlaceholder("Enter Measure Population");
 		measurePopulationInput.setTitle("Enter Measure Population");
 		measurePopulationInput.setId("measurePopulationInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildDenominatorExceptionInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel denoExcepInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(denominatorExceptionsInput, "Denominator Exceptions");
+		FormLabel denoExcepInputLabel = new FormLabel();
 		denoExcepInputLabel.setText("Denominator Exceptions");
 		denoExcepInputLabel.setId("denoExcepInputLabel");
 		denoExcepInputLabel.setFor("denominatorExceptionsInput_TextAreaWithMaxLength");
 		denoExcepInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(denoExcepInputLabel);
-		//
 		moreMeasureDetailsVP.add(denominatorExceptionsInput);
 		denominatorExceptionsInput.setPlaceholder("Enter Denominator Exceptions");
 		denominatorExceptionsInput.setTitle("Enter Denominator Exceptions");
 		denominatorExceptionsInput.setId("denominatorExceptionsInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildNumeratorExclusionInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel numExclInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(numeratorExclusionsInput, "Numerator Exclusions");
+		FormLabel numExclInputLabel = new FormLabel();
 		numExclInputLabel.setText("Numerator Exclusions");
 		numExclInputLabel.setId("numExclInputLabel");
 		numExclInputLabel.setFor("numeratorExclusionsInput_TextAreaWithMaxLength");
 		numExclInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(numExclInputLabel);
-		//	fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(numeratorExclusionsInput);
 		numeratorExclusionsInput.setPlaceholder("Enter Numerator Exclusions");
 		numeratorExclusionsInput.setTitle("Enter Numerator Exclusions");
 		numeratorExclusionsInput.setId("numeratorExclusionsInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildNumneratorInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel numInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(numeratorInput, "Numerator");
+		FormLabel numInputLabel = new FormLabel();
 		numInputLabel.setText("Numerator");
 		numInputLabel.setId("numInputLabel");
 		numInputLabel.setFor("numeratorInput_TextAreaWithMaxLength");
 		numInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(numInputLabel);
-		//fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(numeratorInput);
 		numeratorInput.setPlaceholder("Enter Numerator");
 		numeratorInput.setTitle("Enter Numerator");
 		numeratorInput.setId("numeratorInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildDenominatorExclusionInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel denoExclInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(denominatorExclusionsInput, "Denominator Exclusions");
+		FormLabel denoExclInputLabel = new FormLabel();
 		denoExclInputLabel.setText("Denominator Exclusions");
 		denoExclInputLabel.setId("denoExclInputLabel");
 		denoExclInputLabel.setFor("denominatorExclusionsInput_TextAreaWithMaxLength");
 		denoExclInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(denoExclInputLabel);
-		//fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(denominatorExclusionsInput);
 		denominatorExclusionsInput.setPlaceholder("Enter Denominator Exclusions");
 		denominatorExclusionsInput.setTitle("Enter Denominator Exclusions");
 		denominatorExclusionsInput.setId("denominatorExclusionsInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildDenominatorInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel denoInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(denominatorInput, "Denominator");
+		FormLabel denoInputLabel = new FormLabel();
 		denoInputLabel.setText("Denominator");
 		denoInputLabel.setId("denoInputLabel");
 		denoInputLabel.setFor("denominatorInput_TextAreaWithMaxLength");
 		denoInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(denoInputLabel);
-		//fPanel.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(denominatorInput);
 		denominatorInput.setPlaceholder("Enter Denominator");
 		denominatorInput.setTitle("Enter Denominator");
 		denominatorInput.setId("denominatorInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildInitialPopulationInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel initialPopInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(initialPopInput, "Initial Population");
+		FormLabel initialPopInputLabel = new FormLabel();
 		initialPopInputLabel.setText("Initial Population");
 		initialPopInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(initialPopInputLabel);
@@ -828,12 +585,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		initialPopInput.setId("initialPopInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildTransmissionFormatInputComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel transmissionFormatInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(transmissionFormatInput, "Transmission Format");
+		FormLabel transmissionFormatInputLabel = new FormLabel();
 		transmissionFormatInputLabel.setText("Transmission Format");
 		transmissionFormatInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(transmissionFormatInputLabel);
@@ -845,12 +601,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		transmissionFormatInput.setId("transmissionFormatInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildGuidanceComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel guidanceInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(guidanceInput, "Guidance");
+		FormLabel guidanceInputLabel = new FormLabel();
 		guidanceInputLabel.setText("Guidance");
 		guidanceInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(guidanceInputLabel);
@@ -862,17 +617,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		guidanceInput.setId("guidanceInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildDefinitionComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel definitionsInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(definitionsInput, "Definition");
+		FormLabel definitionsInputLabel = new FormLabel();
 		definitionsInputLabel.setText("Definition");
 		definitionsInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(definitionsInputLabel);
 		moreMeasureDetailsVP.add(definitionsInput);
-		
 		
 		definitionsInputLabel.setId("definitionsInputLabel");
 		definitionsInputLabel.setFor("definitionsInput_TextAreaWithMaxLength");
@@ -880,7 +633,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		definitionsInput.setTitle("Enter Definition");
 		definitionsInput.getElement().setId("definitionsInput_TextAreaWithMaxLength");
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
@@ -904,7 +656,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(referencePlaceHolder);
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
@@ -923,7 +674,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		improvementNotationInput.setId("improvementNotationInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
@@ -940,7 +690,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		clinicalStmtInput.setTitle("Enter Clinical Recommendation Statement");
 		clinicalStmtInput.setId("clinicalStmtInput_TextAreaWithMaxLength");
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
@@ -959,7 +708,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		rationaleInput.setId("rationaleInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
@@ -975,7 +723,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		rateAggregationInput.setTitle("Enter Rate Aggregation");
 		rateAggregationInput.setId("rateAggregationInput_TextAreaWithMaxLength");
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
@@ -994,7 +741,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		riskAdjustmentInput.setId("riskAdjustmentInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
@@ -1011,7 +757,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(stratificationInput);
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
@@ -1021,13 +766,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		CompMeasureTableLabel.setTitle("Component Measures List");
 		CompMeasureTableLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(CompMeasureTableLabel);
-		//moreMeasureDetailsVP.add(horzComponentMeasurePanel);
 		moreMeasureDetailsVP.add(componentMeasuresListSPanel);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		moreMeasureDetailsVP.add(addEditCmponentMeasures);
 		addEditCmponentMeasures.setId("addEditCmponentMeasures_Button");
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
@@ -1041,12 +784,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(measureTypeSPanel);
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildDisclaimerComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel disclaimerInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(disclaimerInput, "Disclaimer");
+		FormLabel disclaimerInputLabel = new FormLabel();
 		disclaimerInputLabel.setText("Disclaimer");
 		disclaimerInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(disclaimerInputLabel);
@@ -1059,12 +801,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		disclaimerInput.setId("disclaimerInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
 	private void buildCopyWriteComponent(VerticalPanel moreMeasureDetailsVP) {
-		FormLabel copyrightInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(copyrightInput, "Copyright");
+		FormLabel copyrightInputLabel = new FormLabel();
 		copyrightInputLabel.setText("Copyright");
 		copyrightInputLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(copyrightInputLabel);
@@ -1075,7 +816,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		copyrightInput.setTitle("Enter Copyright");
 		copyrightInput.setId("copyrightInput_TextAreaWithMaxLength");
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
@@ -1094,7 +834,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		descriptionInput.setId("descriptionInput_TextAreaWithMaxLength");
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 */
@@ -1105,7 +844,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(authorTableLabel);
 		moreMeasureDetailsVP.add(authorSPanel);
 	}
-
 
 	/**
 	 * @param moreMeasureDetailsVP
@@ -1119,13 +857,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		stewardListBox.setId("stewardListBox");
 		stewardListBox.setTitle("Measure Steward List");
 		moreMeasureDetailsVP.add(stewardTableLabel);
-		//moreMeasureDetailsVP.add(new SpacerWidget());
 		stewardListBox.setWidth("750px");
 		stewardSPanel.add(stewardListBox);
-		//stewardListBox.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 		moreMeasureDetailsVP.add(stewardSPanel);
 	}
-
 
 	/**
 	 * @param nqfNumberEndorsmentPanel
@@ -1138,16 +873,17 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		nQFIDInputLabel.setText("NQF Number");
 		nqfNumberRightVP.add(nQFIDInputLabel);
 		nqfNumberRightVP.add(new SpacerWidget());
-		nqfNumberRightVP.add(NQFIDInput);
+		nqfNumberRightVP.add(nQFIDInput);
 		
 		nQFIDInputLabel.setId("nQFIDInputLabel");
 		nQFIDInputLabel.setFor("NQFIDInput_TextBox");
-		NQFIDInput.setId("NQFIDInput_TextBox");
-		NQFIDInput.setPlaceholder("Enter NQF Number");
-		NQFIDInput.setTitle("Enter NQF Number");
-		NQFIDInput.getElement().setAttribute("style", "width:150px;margin-top:-10px;");
+		nQFIDInput.setId("NQFIDInput_TextBox");
+
+		nQFIDInput.setPlaceholder(MatConstants.ENTER_NQF_NUMBER);
+		nQFIDInput.setTitle(MatConstants.ENTER_NQF_NUMBER);
+		nQFIDInput.getElement().setAttribute("style", "width:150px;margin-top:-10px;");
 		
-		FormLabel endorsedByNQFLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(endorsedByNQF, "Endorsed By NQF");
+		FormLabel endorsedByNQFLabel = new FormLabel();
 		endorsedByNQFLabel.setText("Endorsed By NQF");
 		nqfNumberLeftVP.add(endorsedByNQFLabel);
 		endorsedByListBox.setWidth("150px");
@@ -1158,14 +894,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		nqfNumberEndorsmentPanel.add(nqfNumberRightVP);
 	}
 
-
 	/**
 	 * @param moreMeasureDetailsVP
 	 * @param horizontalPanel
 	 */
 	private void buildEmeasureIdComponent(VerticalPanel moreMeasureDetailsVP, HorizontalFlowPanel horizontalPanel) {
 		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
-		FormLabel eMeasureIdentifierInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(eMeasureIdentifierInput, "eCQM Identifier (Measure Authoring Tool)");
+		FormLabel eMeasureIdentifierInputLabel = new FormLabel();
 		eMeasureIdentifierInputLabel.setStyleName("bold");
 		eMeasureIdentifierInputLabel.setText( "eCQM Identifier (Measure Authoring Tool)");
 		moreMeasureDetailsVP.add(new SpacerWidget());
@@ -1187,7 +922,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		eMeasureIdentifierInput.setTitle(emeasureIdMSG);
 	}
 
-
 	/**
 	 * @param generalPanel
 	 */
@@ -1197,21 +931,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		VerticalPanel generalRightPanel = new VerticalPanel();
 		
-		//VerticalPanel deleteMeasureButtonPanel = new VerticalPanel();
-		//deleteMeasureButtonPanel.add(deleteMeasure);
-		//deleteMeasure.setPull(Pull.RIGHT);
 		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here.
-		
-		FormLabel measScoringInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(measScoringInput, "Measure Scoring");
+		FormLabel measScoringInputLabel = new FormLabel();
 		measScoringInputLabel.setText("Measure Scoring");
 		
 		measScoringInputLabel.setId("MeasScoringLabel");
 		measScoringInputLabel.setFor("MeasScoringValue");
-	//	measScoringInputLabel.setStyleName("marginLeft20pxBold");
 		measScoringInputLabel.setTitle(measScoringInputLabel.getText());
 		generalLeftPanel.add(measScoringInputLabel);
 		
-		//measScoringInput.setStyleName("marginLeft20px");
 		measScoringInput.setReadOnly(true);
 		measScoringInput.setEnabled(false);
 		measScoringInput.getElement().setId("MeasScoringValue");
@@ -1220,24 +948,21 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalLeftPanel.add(new SpacerWidget());
 		
 		// MAT-8616 Add patient based measure field to Measure Details > General Information Section
-		FormLabel patientBasedLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(patientBasedInput, "Patient-based Measure");
+		FormLabel patientBasedLabel = new FormLabel();
 		patientBasedLabel.setText("Patient-based Measure");
-	//	patientBasedLabel.setStyleName("marginLeft20pxBold");
 		patientBasedLabel.setTitle(patientBasedLabel.getText());
 		generalLeftPanel.add(patientBasedLabel);
 		patientBasedLabel.setId("patientBasedInput");
 		patientBasedLabel.setFor("patientBasedMeasure");
 		patientBasedInput.setId("patientBasedMeasure");
-		//patientBasedInput.setStyleName("marginLeft20px");
 		patientBasedInput.setReadOnly(true);
 		patientBasedInput.setEnabled(false);
 		patientBasedInput.setWidth("300px");
 		generalLeftPanel.add(patientBasedInput);
 		generalLeftPanel.add(new SpacerWidget());
 		
-		FormLabel abbrInputLabel =  new FormLabel();//(FormLabel) LabelBuilder.buildLabel(abbrInput, "eCQM Abbreviated Title");
+		FormLabel abbrInputLabel =  new FormLabel();
 		abbrInputLabel.setText("eCQM Abbreviated Title");
-	//	abbrInputLabel.setStyleName("marginLeft20pxBold");
 		abbrInputLabel.setTitle(abbrInputLabel.getText());
 		abbrInputLabel.setId("eCQMAbbrTitleLbl");
 		abbrInputLabel.setFor("abbrInput");
@@ -1246,43 +971,37 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		abbrInput.setEnabled(false);
 		abbrInput.setWidth("300px");
 		abbrInput.setId("abbrInput");
-		//abbrInput.setStyleName("marginLeft20px");
 		generalLeftPanel.add(abbrInput);
 		generalLeftPanel.add(new SpacerWidget());
 		
-		FormLabel finalizedDateLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(finalizedDate, "Finalized Date");
+		FormLabel finalizedDateLabel = new FormLabel();
 		finalizedDateLabel.setText("Finalized Date");
-	//	finalizedDateLabel.setStyleName("marginLeft20pxBold");
 		finalizedDateLabel.setTitle(finalizedDateLabel.getText());
 		generalRightPanel.add(finalizedDateLabel);
 		finalizedDateLabel.setId("finalizedDateLabel");
 		finalizedDateLabel.setFor("finalizedDate");
 		finalizedDate.setId("finalizedDate");
-		//finalizedDate.setStyleName("marginLeft20px");
 		finalizedDate.setReadOnly(true);
 		finalizedDate.setEnabled(false);
 		finalizedDate.setWidth("300px");
 		generalRightPanel.add(finalizedDate);
 		generalRightPanel.add(new SpacerWidget());
 		
-		FormLabel eMeasureIdentifierLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(eMeasureIdentifier, "GUID");
+		FormLabel eMeasureIdentifierLabel = new FormLabel();
 		eMeasureIdentifierLabel.setText("GUID");
-		//eMeasureIdentifierLabel.setStyleName("marginLeft20pxBold");
 		eMeasureIdentifierLabel.setTitle(eMeasureIdentifierLabel.getText());
 		generalRightPanel.add(eMeasureIdentifierLabel);
 		eMeasureIdentifierLabel.setId("eMeasureIdentifierLabel");
 		eMeasureIdentifierLabel.setFor("eMeasureIdentifier");
 		eMeasureIdentifier.setId("eMeasureIdentifier");
-		//eMeasureIdentifier.setStyleName("marginLeft20px");
 		eMeasureIdentifier.setReadOnly(true);
 		eMeasureIdentifier.setEnabled(false);
 		eMeasureIdentifier.setWidth("300px");
 		generalRightPanel.add(eMeasureIdentifier);
 		generalRightPanel.add(new SpacerWidget());
 		
-		FormLabel versionInputLabel = new FormLabel();//(FormLabel) LabelBuilder.buildLabel(versionInput, "eCQM Version Number");
+		FormLabel versionInputLabel = new FormLabel();
 		versionInputLabel.setText("eCQM Version Number");
-		//versionInputLabel.setStyleName("marginLeft20pxBold");
 		versionInputLabel.setTitle(versionInputLabel.getText());
 		generalRightPanel.add(versionInputLabel);
 		versionInputLabel.setId("versionInputLabel");
@@ -1291,13 +1010,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		versionInput.setEnabled(false);
 		versionInput.setWidth("300px");
 		versionInput.setId("versionInput");
-		//versionInput.setStyleName("marginLeft20px");
 		generalRightPanel.add(versionInput);
 		generalRightPanel.getElement().setAttribute("style", "margin-left:15px;");
-		//deleteMeasureButtonPanel.getElement().setAttribute("style", "margin-left:205px;");
 		generalMainPanel.add(generalLeftPanel);
 		generalMainPanel.add(generalRightPanel);
-		//generalMainPanel.add(deleteMeasureButtonPanel);
 		
 		PanelCollapse panelCollapse = new PanelCollapse();
 		Anchor viewMetadataAnchor = new Anchor();
@@ -1329,12 +1045,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		panelGroup.add(panel);
 	
 		return panelGroup;
-
-			
-			
-		
 	}
-
 
 	/**
 	 * @param measurementPeriodPanel
@@ -1350,7 +1061,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodFromInputLabel.getElement().setId("measurementPeriodHeader_Label");
 		measurePeriodFromInputLabel.getElement().setAttribute("tabIndex", "0");
 		measurementPeriodPanel.add(measurePeriodFromInputLabel);
-		//measurementPeriodPanel.add(new SpacerWidget());
+
 		HorizontalPanel calenderYearDatePanel = new HorizontalPanel();
 		calenderYearDatePanel.getElement().setId("calenderYear_HorizontalPanel");
 		calenderYearDatePanel.add(calenderYear);
@@ -1365,6 +1076,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		calenderYear.getElement().setId("calenderYear_CustomCheckBox");
 		calenderYear.addValueChangeHandler(calenderYearChangeHandler);
 		calenderYearDatePanel.addStyleName("marginTop");
+		
 		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
 		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
 		FormLabel fromLabel = new FormLabel();
@@ -1399,14 +1111,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		queryGrid.getElement().setId("queryGrid_Grid");
 	}
 
-
 	/**
 	 * 
 	 */
 	private void setMaxWidthAndSize() {
 		codeSystemVersionInput.setMaxLength(255);
 		rationaleInput.setMaxLength(15000);
-		NQFIDInput.setMaxLength(64);
+		nQFIDInput.setMaxLength(64);
 		descriptionInput.setSize("750px", "60px");
 		descriptionInput.setMaxLength(15000);
 		copyrightInput.setSize("750px", "60px");
@@ -1425,8 +1136,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		setNameInput.setSize("750px", "50px");
 		setNameInput.setMaxLength(155);
 		
-		//measureStewardOtherInput.setMaxLength(200);
-		//measureStewardOtherInput.setWidth("415px");
 		clinicalStmtInput.setSize("750px", "60px");
 		clinicalStmtInput.setMaxLength(15000);
 		improvementNotationInput.setSize("750px", "60px");
@@ -1440,7 +1149,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		transmissionFormatInput.setSize("750px", "60px");
 		supplementalDataInput.setMaxLength(15000);
 		supplementalDataInput.setSize("750px", "60px");
-		
 		
 		initialPopInput.setSize("750px", "60px");
 		initialPopInput.setMaxLength(15000);
@@ -1464,8 +1172,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		eMeasureIdentifierInput.setMaxLength(6);
 	}
 	
-	
-	
 	/**
 	 * Update component measures selected list.
 	 *
@@ -1486,8 +1192,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
-	
-	
 	/**
 	 * Update measure type selected list.
 	 *
@@ -1505,7 +1209,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				}
 			}
 		}
-		
 	}
 	
 	/**
@@ -1528,9 +1231,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
-	
-	
-	
 	/**
 	 * Swap measure type list.
 	 *
@@ -1549,38 +1249,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return authorsListSelected;
 	}
 	
-	
-	/**
-	 * Swap measure steward list.
-	 *
-	 * @param measureStewardList the measure steward list
-	 * @return the list
-	 */
-	/*private  List<MeasureSteward> swapMeasureStewardList(List<MeasureSteward> measureStewardList) {
-		List<MeasureSteward> stewardSelectedList = new ArrayList<MeasureSteward>();
-		for(int i = 0; i<measureStewardList.size(); i++){
-			if(measureStewardList.get(i).getId().equals(stewardId)){
-				stewardSelectedList.add(measureStewardList.get(i));
-				break;
-			}
-		}
-		for (int j = 0; j < measureStewardList.size(); j++) {
-			if (!stewardSelectedList.contains(measureStewardList.get(j))) {
-				stewardSelectedList.add(measureStewardList.get(j));
-			}
-		}
-		
-		return stewardSelectedList;
-	}*/
-	
 	/**
 	 * Adds the measures column to table.
 	 *
 	 * @param editable the editable
 	 * @return the cell table
 	 */
-	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(
-			boolean editable) {
+	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(boolean editable) {
 		Label measureSearchHeader = new Label();
 		measureSearchHeader.setText("Component Measures List");
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
@@ -1606,8 +1281,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 						if (componentMeasureSelectedList.get(i).getId()
 								.equalsIgnoreCase(object.getId())) {
 							isSelected = true;
-							// measureSelectionModel.setSelected(object,
-							// isSelected);
 							break;
 						}
 					}
@@ -1619,7 +1292,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		};
 		
 		selectColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
-			
 			@Override
 			public void update(int index, Result object, Boolean value) {
 				measureSelectionModel.setSelected(object, value);
@@ -1635,8 +1307,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 						}
 					}
 				}
-				/*componentMeasuresLabel.setText("Selected Items: "
-						+ componentMeasureSelectedList.size());*/
 			}
 		});
 		
@@ -1646,7 +1316,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureNameColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility.getColumnToolTip(object.getName());
@@ -1659,7 +1328,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> versionColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility.getColumnToolTip(object.getVersion());
@@ -1672,7 +1340,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDateColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility
@@ -1686,7 +1353,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 						+ "Finalized Date" + "</span>"));
 		
 		return componentMeasureCellTable;
-		
 	}
 	
 	/* (non-Javadoc)
@@ -1726,16 +1392,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			vp.add(componentMeasureCellTable);
 			vp.setSize("750px", "150px");
 			componentMeasuresListSPanel.setWidget(vp);
-			
-			
 		} else {
 			HTML desc = new HTML("<p> No Component Measures Selected.</p>");
-			
 			componentMeasuresListSPanel.setWidget(desc);
 		}
-		
 	}
-	
 	
 	/**
 	 * Adds the measure type column to table.
@@ -1754,9 +1415,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureTypeSelectioModel = new MultiSelectionModel<MeasureType>();
 		measureTypeCellTable.setSelectionModel(measureTypeSelectioModel);
 		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
+		
 		Column<MeasureType, Boolean> selectColumn = new Column<MeasureType, Boolean>(
 				chbxCell) {
-			
 			@Override
 			public Boolean getValue(MeasureType object) {
 				boolean isSelected = false;
@@ -1776,7 +1437,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		};
 		
 		selectColumn.setFieldUpdater(new FieldUpdater<MeasureType, Boolean>() {
-			
 			@Override
 			public void update(int index, MeasureType object, Boolean value) {
 				measureTypeSelectioModel.setSelected(object, value);
@@ -1790,18 +1450,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 							break;
 						}
 					}
-					
 				}
-				
 			}
 		});
+		
 		measureTypeCellTable.addColumn(selectColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
 						+ "Select" + "</span>"));
 		
 		Column<MeasureType, SafeHtml> measureNameColumn = new Column<MeasureType, SafeHtml>(
 				new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(MeasureType object) {
 				return CellTableUtility.getColumnToolTip(object
@@ -1812,7 +1470,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureTypeCellTable.addColumn(measureNameColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Measure Type'>"
 						+ "Measure Type" + "</span>"));
-		
 	}
 	
 	/* (non-Javadoc)
@@ -1820,9 +1477,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void buildMeasureTypeCellTable(List<MeasureType> measureTypeDTOList, boolean editable){
-		//horzMeasureTypePanel.clear();
 		measureTypeSPanel.clear();
-		//measureTypeSelectedListVPanel.clear();
 		measureTypeSPanel.setStyleName("cellTablePanelMeasureDetails");
 		
 		Collections.sort(measureTypeDTOList, new MeasureType.Comparator());
@@ -1848,12 +1503,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			vp.add(invisibleLabel);
 			vp.add(measureTypeCellTable);
 			vp.setSize("750px", "150px");
-		//	measureTypeSPanel.add(invisibleLabel);
 			measureTypeSPanel.setWidget(vp);
 		}
-		
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildAuthorCellTable(java.util.List, boolean)
@@ -1890,8 +1542,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				"In the following Measure Type List table,Select is given in first Column for selection and Author is given in Second column.");
 		authorCellTable.getElement().setAttribute("id", "AuthorListCellTable");
 		authorCellTable.getElement().setAttribute("aria-describedby", "authorListSummary");
-		/*authorSPanel.setSize("750px", "150px");
-		authorSPanel.add(invisibleLabel);*/
 		
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(invisibleLabel);
@@ -1918,7 +1568,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
 		Column<Author, Boolean> selectColumn = new Column<Author, Boolean>(
 				chbxCell) {
-			
 			@Override
 			public Boolean getValue(Author object) {
 				boolean isSelected = false;
@@ -1939,7 +1588,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		};
 		
 		selectColumn.setFieldUpdater(new FieldUpdater<Author, Boolean>() {
-			
 			@Override
 			public void update(int index, Author object, Boolean value) {
 				authorSelectionModel.setSelected(object, value);
@@ -1958,13 +1606,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				
 			}
 		});
+		
 		authorCellTable.addColumn(selectColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
 						+ "Select" + "</span>"));
 		
 		Column<Author, SafeHtml> measureNameColumn = new Column<Author, SafeHtml>(
 				new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(Author object) {
 				return CellTableUtility.getColumnToolTip(object.getAuthorName(), object.getOrgId());
@@ -1974,80 +1622,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		authorCellTable.addColumn(measureNameColumn,
 				SafeHtmlUtils.fromSafeConstant("<span title='Measure Developers Name'>"
 						+ "Measure Developer" + "</span>"));
-		
-		
 	}
-	
-	
-	/**
-	 * Adds the steward column to table.
-	 *
-	 * @param editable the editable
-	 */
-	/*private void addStewardColumnToTable(boolean editable) {
-		Label measureSearchHeader = new Label("Measure Steward List");
-		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
-		measureSearchHeader.setStyleName("invisibleTableCaption");
-		com.google.gwt.dom.client.TableElement elem = stewardCellTable.getElement().cast();
-		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(measureSearchHeader.getElement());
-		stewardSelectionModel = new SingleSelectionModel<MeasureSteward>();
-		stewardCellTable.setSelectionModel(stewardSelectionModel);
-		RadioButtonCell stewardRadioButton = new RadioButtonCell(false, true, editable);
-		Column<MeasureSteward, Boolean> selectColumn = new Column<MeasureSteward, Boolean>(
-				stewardRadioButton) {
-			
-			@Override
-			public Boolean getValue(MeasureSteward object) {
-				boolean isSelected = false;
-				
-				if ((stewardId != null)) {
-					if (stewardId.equalsIgnoreCase(object.getId())) {
-						setStewardValue(object.getOrgName());
-						isSelected = true;
-					}
-				} else {
-					isSelected = false;
-				}
-				return isSelected;
-				
-			}
-		};
-		
-		selectColumn.setFieldUpdater(new FieldUpdater<MeasureSteward, Boolean>() {
-			
-			@Override
-			public void update(int index, MeasureSteward object, Boolean value) {
-				stewardSelectionModel.setSelected(object, value);
-				if (value) {
-					setStewardId(object.getId());
-					setStewardValue(object.getOrgName());
-				}
-				
-			}
-		});
-		stewardCellTable.addColumn(selectColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
-						+ "Select" + "</span>"));
-		
-		Column<MeasureSteward, SafeHtml> measureNameColumn = new Column<MeasureSteward, SafeHtml>(
-				new SafeHtmlCell()) {
-			
-			@Override
-			public SafeHtml getValue(MeasureSteward object) {
-				return CellTableUtility.getColumnToolTip(object.getOrgName(), object.getOrgOid());
-			}
-		};
-		
-		stewardCellTable.addColumn(measureNameColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='Measure Steward'>"
-						+ "Measure Steward" + "</span>"));
-		
-		
-		
-		
-	}*/
 	
 	/**
 	 * Update loading state.
@@ -2069,18 +1644,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * Adds the click handlers.
 	 */
 	public void addClickHandlers(){
+		
 		searchString.addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				searchString.setText("");
-				
 			}
 		});
 	}
-	
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getSearchButton()
@@ -2090,15 +1661,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return searchButton;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#asWidget()
 	 */
 	@Override
 	public Widget asWidget() {
-		
 		return focusPanel;
-		//return mainPanel;
 	}
 	
 	/* (non-Javadoc)
@@ -2107,7 +1675,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public Widget asComponentMeasuresWidget() {
 		return componentMeasuresListSPanel;
-		//return mainPanel;
 	}
 	
 	/* (non-Javadoc)
@@ -2119,9 +1686,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	/* Returns the Measure Scoring choice value.
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureScoring()
-	 */
-	/* (non-Javadoc)
+	 * (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureScoring()
 	 */
 	@Override
@@ -2158,16 +1723,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return focusPanel;
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEditMeasureTypeButton()
-	 */
-	/*@Override
-	public HasClickHandlers getEditMeasureTypeButton() {
-		return addEditMeasureType;
-	}*/
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getAddEditCmponentMeasures()
 	 */
@@ -2184,7 +1739,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return saveButton;
 	}
 	
-	
 	/**
 	 * Sets the list box options.
 	 *
@@ -2198,6 +1752,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextBox getVersionNumber() {
 		return versionInput;
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getSupplementalData()
 	 */
@@ -2235,7 +1790,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public HasValue<String> getNqfId() {
-		return NQFIDInput;
+		return nQFIDInput;
 	}
 	
 	/* (non-Javadoc)
@@ -2246,7 +1801,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return finalizedDate;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureType()
 	 */
@@ -2256,22 +1810,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getEndorsebyNQF()
-	 */
-	/*@Override
-	public HasValue<Boolean> getEndorsebyNQF() {
-		return Yes;
-	}*/
-	
-	
-	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getAuthor()
 	 */
 	@Override
 	public String getAuthor() {
 		return authorInput.getValue(authorInput.getSelectedIndex());
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getDescription()
@@ -2296,7 +1840,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public HasValue<String> getDisclaimer() {
 		return disclaimerInput;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getInitialPatientPop()
@@ -2370,7 +1913,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return clinicalStmtInput;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getDefinitions()
 	 */
@@ -2378,7 +1920,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public HasValue<String> getDefinitions() {
 		return definitionsInput;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getGuidance()
@@ -2396,7 +1937,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return transmissionFormatInput;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getRationale()
 	 */
@@ -2405,7 +1945,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return rationaleInput;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getImprovementNotation()
 	 */
@@ -2413,7 +1952,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public HasValue<String> getImprovementNotation() {
 		return improvementNotationInput;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getStratification()
@@ -2439,7 +1977,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return rateAggregationInput;
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getReference()
 	 */
@@ -2447,7 +1984,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public HasValue<String> getReference() {
 		return referenceInput;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasurementFromPeriod()
@@ -2457,7 +1993,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measurePeriodFromInput.getValue();
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasurementToPeriod()
 	 */
@@ -2465,7 +2000,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public String getMeasurementToPeriod() {
 		return measurePeriodToInput.getValue();
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#getSuccessMessageDisplay()
@@ -2494,13 +2028,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				clearErrorMsg();
-				
 			}
 		});
 		return newReferenceBox;
 	}
-	
-	
 	
 	/**
 	 * Adds the row.
@@ -2513,36 +2044,27 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		TextAreaWithMaxLength newReferenceBox = createReferenceInput();
 		newReferenceBox.setPlaceholder("Enter Reference");
 		newReferenceBox.setTitle("Enter Reference");
-		//++counter;
 		String dynamicLabel = "Reference" + referenceTable.getRowCount()+1;
-		//Widget newReferenceBoxLabel = LabelBuilder.buildInvisibleLabel(newReferenceBox, dynamicLabel);
-		//HorizontalPanel hp = new HorizontalPanel();
-		//hp.add(newReferenceBoxLabel);
-		//hp.add(newReferenceBox);
 		newReferenceBox.getElement().setId(dynamicLabel+"_TextAreaWithMaxLength");
 		Button newremoveButton = new Button("Remove");
 		newremoveButton.setId(dynamicLabel+"_RemoveButton");
 		newremoveButton.setType(ButtonType.LINK);
 		newremoveButton.setIcon(IconType.MINUS);
 		newremoveButton.setTitle("Remove Reference");
+		
 		newremoveButton.addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				clearErrorMsg();
 				com.google.gwt.user.client.ui.HTMLTable.Cell cell = referenceTable.getCellForEvent(event);
 				int clickedRowIndex = cell.getRowIndex();
 				removeRow(referenceTable, clickedRowIndex);
-				
 			}
 		});
 		int numRows = referenceTable.getRowCount();
 		referenceTable.setWidget(numRows, 0, newReferenceBox);
-		//referenceTable.setWidget(numRows, 1, new SimplePanel());
 		referenceTable.setWidget(numRows, 1, newremoveButton);
 		newremoveButton.getElement().setId("newremoveButton"+numRows+"_Button");
-		//referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows + 1);
-	//	referenceTable.getFlexCellFormatter().setColSpan(numRows + 1, 0, 1);
 		referenceArrayList.add(newReferenceBox);
 	}
 	
@@ -2563,9 +2085,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			referenceArrayList.remove(referenceTable.getWidget(rowIndex, 0));
 		}
 		referenceTable.removeRow(rowIndex);
-		//referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows - 1);
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getReferenceValues()
@@ -2579,7 +2099,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return referenceValues;
 		
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setReferenceValues(java.util.List, boolean)
@@ -2596,11 +2115,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				newReferenceBox.setPlaceholder("Enter Reference");
 				if (i == 0) {
 					referenceTable.setWidget(0, 0, newReferenceBox);
-					//referenceTable.setWidget(0, 1, new SimplePanel());
 					VerticalPanel vp = new VerticalPanel();
 					vp.getElement().setId("vp_1");
 					vp.add(AddRowButton);
-					//AddRowButton.setWidth("10px");
 					
 					referenceTable.setWidget(0, 1, vp);
 				} else {
@@ -2610,10 +2127,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 						newRemoveButton.setId("RemoveButton_"+i);
 						newRemoveButton.setType(ButtonType.LINK);
 						newRemoveButton.setIcon(IconType.MINUS);
-						//newRemoveButton.setMarginLeft(14.00);
 						newRemoveButton.setTitle("Remove Reference");
+
 						newRemoveButton.addClickHandler(new ClickHandler() {
-							
 							@Override
 							public void onClick(ClickEvent event) {
 								com.google.gwt.user.client.ui.HTMLTable.Cell cell = referenceTable.getCellForEvent(event);
@@ -2621,7 +2137,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 								removeRow(referenceTable, clickedRowIndex);
 							}
 						});
-						//referenceTable.setWidget(i, 1, new SimplePanel());
 						referenceTable.setWidget(i, 1, newRemoveButton);
 					}
 				}
@@ -2636,10 +2151,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			VerticalPanel vp = new VerticalPanel();
 			vp.getElement().setId("vp_2");
 			vp.add(AddRowButton);
-			//AddRowButton.setWidth("10px");
 
 			referenceTable.setWidget(0, 0, newReferenceBox);
-			//referenceTable.setWidget(0, 1, new SimplePanel());
 			referenceTable.setWidget(0, 1, vp);
 			referenceArrayList.add(newReferenceBox);
 			referencePlaceHolder.add(referenceTable);
@@ -2658,15 +2171,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		referenceInput.setTitle("Enter Reference");
 		referenceTable.setWidget(0, 0, referenceInput);
 		referenceArrayList.add(referenceInput);
-		//referenceTable.setWidget(0, 1, new SimplePanel());
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setId("vp_3");
 		vp.add(AddRowButton);
-		//AddRowButton.setWidth("10px");
 
 		referenceTable.setWidget(0, 1, vp);
 	}
-	
 	
 	/**
 	 * Clear references.
@@ -2680,7 +2190,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		cellFormatter.setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT);
 	}
 	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasurementFromPeriodInputBox()
 	 */
@@ -2688,7 +2197,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public DateBoxWithCalendar getMeasurementFromPeriodInputBox() {
 		return measurePeriodFromInput;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasurementToPeriodInputBox()
@@ -2730,29 +2238,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return deleteMeasure;
 	}
 	
-	/**
-	 * Local method to clear out the Steward other panel.
-	 */
-	/*private void clearOtherPanel() {
-		measureStewardOtherInput.setValue(null);
-		emptyTextBoxHolder.clear();
-	}*/
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStatus()
-	 */
-	/*@Override
-	public ListBoxMVP getMeasureStatus() {
-		return objectStatusInput;
-	}*/
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setAddEditButtonsVisible(boolean)
 	 */
 	@Override
 	public void setAddEditButtonsVisible(boolean b) {
-		//addEditMeasureType.setEnabled(b);
 		addEditCmponentMeasures.setEnabled(b);
 		measurePeriodFromInput.setEnableCSS(b);
 		measurePeriodToInput.setEnableCSS(b);
@@ -2771,15 +2261,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePeriodToInput.setEnableCSS(b);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getNotEndorsebyNQF()
-	 */
-	/*@Override
-	public HasValue<Boolean> getNotEndorsebyNQF() {
-		return No;
-	}*/
-	
 	private void resetEndorsedByListBox() {
 		endorsedByListBox.clear();
 		endorsedByListBox.insertItem("No", "false","No");
@@ -2788,36 +2269,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		endorsedByListBox.setTitle("Endorsed By NQF List");
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#setObjectStatusOptions(java.util.List)
-	 */
-	/*@Override
-	public void setObjectStatusOptions(List<? extends HasListBox> texts) {
-		setListBoxOptions(objectStatusInput, texts, MatContext.PLEASE_SELECT);
-		
-	}*/
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStatusValue()
-	 */
-	//@Override
-	/*public String getMeasureStatusValue() {
-		return objectStatusInput.getItemText(objectStatusInput.getSelectedIndex());
-	}*/
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#enableEndorseByRadioButtons(boolean)
-	 */
-	/*@Override
-	public void enableEndorseByRadioButtons(boolean b) {
-		No.setEnabled(b);
-		Yes.setEnabled(b);
-	}*/
-	
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setSaveButtonVisible(boolean)
 	 */
@@ -2825,9 +2276,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setSaveButtonEnabled(boolean b) {
 		saveButton.setEnabled(b);
 		saveButton2.setEnabled(b);
-		
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#getSaveErrorMsg()
@@ -2836,8 +2285,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public WarningConfirmationMessageAlert getSaveErrorMsg() {
 		return saveErrorDisplay;
 	}
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getSaveBtn()
@@ -2882,8 +2329,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setComponentMeasureSelectedList(java.util.List)
 	 */
 	@Override
-	public void setComponentMeasureSelectedList(
-			List<ManageMeasureSearchModel.Result> componentMeasureSelectedList) {
+	public void setComponentMeasureSelectedList(List<ManageMeasureSearchModel.Result> componentMeasureSelectedList) {
 		this.componentMeasureSelectedList = componentMeasureSelectedList;
 	}
 	
@@ -2936,7 +2382,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return tsStr;
 	}
 	
-	
 	/**
 	 * Gets the authors selected list.
 	 *
@@ -2947,7 +2392,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return authorsSelectedList;
 	}
 	
-	
 	/**
 	 * Sets the authors selected list.
 	 *
@@ -2957,7 +2401,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setAuthorsSelectedList(List<Author> authorsSelectedList) {
 		this.authorsSelectedList = authorsSelectedList;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setStewardId(java.lang.String)
@@ -2974,7 +2417,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public String getStewardId() {
 		return stewardId;
 	}
-	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getStewardValue()
@@ -3018,14 +2460,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return calenderYear;
 	}
 	
-	
 	/**
 	 * @return the measureScoringType
 	 */
 	public String getMeasureScoringType() {
 		return measureScoringType;
 	}
-	
 	
 	/**
 	 * @param measureScoringType the measureScoringType to set
@@ -3035,7 +2475,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		this.measureScoringType = measureScoringType;
 	}
 	
-	
 	/**
 	 * @return the authorListBox
 	 */
@@ -3043,10 +2482,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public ListBox getAuthorListBox() {
 		return authorListBox;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the measureTypeListBox
@@ -3056,10 +2491,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measureTypeListBox;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the generateeMeasureIDButton
 	 */
@@ -3067,10 +2498,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public Button getGenerateeMeasureIDButton() {
 		return generateeMeasureIDButton;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the abbrInput
@@ -3088,9 +2515,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return patientBasedInput;
 	}
 	
-	
-	
-	
 	/**
 	 * @return the measScoringInput
 	 */
@@ -3098,10 +2522,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextBox getMeasScoringInput() {
 		return measScoringInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the rationaleInput
@@ -3111,10 +2531,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return rationaleInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the versionInput
 	 */
@@ -3122,10 +2538,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextBox getVersionInput() {
 		return versionInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the authorInput
@@ -3135,10 +2547,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return authorInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the measureStewardOtherInput
 	 */
@@ -3146,10 +2554,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextBox getMeasureStewardOtherInput() {
 		return measureStewardOtherInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the descriptionInput
@@ -3159,10 +2563,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return descriptionInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the copyrightInput
 	 */
@@ -3170,10 +2570,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getCopyrightInput() {
 		return copyrightInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the disclaimerInput
@@ -3183,10 +2579,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return disclaimerInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the riskAdjustmentInput
 	 */
@@ -3194,10 +2586,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getRiskAdjustmentInput() {
 		return riskAdjustmentInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the rateAggregationInput
@@ -3207,10 +2595,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return rateAggregationInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the initialPopInput
 	 */
@@ -3218,10 +2602,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getInitialPopInput() {
 		return initialPopInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the denominatorInput
@@ -3231,10 +2611,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return denominatorInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the denominatorExclusionsInput
 	 */
@@ -3242,10 +2618,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getDenominatorExclusionsInput() {
 		return denominatorExclusionsInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the numeratorInput
@@ -3255,10 +2627,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return numeratorInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the numeratorExclusionsInput
 	 */
@@ -3266,10 +2634,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getNumeratorExclusionsInput() {
 		return numeratorExclusionsInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the denominatorExceptionsInput
@@ -3279,10 +2643,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return denominatorExceptionsInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the measurePopulationInput
 	 */
@@ -3291,10 +2651,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measurePopulationInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the measurePopulationExclusionsInput
 	 */
@@ -3302,11 +2658,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getMeasurePopulationExclusionsInput() {
 		return measurePopulationExclusionsInput;
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * @return the measureObservationsInput
 	 */
@@ -3314,10 +2666,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getMeasureObservationsInput() {
 		return measureObservationsInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the measureTypeInput
@@ -3327,10 +2675,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measureTypeInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the measurePeriodFromInput
 	 */
@@ -3338,10 +2682,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public DateBoxWithCalendar getMeasurePeriodFromInput() {
 		return measurePeriodFromInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the measurePeriodToInput
@@ -3351,10 +2691,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measurePeriodToInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the supplementalDataInput
 	 */
@@ -3363,10 +2699,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return supplementalDataInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the codeSystemVersionInput
 	 */
@@ -3374,22 +2706,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextBox getCodeSystemVersionInput() {
 		return codeSystemVersionInput;
 	}
-	
-	
-	
-	
-	
+
 	/**
 	 * @return the nQFIDInput
 	 */
 	@Override
 	public TextBox getNQFIDInput() {
-		return NQFIDInput;
+		return nQFIDInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the setNameInput
@@ -3399,10 +2723,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return setNameInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the clinicalStmtInput
 	 */
@@ -3410,10 +2730,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getClinicalStmtInput() {
 		return clinicalStmtInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the improvementNotationInput
@@ -3423,10 +2739,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return improvementNotationInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the referenceInput
 	 */
@@ -3434,10 +2746,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getReferenceInput() {
 		return referenceInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the definitionsInput
@@ -3447,10 +2755,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return definitionsInput;
 	}
 	
-	
-	
-	
-	
 	/**
 	 * @return the transmissionFormatInput
 	 */
@@ -3458,10 +2762,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getTransmissionFormatInput() {
 		return transmissionFormatInput;
 	}
-	
-	
-	
-	
 	
 	/**
 	 * @return the stratificationInput
@@ -3488,7 +2788,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 	}
 	
-	
 	/**
 	 * @return the guidanceInput
 	 */
@@ -3496,7 +2795,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public TextAreaWithMaxLength getGuidanceInput() {
 		return guidanceInput;
 	}
-	
 	
 	/**
 	 * @return the addRowButton
@@ -3519,7 +2817,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return stewardListBox;
 	}
 
-
 	public void setStewardListBox(ListBoxMVP stewardListBox) {
 		this.stewardListBox = stewardListBox;
 	}
@@ -3528,7 +2825,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public ListBoxMVP getEndorsedByListBox() {
 		return endorsedByListBox;
 	}
-
 
 	public void setEndorsedByListBox(ListBoxMVP endorsedByListBox) {
 		this.endorsedByListBox = endorsedByListBox;
@@ -3543,5 +2839,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public Button getDeleteMeasure2() {
 		return deleteMeasure2;
 	}
+
+	public boolean isPatientBasedMeasure() {
+		return isPatientBasedMeasure;
+	}
 	
+	@Override
+	public void setPatientBasedMeasure(boolean isPatientBasedMeasure) {
+		this.isPatientBasedMeasure = isPatientBasedMeasure;
+	}
 }

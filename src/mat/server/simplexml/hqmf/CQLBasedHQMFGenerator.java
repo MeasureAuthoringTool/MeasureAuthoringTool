@@ -3,7 +3,6 @@ package mat.server.simplexml.hqmf;
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLbasedHQMFGenerator.
  *
@@ -39,9 +38,6 @@ public class CQLBasedHQMFGenerator implements Generator {
 			
 			//generateNarrative(me);
 			hqmfXML = finalCleanUp(me);
-			
-			// TODO Export more Stuff
-
 		} catch (Exception e) {
 			LOGGER.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
 			e.printStackTrace();

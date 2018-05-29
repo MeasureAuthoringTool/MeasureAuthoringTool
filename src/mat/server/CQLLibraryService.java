@@ -331,7 +331,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 */
 	@Override
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId){
-		
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		CQLLibrary existingLibrary = cqlLibraryDAO.find(libraryId);
 		boolean isDraftable = MatContextServiceUtil.get().isCurrentCQLLibraryDraftable(
@@ -350,11 +349,16 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				XmlProcessor processor = new XmlProcessor(getCQLLibraryXml(existingLibrary));
 				try {
 					MeasureUtility.updateLatestQDMVersion(processor);
+					SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
+					List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+					processor.removeUnusedDefaultCodes(usedCodeList);
+					
 					versionLibraryXml = processor.transform(processor.getOriginalDoc());
 				} catch (XPathExpressionException e) {
 					e.printStackTrace();
 				}
 			}
+			
 			newLibraryObject.setCQLByteArray(versionLibraryXml.getBytes());
 			newLibraryObject.setVersion(existingLibrary.getVersion());
 			newLibraryObject.setRevisionNumber("000");
@@ -379,8 +383,8 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @see mat.server.service.CQLLibraryServiceInterface#saveFinalizedVersion(java.lang.String, boolean, java.lang.String)
 	 */
 	@Override
-	public SaveCQLLibraryResult saveFinalizedVersion (String libraryId,  boolean isMajor,
-			 String version){
+	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId,  boolean isMajor,
+			 String version, boolean ignoreUnusedLibraries){
 		logger.info("Inside saveFinalizedVersion: Start");
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		
@@ -393,12 +397,23 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		SaveUpdateCQLResult cqlResult  = getCQLData(libraryId);
+
 		if(cqlResult.getCqlErrors().size() >0 || !cqlResult.isDatatypeUsedCorrectly()){
 			result.setSuccess(false);
 			result.setFailureReason(ConstantMessages.INVALID_CQL_DATA);
 			return result;
 		}
 		
+		List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
+		if(cqlLibraryContainsUnusedCQLLibraries(libraryId, usedLibraries)){
+			if(!ignoreUnusedLibraries) {
+			    result.setSuccess(false);
+			    result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
+			    return result;
+			} else {
+		    	removeUnusedLibraries(libraryId, usedLibraries);
+			}
+	    }
 		
 		CQLLibrary library = cqlLibraryDAO.find(libraryId);
 		if(library != null){
@@ -415,7 +430,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				String selectedVersion = version.substring(versionIndex + 1);
 				logger.info("Min Version number after trim: " + selectedVersion);
 				versionNumber = cqlLibraryDAO.findMaxOfMinVersion(library.getSet_id(), selectedVersion);
-
 			}
 			
 			int endIndex = versionNumber.indexOf('.');
@@ -432,7 +446,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						result.setSuccess(false);
 						return result;
 					}
-
 				} else {
 					if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
 						versionNumber = versionArr[0] + "." + versionArr[1];
@@ -445,7 +458,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 						return result;
 					}
 				}
-
 			} else {
 				logger.info("Inside saveFinalizedVersion: returnFailureReason MAX Major Minor Reached");
 				result.setFailureReason(SaveCQLLibraryResult.REACHED_MAXIMUM_VERSION);
@@ -453,19 +465,90 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				return result;
 				
 			}
-			
-			
 		} else {
-			
 			result.setFailureReason(SaveCQLLibraryResult.INVALID_DATA);
 			result.setSuccess(false);
 			return result;
-		}
-		
-		
+		}	
 	}
 	
 	
+	private boolean cqlLibraryContainsUnusedCQLLibraries(String libraryId, List<String> usedLibraries) {
+		boolean containsUnusedLibraries = false;
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+		XmlProcessor xmlProcessor = new XmlProcessor(cqlLibraryXml);
+		String includeLibrariesXPath = "//cqlLookUp/includeLibrarys";
+		try {
+			Node node = (Node) xPath.evaluate(includeLibrariesXPath, xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			if (node != null) {
+				NodeList childNodes = node.getChildNodes();
+				for(int i = 0; i<childNodes.getLength(); i++) {
+					String refName = null;
+					String alias = null;
+					String version = null;
+					if(childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName") != null) {
+						refName = childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName").getNodeValue();
+					}
+					if(childNodes.item(i).getAttributes().getNamedItem("name") != null) {
+						alias = childNodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					}
+					if(childNodes.item(i).getAttributes().getNamedItem("cqlVersion") != null) {
+						version = childNodes.item(i).getAttributes().getNamedItem("cqlVersion").getNodeValue();
+					}
+					String libraryKey = refName + "-" + version + "|" + alias;
+					if(!usedLibraries.contains(libraryKey)) {
+						containsUnusedLibraries = true;
+						break;
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+		
+		return containsUnusedLibraries;
+	}
+	
+	private void removeUnusedLibraries(String libraryId, List<String> usedLibraries) {
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+		XmlProcessor xmlProcessor = new XmlProcessor(cqlLibraryXml);
+		String includeLibrariesXPath = "//cqlLookUp/includeLibrarys";
+		try {
+			Node node = (Node) xPath.evaluate(includeLibrariesXPath, xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
+			if (node != null) {
+				NodeList childNodes = node.getChildNodes();
+				for(int i = 0; i<childNodes.getLength(); i++) {
+					String refName = null;
+					String alias = null;
+					String version = null;
+					Node childNode = childNodes.item(i);
+					if(childNode.getAttributes().getNamedItem("cqlLibRefName") != null) {
+						refName = childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName").getNodeValue();
+					}
+					if(childNode.getAttributes().getNamedItem("name") != null) {
+						alias = childNodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					}
+					if(childNode.getAttributes().getNamedItem("cqlVersion") != null) {
+						version = childNodes.item(i).getAttributes().getNamedItem("cqlVersion").getNodeValue();
+					}
+					String libraryKey = refName + "-" + version + "|" + alias;
+					if(!usedLibraries.contains(libraryKey)) {
+						Node parentNode = childNode.getParentNode();
+						parentNode.removeChild(childNode);
+					}
+				}
+
+				cqlLibrary.setCQLByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
+				save(cqlLibrary);
+				cqlLibraryDAO.refresh(cqlLibrary);
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
 	/**
 	 * Increment version number and save.
 	 *

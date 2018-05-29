@@ -4,6 +4,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
@@ -108,6 +109,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 		FormGroup getUserIdGroup();
 
 		MessageAlert getSuccessMessageAlert();
+
+		Modal getModel();
 	}
 	
 	/** The display. */
@@ -293,9 +296,9 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getPasswordInput().setText("");
 						display.getUserIdText().setText("");
-						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
 						MatContext.get().setUMLSLoggedIn(true);
+						display.getModel().hide();
 					} else { //incorrect UMLS credential - no ticket is assigned.
 						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);

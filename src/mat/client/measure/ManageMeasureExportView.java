@@ -35,11 +35,11 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	/** The simple xml radio. */
 	private RadioButton simpleXMLRadio = new RadioButton("format", "SimpleXML");
 	
-	/** The e measure radio. */
-	private RadioButton eCQMRadio = new RadioButton("format", "eCQM");
+	/** The HQMF radio. */
+	private RadioButton hqmfRadio = new RadioButton("format", "HQMF");
 	
-	/** The code list radio. */
-	//private RadioButton codeListRadio = new RadioButton("format", "Measure Value Set");
+	/** The Human Readable radio. */
+	private RadioButton humanReadableRadio = new RadioButton("format", "Human Readable");
 	
 	/** The e measure package radio. */
 	private RadioButton eCQMPackageRadio = new RadioButton("format", "eCQM Package");
@@ -47,9 +47,10 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	/** The ELM radio */
 	private RadioButton elmRadio = new RadioButton("format", "ELM"); 
 	
-	/** The ELM radio */
+	/** The JSON radio */
 	private RadioButton jsonRadio = new RadioButton("format", "JSON");
 	
+	/** The CQL Library radio */
 	private RadioButton cqlLibraryRadio = new RadioButton("format", "CQL Library");
 	
 	/** The save button. */
@@ -116,8 +117,9 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)) {
 			vp.add(simpleXMLRadio);
 		}
-		vp.add(eCQMRadio);
 		
+		vp.add(humanReadableRadio);
+		vp.add(hqmfRadio);
 		if(releaseVersion.startsWith("v5")){
 			vp.add(cqlLibraryRadio);
 			vp.add(elmRadio);
@@ -134,7 +136,8 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	 */
 	private void resetRadioButtonValues() {
 		simpleXMLRadio.setValue(false);
-		eCQMRadio.setValue(false);
+		hqmfRadio.setValue(false);
+		humanReadableRadio.setValue(false);
 		cqlLibraryRadio.setValue(false);
 		elmRadio.setValue(false);
 		jsonRadio.setValue(false);
@@ -189,12 +192,18 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		return simpleXMLRadio.getValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isEMeasure()
+	/* (non-Javadoc
+	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isHQMF()
 	 */
-	@Override
-	public boolean isEMeasure() {
-		return eCQMRadio.getValue();
+	public boolean isHQMF() {
+		return hqmfRadio.getValue(); 
+	}
+	
+	/* (non-Javadoc
+	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isHumanReadable()
+	 */
+	public boolean isHumanReadable() {
+		return humanReadableRadio.getValue(); 
 	}
 	
 	/* (non-Javadoc
@@ -212,14 +221,6 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isCodeList()
-	 */
-	/*@Override
-	public boolean isCodeList() {
-		return codeListRadio.getValue();
-	}*/
-	
-	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isEMeasurePackage()
 	 */
 	@Override
@@ -227,10 +228,11 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		return eCQMPackageRadio.getValue();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ExportDisplay#isCQLLibrary()
+	 */
 	@Override
 	public boolean isCQLLibrary() {
 		return cqlLibraryRadio.getValue();
 	}
-
-	
 }

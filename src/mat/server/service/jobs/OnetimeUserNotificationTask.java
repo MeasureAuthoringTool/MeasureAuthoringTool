@@ -2,15 +2,15 @@ package mat.server.service.jobs;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import mat.dao.MatFlagDAO;
 import mat.dao.UserDAO;
 import mat.model.MatFlag;
 import mat.model.User;
 import mat.server.service.UserService;
 import mat.server.service.impl.UserServiceImpl;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * The Class OnetimeUserNotificationTask.
@@ -20,28 +20,21 @@ public class OnetimeUserNotificationTask {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(OnetimeUserNotificationTask.class);
 	
-	/** The user dao. */
 	private UserDAO userDAO;
-	
-	/** The user service. */
 	private UserService userService;
-	
-	/** The mat flag dao. */
 	private MatFlagDAO matFlagDAO;
 	
 	/**
 	 * Send onetime user notification emails.
 	 */
 	public void sendOnetimeUserNotificationEmails(){
-		System.out.println("Hi there this is OnetimeUserNotificationTask..");
+		logger.info("Hi there this is OnetimeUserNotificationTask..");
 		
 		List<User> users = userDAO.find();
-		
 		if(doesJobNeedExecution()){
 			sendUserLoginIdEmail(users);
 			sendUserNewTempPasswordEmail(users);
 		}
-		
 	}
 
 	/**
@@ -51,14 +44,9 @@ public class OnetimeUserNotificationTask {
 	 *            the users
 	 */
 	private void sendUserLoginIdEmail(List<User> users) {
-	
 		for(User user:users){
-//			user.setEmailAddress("cbajikar@ifmc.org");
 			((UserServiceImpl)userService).notifyUserOfNewAccount(user);
-//			break;
-			
 		}
-		
 	}
 	
 	/**
@@ -70,12 +58,7 @@ public class OnetimeUserNotificationTask {
 	private void sendUserNewTempPasswordEmail(List<User> users) {
 		for(User user:users){
 			userService.requestResetLockedPassword(user.getId());
-//			user.setEmailAddress("cbajikar@ifmc.org");
-//			String newPassword = userService.generateRandomPassword();
-//			((UserServiceImpl)userService).notifyUserOfTemporaryPassword(user, newPassword);
-//			break;
 		}
-		
 	}
 	
 	/**

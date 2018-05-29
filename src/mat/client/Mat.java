@@ -70,7 +70,7 @@ import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
-import mat.client.umls.UmlsLoginView;
+import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityRole;
 import mat.shared.ConstantMessages;
@@ -164,7 +164,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		@Override
 		public void onFailure(final Throwable caught) {
 			redirectToLogin();
-			//			Window.alert("User Role is not set in the session");
 		}
 		
 		@Override
@@ -255,6 +254,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView, historyView, versionView, /*measureDraftView,*/ null);
 		}
+		
+		
 		return measurePresenter;
 		
 	}
@@ -294,19 +295,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	}
 	
 	/**
-	 * Builds the umls widget.
-	 *
-	 * @param userFirstName the user first name
-	 * @param isAlreadySignedIn the is already signed in
-	 * @return the mat presenter
-	 */
-	private MatPresenter buildUMLSWidget(String userFirstName, boolean isAlreadySignedIn){
-		UmlsLoginView umlsLoginView = new UmlsLoginView();
-		ManageUmlsPresenter manageUmlsPresenter = new ManageUmlsPresenter(umlsLoginView, userFirstName, isAlreadySignedIn);
-		return manageUmlsPresenter;
-	}
-	
-	/**
 	 * Call sign out.
 	 */
 	private void callSignOut(){
@@ -334,7 +322,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			@Override
 			public void onSuccess(Void arg0) {}
 		});
-		//		 closeBrowser();
 	}
 	
 	/**
@@ -356,19 +343,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 		MatContext.get().getCurrentUserRole(userRoleCallback);
 		mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID;
-		/*
-		 * logic used to process history for registered TabPanels
-		 * See field MatContext.tabRegistry
-		 * When instantiating a TabPanel, add a selection handler responsible for adding a History item
-		 * to History identifying the TabPanel in the registry.
-				      
-			 MatContext.get().tabRegistry.put(MY_TAB_PANEL_ID,tabLayout);
-				tabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
-				      public void onSelection(SelectionEvent<Integer> event) {
-				        History.newItem(MY_TAB_PANEL_ID + event.getSelectedItem(), false);
-				      }});
-
-		 */
 		
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
@@ -513,13 +487,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			mainTabLayout.add(myAccountPresenter.getWidget(), title);
 			presenterList.add(myAccountPresenter);
 			
-			title= ClientConstants.TITLE_UMLS;
-			manageUmlsPresenter = (ManageUmlsPresenter) buildUMLSWidget(userFirstName, isAlreadySignedIn);
-			mainTabLayout.add(manageUmlsPresenter.getWidget(), title);
-			presenterList.add(manageUmlsPresenter);
-			
-			tabIndex = presenterList.indexOf(manageUmlsPresenter);
+			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
+			
+			
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
@@ -582,7 +553,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		hideLoadingMessage(0);
 		
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
-			mainTabLayout.selectTab(presenterList.indexOf(manageUmlsPresenter));
+			mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			mainTabLayout.selectTab(presenterList.indexOf(adminPresenter));
@@ -598,6 +569,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
+		
+		
 		getContentPanel().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -605,6 +578,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				MatContext.get().restartTimeoutWarning();
 			}
 		});
+		
+		getSigninLink().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				final UmlsLoginDialogBox login = new UmlsLoginDialogBox();
+				login.showUMLSLogInDialog();
+				new ManageUmlsPresenter(login, userFirstName, isAlreadySignedIn);
+				login.showModal();
+			}
+		});
+		
 		
 		/*
 		 * This block adds a special generic handler for any mouse clicks in the mainContent for ie browser.

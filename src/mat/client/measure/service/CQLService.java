@@ -169,8 +169,6 @@ public interface CQLService {
 	String getCqlString(CQLModel cqlModel);
 
 	String getDefaultCodeSystems();
-	
-	String getDefaultCodes();
 
 	GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
 
@@ -205,8 +203,6 @@ public interface CQLService {
 	SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel);
 
 	List<CQLLibraryAssociation> getAssociations(String id);
-
-	//String getDefaultExpansionIdentifier(String xml);
 
 	SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject);
 

@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -34,12 +35,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
+import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
+import mat.client.cql.ConfirmationObserver;
 import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
@@ -67,8 +70,7 @@ import mat.shared.ConstantMessages;
 
 /**
  * The Class CqlLibraryPresenter.
- *
- * @author jnarang
+
  */
 @SuppressWarnings("deprecation")
 public class CqlLibraryPresenter implements MatPresenter {
@@ -334,6 +336,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		void setSelectedLibraryObject(CQLLibraryDataSetObject selectedLibraryObject);
 		
+		ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer);
 	}
 	
 	
@@ -913,7 +916,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				versionDisplay.getErrorMessages().clearAlert();
-				//versionDisplay.getSearchWidget().getSearchInput().setText("");
 				displaySearch();
 				
 			}
@@ -933,7 +935,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 								.getMinorRadio().getValue())) {
 					saveFinalizedVersion(selectedLibrary.getId(), selectedLibrary.getCqlName(),
 							versionDisplay.getMajorRadioButton().getValue(),
-							selectedLibrary.getVersion());
+							selectedLibrary.getVersion(), false);
 				
 				} else {
 					versionDisplay
@@ -954,20 +956,18 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param isMajor the is major
 	 * @param version the version
 	 */
-	protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
-		
+	protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version, boolean ignoreUnusedLibraries) {
 		versionDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
 		((Button)versionDisplay.getSaveButton()).setEnabled(false);
 		((Button)versionDisplay.getCancelButton()).setEnabled(false);
-		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version,
+		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
 						showSearchingBusy(false);
-						versionDisplay.getErrorMessages()
-								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						((Button) versionDisplay.getSaveButton()).setEnabled(true);
 						((Button) versionDisplay.getCancelButton()).setEnabled(true);
 					}
@@ -1000,6 +1000,19 @@ public class CqlLibraryPresenter implements MatPresenter {
 							isCqlLibraryVersioned = false;
 							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
 								versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+							} else if(result.getFailureReason() == ConstantMessages.INVALID_CQL_LIBRARIES) {
+								String libraryName = versionDisplay.getSelectedLibrary().getCqlName();
+								String errorMessage =  "You have included libraries that are unused. In order to version " + libraryName + ", these must be removed. Select Continue to have the MAT remove these included libraries or Cancel to stop the version process";
+								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", new ConfirmationObserver() {				
+									@Override
+									public void onYesButtonClicked() {
+										saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);		
+									}
+									
+									@Override
+									public void onNoButtonClicked() {}
+								});
+								dialogBox.show();
 							}
 						}
 					}

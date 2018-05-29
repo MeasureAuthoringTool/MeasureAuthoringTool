@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PasswordRules.
  */
@@ -35,7 +35,7 @@ public class PasswordRules extends Composite {
 				"<img src='images/bullet.png'/> Lower case character");
 		b2.getElement().setId("b2Label");
 		HTML b3 = new HTML(
-				"<img src='images/bullet.png'/> One of the following special characters % &nbsp; # &nbsp; * &nbsp; + &nbsp; , &nbsp; ; &nbsp; = &nbsp; ? &nbsp; _");
+				"<img src='images/bullet.png'/> One of the following special characters % &nbsp; # &nbsp; * &nbsp; + &nbsp; - &nbsp; , &nbsp; : &nbsp; = &nbsp; ? &nbsp; _");
 		b3.getElement().setId("b3Label");
 		HTML b4 = new HTML("<img src='images/bullet.png'/> Numeric character");
 		b4.getElement().setId("b4Label");

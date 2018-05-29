@@ -50,9 +50,6 @@ public class XmlProcessor {
 	 */
 	private static final String COHORT = "COHORT";
 	
-	/** The Constant MEASUREMENT_PERIOD_OID. */
-	//private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
-	
 	/** The Constant XPATH_POPULATIONS. */
 	private static final String XPATH_POPULATIONS = "/measure/populations";
 	
@@ -175,7 +172,6 @@ public class XmlProcessor {
 	private static final String INITIAL_POPULATIONS = "initialPopulations";
 	
 	/** The Constant XPATH_MEASURE_CLAUSE. */
-	//	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause[@type !='stratum']";
 	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause | /measure/strata/stratification | /measure/strata/Stratification";
 	
 	/** The Constant XPATH_MEASURE_GROUPING. */
@@ -223,7 +219,6 @@ public class XmlProcessor {
 	/** The Constant TYPE. */
 	private static final String TYPE = "type";
 	
-	
 	/** The Constant PATIENT. */
 	private static final String PATIENT = " Patient ";
 	
@@ -247,6 +242,14 @@ public class XmlProcessor {
 	/** The Constant PARAMETER_MEASUREMENT_PERIOD. */
 	private static final String PARAMETER_MEASUREMENT_PERIOD = "Measurement Period";
 	
+	private static final String XPATH_FOR_PATIENT_BASED_INDICATOR = "/measure/measureDetails/patientBasedIndicator";
+	
+	private static final String XPATH_FOR_CODES = "//cqlLookUp/codes/code";
+	
+	private static final String ATTRIBUTE_CODE_OID = "codeOID";
+	private static final String ATTRIBUTE_CODE_NAME = "codeName";
+	private static final String ATTRIBUTE_READ_ONLY = "readOnly";
+	private static final String ATTRIBUTE_CODE_SYSTEM_OID = "codeSystemOID";
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = {
 		INITIAL_POPULATIONS, NUMERATORS, NUMERATOR_EXCLUSIONS, DENOMINATORS,
@@ -256,7 +259,6 @@ public class XmlProcessor {
 		constantsMap.put("populations", "Populations");
 		constantsMap.put(MEASURE_OBSERVATION, "Measure Observations");
 		constantsMap.put("strata", "Stratification");
-		constantsMap.put(MEASURE_OBSERVATION, "Measure Observations");
 		constantsMap.put("initialPopulations", "Initial Populations");
 		constantsMap.put("numerators", "Numerators");
 		constantsMap.put("denominators", "Denominators");
@@ -276,7 +278,6 @@ public class XmlProcessor {
 		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
 		//commented for MAT-4426 in sprint 44
-		//topNodeOperatorMap.put(MEASURE_OBSERVATION, AND);
 		topNodeOperatorMap.put("initialPopulations", AND);
 		topNodeOperatorMap.put("numerators", AND);
 		topNodeOperatorMap.put("denominators", AND);
@@ -286,6 +287,7 @@ public class XmlProcessor {
 		topNodeOperatorMap.put("denominatorExceptions", OR_STRING);
 		topNodeOperatorMap.put("measurePopulationExclusions", OR_STRING);
 	}
+	
 	/**
 	 * Instantiates a new xml processor.
 	 * @param originalXml
@@ -607,10 +609,9 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public void removeNodesBasedOnScoring(String scoringType)
-			throws XPathExpressionException {
+	public void removeNodesBasedOnScoring(String scoringType) throws XPathExpressionException {
 		List<String> xPathList = new ArrayList<String>();
-		
+		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
 		if (RATIO.equalsIgnoreCase(scoringType)) {
 			// Denominator Exceptions, Measure Populations
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
@@ -620,10 +621,15 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_DETAILS_DENOMINATOR_EXCEPTIONS);
-			/*xPathList.add(XPATH_MEASURE_OBSERVATIONS);*/
+			
+			//Measure Observations section is not available for
+			//Patient Based Ratio Measures. Hence adding to Remove list 
+			if (patientBasedMeasureNode != null && "true".equals(patientBasedMeasureNode.getTextContent())) {
+				xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+				xPathList.add(XPATH_MEASURE_DETAILS_MEASURE_OBSERVATIONS);
+			}
 		} else if (PROPOR.equalsIgnoreCase(scoringType)) {
 			// Measure Population Exlusions, Measure Populations
-			//xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
@@ -794,6 +800,7 @@ public class XmlProcessor {
 			throws XPathExpressionException {
 		List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
 		Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
+		
 		if (populationsNode == null) {
 			populationsNode = addPopulationsNode();
 		}
@@ -803,10 +810,10 @@ public class XmlProcessor {
 		 * Add Measure Observations node after Populations node if not present
 		 * and scoring type is Continuous Variable.
 		 */
-		Node measureObservationsNode = findNode(originalDoc,
-				XPATH_MEASURE_OBSERVATIONS);
-		if ((SCORING_TYPE_CONTVAR.equals(scoringType)
-				|| RATIO.equals(scoringType)) && (measureObservationsNode == null)) {
+		Node measureObservationsNode = findNode(originalDoc, XPATH_MEASURE_OBSERVATIONS);
+		Node patientBasedMeasureNode = findNode(originalDoc, XPATH_FOR_PATIENT_BASED_INDICATOR);
+		if ((SCORING_TYPE_CONTVAR.equals(scoringType) || (RATIO.equals(scoringType) && patientBasedMeasureNode != null && !"true".equals(patientBasedMeasureNode.getTextContent()))) 
+				&& (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;
 			String displayName = constantsMap.get(nodeName);
@@ -1104,13 +1111,6 @@ public class XmlProcessor {
 	}
 	
 	/**
-	 * Creates the general information node.
-	 */
-	public void createGeneralInformationNode(){
-		
-	}
-	
-	/**
 	 * This method creates blank nodes for Elements like 'child elements of
 	 * populations node, measureObservations node and stratifications node' The
 	 * method will return the newly created Element. The called needs to add
@@ -1133,23 +1133,6 @@ public class XmlProcessor {
 		clauseChildElem.setAttribute(UUID_STRING, UUIDUtilClient.uuid());
 		mainChildElem.appendChild(clauseChildElem);
 		
-		/**Commenting this code for MAT-7076*/
-		
-		//logical AND is not required by stratification clause at the
-		//time of creation of new Measure But Population and Measure Observations
-		// clauses will have Logical AND by Default.
-		
-		/**if (!nodeName.equalsIgnoreCase("strata")&& (topNodeOperatorMap.containsKey(nodeName))) {
-			String nodeTopLogicalOperator = topNodeOperatorMap.get(nodeName);
-			if (nodeTopLogicalOperator != null) {
-				Element logicalOpElem = originalDoc.createElement("logicalOp");
-				logicalOpElem.setAttribute(DISPLAY_NAME, nodeTopLogicalOperator.toUpperCase(Locale.US));
-				logicalOpElem.setAttribute(TYPE, nodeTopLogicalOperator);
-				clauseChildElem.appendChild(logicalOpElem);
-			}
-		}*/
-		
-		/**Commenting for MAT-7076 ends.*/
 		mainChildElem.appendChild(clauseChildElem);
 		
 		return mainChildElem;
@@ -1179,11 +1162,9 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public Node findNode(Document document, String xPathString)
-			throws XPathExpressionException {
+	public Node findNode(Document document, String xPathString) throws XPathExpressionException {
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		Node node = (Node) xPath.evaluate(xPathString,
-				document.getDocumentElement(), XPathConstants.NODE);
+		Node node = (Node) xPath.evaluate(xPathString, document.getDocumentElement(), XPathConstants.NODE);
 		return node;
 	}
 	
@@ -1198,8 +1179,7 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public NodeList findNodeList(Document document, String xPathString)
-			throws XPathExpressionException {
+	public NodeList findNodeList(Document document, String xPathString) throws XPathExpressionException {
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		XPathExpression expr = xPath.compile(xPathString);
 		return (NodeList) expr.evaluate(document, XPathConstants.NODESET);
@@ -1216,8 +1196,7 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public int getNodeCount(Document document, String xPathString)
-			throws XPathExpressionException {
+	public int getNodeCount(Document document, String xPathString) throws XPathExpressionException {
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		XPathExpression expr = xPath.compile(xPathString);
 		return ((Double) expr.evaluate(document, XPathConstants.NUMBER)).intValue();
@@ -1285,7 +1264,7 @@ public class XmlProcessor {
 	 * Convert xml document to string.
 	 *
 	 * @param node the node
-	 * @param isFormatted TODO
+	 * @param isFormatted
 	 * @return the string
 	 */
 	public String transform(Node node, boolean isFormatted) {
@@ -1500,5 +1479,48 @@ public class XmlProcessor {
 			}
 		}
 		return missingDefaultParameterList;
+	}
+
+	public void removeUnusedDefaultCodes(List<String> usedCodeList) {
+		try {
+			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_CODES);
+			List<String> codeSystemOIDsToRemove = new ArrayList<String>();
+			for(int i = 0; i<nodeList.getLength(); i++) {
+				Node currentNode = nodeList.item(i);
+				String codeOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_OID).getNodeValue();
+				Boolean readOnly = Boolean.parseBoolean(currentNode.getAttributes().getNamedItem(ATTRIBUTE_READ_ONLY).getNodeValue());
+				
+				if(readOnly && (codeOID.equals(CQLUtil.BIRTHDATE_OID) || codeOID.equals(CQLUtil.DEAD_OID))) {
+					String codeName = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_NAME).getNodeValue();
+					if(!usedCodeList.contains(codeName)) {
+						String codeSystemOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_SYSTEM_OID).getNodeValue();
+						codeSystemOIDsToRemove.add(codeSystemOID);
+						Node parentNode = currentNode.getParentNode();
+						parentNode.removeChild(currentNode);	
+					} 
+				}
+			}
+			removeUnusedCodeSystems(codeSystemOIDsToRemove);
+		} catch (XPathExpressionException e) {LOG.error(e.getMessage());}
+	}
+
+	private void removeUnusedCodeSystems(List<String> codeSystemOIDsToRemove) {
+		try {
+			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_CODES);
+			for(int i = 0; i<nodeList.getLength(); i++) {
+				Node currentNode = nodeList.item(i);
+				String codeSystemOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_SYSTEM_OID).getNodeValue();
+				if(codeSystemOIDsToRemove.contains(codeSystemOID)) {
+					codeSystemOIDsToRemove.remove(codeSystemOIDsToRemove.indexOf(codeSystemOID));
+				}		
+			}
+			
+			for(String codeSystemOID: codeSystemOIDsToRemove) {
+				String codeSystemXPathString = "[@codeSystemOID =\"" + codeSystemOID + "\"]";
+				Node codeSystemNode = findNode(getOriginalDoc(), codeSystemXPathString);
+				Node parentNode = codeSystemNode.getParentNode();
+				parentNode.removeChild(codeSystemNode);
+			}
+		} catch (Exception e) {LOG.error(e.getMessage());}
 	}
 }

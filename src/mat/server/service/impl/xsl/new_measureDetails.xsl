@@ -208,10 +208,18 @@
                 </code>
                 <xsl:variable name="NQFText">
                     <xsl:call-template name="trim">
-                        <xsl:with-param name="textString" select="nqfid/@extension" />
+                        <xsl:with-param name="textString" select="nqfid/@extension"/>
                     </xsl:call-template>
                 </xsl:variable>
-                <value xsi:type="ED" mediaType="text/plain" value="{$NQFText}" />
+                <xsl:choose>
+                <xsl:when test="$NQFText = '' ">
+                		<value xsi:type="ED" mediaType="text/plain" value="Not Applicable"/>
+                </xsl:when>
+                <xsl:otherwise>
+                		<value xsi:type="ED" mediaType="text/plain" value="{$NQFText}"/>
+                </xsl:otherwise>
+                </xsl:choose>
+
             </measureAttribute>
         </subjectOf>
 
@@ -509,6 +517,9 @@
         <xsl:variable name="scoring_value">
             <xsl:value-of select="scoring"></xsl:value-of>
         </xsl:variable>
+        <xsl:variable name="patient_based_indicator">
+            <xsl:value-of select="patientBasedIndicator"></xsl:value-of>
+        </xsl:variable>
         <!-- Denominator Description -->
         <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Proportion'">
             <xsl:call-template name="subjOfOrigText">
@@ -595,7 +606,7 @@
             <xsl:with-param name="codeSystem">2.16.840.1.113883.5.4</xsl:with-param>
         </xsl:call-template>
         </xsl:if>
-        <xsl:if test="$scoring_value = 'Ratio' or $scoring_value ='Continuous Variable'">
+        <xsl:if test="(($scoring_value = 'Ratio' and $patient_based_indicator = 'false') or $scoring_value ='Continuous Variable') and measureObservationsDescription/text() != ''">
         <!-- Measure Observations Description -->
             <xsl:call-template name="subjOfOrigText">
                 <xsl:with-param name="origText">

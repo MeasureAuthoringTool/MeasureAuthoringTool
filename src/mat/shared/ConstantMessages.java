@@ -1,7 +1,5 @@
 package mat.shared;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ConstantMessages.
  */
@@ -35,6 +33,8 @@ public  class ConstantMessages {
 	
 	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_CQL_DATA = 7;
+	
+	public static final int INVALID_CQL_LIBRARIES = 8;
 	
 	/** The Constant FILE_NOT_SELECTED. */
 	public static final String FILE_NOT_SELECTED ="Please Select a File.";
@@ -260,9 +260,6 @@ public  class ConstantMessages {
 	/** The Constant ADMINISTRATIVE_GENDER_UNDIFFERENTIATED. */
 	public static final String ADMINISTRATIVE_GENDER_UNDIFFERENTIATED = "Administrative Gender Undifferentiated";
 	
-	/** The Constant BIRTH_DATE. */
-	public static final String BIRTH_DATE = "birth date";
-	
 	/** The Constant GENDER_MALE_OID. */
 	public static final String GENDER_MALE_OID = "2.16.840.1.113883.3.560.100.1";
 	
@@ -335,16 +332,16 @@ public  class ConstantMessages {
 	
 	//TEMPLATES
 	/** The Constant TEMPLATE_WELCOME. */
-	public static final String TEMPLATE_WELCOME = "welcomeTemplate.vm";
+	public static final String TEMPLATE_WELCOME = "welcomeTemplate.ftl";
 	
 	/** The Constant TEMPLATE_TEMP_PASSWORD. */
-	public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.vm";
+	public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_RESET_PASSWORD. */
-	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.vm";
+	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_FORGOT_LOGINID. */
-	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.vm";
+	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.ftl";
 	
 	
 	//events

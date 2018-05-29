@@ -1,9 +1,6 @@
 
 package mat.server.simplexml.hqmf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.StringUtils;

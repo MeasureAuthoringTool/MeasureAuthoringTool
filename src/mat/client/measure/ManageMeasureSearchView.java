@@ -9,7 +9,6 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Anchor;
-//import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -27,19 +26,17 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
+import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.ClientConstants;
-import mat.client.util.MatTextBox;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureSearchView.
  */
 public class ManageMeasureSearchView implements
-ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDisplay*/ {
+ManageMeasurePresenter.SearchDisplay {
 	
 	/** The bulk export button. */
 	private Button bulkExportButton = new Button("Export Selected");	
@@ -83,17 +80,13 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter",
 			"measureLibraryFilterDisclosurePanel","forMeasure");
 	
+	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
+	
 	/** The most recent measure widget. */
 	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
 	
 	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
-	
-	/** The search button. */
-	private Button searchButton = new Button("Search");
-	
-	/** The search input. */
-	private MatTextBox searchInput = new MatTextBox();
 	
 	/** The success measure deletion. */
 	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
@@ -114,8 +107,8 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	MeasureSearchView measureSearchView = new MeasureSearchView("Measures");
 	
 	/** The zoom button. */
-	CustomButton zoomButton = (CustomButton) getImage("Search",
-			ImageResources.INSTANCE.search_zoom(), "Search" , "MeasureSearchButton");
+	CustomButton zoomButton = (CustomButton) getImage("Search", ImageResources.INSTANCE.search_zoom(), "Search" , "MeasureSearchButton");
+	
 	/** Instantiates a new manage measure search view. */
 	public ManageMeasureSearchView() {
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
@@ -134,11 +127,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
-		/*
-		 * options.getElement().setId("options_ListBoxMVP"); createButton.getElement().setId("createButton_Button");
-		 */
-		searchInput.getElement().setId("searchInput_TextBox");
-		searchButton.getElement().setId("searchButton_Button");
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
@@ -211,9 +199,9 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.add(errorMessageDisplay);
 		transferButton.setTitle("Transfer");
-		clearButton.setTitle("Clear");
+		clearButton.setTitle("Clear All");
 		transferButton.setType(ButtonType.PRIMARY);
-		clearButton.setType(ButtonType.PRIMARY);
+		clearButton.setType(ButtonType.DANGER);
 		clearButton.setMarginLeft(10.00);
 		flowPanel.add(transferButton);
 		flowPanel.add(clearButton);
@@ -228,17 +216,8 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	public Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
-		//FlowPanel fp1 = new FlowPanel();
-		searchInput.setHeight("32px");
-		searchButton.setHeight("32px");
-		searchButton.setMarginLeft(5.00);
-		hp.add(searchInput);
-		searchInput.getElement().setId("searchInput_TextBox");
-		searchButton.setTitle("Search");
-		searchButton.setType(ButtonType.PRIMARY);
-		
-		hp.add(searchButton);
-		searchButton.getElement().setId("searchButton_Button");
+		hp.add(searchWidgetBootStrap.getSearchWidget());
+
 		return hp;
 	}
 	
@@ -402,15 +381,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		image.getElement().setAttribute("id", id);
 		return image;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureDataTable()
-	 */
-//	@Override
-//	public Grid508 getMeasureDataTable() {
-//		return view.getDataTable();
-//	}
-//	
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSelectionTool()
 	 */
@@ -419,7 +390,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 * 
 	 * @return the dropDown
 	 */
-	
 	@Override
 	public SearchWidgetWithFilter getMeasureSearchFilterWidget() {
 		return measureSearchFilterWidget;
@@ -471,10 +441,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectIdForEditTool()
 	 */	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSuccessMeasureDeletion()
-	 */
 	@Override
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return measureSearchView;
@@ -487,16 +453,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	public MessageAlert getSuccessMeasureDeletion() {
 		return successMeasureDeletion;
 	}
-	
-	
-	/** Load list box options.
-	 * 
-	 * @return the zoom button */
-	/*
-	 * private void loadListBoxOptions() { options.addItem(ConstantMessages.DEFAULT_SELECT);
-	 * options.addItem(ConstantMessages.CREATE_NEW_MEASURE); options.addItem(ConstantMessages.CREATE_NEW_VERSION);
-	 * options.addItem(ConstantMessages.CREATE_NEW_DRAFT); }
-	 */
 	
 	@Override
 	/** @return the zoomButton */
@@ -562,8 +518,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 		return errorMessagesForTransferOS;
 	}
 
-	
-
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getTransferButton()
 	 */
@@ -602,7 +556,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	@Override
 	public HasClickHandlers getAdminSearchButton() {		
-		return searchButton;
+		return searchWidgetBootStrap.getGo();
 	}
 
 	/* (non-Javadoc)
@@ -610,7 +564,7 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	 */
 	@Override
 	public HasValue<String> getAdminSearchString() {		
-		return searchInput;
+		return searchWidgetBootStrap.getSearchBox();
 	}
 
 	@Override
@@ -620,7 +574,6 @@ ManageMeasurePresenter.SearchDisplay/*, ManageMeasurePresenter.AdminSearchDispla
 	
 	@Override
 	public String getSelectedOption() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -69,8 +69,8 @@ public class CQLHumanReadableHTMLCreator {
 	private static final String[] POPULATION_NAME_ARRAY = {"initialPopulation",
 		"denominator", "denominatorExclusions", "numerator",
 		"numeratorExclusions", "denominatorExceptions",
-		"measurePopulation", "measurePopulationExclusions",
-		"measureObservation", "stratum" };
+		"measurePopulation", "measurePopulationExclusions", "stratum" ,
+		"measureObservation"};
 	
 	/**
 	 * Generate cql human readable for measure.

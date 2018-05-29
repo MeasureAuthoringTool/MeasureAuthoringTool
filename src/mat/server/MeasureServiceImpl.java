@@ -209,9 +209,8 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#saveFinalizedVersion(java.lang.String, boolean, java.lang.String)
 	 */
 	@Override
-	public SaveMeasureResult saveFinalizedVersion(String measureId,
-			boolean isMajor, String version) {
-		return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version);
+	public SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version,  boolean shouldPackage) {
+		return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage);
 	}
 	
 	/* (non-Javadoc)
@@ -386,6 +385,15 @@ MeasureService {
 	public ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model) {
 		
 		return this.getMeasureLibraryService().validateForGroup(model);
+	}
+	
+	/**
+	 * Validates and packages the measure when the user versions or packages a measure
+	 * @param mode the measure details
+	 */
+	@Override
+	public SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel model) {
+		return this.getMeasureLibraryService().validateAndPackage(model);
 	}
 	
 	

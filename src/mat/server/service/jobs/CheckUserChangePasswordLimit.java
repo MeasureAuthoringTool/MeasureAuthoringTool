@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -65,9 +64,6 @@ public class CheckUserChangePasswordLimit {
 	
 	/** The expiry mail subject. */
 	private String expiryMailSubject;
-	
-	/** The velocity engine. */
-	private VelocityEngine velocityEngine;
 	
 	/** The Constant WARNING_EMAIL_FLAG. */
 	private final static String WARNING_EMAIL_FLAG = "WARNING";
@@ -250,24 +246,6 @@ public class CheckUserChangePasswordLimit {
 	 */
 	public void setWarningMailSubject(String warningMailSubject) {
 		this.warningMailSubject = warningMailSubject;
-	}
-
-	/**
-	 * Gets the velocity engine.
-	 *
-	 * @return the velocity engine
-	 */
-	public VelocityEngine getVelocityEngine() {
-		return velocityEngine;
-	}
-
-	/**
-	 * Sets the velocity engine.
-	 *
-	 * @param velocityEngine the new velocity engine
-	 */
-	public void setVelocityEngine(VelocityEngine velocityEngine) {
-		this.velocityEngine = velocityEngine;
 	}
 
 	/**

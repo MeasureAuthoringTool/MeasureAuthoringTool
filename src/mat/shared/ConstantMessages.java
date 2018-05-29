@@ -34,6 +34,8 @@ public  class ConstantMessages {
 	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_CQL_DATA = 7;
 	
+	public static final int INVALID_CQL_LIBRARIES = 8;
+	
 	/** The Constant FILE_NOT_SELECTED. */
 	public static final String FILE_NOT_SELECTED ="Please Select a File.";
 	
@@ -498,4 +500,6 @@ public  class ConstantMessages {
 	public static final String BIRTHDATE_CODE_SYSTEM_OID = "2.16.840.1.113883.6.1";
 	
 	public static final String DEAD_CODE_SYSTEM_OID = "2.16.840.1.113883.6.96";
+	
+	public static int PACKAGE_VALIDATION_FAIL = 30;
 }

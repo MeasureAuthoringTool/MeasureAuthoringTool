@@ -3,6 +3,7 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -48,9 +49,11 @@ import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
+import mat.client.cql.ConfirmationObserver;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -1728,6 +1731,24 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void saveExport() {
 		Window.open(buildExportURL() + "&type=save", "_self", "");
 	}
+	
+	private ConfirmationDialogBox getVersionWithoutPackageDialog(String measureId, String measureName, boolean isMajor, String version, boolean shouldPackage) {
+		ConfirmationObserver observer = new ConfirmationObserver() {
+			
+			@Override
+			public void onYesButtonClicked() {
+				saveFinalizedVersion(measureId, measureName, isMajor, version, shouldPackage);
+			}
+			
+			@Override
+			public void onNoButtonClicked() {
+				// dialog box will automatically close even if nothing is in the click handler				
+			}
+		};
+			
+		ConfirmationDialogBox dialogBox = new ConfirmationDialogBox(MatContext.get().getMessageDelegate().getVersionAndPackageUnsuccessfulMessage(), "Continue", "Cancel", observer);
+		return dialogBox;
+	}
 
 	/**
 	 * Save finalized version.
@@ -1740,10 +1761,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param version
 	 *            the version
 	 */
-	private void saveFinalizedVersion(final String measureId, final String measureName, final boolean isMajor, final String version) {
+	private void saveFinalizedVersion(final String measureId, final String measureName, final boolean isMajor, final String version, boolean shouldPackage) {
 		showSearchingBusy(true);
-		MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version,
-				new AsyncCallback<SaveMeasureResult>() {
+		MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, new AsyncCallback<SaveMeasureResult>() {
 					@Override
 					public void onFailure(Throwable caught) {
 						showSearchingBusy(false);
@@ -1773,12 +1793,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 										}
 									});
 							isMeasureVersioned = true;
-							fireSuccessfullVersionEvent(isMeasureVersioned,measureName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
+							
+							if(shouldPackage) {
+								fireSuccessfullVersionAndPackageEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionAndPackageSuccessfulMessage(measureName, versionStr));
+							} else  {
+								fireSuccessfullVersionEvent(isMeasureVersioned, measureName, MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(measureName, versionStr));
+							}
+							
 						} else {
 							isMeasureVersioned = false;
 							if (result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
 								versionDisplay.getErrorMessageDisplay()
 										.createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+							} else if(result.getFailureReason() == SaveMeasureResult.PACKAGE_FAIL) {
+								getVersionWithoutPackageDialog(measureId, measureName, isMajor, version, false).show();
 							}
 						}
 					}
@@ -1788,6 +1816,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){
 		MeasureVersionEvent versionEvent = new MeasureVersionEvent(isSuccess, name, message);
 		MatContext.get().getEventBus().fireEvent(versionEvent);
+	}
+	
+	private void fireSuccessfullVersionAndPackageEvent(boolean isSuccess, String name, String message) {
+		MeasureVersionEvent versionEvent = new MeasureVersionEvent(isSuccess, name, message);
+		MatContext.get().getEventBus().fireEvent(versionEvent);		
 	}
 	
 	/**
@@ -2777,7 +2810,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 						&& (versionDisplay.getMajorRadioButton().getValue()
 								|| versionDisplay.getMinorRadioButton().getValue())) {
 					saveFinalizedVersion(selectedMeasure.getId(), selectedMeasure.getName(),versionDisplay.getMajorRadioButton().getValue(),
-							selectedMeasure.getVersion());
+							selectedMeasure.getVersion(), true);
+					
+					// TODO load dialog box
+					// diplay message "Your measure could not be packaged. Select Cancel and return to the measure composer to correct any issues or select Continue to create a version without a measure package."
+				
 				} else {
 					versionDisplay.getErrorMessageDisplay()
 							.createAlert(MatContext.get().getMessageDelegate().getERROR_LIBRARY_VERSION());

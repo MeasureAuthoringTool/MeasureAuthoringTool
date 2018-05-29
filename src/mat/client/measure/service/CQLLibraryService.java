@@ -39,8 +39,7 @@ public interface CQLLibraryService extends RemoteService {
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
 	
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
-
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 	
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 	
@@ -53,9 +52,7 @@ public interface CQLLibraryService extends RemoteService {
 	SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter);
 	
 	SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter);
-	
-	//SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText);
-	
+		
 	void updateUsersShare(SaveCQLLibraryResult result);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
@@ -89,9 +86,7 @@ public interface CQLLibraryService extends RemoteService {
 	
 	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList);
-	
-	//void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
-	
+		
 	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
 	
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);

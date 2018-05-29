@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
@@ -96,10 +97,6 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				if(currentValues != null) {
 					setValues(currentValues);
 				}
-				//Reset the newly entered values
-				display.getSecurityAnswers().put("answer1", MessageDelegate.EMPTY_VALUE);
-				display.getSecurityAnswers().put("answer2", MessageDelegate.EMPTY_VALUE);
-				display.getSecurityAnswers().put("answer3", MessageDelegate.EMPTY_VALUE);
 			}
 		});
 		
@@ -141,8 +138,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		model.setQuestion2(display.getQuestion2Text().getValue());
 		model.setQuestion3(display.getQuestion3Text().getValue());
 		
-		String masked1Value = display.getSecurityAnswers().get("answer1");
-		String textBox1Value= StringUtility.isEmptyOrNull(masked1Value) ? display.getAnswerText1() : masked1Value ;
+		String textBox1Value= display.getAnswerText1();
 		String hidden1Value = display.getSecurityQuestionsWidget().getAnswer1Value();
 		if(!StringUtility.isEmptyOrNull(textBox1Value) && !textBox1Value.equals(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE)) {
 			model.setQuestion1Answer(textBox1Value);
@@ -150,8 +146,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			model.setQuestion1Answer(hidden1Value);
 		}
 		
-		String masked2Value = display.getSecurityAnswers().get("answer2");
-		String textBox2Value = StringUtility.isEmptyOrNull(masked2Value) ? display.getAnswerText2() : masked2Value;
+		String textBox2Value = display.getAnswerText2();
 		String hidden2Value = display.getSecurityQuestionsWidget().getAnswer2Value();
 		if(!StringUtility.isEmptyOrNull(textBox2Value) && !textBox2Value.equals(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE)) {
 			model.setQuestion2Answer(textBox2Value);
@@ -159,8 +154,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			model.setQuestion2Answer(hidden2Value);
 		}
 		
-		String masked3Value = display.getSecurityAnswers().get("answer3");
-		String textBox3Value = StringUtility.isEmptyOrNull(masked3Value) ? display.getAnswerText3() : masked3Value ;
+		String textBox3Value = display.getAnswerText3();
 		String hidden3Value = display.getSecurityQuestionsWidget().getAnswer3Value();
 		
 		if(!StringUtility.isEmptyOrNull(textBox3Value) && !textBox3Value.equals(MessageDelegate.DEFAULT_SECURITY_QUESTION_VALUE)) {

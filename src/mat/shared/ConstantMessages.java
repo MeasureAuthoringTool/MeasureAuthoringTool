@@ -1,7 +1,5 @@
 package mat.shared;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class ConstantMessages.
  */
@@ -334,16 +332,16 @@ public  class ConstantMessages {
 	
 	//TEMPLATES
 	/** The Constant TEMPLATE_WELCOME. */
-	public static final String TEMPLATE_WELCOME = "welcomeTemplate.vm";
+	public static final String TEMPLATE_WELCOME = "welcomeTemplate.ftl";
 	
 	/** The Constant TEMPLATE_TEMP_PASSWORD. */
-	public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.vm";
+	public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_RESET_PASSWORD. */
-	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.vm";
+	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_FORGOT_LOGINID. */
-	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.vm";
+	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.ftl";
 	
 	
 	//events

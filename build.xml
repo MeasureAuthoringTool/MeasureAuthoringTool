@@ -83,6 +83,10 @@
 			<fileset dir="conf/deploy">
 			</fileset>
 		</copy>
+		
+		<copy todir="test-classes">
+			<fileset dir="templates" />
+		</copy>
 
 	</target>
 

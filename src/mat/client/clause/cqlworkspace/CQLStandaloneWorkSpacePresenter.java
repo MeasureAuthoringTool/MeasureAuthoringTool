@@ -99,7 +99,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	private SimplePanel panel = new SimplePanel();
 
 	/** The search display. */
-	private ViewDisplay searchDisplay;
+	private static ViewDisplay searchDisplay;
 
 	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
@@ -6237,7 +6237,7 @@ private void addCodeSearchPanelHandlers() {
 	 * 
 	 * @return ViewDisplay.
 	 */
-	public ViewDisplay getSearchDisplay() {
+	public static ViewDisplay getSearchDisplay() {
 		return searchDisplay;
 	}
 

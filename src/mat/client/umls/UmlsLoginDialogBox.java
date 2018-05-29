@@ -15,7 +15,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Anchor;
@@ -26,6 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
@@ -88,6 +88,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	public void showUMLSLogInDialog() {
 		
 		CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
+		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
 		
 		focusPanel.clear();
 	    panel = new Modal();

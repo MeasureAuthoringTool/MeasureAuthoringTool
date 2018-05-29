@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;

@@ -9,15 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.dao.EmailAuditLogDAO;
-import mat.dao.UserDAO;
-import mat.model.EmailAuditLog;
-import mat.model.Status;
-import mat.model.User;
-import mat.server.util.ServerConstants;
-import mat.shared.ConstantMessages;
-
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +19,13 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
+import mat.dao.EmailAuditLogDAO;
+import mat.dao.UserDAO;
+import mat.model.EmailAuditLog;
+import mat.model.Status;
+import mat.model.User;
+import mat.server.util.ServerConstants;
+import mat.shared.ConstantMessages;
 
 
 

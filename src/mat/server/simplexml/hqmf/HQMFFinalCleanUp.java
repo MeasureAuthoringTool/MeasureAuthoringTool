@@ -6,7 +6,7 @@ import mat.model.clause.MeasureExport;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;

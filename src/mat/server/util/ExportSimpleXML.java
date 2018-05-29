@@ -38,7 +38,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;

@@ -8,9 +8,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import mat.model.clause.Measure;
-
 import org.hibernate.Hibernate;
+
+import mat.hibernate.HibernateConf;
+import mat.model.clause.Measure;
 
 /**
  * Data Structure to store for information about a validation event: type, user,
@@ -149,7 +150,7 @@ public class MeasureValidationLog {
 	 *            the new interim barr
 	 */
 	public void setInterimBarr(byte[] interimBarr) {
-		this.interimBlob = Hibernate.createBlob(interimBarr);
+		this.interimBlob = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(interimBarr);
 	}
 	
 	  /**

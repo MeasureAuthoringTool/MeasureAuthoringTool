@@ -26,7 +26,7 @@ public class HibernateStatisticsFilter implements Filter {
 	private static final Log logger = LogFactory.getLog(HibernateStatisticsFilter.class);
 
 	/** The context. */
-	private ApplicationContext context;
+	public static ApplicationContext context;
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.Filter#destroy()
@@ -65,8 +65,16 @@ public class HibernateStatisticsFilter implements Filter {
 	 */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
-		this.context =
+		HibernateStatisticsFilter.context =
 			WebApplicationContextUtils.getRequiredWebApplicationContext(config.getServletContext());
+	}
+
+	public static ApplicationContext getContext() {
+		return context;
+	}
+
+	public static void setContext(ApplicationContext context) {
+		HibernateStatisticsFilter.context = context;
 	}
 
 }

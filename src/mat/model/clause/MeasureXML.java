@@ -8,6 +8,8 @@ import java.sql.SQLException;
 
 import org.hibernate.Hibernate;
 
+import mat.hibernate.HibernateConf;
+
 /**
  * The Class MeasureXML.
  */
@@ -102,7 +104,7 @@ public class MeasureXML {
 	public void setMeasureXMLAsByteArray(String xml){
 		if(null != xml){
 			byte[] xmlByteArr = xml.getBytes();
-			this.measureXML = Hibernate.createBlob(xmlByteArr);	
+			this.measureXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(xmlByteArr);	
 		}else{
 			this.measureXML = null;
 		}

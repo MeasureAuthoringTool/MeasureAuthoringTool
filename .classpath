@@ -39,7 +39,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-3.17.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-ooxml-3.17.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/poi-ooxml-schemas-3.17.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/velocity-1.7.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/castor-anttasks-1.4.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/castor-codegen-1.4.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/castor-core-1.4.1.jar"/>

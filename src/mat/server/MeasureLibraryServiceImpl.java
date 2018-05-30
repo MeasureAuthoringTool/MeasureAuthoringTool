@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.UUID;
 
@@ -3697,78 +3698,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if(cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
 			String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
 			CQLModel model = CQLUtilityClass.getCQLModelFromXML(exportedXML, cqlLibraryDAO);
-			SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, null);
+			SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, getExpressionListFromCqlModel(model));
 			if(result.getCqlErrors() != null && result.getCqlErrors().size() > 0){
 				isInvalid = true;
 			} else {
-				if(exportedXML != null &&  !exportedXML.isEmpty()) {
-					XmlProcessor processor = new XmlProcessor(exportedXML);
-					String xPathForValueSetBirthDate = "//qdm[@oid='21112-8' and @codeSystemOID='2.16.840.1.113883.6.1']";
-					try {
-						isInvalid = validateDataTypeAndValueSet(xPathForValueSetBirthDate,processor,"datatype",CQLUtil.PATIENT_CHARACTERISTIC_BIRTHDATE);
-						if(!isInvalid){
-							String xPathForValueSetDead = "//qdm[@oid='419099009' and @codeSystemOID='2.16.840.1.113883.6.96']";
-							isInvalid = validateDataTypeAndValueSet(xPathForValueSetDead,processor,"datatype",CQLUtil.PATIENT_CHARACTERSTICS_EXPIRED);
-						}
-						
-						if(!isInvalid) {
-							isInvalid = validateOIDandCodeSystemOIDForDataType(processor, CQLUtil.PATIENT_CHARACTERSTICS_EXPIRED, CQLUtil.DEAD_OID, CQLUtil.DEAD_CODESYSTEM_OID);
-						}
-						if(!isInvalid) {
-							isInvalid = validateOIDandCodeSystemOIDForDataType(processor, CQLUtil.PATIENT_CHARACTERISTIC_BIRTHDATE, CQLUtil.BIRTHDATE_OID, CQLUtil.BIRTHDATE_CODESYTEM_OID);
-						}
-					} catch (XPathExpressionException e) {
-						logger.info("Issue in parseCQLFile while packaging. ExportSimpleXml is null or blank or Xpath breaking");
-						e.printStackTrace();
-					}
-				}
+				isInvalid = !CQLUtil.validateDatatypeCombinations(model, result.getUsedCQLArtifacts().getValueSetDataTypeMap(), result.getUsedCQLArtifacts().getCodeDataTypeMap());				
 			}
 		} else {
 			isInvalid = true;
 		}
 		return isInvalid;
 	}
+	
 
 	
-	private boolean validateOIDandCodeSystemOIDForDataType(XmlProcessor processor, String dataType, String oid,
-			String codeSystemOID) throws XPathExpressionException {
-		boolean isInvalid = false;
-		
-		String xPathToEval = "//qdm[@datatype='" + dataType + "']";
-		NodeList nodeList = (NodeList) xPath.evaluate(xPathToEval,
-				processor.getOriginalDoc(), XPathConstants.NODESET);
-		for(int i=0; i<nodeList.getLength();i++){
-			Node node = nodeList.item(i);
-			if(node.getAttributes().getNamedItem("codeSystemOID") != null) {
-				if(!node.getAttributes().getNamedItem("codeSystemOID").getNodeValue().equalsIgnoreCase(codeSystemOID)) {
-					isInvalid = true;
-				}
-			}
-			if(!isInvalid && node.getAttributes().getNamedItem("oid") != null) {
-				if(!node.getAttributes().getNamedItem("oid").getNodeValue().equalsIgnoreCase(oid)) {
-					isInvalid = true;
-				}
-			}
-		}
-		return isInvalid;
-	}
+	private List<String> getExpressionListFromCqlModel(CQLModel cqlModel) {
+		List<String> expressionList = new ArrayList<>();
 
-	private boolean validateDataTypeAndValueSet(String xPathToEval, XmlProcessor processor, String namedItem, String compareTo) throws XPathExpressionException{
-		boolean isInvalid = false;
-		NodeList valueSetNodeList = (NodeList) xPath.evaluate(xPathToEval,
-				processor.getOriginalDoc(), XPathConstants.NODESET);
-		for(int i=0; i<valueSetNodeList.getLength();i++){
-			Node node = valueSetNodeList.item(i);
-			if(node.getAttributes().getNamedItem(namedItem)!=null ){
-				if(!node.getAttributes().getNamedItem(namedItem).getNodeValue().equalsIgnoreCase(compareTo)){
-					isInvalid = true;
-					break;
-				}
-			}
+		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
+			expressionList.add(cqlDefinition.getName());
 		}
-		
-		
-		return isInvalid;
+
+		for (CQLFunctions cqlFunction : cqlModel.getCqlFunctions()) {
+			expressionList.add(cqlFunction.getName());
+		}
+
+		return expressionList;
 	}
 
 	/**

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
@@ -183,6 +184,73 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setIncludedCQLLibXMLMap(Map<String, LibHolderObject> includedCQLLibXMLMap) {
 		this.includedCQLLibXMLMap = includedCQLLibXMLMap;
+	}
+	
+	/**
+	 * Gets a valueset by name from the parent or any children
+	 * @param formattedCodeName the name in the format libraryname-x.x.xxx|alias|code identifier
+	 * @return the code found
+	 */
+	public CQLCode getCodeByName(String formattedCodeName) {
+		String codeName = formattedCodeName; 
+		String libraryNameVersion = null; // name in the format libraryname-x.x.xxx
+		String[] codeSplit = formattedCodeName.split(Pattern.quote("|"));
+		if(codeSplit.length == 3) {
+			libraryNameVersion = codeSplit[0];
+			codeName = codeSplit[2];
+		}
+		
+		// if the library name version is null, then the code is in the parent
+		if(libraryNameVersion == null) {
+			for(CQLCode code : codeList) {
+				if(code.getCodeName().equals(codeName)) {
+					return code; 
+				}
+			}
+		} else {
+			System.out.println(libraryNameVersion);
+			for(CQLCode code : includedLibrarys.get(libraryNameVersion).getCodeList()) {
+				if(code.getCodeName().equals(codeName)) {
+					return code; 
+				}			
+			}
+ 		}
+		
+		return null;
+	}
+	
+	/**
+	 * Gets a code by name from the parent or any children
+	 * @param formattedName the name in the format libraryname-x.x.xxx|alias|valueset identifier
+	 * @return the code found
+	 */
+	public CQLQualityDataSetDTO getValuesetByName(String formattedValuesetName) {
+		String valuesetName = formattedValuesetName; 
+		String libraryNameVersion = null; // name in the format libraryname-x.x.xxx
+		String alias = null;
+		String[] valuesetSplit = formattedValuesetName.split(Pattern.quote("|"));
+		if(valuesetSplit.length == 3) {
+			libraryNameVersion = valuesetSplit[0];
+			alias = valuesetSplit[1];
+			valuesetName = valuesetSplit[2];
+		}
+		
+		// if the library name version is null, then the code is in the parent
+		if(libraryNameVersion == null) {
+			for(CQLQualityDataSetDTO valueset : valueSetList) {
+				if(valueset.getName() == valuesetName) {
+					return valueset; 
+				}
+			}
+		} else {
+			for(CQLQualityDataSetDTO valueset : includedLibrarys.get(libraryNameVersion).getValueSetList()) {
+				if(valueset.getName() == valuesetName) {
+					return valueset; 
+				}			
+			}
+ 		}
+		
+		return null;
 	}
 	
 }

@@ -77,6 +77,7 @@ public class ConfirmationDialogBox {
 		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
+		messageAlert.getElement().setAttribute("role", "alert");
 		modalBody.add(messageAlert);
 		
 		

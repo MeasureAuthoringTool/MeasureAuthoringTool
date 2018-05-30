@@ -121,7 +121,7 @@ public class StringUtility {
 	public static List<CQLCode> removeEscapedCharsFromList(List<CQLCode> list) {
 		for(CQLCode code : list) {
 			code.setDisplayName(removeEscapedCharsFromString(code.getDisplayName()));
-			code.setCodeName(code.getDisplayName());
+			code.setName(code.getDisplayName());
 		}
 		return list;
 	}

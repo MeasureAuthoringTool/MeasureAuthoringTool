@@ -27,7 +27,7 @@ public class CQLValueSetTransferObjectValidator {
 		List<CQLQualityDataSetDTO> existingQDSList = object.getAppliedQDMList();
 		for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {
 			if (dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID) && dataSetDTO
-					.getCodeListName().equalsIgnoreCase(object.getCqlQualityDataSetDTO().getCodeListName())) {
+					.getName().equalsIgnoreCase(object.getCqlQualityDataSetDTO().getName())) {
 				isValid = false;
 				break;
 			}

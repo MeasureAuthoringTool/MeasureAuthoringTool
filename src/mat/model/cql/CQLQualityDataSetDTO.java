@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class QualityDataSetDTO.
  */
-public class CQLQualityDataSetDTO implements IsSerializable {
+public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	
 	
 	/**
@@ -87,10 +87,6 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 		return dataType;
 	}
 	
-	public String getId() {
-		return id;
-	}
-	
 	public String getOid() {
 		return oid;
 	}
@@ -137,10 +133,6 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
 	}
 	
 	public void setOid(String oid) {
@@ -254,6 +246,42 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	}
 
 
-	
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String getName() {
+		return getCodeListName();
+	}
+
+
+
+	@Override
+	public void setName(String name) {
+		setCodeListName(name);
+	}
+
+
+
+	@Override
+	public String getLogic() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public void setLogic(String logic) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

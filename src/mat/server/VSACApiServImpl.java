@@ -407,10 +407,10 @@ public class VSACApiServImpl implements VSACApiService{
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsacResponseResult.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							if (matValueSet != null) {
-								cqlQualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
+								cqlQualityDataSetDTO.setName(matValueSet.getDisplayName());
 								cqlQualityDataSetDTO.setOriginalCodeListName(matValueSet.getDisplayName());
 								if(cqlQualityDataSetDTO.getSuffix() != null && !cqlQualityDataSetDTO.getSuffix().isEmpty()){
-									cqlQualityDataSetDTO.setCodeListName(matValueSet.getDisplayName()+" ("+cqlQualityDataSetDTO.getSuffix()+")");
+									cqlQualityDataSetDTO.setName(matValueSet.getDisplayName()+" ("+cqlQualityDataSetDTO.getSuffix()+")");
 								}
 								if (matValueSet.isGrouping()) {
 									cqlQualityDataSetDTO.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);

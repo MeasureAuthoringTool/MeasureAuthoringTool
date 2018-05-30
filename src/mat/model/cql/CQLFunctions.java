@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class CQLFunctions.
  */
-public class CQLFunctions implements IsSerializable {
+public class CQLFunctions implements CQLExpression, IsSerializable {
 	
 	/** The id. */
 	private String id;
@@ -28,42 +28,7 @@ public class CQLFunctions implements IsSerializable {
 	private String commentString = "";
 	
 	private String returnType;
-	
-	/**
-	 * Gets the function name.
-	 *
-	 * @return the function name
-	 */
-	public String getFunctionName() {
-		return functionName.trim();
-	}
-	
-	/**
-	 * Sets the function name.
-	 *
-	 * @param functionName the new function name
-	 */
-	public void setFunctionName(String functionName) {
-		this.functionName = functionName.trim();
-	}
-	
-	/**
-	 * Gets the function logic.
-	 *
-	 * @return the function logic
-	 */
-	public String getFunctionLogic() {
-		return functionLogic.trim();
-	}
-	
-	/**
-	 * Sets the function logic.
-	 *
-	 * @param functionLogic the new function logic
-	 */
-	public void setFunctionLogic(String functionLogic) {
-		this.functionLogic = functionLogic.trim();
-	}
+
 	
 	/**
 	 * Gets the argument list.
@@ -88,6 +53,7 @@ public class CQLFunctions implements IsSerializable {
 	 *
 	 * @return the id
 	 */
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -97,10 +63,46 @@ public class CQLFunctions implements IsSerializable {
 	 *
 	 * @param id the new id
 	 */
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
 	
+	@Override
+	public String getName() {
+		return getFunctionName();
+	}
+
+	@Override
+	public void setName(String name) {
+		setFunctionName(name);
+	}
+
+	@Override
+	public String getLogic() {
+		return getFunctionLogic();
+	}
+
+	@Override
+	public void setLogic(String logic) {
+		setFunctionLogic(logic);
+	}
+
+	public String getFunctionName() {
+		return functionName.trim();
+	}
+
+	public void setFunctionName(String name) {
+		this.functionName = name.trim();
+	}
+
+	public String getFunctionLogic() {
+		return functionLogic.trim();
+	}
+
+	public void setFunctionLogic(String logic) {
+		this.functionLogic = logic.trim();
+	}
 	/**
 	 * Gets the context.
 	 *

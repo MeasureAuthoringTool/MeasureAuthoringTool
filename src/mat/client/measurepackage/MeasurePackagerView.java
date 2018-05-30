@@ -1122,7 +1122,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public final void setCQLElementsInSuppElements(final List<CQLDefinition> clauses) {
 		cqlSupPopulationList.clear();
 		for(CQLDefinition cqlDef:clauses){
-			if(cqlDef.getDefinitionName() != null && !cqlDef.getDefinitionName().isEmpty()){
+			if(cqlDef.getName() != null && !cqlDef.getName().isEmpty()){
 					cqlSupPopulationList.add(cqlDef);
 			}
 		}
@@ -1555,9 +1555,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			if (value == null) {
 				return;
 			}
-			if (value.getDefinitionName() != null) {
-				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getDefinitionName());
-				SafeHtml rendered = templates.cell(value.getDefinitionName(), safeValue);
+			if (value.getName() != null) {
+				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getName());
+				SafeHtml rendered = templates.cell(value.getName(), safeValue);
 				sb.append(rendered);
 			}
 		}

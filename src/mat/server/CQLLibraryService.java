@@ -821,7 +821,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		try {
 			bdata = cqlLibrary.getCqlXML().getBytes(1, (int) cqlLibrary.getCqlXML().length());
 			String data = new String(bdata);
-			cqlModel = CQLUtilityClass.getCQLStringFromXML(data);
+			cqlModel = CQLUtilityClass.getCQLStringFromXML(data, cqlLibraryDAO);
 			cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		} catch (SQLException e) {
 			e.printStackTrace();

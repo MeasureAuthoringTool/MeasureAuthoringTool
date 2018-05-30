@@ -159,10 +159,10 @@ public class JSONAttributeModeUtility {
 						if(modeName.equalsIgnoreCase("Value Sets")){
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
-								if(!valSets.getCodeListName().equals("Birthdate") && !valSets.getCodeListName().equals("Dead")) {
-									mode.setModeValue(formatModeValue(valSets.getCodeListName()));
+								if(!valSets.getName().equals("Birthdate") && !valSets.getName().equals("Dead")) {
+									mode.setModeValue(formatModeValue(valSets.getName()));
 									if(valSets.getType()== null) {
-										mode.setModeName("valueset:\""+valSets.getCodeListName() + "\"");
+										mode.setModeName("valueset:\""+valSets.getName() + "\"");
 										modeDetailsList.add(mode);
 									}
 								}

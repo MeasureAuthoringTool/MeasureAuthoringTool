@@ -470,7 +470,7 @@ public class CQLUtil {
 		
 		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
 
-		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
+		getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
@@ -492,7 +492,7 @@ public class CQLUtil {
 	 * @param cqlLibraryDAO the cql library DAO
 	 * @return the CQL include lib map
 	 */
-	public static void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
+	public static void getCQLIncludeMaps(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
 			Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap, CQLLibraryDAO cqlLibraryDAO) {
 
 		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
@@ -514,7 +514,7 @@ public class CQLUtil {
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
-			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
+			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 		}
 	}
 
@@ -1047,7 +1047,7 @@ public class CQLUtil {
 
 		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
 		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
-		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
+		getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 		setIncludedCQLExpressions(cqlModel);

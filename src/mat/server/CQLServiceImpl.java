@@ -1675,7 +1675,7 @@ public class CQLServiceImpl implements CQLService {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
 		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
-		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
+		CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 		CQLUtil.setIncludedCQLExpressions(cqlModel);
@@ -1691,7 +1691,7 @@ public class CQLServiceImpl implements CQLService {
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
 		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
 		String parentLibraryName = cqlModel.getLibraryName();
-		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlIncludeModelMap, getCqlLibraryDAO());
+		CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 

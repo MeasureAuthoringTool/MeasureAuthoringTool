@@ -506,7 +506,7 @@ public class CQLUtil {
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString, cqlLibraryDAO);
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString, cqlLibraryDAO);
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
@@ -532,7 +532,7 @@ public class CQLUtil {
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		libraryMap.put(cqlModel.getName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
-			CQLModel includedCQLModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML(), cqlLibraryDAO);
+			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML(), cqlLibraryDAO);
 			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
 			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();			
 			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
@@ -1007,7 +1007,7 @@ public class CQLUtil {
 
 					if(libHolderObject != null){
 						String xml = libHolderObject.getMeasureXML();
-						CQLModel childCQLModel = CQLUtilityClass.getCQLStringFromXML(xml, cqlLibraryDAO);
+						CQLModel childCQLModel = CQLUtilityClass.getCQLModelFromXML(xml, cqlLibraryDAO);
 						List<CQLIncludeLibrary> cqlGrandChildLibs = childCQLModel.getCqlIncludeLibrarys();
 
 						for(CQLIncludeLibrary grandChildLib : cqlGrandChildLibs){

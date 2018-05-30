@@ -255,7 +255,7 @@ public final class CQLUtilityClass {
 	}
 
 
-	public static CQLModel getCQLStringFromXML(String xmlString, CQLLibraryDAO cqlLibraryDAO) {
+	public static CQLModel getCQLModelFromXML(String xmlString, CQLLibraryDAO cqlLibraryDAO) {
 		CQLModel cqlModel = new CQLModel();
 		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlString);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
@@ -310,7 +310,7 @@ public final class CQLUtilityClass {
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString, cqlLibraryDAO);
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString, cqlLibraryDAO);
 			cqlModelMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion(),
 					includeCqlModel);
 			getCQLIncludeModel(includeCqlModel, cqlModelMap, cqlLibraryDAO);

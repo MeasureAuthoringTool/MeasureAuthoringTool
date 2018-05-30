@@ -1693,6 +1693,7 @@ public class CQLServiceImpl implements CQLService {
 		String parentLibraryName = cqlModel.getLibraryName();
 		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlIncludeModelMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();

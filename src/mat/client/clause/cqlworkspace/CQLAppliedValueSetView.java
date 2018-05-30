@@ -545,7 +545,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						}
 					}
 
-					value.append(object.getCodeListName()).append(qdmType);
+					value.append(object.getName()).append(qdmType);
 					title.append("Name : ").append(value);
 
 					title.append("");
@@ -1538,7 +1538,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList,  List<CQLQualityDataSetDTO> appliedValueSetTableList) {
 		List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList  = new ArrayList<CQLValueSetTransferObject>();
 		for(CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
-			if(!checkNameInValueSetList(cqlQualityDataSetDTO.getCodeListName(), appliedValueSetTableList)) {
+			if(!checkNameInValueSetList(cqlQualityDataSetDTO.getName(), appliedValueSetTableList)) {
 				CQLValueSetTransferObject cqlValueSetTransferObject = new CQLValueSetTransferObject();
 				cqlValueSetTransferObject.setCqlQualityDataSetDTO(cqlQualityDataSetDTO);
 				
@@ -1560,7 +1560,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					matValueSet.setConceptList(matConceptList);
 					
 					matValueSet.setID(cqlQualityDataSetDTO.getOid());
-					matValueSet.setDisplayName(cqlQualityDataSetDTO.getCodeListName());
+					matValueSet.setDisplayName(cqlQualityDataSetDTO.getName());
 					cqlValueSetTransferObject.setMatValueSet(matValueSet);
 				}
 				CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
@@ -1586,7 +1586,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
 			while (iterator.hasNext()) {
 				CQLQualityDataSetDTO dataSetDTO = iterator.next();
-				if (dataSetDTO.getCodeListName().equalsIgnoreCase(userDefinedInput)) {
+				if (dataSetDTO.getName().equalsIgnoreCase(userDefinedInput)) {
 					return true;
 				}
 			}

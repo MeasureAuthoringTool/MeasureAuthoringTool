@@ -180,10 +180,10 @@ public class CQLValueSetTransferObject implements IsSerializable, BaseModel {
 			}
 		}
 		if (this.getCqlQualityDataSetDTO() != null) {
-			String noMarkupText = this.getCqlQualityDataSetDTO().getCodeListName().trim().replaceAll(markupRegExp, "");
+			String noMarkupText = this.getCqlQualityDataSetDTO().getName().trim().replaceAll(markupRegExp, "");
 			//System.out.println("QDM To Be Modified VSAC Value set name:" + noMarkupText);
-			if (this.getCqlQualityDataSetDTO().getCodeListName().trim().length() > noMarkupText.length()) {
-				this.getCqlQualityDataSetDTO().setCodeListName(noMarkupText);
+			if (this.getCqlQualityDataSetDTO().getName().trim().length() > noMarkupText.length()) {
+				this.getCqlQualityDataSetDTO().setName(noMarkupText);
 			}
 		}
 		if (this.getCodeListSearchDTO() != null) {

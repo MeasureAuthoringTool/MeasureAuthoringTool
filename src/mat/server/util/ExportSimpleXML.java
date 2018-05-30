@@ -394,7 +394,7 @@ public class ExportSimpleXML {
 
 		CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
 		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
-		CQLUtil.addUnUsedGrandChildrentoSimpleXML(originalDoc, result, cqlModel);
+		CQLUtil.addUnUsedGrandChildrentoSimpleXML(originalDoc, result, cqlModel, cqlLibraryDAO);
 
 		System.out.println("All included libs:" + cqlModel.getIncludedCQLLibXMLMap().keySet());
 	}

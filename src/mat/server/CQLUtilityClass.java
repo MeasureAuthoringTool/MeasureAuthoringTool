@@ -3,6 +3,7 @@ package mat.server;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,9 +11,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.InputSource;
 
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.dao.IDAO;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -24,9 +29,12 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.shared.LibHolderObject;
 
 public final class CQLUtilityClass {
 
+
+	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtilityClass.class);
 
@@ -184,10 +192,10 @@ public final class CQLUtilityClass {
 				cqlStr = cqlStr.append(definitionComment);
 			}
 
-			String def = "define " + "\""+ definition.getDefinitionName() + "\"";
+			String def = "define " + "\""+ definition.getName() + "\"";
 
 			cqlStr = cqlStr.append(def + ":\n");
-			cqlStr = cqlStr.append("\t" + definition.getDefinitionLogic().replaceAll("\\n", "\n\t"));
+			cqlStr = cqlStr.append("\t" + definition.getLogic().replaceAll("\\n", "\n\t"));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the def we just appended is the current one, then
@@ -208,7 +216,7 @@ public final class CQLUtilityClass {
 			}
 
 			String func = "define function "
-					+ "\""+ function.getFunctionName() + "\"";
+					+ "\""+ function.getName() + "\"";
 
 
 			cqlStr = cqlStr.append(func + "(");
@@ -232,7 +240,7 @@ public final class CQLUtilityClass {
 				cqlStr.deleteCharAt(cqlStr.length() - 2);
 			}
 
-			cqlStr = cqlStr.append("):\n" + "\t" + function.getFunctionLogic().replaceAll("\\n", "\n\t"));
+			cqlStr = cqlStr.append("):\n" + "\t" + function.getLogic().replaceAll("\\n", "\n\t"));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the func we just appended is the current one, then
@@ -247,7 +255,7 @@ public final class CQLUtilityClass {
 	}
 
 
-	public static CQLModel getCQLStringFromXML(String xmlString) {
+	public static CQLModel getCQLStringFromXML(String xmlString, CQLLibraryDAO cqlLibraryDAO) {
 		CQLModel cqlModel = new CQLModel();
 		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlString);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
@@ -264,6 +272,11 @@ public final class CQLUtilityClass {
 			} catch (Exception e) {
 				logger.info("Error while getting codesystems :" + e.getMessage());
 			}
+		}
+		
+		if(!cqlModel.getCqlIncludeLibrarys().isEmpty()) {
+			getCQLIncludeModel(cqlModel, cqlModel.getIncludedLibrarys(), cqlLibraryDAO);
+			
 		}
 		
 		if(!cqlModel.getValueSetList().isEmpty()){			
@@ -284,7 +297,25 @@ public final class CQLUtilityClass {
 		return cqlModel;
 	}
 
+	private static void getCQLIncludeModel(CQLModel cqlModel, Map<String, CQLModel> cqlModelMap, CQLLibraryDAO cqlLibraryDAO) {
+		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
 
+		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlIncludeLibrary.getCqlLibraryId());
+
+			if (cqlLibrary == null) {
+				logger.info("Could not find included library:" + cqlIncludeLibrary.getAliasName());
+				continue;
+			}
+
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString, cqlLibraryDAO);
+			cqlModelMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion(),
+					includeCqlModel);
+			getCQLIncludeModel(includeCqlModel, cqlModelMap, cqlLibraryDAO);
+		}
+	}
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		CQLQualityDataModelWrapper valuesetWrapper;
 		try {
@@ -310,7 +341,7 @@ public final class CQLUtilityClass {
 		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 		for (CQLCode tempDataSet : codeList) {
 			CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
-			convertedCQLDataSet.setCodeListName(tempDataSet.getCodeName());
+			convertedCQLDataSet.setName(tempDataSet.getName());
 			convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
 			convertedCQLDataSet.setCodeSystemOID(tempDataSet.getCodeSystemOID());
 
@@ -348,13 +379,13 @@ public final class CQLUtilityClass {
 
 	public static List<CQLQualityDataSetDTO> sortCQLQualityDataSetDto(List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs){
 
-		cqlQualityDataSetDTOs.sort((c1, c2) -> c1.getCodeListName().compareToIgnoreCase(c2.getCodeListName()));
+		cqlQualityDataSetDTOs.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
 		return cqlQualityDataSetDTOs;
 	}
 
 	public static List<CQLCode> sortCQLCodeDTO(List<CQLCode> cqlCodes){
 
-		cqlCodes.sort((c1, c2) -> c1.getCodeName().compareToIgnoreCase(c2.getCodeName()));
+		cqlCodes.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
 		return cqlCodes;
 	}
 
@@ -427,17 +458,17 @@ public final class CQLUtilityClass {
 
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 
-				if(!valueSetAlreadyUsed.contains(valueset.getCodeListName())){
+				if(!valueSetAlreadyUsed.contains(valueset.getName())){
 
 					String version = valueset.getVersion().replaceAll(" ", "%20");
-					sb.append("valueset ").append('"').append(valueset.getCodeListName()).append('"');
+					sb.append("valueset ").append('"').append(valueset.getName()).append('"');
 					sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
 					//Check if QDM has expansion identifier or not.
 					if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
 						sb.append("version 'urn:hl7:version:").append(version).append("' ");
 					}
 					sb.append("\n");
-					valueSetAlreadyUsed.add(valueset.getCodeListName());
+					valueSetAlreadyUsed.add(valueset.getName());
 				}
 			}
 
@@ -466,7 +497,7 @@ public final class CQLUtilityClass {
 				if(!codesAlreadyUsed.contains(codesStr)){
 					sb.append("code ").append(codesStr).append(" ").append("from ");
 					sb.append('"').append(codeSysStr).append('"').append(" ");
-					sb.append("display " +"'" +codes.getCodeName().replaceAll("'", "\\\\'")+"'");
+					sb.append("display " +"'" +codes.getName().replaceAll("'", "\\\\'")+"'");
 					sb.append("\n");
 					codesAlreadyUsed.add(codesStr);
 				}
@@ -484,14 +515,14 @@ public final class CQLUtilityClass {
 
 			for (CQLParameter parameter : paramList) {
 
-				String param = "parameter " + "\"" + parameter.getParameterName() + "\"";
+				String param = "parameter " + "\"" + parameter.getName() + "\"";
 
 				if(StringUtils.isNotBlank(parameter.getCommentString())) {
 					cqlStr.append("/*").append(parameter.getCommentString()).append("*/");
 					cqlStr.append("\n");
 				}
 				
-				cqlStr.append(param + " " + parameter.getParameterLogic());
+				cqlStr.append(param + " " + parameter.getLogic());
 				cqlStr.append("\n");
 
 				// if the the param we just appended is the current one, then

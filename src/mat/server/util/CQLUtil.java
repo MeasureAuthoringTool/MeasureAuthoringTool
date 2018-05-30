@@ -15,10 +15,23 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.cqframework.cql.cql2elm.CQLtoELM;
+import org.cqframework.cql.cql2elm.CqlTranslatorException;
+import org.cqframework.cql.cql2elm.MATCQLFilter;
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.OperandDef;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLExpression;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
@@ -33,18 +46,6 @@ import mat.shared.CQLObject;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.cqframework.cql.cql2elm.MATCQLFilter;
-import org.hl7.elm.r1.FunctionDef;
-import org.hl7.elm.r1.OperandDef;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * The Class CQLUtil.
@@ -473,7 +474,7 @@ public class CQLUtil {
 
 		setIncludedCQLExpressions(cqlModel);
 
-		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM);
+		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM, cqlLibraryDAO);
 
 		return parsedCQL;
 	}
@@ -505,7 +506,7 @@ public class CQLUtil {
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString);
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLStringFromXML(includeCqlXMLString, cqlLibraryDAO);
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
@@ -522,7 +523,7 @@ public class CQLUtil {
 	 * @param generateELM the generate ELM
 	 */
 	private static void validateCQLWithIncludes(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
-			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM) {
+			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM, CQLLibraryDAO cqlLibraryDAO ) {
 
 		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
 		Map<String, String> libraryMap = new HashMap<>(); 
@@ -531,7 +532,7 @@ public class CQLUtil {
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		libraryMap.put(cqlModel.getName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
-			CQLModel includedCQLModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
+			CQLModel includedCQLModel = CQLUtilityClass.getCQLStringFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML(), cqlLibraryDAO);
 			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
 			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();			
 			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
@@ -593,7 +594,7 @@ public class CQLUtil {
 			}
 
 			for(CQLDefinition definition : cqlModel.getDefinitionList()) {
-				String definitionName = definition.getDefinitionName(); 
+				String definitionName = definition.getName(); 
 				CQLExpressionObject expression = new CQLExpressionObject("Definition", definitionName);
 				expression.setReturnType(cqlToElm.getExpression(definitionName).getResultType().toString());		
 				expression.setCodeDataTypeMap(mapSetValueToListValue(cqlFilter.getExpressionNameToCodeDataTypeMap().get(definitionName)));
@@ -602,7 +603,7 @@ public class CQLUtil {
 			}
 
 			for(CQLFunctions function : cqlModel.getCqlFunctions()) {
-				String functionName = function.getFunctionName(); 
+				String functionName = function.getName(); 
 				FunctionDef functionDef = (FunctionDef) cqlToElm.getExpression(functionName);
 
 				CQLExpressionObject expression = new CQLExpressionObject("Function", functionName);
@@ -622,7 +623,7 @@ public class CQLUtil {
 
 
 			for(CQLParameter parameter : cqlModel.getCqlParameters()) {
-				String parameterName = parameter.getParameterName(); 
+				String parameterName = parameter.getName(); 
 				CQLExpressionObject expression = new CQLExpressionObject("Parameter", parameterName);
 				cqlObject.getCqlParameterObjectList().add(expression);
 			}
@@ -688,12 +689,13 @@ public class CQLUtil {
 
 			String xml = libHolderObject.getMeasureXML();
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);
-
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/definitions/definition[@supplDataElement=\"false\"]/@name", cqlModel.getIncludedDefNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/functions/function/@name", cqlModel.getIncludedFuncNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset[@suppDataElement=\"false\"]/@name", cqlModel.getIncludedValueSetNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/parameters/parameter[@readOnly=\"false\"]/@name", cqlModel.getIncludedParamNames());
-			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@displayName", cqlModel.getIncludedCodeNames());
+			
+			
+		/*	addNamesToList(alias, xmlProcessor, "//cqlLookUp/definitions/definition[@supplDataElement=\"false\"]/@name", cqlModel.getIncludedDef());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/functions/function/@name", cqlModel.getIncludedFunc());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/valuesets/valueset[@suppDataElement=\"false\"]/@name", cqlModel.getIncludedValueSet());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/parameters/parameter[@readOnly=\"false\"]/@name", cqlModel.getIncludedParam());
+			addNamesToList(alias, xmlProcessor, "//cqlLookUp/codes/code/@displayName", cqlModel.getIncludedCode());*/
 
 		}
 
@@ -708,7 +710,7 @@ public class CQLUtil {
 	 * @param listToAddTo the list to add to
 	 */
 	private static void addNamesToList(String alias,
-			XmlProcessor xmlProcessor, String xPathForFetch, List<CQLIdentifierObject> listToAddTo) {
+			XmlProcessor xmlProcessor, String xPathForFetch, List<CQLExpression> listToAddTo) {
 		try {
 
 			NodeList exprList = (NodeList) xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForFetch);
@@ -717,9 +719,10 @@ public class CQLUtil {
 
 				for(int i=0; i < exprList.getLength(); i++){
 					CQLIdentifierObject identifier = new CQLIdentifierObject(alias, exprList.item(i).getNodeValue());
-					listToAddTo.add(identifier);
+					//listToAddTo.add(identifier);
 					
-				}			}                    
+				}			
+			}                    
 
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
@@ -977,7 +980,7 @@ public class CQLUtil {
 	 * @param cqlModel the cql model
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	public static void addUnUsedGrandChildrentoSimpleXML(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel) throws XPathExpressionException {
+	public static void addUnUsedGrandChildrentoSimpleXML(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO) throws XPathExpressionException {
 
 		String allUsedCQLLibsXPath = "//allUsedCQLLibs";
 
@@ -1004,7 +1007,7 @@ public class CQLUtil {
 
 					if(libHolderObject != null){
 						String xml = libHolderObject.getMeasureXML();
-						CQLModel childCQLModel = CQLUtilityClass.getCQLStringFromXML(xml);
+						CQLModel childCQLModel = CQLUtilityClass.getCQLStringFromXML(xml, cqlLibraryDAO);
 						List<CQLIncludeLibrary> cqlGrandChildLibs = childCQLModel.getCqlIncludeLibrarys();
 
 						for(CQLIncludeLibrary grandChildLib : cqlGrandChildLibs){

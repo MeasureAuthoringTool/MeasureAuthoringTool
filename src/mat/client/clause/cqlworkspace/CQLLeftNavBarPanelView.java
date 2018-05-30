@@ -830,7 +830,7 @@ public class CQLLeftNavBarPanelView {
 			defineNameListBox.clear();
 			viewDefinitions = sortDefinitionNames(viewDefinitions);
 			for (CQLDefinition define : viewDefinitions) {
-				defineNameListBox.addItem(define.getDefinitionName(), define.getId());
+				defineNameListBox.addItem(define.getName(), define.getId());
 			}
 			// Set tooltips for each element in listbox
 			SelectElement selectElement = SelectElement.as(defineNameListBox.getElement());
@@ -853,7 +853,7 @@ public class CQLLeftNavBarPanelView {
 		Collections.sort(viewDef, new Comparator<CQLDefinition>() {
 			@Override
 			public int compare(final CQLDefinition object1, final CQLDefinition object2) {
-				return object1.getDefinitionName().compareToIgnoreCase(object2.getDefinitionName());
+				return object1.getName().compareToIgnoreCase(object2.getName());
 			}
 		});
 		return viewDef;
@@ -868,7 +868,7 @@ public class CQLLeftNavBarPanelView {
 			// sort functions
 			viewFunctions = sortFunctionNames(viewFunctions);
 			for (CQLFunctions func : viewFunctions) {
-				funcNameListBox.addItem(func.getFunctionName(), func.getId());
+				funcNameListBox.addItem(func.getName(), func.getId());
 			}
 			// Set tooltips for each element in listbox
 			SelectElement selectElement = SelectElement.as(funcNameListBox.getElement());
@@ -891,7 +891,7 @@ public class CQLLeftNavBarPanelView {
 		Collections.sort(viewFunc, new Comparator<CQLFunctions>() {
 			@Override
 			public int compare(final CQLFunctions object1, final CQLFunctions object2) {
-				return object1.getFunctionName().compareToIgnoreCase(object2.getFunctionName());
+				return object1.getName().compareToIgnoreCase(object2.getName());
 			}
 		});
 		return viewFunc;
@@ -912,7 +912,7 @@ public class CQLLeftNavBarPanelView {
 			parameterNameListBox.clear();
 			viewParameterList = sortParamList(viewParameterList);
 			for (CQLParameter param : viewParameterList) {
-				parameterNameListBox.addItem(param.getParameterName(), param.getId());
+				parameterNameListBox.addItem(param.getName(), param.getId());
 			}
 			// Set tooltips for each element in listbox
 			SelectElement selectElement = SelectElement.as(parameterNameListBox.getElement());
@@ -935,7 +935,7 @@ public class CQLLeftNavBarPanelView {
 		Collections.sort(viewParamList, new Comparator<CQLParameter>() {
 			@Override
 			public int compare(final CQLParameter object1, final CQLParameter object2) {
-				return object1.getParameterName().compareToIgnoreCase(object2.getParameterName());
+				return object1.getName().compareToIgnoreCase(object2.getName());
 			}
 		});
 		return viewParamList;
@@ -1028,7 +1028,7 @@ public class CQLLeftNavBarPanelView {
 		getParameterMap().clear();
 		getParameterNameMap().clear();
 		for (CQLParameter parameter : getViewParameterList()) {
-			getParameterNameMap().put(parameter.getId(), parameter.getParameterName());
+			getParameterNameMap().put(parameter.getId(), parameter.getName());
 			getParameterMap().put(parameter.getId(), parameter);
 		}
 		updateNewSuggestParamOracle();
@@ -1053,7 +1053,7 @@ public class CQLLeftNavBarPanelView {
 		getDefinitionMap().clear();
 		getDefineNameMap().clear();
 		for (CQLDefinition define : getViewDefinitions()) {
-			getDefineNameMap().put(define.getId(), define.getDefinitionName());
+			getDefineNameMap().put(define.getId(), define.getName());
 			getDefinitionMap().put(define.getId(), define);
 		}
 
@@ -1078,16 +1078,9 @@ public class CQLLeftNavBarPanelView {
 	public void updateFunctionMap() {
 		functionMap.clear();
 		funcNameMap.clear();
-		// functionArgNameMap.clear();
 		for (CQLFunctions function : viewFunctions) {
-			funcNameMap.put(function.getId(), function.getFunctionName());
+			funcNameMap.put(function.getId(), function.getName());
 			functionMap.put(function.getId(), function);
-			/*
-			 * if (function.getArgumentList() != null) { for
-			 * (CQLFunctionArgument argument : function.getArgumentList()) {
-			 * functionArgNameMap.put(argument.getArgumentName().toLowerCase(),
-			 * argument); } }
-			 */
 		}
 		updateNewSuggestFuncOracle();
 		if (viewFunctions.size() < 10) {

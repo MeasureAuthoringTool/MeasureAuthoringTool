@@ -930,8 +930,8 @@ public class PackagerServiceImpl implements PackagerService {
 				CQLDefinition cqlDef = new CQLDefinition();
 
 				cqlDef.setId(newNode.getAttributes().getNamedItem("id").getNodeValue());
-				cqlDef.setDefinitionName(newNode.getAttributes().getNamedItem("name").getNodeValue());
-				cqlDef.setDefinitionLogic(newNode.getFirstChild().getTextContent());
+				cqlDef.setName(newNode.getAttributes().getNamedItem("name").getNodeValue());
+				cqlDef.setLogic(newNode.getFirstChild().getTextContent());
 
 				cqlDef.setContext(newNode.getAttributes().getNamedItem("context").getNodeValue());
 				// if(newNode.getAttributes().getNamedItem("supplDataElement")

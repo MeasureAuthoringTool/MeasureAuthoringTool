@@ -620,63 +620,6 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 		
 	}
 	
-	
-	
-	/**
-	 * Gets the function argument value builder.
-	 *
-	 * @param functions the functions
-	 * @return the function argument value builder
-	 */
-	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getName());
-		functionNameBuilder.append("(");
-		StringBuilder argumentType = new StringBuilder();
-		if (functions.getArgumentList() != null) {
-			for (int j = 0; j < functions.getArgumentList().size(); j++) {
-				CQLFunctionArgument argument = functions.getArgumentList().get(j);
-				argumentType = argumentType.append(argument.getArgumentName());
-				if (j <  (functions.getArgumentList().size() - 1)) {
-					argumentType.append(",");
-				}
-			}
-		}
-		functionNameBuilder.append(argumentType + ")");
-		return functionNameBuilder.toString();
-	}
-	
-	/**
-	 * Gets the function argument tool tip builder.
-	 *
-	 * @param functions the functions
-	 * @return the function argument tool tip builder
-	 */
-	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getName());
-		functionNameBuilder.append("(");
-		StringBuilder argumentType = new StringBuilder();
-		if (functions.getArgumentList() != null) {
-			for (int j = 0; j < functions.getArgumentList().size(); j++) {
-				CQLFunctionArgument argument = functions.getArgumentList().get(j);
-				argumentType = argumentType.append(argument.getArgumentName());
-				if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
-					argumentType = argumentType.append(" " +'"' + argument.getQdmDataType() + '"');
-				}
-				else if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
-					argumentType = argumentType.append(" " + argument.getOtherType());
-				}
-				else{
-					argumentType = argumentType.append(" " +argument.getArgumentType());
-				}
-				if (j <  (functions.getArgumentList().size() - 1)) {
-					argumentType.append(",");
-				}
-			}
-		}
-		functionNameBuilder.append(argumentType + ")");
-		return functionNameBuilder.toString();
-	}
-	
 	/**
 	 * Convert to camel case.
 	 *

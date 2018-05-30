@@ -17,7 +17,7 @@ public class CQLHumanReadableGenerator {
 		String cqlNodeString = subXMLProcessor.transform(subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild());
 		System.out.println("cqlNodeString:"+cqlNodeString);
 		
-		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML, cqlLibraryDAO);
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML);
 //		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 				
 //		MATCQLParser matcqlParser = new MATCQLParser();
@@ -34,7 +34,7 @@ public class CQLHumanReadableGenerator {
 		
 		String humanReadableHTML = "";
 		
-		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXmlStr, cqlLibraryDAO);
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXmlStr);
 //		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
 		
 //		MATCQLParser matcqlParser = new MATCQLParser();

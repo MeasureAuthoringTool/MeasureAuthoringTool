@@ -3,7 +3,6 @@ package mat.server;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,13 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.InputSource;
 
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
-import mat.dao.IDAO;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -29,7 +24,6 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.LibHolderObject;
 
 public final class CQLUtilityClass {
 
@@ -255,7 +249,7 @@ public final class CQLUtilityClass {
 	}
 
 
-	public static CQLModel getCQLModelFromXML(String xmlString, CQLLibraryDAO cqlLibraryDAO) {
+	public static CQLModel getCQLModelFromXML(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
 		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlString);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
@@ -272,11 +266,6 @@ public final class CQLUtilityClass {
 			} catch (Exception e) {
 				logger.info("Error while getting codesystems :" + e.getMessage());
 			}
-		}
-		
-		if(!cqlModel.getCqlIncludeLibrarys().isEmpty()) {
-			getCQLIncludeModel(cqlModel, cqlModel.getIncludedLibrarys(), cqlLibraryDAO);
-			
 		}
 		
 		if(!cqlModel.getValueSetList().isEmpty()){			
@@ -296,26 +285,7 @@ public final class CQLUtilityClass {
 		}
 		return cqlModel;
 	}
-
-	private static void getCQLIncludeModel(CQLModel cqlModel, Map<String, CQLModel> cqlModelMap, CQLLibraryDAO cqlLibraryDAO) {
-		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
-
-		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
-			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlIncludeLibrary.getCqlLibraryId());
-
-			if (cqlLibrary == null) {
-				logger.info("Could not find included library:" + cqlIncludeLibrary.getAliasName());
-				continue;
-			}
-
-			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
-
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString, cqlLibraryDAO);
-			cqlModelMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion(),
-					includeCqlModel);
-			getCQLIncludeModel(includeCqlModel, cqlModelMap, cqlLibraryDAO);
-		}
-	}
+	
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		CQLQualityDataModelWrapper valuesetWrapper;
 		try {

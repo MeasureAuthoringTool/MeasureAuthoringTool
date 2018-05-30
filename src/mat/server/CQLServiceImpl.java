@@ -1645,7 +1645,7 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult getCQLData(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
-		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString, cqlLibraryDAO);
+		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString, cqlLibraryDAO);
 
 		SaveUpdateCQLResult parsedCQL = parseCQLLibraryForErrors(cqlModel);
 
@@ -1670,7 +1670,7 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult getCQLDataForLoad(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
-		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString, cqlLibraryDAO);
+		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString, cqlLibraryDAO);
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
@@ -1685,7 +1685,7 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult getCQLLibraryData(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
-		cqlModel = CQLUtilityClass.getCQLStringFromXML(xmlString, cqlLibraryDAO);
+		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString, cqlLibraryDAO);
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
 		String parentLibraryName = cqlModel.getLibraryName();
 		CQLUtil.getCQLIncludeLibMap(cqlModel, cqlLibNameMap, getCqlLibraryDAO());
@@ -2362,7 +2362,7 @@ public class CQLServiceImpl implements CQLService {
 	private SaveUpdateCQLResult parseCQLExpressionForErrors(SaveUpdateCQLResult result, String xml,
 			String cqlExpressionName, String logic, String expressionName, String expressionType) {
 
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml, cqlLibraryDAO);
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml, cqlLibraryDAO);
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName).toString();
 
 		cqlModel.setLines(countLines(cqlFileString));
@@ -2506,7 +2506,7 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
 		logger.info("GETTING CQL ARTIFACTS");
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(xml, cqlLibraryDAO);
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml, cqlLibraryDAO);
 
 		List<String> exprList = new ArrayList<String>();
 

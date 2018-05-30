@@ -3685,14 +3685,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean parseCQLFile(String measureXML, String measureId) {
 		boolean isInvalid = false;
 		MeasureXML newXml = getMeasureXMLDAO().findForMeasure(measureId);
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML, cqlLibraryDAO);
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML, cqlLibraryDAO);
 		List<String> message = new ArrayList<String>();
 		
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 		
 		if(cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
 			String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
-			CQLModel model = CQLUtilityClass.getCQLStringFromXML(exportedXML, cqlLibraryDAO);
+			CQLModel model = CQLUtilityClass.getCQLModelFromXML(exportedXML, cqlLibraryDAO);
 			SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, null);
 			if(result.getCqlErrors() != null && result.getCqlErrors().size() > 0){
 				isInvalid = true;

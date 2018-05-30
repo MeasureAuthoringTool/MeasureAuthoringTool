@@ -16,6 +16,7 @@
 	
 	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 	  <property name="systemPropertiesMode" value="2"/>
+	  <property name="location" value="classpath:MAT.properties"/>
 	  <property name="properties">  
         <props>  
             <prop key="db_user">mat_app</prop>  

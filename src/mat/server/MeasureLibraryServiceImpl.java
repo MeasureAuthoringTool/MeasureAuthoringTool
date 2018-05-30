@@ -52,6 +52,7 @@ import org.xml.sax.SAXException;
 
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
+import mat.client.audit.service.AuditService;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -64,7 +65,6 @@ import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.CQLService;
-import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
@@ -122,6 +122,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
 import mat.server.util.CQLUtil;
 import mat.server.util.ExportSimpleXML;
@@ -228,6 +229,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/** The cql service. */
 	private CQLService cqlService;
+	
+	@Autowired
+	private MeasureAuditServiceImpl auditService; 
 
 	/*
 	 * (non-Javadoc)
@@ -2182,7 +2186,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		String versionNumber = null;
 		if (isMajor) {
-			versionNumber = findOutMaximumVersionNumber(measureId);
+			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());
 			// For new measure's only draft entry will be
 			// available.findOutMaximumVersionNumber will return null.
 			if (versionNumber == null) {
@@ -6086,6 +6090,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
 			validateMeasureForExport(measureId, null);
+			auditService.recordMeasureEvent(measureId, "Measure Pacakge Created", "", false);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

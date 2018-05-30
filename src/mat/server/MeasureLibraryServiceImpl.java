@@ -670,8 +670,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		CQLParameter parameter = new CQLParameter();
 
 		parameter.setId(UUID.randomUUID().toString());
-		parameter.setParameterName(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME);
-		parameter.setParameterLogic(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC);
+		parameter.setName(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_NAME);
+		parameter.setLogic(CQLWorkSpaceConstants.CQL_DEFAULT_MEASUREMENTPERIOD_PARAMETER_LOGIC);
 		parameter.setReadOnly(true);
 		String parStr = getCqlService().createParametersXML(parameter);
 
@@ -1389,7 +1389,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if ((details.getQualityDataDTO() != null) && (details.getQualityDataDTO().size() != 0)) {
 				logger.info(" details.getQualityDataDTO().size() :" + details.getQualityDataDTO().size());
 				for (CQLQualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
-					if (dataSetDTO.getCodeListName() != null) {
+					if (dataSetDTO.getName() != null) {
 						if ((dataSetDTO.isSuppDataElement())) {
 							finalList.add(dataSetDTO);
 						}
@@ -1421,7 +1421,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				unmar.setClass(CQLQualityDataModelWrapper.class);
 				unmar.setWhitespacePreserve(true);
 				details = (CQLQualityDataModelWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
-				logger.info("unmarshalling complete..valuesets" + details.getQualityDataDTO().get(0).getCodeListName());
+				logger.info("unmarshalling complete..valuesets" + details.getQualityDataDTO().get(0).getName());
 			}
 
 		} catch (Exception e) {
@@ -3685,14 +3685,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean parseCQLFile(String measureXML, String measureId) {
 		boolean isInvalid = false;
 		MeasureXML newXml = getMeasureXMLDAO().findForMeasure(measureId);
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML);
+		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML, cqlLibraryDAO);
 		List<String> message = new ArrayList<String>();
 		
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 		
 		if(cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
 			String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
-			CQLModel model = CQLUtilityClass.getCQLStringFromXML(exportedXML);
+			CQLModel model = CQLUtilityClass.getCQLStringFromXML(exportedXML, cqlLibraryDAO);
 			SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, null);
 			if(result.getCqlErrors() != null && result.getCqlErrors().size() > 0){
 				isInvalid = true;

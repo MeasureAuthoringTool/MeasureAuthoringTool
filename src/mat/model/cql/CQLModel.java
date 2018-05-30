@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
@@ -28,14 +29,10 @@ public class CQLModel implements IsSerializable{
 	private List<CQLCode> codeList = new ArrayList<CQLCode>();
 	private List<CQLIncludeLibrary> cqlIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
 	
-	/**
-	 * The following 5 may not be populated all the times.	 * 
-	 */
-	private List<CQLIdentifierObject> includedDefNames = new ArrayList<CQLIdentifierObject>();
-	private List<CQLIdentifierObject> includedFuncNames = new ArrayList<CQLIdentifierObject>();
-	private List<CQLIdentifierObject> includedValueSetNames = new ArrayList<CQLIdentifierObject>();
-	private List<CQLIdentifierObject> includedParamNames = new ArrayList<CQLIdentifierObject>();
-	private List<CQLIdentifierObject> includedCodeNames = new ArrayList<CQLIdentifierObject>();
+	
+	
+	private Map<String, CQLModel> includedLibrarys = new HashMap<String, CQLModel>(); 
+
 	
 	/**
 	 * This member is set programatically from some class and isnt populated by Hibernate.
@@ -64,18 +61,6 @@ public class CQLModel implements IsSerializable{
 	public void setValueSetList(List<CQLQualityDataSetDTO> valueSetList) {
 		this.valueSetList = valueSetList;
 	}
-	/*public List<CQLLibraryModel> getIncludeLibraryList() {
-		return includeLibraryList;
-	}
-	public void setIncludeLibraryList(List<CQLLibraryModel> includeLibraryList) {
-		this.includeLibraryList = includeLibraryList;
-	}*/
-	/*public CQLLibraryModel getLibrary() {
-		return library;
-	}
-	public void setLibrary(CQLLibraryModel library) {
-		this.library = library;
-	}*/
 	public List<CQLParameter> getCqlParameters() {
 		return cqlParameters;
 	}
@@ -149,41 +134,55 @@ public class CQLModel implements IsSerializable{
 		this.name = name;
 	}
 	
-	public Map<String, mat.shared.LibHolderObject> getIncludedCQLLibXMLMap() {
-		return includedCQLLibXMLMap;
+	public Map<String, CQLModel> getIncludedLibrarys() {
+		return includedLibrarys;
 	}
-	public void setIncludedCQLLibXMLMap(Map<String, mat.shared.LibHolderObject> includedCQLLibXMLMap) {
-		this.includedCQLLibXMLMap = includedCQLLibXMLMap;
+	public void setIncludedLibrarys(Map<String, CQLModel> includedLibrarys) {
+		this.includedLibrarys = includedLibrarys;
 	}
-	public List<CQLIdentifierObject> getIncludedDefNames() {
+	
+	public List<CQLDefinition> getIncludedDef() {
+		List<CQLDefinition> includedDefNames = new ArrayList<CQLDefinition>();
+		for(CQLModel value : includedLibrarys.values()) {
+			includedDefNames.addAll(value.getDefinitionList());
+		}
 		return includedDefNames;
 	}
-	public void setIncludedDefNames(List<CQLIdentifierObject> includedDefNames) {
-		this.includedDefNames = includedDefNames;
-	}
-	public List<CQLIdentifierObject> getIncludedFuncNames() {
+	public List<CQLFunctions> getIncludedFunc() {
+		List<CQLFunctions> includedFuncNames = new ArrayList<CQLFunctions>();
+		for(CQLModel value : includedLibrarys.values()) {
+			includedFuncNames.addAll(value.getCqlFunctions());
+		}
 		return includedFuncNames;
 	}
-	public void setIncludedFuncNames(List<CQLIdentifierObject> includedFuncNames) {
-		this.includedFuncNames = includedFuncNames;
-	}
-	public List<CQLIdentifierObject> getIncludedValueSetNames() {
+	public List<CQLQualityDataSetDTO> getIncludedValueSet() {
+		List<CQLQualityDataSetDTO> includedValueSetNames = new ArrayList<CQLQualityDataSetDTO>();
+		for(CQLModel value : includedLibrarys.values()) {
+			includedValueSetNames.addAll(value.getValueSetList());
+		}
 		return includedValueSetNames;
 	}
-	public void setIncludedValueSetNames(List<CQLIdentifierObject> includedValueSetNames) {
-		this.includedValueSetNames = includedValueSetNames;
-	}
-	public List<CQLIdentifierObject> getIncludedParamNames() {
+	
+	public List<CQLParameter> getIncludedParam() {
+		List<CQLParameter> includedParamNames = new ArrayList<CQLParameter>();
+		for(CQLModel value : includedLibrarys.values()) {
+			includedParamNames.addAll(value.getCqlParameters());
+		}
 		return includedParamNames;
 	}
-	public void setIncludedParamNames(List<CQLIdentifierObject> includedParamNames) {
-		this.includedParamNames = includedParamNames;
-	}
-	public List<CQLIdentifierObject> getIncludedCodeNames() {
+	
+	public List<CQLCode> getIncludedCode() {
+		List<CQLCode> includedCodeNames = new ArrayList<CQLCode>();
+		for(CQLModel value : includedLibrarys.values()) {
+			includedCodeNames.addAll(value.getCodeList());
+		}
 		return includedCodeNames;
 	}
-	public void setIncludedCodeNames(List<CQLIdentifierObject> includedCodeNames) {
-		this.includedCodeNames = includedCodeNames;
+	public Map<String, LibHolderObject> getIncludedCQLLibXMLMap() {
+		return includedCQLLibXMLMap;
+	}
+	public void setIncludedCQLLibXMLMap(Map<String, LibHolderObject> includedCQLLibXMLMap) {
+		this.includedCQLLibXMLMap = includedCQLLibXMLMap;
 	}
 	
 }

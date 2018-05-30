@@ -131,7 +131,7 @@ mat.dao.clause.MeasureXMLDAO {
 		for (ListObject lo : listOfSuppElements) {
 			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 			qds.setOid(lo.getOid());
-			qds.setCodeListName(lo.getName());
+			qds.setName(lo.getName());
 			qds.setTaxonomy(lo.getCodeSystem().getDescription());
 			qds.setVersion("1.0");
 			qds.setId(lo.getId());

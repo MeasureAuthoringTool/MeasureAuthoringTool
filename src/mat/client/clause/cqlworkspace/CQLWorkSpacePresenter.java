@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
@@ -1157,11 +1158,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														searchDisplay.getCQLParametersView().getParameterNameTxtArea()
 																.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																		.getParameterMap().get(selectedParamID)
-																		.getParameterName());
+																		.getName());
 														searchDisplay.getCQLParametersView().getParameterAceEditor()
 																.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																		.getParameterMap().get(selectedParamID)
-																		.getParameterLogic());
+																		.getLogic());
 														searchDisplay.getCQLParametersView()
 																.getParameterCommentTextArea()
 																.setText(searchDisplay.getCqlLeftNavBarPanelView()
@@ -1181,7 +1182,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														if (!currentParameter.isReadOnly()) {
 																if (!result.getCqlErrors().isEmpty()
 																		|| !result.getUsedCQLParameters().contains(
-																				currentParameter.getParameterName())) {
+																				currentParameter.getName())) {
 																	searchDisplay.getCQLParametersView()
 																			.getParameterButtonBar().getDeleteButton()
 																			.setEnabled(true);
@@ -1197,7 +1198,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																.getCqlErrorsPerExpression();
 														if (expressionCQLErrorMap != null) {
 															List<CQLErrors> errorList = expressionCQLErrorMap
-																	.get(currentParameter.getParameterName());
+																	.get(currentParameter.getName());
 															searchDisplay.getCQLParametersView().getParameterAceEditor()
 																	.clearAnnotations();
 															searchDisplay.getCQLParametersView().getParameterAceEditor()
@@ -1305,7 +1306,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea()
 																.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																		.getDefinitionMap().get(selectedDefinitionID)
-																		.getDefinitionName());
+																		.getName());
 														searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea()
 																.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																		.getDefinitionMap().get(selectedDefinitionID)
@@ -1313,7 +1314,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														searchDisplay.getCQlDefinitionsView().getDefineAceEditor()
 																.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																		.getDefinitionMap().get(selectedDefinitionID)
-																		.getDefinitionLogic());
+																		.getLogic());
 														if (MatContext.get().getMeasureLockService()
 																.checkForEditPermission()) {
 															searchDisplay.getCQlDefinitionsView()
@@ -1328,7 +1329,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																if (!result.getCqlErrors().isEmpty()
 																		|| !result.getUsedCQLDefinitions()
 																				.contains(currentDefinition
-																						.getDefinitionName())) {
+																						.getName())) {
 																	searchDisplay.getCQlDefinitionsView()
 																			.getDefineButtonBar().getDeleteButton()
 																			.setEnabled(true);
@@ -1371,7 +1372,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																.getCqlErrorsPerExpression();
 														if (expressionCQLErrorMap != null) {
 															List<CQLErrors> errorList = expressionCQLErrorMap
-																	.get(currentDefinition.getDefinitionName());
+																	.get(currentDefinition.getName());
 															searchDisplay.getCQlDefinitionsView().getDefineAceEditor()
 																	.clearAnnotations();
 															searchDisplay.getCQlDefinitionsView().getDefineAceEditor()
@@ -1392,12 +1393,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																&& result.getExpressionReturnTypeMap() != null) {
 															searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox()
 																	.setText(result.getExpressionReturnTypeMap().get(
-																			currentDefinition.getDefinitionName()));
+																			currentDefinition.getName()));
 															searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox()
 																	.setTitle("Return Type of CQL Expression is "
 																			+ result.getExpressionReturnTypeMap()
 																					.get(currentDefinition
-																							.getDefinitionName()));
+																							.getName()));
 
 														} else {
 															searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox()
@@ -1484,7 +1485,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlFunctionsView().getFuncNameTxtArea()
 														.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																.getFunctionMap().get(selectedFunctionId)
-																.getFunctionName());
+																.getName());
 												searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea()
 														.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																.getFunctionMap().get(selectedFunctionId)
@@ -1492,7 +1493,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor()
 														.setText(searchDisplay.getCqlLeftNavBarPanelView()
 																.getFunctionMap().get(selectedFunctionId)
-																.getFunctionLogic());
+																.getLogic());
 												if (searchDisplay.getCqlLeftNavBarPanelView().getFunctionMap()
 														.get(selectedFunctionId).getContext()
 														.equalsIgnoreCase("patient")) {
@@ -1512,7 +1513,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 													
 													if (!result.getCqlErrors().isEmpty()
 															|| !result.getUsedCQLFunctions()
-																	.contains(currentFunction.getFunctionName())) {
+																	.contains(currentFunction.getName())) {
 														searchDisplay.getCqlFunctionsView().getFunctionButtonBar()
 																.getDeleteButton().setEnabled(true);
 														// MAT-8571 :Enable Function context radio buttons if its used
@@ -1535,7 +1536,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														.getCqlErrorsPerExpression();
 												if (expressionCQLErrorMap != null) {
 													List<CQLErrors> errorList = expressionCQLErrorMap
-															.get(currentFunction.getFunctionName());
+															.get(currentFunction.getName());
 													searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor()
 															.clearAnnotations();
 													searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor()
@@ -1555,11 +1556,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														&& result.getExpressionReturnTypeMap() != null) {
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox()
 															.setText(result.getExpressionReturnTypeMap()
-																	.get(currentFunction.getFunctionName()));
+																	.get(currentFunction.getName()));
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox()
 															.setTitle("Return Type of CQL Expression is "
 																	+ result.getExpressionReturnTypeMap()
-																			.get(currentFunction.getFunctionName()));
+																			.get(currentFunction.getName()));
 
 												} else {
 													searchDisplay.getCqlFunctionsView().getReturnTypeTextBox()
@@ -1859,15 +1860,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														MatContext.get().setIncludes(getIncludesList(
 																result.getCqlModel().getCqlIncludeLibrarys()));
 														MatContext.get().setIncludedValueSetNames(
-																result.getCqlModel().getIncludedValueSetNames());
+																result.getCqlModel().getIncludedValueSet().stream().map(value -> new CQLIdentifierObject(value.getId(), value.getName())).collect(Collectors.toList()));
 														MatContext.get().setIncludedCodeNames(
-																result.getCqlModel().getIncludedCodeNames());
+																result.getCqlModel().getIncludedCode().stream().map(code -> new CQLIdentifierObject(code.getId(), code.getName())).collect(Collectors.toList()));
 														MatContext.get().setIncludedParamNames(
-																result.getCqlModel().getIncludedParamNames());
+																result.getCqlModel().getIncludedParam().stream().map(param -> new CQLIdentifierObject(param.getId(), param.getName())).collect(Collectors.toList()));
 														MatContext.get().setIncludedDefNames(
-																result.getCqlModel().getIncludedDefNames());
+																result.getCqlModel().getIncludedDef().stream().map(def -> new CQLIdentifierObject(def.getId(), def.getName())).collect(Collectors.toList()));
 														MatContext.get().setIncludedFuncNames(
-																result.getCqlModel().getIncludedFuncNames());
+																result.getCqlModel().getIncludedFunc().stream().map(func -> new CQLIdentifierObject(func.getId(), func.getName())).collect(Collectors.toList()));
 														editIncludedLibraryDialogBox.getDialogModal().hide();
 														DomEvent.fireNativeEvent(Document.get().createDblClickEvent(
 																searchDisplay.getCqlLeftNavBarPanelView()
@@ -2107,16 +2108,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 															.getIncludeLibrarySuccessMessage(
 																	result.getIncludeLibrary().getAliasName()));
 											clearAlias();
-											MatContext.get().setIncludedValueSetNames(
-													result.getCqlModel().getIncludedValueSetNames());
-											MatContext.get()
-													.setIncludedCodeNames(result.getCqlModel().getIncludedCodeNames());
-											MatContext.get().setIncludedParamNames(
-													result.getCqlModel().getIncludedParamNames());
-											MatContext.get()
-													.setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
-											MatContext.get()
-													.setIncludedFuncNames(result.getCqlModel().getIncludedFuncNames());
+											MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSet().stream().map(value -> new CQLIdentifierObject(value.getId(), value.getName())).collect(Collectors.toList()));
+											MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCode().stream().map(code -> new CQLIdentifierObject(code.getId(), code.getName())).collect(Collectors.toList()));
+											MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParam().stream().map(param -> new CQLIdentifierObject(param.getId(), param.getName())).collect(Collectors.toList()));
+											MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDef().stream().map(def -> new CQLIdentifierObject(def.getId(), def.getName())).collect(Collectors.toList()));
+											MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFunc().stream().map(func -> new CQLIdentifierObject(func.getId(), func.getName())).collect(Collectors.toList()));
 											if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
 													.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
@@ -2418,7 +2414,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getValueSetView().resetCQLValuesetearchPanel();
 					isModified = true;
 					modifyValueSetDTO = result;
-					String displayName = result.getCodeListName();
+					String displayName = result.getName();
 					// Substring at 60th character length.
 					if (displayName.length() >= 60) {
 						displayName = displayName.substring(0, 59);
@@ -2455,7 +2451,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
 						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
 								.createAlert(MatContext.get().getMessageDelegate()
-										.getDELETE_CONFIRMATION_VALUESET(result.getCodeListName()));
+										.getDELETE_CONFIRMATION_VALUESET(result.getName()));
 						searchDisplay.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
 						// 508 Compliance for Value Sets section
 						searchDisplay.getValueSetView().getOIDInput().setFocus(true);
@@ -2496,7 +2492,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							getAppliedValueSetList();
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 									.createAlert(MatContext.get().getMessageDelegate().getSUCCESSFUL_QDM_REMOVE_MSG(
-											result.getCqlQualityDataSetDTO().getCodeListName()));
+											result.getCqlQualityDataSetDTO().getName()));
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().setVisible(true);
 						}
 						getUsedValueSets();
@@ -2650,8 +2646,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
 			} else {
 				CQLFunctions function = new CQLFunctions();
-				function.setFunctionLogic(functionBody);
-				function.setFunctionName(functionName);
+				function.setLogic(functionBody);
+				function.setName(functionName);
 				function.setCommentString(funcComment);
 				function.setArgumentList(searchDisplay.getCqlFunctionsView().getFunctionArgumentList());
 				function.setContext(funcContext);
@@ -2694,9 +2690,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												.setVisible(true);
 
 										searchDisplay.getCqlFunctionsView().getFuncNameTxtArea()
-												.setText(result.getFunction().getFunctionName());
+												.setText(result.getFunction().getName());
 										searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor()
-												.setText(result.getFunction().getFunctionLogic());
+												.setText(result.getFunction().getLogic());
 										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 										searchDisplay.getCqlFunctionsView().getFunctionBodyAceEditor()
 												.clearAnnotations();
@@ -2858,8 +2854,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			} else {
 				CQLParameter parameter = new CQLParameter();
-				parameter.setParameterLogic(parameterLogic);
-				parameter.setParameterName(parameterName);
+				parameter.setLogic(parameterLogic);
+				parameter.setName(parameterName);
 				parameter.setCommentString(parameterComment);
 				CQLParameter toBeModifiedParamObj = null;
 
@@ -2895,9 +2891,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 										searchDisplay.getCQLParametersView().getParameterNameTxtArea()
-												.setText(result.getParameter().getParameterName());
+												.setText(result.getParameter().getName());
 										searchDisplay.getCQLParametersView().getParameterAceEditor()
-												.setText(result.getParameter().getParameterLogic());
+												.setText(result.getParameter().getLogic());
 										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 										searchDisplay.getCQLParametersView().getParameterAceEditor().clearAnnotations();
 										searchDisplay.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
@@ -3010,8 +3006,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			} else {
 				final CQLDefinition define = new CQLDefinition();
-				define.setDefinitionName(definitionName);
-				define.setDefinitionLogic(definitionLogic);
+				define.setName(definitionName);
+				define.setLogic(definitionLogic);
 				define.setCommentString(definitionComment);
 				define.setContext(defineContext);
 				CQLDefinition toBeModifiedObj = null;
@@ -3048,9 +3044,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().updateDefineMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 										searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea()
-												.setText(result.getDefinition().getDefinitionName());
+												.setText(result.getDefinition().getName());
 										searchDisplay.getCQlDefinitionsView().getDefineAceEditor()
-												.setText(result.getDefinition().getDefinitionLogic());
+												.setText(result.getDefinition().getLogic());
 										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 										searchDisplay.getCQlDefinitionsView().getDefineAceEditor().clearAnnotations();
 										searchDisplay.getCQlDefinitionsView().getDefineAceEditor().removeAllMarkers();
@@ -3411,11 +3407,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-				MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSetNames());
-				MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCodeNames());
-				MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParamNames());
-				MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
-				MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFuncNames());
+				MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSet().stream().map(value -> new CQLIdentifierObject(value.getId(), value.getName())).collect(Collectors.toList()));
+				MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCode().stream().map(code -> new CQLIdentifierObject(code.getId(), code.getName())).collect(Collectors.toList()));
+				MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParam().stream().map(param -> new CQLIdentifierObject(param.getId(), param.getName())).collect(Collectors.toList()));
+				MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDef().stream().map(def -> new CQLIdentifierObject(def.getId(), def.getName())).collect(Collectors.toList()));
+				MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFunc().stream().map(func -> new CQLIdentifierObject(func.getId(), func.getName())).collect(Collectors.toList()));
 
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
@@ -3656,7 +3652,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						else {
 							for (CQLQualityDataSetDTO cqlDTo : searchDisplay.getCqlLeftNavBarPanelView()
 									.getAppliedQdmTableList()) {
-								if (result.getUsedCQLValueSets().contains(cqlDTo.getCodeListName())) {
+								if (result.getUsedCQLValueSets().contains(cqlDTo.getName())) {
 									cqlDTo.setUsed(true);
 								} else {
 									cqlDTo.setUsed(false);
@@ -4022,7 +4018,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		List<CQLIdentifierObject> defineList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < definitionList.size(); i++) {
-			CQLIdentifierObject definition = new CQLIdentifierObject(null, definitionList.get(i).getDefinitionName(),
+			CQLIdentifierObject definition = new CQLIdentifierObject(null, definitionList.get(i).getName(),
 					definitionList.get(i).getId());
 			defineList.add(definition);
 		}
@@ -4041,7 +4037,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		List<CQLIdentifierObject> paramList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < parameterList.size(); i++) {
-			CQLIdentifierObject parameter = new CQLIdentifierObject(null, parameterList.get(i).getParameterName(),
+			CQLIdentifierObject parameter = new CQLIdentifierObject(null, parameterList.get(i).getName(),
 					parameterList.get(i).getId());
 			paramList.add(parameter);
 		}
@@ -4060,7 +4056,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		List<CQLIdentifierObject> funcList = new ArrayList<CQLIdentifierObject>();
 
 		for (int i = 0; i < functionList.size(); i++) {
-			CQLIdentifierObject function = new CQLIdentifierObject(null, functionList.get(i).getFunctionName(),
+			CQLIdentifierObject function = new CQLIdentifierObject(null, functionList.get(i).getName(),
 					functionList.get(i).getId());
 			funcList.add(function);
 		}
@@ -4181,7 +4177,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 												.createAlert(MatContext.get().getMessageDelegate()
 														.getSuccessfulDefinitionRemoveMessage(
-																toBeModifiedObj.getDefinitionName()));
+																toBeModifiedObj.getName()));
 										searchDisplay.getCQlDefinitionsView().getReturnTypeTextBox().setText("");
 
 									} else if (result.getFailureReason() == 2) {
@@ -4269,7 +4265,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											.setEnabled(false);
 									searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
 											MatContext.get().getMessageDelegate().getSuccessfulFunctionRemoveMessage(
-													toBeModifiedFuncObj.getFunctionName()));
+													toBeModifiedFuncObj.getName()));
 									searchDisplay.getCqlFunctionsView().getReturnTypeTextBox().setText("");
 									if (result.getFunction() != null) {
 										searchDisplay.getCqlFunctionsView().createAddArgumentViewForFunctions(
@@ -4401,7 +4397,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
 												.createAlert(MatContext.get().getMessageDelegate()
 														.getSuccessfulParameterRemoveMessage(
-																toBeModifiedParamObj.getParameterName()));
+																toBeModifiedParamObj.getName()));
 									} else if (result.getFailureReason() == 2) {
 										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -4464,13 +4460,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 									MatContext.get()
 											.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-									MatContext.get()
-											.setIncludedValueSetNames(result.getCqlModel().getIncludedValueSetNames());
-									MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCodeNames());
-									MatContext.get()
-											.setIncludedParamNames(result.getCqlModel().getIncludedParamNames());
-									MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDefNames());
-									MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFuncNames());
+									MatContext.get().setIncludedValueSetNames(result.getCqlModel().getIncludedValueSet().stream().map(value -> new CQLIdentifierObject(value.getId(), value.getName())).collect(Collectors.toList()));
+									MatContext.get().setIncludedCodeNames(result.getCqlModel().getIncludedCode().stream().map(code -> new CQLIdentifierObject(code.getId(), code.getName())).collect(Collectors.toList()));
+									MatContext.get().setIncludedParamNames(result.getCqlModel().getIncludedParam().stream().map(param -> new CQLIdentifierObject(param.getId(), param.getName())).collect(Collectors.toList()));
+									MatContext.get().setIncludedDefNames(result.getCqlModel().getIncludedDef().stream().map(def -> new CQLIdentifierObject(def.getId(), def.getName())).collect(Collectors.toList()));
+									MatContext.get().setIncludedFuncNames(result.getCqlModel().getIncludedFunc().stream().map(func -> new CQLIdentifierObject(func.getId(), func.getName())).collect(Collectors.toList()));
 									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 									searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -5088,7 +5082,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		codesView.getRetrieveFromVSACButton().setEnabled(false);
 		codesView.getCodeSearchInput().setValue(cqlCode.getCodeIdentifier());
 		codesView.getSuffixTextBox().setValue(cqlCode.getSuffix());
-		codesView.getCodeDescriptorInput().setValue(cqlCode.getCodeName());
+		codesView.getCodeDescriptorInput().setValue(cqlCode.getName());
 		codesView.getCodeInput().setValue(cqlCode.getCodeOID());
 		codesView.getCodeSystemInput().setValue(cqlCode.getCodeSystemName());
 		codesView.setCodeSystemOid(cqlCode.getCodeSystemOID());
@@ -5283,7 +5277,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		CQLCodesView codesView = searchDisplay.getCodesView();
 		boolean isCodeSystemVersionIncluded = codesView.getIncludeCodeSystemVersionCheckBox().getValue();
 		refCode.setCodeOID(codesView.getCodeInput().getValue());
-		refCode.setCodeName(StringUtility.removeEscapedCharsFromString(codesView.getCodeDescriptorInput().getValue()));
+		refCode.setName(StringUtility.removeEscapedCharsFromString(codesView.getCodeDescriptorInput().getValue()));
 		refCode.setCodeSystemName(codesView.getCodeSystemInput().getValue());
 		refCode.setCodeSystemVersion(codesView.getCodeSystemVersionInput().getValue());
 		refCode.setCodeIdentifier(codesView.getCodeSearchInput().getValue());
@@ -5331,13 +5325,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										if (cqlQualityDataSetDTO.getId().equals(cqlQDMDTO.getId())) {
 											cqlQualityDataSetDTO
 													.setOriginalCodeListName(cqlQDMDTO.getOriginalCodeListName());
-											cqlQualityDataSetDTO.setCodeListName(cqlQDMDTO.getCodeListName());
+											cqlQualityDataSetDTO.setName(cqlQDMDTO.getName());
 										}
 									}
 									// update existing Value set list for Insert Button and short cut keys
 									for (CQLIdentifierObject cqlIdentifierObject : MatContext.get().getValuesets()) {
 										if (cqlIdentifierObject.getId().equals(cqlQDMDTO.getId())) {
-											cqlIdentifierObject.setIdentifier(cqlQDMDTO.getCodeListName());
+											cqlIdentifierObject.setIdentifier(cqlQDMDTO.getName());
 										}
 									}
 									// Update value set list for Attribute builder.
@@ -5345,7 +5339,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											.getValueSetCodeQualityDataSetList()) {
 										if (dataSetDTO.getId().equals(cqlQDMDTO.getId())) {
 											dataSetDTO.setOriginalCodeListName(cqlQDMDTO.getOriginalCodeListName());
-											dataSetDTO.setCodeListName(cqlQDMDTO.getCodeListName());
+											dataSetDTO.setName(cqlQDMDTO.getName());
 										}
 									}
 								}
@@ -5606,7 +5600,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 												MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(
-														result.getCqlQualityDataSetDTO().getCodeListName()));
+														result.getCqlQualityDataSetDTO().getName()));
 									}
 								}
 							}
@@ -5650,7 +5644,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			ValueSetNameInputValidator valueSetNameInputValidator = new ValueSetNameInputValidator();
 			String message = valueSetNameInputValidator.validate(matValueSetTransferObject);
 			if (message.isEmpty()) {
-				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getCodeListName();
+				final String userDefinedInput = matValueSetTransferObject.getCqlQualityDataSetDTO().getName();
 				// Check if QDM name already exists in the list.
 				if (!searchDisplay.getValueSetView().checkNameInValueSetList(userDefinedInput,
 						appliedValueSetTableList)) {
@@ -5683,7 +5677,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert(MatContext.get().getMessageDelegate()
 																.getDuplicateAppliedValueSetMsg(result
-																		.getCqlQualityDataSetDTO().getCodeListName()));
+																		.getCqlQualityDataSetDTO().getName()));
 											} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
 												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 														.createAlert("Invalid input data.");
@@ -5761,10 +5755,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 				if (!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 					modifyValueSetDTO.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
-					modifyValueSetDTO.setCodeListName(
+					modifyValueSetDTO.setName(
 							originalName + " (" + searchDisplay.getValueSetView().getSuffixInput().getValue() + ")");
 				} else {
-					modifyValueSetDTO.setCodeListName(originalName);
+					modifyValueSetDTO.setName(originalName);
 					modifyValueSetDTO.setSuffix(null);
 				}
 				modifyValueSetDTO.setOriginalCodeListName(originalName);
@@ -5806,7 +5800,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					modifyWithDTO.setName(usrDefDisplayName);
 					modifyValueSetDTO.setOriginalCodeListName(originalName);
 					modifyValueSetDTO.setSuffix(suffix);
-					modifyValueSetDTO.setCodeListName(usrDefDisplayName);
+					modifyValueSetDTO.setName(usrDefDisplayName);
 					updateAppliedValueSetsList(null, modifyWithDTO, modifyValueSetDTO);
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(message);
@@ -5888,7 +5882,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
 									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 											MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(
-													result.getCqlQualityDataSetDTO().getCodeListName()));
+													result.getCqlQualityDataSetDTO().getName()));
 
 								} else if (result
 										.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
@@ -5912,7 +5906,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void modifyValueSetList(CQLQualityDataSetDTO qualityDataSetDTO) {
 		for (int i = 0; i < appliedValueSetTableList.size(); i++) {
-			if (qualityDataSetDTO.getCodeListName().equals(appliedValueSetTableList.get(i).getCodeListName())) {
+			if (qualityDataSetDTO.getName().equals(appliedValueSetTableList.get(i).getName())) {
 				appliedValueSetTableList.remove(i);
 				break;
 
@@ -5970,10 +5964,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (!searchDisplay.getValueSetView().getSuffixInput().getValue().isEmpty()) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO()
 					.setSuffix(searchDisplay.getValueSetView().getSuffixInput().getValue());
-			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setName(
 					originalCodeListName + " (" + searchDisplay.getValueSetView().getSuffixInput().getValue() + ")");
 		} else {
-			matValueSetTransferObject.getCqlQualityDataSetDTO().setCodeListName(originalCodeListName);
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setName(originalCodeListName);
 		}
 		
 		// set them to empty strings to begin with

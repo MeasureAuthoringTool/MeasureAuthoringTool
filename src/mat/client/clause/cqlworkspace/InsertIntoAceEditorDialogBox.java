@@ -629,7 +629,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @return the function argument value builder
 	 */
 	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+		StringBuilder functionNameBuilder = new StringBuilder(functions.getName());
 		functionNameBuilder.append("(");
 		StringBuilder argumentType = new StringBuilder();
 		if (functions.getArgumentList() != null) {
@@ -652,7 +652,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @return the function argument tool tip builder
 	 */
 	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getFunctionName());
+		StringBuilder functionNameBuilder = new StringBuilder(functions.getName());
 		functionNameBuilder.append("(");
 		StringBuilder argumentType = new StringBuilder();
 		if (functions.getArgumentList() != null) {

@@ -3,7 +3,7 @@ package mat.model.cql;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
-public class CQLParameter implements IsSerializable{
+public class CQLParameter implements CQLExpression, IsSerializable{
 	private String parameterName;
 	private String cqlType;
 	private String defaultValue;
@@ -13,12 +13,6 @@ public class CQLParameter implements IsSerializable{
 	private String commentString = "";
 	
 	
-	public String getParameterName() {
-		return parameterName.trim();
-	}
-	public void setParameterName(String parameterName) {
-		this.parameterName = parameterName.trim();
-	}
 	public String getCqlType() {
 		return cqlType;
 	}
@@ -31,18 +25,6 @@ public class CQLParameter implements IsSerializable{
 	public void setDefaultValue(String defaultValue) {
 		this.defaultValue = defaultValue;
 	}
-	public String getParameterLogic() {
-		return parameterLogic.trim();
-	}
-	public void setParameterLogic(String parameterLogic) {
-		this.parameterLogic = parameterLogic.trim();
-	}
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
 	public boolean isReadOnly() {
 		return readOnly;
 	}
@@ -54,6 +36,47 @@ public class CQLParameter implements IsSerializable{
 	}
 	public void setCommentString(String commentString) {
 		this.commentString = commentString;
+	}
+	public String getParameterName() {
+		return parameterName.trim();
+	}
+	
+	public void setParameterName(String name) {
+		this.parameterName = name.trim();
+	}
+	
+	public String getParameterLogic() {
+		return parameterLogic.trim();
+	}
+
+	public void setParameterLogic(String logic) {
+		this.parameterLogic = logic.trim();
+	}
+	
+	@Override
+	public String getId() {
+		return id;
+	}
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	@Override
+	public String getName() {
+		return getParameterName();
+	}
+	@Override
+	public void setName(String name) {
+		setParameterName(name);
+	}
+	@Override
+	public String getLogic() {
+		return getParameterLogic();
+	}
+	@Override
+	public void setLogic(String logic) {
+		setParameterLogic(logic);
 	}
 	
 	

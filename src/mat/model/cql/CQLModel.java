@@ -13,13 +13,10 @@ import mat.shared.LibHolderObject;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLModel implements IsSerializable{
-	//private CQLLibraryModel library;
 	private String libraryName;
 	private String versionUsed;
 	private String qdmVersion;
 	private String name;
-	//private CQLDataModel usedModel;
-	//private List<CQLLibraryModel> includeLibraryList = new ArrayList<CQLLibraryModel>();
 	private String context;
 	private List<CQLQualityDataSetDTO> valueSetList = new ArrayList<CQLQualityDataSetDTO>();
 	private List<CQLQualityDataSetDTO> allValueSetList = new ArrayList<CQLQualityDataSetDTO>();
@@ -208,7 +205,6 @@ public class CQLModel implements IsSerializable{
 				}
 			}
 		} else {
-			System.out.println(libraryNameVersion);
 			for(CQLCode code : includedLibrarys.get(libraryNameVersion).getCodeList()) {
 				if(code.getCodeName().equals(codeName)) {
 					return code; 

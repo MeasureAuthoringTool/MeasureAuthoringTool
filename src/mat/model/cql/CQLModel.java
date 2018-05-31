@@ -315,6 +315,11 @@ public class CQLModel implements IsSerializable{
 		return null;
 	}
 	
+	/**
+	 * This function returns a list containing all the definitions and functions names in the model
+	 * @return
+	 * 	list containing all the definitions and functions names in the model
+	 */
 	public List<String> getExpressionListFromCqlModel() {
 		List<String> expressionList = new ArrayList<>();
 

@@ -103,5 +103,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/groovy-all-2.4.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER/GWT 2.8.1"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/antlr-2.7.7.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class CQLModel implements IsSerializable{
 	//private CQLLibraryModel library;
@@ -31,7 +30,9 @@ public class CQLModel implements IsSerializable{
 	
 	
 	
+
 	private Map<CQLIncludeLibrary, CQLModel> includedLibrarys = new HashMap<CQLIncludeLibrary, CQLModel>(); 
+
 
 	
 	/**
@@ -186,7 +187,7 @@ public class CQLModel implements IsSerializable{
 		}
 		return includedValueSetNames;
 	}
-	
+
 	public List<CQLIdentifierObject> getCQLIdentifierValueSet(){
 		List<CQLIdentifierObject> includedValueSetCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
 		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
@@ -217,6 +218,7 @@ public class CQLModel implements IsSerializable{
 		return includedParamCQLIdentifierObject;
 	}
 	
+
 	public List<CQLCode> getIncludedCode() {
 		List<CQLCode> includedCodeNames = new ArrayList<CQLCode>();
 		for(CQLModel value : includedLibrarys.values()) {
@@ -235,7 +237,7 @@ public class CQLModel implements IsSerializable{
 		}
 		return includedCodeCQLIdentifierObject;
 	}
-	
+
 	public Map<String, LibHolderObject> getIncludedCQLLibXMLMap() {
 		return includedCQLLibXMLMap;
 	}

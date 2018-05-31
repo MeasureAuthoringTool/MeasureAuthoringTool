@@ -32,7 +32,7 @@ public class CQLHumanReadableGenerator {
 		String humanReadableHTML = "";
 		
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXmlStr);
-	
+
 		
 		humanReadableHTML = CQLHumanReadableHTMLCreator.generateCQLHumanReadableForMeasure(simpleXmlStr, cqlModel, cqlLibraryDAO);
 		

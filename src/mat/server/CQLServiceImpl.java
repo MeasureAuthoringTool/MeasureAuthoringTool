@@ -1647,6 +1647,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
 
+
 		SaveUpdateCQLResult parsedCQL = parseCQLLibraryForErrors(cqlModel);
 
 		if (parsedCQL.getCqlErrors().isEmpty()) {
@@ -1670,7 +1671,9 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult getCQLDataForLoad(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
+
 		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
+
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
@@ -1688,6 +1691,7 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult getCQLLibraryData(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
+
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
 		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
 		String parentLibraryName = cqlModel.getLibraryName();
@@ -2367,6 +2371,7 @@ public class CQLServiceImpl implements CQLService {
 			String cqlExpressionName, String logic, String expressionName, String expressionType) {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
+
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, cqlExpressionName).toString();
 
 		cqlModel.setLines(countLines(cqlFileString));
@@ -2511,6 +2516,7 @@ public class CQLServiceImpl implements CQLService {
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
 		logger.info("GETTING CQL ARTIFACTS");
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
+
 
 		List<String> exprList = new ArrayList<String>();
 

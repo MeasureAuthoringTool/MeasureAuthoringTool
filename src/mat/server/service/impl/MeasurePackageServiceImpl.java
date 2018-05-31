@@ -240,6 +240,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 				
 		if(measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
+
 			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlLibraryDAO, cqlModel);
 		} else {
 			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO);

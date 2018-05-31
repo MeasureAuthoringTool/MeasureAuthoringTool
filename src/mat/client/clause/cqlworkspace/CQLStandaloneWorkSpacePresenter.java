@@ -2978,10 +2978,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 															.getIncludeLibrarySuccessMessage(
 																	result.getIncludeLibrary().getAliasName()));
 											clearAlias();
+
 											MatContext.get().setIncludedValueSetNames(result.getCqlModel().getCQLIdentifierValueSet());
 											MatContext.get().setIncludedCodeNames(result.getCqlModel().getCQLIdentifierCode());
 											MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
+											MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
 											MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+
 											if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
 													.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
 												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
@@ -3405,6 +3408,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 								MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
 								MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
 								MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+
 								searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 								searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 								searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -3797,6 +3801,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
 					MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
 					MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 					searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();

@@ -266,7 +266,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public final ExportResult getCQLLibraryFile(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
 		String simpleXML = measureExport.getSimpleXML();
+
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXML);
+
 
 		// get the name from the simple xml
 		String xPathName = "/measure/cqlLookUp[1]/library[1]";
@@ -310,8 +312,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
-			String cqlFileString = CQLUtilityClass
-					.getCqlString(CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString), "").toString();
+			String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString), "").toString();
+
 			try {
 				CQLFormatter formatter = new CQLFormatter(); 
 				cqlFileString = formatter.format(cqlFileString);
@@ -336,7 +338,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		String measureSimpleXML = measureExport.getSimpleXML();
 		XmlProcessor xmlProcessor = new XmlProcessor(measureSimpleXML);
+
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureSimpleXML);
+
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
@@ -373,7 +377,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString);
+
 			SaveUpdateCQLResult jsonResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
 			String jsonString = jsonResult.getJsonString();
 			ExportResult includeResult = new ExportResult();
@@ -395,7 +401,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		String measureSimpleXML = measureExport.getSimpleXML();
 		XmlProcessor xmlProcessor = new XmlProcessor(measureSimpleXML);
+
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureSimpleXML);
+
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
@@ -431,7 +439,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString);
+
 			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
 			String elmString = elmResult.getElmString();
 			ExportResult includeResult = new ExportResult();

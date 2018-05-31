@@ -162,6 +162,7 @@ public class PatientBasedValidator {
 			usedExprList.addAll(moAssociatedPopUsedExpression);
 
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXmlL);
+
 			SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, usedExprList);
 
 			List<CQLExpressionObject> expressions = cqlResult.getCqlObject().getCqlDefinitionObjectList();

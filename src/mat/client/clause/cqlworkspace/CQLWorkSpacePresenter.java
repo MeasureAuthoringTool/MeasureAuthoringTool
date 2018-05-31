@@ -1857,11 +1857,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																.udpateIncludeLibraryMap();
 														MatContext.get().setIncludes(getIncludesList(
 																result.getCqlModel().getCqlIncludeLibrarys()));
-														MatContext.get().setIncludedValueSetNames(result.getCqlModel().getCQLIdentifierValueSet());
-														MatContext.get().setIncludedCodeNames(result.getCqlModel().getCQLIdentifierCode());
-														MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
-														MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
-														MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+														MatContext.get().setIncludedValues(result);
 
 														editIncludedLibraryDialogBox.getDialogModal().hide();
 														DomEvent.fireNativeEvent(Document.get().createDblClickEvent(
@@ -2102,11 +2098,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 															.getIncludeLibrarySuccessMessage(
 																	result.getIncludeLibrary().getAliasName()));
 											clearAlias();
-											MatContext.get().setIncludedValueSetNames(result.getCqlModel().getCQLIdentifierValueSet());
-											MatContext.get().setIncludedCodeNames(result.getCqlModel().getCQLIdentifierCode());
-											MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
-											MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
-											MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+											MatContext.get().setIncludedValues(result);
 
 											if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
 													.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
@@ -3401,14 +3393,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
-				MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-				MatContext.get().setIncludedValueSetNames(result.getCqlModel().getCQLIdentifierValueSet());
-				MatContext.get().setIncludedCodeNames(result.getCqlModel().getCQLIdentifierCode());
-				MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
-				MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
-				MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
-
-
+				MatContext.get().setIncludedValues(result);
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 				searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
@@ -4452,15 +4437,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if (result != null) {
 								if (result.isSuccess()) {
-									searchDisplay.getCqlLeftNavBarPanelView()
-											.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
-									MatContext.get()
-											.setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-									MatContext.get().setIncludedValueSetNames(result.getCqlModel().getCQLIdentifierValueSet());
-									MatContext.get().setIncludedCodeNames(result.getCqlModel().getCQLIdentifierCode());
-									MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
-									MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
-									MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+									searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+									MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+									MatContext.get().setIncludedValues(result);
 
 									searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 									searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
@@ -6273,4 +6252,5 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null
 				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
 	}
+
 }

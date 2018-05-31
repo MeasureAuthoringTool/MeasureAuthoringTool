@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
-import mat.shared.CQLIdentifierObject;
 import mat.shared.LibHolderObject;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -191,7 +188,7 @@ public class CQLModel implements IsSerializable{
 	public CQLCode getCodeByName(String formattedCodeName) {
 		String codeName = formattedCodeName; 
 		String libraryNameVersion = null; // name in the format libraryname-x.x.xxx
-		String[] codeSplit = formattedCodeName.split(Pattern.quote("|"));
+		String[] codeSplit = formattedCodeName.split("\\|");
 		if(codeSplit.length == 3) {
 			libraryNameVersion = codeSplit[0];
 			codeName = codeSplit[2];
@@ -223,11 +220,9 @@ public class CQLModel implements IsSerializable{
 	public CQLQualityDataSetDTO getValuesetByName(String formattedValuesetName) {
 		String valuesetName = formattedValuesetName; 
 		String libraryNameVersion = null; // name in the format libraryname-x.x.xxx
-		String alias = null;
-		String[] valuesetSplit = formattedValuesetName.split(Pattern.quote("|"));
+		String[] valuesetSplit = formattedValuesetName.split("\\|");
 		if(valuesetSplit.length == 3) {
 			libraryNameVersion = valuesetSplit[0];
-			alias = valuesetSplit[1];
 			valuesetName = valuesetSplit[2];
 		}
 		

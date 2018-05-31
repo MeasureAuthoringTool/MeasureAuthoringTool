@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -116,6 +117,36 @@ public class CQLUtil {
 		}
 
 		return cqlArtifactHolder;
+	}
+	
+	/**
+	 * Checks a CQL Model for to determine if valid datatype valueset/code combinations are being used
+	 * @param model the cql model to check
+	 * @param valuesetDatatypeMap the map of valueset names to datatypes
+	 * @param codeDatatypeMap the map of code names to datatypes
+	 * @return true if all combinations are valid, false otherwise
+	 */
+	public static boolean validateDatatypeCombinations(CQLModel model, Map<String, List<String>> valuesetDatatypeMap, Map<String, List<String>> codeDatatypeMap) {
+	
+		boolean isValidValuesetDatatypeComboUsed = true; 
+		Iterator<Entry<String, List<String>>> iterator = valuesetDatatypeMap.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
+			List<String> datatypes = pair.getValue();
+			isValidValuesetDatatypeComboUsed = CQLUtil.isValidDataTypeCombination(datatypes);
+		}
+		
+		boolean isValidCodeDatatypeComboUsed = true; 
+		iterator = codeDatatypeMap.entrySet().iterator();
+		while(iterator.hasNext()) {
+			Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
+			String codeName = pair.getKey();
+			List<String> datatypes = pair.getValue();
+			CQLCode code = model.getCodeByName(codeName);
+			isValidValuesetDatatypeComboUsed = CQLUtil.isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);		
+		}
+		
+		return isValidValuesetDatatypeComboUsed && isValidCodeDatatypeComboUsed; 
 	}
 	
 	public static boolean isValidDataTypeUsed(List<CQLQualityDataSetDTO> valuests, List<CQLCode> codes, Map<String, List<String>> valueSetDataTypeMap,
@@ -573,7 +604,7 @@ public class CQLUtil {
 			cqlErrors.setErrorMessage(cte.getMessage());
 			errors.add(cqlErrors);
 		}
-
+		
 		parsedCQL.setCqlErrors(errors);
 	}
 	

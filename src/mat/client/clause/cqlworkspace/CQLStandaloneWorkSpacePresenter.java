@@ -2086,11 +2086,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 																result.getCqlModel().getCqlIncludeLibrarys());
 														searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 														MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-														MatContext.get().setIncludedValueSetNames(result.getCqlModel().getCQLIdentifierValueSet());
-														MatContext.get().setIncludedCodeNames(result.getCqlModel().getCQLIdentifierCode());
-														MatContext.get().setIncludedParamNames(result.getCqlModel().getCQLIdentifierParam());
-														MatContext.get().setIncludedDefNames(result.getCqlModel().getCQLIdentifierDefinitions());
-														MatContext.get().setIncludedFuncNames(result.getCqlModel().getCQLIdentifierFunctions());
+														MatContext.get().setIncludedValues(result);
 														editIncludedLibraryDialogBox.getDialogModal().hide();
 														DomEvent.fireNativeEvent(
 																Document.get()

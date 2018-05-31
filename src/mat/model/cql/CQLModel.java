@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -251,7 +251,7 @@ public class CQLModel implements IsSerializable{
 	public CQLCode getCodeByName(String formattedCodeName) {
 		String codeName = formattedCodeName; 
 		String libraryNameVersion = null; // name in the format libraryname-x.x.xxx
-		String[] codeSplit = formattedCodeName.split(Pattern.quote("|"));
+		String[] codeSplit = formattedCodeName.split("\\|");
 		if(codeSplit.length == 3) {
 			libraryNameVersion = codeSplit[0];
 			codeName = codeSplit[2];
@@ -265,7 +265,9 @@ public class CQLModel implements IsSerializable{
 				}
 			}
 		} else {
-			for(CQLCode code : includedLibrarys.get(libraryNameVersion).getCodeList()) {
+			final String nameVersion = libraryNameVersion;
+			List<CQLIncludeLibrary> CQLIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
+			for(CQLCode code : includedLibrarys.get(CQLIncludeLibrary.get(0)).getCodeList()) {
 				if(code.getCodeName().equals(codeName)) {
 					return code; 
 				}			
@@ -273,6 +275,10 @@ public class CQLModel implements IsSerializable{
  		}
 		
 		return null;
+	}
+	
+	private String createNameVersionString(String name, String version) {
+		return name + "-" + version;
 	}
 	
 	/**
@@ -283,11 +289,9 @@ public class CQLModel implements IsSerializable{
 	public CQLQualityDataSetDTO getValuesetByName(String formattedValuesetName) {
 		String valuesetName = formattedValuesetName; 
 		String libraryNameVersion = null; // name in the format libraryname-x.x.xxx
-		String alias = null;
-		String[] valuesetSplit = formattedValuesetName.split(Pattern.quote("|"));
+		String[] valuesetSplit = formattedValuesetName.split("\\|");
 		if(valuesetSplit.length == 3) {
 			libraryNameVersion = valuesetSplit[0];
-			alias = valuesetSplit[1];
 			valuesetName = valuesetSplit[2];
 		}
 		
@@ -299,7 +303,9 @@ public class CQLModel implements IsSerializable{
 				}
 			}
 		} else {
-			for(CQLQualityDataSetDTO valueset : includedLibrarys.get(libraryNameVersion).getValueSetList()) {
+			final String nameVersion = libraryNameVersion;
+			List<CQLIncludeLibrary> CQLIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
+			for(CQLQualityDataSetDTO valueset : includedLibrarys.get(CQLIncludeLibrary.get(0)).getValueSetList()) {
 				if(valueset.getName() == valuesetName) {
 					return valueset; 
 				}			

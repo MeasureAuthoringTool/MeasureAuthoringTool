@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;

@@ -498,10 +498,13 @@ public class CQLUtil {
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 
 		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
+		
+		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
 
-		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlLibraryDAO);
+		getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 
 		setIncludedCQLExpressions(cqlModel);
 
@@ -516,11 +519,12 @@ public class CQLUtil {
 	 *
 	 * @param cqlModel the cql model
 	 * @param cqlLibNameMap the cql lib name map
+	 * @param cqlIncludeModelMap 
 	 * @param cqlLibraryDAO the cql library DAO
 	 * @return the CQL include lib map
 	 */
-	public static void getCQLIncludeLibMap(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
-			CQLLibraryDAO cqlLibraryDAO) {
+	public static void getCQLIncludeMaps(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
+			Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap, CQLLibraryDAO cqlLibraryDAO) {
 
 		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
 		if (cqlIncludeLibraries == null) {
@@ -537,10 +541,12 @@ public class CQLUtil {
 
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString, cqlLibraryDAO);
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString);
+
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
-			getCQLIncludeLibMap(includeCqlModel, cqlLibNameMap, cqlLibraryDAO);
+			cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
+			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 		}
 	}
 
@@ -561,9 +567,10 @@ public class CQLUtil {
 		
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
-		libraryMap.put(cqlModel.getName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
+		libraryMap.put(cqlModel.getUsingName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
-			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML(), cqlLibraryDAO);
+			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
+
 			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
 			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();			
 			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
@@ -1038,7 +1045,8 @@ public class CQLUtil {
 
 					if(libHolderObject != null){
 						String xml = libHolderObject.getMeasureXML();
-						CQLModel childCQLModel = CQLUtilityClass.getCQLModelFromXML(xml, cqlLibraryDAO);
+						CQLModel childCQLModel = CQLUtilityClass.getCQLModelFromXML(xml);
+
 						List<CQLIncludeLibrary> cqlGrandChildLibs = childCQLModel.getCqlIncludeLibrarys();
 
 						for(CQLIncludeLibrary grandChildLib : cqlGrandChildLibs){
@@ -1072,8 +1080,10 @@ public class CQLUtil {
 	public static void getIncludedCQLExpressions(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO){
 
 		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
-		getCQLIncludeLibMap(cqlModel, cqlLibNameMap, cqlLibraryDAO);
+		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
+		getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 		setIncludedCQLExpressions(cqlModel);
 	}
 }

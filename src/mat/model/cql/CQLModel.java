@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import mat.shared.LibHolderObject;
+import java.util.stream.Collectors;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.shared.CQLIdentifierObject;
+import mat.shared.LibHolderObject;
 
 public class CQLModel implements IsSerializable{
 	private String libraryName;
 	private String versionUsed;
 	private String qdmVersion;
-	private String name;
+	private String usingName;
 	private String context;
 	private List<CQLQualityDataSetDTO> valueSetList = new ArrayList<CQLQualityDataSetDTO>();
 	private List<CQLQualityDataSetDTO> allValueSetList = new ArrayList<CQLQualityDataSetDTO>();
@@ -26,7 +28,9 @@ public class CQLModel implements IsSerializable{
 	
 	
 	
-	private Map<String, CQLModel> includedLibrarys = new HashMap<String, CQLModel>(); 
+
+	private Map<CQLIncludeLibrary, CQLModel> includedLibrarys = new HashMap<CQLIncludeLibrary, CQLModel>(); 
+
 
 	
 	/**
@@ -122,17 +126,17 @@ public class CQLModel implements IsSerializable{
 	public void setQdmVersion(String qdmVersion) {
 		this.qdmVersion = qdmVersion;
 	}
-	public String getName() {
-		return name;
+	public String getUsingName() {
+		return usingName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setUsingName(String name) {
+		this.usingName = name;
 	}
 	
-	public Map<String, CQLModel> getIncludedLibrarys() {
+	public Map<CQLIncludeLibrary, CQLModel> getIncludedLibrarys() {
 		return includedLibrarys;
 	}
-	public void setIncludedLibrarys(Map<String, CQLModel> includedLibrarys) {
+	public void setIncludedLibrarys(Map<CQLIncludeLibrary, CQLModel> includedLibrarys) {
 		this.includedLibrarys = includedLibrarys;
 	}
 	
@@ -143,6 +147,18 @@ public class CQLModel implements IsSerializable{
 		}
 		return includedDefNames;
 	}
+	
+	public List<CQLIdentifierObject> getCQLIdentifierDefinitions(){
+		List<CQLIdentifierObject> includedDefCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
+		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
+			CQLModel model = includedLibrarys.get(lib);
+			for(CQLDefinition def : model.getDefinitionList()) {
+				includedDefCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), def.getName()));
+			}
+		}
+		return includedDefCQLIdentifierObject;
+	}
+	
 	public List<CQLFunctions> getIncludedFunc() {
 		List<CQLFunctions> includedFuncNames = new ArrayList<CQLFunctions>();
 		for(CQLModel value : includedLibrarys.values()) {
@@ -150,12 +166,35 @@ public class CQLModel implements IsSerializable{
 		}
 		return includedFuncNames;
 	}
+	
+	public List<CQLIdentifierObject> getCQLIdentifierFunctions(){
+		List<CQLIdentifierObject> includedFuncCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
+		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
+			CQLModel model = includedLibrarys.get(lib);
+			for(CQLFunctions fun : model.getCqlFunctions()) {
+				includedFuncCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), fun.getName()));
+			}
+		}
+		return includedFuncCQLIdentifierObject;
+	}
+	
 	public List<CQLQualityDataSetDTO> getIncludedValueSet() {
 		List<CQLQualityDataSetDTO> includedValueSetNames = new ArrayList<CQLQualityDataSetDTO>();
 		for(CQLModel value : includedLibrarys.values()) {
 			includedValueSetNames.addAll(value.getValueSetList());
 		}
 		return includedValueSetNames;
+	}
+
+	public List<CQLIdentifierObject> getCQLIdentifierValueSet(){
+		List<CQLIdentifierObject> includedValueSetCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
+		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
+			CQLModel model = includedLibrarys.get(lib);
+			for(CQLQualityDataSetDTO value : model.getAllValueSetList()) {
+				includedValueSetCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), value.getName()));
+			}
+		}
+		return includedValueSetCQLIdentifierObject;
 	}
 	
 	public List<CQLParameter> getIncludedParam() {
@@ -166,6 +205,18 @@ public class CQLModel implements IsSerializable{
 		return includedParamNames;
 	}
 	
+	public List<CQLIdentifierObject> getCQLIdentifierParam(){
+		List<CQLIdentifierObject> includedParamCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
+		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
+			CQLModel model = includedLibrarys.get(lib);
+			for(CQLParameter param : model.getCqlParameters()) {
+				includedParamCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), param.getName()));
+			}
+		}
+		return includedParamCQLIdentifierObject;
+	}
+	
+
 	public List<CQLCode> getIncludedCode() {
 		List<CQLCode> includedCodeNames = new ArrayList<CQLCode>();
 		for(CQLModel value : includedLibrarys.values()) {
@@ -173,6 +224,18 @@ public class CQLModel implements IsSerializable{
 		}
 		return includedCodeNames;
 	}
+	
+	public List<CQLIdentifierObject> getCQLIdentifierCode(){
+		List<CQLIdentifierObject> includedCodeCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
+		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
+			CQLModel model = includedLibrarys.get(lib);
+			for(CQLCode param : model.getIncludedCode()) {
+				includedCodeCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), param.getName()));
+			}
+		}
+		return includedCodeCQLIdentifierObject;
+	}
+
 	public Map<String, LibHolderObject> getIncludedCQLLibXMLMap() {
 		return includedCQLLibXMLMap;
 	}
@@ -202,7 +265,9 @@ public class CQLModel implements IsSerializable{
 				}
 			}
 		} else {
-			for(CQLCode code : includedLibrarys.get(libraryNameVersion).getCodeList()) {
+			final String nameVersion = libraryNameVersion;
+			List<CQLIncludeLibrary> CQLIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
+			for(CQLCode code : includedLibrarys.get(CQLIncludeLibrary.get(0)).getCodeList()) {
 				if(code.getCodeName().equals(codeName)) {
 					return code; 
 				}			
@@ -210,6 +275,10 @@ public class CQLModel implements IsSerializable{
  		}
 		
 		return null;
+	}
+	
+	private String createNameVersionString(String name, String version) {
+		return name + "-" + version;
 	}
 	
 	/**
@@ -234,7 +303,9 @@ public class CQLModel implements IsSerializable{
 				}
 			}
 		} else {
-			for(CQLQualityDataSetDTO valueset : includedLibrarys.get(libraryNameVersion).getValueSetList()) {
+			final String nameVersion = libraryNameVersion;
+			List<CQLIncludeLibrary> CQLIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
+			for(CQLQualityDataSetDTO valueset : includedLibrarys.get(CQLIncludeLibrary.get(0)).getValueSetList()) {
 				if(valueset.getName() == valuesetName) {
 					return valueset; 
 				}			

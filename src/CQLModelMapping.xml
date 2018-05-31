@@ -11,7 +11,7 @@
 		<field name="versionUsed" type="java.lang.String">
 			<bind-xml name="version" node="element" />
 		</field>
-		<field name="name" type="java.lang.String">
+		<field name="usingName" type="java.lang.String">
 			<bind-xml name="usingModel" node="element" />
 		</field>
 		<field name="qdmVersion" type="java.lang.String">

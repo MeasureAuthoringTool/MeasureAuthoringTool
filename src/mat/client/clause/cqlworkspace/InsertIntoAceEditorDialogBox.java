@@ -3,6 +3,7 @@ package mat.client.clause.cqlworkspace;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.FieldSet;
@@ -27,14 +28,13 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
-import mat.model.cql.CQLFunctionArgument;
-import mat.model.cql.CQLFunctions;
 import mat.shared.CQLIdentifierObject;
 
 // TODO: Auto-generated Javadoc
@@ -339,10 +339,6 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.show();
 	}
 	
-	private static String modifyQuotesInString(String textToBeModified) {
-		return textToBeModified.replaceAll("\"", "");
-	}
-	
 	
 	/**
 	 * This method add's addChangeHandler event to 'availableItemToInsert' and 'listAllItemNames' ListBox.
@@ -618,63 +614,6 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 			}
 		}
 		
-	}
-	
-	
-	
-	/**
-	 * Gets the function argument value builder.
-	 *
-	 * @param functions the functions
-	 * @return the function argument value builder
-	 */
-	private static String getFunctionArgumentValueBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getName());
-		functionNameBuilder.append("(");
-		StringBuilder argumentType = new StringBuilder();
-		if (functions.getArgumentList() != null) {
-			for (int j = 0; j < functions.getArgumentList().size(); j++) {
-				CQLFunctionArgument argument = functions.getArgumentList().get(j);
-				argumentType = argumentType.append(argument.getArgumentName());
-				if (j <  (functions.getArgumentList().size() - 1)) {
-					argumentType.append(",");
-				}
-			}
-		}
-		functionNameBuilder.append(argumentType + ")");
-		return functionNameBuilder.toString();
-	}
-	
-	/**
-	 * Gets the function argument tool tip builder.
-	 *
-	 * @param functions the functions
-	 * @return the function argument tool tip builder
-	 */
-	private static String getFunctionArgumentToolTipBuilder(CQLFunctions functions){
-		StringBuilder functionNameBuilder = new StringBuilder(functions.getName());
-		functionNameBuilder.append("(");
-		StringBuilder argumentType = new StringBuilder();
-		if (functions.getArgumentList() != null) {
-			for (int j = 0; j < functions.getArgumentList().size(); j++) {
-				CQLFunctionArgument argument = functions.getArgumentList().get(j);
-				argumentType = argumentType.append(argument.getArgumentName());
-				if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_MODEL_DATA_TYPE)){
-					argumentType = argumentType.append(" " +'"' + argument.getQdmDataType() + '"');
-				}
-				else if(argument.getArgumentType().equalsIgnoreCase(CQLWorkSpaceConstants.CQL_OTHER_DATA_TYPE)){
-					argumentType = argumentType.append(" " + argument.getOtherType());
-				}
-				else{
-					argumentType = argumentType.append(" " +argument.getArgumentType());
-				}
-				if (j <  (functions.getArgumentList().size() - 1)) {
-					argumentType.append(",");
-				}
-			}
-		}
-		functionNameBuilder.append(argumentType + ")");
-		return functionNameBuilder.toString();
 	}
 	
 	/**

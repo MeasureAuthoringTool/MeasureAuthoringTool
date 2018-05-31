@@ -133,7 +133,7 @@ public class CQLUtil {
 		while(iterator.hasNext()) {
 			Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
 			List<String> datatypes = pair.getValue();
-			isValidValuesetDatatypeComboUsed = CQLUtil.isValidDataTypeCombination(datatypes);
+			isValidValuesetDatatypeComboUsed = isValidDataTypeCombination(datatypes);
 		}
 		
 		boolean isValidCodeDatatypeComboUsed = true; 
@@ -147,51 +147,6 @@ public class CQLUtil {
 		}
 		
 		return isValidValuesetDatatypeComboUsed && isValidCodeDatatypeComboUsed; 
-	}
-	
-	public static boolean isValidDataTypeUsed(List<CQLQualityDataSetDTO> valuests, List<CQLCode> codes, Map<String, List<String>> valueSetDataTypeMap,
-			Map<String, List<String>> codeDataTypeMap) {
-		if (valueSetDataTypeMap != null && !valueSetDataTypeMap.isEmpty()) {
-			for (String valueSetName : valueSetDataTypeMap.keySet()) {
-				List<String> dataTypeList = valueSetDataTypeMap.get(valueSetName);
-				String[] valueSetNameArray = valueSetName.split(Pattern.quote("|"));
-				if (valueSetNameArray.length == 3) {
-					valueSetName = valueSetNameArray[2];
-				}
-
-				if (!isValidDataTypeCombination(dataTypeList)) {
-					return false;
-				}
-			}
-		}
-
-		if (codeDataTypeMap != null && !codeDataTypeMap.isEmpty()) {
-			for (String codeName : codeDataTypeMap.keySet()) {
-				findCodeByName(codeName, codes);
-				List<String> dataTypeList = codeDataTypeMap.get(codeName);
-				String[] codeNameArray = codeName.split(Pattern.quote("|"));
-				if (codeNameArray.length == 3) {
-					codeName = codeNameArray[2];
-				}
-
-				CQLCode code = findCodeByName(codeName, codes);
-				if (code != null && !isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), dataTypeList)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-	
-	private static CQLCode findCodeByName(String codeName, List<CQLCode> codes) {
-		for(CQLCode code : codes) {
-			if(code.getDisplayName().equals(codeName)) {
-				return code; 
-			}
-		}
-		
-		return null; 
 	}
 	
 	/**

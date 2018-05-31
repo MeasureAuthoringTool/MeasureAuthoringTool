@@ -315,4 +315,17 @@ public class CQLModel implements IsSerializable{
 		return null;
 	}
 	
+	public List<String> getExpressionListFromCqlModel() {
+		List<String> expressionList = new ArrayList<>();
+
+		for (CQLDefinition cqlDefinition : cqlDefinitions) {
+			expressionList.add(cqlDefinition.getName());
+		}
+
+		for (CQLFunctions cqlFunction : cqlFunctions) {
+			expressionList.add(cqlFunction.getName());
+		}
+
+		return expressionList;
+	}
 }

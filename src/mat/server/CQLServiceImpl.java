@@ -184,19 +184,6 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 
-	private List<String> getExpressionListFromCqlModel(CQLModel cqlModel) {
-		List<String> expressionList = new ArrayList<>();
-
-		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
-			expressionList.add(cqlDefinition.getName());
-		}
-
-		for (CQLFunctions cqlFunction : cqlModel.getCqlFunctions()) {
-			expressionList.add(cqlFunction.getName());
-		}
-
-		return expressionList;
-	}
 
 	/*
 	 * {@inheritDoc}
@@ -1654,8 +1641,7 @@ public class CQLServiceImpl implements CQLService {
 			parsedCQL.setUsedCQLArtifacts(getUsedCQlArtifacts(xmlString));
 			setUsedValuesets(parsedCQL, cqlModel);
 			setUsedCodes(parsedCQL, cqlModel);
-			boolean isValid = CQLUtil.isValidDataTypeUsed(cqlModel.getValueSetList(), cqlModel.getCodeList(), parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(),
-					parsedCQL.getUsedCQLArtifacts().getCodeDataTypeMap());
+			boolean isValid = CQLUtil.validateDatatypeCombinations(cqlModel, parsedCQL.getUsedCQLArtifacts().getValueSetDataTypeMap(), parsedCQL.getUsedCQLArtifacts().getCodeDataTypeMap());
 			parsedCQL.setDatatypeUsedCorrectly(isValid);
 
 		}
@@ -1701,13 +1687,12 @@ public class CQLServiceImpl implements CQLService {
 
 		// get the strings for parsing
 		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
-		List<String> expressionList = getExpressionListFromCqlModel(cqlModel);
+		List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
 		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
 		setUsedValuesets(result, cqlModel);
 		setUsedCodes(result, cqlModel);
-		boolean isValid = CQLUtil.isValidDataTypeUsed(cqlModel.getValueSetList(), cqlModel.getCodeList(), result.getUsedCQLArtifacts().getValueSetDataTypeMap(),
-				result.getUsedCQLArtifacts().getCodeDataTypeMap());
+		boolean isValid = CQLUtil.validateDatatypeCombinations(cqlModel, result.getUsedCQLArtifacts().getValueSetDataTypeMap(), result.getUsedCQLArtifacts().getCodeDataTypeMap());
 		result.setDatatypeUsedCorrectly(isValid);
 
 		// if there is no cql errors
@@ -2403,7 +2388,7 @@ public class CQLServiceImpl implements CQLService {
 		result.setStartLine(startLine);
 		result.setEndLine(endLine);
 
-		List<String> expressionList = getExpressionListFromCqlModel(cqlModel);
+		List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
 		SaveUpdateCQLResult parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 
 		if (!parsedCQL.getCqlErrors().isEmpty()) {
@@ -2470,8 +2455,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLExpressionObject cqlExpressionObject = findExpressionObject(expressionName, expressionList);
 		boolean isValid = true;
 		if (cqlExpressionObject != null) {
-			isValid = CQLUtil.isValidDataTypeUsed(model.getValueSetList(), model.getCodeList(), cqlExpressionObject.getValueSetDataTypeMap(),
-					cqlExpressionObject.getCodeDataTypeMap());
+			isValid = CQLUtil.validateDatatypeCombinations(model, cqlExpressionObject.getValueSetDataTypeMap(), cqlExpressionObject.getCodeDataTypeMap());
 		}
 		return isValid;
 	}

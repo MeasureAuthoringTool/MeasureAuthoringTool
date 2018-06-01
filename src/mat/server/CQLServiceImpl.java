@@ -33,6 +33,8 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -86,9 +88,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
+
 
 /**
  * The Class CQLServiceImpl.
@@ -2281,24 +2281,17 @@ public class CQLServiceImpl implements CQLService {
 		return IncLibList;
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String getJSONObjectFromXML() {
 		String result = null;
 		try {
-			result = convertXmlToString();
-			XMLSerializer xmlSerializer = new XMLSerializer();
-			xmlSerializer.setForceTopLevelObject(true);
-			xmlSerializer.setTypeHintsEnabled(false);
-			JSON json = xmlSerializer.read(result);
-			JSONObject jsonObject = JSONObject.fromObject(json.toString());
+			JSONObject jsonObject = XML.toJSONObject(convertXmlToString());
 			result = jsonObject.toString(4);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
-
 		}
+		
 		return result;
 	}
 

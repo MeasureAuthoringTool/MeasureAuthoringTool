@@ -52,7 +52,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/fluent-hc-4.5.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/vsac_framework.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jtidy.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/json-lib-2.4-jdk15.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/axiom-api-1.2.20.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/axiom-impl-1.2.20.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/axis2-adb-1.7.7.jar"/>
@@ -102,7 +101,8 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/snakeyaml-1.21.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/groovy-all-2.4.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-httpclient-3.1.jar"/>
-	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER/GWT 2.8.1"/>
+	<classpathentry kind="con" path="com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/json-20180130.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

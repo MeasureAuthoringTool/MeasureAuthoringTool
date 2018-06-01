@@ -4,30 +4,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import mat.client.clause.cqlworkspace.TimingExpressionObj;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.MeasureServiceAsync;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONString;
-import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class JSONCQLTimingExpressionUtility.
- */
 public class JSONCQLTimingExpressionUtility {
 
 	/** The measure service. */
 	private static MeasureServiceAsync measureService;
 
 	/** The json object map. */
-	private static HashMap<String, JSONArray> jsonObjectMap = new HashMap<String, JSONArray>();
+	private static HashMap<String, JSONArray> jsonObjectMap = new HashMap<>();
+	
+	private static final String REF = "ref";
 
+	private static final String NAME = "name";
+	
+	private static final String TRUE = "true";
+	
+	private static final String OPTION = "option";
+	
+	private static final String QUANTITY = "quantity";
+	
+	private static final String TIMING_EXPR = "timingExpression";
+	
 	/**
 	 * Gets the all attr mode list.
 	 * 
@@ -54,15 +60,10 @@ public class JSONCQLTimingExpressionUtility {
 	 * @param jsonString
 	 *            the json string
 	 */
-	@SuppressWarnings("deprecation")
 	private static void extractJSONObject(String jsonString) {
-		if (jsonString != null) {
-			JSONValue jsonValue = JSONParser.parse(jsonString);
-			if (jsonValue.isObject() != null) {
-				JSONArray attributeJsonArray = (JSONArray) jsonValue.isObject()
-						.get("cqlTimingExpressions");
-				jsonObjectMap.put("timingExpression", attributeJsonArray);
-			}
+		JSONArray attributeJsonArray  = JSONAttributeModeUtility.createJSONArrayFromStr(jsonString, "cqlTimingExpressions", TIMING_EXPR);
+		if (attributeJsonArray != null) {
+			jsonObjectMap.put(TIMING_EXPR, attributeJsonArray);
 		}
 	}
 
@@ -73,101 +74,71 @@ public class JSONCQLTimingExpressionUtility {
 	 *            the timing expression
 	 * @return the more viable options list
 	 */
-	public static TimingExpressionObj getAvaialableTimingQualifierList(
-			String timingExpression) {
+	public static TimingExpressionObj getAvaialableTimingQualifierList(String timingExpression) {
 		TimingExpressionObj timingExpressionObj = null;
 
 		List<String> optionList = new ArrayList<String>();
-		if (jsonObjectMap.get("timingExpression").isArray() != null) {
-			JSONArray arrayObject = jsonObjectMap.get("timingExpression")
-					.isArray();
+		if (jsonObjectMap.get(TIMING_EXPR).isArray() != null) {
+			JSONArray arrayObject = jsonObjectMap.get(TIMING_EXPR).isArray();
 			for (int i = 0; i < arrayObject.size(); i++) {
 				JSONObject attrJSONObject = (JSONObject) arrayObject.get(i);
-				if (attrJSONObject.get("@name") != null) {
-
-					JSONString attrObject = attrJSONObject.get("@name")
-							.isString();
-					String timingName = attrObject.toString();
-					timingName = timingName.replace("\"", "");
+				if (attrJSONObject.get(NAME) != null) {
+					String timingName = JSONAttributeModeUtility.createStrFromJSONValue(NAME, attrJSONObject);
 					if (timingName.equalsIgnoreCase(timingExpression)) {
-
 						timingExpressionObj = new TimingExpressionObj();
 						timingExpressionObj.setName(timingExpression);
-						if (attrJSONObject.get("@quantity") != null) {
-							JSONString quantityBoolean = attrJSONObject.get(
-									"@quantity").isString();
-							String quantity = quantityBoolean.toString()
-									.replaceAll("\"", "");
-							if (quantity.equals("true")) {
+						if (attrJSONObject.get(QUANTITY) != null) {
+							String quantity = JSONAttributeModeUtility.createStrFromJSONValue(QUANTITY, attrJSONObject);
+							if (quantity.equals(TRUE)) {
 								timingExpressionObj.setQuantity(true);
 							} else {
 								timingExpressionObj.setQuantity(false);
 							}
 						}
 
-						if (attrJSONObject.get("@units") != null) {
-							JSONString unitsBoolean = attrJSONObject.get(
-									"@units").isString();
-							String units = unitsBoolean.toString().replaceAll(
-									"\"", "");
-							if (units.equals("true")) {
+						if (attrJSONObject.get("units") != null) {
+							String units = JSONAttributeModeUtility.createStrFromJSONValue("units", attrJSONObject);
+							if (units.equals(TRUE)) {
 								timingExpressionObj.setUnits(true);
 							} else {
 								timingExpressionObj.setUnits(false);
 							}
 						}
-						
-						if (attrJSONObject.get("@relativeQualifer") != null) {
-							JSONString unitsBoolean = attrJSONObject.get(
-									"@relativeQualifer").isString();
-							String units = unitsBoolean.toString().replaceAll(
-									"\"", "");
-							if (units.equals("true")) {
+
+						if (attrJSONObject.get("relativeQualifer") != null) {
+							String units = JSONAttributeModeUtility.createStrFromJSONValue("relativeQualifer", attrJSONObject);
+							if (units.equals(TRUE)) {
 								timingExpressionObj.setRelativeQualifier(true);
 							} else {
 								timingExpressionObj.setRelativeQualifier(false);
 							}
 						}
-						
-						if (attrJSONObject.get("@quantityOffsetReq") != null) {
-							JSONString unitsBoolean = attrJSONObject.get(
-									"@quantityOffsetReq").isString();
-							String units = unitsBoolean.toString().replaceAll(
-									"\"", "");
-							if (units.equals("true")) {
+
+						if (attrJSONObject.get("quantityOffsetReq") != null) {
+							String units = JSONAttributeModeUtility.createStrFromJSONValue("quantityOffsetReq", attrJSONObject);
+							if (units.equals(TRUE)) {
 								timingExpressionObj.setQuantityOffsetReq(true);
 							} else {
 								timingExpressionObj.setQuantityOffsetReq(false);
 							}
 						}
-						
 
-						if (attrJSONObject.get("@dateTimePrecision") != null) {
-							JSONString dateTimePreBoolean = attrJSONObject.get(
-									"@dateTimePrecision").isString();
-							String dateTimePrecision = dateTimePreBoolean
-									.toString().replaceAll("\"", "");
-							if (dateTimePrecision.equals("true")) {
+
+						if (attrJSONObject.get("dateTimePrecision") != null) {
+							String dateTimePrecision = JSONAttributeModeUtility.createStrFromJSONValue("dateTimePrecision", attrJSONObject);
+							if (dateTimePrecision.equals(TRUE)) {
 								timingExpressionObj.setDateTimePrecesion(true);
 							} else {
 								timingExpressionObj.setDateTimePrecesion(false);
 							}
 						}
 
-						if (attrJSONObject.get("@dateTimePrecisionOffset") != null) {
-							JSONString dateTimePrecisionOffset = attrJSONObject
-									.get("@dateTimePrecisionOffset").isString();
-							String dateTimePrecisionOffsetStr = dateTimePrecisionOffset
-									.toString().replaceAll("\"", "");
-							timingExpressionObj
-									.setDateTimePrecOffset(dateTimePrecisionOffsetStr);
+						if (attrJSONObject.get("dateTimePrecisionOffset") != null) {
+							String dateTimePrecisionOffsetStr = JSONAttributeModeUtility.createStrFromJSONValue("dateTimePrecisionOffset", attrJSONObject);
+							timingExpressionObj.setDateTimePrecOffset(dateTimePrecisionOffsetStr);
 						}
-						if (attrJSONObject.get("@option") != null) {
-							JSONString moreViableOptionObject = attrJSONObject
-									.get("@option").isString();
-							String optionName = moreViableOptionObject
-									.toString();
-							optionName = optionName.replace("\"", "");
+						if (attrJSONObject.get(OPTION) != null) {							
+							String optionName = JSONAttributeModeUtility.createStrFromJSONValue(OPTION, attrJSONObject);
 							optionList = getOptionList(optionName);
 							timingExpressionObj.setOptionList(optionList);
 							break;
@@ -182,7 +153,7 @@ public class JSONCQLTimingExpressionUtility {
 
 		return timingExpressionObj;
 	}
-
+	
 	/**
 	 * Gets the option list.
 	 * 
@@ -191,36 +162,24 @@ public class JSONCQLTimingExpressionUtility {
 	 * @return the option list
 	 */
 	public static List<String> getOptionList(String timingExpression) {
-		List<String> optionList = new ArrayList<String>();
-		if (jsonObjectMap.get("timingExpression").isArray() != null) {
-			JSONArray arrayObject = jsonObjectMap.get("timingExpression")
-					.isArray();
+		List<String> optionList = new ArrayList<>();
+		if (jsonObjectMap.get(TIMING_EXPR).isArray() != null) {
+			JSONArray arrayObject = jsonObjectMap.get(TIMING_EXPR).isArray();
 			for (int i = 0; i < arrayObject.size(); i++) {
 				JSONObject attrJSONObject = (JSONObject) arrayObject.get(i);
-				if(attrJSONObject.get("@ref") != null){
-					JSONString attrObject = attrJSONObject.get("@ref").isString();
-					String timingName = attrObject.toString();
-					timingName = timingName.replace("\"", "");
+				if(attrJSONObject.get(REF) != null){
+					String timingName = JSONAttributeModeUtility.createStrFromJSONValue(REF, attrJSONObject);
 					if (timingName.equalsIgnoreCase(timingExpression)) {
-						if (attrJSONObject.get("option").isArray() != null) {
-							JSONArray attrModeObject = attrJSONObject
-									.get("option").isArray();
+						if (attrJSONObject.get(OPTION).isArray() != null) {
+							JSONArray attrModeObject = attrJSONObject.get(OPTION).isArray();
 							for (int j = 0; j < attrModeObject.size(); j++) {
-								JSONObject optionObject = (JSONObject) attrModeObject
-										.get(j);
-								JSONString optionStrObject = optionObject.get(
-										"@name").isString();
-								String optionName = optionStrObject.toString();
-								optionName = optionName.replace("\"", "");
+								JSONObject optionObject = (JSONObject) attrModeObject.get(j);
+								String optionName = JSONAttributeModeUtility.createStrFromJSONValue(NAME, optionObject);
 								optionList.add(optionName);
 							}
-						} else if (attrJSONObject.get("option").isObject() != null) {
-							JSONObject optionObject = attrJSONObject.get("option")
-									.isObject();
-							JSONString optionStrObject = optionObject.get("@name")
-									.isString();
-							String optionName = optionStrObject.toString();
-							optionName = optionName.replace("\"", "");
+						} else if (attrJSONObject.get(OPTION).isObject() != null) {
+							JSONObject optionObject = attrJSONObject.get(OPTION).isObject();
+							String optionName = JSONAttributeModeUtility.createStrFromJSONValue(NAME, optionObject);
 							optionList.add(optionName);
 						}
 						break;
@@ -232,64 +191,9 @@ public class JSONCQLTimingExpressionUtility {
 		return optionList;
 	}
 
-	/**
-	 * Gets the attr mode list.
-	 * 
-	 * @return the attr mode list
-	 */
-	/*
-	 * public static TimingExpressionObj getAllCQLTimingExpressionsList(String
-	 * timing) { TimingExpressionObj timingExpressionObj = new
-	 * TimingExpressionObj(); List<String> modeList = new ArrayList<String>();
-	 * if ((timing != null) && (timing != "")) { if
-	 * (jsonObjectMap.get("firstLevel").isArray() != null) { JSONArray
-	 * arrayObject = jsonObjectMap.get("firstLevel") .isArray(); for (int i = 0;
-	 * i < arrayObject.size(); i++) { JSONObject attrJSONObject = (JSONObject)
-	 * arrayObject .get(i); JSONString attrObject = attrJSONObject.get(
-	 * "@name").isString(); //String dataTypeObject = null; String timingName =
-	 * attrObject.toString(); timingName = timingName.replace("\"", ""); if
-	 * (timing.equalsIgnoreCase(timingName)) {
-	 * 
-	 * JSONString unitsBoolean = attrJSONObject.get("@quantity").isString();
-	 * String units = unitsBoolean.toString().replaceAll("\"", "");
-	 * if(units.equals("true")){ timingExpressionObj.setQuantity(true); } else {
-	 * timingExpressionObj.setQuantity(false); }
-	 * 
-	 * JSONString quanBoolean = attrJSONObject.get("@units").isString(); String
-	 * quantity = quanBoolean.toString().replaceAll("\"", "");
-	 * if(quantity.equals("true")){ timingExpressionObj.setUnits(true); } else {
-	 * timingExpressionObj.setUnits(false); }
-	 * 
-	 * JSONString dateTimePreBoolean =
-	 * attrJSONObject.get("@dateTimePrecision").isString(); String
-	 * dateTimePrecision = dateTimePreBoolean.toString().replaceAll("\"", "");
-	 * if(dateTimePrecision.equals("true")){
-	 * timingExpressionObj.setDateTimePrecesion(true); } else {
-	 * timingExpressionObj.setDateTimePrecesion(false); }
-	 * 
-	 * if (attrJSONObject.get("secondLevel").isArray() != null) { JSONArray
-	 * attrModeObject = attrJSONObject.get("secondLevel").isArray();
-	 * jsonObjectSecondLevelMap.put("secondLevel", attrModeObject); for (int j =
-	 * 0; j < attrModeObject.size(); j++) { JSONObject modeObject = (JSONObject)
-	 * attrModeObject.get(j); JSONString modeStrObject = modeObject.get(
-	 * "@name").isString(); String modeName = modeStrObject.toString(); modeName
-	 * = modeName.replace("\"", ""); // modeName = getAttrMode(modeName);
-	 * modeList.add(modeName); } } else if
-	 * (attrJSONObject.get("secondLevel").isObject() != null) { JSONObject
-	 * modeObject = attrJSONObject.get("secondLevel") .isObject(); JSONString
-	 * modeStrObject = modeObject.get( "@name").isString(); String modeName =
-	 * modeStrObject.toString(); modeName = modeName.replace("\"", ""); //
-	 * modeName = getAttrMode(modeName); modeList.add(modeName); } } } } }
-	 * 
-	 * timingExpressionObj.setOptionList(modeList);
-	 * 
-	 * return timingExpressionObj; }
-	 */
-
 	public static MeasureServiceAsync getMeasureService() {
 		if (measureService == null) {
-			measureService = (MeasureServiceAsync) GWT
-					.create(MeasureService.class);
+			measureService = GWT.create(MeasureService.class);
 		}
 		return measureService;
 	}

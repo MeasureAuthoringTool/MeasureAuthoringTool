@@ -314,7 +314,7 @@ public class CheckUserChangePasswordLimit {
 		
 		logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 		//Get all the Users
-				final List<User> users = userDAO.find();
+				final List<User> users = userDAO.find(); 
 				final List<User> emailUsers=checkUsersLastPassword(noOfDaysPasswordLimit,users);
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
@@ -342,7 +342,7 @@ public class CheckUserChangePasswordLimit {
 					content.put(ConstantMessages.URL, envirUrl);
 					
 					//5 days Expiry Date
-				     if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
+				    if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
 						final String expiryDate=getFormattedExpiryDate(new Date(),5-1);
 						content.put("passwordExpiryDate",expiryDate );
 					}
@@ -351,7 +351,7 @@ public class CheckUserChangePasswordLimit {
 					String text = null;
 					try {
 						if(WARNING_EMAIL_FLAG.equals(emailType)){
-							text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail_warning_template.ftl"), model);
+							text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(warningMailTemplate), model);
 							simpleMailMessage.setText(text);
 							simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
 						}else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
@@ -359,20 +359,18 @@ public class CheckUserChangePasswordLimit {
 							simpleMailMessage.setText(text);
 							simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
 						}
+						mailSender.send(simpleMailMessage);
+						EmailAuditLog emailAudit = new EmailAuditLog();
+						emailAudit.setActivityType("Password " + emailType + " email sent.");
+						emailAudit.setTime(new Date());
+						emailAudit.setLoginId(user.getLoginId());
+						emailAuditLogDAO.save(emailAudit);
+						content.clear();
+						model.clear();
+						logger.info("Email Sent to "+user.getFirstName());
 					} catch (IOException | TemplateException e) {
 						e.printStackTrace();
 					}
-				
-					mailSender.send(simpleMailMessage);
-					EmailAuditLog emailAudit = new EmailAuditLog();
-					emailAudit.setActivityType("Password " + emailType + " email sent.");
-					emailAudit.setTime(new Date());
-					emailAudit.setLoginId(user.getLoginId());
-					emailAuditLogDAO.save(emailAudit);
-					
-					content.clear();
-					model.clear();
-					logger.info("Email Sent to "+user.getFirstName());
 				}
 			
 				logger.info(" :: CheckUserLoginPasswordDays Method END :: ");

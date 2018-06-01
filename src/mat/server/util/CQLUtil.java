@@ -501,7 +501,7 @@ public class CQLUtil {
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
-			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
+			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, includeCqlModel.getIncludedLibrarys(), cqlLibraryDAO);
 		}
 	}
 

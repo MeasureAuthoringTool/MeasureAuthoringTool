@@ -229,8 +229,8 @@ public class CQLModel implements IsSerializable{
 		List<CQLIdentifierObject> includedCodeCQLIdentifierObject = new ArrayList<CQLIdentifierObject>();
 		for(CQLIncludeLibrary lib : includedLibrarys.keySet()) {
 			CQLModel model = includedLibrarys.get(lib);
-			for(CQLCode param : model.getIncludedCode()) {
-				includedCodeCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), param.getName()));
+			for(CQLCode code : model.getIncludedCode()) {
+				includedCodeCQLIdentifierObject.add(new CQLIdentifierObject(lib.getAliasName(), code.getDisplayName()));
 			}
 		}
 		return includedCodeCQLIdentifierObject;

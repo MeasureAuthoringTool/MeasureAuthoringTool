@@ -185,12 +185,12 @@ public class CQLCode implements CQLExpression, IsSerializable {
 
 	@Override
 	public String getName() {
-		return getCodeName();
+		return getDisplayName();
 	}
 
 	@Override
 	public void setName(String name) {
-		setCodeName(name);
+		setDisplayName(name);
 	}
 
 

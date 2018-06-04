@@ -134,6 +134,10 @@ public class CQLUtil {
 			Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
 			List<String> datatypes = pair.getValue();
 			isValidValuesetDatatypeComboUsed = isValidDataTypeCombination(datatypes);
+			
+			if(!isValidValuesetDatatypeComboUsed) {
+				return false; 
+			}
 		}
 		
 		boolean isValidCodeDatatypeComboUsed = true; 
@@ -143,10 +147,14 @@ public class CQLUtil {
 			String codeName = pair.getKey();
 			List<String> datatypes = pair.getValue();
 			CQLCode code = model.getCodeByName(codeName);
-			isValidValuesetDatatypeComboUsed = CQLUtil.isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);		
+			isValidCodeDatatypeComboUsed = isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);
+			
+			if(!isValidCodeDatatypeComboUsed) {
+				return false; 
+			}
 		}
 		
-		return isValidValuesetDatatypeComboUsed && isValidCodeDatatypeComboUsed; 
+		return true; 
 	}
 	
 	/**

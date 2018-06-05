@@ -1,6 +1,8 @@
 package mat.client.clause.cqlworkspace;
 
 
+import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
+import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -24,8 +26,10 @@ import mat.client.shared.ErrorMessageAlert;
 public class ConfirmationDialogBox {
 	private  final Button yesButton = new Button("Yes"); 
 	private final Button noButton = new Button("No");
+	private ConfirmationObserver observer; 
 	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
-
+	Modal panel = new Modal();
+	private boolean isContinueClose = false; 
 	
 	public ErrorMessageAlert getMessageAlert() {
 		return messageAlert;
@@ -41,26 +45,14 @@ public class ConfirmationDialogBox {
 	}
 	
 	public ConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
+		this.observer = observer; 
 		getMessageAlert().createAlert(messageText);
-		getYesButton().setText(yesButtonText);
-		getYesButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				observer.onYesButtonClicked();
-			}
-		});
 		getNoButton().setText(noButtonText);
-		getNoButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				observer.onNoButtonClicked();
-			}
-		});
+		getYesButton().setText(yesButtonText);
 		getYesButton().setFocus(true);
 	}
 
 	public void show() {
-		Modal panel = new Modal();
 		ModalBody modalBody = new ModalBody(); 
 
 		modalBody.clear();
@@ -74,6 +66,32 @@ public class ConfirmationDialogBox {
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
+		
+		panel.addHideHandler(new ModalHideHandler() {
+			@Override
+			public void onHide(ModalHideEvent evt) {
+				// if the dialog box is closing because of clicking the continue button, 
+				// then don't execute the close handler. Just close the thing. 
+				if(!isContinueClose) {
+					observer.onClose();
+				}
+			}
+		});
+		
+		getYesButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				isContinueClose = true; 
+				observer.onYesButtonClicked();
+			}
+		});
+		getNoButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				isContinueClose = false; 
+				observer.onNoButtonClicked();
+			}
+		});
 		
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
@@ -103,7 +121,7 @@ public class ConfirmationDialogBox {
 	
 	
 	public void hide() {
-
+		panel.hide();
 	}
 	
 	
@@ -113,6 +131,10 @@ public class ConfirmationDialogBox {
 	
 	public Button getNoButton() {
 		return noButton; 
+	}
+	
+	public void setObserver(ConfirmationObserver observer) {
+		this.observer = observer; 
 	}
 
 }

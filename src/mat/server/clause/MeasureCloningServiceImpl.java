@@ -294,7 +294,7 @@ implements MeasureCloningService {
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
 			
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) 
-					|| !Boolean.valueOf(measure.isPatientBased()).equals(currentDetails.isPatientBased())) {
+					|| Boolean.TRUE.equals(currentDetails.isPatientBased())) {
 
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());

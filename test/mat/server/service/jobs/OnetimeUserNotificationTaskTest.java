@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import mat.config.TestContextConfiguration;
 import mat.dao.UserDAO;
 import mat.server.service.UserService;
 

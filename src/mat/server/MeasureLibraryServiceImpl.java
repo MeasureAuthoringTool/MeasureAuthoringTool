@@ -2751,6 +2751,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measure.setaBBRName(model.getShortName());
 		// US 421. Scoring choice is not part of core measure.
 		measure.setMeasureScoring(model.getMeasScoring());
+		measure.setPatientBased(model.isPatientBased());
 		measure.setVersion(model.getVersionNumber());
 		measure.setDraft(model.isDraft());
 		measure.setRevisionNumber(model.getRevisionNumber());

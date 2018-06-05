@@ -67,6 +67,8 @@ public class Measure {
 	
 	private String releaseVersion;
 	
+	private boolean isPatientBased;
+	
 	/**
 	 * Gets the value set date.
 	 * 
@@ -493,5 +495,13 @@ public class Measure {
 	 */
 	public void setReleaseVersion(String releaseVersion) {
 		this.releaseVersion = releaseVersion;
+	}
+
+	public boolean isPatientBased() {
+		return isPatientBased;
+	}
+
+	public void setPatientBased(boolean isPatientBased) {
+		this.isPatientBased = isPatientBased;
 	}
 }

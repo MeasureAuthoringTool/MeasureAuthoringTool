@@ -293,9 +293,8 @@ implements MeasureCloningService {
 			
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
 			
-			if ((currentDetails.getMeasScoring() != null)
-					&& !currentDetails.getMeasScoring().equals(
-							measure.getMeasureScoring())) {
+			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) 
+					|| !Boolean.valueOf(measure.isPatientBased()).equals(currentDetails.isPatientBased())) {
 
 				String scoringTypeId = MeasureDetailsUtil
 						.getScoringAbbr(clonedMeasure.getMeasureScoring());

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -707,6 +708,8 @@ public class MetaDataPresenter  implements MatPresenter {
 		void setOptionsInStewardList(List<MeasureSteward> allStewardList, boolean editable);
 		
 		void setPatientBasedMeasure(boolean isPatientBasedMeasure);
+		
+		HelpBlock getHelpBlock();
 		
 	}
 	
@@ -1483,12 +1486,14 @@ public class MetaDataPresenter  implements MatPresenter {
 	
 	private void setNQFTitle() {
 		if(metaDataDisplay.getEndorsedByListBox().getSelectedIndex() == 0) {
+			metaDataDisplay.getHelpBlock().setText("You have chosen no; the NQF number field has been cleared. It now reads as Not Applicable and is disabled.");
 			metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.NOT_APPLICABLE);
 			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.NOT_APPLICABLE);
 			metaDataDisplay.getNQFIDInput().setText("");
 			metaDataDisplay.getNQFIDInput().setEnabled(false);
 			metaDataDisplay.getNQFIDInput().setReadOnly(true);
 		} else {
+			metaDataDisplay.getHelpBlock().setText("You have chosen yes, the NQF number field is now enabled and required.");
 			if(!StringUtility.isEmptyOrNull(metaDataDisplay.getNQFIDInput().getText())) {
 				String placeHolderText = metaDataDisplay.getNQFIDInput().getText();
 				metaDataDisplay.getNQFIDInput().setPlaceholder(placeHolderText);
@@ -1500,6 +1505,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getNQFIDInput().setReadOnly(false);
 			metaDataDisplay.getNQFIDInput().setEnabled(true);
 		}
+		metaDataDisplay.getHelpBlock().getElement().focus();
 	}
 	
 	/**
@@ -2082,6 +2088,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		metaDataDisplay.getHelpBlock().setText("");
 		panel.clear();
 		editable=false;
 		clearMessages();

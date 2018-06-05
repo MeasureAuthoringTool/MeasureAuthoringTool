@@ -244,7 +244,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void saveFinalizedVersion(String measureid, boolean isMajor,String version, boolean shouldPackage, AsyncCallback<SaveMeasureResult> callback);
+	void saveFinalizedVersion(String measureid, boolean isMajor,String version, boolean shouldPackage, boolean ignoreUnusedLibraries, AsyncCallback<SaveMeasureResult> callback);
 	
 	/**
 	 * Save measure details.

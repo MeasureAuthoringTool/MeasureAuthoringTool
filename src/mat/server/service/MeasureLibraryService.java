@@ -232,7 +232,7 @@ public interface MeasureLibraryService {
 	 *            the version
 	 * @return the save measure result
 	 */
-	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version, boolean shouldPackage);
+	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version, boolean shouldPackage, boolean ignoreUnusedLibraries);
 	
 	/**
 	 * Save measure details.

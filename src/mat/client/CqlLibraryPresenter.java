@@ -948,6 +948,23 @@ public class CqlLibraryPresenter implements MatPresenter {
 		
 	}
 	
+	private void recordCQLLibraryAuditEvent(String libraryId, String versionString) {
+		MatContext.get().getAuditService().recordCQLLibraryEvent(libraryId, "CQL Library Versioned",
+				"CQL Library Version " + versionString + " created", false,
+				new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+
+					}
+				});
+	}
+	
 	/**
 	 * Method to Save Version of a Draft.
 	 *
@@ -980,45 +997,39 @@ public class CqlLibraryPresenter implements MatPresenter {
 						if (result.isSuccess()) {
 							displaySearch();
 							String versionStr = result.getVersionStr();
-							MatContext.get().getAuditService().recordCQLLibraryEvent(libraryId, "CQL Library Versioned",
-									"CQL Library Version " + versionStr + " created", false,
-									new AsyncCallback<Boolean>() {
-
-										@Override
-										public void onFailure(Throwable caught) {
-
-										}
-
-										@Override
-										public void onSuccess(Boolean result) {
-
-										}
-									});
+							recordCQLLibraryAuditEvent(libraryId, versionStr);
 							isCqlLibraryVersioned = true;
 							fireSuccessfullVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
 						} else {
 							isCqlLibraryVersioned = false;
-							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
+							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
 								versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
 							} else if(result.getFailureReason() == ConstantMessages.INVALID_CQL_LIBRARIES) {
 								String libraryName = versionDisplay.getSelectedLibrary().getCqlName();
-								String errorMessage =  "You have included libraries that are unused. In order to version " + libraryName + ", these must be removed. Select Continue to have the MAT remove these included libraries or Cancel to stop the version process";
-								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", new ConfirmationObserver() {				
+								String errorMessage =  MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(libraryName);
+								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", null);
+								dialogBox.setObserver(new ConfirmationObserver() {
+									
 									@Override
 									public void onYesButtonClicked() {
-										saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);		
+										saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);												
 									}
 									
 									@Override
-									public void onNoButtonClicked() {}
+									public void onNoButtonClicked() {
+										displaySearch(); 
+									}
+									
+									@Override
+									public void onClose() {
+										displaySearch();										
+									}
 								});
 								dialogBox.show();
 							}
 						}
 					}
-
-				});
-		
+		});
 	}
 
 	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){

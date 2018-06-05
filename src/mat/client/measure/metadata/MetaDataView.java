@@ -8,7 +8,9 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
@@ -177,6 +179,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private CheckBox calenderYear = new CheckBox();	
 	private String measureScoringType ;
 	private boolean isPatientBasedMeasure;
+	private FormGroup messageFormGrp = new FormGroup();
+	private HelpBlock helpBlock = new HelpBlock();
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -209,6 +213,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		addClickHandlers();
 		searchString.setHeight("20px");
 		
+		messageFormGrp.add(helpBlock);
+		messageFormGrp.getElement().setAttribute("role", "alert");
+		helpBlock.setColor("transparent");
+		
 		saveErrorDisplay.clearAlert();
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.getElement().setAttribute("id", "MetaDataView.containerPanel");
@@ -224,6 +232,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void buildForm() {
 		mainPanel.clear();
+		mainPanel.add(messageFormGrp);
 		mainPanel.add(saveErrorDisplay);
 		mainPanel.add(successMessages2);
 		mainPanel.add(errorMessages2);
@@ -2847,5 +2856,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public void setPatientBasedMeasure(boolean isPatientBasedMeasure) {
 		this.isPatientBasedMeasure = isPatientBasedMeasure;
+	}
+
+	@Override
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
 	}
 }

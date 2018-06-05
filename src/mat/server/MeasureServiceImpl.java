@@ -209,8 +209,8 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#saveFinalizedVersion(java.lang.String, boolean, java.lang.String)
 	 */
 	@Override
-	public SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version,  boolean shouldPackage) {
-		return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage);
+	public SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version,  boolean shouldPackage, boolean ignoreUnusedLibraries) {
+		return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries);
 	}
 	
 	/* (non-Javadoc)

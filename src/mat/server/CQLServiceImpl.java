@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -55,6 +56,7 @@ import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.clause.CQLData;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeSystemWrapper;
@@ -96,7 +98,7 @@ import mat.shared.SaveUpdateCQLResult;
 public class CQLServiceImpl implements CQLService {
 
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
-	
+		
 	@Autowired private CQLDAO cqlDAO;
 	@Autowired private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
@@ -3391,5 +3393,5 @@ public class CQLServiceImpl implements CQLService {
 	public CQLModel parseCQL(String cqlBuilder) {
 		CQLModel cqlModel = new CQLModel();
 		return cqlModel;
-	}	
+	}
 }

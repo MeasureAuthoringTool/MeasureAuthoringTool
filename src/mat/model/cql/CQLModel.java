@@ -245,7 +245,7 @@ public class CQLModel implements IsSerializable{
 	
 	/**
 	 * Gets a valueset by name from the parent or any children
-	 * @param formattedCodeName the name in the format libraryname-x.x.xxx|alias|code identifier
+	 * @param formattedCodeName the name in the format libraryname-x.x.xxx|alias|code identifier if from child, otherwise just code identifer
 	 * @return the code found
 	 */
 	public CQLCode getCodeByName(String formattedCodeName) {

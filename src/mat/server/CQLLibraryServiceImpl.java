@@ -21,7 +21,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService{
+public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService {
 	private static final long serialVersionUID = -2412573290030426288L;
 
 	@Override

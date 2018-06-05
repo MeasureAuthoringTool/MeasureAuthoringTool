@@ -2149,6 +2149,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 
+	private void removeUnusedLibraries(String measureId, SaveUpdateCQLResult cqlResult) {
+		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);
+		String measureXml = measureXmlModel.getXml();
+		
+		XmlProcessor processor = new XmlProcessor(measureXml);
+		try {
+			CQLUtil.removeUnusedIncludes(processor.getOriginalDoc(), 
+					cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlResult.getCqlModel());
+		} catch (XPathExpressionException e) {
+			logger.error(e.getStackTrace());
+		}
+		
+		String updatedMeasureXml = new String(processor.transform(processor.getOriginalDoc()).getBytes());
+		measureXmlModel.setXml(updatedMeasureXml);
+		getService().saveMeasureXml(measureXmlModel);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -2157,7 +2174,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * String, boolean, java.lang.String)
 	 */
 	@Override
-	public final SaveMeasureResult saveFinalizedVersion(final String measureId, final boolean isMajor, final String version, boolean shouldPackage) {
+	public final SaveMeasureResult saveFinalizedVersion(final String measureId, final boolean isMajor, final String version, boolean shouldPackage, boolean ignoreUnusedLibraries) {
 
 		logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
 		Measure m = getService().getById(measureId);
@@ -2169,12 +2186,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);
 		}
 
-		SaveUpdateCQLResult cqlResult =  getMeasureCQLFileData(measureId);
+		SaveUpdateCQLResult cqlResult = getMeasureCQLFileData(measureId);
 		if(cqlResult.getCqlErrors().size() > 0 || !cqlResult.isDatatypeUsedCorrectly()){
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_CQL_DATA);
 		}
 
+		// return error if there are unused libraries in the measure
+		if(!ignoreUnusedLibraries) {
+			if(cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries().size() < cqlResult.getCqlModel().getIncludedLibrarys().size()) {
+				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
+				saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+				logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
+				return saveMeasureResult;
+			}
+		}
+		
+		removeUnusedLibraries(measureId, cqlResult);
+		
 		if(shouldPackage) {
 			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId));
 			if(!validatePackageResult.isSuccess()) {
@@ -2182,6 +2211,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
 			}
 		}
+		
+
 
 		String versionNumber = null;
 		if (isMajor) {

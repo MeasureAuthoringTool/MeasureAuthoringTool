@@ -1,8 +1,11 @@
-package mat.server.service.jobs;
+package mat.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+
+import mat.server.service.jobs.CheckUserChangePasswordLimit;
+import mat.server.service.jobs.OnetimeUserNotificationTask;
 
 /**
  * Class to set Test configuration. This is the base configuration

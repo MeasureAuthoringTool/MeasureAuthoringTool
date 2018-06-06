@@ -948,49 +948,6 @@ public class CQLUtil {
 	}
 	
 	/**
-	 * Removes unused libraries from cql xml or measure xml 
-	 * @param xml the original xml 
-	 * @param usedLibraries
-	 * @return xml with the unused libraries removed
-	 */
-	public static String removeUnusedLibrariesFromXML(String xml, List<String> usedLibraries) {
-		XmlProcessor xmlProcessor = new XmlProcessor(xml);
-		String includeLibrariesXPath = "//cqlLookUp/includeLibrarys";
-		try {
-			Node node = (Node) xPath.evaluate(includeLibrariesXPath, xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
-			if (node != null) {
-				NodeList childNodes = node.getChildNodes();
-				for(int i = 0; i<childNodes.getLength(); i++) {
-					String refName = null;
-					String alias = null;
-					String version = null;
-					Node childNode = childNodes.item(i);
-					if(childNode.getAttributes().getNamedItem("cqlLibRefName") != null) {
-						refName = childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName").getNodeValue();
-					}
-					if(childNode.getAttributes().getNamedItem("name") != null) {
-						alias = childNodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
-					}
-					if(childNode.getAttributes().getNamedItem("cqlVersion") != null) {
-						version = childNodes.item(i).getAttributes().getNamedItem("cqlVersion").getNodeValue();
-					}
-					String libraryKey = refName + "-" + version + "|" + alias;
-					if(!usedLibraries.contains(libraryKey)) {
-						Node parentNode = childNode.getParentNode();
-						parentNode.removeChild(childNode);
-					}
-				}
-			}
-			
-			return new String(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
-			
-		} catch(Exception e) {
-			logger.error(e.getStackTrace());
-			return xml; // return the original xml on failure
-		}
-	}
-
-/**
 	 * Adds the used CQL libsto simple XML.
 	 *
 	 * @param originalDoc the original doc
@@ -1013,7 +970,6 @@ public class CQLUtil {
 
 			allUsedLibsNode.appendChild(libNode);
 		}
-
 	}
 
 	/**

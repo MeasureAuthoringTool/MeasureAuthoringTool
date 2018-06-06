@@ -1505,7 +1505,6 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getNQFIDInput().setReadOnly(false);
 			metaDataDisplay.getNQFIDInput().setEnabled(true);
 		}
-		metaDataDisplay.getHelpBlock().getElement().focus();
 	}
 	
 	/**

@@ -266,11 +266,13 @@ public class CQLModel implements IsSerializable{
 			}
 		} else {
 			final String nameVersion = libraryNameVersion;
-			List<CQLIncludeLibrary> CQLIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
-			for(CQLCode code : includedLibrarys.get(CQLIncludeLibrary.get(0)).getCodeList()) {
-				if(code.getCodeName().equals(codeName)) {
-					return code; 
-				}			
+			List<CQLIncludeLibrary> cqlIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
+			if(cqlIncludeLibrary != null && !cqlIncludeLibrary.isEmpty()) {
+				for(CQLCode code : includedLibrarys.get(cqlIncludeLibrary.get(0)).getCodeList()) {
+					if(code.getCodeName().equals(codeName)) {
+						return code; 
+					}			
+				}
 			}
  		}
 		
@@ -304,11 +306,13 @@ public class CQLModel implements IsSerializable{
 			}
 		} else {
 			final String nameVersion = libraryNameVersion;
-			List<CQLIncludeLibrary> CQLIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
-			for(CQLQualityDataSetDTO valueset : includedLibrarys.get(CQLIncludeLibrary.get(0)).getValueSetList()) {
-				if(valueset.getName() == valuesetName) {
-					return valueset; 
-				}			
+			List<CQLIncludeLibrary> cqlIncludeLibrary =  includedLibrarys.keySet().stream().filter(lib -> createNameVersionString(lib.getCqlLibraryName(), lib.getVersion()).equals(nameVersion)).collect(Collectors.toList());
+			if(cqlIncludeLibrary != null && !cqlIncludeLibrary.isEmpty()) {
+				for(CQLQualityDataSetDTO valueset : includedLibrarys.get(cqlIncludeLibrary.get(0)).getValueSetList()) {
+					if(valueset.getName() == valuesetName) {
+						return valueset; 
+					}			
+				}
 			}
  		}
 		

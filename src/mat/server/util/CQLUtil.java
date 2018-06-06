@@ -147,8 +147,9 @@ public class CQLUtil {
 			String codeName = pair.getKey();
 			List<String> datatypes = pair.getValue();
 			CQLCode code = model.getCodeByName(codeName);
-			isValidCodeDatatypeComboUsed = isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);
-			
+			if(code != null) {
+				isValidCodeDatatypeComboUsed = isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);
+			}
 			if(!isValidCodeDatatypeComboUsed) {
 				return false; 
 			}

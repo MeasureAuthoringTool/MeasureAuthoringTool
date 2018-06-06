@@ -2149,10 +2149,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 
-	private void removeUnusedLibraries(String measureId, SaveUpdateCQLResult cqlResult) {
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);
+	private void removeUnusedLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult) {
 		String measureXml = measureXmlModel.getXml();
-		
 		XmlProcessor processor = new XmlProcessor(measureXml);
 		try {
 			CQLUtil.removeUnusedIncludes(processor.getOriginalDoc(), 
@@ -2193,8 +2191,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		// return error if there are unused libraries in the measure
+		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);
+		String measureXml = measureXmlModel.getXml();
 		if(!ignoreUnusedLibraries) {
-			if(cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries().size() < cqlResult.getCqlModel().getIncludedLibrarys().size()) {
+			if(CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
 				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
 				saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
 				logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
@@ -2202,7 +2202,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		}
 		
-		removeUnusedLibraries(measureId, cqlResult);
+		removeUnusedLibraries(measureXmlModel, cqlResult);
 		
 		if(shouldPackage) {
 			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId));

@@ -385,6 +385,43 @@ public class CQLUtil {
 			parent.removeChild(current);
 		}
 	}
+	
+	public static boolean checkForUnusedIncludes(String xml, List<String> usedLibraries) {
+		XmlProcessor processor = new XmlProcessor(xml);
+		Document originalDoc = processor.getOriginalDoc();
+		String includeLibrariesXPath = "//cqlLookUp/includeLibrarys";
+
+		try {
+			Node node = (Node) xPath.evaluate(includeLibrariesXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
+			if (node != null) {
+				NodeList childNodes = node.getChildNodes();
+				for (int i = 0; i < childNodes.getLength(); i++) {
+					String refName = null;
+					String alias = null;
+					String version = null;
+					if (childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName") != null) {
+						refName = childNodes.item(i).getAttributes().getNamedItem("cqlLibRefName").getNodeValue();
+					}
+					if (childNodes.item(i).getAttributes().getNamedItem("name") != null) {
+						alias = childNodes.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					}
+					if (childNodes.item(i).getAttributes().getNamedItem("cqlVersion") != null) {
+						version = childNodes.item(i).getAttributes().getNamedItem("cqlVersion").getNodeValue();
+					}
+					String libraryKey = refName + "-" + version + "|" + alias;
+					if (!usedLibraries.contains(libraryKey)) {
+						return true;
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			logger.error(e.getMessage());
+			logger.error(e.getStackTrace());
+		}
+
+		return false;
+	}
+	
 
 	/**
 	 * Removes all unused cql includes from the simple xml file. Iterates
@@ -933,7 +970,6 @@ public class CQLUtil {
 
 			allUsedLibsNode.appendChild(libNode);
 		}
-
 	}
 
 	/**

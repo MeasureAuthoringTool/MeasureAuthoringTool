@@ -405,13 +405,15 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}
 		
 		List<String> usedLibraries = cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries();
-		if(usedLibraries.size() < cqlResult.getCqlModel().getCqlIncludeLibrarys().size()){
+		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
+		if(CQLUtil.checkForUnusedIncludes(cqlLibraryXml, usedLibraries)){
 			if(!ignoreUnusedLibraries) {
 			    result.setSuccess(false);
 			    result.setFailureReason(ConstantMessages.INVALID_CQL_LIBRARIES);
 			    return result;
 			} else {
-		    	removeUnusedLibraries(libraryId, cqlResult);
+		    	removeUnusedLibraries(cqlLibrary, cqlResult);
 			}
 	    }
 		
@@ -472,8 +474,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}	
 	}
 	
-	private void removeUnusedLibraries(String libraryId, SaveUpdateCQLResult cqlResult) {
-		CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
+	private void removeUnusedLibraries(CQLLibrary cqlLibrary, SaveUpdateCQLResult cqlResult) {
 		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
 		XmlProcessor xmlProcessor = new XmlProcessor(cqlLibraryXml);
 

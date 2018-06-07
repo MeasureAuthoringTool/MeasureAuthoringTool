@@ -32,17 +32,14 @@ import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
-import mat.model.cql.CQLExpression;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
-import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.CQLUtilityClass;
 import mat.shared.CQLErrors;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
-import mat.shared.CQLIdentifierObject;
 import mat.shared.CQLObject;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
@@ -127,34 +124,36 @@ public class CQLUtil {
 	 * @return true if all combinations are valid, false otherwise
 	 */
 	public static boolean validateDatatypeCombinations(CQLModel model, Map<String, List<String>> valuesetDatatypeMap, Map<String, List<String>> codeDatatypeMap) {
-	
-		boolean isValidValuesetDatatypeComboUsed = true; 
-		Iterator<Entry<String, List<String>>> iterator = valuesetDatatypeMap.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
-			List<String> datatypes = pair.getValue();
-			isValidValuesetDatatypeComboUsed = isValidDataTypeCombination(datatypes);
-			
-			if(!isValidValuesetDatatypeComboUsed) {
-				return false; 
+		Iterator<Entry<String, List<String>>> iterator = null;
+		if(valuesetDatatypeMap != null && !valuesetDatatypeMap.isEmpty()) {
+			boolean isValidValuesetDatatypeComboUsed = true; 
+			iterator = valuesetDatatypeMap.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
+				List<String> datatypes = pair.getValue();
+				isValidValuesetDatatypeComboUsed = isValidDataTypeCombination(datatypes);
+				
+				if(!isValidValuesetDatatypeComboUsed) {
+					return false; 
+				}
 			}
 		}
-		
-		boolean isValidCodeDatatypeComboUsed = true; 
-		iterator = codeDatatypeMap.entrySet().iterator();
-		while(iterator.hasNext()) {
-			Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
-			String codeName = pair.getKey();
-			List<String> datatypes = pair.getValue();
-			CQLCode code = model.getCodeByName(codeName);
-			if(code != null) {
-				isValidCodeDatatypeComboUsed = isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);
-			}
-			if(!isValidCodeDatatypeComboUsed) {
-				return false; 
+		if(codeDatatypeMap != null && !codeDatatypeMap.isEmpty()) {
+			boolean isValidCodeDatatypeComboUsed = true; 
+			iterator = codeDatatypeMap.entrySet().iterator();
+			while(iterator.hasNext()) {
+				Map.Entry<String, List<String>> pair = (Map.Entry<String, List<String>>) iterator.next();
+				String codeName = pair.getKey();
+				List<String> datatypes = pair.getValue();
+				CQLCode code = model.getCodeByName(codeName);
+				if(code != null) {
+					isValidCodeDatatypeComboUsed = isValidDataTypeCombination(code.getCodeOID(), code.getCodeSystemOID(), datatypes);
+				}
+				if(!isValidCodeDatatypeComboUsed) {
+					return false; 
+				}
 			}
 		}
-		
 		return true; 
 	}
 	

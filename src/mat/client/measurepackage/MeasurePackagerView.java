@@ -5,6 +5,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -13,7 +22,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -26,12 +34,10 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -43,14 +49,11 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.PrimaryButton;
 import mat.client.shared.ShowMorePagerPanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -60,6 +63,7 @@ import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
+import mat.shared.ClickableSafeHtmlCell;
 
 
 /**
@@ -105,60 +109,44 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;margin-right:5px;white-space:nowrap;\">{1}</div>")
 		SafeHtml cell(String title, SafeHtml value);
 	}
+	
 	/** Create a singleton instance of the templates used to render the cell. */
 	private static Templates templates = GWT.create(Templates.class);
-	/** The add qdm right. */
-	private Button addQDMRight = buildAddButton("customAddRightButton", "addQDMRight");
+
+	private Button addQDMRight = buildAddButton(IconType.ANGLE_RIGHT, "addQDMRight");
 	
-	/** The add qdm left. */
-	private Button addQDMLeft = buildAddButton("customAddLeftButton", "addQDMLeft");
+	private Button addQDMLeft = buildAddButton(IconType.ANGLE_LEFT, "addQDMLeft");
 	
-	/** The add all qdm right. */
-	private Button addAllQDMRight = buildDoubleAddButton("customAddALlRightButton", "addAllToRight");
+	private Button addAllQDMRight = buildAddButton(IconType.ANGLE_DOUBLE_RIGHT, "addAllToRight");
 	
-	/** The add all qdm left. */
-	private Button addAllQDMLeft = buildDoubleAddButton("customAddAllLeftButton", "addAllToLeft");
+	private Button addAllQDMLeft = buildAddButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
 	
-	/** The measure package success msg. */
 	private MessageAlert measurePackageSuccessMsg = new SuccessMessageAlert();
-	/** The measure package warning msg. */
+
 	private WarningMessageAlert measurePackageWarningMsg = new WarningMessageAlert();
-	/** The measure error messages. */
+
 	private MessageAlert measureErrorMessages = new ErrorMessageAlert();
-	/** The supp data success messages. */
+	
 	private MessageAlert suppDataSuccessMessages = new SuccessMessageAlert();
 	
-	/** The in progress message display. */
-	private InProgressMessageDisplay inProgressMessageDisplay = new InProgressMessageDisplay();
-	/** The package measure. */
-	private PrimaryButton packageMeasure = new PrimaryButton(
-			"Create Measure Package", "primaryButton");
-	/** The content. */
+	private MessageAlert inProgressMessageDisplay = new WarningMessageAlert();
+
+	private Button packageMeasureButton = buildSaveButton(IconType.PLUS, "Create Measure Package") ;;
+
 	private FlowPanel content = new FlowPanel();
-	/** The add qdm element button panel. */
+
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
-	/** The qdm elements panel. */
-	private FlowPanel qdmElementsPanel = new FlowPanel();
-	/** The supp elements panel. */
-	private FlowPanel suppElementsPanel = new FlowPanel();
-	/** The add qdm elements to measure. */
-	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements", "primaryButton");
-	/** The qdm tab name. */
-	private Label supplementalDataElementHeader = new Label("Supplemental Data Elements");
-	/** The risk adjustment header. */
-	private Label riskAdjHeader = new Label("Risk Adjustment Variables");
-	/**	MeasurePackageClauseListWidget. *  */
+
+	private Button addSupplementalDataElementsButton = buildSaveButton(IconType.SAVE, "Save Supplemental Data Elements");
+
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
-	/** The Create New Grouping Button. */
-	private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
+
+	private Button createNewGroupingButton = buildSaveButton(IconType.PLUS, "Create New Grouping") ;
 	
-	/** The Vertical Panel for Cell Table. */
-	private VerticalPanel cellTablePanel = new VerticalPanel();
+	private Panel cellTablePanel = new Panel();
 	
-	/** The Observer. */
 	private Observer observer;
 	
-	/** The save error message display. */
 	private WarningConfirmationMessageAlert saveErrorMessageDisplay = new WarningConfirmationMessageAlert();
 	
 	private WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit = new WarningConfirmationMessageAlert();
@@ -229,76 +217,46 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The right pager panel. */
 	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel("RightSidePanel");
 	
+	private Button addRiskAdjRight = buildAddButton(IconType.ANGLE_RIGHT, "addRiskAdjRight");
 	
-	//RiskAdjustment UI Components
-	/** The add risk adj right. */
-	private Button addRiskAdjRight = buildAddButton("customAddRightButton", "addRiskAdjRight");
+	private Button addRiskAdjLeft = buildAddButton(IconType.ANGLE_LEFT, "addRiskAdjLeft");
 	
-	/** The add risk adj left. */
-	private Button addRiskAdjLeft = buildAddButton("customAddLeftButton", "addRiskAdjLeft");
+	private Button addAllRiskAdjRight = buildAddButton(IconType.ANGLE_DOUBLE_RIGHT, "addAllToRight");
 	
-	/** The add all risk adj right. */
-	private Button addAllRiskAdjRight = buildDoubleAddButton("customAddALlRightButton", "addAllToRight");
+	private Button addAllRiskAdjLeft = buildAddButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
 	
-	/** The add all risk adj left. */
-	private Button addAllRiskAdjLeft = buildDoubleAddButton("customAddAllLeftButton", "addAllToLeft");
-	
-	/** The risk adj success messages. */
 	private MessageAlert riskAdjSuccessMessages = new SuccessMessageAlert();
 	
-	/** The add risk adjustment button panel. */
 	private Widget addRiskAdjButtonPanel = buildRiskAdjustmentAddButtonWidget();
+		
+	private Button addRiskAdjVariablesToMeasureButton = buildSaveButton(IconType.SAVE, "Save Risk Adjustment Variables") ;
 	
-	/** The risk adj flow panel. */
-	private FlowPanel riskAdjFlowPanel = new FlowPanel();
+	private ShowMorePagerPanel leftRiskAdjustmentVariablesPanel = new ShowMorePagerPanel("LeftRiskAdjPanel");
 	
-	/** The risk panel. */
-	private FlowPanel riskPanel = new FlowPanel();
-	
-	/** The add risk adj variables to measure. */
-	private PrimaryButton addRiskAdjVariablesToMeasure = new PrimaryButton("Save Risk Adjustment Variables", "primaryButton");
-	
-	/** The left risk adj panel. */
-	private ShowMorePagerPanel leftRiskAdjPanel = new ShowMorePagerPanel("LeftRiskAdjPanel");
-	
-	/** The right risk adj panel. */
 	private ShowMorePagerPanel rightRiskAdjPanel = new ShowMorePagerPanel("RightRiskAdjPanel");
 	
-	/** The Risk adj cell list. */
 	private CellList<RiskAdjustmentDTO> riskAdjClauseCellList;
 	
-	/** The risk adj sel model. */
 	private SingleSelectionModel<RiskAdjustmentDTO> riskAdjClauseSelModel = new SingleSelectionModel<RiskAdjustmentDTO>();
 	
-	/** The risk adj var sel model. */
 	private SingleSelectionModel<RiskAdjustmentDTO> riskAdjVarSelModel = new SingleSelectionModel<RiskAdjustmentDTO>();
 	
-	/** The risk adj population list. */
 	private List<RiskAdjustmentDTO> subTreePopulationList = new ArrayList<RiskAdjustmentDTO>();
 	
-	/** The risk adj list prov. */
 	private ListDataProvider<RiskAdjustmentDTO> riskAdjClauseListProv;
 	
-	/** The risk adj var cell list. */
 	private CellList<RiskAdjustmentDTO> riskAdjVarCellList;
 	
-	/** The risk adj var list prov. */
 	private ListDataProvider<RiskAdjustmentDTO> riskAdjVarListProv;
 	
-	/** The risk adj var population list. */
 	private ArrayList<RiskAdjustmentDTO> riskAdjVarPopulationList = new ArrayList<RiskAdjustmentDTO>();
 	
-	/** The package measure and export. */
-	private PrimaryButton packageMeasureAndExport = new PrimaryButton(
-			"Create Package and Export", "primaryButton");
+	private Button packageMeasureAndExportButton = buildSaveButton(IconType.PLUS, "Create Package and Export") ;
 	
-	/** The is cql measure. */
 	private boolean isCQLMeasure;
 	
-	/** The risk adjust label. */
 	private HTML riskAdjustLabel = new HTML();
 	
-	/** The QDMElements label. */
 	private HTML qdmElementsLabel = new HTML();
 	
 	/**
@@ -307,16 +265,23 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public MeasurePackagerView() {
 		addQDMElementLeftRightClickHandlers();
 		addRiskAdjLeftRightClickHandlers();
+		
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
 		Panel topRiskAdjContainer = buildRiskAdjLeftRightPanel();
+	
 		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
-		createNew.getElement().setAttribute("id", "CreateNewGroupingButton");
+		
+		
+		createNewGroupingButton.getElement().setAttribute("id", "CreateNewGroupingButton");
+		createNewGroupingButton.setIcon(IconType.PLUS);
+		createNewGroupingButton.setType(ButtonType.PRIMARY);
+		
 		content.add(saveErrorMessageDisplay);
 		content.add(saveErrorMessageDisplayOnEdit);
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
-		content.add(createNew);
+		content.add(createNewGroupingButton);
 		content.add(packageGroupingWidget.getWidget());
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
@@ -327,18 +292,17 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(topRiskAdjContainer);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
+		
 		content.add(measurePackageSuccessMsg);
 		content.add(measurePackageWarningMsg);
 		content.add(measureErrorMessages);
 		content.add(inProgressMessageDisplay);
-		packageMeasure.setTitle("Create Measure Package");
-		packageMeasureAndExport.getElement().setId("Create Measure Package and Export");
-		packageMeasureAndExport.setTitle("Create Measure Package and Export");
-		packageMeasureAndExport.setStyleName("primaryButton floatRightButtonPanel");
-		content.add(packageMeasure);
-		content.add(packageMeasureAndExport);
+		
+
+		ButtonToolBar packageGroup = new ButtonToolBar();
+		packageGroup.add(packageMeasureButton);
+		packageGroup.add(packageMeasureAndExportButton);
+		content.add(packageGroup);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.setStyleName("contentPanel");
@@ -362,7 +326,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					//Collections.sort(riskAdjVarPopulationList, new RiskAdjustmentDTO.Comparator());
 					riskAdjClauseSelModel.clear();
 					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
-					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
+					leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
 				}
 			}
 		});
@@ -378,7 +342,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					/*Collections.sort(riskAdjVarPopulationList , new RiskAdjustmentDTO.Comparator());
 					Collections.sort(subTreePopulationList, new RiskAdjustmentDTO.Comparator());*/
 					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
-					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
+					leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 					
 				}
@@ -397,7 +361,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					riskAdjVarSelModel.clear();
 					riskAdjClauseSelModel.clear();
 					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
-					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
+					leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}
 			}
@@ -413,7 +377,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					riskAdjVarSelModel.clear();
 					riskAdjClauseSelModel.clear();
 					rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
-					leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
+					leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
 					riskAdjClauseSelModel.clear();
 				}
 			}
@@ -589,90 +553,98 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 *
 	 * @return the panel
 	 */
-	private Panel buildRiskAdjLeftRightPanel(){
-		riskAdjFlowPanel.clear();
-		riskPanel.clear();
-		SimplePanel riskSimplepanel = new SimplePanel();
-		riskSimplepanel.getElement().setAttribute("id", "RiskAdjustmentLeftRightButtonSimplePanel");
-		FlowPanel RiskAdjustmentTopContainer = new FlowPanel();
-		RiskAdjustmentTopContainer.getElement().setAttribute("id", "RiskAdjustmentTopContainerFlowPanel");
-		VerticalPanel riskVPanel = new VerticalPanel();
-		VerticalPanel riskSPanel = new VerticalPanel();
-		riskVPanel.getElement().setAttribute("id", "RiskAdjustmentLeftRightButtonVerticalPanel");
-		riskAdjHeader.setStyleName("valueSetHeader");
-		riskAdjHeader.getElement().setAttribute("id", "RiskAdjustmentHeadingLabel");
-		RiskAdjustmentTopContainer.add(riskAdjHeader);
-		RiskAdjustmentTopContainer.add(riskAdjSuccessMessages);
-		riskAdjFlowPanel.addStyleName("newColumn");
-		riskAdjFlowPanel.getElement().setAttribute("id", "RiskAdjustmentFlowPanel");
-		riskPanel.addStyleName("newColumn");
-		riskPanel.getElement().setAttribute("id", "RiskFlowPanel");
-		addRiskAdjButtonPanel.addStyleName("column");
-		riskSPanel.add(getRiskAdjustLabel());
-		leftRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
-		leftRiskAdjPanel.setSize("320px", "200px");
-		leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
-		riskSPanel.add(leftRiskAdjPanel);
+	private Panel buildRiskAdjLeftRightPanel(){	
+		Panel riskAdjustmentPanel = new Panel(); 
+		riskAdjustmentPanel.setType(PanelType.PRIMARY);
+		PanelHeader riskAdjustmentPanelHeader = new PanelHeader();
+		riskAdjustmentPanelHeader.setText("Risk Adjustment Variables");
+		riskAdjustmentPanelHeader.setTitle("Risk Adjustment Variables");
 		
+		PanelBody riskAdjustmentPanelBody = new PanelBody();
+		riskAdjustmentPanelBody.add(riskAdjSuccessMessages);
+		
+		riskAdjustmentPanel.add(riskAdjustmentPanelHeader);
+		riskAdjustmentPanel.add(riskAdjustmentPanelBody);
+		riskAdjustmentPanelBody.getElement().setAttribute("id", "RiskAdjustmentPanelBody");
+		
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		VerticalPanel riskAdjustmentDefinitionsVerticalPanel = new VerticalPanel();
+		riskAdjustmentDefinitionsVerticalPanel.add(getRiskAdjustLabel());
+		leftRiskAdjustmentVariablesPanel.addStyleName("measurePackageCellListscrollable");
+		leftRiskAdjustmentVariablesPanel.setSize("320px", "200px");
+		leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
+		riskAdjustmentDefinitionsVerticalPanel.add(leftRiskAdjustmentVariablesPanel);
+		horizontalPanel.add(riskAdjustmentDefinitionsVerticalPanel);
+		riskAdjustmentDefinitionsVerticalPanel.add(new SpacerWidget());
+			
+		addRiskAdjButtonPanel.addStyleName("column");
+		horizontalPanel.add(addRiskAdjButtonPanel);
+
+		VerticalPanel riskAdjustmentVariablesVerticalPanel = new VerticalPanel();
+		riskAdjustmentVariablesVerticalPanel.add(new HTML("<b style='margin-left:15px;'> Risk Adjustment Variables </b>"));
+		riskAdjustmentVariablesVerticalPanel.getElement().setAttribute("id", "RiskAdjustmentLeftRightButtonVerticalPanel");
 		rightRiskAdjPanel.addStyleName("measurePackageCellListscrollable");
 		rightRiskAdjPanel.setSize("320px", "200px");
 		rightRiskAdjPanel.setDisplay(getRiskAdjVarCellList());
-		riskVPanel.add(new HTML("<b style='margin-left:15px;'> Risk Adjustment Variables </b>"));
-		riskVPanel.add(rightRiskAdjPanel);
-		riskPanel.add(riskVPanel);
-		riskSPanel.add(new SpacerWidget());
-		riskAdjFlowPanel.add(riskSPanel);
-		RiskAdjustmentTopContainer.add(riskAdjFlowPanel);
-		RiskAdjustmentTopContainer.add(addRiskAdjButtonPanel);
-		RiskAdjustmentTopContainer.add(riskPanel);
+		riskAdjustmentVariablesVerticalPanel.add(rightRiskAdjPanel);
+		horizontalPanel.add(riskAdjustmentVariablesVerticalPanel);		
+		
+		riskAdjustmentPanelBody.add(horizontalPanel);
 		SpacerWidget spacer = new SpacerWidget();
 		spacer.setStylePrimaryName("clearBoth");
-		RiskAdjustmentTopContainer.add(spacer);
-		RiskAdjustmentTopContainer.setStylePrimaryName("valueSetSearchPanel");
-		riskSimplepanel.setStylePrimaryName("measurePackageLeftRightPanel");
-		RiskAdjustmentTopContainer.add(addRiskAdjVariablesToMeasure);
-		riskSimplepanel.add(RiskAdjustmentTopContainer);
-		return riskSimplepanel;
+		riskAdjustmentPanelBody.add(spacer);
 		
+		addRiskAdjVariablesToMeasureButton.setType(ButtonType.PRIMARY);
+		addRiskAdjVariablesToMeasureButton.setIcon(IconType.SAVE);
+		riskAdjustmentPanelBody.add(addRiskAdjVariablesToMeasureButton);
 		
+		return riskAdjustmentPanel; 		
 	}
 	/**
 	 * Builds the qdm element left right panel.
 	 * @return the panel
 	 */
-	private Panel buildQDMElementLeftRightPanel() {
-		qdmElementsPanel.clear();
-		suppElementsPanel.clear();
-		SimplePanel panel = new SimplePanel();
-		panel.getElement().setAttribute("id", "QDMLeftRightButtonSimplePanel");
-		FlowPanel qdmTopContainer = new FlowPanel();
-		qdmTopContainer.getElement().setAttribute("id", "QDMTopContainerFlowPanel");
-		VerticalPanel vPanel = new VerticalPanel();
-		VerticalPanel sPanel = new VerticalPanel();
-		vPanel.getElement().setAttribute("id", "QDMLeftRightButtonVerticalPanel");
-		supplementalDataElementHeader.setStyleName("valueSetHeader");
-		supplementalDataElementHeader.getElement().setAttribute("id", "SupplementalDataElementHeadingLabel");
-		qdmTopContainer.add(supplementalDataElementHeader);
-		qdmTopContainer.add(suppDataSuccessMessages);
-		qdmElementsPanel.addStyleName("newColumn");
-		qdmElementsPanel.getElement().setAttribute("id", "QDMElementFlowPanel");
-		suppElementsPanel.addStyleName("newColumn");
-		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
-		addQDMElementButtonPanel.addStyleName("column");
+	private Panel buildQDMElementLeftRightPanel() {					
+		Panel supplementalDataElementsPanel = new Panel(); 
+		supplementalDataElementsPanel.setType(PanelType.PRIMARY);
+		PanelHeader supplementalDataElementsPanelHeader = new PanelHeader(); 
+		supplementalDataElementsPanelHeader.setText("Supplemental Data Elements");
+		supplementalDataElementsPanelHeader.setTitle("Supplemental Data Elements");
 		
-		sPanel.add(getQdmElementsLabel());
+		PanelBody supplementalDataElementsPanelBody = new PanelBody(); 
+		supplementalDataElementsPanelBody.add(suppDataSuccessMessages);
 		
+		supplementalDataElementsPanel.add(supplementalDataElementsPanelHeader);
+		supplementalDataElementsPanel.add(supplementalDataElementsPanelBody);
+		supplementalDataElementsPanelBody.getElement().setAttribute("id", "SupplementalDataElementsPanel");
+		
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		
+		// left hand side
+		VerticalPanel supplementalDataElementsDefinitionsPanel = new VerticalPanel();
+		supplementalDataElementsDefinitionsPanel.add(getQdmElementsLabel());
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
-		leftPagerPanel.getElement().setId("LeftPanelSuppQDMList");
 		leftPagerPanel.setSize("320px", "200px");
+		leftPagerPanel.getElement().setId("LeftPanelSuppQDMList");
 		if(isCQLMeasure()){
 			leftPagerPanel.setDisplay(getCQLQdmCellList());
 		}
 		else{
 			leftPagerPanel.setDisplay(getQdmCellList());
 		}
-		sPanel.add(leftPagerPanel);
 		
+		supplementalDataElementsDefinitionsPanel.add(leftPagerPanel);
+		horizontalPanel.add(supplementalDataElementsDefinitionsPanel);
+		supplementalDataElementsDefinitionsPanel.add(new SpacerWidget());
+
+		// middle
+		addQDMElementButtonPanel.addStyleName("column");	
+		horizontalPanel.add(addQDMElementButtonPanel);
+
+		// right hand side
+		VerticalPanel supplementalDataElementsRightPanel = new VerticalPanel();
+		supplementalDataElementsRightPanel.add(new HTML("<b style='margin-left:15px;'> Supplemental Data Elements </b>"));
+		supplementalDataElementsRightPanel.getElement().setAttribute("id", "RiskAdjustmentLeftRightButtonVerticalPanel");
 		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
 		rightPagerPanel.getElement().setId("RightPanelSuppQDMList");
 		rightPagerPanel.setSize("320px", "200px");
@@ -682,22 +654,22 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		else{
 			rightPagerPanel.setDisplay(getSupCellList());
 		}
-		vPanel.add(new HTML("<b style='margin-left:15px;'> Supplemental Data Elements </b>"));
-		vPanel.add(rightPagerPanel);
-		suppElementsPanel.add(vPanel);
-		sPanel.add(new SpacerWidget());
-		qdmElementsPanel.add(sPanel);
-		qdmTopContainer.add(qdmElementsPanel);
-		qdmTopContainer.add(addQDMElementButtonPanel);
-		qdmTopContainer.add(suppElementsPanel);
+		supplementalDataElementsRightPanel.add(rightPagerPanel);
+		horizontalPanel.add(supplementalDataElementsRightPanel);
+		
 		SpacerWidget spacer = new SpacerWidget();
 		spacer.setStylePrimaryName("clearBoth");
-		qdmTopContainer.add(spacer);
-		qdmTopContainer.setStylePrimaryName("valueSetSearchPanel");
-		panel.setStylePrimaryName("measurePackageLeftRightPanel");
-		qdmTopContainer.add(addQDMElementsToMeasure);
-		panel.add(qdmTopContainer);
-		return panel;
+		supplementalDataElementsPanelBody.add(spacer);
+		
+		addSupplementalDataElementsButton.setType(ButtonType.PRIMARY);
+		addSupplementalDataElementsButton.setIcon(IconType.SAVE);
+		
+		supplementalDataElementsPanelBody.add(horizontalPanel);
+		supplementalDataElementsPanelBody.add(addSupplementalDataElementsButton);
+		
+
+
+		return supplementalDataElementsPanel; 
 	}
 	
 	/**
@@ -985,41 +957,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				return CellTableUtility.getColumnToolTip(object.getPackageName());
 			}
 		};
-		table.addColumn(measureGrouping, SafeHtmlUtils.fromSafeConstant("<span title='Grouping'>" + "Grouping"
-				+ "</span>"));
-		Cell<String> editButtonCell = new MatButtonCell("Click to Edit Measure Grouping", "customEditButton");
-		Column<MeasurePackageDetail, String> editColumn = new Column<MeasurePackageDetail, String>(editButtonCell) {
-			@Override
-			public String getValue(MeasurePackageDetail object) {
-				return "Edit";
-			}
-		};
-		editColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, String>() {
-			@Override
-			public void update(int index, MeasurePackageDetail object, String value) {
-				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
-				observer.onEditClicked(object);
-			}
-		});
-		table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit"
-				+ "</span>"));
+		
+		table.addColumn(measureGrouping, SafeHtmlUtils.fromSafeConstant("<span title='Grouping'>" + "Grouping" + "</span>"));
+		table.addColumn(getEditColumn(), SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
+		
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			Cell<String> deleteButtonCell = new MatButtonCell("Click to Delete Measure Grouping", "customDeleteButton");
-			Column<MeasurePackageDetail, String> deleteColumn = new Column<MeasurePackageDetail, String>(deleteButtonCell) {
-				@Override
-				public String getValue(MeasurePackageDetail object) {
-					return "Delete";
-				}
-			};
-			deleteColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, String>() {
-				@Override
-				public void update(int index, MeasurePackageDetail object, String value) {
-					packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
-					observer.onDeleteClicked(object);
-				}
-			});
-			table.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete"
-					+ "</span>"));
+			table.addColumn(getDeleteColumn(), SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete" + "</span>"));
 			table.setColumnWidth(0, 60.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
@@ -1028,55 +971,122 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 		}
 	}
+	
+	private Column<MeasurePackageDetail, SafeHtml> getDeleteColumn() {
+		Cell<SafeHtml> deleteButtonCell = new ClickableSafeHtmlCell();
+		
+		Column<MeasurePackageDetail, SafeHtml> deleteColumn = new Column<MeasurePackageDetail, SafeHtml>(deleteButtonCell) {
+			@Override
+			public SafeHtml getValue(MeasurePackageDetail object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to Delete " + object.getPackageName();
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-trash fa-lg";
+					sb.appendHtmlConstant("<button type=\"button\" title='"
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+			
+				return sb.toSafeHtml();
+			}
+		};
+		
+		deleteColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, SafeHtml>() {
+			@Override
+			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
+				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
+				observer.onDeleteClicked(object);
+			}
+		});
+		
+		return deleteColumn; 
+	}
+	
+	private Column<MeasurePackageDetail, SafeHtml> getEditColumn() {
+		Cell<SafeHtml> editButtonCell = new ClickableSafeHtmlCell(); 
+		Column<MeasurePackageDetail, SafeHtml> editColumn = new Column<MeasurePackageDetail, SafeHtml>(editButtonCell) {
+			@Override
+			public SafeHtml getValue(MeasurePackageDetail object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to Edit " + object.getPackageName();
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-pencil fa-lg";
+				sb.appendHtmlConstant("<button type=\"button\" title='"
+						+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"color: darkgoldenrod;\" > <i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Edit</button>");
+			
+				return sb.toSafeHtml();
+			}
+		};
+		
+		editColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, SafeHtml>() {
+			@Override
+			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
+				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
+				observer.onEditClicked(object);
+			}
+		});
+		
+		return editColumn; 
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#buildCellTable(java.util.List)
 	 */
 	@Override
 	public void buildCellTable(List<MeasurePackageDetail> packages) {
 		cellTablePanel.clear();
-		if ((packages != null) && (packages.size() > 0)) {
-			CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
-			Label measureSearchHeader = new Label("Measure Grouping List");
-			measureSearchHeader.getElement().setId("measureGroupingHeader_Label");
-			measureSearchHeader.setStyleName("measureGroupingTableHeader");
-			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
-			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-			TableCaptionElement caption = elem.createCaption();
-			caption.appendChild(measureSearchHeader.getElement());
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
-			List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
-			measureGroupingList.addAll(packages);
-			table.setRowData(measureGroupingList);
-			table.setPageSize(2);
-			table.redraw();
-			table.setRowCount(measureGroupingList.size(), true);
-			sortProvider.refresh();
-			sortProvider.getList().addAll(measureGroupingList);
-			addColumnToTable(table);
-			sortProvider.addDataDisplay(table);
-			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			table.setWidth("100%");
-			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
-					"In the following Measure Grouping List table, Grouping Name is given in first column,"
-							+ " Edit in second column and Delete in third column.");
-			table.getElement().setAttribute("id", "MeasureGroupingCellTable");
-			table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
-			cellTablePanel.add(invisibleLabel);
-			cellTablePanel.add(table);
-			if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
-				MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
-				spager.setPageStart(0);
-				spager.setDisplay(table);
-				spager.setPageSize(2);
-				cellTablePanel.add(new SpacerWidget());
-				cellTablePanel.add(spager);
-			}
-			cellTablePanel.setStylePrimaryName("valueSetSearchPanel");
-		} else {
-			cellTablePanel.removeStyleName("valueSetSearchPanel");
+		cellTablePanel.setType(PanelType.PRIMARY);
+		PanelHeader measureGroupingTablePanelHeader = new PanelHeader(); 
+		measureGroupingTablePanelHeader.setTitle("Measure Grouping List");
+		measureGroupingTablePanelHeader.setText("Measure Grouping List");
+
+		PanelBody measureGroupingTablePanelBody = new PanelBody();
+		CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
+		List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
+		measureGroupingList.addAll(packages);
+		table.setRowData(measureGroupingList);
+		table.setPageSize(2);
+		table.redraw();
+		table.setRowCount(measureGroupingList.size(), true);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(measureGroupingList);
+		addColumnToTable(table);
+		sortProvider.addDataDisplay(table);
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+		table.setWidth("100%");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
+				"In the following Measure Grouping List table, Grouping Name is given in first column,"
+						+ " Edit in second column and Delete in third column.");
+		table.getElement().setAttribute("id", "MeasureGroupingCellTable");
+		table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
+		measureGroupingTablePanelBody.add(invisibleLabel);
+		measureGroupingTablePanelBody.add(table);
+		if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
+			spager.setPageStart(0);
+			spager.setDisplay(table);
+			spager.setPageSize(2);
+			measureGroupingTablePanelBody.add(new SpacerWidget());
+			measureGroupingTablePanelBody.add(spager);
 		}
+		
+		cellTablePanel.add(measureGroupingTablePanelHeader);
+		cellTablePanel.add(measureGroupingTablePanelBody);
+		
 	}
+	
+	private Button buildSaveButton(IconType icon, String text) {
+		Button button = new Button(); 
+		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
+		button.setType(ButtonType.PRIMARY);
+		button.setIcon(icon);
+		button.setText(text);
+		button.setTitle("Click to " + text);
+		
+		return button; 
+	}
+	
 	/**
 	 * Builds the add button.
 	 *
@@ -1084,25 +1094,17 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @param id button Id.
 	 * @return button.
 	 */
-	private Button buildAddButton(String imageUrl, String id) {
+	private Button buildAddButton(IconType icon, String id) {
 		Button btn = new Button();
 		btn.getElement().setAttribute("id", id);
-		btn.setStyleName(imageUrl);
+		btn.setIcon(icon);
+		btn.setType(ButtonType.SUCCESS);
+		btn.setPaddingBottom(3.0);
+		btn.setPaddingTop(3.0);
+		btn.setWidth("50px");		
 		return btn;
 	}
-	/**
-	 * Builds the double add button.
-	 *
-	 * @param imageUrl the image url
-	 * @param id button Id.
-	 * @return the button
-	 */
-	private Button buildDoubleAddButton(String imageUrl, String id) {
-		Button btn = new Button();
-		btn.getElement().setAttribute("id", id);
-		btn.setStyleName(imageUrl);
-		return btn;
-	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setQDMElementsInSuppElements(java.util.List)
 	 */
@@ -1147,10 +1149,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setViewIsEditable(final boolean isEnabled, final List<MeasurePackageDetail> packages) {
-		createNew.setEnabled(isEnabled);
-		packageMeasure.setEnabled(isEnabled);
-		packageMeasureAndExport.setEnabled(isEnabled);
-		addQDMElementsToMeasure.setEnabled(isEnabled);
+		createNewGroupingButton.setEnabled(isEnabled);
+		packageMeasureButton.setEnabled(isEnabled);
+		packageMeasureAndExportButton.setEnabled(isEnabled);
+		addSupplementalDataElementsButton.setEnabled(isEnabled);
 		packageGroupingWidget.getSaveGrouping().setEnabled(isEnabled);
 		addAllQDMLeft.setEnabled(isEnabled);
 		addAllQDMRight.setEnabled(isEnabled);
@@ -1160,7 +1162,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		packageGroupingWidget.getAddClauseLeft().setEnabled(isEnabled);
 		packageGroupingWidget.getAddAllClauseRight().setEnabled(isEnabled);
 		packageGroupingWidget.getAddAllClauseLeft().setEnabled(isEnabled);
-		addRiskAdjVariablesToMeasure.setEnabled(isEnabled);
+		addRiskAdjVariablesToMeasureButton.setEnabled(isEnabled);
 		addRiskAdjRight.setEnabled(isEnabled);
 		addRiskAdjLeft.setEnabled(isEnabled);
 		addAllRiskAdjRight.setEnabled(isEnabled);
@@ -1235,7 +1237,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @return the inProgressMessageDisplay
 	 */
 	@Override
-	public InProgressMessageDisplay getInProgressMessageDisplay() {
+	public MessageAlert getInProgressMessageDisplay() {
 		return inProgressMessageDisplay;
 	}
 	
@@ -1244,7 +1246,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 *
 	 * @param inProgressMessageDisplay the inProgressMessageDisplay to set
 	 */
-	public void setInProgressMessageDisplay(InProgressMessageDisplay inProgressMessageDisplay) {
+	public void setInProgressMessageDisplay(MessageAlert inProgressMessageDisplay) {
 		this.inProgressMessageDisplay = inProgressMessageDisplay;
 	}
 	
@@ -1253,7 +1255,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public HasClickHandlers getPackageMeasureButton() {
-		return packageMeasure;
+		return packageMeasureButton;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageSuccessMessageDisplay()
@@ -1274,7 +1276,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final HasClickHandlers getAddQDMElementsToMeasureButton() {
-		return addQDMElementsToMeasure;
+		return addSupplementalDataElementsButton;
 	}
 	
 	/* (non-Javadoc)
@@ -1282,7 +1284,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final HasClickHandlers getaddRiskAdjVariablesToMeasure() {
-		return addRiskAdjVariablesToMeasure;
+		return addRiskAdjVariablesToMeasureButton;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSuppDataSuccessMessageDisplay()
@@ -1352,7 +1354,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public HasClickHandlers getCreateNewButton() {
-		return createNew;
+		return createNewGroupingButton;
 	}
 	
 	/**
@@ -1638,7 +1640,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public HasClickHandlers getPackageMeasureAndExportButton() {
-		return packageMeasureAndExport;
+		return packageMeasureAndExportButton;
 	}
 	
 	/* (non-Javadoc)
@@ -1650,7 +1652,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		subTreePopulationList.addAll(subTreeClauseList);
 		subTreePopulationList.sort(new RiskAdjustmentDTO.Comparator());
 		//Collections.sort(subTreePopulationList, new RiskAdjustmentDTO.Comparator());
-		leftRiskAdjPanel.setDisplay(getSubTreeClauseCellList());
+		leftRiskAdjustmentVariablesPanel.setDisplay(getSubTreeClauseCellList());
 		riskAdjClauseSelModel.clear();
 		
 	}
@@ -1777,13 +1779,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 	}
 
-@Override
-public WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit() {
-	return saveErrorMessageDisplayOnEdit;
-}
-@Override
-public void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit) {
-	this.saveErrorMessageDisplayOnEdit = saveErrorMessageDisplayOnEdit;
-}
-	
+	@Override
+	public WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit() {
+		return saveErrorMessageDisplayOnEdit;
+	}
+	@Override
+	public void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit) {
+		this.saveErrorMessageDisplayOnEdit = saveErrorMessageDisplayOnEdit;
+	}	
 }

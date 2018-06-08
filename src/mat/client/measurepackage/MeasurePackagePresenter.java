@@ -75,7 +75,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private List<RiskAdjustmentDTO> dbRiskAdjVars = new ArrayList<RiskAdjustmentDTO>();
 	
 	/** The is measure package success. */
-	private boolean isMeasurePackageExportSuccess = false;
+	private boolean isMeasurePackageAndExport = false;
 	
 	/**
 	 * Gets the db cql supp data elements.
@@ -415,7 +415,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 *
 		 * @return the in progress message display
 		 */
-		InProgressMessageDisplay getInProgressMessageDisplay();
+		MessageAlert getInProgressMessageDisplay();
 		
 		/**
 		 * Sets the CQL measure.
@@ -476,9 +476,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 					clearMessages();
 					((Button) view.getPackageMeasureButton()).setEnabled(false);
 					((Button) view.getPackageMeasureAndExportButton()).setEnabled(false);
-					isMeasurePackageExportSuccess = false;
-					view.getInProgressMessageDisplay().setMessage(" Loading Please Wait...");
+					isMeasurePackageAndExport = false;
+					view.getInProgressMessageDisplay().createAlert("Loading Please Wait...");
 					validateGroup();
+					clearMessages(); 
 				}
 			}
 		});
@@ -488,11 +489,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
-				view.getInProgressMessageDisplay().clear();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				((Button) view.getPackageMeasureAndExportButton()).setEnabled(false);
-				isMeasurePackageExportSuccess = true;
+				isMeasurePackageAndExport = true;
+				view.getInProgressMessageDisplay().createAlert("Loading Please Wait...");
 				validateGroup();
+				clearMessages(); 
 			}
 		});
 		
@@ -687,6 +689,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getSaveErrorMessageDisplay().clearAlert();
 		view.getSaveErrorMessageDisplayOnEdit().clearAlert();
 		view.getRiskAdjSuccessMessageDisplay().clearAlert();
+		view.getInProgressMessageDisplay().clearAlert();
 		
 	}
 	/**
@@ -1274,7 +1277,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				if (updateVsacResult != null) {
 					if (result.isValid() && updateVsacResult.isSuccess()) {
 						if (updateVsacResult.getRetrievalFailedOIDs().size() > 0) {
-							if (isMeasurePackageExportSuccess) {
+							if (isMeasurePackageAndExport) {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();
 							} else {
@@ -1284,7 +1287,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 							}
 						} else {
-							if (isMeasurePackageExportSuccess) {
+							if (isMeasurePackageAndExport) {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();
 							} else {
@@ -1297,7 +1300,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 						
 					} else if (result.isValid() && !updateVsacResult.isSuccess()) {
 						if (updateVsacResult.getFailureReason() == VsacApiResult.UMLS_NOT_LOGGEDIN) {
-							if (isMeasurePackageExportSuccess) {
+							if (isMeasurePackageAndExport) {
 								((Button) view.getPackageMeasureButton()).setEnabled(true);
 								saveExport();
 							} else {
@@ -1321,7 +1324,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				} else {
 					if (result.isValid()) {
 						//to Export the Measure.
-						if (isMeasurePackageExportSuccess) {
+						if (isMeasurePackageAndExport) {
 							((Button) view.getPackageMeasureButton()).setEnabled(true);
 							saveExport();
 						} else {

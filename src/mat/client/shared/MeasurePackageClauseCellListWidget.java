@@ -28,13 +28,20 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import com.google.gwt.user.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
+
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -88,82 +95,73 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	/** Create a singleton instance of the templates used to render the cell. */
 	private static Templates templates = GWT.create(Templates.class);
-	/** The cell list. */
+
 	private CellList<MeasurePackageClauseDetail> leftCellList;
-	/** The cell list. */
+
 	private CellList<MeasurePackageClauseDetail> rightCellList;
-	/** The Association cell list. */
+
 	private CellList<MeasurePackageClauseDetail> associatedCellList;
-	/** The Right cell LIst pager panel. */
+
 	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel("RightPackagePanel");
-	/** The Left cell LIst pager panel. */
+
 	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel("LeftPackagePanel");
-	/** The range label pager. */
+
 	private RangeLabelPager rightRangeLabelPager = new RangeLabelPager();
-	/** The range label pager. */
+
 	private RangeLabelPager leftRangeLabelPager = new RangeLabelPager();
-	/** The disclosure panel associations. */
+
 	private DisclosurePanel disclosurePanelAssociations = new DisclosurePanel("Add Associations");
-	/** The main flow panel. */
+
 	private FlowPanel mainFlowPanel = new FlowPanel();
-	/** The add Grouping to measure. */
-	private PrimaryButton saveGrouping = new PrimaryButton("Save Grouping", "primaryButton");
-	/** The add Clause Right. */
-	private Button addClauseRight = buildAddButton("customAddRightButton", "AddClauseToRight");
-	/** The add Clause left. */
-	private Button addClauseLeft = buildAddButton("customAddLeftButton", "AddClauseToLeft");
-	/** The add all Clause right. */
-	private Button addAllClauseRight = buildDoubleAddButton("customAddALlRightButton", "AddAllClauseToRight");
-	/** The add all Clause left. */
-	private Button addAllClauseLeft = buildDoubleAddButton("customAddAllLeftButton", "AddAllClauseToLeft");
-	/** The package name. */
+
+	private Button saveGroupingButton = buildSaveButton(IconType.SAVE, "Save Grouping") ;
+	
+	private Button addClauseRight = buildAddButton(IconType.ANGLE_RIGHT, "AddClauseToRight");
+
+	private Button addClauseLeft = buildAddButton(IconType.ANGLE_LEFT, "AddClauseToLeft");
+
+	private Button addAllClauseRight = buildAddButton(IconType.ANGLE_DOUBLE_RIGHT, "AddAllClauseToRight");
+
+	private Button addAllClauseLeft = buildAddButton(IconType.ANGLE_DOUBLE_LEFT, "AddAllClauseToLeft");
+
 	private Label packageName = new Label();
-	/** Item Count Table Selection Model. */
-	/** Clauses Selection Model.	 */
-	private SingleSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel	=
-			new SingleSelectionModel<MeasurePackageClauseDetail>();
-	/** Grouping Selection Model.	 */
-	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
-			new SingleSelectionModel<MeasurePackageClauseDetail>();
-	/** List of Measure Observations in Array.*/
-	private List<String> meaObsList = new ArrayList<String>();
-	/** List Data Provider for Right(Package Clauses) cell List.*/
+
+	private SingleSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel	= new SingleSelectionModel<MeasurePackageClauseDetail>();
+	
+	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
+
+	private List<String> measureObservationList = new ArrayList<String>();
+
 	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
-	/** List Data Provider for Left(Clause) cell List. */
+
 	private ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
-	/** Applied QDM List.**/
+
 	private List<QualityDataSetDTO> appliedQdmList;
-	/** List of Elements in Grouping List. */
-	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList =
-			new ArrayList<MeasurePackageClauseDetail>();
-	/** List of Elements in Clause List.*/
-	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList =
-			new ArrayList<MeasurePackageClauseDetail>();
-	/** List of Elements in Association Population List.*/
-	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList =
-			new ArrayList<MeasurePackageClauseDetail>();
-	/** List of Elements For Denominator Association Population List.*/
-	private ArrayList<MeasurePackageClauseDetail> denoAssociatedPopulationList =
-			new ArrayList<MeasurePackageClauseDetail>();
-	/** List of Elements For Numerator Association Population List.*/
-	private ArrayList<MeasurePackageClauseDetail> numAssociatedPopulationList =
-			new ArrayList<MeasurePackageClauseDetail>();
-	/** List Data Provider for Associate Cell List Widget.**/
+
+	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+
+	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	
+	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+
+	private ArrayList<MeasurePackageClauseDetail> denoAssociatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+
+	private ArrayList<MeasurePackageClauseDetail> numAssociatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+
 	private ListDataProvider<MeasurePackageClauseDetail> associationListDataProvider;
-	/** Cell List Associate Widget. **/
+
 	private CellList<MeasurePackageClauseDetail> associatedPOPCellList;
-	/** Error Message in Package Grouping Section. */
-	//private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+
 	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
-	/** Success Message in Package Grouping Section.**/
+
 	private MessageAlert successMessages = new SuccessMessageAlert();
-	/**Selection Model for Associate Widget.**/
+
 	private SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel;
-	/**Map of Grouping Clauses.**/
+
 	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<String, MeasurePackageClauseDetail>();
 	
-	/** The clear button panel. */
 	private SimplePanel clearButtonPanel = new SimplePanel();
+	
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -187,6 +185,7 @@ public class MeasurePackageClauseCellListWidget {
 		
 		return rightCellList;
 	}
+
 	/**
 	 * Gets the Clause Cell List.
 	 * @return CellList.
@@ -242,6 +241,20 @@ public class MeasurePackageClauseCellListWidget {
 	 * Instantiates a new cell list with context menu.
 	 */
 	public MeasurePackageClauseCellListWidget() {
+
+		Panel packageGroupingPanel = new Panel(); 
+		packageGroupingPanel.setType(PanelType.PRIMARY);
+		
+		PanelHeader packageGroupingPanelHeader = new PanelHeader(); 
+		packageGroupingPanelHeader.setText("Package Grouping");
+		packageGroupingPanelHeader.setTitle("Package Grouping");
+
+		PanelBody packageGroupingPanelBody = new PanelBody();
+		packageGroupingPanelBody.add(errorMessages);
+		packageGroupingPanelBody.add(successMessages);
+		packageGroupingPanel.add(packageGroupingPanelHeader);
+		packageGroupingPanel.add(packageGroupingPanelBody);
+	
 		disclosurePanelAssociations.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_DisclosurePanel");
 		addClickHandlersToDisclosurePanels();
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
@@ -250,11 +263,6 @@ public class MeasurePackageClauseCellListWidget {
 		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
 		rightPagerPanel.setDisplay(getRightCellList());
 		rightRangeLabelPager.setDisplay(getRightCellList());
-		Label packageTabName = new Label("Package Grouping");
-		packageTabName.getElement().setAttribute("id", "MeasurePackageClause_PackageHeading_Lbl");
-		packageTabName.setStyleName("valueSetHeader");
-		mainFlowPanel.add(packageTabName);
-		mainFlowPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
 		VerticalPanel leftCellListVPanel = new VerticalPanel();
 		leftCellListVPanel.getElement().setAttribute("id", "MeasurePackageClause_LeftCellListVPanel");
@@ -274,14 +282,15 @@ public class MeasurePackageClauseCellListWidget {
 		vp.add(disclosurePanelAssociations);
 		hp.add(vp);
 		hp.getElement().setAttribute("id", "MeasurePackageClause_MainHoriPanel");
-		packageName.addStyleName("measureGroupPackageName");
-		mainFlowPanel.add(packageName);
-		mainFlowPanel.add(errorMessages);
-		mainFlowPanel.add(successMessages);
-		mainFlowPanel.add(hp);
-		mainFlowPanel.add(new SpacerWidget());
-		mainFlowPanel.add(saveGrouping);
-		mainFlowPanel.setStylePrimaryName("valueSetSearchPanel");
+		packageGroupingPanelBody.add(hp);
+		
+		
+		SpacerWidget spacer = new SpacerWidget();
+		spacer.setStylePrimaryName("clearBoth");
+		packageGroupingPanelBody.add(spacer);
+
+		packageGroupingPanelBody.add(saveGroupingButton);
+		mainFlowPanel.add(packageGroupingPanel);
 	}
 	/**
 	 * Click Handlers for Disclosure Panel.
@@ -338,7 +347,7 @@ public class MeasurePackageClauseCellListWidget {
 				//As there are no more than two entries in meaObsList for Ratio do not need to bother about rest.
 				String measureObservation1 = ""; 
 				String measureObservation2 = ""; 
-				for(String entry : meaObsList){
+				for(String entry : measureObservationList){
 					if(measureObservation1.isEmpty() || measureObservation1.equalsIgnoreCase("")){
 						measureObservation1 = entry;
 					}
@@ -434,7 +443,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * @param populationList - ArrayList.
 	 * @return Vertical Panel.
 	 */
-	private Panel getAssociatedPOPCellListWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
+	private VerticalPanel getAssociatedPOPCellListWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
 		associatedSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
@@ -592,6 +601,18 @@ public class MeasurePackageClauseCellListWidget {
 		
 		return associatePopulationCell;
 	}
+	
+	private Button buildSaveButton(IconType icon, String text) {
+		Button button = new Button(); 
+		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
+		button.setType(ButtonType.PRIMARY);
+		button.setIcon(icon);
+		button.setText(text);
+		button.setTitle("Click to " + text);
+		
+		return button; 
+	}
+	
 	/**
 	 * Builds the add button.
 	 *
@@ -599,25 +620,17 @@ public class MeasurePackageClauseCellListWidget {
 	 * @param id - String.
 	 * @return the button
 	 */
-	private Button buildAddButton(String imageUrl , String id) {
+	private Button buildAddButton(IconType icon , String id) {
 		Button btn = new Button();
 		btn.getElement().setAttribute("id", id);
-		btn.setStyleName(imageUrl);
+		btn.setIcon(icon);
+		btn.setType(ButtonType.SUCCESS);
+		btn.setPaddingBottom(3.0);
+		btn.setPaddingTop(3.0);
+		btn.setWidth("50px");
 		return btn;
 	}
-	/**
-	 * Builds the double add button.
-	 *
-	 * @param imageUrl the image url
-	 * @param id - String Id.
-	 * @return the button
-	 */
-	private Button buildDoubleAddButton(String imageUrl , String id) {
-		Button btn = new Button();
-		btn.getElement().setAttribute("id", id);
-		btn.setStyleName(imageUrl);
-		return btn;
-	}
+
 	/**
 	 * Widget to add Left/right/leftAll/RightAll button's.
 	 * @return - Widget.
@@ -841,10 +854,10 @@ public class MeasurePackageClauseCellListWidget {
 						.getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 
 			}else{
-				meaObsList.clear();
+				measureObservationList.clear();
 				for (MeasurePackageClauseDetail entry : validateGroupingList) {
 					if (entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
-						meaObsList.add(entry.getName());
+						measureObservationList.add(entry.getName());
 					}
 				}
 			}
@@ -1297,8 +1310,8 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the saveGrouping
 	 */
-	public PrimaryButton getSaveGrouping() {
-		return saveGrouping;
+	public Button getSaveGrouping() {
+		return saveGroupingButton;
 	}
 	
 	/**
@@ -1306,8 +1319,8 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @param saveGrouping the saveGrouping to set
 	 */
-	public void setSaveGrouping(PrimaryButton saveGrouping) {
-		this.saveGrouping = saveGrouping;
+	public void setSaveGrouping(Button saveGrouping) {
+		this.saveGroupingButton = saveGrouping;
 	}
 	
 	/**

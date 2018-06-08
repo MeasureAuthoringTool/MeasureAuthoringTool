@@ -10,9 +10,9 @@ import mat.shared.StringUtility;
 
 public class ManageMeasureModelValidator {
 	
-	public List<String> isValidMeasure(ManageMeasureDetailModel model){
-		List<String> message = isMeasureValid(model);
-		message.addAll(isNQFValid(model));
+	public List<String> validateMeasure(ManageMeasureDetailModel model){
+		List<String> message = performCommonMeasureValidation(model);
+		message.addAll(validateNQF(model));
 		return message;
 	}
 	
@@ -20,15 +20,15 @@ public class ManageMeasureModelValidator {
 		return !value.equalsIgnoreCase("--Select--") && !value.equals("");
 	}
 
-	public List<String> isValidMeasure(ManageMeasureDetailModel model, boolean isClone) {
-		List<String> message = isMeasureValid(model);
+	public List<String> validateMeasureWithClone(ManageMeasureDetailModel model, boolean isClone) {
+		List<String> message = performCommonMeasureValidation(model);
 		if(!isClone) {
-			message.addAll(isNQFValid(model));
+			message.addAll(validateNQF(model));
 		}
 		return message;
 	}
 	
-	private List<String> isNQFValid(ManageMeasureDetailModel model) {
+	private List<String> validateNQF(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		if(Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) { 
 			if(StringUtility.isEmptyOrNull(model.getNqfId())) {
@@ -38,7 +38,7 @@ public class ManageMeasureModelValidator {
 		return message;
 	}
 	
-	private List<String> isMeasureValid(ManageMeasureDetailModel model) {
+	private List<String> performCommonMeasureValidation(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
 
 		if ((model.getName() == null) || "".equals(model.getName().trim())) {

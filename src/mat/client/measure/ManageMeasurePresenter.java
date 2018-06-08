@@ -1701,7 +1701,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	public boolean isValid(ManageMeasureDetailModel model, boolean isClone) {
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.isValidMeasure(model, isClone);
+		List<String> message = manageMeasureModelValidator.validateMeasureWithClone(model, isClone);
 		boolean valid = message.size() == 0;
 		if (!valid) {
 			String errorMessage = "";

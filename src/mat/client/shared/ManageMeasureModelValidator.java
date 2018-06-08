@@ -11,6 +11,34 @@ import mat.shared.StringUtility;
 public class ManageMeasureModelValidator {
 	
 	public List<String> isValidMeasure(ManageMeasureDetailModel model){
+		List<String> message = isMeasureValid(model);
+		message.addAll(isNQFValid(model));
+		return message;
+	}
+	
+	private boolean isValidValue(String value) {
+		return !value.equalsIgnoreCase("--Select--") && !value.equals("");
+	}
+
+	public List<String> isValidMeasure(ManageMeasureDetailModel model, boolean isClone) {
+		List<String> message = isMeasureValid(model);
+		if(!isClone) {
+			message.addAll(isNQFValid(model));
+		}
+		return message;
+	}
+	
+	private List<String> isNQFValid(ManageMeasureDetailModel model) {
+		List<String> message = new ArrayList<String>();
+		if(Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) { 
+			if(StringUtility.isEmptyOrNull(model.getNqfId())) {
+				message.add(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR);
+			}
+		}
+		return message;
+	}
+	
+	private List<String> isMeasureValid(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
 
 		if ((model.getName() == null) || "".equals(model.getName().trim())) {
@@ -21,12 +49,6 @@ public class ManageMeasureModelValidator {
 				|| "".equals(model.getShortName().trim())) {
 			message.add(MatContext.get().getMessageDelegate()
 					.getAbvNameRequiredMessage());
-		}
-		
-		if(Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) { 
-			if(StringUtility.isEmptyOrNull(model.getNqfId())) {
-				message.add(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR);
-			}
 		}
 		
 		String scoring = model.getMeasScoring();
@@ -40,11 +62,6 @@ public class ManageMeasureModelValidator {
 			MatContext.get().getMessageDelegate();
 			message.add(MessageDelegate.CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR);
 		}
-		
 		return message;
-	}
-	
-	private boolean isValidValue(String value) {
-		return !value.equalsIgnoreCase("--Select--") && !value.equals("");
 	}
 }

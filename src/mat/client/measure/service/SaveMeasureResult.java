@@ -38,6 +38,8 @@ public class SaveMeasureResult extends GenericResult {
 	
 	public static final int PACKAGE_FAIL = -1;
 	
+	public static final int VALIDATE_MEASURE_AT_PACKAGE_FAIL = -3;
+	
 	/** The id. */
 	private String id;
 	

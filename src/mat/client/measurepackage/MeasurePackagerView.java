@@ -233,7 +233,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
 		Panel topRiskAdjContainer = buildRiskAdjLeftRightPanel();
 	
-		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		
 		createNewGroupingButton.getElement().setAttribute("id", "CreateNewGroupingButton");
@@ -243,6 +242,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(saveErrorMessageDisplay);
 		content.add(saveErrorMessageDisplayOnEdit);
 		content.add(cellTablePanel);
+		cellTablePanel.setVisible(false); // default hidden, only show if there is more than 0 groupings
 		content.add(new SpacerWidget());
 		content.add(createNewGroupingButton);
 		content.add(packageGroupingWidget.getWidget());
@@ -934,46 +934,49 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public void buildCellTable(List<MeasurePackageDetail> packages) {
 		cellTablePanel.clear();
-		cellTablePanel.setType(PanelType.PRIMARY);
-		PanelHeader measureGroupingTablePanelHeader = new PanelHeader(); 
-		measureGroupingTablePanelHeader.setTitle("Measure Grouping List");
-		measureGroupingTablePanelHeader.setText("Measure Grouping List");
-
-		PanelBody measureGroupingTablePanelBody = new PanelBody();
-		CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
-		List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
-		measureGroupingList.addAll(packages);
-		table.setRowData(measureGroupingList);
-		table.setPageSize(2);
-		table.redraw();
-		table.setRowCount(measureGroupingList.size(), true);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(measureGroupingList);
-		addColumnToTable(table);
-		sortProvider.addDataDisplay(table);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		table.setWidth("100%");
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
-				"In the following Measure Grouping List table, Grouping Name is given in first column,"
-						+ " Edit in second column and Delete in third column.");
-		table.getElement().setAttribute("id", "MeasureGroupingCellTable");
-		table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
-		measureGroupingTablePanelBody.add(invisibleLabel);
-		measureGroupingTablePanelBody.add(table);
-		if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
-			spager.setPageStart(0);
-			spager.setDisplay(table);
-			spager.setPageSize(2);
-			measureGroupingTablePanelBody.add(new SpacerWidget());
-			measureGroupingTablePanelBody.add(spager);
+		cellTablePanel.setVisible(false);;
+		if(packages != null && packages.size() > 0) {
+			cellTablePanel.setType(PanelType.PRIMARY);
+			PanelHeader measureGroupingTablePanelHeader = new PanelHeader(); 
+			measureGroupingTablePanelHeader.setTitle("Measure Grouping List");
+			measureGroupingTablePanelHeader.setText("Measure Grouping List");
+	
+			PanelBody measureGroupingTablePanelBody = new PanelBody();
+			CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
+			List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
+			measureGroupingList.addAll(packages);
+			table.setRowData(measureGroupingList);
+			table.setPageSize(2);
+			table.redraw();
+			table.setRowCount(measureGroupingList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(measureGroupingList);
+			addColumnToTable(table);
+			sortProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			table.setWidth("100%");
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
+					"In the following Measure Grouping List table, Grouping Name is given in first column,"
+							+ " Edit in second column and Delete in third column.");
+			table.getElement().setAttribute("id", "MeasureGroupingCellTable");
+			table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
+			measureGroupingTablePanelBody.add(invisibleLabel);
+			measureGroupingTablePanelBody.add(table);
+			if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
+				MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
+				spager.setPageStart(0);
+				spager.setDisplay(table);
+				spager.setPageSize(2);
+				measureGroupingTablePanelBody.add(new SpacerWidget());
+				measureGroupingTablePanelBody.add(spager);
+			}
+			
+			cellTablePanel.add(measureGroupingTablePanelHeader);
+			cellTablePanel.add(measureGroupingTablePanelBody);
+			cellTablePanel.setVisible(true);
 		}
-		
-		cellTablePanel.add(measureGroupingTablePanelHeader);
-		cellTablePanel.add(measureGroupingTablePanelBody);
-		
 	}
 	
 	private Button buildSaveButton(IconType icon, String text) {

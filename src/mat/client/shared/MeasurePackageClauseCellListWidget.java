@@ -201,9 +201,7 @@ public class MeasurePackageClauseCellListWidget {
 				if (leftCellListSelectionModel.getSelectedObject() == null) {
 					return;
 				}
-				//if (rightCellListSelectionModel.getSelectedObject() != null) {
 				rightCellListSelectionModel.clear();
-				//}
 				disclosurePanelAssociations.setVisible(false);
 			}
 		});

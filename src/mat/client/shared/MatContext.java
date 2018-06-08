@@ -9,9 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
@@ -1923,11 +1920,14 @@ public class MatContext implements IsSerializable {
 	 * @return true, if is CQL measure
 	 */
 	public boolean isCQLMeasure(String releaseVersion) {
-		String ver = StringUtils.substringAfterLast(releaseVersion, "v");
-		String major = StringUtils.substringBeforeLast(ver, ".");
-		int versionInt = NumberUtils.toInt(major);
 		
-		return (versionInt < 5) ? false : true;
+		String str[] = releaseVersion.replace("v", "").split("\\.");
+		int versionInt = Integer.parseInt(str[0]);
+		if(versionInt<5){
+			return false;
+		}
+		
+		return true;
 	}
 
 

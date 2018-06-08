@@ -359,7 +359,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * 
 		 * @return the include vsac data
 		 */
-		//CheckBox getIncludeVSACData();
+
 		/**
 		 * Gets the measure error message display.
 		 *
@@ -636,8 +636,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 			
 		});
-		
-		
 	}
 	
 	/**
@@ -645,7 +643,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @return boolean.
 	 */
 	private boolean isValid() {
-		
 		List<MeasurePackageClauseDetail> detailList = view
 				.getPackageGroupingWidget().getGroupingPopulationList();
 		List<String> messages = new ArrayList<String>();
@@ -658,6 +655,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		} else {
 			view.getPackageErrorMessageDisplay().clearAlert();
 		}
+		
 		return messages.size() == 0;
 	}
 	
@@ -699,26 +697,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.clear();
 		panel.add(view.asWidget());
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		//view.getIncludeVSACData().setValue(false);
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
+
 	@Override
 	public void beforeClosingDisplay() {
 		currentDetail = null;
 		packageOverview = null;
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		//view.getIncludeVSACData().setValue(false);
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
+
 	@Override
 	public void beforeDisplay() {
 		showMeasurePackagerBusy(true);
 		clearMessages();
-		//panel.clear();
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			
@@ -735,7 +726,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 														
 							if(result.getCqlErrors().size() == 0){
-								//panel.add(view.asWidget());
 								getMeasure(MatContext.get().getCurrentMeasureId());
 								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 							}else{
@@ -763,9 +753,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackagerContentFlowPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
+
 	@Override
 	public Widget getWidget() {
 		panel.clear();
@@ -818,7 +806,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 					
 					view.getSaveErrorMessageDisplay().clearAlert();
 					view.getSaveErrorMessageDisplayOnEdit().clearAlert();
-					//showErrorMessage(view.getSaveErrorMessageDisplay());
 					view.getSaveErrorMessageDisplayOnEdit().createAlert();
 					view.getSaveErrorMessageDisplayOnEdit().getWarningConfirmationYesButton().setFocus(true);
 					handleClickEventsOnUnsavedErrorMsg(detail, view.getSaveErrorMessageDisplayOnEdit(), null);
@@ -1068,7 +1055,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			
 		}
-		//view.setQDMElements(packageOverview.getQdmElements());
+
 		view.setSubTreeInRiskAdjVarList(packageOverview.getRiskAdjList());
 		view.setSubTreeClauseList(packageOverview.getSubTreeClauseList());
 		dbPackageClauses.clear();
@@ -1341,22 +1328,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 					}
 				}
 				
-				//record Package created Audit event
 				if (result.isValid()) {	
-					MatContext.get().getAuditService().recordMeasureEvent(measureId, "Measure Package Created",
-							"", false, new AsyncCallback<Boolean>() {
-	
-								@Override
-								public void onFailure(Throwable caught) {
-	
-								}
-	
-								@Override
-								public void onSuccess(Boolean result) {
-	
-								}
-							});
+					recordMeasurePackageEvent(measureId);
 				}
+			}
+		});
+	}
+	
+	private void recordMeasurePackageEvent(final String measureId) {
+		MatContext.get().getAuditService().recordMeasureEvent(measureId, "Measure Package Created", "", false, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+
 			}
 		});
 	}
@@ -1416,7 +1404,3 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 	
 }
-
-
-
-

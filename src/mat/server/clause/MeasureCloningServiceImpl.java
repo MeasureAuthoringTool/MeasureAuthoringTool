@@ -619,7 +619,6 @@ implements MeasureCloningService {
 				"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
 		
 		if(supplementalDefnNodes != null){
-			logger.info("suppl data elems..setting ids");
 			for(int i=0;i<supplementalDefnNodes.getLength();i++){
 				Node supplNode = supplementalDefnNodes.item(i);
 			    			    

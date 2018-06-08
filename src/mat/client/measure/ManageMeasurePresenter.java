@@ -3,7 +3,6 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -1144,7 +1143,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				
 				updateDetailsFromView();
-				if(!isValid(currentDetails)){
+				if(!isValid(currentDetails, isClone)){
 					return;
 				}
 				
@@ -1700,9 +1699,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the model
 	 * @return true, if is valid
 	 */
-	public boolean isValid(ManageMeasureDetailModel model) {
+	public boolean isValid(ManageMeasureDetailModel model, boolean isClone) {
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
+		List<String> message = manageMeasureModelValidator.isValidMeasure(model, isClone);
 		boolean valid = message.size() == 0;
 		if (!valid) {
 			String errorMessage = "";
@@ -2676,9 +2675,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		showSearchingBusy(true);
 		updateDetailsFromView();
 
-		if (isClone && isValid(currentDetails)) {
+		if (isClone && isValid(currentDetails, isClone)) {
 			cloneMeasure(currentDetails, false);
-		} else if (isValid(currentDetails)) {
+		} else if (isValid(currentDetails, false)) {
 			final boolean isInsert = currentDetails.getId() == null;
 			final String name = currentDetails.getName();
 			final String shortName = currentDetails.getShortName();

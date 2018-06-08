@@ -35,6 +35,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;
 import mat.client.measure.service.MeasureCloningService;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
@@ -237,10 +238,24 @@ implements MeasureCloningService {
 			}
 			// when creating a draft of a shared version  Measure then the Measure Owner should not change
 			List<String> usedCodeList = null;
+			boolean isNonCQLtoCQLDraft = false;
 			if (creatingDraft) {
 				clonedMeasure.setOwner(measure.getOwner());
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
-				clonedMeasure.setVersion(measure.getVersion());
+				//MAT-9206 changes
+				if (MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
+					clonedMeasure.setVersion(measure.getVersion());
+				}else {
+					isNonCQLtoCQLDraft = true;
+					String ver = StringUtils.substringAfterLast(currentDetails.getVersionNumber(), "v");
+					if(StringUtils.countMatches(ver, ".") == 2) {
+						ver = StringUtils.substringBeforeLast(ver, ".");						
+					} 
+					String major = StringUtils.substringBeforeLast(ver, ".");
+					String minor = StringUtils.substringAfterLast(ver, ".");
+					ver = major + "." + StringUtils.leftPad(minor, 3, "0");
+					clonedMeasure.setVersion(ver);
+				}
 				clonedMeasure.setRevisionNumber("000");
 				clonedMeasure.seteMeasureId(measure.geteMeasureId());
 				measureDAO.saveMeasure(clonedMeasure);
@@ -253,12 +268,13 @@ implements MeasureCloningService {
 					clonedMeasure.setOwner(currentUser);
 				}
 				clearChildNodes(MEASURE_DETAILS);
-				clonedMeasure.setRevisionNumber("000");
+				
 				MeasureSet measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
 				measureSetDAO.save(measureSet);
 				clonedMeasure.setMeasureSet(measureSet);
 				clonedMeasure.setVersion(VERSION_ZERO);
+				clonedMeasure.setRevisionNumber("000");
 				measureDAO.saveMeasure(clonedMeasure);
 				createNewMeasureDetails();
 				
@@ -304,7 +320,7 @@ implements MeasureCloningService {
 						.transform(xmlProcessor.getOriginalDoc()));
 			}
 			
-			boolean isUpdatedForCQL = updateForCQLMeasure(measure, clonedXml, xmlProcessor, clonedMeasure);
+			boolean isUpdatedForCQL = updateForCQLMeasure(measure, clonedXml, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
 			
 			if(!isUpdatedForCQL){
 				//this means this is a CQL Measure to CQL Measure draft/clone.
@@ -339,7 +355,7 @@ implements MeasureCloningService {
 	}
 
 	private boolean updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
-			XmlProcessor xmlProcessor, Measure clonedMsr) throws XPathExpressionException {
+			XmlProcessor xmlProcessor, Measure clonedMsr, boolean isNonCQLtoCQLDraft) throws XPathExpressionException {
 		
 		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
 		
@@ -355,7 +371,18 @@ implements MeasureCloningService {
 		}
 		
 		clonedMsr.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-				
+		//MAT-9206 changes
+		if (isNonCQLtoCQLDraft) {
+			Node versionNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/measureDetails/version");
+			if (versionNode != null) {				
+				String major = StringUtils.substringBeforeLast(measure.getVersion(), ".");
+				String minor = StringUtils.substringAfterLast(measure.getVersion(), ".");
+				minor = StringUtils.stripStart(minor, "0");
+				String ver = major + "." + minor + ".000";
+				versionNode.setTextContent(ver);
+			}	
+		}
+		
 		Node populationsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/populations");
 		if(populationsNode != null){
 			Node populationsParentNode = populationsNode.getParentNode();

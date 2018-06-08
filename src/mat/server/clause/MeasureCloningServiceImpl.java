@@ -17,6 +17,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -89,8 +90,7 @@ implements MeasureCloningService {
 	private CQLService cqlService;
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory
-			.getLog(MeasureCloningServiceImpl.class);
+	private static final Log logger = LogFactory.getLog(MeasureCloningServiceImpl.class);
 	
 	/** The Constant MEASURE_DETAILS. */
 	private static final String MEASURE_DETAILS = "measureDetails";
@@ -133,13 +133,10 @@ implements MeasureCloningService {
 	private static final String SUPPLEMENTAL_DATA_ELEMENTS = "supplementalDataElements";
 	
 	/** The Constant Risk_ADJUSTMENT_VARIABLES. */
-	private static final String Risk_ADJUSTMENT_VARIABLES = "riskAdjustmentVariables";
+	private static final String RISK_ADJUSTMENT_VARIABLES = "riskAdjustmentVariables";
 	
 	/** The Constant VERSION_ZERO. */
 	private static final String VERSION_ZERO = "0.0";
-	
-	/** The Constant TRUE. */
-	private static final boolean TRUE = true;
 	
 	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
 	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
@@ -207,16 +204,13 @@ implements MeasureCloningService {
 				throw new MatException(e.getMessage());
 			}
 			
-			MeasureXML xml = measureXmlDAO.findForMeasure(currentDetails
-					.getId());
+			MeasureXML xml = measureXmlDAO.findForMeasure(currentDetails.getId());
 
 			clonedMeasure = new Measure();
 			String originalXml = xml.getMeasureXMLAsString();
 			
-			InputSource oldXmlstream = new InputSource(new StringReader(
-					originalXml));
-			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
+			InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
+			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document originalDoc = docBuilder.parse(oldXmlstream);
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
@@ -224,103 +218,47 @@ implements MeasureCloningService {
 			
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
 			
-			clonedMeasure.setDraft(TRUE);
+			clonedMeasure.setDraft(Boolean.TRUE);
 			if (currentDetails.getMeasScoring() != null) {
-				clonedMeasure
-				.setMeasureScoring(currentDetails.getMeasScoring());
+				clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring());
 			} else {
 				clonedMeasure.setMeasureScoring(measure.getMeasureScoring());
 			}
-			if (LoggedInUserUtil.getLoggedInUser() != null) {
-				User currentUser = userDAO.find(LoggedInUserUtil
-						.getLoggedInUser());
-				clonedMeasure.setOwner(currentUser);
-			}
 			// when creating a draft of a shared version  Measure then the Measure Owner should not change
-			List<String> usedCodeList = null;
-			boolean isNonCQLtoCQLDraft = false;
+			boolean isNonCQLtoCQLDraft = false; 
 			if (creatingDraft) {
-				clonedMeasure.setOwner(measure.getOwner());
-				clonedMeasure.setMeasureSet(measure.getMeasureSet());
-				//MAT-9206 changes
-				if (MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
-					clonedMeasure.setVersion(measure.getVersion());
-				}else {
-					isNonCQLtoCQLDraft = true;
-					String ver = StringUtils.substringAfterLast(currentDetails.getVersionNumber(), "v");
-					if(StringUtils.countMatches(ver, ".") == 2) {
-						ver = StringUtils.substringBeforeLast(ver, ".");						
-					} 
-					String major = StringUtils.substringBeforeLast(ver, ".");
-					String minor = StringUtils.substringAfterLast(ver, ".");
-					ver = major + "." + StringUtils.leftPad(minor, 3, "0");
-					clonedMeasure.setVersion(ver);
-				}
-				clonedMeasure.setRevisionNumber("000");
-				clonedMeasure.seteMeasureId(measure.geteMeasureId());
-				measureDAO.saveMeasure(clonedMeasure);
-				createNewMeasureDetailsForDraft();
+				isNonCQLtoCQLDraft = createDraftAndDetermineIfNonCQL(currentDetails.getVersionNumber(), measure);
+				
 			} else { 
-				// Clear the measureDetails tag
-				if (LoggedInUserUtil.getLoggedInUser() != null) {
-					User currentUser = userDAO.find(LoggedInUserUtil
-							.getLoggedInUser());
-					clonedMeasure.setOwner(currentUser);
-				}
-				clearChildNodes(MEASURE_DETAILS);
-				
-				MeasureSet measureSet = new MeasureSet();
-				measureSet.setId(UUID.randomUUID().toString());
-				measureSetDAO.save(measureSet);
-				clonedMeasure.setMeasureSet(measureSet);
-				clonedMeasure.setVersion(VERSION_ZERO);
-				clonedMeasure.setRevisionNumber("000");
-				measureDAO.saveMeasure(clonedMeasure);
-				createNewMeasureDetails();
-				
-				//copy over value of "Patient based indicator" from the original measure.
-						
-				NodeList nodeList = clonedDoc.getElementsByTagName(MEASURE_DETAILS);
-				Node measureDetailsNode = nodeList.item(0);
-				
-				Node patientBasedIndicatorNode = clonedDoc.createElement("patientBasedIndicator");
-				String isPatientBasedIndicator = currentDetails.isPatientBased() + "";
-				patientBasedIndicatorNode.setTextContent(isPatientBasedIndicator);
-				
-				measureDetailsNode.appendChild(patientBasedIndicatorNode);
+				cloneMeasure(currentDetails.isPatientBased());
 			}
 			
 			SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(originalXml);
-			usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
+			List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
 			
 			// Create the measureGrouping tag
 			clearChildNodes(MEASURE_GROUPING);
 			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
-			clearChildNodes(Risk_ADJUSTMENT_VARIABLES);
+			clearChildNodes(RISK_ADJUSTMENT_VARIABLES);
 			
 			String clonedXMLString = convertDocumenttoString(clonedDoc);
 			MeasureXML clonedXml = new MeasureXML();
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
 			clonedXml.setMeasure_id(clonedMeasure.getId());
 			
-			XmlProcessor xmlProcessor = new XmlProcessor(
-					clonedXml.getMeasureXMLAsString());
-			
-			
+			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
 			
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) 
-					|| Boolean.TRUE.equals(currentDetails.isPatientBased())) {
+					|| currentDetails.isPatientBased()) {
 
-				String scoringTypeId = MeasureDetailsUtil
-						.getScoringAbbr(clonedMeasure.getMeasureScoring());
+				String scoringTypeId = MeasureDetailsUtil.getScoringAbbr(clonedMeasure.getMeasureScoring());
 				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
 				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesService.get().getQmdVersion());  
-				clonedXml.setMeasureXMLAsByteArray(xmlProcessor
-						.transform(xmlProcessor.getOriginalDoc()));
+				clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 			}
 			
-			boolean isUpdatedForCQL = updateForCQLMeasure(measure, clonedXml, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
+			boolean isUpdatedForCQL = updateForCQLMeasure(measure, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
 			
 			if(!isUpdatedForCQL){
 				//this means this is a CQL Measure to CQL Measure draft/clone.
@@ -332,11 +270,9 @@ implements MeasureCloningService {
 				MeasureUtility.updateLatestQDMVersion(xmlProcessor);
 			}
 			
-			clonedXml.setMeasureXMLAsByteArray(xmlProcessor
-					.transform(xmlProcessor.getOriginalDoc()));
+			clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 			
-			logger.info("Final XML after cloning/draft"
-					+ clonedXml.getMeasureXMLAsString());
+			logger.info("Final XML after cloning/draft" + clonedXml.getMeasureXMLAsString());
 			measureXmlDAO.save(clonedXml);
 			result.setId(clonedMeasure.getId());
 			result.setName(currentDetails.getName());
@@ -345,17 +281,66 @@ implements MeasureCloningService {
 			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(clonedMeasure.getVersion(), 
 					clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft());
 			result.setVersion(formattedVersion);
-			result.setEditable(TRUE);
-			result.setClonable(TRUE);
+			result.setEditable(Boolean.TRUE);
+			result.setClonable(Boolean.TRUE);
 			return result;
 		} catch (Exception e) {
 			log(e.getMessage(), e);
 			throw new MatException(e.getMessage());
 		}
 	}
+	
+	private boolean createDraftAndDetermineIfNonCQL(String version, Measure measure) {
+		boolean isNonCQLtoCQLDraft = false;
+		clonedMeasure.setOwner(measure.getOwner());
+		clonedMeasure.setMeasureSet(measure.getMeasureSet());
+		//MAT-9206 changes
+		String draftVer;
+		if(MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
+			draftVer = measure.getVersion();
+		}else {
+			isNonCQLtoCQLDraft = true;
+			draftVer = getVersionOnNonCQLDraft(version);
+		}
+		clonedMeasure.setVersion(draftVer);
+		clonedMeasure.setRevisionNumber("000");
+		clonedMeasure.seteMeasureId(measure.geteMeasureId());
+		measureDAO.saveMeasure(clonedMeasure);
+		createNewMeasureDetailsForDraft();
+		
+		return isNonCQLtoCQLDraft;
+	}
+	
+	private void cloneMeasure(boolean isPatientBased) {
+		 
+		// Clear the measureDetails tag
+		if (LoggedInUserUtil.getLoggedInUser() != null) {
+			User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+			clonedMeasure.setOwner(currentUser);
+		}
+		clearChildNodes(MEASURE_DETAILS);
+		
+		MeasureSet measureSet = new MeasureSet();
+		measureSet.setId(UUID.randomUUID().toString());
+		measureSetDAO.save(measureSet);
+		clonedMeasure.setMeasureSet(measureSet);
+		clonedMeasure.setVersion(VERSION_ZERO);
+		clonedMeasure.setRevisionNumber("000");
+		measureDAO.saveMeasure(clonedMeasure);
+		createNewMeasureDetails();
+		
+		//copy over value of "Patient based indicator" from the original measure.
+		Node patientBasedIndicatorNode = clonedDoc.createElement("patientBasedIndicator");
+		patientBasedIndicatorNode.setTextContent(BooleanUtils.toStringTrueFalse(isPatientBased));
+		
+		NodeList nodeList = clonedDoc.getElementsByTagName(MEASURE_DETAILS);
+		Node measureDetailsNode = nodeList.item(0);		
+		measureDetailsNode.appendChild(patientBasedIndicatorNode);
+	
+	}
 
-	private boolean updateForCQLMeasure(Measure measure, MeasureXML clonedXml,
-			XmlProcessor xmlProcessor, Measure clonedMsr, boolean isNonCQLtoCQLDraft) throws XPathExpressionException {
+	private boolean updateForCQLMeasure(Measure measure, XmlProcessor xmlProcessor, Measure clonedMsr, boolean isNonCQLtoCQLDraft) 
+			throws XPathExpressionException {
 		
 		Node cqlLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp");
 		
@@ -401,35 +386,26 @@ implements MeasureCloningService {
 			strataParentNode.removeChild(stratificationNode);
 		}
 		
-		String scoringTypeId = MeasureDetailsUtil
-				.getScoringAbbr(clonedMeasure.getMeasureScoring());
+		String scoringTypeId = MeasureDetailsUtil.getScoringAbbr(clonedMeasure.getMeasureScoring());
 		
-		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId,MATPropertiesService.get().getQmdVersion());
+		xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId, MATPropertiesService.get().getQmdVersion());
 		
 		// This section generates CQL Look Up tag from CQLXmlTemplate.xml
 
 		XmlProcessor cqlXmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		String libraryName = (String) xPath.evaluate(
-				"/measure/measureDetails/title/text()",
-				xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+		String libraryName = (String) xPath.evaluate("/measure/measureDetails/title/text()", xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 		
-		String version = (String) xPath.evaluate(
-				"/measure/measureDetails/version/text()",
-				xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+		String version = (String) xPath.evaluate("/measure/measureDetails/version/text()", xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
 		
 		
-		String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)),
-				version, cqlXmlProcessor, "//measure");
-		if (cqlLookUpTag != null && StringUtils.isNotEmpty(cqlLookUpTag)
-				&& StringUtils.isNotBlank(cqlLookUpTag)) {
+		String cqlLookUpTag = cqlLibraryService.getCQLLookUpXml((MeasureUtility.cleanString(libraryName)), version, cqlXmlProcessor, "//measure");
+		if (cqlLookUpTag != null && StringUtils.isNotBlank(cqlLookUpTag)) {
 			try {
 				xmlProcessor.appendNode(cqlLookUpTag, "cqlLookUp", "/measure");
-			} catch (SAXException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			} catch (SAXException | IOException e) {
+				logger.debug("Measure lookup failed:" + e.getMessage());
+			} 
 		}
 		
 		//copy qdm to cqlLookup/valuesets
@@ -482,9 +458,9 @@ implements MeasureCloningService {
 				}
 				if(isClonable){
 					//MAT-8729 : Drafting of non-CQL to CQL measures - force version to be 1.0 if its value is 1.
-					String qdmAppliedVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
-					if(qdmAppliedVersion.equalsIgnoreCase("1")){
-						qdmNode.getAttributes().getNamedItem("version").setNodeValue("1.0");
+					String qdmAppliedVersion = qdmNode.getAttributes().getNamedItem(VERSION).getNodeValue();
+					if(qdmAppliedVersion.equals("1")){
+						qdmNode.getAttributes().getNamedItem(VERSION).setNodeValue("1.0");
 					}
 					Node clonedqdmNode = qdmNode.cloneNode(true);
 					xmlProcessor.getOriginalDoc().renameNode(clonedqdmNode, null, "valueset");
@@ -506,7 +482,7 @@ implements MeasureCloningService {
 		
 				
 		//Remove all duplicate value sets for new Value Sets workspace.
-		if(cqlValuesetsNodeList != null && cqlValuesetsNodeList.size() >0){
+		if(cqlValuesetsNodeList != null && !cqlValuesetsNodeList.isEmpty()){
 			List<String> cqlVSACValueSets = new ArrayList<String>();
 			List<String> cqlUserDefValueSets = new ArrayList<String>();
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
@@ -516,7 +492,7 @@ implements MeasureCloningService {
 				String valuesetOID = cqlNode.getAttributes().getNamedItem(OID).getTextContent();
 				if(!valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
 					if(!cqlVSACValueSets.contains(valuesetName)){
-					cqlVSACValueSets.add(valuesetName);
+						cqlVSACValueSets.add(valuesetName);
 					}else{
 						parentNode.removeChild(cqlNode);
 					}
@@ -529,7 +505,7 @@ implements MeasureCloningService {
 					}
 				}
 			}
-			
+
 			//Loop through user Defined and remove if it exists already in VSAC list
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
@@ -543,21 +519,20 @@ implements MeasureCloningService {
 					}
 				}
 			}
-			
+
 			cqlVSACValueSets.clear();
 			cqlUserDefValueSets.clear();
 		}
 		
 		//Remove all unclonable QDM's collected above in For Loop from elementLookUp tag.
-		if(qdmNodeList != null && qdmNodeList.size() >0){
+		if(qdmNodeList != null && !qdmNodeList.isEmpty()){
 			for(int i=0;i<qdmNodeList.size();i++){
 				Node qNode = qdmNodeList.get(i);
 				Node parentNode = qNode.getParentNode();
 				parentNode.removeChild(qNode);
 			}
 		}
-		
-		//checkForTimingElementsAndAppend(xmlProcessor);
+
 		checkForDefaultCQLParametersAndAppend(xmlProcessor);
 		checkForDefaultCQLDefinitionsAndAppend(xmlProcessor);
 		
@@ -568,9 +543,7 @@ implements MeasureCloningService {
 	private Node addOriginalNameAttributeIfNotPresent(Node valueSetNode, XmlProcessor xmlProcessor) {
 		Node originalNameNode = valueSetNode.getAttributes().getNamedItem(ORIGINAL_NAME);
 		if(originalNameNode == null) {
-			Attr originalNameAttr = xmlProcessor.getOriginalDoc().createAttribute(ORIGINAL_NAME);
-			originalNameAttr.setNodeValue(valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue());
-			valueSetNode.getAttributes().setNamedItem(originalNameAttr);
+			createDefaultAttr(ORIGINAL_NAME, valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue(), valueSetNode, xmlProcessor);
 		}
 		return valueSetNode;
 	}
@@ -579,9 +552,7 @@ implements MeasureCloningService {
 	private Node addProgramAttributeIfNotPresent(Node nodeToUpdate, XmlProcessor xmlProcessor) {
 		Node programNode = nodeToUpdate.getAttributes().getNamedItem(PROGRAM);
 		if(programNode == null) {
-			Attr programAttr = xmlProcessor.getOriginalDoc().createAttribute(PROGRAM);
-			programAttr.setNodeValue("");
-			nodeToUpdate.getAttributes().setNamedItem(programAttr);
+			createDefaultAttr(PROGRAM, "", nodeToUpdate, xmlProcessor);
 		}
 		return nodeToUpdate;
 	}
@@ -589,11 +560,15 @@ implements MeasureCloningService {
 	private Node addReleaseAttributeIfNotPresent(Node nodeToUpdate, XmlProcessor xmlProcessor) {
 		Node releaseNode = nodeToUpdate.getAttributes().getNamedItem(RELEASE);
 		if(releaseNode == null) {
-			Attr releaseAttr = xmlProcessor.getOriginalDoc().createAttribute(RELEASE);
-			releaseAttr.setNodeValue("");
-			nodeToUpdate.getAttributes().setNamedItem(releaseAttr);
+			createDefaultAttr(RELEASE, "", nodeToUpdate, xmlProcessor);
 		}
 		return nodeToUpdate;
+	}
+	
+	private void createDefaultAttr(String name, String value, Node nodeToUpdate, XmlProcessor xmlProcessor) {
+		Attr attr = xmlProcessor.getOriginalDoc().createAttribute(name);
+		attr.setNodeValue(value);
+		nodeToUpdate.getAttributes().setNamedItem(attr);
 	}
 	
 	/**
@@ -622,17 +597,13 @@ implements MeasureCloningService {
 		}
 		
 		String defStr = cqlService.getSupplementalDefinitions();
-		System.out.println("defStr:"+defStr);
+		logger.info("defStr:" + defStr);
 		try {
 			xmlProcessor.appendNode(defStr, "definition", "/measure/cqlLookUp/definitions");
 			
 			appendSupplementalDefinitions(xmlProcessor, true);
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			e.printStackTrace();
+		} catch (SAXException | IOException | XPathExpressionException e) {
+			logger.debug("checkForDefaultCQLDefinitionsAndAppend:" + e.getMessage());
 		}
 	}
 
@@ -648,7 +619,7 @@ implements MeasureCloningService {
 				"/measure/cqlLookUp/definitions/definition[@supplDataElement='true']");
 		
 		if(supplementalDefnNodes != null){
-			System.out.println("suppl data elems..setting ids");
+			logger.info("suppl data elems..setting ids");
 			for(int i=0;i<supplementalDefnNodes.getLength();i++){
 				Node supplNode = supplementalDefnNodes.item(i);
 			    			    
@@ -710,11 +681,9 @@ implements MeasureCloningService {
 	
 		try {
 			xmlProcessor.appendNode(parStr, "parameter", "/measure/cqlLookUp/parameters");
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (SAXException | IOException e) {
+			logger.debug("checkForDefaultCQLParametersAndAppend:" + e.getMessage());
+		} 
 		
 	}
 	
@@ -754,14 +723,11 @@ implements MeasureCloningService {
 		Node versionNode = clonedDoc.createElement(VERSION);
 		versionNode.setTextContent(MeasureUtility.getVersionText(String.valueOf(clonedMeasure.getVersionNumber()),
 				clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft()));
-		//Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
-		/*statusNode.setTextContent(clonedMeasure.getMeasureStatus());*/
 		Node measurementPeriodNode = createMeasurementPeriodNode();
 		Node measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
 		String measureScoring = clonedMeasure.getMeasureScoring();
 		ElementImpl element = (ElementImpl) measureScoringNode;
-		element.setAttribute("id",
-				MeasureDetailsUtil.getScoringAbbr(measureScoring));
+		element.setAttribute("id", MeasureDetailsUtil.getScoringAbbr(measureScoring));
 		measureScoringNode.setTextContent(measureScoring);
 		parentNode.appendChild(uuidNode);
 		parentNode.appendChild(titleNode);
@@ -769,7 +735,6 @@ implements MeasureCloningService {
 		parentNode.appendChild(guidNode);
 		parentNode.appendChild(versionNode);
 		parentNode.appendChild(measurementPeriodNode);
-		//parentNode.appendChild(statusNode);
 		parentNode.appendChild(measureScoringNode);
 	}
 	
@@ -796,12 +761,9 @@ implements MeasureCloningService {
 	 * Creates the new measure details for draft.
 	 */
 	private void createNewMeasureDetailsForDraft() {
-		clonedDoc.getElementsByTagName(UU_ID).item(0)
-		.setTextContent(clonedMeasure.getId());
-		clonedDoc.getElementsByTagName(TITLE).item(0)
-		.setTextContent(clonedMeasure.getDescription());
-		clonedDoc.getElementsByTagName(SHORT_TITLE).item(0)
-		.setTextContent(clonedMeasure.getaBBRName());
+		clonedDoc.getElementsByTagName(UU_ID).item(0).setTextContent(clonedMeasure.getId());
+		clonedDoc.getElementsByTagName(TITLE).item(0).setTextContent(clonedMeasure.getDescription());
+		clonedDoc.getElementsByTagName(SHORT_TITLE).item(0).setTextContent(clonedMeasure.getaBBRName());
 	}
 	
 	/**
@@ -823,7 +785,7 @@ implements MeasureCloningService {
 		
 		boolean returnValue = false;
 		
-		String measureReleaseVersion = (measure.getReleaseVersion() == null) ? "" : measure.getReleaseVersion();
+		String measureReleaseVersion =  StringUtils.trimToEmpty(measure.getReleaseVersion());
 		if(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4") || measureReleaseVersion.startsWith("v3")){
 			returnValue = true;
 		}
@@ -855,4 +817,17 @@ implements MeasureCloningService {
 		}
 		
 	}
+	
+	private String getVersionOnNonCQLDraft(String version) {
+
+		String ver = StringUtils.substringAfterLast(version, "v");
+		if(StringUtils.countMatches(ver, ".") == 2) {
+			ver = StringUtils.substringBeforeLast(ver, ".");						
+		} 
+		String major = StringUtils.substringBeforeLast(ver, ".");
+		String minor = StringUtils.substringAfterLast(ver, ".");
+
+		return major + "." + StringUtils.leftPad(minor, 3, "0");
+	}
+
 }

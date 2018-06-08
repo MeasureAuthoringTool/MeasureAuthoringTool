@@ -887,7 +887,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
 					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
 			
 				return sb.toSafeHtml();
 			}

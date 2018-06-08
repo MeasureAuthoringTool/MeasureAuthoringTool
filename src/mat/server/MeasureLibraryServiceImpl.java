@@ -2064,7 +2064,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			model.scrubForMarkUp();
 		}
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
+		List<String> message = manageMeasureModelValidator.validateMeasure(model);
 		if (message.size() == 0) {
 			Measure pkg = null;
 			MeasureSet measureSet = null;
@@ -2373,7 +2373,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure measure = null;
 		model.scrubForMarkUp();
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.isValidMeasure(model);
+		List<String> message = manageMeasureModelValidator.validateMeasure(model);
 		if (message.size() == 0) {
 			if (model.getId() != null) {
 				setMeasureCreated(true);

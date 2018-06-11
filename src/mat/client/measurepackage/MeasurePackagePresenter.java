@@ -25,7 +25,6 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackagerView.Observer;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.MessageAlert;
@@ -462,7 +461,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					clearMessages();
-					view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+					view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 					setNewMeasurePackage();
 				}
 			}
@@ -559,7 +558,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+				view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
 				updateDetailsFromView(tempMeasurePackageDetails);
 			
@@ -649,7 +648,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
 		MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();
 		messages = clauseValidator.isValidMeasurePackage(detailList);
-		measurePackageClauseCellListWidget.CheckForNumberOfStratification((ArrayList<MeasurePackageClauseDetail>) detailList, messages);
+		measurePackageClauseCellListWidget.checkForNumberOfStratification((ArrayList<MeasurePackageClauseDetail>) detailList, messages);
 		if (messages.size() > 0) {
 			view.getPackageErrorMessageDisplay().createAlert(messages);
 		} else {
@@ -696,14 +695,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void displayEmpty() {
 		panel.clear();
 		panel.add(view.asWidget());
-		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 	}
 
 	@Override
 	public void beforeClosingDisplay() {
 		currentDetail = null;
 		packageOverview = null;
-		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 	}
 
 	@Override
@@ -727,7 +726,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 														
 							if(result.getCqlErrors().size() == 0){
 								getMeasure(MatContext.get().getCurrentMeasureId());
-								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+								view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 							}else{
 								panel.clear();
 								panel.getElement().setId("MeasurePackagerContentFlowPanel");
@@ -737,7 +736,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								MatContext.get().getMessageDelegate();
 								errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
 																								
-								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+								view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 							}		
 							
 							showMeasurePackagerBusy(false);
@@ -905,8 +904,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					MeasurePackageDetail mpDetail = result.getPackages().get(i);
 					if (mpDetail.getSequence().equalsIgnoreCase(
 							currentDetail.getSequence())) {
-						setMeasurePackage(result.getPackages().get(i)
-								.getSequence());
+						setMeasurePackage(result.getPackages().get(i).getSequence());
 					}
 				}
 			} else {
@@ -986,17 +984,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void setNewMeasurePackage() {
 		currentDetail = new MeasurePackageDetail();
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
-		currentDetail.setSequence(Integer
-				.toString(getMaxSequence(packageOverview) + 1));
+		currentDetail.setSequence(Integer.toString(getMaxSequence(packageOverview) + 1));
 		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(packageOverview.getPackages());
 		view.buildCellTable(packageList);
 		setMeasurePackageDetailsOnView();
 	}
-	/**
-	 * Sets the measure package.
-	 *
-	 * @param measurePackageId the new measure package
-	 */
+
 	private void setMeasurePackage(final String measurePackageId) {
 		for (MeasurePackageDetail detail : packageOverview.getPackages()) {
 			if (detail.getSequence().equals(measurePackageId)) {
@@ -1008,31 +1001,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 	}
 	
-	/**
-	 * Gets the association list from view.
-	 *
-	 * @param packageClauses the package clauses
-	 * @return the association list from view
-	 */
 	public void getAssociationListFromView(List<MeasurePackageClauseDetail> packageClauses){
 		for(int i=0; i<dbPackageClauses.size(); i++){
 			dbPackageClauses.get(i).setDbAssociatedPopulationUUID(packageClauses.get(i).getAssociatedPopulationUUID());
 		}
-		
 	}
-	/**
-	 * setMeasurePackageDetailsOnView.
-	 */
+
 	private void setMeasurePackageDetailsOnView() {
-		List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>(currentDetail
-				.getPackageClauses());
-		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
-				packageOverview.getClauses(), packageClauses);
+		List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>(currentDetail.getPackageClauses());
+		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(packageOverview.getClauses(), packageClauses);
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
-		if(packageOverview.getReleaseVersion() != null 
-				&& MatContext.get().isCQLMeasure(packageOverview.getReleaseVersion())){
+		if(packageOverview.getReleaseVersion() != null && MatContext.get().isCQLMeasure(packageOverview.getReleaseVersion())){
 			view.setCQLMeasure(true);
 			view.setRiskAdjustLabel(true);
 			view.setQdmElementsLabel(true);
@@ -1042,7 +1023,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			view.setCQLElementsInSuppElements(packageOverview.getCqlSuppDataElements());
 			view.setCQLQDMElements(packageOverview.getCqlQdmElements());
 		}
-		else{
+		else {
 			view.setCQLMeasure(false);
 			view.setRiskAdjustLabel(false);
 			view.setQdmElementsLabel(false);
@@ -1051,9 +1032,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			view.setCQLQDMElements(Collections.<CQLDefinition>emptyList());
 			//Set QDM and Supplemental Data Elements.
 			view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
-			view.setQDMElements(packageOverview.getQdmElements());
-			
-			
+			view.setQDMElements(packageOverview.getQdmElements());	
 		}
 
 		view.setSubTreeInRiskAdjVarList(packageOverview.getRiskAdjList());
@@ -1076,9 +1055,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param toRemove - List from where to Remove.
 	 * @return List.
 	 */
-	private List<MeasurePackageClauseDetail> removeClauses(
-			final List<MeasurePackageClauseDetail> master,
-			final List<MeasurePackageClauseDetail> toRemove) {
+	private List<MeasurePackageClauseDetail> removeClauses(final List<MeasurePackageClauseDetail> master, final List<MeasurePackageClauseDetail> toRemove) {
 		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
 		newList.addAll(master);
 		for (MeasurePackageClauseDetail remove : toRemove) {

@@ -13,6 +13,7 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -123,7 +124,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private MessageAlert inProgressMessageDisplay = new WarningMessageAlert();
 
-	private Button packageMeasureButton = buildSaveButton(IconType.PLUS, "Create Measure Package") ;;
+	private Button packageMeasureButton = buildSaveButton(IconType.ARCHIVE, "Create Measure Package") ;;
 
 	private FlowPanel content = new FlowPanel();
 
@@ -133,7 +134,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
 
-	private Button createNewGroupingButton = buildSaveButton(IconType.PLUS, "Create New Grouping") ;
+	private Button createNewGroupingButton = buildSaveButton(IconType.DOWNLOAD, "Create New Grouping") ;
 	
 	private Panel cellTablePanel = new Panel();
 	
@@ -232,8 +233,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
 		Panel topRiskAdjContainer = buildRiskAdjLeftRightPanel();
-	
-		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		
 		createNewGroupingButton.getElement().setAttribute("id", "CreateNewGroupingButton");
@@ -243,19 +242,16 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(saveErrorMessageDisplay);
 		content.add(saveErrorMessageDisplayOnEdit);
 		content.add(cellTablePanel);
+		cellTablePanel.setVisible(false); // default hidden, only show if there is more than 0 groupings
 		content.add(new SpacerWidget());
 		content.add(createNewGroupingButton);
 		content.add(packageGroupingWidget.getWidget());
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
 		content.add(topQDMElementContainer);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		content.add(topRiskAdjContainer);
-		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
-		
+		content.add(topRiskAdjContainer);		
 		content.add(measurePackageSuccessMsg);
 		content.add(measurePackageWarningMsg);
 		content.add(measureErrorMessages);
@@ -264,9 +260,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		ButtonToolBar packageGroup = new ButtonToolBar();
 		packageGroup.add(packageMeasureButton);
 		packageGroup.add(packageMeasureAndExportButton);
+		
+		packageMeasureAndExportButton.setPull(Pull.RIGHT);
+		packageMeasureButton.setPull(Pull.RIGHT);
 		content.add(packageGroup);
-		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
 		content.setStyleName("contentPanel");
 	}
 	
@@ -522,11 +519,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskAdjustmentVariablesVerticalPanel.add(rightRiskAdjustmentPanel);
 		horizontalPanel.add(riskAdjustmentVariablesVerticalPanel);		
 		
-		riskAdjustmentPanelBody.add(horizontalPanel);
-		SpacerWidget spacer = new SpacerWidget();
-		spacer.setStylePrimaryName("clearBoth");
-		riskAdjustmentPanelBody.add(spacer);
-		
+		riskAdjustmentPanelBody.add(horizontalPanel);		
 		addRiskAdjustmentVariablesToMeasureButton.setType(ButtonType.PRIMARY);
 		addRiskAdjustmentVariablesToMeasureButton.setIcon(IconType.SAVE);
 		riskAdjustmentPanelBody.add(addRiskAdjustmentVariablesToMeasureButton);
@@ -581,12 +574,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			rightPagerPanel.setDisplay(getSupCellList());
 		}
 		supplementalDataElementsRightPanel.add(rightPagerPanel);
-		horizontalPanel.add(supplementalDataElementsRightPanel);
-		
-		SpacerWidget spacer = new SpacerWidget();
-		spacer.setStylePrimaryName("clearBoth");
-		supplementalDataElementsPanelBody.add(spacer);
-		
+		horizontalPanel.add(supplementalDataElementsRightPanel);		
 		addSupplementalDataElementsButton.setType(ButtonType.PRIMARY);
 		addSupplementalDataElementsButton.setIcon(IconType.SAVE);
 		
@@ -886,8 +874,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				String title = "Click to Delete " + object.getPackageName();
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
-					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
 			
 				return sb.toSafeHtml();
 			}
@@ -896,7 +883,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		deleteColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, SafeHtml>() {
 			@Override
 			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
-				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
+				packageGroupingWidget.getAddAssociationsPanel().setVisible(false);
 				observer.onDeleteClicked(object);
 			}
 		});
@@ -923,7 +910,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		editColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, SafeHtml>() {
 			@Override
 			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
-				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
+				packageGroupingWidget.getAddAssociationsPanel().setVisible(false);
 				observer.onEditClicked(object);
 			}
 		});
@@ -934,46 +921,49 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public void buildCellTable(List<MeasurePackageDetail> packages) {
 		cellTablePanel.clear();
-		cellTablePanel.setType(PanelType.PRIMARY);
-		PanelHeader measureGroupingTablePanelHeader = new PanelHeader(); 
-		measureGroupingTablePanelHeader.setTitle("Measure Grouping List");
-		measureGroupingTablePanelHeader.setText("Measure Grouping List");
-
-		PanelBody measureGroupingTablePanelBody = new PanelBody();
-		CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
-		List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
-		measureGroupingList.addAll(packages);
-		table.setRowData(measureGroupingList);
-		table.setPageSize(2);
-		table.redraw();
-		table.setRowCount(measureGroupingList.size(), true);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(measureGroupingList);
-		addColumnToTable(table);
-		sortProvider.addDataDisplay(table);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		table.setWidth("100%");
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
-				"In the following Measure Grouping List table, Grouping Name is given in first column,"
-						+ " Edit in second column and Delete in third column.");
-		table.getElement().setAttribute("id", "MeasureGroupingCellTable");
-		table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
-		measureGroupingTablePanelBody.add(invisibleLabel);
-		measureGroupingTablePanelBody.add(table);
-		if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
-			spager.setPageStart(0);
-			spager.setDisplay(table);
-			spager.setPageSize(2);
-			measureGroupingTablePanelBody.add(new SpacerWidget());
-			measureGroupingTablePanelBody.add(spager);
-		}
-		
-		cellTablePanel.add(measureGroupingTablePanelHeader);
-		cellTablePanel.add(measureGroupingTablePanelBody);
-		
+		cellTablePanel.setVisible(false);;
+		if(packages != null && packages.size() > 0) {
+			cellTablePanel.setType(PanelType.PRIMARY);
+			PanelHeader measureGroupingTablePanelHeader = new PanelHeader(); 
+			measureGroupingTablePanelHeader.setTitle("Measure Grouping List");
+			measureGroupingTablePanelHeader.setText("Measure Grouping List");
+	
+			PanelBody measureGroupingTablePanelBody = new PanelBody();
+			CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
+			List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
+			measureGroupingList.addAll(packages);
+			table.setRowData(measureGroupingList);
+			table.setPageSize(2);
+			table.redraw();
+			table.setRowCount(measureGroupingList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(measureGroupingList);
+			addColumnToTable(table);
+			sortProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			table.setWidth("100%");
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
+					"In the following Measure Grouping List table, Grouping Name is given in first column,"
+							+ " Edit in second column and Delete in third column.");
+			table.getElement().setAttribute("id", "MeasureGroupingCellTable");
+			table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
+			measureGroupingTablePanelBody.add(invisibleLabel);
+			measureGroupingTablePanelBody.add(table);
+			if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
+				MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"measureGrouping");
+				spager.setPageStart(0);
+				spager.setDisplay(table);
+				spager.setPageSize(2);
+				measureGroupingTablePanelBody.add(new SpacerWidget());
+				measureGroupingTablePanelBody.add(spager);
+			}
+			
+			cellTablePanel.add(measureGroupingTablePanelHeader);
+			cellTablePanel.add(measureGroupingTablePanelBody);
+			cellTablePanel.setVisible(true);
+		}		
 	}
 	
 	private Button buildSaveButton(IconType icon, String text) {

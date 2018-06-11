@@ -672,6 +672,10 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	
 	//returns true if given code is the birthday code; false otherwise
 	private static boolean isBirthdate(CQLCode code) {
+		if(code == null) {
+			return false;
+		}
+		
 		if(code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
 			return true;
 		}
@@ -681,6 +685,10 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	
 	//returns true if given code is the dead code; false otherwise
 	private static boolean isDead(CQLCode code) {
+		if(code == null) {
+			return false;
+		}
+		
 		if(code.getCodeOID().equals(ConstantMessages.DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.DEAD_CODE_SYSTEM_OID)) {
 			return true;
 		}
@@ -701,7 +709,6 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 *  true otherwise
 	 */
 	private static boolean isValidPair(String dataType, CQLCode code) {
-		
 		//valid pair
 		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
 			return true;
@@ -711,7 +718,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 			return true;
 		
 		//by elimination of above, must be invalid pair
-		}else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) ||dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) ||
+		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) ||dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) ||
 				isDead(code) || isBirthdate(code)) {
 			return false;
 		

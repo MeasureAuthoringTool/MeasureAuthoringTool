@@ -654,6 +654,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		} else {
 			view.getPackageErrorMessageDisplay().clearAlert();
 		}
+		
 		return messages.size() == 0;
 	}
 	

@@ -232,7 +232,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
 		Panel topRiskAdjContainer = buildRiskAdjLeftRightPanel();
-	
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		
 		createNewGroupingButton.getElement().setAttribute("id", "CreateNewGroupingButton");
@@ -886,8 +885,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				String title = "Click to Delete " + object.getPackageName();
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-trash fa-lg";
-					sb.appendHtmlConstant("<button type=\"button\" title='"
-							+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
 			
 				return sb.toSafeHtml();
 			}
@@ -976,7 +974,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			cellTablePanel.add(measureGroupingTablePanelHeader);
 			cellTablePanel.add(measureGroupingTablePanelBody);
 			cellTablePanel.setVisible(true);
-		}
+		}		
 	}
 	
 	private Button buildSaveButton(IconType icon, String text) {

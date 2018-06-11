@@ -670,28 +670,22 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
         return result.replaceAll(" ", "");
 	}
 	
-
-	/**
-	 * determine if given code is birthdate code or dead code
-	 * 
-	 * @param code  CQLCode
-	 * @return
-	 * 		returns either 'Birthdate' or 'Dead' if the code equals birthdate or dead, respectively. Else returns an empty string
-	 */
-	private static String determineBirthdateOrDead(CQLCode code) {
-		if(code == null) {
-			return "";
-		}
-		
+	//returns true if given code is the birthday code; false otherwise
+	private static boolean isBirthdate(CQLCode code) {
 		if(code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
-			return ConstantMessages.BIRTHDATE;
+			return true;
 		}
 		
+		return false;
+	}
+	
+	//returns true if given code is the dead code; false otherwise
+	private static boolean isDead(CQLCode code) {
 		if(code.getCodeOID().equals(ConstantMessages.DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.DEAD_CODE_SYSTEM_OID)) {
-			return ConstantMessages.DEAD;
+			return true;
 		}
 		
-		return "";
+		return false;
 	}
 	
 	/**
@@ -707,19 +701,18 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 *  true otherwise
 	 */
 	private static boolean isValidPair(String dataType, CQLCode code) {
-		String codeName = determineBirthdateOrDead(code);
 		
 		//valid pair
-		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && codeName.equals(ConstantMessages.BIRTHDATE)) {
+		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
 			return true;
 		
 		//valid pair
-		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) && codeName.equals(ConstantMessages.DEAD)) {
+		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) && isDead(code)) {
 			return true;
 		
 		//by elimination of above, must be invalid pair
 		}else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) ||dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) ||
-				codeName.equals(ConstantMessages.DEAD) || codeName.equals(ConstantMessages.BIRTHDATE)) {
+				isDead(code) || isBirthdate(code)) {
 			return false;
 		
 		//valid pair consisting of none of the datatypes or codes we are considering in the scope of this method

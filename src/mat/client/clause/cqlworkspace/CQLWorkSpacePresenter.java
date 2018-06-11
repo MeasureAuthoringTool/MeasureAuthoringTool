@@ -474,9 +474,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				});
 	}
 
-	/**
-	 * Adds the warning confirmation handlers.
-	 */
+
 	private void addWarningConfirmationHandlers() {
 
 		searchDisplay.getCqlLeftNavBarPanelView().getWarningConfirmationYesButton().addClickHandler(new ClickHandler() {
@@ -516,9 +514,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 	}
 
-	/**
-	 * Adds the parameter section handlers.
-	 */
+
 	private void addParameterSectionHandlers() {
 
 		searchDisplay.getCQLParametersView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
@@ -677,9 +673,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 	}
 
-	/**
-	 * Adds the function section handlers.
-	 */
+
 	private void addFunctionSectionHandlers() {
 
 		searchDisplay.getCqlFunctionsView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
@@ -910,9 +904,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Adds the definition section handlers.
-	 */
+
 	private void addDefinitionSectionHandlers() {
 
 		searchDisplay.getCQlDefinitionsView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
@@ -2872,6 +2864,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												.setViewParameterList(result.getCqlModel().getCqlParameters());
 										MatContext.get().setParameters(
 												getParamaterList(result.getCqlModel().getCqlParameters()));
+										MatContext.get().setCQLModel(result.getCqlModel());
 										searchDisplay.getCqlLeftNavBarPanelView()
 												.setCurrentSelectedParamerterObjId(result.getParameter().getId());
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
@@ -3375,6 +3368,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 				MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
+				MatContext.get().setCQLModel(result.getCqlModel());
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getParamBadge().setText("00");
 			}
@@ -4354,6 +4348,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												.setViewParameterList((result.getCqlModel().getCqlParameters()));
 										MatContext.get().setParameters(
 												getParamaterList(result.getCqlModel().getCqlParameters()));
+										MatContext.get().setCQLModel(result.getCqlModel());
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 										searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -4980,8 +4975,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					// 508 Compliance for Codes section
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
+					//TODO put update here for new codes added from vsac
 				}
-
 			}
 		});
 
@@ -5065,6 +5060,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		codesView.getCodeSystemVersionInput().setValue(cqlCode.getCodeSystemVersion());
 		codesView.getIncludeCodeSystemVersionCheckBox().setValue(cqlCode.isIsCodeSystemVersionIncluded());
 		codesView.getSaveButton().setEnabled(true);
+		//Todo update list here?
 	}
 	
 	private void copyCodes() {
@@ -5127,6 +5123,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().CLIPBOARD_DOES_NOT_CONTAIN_CODES);
 		}
+		//TODO add update here?
 	}
 
 	/**
@@ -5181,6 +5178,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		}
+		//TODO add update here?
 	}
 	
 	private void addNewCodes() {
@@ -5235,6 +5233,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView()
 							.setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(!result.isSuccess());
+					//TODO put update here?
 
 				}
 
@@ -5417,7 +5416,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 		});
-
 	}
 
 	/**
@@ -6253,4 +6251,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
 	}
 
+	private void updateCodeList() {
+		MatContext.get().getCQLModel().setCodeList(searchDisplay.getCodesView().getListDataProvider().getList());
+	}
 }

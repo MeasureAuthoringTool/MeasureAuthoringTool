@@ -22,7 +22,7 @@ public class CQLView {
 	
 	
 	VerticalPanel cqlViewVP = new VerticalPanel();
-	/** The cql ace editor. */
+
 	private AceEditor cqlAceEditor = new AceEditor();
 	
 	private Button exportErrorFile = new Button();
@@ -42,9 +42,6 @@ public class CQLView {
 	public VerticalPanel buildView(boolean showExportButton){
 		cqlViewVP.clear();
 		cqlViewVP.getElement().setId("cqlViewCQL_Id");
-		//VerticalPanel cqlViewVP = new VerticalPanel();
-		//cqlViewSimpleP.getElement().setId("ViewCQl_SimplePanel");
-		//cqlViewVP.getElement().setId("ViewCQl_VPanel");
 		heading.addStyleName("leftAligned");
 		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
 		viewCQLPanel.setMarginTop(20);
@@ -79,7 +76,7 @@ public class CQLView {
 			cqlViewVP.add(exportErrorFile);
 		}
 		
-		/*cqlViewVP.add(new SpacerWidget());*/
+		
 		cqlViewVP.add(viewCQLPanel);
 		cqlViewVP.setStyleName("cqlRightContainer");
 		cqlViewVP.setWidth("700px");

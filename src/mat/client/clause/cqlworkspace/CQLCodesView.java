@@ -66,97 +66,63 @@ import mat.model.cql.CQLCode;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.StringUtility;
 
-/**
- * The Class QDMAppliedSelectionView.
- */
 public class CQLCodesView {
 	
-	/**
-	 * The Interface Observer.
-	 */
 	public static interface Delegator {
 		
-		/**
-		 * On delete clicked.
-		 *
-		 * @param result            the result
-		 * @param index the index
-		 */
 		void onDeleteClicked(CQLCode result, int index);
 
 		void onModifyClicked(CQLCode object);
 		
 	}
 	
-	/** The observer. */
 	private Delegator delegator;
-	
-	/** The container panel. */
+
 	private SimplePanel containerPanel = new SimplePanel();
-	
-	/** The vsacapi service async. */
+
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
 			.getVsacapiServiceAsync();
 	
-	
-	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	
-	/** The cell table panel. */
+
 	private Panel cellTablePanel = new Panel();
-	
-	/** The table. */
+
 	private CellTable<CQLCode> table;
-	
-	/** The sort provider. */
+
 	private ListDataProvider<CQLCode> listDataProvider;
-	
-	/** The last selected object. */
+
 	private CQLCode lastSelectedObject;
 	
 	private CQLCode validateCodeObject;
-	
-	/** the Code Descriptor input */
+
 	private MatTextBox codeDescriptorInput = new MatTextBox();
-	
-	/** the Code */
+
 	private MatTextBox codeInput = new MatTextBox();
-	
-	/** the Code system input */
+
 	private MatTextBox codeSystemInput = new MatTextBox();
-	
-	/** the Code system Version input */
+
 	private MatTextBox codeSystemVersionInput = new MatTextBox();
 	
 	private CustomQuantityTextBox suffixTextBox = new CustomQuantityTextBox(4);
 	
 	private String codeSystemOid;
-	
-	/** The is editable. */
+
 	private boolean isEditable;
-	
-	/** The spager. */
+
 	private MatSimplePager spager;
-	
-	/** The save cancel button bar. */
+
 	private Button saveCode = new Button("Apply");
-	
-	/** The cancel button. */
+
 	private Button cancelButton = new Button("Cancel");
-	
-	/** The s widget. */
+
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve","Enter Code Identifier");
-	
-	/** The main panel. */
+
 	private VerticalPanel mainPanel;
-	
-	/** The search header. */
+
 	private PanelHeader searchHeader = new PanelHeader();
-	
-	/** The cell table main panel. */
+
 	SimplePanel cellTableMainPanel = new SimplePanel();
-	
-	/** The cell table panel body. */
+
 	private PanelBody cellTablePanelBody = new PanelBody();
 	
 	private static final int TABLE_ROW_COUNT = 10;
@@ -172,11 +138,9 @@ public class CQLCodesView {
 	
 	
 	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("codes");
-	
-	/** The selection model. */
+
 	private MultiSelectionModel<CQLCode> selectionModel;
-	
-	/** The qdm selected list. */
+
 	private List<CQLCode> codesSelectedList;
 	
 	/**
@@ -214,11 +178,7 @@ public class CQLCodesView {
 		containerPanel.setStyleName("cqlcodesContentPanel");
 	}
 	
-	/**
-	 * Builds the cell table widget.
-	 *
-	 * @return the simple panel
-	 */
+
 	public SimplePanel buildCellTableWidget(){
 		cellTableMainPanel.clear();
 		VerticalPanel vPanel = new VerticalPanel();

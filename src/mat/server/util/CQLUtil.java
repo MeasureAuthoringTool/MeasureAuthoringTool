@@ -44,6 +44,7 @@ import mat.shared.CQLObject;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.ConstantMessages;
 
 /**
  * The Class CQLUtil.
@@ -55,20 +56,7 @@ public class CQLUtil {
 
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtil.class);
-	
-    public static final String PATIENT_CHARACTERSTICS_EXPIRED = "Patient Characteristic Expired";
 
-    public static final String DEAD = "Dead";
-
-    public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-    
-    public static final String BIRTHDATE_OID = "21112-8";
-    
-    public static final String BIRTHDATE_CODESYTEM_OID = "2.16.840.1.113883.6.1";
-    
-    public static final String DEAD_OID = "419099009";
-    
-    public static final String DEAD_CODESYSTEM_OID = "2.16.840.1.113883.6.96";
 
 
 	/**
@@ -109,7 +97,6 @@ public class CQLUtil {
 			}
 
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -166,7 +153,7 @@ public class CQLUtil {
 	 * @return
 	 */
 	private static boolean isValidDataTypeCombination(List<String> dataTypeList) {
-		return !(dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE) || dataTypeList.contains(PATIENT_CHARACTERSTICS_EXPIRED));
+		return !(dataTypeList.contains(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) || dataTypeList.contains(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED));
 	}
 	
 
@@ -178,9 +165,9 @@ public class CQLUtil {
 	public static boolean isValidDataTypeCombination(String codeOID, String codesystemOID, List<String> dataTypeList) {
 		// check if the birthdate valueset is being used with something other
 		// than then Patient Characteristic Birthdate datatype
-		if (codeOID.equals(BIRTHDATE_OID) && codesystemOID.equals(BIRTHDATE_CODESYTEM_OID)) {
+		if (codeOID.equals(ConstantMessages.BIRTHDATE_OID) && codesystemOID.equals(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
 			for (String dataType : dataTypeList) {
-				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE)) {
+				if (!dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE)) {
 					return false;
 				}
 			}
@@ -188,9 +175,9 @@ public class CQLUtil {
 
 		// check if the dead valueset is being used with something other than
 		// the Patient Characteristic Expired datatype
-		else if (codeOID.equals(DEAD_OID) && codesystemOID.equals(DEAD_CODESYSTEM_OID)) {
+		else if (codeOID.equals(ConstantMessages.DEAD_OID) && codesystemOID.equals(ConstantMessages.DEAD_CODE_SYSTEM_OID)) {
 			for (String dataType : dataTypeList) {
-				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
+				if (!dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED)) {
 					return false;
 				}
 			}

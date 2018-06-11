@@ -39,24 +39,11 @@ import mat.model.cql.CQLCode;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.shared.CQLIdentifierObject;
+import mat.shared.ConstantMessages;
 
 public class InsertIntoAceEditorDialogBox {
 	
-    public static final String PATIENT_CHARACTERSTIC_EXPIRED = "Patient Characteristic Expired";
-
-    public static final String DEAD = "Dead";
     
-    public static final String BIRTHDATE = "Birthdate";
-
-    public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
-    
-    public static final String BIRTHDATE_OID = "21112-8";
-    
-    public static final String BIRTHDATE_CODESYTEM_OID = "2.16.840.1.113883.6.1";
-    
-    public static final String DEAD_OID = "419099009";
-    
-    public static final String DEAD_CODESYSTEM_OID = "2.16.840.1.113883.6.96";
 	
 	private static final String ITEM_NAME_DATA_TYPE_ALERT = "Item Name dropdown is enabled. Data Type dropdown now available.";
 
@@ -272,7 +259,7 @@ public class InsertIntoAceEditorDialogBox {
 										}
 
 										CQLCode code = cqlCodesList.get(selectedIndex);
-										if(validPair(dataType, code)) {
+										if(isValidPair(dataType, code)) {
 											StringBuilder sb = new StringBuilder();
 											if(dataType != null){
 												sb = sb.append("[\"" + dataType + "\": ");
@@ -294,7 +281,7 @@ public class InsertIntoAceEditorDialogBox {
 											selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 											dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 											helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-											helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_INVALID_ITEM_AND_DATATYPE_COMBINATOIN());
+											helpBlock.setText(MatContext.get().getMessageDelegate().getINVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR());
 											messageFormgroup.setValidationState(ValidationState.ERROR);
 										}
 										
@@ -696,12 +683,12 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 			return "";
 		}
 		
-		if(code.getCodeOID().equals(BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(BIRTHDATE_CODESYTEM_OID)) {
-			return BIRTHDATE;
+		if(code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
+			return ConstantMessages.BIRTHDATE;
 		}
 		
-		if(code.getCodeOID().equals(DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(DEAD_CODESYSTEM_OID)) {
-			return DEAD;
+		if(code.getCodeOID().equals(ConstantMessages.DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.DEAD_CODE_SYSTEM_OID)) {
+			return ConstantMessages.DEAD;
 		}
 		
 		return "";
@@ -714,29 +701,30 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 * @return
 	 * 	true if 'Patient Characteristic Birthdate' is paired with birthdate code
 	 *  true if 'Patient Characteristic Expired' is paired with dead code
-	 *  true if datatype does not equal 'Patient Characteristic Birthdate' or 'Patient Characteristic Expired', and 
-	 *  		code does not equal birthdate code or dead code
-	 *  false otherwise
+	 *  false if datatype = PATIENT_CHARACTERISTIC_BIRTHDATE or datatype = PATIENT_CHARACTERISTIC_EXPIRED,
+	 *  	or if code = dead or code = birthdate and the combination is not PATIENT_CHARACTERISTIC_EXPIRED 
+	 *  	and dead, or PATIENT_CHARACTERISTIC_BIRTHDATE and birthdate
+	 *  true otherwise
 	 */
-	private static boolean validPair(String dataType, CQLCode code) {
+	private static boolean isValidPair(String dataType, CQLCode code) {
 		String codeName = determineBirthdateOrDead(code);
 		
-		//valid combination
-		if(dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE) && codeName.equals(BIRTHDATE)) {
+		//valid pair
+		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && codeName.equals(ConstantMessages.BIRTHDATE)) {
 			return true;
-		}
 		
-		//valid combinations
-		if(dataType.equalsIgnoreCase(PATIENT_CHARACTERSTIC_EXPIRED) && codeName.equals(DEAD)) {
+		//valid pair
+		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) && codeName.equals(ConstantMessages.DEAD)) {
 			return true;
-		}
 		
-		//invalid combinations include any one of the following
-		if(dataType.equalsIgnoreCase(PATIENT_CHARACTERSTIC_EXPIRED) ||dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTHDATE) ||
-				codeName.equals(DEAD) || codeName.equals(BIRTHDATE)) {
+		//by elimination of above, must be invalid pair
+		}else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) ||dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) ||
+				codeName.equals(ConstantMessages.DEAD) || codeName.equals(ConstantMessages.BIRTHDATE)) {
 			return false;
-		}
 		
-		return true;
+		//valid pair consisting of none of the datatypes or codes we are considering in the scope of this method
+		} else {
+			return true;
+		}
 	}
 }

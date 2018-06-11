@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 
 /**
@@ -1490,7 +1491,7 @@ public class XmlProcessor {
 				String codeOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_OID).getNodeValue();
 				Boolean readOnly = Boolean.parseBoolean(currentNode.getAttributes().getNamedItem(ATTRIBUTE_READ_ONLY).getNodeValue());
 				
-				if(readOnly && (codeOID.equals(CQLUtil.BIRTHDATE_OID) || codeOID.equals(CQLUtil.DEAD_OID))) {
+				if(readOnly && (codeOID.equals(ConstantMessages.BIRTHDATE_OID) || codeOID.equals(ConstantMessages.DEAD_OID))) {
 					String codeName = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_NAME).getNodeValue();
 					if(!usedCodeList.contains(codeName)) {
 						String codeSystemOID = currentNode.getAttributes().getNamedItem(ATTRIBUTE_CODE_SYSTEM_OID).getNodeValue();

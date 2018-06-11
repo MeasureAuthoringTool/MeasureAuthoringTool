@@ -4975,7 +4975,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 					// 508 Compliance for Codes section
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeInput());
-					//TODO put update here for new codes added from vsac
 				}
 			}
 		});
@@ -5123,7 +5122,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().CLIPBOARD_DOES_NOT_CONTAIN_CODES);
 		}
-		//TODO add update here?
 	}
 
 	/**
@@ -5178,7 +5176,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 
 		}
-		//TODO add update here?
 	}
 	
 	private void addNewCodes() {
@@ -5233,7 +5230,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView()
 							.setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 					searchDisplay.getCodesView().getSaveButton().setEnabled(!result.isSuccess());
-					//TODO put update here?
 
 				}
 

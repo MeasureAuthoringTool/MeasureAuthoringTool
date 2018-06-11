@@ -460,7 +460,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								.getDataType())
 								|| ConstantMessages.BIRTHDATE_OID
 								.equals(qdsDTO.getOid())
-								|| ConstantMessages.EXPIRED_OID
+								|| ConstantMessages.DEAD_OID
 								.equals(qdsDTO.getOid())) {
 							timingQDMs.add(qdsDTO);
 						}

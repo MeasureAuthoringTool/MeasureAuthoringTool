@@ -5286,7 +5286,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 									.createAlert(MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
 							List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
 							for (CQLQualityDataSetDTO cqlQDMDTO : result.getUpdatedCQLQualityDataDTOLIst()) {
-								if (!ConstantMessages.EXPIRED_OID.equals(cqlQDMDTO.getDataType())
+								if (!ConstantMessages.DEAD_OID.equals(cqlQDMDTO.getDataType())
 										&& !ConstantMessages.BIRTHDATE_OID.equals(cqlQDMDTO.getDataType())
 										&& (cqlQDMDTO.getType() == null)) {
 									appliedListModel.add(cqlQDMDTO);

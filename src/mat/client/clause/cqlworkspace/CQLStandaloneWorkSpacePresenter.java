@@ -4725,7 +4725,7 @@ private void addCodeSearchPanelHandlers() {
 						
 							List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
 							for (CQLQualityDataSetDTO cqlQDMDTO : result.getUpdatedCQLQualityDataDTOLIst()) {
-								if (!ConstantMessages.EXPIRED_OID.equals(cqlQDMDTO
+								if (!ConstantMessages.DEAD_OID.equals(cqlQDMDTO
 										.getDataType()) && !ConstantMessages.BIRTHDATE_OID.equals(cqlQDMDTO
 												.getDataType())
 										&& (cqlQDMDTO.getType() == null))  {

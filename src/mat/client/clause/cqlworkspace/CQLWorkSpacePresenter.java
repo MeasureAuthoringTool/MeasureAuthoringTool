@@ -5059,7 +5059,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		codesView.getCodeSystemVersionInput().setValue(cqlCode.getCodeSystemVersion());
 		codesView.getIncludeCodeSystemVersionCheckBox().setValue(cqlCode.isIsCodeSystemVersionIncluded());
 		codesView.getSaveButton().setEnabled(true);
-		//Todo update list here?
 	}
 	
 	private void copyCodes() {

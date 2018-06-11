@@ -627,8 +627,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				}else {
 					Mat.hideLoadingMessage();
 					view.getInProgressMessageDisplay().clear();
-					view.getMeasureErrorMessageDisplay()
-					.createAlert(result.getValidationMessages());
+					view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
 					((Button) view.getPackageMeasureButton()).setEnabled(true);
 					((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
 				}
@@ -686,8 +685,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getSaveErrorMessageDisplay().clearAlert();
 		view.getSaveErrorMessageDisplayOnEdit().clearAlert();
 		view.getRiskAdjSuccessMessageDisplay().clearAlert();
-		view.getInProgressMessageDisplay().clearAlert();
-		
+//		view.getInProgressMessageDisplay().clearAlert();
 	}
 	/**
 	 * Display Empty.
@@ -1129,7 +1127,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onSuccess(ValidateMeasureResult result) {
 				if (result.isValid()) {
 					saveMeasureAtPackage();
-					
 				} else {
 					Mat.hideLoadingMessage();
 					if (result.getValidationMessages() != null) {
@@ -1242,66 +1239,44 @@ public class MeasurePackagePresenter implements MatPresenter {
 					if (result.isValid() && updateVsacResult.isSuccess()) {
 						if (updateVsacResult.getRetrievalFailedOIDs().size() > 0) {
 							if (isMeasurePackageAndExport) {
-								((Button) view.getPackageMeasureButton()).setEnabled(true);
-								saveExport();
+								handleSuccessfulPackageAndExport();
 							} else {
 								view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessAmberMessage());
-								((Button) view.getPackageMeasureButton()).setEnabled(true);
-								view.getInProgressMessageDisplay().clear();
-								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
+								resetPackageButtonsAndMessages();
 							}
 						} else {
 							if (isMeasurePackageAndExport) {
-								((Button) view.getPackageMeasureButton()).setEnabled(true);
-								saveExport();
+								handleSuccessfulPackageAndExport();
 							} else {
-								view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
-								((Button) view.getPackageMeasureButton()).setEnabled(true);
-								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-								view.getInProgressMessageDisplay().clear();
+								handleSuccessfulPackage();
 							}
 						}
 						
 					} else if (result.isValid() && !updateVsacResult.isSuccess()) {
 						if (updateVsacResult.getFailureReason() == VsacApiResult.UMLS_NOT_LOGGEDIN) {
 							if (isMeasurePackageAndExport) {
-								((Button) view.getPackageMeasureButton()).setEnabled(true);
-								saveExport();
+								handleSuccessfulPackageAndExport();
 							} else {
 								view.getMeasurePackageWarningMsg().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
-								((Button) view.getPackageMeasureButton()).setEnabled(true);
-								((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-								view.getInProgressMessageDisplay().clear();
+								resetPackageButtonsAndMessages();
 							}
 						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
 							view.getMeasureErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getMEASURE_PACKAGE_VSAC_TIMEOUT());
-							((Button) view.getPackageMeasureButton()).setEnabled(true);
-							((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-							view.getInProgressMessageDisplay().clear();
+							resetPackageButtonsAndMessages();
 						}
 					} else {
-						view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
-						((Button) view.getPackageMeasureButton()).setEnabled(true);
-						((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-						view.getInProgressMessageDisplay().clear();
+						handleUnsuccessfulPackage(result);
 					}
 				} else {
 					if (result.isValid()) {
 						//to Export the Measure.
 						if (isMeasurePackageAndExport) {
-							((Button) view.getPackageMeasureButton()).setEnabled(true);
-							saveExport();
+							handleSuccessfulPackageAndExport();
 						} else {
-							view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
-							((Button) view.getPackageMeasureButton()).setEnabled(true);
-							((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-							view.getInProgressMessageDisplay().clear();
+							handleSuccessfulPackage();
 						}
 					} else {
-						view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
-						((Button) view.getPackageMeasureButton()).setEnabled(true);
-						((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
-						view.getInProgressMessageDisplay().clear();
+						handleUnsuccessfulPackage(result);
 					}
 				}
 				
@@ -1309,6 +1284,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 					recordMeasurePackageEvent(measureId);
 				}
 			}
+
+
 		});
 	}
 	
@@ -1324,6 +1301,27 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 			}
 		});
+	}
+	
+	private void handleUnsuccessfulPackage(final ValidateMeasureResult result) {
+		view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
+		resetPackageButtonsAndMessages();
+	}
+
+	private void handleSuccessfulPackage() {
+		view.getMeasurePackageSuccessMsg().createAlert(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
+		resetPackageButtonsAndMessages();
+	}
+
+	private void resetPackageButtonsAndMessages() {
+		((Button) view.getPackageMeasureButton()).setEnabled(true);
+		((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
+		view.getInProgressMessageDisplay().clearAlert();
+	}
+
+	private void handleSuccessfulPackageAndExport() {
+		resetPackageButtonsAndMessages();
+		saveExport();
 	}
 	
 	private void showMeasurePackagerBusy(boolean isBusy) {

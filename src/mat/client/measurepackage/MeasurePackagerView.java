@@ -219,7 +219,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private ArrayList<RiskAdjustmentDTO> riskAdjustmentVariablePopulationList = new ArrayList<RiskAdjustmentDTO>();
 	
-	private Button packageMeasureAndExportButton = buildSaveButton(IconType.PLUS, "Create Package and Export") ;
+	private Button packageMeasureAndExportButton = buildSaveButton(IconType.DOWNLOAD, "Create Package and Export") ;
 	
 	private boolean isCQLMeasure;
 	
@@ -258,11 +258,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(inProgressMessageDisplay);
 		
 		ButtonToolBar packageGroup = new ButtonToolBar();
-		packageGroup.add(packageMeasureButton);
 		packageGroup.add(packageMeasureAndExportButton);
-		
-		packageMeasureAndExportButton.setPull(Pull.RIGHT);
+		packageGroup.add(packageMeasureButton);
+
 		packageMeasureButton.setPull(Pull.RIGHT);
+		packageMeasureAndExportButton.setPull(Pull.RIGHT);
+		
 		content.add(packageGroup);
 		content.setStyleName("contentPanel");
 	}

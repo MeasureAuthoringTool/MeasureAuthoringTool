@@ -28,8 +28,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
@@ -47,17 +45,20 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 
-public class CQLUtil implements IsSerializable{
+/**
+ * The Class CQLUtil.
+ */
+public class CQLUtil {
 
+	/** The Constant xPath. */
 	static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtil.class);
 	
-    public static final String PATIENT_CHARACTERSTIC_EXPIRED = "Patient Characteristic Expired";
+    public static final String PATIENT_CHARACTERSTICS_EXPIRED = "Patient Characteristic Expired";
 
     public static final String DEAD = "Dead";
-    
-    public static final String BIRTHDATE = "Birthdate";
 
     public static final String PATIENT_CHARACTERISTIC_BIRTHDATE = "Patient Characteristic Birthdate";
     
@@ -108,6 +109,7 @@ public class CQLUtil implements IsSerializable{
 			}
 
 		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -154,7 +156,7 @@ public class CQLUtil implements IsSerializable{
 		}
 		return true; 
 	}
-
+	
 	/**
 	 * Checks if the datatype list contains "Patient Characteristic Birthdate or Patient Characteristic Dead.
 	 * 
@@ -164,7 +166,7 @@ public class CQLUtil implements IsSerializable{
 	 * @return
 	 */
 	private static boolean isValidDataTypeCombination(List<String> dataTypeList) {
-		return !(dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE) || dataTypeList.contains(PATIENT_CHARACTERSTIC_EXPIRED));
+		return !(dataTypeList.contains(PATIENT_CHARACTERISTIC_BIRTHDATE) || dataTypeList.contains(PATIENT_CHARACTERSTICS_EXPIRED));
 	}
 	
 
@@ -188,7 +190,7 @@ public class CQLUtil implements IsSerializable{
 		// the Patient Characteristic Expired datatype
 		else if (codeOID.equals(DEAD_OID) && codesystemOID.equals(DEAD_CODESYSTEM_OID)) {
 			for (String dataType : dataTypeList) {
-				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTIC_EXPIRED)) {
+				if (!dataType.equalsIgnoreCase(PATIENT_CHARACTERSTICS_EXPIRED)) {
 					return false;
 				}
 			}
@@ -1045,8 +1047,5 @@ public class CQLUtil implements IsSerializable{
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
 		setIncludedCQLExpressions(cqlModel);
 	}
-	
-
-
 }
 

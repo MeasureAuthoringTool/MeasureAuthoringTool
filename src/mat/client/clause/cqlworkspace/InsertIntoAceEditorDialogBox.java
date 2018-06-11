@@ -43,7 +43,7 @@ import mat.shared.ConstantMessages;
 
 public class InsertIntoAceEditorDialogBox {
 	
-    
+	private static final String INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR = "Invalid Item Name and Datatype Combination.";
 	
 	private static final String ITEM_NAME_DATA_TYPE_ALERT = "Item Name dropdown is enabled. Data Type dropdown now available.";
 
@@ -281,7 +281,7 @@ public class InsertIntoAceEditorDialogBox {
 											selectItemListFormGroup.setValidationState(ValidationState.ERROR);
 											dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
 											helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
-											helpBlock.setText(MatContext.get().getMessageDelegate().getINVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR());
+											helpBlock.setText(InsertIntoAceEditorDialogBox.INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR);
 											messageFormgroup.setValidationState(ValidationState.ERROR);
 										}
 										

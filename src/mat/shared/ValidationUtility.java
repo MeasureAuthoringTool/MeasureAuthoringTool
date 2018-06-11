@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import mat.model.cql.CQLCode;
 
 public class ValidationUtility {
 

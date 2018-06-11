@@ -709,6 +709,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 *  true otherwise
 	 */
 	private static boolean isValidPair(String dataType, CQLCode code) {
+		
 		//valid pair
 		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
 			return true;

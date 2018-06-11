@@ -461,7 +461,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
 					clearMessages();
-					view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+					view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 					setNewMeasurePackage();
 				}
 			}
@@ -558,7 +558,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+				view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
 				updateDetailsFromView(tempMeasurePackageDetails);
 			
@@ -648,7 +648,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
 		MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();
 		messages = clauseValidator.isValidMeasurePackage(detailList);
-		measurePackageClauseCellListWidget.CheckForNumberOfStratification((ArrayList<MeasurePackageClauseDetail>) detailList, messages);
+		measurePackageClauseCellListWidget.checkForNumberOfStratification((ArrayList<MeasurePackageClauseDetail>) detailList, messages);
 		if (messages.size() > 0) {
 			view.getPackageErrorMessageDisplay().createAlert(messages);
 		} else {
@@ -695,14 +695,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void displayEmpty() {
 		panel.clear();
 		panel.add(view.asWidget());
-		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 	}
 
 	@Override
 	public void beforeClosingDisplay() {
 		currentDetail = null;
 		packageOverview = null;
-		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 	}
 
 	@Override
@@ -726,7 +726,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 														
 							if(result.getCqlErrors().size() == 0){
 								getMeasure(MatContext.get().getCurrentMeasureId());
-								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+								view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 							}else{
 								panel.clear();
 								panel.getElement().setId("MeasurePackagerContentFlowPanel");
@@ -736,7 +736,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								MatContext.get().getMessageDelegate();
 								errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
 																								
-								view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+								view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 							}		
 							
 							showMeasurePackagerBusy(false);

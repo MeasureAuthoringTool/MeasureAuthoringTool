@@ -883,7 +883,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		deleteColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, SafeHtml>() {
 			@Override
 			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
-				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
+				packageGroupingWidget.getAddAssociationsPanel().setVisible(false);
 				observer.onDeleteClicked(object);
 			}
 		});
@@ -910,7 +910,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		editColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, SafeHtml>() {
 			@Override
 			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
-				packageGroupingWidget.getDisclosurePanelAssociations().setVisible(false);
+				packageGroupingWidget.getAddAssociationsPanel().setVisible(false);
 				observer.onEditClicked(object);
 			}
 		});

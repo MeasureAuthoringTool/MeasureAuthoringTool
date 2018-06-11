@@ -915,8 +915,6 @@ public class MessageDelegate {
 	/** The cql library deletion success msg. */
 	private final String CQL_LIBRARY_DELETION_SUCCESS_MSG = "CQL Library successfully deleted.";
 	
-	private final String INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR = "Invalid Item Name and Datatype Combination.";
-	
 	/**
 	 * Gets the only one child required.
 	 *
@@ -3587,10 +3585,6 @@ public class MessageDelegate {
 
 	public String getVSAC_RETRIEVE_TIMEOUT() {
 		return VSAC_RETRIEVE_TIMEOUT;
-	}
-
-	public String getINVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR() {
-		return INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR;
 	}
 
 }

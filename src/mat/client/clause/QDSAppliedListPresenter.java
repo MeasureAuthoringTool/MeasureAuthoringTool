@@ -280,7 +280,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
 								.getDataType()) || ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
-										.getOid()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
+										.getOid()) || ConstantMessages.DEAD_OID.equals(qdsDTO
 												.getOid())) {
 							timingQDMs.add(qdsDTO);
 						}

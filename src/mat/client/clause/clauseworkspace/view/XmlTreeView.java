@@ -2563,7 +2563,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				qdmName + "~" + node.getUUID());
 		Node oid = qdmNode.getAttributes().getNamedItem("oid");
 		String  oidValue = oid.getNodeValue().trim();
-		if (oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+		if (oidValue.equalsIgnoreCase(ConstantMessages.DEAD_OID)
 				|| oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)) {
 			if (!node.getValidNode()) {
 				editNode(true, node);

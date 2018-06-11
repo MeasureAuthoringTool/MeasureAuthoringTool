@@ -857,7 +857,7 @@ public class PackagerServiceImpl implements PackagerService {
 					// Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 							&& !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-							&& !oid.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+							&& !oid.equalsIgnoreCase(ConstantMessages.DEAD_OID)
 							&& !oid.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(nodeID)
@@ -882,7 +882,7 @@ public class PackagerServiceImpl implements PackagerService {
 					// Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 							&& !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-							&& !oid.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+							&& !oid.equalsIgnoreCase(ConstantMessages.DEAD_OID)
 							&& !oid.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(nodeID)

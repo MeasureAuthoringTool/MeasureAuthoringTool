@@ -13,6 +13,7 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -123,7 +124,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private MessageAlert inProgressMessageDisplay = new WarningMessageAlert();
 
-	private Button packageMeasureButton = buildSaveButton(IconType.PLUS, "Create Measure Package") ;;
+	private Button packageMeasureButton = buildSaveButton(IconType.ARCHIVE, "Create Measure Package") ;;
 
 	private FlowPanel content = new FlowPanel();
 
@@ -133,7 +134,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
 
-	private Button createNewGroupingButton = buildSaveButton(IconType.PLUS, "Create New Grouping") ;
+	private Button createNewGroupingButton = buildSaveButton(IconType.DOWNLOAD, "Create New Grouping") ;
 	
 	private Panel cellTablePanel = new Panel();
 	
@@ -247,14 +248,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(packageGroupingWidget.getWidget());
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
 		content.add(topQDMElementContainer);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		content.add(topRiskAdjContainer);
-		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
-		
+		content.add(topRiskAdjContainer);		
 		content.add(measurePackageSuccessMsg);
 		content.add(measurePackageWarningMsg);
 		content.add(measureErrorMessages);
@@ -263,9 +260,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		ButtonToolBar packageGroup = new ButtonToolBar();
 		packageGroup.add(packageMeasureButton);
 		packageGroup.add(packageMeasureAndExportButton);
+		
+		packageMeasureAndExportButton.setPull(Pull.RIGHT);
+		packageMeasureButton.setPull(Pull.RIGHT);
 		content.add(packageGroup);
-		content.add(new SpacerWidget());
-		content.add(new SpacerWidget());
 		content.setStyleName("contentPanel");
 	}
 	
@@ -521,11 +519,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskAdjustmentVariablesVerticalPanel.add(rightRiskAdjustmentPanel);
 		horizontalPanel.add(riskAdjustmentVariablesVerticalPanel);		
 		
-		riskAdjustmentPanelBody.add(horizontalPanel);
-		SpacerWidget spacer = new SpacerWidget();
-		spacer.setStylePrimaryName("clearBoth");
-		riskAdjustmentPanelBody.add(spacer);
-		
+		riskAdjustmentPanelBody.add(horizontalPanel);		
 		addRiskAdjustmentVariablesToMeasureButton.setType(ButtonType.PRIMARY);
 		addRiskAdjustmentVariablesToMeasureButton.setIcon(IconType.SAVE);
 		riskAdjustmentPanelBody.add(addRiskAdjustmentVariablesToMeasureButton);
@@ -580,12 +574,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			rightPagerPanel.setDisplay(getSupCellList());
 		}
 		supplementalDataElementsRightPanel.add(rightPagerPanel);
-		horizontalPanel.add(supplementalDataElementsRightPanel);
-		
-		SpacerWidget spacer = new SpacerWidget();
-		spacer.setStylePrimaryName("clearBoth");
-		supplementalDataElementsPanelBody.add(spacer);
-		
+		horizontalPanel.add(supplementalDataElementsRightPanel);		
 		addSupplementalDataElementsButton.setType(ButtonType.PRIMARY);
 		addSupplementalDataElementsButton.setIcon(IconType.SAVE);
 		

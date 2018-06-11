@@ -4,9 +4,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * The Class ValidationUtility.
- */
+import mat.model.cql.CQLCode;
+
 public class ValidationUtility {
 
 	/** The good chars. */
@@ -83,9 +82,8 @@ public class ValidationUtility {
 	 *            the logstr
 	 */
 	private void log(String logstr){
-		//TODO get this output to the server logs
 		System.out.println(logstr);
 	}
 	
-
+	
 }

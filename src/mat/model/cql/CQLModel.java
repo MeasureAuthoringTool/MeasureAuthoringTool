@@ -260,7 +260,7 @@ public class CQLModel implements IsSerializable{
 		// if the library name version is null, then the code is in the parent
 		if(libraryNameVersion == null) {
 			for(CQLCode code : codeList) {
-				if(code.getCodeName().equals(codeName)) {
+				if(code.getDisplayName()==null ? code.getCodeName().equals(codeName) : code.getDisplayName().equals(codeName)) {
 					return code; 
 				}
 			}

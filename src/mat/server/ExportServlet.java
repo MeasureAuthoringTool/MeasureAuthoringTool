@@ -1,8 +1,8 @@
 package mat.server;
 
 import java.io.IOException;
-import java.text.Format;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -15,11 +15,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import mat.client.shared.MatException;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
@@ -43,79 +46,57 @@ public class ExportServlet extends HttpServlet {
 	private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
 	private static final String EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE = "errorFileStandAlone";
 	private static final String EXPORT_CQL_ERROR_FILE_FOR_MEASURE = "errorFileMeasure";
-	/** The Constant EXPORT_ACTIVE_NON_ADMIN_USERS_CSV. */
+
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
 	private static final String EXPORT_ALL_USERS_CSV = "exportAllUsersCSV";
-	
-	/** The Constant EXPORT_ACTIVE_OID_CSV. */
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
-	
 	private static final String EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP = "exportCQLLibraryOwner";
 	
-	/** The Constant ZIP. */
 	private static final String ZIP = "zip";
 	
-	/** Human readable for Subtree Node *. */
 	private static final String SUBTREE_HTML = "subtreeHTML";
 	
-	/** The Constant CODELIST. */
 	private static final String CODELIST = "codelist";
 	
-	/** The Constant SAVE. */
 	private static final String SAVE = "save";
 	
-	/** The Constant ATTACHMENT_FILENAME. */
 	private static final String ATTACHMENT_FILENAME = "attachment; filename=";
 	
-	/** The Constant CONTENT_DISPOSITION. */
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
 	
-	/** The Constant TEXT_XML. */
-	private static final String TEXT_XML = "text/xml";
+	private static final String TEXT_CSV =  "text/csv";
+
+	private static final String APPLICATION_ZIP = "application/zip";
 	
-	/** The Constant APPLICATION_JSON. */
-	private static final String APPLICATION_JSON = "application/json";
-	
-	/** The Constant TEXT_HTML. */
-	private static final String TEXT_HTML = "text/html";
-	
-	/** The Constant TEST_PLAN */
-	private static final String TEXT_PLAIN = "text/plain"; 
-	
-	/** The Constant CONTENT_TYPE. */
 	private static final String CONTENT_TYPE = "Content-Type";
 	
 	private static final String HQMF = "hqmf";
 	
 	private static final String HUMAN_READABLE = "humanreadable";
 	
-	/** The Constant SIMPLEXML. */
 	private static final String SIMPLEXML = "simplexml";
 	
-	/** The Constant TYPE_PARAM. */
 	private static final String TYPE_PARAM = "type";
 	
-	/** The Constant XML_PARAM. */
 	private static final String XML_PARAM = "xml";
 	
-	/** The Constant FORMAT_PARAM. */
 	private static final String FORMAT_PARAM = "format";
 	
-	/** The Constant ID_PARAM. */
 	private static final String ID_PARAM = "id";
 	
-	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(ExportServlet.class);
 	
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4539514145289378238L;
 	
-	/** The context. */
 	protected ApplicationContext context;
 	
 	private static final String CQL_LIBRARY = "cqlLibrary";
 	private static final String ELM = "elm"; 
-	private static final String JSON = "json"; 
+	private static final String JSON =  "json"; 
+	
+	private static final String ADMINISTRATOR =  "Administrator";
+	
+	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -126,55 +107,73 @@ public class ExportServlet extends HttpServlet {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		MeasurePackageService service = getMeasurePackageService();
 		MeasureLibraryService measureLibraryService = getMeasureLibraryService();
-		
+
 		String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
 		String libraryId = req.getParameter(LIBRARY_ID);
 		Measure measure = null;
 		Date exportDate = null;
-		
+
 		logger.info("FORMAT: " + format);
-		
+
 		if (id!= null) {
 			measure = service.getById(id);
 			exportDate = measure.getExportedDate();
 		}
 
 		try {
-			if (SIMPLEXML.equals(format)) {
+			switch(format) {
+			case SIMPLEXML :
 				exportSimpleXML(resp, id, type, measure);
-			} else if (HQMF.equals(format)) {
+				break;
+			case HQMF :
 				exportHQMFForNewMeasures(resp, id, type, measure);
-			} else if (HUMAN_READABLE.equals(format)) {
-				exportHumanReadableForNewMeasures(resp, id, type, measure);	
-			} else if (CODELIST.equals(format)) {
+				break;
+			case HUMAN_READABLE :
+				exportHumanReadableForNewMeasures(resp, id, type, measure);
+				break;
+			case CODELIST :
 				exportCodeListXLS(resp, id, measure);
-			} else if (CQL_LIBRARY.equals(format)) {
-				exportCQLLibraryFile(resp, id, type, measure);
-			} else if(ELM.equals(format)) {
-				exportELMFile(resp, id, type, measure); 
-			} else if(JSON.equals(format)) {
-				exportJSONFile(resp, id, type, measure); 
-			}else if (ZIP.equals(format)) {
+				break;
+			case CQL_LIBRARY :
+				exportCQLLibraryFile(resp, id, type);
+				break;
+			case ELM :
+				exportELMFile(resp, id, type); 
+				break;
+			case JSON :
+				exportJSONFile(resp, id, type); 
+				break;
+			case ZIP :
 				exportEmeasureZip(resp, id, measure, exportDate);
-			} else if (SUBTREE_HTML.equals(format)){
+				break;
+			case SUBTREE_HTML :
 				exportSubTreeHumanReadable(req, resp, id);
-			} else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
+				break;
+			case EXPORT_ACTIVE_NON_ADMIN_USERS_CSV :
 				exportActiveUserListCSV(resp);
-			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
+				break;
+			case EXPORT_ACTIVE_OID_CSV :
 				exportActiveOrganizationListCSV(resp);
-			} else if(EXPORT_MEASURE_OWNER.equalsIgnoreCase(format)){
+				break;
+			case EXPORT_MEASURE_OWNER :
 				exportActiveUserMeasureOwnershipListCSV(resp);
-			} else if (EXPORT_ALL_USERS_CSV.equals(format)) {
+				break;
+			case EXPORT_ALL_USERS_CSV :
 				exportAllUserCSV(resp);
-			} else if(EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP.equals(format)) {
+				break;
+			case EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP :
 				exportActiveUserCQLLibraryOwnershipListCSV(resp);
-			} else if(EXPORT_CQL_ERROR_FILE_FOR_MEASURE.equalsIgnoreCase(format)) {
+				break;
+			case EXPORT_CQL_ERROR_FILE_FOR_MEASURE :
 				exportErrorFileForMeasure(resp, measureLibraryService, id);
-			} else if(EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE.equalsIgnoreCase(format)) {
+				break;
+			case EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE :
 				exportErrorFileForStandAloneLib(resp, libraryId);
+				break;
 			}
+
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}finally {
@@ -201,7 +200,7 @@ public class ExportServlet extends HttpServlet {
 		for(int i=0;i<cqlLinesArray.length;i++) {			
 			sb.append((i+1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
 		}
-		if (!result.getCqlErrors().isEmpty() && result.getCqlErrors().size() > 0) {
+		if (!result.getCqlErrors().isEmpty()) {
 			
 			Collections.sort(result.getCqlErrors());
 			sb.append("/*******************************************************************************************************************");
@@ -219,177 +218,155 @@ public class ExportServlet extends HttpServlet {
 
 	
 	
-	private void exportELMFile(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		
+	private void exportELMFile(HttpServletResponse resp, String id, String type) throws Exception {
+
 		ExportResult export = getService().getELMFile(id); 
-		
-		if(export.getIncludedCQLExports().size() > 0){
+
+		if(!export.getIncludedCQLExports().isEmpty()){
 			ZipPackager zp = new ZipPackager();
 			zp.getCQLZipBarr(export, "xml");
-			
+
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "ELM"));
-			resp.setContentType("application/zip");
+			resp.setContentType(APPLICATION_ZIP);
 			resp.getOutputStream().write(export.zipbarr);
 			export.zipbarr = null;
-		}else if (SAVE.equals(type)) {
-			String currentReleaseVersion = measure.getReleaseVersion();
-			if(currentReleaseVersion.contains(".")){
-				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}else {
+			if (SAVE.equals(type)) {
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".xml");
 			}
-			System.out.println("Release version zip " + currentReleaseVersion);
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".xml");
-			resp.getOutputStream().write(export.export.getBytes());
-		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_XML);
+			resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
+
 			resp.getOutputStream().write(export.export.getBytes());
 		}
 	}
 	
-	private void exportJSONFile(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		
+	private void exportJSONFile(HttpServletResponse resp, String id, String type) throws Exception {
+
 		ExportResult export = getService().getJSONFile(id); 
-		
-		if(export.getIncludedCQLExports().size() > 0){
+
+		if(!export.getIncludedCQLExports().isEmpty()){
 			ZipPackager zp = new ZipPackager();
 			zp.getCQLZipBarr(export, "json");
-			
+
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "JSON"));
-			resp.setContentType("application/zip");
+			resp.setContentType(APPLICATION_ZIP);
 			resp.getOutputStream().write(export.zipbarr);
 			export.zipbarr = null;
-		}else if (SAVE.equals(type)) {
-			String currentReleaseVersion = measure.getReleaseVersion();
-			if(currentReleaseVersion.contains(".")){
-				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}else {
+			if (SAVE.equals(type)) {
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".json");	
 			}
-			System.out.println("Release version zip " + currentReleaseVersion);
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".json");
-			resp.getOutputStream().write(export.export.getBytes());
-		} else {
-			resp.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+			resp.setHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+
 			resp.getOutputStream().write(export.export.getBytes()); 
 		}
 	}
 
 	
 	
-	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		
+	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type) throws Exception {
+
 		ExportResult export = getService().getCQLLibraryFile(id);
-		
-		if(export.getIncludedCQLExports().size() > 0){
+
+		if(!export.getIncludedCQLExports().isEmpty()){
 			ZipPackager zp = new ZipPackager();
 			zp.getCQLZipBarr(export, "cql");
-			
+
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "CQL"));
-			resp.setContentType("application/zip");
+			resp.setContentType(APPLICATION_ZIP);
 			resp.getOutputStream().write(export.zipbarr);
 			export.zipbarr = null;
-		}else if (SAVE.equals(type)) {
-			String currentReleaseVersion = measure.getReleaseVersion();
-			if(currentReleaseVersion.contains(".")){
-				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
+		}else {
+			if (SAVE.equals(type)) {
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName()+".cql");
 			}
-			System.out.println("Release version zip " + currentReleaseVersion);
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-					+ export.getCqlLibraryName()+".cql");
-			resp.getOutputStream().write(export.export.getBytes());
-		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_PLAIN);
+			resp.setHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+
 			resp.getOutputStream().write(export.export.getBytes());
 		}
 	}
 	
-	private void exportActiveOrganizationListCSV(HttpServletResponse resp) throws IOException {
+	private void generateCSVFile(HttpServletResponse resp, String name) throws MatException {
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		if ("Administrator".equalsIgnoreCase(userRole)) {
-			String csvFileString = generateCSVOfActiveUserOIDs();
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String activeUserCSVDate = formatter.format(new Date());
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName("activeOrganizationOids", activeUserCSVDate) + ";");
-			resp.setContentType("text/csv");
-			resp.getOutputStream().write(csvFileString.getBytes());
+		if (ADMINISTRATOR.equalsIgnoreCase(userRole)) {
+			String csvFileString = "";
+			switch(name) {
+				case "activeOrganizationOids" :
+					csvFileString = generateCSVOfActiveUserOIDs();
+					break;
+				case "activeUsers" :
+					csvFileString = generateCSVOfActiveUserEmails();
+					break;
+				case "allUsersReport" :
+					csvFileString = generateCSVOfAllUser();
+					break;
+				case "activeUsersMeasureOwnership" :
+				try {
+					csvFileString = generateCSVOfMeasureOwnershipForActiveUser();
+				} catch (XPathExpressionException e1) {
+					logger.debug("generateCSVFile:" + name + e1.getMessage());
+					throw new MatException(e1.getMessage());
+				}
+					break;
+				case "activeUsersCQLLibraryOwnership" :
+					csvFileString = generateCSVOfCQLLibraryOwnershipForActiveUser();
+					break;
+			}
+			
+			String activeUserCSVDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName(name, activeUserCSVDate) + ";");
+			resp.setContentType(TEXT_CSV);
+			try {
+				resp.getOutputStream().write(csvFileString.getBytes());
+			} catch (IOException e) {
+				logger.debug("generateCSVFile:" + name + e.getMessage());
+				throw new MatException(e.getMessage());
+			}
 		}
 	}
 	
-	private void exportActiveUserListCSV(HttpServletResponse resp) throws InCorrectUserRoleException, IOException {
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		if ("Administrator".equalsIgnoreCase(userRole)) {
-			String csvFileString = generateCSVOfActiveUserEmails();
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String activeUserCSVDate = formatter.format(new Date());
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
-			resp.setContentType("text/csv");
-			resp.getOutputStream().write(csvFileString.getBytes());
-		}
+	private void exportActiveOrganizationListCSV(HttpServletResponse resp) throws MatException {
+		generateCSVFile(resp, "activeOrganizationOids");
 	}
 	
-	private void exportAllUserCSV(HttpServletResponse resp) throws InCorrectUserRoleException, IOException {
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		if ("Administrator".equalsIgnoreCase(userRole)) {
-			String csvFileString = generateCSVOfAllUser();
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String allUserCSVDate = formatter.format(new Date());
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName("allUsersReport", allUserCSVDate) + ";");
-			resp.setContentType("text/csv");
-			resp.getOutputStream().write(csvFileString.getBytes());
-		}
-		
+	private void exportActiveUserListCSV(HttpServletResponse resp) throws MatException {
+		generateCSVFile(resp, "activeUsers");
 	}
 	
-	private void exportActiveUserMeasureOwnershipListCSV(HttpServletResponse resp) throws InCorrectUserRoleException, IOException, XPathExpressionException {
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		if ("Administrator".equalsIgnoreCase(userRole)) {
-			String csvFileString = generateCSVOfMeasureOwnershipForActiveUser();
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String aCSVDate = formatter.format(new Date());
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName("activeUsersMeasureOwnership", aCSVDate) + ";");
-			resp.setContentType("text/csv");
-			resp.getOutputStream().write(csvFileString.getBytes());
-		}
+	private void exportAllUserCSV(HttpServletResponse resp) throws MatException {
+		generateCSVFile(resp, "allUsersReport");
 	}
 	
-	private void exportActiveUserCQLLibraryOwnershipListCSV(HttpServletResponse resp) throws IOException {
-		String userRole = LoggedInUserUtil.getLoggedInUserRole();
-		if("Administrator".equalsIgnoreCase(userRole)) {
-			String csvFileString = generateCSVOfCQLLibraryOwnershipForActiveUser();
-			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String aCSVDate = formatter.format(new Date());
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName("activeUsersCQLLibraryOwnership", aCSVDate) + ";");
-			resp.setContentType("text/csv");
-			resp.getOutputStream().write(csvFileString.getBytes());
-		}
+	private void exportActiveUserMeasureOwnershipListCSV(HttpServletResponse resp) throws MatException {
+		generateCSVFile(resp, "activeUsersMeasureOwnership");
+	}
+	
+	private void exportActiveUserCQLLibraryOwnershipListCSV(HttpServletResponse resp) throws MatException {
+		generateCSVFile(resp, "activeUsersCQLLibraryOwnership");
 	}
 	
 	private void exportSubTreeHumanReadable(HttpServletRequest req, HttpServletResponse resp, String id) throws Exception {
 		String nodeXML = req.getParameter(XML_PARAM);
-		System.out.println("Export servlet received node xml:"+nodeXML +" and Measure ID:"+id);
+		logger.info("Export servlet received node xml:"+nodeXML +" and Measure ID:"+id);
 		ExportResult export = getService().getHumanReadableForNode(id,nodeXML);
-		resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
 		resp.getOutputStream().println(export.export);
 	}
 	
-	private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate) throws Exception, IOException {
+	private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate) throws Exception {
 		ExportResult export = getService().getEMeasureZIP(id,exportDate);
 				
-		String currentReleaseVersion = measure.getReleaseVersion();
-		if(currentReleaseVersion.contains(".")){
-			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-		}
-		System.out.println("Release version zip " + currentReleaseVersion);
+		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + currentReleaseVersion));
-		resp.setContentType("application/zip");
+		resp.setContentType(APPLICATION_ZIP);
 		resp.getOutputStream().write(export.zipbarr);
 		export.zipbarr = null;
 	}
 	
-	private void exportCodeListXLS(HttpServletResponse resp, String id, Measure measure) throws Exception, IOException {
+	private void exportCodeListXLS(HttpServletResponse resp, String id, Measure measure) throws Exception {
 		ExportResult export = getService().getEMeasureXLS(id);
-		String currentReleaseVersion = measure.getReleaseVersion();
-		if(currentReleaseVersion.contains(".")){
-			currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-		}
-		System.out.println("Release version zip " + currentReleaseVersion);
+
+		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureXLSName(export.measureName + "_" + currentReleaseVersion, export.packageDate));
 		resp.setContentType("application/vnd.ms-excel");
 		resp.getOutputStream().write(export.wkbkbarr);
@@ -400,13 +377,11 @@ public class ExportServlet extends HttpServlet {
 		String currentReleaseVersion = measure.getReleaseVersion();
 		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureXML(id) : getService().getNewEMeasureXML(id);
 		if (SAVE.equals(type)) {
-			if(currentReleaseVersion.contains(".")){
-				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-			}
+			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
-		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_XML);
 		}
+		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
+
 		resp.getOutputStream().write(export.export.getBytes());
 	}
 	
@@ -414,28 +389,22 @@ public class ExportServlet extends HttpServlet {
 		String currentReleaseVersion = measure.getReleaseVersion();
 		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureHTML(id) : getService().getNewEMeasureHTML(id, currentReleaseVersion);
 		if (SAVE.equals(type)) {
-			if(currentReleaseVersion.contains(".")){
-				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-			}
+			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureHumanReadableName(export.measureName + "_" + currentReleaseVersion));
-		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_HTML);
 		}
+		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
+
 		resp.getOutputStream().write(export.export.getBytes());
 	}
 	
-	private void exportSimpleXML(HttpServletResponse resp, String id, String type, Measure measure ) throws Exception {
+	private void exportSimpleXML(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
 		ExportResult export = getService().getSimpleXML(id);
 		if (SAVE.equals(type)) {
-			String currentReleaseVersion = measure.getReleaseVersion();
-			if(currentReleaseVersion.contains(".")){
-				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
-			}
-			System.out.println("Release version zip " + currentReleaseVersion);
+			String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getSimpleXMLName(export.measureName + "_" + currentReleaseVersion));
-		} else {
-			resp.setHeader(CONTENT_TYPE, TEXT_XML);
-		}
+		} 
+		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
+
 		resp.getOutputStream().write(export.export.getBytes());
 	}
 	
@@ -446,7 +415,7 @@ public class ExportServlet extends HttpServlet {
 	 * @throws InCorrectUserRoleException
 	 *             the in correct user role exception
 	 */
-	private String generateCSVOfActiveUserEmails() throws InCorrectUserRoleException {
+	private String generateCSVOfActiveUserEmails() {
 		logger.info("Generating CSV of email addrs for all Active Users...");
 		//Get all the active users
 		List<User> allNonAdminActiveUsersList = getUserService().getAllNonAdminActiveUsers();
@@ -455,7 +424,7 @@ public class ExportServlet extends HttpServlet {
 		return createCSVOfAllNonAdminActiveUsers(allNonAdminActiveUsersList);
 	}
 	
-	private String generateCSVOfAllUser() throws InCorrectUserRoleException {
+	private String generateCSVOfAllUser() {
 		logger.info("Generating CSV For All Users...");
 		//Get all the active users
 		List<User> allUsersList = getUserService().getAllUsers();
@@ -472,7 +441,7 @@ public class ExportServlet extends HttpServlet {
 	 *             the in correct user role exception
 	 * @throws XPathExpressionException
 	 */
-	private String generateCSVOfMeasureOwnershipForActiveUser() throws InCorrectUserRoleException, XPathExpressionException {
+	private String generateCSVOfMeasureOwnershipForActiveUser() throws XPathExpressionException {
 		logger.info("Generating CSV of Measure Ownership for all Active Non Admin Users...");
 		List<MeasureOwnerReportDTO> ownerReList = 	getMeasureLibraryService().getMeasuresForMeasureOwner();
 		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
@@ -649,8 +618,7 @@ public class ExportServlet extends HttpServlet {
 	 * @return the service
 	 */
 	private SimpleEMeasureService getService() {
-		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
-		return service;
+		return (SimpleEMeasureService) context.getBean("eMeasureService");
 	}
 	
 	/**

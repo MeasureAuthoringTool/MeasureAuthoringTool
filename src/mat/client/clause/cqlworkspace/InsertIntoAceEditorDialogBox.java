@@ -211,7 +211,7 @@ public class InsertIntoAceEditorDialogBox {
 				if (selectedItemIndex != 0) {
 					String itemTypeName = availableItemToInsert.getItemText (selectedItemIndex);
 					if (!itemTypeName.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-						//For Attributes
+						
 						if(itemTypeName.equalsIgnoreCase("Attributes")) {
 							
 							int selectedIndex = availableAttributesToInsert.getSelectedIndex();
@@ -225,7 +225,6 @@ public class InsertIntoAceEditorDialogBox {
 								} else {
 									int columnIndex = editor.getCursorPosition().getColumn();
 									System.out.println(columnIndex);
-									//convertToCamelCase(attributeNameToBeInserted);
 									editor.insertAtCursor(convertToCamelCase(attributeNameToBeInserted));
 									editor.focus();
 									dialogModal.hide();
@@ -296,7 +295,13 @@ public class InsertIntoAceEditorDialogBox {
 											editor.focus();
 											dialogModal.hide();
 										}
-									} 
+									} else if (itemTypeName.equalsIgnoreCase("Pre-Defined Functions")) {
+										if(!itemNameToBeInserted.isEmpty()){
+											editor.insertAtCursor(itemNameToBeInserted);
+											editor.focus();
+											dialogModal.hide();
+										}
+									}
 									
 								}
 							} else {

@@ -295,7 +295,7 @@ public class InsertIntoAceEditorDialogBox {
 											editor.focus();
 											dialogModal.hide();
 										}
-									} else if (itemTypeName.equalsIgnoreCase("Pre-Defined Functions")) {
+									} else if (itemTypeName.equalsIgnoreCase("Pre-Defined Functions") || itemTypeName.equalsIgnoreCase("Timing")) {
 										if(!itemNameToBeInserted.isEmpty()){
 											editor.insertAtCursor(itemNameToBeInserted);
 											editor.focus();

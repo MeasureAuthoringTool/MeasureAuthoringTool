@@ -100,6 +100,10 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The transfer button. */
 	private Button transferButton = new Button("Transfer");
 	
+	private Anchor advancedSearch;
+	
+	private AdvancedSearchModel advancedSearchModel = new AdvancedSearchModel("Measures");
+	
 	/** The search view. */
 	MeasureSearchView searchView;
 	
@@ -134,6 +138,13 @@ ManageMeasurePresenter.SearchDisplay {
 		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
 		measureFilterVP.add(measureSearchFilterWidget);
+		
+		VerticalPanel advancedSearchVP = new VerticalPanel();
+		advancedSearch = new Anchor("Advanced Search");
+		advancedSearchVP.add(advancedSearch);
+		advancedSearchVP.setStylePrimaryName("advanceSearch");
+		
+		measureFilterVP.add(advancedSearchVP);
 		buildMostRecentWidget();
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(measureFilterVP);
@@ -541,6 +552,20 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
+	}
+	
+	@Override
+	public Anchor getAdvancedSearch() {
+		return advancedSearch;
+	}
+	
+	@Override
+	public AdvancedSearchModel getAdvancedSearchModal() {
+		return advancedSearchModel;
+	}
+
+	public void setAdvancedSearch(Anchor advancedSearch) {
+		this.advancedSearch = advancedSearch;
 	}
 	
 	/* (non-Javadoc)

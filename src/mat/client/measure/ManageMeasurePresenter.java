@@ -33,6 +33,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -79,6 +80,8 @@ import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
+import mat.client.umls.ManageUmlsPresenter;
+import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.ConstantMessages;
@@ -415,6 +418,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the transfer button
 		 */
 		public HasClickHandlers getTransferButton();
+		
+		public Anchor getAdvancedSearch();
+		
+		public AdvancedSearchModel getAdvancedSearchModal();
 
 		/**
 		 * Sets the admin observer.
@@ -2368,6 +2375,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 						.removeAll(manageMeasureSearchModel.getSelectedTransferIds());
 				int filter = 1;
 				search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+			}
+		});
+		
+		searchDisplay.getAdvancedSearch().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getAdvancedSearchModal().showAdvanceSearch();
 			}
 		});
 

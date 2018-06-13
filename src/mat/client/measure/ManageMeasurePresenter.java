@@ -2378,14 +2378,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getAdvancedSearch().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getAdvancedSearchModal().showAdvanceSearch();
-			}
-		});
-
+		if(searchDisplay.getAdvancedSearch() != null) {
+			searchDisplay.getAdvancedSearch().addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					searchDisplay.getAdvancedSearchModal().showAdvanceSearch();
+				}
+			});
+		}
 	}
 
 	/**

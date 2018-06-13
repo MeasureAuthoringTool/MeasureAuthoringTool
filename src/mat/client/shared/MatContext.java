@@ -980,9 +980,7 @@ public class MatContext implements IsSerializable {
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
+			public void onFailure(Throwable caught) {				
 			}
 		});
 	}
@@ -1375,6 +1373,8 @@ public class MatContext implements IsSerializable {
 	}
 
 	public void setCQLModel(CQLModel model) {
-		this.cqlModel = model;
+		if(model != null) {
+			this.cqlModel = model;
+		}
 	}
 }

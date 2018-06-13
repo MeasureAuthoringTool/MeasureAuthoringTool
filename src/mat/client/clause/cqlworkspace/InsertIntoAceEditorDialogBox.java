@@ -65,7 +65,7 @@ public class InsertIntoAceEditorDialogBox {
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 
-	private static ArrayList<CQLCode> cqlCodesList = new ArrayList<>();
+	private static ArrayList<CQLCode> cqlCodesList;
 	
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	
@@ -256,7 +256,7 @@ public class InsertIntoAceEditorDialogBox {
 												dataType = allQDMDatatypes.getValue(selectedDatatypeIndex);
 											}
 										}
-
+										
 										CQLCode code = cqlCodesList.get(selectedIndex);
 										if(isValidPair(dataType, code)) {
 											StringBuilder sb = new StringBuilder();
@@ -301,7 +301,8 @@ public class InsertIntoAceEditorDialogBox {
 											editor.focus();
 											dialogModal.hide();
 										}
-									}
+									} 
+
 									
 								}
 							} else {
@@ -469,6 +470,7 @@ public class InsertIntoAceEditorDialogBox {
 						terminologies.addAll(MatContext.get().getIncludedValueSetNames());
 						terminologies.addAll(MatContext.get().getIncludedCodeNames());
 						
+						cqlCodesList = new ArrayList<CQLCode>();
 						//Add null as first value in cqlCodes list so that 'selectedIndex' variable for ListBoxMVP
 						//lines up with array list index
 						cqlCodesList.add(null);
@@ -482,7 +484,6 @@ public class InsertIntoAceEditorDialogBox {
 								String secondPart = displayName.substring(displayName.length() - 7); 
 								displayName = firstPart + "..." + secondPart;
 							}
-							
 							listAllItemNames.addItem(displayName, terminology.toString());
 							
 							String alias = terminology.getAliasName();
@@ -681,6 +682,10 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 			return false;
 		}
 		
+		if(code.getCodeSystemOID() == null) {
+			return false;
+		}
+		
 		if(code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
 			return true;
 		}
@@ -691,6 +696,10 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	//returns true if given code is the dead code; false otherwise
 	private static boolean isDead(CQLCode code) {
 		if(code == null) {
+			return false;
+		}
+		
+		if(code.getCodeSystemOID() == null) {
 			return false;
 		}
 		

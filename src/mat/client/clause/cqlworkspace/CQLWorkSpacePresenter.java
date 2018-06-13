@@ -1850,6 +1850,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 														MatContext.get().setIncludes(getIncludesList(
 																result.getCqlModel().getCqlIncludeLibrarys()));
 														MatContext.get().setIncludedValues(result);
+														MatContext.get().setCQLModel(result.getCqlModel());
 
 														editIncludedLibraryDialogBox.getDialogModal().hide();
 														DomEvent.fireNativeEvent(Document.get().createDblClickEvent(
@@ -2091,6 +2092,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 																	result.getIncludeLibrary().getAliasName()));
 											clearAlias();
 											MatContext.get().setIncludedValues(result);
+											MatContext.get().setCQLModel(result.getCqlModel());
+
 
 											if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
 													.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
@@ -3337,7 +3340,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					continue;
 				appliedAllValueSetList.add(dto);
 			}
-
+			MatContext.get().setCQLModel(result.getCqlModel());
 			MatContext.get().setValuesets(appliedAllValueSetList);
 			appliedValueSetTableList.clear();
 			appliedCodeTableList.clear();
@@ -3368,7 +3371,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 				MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
-				MatContext.get().setCQLModel(result.getCqlModel());
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getParamBadge().setText("00");
 			}
@@ -3388,6 +3390,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
+
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getIncludesBadge().setText("00");
 				searchDisplay.getCqlLeftNavBarPanelView().getIncludeLibraryMap().clear();
@@ -4348,7 +4351,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												.setViewParameterList((result.getCqlModel().getCqlParameters()));
 										MatContext.get().setParameters(
 												getParamaterList(result.getCqlModel().getCqlParameters()));
-										MatContext.get().setCQLModel(result.getCqlModel());
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 										searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();

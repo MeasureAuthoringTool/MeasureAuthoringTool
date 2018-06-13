@@ -278,10 +278,11 @@ public class ExportServlet extends HttpServlet {
 			export.zipbarr = null;
 		}else {
 			if (SAVE.equals(type)) {
+				resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);				
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName()+".cql");
-			} else {
+			}else {
 				resp.setHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);	
-			}			
+			}
 
 			resp.getOutputStream().write(export.export.getBytes());
 		}

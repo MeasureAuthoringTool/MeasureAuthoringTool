@@ -222,5 +222,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-130_MAT-8901_EmailAuditLog.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-140_MAT-9117_bpm_cql_unit_update.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9226_MAT-9228_add_assessment_order_and_not_ordered_data_types.xml"/>
         
    	</databaseChangeLog>

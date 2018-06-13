@@ -130,14 +130,14 @@ public class AdvancedSearchModel {
 	private FormGroup getSearchBySection(String type) {
 		FormLabel searchLabel = new FormLabel();
 		HorizontalPanel searchHeader = new HorizontalPanel();
-		searchLabel.setText("Search by:");
-		searchLabel.setTitle("Search by");
+		searchLabel.setText("Search By:");
+		searchLabel.setTitle("Search By");
 		searchLabel.setFor("SeachId");
 		searchLabel.setStylePrimaryName("searchTextLabel");
 		searchLabel.getElement().setTabIndex(0);
 		searchHeader.add(searchLabel);
 		HorizontalPanel searchRow1 = new HorizontalPanel();
-		myRadio = new RadioButton("searchGroup", "Only my " + type);
+		myRadio = new RadioButton("searchGroup", "Only My " + type);
 		myRadio.setTitle("Only my " + type);
 		myRadio.setStylePrimaryName("searchTextInput");
 		myRadio.getElement().setTabIndex(0);
@@ -156,8 +156,8 @@ public class AdvancedSearchModel {
 	private FormGroup getStateSection(String type) {
 		FormLabel stateLabel = new FormLabel();
 		HorizontalPanel stateHeader = new HorizontalPanel();
-		stateLabel.setText("Show only:");
-		stateLabel.setTitle("Show only");
+		stateLabel.setText("Show Only:");
+		stateLabel.setTitle("Show Only");
 		stateLabel.setFor("stateId");
 		stateLabel.setStylePrimaryName("searchTextLabel");
 		stateLabel.getElement().setTabIndex(0);
@@ -189,9 +189,17 @@ public class AdvancedSearchModel {
 		FormLabel scoreLabel = new FormLabel();
 		scoreLabel.setText(type + " Score:");
 		scoreLabel.setTitle(type + " Score");
+		scoreLabel.setWidth("550px");
 		scoreLabel.setStylePrimaryName("searchTextLabel");
 		scoreLabel.getElement().setTabIndex(0);
 		scoreheader.add(scoreLabel);
+		HorizontalPanel helpTextRow = new HorizontalPanel();
+		FormLabel helpText = new FormLabel();
+		helpText.setText("(Check all that apply. No selection will return all measure scores.)");
+		helpText.setTitle("(Check all that apply. No selection will return all measure scores.)");
+		helpText.setStylePrimaryName("helpText");
+		helpText.getElement().setTabIndex(0);
+		helpTextRow.add(helpText);
 		HorizontalPanel scoreRow1 = new HorizontalPanel();
 		proportionCheckbox = new CheckBox("Proportion");
 		proportionCheckbox.setTitle("Proportion");
@@ -210,6 +218,7 @@ public class AdvancedSearchModel {
 		scoreRow1.add(proportionCheckbox);
 		scoreRow1.add(ratioCheckbox);
 		scoreGroup.add(scoreheader);
+		scoreGroup.add(helpTextRow);
 		scoreGroup.add(scoreRow1);
 		return scoreGroup;
 	}
@@ -228,7 +237,7 @@ public class AdvancedSearchModel {
 		patientBasedRadio.setTitle("Yes, Patient-based");
 		patientBasedRadio.setStylePrimaryName("searchTextInput");
 		patientBasedRadio.getElement().setTabIndex(0);
-		nonPatientBasedRadio = new RadioButton("patientBase", "No, not Patient-based");
+		nonPatientBasedRadio = new RadioButton("patientBase", "No, Not Patient-based");
 		nonPatientBasedRadio.setTitle("No, not Patient-based");
 		nonPatientBasedRadio.setStylePrimaryName("searchTextInput");
 		nonPatientBasedRadio.getElement().setTabIndex(0);

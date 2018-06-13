@@ -2820,3 +2820,8 @@ padding: 2px;
 	margin-bottom: 5px;
     margin-left: 10px;
 }
+
+.helpText {
+	font-weight: 200;
+	margin-left: 5px;
+}

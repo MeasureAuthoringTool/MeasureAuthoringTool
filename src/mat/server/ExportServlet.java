@@ -279,9 +279,9 @@ public class ExportServlet extends HttpServlet {
 		}else {
 			if (SAVE.equals(type)) {
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName()+".cql");
-			} else {
+			}else {
 				resp.setHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);	
-			}			
+			}
 
 			resp.getOutputStream().write(export.export.getBytes());
 		}

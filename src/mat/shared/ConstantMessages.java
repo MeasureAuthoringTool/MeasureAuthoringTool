@@ -491,8 +491,7 @@ public  class ConstantMessages {
 	/** The Constant BIRTHDATE. */
 	public static final String BIRTHDATE = "Birthdate";
 	
-	/** The Constant EXPIRED_OID. */
-	public static final String EXPIRED_OID = "419099009";
+	public static final String DEAD_OID = "419099009";
 	
 	/** The Constant BIRTHDATE. */
 	public static final String BIRTHDATE_OID = "21112-8";

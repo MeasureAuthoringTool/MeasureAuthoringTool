@@ -35,27 +35,24 @@ import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
+import mat.model.cql.CQLCode;
+import mat.model.cql.CQLIncludeLibrary;
+import mat.model.cql.CQLModel;
 import mat.shared.CQLIdentifierObject;
+import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class InsertIntoAceEditorDialogBox.
- */
 public class InsertIntoAceEditorDialogBox {
+	
+	private static final String INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR = "Invalid Item Name and Datatype Combination.";
 	
 	private static final String ITEM_NAME_DATA_TYPE_ALERT = "Item Name dropdown is enabled. Data Type dropdown now available.";
 
 	private static final String ITEM_NAME_ALERT = "Item Name dropdown is now enabled.";
 
-	/**
-	 * List of availableInsertItemList.
-	 */
 	private static List<String> availableInsertItemList = CQLWorkSpaceConstants.getAvailableItem();
-	
-	/** The all data types. */
+
 	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
-		
-	/** The all attributes. */
+
 	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 	
 	private static List<String> allTimings = MatContext.get().getCqlConstantContainer().getCqlTimingList();
@@ -67,18 +64,11 @@ public class InsertIntoAceEditorDialogBox {
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
-	
 
+	private static ArrayList<CQLCode> cqlCodesList = new ArrayList<>();
 	
-	
-	/**
-	 * List of timingList.
-	 */
-	//private static List<String> timingList = MatContext.get().getCqlGrammarDataType().getCqlTimingList();
-	/**
-	 * List of cqlFunctionsList.
-	 */
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
+	
 	private static AceEditor curEditor; 
 
 	/**
@@ -221,7 +211,7 @@ public class InsertIntoAceEditorDialogBox {
 				if (selectedItemIndex != 0) {
 					String itemTypeName = availableItemToInsert.getItemText (selectedItemIndex);
 					if (!itemTypeName.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-						//For Attributes
+						
 						if(itemTypeName.equalsIgnoreCase("Attributes")) {
 							
 							int selectedIndex = availableAttributesToInsert.getSelectedIndex();
@@ -235,7 +225,6 @@ public class InsertIntoAceEditorDialogBox {
 								} else {
 									int columnIndex = editor.getCursorPosition().getColumn();
 									System.out.println(columnIndex);
-									//convertToCamelCase(attributeNameToBeInserted);
 									editor.insertAtCursor(convertToCamelCase(attributeNameToBeInserted));
 									editor.focus();
 									dialogModal.hide();
@@ -268,16 +257,31 @@ public class InsertIntoAceEditorDialogBox {
 											}
 										}
 
-										StringBuilder sb = new StringBuilder();
-										if(dataType != null){
-											sb = sb.append("[\"" + dataType + "\": ");
-											sb= sb.append(itemNameToBeInserted).append("]");
-											itemNameToBeInserted = sb.toString();
-
-
+										CQLCode code = cqlCodesList.get(selectedIndex);
+										if(isValidPair(dataType, code)) {
+											StringBuilder sb = new StringBuilder();
+											if(dataType != null){
+												sb = sb.append("[\"" + dataType + "\": ");
+												sb = sb.append(itemNameToBeInserted).append("]");
+												itemNameToBeInserted = sb.toString();
+	
+	
+											} else {
+												sb= sb.append(itemNameToBeInserted);
+												itemNameToBeInserted = sb.toString();	
+											}
+											
+											if(!itemNameToBeInserted.isEmpty()){
+												editor.insertAtCursor(itemNameToBeInserted);
+												editor.focus();
+												dialogModal.hide();
+											}
 										} else {
-											sb= sb.append(itemNameToBeInserted);
-											itemNameToBeInserted = sb.toString();	
+											selectItemListFormGroup.setValidationState(ValidationState.ERROR);
+											dataTypeListFormGroup.setValidationState(ValidationState.ERROR);
+											helpBlock.setIconType(IconType.EXCLAMATION_CIRCLE);
+											helpBlock.setText(InsertIntoAceEditorDialogBox.INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR);
+											messageFormgroup.setValidationState(ValidationState.ERROR);
 										}
 										
 									} else if(itemTypeName.equalsIgnoreCase("definitions") || itemTypeName.equalsIgnoreCase("parameters") ||
@@ -285,10 +289,18 @@ public class InsertIntoAceEditorDialogBox {
 										StringBuilder sb = new StringBuilder(); 
 										sb.append(itemNameToBeInserted);
 										itemNameToBeInserted = sb.toString(); 
-									} if(!itemNameToBeInserted.isEmpty()){
-										editor.insertAtCursor(itemNameToBeInserted);
-										editor.focus();
-										dialogModal.hide();
+										
+										if(!itemNameToBeInserted.isEmpty()){
+											editor.insertAtCursor(itemNameToBeInserted);
+											editor.focus();
+											dialogModal.hide();
+										}
+									} else if (itemTypeName.equalsIgnoreCase("Pre-Defined Functions") || itemTypeName.equalsIgnoreCase("Timing")) {
+										if(!itemNameToBeInserted.isEmpty()){
+											editor.insertAtCursor(itemNameToBeInserted);
+											editor.focus();
+											dialogModal.hide();
+										}
 									}
 									
 								}
@@ -457,6 +469,12 @@ public class InsertIntoAceEditorDialogBox {
 						terminologies.addAll(MatContext.get().getIncludedValueSetNames());
 						terminologies.addAll(MatContext.get().getIncludedCodeNames());
 						
+						//Add null as first value in cqlCodes list so that 'selectedIndex' variable for ListBoxMVP
+						//lines up with array list index
+						cqlCodesList.add(null);
+						
+						
+						CQLModel cqlModel = MatContext.get().getCQLModel();
 						for(CQLIdentifierObject terminology : terminologies) {
 							String displayName = terminology.getDisplay();
 							if(displayName.length() > 65) {
@@ -465,8 +483,33 @@ public class InsertIntoAceEditorDialogBox {
 								displayName = firstPart + "..." + secondPart;
 							}
 							
-							
 							listAllItemNames.addItem(displayName, terminology.toString());
+							
+							String alias = terminology.getAliasName();
+							String libraryName = null;
+							String version = null;
+							String codeName = terminology.getDisplay();
+							CQLCode code = null;
+							
+							if(alias==null) {
+								code = cqlModel.getCodeByName(codeName);
+								cqlCodesList.add(code);
+							} else {
+								for(CQLIncludeLibrary lib : cqlModel.getCqlIncludeLibrarys()) {
+									
+									if(lib.getAliasName().equalsIgnoreCase(alias)){
+										version = lib.getVersion();
+										libraryName = lib.getCqlLibraryName();
+										
+										//changes codeName from 'Library.Name' to 'Name'
+										int indexOfFirstPeriod = codeName.indexOf('.');
+										codeName = codeName.substring(indexOfFirstPeriod+1);
+										
+										code = cqlModel.getCodeByName(libraryName + "-" + version +"|" + alias + "|" + codeName);
+										cqlCodesList.add(code);
+									}
+								}
+							}
 						}
 						
 					} else if (itemTypeSelected.equalsIgnoreCase("Attributes")) {
@@ -593,7 +636,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+		
 			}
 		});
 	}
@@ -615,13 +658,7 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 		}
 		
 	}
-	
-	/**
-	 * Convert to camel case.
-	 *
-	 * @param str the str
-	 * @return the string
-	 */
+
 	private static String convertToCamelCase(String str){
         String result = "";
         char firstChar = str.charAt(0);
@@ -638,8 +675,62 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
         return result.replaceAll(" ", "");
 	}
 	
+	//returns true if given code is the birthday code; false otherwise
+	private static boolean isBirthdate(CQLCode code) {
+		if(code == null) {
+			return false;
+		}
+		
+		if(code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
+			return true;
+		}
+		
+		return false;
+	}
 	
+	//returns true if given code is the dead code; false otherwise
+	private static boolean isDead(CQLCode code) {
+		if(code == null) {
+			return false;
+		}
+		
+		if(code.getCodeOID().equals(ConstantMessages.DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.DEAD_CODE_SYSTEM_OID)) {
+			return true;
+		}
+		
+		return false;
+	}
 	
-	
-	
+	/**
+	 * 
+	 * @param dataType	String
+	 * @param code	CQLCode
+	 * @return
+	 * 	true if 'Patient Characteristic Birthdate' is paired with birthdate code
+	 *  true if 'Patient Characteristic Expired' is paired with dead code
+	 *  false if datatype = PATIENT_CHARACTERISTIC_BIRTHDATE or datatype = PATIENT_CHARACTERISTIC_EXPIRED,
+	 *  	or if code = dead or code = birthdate and the combination is not PATIENT_CHARACTERISTIC_EXPIRED 
+	 *  	and dead, or PATIENT_CHARACTERISTIC_BIRTHDATE and birthdate
+	 *  true otherwise
+	 */
+	private static boolean isValidPair(String dataType, CQLCode code) {
+		
+		//valid pair
+		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
+			return true;
+		
+		//valid pair
+		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) && isDead(code)) {
+			return true;
+		
+		//by elimination of above, must be invalid pair
+		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) ||dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) ||
+				isDead(code) || isBirthdate(code)) {
+			return false;
+		
+		//valid pair consisting of none of the datatypes or codes we are considering in the scope of this method
+		} else {
+			return true;
+		}
+	}
 }

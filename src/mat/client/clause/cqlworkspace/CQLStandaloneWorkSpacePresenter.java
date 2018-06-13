@@ -2636,6 +2636,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												.setViewParameterList(result.getCqlModel().getCqlParameters());
 										MatContext.get().setParameters(
 												getParamaterList(result.getCqlModel().getCqlParameters()));
+										MatContext.get().setCQLModel(result.getCqlModel());
 										searchDisplay.getCqlLeftNavBarPanelView()
 												.setCurrentSelectedParamerterObjId(result.getParameter().getId());
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
@@ -3316,6 +3317,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 												.setViewParameterList((result.getCqlModel().getCqlParameters()));
 										MatContext.get().setParameters(
 												getParamaterList(result.getCqlModel().getCqlParameters()));
+										MatContext.get().setCQLModel(result.getCqlModel());
 										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 										searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
@@ -3763,6 +3765,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					searchDisplay.getCqlLeftNavBarPanelView().clearAndAddParameterNamesToListBox();
 					searchDisplay.getCqlLeftNavBarPanelView().updateParamMap();
 					MatContext.get().setParameters(getParamaterList(result.getCqlModel().getCqlParameters()));
+					MatContext.get().setCQLModel(result.getCqlModel());
 				} else {
 					searchDisplay.getCqlLeftNavBarPanelView().getParamBadge().setText("00");
 				}
@@ -4722,7 +4725,7 @@ private void addCodeSearchPanelHandlers() {
 						
 							List<CQLQualityDataSetDTO> appliedListModel = new ArrayList<CQLQualityDataSetDTO>();
 							for (CQLQualityDataSetDTO cqlQDMDTO : result.getUpdatedCQLQualityDataDTOLIst()) {
-								if (!ConstantMessages.EXPIRED_OID.equals(cqlQDMDTO
+								if (!ConstantMessages.DEAD_OID.equals(cqlQDMDTO
 										.getDataType()) && !ConstantMessages.BIRTHDATE_OID.equals(cqlQDMDTO
 												.getDataType())
 										&& (cqlQDMDTO.getType() == null))  {

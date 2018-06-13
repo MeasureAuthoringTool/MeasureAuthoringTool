@@ -1702,7 +1702,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		// supplement data elems
 		String xpathForQDMElements = "/measure/elementLookUp/qdm[@datatype != 'Timing Element' and @oid!='"
 				+ ConstantMessages.BIRTHDATE_OID + "' " + "and @oid!='"
-				+ ConstantMessages.EXPIRED_OID + "']";
+				+ ConstantMessages.DEAD_OID + "']";
 		NodeList qdmElements = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
 				xpathForQDMElements);

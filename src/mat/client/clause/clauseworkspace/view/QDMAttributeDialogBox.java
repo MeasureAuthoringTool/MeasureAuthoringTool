@@ -201,7 +201,7 @@ public class QDMAttributeDialogBox {
 		if(qdmDataType.equalsIgnoreCase("Patient characteristic Birthdate") || qdmDataType.equalsIgnoreCase("Patient characteristic Expired")){
 			Node oid = qdmNode.getAttributes().getNamedItem("oid");
 			String  oidValue = oid.getNodeValue().trim();
-			if(oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID) || oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)){
+			if(oidValue.equalsIgnoreCase(ConstantMessages.DEAD_OID) || oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)){
 				findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
 						xmlTreeDisplay, cellTreeNode);
 			}else{

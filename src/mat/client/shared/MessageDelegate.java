@@ -799,7 +799,7 @@ public class MessageDelegate {
 			+ "Please copy the complete URL for the code directly from VSAC and try again.";
 	
 	/** The umls successfull login. */
-	private final String UMLS_SUCCESSFULL_LOGIN = "Successfully logged into UMLS";
+	private final String UMLS_SUCCESSFULL_LOGIN = "Successfully logged in to UMLS";
 	
 	/** The unable to process. */
 	private final String UNABLE_TO_PROCESS = "System error.  Unable to process information.";

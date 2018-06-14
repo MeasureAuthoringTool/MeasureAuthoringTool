@@ -323,8 +323,8 @@ public class AdvancedSearchModel {
 	private FormGroup getOwnedBySection(String type) {
 		HorizontalPanel ownedByHeader = new HorizontalPanel();
 		FormLabel ownedByLabel = new FormLabel();
-		ownedByLabel.setText(type + " Owned Modified By:");
-		ownedByLabel.setTitle(type + " Owned Modified By");
+		ownedByLabel.setText(type + " Owned By:");
+		ownedByLabel.setTitle(type + " Owned By");
 		ownedByLabel.setStylePrimaryName("searchTextLabel");
 		ownedByLabel.setWidth("550px");
 		ownedByLabel.getElement().setTabIndex(0);

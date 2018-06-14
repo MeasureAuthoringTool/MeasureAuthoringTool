@@ -43,7 +43,7 @@ import mat.shared.ConstantMessages;
 
 public class InsertIntoAceEditorDialogBox {
 	
-	private static final String INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR = "Invalid Item Name and Datatype Combination.";
+	private static final String INVALID_ITEM_AND_DATATYPE_COMBINATOIN_ERROR = "Invalid value set/code datatype combination.";
 	
 	private static final String ITEM_NAME_DATA_TYPE_ALERT = "Item Name dropdown is enabled. Data Type dropdown now available.";
 

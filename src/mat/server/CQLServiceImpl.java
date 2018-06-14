@@ -1758,7 +1758,7 @@ public class CQLServiceImpl implements CQLService {
 
 		List<String> usedValuesets = parsedCQL.getUsedCQLArtifacts().getUsedCQLValueSets();
 
-		for (CQLQualityDataSetDTO valueset : cqlModel.getAllValueSetList()) {
+		for (CQLQualityDataSetDTO valueset : cqlModel.getAllValueSetAndCodeList()) {
 			boolean isUsed = usedValuesets.contains(valueset.getName());
 			valueset.setUsed(isUsed);
 		}
@@ -3144,7 +3144,7 @@ public class CQLServiceImpl implements CQLService {
 	public CQLQualityDataModelWrapper getCQLValusets(String measureId, CQLQualityDataModelWrapper cqlQualityDataModelWrapper) {
 		MeasureXmlModel model = measurePackageService.getMeasureXmlForMeasure(measureId);
 		String xmlString = model.getXml();
-		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(xmlString).getCqlModel().getAllValueSetList());
+		List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass.sortCQLQualityDataSetDto(getCQLData(xmlString).getCqlModel().getAllValueSetAndCodeList());
 		cqlQualityDataModelWrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 
 		return cqlQualityDataModelWrapper;

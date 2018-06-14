@@ -1565,7 +1565,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				appendAndSaveNode(library, nodeName, finalResult.getXml(), parentNode);
 				cqlLibraryDAO.refresh(library);
 				List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs = CQLUtilityClass
-						.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetList());
+						.sortCQLQualityDataSetDto(getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList());
 				wrapper.setQualityDataDTO(cqlQualityDataSetDTOs);
 				
 			}
@@ -1824,7 +1824,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 	@Override
 	public VsacApiResult updateCQLVSACValueSets(String cqlLibraryId, String expansionId, String sessionId) {
-		List<CQLQualityDataSetDTO> appliedQDMList = getCQLData(cqlLibraryId).getCqlModel().getAllValueSetList();
+		List<CQLQualityDataSetDTO> appliedQDMList = getCQLData(cqlLibraryId).getCqlModel().getAllValueSetAndCodeList();
 		VsacApiResult result = getVsacService().updateCQLVSACValueSets(appliedQDMList, expansionId, sessionId);
 		if(result.isSuccess()){
 			updateAllCQLInLibraryXml(result.getCqlQualityDataSetMap(), cqlLibraryId);

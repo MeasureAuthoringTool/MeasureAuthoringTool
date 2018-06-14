@@ -278,7 +278,7 @@ public final class CQLUtilityClass {
 			cqlModel.setValueSetList(filterValuesets(cqlModel.getValueSetList()));
 			ArrayList<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
 			valueSetsList.addAll(cqlModel.getValueSetList());
-			cqlModel.setAllValueSetList(valueSetsList);
+			cqlModel.setAllValueSetAndCodeList(valueSetsList);
 		}
 		
 		if(!cqlModel.getCodeList().isEmpty()){
@@ -286,7 +286,7 @@ public final class CQLUtilityClass {
 			//Combine Codes and Value sets in allValueSetList for UI
 			List<CQLQualityDataSetDTO> dtoList = convertCodesToQualityDataSetDTO(cqlModel.getCodeList());
 			if(!dtoList.isEmpty()){
-				cqlModel.getAllValueSetList().addAll(dtoList);
+				cqlModel.getAllValueSetAndCodeList().addAll(dtoList);
 			}
 		}
 		return cqlModel;

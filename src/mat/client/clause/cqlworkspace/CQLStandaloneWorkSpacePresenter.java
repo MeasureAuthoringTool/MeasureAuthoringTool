@@ -781,7 +781,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(SaveUpdateCQLResult result) {
-					setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetList());
+					setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
 					showSearchingBusy(false);
 				}
 			});
@@ -3498,8 +3498,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(final SaveUpdateCQLResult result) {
 						searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedValueSetObjId(null);
 						appliedValueSetTableList.clear();
-						if (result.getCqlModel().getAllValueSetList() != null) {
-							for (CQLQualityDataSetDTO dto : result.getCqlModel().getAllValueSetList()) {
+						if (result.getCqlModel().getAllValueSetAndCodeList() != null) {
+							for (CQLQualityDataSetDTO dto : result.getCqlModel().getAllValueSetAndCodeList()) {
 								if(dto.isSuppDataElement() || 
 										dto.getOid().equals("419099009") || dto.getOid().equals("21112-8") 
 												|| (dto.getType() !=null && dto.getType().equalsIgnoreCase("code")))
@@ -3725,7 +3725,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				}
 
 				List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
-				List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetList();
+				List<CQLQualityDataSetDTO> appliedValueSetListInXML = result.getCqlModel().getAllValueSetAndCodeList();
 
 				for (CQLQualityDataSetDTO dto : appliedValueSetListInXML) {
 					if (dto.isSuppDataElement())
@@ -4419,8 +4419,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						MatContext.get().getCQLModel().setCodeList(appliedCodeTableList);
 						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService().checkForEditPermission());
 						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						if (result != null && result.getCqlModel().getAllValueSetList() != null) {
-							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetList());
+						if (result != null && result.getCqlModel().getAllValueSetAndCodeList() != null) {
+							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
 						}
 						showSearchingBusy(false);
 					}
@@ -4600,8 +4600,8 @@ private void addCodeSearchPanelHandlers() {
 						appliedCodeTableList.addAll(result.getCqlCodeList());
 						MatContext.get().getCQLModel().setCodeList(appliedCodeTableList);
 						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
-						if (result.getCqlModel().getAllValueSetList() != null) {
-							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetList());
+						if (result.getCqlModel().getAllValueSetAndCodeList() != null) {
+							setAppliedValueSetListInTable(result.getCqlModel().getAllValueSetAndCodeList());
 						}
 						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList, MatContext.get().getLibraryLockService().checkForEditPermission());
 						//Temporary fix to update codes for insert Icon.

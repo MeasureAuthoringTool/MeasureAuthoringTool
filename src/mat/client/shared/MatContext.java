@@ -1239,15 +1239,10 @@ public class MatContext implements IsSerializable {
 	}
 	
 	public void setIncludedValues(SaveUpdateCQLResult result) {
-		includedValueSetNames.clear();
 		includedValueSetNames = result.getCqlModel().getCQLIdentifierValueSet();
-		includedCodeNames.clear();
 		includedCodeNames = result.getCqlModel().getCQLIdentifierCode();
-		includedParamNames.clear();
 		includedParamNames = result.getCqlModel().getCQLIdentifierParam();
-		includedDefNames.clear();
 		includedDefNames= result.getCqlModel().getCQLIdentifierDefinitions();
-		includedFuncNames.clear();
 		includedFuncNames = result.getCqlModel().getCQLIdentifierFunctions();
 	}
 

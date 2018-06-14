@@ -258,12 +258,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(inProgressMessageDisplay);
 		
 		ButtonToolBar packageGroup = new ButtonToolBar();
-		packageGroup.add(packageMeasureAndExportButton);
 		packageGroup.add(packageMeasureButton);
+		packageGroup.add(packageMeasureAndExportButton);
 
-		packageMeasureButton.setPull(Pull.RIGHT);
-		packageMeasureAndExportButton.setPull(Pull.RIGHT);
-		
 		content.add(packageGroup);
 		content.setStyleName("contentPanel");
 	}

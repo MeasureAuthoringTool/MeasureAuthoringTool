@@ -6080,7 +6080,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
 			validateMeasureForExport(measureId, null);
-			auditService.recordMeasureEvent(measureId, "Measure Pacakge Created", "", false);
+			auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
 			return result;
 		} catch (Exception e) {
 			e.printStackTrace();

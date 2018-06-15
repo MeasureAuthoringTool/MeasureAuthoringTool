@@ -790,7 +790,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 					// cached across
 					// measures.
 				}
-				
 				setOverview(result);
 			}
 		});
@@ -930,12 +929,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 			@Override
 			public void onSuccess(final Void result) {
-				packageOverview.getPackages().remove(pkg);
-				if (currentDetail.getSequence().equals(
-						pkg.getSequence())) {
-					currentDetail = null;
+				getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+				if (!packageOverview.getPackages().isEmpty()) {
+					//Setting the first item in the list as selected item
+					currentDetail = packageOverview.getPackages().get(0);
 				}
-				setOverview(packageOverview);
 			}
 		});
 	}
@@ -1341,7 +1339,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * Save export.
 	 */
 	private void saveExport() {
-		((Button) view.getPackageMeasureAndExportButton()).setEnabled(false);
 		String url = GWT.getModuleBaseURL() + "export?id=" + model.getId()
 				+ "&format=zip";
 		Window.Location.replace(url + "&type=save");

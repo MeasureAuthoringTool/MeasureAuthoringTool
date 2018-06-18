@@ -8,8 +8,6 @@
 	    <changeSet author="mat_dev_user" id="1" context="prod">
 	        <sql>
 				INSERT INTO DATA_TYPE VALUES((select concat(max(cast(aw.DATA_TYPE_ID as signed))+1,'') from DATA_TYPE aw), 'Assessment, Order', (select ca.CATEGORY_ID from CATEGORY ca where ca.DESCRIPTION = 'Assessment'));
-				INSERT INTO DATA_TYPE VALUES((select concat(max(cast(aw.DATA_TYPE_ID as signed))+1,'') from DATA_TYPE aw), 'Assessment, Not Ordered', (select ca.CATEGORY_ID from CATEGORY ca where ca.DESCRIPTION = 'Assessment'));
-				
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'authorDatetime', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Order'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'reason', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Order'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'code', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Order'), 'Data Type');
@@ -17,12 +15,15 @@
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'recorder', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Order'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'reporter', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Order'), 'Data Type');
 				
+				INSERT INTO DATA_TYPE VALUES((select concat(max(cast(aw.DATA_TYPE_ID as signed))+1,'') from DATA_TYPE aw), 'Assessment, Not Ordered', (select ca.CATEGORY_ID from CATEGORY ca where ca.DESCRIPTION = 'Assessment'));
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'authorDatetime', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'negationRationale', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'code', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'id', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'recorder', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'reporter', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
+		  		 
+		  		DELETE FROM QDM_ATTRIBUTES WHERE NAME = 'anatomicalApproachSite';
 		   </sql>
 	    </changeSet>
     

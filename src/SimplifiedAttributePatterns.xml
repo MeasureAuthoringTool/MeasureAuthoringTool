@@ -152,6 +152,11 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="setting">
+ 	<mode mode="Nullable" />
+ 	<mode mode="ValueSets" />
+ 	<mode mode="Codes" />
+ </attribute>
  <attribute attribName="severity">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />

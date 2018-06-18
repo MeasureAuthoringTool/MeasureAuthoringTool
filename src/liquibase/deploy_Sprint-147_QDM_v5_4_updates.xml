@@ -23,7 +23,9 @@
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'recorder', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 				INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'reporter', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Assessment, Not Ordered'), 'Data Type');
 		  		 
-		  		DELETE FROM QDM_ATTRIBUTES WHERE NAME = 'anatomicalApproachSite';
+		  		INSERT INTO QDM_ATTRIBUTES VALUES((select concat(max(cast(aw.ID as signed))+1,'') from QDM_ATTRIBUTES aw), 'setting', (select DATA_TYPE_ID from DATA_TYPE where DESCRIPTION='Medication, Order'), 'Data Type');
+	  		 	
+		  		DELETE FROM QDM_ATTRIBUTES WHERE NAME = 'anatomicalApproachSite';	
 		   </sql>
 	    </changeSet>
     

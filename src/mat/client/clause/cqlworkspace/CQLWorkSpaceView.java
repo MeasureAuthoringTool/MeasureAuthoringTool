@@ -12,69 +12,42 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLWorkSpaceView.
- */
-/**
- * @author jnarang
- *
- */
 public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
-	/** The main horizontal panel. */
 	HorizontalPanel mainHPPanel = new HorizontalPanel();
 
-	/** The main horizontal panel. */
 	private VerticalPanel mainPanel = new VerticalPanel();
 
-	/** The main v panel. */
 	private VerticalPanel mainVPanel = new VerticalPanel();
 
-	/** The main flow panel. */
 	private FlowPanel mainFlowPanel = new FlowPanel();
-	
-	/** The clicked menu. */
+
 	public String clickedMenu = "general";
 
-	/** The clicked menu. */
 	public String nextClickedMenu = "general";
 
-	/** The vp. */
 	VerticalPanel vp = new VerticalPanel();
 
-	/** The value set view. */
 	private CQLAppliedValueSetView valueSetView;
 
-	/** The incl view. */
 	private CQLIncludeLibraryView inclView;
-	
-	/** The code view. */
+
 	private CQLCodesView codesView;
 
-	/** The general information view. */
 	private CQLGeneralInformationView generalInformationView;
 	
-	/** The cql parameters view. */
 	private CQLParametersView cqlParametersView;
 	
-	/** The cql definitions view. */
 	private CQlDefinitionsView cqlDefinitionsView;
 	
-	/** The cql functions view. */
 	private CQLFunctionsView cqlFunctionsView;
 	
-	/** The cql view CQL view. */
 	private CQLView cqlViewCQLView;
 	
-	/** The cql left nav bar panel view. */
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
 	
 	private HelpBlock helpBlock = new HelpBlock();
-	
-	/**
-	 * Instantiates a new CQL work space view.
-	 */
+
 	public CQLWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		cqlParametersView = new CQLParametersView();
@@ -89,14 +62,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		resetAll();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLNewPresenter.ViewDisplay#buildView()
-	 */
-	/**
-	 * Builds the view.
-	 */
+
 	@Override
 	public void buildView() {
 		resetAll();
@@ -122,15 +88,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
         
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#buildCQLFileView()
-	 */
-	/**
-	 * Builds the cql file view.
-	 */
 	@Override
 	public void buildCQLFileView(boolean isEditable) {
 		unsetEachSectionSelectedObject();
@@ -140,15 +97,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * buildGeneralInformation()
-	 */
-	/**
-	 * Builds the general information.
-	 */
 	@Override
 	public void buildGeneralInformation() {
 		unsetEachSectionSelectedObject();
@@ -158,11 +106,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 
-	
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildAppliedQDM()
-	 */
 	@Override
 	public void buildAppliedQDM() {
 		mainFlowPanel.clear();
@@ -209,9 +153,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildIncludesView()
-	 */
+
 	@Override
 	public void buildIncludesView() {
 		unsetEachSectionSelectedObject();
@@ -233,16 +175,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.add(vp);
 	}
 
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * buildParameterLibraryView()
-	 */
-	/**
-	 * Builds the parameter library view.
-	 */
 	@Override
 	public void buildParameterLibraryView() {
 		unsetEachSectionSelectedObject();
@@ -252,16 +184,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		getCqlLeftNavBarPanelView().setFocus(getCQLParametersView().getMainParamViewVerticalPanel());
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * buildDefinitionLibraryView()
-	 */
-	/**
-	 * Builds the definition library view.
-	 */
 	@Override
 	public void buildDefinitionLibraryView() {
 		unsetEachSectionSelectedObject();
@@ -272,15 +194,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * buildFunctionLibraryView()
-	 */
-	/**
-	 * Builds the function library view.
-	 */
 	@Override
 	public void buildFunctionLibraryView() {
 		unsetEachSectionSelectedObject();
@@ -289,10 +202,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		//508 Compliance for Function section
 		getCqlLeftNavBarPanelView().setFocus(getCqlFunctionsView().getMainFunctionVerticalPanel());
 	}
-	
-	/**
-	 * Reset All components to default state.
-	 */
+
 	@Override
 	public void resetAll() {
 		mainFlowPanel.clear();
@@ -328,171 +238,46 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getMainPanel()
-	 */
-	/**
-	 * Gets the main panel.
-	 *
-	 * @return the main panel
-	 */
 	@Override
 	public VerticalPanel getMainPanel() {
 		return mainPanel;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getMainVPanel()
-	 */
-	/**
-	 * Gets the main h panel.
-	 *
-	 * @return the main h panel
-	 */
 	@Override
 	public HorizontalPanel getMainHPanel() {
 		return mainHPPanel;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getMainVPanel()
-	 */
-	/**
-	 * Gets the main v panel.
-	 *
-	 * @return the main v panel
-	 */
 	@Override
 	public Widget asWidget() {
 		return mainVPanel;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getClickedMenu()
-	 */
-	/**
-	 * Gets the clicked menu.
-	 *
-	 * @return the clicked menu
-	 */
 	@Override
 	public String getClickedMenu() {
 		return clickedMenu;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
-	 * lang.String)
-	 */
-	/**
-	 * Sets the clicked menu.
-	 *
-	 * @param clickedMenu
-	 *            the new clicked menu
-	 */
 	@Override
 	public void setClickedMenu(String clickedMenu) {
 		this.clickedMenu = clickedMenu;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#getClickedMenu()
-	 */
-	/**
-	 * Gets the clicked menu.
-	 *
-	 * @return the clicked menu
-	 */
 	@Override
 	public String getNextClickedMenu() {
 		return nextClickedMenu;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#setClickedMenu(java.
-	 * lang.String)
-	 */
-	/**
-	 * Sets the clicked menu.
-	 *
-	 * @param nextClickedMenu
-	 *            the new next clicked menu
-	 */
 	@Override
 	public void setNextClickedMenu(String nextClickedMenu) {
 		this.nextClickedMenu = nextClickedMenu;
 	}
-
-	/**
-	 * Gets the main flow panel.
-	 *
-	 * @return the main flow panel
-	 */
+	
 	@Override
 	public FlowPanel getMainFlowPanel() {
 		return mainFlowPanel;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#buildInfoPanel(com.google.gwt.user.client.ui.Widget)
-	 */
-	/*
-	 * This Method is used to give information of Keyboard ShortcutKeys on
-	 * AceEditor for Users.
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * buildInfoPanel(com.google.gwt.user.client.ui.Widget)
-	 */
-	/*@Override
-	public void buildInfoPanel(Widget sourceWidget) {
-
-		PopupPanel panel = new PopupPanel();
-		panel.setAutoHideEnabled(true);
-		panel.setPopupPosition(sourceWidget.getAbsoluteLeft() + 40, sourceWidget.getAbsoluteTop() + 20);
-		VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-		panel.setWidget(dialogContents);
-
-		HTML html1 = new HTML("Ctrl-Alt-v  : Value Sets");
-		HTML html2 = new HTML("Ctrl-Alt-y  : Datatypes");
-		HTML html3 = new HTML("Ctrl-Alt-t  : Timings");
-		HTML html4 = new HTML("Ctrl-Alt-f  : Functions");
-		HTML html5 = new HTML("Ctrl-Alt-d  : Definitions");
-		HTML html6 = new HTML("Ctrl-Alt-p  : Parameters");
-		HTML html7 = new HTML("Ctrl-Alt-a  : Attributes");
-		HTML html8 = new HTML("Ctrl-Space  : All");
-
-		dialogContents.add(html1);
-		dialogContents.add(html2);
-		dialogContents.add(html3);
-		dialogContents.add(html4);
-		dialogContents.add(html5);
-		dialogContents.add(html6);
-		dialogContents.add(html7);
-		dialogContents.add(html8);
-		panel.show();
-	}*/
-	
-
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#hideAceEditorAutoCompletePopUp()
-	 */
 	@Override
 	public void hideAceEditorAutoCompletePopUp() {
 		cqlDefinitionsView.hideAceEditorAutoCompletePopUp();
@@ -507,9 +292,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlFunctionsView.getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 	}
 	
-	/**
-	 * Unset each section selected object and clear Value sets CellTable Panel.
-	 */
+
 	public void unsetEachSectionSelectedObject() {
 		cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
 		cqlLeftNavBarPanelView.setCurrentSelectedParamerterObjId(null);
@@ -525,10 +308,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		codesView.clearCellTableMainPanel();
 	}
 	
-	
-	/**
-	 * Reset message display.
-	 */
 	@Override
 	public void resetMessageDisplay() {
 		cqlLeftNavBarPanelView.getWarningMessageAlert().clearAlert();
@@ -544,7 +323,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 
 	
-	
 	private void resetFormGroups() {
 		cqlDefinitionsView.resetDefineFormGroup();
 		cqlParametersView.resetParamFormGroup();
@@ -554,67 +332,41 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlLeftNavBarPanelView()
-	 */
 	@Override
 	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView(){
 		return cqlLeftNavBarPanelView;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlGeneralInformationView()
-	 */
 	@Override
 	public CQLGeneralInformationView getCqlGeneralInformationView(){
 		return generalInformationView;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getIncludeView()
-	 */
+
 	@Override
 	public CQLIncludeLibraryView getIncludeView() {
 		return inclView;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getQdmView()
-	 */
 	@Override
 	public CQLAppliedValueSetView getValueSetView() {
 		return valueSetView;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCQLParametersView()
-	 */
+
 	@Override
 	public CQLParametersView getCQLParametersView(){
 		return cqlParametersView;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCQlDefinitionsView()
-	 */
+
 	@Override
 	public CQlDefinitionsView getCQlDefinitionsView(){
 		return cqlDefinitionsView;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#getCqlFunctionsView()
-	 */
+
 	@Override
 	public CQLFunctionsView getCqlFunctionsView() {
 		return cqlFunctionsView;
 	}
-	
-	/**
-	 * Gets the view CQL view.
-	 *
-	 * @return the view CQL view
-	 */
+
 	@Override
 	public CQLView getViewCQLView(){
 		return cqlViewCQLView;

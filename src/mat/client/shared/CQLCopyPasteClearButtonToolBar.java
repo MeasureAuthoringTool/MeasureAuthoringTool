@@ -1,6 +1,3 @@
-/**
- * 
- */
 package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -9,15 +6,13 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-/**
- * @author jnarang
- *
- */
 public class CQLCopyPasteClearButtonToolBar {
 	
 	private Button copyButton = new Button();
 	
 	private Button pasteButton = new Button();
+	
+	private Button selectAllButton = new Button();
 	
 	private Button clearButton = new Button();
 	
@@ -49,6 +44,17 @@ public class CQLCopyPasteClearButtonToolBar {
 		pasteButton.setSize("70px", "30px");
 		pasteButton.getElement().setAttribute("aria-label", "Paste");
 		
+		selectAllButton.setType(ButtonType.LINK);
+		selectAllButton.getElement().setId("selectAllButton_"+sectionName);
+		selectAllButton.setMarginTop(10);
+		selectAllButton.setTitle("Select All");
+		selectAllButton.setText("Select All");
+		selectAllButton.setIcon(IconType.CHECK_SQUARE);
+		selectAllButton.setIconSize(IconSize.LARGE);
+		selectAllButton.setColor("#0964A2");
+		selectAllButton.setSize("85px", "30px");
+		selectAllButton.getElement().setAttribute("aria-label", "Select All");
+		
 		
 		clearButton.setType(ButtonType.LINK);
 		clearButton.getElement().setId("clearButton_"+sectionName);
@@ -63,8 +69,9 @@ public class CQLCopyPasteClearButtonToolBar {
 		
 		buttonToolBar.add(copyButton);
 		buttonToolBar.add(pasteButton);
+		buttonToolBar.add(selectAllButton);
 		buttonToolBar.add(clearButton);
-		buttonToolBar.getElement().setAttribute("style", "margin-left:660px;");
+		buttonToolBar.getElement().setAttribute("style", "margin-left:590px;");
 		
 	}
 
@@ -74,6 +81,10 @@ public class CQLCopyPasteClearButtonToolBar {
 
 	public Button getPasteButton() {
 		return pasteButton;
+	}
+	
+	public Button getSelectAllButton() {
+		return selectAllButton;
 	}
 
 	public Button getClearButton() {

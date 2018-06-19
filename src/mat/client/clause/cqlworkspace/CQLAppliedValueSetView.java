@@ -83,10 +83,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
 
-
-/**
- * The Class QDMAppliedSelectionView.
- */
 public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	static final String GROUPING_QDM = " (G)";
 	static final String EXTENSIONAL_QDM = " (E)";
@@ -101,25 +97,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private final String ENTER_OID = "Enter OID";
 	private final String ENTER_NAME = "Enter Name";
 	private final String RETRIEVE_OID = "Retrieve OID";
-	/**
-	 * The Interface Observer.
-	 */
+	
 	public static interface Observer {
-		
-		/**
-		 * On modify clicked.
-		 * 
-		 * @param result
-		 *            the result
-		 */
+
 		void onModifyClicked(CQLQualityDataSetDTO result);
-		
-		/**
-		 * On delete clicked.
-		 *
-		 * @param result            the result
-		 * @param index the index
-		 */
+
 		void onDeleteClicked(CQLQualityDataSetDTO result, int index);
 		
 	}
@@ -132,6 +114,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private static final int TABLE_ROW_COUNT = 10;
 	private CellTable<CQLQualityDataSetDTO> table;
 	private List<CQLQualityDataSetDTO> qdmSelectedList;
+	private List<CQLQualityDataSetDTO> allValueSetsList;
 	private MultiSelectionModel<CQLQualityDataSetDTO> selectionModel;
 	private ListDataProvider<CQLQualityDataSetDTO> listDataProvider;
 	private Button updateVSACButton = new Button("Update From VSAC ");
@@ -163,10 +146,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	SimplePanel cellTableMainPanel = new SimplePanel();
 	HTML heading = new HTML();
 	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("valueset");
-	
-	/**
-	 * Instantiates a new VSAC profile selection view.
-	 */
+
 	public CQLAppliedValueSetView() {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -198,12 +178,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		containerPanel.setStyleName("cqlqdsContentPanel");
 	}
 
-	
-	/**
-	 * Builds the cell table widget.
-	 *
-	 * @return the simple panel
-	 */
 	public SimplePanel buildCellTableWidget(){
 		cellTableMainPanel.clear();
 		VerticalPanel vPanel = new VerticalPanel();
@@ -229,12 +203,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		cellTableMainPanel.add(vPanel);
 		return cellTableMainPanel;
 	}
-	
-	/**
-	 * Builds the element with vsac value set widget.
-	 *
-	 * @return the widget
-	 */
+
 	private Widget buildElementWithVSACValueSetWidget() {
 		mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
@@ -245,12 +214,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return mainPanel;
 	}
 	
-	
-	/**
-	 * Builds the search panel.
-	 *
-	 * @return the widget
-	 */
+
 	private Widget buildSearchPanel() {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
@@ -428,14 +392,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getProgramListBox().clear();
 		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
 	}
-	
-	
-	/**
-	 * Builds the cell table.
-	 *
-	 * @param appliedValueSetList the applied value set list
-	 * @param isEditable the is editable
-	 */
+
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
 		cellTablePanel.clear();
 		cellTablePanelBody.clear();
@@ -451,7 +408,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		if ((appliedValueSetList != null)
 				&& (appliedValueSetList.size() > 0)) {
 			table = new CellTable<CQLQualityDataSetDTO>();
-			
+			allValueSetsList = appliedValueSetList;
 			setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			listDataProvider = new ListDataProvider<CQLQualityDataSetDTO>();
@@ -504,15 +461,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			cellTablePanel.add(desc);
 		}
 	}
-	
-	/**
-	 * Adds the column to table.
-	 *
-	 * @param table the table
-	 * @param sortHandler the sort handler
-	 * @param isEditable the is editable
-	 * @return the cell table
-	 */
+
 	private CellTable<CQLQualityDataSetDTO> addColumnToTable(
 			final CellTable<CQLQualityDataSetDTO> table,
 			ListHandler<CQLQualityDataSetDTO> sortHandler, final boolean isEditable) {
@@ -535,8 +484,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					StringBuilder title = new StringBuilder();
 					StringBuilder value = new StringBuilder();
 					String qdmType = new String();
-					// if the QDM element is not user defined, add (G) for Grouping or (E) for
-					// extensional.
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 						if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
 							qdmType = GROUPING_QDM;
@@ -707,12 +654,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		};
 		return cell;
 	}
-	
-	/**
-	 * Gets the modify qdm button cell.
-	 * 
-	 * @return the modify qdm button cell
-	 */
+
 	private HasCell<CQLQualityDataSetDTO, SafeHtml> getModifyButtonCell() {
 		
 		HasCell<CQLQualityDataSetDTO, SafeHtml> hasCell = new HasCell<CQLQualityDataSetDTO, SafeHtml>() {
@@ -758,12 +700,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		return hasCell;
 	}
-	
-	/**
-	 * Gets the delete qdm button cell.
-	 * 
-	 * @return the delete qdm button cell
-	 */
+
 	private HasCell<CQLQualityDataSetDTO, SafeHtml> getDeleteButtonCell() {
 		
 		HasCell<CQLQualityDataSetDTO, SafeHtml> hasCell = new HasCell<CQLQualityDataSetDTO, SafeHtml>() {
@@ -812,13 +749,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		return hasCell;
 	}
-	
-	
-	/**
-	 * Gets the QDM check box cell.
-	 *
-	 * @return the QDM check box cell
-	 */
+
 	private HasCell<CQLQualityDataSetDTO, Boolean> getCheckBoxCell(){
 		HasCell<CQLQualityDataSetDTO, Boolean> hasCell = new HasCell<CQLQualityDataSetDTO, Boolean>() {
 			
@@ -873,12 +804,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		};
 		return hasCell;
 	}
-	
-	/**
-	 * As widget.
-	 *
-	 * @return the widget
-	 */
+
 	public Widget asWidget() {
 		return containerPanel;
 	}
@@ -895,21 +821,22 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 	}
 	
-	/**
-	 * Gets the specific occ chk box.
-	 *
-	 * @return the specific occ chk box
-	 */
+	public void selectAll(){
+		if(table!=null){
+			for (CQLQualityDataSetDTO dto : allValueSetsList){
+				   if (!qdmSelectedList.contains(dto)) {
+					   qdmSelectedList.add(dto);
+				   }
+				   selectionModel.setSelected(dto, true);
+			}
+			table.redraw();
+		}
+	}
+
 	public CheckBox getSpecificOccChkBox(){
 		return specificOcurChkBox;
 	}
-	
-	/**
-	 * Gets the data type text.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the data type text
-	 */
+
 	public String getDataTypeText(ListBoxMVP inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getItemText(inputListBox.getSelectedIndex());
@@ -917,13 +844,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			return "";
 		}
 	}
-	
-	/**
-	 * Gets the data type value.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the data type value
-	 */
+
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -931,13 +852,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			return "";
 		}
 	}
-	
-	/**
-	 * Gets the version value.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the version value
-	 */
+
 	public String getVersionValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -945,13 +860,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			return "";
 		}
 	}
-	
-	/**
-	 * Gets the expansion Profile value.
-	 *
-	 * @param inputListBox the input list box
-	 * @return the expansion Profile value
-	 */
+
 	public String getExpansionProfileValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -959,31 +868,16 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			return "";
 		}
 	}
-	
-	/**
-	 * Check for enable.
-	 * 
-	 * @return true, if successful
-	 */
+
 	private boolean checkForEnable() {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
 	}
-	/**
-	 * Sets the VSAC version list box options.
-	 *
-	 * @param texts the new VSAC version list box options
-	 */
+
 	public void setQDMVersionListBoxOptions(List<? extends HasListBox> texts){
 		setVersionListBoxItems(versionListBox, texts, MatContext.PLEASE_SELECT);
 	}
-	/**
-	 * Sets the version list box items.
-	 *
-	 * @param dataTypeListBox the data type list box
-	 * @param itemList the item list
-	 * @param defaultOption the default option
-	 */
+
 	private void setVersionListBoxItems(ListBox dataTypeListBox,
 			List<? extends HasListBox> itemList, String defaultOption) {
 		dataTypeListBox.clear();
@@ -1002,9 +896,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 	}
-	/**
-	 * Reset vsac value set widget.
-	 */
+
 	public void resetVSACValueSetWidget() {
 	
 		if(checkForEnable()){
@@ -1016,65 +908,24 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		searchHeader.clear();
 		searchHeader.add(searchHeaderText);
 	}
-	/**
-	 * Fire event.
-	 *
-	 * @param event the event
-	 */
+
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
-	/**
-	 * Adds the selection handler.
-	 *
-	 * @param handler the handler
-	 * @return the handler registration
-	 */
+
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<Boolean> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
-	
-	/**
-	 * Gets the observer.
-	 * 
-	 * @return the observer
-	 */
+
 	public Observer getObserver() {
 		return observer;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#setObserver
-	 * (mat.client.clause.VSACProfileSelectionView.Observer)
-	 */
-	/**
-	 * Sets the observer.
-	 *
-	 * @param observer the new observer
-	 */
-	//@Override
+
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
-	
-	
-	/**
-	 * Gets the OID column tool tip.
-	 * 
-	 * @param columnText
-	 *            the column text
-	 * @param title
-	 *            the title
-	 * @param hasImage
-	 *            the has image
-	 * @param isUserDefined
-	 *            the is user defined
-	 * @return the OID column tool tip
-	 */
+
 	private SafeHtml getOIDColumnToolTip(String columnText,
 			StringBuilder title, boolean hasImage, boolean isUserDefined) {
 		if (hasImage && !isUserDefined) {
@@ -1102,94 +953,31 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					.toSafeHtml();
 		}
 	}
-	
-	/**
-	 * Gets the version list.
-	 *
-	 * @return the version list
-	 */
+
 	public List<String> getVersionList() {
 		return versionList;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getAddNewQDMButton()
-	 */
-	/**
-	 * Gets the cancel qdm button.
-	 *
-	 * @return the cancel qdm button
-	 */
-//	@Override
+
 	public Button getCancelQDMButton() {
 		return cancelButton;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getApplyButton()
-	 */
-	/**
-	 * Gets the apply button.
-	 *
-	 * @return the apply button
-	 */
-	//@Override
-	/*public Button getApplyDefaultExpansionIdButton(){
-		return applyDefaultExpansionIdButton;
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getRetrieveFromVSACButton()
-	 */
-	/**
-	 * Gets the retrieve from vsac button.
-	 *
-	 * @return the retrieve from vsac button
-	 */
-	//@Override
 	public org.gwtbootstrap3.client.ui.Button getRetrieveFromVSACButton(){
 		return goButton;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getSaveButton()
-	 */
-	/**
-	 * Gets the save button.
-	 *
-	 * @return the save button
-	 */
-	//@Override
+
 	public Button getSaveButton(){
 		return saveValueSet;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.clause.VSACProfileSelectionPresenter.SearchDisplay#getUpdateFromVSACButton()
-	 */
-	/**
-	 * Gets the update from vsac button.
-	 *
-	 * @return the update from vsac button
-	 */
-	//@Override
 	public Button getUpdateFromVSACButton(){
 		return updateVSACButton;
 	}
-	
-	/**
-	 * Gets the selected element to remove.
-	 *
-	 * @return the selected element to remove
-	 */
+
 	public CQLQualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
-	/**
-	 * Gets the version list box.
-	 *
-	 * @return the version list box
-	 */
+
 	public ListBox getVersionListBox() {
 		return versionListBox;
 	}
@@ -1201,115 +989,54 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	public ListBox getReleaseListBox() {
 		return releaseListBox;
 	}
-	
-	/**
-	 * Gets the OID input.
-	 *
-	 * @return the OID input
-	 */
+
 	public TextBox getOIDInput() {
 		return oidInput;
 	}
 	
-	/**
-	 * Gets the user defined input.
-	 *
-	 * @return the user defined input
-	 */
 	public TextBox getUserDefinedInput() {
 		return nameInput;
 	}
-	
-	/**
-	 * Gets the user defined input.
-	 *
-	 * @return the user defined input
-	 */
+
 	public CustomQuantityTextBox getSuffixInput() {
 		return suffixInput;
 	}
-	
-	/**
-	 * Checks if is editable.
-	 *
-	 * @return true, if is editable
-	 */
+
 	public boolean isEditable() {
 		return isEditable;
 	}
-	
-	
-	/**
-	 * Sets the editable.
-	 *
-	 * @param isEditable the new editable
-	 */
+
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
-	
-	/**
-	 * Gets the search header.
-	 *
-	 * @return the search header
-	 */
+
 	public PanelHeader getSearchHeader() {
 		return searchHeader;
 	}
 	
-	
-	/**
-	 * Gets the list data provider.
-	 *
-	 * @return the list data provider
-	 */
 	public ListDataProvider<CQLQualityDataSetDTO> getListDataProvider(){
 		return listDataProvider;
 	}
-	
-	/**
-	 * Gets the simple pager.
-	 *
-	 * @return the simple pager
-	 */
+
 	public MatSimplePager getSimplePager(){
 		return spager;
 	}
 	
-	/**
-	 * Gets the celltable.
-	 *
-	 * @return the celltable
-	 */
+
 	public CellTable<CQLQualityDataSetDTO> getCelltable(){
 		return table;
 	}
 	
-	/**
-	 * Gets the pager.
-	 *
-	 * @return the pager
-	 */
+
 	public MatSimplePager getPager(){
 		return spager;
 	}
 	
-	/**
-	 * Gets the main panel.
-	 *
-	 * @return the main panel
-	 */
+
 	public VerticalPanel getMainPanel(){
 		return mainPanel;
 	}
-	
-	
-	
-	/**
-	 * Sets the widgets read only.
-	 *
-	 * @param editable the new widgets read only
-	 */
+
 	public void setWidgetsReadOnly(boolean editable){
 		
 		getOIDInput().setEnabled(editable);
@@ -1322,10 +1049,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getProgramListBox().setEnabled(editable);
 		getSuffixInput().setEnabled(editable);
 	}
-	
-	/**
-	 * Sets the widget to default.
-	 */
+
 	public void setWidgetToDefault() {
 		getVersionListBox().clear();
 		getOIDInput().setValue("");
@@ -1333,43 +1057,16 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getSaveButton().setEnabled(false);
 	}
 	
-	/**
-	 * This method enable/disable's reterive and updateFromVsac button
-	 * and hide/show loading please wait message.
-	 *
-	 * @param busy the busy
-	 */
-	/*public void showSearchingBusyOnQDM(final boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		getUpdateFromVSACButton().setEnabled(!busy);
-		getRetrieveFromVSACButton().setEnabled(!busy);
-	}*/
 	
-	/**
-	 * Gets the cell table main panel.
-	 *
-	 * @return the cell table main panel
-	 */
 	public SimplePanel getCellTableMainPanel(){
 		return cellTableMainPanel;
 	}
-	
-	/**
-	 * Clear cell table main panel.
-	 */
+
 	public void clearCellTableMainPanel(){
 		cellTableMainPanel.clear();
 	}
 	
-	/**
-	 * Validate user defined input. In this functionality we are disabling all
-	 * the fields in Search Panel except Name
-	 * which are required to create new UserDefined QDM Element.
-	 */
+
 	public boolean validateUserDefinedInput() {
 
 		boolean hasName = (getUserDefinedInput().getValue().length() > 0) ? true : false ;
@@ -1397,11 +1094,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return hasName;
 	}
 	
-	
-	/**
-	 * Validate oid input. depending on the OID input we are disabling and
-	 * enabling the fields in Search Panel
-	 */
 	public boolean validateOIDInput() {
 		
 		boolean isUserDefined = false;
@@ -1424,14 +1116,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 		return isUserDefined;
 	}
-	
-	/**
-	 * Convert message.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the string
-	 */
+
 	public String convertMessage(final int id) {
 		String message;
 		switch (id) {
@@ -1449,12 +1134,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 		return message;
 	}
-	
-	
-	
-	/**
-	 * Reset QDM search panel.
-	 */
+
 	public void resetCQLValuesetearchPanel() {
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		getSearchHeader().clear();
@@ -1505,14 +1185,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return copyPasteClearButtonToolBar.getCopyButton();
 	}
 	
+	public Button getSelectAllButton(){
+		return copyPasteClearButtonToolBar.getSelectAllButton();
+	}
+	
 	public Button getPasteButton(){
 		return copyPasteClearButtonToolBar.getPasteButton();
 	}
-	
-	/**
-	 * Added this method as part of MAT-8882.
-	 * @param isEditable
-	 */
+
 	public void setReadOnly(boolean isEditable) {		
 		getCancelQDMButton().setEnabled(isEditable);
 		getUpdateFromVSACButton().setEnabled(isEditable);
@@ -1573,14 +1253,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		return cqlValueSetTransferObjectsList;
 	}
-	
-	/**
-	 * Check name in Applied Value set list.
-	 *
-	 * @param userDefinedInput the user defined input
-	 * @param appliedValueSetTableList the list of {@link CQLQualityDataSetDTO}
-	 * @return true, if successful
-	 */
+
 	public  boolean checkNameInValueSetList(String userDefinedInput, List<CQLQualityDataSetDTO> appliedValueSetTableList) {
 		if (appliedValueSetTableList.size() > 0) {
 			Iterator<CQLQualityDataSetDTO> iterator = appliedValueSetTableList.iterator();
@@ -1609,6 +1282,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
                 return;
             }
         }
+	}
+
+
+	public List<CQLQualityDataSetDTO> getAllValueSets() {
+		return allValueSetsList;
 	}
 	
 }

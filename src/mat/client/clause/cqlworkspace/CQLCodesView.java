@@ -143,9 +143,8 @@ public class CQLCodesView {
 
 	private List<CQLCode> codesSelectedList;
 	
-	/**
-	 * Instantiates a new VSAC profile selection view.
-	 */
+	private List<CQLCode> allCodes;
+	
 	public CQLCodesView() {
 		
 		VerticalPanel verticalPanel = new VerticalPanel();
@@ -192,11 +191,6 @@ public class CQLCodesView {
 		return cellTableMainPanel;
 	}
 	
-	/**
-	 * Builds the element with Codes widget.
-	 *
-	 * @return the widget
-	 */
 	private Widget buildElementWithCodesWidget() {
 		mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
@@ -206,13 +200,7 @@ public class CQLCodesView {
 		mainPanel.add(new SpacerWidget());
 		return mainPanel;
 	}
-	
-	
-	/**
-	 * Builds the search panel.
-	 *
-	 * @return the widget
-	 */
+
 	private Widget buildSearchPanel() {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
@@ -368,31 +356,16 @@ public class CQLCodesView {
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
 	}
-	
-	
-	/**
-	 * As widget.
-	 *
-	 * @return the widget
-	 */
+
 	public Widget asWidget() {
 		return containerPanel;
 	}
-	
 
-	/**
-	 * Check for enable.
-	 * 
-	 * @return true, if successful
-	 */
 	private boolean checkForEnable() {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
 	}
 
-	/**
-	 * Reset vsac code widget.
-	 */
 	public void resetVSACCodeWidget() {
 		if(checkForEnable()){
 			sWidget.getSearchBox().setTitle("Enter Code Identifier");
@@ -401,11 +374,7 @@ public class CQLCodesView {
 		searchHeader.clear();
 		searchHeader.add(searchHeaderText);
 	}
-	/**
-	 * Fire event.
-	 *
-	 * @param event the event
-	 */
+
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
@@ -417,171 +386,75 @@ public class CQLCodesView {
 		this.delegator = delegator;
 	}
 
-	/**
-	 * Adds the selection handler.
-	 *
-	 * @param handler the handler
-	 * @return the handler registration
-	 */
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<Boolean> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
-	
-	
-	/**
-	 * Gets the cancel qdm button.
-	 *
-	 * @return the cancel qdm button
-	 */
+
 	public Button getCancelCodeButton() {
 		return cancelButton;
 	}
-	
-	/**
-	 * Gets the retrieve from vsac button.
-	 *
-	 * @return the retrieve from vsac button
-	 */
+
 	public Button getRetrieveFromVSACButton(){
 		return sWidget.getGo();
 	}
-	
-	/**
-	 * Gets the save button.
-	 *
-	 * @return the save button
-	 */
+
 	public Button getSaveButton(){
 		return saveCode;
 	}
-	
-	/**
-	 * Gets the selected element to remove.
-	 *
-	 * @return the selected element to remove
-	 */
+
 	public CQLCode getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
-	
-	/**
-	 * Gets the code search input.
-	 *
-	 * @return the code search input
-	 */
+
 	public TextBox getCodeSearchInput() {
 		return sWidget.getSearchBox();
 	}
-	
-	/**
-	 * Gets the Code Descriptor Input.
-	 *
-	 * @return the codeDescriptorInput
-	 */
+
 	public TextBox getCodeDescriptorInput() {
 		return codeDescriptorInput;
 	}
-	
-	/**
-	 * Gets the Code Input.
-	 *
-	 * @return the codeInput
-	 */
+
 	public TextBox getCodeInput() {
 		return codeInput;
 	}
-	
-	/**
-	 * Gets the Code System Input.
-	 *
-	 * @return the codeSystemInput
-	 */
+
 	public TextBox getCodeSystemInput() {
 		return codeSystemInput;
 	}
-	
-	/**
-	 * Gets the user Code System Version Input.
-	 *
-	 * @return the user codeSystemVersionInput
-	 */
+
 	public TextBox getCodeSystemVersionInput() {
 		return codeSystemVersionInput;
 	}
-	/**
-	 * Checks if is editable.
-	 *
-	 * @return true, if is editable
-	 */
+
 	public boolean isEditable() {
 		return isEditable;
 	}
 	
-	
-	/**
-	 * Sets the editable.
-	 *
-	 * @param isEditable the new editable
-	 */
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
-	
-	/**
-	 * Gets the search header.
-	 *
-	 * @return the search header
-	 */
+
 	public PanelHeader getSearchHeader() {
 		return searchHeader;
 	}
-	
-	
-	/**
-	 * Gets the list data provider.
-	 *
-	 * @return the list data provider
-	 */
+
 	public ListDataProvider<CQLCode> getListDataProvider(){
 		return listDataProvider;
 	}
-	
-	/**
-	 * Gets the simple pager.
-	 *
-	 * @return the simple pager
-	 */
+
 	public MatSimplePager getSimplePager(){
 		return spager;
 	}
-	
-	/**
-	 * Gets the celltable.
-	 *
-	 * @return the celltable
-	 */
+
 	public CellTable<CQLCode> getCelltable(){
 		return table;
 	}
-	
-	
-	/**
-	 * Gets the main panel.
-	 *
-	 * @return the main panel
-	 */
+
 	public VerticalPanel getMainPanel(){
 		return mainPanel;
 	}
-	
-	
-	
-	/**
-	 * Sets the widgets read only.
-	 *
-	 * @param editable the new widgets read only
-	 */
+
 	public void setWidgetsReadOnly(boolean editable){
 		
 		getCodeSearchInput().setEnabled(editable);
@@ -597,10 +470,7 @@ public class CQLCodesView {
 		getSaveButton().setEnabled(false);
 		
 	}
-	
-	/**
-	 * Sets the widget to default.
-	 */
+
 	public void setWidgetToDefault() {
 		getCodeSearchInput().setValue("");
 		getCodeDescriptorInput().setValue("");
@@ -611,13 +481,7 @@ public class CQLCodesView {
 		getSaveButton().setEnabled(false);
 		getIncludeCodeSystemVersionCheckBox().setValue(false);
 	}
-	
-	/**
-	 * This method enable/disable's reterive and updateFromVsac button
-	 * and hide/show loading please wait message.
-	 *
-	 * @param busy the busy
-	 */
+
 	public void showSearchingBusyOnCodes(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -626,30 +490,15 @@ public class CQLCodesView {
 		}
 		getRetrieveFromVSACButton().setEnabled(!busy);
 	}
-	
-	/**
-	 * Gets the cell table main panel.
-	 *
-	 * @return the cell table main panel
-	 */
+
 	public SimplePanel getCellTableMainPanel(){
 		return cellTableMainPanel;
 	}
-	
-	/**
-	 * Clear cell table main panel.
-	 */
+
 	public void clearCellTableMainPanel(){
 		cellTableMainPanel.clear();
 	}
-	
-	/**
-	 * Convert message.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the string
-	 */
+
 	public String convertMessage(final int id) {
 		String message;
 		switch (id) {
@@ -667,11 +516,7 @@ public class CQLCodesView {
 		}
 		return message;
 	}
-	
-	
-	/**
-	 * Reset QDM search panel.
-	 */
+
 	public void resetCQLCodesSearchPanel() {
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		getSearchHeader().clear();
@@ -705,6 +550,7 @@ public class CQLCodesView {
 		cellTablePanel.add(codesElementsHeader);
 		if ((codesTableList != null)
 				&& (!codesTableList.isEmpty())) {
+			allCodes = codesTableList;
 			StringUtility.removeEscapedCharsFromList(codesTableList);
 			codesSelectedList = new ArrayList<CQLCode>();
 			table = new CellTable<CQLCode>();
@@ -933,12 +779,7 @@ public class CQLCodesView {
 		};
 
 	}
-	
-	/**
-	 * Gets the QDM check box cell.
-	 *
-	 * @return the QDM check box cell
-	 */
+
 	private HasCell<CQLCode, Boolean> getCheckBoxCell(){
 		return new HasCell<CQLCode, Boolean>() {
 
@@ -992,12 +833,6 @@ public class CQLCodesView {
 
 	}
 	
-	
-	/**
-	 * Gets the modify code button cell.
-	 * 
-	 * @return the modify code button cell
-	 */
 	private HasCell<CQLCode, ?> getModifyButtonCell() {
 
 		return new HasCell<CQLCode, SafeHtml>() {
@@ -1043,12 +878,7 @@ public class CQLCodesView {
 
 	}
 	
-	
-	/**
-	 * Gets the delete code button cell.
-	 * 
-	 * @return the delete code button cell
-	 */
+
 	private HasCell<CQLCode, SafeHtml> getDeleteButtonCell() {
 		
 		return new HasCell<CQLCode, SafeHtml>() {
@@ -1106,6 +936,18 @@ public class CQLCodesView {
 			table.redraw();
 		}
 	}
+	
+	public void selectAll(){
+		if(table!=null){
+			for (CQLCode code : allCodes){
+				   if (!codesSelectedList.contains(code)) {
+					   codesSelectedList.add(code);
+				   }
+				   selectionModel.setSelected(code, true);
+			}
+			table.redraw();
+		}
+	}
 
 	public String getCodeSystemOid() {
 		return codeSystemOid;
@@ -1145,14 +987,14 @@ public class CQLCodesView {
 		return copyPasteClearButtonToolBar.getCopyButton();
 	}
 	
+	public Button getSelectAllButton() {
+		return copyPasteClearButtonToolBar.getSelectAllButton();
+	}
+	
 	public Button getPasteButton(){
 		return copyPasteClearButtonToolBar.getPasteButton();
 	}
-	
-	/**
-	 * Added this method as part of MAT-8882.
-	 * @param isEditable
-	 */
+
 	public void setReadOnly(boolean isEditable) {		
 		getIncludeCodeSystemVersionCheckBox().setEnabled(isEditable);
 		getSaveButton().setEnabled(isEditable);
@@ -1209,6 +1051,10 @@ public class CQLCodesView {
 		 }
 		 
 		 return null;
+	}
+	
+	public List<CQLCode> getAllCodes(){
+		return allCodes;
 	}
 	
 }

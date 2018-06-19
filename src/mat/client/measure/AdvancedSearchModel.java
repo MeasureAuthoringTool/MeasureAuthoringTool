@@ -1,51 +1,42 @@
 package mat.client.measure;
 
+import org.apache.xalan.xsltc.compiler.util.Type;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
-import org.gwtbootstrap3.client.ui.ModalHeader;
 import org.gwtbootstrap3.client.ui.ModalSize;
-import org.gwtbootstrap3.client.ui.RadioButton;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+
+import mat.client.util.MatTextBox;
 
 public class AdvancedSearchModel {
 	private Modal panel;
 	private Input searchText;
 	private FormGroup searchTextGroup = new FormGroup();
 	private FormGroup searchGroup = new FormGroup();
-	private RadioButton myRadio;
-	private RadioButton allRadio;
+	private ListBox searchBoxList;
 	private FormGroup searchStateGroup = new FormGroup();
-	private RadioButton draftRadio;
-	private RadioButton versionRadio;
-	private RadioButton allStateRadio;
+	private ListBox searchStateList;
 	private FormGroup scoreGroup = new FormGroup();
 	private CheckBox proportionCheckbox;
 	private CheckBox ratioCheckbox;
 	private CheckBox cohortCheckbox;
 	private CheckBox contVariableCheckbox;
 	private FormGroup patientIndecatorGroup = new FormGroup();
-	private RadioButton patientBasedRadio;
-	private RadioButton nonPatientBasedRadio;
-	private RadioButton allPatientsBasedRadio;
+	private ListBox patientIndecatorList;
 	private FormGroup modifiedGroup = new FormGroup();
-	private RadioButton fourteenDaysRadio;
-	private RadioButton thirtyDaysRadio;
-	private RadioButton sixtyDaysRadio;
-	private RadioButton nintyDaysRadio;
-	private RadioButton allDaysRadio;
+	private ListBox modifiedOnList;
 	private FormGroup modifiedByGroup = new FormGroup();
 	private Input modifiedBy;
 	private FormGroup ownedByGroup = new FormGroup();
@@ -66,19 +57,8 @@ public class AdvancedSearchModel {
 		panel.setSize(ModalSize.MEDIUM);
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
+		panel.setTitle("Advanced Search");
 		panel.getElement().setAttribute("tabindex", "0");
-		//panel.setTitle("Advanced Search");
-		ModalHeader modalHeader = new ModalHeader();
-		HorizontalPanel header = new HorizontalPanel();
-		header.setWidth("550px");
-		HTML loginText = new HTML("Advanced Search");
-		header.add(loginText);
-		header.setStylePrimaryName("advanceSearchHeader");
-		header.setHeight("30px");
-		modalHeader.setHeight("50px");
-		modalHeader.add(header);
-				
-		panel.add(modalHeader);
 		
 		ModalBody modalBody = new ModalBody();
 		
@@ -105,98 +85,74 @@ public class AdvancedSearchModel {
 	}
 	
 	private FormGroup getSearchTextSection(String type) {
-		HorizontalPanel searchTextHeader = new HorizontalPanel();
+		HorizontalPanel searchTextPanel = new HorizontalPanel();
 		FormLabel searchTextLabel = new FormLabel();
 		searchTextLabel.setText("Enter Text:");
 		searchTextLabel.setTitle("Enter Text");
 		searchTextLabel.setFor("searchTextId");
-		searchTextLabel.setStylePrimaryName("searchTextLabel");
+		searchTextLabel.setMarginRight(10);
 		searchTextLabel.getElement().setTabIndex(0);
-		searchTextHeader.add(searchTextLabel);
-		HorizontalPanel searchTextRow1 = new HorizontalPanel();
 		searchText = new Input(InputType.TEXT);
 		searchText.setWidth("250px");
 		searchText.setHeight("27px");
+		searchText.setTitle("Search Text");
 		searchText.setId("searchTextId");
 		searchText.setPlaceholder("Search Text");
-		searchText.setTitle("Search Text");
-		searchText.setStylePrimaryName("searchTextInput");
-		searchTextRow1.add(searchText);
-		searchTextGroup.add(searchTextHeader);
-		searchTextGroup.add(searchTextRow1);
+		searchTextPanel.add(searchTextLabel);
+		searchTextPanel.add(searchText);
+		searchTextGroup.add(searchTextPanel);
 		return searchTextGroup;
 	}
 	
 	private FormGroup getSearchBySection(String type) {
 		FormLabel searchLabel = new FormLabel();
-		HorizontalPanel searchHeader = new HorizontalPanel();
+		HorizontalPanel searchPanel = new HorizontalPanel();
 		searchLabel.setText("Search By:");
 		searchLabel.setTitle("Search By");
 		searchLabel.setFor("SeachId");
-		searchLabel.setStylePrimaryName("searchTextLabel");
+		searchLabel.setMarginRight(10);
 		searchLabel.getElement().setTabIndex(0);
-		searchHeader.add(searchLabel);
-		HorizontalPanel searchRow1 = new HorizontalPanel();
-		myRadio = new RadioButton("searchGroup", "Only My " + type);
-		myRadio.setTitle("Only my " + type);
-		myRadio.setStylePrimaryName("searchTextInput");
-		myRadio.getElement().setTabIndex(0);
-		allRadio = new RadioButton("searchGroup", "All " + type);
-		allRadio.setTitle("All " + type);
-		allRadio.setStylePrimaryName("searchTextInput");
-		allRadio.getElement().setTabIndex(0);
-		allRadio.setValue(true);
-		searchRow1.add(myRadio);
-		searchRow1.add(allRadio);
-		searchGroup.add(searchHeader);
-		searchGroup.add(searchRow1);
+		searchBoxList = new ListBox();
+		searchBoxList.addItem("All " + type, "All " + type);
+		searchBoxList.setId("searchTextInput");
+		searchBoxList.addItem("Only My " + type, "Only My " + type);
+		searchPanel.add(searchLabel);
+		searchPanel.add(searchBoxList);
+		searchGroup.add(searchPanel);
 		return searchGroup;
 	}
 	
 	private FormGroup getStateSection(String type) {
 		FormLabel stateLabel = new FormLabel();
-		HorizontalPanel stateHeader = new HorizontalPanel();
+		HorizontalPanel statePanel = new HorizontalPanel();
 		stateLabel.setText("Show Only:");
 		stateLabel.setTitle("Show Only");
 		stateLabel.setFor("stateId");
-		stateLabel.setStylePrimaryName("searchTextLabel");
+		stateLabel.setPaddingRight(10);
 		stateLabel.getElement().setTabIndex(0);
-		stateHeader.add(stateLabel);
-		HorizontalPanel stateRow1 = new HorizontalPanel();
-		draftRadio = new RadioButton("stateGroup", "Draft " + type);
-		draftRadio.setTitle("Draft " + type);
-		draftRadio.setStylePrimaryName("searchTextInput");
-		draftRadio.getElement().setTabIndex(0);
-		versionRadio = new RadioButton("stateGroup", "Versioned " + type);
-		versionRadio.setTitle("Versioned" + type);
-		versionRadio.setStylePrimaryName("searchTextInput");
-		versionRadio.getElement().setTabIndex(0);
-		allStateRadio = new RadioButton("stateGroup", "All " + type);
-		allStateRadio.setTitle("All " + type);
-		allStateRadio.setStylePrimaryName("searchTextInput");
-		allStateRadio.getElement().setTabIndex(0);
-		allStateRadio.setValue(true);
-		stateRow1.add(draftRadio);
-		stateRow1.add(versionRadio);
-		stateRow1.add(allStateRadio);
-		searchStateGroup.add(stateHeader);
-		searchStateGroup.add(stateRow1);
+		searchStateList = new ListBox();
+		searchStateList.setId("stateGroup");
+		searchStateList.addItem("All " + type, "All " + type);
+		searchStateList.addItem("Draft " + type, "Draft " + type);
+		searchStateList.addItem("Versioned " + type, "Versioned " + type);
+		statePanel.add(stateLabel);
+		statePanel.add(searchStateList);
+		searchStateGroup.add(statePanel);
 		return searchStateGroup;
 	}
 	
 	private FormGroup getScoreSection(String type) {
 		HorizontalPanel scoreheader = new HorizontalPanel();
 		FormLabel scoreLabel = new FormLabel();
-		scoreLabel.setText(type + " Score:");
-		scoreLabel.setTitle(type + " Score");
+		scoreLabel.setText(type + " Scoreing:");
+		scoreLabel.setTitle(type + " Scoreing");
 		scoreLabel.setWidth("550px");
-		scoreLabel.setStylePrimaryName("searchTextLabel");
 		scoreLabel.getElement().setTabIndex(0);
 		scoreheader.add(scoreLabel);
 		HorizontalPanel helpTextRow = new HorizontalPanel();
 		FormLabel helpText = new FormLabel();
-		helpText.setText("(Check all that apply. No selection will return all measure scores.)");
-		helpText.setTitle("(Check all that apply. No selection will return all measure scores.)");
+		helpText.setText("(Check all that apply. No selection will return all measure scoreing types.)");
+		helpText.setTitle("(Check all that apply. No selection will return all measure scoreing types.)");
 		helpText.setStylePrimaryName("helpText");
 		helpText.getElement().setTabIndex(0);
 		helpTextRow.add(helpText);
@@ -224,123 +180,80 @@ public class AdvancedSearchModel {
 	}
 	
 	private FormGroup getPatientSection() {
-		HorizontalPanel patientHeader = new HorizontalPanel();
+		HorizontalPanel patientPanel = new HorizontalPanel();
 		FormLabel patientLabel = new FormLabel();
 		patientLabel.setText("Patient-Based Indicator:");
 		patientLabel.setTitle("Patient-Based Indicator");
-		patientLabel.setStylePrimaryName("searchTextLabel");
-		patientLabel.setWidth("550px");
+		patientLabel.setPaddingRight(10);
 		patientLabel.getElement().setTabIndex(0);
-		patientHeader.add(patientLabel);
-		HorizontalPanel patientRow1 = new HorizontalPanel();
-		patientBasedRadio = new RadioButton("patientBase", "Yes, Patient-based");
-		patientBasedRadio.setTitle("Yes, Patient-based");
-		patientBasedRadio.setStylePrimaryName("searchTextInput");
-		patientBasedRadio.getElement().setTabIndex(0);
-		nonPatientBasedRadio = new RadioButton("patientBase", "No, Not Patient-based");
-		nonPatientBasedRadio.setTitle("No, not Patient-based");
-		nonPatientBasedRadio.setStylePrimaryName("searchTextInput");
-		nonPatientBasedRadio.getElement().setTabIndex(0);
-		patientRow1.add(patientBasedRadio);
-		patientRow1.add(nonPatientBasedRadio);
-		allPatientsBasedRadio = new RadioButton("patientBase", "All Measures");
-		allPatientsBasedRadio.setTitle("All Measures");
-		allPatientsBasedRadio.setStylePrimaryName("searchTextInput");
-		allPatientsBasedRadio.getElement().setTabIndex(0);
-		allPatientsBasedRadio.setValue(true);
-		patientRow1.add(allPatientsBasedRadio);
-		patientIndecatorGroup.add(patientHeader);
-		patientIndecatorGroup.add(patientRow1);
+		patientIndecatorList = new ListBox();
+		patientIndecatorList.setId("patientBase");
+		patientIndecatorList.addItem("All Measures", "All Measures");
+		patientIndecatorList.addItem("Yes, Patient-based", "Yes, Patient-based");
+		patientIndecatorList.addItem("No, Not Patient-based", "No, Not Patient-based");
+		patientPanel.add(patientLabel);
+		patientPanel.add(patientIndecatorList);
+		patientIndecatorGroup.add(patientPanel);
 		return patientIndecatorGroup;
 	}
 	
 	private FormGroup getDaysSection(String type) {
-		HorizontalPanel daysHeader = new HorizontalPanel();
+		HorizontalPanel daysPanel = new HorizontalPanel();
 		FormLabel daysLabel = new FormLabel();
 		daysLabel.setText(type + " Last Modified Within:");
 		daysLabel.setTitle(type + " Last Modified Within");
-		daysLabel.setStylePrimaryName("searchTextLabel");
-		daysLabel.setWidth("550px");
+		daysLabel.setPaddingRight(10);
 		daysLabel.getElement().setTabIndex(0);
-		daysHeader.add(daysLabel);
-		HorizontalPanel daysRow1 = new HorizontalPanel();
-		fourteenDaysRadio = new RadioButton("modifiedDate", "14 days");
-		fourteenDaysRadio.setTitle("14 days");
-		fourteenDaysRadio.setStylePrimaryName("searchTextInput");
-		fourteenDaysRadio.getElement().setTabIndex(0);
-		thirtyDaysRadio = new RadioButton("modifiedDate", "30 days");
-		thirtyDaysRadio.setTitle("30 days");
-		thirtyDaysRadio.setStylePrimaryName("searchTextInput");
-		thirtyDaysRadio.getElement().setTabIndex(0);
-		daysRow1.add(fourteenDaysRadio);
-		daysRow1.add(thirtyDaysRadio);
-		sixtyDaysRadio = new RadioButton("modifiedDate", "60 days");
-		sixtyDaysRadio.setTitle("60 days");
-		sixtyDaysRadio.setStylePrimaryName("searchTextInput");
-		sixtyDaysRadio.getElement().setTabIndex(0);
-		nintyDaysRadio = new RadioButton("modifiedDate", "90 days");
-		nintyDaysRadio.setTitle("90 days");
-		nintyDaysRadio.setStylePrimaryName("searchTextInput"); 
-		nintyDaysRadio.getElement().setTabIndex(0);
-		daysRow1.add(sixtyDaysRadio);
-		daysRow1.add(nintyDaysRadio);
-		allDaysRadio = new RadioButton("modifiedDate", "All " + type);
-		allDaysRadio.setTitle("All " + type);
-		allDaysRadio.setStylePrimaryName("searchTextInput");
-		allDaysRadio.getElement().setTabIndex(0);
-		allDaysRadio.setValue(true);
-		daysRow1.add(allDaysRadio);
-		modifiedGroup.add(daysHeader);
-		modifiedGroup.add(daysRow1);
+		modifiedOnList = new ListBox();
+		modifiedOnList.setId("modifiedDate");
+		modifiedOnList.addItem("All " + type, "All " + type);
+		modifiedOnList.addItem("14 days", "14 days");
+		modifiedOnList.addItem("30 days", "30 days");
+		modifiedOnList.addItem("60 days", "60 days");
+		modifiedOnList.addItem("90 days", "90 days");
+		daysPanel.add(daysLabel);
+		daysPanel.add(modifiedOnList);
+		modifiedGroup.add(daysPanel);
 		return modifiedGroup;
 	}
 	
 	private FormGroup getModifiedBySection(String type) {
-		HorizontalPanel modifiedByHeader = new HorizontalPanel();
+		HorizontalPanel modifiedByPanel = new HorizontalPanel();
 		FormLabel modifiedByLabel = new FormLabel();
 		modifiedByLabel.setText(type + " Last Modified By:");
 		modifiedByLabel.setTitle(type + " Last Modified By");
-		modifiedByLabel.setStylePrimaryName("searchTextLabel");
-		modifiedByLabel.setWidth("550px");
+		modifiedByLabel.setPaddingRight(10);
 		modifiedByLabel.getElement().setTabIndex(0);
 		modifiedByLabel.setFor("modifiedById");
-		modifiedByHeader.add(modifiedByLabel);
-		HorizontalPanel modifiedRow1 = new HorizontalPanel();
 		modifiedBy = new Input(InputType.TEXT);
-		modifiedBy.setId("modifiedById");
 		modifiedBy.setWidth("250px");
 		modifiedBy.setHeight("27px");
 		modifiedBy.setId("modifiedById");
 		modifiedBy.setPlaceholder("Modified By");
 		modifiedBy.setTitle("Modified By");
-		modifiedBy.setStylePrimaryName("searchTextInput");
-		modifiedRow1.add(modifiedBy);
-		modifiedByGroup.add(modifiedByHeader);
-		modifiedByGroup.add(modifiedRow1);
+		modifiedByPanel.add(modifiedByLabel);
+		modifiedByPanel.add(modifiedBy);
+		modifiedByGroup.add(modifiedByPanel);
 		return modifiedByGroup;
 	}
 	
 	private FormGroup getOwnedBySection(String type) {
-		HorizontalPanel ownedByHeader = new HorizontalPanel();
+		HorizontalPanel ownedByPanel = new HorizontalPanel();
 		FormLabel ownedByLabel = new FormLabel();
 		ownedByLabel.setText(type + " Owned By:");
 		ownedByLabel.setTitle(type + " Owned By");
-		ownedByLabel.setStylePrimaryName("searchTextLabel");
-		ownedByLabel.setWidth("550px");
-		ownedByLabel.getElement().setTabIndex(0);
 		ownedByLabel.setFor("ownedById");
-		ownedByHeader.add(ownedByLabel);
-		HorizontalPanel ownedByRow1 = new HorizontalPanel();
+		ownedByLabel.setPaddingRight(10);
+		ownedByLabel.getElement().setTabIndex(0);
 		ownedBy = new Input(InputType.TEXT);
 		ownedBy.setWidth("250px");
 		ownedBy.setHeight("27px");
 		ownedBy.setId("ownedById");
 		ownedBy.setPlaceholder("Owned By");
 		ownedBy.setTitle("Owned By");
-		ownedBy.setStylePrimaryName("searchTextInput");
-		ownedByRow1.add(ownedBy);
-		ownedByGroup.add(ownedByHeader);
-		ownedByGroup.add(ownedByRow1);
+		ownedByPanel.add(ownedByLabel);
+		ownedByPanel.add(ownedBy);
+		ownedByGroup.add(ownedByPanel);
 		return ownedByGroup;
 	}
 	
@@ -358,10 +271,8 @@ public class AdvancedSearchModel {
 		search.setTitle("Search");
 		search.setType(ButtonType.PRIMARY);
 		
-		buttonToolBar.add(cancel);
 		buttonToolBar.add(search);
-		cancel.setPull(Pull.RIGHT);
-		search.setPull(Pull.RIGHT);
+		buttonToolBar.add(cancel);
 		return buttonToolBar;
 	}
 	
@@ -397,52 +308,12 @@ public class AdvancedSearchModel {
 		this.searchGroup = searchGroup;
 	}
 
-	public RadioButton getMyRadio() {
-		return myRadio;
-	}
-
-	public void setMyRadio(RadioButton myRadio) {
-		this.myRadio = myRadio;
-	}
-
-	public RadioButton getAllRadio() {
-		return allRadio;
-	}
-
-	public void setAllRadio(RadioButton allRadio) {
-		this.allRadio = allRadio;
-	}
-
 	public FormGroup getSearchStateGroup() {
 		return searchStateGroup;
 	}
 
 	public void setSearchStateGroup(FormGroup searchStateGroup) {
 		this.searchStateGroup = searchStateGroup;
-	}
-
-	public RadioButton getDraftRadio() {
-		return draftRadio;
-	}
-
-	public void setDraftRadio(RadioButton draftRadio) {
-		this.draftRadio = draftRadio;
-	}
-
-	public RadioButton getVersionRadio() {
-		return versionRadio;
-	}
-
-	public void setVersionRadio(RadioButton versionRadio) {
-		this.versionRadio = versionRadio;
-	}
-
-	public RadioButton getAllStateRadio() {
-		return allStateRadio;
-	}
-
-	public void setAllStateRadio(RadioButton allStateRadio) {
-		this.allStateRadio = allStateRadio;
 	}
 
 	public FormGroup getScoreGroup() {
@@ -493,76 +364,12 @@ public class AdvancedSearchModel {
 		this.patientIndecatorGroup = patientIndecatorGroup;
 	}
 
-	public RadioButton getPatientBasedRadio() {
-		return patientBasedRadio;
-	}
-
-	public void setPatientBasedRadio(RadioButton patientBasedRadio) {
-		this.patientBasedRadio = patientBasedRadio;
-	}
-
-	public RadioButton getNonPatientBasedRadio() {
-		return nonPatientBasedRadio;
-	}
-
-	public void setNonPatientBasedRadio(RadioButton nonPatientBasedRadio) {
-		this.nonPatientBasedRadio = nonPatientBasedRadio;
-	}
-
-	public RadioButton getAllPatientsBasedRadio() {
-		return allPatientsBasedRadio;
-	}
-
-	public void setAllPatientsBasedRadio(RadioButton allPatientsBasedRadio) {
-		this.allPatientsBasedRadio = allPatientsBasedRadio;
-	}
-
 	public FormGroup getModifiedGroup() {
 		return modifiedGroup;
 	}
 
 	public void setModifiedGroup(FormGroup modifiedGroup) {
 		this.modifiedGroup = modifiedGroup;
-	}
-
-	public RadioButton getFourteenDaysRadio() {
-		return fourteenDaysRadio;
-	}
-
-	public void setFourteenDaysRadio(RadioButton fourteenDaysRadio) {
-		this.fourteenDaysRadio = fourteenDaysRadio;
-	}
-
-	public RadioButton getThirtyDaysRadio() {
-		return thirtyDaysRadio;
-	}
-
-	public void setThirtyDaysRadio(RadioButton thirtyDaysRadio) {
-		this.thirtyDaysRadio = thirtyDaysRadio;
-	}
-
-	public RadioButton getSixtyDaysRadio() {
-		return sixtyDaysRadio;
-	}
-
-	public void setSixtyDaysRadio(RadioButton sixtyDaysRadio) {
-		this.sixtyDaysRadio = sixtyDaysRadio;
-	}
-
-	public RadioButton getNintyDaysRadio() {
-		return nintyDaysRadio;
-	}
-
-	public void setNintyDaysRadio(RadioButton nintyDaysRadio) {
-		this.nintyDaysRadio = nintyDaysRadio;
-	}
-
-	public RadioButton getAllDaysRadio() {
-		return allDaysRadio;
-	}
-
-	public void setAllDaysRadio(RadioButton allDaysRadio) {
-		this.allDaysRadio = allDaysRadio;
 	}
 
 	public FormGroup getModifiedByGroup() {
@@ -615,5 +422,37 @@ public class AdvancedSearchModel {
 
 	public void showAdvanceSearch() {
 		panel.show();
+	}
+	
+	public ListBox getSearchBoxList() {
+		return searchBoxList;
+	}
+
+	public void setSearchBoxList(ListBox searchBoxList) {
+		this.searchBoxList = searchBoxList;
+	}
+
+	public ListBox getSearchStateList() {
+		return searchStateList;
+	}
+
+	public void setSearchStateList(ListBox searchStateList) {
+		this.searchStateList = searchStateList;
+	}
+
+	public ListBox getPatientIndecatorList() {
+		return patientIndecatorList;
+	}
+
+	public void setPatientIndecatorList(ListBox patientIndecatorList) {
+		this.patientIndecatorList = patientIndecatorList;
+	}
+
+	public ListBox getModifiedOnList() {
+		return modifiedOnList;
+	}
+
+	public void setModifiedOnList(ListBox modifiedOnList) {
+		this.modifiedOnList = modifiedOnList;
 	}
 }

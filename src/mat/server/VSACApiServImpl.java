@@ -551,17 +551,13 @@ public class VSACApiServImpl implements VSACApiService{
 		VsacApiResult result = new VsacApiResult();
 		try {
 			result = futureGetValuesetTask.get(60, TimeUnit.SECONDS);
-			result.setSuccess(true);
 			return result;
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
+		} catch (InterruptedException | ExecutionException e) {
+			LOGGER.error("taskExecutor:" + e.getMessage());
 		} catch (java.util.concurrent.TimeoutException e) {
-			LOGGER.info("VSACAPIServiceIMpl: Call to the VSAC API timed out.");
+			LOGGER.info("VSACAPIServiceIMpl: Call to the VSAC API timed out." + e.getMessage());
 			result.setSuccess(false);
 			result.setFailureReason(VsacApiResult.VSAC_REQUEST_TIMEOUT);
-			e.printStackTrace();
 		}
 
 		return result;

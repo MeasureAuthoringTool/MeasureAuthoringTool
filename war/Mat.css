@@ -2786,44 +2786,6 @@ padding: 2px;
 	padding-top: 10px;
 }
 
-.searchTextInput {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    display:inline-block;
-    *display: inline;     /* for IE7*/
-    zoom:1;              /* for IE7*/
-    vertical-align:middle;
-    margin-left:20px
-}
-
-.searchTextLabel {
-    display:inline-block;
-    *display: inline;     /* for IE7*/
-    zoom:1;              /* for IE7*/
-    float: left;
-    padding-top: 5px;
-    text-align: right;
-}
-
-.advanceSearchHeader {
-	font-weight: 900;
-	padding-top: 5px;
-	padding-bottom: 5px;
-}
-
-.radioTable {
-	vertical-align: middle;
-}
-
-.radioInput {
-	vertical-align: middle;
-	position: relative;
-	display: block;
-	margin-top: 5px;
-	margin-bottom: 5px;
-    margin-left: 10px;
-}
-
 .helpText {
 	font-weight: 200;
 	margin-left: 5px;

@@ -144,15 +144,15 @@ public class AdvancedSearchModel {
 	private FormGroup getScoreSection(String type) {
 		HorizontalPanel scoreheader = new HorizontalPanel();
 		FormLabel scoreLabel = new FormLabel();
-		scoreLabel.setText(type + " Scoreing:");
-		scoreLabel.setTitle(type + " Scoreing");
+		scoreLabel.setText(type + " Scoring:");
+		scoreLabel.setTitle(type + " Scoring");
 		scoreLabel.setWidth("550px");
 		scoreLabel.getElement().setTabIndex(0);
 		scoreheader.add(scoreLabel);
 		HorizontalPanel helpTextRow = new HorizontalPanel();
 		FormLabel helpText = new FormLabel();
-		helpText.setText("(Check all that apply. No selection will return all measure scoreing types.)");
-		helpText.setTitle("(Check all that apply. No selection will return all measure scoreing types.)");
+		helpText.setText("(Check all that apply. No selection will return all measure scoring types.)");
+		helpText.setTitle("(Check all that apply. No selection will return all measure scoring types.)");
 		helpText.setStylePrimaryName("helpText");
 		helpText.getElement().setTabIndex(0);
 		helpTextRow.add(helpText);

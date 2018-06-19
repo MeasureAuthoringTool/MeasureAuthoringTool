@@ -10,11 +10,6 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <attribute attribName="anatomicalApproachSite">
-  <mode mode="Nullable" />
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
- </attribute>
  <attribute attribName="anatomicalLocationSite">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />

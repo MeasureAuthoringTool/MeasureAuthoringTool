@@ -244,7 +244,7 @@ implements MeasureCloningService {
 			String clonedXMLString = convertDocumenttoString(clonedDoc);
 			MeasureXML clonedXml = new MeasureXML();
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
-			clonedXml.setMeasure_id(clonedMeasure.getId());
+			clonedXml.setMeasureId(clonedMeasure.getId());
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);

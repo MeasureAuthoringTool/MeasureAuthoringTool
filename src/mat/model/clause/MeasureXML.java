@@ -14,15 +14,9 @@ import mat.hibernate.HibernateConf;
  * The Class MeasureXML.
  */
 public class MeasureXML {
-	
-	/** The id. */
 	private String id;
-	
-	/** The measure xml. */
 	private Blob measureXML;
-	
-	/** The measure_id. */
-	private String measure_id;
+	private String measureId;
 	
 	
 	/**
@@ -64,22 +58,22 @@ public class MeasureXML {
 	}
 	
 	/**
-	 * Sets the measure_id.
+	 * Sets the measureId.
 	 * 
-	 * @param measure_id
-	 *            the new measure_id
+	 * @param measureId
+	 *            the new measureId
 	 */
-	public void setMeasure_id(String measure_id) {
-		this.measure_id = measure_id;
+	public void setMeasureId(String measureId) {
+		this.measureId = measureId;
 	}
 	
 	/**
-	 * Gets the measure_id.
+	 * Gets the measureId.
 	 * 
-	 * @return the measure_id
+	 * @return the measureId
 	 */
-	public String getMeasure_id() {
-		return measure_id;
+	public String getMeasureId() {
+		return measureId;
 	}
 	
 	/**

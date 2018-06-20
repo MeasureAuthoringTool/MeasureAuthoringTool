@@ -1247,7 +1247,7 @@ public class PackagerServiceImpl implements PackagerService {
 	public void saveRiskAdjVariables(MeasurePackageDetail detail) {
 		ArrayList<RiskAdjustmentDTO> allRiskAdjVars = (ArrayList<RiskAdjustmentDTO>) detail.getRiskAdjVars();
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-		Measure measure = measureDAO.find(measureXML.getMeasure_id());
+		Measure measure = measureDAO.find(measureXML.getMeasureId());
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
 			saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);

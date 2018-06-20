@@ -52,7 +52,7 @@ public class CQLCopyPasteClearButtonToolBar {
 		selectAllButton.setIcon(IconType.CHECK_SQUARE);
 		selectAllButton.setIconSize(IconSize.LARGE);
 		selectAllButton.setColor("#0964A2");
-		selectAllButton.setSize("85px", "30px");
+		selectAllButton.setSize("95px", "30px");
 		selectAllButton.getElement().setAttribute("aria-label", "Select All");
 		
 		
@@ -71,7 +71,7 @@ public class CQLCopyPasteClearButtonToolBar {
 		buttonToolBar.add(pasteButton);
 		buttonToolBar.add(selectAllButton);
 		buttonToolBar.add(clearButton);
-		buttonToolBar.getElement().setAttribute("style", "margin-left:590px;");
+		buttonToolBar.getElement().setAttribute("style", "margin-left:585px;");
 		
 	}
 

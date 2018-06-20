@@ -15,7 +15,6 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
@@ -42,7 +41,8 @@ public class AdvancedSearchModel {
 	private Input ownedBy;
 	private Button search;
 	private Button cancel;
-	private String heightOfBoxes = "30px";
+	
+	private final String HEIGHT_OF_BOXES = "30px";
 	
 	
 	public AdvancedSearchModel(String type) {
@@ -94,7 +94,7 @@ public class AdvancedSearchModel {
 		searchTextLabel.getElement().setTabIndex(0);
 		searchText = new Input(InputType.TEXT);
 		searchText.setWidth("250px");
-		searchText.setHeight(heightOfBoxes);
+		searchText.setHeight(HEIGHT_OF_BOXES);
 		searchText.setTitle(" Search Text");
 		searchText.setId("searchTextId");
 		searchText.setPlaceholder(" Search Text");
@@ -114,7 +114,7 @@ public class AdvancedSearchModel {
 		searchLabel.getElement().setTabIndex(0);
 		searchLabel.setStyleName("advancedSearchLabels");
 		searchBoxList = new ListBox();
-		searchBoxList.setHeight(heightOfBoxes);
+		searchBoxList.setHeight(HEIGHT_OF_BOXES);
 		searchBoxList.addItem("All " + type, "All " + type);
 		searchBoxList.setId("searchTextInput");
 		searchBoxList.addItem("Only My " + type, "Only My " + type);
@@ -133,7 +133,7 @@ public class AdvancedSearchModel {
 		stateLabel.getElement().setTabIndex(0);
 		stateLabel.setStyleName("advancedSearchLabels");
 		searchStateList = new ListBox();
-		searchStateList.setHeight(heightOfBoxes);
+		searchStateList.setHeight(HEIGHT_OF_BOXES);
 		searchStateList.setId("stateGroup");
 		searchStateList.addItem("All " + type, "All " + type);
 		searchStateList.addItem("Draft " + type, "Draft " + type);
@@ -190,7 +190,7 @@ public class AdvancedSearchModel {
 		patientLabel.getElement().setTabIndex(0);
 		patientLabel.setStyleName("advancedSearchLabels");
 		patientIndecatorList = new ListBox();
-		patientIndecatorList.setHeight(heightOfBoxes);
+		patientIndecatorList.setHeight(HEIGHT_OF_BOXES);
 		patientIndecatorList.setId("patientBase");
 		patientIndecatorList.addItem("All Measures", "All Measures");
 		patientIndecatorList.addItem("Yes, Patient-based", "Yes, Patient-based");
@@ -209,7 +209,7 @@ public class AdvancedSearchModel {
 		daysLabel.getElement().setTabIndex(0);
 		daysLabel.setStyleName("advancedSearchLabels");
 		modifiedOnList = new ListBox();
-		modifiedOnList.setHeight(heightOfBoxes);
+		modifiedOnList.setHeight(HEIGHT_OF_BOXES);
 		modifiedOnList.setId("modifiedDate");
 		modifiedOnList.addItem("All " + type, "All " + type);
 		modifiedOnList.addItem("14 days", "14 days");
@@ -232,7 +232,7 @@ public class AdvancedSearchModel {
 		modifiedByLabel.setStyleName("advancedSearchLabels");
 		modifiedBy = new Input(InputType.TEXT);
 		modifiedBy.setWidth("250px");
-		modifiedBy.setHeight(heightOfBoxes);
+		modifiedBy.setHeight(HEIGHT_OF_BOXES);
 		modifiedBy.setId("modifiedById");
 		modifiedBy.setPlaceholder(" Modified By");
 		modifiedBy.setTitle(" Modified By");
@@ -252,7 +252,7 @@ public class AdvancedSearchModel {
 		ownedByLabel.setStyleName("advancedSearchLabels");
 		ownedBy = new Input(InputType.TEXT);
 		ownedBy.setWidth("250px");
-		ownedBy.setHeight(heightOfBoxes);
+		ownedBy.setHeight(HEIGHT_OF_BOXES);
 		ownedBy.setId("ownedById");
 		ownedBy.setPlaceholder(" Owned By");
 		ownedBy.setTitle(" Owned By");

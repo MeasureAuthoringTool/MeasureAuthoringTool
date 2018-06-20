@@ -8,7 +8,7 @@
     <id name="id" column="ID" >
         <generator class="uuid"/>
     </id>
-    <property name="measure_id" column="MEASURE_ID" unique="true"/>
+    <property name="measureId" column="MEASURE_ID" unique="true"/>
 	<property name="measureXML" type="blob" column="MEASURE_XML" />
   </class>
 </hibernate-mapping>

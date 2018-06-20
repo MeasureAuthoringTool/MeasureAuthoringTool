@@ -1,6 +1,5 @@
 package mat.client.measure;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.CheckBox;
@@ -16,9 +15,9 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-import mat.client.util.MatTextBox;
 
 public class AdvancedSearchModel {
 	private Modal panel;
@@ -43,8 +42,8 @@ public class AdvancedSearchModel {
 	private Input ownedBy;
 	private Button search;
 	private Button cancel;
+	private String heightOfBoxes = "30px";
 	
-	private static final String MEASURES = "Measures";
 	
 	public AdvancedSearchModel(String type) {
 		panel = new Modal();
@@ -90,14 +89,15 @@ public class AdvancedSearchModel {
 		searchTextLabel.setText("Enter Text:");
 		searchTextLabel.setTitle("Enter Text");
 		searchTextLabel.setFor("searchTextId");
+		searchTextLabel.setStyleName("advancedSearchLabels");
 		searchTextLabel.setMarginRight(10);
 		searchTextLabel.getElement().setTabIndex(0);
 		searchText = new Input(InputType.TEXT);
 		searchText.setWidth("250px");
-		searchText.setHeight("27px");
-		searchText.setTitle("Search Text");
+		searchText.setHeight(heightOfBoxes);
+		searchText.setTitle(" Search Text");
 		searchText.setId("searchTextId");
-		searchText.setPlaceholder("Search Text");
+		searchText.setPlaceholder(" Search Text");
 		searchTextPanel.add(searchTextLabel);
 		searchTextPanel.add(searchText);
 		searchTextGroup.add(searchTextPanel);
@@ -112,7 +112,9 @@ public class AdvancedSearchModel {
 		searchLabel.setFor("SeachId");
 		searchLabel.setMarginRight(10);
 		searchLabel.getElement().setTabIndex(0);
+		searchLabel.setStyleName("advancedSearchLabels");
 		searchBoxList = new ListBox();
+		searchBoxList.setHeight(heightOfBoxes);
 		searchBoxList.addItem("All " + type, "All " + type);
 		searchBoxList.setId("searchTextInput");
 		searchBoxList.addItem("Only My " + type, "Only My " + type);
@@ -128,9 +130,10 @@ public class AdvancedSearchModel {
 		stateLabel.setText("Show Only:");
 		stateLabel.setTitle("Show Only");
 		stateLabel.setFor("stateId");
-		stateLabel.setPaddingRight(10);
 		stateLabel.getElement().setTabIndex(0);
+		stateLabel.setStyleName("advancedSearchLabels");
 		searchStateList = new ListBox();
+		searchStateList.setHeight(heightOfBoxes);
 		searchStateList.setId("stateGroup");
 		searchStateList.addItem("All " + type, "All " + type);
 		searchStateList.addItem("Draft " + type, "Draft " + type);
@@ -184,9 +187,10 @@ public class AdvancedSearchModel {
 		FormLabel patientLabel = new FormLabel();
 		patientLabel.setText("Patient-Based Indicator:");
 		patientLabel.setTitle("Patient-Based Indicator");
-		patientLabel.setPaddingRight(10);
 		patientLabel.getElement().setTabIndex(0);
+		patientLabel.setStyleName("advancedSearchLabels");
 		patientIndecatorList = new ListBox();
+		patientIndecatorList.setHeight(heightOfBoxes);
 		patientIndecatorList.setId("patientBase");
 		patientIndecatorList.addItem("All Measures", "All Measures");
 		patientIndecatorList.addItem("Yes, Patient-based", "Yes, Patient-based");
@@ -202,9 +206,10 @@ public class AdvancedSearchModel {
 		FormLabel daysLabel = new FormLabel();
 		daysLabel.setText(type + " Last Modified Within:");
 		daysLabel.setTitle(type + " Last Modified Within");
-		daysLabel.setPaddingRight(10);
 		daysLabel.getElement().setTabIndex(0);
+		daysLabel.setStyleName("advancedSearchLabels");
 		modifiedOnList = new ListBox();
+		modifiedOnList.setHeight(heightOfBoxes);
 		modifiedOnList.setId("modifiedDate");
 		modifiedOnList.addItem("All " + type, "All " + type);
 		modifiedOnList.addItem("14 days", "14 days");
@@ -222,15 +227,15 @@ public class AdvancedSearchModel {
 		FormLabel modifiedByLabel = new FormLabel();
 		modifiedByLabel.setText(type + " Last Modified By:");
 		modifiedByLabel.setTitle(type + " Last Modified By");
-		modifiedByLabel.setPaddingRight(10);
 		modifiedByLabel.getElement().setTabIndex(0);
 		modifiedByLabel.setFor("modifiedById");
+		modifiedByLabel.setStyleName("advancedSearchLabels");
 		modifiedBy = new Input(InputType.TEXT);
 		modifiedBy.setWidth("250px");
-		modifiedBy.setHeight("27px");
+		modifiedBy.setHeight(heightOfBoxes);
 		modifiedBy.setId("modifiedById");
-		modifiedBy.setPlaceholder("Modified By");
-		modifiedBy.setTitle("Modified By");
+		modifiedBy.setPlaceholder(" Modified By");
+		modifiedBy.setTitle(" Modified By");
 		modifiedByPanel.add(modifiedByLabel);
 		modifiedByPanel.add(modifiedBy);
 		modifiedByGroup.add(modifiedByPanel);
@@ -243,14 +248,14 @@ public class AdvancedSearchModel {
 		ownedByLabel.setText(type + " Owned By:");
 		ownedByLabel.setTitle(type + " Owned By");
 		ownedByLabel.setFor("ownedById");
-		ownedByLabel.setPaddingRight(10);
 		ownedByLabel.getElement().setTabIndex(0);
+		ownedByLabel.setStyleName("advancedSearchLabels");
 		ownedBy = new Input(InputType.TEXT);
 		ownedBy.setWidth("250px");
-		ownedBy.setHeight("27px");
+		ownedBy.setHeight(heightOfBoxes);
 		ownedBy.setId("ownedById");
-		ownedBy.setPlaceholder("Owned By");
-		ownedBy.setTitle("Owned By");
+		ownedBy.setPlaceholder(" Owned By");
+		ownedBy.setTitle(" Owned By");
 		ownedByPanel.add(ownedByLabel);
 		ownedByPanel.add(ownedBy);
 		ownedByGroup.add(ownedByPanel);

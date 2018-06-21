@@ -111,7 +111,7 @@ public class AdvancedSearchModel {
 		searchLabel.setTitle("Search By");
 		searchLabel.setFor("SeachId");
 		searchLabel.setMarginRight(10);
-		searchLabel.getElement().setTabIndex(0);
+		searchLabel.setFor("searchTextInput");
 		searchLabel.setStyleName("advancedSearchLabels");
 		searchBoxList = new ListBox();
 		searchBoxList.setHeight(HEIGHT_OF_BOXES);
@@ -130,7 +130,7 @@ public class AdvancedSearchModel {
 		stateLabel.setText("Show Only:");
 		stateLabel.setTitle("Show Only");
 		stateLabel.setFor("stateId");
-		stateLabel.getElement().setTabIndex(0);
+		stateLabel.setFor("stateGroup");
 		stateLabel.setStyleName("advancedSearchLabels");
 		searchStateList = new ListBox();
 		searchStateList.setHeight(HEIGHT_OF_BOXES);
@@ -187,8 +187,8 @@ public class AdvancedSearchModel {
 		FormLabel patientLabel = new FormLabel();
 		patientLabel.setText("Patient-Based Indicator:");
 		patientLabel.setTitle("Patient-Based Indicator");
-		patientLabel.getElement().setTabIndex(0);
 		patientLabel.setStyleName("advancedSearchLabels");
+		patientLabel.setFor("patientBase");
 		patientIndecatorList = new ListBox();
 		patientIndecatorList.setHeight(HEIGHT_OF_BOXES);
 		patientIndecatorList.setId("patientBase");
@@ -206,8 +206,8 @@ public class AdvancedSearchModel {
 		FormLabel daysLabel = new FormLabel();
 		daysLabel.setText(type + " Last Modified Within:");
 		daysLabel.setTitle(type + " Last Modified Within");
-		daysLabel.getElement().setTabIndex(0);
 		daysLabel.setStyleName("advancedSearchLabels");
+		daysLabel.setFor("modifiedDate");
 		modifiedOnList = new ListBox();
 		modifiedOnList.setHeight(HEIGHT_OF_BOXES);
 		modifiedOnList.setId("modifiedDate");

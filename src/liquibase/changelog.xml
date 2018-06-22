@@ -223,5 +223,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-140_MAT-9117_bpm_cql_unit_update.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates.xml"/>
+       	<include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates2.xml"/>
         
    	</databaseChangeLog>

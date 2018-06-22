@@ -2,9 +2,12 @@ package mat.client;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -13,6 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.cql.CQLLibrarySearchView;
+import mat.client.measure.AdvancedSearchModel;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
@@ -27,6 +31,8 @@ import mat.model.cql.CQLLibraryDataSetObject;
  * The Class CqlLibraryView.
  */
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
+	private Anchor advancedSearch;
+	private AdvancedSearchModel advancedSearchModel = new AdvancedSearchModel("Library");
 
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
@@ -70,7 +76,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	@Override
 	public FlowPanel getMainPanel() {
-		// TODO Auto-generated method stub
 		return mainPanel;
 	}
 
@@ -177,7 +182,21 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public Widget asWidget() {
 		widgetVP.clear();
 		widgetVP.add(searchFilterWidget);
-		//getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
+		
+		VerticalPanel advancedSearchVP = new VerticalPanel();
+		advancedSearch = new Anchor("Advanced Search");
+		advancedSearchVP.add(advancedSearch);
+		advancedSearchVP.setStylePrimaryName("advanceSearch");
+		widgetVP.add(advancedSearchVP);
+		
+		advancedSearch.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				advancedSearchModel.showAdvanceSearch();
+			}
+		});
+		
 		return mainPanel;
 	}
 	
@@ -257,5 +276,19 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void resetMessageDisplay() {
 		getSuccessMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
+	}
+	
+
+	public Anchor getAdvancedSearch() {
+		return advancedSearch;
+	}
+	
+
+	public AdvancedSearchModel getAdvancedSearchModal() {
+		return advancedSearchModel;
+	}
+
+	public void setAdvancedSearch(Anchor advancedSearch) {
+		this.advancedSearch = advancedSearch;
 	}
 }

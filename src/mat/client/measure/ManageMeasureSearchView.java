@@ -564,9 +564,6 @@ ManageMeasurePresenter.SearchDisplay {
 		return advancedSearchModel;
 	}
 
-	public void setAdvancedSearch(Anchor advancedSearch) {
-		this.advancedSearch = advancedSearch;
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#setAdminObserver(mat.client.measure.MeasureSearchView.AdminObserver)

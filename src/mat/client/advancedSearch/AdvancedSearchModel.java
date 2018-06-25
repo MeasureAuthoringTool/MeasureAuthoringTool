@@ -1,4 +1,4 @@
-package mat.client.measure;
+package mat.client.advancedSearch;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
@@ -18,34 +18,43 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
-public class AdvancedSearchModel {
+public class AdvancedSearchModel {	
+	private final String HEIGHT_OF_BOXES = "30px";
+	
 	private Modal panel;
 	private Input searchText;
-	private FormGroup searchTextGroup = new FormGroup();
-	private FormGroup searchGroup = new FormGroup();
+	private ModalBody modalBody;
+
+	private FormGroup searchTextGroup;
+	private FormGroup searchGroup;
 	private ListBox searchBoxList;
-	private FormGroup searchStateGroup = new FormGroup();
+	private FormGroup searchStateGroup;
 	private ListBox searchStateList;
-	private FormGroup scoreGroup = new FormGroup();
+	private FormGroup scoreGroup;
 	private CheckBox proportionCheckbox;
 	private CheckBox ratioCheckbox;
 	private CheckBox cohortCheckbox;
 	private CheckBox contVariableCheckbox;
-	private FormGroup patientIndecatorGroup = new FormGroup();
+	private FormGroup patientIndecatorGroup;
 	private ListBox patientIndecatorList;
-	private FormGroup modifiedGroup = new FormGroup();
+	private FormGroup modifiedGroup;
 	private ListBox modifiedOnList;
-	private FormGroup modifiedByGroup = new FormGroup();
+	private FormGroup modifiedByGroup;
 	private Input modifiedBy;
-	private FormGroup ownedByGroup = new FormGroup();
+	private FormGroup ownedByGroup;
 	private Input ownedBy;
 	private Button search;
 	private Button cancel;
+	private ButtonToolBar buttonToolBar;
+	private String type;
+	private String pluralType;
+
 	
-	private final String HEIGHT_OF_BOXES = "30px";
 	
-	
-	public AdvancedSearchModel(String type) {
+	public AdvancedSearchModel(String type, String pluralType) {
+		this.type = type;
+		this.pluralType = pluralType;
+		
 		panel = new Modal();
 		panel.getElement().setAttribute("role", "dialog");
 	    panel.setWidth("600px");
@@ -57,44 +66,14 @@ public class AdvancedSearchModel {
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
 		panel.setTitle("Advanced Search");
-		
-		setTitleOfPanel();
-		
 		panel.getElement().setAttribute("tabindex", "0");
 		
-		ModalBody modalBody = new ModalBody();
-		
-		modalBody.add(getSearchTextSection(type));
-		
-		modalBody.add(getSearchBySection(type));
-		
-		modalBody.add(getStateSection(type));
-		
-		modalBody.add(getScoreSection(type));
-		
-		modalBody.add(getPatientSection());
-		
-		modalBody.add(getDaysSection(type));
-
-		modalBody.add(getModifiedBySection(type));
-		
-		modalBody.add(getOwnedBySection(type));
-		
-		modalBody.add(getButtonSection());
-		
+		modalBody = new ModalBody();
 		panel.add(modalBody);
 		panel.getElement().focus();
 	}
-	
-	private void setTitleOfPanel() {
-		panel.getElement().setTitle(
-			"This advanced search section allows you to "
-			+ "search by the name of the measure, measure owner, measure state, measure score, "
-			+ "patient-based indicator, when the measure was last modified, and by the user that"
-			+ " last modified the measure, and the measure owner. ");
-	}
-	
-	private FormGroup getSearchTextSection(String type) {
+		
+	private void buildSearchTextSection() {
 		HorizontalPanel searchTextPanel = new HorizontalPanel();
 		FormLabel searchTextLabel = new FormLabel();
 		searchTextLabel.setText("Enter Text:");
@@ -111,11 +90,11 @@ public class AdvancedSearchModel {
 		searchText.setPlaceholder(" Search Text");
 		searchTextPanel.add(searchTextLabel);
 		searchTextPanel.add(searchText);
+		searchTextGroup = new FormGroup();
 		searchTextGroup.add(searchTextPanel);
-		return searchTextGroup;
 	}
 	
-	private FormGroup getSearchBySection(String type) {
+	private void buildSearchBySection() {
 		FormLabel searchLabel = new FormLabel();
 		HorizontalPanel searchPanel = new HorizontalPanel();
 		searchLabel.setText("Search By:");
@@ -126,16 +105,16 @@ public class AdvancedSearchModel {
 		searchLabel.setStyleName("advancedSearchLabels");
 		searchBoxList = new ListBox();
 		searchBoxList.setHeight(HEIGHT_OF_BOXES);
-		searchBoxList.addItem("All " + type, "All " + type);
+		searchBoxList.addItem("All " + pluralType, "All " + pluralType);
 		searchBoxList.setId("searchTextInput");
-		searchBoxList.addItem("Only My " + type, "Only My " + type);
+		searchBoxList.addItem("Only My " + pluralType, "Only My " + pluralType);
 		searchPanel.add(searchLabel);
 		searchPanel.add(searchBoxList);
+		searchGroup = new FormGroup();
 		searchGroup.add(searchPanel);
-		return searchGroup;
 	}
 	
-	private FormGroup getStateSection(String type) {
+	private void buildStateSection() {
 		FormLabel stateLabel = new FormLabel();
 		HorizontalPanel statePanel = new HorizontalPanel();
 		stateLabel.setText("Show Only:");
@@ -146,16 +125,16 @@ public class AdvancedSearchModel {
 		searchStateList = new ListBox();
 		searchStateList.setHeight(HEIGHT_OF_BOXES);
 		searchStateList.setId("stateGroup");
-		searchStateList.addItem("All " + type, "All " + type);
-		searchStateList.addItem("Draft " + type, "Draft " + type);
-		searchStateList.addItem("Versioned " + type, "Versioned " + type);
+		searchStateList.addItem("All " + pluralType, "All " + pluralType);
+		searchStateList.addItem("Draft " + pluralType, "Draft " + pluralType);
+		searchStateList.addItem("Versioned " + pluralType, "Versioned " + pluralType);
 		statePanel.add(stateLabel);
 		statePanel.add(searchStateList);
+		searchStateGroup = new FormGroup();
 		searchStateGroup.add(statePanel);
-		return searchStateGroup;
 	}
 	
-	private FormGroup getScoreSection(String type) {
+	private void buildScoreSection() {
 		HorizontalPanel scoreheader = new HorizontalPanel();
 		FormLabel scoreLabel = new FormLabel();
 		scoreLabel.setText(type + " Scoring:");
@@ -187,13 +166,13 @@ public class AdvancedSearchModel {
 		scoreRow1.add(contVariableCheckbox);
 		scoreRow1.add(proportionCheckbox);
 		scoreRow1.add(ratioCheckbox);
+		scoreGroup = new FormGroup();
 		scoreGroup.add(scoreheader);
 		scoreGroup.add(helpTextRow);
 		scoreGroup.add(scoreRow1);
-		return scoreGroup;
 	}
-	
-	private FormGroup getPatientSection() {
+
+	private void buildPatientSection() {
 		HorizontalPanel patientPanel = new HorizontalPanel();
 		FormLabel patientLabel = new FormLabel();
 		patientLabel.setText("Patient-Based Indicator:");
@@ -208,11 +187,11 @@ public class AdvancedSearchModel {
 		patientIndecatorList.addItem("No, Not Patient-based", "No, Not Patient-based");
 		patientPanel.add(patientLabel);
 		patientPanel.add(patientIndecatorList);
+		patientIndecatorGroup = new FormGroup();
 		patientIndecatorGroup.add(patientPanel);
-		return patientIndecatorGroup;
 	}
-	
-	private FormGroup getDaysSection(String type) {
+
+	private void buildDaysSection() {
 		HorizontalPanel daysPanel = new HorizontalPanel();
 		FormLabel daysLabel = new FormLabel();
 		daysLabel.setText(type + " Last Modified Within:");
@@ -222,18 +201,18 @@ public class AdvancedSearchModel {
 		modifiedOnList = new ListBox();
 		modifiedOnList.setHeight(HEIGHT_OF_BOXES);
 		modifiedOnList.setId("modifiedDate");
-		modifiedOnList.addItem("All " + type, "All " + type);
+		modifiedOnList.addItem("All " + pluralType, "All " + pluralType);
 		modifiedOnList.addItem("14 days", "14 days");
 		modifiedOnList.addItem("30 days", "30 days");
 		modifiedOnList.addItem("60 days", "60 days");
 		modifiedOnList.addItem("90 days", "90 days");
 		daysPanel.add(daysLabel);
 		daysPanel.add(modifiedOnList);
+		modifiedGroup = new FormGroup();
 		modifiedGroup.add(daysPanel);
-		return modifiedGroup;
 	}
 	
-	private FormGroup getModifiedBySection(String type) {
+	private void buildModifiedBySection() {
 		HorizontalPanel modifiedByPanel = new HorizontalPanel();
 		FormLabel modifiedByLabel = new FormLabel();
 		modifiedByLabel.setText(type + " Last Modified By:");
@@ -249,11 +228,11 @@ public class AdvancedSearchModel {
 		modifiedBy.setTitle(" Modified By");
 		modifiedByPanel.add(modifiedByLabel);
 		modifiedByPanel.add(modifiedBy);
+		modifiedByGroup = new FormGroup();
 		modifiedByGroup.add(modifiedByPanel);
-		return modifiedByGroup;
 	}
-	
-	private FormGroup getOwnedBySection(String type) {
+
+	private void buildOwnedBySection() {
 		HorizontalPanel ownedByPanel = new HorizontalPanel();
 		FormLabel ownedByLabel = new FormLabel();
 		ownedByLabel.setText(type + " Owned By:");
@@ -269,12 +248,12 @@ public class AdvancedSearchModel {
 		ownedBy.setTitle(" Owned By");
 		ownedByPanel.add(ownedByLabel);
 		ownedByPanel.add(ownedBy);
+		ownedByGroup = new FormGroup();
 		ownedByGroup.add(ownedByPanel);
-		return ownedByGroup;
 	}
-	
-	private ButtonToolBar getButtonSection() {
-		ButtonToolBar buttonToolBar = new ButtonToolBar();
+
+	private void buildButtonSection() {
+		buttonToolBar = new ButtonToolBar();
 		
 		cancel = new Button();
 		cancel.setText("Cancel");
@@ -289,8 +268,58 @@ public class AdvancedSearchModel {
 		
 		buttonToolBar.add(search);
 		buttonToolBar.add(cancel);
-		return buttonToolBar;
 	}
+	
+	public void addSearchTextSection() {
+		buildSearchTextSection();
+		modalBody.add(searchTextGroup);
+	}
+	
+	public void addSearchBySection() {
+		buildSearchBySection();
+		modalBody.add(searchGroup);
+	}
+	
+	public void addStateSection() {
+		buildStateSection();
+		modalBody.add(searchStateGroup);
+	}
+	
+	public void addScoreSection() {
+		buildScoreSection();
+		modalBody.add(scoreGroup);
+	}
+	
+	public void addPatientSection() {
+		buildPatientSection();
+		modalBody.add(patientIndecatorGroup);
+	}
+	
+	public void addDaysSection() {
+		buildDaysSection();
+		modalBody.add(modifiedGroup);
+	}
+	
+	public void addModifiedBySection() {
+		buildModifiedBySection();
+		modalBody.add(modifiedByGroup);
+	}
+	
+	public void addOwnedBySection() {
+		buildOwnedBySection();
+		modalBody.add(ownedByGroup);
+	}
+	
+	public void addButtonSection() {
+		buildButtonSection();
+		modalBody.add(buttonToolBar);
+	}
+	
+	public void setTitleOfPanel(String message) {
+		panel.getElement().setTitle(message);
+	}
+	
+	
 	
 	public Modal getPanel() {
 		return panel;

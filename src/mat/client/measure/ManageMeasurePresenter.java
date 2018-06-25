@@ -49,6 +49,7 @@ import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.advancedSearch.AdvancedSearchModel;
 import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
@@ -418,10 +419,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the transfer button
 		 */
 		public HasClickHandlers getTransferButton();
-		
-		public Anchor getAdvancedSearch();
-		
-		public AdvancedSearchModel getAdvancedSearchModal();
 
 		/**
 		 * Sets the admin observer.
@@ -2377,16 +2374,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			}
 		});
-		
-		if(searchDisplay.getAdvancedSearch() != null) {
-			searchDisplay.getAdvancedSearch().addClickHandler(new ClickHandler() {
-				
-				@Override
-				public void onClick(ClickEvent event) {
-					searchDisplay.getAdvancedSearchModal().showAdvanceSearch();
-				}
-			});
-		}
+
 	}
 
 	/**

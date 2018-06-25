@@ -17,6 +17,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
+import mat.client.advancedSearch.AdvancedSearchModel;
+import mat.client.advancedSearch.MeasureLibraryAdvancedSearch;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -100,9 +102,7 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The transfer button. */
 	private Button transferButton = new Button("Transfer");
 	
-	private Anchor advancedSearch;
-	
-	private AdvancedSearchModel advancedSearchModel = new AdvancedSearchModel("Measures");
+	private MeasureLibraryAdvancedSearch measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearch();
 	
 	/** The search view. */
 	MeasureSearchView searchView;
@@ -138,13 +138,7 @@ ManageMeasurePresenter.SearchDisplay {
 		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
 		measureFilterVP.add(measureSearchFilterWidget);
-		
-		VerticalPanel advancedSearchVP = new VerticalPanel();
-		advancedSearch = new Anchor("Advanced Search");
-		advancedSearchVP.add(advancedSearch);
-		advancedSearchVP.setStylePrimaryName("advanceSearch");
-		
-		measureFilterVP.add(advancedSearchVP);
+		measureFilterVP.add(measureLibraryAdvancedSearchBuilder.asWidget());
 		buildMostRecentWidget();
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(measureFilterVP);
@@ -552,16 +546,6 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
-	}
-	
-	@Override
-	public Anchor getAdvancedSearch() {
-		return advancedSearch;
-	}
-	
-	@Override
-	public AdvancedSearchModel getAdvancedSearchModal() {
-		return advancedSearchModel;
 	}
 
 	

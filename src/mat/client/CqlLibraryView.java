@@ -14,9 +14,10 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.advancedSearch.AdvancedSearchModel;
+import mat.client.advancedSearch.CQLLibraryAdvancedSearch;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.cql.CQLLibrarySearchView;
-import mat.client.measure.AdvancedSearchModel;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
@@ -31,8 +32,8 @@ import mat.model.cql.CQLLibraryDataSetObject;
  * The Class CqlLibraryView.
  */
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
-	private Anchor advancedSearch;
-	private AdvancedSearchModel advancedSearchModel = new AdvancedSearchModel("Library");
+
+	private CQLLibraryAdvancedSearch cqlLibraryAdvancedSearchBuilder = new CQLLibraryAdvancedSearch();
 
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
@@ -182,20 +183,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public Widget asWidget() {
 		widgetVP.clear();
 		widgetVP.add(searchFilterWidget);
-		
-		VerticalPanel advancedSearchVP = new VerticalPanel();
-		advancedSearch = new Anchor("Advanced Search");
-		advancedSearchVP.add(advancedSearch);
-		advancedSearchVP.setStylePrimaryName("advanceSearch");
-		widgetVP.add(advancedSearchVP);
-		
-		advancedSearch.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				advancedSearchModel.showAdvanceSearch();
-			}
-		});
+		widgetVP.add(cqlLibraryAdvancedSearchBuilder.asWidget());
 		
 		return mainPanel;
 	}
@@ -276,19 +264,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void resetMessageDisplay() {
 		getSuccessMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
-	}
-	
+	}	
 
-	public Anchor getAdvancedSearch() {
-		return advancedSearch;
-	}
-	
 
-	public AdvancedSearchModel getAdvancedSearchModal() {
-		return advancedSearchModel;
-	}
-
-	public void setAdvancedSearch(Anchor advancedSearch) {
-		this.advancedSearch = advancedSearch;
-	}
 }

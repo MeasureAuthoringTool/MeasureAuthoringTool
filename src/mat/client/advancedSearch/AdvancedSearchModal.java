@@ -87,7 +87,7 @@ public class AdvancedSearchModal {
 		searchText.setHeight(HEIGHT_OF_BOXES);
 		searchText.setTitle(" Search Text");
 		searchText.setId("searchTextId");
-		searchText.setPlaceholder(" Search Text");
+		searchText.setPlaceholder(" Search " + pluralType);
 		searchTextPanel.add(searchTextLabel);
 		searchTextPanel.add(searchText);
 		searchTextGroup = new FormGroup();

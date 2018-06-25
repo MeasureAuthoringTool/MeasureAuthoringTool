@@ -217,7 +217,6 @@ public class AdvancedSearchModal {
 		FormLabel modifiedByLabel = new FormLabel();
 		modifiedByLabel.setText(type + " Last Modified By:");
 		modifiedByLabel.setTitle(type + " Last Modified By");
-		modifiedByLabel.getElement().setTabIndex(0);
 		modifiedByLabel.setFor("modifiedById");
 		modifiedByLabel.setStyleName("advancedSearchLabels");
 		modifiedBy = new Input(InputType.TEXT);
@@ -238,7 +237,6 @@ public class AdvancedSearchModal {
 		ownedByLabel.setText(type + " Owned By:");
 		ownedByLabel.setTitle(type + " Owned By");
 		ownedByLabel.setFor("ownedById");
-		ownedByLabel.getElement().setTabIndex(0);
 		ownedByLabel.setStyleName("advancedSearchLabels");
 		ownedBy = new Input(InputType.TEXT);
 		ownedBy.setWidth("250px");

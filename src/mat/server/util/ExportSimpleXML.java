@@ -25,19 +25,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.dao.OrganizationDAO;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.dao.clause.MeasureDAO;
-import mat.model.Organization;
-import mat.model.clause.Measure;
-import mat.model.clause.MeasureXML;
-import mat.model.cql.CQLModel;
-import mat.server.util.CQLUtil.CQLArtifactHolder;
-import mat.shared.CQLExpressionObject;
-import mat.shared.SaveUpdateCQLResult;
-import mat.shared.UUIDUtilClient;
-import net.sf.saxon.TransformerFactoryImpl;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,77 +38,55 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-// TODO: Auto-generated Javadoc
+import mat.dao.OrganizationDAO;
+import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.MeasureDAO;
+import mat.model.Organization;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLModel;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.shared.CQLExpressionObject;
+import mat.shared.SaveUpdateCQLResult;
+import mat.shared.UUIDUtilClient;
+import net.sf.saxon.TransformerFactoryImpl;
+
 /**
  * The Class ExportSimpleXML.
  */
 public class ExportSimpleXML {
-
-	/** The Constant STRATA. */
 	private static final String STRATIFICATION = "stratification";
-
-	/** The Constant _logger. */
-	private static final Log _logger = LogFactory.getLog(ExportSimpleXML.class);
-
-	/** The Constant xPath. */
-	static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-
-	/** The Constant MEASUREMENT_PERIOD_OID. */
+	private static final Log logger = LogFactory.getLog(ExportSimpleXML.class);
+	private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 
-	/** The measure_ id. */
-	private static String measure_Id;
-
-	/** The Constant Continuous Variable. */
-	/*
-	 * private static final String SCORING_TYPE_CONTVAR = "CONTVAR";
-	 * 
-	 *//** The Constant RATIO. */
-	/*
-	 * private static final String RATIO = "RATIO";
-	 * 
-	 *//** The Constant PROPOR. *//*
-									 * private static final String PROPOR =
-									 * "PROPOR";
-									 * 
-									 * private static final String COHORT =
-									 * "COHORT";
-									 */
 
 	/**
 	 * Export.
 	 *
 	 * @param measureXMLObject
 	 *            the measure xml object
-	 * @param message
-	 *            the message
 	 * @param measureDAO
-	 *            TODO
 	 * @param organizationDAO
 	 *            the organization dao
 	 * @return the string
 	 */
-	public static String export(MeasureXML measureXMLObject, List<String> message, MeasureDAO measureDAO,
+	@Deprecated
+	public static String export(MeasureXML measureXMLObject, MeasureDAO measureDAO,
 			OrganizationDAO organizationDAO) {
 		String exportedXML = "";
-		// Validate the XML
+
 		Document measureXMLDocument;
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
-			/* if(validateMeasure(measureXMLDocument, message)){ */
-			measure_Id = measureXMLObject.getMeasure_id();
-			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id);
-			// }
-		} catch (ParserConfigurationException e) {
+
+			String measureId = measureXMLObject.getMeasureId();
+			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measureId);
+
+		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} /*
-			 * catch (XPathExpressionException e) { e.printStackTrace(); }
-			 */
-		measure_Id = null;
+		}
+
 		return exportedXML;
 	}
 
@@ -130,36 +95,28 @@ public class ExportSimpleXML {
 	 *
 	 * @param measureXMLObject
 	 *            the measure xml object
-	 * @param message
-	 *            the message
 	 * @param measureDAO
-	 *            TODO
 	 * @param organizationDAO
 	 *            the organization dao
 	 * @param cqlLibraryDAO
 	 * @return the string
 	 */
-	public static String export(MeasureXML measureXMLObject, List<String> message, MeasureDAO measureDAO,
+	public static String export(MeasureXML measureXMLObject, MeasureDAO measureDAO,
 			OrganizationDAO organizationDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) {
 		String exportedXML = "";
-		// Validate the XML
 		Document measureXMLDocument;
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
-			measure_Id = measureXMLObject.getMeasure_id();
-			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id,
+			String measureId = measureXMLObject.getMeasureId();
+			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measureId,
 					cqlLibraryDAO, cqlModel);
 			int insertAt = exportedXML.indexOf("<title>");
 			exportedXML = exportedXML.substring(0, insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>"
 					+ exportedXML.substring(insertAt, exportedXML.length());
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (ParserConfigurationException | SAXException | IOException e) {
 			e.printStackTrace();
 		}
-		measure_Id = null;
+
 		return exportedXML;
 	}
 
@@ -207,18 +164,16 @@ public class ExportSimpleXML {
 	 * @param organizationDAO
 	 *            the organization dao
 	 * @param measureDAO
-	 *            TODO
 	 * @param measure_Id
-	 *            TODO
 	 * @return the string
 	 */
 	private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO,
 			MeasureDAO measureDAO, String measure_Id) {
-		_logger.info("In ExportSimpleXML.generateExportedXML()");
+		logger.info("In ExportSimpleXML.generateExportedXML()");
 		try {
 			return traverseXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id);
 		} catch (Exception e) {
-			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
+			logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
 			e.printStackTrace();
 		}
 		return "";
@@ -233,19 +188,17 @@ public class ExportSimpleXML {
 	 * @param organizationDAO
 	 *            the organization dao
 	 * @param measureDAO
-	 *            TODO
 	 * @param measure_Id
-	 *            TODO
 	 * @param cqlLibraryDAO
 	 * @return the string
 	 */
 	private static String generateExportedXML(Document measureXMLDocument, OrganizationDAO organizationDAO,
 			MeasureDAO measureDAO, String measure_Id, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) {
-		_logger.info("In ExportSimpleXML.generateExportedXML()");
+		logger.info("In ExportSimpleXML.generateExportedXML()");
 		try {
-			return traverseXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id, cqlLibraryDAO, cqlModel);
+			return generateMeasureExportXML(measureXMLDocument, organizationDAO, measureDAO, measure_Id, cqlLibraryDAO, cqlModel);
 		} catch (Exception e) {
-			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
+			logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
 			e.printStackTrace();
 		}
 		return "";
@@ -261,9 +214,7 @@ public class ExportSimpleXML {
 	 * @param organizationDAO
 	 *            the organization dao
 	 * @param MeasureDAO
-	 *            TODO
 	 * @param measure_Id
-	 *            TODO
 	 * @return the string
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
@@ -324,30 +275,21 @@ public class ExportSimpleXML {
 	 * @param organizationDAO
 	 *            the organization dao
 	 * @param MeasureDAO
-	 *            TODO
 	 * @param measure_Id
-	 *            TODO
 	 * @param cqlLibraryDAO
 	 * @return the string
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private static String traverseXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO MeasureDAO,
+	private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO MeasureDAO,
 			String measure_Id, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) throws XPathExpressionException {
-		// set attributes
 		updateVersionforMeasureDetails(originalDoc, MeasureDAO, measure_Id);
-		// update Steward and developer's node id with oid.
 		updateStewardAndDevelopersIdWithOID(originalDoc, organizationDAO);
 		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
-		// using the above list we need to traverse the originalDoc and remove
-		// the unused Clauses
 		removeUnwantedClauses(usedClauseIds, originalDoc);
-
 		removeNode("/measure/subTreeLookUp", originalDoc);
 		expandAndHandleGrouping(originalDoc);
-
-		// remove unused cql artifacts
 		removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
 
 		// addUUIDToFunctions(originalDoc);
@@ -355,10 +297,7 @@ public class ExportSimpleXML {
 		// format
 		modifyHeaderStart_Stop_Dates(originalDoc);
 		modifyMeasureGroupingSequence(originalDoc);
-		// Remove Empty Comments nodes from population Logic.
 		removeEmptyCommentsFromPopulationLogic(originalDoc);
-		// addLocalVariableNameToQDMs(originalDoc);
-		// createUsedCQLArtifactsWithPopulationNames(originalDoc);
 
 		return transform(originalDoc);
 	}
@@ -689,57 +628,6 @@ public class ExportSimpleXML {
 
 	}
 
-	/**
-	 * @param originalDoc
-	 * @param result
-	 * @param mergedValueSetMap
-	 * @param expressionReferenceXPath
-	 * @throws XPathExpressionException
-	 */
-	private static void getUsedValueSetMap(Document originalDoc, SaveUpdateCQLResult result,
-			Map<String, List<String>> mergedValueSetMap, String expressionReferenceXPath, boolean isValueSet)
-			throws XPathExpressionException {
-
-		NodeList expressionNodeList = (NodeList) xPath.evaluate(expressionReferenceXPath,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-
-		if (expressionNodeList != null && expressionNodeList.getLength() > 0) {
-			for (int i = 0; i < expressionNodeList.getLength(); i++) {
-				Node supplementalNode = expressionNodeList.item(i);
-
-				String nodeUUID = supplementalNode.getAttributes().getNamedItem("uuid").getNodeValue();
-
-				String definitionXPath = "//cqlLookUp/definitions/definition[@id='" + nodeUUID + "']";
-				Node definitionNode = (Node) xPath.evaluate(definitionXPath, originalDoc.getDocumentElement(),
-						XPathConstants.NODE);
-
-				if (definitionNode != null) {
-					String definitionName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
-					System.out.println("Definition Name:"+definitionName);
-					// find the used value-sets (with their datatypes) for this
-					// definition
-					List<CQLExpressionObject> definitionObjects = result.getCqlObject().getCqlDefinitionObjectList();
-					for (CQLExpressionObject expressionObject : definitionObjects) {
-						
-						if (expressionObject.getName().equals(definitionName)) {
-
-							Map<String, List<String>> usedValueSetMap = new HashMap<String, List<String>>();
-
-							if (isValueSet) {
-								usedValueSetMap = expressionObject.getValueSetDataTypeMap();
-							} else {
-								usedValueSetMap = expressionObject.getCodeDataTypeMap();
-							}
-							System.out.println("usedValueSetMap:"+usedValueSetMap);
-							CQLExpressionObject.mergeValueSetMap(mergedValueSetMap, usedValueSetMap);
-							System.out.println("mergedValueSetMap:"+mergedValueSetMap);
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * @param originalDoc
@@ -932,24 +820,21 @@ public class ExportSimpleXML {
 	 *            the used sub tree ids
 	 * @param originalDoc
 	 *            the original doc
+	 * @throws XPathExpressionException 
 	 */
-	private static void formatAttributeDateInQDMAttribute(List<String> usedSubTreeIds, Document originalDoc) {
+	private static void formatAttributeDateInQDMAttribute(List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException {
 
 		String XPATH_EXP_ATTR_DATE = "/measure/subTreeLookUp//elementRef/attribute";
-		try {
-			NodeList qdmAttributeList = (NodeList) xPath.evaluate(XPATH_EXP_ATTR_DATE, originalDoc.getDocumentElement(),
-					XPathConstants.NODESET);
-			for (int i = 0; i < qdmAttributeList.getLength(); i++) {
-				Node attrNode = qdmAttributeList.item(i);
-				if (attrNode.getAttributes().getNamedItem("attrDate") != null) {
-					String date = attrNode.getAttributes().getNamedItem("attrDate").getNodeValue();
-					attrNode.getAttributes().getNamedItem("attrDate").setNodeValue(formatDate(date));
-				}
+		NodeList qdmAttributeList = (NodeList) xPath.evaluate(XPATH_EXP_ATTR_DATE, originalDoc.getDocumentElement(),
+				XPathConstants.NODESET);
+		for (int i = 0; i < qdmAttributeList.getLength(); i++) {
+			Node attrNode = qdmAttributeList.item(i);
+			if (attrNode.getAttributes().getNamedItem("attrDate") != null) {
+				String date = attrNode.getAttributes().getNamedItem("attrDate").getNodeValue();
+				attrNode.getAttributes().getNamedItem("attrDate").setNodeValue(formatDate(date));
 			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+
 
 	}
 
@@ -998,17 +883,15 @@ public class ExportSimpleXML {
 	 *            the original doc
 	 * @param measureDAO
 	 *            the measure dao
-	 * @param measure_Id
-	 *            TODO
+	 * @param measureId
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private static void updateVersionforMeasureDetails(Document originalDoc, MeasureDAO measureDAO, String measure_Id)
+	private static void updateVersionforMeasureDetails(Document originalDoc, MeasureDAO measureDAO, String measureId)
 			throws XPathExpressionException {
 		String xPathForMeasureDetailsVerion = "/measure/measureDetails/version";
 		Node versionNode = (Node) xPath.evaluate(xPathForMeasureDetailsVerion, originalDoc, XPathConstants.NODE);
-		Measure measure = measureDAO.find(measure_Id);
-
+		Measure measure = measureDAO.find(measureId);
 		versionNode.setTextContent(
 				measure.getMajorVersionStr() + "." + measure.getMinorVersionStr() + "." + measure.getRevisionNumber());
 
@@ -1116,21 +999,14 @@ public class ExportSimpleXML {
 				uuidXPathString += "@uuid != '" + uuidString + "' and";
 			}
 			uuidXPathString = uuidXPathString.substring(0, uuidXPathString.lastIndexOf(" and"));
-
 			String xPathForUnunsedSubTreeNodes = "/measure/subTreeLookUp/subTree[" + uuidXPathString + "]";
-
-			try {
-				NodeList unUnsedSubTreeNodes = (NodeList) xPath.evaluate(xPathForUnunsedSubTreeNodes,
-						originalDoc.getDocumentElement(), XPathConstants.NODESET);
-				if (unUnsedSubTreeNodes.getLength() > 0) {
-					Node parentSubTreeNode = unUnsedSubTreeNodes.item(0).getParentNode();
-					for (int i = 0; i < unUnsedSubTreeNodes.getLength(); i++) {
-						parentSubTreeNode.removeChild(unUnsedSubTreeNodes.item(i));
-					}
+			NodeList unUnsedSubTreeNodes = (NodeList) xPath.evaluate(xPathForUnunsedSubTreeNodes,
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			if (unUnsedSubTreeNodes.getLength() > 0) {
+				Node parentSubTreeNode = unUnsedSubTreeNodes.item(0).getParentNode();
+				for (int i = 0; i < unUnsedSubTreeNodes.getLength(); i++) {
+					parentSubTreeNode.removeChild(unUnsedSubTreeNodes.item(i));
 				}
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 
 		} else {
@@ -1160,9 +1036,6 @@ public class ExportSimpleXML {
 			Node qdmNode = allOccuranceQDMs.item(i);
 			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			// String instance =
-			// qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
-
 			if (qdmOID_Datatype_List.contains(datatype + oid)) {
 				continue;
 			} else {
@@ -1205,8 +1078,6 @@ public class ExportSimpleXML {
 
 		for (int i = 0; i < qdmVariableSubTreeList.getLength(); i++) {
 			Node qdmVariableNode = qdmVariableSubTreeList.item(i);
-			// String uuid =
-			// qdmVariableNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			String occuranceLetter = qdmVariableNode.getAttributes().getNamedItem("instance").getNodeValue();
 			String displayName = qdmVariableNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			displayName = "Occurrence " + occuranceLetter + " of $" + StringUtils.deleteWhitespace(displayName);
@@ -1290,7 +1161,7 @@ public class ExportSimpleXML {
 	 * @return the string
 	 */
 	private static String transform(Node node) {
-		_logger.info("In transform() method");
+		logger.info("In transform() method");
 		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 		TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
 		DOMSource source = new DOMSource(node);
@@ -1299,10 +1170,10 @@ public class ExportSimpleXML {
 		try {
 			transformerFactory.newTransformer().transform(source, result);
 		} catch (TransformerException e) {
-			_logger.info("Document object to ByteArray transformation failed " + e.getStackTrace());
+			logger.info("Document object to ByteArray transformation failed " + e.getStackTrace());
 			e.printStackTrace();
 		}
-		_logger.info("Document object to ByteArray transformation complete");
+		logger.info("Document object to ByteArray transformation complete");
 		return arrayOutputStream.toString();
 	}
 
@@ -1409,7 +1280,7 @@ public class ExportSimpleXML {
 
 				Node clauseNode = findClauseByUUID(uuid, type, originalDoc).cloneNode(true);
 
-				if ("stratification".equals(clauseNode.getNodeName())) {
+				if (STRATIFICATION.equals(clauseNode.getNodeName())) {
 					NodeList stratificationClauses = clauseNode.getChildNodes();
 
 					for (int h = 0; h < stratificationClauses.getLength(); h++) {
@@ -1571,7 +1442,6 @@ public class ExportSimpleXML {
 	 *            the original doc
 	 */
 	private static void generateClauseNode(Node groupNode, String type, Document origionalDoc) {
-		// TODO Auto-generated method stub
 		Node newClauseNode = groupNode.getFirstChild().cloneNode(true);
 		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
 		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
@@ -1613,6 +1483,7 @@ public class ExportSimpleXML {
 		List<String> list = new ArrayList<String>();
 		if ("Cohort".equalsIgnoreCase(type)) {
 			list.add("initialPopulation");
+			list.add("stratum");
 		} else if ("Continuous Variable".equalsIgnoreCase(type)) {
 			list.add("initialPopulation");
 			list.add("measurePopulation");
@@ -1687,14 +1558,14 @@ public class ExportSimpleXML {
 			Node childNode = measureGrpupingNodeList.item(i);
 			String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			String type = childNode.getAttributes().getNamedItem("type").getNodeValue();
-			if (type.equals("stratification")) {
+			if (type.equals(STRATIFICATION)) {
 				List<String> stratificationClausesIDlist = getStratificationClasuesIDList(uuid, originalDoc);
 				usedClauseIds.addAll(stratificationClausesIDlist);
 			} else {
 				usedClauseIds.add(uuid);
 			}
 		}
-		_logger.info("usedClauseIds:" + usedClauseIds);
+		logger.info("usedClauseIds:" + usedClauseIds);
 		return usedClauseIds;
 	}
 
@@ -1705,23 +1576,19 @@ public class ExportSimpleXML {
 	 *            the uuid
 	 * @param originalDoc
 	 *            the original doc
-	 * @return the stratification clasues id list
+	 * @return the stratification clauses id list
+	 * @throws XPathExpressionException 
 	 */
-	private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) {
-
+	private static List<String> getStratificationClasuesIDList(String uuid, Document originalDoc) throws XPathExpressionException {
 		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" + "[@uuid='" + uuid
 				+ "']/clause/@uuid";
 		List<String> clauseList = new ArrayList<String>();
-		try {
-			NodeList stratificationClausesNodeList = (NodeList) xPath
-					.evaluate(XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES, originalDoc, XPathConstants.NODESET);
-			for (int i = 0; i < stratificationClausesNodeList.getLength(); i++) {
-				clauseList.add(stratificationClausesNodeList.item(i).getNodeValue());
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		NodeList stratificationClausesNodeList = (NodeList) xPath
+				.evaluate(XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES, originalDoc, XPathConstants.NODESET);
+		for (int i = 0; i < stratificationClausesNodeList.getLength(); i++) {
+			clauseList.add(stratificationClausesNodeList.item(i).getNodeValue());
 		}
+
 		return clauseList;
 	}
 
@@ -1931,7 +1798,7 @@ public class ExportSimpleXML {
 			Node elementRefNode = elementInQDMAttributesList.item(i);
 			usedQDMIds.add(elementRefNode.getNodeValue());
 		}
-		_logger.info("usedQDMIds:" + usedQDMIds);
+		logger.info("usedQDMIds:" + usedQDMIds);
 		return usedQDMIds;
 	}
 
@@ -1974,7 +1841,7 @@ public class ExportSimpleXML {
 	private static Node findClauseByUUID(String uuid, String type, Document originalDoc)
 			throws XPathExpressionException {
 		Node clauseNode = null;
-		if (type.equalsIgnoreCase("stratification")) {
+		if (type.equalsIgnoreCase(STRATIFICATION)) {
 			String startificationXPath = "/measure/strata/stratification[@uuid='" + uuid + "']";
 			clauseNode = (Node) xPath.evaluate(startificationXPath, originalDoc, XPathConstants.NODE);
 
@@ -2095,7 +1962,7 @@ public class ExportSimpleXML {
 			}
 			dateString = year + month + dt;
 		} catch (Exception e) {
-			_logger.info("Bad Start/Stop dates in Measure Details." + e.getMessage());
+			logger.info("Bad Start/Stop dates in Measure Details." + e.getMessage());
 		}
 		return dateString;
 	}

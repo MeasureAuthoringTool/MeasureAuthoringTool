@@ -10,7 +10,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class PopulationWorkSpaceContextMenu.
  *

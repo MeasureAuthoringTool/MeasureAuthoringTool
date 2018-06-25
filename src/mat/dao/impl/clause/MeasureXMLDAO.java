@@ -54,7 +54,7 @@ mat.dao.clause.MeasureXMLDAO {
 		Criteria criteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureXML.class);
 
-		criteria.add(Restrictions.eq("measure_id", measureId));
+		criteria.add(Restrictions.eq("measureId", measureId));
 		List<MeasureXML> results = criteria.list();
 		if (!results.isEmpty()) {
 			return results.get(0);

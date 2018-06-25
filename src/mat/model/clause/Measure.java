@@ -45,7 +45,7 @@ public class Measure {
 	
 	/** The locked user. */
 	private User lockedUser;
-	//Sprint 16 additions
+
 	/** The draft. */
 	private boolean draft;
 	
@@ -54,14 +54,13 @@ public class Measure {
 	
 	/** The finalized date. */
 	private Timestamp finalizedDate;
-	//Sprint17
+
 	/** The value set date. */
 	private Timestamp valueSetDate;
 	
 	/** The e measure id. */
 	private int eMeasureId;
 	
-	//private String deleted;
 	/** The is private. */
 	private boolean isPrivate;
 	
@@ -312,25 +311,6 @@ public class Measure {
 	}
 	
 	/**
-	 * Gets the measure status.
-	 * 
-	 * @return the measure status
-	 */
-	/*public String getMeasureStatus() {
-		return measureStatus;
-	}
-	
-	 *//**
-	 * Sets the measure status.
-	 * 
-	 * @param measureStatus
-	 *            the new measure status
-	 *//*
-	public void setMeasureStatus(String measureStatus) {
-		this.measureStatus = measureStatus;
-	}*/
-	
-	/**
 	 * Gets the owner.
 	 * 
 	 * @return the owner
@@ -444,12 +424,6 @@ public class Measure {
 		this.eMeasureId = eMeasureId;
 	}
 	
-	/*public String getDeleted() {
-		return deleted;
-	}
-	public void setDeleted(String deleted) {
-		this.deleted = deleted;
-	}*/
 	/**
 	 * Gets the checks if is private.
 	 * 

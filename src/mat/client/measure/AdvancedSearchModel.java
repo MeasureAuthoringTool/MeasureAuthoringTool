@@ -133,7 +133,7 @@ public class AdvancedSearchModel {
 		FormLabel stateLabel = new FormLabel();
 		HorizontalPanel statePanel = new HorizontalPanel();
 		stateLabel.setText("Show Only:");
-		stateLabel.setTitle("Show Only");
+		stateLabel.setTitle("Show Only");stateLabel.setFor("stateId");
 		stateLabel.setFor("stateGroup");
 		stateLabel.setStyleName("advancedSearchLabels");
 		searchStateList = new ListBox();

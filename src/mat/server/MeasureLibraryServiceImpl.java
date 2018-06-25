@@ -3534,13 +3534,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 
 			// validate only from MeasureGrouping
-			String XAPTH_MEASURE_GROUPING = "/measure/measureGrouping/ group/packageClause"
+			String XPATH_MEASURE_GROUPING = "/measure/measureGrouping/ group/packageClause"
 					+ "[not(@uuid = preceding:: group/packageClause/@uuid)]";
 
 			List<String> measureGroupingIDList = new ArrayList<String>();
 			
 			try {
-				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING,
+				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_GROUPING,
 						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 
 				for (int i = 0; i < measureGroupingNodeList.getLength(); i++) {
@@ -3728,7 +3728,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 		
 		if(cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {
-			String exportedXML = ExportSimpleXML.export(newXml, message, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+			String exportedXML = ExportSimpleXML.export(newXml, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
 
 			CQLModel model = CQLUtilityClass.getCQLModelFromXML(exportedXML);
 
@@ -5101,12 +5101,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 
 			// validate only for Stratification where each startum should have at least one Clause
-			String XAPTH_MEASURE_GROUPING_STRATIFICATION = "/measure/measureGrouping/group/packageClause[@type='stratification']"
+			String XPATH_MEASURE_GROUPING_STRATIFICATION = "/measure/measureGrouping/group/packageClause[@type='stratification']"
 					+ "[not(@uuid = preceding:: group/packageClause/@uuid)]/@uuid";
 
 			List<String> stratificationClausesIDlist = null;
 			try {
-				NodeList startificationUuidList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING_STRATIFICATION,
+				NodeList startificationUuidList = (NodeList) xPath.evaluate(XPATH_MEASURE_GROUPING_STRATIFICATION,
 						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 
 				for (int i = 0; i < startificationUuidList.getLength(); i++) {

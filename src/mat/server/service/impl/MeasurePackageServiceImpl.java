@@ -241,9 +241,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		if(measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
 
-			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO, cqlLibraryDAO, cqlModel);
+			exportedXML = ExportSimpleXML.export(measureXML, measureDAO,organizationDAO, cqlLibraryDAO, cqlModel);
 		} else {
-			exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO,organizationDAO);
+			exportedXML = ExportSimpleXML.export(measureXML, measureDAO,organizationDAO);
 		}
 		if (exportedXML.length() == 0) {
 			return;
@@ -292,7 +292,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		if (measureXML != null) {
 			MeasureXmlModel exportModal = new MeasureXmlModel();
-			exportModal.setMeasureId(measureXML.getMeasure_id());
+			exportModal.setMeasureId(measureXML.getMeasureId());
 			exportModal.setMeausreExportId(measureXML.getId());
 			exportModal.setXml(measureXML.getMeasureXMLAsString());
 			return exportModal;
@@ -395,7 +395,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			measureXML.setMeasureXMLAsByteArray(measureXmlModel.getXml());
 		} else {
 			measureXML = new MeasureXML();
-			measureXML.setMeasure_id(measureXmlModel.getMeasureId());
+			measureXML.setMeasureId(measureXmlModel.getMeasureId());
 			measureXML.setMeasureXMLAsByteArray(measureXmlModel.getXml());
 		}
 		measureXMLDAO.save(measureXML);

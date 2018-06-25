@@ -57,10 +57,8 @@ public class AdvancedSearchModel {
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
 		panel.setTitle("Advanced Search");
-		panel.getElement().setTitle(
-		"This advanced search section allows you to "
-				+ "search by the name of the measure, measure owner, measure state, measure score, "
-				+ "patient-based indicator, when the measure was last modified, and by the user that last modified the measure, and the measure owner. ");
+		
+		setTitleOfPanel();
 		
 		panel.getElement().setAttribute("tabindex", "0");
 		
@@ -86,6 +84,14 @@ public class AdvancedSearchModel {
 		
 		panel.add(modalBody);
 		panel.getElement().focus();
+	}
+	
+	private void setTitleOfPanel() {
+		panel.getElement().setTitle(
+			"This advanced search section allows you to "
+			+ "search by the name of the measure, measure owner, measure state, measure score, "
+			+ "patient-based indicator, when the measure was last modified, and by the user that"
+			+ " last modified the measure, and the measure owner. ");
 	}
 	
 	private FormGroup getSearchTextSection(String type) {

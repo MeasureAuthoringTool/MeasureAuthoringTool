@@ -7,9 +7,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public abstract class AdvancedSearchBuilder {
-	protected AdvancedSearchModel modal;
-	protected Anchor anchor;
-	protected VerticalPanel panel;
+	private AdvancedSearchModal modal;
+	private Anchor anchor;
+	private VerticalPanel panel;
 	
 	public AdvancedSearchBuilder() {
 		createAdvancedSearch();
@@ -34,12 +34,12 @@ public abstract class AdvancedSearchBuilder {
 		panel.setStylePrimaryName("advanceSearch");
 	}
 	
-	public AdvancedSearchModel getAdvancedSearchModel(){
+	public AdvancedSearchModal getModal() {
 		return modal;
 	}
 	
-	public VerticalPanel getAdvancedSearchPanel() {
-		return panel;
+	public void setModal(AdvancedSearchModal modal) {
+		this.modal = modal;
 	}
 	
 	public Widget asWidget() {

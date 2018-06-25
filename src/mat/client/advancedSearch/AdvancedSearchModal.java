@@ -18,7 +18,7 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
-public class AdvancedSearchModel {	
+public class AdvancedSearchModal {	
 	private final String HEIGHT_OF_BOXES = "30px";
 	
 	private Modal panel;
@@ -51,7 +51,7 @@ public class AdvancedSearchModel {
 
 	
 	
-	public AdvancedSearchModel(String type, String pluralType) {
+	public AdvancedSearchModal(String type, String pluralType) {
 		this.type = type;
 		this.pluralType = pluralType;
 		

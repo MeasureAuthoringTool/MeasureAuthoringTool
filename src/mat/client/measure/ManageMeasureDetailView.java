@@ -31,89 +31,59 @@ import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.TextAreaWithMaxLength;
 
-/**
- * The Class ManageMeasureDetailView.
- */
-public class ManageMeasureDetailView 
-	implements ManageMeasurePresenter.DetailDisplay{
+public class ManageMeasureDetailView implements DetailDisplay{
 	
-	/** The main panel. */
 	private SimplePanel mainPanel = new SimplePanel();
 	
-	/** The measure name label. */
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
-	/** The name. */
 	private TextAreaWithMaxLength name = new TextAreaWithMaxLength();
 	
-	/** The short name. */
 	private TextBox shortName = new TextBox();
 	
-	//US 421. Measure scoring choice is now part of measure creation process.	
-	/** The meas scoring input. */
 	private ListBoxMVP  measScoringInput = new ListBoxMVP();
 	
-	/** The patient based input. */
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
 	
-	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
 	
-	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/**  The edit confirmation box. */
 	EditConfirmationDialogBox confirmationDialogBox = new EditConfirmationDialogBox();
 	
-	/** The instructions. */
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
-	//User Story # 1391 Sprint 11
-	/** The caution msg str. */
+
 	private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Measure Scoring' will have the following impacts:<br/>" +
 								   "<img src='images/bullet.png'/> Populations in the Population Workspace that do not apply to the 'Measure Scoring' selected will be deleted.<br/>" +
                                    "<img src='images/bullet.png'/> Existing Groupings in the Measure Packager will be deleted.</div>";
-	
-    /** The caution msg place holder. */
+
     protected HTML cautionMsgPlaceHolder = new HTML();
     
-    /** The required instructions. */
     protected HTML requiredInstructions = new HTML("All fields are required.");
     
-    /** The patient based measure. */
     protected Label patientBasedMeasure = new Label();
     
-    /** The invisible radio yes. */
     Label invisibleRadioYes; 
     
-    /** The invisible radio no. */
     Label invisibleRadioNo;
     
-    /** The measure name group. */
     private FormGroup measureNameGroup = new FormGroup();
 	
-	/** The short name group. */
 	private FormGroup shortNameGroup = new FormGroup();
 	
-	/** The scoring group. */
 	private FormGroup scoringGroup = new FormGroup();
 	
-	/** The message form grp. */
 	private FormGroup messageFormGrp = new FormGroup();
 	
-	/** The patient based form grp. */
 	private FormGroup patientBasedFormGrp = new FormGroup();
 	
-	/** The help block. */
 	private HelpBlock helpBlock = new HelpBlock();
 
 	private String cautionPatientbasedMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the Measure Scoring type will "
 			+ "reset the Patient-based Measure to its default setting.<br/>";
 
 	protected HTML cautionPatientbasedMsgPlaceHolder = new HTML();
-	
-	/**
-	 * Instantiates a new manage measure detail view.
-	 */
+
 	public ManageMeasureDetailView() {
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
@@ -131,13 +101,10 @@ public class ManageMeasureDetailView
 		fPanel.add(requiredInstructions);
 		requiredInstructions.getElement().setId("requiredInstructions_HTML");
 		fPanel.add(new SpacerWidget());
-		
 		fPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		Form createMeasureForm = new Form();
-		
-		
 		FormLabel measureNameLabel = new FormLabel();
 		measureNameLabel.setText("Name");
 		measureNameLabel.setTitle("Name");
@@ -227,76 +194,46 @@ public class ManageMeasureDetailView
 				
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setMeasureName(java.lang.String)
-	 */
 	@Override
 	public void setMeasureName(String name) {
 		measureNameLabel.setMeasureName(name);
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#showMeasureName(boolean)
-	 */
 	@Override
 	public void showMeasureName(boolean show) {
 		MatContext.get().setVisible(measureNameLabel,show);
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#asWidget()
-	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getSaveButton()
-	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getCancelButton()
-	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getName()
-	 */
 	@Override
 	public HasValue<String> getName() {
 		return name;
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getShortName()
-	 */
+	
 	@Override
 	public HasValue<String> getShortName() {
 		return shortName;
 	}		
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
-	 */
 	@Override
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#clearFields()
-	 */
 	@Override
 	public void clearFields() {
 		name.setText("");
@@ -306,51 +243,22 @@ public class ManageMeasureDetailView
 		messageFormGrp.setValidationState(ValidationState.NONE);
 		
 	}
-	
-	/* Returns the text value of Measure Scoring choice.
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringValue()
-	 */
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringValue()
-	 */
+
 	@Override
 	public String getMeasScoringValue() {
 		return measScoringInput.getItemText(measScoringInput.getSelectedIndex());
 	}
-	
-	/* Returns the Measure Scoring ListBox object.
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringChoice()
-	 */
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringChoice()
-	 */
+
 	@Override
 	public ListBoxMVP getMeasScoringChoice() {
 		return measScoringInput;
 	}
-	
-	//US 421
-	/* Set the value list for Measure Scoring choice list box.
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setScoringChoices(java.util.List)
-	 */
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setScoringChoices(java.util.List)
-	 */
+
 	@Override
 	public void setScoringChoices(List<? extends HasListBox> texts) {
 		setListBoxItems(measScoringInput, texts, MatContext.PLEASE_SELECT);
 	}
 
-	/**
-	 * Populates the list box with collection values.
-	 * 
-	 * @param listBox
-	 *            the list box
-	 * @param itemList
-	 *            the item list
-	 * @param defaultOption
-	 *            the default option
-	 */
 	private void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
 		listBox.clear();
 		listBox.addItem(defaultOption,"");
@@ -361,18 +269,11 @@ public class ManageMeasureDetailView
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasureVersion()
-	 */
 	@Override
 	public HasValue<String> getMeasureVersion() {
 		return null;
 	}
 
-	//US 195
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#showCautionMsg(boolean)
-	 */
 	@Override
 	public void showCautionMsg(boolean show) {
 		if(show){
@@ -384,51 +285,30 @@ public class ManageMeasureDetailView
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getPatientBasedInput()
-	 */
 	@Override
 	public ListBoxMVP getPatientBasedInput() {
 		return patientBasedInput;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setPatientBasedInput(com.google.gwt.user.client.ui.ListBox)
-	 */
 	@Override
 	public void setPatientBasedInput(ListBoxMVP patientBasedInput) {
 		this.patientBasedInput = patientBasedInput;
 	}
 
-	/* (non-Javadoc)
-	 *  * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getHelpBlock()
-	 */
 	@Override
 	public HelpBlock getHelpBlock() {
 		return helpBlock;
 	}
 
-	/**
-	 * Sets the help block.
-	 *
-	 * @param helpBlock the new help block
-	 */
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMessageFormGrp()
-	 */
+
 	@Override
 	public FormGroup getMessageFormGrp() {
 		return messageFormGrp;
 	}
 
-	/**
-	 * @return the createNewConfirmationDialogBox
-	 */
 	public EditConfirmationDialogBox getConfirmationDialogBox() {
 		return confirmationDialogBox;
 	}

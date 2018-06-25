@@ -1,7 +1,7 @@
 package mat.client.advancedSearch;
 
 
-public class CQLLibraryAdvancedSearch extends AdvancedSearchBuilder {
+public class CQLLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	
 	final String DESCRIPTION_OF_MODAL_FOR_508 = "This advanced search section "
 			+ "allows you to search by the name of the library, library state, "

@@ -17,8 +17,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
-import mat.client.advancedSearch.AdvancedSearchModel;
-import mat.client.advancedSearch.MeasureLibraryAdvancedSearch;
+import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -34,86 +33,59 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.ClientConstants;
 
-/**
- * The Class ManageMeasureSearchView.
- */
-public class ManageMeasureSearchView implements
-ManageMeasurePresenter.SearchDisplay {
-	
-	/** The bulk export button. */
+public class ManageMeasureSearchView implements SearchDisplay {
+
 	private Button bulkExportButton = new Button("Export Selected");	
-	
-	/** The create measure button. */
+
 	Button createMeasureButton = new Button("New Measure"); 
-	
-	/** The table. */
+
 	CellTable<ManageMeasureSearchModel.Result> table;
 	
-	/** The error messages for transfer os. */
 	private MessageAlert errorMessagesForTransferOS = new ErrorMessageAlert();
 	
-	/** The current user role. */
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
 	
-	/** The error measure deletion. */
 	private MessageAlert errorMeasureDeletion = new ErrorMessageAlert();
 	
-	/** The clear button. */
 	private Button clearButton = new Button("Clear All");
 	
-	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/** The error messages for bulk export. */
 	private MessageAlert errorMessagesForBulkExport = new ErrorMessageAlert();
 	
-	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
 	
-	/** The form. */
 	private final FormPanel form = new FormPanel();
 	
-	/** The measure vpanel. */
 	public VerticalPanel measureVpanel = new VerticalPanel();
-	/** The main panel. */
+
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	/** The measure search filter widget. */
 	private SearchWidgetWithFilter measureSearchFilterWidget = new SearchWidgetWithFilter("searchFilter",
 			"measureLibraryFilterDisclosurePanel","forMeasure");
 	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
-	/** The most recent measure widget. */
 	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
 	
-	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
-	/** The success measure deletion. */
 	private MessageAlert successMeasureDeletion = new SuccessMessageAlert();
 	
-	/** The success message display. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
 	
-	/**  The delete confirmation box. */
 	EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
 	
-	/** The transfer button. */
 	private Button transferButton = new Button("Transfer");
 	
-	private MeasureLibraryAdvancedSearch measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearch();
+	private MeasureLibraryAdvancedSearchBuilder measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearchBuilder();
 	
-	/** The search view. */
 	MeasureSearchView searchView;
 	
-	/** The view. */
 	MeasureSearchView measureSearchView = new MeasureSearchView("Measures");
 	
-	/** The zoom button. */
 	CustomButton zoomButton = (CustomButton) getImage("Search", ImageResources.INSTANCE.search_zoom(), "Search" , "MeasureSearchButton");
 	
-	/** Instantiates a new manage measure search view. */
 	public ManageMeasureSearchView() {
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())){
@@ -159,22 +131,12 @@ ManageMeasurePresenter.SearchDisplay {
 		MatContext.get().setManageMeasureSearchView(this);
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#asWidget()
-	 */
+
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
-	
-	/**
-	 * Builds the bottom button widget.
-	 *
-	 * @param bulkExportButton the bulk export button
-	 * @param errorMessageDisplay the error message display
-	 * @return the widget
-	 */
+
 	private Widget buildBottomButtonWidget(Button bulkExportButton,
 			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
@@ -190,15 +152,7 @@ ManageMeasurePresenter.SearchDisplay {
 		form.getElement().setId("measureLibrary_bottomPanelForm");
 		return form;
 	}
-	
-	/**
-	 * Admin build bottom button widget.
-	 *
-	 * @param transferButton the transfer button
-	 * @param clearButton the clear button
-	 * @param errorMessageDisplay the error message display
-	 * @return the widget
-	 */
+
 	public Widget adminBuildBottomButtonWidget(Button transferButton, Button clearButton,
 			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
@@ -213,33 +167,21 @@ ManageMeasurePresenter.SearchDisplay {
 		form.setWidget(flowPanel);
 		return form;
 	}
-	
-	/**
-	 * Builds the search widget.
-	 *
-	 * @return the widget
-	 */
+
 	public Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(searchWidgetBootStrap.getSearchWidget());
 
 		return hp;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#buildDataTable(mat.client.measure.ManageMeasureSearchModel, int, java.lang.String)
-	 */
+
 	@Override
 	public void buildDataTable(ManageMeasureSearchModel
 			manageMeasureSearchModel, int filter, String searchText){
 		measureSearchView.buildCellTable(manageMeasureSearchModel,filter,searchText);		
 		
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
-	 */
+
 	@Override
 	public void buildCellTable(ManageMeasureSearchModel
 			manageMeasureSearchModel, int filter, String searchText) {
@@ -247,10 +189,6 @@ ManageMeasurePresenter.SearchDisplay {
 		measureSearchView.buildCellTable(manageMeasureSearchModel,filter,searchText);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildMostRecentWidget()
-	 */
 	@Override
 	public void buildMostRecentWidget() {
 		mostRecentVerticalPanel.clear();
@@ -260,9 +198,7 @@ ManageMeasurePresenter.SearchDisplay {
 	public VerticalPanel getCellTablePanel(){
 		return measureSearchView.getCellTablePanel();
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#clearBulkExportCheckBoxes(mat.client.measure.metadata.Grid508)
-	 */
+
 	@Override
 	public void clearBulkExportCheckBoxes(Grid508 dataTable) {
 		int rows = dataTable.getRowCount();
@@ -314,69 +250,37 @@ ManageMeasurePresenter.SearchDisplay {
 		}
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getBulkExportButton()
-	 */
+
 	@Override
 	public HasClickHandlers getBulkExportButton() {
 		return bulkExportButton;
 	}	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMeasureDeletion()
-	 */
+
 	@Override
 	public MessageAlert getErrorMeasureDeletion() {
 		return errorMeasureDeletion;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
-	 */
 	@Override
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMessageDisplayForBulkExport()
-	 */
+
 	@Override
 	public MessageAlert getErrorMessageDisplayForBulkExport() {
 		return errorMessagesForBulkExport;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getExportSelectedButton()
-	 */
+
 	@Override
 	public Button getExportSelectedButton() {
 		return bulkExportButton;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getForm()
-	 */
+
 	@Override
 	public FormPanel getForm() {
 		return form;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureDataTable()
-	 */
-	/**
-	 * Add Image on Button with invisible text. This text will be available when
-	 * css is turned off.
-	 *
-	 * @param action - {@link String}
-	 * @param url - {@link ImageResource}.
-	 * @param key - {@link String}.
-	 * @param id the id
-	 * @return - {@link Widget}.
-	 */
+
 	private Widget getImage(String action, ImageResource url, String key , String id) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
@@ -387,119 +291,71 @@ ManageMeasurePresenter.SearchDisplay {
 		return image;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSelectionTool()
-	 */
-	/**
-	 * Gets the measure search filter widget.
-	 * 
-	 * @return the dropDown
-	 */
 	@Override
 	public SearchWidgetWithFilter getMeasureSearchFilterWidget() {
 		return measureSearchFilterWidget;
 	}
-	
-	/** Gets the most recent measure widget.
-	 * 
-	 * @return the mostRecentMeasureWidget */
+
 	@Override
 	public MostRecentMeasureWidget getMostRecentMeasureWidget() {
 		return mostRecentMeasureWidget;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureSearchView()
-	 */
+
 	@Override
 	public MeasureSearchView getMeasureSearchView() {
 		return measureSearchView;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchString()
-	 */
+
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return measureSearchFilterWidget.getSearchButton();
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedFilter()
-	 */
+
 	@Override
 	public HasValue<String> getSearchString() {
 		return measureSearchFilterWidget.getSearchInput();
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedFilter()
-	 */
+
 	@Override
 	public int getSelectedFilter() {
 		return measureSearchFilterWidget.getSelectedFilter();
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectIdForEditTool()
-	 */	
+
 	@Override
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return measureSearchView;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSuccessMeasureDeletion()
-	 */
+
 	@Override
 	public MessageAlert getSuccessMeasureDeletion() {
 		return successMeasureDeletion;
 	}
 	
 	@Override
-	/** @return the zoomButton */
 	public CustomButton getZoomButton() {
 		return zoomButton;
 	}
 	
-	/** Sets the create button.
-	 * 
-	 * @param createMeasureButton the createMeasureButton to set */
 	public void setCreateMeasureButton(Button createMeasureButton) {
 		this.createMeasureButton = createMeasureButton;
 	}
-		
-	/**
-	 * Sets the error measure deletion.
-	 * 
-	 * @param errorMeasureDeletion
-	 *            the new error measure deletion
-	 */
+
 	public void setErrorMeasureDeletion(MessageAlert errorMeasureDeletion) {
 		this.errorMeasureDeletion = errorMeasureDeletion;
 	}
-	
-	/** Sets the measure search filter widget.
-	 * 
-	 * @param measureSearchFilterWidget the measureSearchFilterWidget to set */
+
 	public void setMeasureSearchFilterWidget(SearchWidgetWithFilter measureSearchFilterWidget) {
 		this.measureSearchFilterWidget = measureSearchFilterWidget;
 	}
-	
-	/** Sets the success measure deletion.
-	 * 
-	 * @param successMeasureDeletion the new success measure deletion */
+
 	public void setSuccessMeasureDeletion(
 			MessageAlert successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#clearTransferCheckBoxes()
-	 */
 	@Override
 	public void clearTransferCheckBoxes() {
 		
@@ -507,67 +363,39 @@ ManageMeasurePresenter.SearchDisplay {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getClearButton()
-	 */
 	@Override
 	public HasClickHandlers getClearButton() {
 		return clearButton;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getErrorMessagesForTransferOS()
-	 */
 	@Override
 	public MessageAlert getErrorMessagesForTransferOS() {
 		return errorMessagesForTransferOS;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getTransferButton()
-	 */
 	@Override
 	public HasClickHandlers getTransferButton() {
 		return transferButton;
 	}
-	
-	/**
-	 * Gets the data.
-	 *
-	 * @return the data
-	 */
+
 	public ManageMeasureSearchModel getData() {
 		return data;
 	}
-	/**
-	 * Sets the data.
-	 *
-	 * @param data the new data
-	 */
+
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#setAdminObserver(mat.client.measure.MeasureSearchView.AdminObserver)
-	 */
 	@Override
 	public void setAdminObserver(AdminObserver adminObserver) {
 		measureSearchView.setAdminObserver(adminObserver);
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getAdminSearchButton()
-	 */
 	@Override
 	public HasClickHandlers getAdminSearchButton() {		
 		return searchWidgetBootStrap.getGo();
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getAdminSearchString()
-	 */
 	@Override
 	public HasValue<String> getAdminSearchString() {		
 		return searchWidgetBootStrap.getSearchBox();
@@ -583,9 +411,6 @@ ManageMeasurePresenter.SearchDisplay {
 		return null;
 	}
 
-	/**
-	 * @return the draftConfirmationDialogBox
-	 */
 	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
 		return draftConfirmationDialogBox;
 	}
@@ -603,5 +428,4 @@ ManageMeasurePresenter.SearchDisplay {
 		getSuccessMeasureDeletion().clearAlert();
 		getSuccessMessageDisplay().clearAlert();
 	}
-
 }

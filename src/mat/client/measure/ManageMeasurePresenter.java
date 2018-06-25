@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -16,14 +14,11 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -33,25 +28,17 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.advancedSearch.AdvancedSearchModel;
 import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
 import mat.client.cql.ConfirmationObserver;
@@ -60,655 +47,30 @@ import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.event.MeasureVersionEvent;
 import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableWidget;
-import mat.client.shared.ListBoxMVP;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SearchWidgetBootStrap;
-import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
-import mat.client.umls.ManageUmlsPresenter;
-import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
-
-/**
- * The Class ManageMeasurePresenter.
- */
 @SuppressWarnings("deprecation")
 public class ManageMeasurePresenter implements MatPresenter {
-	/**
-	 * The Interface BaseDisplay.
-	 */
-	public static interface BaseDisplay {
 
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		public Widget asWidget();
-
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
-		public MessageAlert getErrorMessageDisplay();
-
-	}
-
-	/**
-	 * The Interface DetailDisplay.
-	 */
-	public static interface DetailDisplay extends BaseDisplay {
-
-		/**
-		 * Clear fields.
-		 */
-		public void clearFields();
-
-		/**
-		 * Gets the cancel button.
-		 * 
-		 * @return the cancel button
-		 */
-		public HasClickHandlers getCancelButton();
-
-		// US 421. Measure scoring choice is now part of measure creation
-		// process.
-		/**
-		 * Gets the meas scoring choice.
-		 * 
-		 * @return the meas scoring choice
-		 */
-		public ListBoxMVP getMeasScoringChoice();
-
-		/**
-		 * Gets the meas scoring value.
-		 * 
-		 * @return the meas scoring value
-		 */
-		public String getMeasScoringValue();
-
-		/**
-		 * Gets the measure version.
-		 * 
-		 * @return the measure version
-		 */
-		public HasValue<String> getMeasureVersion();
-
-		/**
-		 * Gets the name.
-		 * 
-		 * @return the name
-		 */
-		public HasValue<String> getName();
-
-		/**
-		 * Gets the save button.
-		 * 
-		 * @return the save button
-		 */
-		public HasClickHandlers getSaveButton();
-
-		/**
-		 * Gets the short name.
-		 * 
-		 * @return the short name
-		 */
-		public HasValue<String> getShortName();
-
-		/**
-		 * Sets the measure name.
-		 * 
-		 * @param name
-		 *            the new measure name
-		 */
-		public void setMeasureName(String name);
-
-		// US 421. Measure scoring choice is now part of measure creation
-		// process.
-		/**
-		 * Sets the scoring choices.
-		 * 
-		 * @param texts
-		 *            the new scoring choices
-		 */
-		void setScoringChoices(List<? extends HasListBox> texts);
-
-		// US 195 showingCautionMsg
-		/**
-		 * Show caution msg.
-		 * 
-		 * @param show
-		 *            the show
-		 */
-		public void showCautionMsg(boolean show);
-
-		/**
-		 * Show measure name.
-		 * 
-		 * @param show
-		 *            the show
-		 */
-		public void showMeasureName(boolean show);
-
-		
-		ListBoxMVP getPatientBasedInput();
-
-		HelpBlock getHelpBlock();
-
-		FormGroup getMessageFormGrp();
-
-		void setPatientBasedInput(ListBoxMVP patientBasedInput);
-		
-		EditConfirmationDialogBox getConfirmationDialogBox();
-	}
-
-	/**
-	 * The Interface ExportDisplay.
-	 */
-	public static interface ExportDisplay extends BaseDisplay {
-
-		/**
-		 * Gets the cancel button.
-		 * 
-		 * @return the cancel button
-		 */
-		public HasClickHandlers getCancelButton();
-
-		/**
-		 * Gets the open button.
-		 * 
-		 * @return the open button
-		 */
-		public HasClickHandlers getOpenButton();
-
-		/**
-		 * Gets the save button.
-		 * 
-		 * @return the save button
-		 */
-		public HasClickHandlers getSaveButton();
-
-		public boolean isHQMF();
-		
-		public boolean isHumanReadable();
-
-		/**
-		 * Checks if is ELM
-		 */
-		public boolean isELM();
-		
-		/**
-		 * Checks if is JSON
-		 */
-		public boolean isJSON();
-		
-		/**
-		 * Checks if is e measure package.
-		 * 
-		 * @return true, if is e measure package
-		 */
-		boolean isEMeasurePackage();
-
-		/**
-		 * Checks if is simple xml.
-		 * 
-		 * @return true, if is simple xml
-		 */
-		public boolean isSimpleXML();
-
-		/**
-		 * Sets the measure name.
-		 * 
-		 * @param name
-		 *            the new measure name
-		 */
-		public void setMeasureName(String name);
-
-		boolean isCQLLibrary();
-
-		public void setVersion_Based_ExportOptions(String releaseVersion);
-	}
-
-	/**
-	 * The Interface HistoryDisplay.
-	 */
-	public static interface HistoryDisplay extends BaseDisplay {
-
-		/**
-		 * Clear error message.
-		 */
-		public void clearErrorMessage();
-
-		/**
-		 * Gets the measure id.
-		 * 
-		 * @return the measure id
-		 */
-		public String getMeasureId();
-
-		/**
-		 * Gets the measure name.
-		 * 
-		 * @return the measure name
-		 */
-		public String getMeasureName();
-
-		/**
-		 * Gets the return to link.
-		 * 
-		 * @return the return to link
-		 */
-		public HasClickHandlers getReturnToLink();
-
-		/**
-		 * Sets the error message.
-		 *
-		 * @param s
-		 *            the new error message
-		 */
-		public void setErrorMessage(String s);
-
-		/**
-		 * Sets the measure id.
-		 * 
-		 * @param id
-		 *            the new measure id
-		 */
-		public void setMeasureId(String id);
-
-		/**
-		 * Sets the measure name.
-		 * 
-		 * @param name
-		 *            the new measure name
-		 */
-		public void setMeasureName(String name);
-
-		/**
-		 * Sets the return to link text.
-		 * 
-		 * @param s
-		 *            the new return to link text
-		 */
-		public void setReturnToLinkText(String s);
-
-		/**
-		 * Builds the cell table.
-		 *
-		 * @param results
-		 *            the results
-		 */
-		public void buildCellTable(List<AuditLogDTO> results);
-	}
-
-	/**
-	 * The Interface SearchDisplay.
-	 */
-	public static interface SearchDisplay extends BaseDisplay {
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		@Override
-		public Widget asWidget();
-
-		/**
-		 * Builds the data table.
-		 *
-		 * @param manageMeasureSearchModel
-		 *            the manage measure search model
-		 * @param filter
-		 *            
-		 * @param searchText
-		 *            
-		 */
-		public void buildDataTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
-
-		/**
-		 * Clear transfer check boxes.
-		 */
-		public void clearTransferCheckBoxes();
-
-		/**
-		 * Gets the clear button.
-		 * 
-		 * @return the clear button
-		 */
-		public HasClickHandlers getClearButton();
-
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
-		@Override
-		public MessageAlert getErrorMessageDisplay();
-
-		/**
-		 * Gets the error messages for transfer os.
-		 * 
-		 * @return the error messages for transfer os
-		 */
-		public MessageAlert getErrorMessagesForTransferOS();
-
-		/**
-		 * Gets the transfer button.
-		 * 
-		 * @return the transfer button
-		 */
-		public HasClickHandlers getTransferButton();
-
-		/**
-		 * Sets the admin observer.
-		 *
-		 * @param adminObserver
-		 *            the new admin observer
-		 */
-		void setAdminObserver(AdminObserver adminObserver);
-
-		/**
-		 * Builds the data table.
-		 *
-		 * @param manageMeasureSearchModel
-		 *            the results
-		 * @param filter
-		 *            the filter
-		 * @param searchText
-		 *            the search text
-		 */
-		public void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
-
-		/** Builds the most recent widget. */
-		void buildMostRecentWidget();
-
-		/**
-		 * Clear bulk export check boxes.
-		 * 
-		 * @param dataTable
-		 *            the data table
-		 */
-		public void clearBulkExportCheckBoxes(Grid508 dataTable);
-
-		/**
-		 * Gets the bulk export button.
-		 * 
-		 * @return the bulk export button
-		 */
-		public HasClickHandlers getBulkExportButton();
-
-		/**
-		 * Gets the creates the measure button.
-		 * 
-		 * @return the creates the measure button
-		 */
-		Button getCreateMeasureButton();
-
-		/**
-		 * Gets the error measure deletion.
-		 * 
-		 * @return the error measure deletion
-		 */
-		public MessageAlert getErrorMeasureDeletion();
-
-		/**
-		 * Gets the error message display for bulk export.
-		 * 
-		 * @return the error message display for bulk export
-		 */
-		public MessageAlert getErrorMessageDisplayForBulkExport();
-
-		/**
-		 * Gets the export selected button.
-		 * 
-		 * @return the export selected button
-		 */
-		public Button getExportSelectedButton();
-
-		/**
-		 * Gets the form.
-		 * 
-		 * @return the form
-		 */
-		public FormPanel getForm();
-
-		/**
-		 * Gets the measure search filter widget.
-		 * 
-		 * @return the measure search filter widget
-		 */
-		SearchWidgetWithFilter getMeasureSearchFilterWidget();
-
-		/**
-		 * Gets the most recent measure widget.
-		 * 
-		 * @return the most recent measure widget
-		 */
-		MostRecentMeasureWidget getMostRecentMeasureWidget();
-
-		/**
-		 * Gets the measure search view.
-		 *
-		 * @return the measure search view
-		 */
-		MeasureSearchView getMeasureSearchView();
-
-		/**
-		 * Gets the search button.
-		 * 
-		 * @return the search button
-		 */
-		public HasClickHandlers getSearchButton();
-
-		/**
-		 * Gets the admin search button.
-		 *
-		 * @return the admin search button
-		 */
-		public HasClickHandlers getAdminSearchButton();
-
-		/**
-		 * Gets the search string.
-		 * 
-		 * @return the search string
-		 */
-		public HasValue<String> getSearchString();
-
-		/**
-		 * Gets the admin search string.
-		 *
-		 * @return the admin search string
-		 */
-		public HasValue<String> getAdminSearchString();
-
-		/**
-		 * Gets the selected filter.
-		 * 
-		 * @return the selected filter
-		 */
-		int getSelectedFilter();
-
-		/**
-		 * Gets the selected option.
-		 * 
-		 * @return the selected option
-		 */
-		public String getSelectedOption();
-
-		/**
-		 * Gets the select id for edit tool.
-		 * 
-		 * @return the select id for edit tool
-		 */
-		public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool();
-
-		/**
-		 * Gets the success measure deletion.
-		 * 
-		 * @return the success measure deletion
-		 */
-		public MessageAlert getSuccessMeasureDeletion();
-		
-		/**
-		 * Gets the success message display
-		 * 
-		 * @return the success message display
-		 */
-		public MessageAlert getSuccessMessageDisplay();
-		
-		/**
-		 * Gets the zoom button.
-		 * 
-		 * @return the zoom button
-		 */
-		CustomButton getZoomButton();
-
-		VerticalPanel getCellTablePanel();
-
-		EditConfirmationDialogBox getDraftConfirmationDialogBox();
-		
-		/* clear the message alerts */
-		public void resetMessageDisplay();
-
-	}
-
-	/**
-	 * The Interface ShareDisplay.
-	 */
-	public static interface ShareDisplay extends BaseDisplay {
-
-		/**
-		 * Builds the data table.
-		 *
-		 * @param adapter
-		 *            the adapter
-		 */
-		public void buildDataTable(UserShareInfoAdapter adapter);
-
-		/**
-		 * Gets the cancel button.
-		 * 
-		 * @return the cancel button
-		 */
-		public HasClickHandlers getCancelButton();
-
-		/**
-		 * Gets the share button.
-		 * 
-		 * @return the share button
-		 */
-		public HasClickHandlers getSaveButton();
-
-		/**
-		 * Private checkbox.
-		 * 
-		 * @return the checks for value change handlers
-		 */
-		public HasValueChangeHandlers<Boolean> privateCheckbox();
-
-		/**
-		 * Sets the measure name.
-		 * 
-		 * @param name
-		 *            the new measure name
-		 */
-		public void setMeasureName(String name);
-
-		/**
-		 * Sets the private.
-		 * 
-		 * @param isPrivate
-		 *            the new private
-		 */
-		public void setPrivate(boolean isPrivate);
-		/**
-		 * Gets the search button.
-		 * 
-		 * @return the search button
-		 */
-		SearchWidgetBootStrap getSearchWidgetBootStrap();
-		/**
-		 * Gets the focus panel.
-		 * 
-		 * @return the focus panel
-		 */
-		FocusPanel getSearchWidgetFocusPanel();
-
-		MessageAlert getWarningMessageDisplay();
-
-		void resetMessageDisplay();
-	}
-
-	/**
-	 * The Interface VersionDisplay.
-	 */
-	public static interface VersionDisplay extends BaseDisplay {
-
-		/**
-		 * Gets the cancel button.
-		 * 
-		 * @return the cancel button
-		 */
-		HasClickHandlers getCancelButton();
-
-		/**
-		 * Gets the major radio button.
-		 * 
-		 * @return the major radio button
-		 */
-		RadioButton getMajorRadioButton();
-
-		/**
-		 * Gets the minor radio button.
-		 * 
-		 * @return the minor radio button
-		 */
-		RadioButton getMinorRadioButton();
-
-		/**
-		 * Gets the save button.
-		 * 
-		 * @return the save button
-		 */
-		HasClickHandlers getSaveButton();
-
-		/**
-		 * Gets the selected measure.
-		 *
-		 * @return the selected measure
-		 */
-		Result getSelectedMeasure();
-
-		void setSelectedMeasure(Result selectedMeasure);
-
-		MessageAlert getErrorMessageDisplay();
-	}
-
-	/** The bulk export measure ids. */
 	private List<String> bulkExportMeasureIds;
 
-	/** The cancel click handler. */
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
@@ -721,126 +83,63 @@ public class ManageMeasurePresenter implements MatPresenter {
 	};
 
 	private ManageMeasureSearchModel.Result resultToFireEvent ;
-	
-	/** The current details. */
+
 	private ManageMeasureDetailModel currentDetails;
 
-	/** The current export id. */
 	private String currentExportId;
 
-	/** The current share details. */
 	private ManageMeasureShareModel currentShareDetails;
 
-	/** The current user role. */
 	final String currentUserRole = MatContext.get().getLoggedInUserRole();
 
-	/** The detail display. */
 	private DetailDisplay detailDisplay;
 
-	/** The export display. */
 	private ExportDisplay exportDisplay;
 
-	/** The history display. */
 	private HistoryDisplay historyDisplay;
 
-	/** The is clone. */
 	private boolean isClone;
 
-	/** The is measure deleted. */
 	private boolean isMeasureDeleted = false;
 	
 	private boolean isMeasureVersioned = false;
 	
-	/** The is measure search filter visible. */
 	boolean isMeasureSearchFilterVisible = true;
 
-	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
 	
 	boolean isLoading = false;
 
-	/**
-	 * Sets the sub skip embedded link.
-	 *
-	 * @param name
-	 *            the new sub skip embedded link
-	 */
-	public static void setSubSkipEmbeddedLink(String name) {
-		if (subSkipContentHolder == null) {
-			subSkipContentHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Sub Content"));
-		}
-		Mat.removeInputBoxFromFocusPanel(subSkipContentHolder.getElement());
-		Widget w = SkipListBuilder.buildSubSkipList(name);
-		subSkipContentHolder.clear();
-		subSkipContentHolder.add(w);
-		subSkipContentHolder.setFocus(true);
-	}
-
-	/** The listof measures. */
 	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
 
-	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
 
-	/** The measure deletion. */
 	private boolean measureDeletion = false;
 
-	/** The measure del message. */
 	private String measureDelMessage;
-	
-	/** The measure share. */
+
 	private boolean measureShared = false;
-	
-	/** The measure share message. */
+
 	private String measureShareMessage;
 
-	/** The measure ver message. */
 	private String measureVerMessage;
 
-	/** The model. */
 	private TransferOwnerShipModel model = null;
 
-	/** The panel. */
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 
-	/** The search display. */
 	private SearchDisplay searchDisplay;
 
-	/** The share display. */
 	private ShareDisplay shareDisplay;
-	
-	/** The start index. */
+
 	private int startIndex = 1;
 
-	/** The transfer display. */
 	private TransferOwnershipView transferDisplay;
 
-	/** The user share info. */
 	private UserShareInfoAdapter userShareInfo = new UserShareInfoAdapter();
 
-	/** The version display. */
 	private VersionDisplay versionDisplay;
 
-	/**
-	 * Instantiates a new manage measure presenter.
-	 *
-	 * @param sDisplayArg
-	 *            the s display arg
-	 * @param dDisplayArg
-	 *            the d display arg
-	 * @param shareDisplayArg
-	 *            the share display arg
-	 * @param exportDisplayArg
-	 *            the export display arg
-	 * @param hDisplay
-	 *            the h display
-	 * @param vDisplay
-	 *            the v display
-	 * @param dDisplay
-	 *            the d display
-	 * @param transferDisplay
-	 *            the transfer display
-	 */
 	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, ShareDisplay shareDisplayArg,
 			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
 			VersionDisplay vDisplay, /* DraftDisplay dDisplay, */
@@ -916,11 +215,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
 	@Override
 	public void beforeClosingDisplay() {
 		searchDisplay.resetMessageDisplay();
@@ -939,11 +233,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			transferDisplay.getSearchString().setValue("");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
 	@Override
 	public void beforeDisplay() {
 		Command waitForUnlock = new Command() {
@@ -961,18 +250,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			displaySearch();
 		}
-		// Commented for MAT-1929 : Retain Filters at Measure library
-		// screen.This message is commented since loading Please message was
-		// getting removed when search was performed.
-		// Mat.hideLoadingMessage();
+
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	/**
-	 * Builds the export url.
-	 * 
-	 * @return the string
-	 */
 	private String buildExportURL() {
 		String url = GWT.getModuleBaseURL() + "export?id=" + currentExportId + "&format=";
 		System.out.println("URL: " + url);
@@ -982,12 +263,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		return url;
 	}
 
-	/**
-	 * Bulk export.
-	 * 
-	 * @param selectedMeasureIds
-	 *            the selected measure ids
-	 */
 	private void bulkExport(List<String> selectedMeasureIds) {
 		String measureId = "";
 
@@ -1017,22 +292,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		form.submit();
 	}
 
-	/**
-	 * Clear radio button selection.
-	 */
 	private void clearRadioButtonSelection() {
 		versionDisplay.getMajorRadioButton().setValue(false);
 		versionDisplay.getMinorRadioButton().setValue(false);
 	}
 
-	/**
-	 * Clone measure.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @param isDraftCreation
-	 *            the is draft creation
-	 */
 	private void cloneMeasure(final ManageMeasureDetailModel currentDetails, final boolean isDraftCreation) {
 		String loggedinUserId = MatContext.get().getLoggedinUserId();
 		searchDisplay.resetMessageDisplay();
@@ -1079,32 +343,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created",
 				"Draft created based on Version " + result.getVersionValue(), false,
 				new AsyncCallback<Boolean>() {
-
 					@Override
-					public void onFailure(Throwable caught) {
-
-					}
-
+					public void onFailure(Throwable caught) {}
 					@Override
-					public void onSuccess(Boolean result) {
-
-					}
+					public void onSuccess(Boolean result) {}
 				});
 	}
-	
-	/**
-	 * Creates the draft of selected version.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 */
+
 	private void createDraftOfSelectedVersion(ManageMeasureDetailModel currentDetails) {
 		cloneMeasure(currentDetails, true);
 	}
 
-	/**
-	 * Creates the new.
-	 */
 	private void createNew() {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
@@ -1113,9 +362,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	/**
-	 * Creates the version.
-	 */
 	private void createVersion() {
 		versionDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.resetMessageDisplay();
@@ -1126,12 +372,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		clearRadioButtonSelection();
 	}
 
-	/**
-	 * Detail display handlers.
-	 * 
-	 * @param detailDisplay
-	 *            the detail display
-	 */
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
 		
 		detailDisplay.getConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
@@ -1174,7 +414,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 
-		// US 421. Retrieve the Measure scoring choices from db.
 		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1220,9 +459,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 
-	/**
-	 * Display detail for add.
-	 */
 	private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
 		resetPatientBasedInput(); 
@@ -1234,9 +470,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 
-	/**
-	 * Display detail for clone.
-	 */
 	private void displayDetailForClone() {
 		detailDisplay.clearFields();
 		resetPatientBasedInput(); 
@@ -1265,9 +498,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	/**
-	 * Display detail for edit.
-	 */
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
 		resetPatientBasedInput(); 
@@ -1290,10 +520,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		panel.setContent(detailDisplay.asWidget());
 	}
-	
-	/**
-	 * resets the patient based input by clearing the list, adding no and yes options, and setting the selected index to 0. 
-	 */
+
 	private void resetPatientBasedInput() {
 		detailDisplay.getPatientBasedInput().clear();
 		detailDisplay.getPatientBasedInput().addItem("No", "No");
@@ -1301,14 +528,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
-	/**
-	 * Display history.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param measureName
-	 *            the measure name
-	 */
 	private void displayHistory(String measureId, String measureName) {
 		int startIndex = 0;
 		int pageSize = Integer.MAX_VALUE;
@@ -1325,9 +544,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	/**
-	 * Display search.
-	 */
 	private void displaySearch() {
 		searchDisplay.getCellTablePanel().clear();
 		String heading = "Measure Library";
@@ -1342,7 +558,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			fp.add(searchDisplay.asWidget());
 		} else {
-			// MAT-1929 : Retain filters at measure library screen
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(true);
 			isMeasureSearchFilterVisible = true;
 			filter = searchDisplay.getSelectedFilter();
@@ -1356,10 +571,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(fp);
 		Mat.focusSkipLists("MeasureLibrary");
 	}
-	
-	/**
-	 * Builds the Create Measure Button
-	 */
+
 	private void buildCreateMeasure() {
 		panel.getButtonPanel().clear();
 
@@ -1373,31 +585,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.getButtonPanel().add(searchDisplay.getCreateMeasureButton());
 	}
 
-	/**
-	 * Display share.
-	 *
-	 * @param userName
-	 *            the user name 
-	 * @param id
-	 *            the id
-	 * @param name
-	 *            the name
-	 */
 	private void displayShare(String userName, String id, String name) {
 		//Setting this value so that visiting this page every time from share link, any previously entered value is reset
 		shareDisplay.getSearchWidgetBootStrap().getSearchBox().setValue("");
 		shareDisplay.setMeasureName(name);
 		displayShare(userName, id);
 	}
-	
-	/**
-	 * Display share.
-	 *
-	 * @param id
-	 *            the id
-	 * @param name
-	 *            the name
-	 */	
+
 	private void displayShare(String userName, String id) {
 		getShareDetails(userName, id, 1);
 		panel.getButtonPanel().clear();
@@ -1406,16 +600,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	/**
-	 * Display transfer view.
-	 *
-	 * @param searchString
-	 *            the search string
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 */
 	private void displayTransferView(String searchString, int startIndex, int pageSize) {
 		final ArrayList<ManageMeasureSearchModel.Result> transferMeasureResults = (ArrayList<Result>) manageMeasureSearchModel
 				.getSelectedTransferResults();
@@ -1455,12 +639,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Edits the.
-	 * 
-	 * @param name
-	 *            the name
-	 */
 	private void edit(String name) {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
@@ -1482,12 +660,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 
-	/**
-	 * Edits the clone.
-	 * 
-	 * @param id
-	 *            the id
-	 */
 	private void editClone(String id) {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
@@ -1509,18 +681,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 
-	/**
-	 * Export.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param name
-	 *            the name
-	 */
 	private void export(ManageMeasureSearchModel.Result result) {
 		String id = result.getId();
 		String name = result.getName();
-		// US 170
 		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Exported", null, true,
 				new AsyncCallback<Boolean>() {
 					@Override
@@ -1544,12 +707,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	/**
-	 * Export display handlers.
-	 * 
-	 * @param exportDisplay
-	 *            the export display
-	 */
 	private void exportDisplayHandlers(final ExportDisplay exportDisplay) {
 		exportDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 		exportDisplay.getSaveButton().addClickHandler(new ClickHandler() {
@@ -1567,34 +724,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Fire measure edit event.
-	 */
 	private void fireMeasureEditEvent() {
 		MeasureEditEvent evt = new MeasureEditEvent();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 
-	/**
-	 * Fire measure selected event.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param version
-	 *            the version
-	 * @param name
-	 *            the name
-	 * @param shortName
-	 *            the short name
-	 * @param scoringType
-	 *            the scoring type
-	 * @param isEditable
-	 *            the is editable
-	 * @param isLocked
-	 *            the is locked
-	 * @param lockedUserId
-	 *            the locked user id
-	 */
 	private void fireMeasureSelectedEvent(String id, String version, String name, String shortName, String scoringType,
 			boolean isEditable, boolean isLocked, String lockedUserId) {
 		MeasureSelectedEvent evt = new MeasureSelectedEvent(id, version, name, shortName, scoringType, isEditable,
@@ -1603,24 +737,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 
-	/**
-	 * Gets the bulk export measure ids.
-	 * 
-	 * @return the bulkExportMeasureIds
-	 */
 	public List<String> getBulkExportMeasureIds() {
 		return bulkExportMeasureIds;
 	}
 
-	/**
-	 * Gets the share details.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param startIndex
-	 *            the start index
-	 * @return the share details
-	 */
 	private void getShareDetails(String userName, String id, int startIndex) {
 		searchDisplay.resetMessageDisplay();
 		shareDisplay.resetMessageDisplay();
@@ -1647,25 +767,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 				});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
 	@Override
 	public Widget getWidget() {
 		return panel;
 	}
 
-	/**
-	 * Gets the widget with heading.
-	 * 
-	 * @param widget
-	 *            the widget
-	 * @param heading
-	 *            the heading
-	 * @return the widget with heading
-	 */
 	public Widget getWidgetWithHeading(Widget widget, String heading) {
 		FlowPanel vPanel = new FlowPanel();
 		Label h = new Label(heading);
@@ -1678,12 +784,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		return vPanel;
 	}
 
-	/**
-	 * History display handlers.
-	 * 
-	 * @param historyDisplay
-	 *            the history display
-	 */
 	private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
 
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
@@ -1696,13 +796,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Checks if is valid.
-	 * 
-	 * @param model
-	 *            the model
-	 * @return true, if is valid
-	 */
 	public boolean isValid(ManageMeasureDetailModel model, boolean isClone) {
 		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
 		List<String> message = manageMeasureModelValidator.validateMeasureWithClone(model, isClone);
@@ -1721,16 +814,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		return valid;
 	}
 
-	/**
-	 * Open export.
-	 */
 	private void openExport() {
 		Window.open(buildExportURL() + "&type=open", "_blank", "");
 	}
 
-	/**
-	 * Save export.
-	 */
 	private void saveExport() {
 		Window.open(buildExportURL() + "&type=save", "_self", "");
 	}
@@ -1797,17 +884,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				});
 	}
 
-	/**
-	 * Save finalized version.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param measureName 
-	 * @param isMajor
-	 *            the is major
-	 * @param version
-	 *            the version
-	 */
 	private void saveFinalizedVersion(final String measureId, final String measureName, final boolean isMajor, final String version, boolean shouldPackage, boolean ignoreUnusedLibraries) {
 		showSearchingBusy(true);
 		MatContext.get().getMeasureService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries, new AsyncCallback<SaveMeasureResult>() {
@@ -1858,19 +934,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MeasureVersionEvent versionEvent = new MeasureVersionEvent(isSuccess, name, message);
 		MatContext.get().getEventBus().fireEvent(versionEvent);		
 	}
-	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
-	 */
+
 	private void search(final String searchText, int startIndex, int pageSize, final int filter) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 
@@ -1933,7 +997,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 		} else {
-			// pageSize = Integer.MAX_VALUE;
 			pageSize = 25;
 			showSearchingBusy(true);
 			MatContext.get().getMeasureService().search(searchText, startIndex, pageSize, filter,
@@ -2077,7 +1140,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 														@Override
 														public void onFailure(Throwable caught) {
 															showSearchingBusy(false);
-															// O&M 17
 															searchDisplay.getErrorMessageDisplay()
 																	.createAlert(MatContext.get().getMessageDelegate()
 																			.getGenericErrorMessage());
@@ -2141,13 +1203,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 					});
 		}
 	}
+	
 
-	/**
-	 * Search display handlers.
-	 * 
-	 * @param searchDisplay
-	 *            the search display
-	 */
+	public static void setSubSkipEmbeddedLink(String name) {
+		if (subSkipContentHolder == null) {
+			subSkipContentHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Sub Content"));
+		}
+		Mat.removeInputBoxFromFocusPanel(subSkipContentHolder.getElement());
+		Widget w = SkipListBuilder.buildSubSkipList(name);
+		subSkipContentHolder.clear();
+		subSkipContentHolder.add(w);
+		subSkipContentHolder.setFocus(true);
+	}
+
 	private void searchDisplayHandlers(final SearchDisplay searchDisplay) {
 		searchDisplay.getDraftConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
 			
@@ -2343,7 +1411,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 
-		// added by hari
 		searchDisplay.getAdminSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -2377,16 +1444,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Search history.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 */
 	private void searchHistory(String measureId, int startIndex, int pageSize) {
 		List<String> filterList = new ArrayList<String>();
 		MatContext.get().getAuditService().executeMeasureLogSearch(measureId, startIndex, pageSize, filterList,
@@ -2443,34 +1500,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 				});
 	}
 
-	/**
-	 * Sets the bulk export measure ids.
-	 * 
-	 * @param bulkExportMeasureIds
-	 *            the bulkExportMeasureIds to set
-	 */
 	public void setBulkExportMeasureIds(List<String> bulkExportMeasureIds) {
 		this.bulkExportMeasureIds = bulkExportMeasureIds;
 	}
 
-	/**
-	 * Sets the details to view.
-	 */
 	private void setDetailsToView() {
 		detailDisplay.getName().setValue(currentDetails.getName());
 		detailDisplay.getShortName().setValue(currentDetails.getShortName());
-
-		// US 421. Measure scoring choice is now part of measure creation
-		// process.
 		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
 	}
 
-	/**
-	 * Share display handlers.
-	 * 
-	 * @param shareDisplay
-	 *            the share display
-	 */
 	private void shareDisplayHandlers(final ShareDisplay shareDisplay) {
 
 		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
@@ -2515,14 +1554,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 						event.getValue(), new AsyncCallback<Void>() {
 
 							@Override
-							public void onFailure(Throwable caught) {
-
-							}
+							public void onFailure(Throwable caught) {}
 
 							@Override
-							public void onSuccess(Void result) {
-
-							}
+							public void onSuccess(Void result) {}
 						});
 			}
 		});
@@ -2545,12 +1580,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}); 
 	}
 
-	/**
-	 * Show admin searching busy.
-	 * 
-	 * @param busy
-	 *            the busy
-	 */
 	private void showAdminSearchingBusy(boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -2564,12 +1593,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Show searching busy.
-	 * 
-	 * @param busy
-	 *            the busy
-	 */
 	private void showSearchingBusy(boolean busy) {
 		isLoading = busy;
 		if (busy) {
@@ -2583,12 +1606,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * Transfer display handlers.
-	 * 
-	 * @param transferDisplay
-	 *            the transfer display
-	 */
 	private void transferDisplayHandlers(final TransferOwnershipView transferDisplay) {
 
 		transferDisplay.getSaveButton().addClickHandler(new ClickHandler() {
@@ -2667,11 +1684,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 
-	/**
-	 * Update.
-	 */
 	private void update() {
-		// exit if there is something already being saved
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
 		}
@@ -2700,10 +1713,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					if (result.isSuccess()) {
 						if (isInsert) {
 							fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true, false,
-									null);// Need to revisit
-							// this, since don't
-							// know how this will
-							// affect
+									null);
 							fireMeasureEditEvent();
 						} else {
 							displaySearch();
@@ -2732,11 +1742,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentDetails.setName(detailDisplay.getName().getValue().trim());
 		currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
 		String measureScoring = detailDisplay.getMeasScoringValue();
-		
-		// US 421. Update the Measure scoring choice from the UI.
+
 		currentDetails.setMeasScoring(measureScoring);
-		
-		// update the current measure details model based on the patient based radio buttons
+
 		if(detailDisplay.getPatientBasedInput().getItemText(detailDisplay.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
 			currentDetails.setIsPatientBased(true);
 		} else {
@@ -2751,14 +1759,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext.get().setCurrentMeasureScoringType(currentDetails.getMeasScoring());
 	}
 
-	/**
-	 * Update transfer i ds.
-	 * 
-	 * @param result
-	 *            the result
-	 * @param model
-	 *            the model
-	 */
 	private void updateTransferIDs(Result result, ManageMeasureSearchModel model) {
 		if (result.isTransferable()) {
 			List<String> selectedIdList = model.getSelectedTransferIds();
@@ -2777,16 +1777,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 	}
 
-	/**
-	 * Update exported i ds.
-	 *
-	 * @param result
-	 *            the result
-	 * @param model
-	 *            the model
-	 * @param isCBChecked
-	 *            the is cb checked
-	 */
+
 	private void updateExportedIDs(Result result, ManageMeasureSearchModel model, boolean isCBChecked) {
 		List<String> selectedIdList = model.getSelectedExportIds();
 		;
@@ -2806,13 +1797,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 	}
 	
-	
-	/**
-	 * Version display handlers.
-	 * 
-	 * @param versionDisplay
-	 *            the version display
-	 */
 	private void versionDisplayHandlers(final VersionDisplay versionDisplay) {
 		
 		MatContext.get().getEventBus().addHandler(MeasureVersionEvent.TYPE, new MeasureVersionEvent.Handler() {

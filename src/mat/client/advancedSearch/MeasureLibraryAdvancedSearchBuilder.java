@@ -1,7 +1,7 @@
 package mat.client.advancedSearch;
 
 
-public class MeasureLibraryAdvancedSearch extends AdvancedSearchBuilder {
+public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	
 	final String DESCRIPTION_OF_MODAL_FOR_508 = "This advanced search section allows you to "
 			+ "search by the name of the measure, measure state, measure score, "

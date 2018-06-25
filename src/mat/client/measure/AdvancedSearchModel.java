@@ -21,23 +21,24 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 public class AdvancedSearchModel {
 	private Modal panel;
 	private Input searchText;
-	private FormGroup searchTextGroup = new FormGroup();
-	private FormGroup searchGroup = new FormGroup();
+
+	private FormGroup searchTextGroup;
+	private FormGroup searchGroup;
 	private ListBox searchBoxList;
-	private FormGroup searchStateGroup = new FormGroup();
+	private FormGroup searchStateGroup;
 	private ListBox searchStateList;
-	private FormGroup scoreGroup = new FormGroup();
+	private FormGroup scoreGroup;
 	private CheckBox proportionCheckbox;
 	private CheckBox ratioCheckbox;
 	private CheckBox cohortCheckbox;
 	private CheckBox contVariableCheckbox;
-	private FormGroup patientIndecatorGroup = new FormGroup();
+	private FormGroup patientIndecatorGroup;
 	private ListBox patientIndecatorList;
-	private FormGroup modifiedGroup = new FormGroup();
+	private FormGroup modifiedGroup;
 	private ListBox modifiedOnList;
-	private FormGroup modifiedByGroup = new FormGroup();
+	private FormGroup modifiedByGroup;
 	private Input modifiedBy;
-	private FormGroup ownedByGroup = new FormGroup();
+	private FormGroup ownedByGroup;
 	private Input ownedBy;
 	private Button search;
 	private Button cancel;
@@ -111,6 +112,7 @@ public class AdvancedSearchModel {
 		searchText.setPlaceholder(" Search Text");
 		searchTextPanel.add(searchTextLabel);
 		searchTextPanel.add(searchText);
+		searchTextGroup = new FormGroup();
 		searchTextGroup.add(searchTextPanel);
 		return searchTextGroup;
 	}
@@ -131,6 +133,7 @@ public class AdvancedSearchModel {
 		searchBoxList.addItem("Only My " + type, "Only My " + type);
 		searchPanel.add(searchLabel);
 		searchPanel.add(searchBoxList);
+		searchGroup = new FormGroup();
 		searchGroup.add(searchPanel);
 		return searchGroup;
 	}
@@ -151,6 +154,7 @@ public class AdvancedSearchModel {
 		searchStateList.addItem("Versioned " + type, "Versioned " + type);
 		statePanel.add(stateLabel);
 		statePanel.add(searchStateList);
+		searchStateGroup = new FormGroup();
 		searchStateGroup.add(statePanel);
 		return searchStateGroup;
 	}
@@ -187,6 +191,7 @@ public class AdvancedSearchModel {
 		scoreRow1.add(contVariableCheckbox);
 		scoreRow1.add(proportionCheckbox);
 		scoreRow1.add(ratioCheckbox);
+		scoreGroup = new FormGroup();
 		scoreGroup.add(scoreheader);
 		scoreGroup.add(helpTextRow);
 		scoreGroup.add(scoreRow1);
@@ -208,6 +213,7 @@ public class AdvancedSearchModel {
 		patientIndecatorList.addItem("No, Not Patient-based", "No, Not Patient-based");
 		patientPanel.add(patientLabel);
 		patientPanel.add(patientIndecatorList);
+		patientIndecatorGroup = new FormGroup();
 		patientIndecatorGroup.add(patientPanel);
 		return patientIndecatorGroup;
 	}
@@ -229,6 +235,7 @@ public class AdvancedSearchModel {
 		modifiedOnList.addItem("90 days", "90 days");
 		daysPanel.add(daysLabel);
 		daysPanel.add(modifiedOnList);
+		modifiedGroup = new FormGroup();
 		modifiedGroup.add(daysPanel);
 		return modifiedGroup;
 	}
@@ -249,6 +256,7 @@ public class AdvancedSearchModel {
 		modifiedBy.setTitle(" Modified By");
 		modifiedByPanel.add(modifiedByLabel);
 		modifiedByPanel.add(modifiedBy);
+		modifiedByGroup = new FormGroup();
 		modifiedByGroup.add(modifiedByPanel);
 		return modifiedByGroup;
 	}
@@ -269,6 +277,7 @@ public class AdvancedSearchModel {
 		ownedBy.setTitle(" Owned By");
 		ownedByPanel.add(ownedByLabel);
 		ownedByPanel.add(ownedBy);
+		ownedByGroup = new FormGroup();
 		ownedByGroup.add(ownedByPanel);
 		return ownedByGroup;
 	}

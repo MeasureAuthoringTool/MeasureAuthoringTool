@@ -19,43 +19,22 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
-/**
- * The Class ManageMeasureVersionView.
- * 
- * @author vandavar
- * 
- *         An view class to manage the widgets for the Version creation.
- */
-public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionDisplay {
+public class ManageMeasureVersionView implements VersionDisplay {
 	
 	private ManageMeasureSearchModel.Result selectedMeasure;
-	
-	/** CellTable Page Size. */
-	private static final int PAGE_SIZE = 25;
-	
-	/** The button bar. */
+
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measuVersion");
-	
-	/** The cell table panel. */
+
 	private VerticalPanel cellTablePanel = new VerticalPanel();
-	
-	/** The error messages. */
+
 	private MessageAlert errorMessages = new ErrorMessageAlert();
-	
-	/** The main panel. */
+
 	private FlowPanel mainPanel = new FlowPanel();
-	
-	/** The major radio. */
+
 	private RadioButton majorRadio = new RadioButton("group", "Major");
-	
-	/** The minor radio. */
+
 	private RadioButton minorRadio = new RadioButton("group", "Minor");
-	
-	
-	
-	/**
-	 * Instantiates a new manage measure version view.
-	 */
+
 	public ManageMeasureVersionView() {
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
@@ -97,72 +76,39 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 			HTML paragraphHtml = new HTML(paragraph.toString());
 			cellTablePanel.add(paragraphHtml);
 		}
-		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#asWidget()
-	 */
+
 	@Override
 	public Widget asWidget() {
 		buildHTML();
 		return mainPanel;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#buildDataTable(mat.client.shared.search.SearchResults)
-	 */
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getCancelButton()
-	 */
+
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
-	 */
+
 	@Override
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getMajorRadioButton()
-	 */
+
 	@Override
 	public RadioButton getMajorRadioButton() {
 		return majorRadio;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getMinorRadioButton()
-	 */
+
 	@Override
 	public RadioButton getMinorRadioButton() {
 		return minorRadio;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getSaveButton()
-	 */
+
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getSelectedMeasure()
-	 */
+
 	@Override
 	public Result getSelectedMeasure() {
 		return selectedMeasure;
@@ -171,7 +117,4 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 	public void setSelectedMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
 		this.selectedMeasure = selectedMeasure;
 	}
-
-	
-	
 }

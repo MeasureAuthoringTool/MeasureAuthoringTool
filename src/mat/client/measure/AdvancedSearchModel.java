@@ -57,6 +57,11 @@ public class AdvancedSearchModel {
 		panel.getElement().getStyle().setZIndex(1000);
 		panel.setRemoveOnHide(true);
 		panel.setTitle("Advanced Search");
+		panel.getElement().setTitle(
+		"This advanced search section allows you to "
+				+ "search by the name of the measure, measure owner, measure state, measure score, "
+				+ "patient-based indicator, when the measure was last modified, and by the user that last modified the measure, and the measure owner. ");
+		
 		panel.getElement().setAttribute("tabindex", "0");
 		
 		ModalBody modalBody = new ModalBody();
@@ -91,7 +96,7 @@ public class AdvancedSearchModel {
 		searchTextLabel.setFor("searchTextId");
 		searchTextLabel.setStyleName("advancedSearchLabels");
 		searchTextLabel.setMarginRight(10);
-		searchTextLabel.getElement().setTabIndex(0);
+		searchTextLabel.setFor("searchTextId");
 		searchText = new Input(InputType.TEXT);
 		searchText.setWidth("250px");
 		searchText.setHeight(HEIGHT_OF_BOXES);
@@ -129,7 +134,6 @@ public class AdvancedSearchModel {
 		HorizontalPanel statePanel = new HorizontalPanel();
 		stateLabel.setText("Show Only:");
 		stateLabel.setTitle("Show Only");
-		stateLabel.setFor("stateId");
 		stateLabel.setFor("stateGroup");
 		stateLabel.setStyleName("advancedSearchLabels");
 		searchStateList = new ListBox();

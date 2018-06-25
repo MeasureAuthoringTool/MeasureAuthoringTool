@@ -15,10 +15,12 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
 public class AdvancedSearchModel {
+	private final String WIDTH_OF_BOXES = "200px";
 	private Modal panel;
 	private Input searchText;
 	private FormGroup searchTextGroup = new FormGroup();
@@ -104,7 +106,8 @@ public class AdvancedSearchModel {
 		searchTextLabel.setMarginRight(10);
 		searchTextLabel.setFor("searchTextId");
 		searchText = new Input(InputType.TEXT);
-		searchText.setWidth("250px");
+		searchText.getElement().getStyle().setPaddingLeft(1, Unit.PX);
+		searchText.setWidth("450px");
 		searchText.setHeight(HEIGHT_OF_BOXES);
 		searchText.setTitle(" Search Text");
 		searchText.setId("searchTextId");
@@ -118,13 +121,14 @@ public class AdvancedSearchModel {
 	private FormGroup getSearchBySection(String type) {
 		FormLabel searchLabel = new FormLabel();
 		HorizontalPanel searchPanel = new HorizontalPanel();
-		searchLabel.setText("Search By:");
+		searchLabel.setText("Search By: ");
 		searchLabel.setTitle("Search By");
 		searchLabel.setFor("SeachId");
 		searchLabel.setMarginRight(10);
 		searchLabel.setFor("searchTextInput");
 		searchLabel.setStyleName("advancedSearchLabels");
 		searchBoxList = new ListBox();
+		searchBoxList.setWidth(WIDTH_OF_BOXES);
 		searchBoxList.setHeight(HEIGHT_OF_BOXES);
 		searchBoxList.addItem("All " + type, "All " + type);
 		searchBoxList.setId("searchTextInput");
@@ -142,8 +146,10 @@ public class AdvancedSearchModel {
 		stateLabel.setTitle("Show Only");
 		stateLabel.setFor("stateId");
 		stateLabel.setFor("stateGroup");
+		stateLabel.setPaddingRight(16);
 		stateLabel.setStyleName("advancedSearchLabels");
 		searchStateList = new ListBox();
+		searchStateList.setWidth(WIDTH_OF_BOXES);
 		searchStateList.setHeight(HEIGHT_OF_BOXES);
 		searchStateList.setId("stateGroup");
 		searchStateList.addItem("All " + type, "All " + type);
@@ -201,6 +207,7 @@ public class AdvancedSearchModel {
 		patientLabel.setStyleName("advancedSearchLabels");
 		patientLabel.setFor("patientBase");
 		patientIndecatorList = new ListBox();
+		patientIndecatorList.setWidth(WIDTH_OF_BOXES);
 		patientIndecatorList.setHeight(HEIGHT_OF_BOXES);
 		patientIndecatorList.setId("patientBase");
 		patientIndecatorList.addItem("All Measures", "All Measures");
@@ -220,6 +227,7 @@ public class AdvancedSearchModel {
 		daysLabel.setStyleName("advancedSearchLabels");
 		daysLabel.setFor("modifiedDate");
 		modifiedOnList = new ListBox();
+		modifiedOnList.setWidth(WIDTH_OF_BOXES);
 		modifiedOnList.setHeight(HEIGHT_OF_BOXES);
 		modifiedOnList.setId("modifiedDate");
 		modifiedOnList.addItem("All " + type, "All " + type);

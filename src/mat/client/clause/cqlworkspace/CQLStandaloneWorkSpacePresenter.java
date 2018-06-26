@@ -52,6 +52,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.buttons.Definition_FuntionButtonToolBar;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
@@ -62,7 +63,6 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.ValueSetNameInputValidator;
@@ -225,11 +225,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 
-		CQLButtonToolBar getParameterButtonBar();
+		Definition_FuntionButtonToolBar getParameterButtonBar();
 
-		CQLButtonToolBar getDefineButtonBar();
+		Definition_FuntionButtonToolBar getDefineButtonBar();
 
-		CQLButtonToolBar getFunctionButtonBar();
+		Definition_FuntionButtonToolBar getFunctionButtonBar();
 
 		TextBox getDefineNameTxtArea();
 

@@ -61,6 +61,10 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+<<<<<<< HEAD
+=======
+import mat.client.buttons.Codes_ValuesetsButtonToolBar;
+>>>>>>> ButtonToolBar: definitions/functions button tool bar updated refactored
 import mat.client.codelist.HasListBox;
 import mat.client.shared.CQLCopyPasteClearButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
@@ -145,7 +149,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private HelpBlock helpBlock = new HelpBlock(); 
 	SimplePanel cellTableMainPanel = new SimplePanel();
 	HTML heading = new HTML();
+<<<<<<< HEAD
 	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("valueset");
+=======
+	Codes_ValuesetsButtonToolBar copyPasteClearButtonToolBar = new Codes_ValuesetsButtonToolBar("valueset");
+>>>>>>> ButtonToolBar: definitions/functions button tool bar updated refactored
 
 	public CQLAppliedValueSetView() {
 		

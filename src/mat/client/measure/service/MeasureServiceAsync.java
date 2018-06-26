@@ -35,7 +35,6 @@ import mat.shared.SaveUpdateCQLResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureServiceAsync.
  */
@@ -108,10 +107,6 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 * @return the applied qdm from measure xml
 	 */
-	//	void getAppliedQDMFromMeasureXml(String measureId,
-	//			boolean checkForSupplementData,
-	//			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
-	
 	void getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData,
 			AsyncCallback<QualityDataModelWrapper> asyncCallback);
@@ -586,19 +581,10 @@ public interface MeasureServiceAsync {
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
 	
 	/**
-	 * Gets the CQL data.
-	 *
-	 * @param measureId the measure id
-	 * @param callback the callback
-	 * @return the CQL data
-	 */
-	//void getCQLData(String measureId, String fromTable,AsyncCallback<SaveUpdateCQLResult> callback);
-	
-	/**
 	 * Save and modify definitions.
 	 *
 	 * @param measureId the measure id
-	 * @param toBemodifiedObj the to bemodified obj
+	 * @param toBemodifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param definitionList the definition list
 	 * @param isFormatable flag for if the definition should be formatted on save
@@ -612,7 +598,7 @@ public interface MeasureServiceAsync {
 	 * Save and modify parameters.
 	 *
 	 * @param measureId the measure id
-	 * @param toBemodifiedObj the to bemodified obj
+	 * @param toBemodifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param parameterList the parameter list
 	 * @param isFormtable flag for if the parameter should be formatted on save
@@ -628,7 +614,7 @@ public interface MeasureServiceAsync {
 	 * @param context the context
 	 * @param asyncCallback the async callback
 	 */
-	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context,
+	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context, String comments,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
 	
@@ -710,8 +696,6 @@ public interface MeasureServiceAsync {
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getMeasureCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
-
-	//void getCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getMeasureCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 

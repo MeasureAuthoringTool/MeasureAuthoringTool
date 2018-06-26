@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -38,7 +37,6 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureService.
  */
@@ -580,7 +578,7 @@ public interface MeasureService extends RemoteService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
-			String context);
+			String context, String comments);
 	
 	/**
 	 * Save and modify functions.

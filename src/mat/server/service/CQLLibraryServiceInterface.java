@@ -54,15 +54,13 @@ public interface CQLLibraryServiceInterface {
 
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context);
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
 
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
 	SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter);
-	
-//	SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText);
 
 	void updateUsersShare(SaveCQLLibraryResult result);
 
@@ -98,9 +96,6 @@ public interface CQLLibraryServiceInterface {
 	SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject);
 
 	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
-
-	/*void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
-			String expansionProfile);*/
 
 	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
 

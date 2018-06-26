@@ -14,9 +14,11 @@ import mat.shared.LibHolderObject;
 public class CQLModel implements IsSerializable{
 	private String libraryName;
 	private String versionUsed;
+	private String libraryComment;
 	private String qdmVersion;
 	private String usingName;
 	private String context;
+
 	private List<CQLQualityDataSetDTO> valueSetList = new ArrayList<CQLQualityDataSetDTO>();
 	private List<CQLQualityDataSetDTO> allValueSetAndCodeList = new ArrayList<CQLQualityDataSetDTO>();
 	private List<CQLParameter> cqlParameters = new ArrayList<CQLParameter>();
@@ -25,16 +27,12 @@ public class CQLModel implements IsSerializable{
 	private List<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
 	private List<CQLCode> codeList = new ArrayList<CQLCode>();
 	private List<CQLIncludeLibrary> cqlIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
-	
-	
-	
 
 	private Map<CQLIncludeLibrary, CQLModel> includedLibrarys = new HashMap<CQLIncludeLibrary, CQLModel>(); 
 
-
 	
 	/**
-	 * This member is set programatically from some class and isnt populated by Hibernate.
+	 * This member is set programmatically from some class and isn't populated by Hibernate.
 	 * So it is possible it is null/empty.
 	 */
 	private Map<String, LibHolderObject> includedCQLLibXMLMap = new HashMap<String, LibHolderObject>();
@@ -42,12 +40,6 @@ public class CQLModel implements IsSerializable{
 	
 	private int lines;
 	
-	/*public CQLDataModel getUsedModel() {
-		return usedModel;
-	}
-	public void setUsedModel(CQLDataModel usedModel) {
-		this.usedModel = usedModel;
-	}*/
 	public String getContext() {
 		return context;
 	}
@@ -119,6 +111,12 @@ public class CQLModel implements IsSerializable{
 	}
 	public void setVersionUsed(String versionUsed) {
 		this.versionUsed = versionUsed;
+	}
+	public String getLibraryComment() {
+		return libraryComment;
+	}
+	public void setLibraryComment(String libraryComment) {
+		this.libraryComment = libraryComment;
 	}
 	public String getQdmVersion() {
 		return qdmVersion;

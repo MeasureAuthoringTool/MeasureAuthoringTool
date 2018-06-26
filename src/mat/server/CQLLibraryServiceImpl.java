@@ -113,8 +113,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
-	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue){
-		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue);
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment){
+		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, libraryComment);
 	}
 
 	@Override

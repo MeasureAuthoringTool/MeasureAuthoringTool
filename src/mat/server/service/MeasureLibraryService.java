@@ -42,7 +42,6 @@ import mat.shared.CQLValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureLibraryService.
  */
@@ -616,7 +615,7 @@ public interface MeasureLibraryService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
-			String context);
+			String context, String comments);
 	
 	/**
 	 * Save and modify functions.

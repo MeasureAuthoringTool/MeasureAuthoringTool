@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
-import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -56,7 +55,6 @@ import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.clause.CQLData;
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeSystemWrapper;
@@ -98,7 +96,9 @@ import mat.shared.SaveUpdateCQLResult;
 public class CQLServiceImpl implements CQLService {
 
 	private static final Log logger = LogFactory.getLog(CQLServiceImpl.class);
-		
+	
+	private static final int COMMENTS_MAX_LENGTH = 2500;
+	
 	@Autowired private CQLDAO cqlDAO;
 	@Autowired private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
@@ -150,11 +150,9 @@ public class CQLServiceImpl implements CQLService {
 		return cqlData;
 	}
 
-	/*
-	 * {@inheritDoc}
-	 */
+
 	@Override
-	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String xml, String libraryName) {
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String xml, String libraryName, String libraryComment) {
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
@@ -162,27 +160,47 @@ public class CQLServiceImpl implements CQLService {
 
 		if (xml != null) {
 
-			XmlProcessor processor = new XmlProcessor(xml);
-			String XPATH_EXPRESSION_CQLLOOKUP_LIBRARY = "//cqlLookUp/library";
 			try {
-				Node libraryNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_LIBRARY);
-				if (libraryNode != null) {
-					libraryNode.setTextContent(libraryName);
+				
+				XmlProcessor processor = new XmlProcessor(xml);	
+				
+				if(StringUtils.isNotBlank(libraryName)) {
+					String xPathForCQLLibraryName = "//cqlLookUp/library";
+					Node libraryNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryName);
+					if (libraryNode != null) {
+						libraryNode.setTextContent(libraryName);
+					}
+				}
+				
+				libraryComment = StringUtils.left(libraryComment, COMMENTS_MAX_LENGTH);
+				String xPathForCQLLibraryComment = "//cqlLookUp/libraryComment";				
+				Node commentsNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryComment);				
+				if (commentsNode == null) {
+					String xPathForCQLUsingModel = "//cqlLookUp/usingModel";
+					Node usingModelNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLUsingModel);
 
-					result.setXml(processor.transform(processor.getOriginalDoc()));
-					result.setSuccess(true);
+					Element commentsElem = processor.getOriginalDoc().createElement("libraryComment");
+					commentsElem.setTextContent(libraryComment);
+
+					Node cqlNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp");	
+					cqlNode.insertBefore(commentsElem, usingModelNode);
+
+				} else {
+					commentsNode.setTextContent(libraryComment);
 				}
 
+				result.setXml(processor.transform(processor.getOriginalDoc()));
+
 			} catch (XPathExpressionException e) {
-				e.printStackTrace();
+				logger.error("saveAndModifyCQLGeneralInfo:" + e.getMessage());
 			}
 
 			result.setSuccess(true);
 			result.getCqlModel().setLibraryName(libraryName);
+			result.getCqlModel().setLibraryComment(libraryComment);
 		} else {
 			result.setSuccess(false);
 		}
-
 		return result;
 	}
 

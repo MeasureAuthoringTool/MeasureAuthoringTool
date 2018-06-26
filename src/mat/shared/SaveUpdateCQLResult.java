@@ -12,7 +12,6 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SaveUpdateCQLResult.
  */
@@ -24,8 +23,6 @@ public class SaveUpdateCQLResult extends GenericResult{
 	private CQLObject cqlObject;
 	
 	private String libraryName;
-	
-	//private String expIdentifier;
 	
 	private String setId;
 	
@@ -337,14 +334,6 @@ public class SaveUpdateCQLResult extends GenericResult{
 	public void setElmString(String elmString) {
 		this.elmString = elmString;
 	}
-
-	/*public String getExpIdentifier() {
-		return expIdentifier;
-	}
-
-	public void setExpIdentifier(String expIdentifier) {
-		this.expIdentifier = expIdentifier;
-	}*/
 
 	/**
 	 * @return the setId

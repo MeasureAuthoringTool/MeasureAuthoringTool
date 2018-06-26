@@ -94,9 +94,9 @@ import mat.shared.StringUtility;
 
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
-	private static String CODES_SELECTED_SUCCESSFULLY = "All codes successfully selected.";
+	private static final String CODES_SELECTED_SUCCESSFULLY = "All codes successfully selected.";
 	
-	private static String VALUE_SETS_SELECTED_SUCCESSFULLY = "All value sets successfully selected.";
+	private static final String VALUE_SETS_SELECTED_SUCCESSFULLY = "All value sets successfully selected.";
 
 	private SimplePanel panel = new SimplePanel();
 
@@ -1656,18 +1656,18 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			}
 		});
 
-		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyUpHandler(new KeyUpHandler() {
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyUpHandler(event -> resetMessagesAndSetPageDirty());
 
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					searchDisplay.resetMessageDisplay();
-					searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
-				}
-			}
-		});
+		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty());
 	}
-
+	
+	private void resetMessagesAndSetPageDirty() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			searchDisplay.resetMessageDisplay();
+			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+		}
+	}
+	
 	/**
 	 * Event Handlers for Ace Editors.
 	 */
@@ -3277,8 +3277,9 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		String libraryId = MatContext.get().getCurrentCQLLibraryId();
 		String libraryValue = searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().getText().trim();
+		String libraryComment = searchDisplay.getCqlGeneralInformationView().getComments().getText().trim();
 		showSearchingBusy(true);
-		MatContext.get().getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue,
+		MatContext.get().getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, libraryComment,
 				new AsyncCallback<SaveUpdateCQLResult>() {
 
 					@Override
@@ -3348,7 +3349,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	public void beforeClosingDisplay() {
 		currentIncludeLibrarySetId = null;
 		currentIncludeLibraryId = null; 
-		searchDisplay.getCqlGeneralInformationView().clearAllGeneralInfoOfLibrary();
 		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
@@ -3456,7 +3456,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						libraryVersion = libraryVersion.substring(1);
 					}
 					searchDisplay.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion,
-							result.getCqlModel().getQdmVersion(), "QDM");
+							result.getCqlModel().getQdmVersion(), "QDM", result.getCqlModel().getLibraryComment());
 				}
 
 				List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
@@ -5620,7 +5620,7 @@ private void addCodeSearchPanelHandlers() {
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 			switch(currentSection.toLowerCase()) {
 			case(CQLWorkSpaceConstants.CQL_GENERAL_MENU): 
-				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(!busy);
+				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnlyForCQLLibrary(!busy);
 			break;
 			case(CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
 				searchDisplay.getIncludeView().setReadOnly(!busy);				

@@ -91,9 +91,9 @@ import mat.shared.StringUtility;
 
 public class CQLWorkSpacePresenter implements MatPresenter {
 	
-	private static String CODES_SELECTED_SUCCESSFULLY = "All codes successfully selected.";
+	private static final String CODES_SELECTED_SUCCESSFULLY = "All codes successfully selected.";
 	
-	private static String VALUE_SETS_SELECTED_SUCCESSFULLY = "All value sets successfully selected.";
+	private static final String VALUE_SETS_SELECTED_SUCCESSFULLY = "All value sets successfully selected.";
 
 	private SimplePanel panel = new SimplePanel();
 
@@ -259,6 +259,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addDeleteConfirmationHandlers();
 		addEventHandlerOnAceEditors();
 		addEventHandlersOnContextRadioButtons();
+		addGeneralInfoEventHandlers();
 		addIncludeCQLLibraryHandlers();
 		addValueSetSearchPanelHandlers();
 		addCodeSearchPanelHandlers();
@@ -1655,6 +1656,46 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	/**
+	 * Adds the general info event handlers.
+	 */
+	private void addGeneralInfoEventHandlers() {
+		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInformation());
+		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(event -> resetMessagesAndSetPageDirty(false));
+		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
+	}
+	
+	private void resetMessagesAndSetPageDirty(boolean isPageDirty) {
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			searchDisplay.resetMessageDisplay();
+			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(isPageDirty);
+		}
+	}
+	
+	private void saveCQLGeneralInformation() {
+		resetMessagesAndSetPageDirty(false);
+		String comments = searchDisplay.getCqlGeneralInformationView().getComments().getText().trim();
+
+		MatContext.get().getMeasureService().saveAndModifyCQLGeneralInfo(MatContext.get().getCurrentMeasureId(), null, comments, 
+				new AsyncCallback<SaveUpdateCQLResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+						MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				showSearchingBusy(false);
+			}
+
+			@Override
+			public void onSuccess(SaveUpdateCQLResult result) {
+				if (result != null) {
+					searchDisplay.getCqlGeneralInformationView().getComments().setText(result.getCqlModel().getLibraryComment()) ;
+				}
+				showSearchingBusy(false);
+			}
+		});
+	}
+	
+	/**
 	 * Adds the include CQL library handlers.
 	 */
 	private void addIncludeCQLLibraryHandlers() {
@@ -1900,7 +1941,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		final String aliasName = searchDisplay.getIncludeView().getAliasNameTxtArea().getText();
 
 		if (!aliasName.isEmpty() && searchDisplay.getIncludeView().getSelectedObjectList().size() > 0) {
-			// functioanlity to add Include Library
+			// functionality to add Include Library
 			CQLLibraryDataSetObject cqlLibraryDataSetObject = searchDisplay.getIncludeView().getSelectedObjectList()
 					.get(0);
 
@@ -3026,7 +3067,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
-		searchDisplay.getCqlGeneralInformationView().clearAllGeneralInfoOfLibrary();
 		searchDisplay.getCqlLeftNavBarPanelView().clearShotcutKeyList();
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedDefinitionObjId(null);
 		searchDisplay.getCqlLeftNavBarPanelView().setCurrentSelectedParamerterObjId(null);
@@ -3189,7 +3229,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					measureVersion = measureVersion.substring(1);
 				}
 				searchDisplay.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, measureVersion,
-						result.getCqlModel().getQdmVersion(), "QDM");
+						result.getCqlModel().getQdmVersion(), "QDM", result.getCqlModel().getLibraryComment());
 
 			}
 
@@ -6055,7 +6095,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			switch (currentSection.toLowerCase()) {
 			case (CQLWorkSpaceConstants.CQL_GENERAL_MENU):
 				// This needs to be set to false to make the CQL Name un-editable under Measure.
-				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnly(false);
+				searchDisplay.getCqlGeneralInformationView().setWidgetReadOnlyForMeasure(!busy);
 				break;
 			case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
 				searchDisplay.getIncludeView().setReadOnly(!busy);

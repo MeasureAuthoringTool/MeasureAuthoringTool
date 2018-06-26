@@ -11,6 +11,9 @@
 		<field name="versionUsed" type="java.lang.String">
 			<bind-xml name="version" node="element" />
 		</field>
+		<field name="libraryComment" type="java.lang.String">
+			<bind-xml name="libraryComment" node="element" />
+		</field>		
 		<field name="usingName" type="java.lang.String">
 			<bind-xml name="usingModel" node="element" />
 		</field>

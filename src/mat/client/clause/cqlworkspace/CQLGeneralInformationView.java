@@ -10,21 +10,17 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLButtonToolBar;
+import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLGeneralInformationView.
  */
 public class CQLGeneralInformationView {
-	private String version = new String();
-	private String libraryName = new String();
-	private String modelUsed = new String();
-	private String qdmVersionUsed = new String();
-	
+
 	private HorizontalPanel generalInfoMainHPanel = new HorizontalPanel();
 	private MatTextBox libraryNameValue = new MatTextBox();
 	private MatTextBox libraryVersionValue = new MatTextBox();
@@ -35,7 +31,17 @@ public class CQLGeneralInformationView {
 	private FormGroup usingModelGroup = new FormGroup();
 	private FormGroup libVersionGroup = new FormGroup();
 	private FormGroup modelVersionGroup = new FormGroup();
+	private FormGroup commentsGroup = new FormGroup();
 	HTML heading = new HTML();
+	
+	private static final String STYLE = "style";
+	private static final String PIXEL_150 = "150px";
+	private static final String DISABLED = "disabled";
+	private static final String FONT_SIZE_90_MARGIN_LEFT_15PX = "font-size:90%;margin-left:15px;";
+	private static final String MARGIN_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
+	
+	private static final int COMMENTS_MAX_LENGTH = 2500;
+	private CustomTextAreaWithMaxLength comments = new CustomTextAreaWithMaxLength(COMMENTS_MAX_LENGTH);
 	
 	/**
 	 * Instantiates a new CQL general information view.
@@ -50,18 +56,19 @@ public class CQLGeneralInformationView {
 		usingModelGroup.clear();
 		libVersionGroup.clear();
 		modelVersionGroup.clear();
+		commentsGroup.clear();
 		heading.addStyleName("leftAligned");
 		VerticalPanel generalInfoTopPanel = new VerticalPanel();
 		
 		FormLabel libraryNameLabel = new FormLabel();
 		libraryNameLabel.setText("CQL Library Name");
 		libraryNameLabel.setTitle("CQL Library Name");
-		libraryNameLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
-		libraryNameLabel.setWidth("150px");
+		libraryNameLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
+		libraryNameLabel.setWidth(PIXEL_150);
 		libraryNameLabel.setId("libraryNameLabel_Label");
 		libraryNameLabel.setFor("libraryNameValue_TextBox");
-		
-		libraryNameValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
+
+		libraryNameValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
 		libraryNameValue.getElement().setId("libraryNameValue_TextBox");
 		
 		libNameGroup.add(libraryNameLabel);
@@ -70,27 +77,27 @@ public class CQLGeneralInformationView {
 		FormLabel libraryVersionLabel = new FormLabel();
 		libraryVersionLabel.setText("CQL Library Version");
 		libraryVersionLabel.setTitle("CQL Library Version");
-		libraryVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
-		libraryVersionLabel.setWidth("150px");
+		libraryVersionLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
+		libraryVersionLabel.setWidth(PIXEL_150);
 		libraryVersionLabel.setId("libraryVersionLabel_Label");
 		libraryVersionLabel.setFor("libraryVersionValue_TextBox");
-		
-		libraryVersionValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
+
+		libraryVersionValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
 		libraryVersionValue.getElement().setId("libraryVersionValue_TextBox");
 		libraryVersionValue.setReadOnly(true);
-		
-	     libVersionGroup.add(libraryVersionLabel);
-	     libVersionGroup.add(libraryVersionValue);
-		
+
+		libVersionGroup.add(libraryVersionLabel);
+		libVersionGroup.add(libraryVersionValue);
+
 		FormLabel usingModeLabel = new FormLabel();
 		usingModeLabel.setText("Using Model");
 		usingModeLabel.setTitle("Using Model");
-		usingModeLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
+		usingModeLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
 		usingModeLabel.setId("usingModeLabel_Label");
-		usingModeLabel.setWidth("150px");
+		usingModeLabel.setWidth(PIXEL_150);
 		usingModeLabel.setFor("usingModelValue_TextBox");
-		
-		usingModelValue.getElement().setAttribute("style", "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;");
+
+		usingModelValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
 		usingModelValue.getElement().setId("usingModelValue_TextBox");
 		usingModelValue.setReadOnly(true);
 		
@@ -100,12 +107,12 @@ public class CQLGeneralInformationView {
 		FormLabel modelVersionLabel = new FormLabel();
 		modelVersionLabel.setText("Model Version");
 		modelVersionLabel.setTitle("Model Version");
-		modelVersionLabel.getElement().setAttribute("style", "font-size:90%;margin-left:15px;");
+		modelVersionLabel.getElement().setAttribute(STYLE, FONT_SIZE_90_MARGIN_LEFT_15PX);
 		modelVersionLabel.getElement().setId("modelVersionLabel_Label");
-		modelVersionLabel.setWidth("150px");
+		modelVersionLabel.setWidth(PIXEL_150);
 		modelVersionLabel.setFor("modelVersionValue_TextBox");
-		
-		modelVersionValue.getElement().setAttribute("style", "margin-left:15px;width:250px;height:32px;");
+
+		modelVersionValue.getElement().setAttribute(STYLE, "margin-left:15px;width:250px;height:32px;");
 		modelVersionValue.getElement().setId("modelVersionValue_TextBox");
 		modelVersionValue.setReadOnly(true);
 		
@@ -146,11 +153,28 @@ public class CQLGeneralInformationView {
 		saveAndDeleteBtn.getInsertButton().removeFromParent();
 		saveAndDeleteBtn.getTimingExpButton().removeFromParent();
 		saveAndDeleteBtn.setStylePrimaryName("floatLeft");
-		generalInfoMainHPanel.add(saveAndDeleteBtn);
+		
+		VerticalPanel generalInfoVPanel = new VerticalPanel();
+		generalInfoVPanel.add(saveAndDeleteBtn);
+		
+		FormLabel commentsLabel = new FormLabel();
+		commentsLabel.setId("commentsLabel");
+		commentsLabel.setFor("commentsContent");
+		commentsLabel.setText("Comments");
+		comments.getElement().setAttribute("maxlength", "2500");
+		comments.getElement().setAttribute("id", "commentsContent");
+		comments.setHeight("220px");
+		comments.setWidth("250px");
+		commentsGroup.add(commentsLabel);
+		commentsGroup.add(comments);	
+		commentsGroup.setStylePrimaryName("floatLeft");
+		generalInfoVPanel.add(new SpacerWidget());
+		generalInfoVPanel.add(new SpacerWidget());
+		generalInfoVPanel.add(commentsGroup);
+		generalInfoVPanel.add(new SpacerWidget());
+		generalInfoMainHPanel.add(generalInfoVPanel);
 	}
-	
-	
-	
+
 	/**
 	 * This method will take a String and remove all non-alphabet/non-numeric characters 
 	 * except underscore ("_") characters.
@@ -181,7 +205,8 @@ public class CQLGeneralInformationView {
 	public HorizontalPanel getView(){
 		generalInfoMainHPanel.clear();
 		buildView();
-		setWidgetReadOnly(false);
+		buildButtonLayoutPanel();
+		setWidgetReadOnlyForMeasure(MatContext.get().isCurrentMeasureEditable());
 		return generalInfoMainHPanel;
 	}
 	
@@ -189,7 +214,7 @@ public class CQLGeneralInformationView {
 		generalInfoMainHPanel.clear();
 		buildView();	
 		buildButtonLayoutPanel();
-		setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+		setWidgetReadOnlyForCQLLibrary(MatContext.get().getLibraryLockService().checkForEditPermission());
 		return generalInfoMainHPanel;
 	}
 
@@ -232,12 +257,25 @@ public class CQLGeneralInformationView {
 	public Button getCancelButton(){
 		return saveAndDeleteBtn.getCloseButton();
 	}
-	
-	public void setWidgetReadOnly(boolean isEditable){
+
+	public void setWidgetReadOnlyForMeasure(boolean isEditable) {
+		getLibraryNameValue().setReadOnly(true);
+		setButtonsAndCommentsReadOnly(isEditable);
+	}
+
+	public void setWidgetReadOnlyForCQLLibrary(boolean isEditable) {
 		getLibraryNameValue().setReadOnly(!isEditable);
+		setButtonsAndCommentsReadOnly(isEditable);
+	}
+
+	private void setButtonsAndCommentsReadOnly(boolean isEditable){
 		getSaveButton().setEnabled(isEditable);
 		getCancelButton().setEnabled(isEditable);
-
+		if(isEditable) {
+			getComments().getElement().removeAttribute(DISABLED);
+		} else {
+			getComments().getElement().setAttribute(DISABLED, DISABLED);
+		}
 	}
 	
 	public void resetAll(){
@@ -245,6 +283,7 @@ public class CQLGeneralInformationView {
 		getLibraryVersionValue().setText("");
 		getUsingModelValue().setText("");
 		getModelVersionValue().setText("");
+		getComments().setText("");
 	}
 	
 	public void resetFormGroup(){
@@ -283,28 +322,26 @@ public class CQLGeneralInformationView {
 		this.modelVersionGroup = modelVersionGroup;
 	}
 
-	public void setGeneralInfoOfLibrary(String libraryName, String version, String qdmVersion , String modelUsed) {
-		this.libraryName = libraryName;
-		this.modelUsed = modelUsed;
-		this.version = version;
-		this.qdmVersionUsed = qdmVersion;
+	public void setGeneralInfoOfLibrary(String libraryName, String version, String qdmVersion , String modelUsed,
+			String comments) {
 		getLibraryVersionValue().setText(version);
 		getUsingModelValue().setText(modelUsed);
 		getModelVersionValue().setText(qdmVersion);
 		getLibraryNameValue().setText(libraryName);
-		
-	}
-	
-	public void clearAllGeneralInfoOfLibrary(){
-		this.libraryName = "";
-		this.modelUsed = "";
-		this.version = "";
-		this.qdmVersionUsed = "";
+		getComments().setText(comments);
 	}
 	
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
+	}
+
+	public CustomTextAreaWithMaxLength getComments() {
+		return comments;
+	}
+
+	public void setComments(CustomTextAreaWithMaxLength comments) {
+		this.comments = comments;
 	}
 
 }

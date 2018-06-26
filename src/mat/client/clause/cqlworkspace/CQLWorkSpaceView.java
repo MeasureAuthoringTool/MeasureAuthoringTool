@@ -1,16 +1,15 @@
 package mat.client.clause.cqlworkspace;
 
-import mat.client.Mat;
-import mat.client.shared.MatContext;
-import mat.client.shared.SpacerWidget;
-
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HorizontalPanel;
-//import org.gwtbootstrap3.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.Mat;
+import mat.client.shared.MatContext;
+import mat.client.shared.SpacerWidget;
 
 public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
@@ -208,7 +207,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		inclView.setAliasNameTxtArea("");
-		System.out.println(" in resetAll doing setText");
 		
 		cqlLeftNavBarPanelView.getViewIncludeLibrarys().clear();
 		cqlLeftNavBarPanelView.getViewParameterList().clear();
@@ -301,7 +299,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentName(null);
 		cqlLeftNavBarPanelView.setCurrentSelectedIncLibraryObjId(null);
 		cqlFunctionsView.getFunctionArgNameMap().clear();
-		if (cqlFunctionsView.getFunctionArgumentList().size() > 0) {
+		if (!cqlFunctionsView.getFunctionArgumentList().isEmpty()) {
 			cqlFunctionsView.getFunctionArgumentList().clear();
 		}
 		valueSetView.clearCellTableMainPanel();
@@ -316,7 +314,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlLeftNavBarPanelView.getWarningConfirmationMessageAlert().clearAlert();
 		if(cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert() != null)
 			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
-		//cqlLeftNavBarPanelView.getDeleteConfirmationMessgeAlert().clearAlert();
 		hideAceEditorAutoCompletePopUp();
 		hideInformationDropDown();
 		resetFormGroups();

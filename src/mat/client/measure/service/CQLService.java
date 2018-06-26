@@ -19,19 +19,10 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface CQLService.
  */
 public interface CQLService {
-
-	/**
-	 * Save cql.
-	 *
-	 * @param measureId the measure id
-	 * @return the boolean
-	 */
-	// Boolean saveCQL(CQLModel cqlDataModel);
 
 	/**
 	 * Get cql.
@@ -65,7 +56,7 @@ public interface CQLService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
-			String currentMeasureId, String context);
+			String currentMeasureId, String context, String libraryComment);
 	
 	/**
 	 * Save and modify functions.

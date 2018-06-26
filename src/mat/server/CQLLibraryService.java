@@ -1013,17 +1013,14 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.CQLLibraryServiceInterface#saveAndModifyCQLGeneralInfo(java.lang.String, java.lang.String)
-	 */
 	@Override
-	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryName) {
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryName, String libraryComment) {
 		SaveUpdateCQLResult result = null;
 		if(MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)){
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(libraryId);
 			String cqlXml = getCQLLibraryXml(cqlLibrary);
 			if (cqlXml != null) {
-				result = cqlService.saveAndModifyCQLGeneralInfo(cqlXml, libraryName);
+				result = cqlService.saveAndModifyCQLGeneralInfo(cqlXml, libraryName, libraryComment);
 				if (result != null && result.isSuccess()) {
 					cqlLibrary.setName(libraryName);
 					cqlLibrary.setCQLByteArray(result.getXml().getBytes());

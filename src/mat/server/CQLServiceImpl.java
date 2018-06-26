@@ -141,13 +141,9 @@ public class CQLServiceImpl implements CQLService {
 					+ "</codeSystems>";
 
 
-	/*
-	 * {@inheritDoc}
-	 */
 	@Override
 	public CQLData getCQL(String measureId) {
-		CQLData cqlData = cqlDAO.findByID(measureId);
-		return cqlData;
+		return cqlDAO.findByID(measureId);
 	}
 
 
@@ -159,42 +155,15 @@ public class CQLServiceImpl implements CQLService {
 		result.setCqlModel(cqlModel);
 
 		if (xml != null) {
+			XmlProcessor processor = new XmlProcessor(xml);	
 
-			try {
-				
-				XmlProcessor processor = new XmlProcessor(xml);	
-				
-				if(StringUtils.isNotBlank(libraryName)) {
-					String xPathForCQLLibraryName = "//cqlLookUp/library";
-					Node libraryNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryName);
-					if (libraryNode != null) {
-						libraryNode.setTextContent(libraryName);
-					}
-				}
-				
-				libraryComment = StringUtils.left(libraryComment, COMMENTS_MAX_LENGTH);
-				String xPathForCQLLibraryComment = "//cqlLookUp/libraryComment";				
-				Node commentsNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryComment);				
-				if (commentsNode == null) {
-					String xPathForCQLUsingModel = "//cqlLookUp/usingModel";
-					Node usingModelNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLUsingModel);
-
-					Element commentsElem = processor.getOriginalDoc().createElement("libraryComment");
-					commentsElem.setTextContent(libraryComment);
-
-					Node cqlNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp");	
-					cqlNode.insertBefore(commentsElem, usingModelNode);
-
-				} else {
-					commentsNode.setTextContent(libraryComment);
-				}
-
-				result.setXml(processor.transform(processor.getOriginalDoc()));
-
-			} catch (XPathExpressionException e) {
-				logger.error("saveAndModifyCQLGeneralInfo:" + e.getMessage());
+			if(StringUtils.isNotBlank(libraryName)) {
+				updateLibraryName(processor, libraryName);
 			}
 
+			updateLibraryComment(processor, libraryComment);
+
+			result.setXml(processor.transform(processor.getOriginalDoc()));
 			result.setSuccess(true);
 			result.getCqlModel().setLibraryName(libraryName);
 			result.getCqlModel().setLibraryComment(libraryComment);
@@ -204,10 +173,44 @@ public class CQLServiceImpl implements CQLService {
 		return result;
 	}
 
+	private void updateLibraryName(XmlProcessor processor, String libraryName) {
 
-	/*
-	 * {@inheritDoc}
-	 */
+		String xPathForCQLLibraryName = "//cqlLookUp/library";
+		try {
+			Node libraryNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryName);
+			if (libraryNode != null) {
+				libraryNode.setTextContent(libraryName);
+			}
+		} catch (XPathExpressionException e) {
+			logger.error("updateLibraryName:" + e.getMessage());
+		}
+	
+	}
+
+	private void updateLibraryComment(XmlProcessor processor, String libraryComment) {
+		libraryComment = StringUtils.left(libraryComment, COMMENTS_MAX_LENGTH);
+		String xPathForCQLLibraryComment = "//cqlLookUp/libraryComment";				
+		try {
+			Node commentsNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLLibraryComment);
+			if (commentsNode == null) {
+				String xPathForCQLUsingModel = "//cqlLookUp/usingModel";
+				Node usingModelNode = processor.findNode(processor.getOriginalDoc(), xPathForCQLUsingModel);
+
+				Element commentsElem = processor.getOriginalDoc().createElement("libraryComment");
+				commentsElem.setTextContent(libraryComment);
+
+				Node cqlNode = processor.findNode(processor.getOriginalDoc(), "//cqlLookUp");	
+				cqlNode.insertBefore(commentsElem, usingModelNode);
+
+			} else {
+				commentsNode.setTextContent(libraryComment);
+			}
+
+		} catch (XPathExpressionException e) {
+			logger.error("updateLibraryComment:" + e.getMessage());		
+		}				
+	}
+
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String xml, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, boolean isFormatable) {

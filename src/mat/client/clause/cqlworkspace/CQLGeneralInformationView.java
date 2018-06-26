@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import mat.client.buttons.Definition_FuntionButtonToolBar;
+import mat.client.buttons.Definition_FunctionButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -30,7 +30,7 @@ public class CQLGeneralInformationView {
 	private MatTextBox libraryVersionValue = new MatTextBox();
 	private MatTextBox usingModelValue = new MatTextBox();
 	private MatTextBox modelVersionValue = new MatTextBox();
-	private Definition_FuntionButtonToolBar saveAndDeleteBtn = new Definition_FuntionButtonToolBar("GeneralInfo");
+	private Definition_FunctionButtonToolBar saveAndDeleteBtn = new Definition_FunctionButtonToolBar("GeneralInfo");
 	private FormGroup libNameGroup = new FormGroup();
 	private FormGroup usingModelGroup = new FormGroup();
 	private FormGroup libVersionGroup = new FormGroup();

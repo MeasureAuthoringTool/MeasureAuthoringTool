@@ -6,6 +6,8 @@ public class ClearToolBarButton extends GenericToolbarButton{
 
 	public ClearToolBarButton(String sectionName) {
 		super("Clear", sectionName);
+		setIcon();
+		setSize();
 	}
 
 	@Override

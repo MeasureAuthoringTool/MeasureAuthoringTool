@@ -2,17 +2,17 @@ package mat.client.buttons;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-public class PasteToolBarButton extends GenericToolbarButton{
+public class EraseToolBarButton extends GenericToolbarButton{
 
-	public PasteToolBarButton(String sectionName) {
-		super("Paste", sectionName);
+	public EraseToolBarButton(String sectionName) {
+		super("Erase", sectionName);
 		setIcon();
 		setSize();
 	}
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.CLIPBOARD);
+		getButton().setIcon(IconType.ERASER);
 	}
 
 	@Override

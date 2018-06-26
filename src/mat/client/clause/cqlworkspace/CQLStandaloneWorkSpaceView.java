@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
-import mat.client.shared.CQLButtonToolBar;
+import mat.client.buttons.Definition_FuntionButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLFunctionArgument;
@@ -538,7 +538,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	}
 	
 	@Override
-	public CQLButtonToolBar getParameterButtonBar() {
+	public Definition_FuntionButtonToolBar getParameterButtonBar() {
 		return cqlParametersView.getParameterButtonBar();
 	}
 
@@ -549,7 +549,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * getDefineButtonBar()
 	 */
 	@Override
-	public CQLButtonToolBar getDefineButtonBar() {
+	public Definition_FuntionButtonToolBar getDefineButtonBar() {
 		return cqlDefinitionsView.getDefineButtonBar();
 	}
 
@@ -560,7 +560,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * getFunctionButtonBar()
 	 */
 	@Override
-	public CQLButtonToolBar getFunctionButtonBar() {
+	public Definition_FuntionButtonToolBar getFunctionButtonBar() {
 		return cqlFunctionsView.getFunctionButtonBar();
 	}
 	

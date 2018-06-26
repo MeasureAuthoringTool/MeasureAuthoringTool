@@ -6,6 +6,8 @@ public class CopyToolBarButton extends GenericToolbarButton{
 
 	public CopyToolBarButton(String sectionName) {
 		super("Copy", sectionName);
+		setIcon();
+		setSize();
 	}
 
 	@Override

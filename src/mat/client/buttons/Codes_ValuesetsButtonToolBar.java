@@ -8,14 +8,14 @@ import org.gwtbootstrap3.client.ui.ButtonToolBar;
  * with buttons (in order) 'Copy', 'Paste', 'Select All',
  * 'Clear'.
  */
-public class CQLCopyPasteSelectAllClearButtonToolBar {
+public class Codes_ValuesetsButtonToolBar {
 	
-	ButtonToolBar buttonBar = new ButtonToolBar();
-	GenericToolbarButton copy, paste, clear, selectAll;
+	private ButtonToolBar buttonBar = new ButtonToolBar();
+	private Button copyButton, pasteButton, selectAllButton, clearButton;
 	private String sectionName;
 	
 	
-	public CQLCopyPasteSelectAllClearButtonToolBar(String sectionName) {
+	public Codes_ValuesetsButtonToolBar(String sectionName) {
 		this.sectionName = sectionName;
 		buttonBar.getElement().setAttribute("style", "margin-left:585px");
 		buttonBar.setId("copyPasteClear_"+sectionName);
@@ -26,39 +26,39 @@ public class CQLCopyPasteSelectAllClearButtonToolBar {
 	}
 	
 	private void addCopyButton() {
-		copy = new CopyToolBarButton(sectionName);
-		buttonBar.add(copy);
+		copyButton = new CopyToolBarButton(sectionName).getButton();
+		buttonBar.add(copyButton);
 	}
 	
 	private void addPasteButton() {
-		paste = new PasteToolBarButton(sectionName);
-		buttonBar.add(paste);
+		pasteButton = new PasteToolBarButton(sectionName).getButton();
+		buttonBar.add(pasteButton);
 	}
 	
 	private void addSelectAllButton() {
-		selectAll = new SelectAllToolBarButton(sectionName);
-		buttonBar.add(selectAll);
+		selectAllButton = new SelectAllToolBarButton(sectionName).getButton();
+		buttonBar.add(selectAllButton);
 	}
 	
 	private void addClearButton() {
-		clear = new ClearToolBarButton(sectionName);
-		buttonBar.add(clear);
+		clearButton = new ClearToolBarButton(sectionName).getButton();
+		buttonBar.add(clearButton);
 	}
 	
 	public Button getCopyButton() {
-		return copy;
+		return copyButton;
 	}
 	
 	public Button getPasteButton() {
-		return paste;
+		return pasteButton;
 	}
 	
 	public Button getSelectAllButton() {
-		return selectAll;
+		return selectAllButton;
 	}
 	
 	public Button getClearButton() {
-		return clear;
+		return clearButton;
 	}
 	
 	public ButtonToolBar getButtonToolBar() {

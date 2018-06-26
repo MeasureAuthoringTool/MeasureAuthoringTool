@@ -25,8 +25,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.buttons.Definition_FuntionButtonToolBar;
 import mat.client.shared.CQLAddNewButton;
-import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -49,7 +49,7 @@ public class CQLParametersView {
 	private AceEditor parameterAceEditor = new AceEditor();
 
 	/** The parameter button bar. */
-	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
+	private Definition_FuntionButtonToolBar parameterButtonBar = new Definition_FuntionButtonToolBar("parameter");
 
 	/** The parameter add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
@@ -250,7 +250,7 @@ public class CQLParametersView {
 	 *
 	 * @return the parameter button bar
 	 */
-	public CQLButtonToolBar getParameterButtonBar() {
+	public Definition_FuntionButtonToolBar getParameterButtonBar() {
 		return parameterButtonBar;
 	}
 

@@ -71,7 +71,7 @@ public class CQLCopyPasteClearButtonToolBar {
 		buttonToolBar.add(pasteButton);
 		buttonToolBar.add(selectAllButton);
 		buttonToolBar.add(clearButton);
-		buttonToolBar.getElement().setAttribute("style", "margin-left:585px;");
+		buttonToolBar.getElement().setAttribute("style", "margin-left:580px;");
 		
 	}
 

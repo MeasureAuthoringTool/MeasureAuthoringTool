@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='login'>
- 	<inherits name='edu.ycp.cs.dh.acegwt.AceGWT'/> 
+ 
 	<inherits name="com.google.gwt.user.User" />
     <inherits name="com.google.gwt.logging.Logging"/>
     <inherits name='com.google.gwt.user.theme.standard.Standard' />

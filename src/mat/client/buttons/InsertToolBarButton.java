@@ -12,12 +12,12 @@ public class InsertToolBarButton extends GenericToolbarButton{
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.PLUS_SQUARE);
+		super.setIcon(IconType.PLUS_SQUARE);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("70px", "30px");
+		super.setSize("70px", "30px");
 	}
 
 }

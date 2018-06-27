@@ -12,12 +12,12 @@ public class EditToolBarButton extends GenericToolbarButton{
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.EDIT);
+		super.setIcon(IconType.EDIT);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("70px", "30px");
+		super.setSize("70px", "30px");
 	}
 
 }

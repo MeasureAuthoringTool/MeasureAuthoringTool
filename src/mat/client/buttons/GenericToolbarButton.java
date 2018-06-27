@@ -9,25 +9,20 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
  * on the Copy/Paste/SelectAll/Clear tool bar
  */
 public abstract class GenericToolbarButton extends Button{
-	private Button button = new Button();
 	
 	/**
 	 * @param name	Name of button ('copy', 'paste', 'clear'...etc)
 	 * @param sectionName 	where the button tool bar is located (what page)
 	 */
 	public GenericToolbarButton(String name, String sectionName) {
-		button.setType(ButtonType.LINK);
-		button.getElement().setId((name.toLowerCase().replace(" ", ""))+"Button_"+sectionName);
-		button.setMarginTop(10);
-		button.setTitle(name);
-		button.setText(name);
-		button.setIconSize(IconSize.LARGE);
-		button.setColor("#0964A2");
-		button.getElement().setAttribute("aria-label", name);
-	}
-		
-	public Button getButton() {
-		return button;
+		super.setType(ButtonType.LINK);
+		super.getElement().setId((name.toLowerCase().replace(" ", ""))+"Button_"+sectionName);
+		super.setMarginTop(10);
+		super.setTitle(name);
+		super.setText(name);
+		super.setIconSize(IconSize.LARGE);
+		super.setColor("#0964A2");
+		super.getElement().setAttribute("aria-label", name);
 	}
 	
 	public abstract void setIcon();

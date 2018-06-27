@@ -12,12 +12,12 @@ public class CopyToolBarButton extends GenericToolbarButton{
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.FILE_O);
+		super.setIcon(IconType.FILE_O);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("70px", "30px");
+		super.setSize("70px", "30px");
 	}
 
 }

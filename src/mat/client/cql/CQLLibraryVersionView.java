@@ -26,13 +26,13 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -57,7 +57,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("cqlVersion");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("cqlVersion");
 	
 	CQLLibraryDataSetObject selectedLibraryObject;
 	

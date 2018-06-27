@@ -28,13 +28,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.WarningMessageAlert;
@@ -48,7 +48,7 @@ import mat.model.clause.ShareLevel;
 public class ManageMeasureShareView implements ShareDisplay {
 	
 	private static final int PAGE_SIZE = 25;
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureVersion");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("measureVersion");
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	private FlowPanel content = new FlowPanel();
 

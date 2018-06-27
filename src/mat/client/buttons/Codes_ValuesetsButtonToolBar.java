@@ -26,22 +26,22 @@ public class Codes_ValuesetsButtonToolBar {
 	}
 	
 	private void addCopyButton() {
-		copyButton = new CopyToolBarButton(sectionName).getButton();
+		copyButton = new CopyToolBarButton(sectionName);
 		buttonBar.add(copyButton);
 	}
 	
 	private void addPasteButton() {
-		pasteButton = new PasteToolBarButton(sectionName).getButton();
+		pasteButton = new PasteToolBarButton(sectionName);
 		buttonBar.add(pasteButton);
 	}
 	
 	private void addSelectAllButton() {
-		selectAllButton = new SelectAllToolBarButton(sectionName).getButton();
+		selectAllButton = new SelectAllToolBarButton(sectionName);
 		buttonBar.add(selectAllButton);
 	}
 	
 	private void addClearButton() {
-		clearButton = new ClearToolBarButton(sectionName).getButton();
+		clearButton = new ClearToolBarButton(sectionName);
 		buttonBar.add(clearButton);
 	}
 	

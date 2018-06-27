@@ -12,12 +12,12 @@ public class EraseToolBarButton extends GenericToolbarButton{
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.ERASER);
+		super.setIcon(IconType.ERASER);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("70px", "30px");
+		super.setSize("70px", "30px");
 	}
 
 }

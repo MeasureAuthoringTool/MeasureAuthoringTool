@@ -12,12 +12,12 @@ public class PasteToolBarButton extends GenericToolbarButton{
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.CLIPBOARD);
+		super.setIcon(IconType.CLIPBOARD);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("70px", "30px");
+		super.setSize("70px", "30px");
 	}
 
 }

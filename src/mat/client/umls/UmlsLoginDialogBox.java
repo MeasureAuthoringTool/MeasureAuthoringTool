@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.shared.ChangePasswordWidget;
@@ -32,7 +33,6 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
@@ -72,7 +72,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	/** The umls trouble logging. */
 	Anchor umlsTroubleLogging ;
 	
-	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("umls");
+	SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("umls");
 	
 	HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool.");
 	
@@ -293,7 +293,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 
 	@Override
-	public SaveCancelButtonBar getButtonBar() {
+	public SaveContinueCancelButtonBar getButtonBar() {
 		return buttonBar;
 	}
 

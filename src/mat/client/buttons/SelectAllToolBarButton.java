@@ -12,12 +12,12 @@ public class SelectAllToolBarButton extends GenericToolbarButton{
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.CHECK_SQUARE);
+		super.setIcon(IconType.CHECK_SQUARE);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("95px", "30px");
+		super.setSize("95px", "30px");
 	}
 
 }

@@ -9,21 +9,21 @@ public class InfoToolBarButton extends GenericToolbarButton{
 		super("Information", sectionName);
 		setIcon();
 		setSize();
-		getButton().setTitle("Click to view available short cut keys information");
-		getButton().setText("Information");
-		getButton().getElement().setAttribute("aria-label", "Click to view available short cut keys information");
-		getButton().setToggleCaret(false);
-		getButton().setDataToggle(Toggle.DROPDOWN);
+		super.setTitle("Click to view available short cut keys information");
+		super.setText("Information");
+		super.getElement().setAttribute("aria-label", "Click to view available short cut keys information");
+		super.setToggleCaret(false);
+		super.setDataToggle(Toggle.DROPDOWN);
 	}
 
 	@Override
 	public void setIcon() {
-		getButton().setIcon(IconType.INFO_CIRCLE);
+		super.setIcon(IconType.INFO_CIRCLE);
 	}
 
 	@Override
 	public void setSize() {
-		getButton().setSize("120px", "30px");
+		super.setSize("120px", "30px");
 	}
 
 }

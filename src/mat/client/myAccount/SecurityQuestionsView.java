@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Input;
+
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordEditInfoWidget;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionAnswerWidget;
 import mat.client.shared.SecurityQuestionsDisplay;
 import mat.client.shared.SpacerWidget;
@@ -44,7 +45,7 @@ public class SecurityQuestionsView implements SecurityQuestionsDisplay {
 	protected PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("securityQnA");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("securityQnA");
 	
 	/**
 	 * Instantiates a new security questions view.

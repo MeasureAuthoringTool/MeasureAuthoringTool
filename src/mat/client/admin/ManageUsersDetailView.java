@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.UserAuditLogDTO;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.ErrorMessageAlert;
@@ -42,7 +43,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
@@ -59,7 +59,7 @@ public class ManageUsersDetailView implements ManageUsersPresenter.DetailDisplay
 	private RadioButton activeStatus = new RadioButton("status", "Active");
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("user");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("user");
 	
 	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();

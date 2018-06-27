@@ -39,40 +39,40 @@ public class Definition_FuntionButtonToolBar extends Composite {
 	}
 	
 	private void addCancelButton() {
-		cancelButton = new CancelToolBarButton(sectionName).getButton();
+		cancelButton = new CancelToolBarButton(sectionName);
 		buttonLayout.add(cancelButton);
 	}
 	
 	private void addEraseButton() {
-		eraseButton = new EraseToolBarButton(sectionName).getButton();
+		eraseButton = new EraseToolBarButton(sectionName);
 		buttonLayout.add(eraseButton);
 	}
 	
 	private void addDeleteButton() {
-		deleteButton = new DeleteToolBarButton(sectionName).getButton();
+		deleteButton = new DeleteToolBarButton(sectionName);
 		buttonLayout.add(deleteButton);
 	}
 	
 	private void addEditButton() {
-		editButton = new EditToolBarButton(sectionName).getButton();
+		editButton = new EditToolBarButton(sectionName);
 		editButton.setVisible(false);
 		buttonLayout.add(editButton);
 	}
 	
 	private void addSaveButton() {
-		saveButton = new SaveToolBarButton(sectionName).getButton();
+		saveButton = new SaveToolBarButton(sectionName);
 		buttonLayout.add(saveButton);
 	}
 	
 	private void addInsertButton() {
-		insertButton = new InsertToolBarButton(sectionName).getButton();
+		insertButton = new InsertToolBarButton(sectionName);
 		buttonLayout.add(insertButton);
 	}
 
 
 	private void buildInfoButtonGroup() {
 		
-		infoButton = new InfoToolBarButton(sectionName).getButton();
+		infoButton = new InfoToolBarButton(sectionName);
 		
 		DropDownMenu downMenu = new DropDownMenu();
 		

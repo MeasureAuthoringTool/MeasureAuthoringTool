@@ -1653,6 +1653,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
+				searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
 			}
 		});
 
@@ -3294,8 +3295,10 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						if (result != null) {
 							cqlLibraryName = result.getCqlModel().getLibraryName().trim();
 							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
+							searchDisplay.getCqlGeneralInformationView().getComments().setText(result.getCqlModel().getLibraryComment());
+							searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
 							searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-									.createAlert(MatContext.get().getMessageDelegate().getMODIFY_CQL_LIBRARY_NAME());
+									.createAlert(cqlLibraryName + " general information successfully updated");
 							searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 							MatContext.get().getCurrentLibraryInfo().setLibraryName(cqlLibraryName);
 							CqlComposerPresenter.setContentHeading();
@@ -5192,6 +5195,7 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
 		}
 		searchDisplay.setGeneralInfoHeading();
+		searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
 	}
 
 	/**

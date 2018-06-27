@@ -1688,7 +1688,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result != null) {
-					searchDisplay.getCqlGeneralInformationView().getComments().setText(result.getCqlModel().getLibraryComment()) ;
+					searchDisplay.getCqlGeneralInformationView().getComments().setText(result.getCqlModel().getLibraryComment());
+					searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
+					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
+							MatContext.get().getCurrentMeasureName() + " general information successfully updated");
 				}
 				showSearchingBusy(false);
 			}
@@ -3461,6 +3464,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 
 		searchDisplay.setGeneralInfoHeading();
+		searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
 	}
 
 	/**

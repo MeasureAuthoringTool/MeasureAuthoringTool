@@ -329,6 +329,7 @@ public class CQLGeneralInformationView {
 		getModelVersionValue().setText(qdmVersion);
 		getLibraryNameValue().setText(libraryName);
 		getComments().setText(comments);
+		getComments().setCursorPos(0);
 	}
 	
 	public void setHeading(String text,String linkName) {

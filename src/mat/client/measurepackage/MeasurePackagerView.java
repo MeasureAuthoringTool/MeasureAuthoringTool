@@ -13,7 +13,6 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -66,29 +65,15 @@ import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
 import mat.shared.ClickableSafeHtmlCell;
 
-
-/**
- * The Class MeasurePackagerView.
- */
-/**
- * @author jnarang
- *
- */
 public class MeasurePackagerView implements MeasurePackagePresenter.PackageView {
-	/**
-	 * Observer Interface.
-	 *
-	 */
+
 	interface Observer {
 
 		void onEditClicked(MeasurePackageDetail detail);
 
 		void onDeleteClicked(MeasurePackageDetail detail);
 	}
-	
-	/**
-	 * The Interface Templates.
-	 */
+
 	interface Templates extends SafeHtmlTemplates {
 		/**
 		 * The template for this Cell, which includes styles and a value.
@@ -103,16 +88,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		SafeHtml cell(String title, SafeHtml value);
 	}
 	
-	/** Create a singleton instance of the templates used to render the cell. */
 	private static Templates templates = GWT.create(Templates.class);
 
-	private Button addQDMRight = buildAddButton(IconType.ANGLE_RIGHT, "addQDMRight");
+	private Button addQDMRight = buildArrowButton(IconType.ANGLE_RIGHT, "addQDMRight");
 	
-	private Button addQDMLeft = buildAddButton(IconType.ANGLE_LEFT, "addQDMLeft");
+	private Button addQDMLeft = buildArrowButton(IconType.ANGLE_LEFT, "addQDMLeft");
 	
-	private Button addAllQDMRight = buildAddButton(IconType.ANGLE_DOUBLE_RIGHT, "addAllToRight");
+	private Button addAllQDMRight = buildArrowButton(IconType.ANGLE_DOUBLE_RIGHT, "addAllToRight");
 	
-	private Button addAllQDMLeft = buildAddButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
+	private Button addAllQDMLeft = buildArrowButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
 	
 	private MessageAlert measurePackageSuccessMsg = new SuccessMessageAlert();
 
@@ -124,17 +108,17 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private MessageAlert inProgressMessageDisplay = new WarningMessageAlert();
 
-	private Button packageMeasureButton = buildSaveButton(IconType.ARCHIVE, "Create Measure Package") ;;
+	private Button packageMeasureButton = buildButton(IconType.ARCHIVE, "Create Measure Package") ;;
 
 	private FlowPanel content = new FlowPanel();
 
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
 
-	private Button addSupplementalDataElementsButton = buildSaveButton(IconType.SAVE, "Save Supplemental Data Elements");
+	private Button addSupplementalDataElementsButton = buildButton(IconType.SAVE, "Save Supplemental Data Elements");
 
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
 
-	private Button createNewGroupingButton = buildSaveButton(IconType.DOWNLOAD, "Create New Grouping") ;
+	private Button createNewGroupingButton = buildButton(IconType.PLUS, "Create New Grouping") ;
 	
 	private Panel cellTablePanel = new Panel();
 	
@@ -143,11 +127,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private WarningConfirmationMessageAlert saveErrorMessageDisplay = new WarningConfirmationMessageAlert();
 	
 	private WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit = new WarningConfirmationMessageAlert();
-	
-	@Override
-	public WarningConfirmationMessageAlert getSaveErrorMessageDisplay() {
-		return saveErrorMessageDisplay;
-	}
 
 	private CellList<QualityDataSetDTO> qdmCellList;
 	
@@ -185,19 +164,19 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel("RightSidePanel");
 	
-	private Button addRiskAdjustmentRight = buildAddButton(IconType.ANGLE_RIGHT, "addRiskAdjRight");
+	private Button addRiskAdjustmentRight = buildArrowButton(IconType.ANGLE_RIGHT, "addRiskAdjRight");
 	
-	private Button addRiskAdjustmentLeft = buildAddButton(IconType.ANGLE_LEFT, "addRiskAdjLeft");
+	private Button addRiskAdjustmentLeft = buildArrowButton(IconType.ANGLE_LEFT, "addRiskAdjLeft");
 	
-	private Button addAllRiskAdjustmentRight = buildAddButton(IconType.ANGLE_DOUBLE_RIGHT, "addAllToRight");
+	private Button addAllRiskAdjustmentRight = buildArrowButton(IconType.ANGLE_DOUBLE_RIGHT, "addAllToRight");
 	
-	private Button addAllRiskAdjustmentLeft = buildAddButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
+	private Button addAllRiskAdjustmentLeft = buildArrowButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
 	
 	private MessageAlert riskAdjustmentSuccessMessages = new SuccessMessageAlert();
 	
 	private Widget addRiskAdjustmentButtonPanel = buildRiskAdjustmentAddButtonWidget();
 		
-	private Button addRiskAdjustmentVariablesToMeasureButton = buildSaveButton(IconType.SAVE, "Save Risk Adjustment Variables") ;
+	private Button addRiskAdjustmentVariablesToMeasureButton = buildButton(IconType.SAVE, "Save Risk Adjustment Variables") ;
 	
 	private ShowMorePagerPanel leftRiskAdjustmentVariablesPanel = new ShowMorePagerPanel("LeftRiskAdjPanel");
 	
@@ -219,7 +198,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private ArrayList<RiskAdjustmentDTO> riskAdjustmentVariablePopulationList = new ArrayList<RiskAdjustmentDTO>();
 	
-	private Button packageMeasureAndExportButton = buildSaveButton(IconType.DOWNLOAD, "Create Package and Export") ;
+	private Button packageMeasureAndExportButton = buildButton(IconType.DOWNLOAD, "Create Package and Export") ;
 	
 	private boolean isCQLMeasure;
 	
@@ -234,10 +213,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
 		Panel topRiskAdjContainer = buildRiskAdjLeftRightPanel();
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
-		
-		createNewGroupingButton.getElement().setAttribute("id", "CreateNewGroupingButton");
-		createNewGroupingButton.setIcon(IconType.PLUS);
-		createNewGroupingButton.setType(ButtonType.PRIMARY);
 		
 		content.add(saveErrorMessageDisplay);
 		content.add(saveErrorMessageDisplayOnEdit);
@@ -517,9 +492,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskAdjustmentVariablesVerticalPanel.add(rightRiskAdjustmentPanel);
 		horizontalPanel.add(riskAdjustmentVariablesVerticalPanel);		
 		
-		riskAdjustmentPanelBody.add(horizontalPanel);		
-		addRiskAdjustmentVariablesToMeasureButton.setType(ButtonType.PRIMARY);
-		addRiskAdjustmentVariablesToMeasureButton.setIcon(IconType.SAVE);
+		riskAdjustmentPanelBody.add(horizontalPanel);
 		riskAdjustmentPanelBody.add(addRiskAdjustmentVariablesToMeasureButton);
 		
 		return riskAdjustmentPanel; 		
@@ -572,9 +545,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			rightPagerPanel.setDisplay(getSupCellList());
 		}
 		supplementalDataElementsRightPanel.add(rightPagerPanel);
-		horizontalPanel.add(supplementalDataElementsRightPanel);		
-		addSupplementalDataElementsButton.setType(ButtonType.PRIMARY);
-		addSupplementalDataElementsButton.setIcon(IconType.SAVE);
+		horizontalPanel.add(supplementalDataElementsRightPanel);
 		
 		supplementalDataElementsPanelBody.add(horizontalPanel);
 		supplementalDataElementsPanelBody.add(addSupplementalDataElementsButton);
@@ -669,12 +640,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		return qdmCellList;
 	}
-	
-	/**
-	 * Gets the sup cell list.
-	 *
-	 * @return the sup cell list
-	 */
+
 	private CellList<QualityDataSetDTO> getSupCellList()
 	{
 		supplementalDataElementList = new CellList<QualityDataSetDTO>(new QualityDataSetCell());
@@ -705,12 +671,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 		return supplementalDataElementList;
 	}
-	
-	/**
-	 * Gets the cql sup cell list.
-	 *
-	 * @return the cql sup cell list
-	 */
+
 	private CellList<CQLDefinition> getCQLSupCellList()
 	{
 		cqlSupplementalDataCellList = new CellList<CQLDefinition>(new CQLDefinitionCell());
@@ -741,12 +702,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 		return cqlSupplementalDataCellList;
 	}
-	
-	/**
-	 * Gets the qdm cell list.
-	 *
-	 * @return the qdm cell list
-	 */
+
 	private CellList<CQLDefinition> getCQLQdmCellList()
 	{
 		cqlQdmCellList = new CellList<CQLDefinition>(new CQLDefinitionCell());
@@ -778,11 +734,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return cqlQdmCellList;
 	}
 	
-	/**
-	 * Builds the risk adjustment add button widget.
-	 *
-	 * @return the widget
-	 */
 	private Widget buildRiskAdjustmentAddButtonWidget(){
 		VerticalPanel riskPanel = new VerticalPanel();
 		riskPanel.getElement().setAttribute("id", "RiskAdjustmentButtonVerticalPanel");
@@ -807,11 +758,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskPanel.add(addAllRiskAdjustmentLeft);
 		return riskPanel;
 	}
-	/**
-	 * Builds the qdm element add button widget.
-	 *
-	 * @return the widget
-	 */
+
 	private Widget buildQDMElementAddButtonWidget() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.getElement().setAttribute("id", "QDMButtonVerticalPanel");
@@ -836,10 +783,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		panel.add(addAllQDMLeft);
 		return panel;
 	}
-	/**
-	 * Add columns to Measure Grouping Cell Table.
-	 * @param table -  CellTable.
-	 */
+
 	private  void addColumnToTable(CellTable<MeasurePackageDetail> table) {
 		Column<MeasurePackageDetail, SafeHtml> measureGrouping = new Column<MeasurePackageDetail, SafeHtml>(new SafeHtmlCell()){
 			@Override
@@ -964,7 +908,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		}		
 	}
 	
-	private Button buildSaveButton(IconType icon, String text) {
+	private Button buildButton(IconType icon, String text) {
 		Button button = new Button(); 
 		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
 		button.setType(ButtonType.PRIMARY);
@@ -974,15 +918,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		return button; 
 	}
-	
-	/**
-	 * Builds the add button.
-	 *
-	 * @param imageUrl the image url.
-	 * @param id button Id.
-	 * @return button.
-	 */
-	private Button buildAddButton(IconType icon, String id) {
+
+	private Button buildArrowButton(IconType icon, String id) {
 		Button btn = new Button();
 		btn.getElement().setAttribute("id", id);
 		btn.setIcon(icon);
@@ -998,7 +935,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		supplementalElementList.clear();
 		supplementalElementList.addAll(clauses);
 		supplementalElementList.sort(new QualityDataSetDTO.Comparator());
-		//Collections.sort(supElementList, new QualityDataSetDTO.Comparator());
 		rightPagerPanel.setDisplay(getSupCellList());
 		supplementalDataSelectionModel.clear();
 	}
@@ -1445,8 +1381,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit() {
 		return saveErrorMessageDisplayOnEdit;
 	}
+	
 	@Override
 	public void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit) {
 		this.saveErrorMessageDisplayOnEdit = saveErrorMessageDisplayOnEdit;
 	}	
+	
+	
+	@Override
+	public WarningConfirmationMessageAlert getSaveErrorMessageDisplay() {
+		return saveErrorMessageDisplay;
+	}
 }

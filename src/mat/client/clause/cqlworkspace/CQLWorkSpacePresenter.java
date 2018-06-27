@@ -5039,6 +5039,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						searchDisplay.getCodesView().resetCQLCodesSearchPanel();
 						appliedCodeTableList.clear();
 						appliedCodeTableList.addAll(result.getCqlCodeList());
+						MatContext.get().getCQLModel().setCodeList(appliedCodeTableList);
 						searchDisplay.getCqlLeftNavBarPanelView().setCodeBadgeValue(appliedCodeTableList);
 						searchDisplay.getCodesView().buildCodesCellTable(appliedCodeTableList,
 								MatContext.get().getMeasureLockService().checkForEditPermission());

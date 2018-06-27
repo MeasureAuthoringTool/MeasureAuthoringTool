@@ -18,7 +18,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
+<<<<<<< HEAD
 import mat.client.buttons.Definition_FuntionButtonToolBar;
+=======
+import mat.client.buttons.Definition_FunctionButtonToolBar;
+>>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLFunctionArgument;
@@ -538,7 +542,11 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	}
 	
 	@Override
+<<<<<<< HEAD
 	public Definition_FuntionButtonToolBar getParameterButtonBar() {
+=======
+	public Definition_FunctionButtonToolBar getParameterButtonBar() {
+>>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 		return cqlParametersView.getParameterButtonBar();
 	}
 
@@ -549,7 +557,11 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * getDefineButtonBar()
 	 */
 	@Override
+<<<<<<< HEAD
 	public Definition_FuntionButtonToolBar getDefineButtonBar() {
+=======
+	public Definition_FunctionButtonToolBar getDefineButtonBar() {
+>>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 		return cqlDefinitionsView.getDefineButtonBar();
 	}
 
@@ -560,7 +572,11 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * getFunctionButtonBar()
 	 */
 	@Override
+<<<<<<< HEAD
 	public Definition_FuntionButtonToolBar getFunctionButtonBar() {
+=======
+	public Definition_FunctionButtonToolBar getFunctionButtonBar() {
+>>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 		return cqlFunctionsView.getFunctionButtonBar();
 	}
 	

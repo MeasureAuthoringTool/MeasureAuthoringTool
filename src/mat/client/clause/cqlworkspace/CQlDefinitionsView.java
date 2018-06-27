@@ -29,7 +29,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-import mat.client.buttons.Definition_FuntionButtonToolBar;
+import mat.client.buttons.Definition_FunctionButtonToolBar;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
@@ -59,7 +59,7 @@ public class CQlDefinitionsView {
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
 
 	/** The define button bar. */
-	private Definition_FuntionButtonToolBar defineButtonBar = new Definition_FuntionButtonToolBar("definition");
+	private Definition_FunctionButtonToolBar defineButtonBar = new Definition_FunctionButtonToolBar("definition");
 
 	/** The define add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("definition");
@@ -414,7 +414,7 @@ public class CQlDefinitionsView {
 	 *
 	 * @return the define button bar
 	 */
-	public Definition_FuntionButtonToolBar getDefineButtonBar() {
+	public Definition_FunctionButtonToolBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
 
@@ -423,7 +423,7 @@ public class CQlDefinitionsView {
 	 *
 	 * @param defineButtonBar the new define button bar
 	 */
-	public void setDefineButtonBar(Definition_FuntionButtonToolBar defineButtonBar) {
+	public void setDefineButtonBar(Definition_FunctionButtonToolBar defineButtonBar) {
 		this.defineButtonBar = defineButtonBar;
 	}
 

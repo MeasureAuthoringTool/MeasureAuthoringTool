@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  * The Button Tool Bar for the Definition and Function sections
  * Includes 'Insert', 'Save', 'Edit', 'Delete', 'save', 'cancel', 'erase'
  */
-public class Definition_FuntionButtonToolBar extends Composite {
+public class Definition_FunctionButtonToolBar extends Composite {
 	private Button insertButton, editButton, saveButton, deleteButton, eraseButton, cancelButton, infoButton;
 	private Button timingExpIcon = new Button();
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
@@ -22,7 +22,7 @@ public class Definition_FuntionButtonToolBar extends Composite {
 	private String sectionName;
 
 	
-	public Definition_FuntionButtonToolBar(String sectionName) {
+	public Definition_FunctionButtonToolBar(String sectionName) {
 		this.sectionName = sectionName;
 		buildInfoButtonGroup();
 		

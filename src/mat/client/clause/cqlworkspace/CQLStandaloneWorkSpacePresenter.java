@@ -52,7 +52,11 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+<<<<<<< HEAD
 import mat.client.buttons.Definition_FuntionButtonToolBar;
+=======
+import mat.client.buttons.Definition_FunctionButtonToolBar;
+>>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
@@ -225,11 +229,19 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 
+<<<<<<< HEAD
 		Definition_FuntionButtonToolBar getParameterButtonBar();
 
 		Definition_FuntionButtonToolBar getDefineButtonBar();
 
 		Definition_FuntionButtonToolBar getFunctionButtonBar();
+=======
+		Definition_FunctionButtonToolBar getParameterButtonBar();
+
+		Definition_FunctionButtonToolBar getDefineButtonBar();
+
+		Definition_FunctionButtonToolBar getFunctionButtonBar();
+>>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 
 		TextBox getDefineNameTxtArea();
 

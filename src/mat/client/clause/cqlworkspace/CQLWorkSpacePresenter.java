@@ -124,6 +124,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	private String currentIncludeLibraryId = null;
 
+	private String cqlLibraryComment;
+
 	private boolean isModified = false;
 	private boolean isCodeModified = false;
 
@@ -1688,10 +1690,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result != null) {
-					searchDisplay.getCqlGeneralInformationView().getComments().setText(result.getCqlModel().getLibraryComment());
+					cqlLibraryComment = result.getCqlModel().getLibraryComment();
+					searchDisplay.getCqlGeneralInformationView().getComments().setText(cqlLibraryComment);
 					searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
 					searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
-							MatContext.get().getCurrentMeasureName() + " general information successfully updated");
+							MatContext.get().getCurrentMeasureName() + " general information successfully updated.");
 				}
 				showSearchingBusy(false);
 			}
@@ -3224,7 +3227,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				String cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 						.createCQLLibraryName(MatContext.get().getCurrentMeasureName());
 				searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
-
+				
+				cqlLibraryComment = result.getCqlModel().getLibraryComment();
 				String measureVersion = MatContext.get().getCurrentMeasureVersion();
 
 				measureVersion = measureVersion.replaceAll("Draft ", "").trim();
@@ -3232,7 +3236,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					measureVersion = measureVersion.substring(1);
 				}
 				searchDisplay.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, measureVersion,
-						result.getCqlModel().getQdmVersion(), "QDM", result.getCqlModel().getLibraryComment());
+						result.getCqlModel().getQdmVersion(), "QDM", cqlLibraryComment);
 
 			}
 
@@ -3461,6 +3465,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			} else {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 			}
+			searchDisplay.getCqlGeneralInformationView().getComments().setText(cqlLibraryComment);
 		}
 
 		searchDisplay.setGeneralInfoHeading();

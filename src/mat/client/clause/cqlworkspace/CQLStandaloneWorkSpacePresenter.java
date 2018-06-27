@@ -115,6 +115,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	CQLModelValidator validator = new CQLModelValidator();
 
 	private String cqlLibraryName;
+	
+	private String cqlLibraryComment;
 
 	private String setId = null;
 	
@@ -1622,51 +1624,46 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	 * Adds the general info event handlers.
 	 */
 	private void addGeneralInfoEventHandlers() {
-
-		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
-				if (searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().getText().isEmpty()) {
-					searchDisplay.getCqlGeneralInformationView().getLibNameGroup().setValidationState(ValidationState.ERROR);
-					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
-				} else {
-
-					if (validator.validateForAliasNameSpecialChar(
-							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().getText().trim())) {
-						saveCQLGeneralInformation();
-					} else {
-						searchDisplay.getCqlGeneralInformationView().getLibNameGroup().setValidationState(ValidationState.ERROR);
-						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-								.createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
-					}
-
-				}
-			}
-		});
-
-		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.resetMessageDisplay();
-				searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
-				searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
-			}
-		});
-
-		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyUpHandler(event -> resetMessagesAndSetPageDirty());
-
-		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty());
+		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInfo());
+		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(event -> cancelChangesOnGeneralInfoPage());
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
+		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
 	}
 	
-	private void resetMessagesAndSetPageDirty() {
+	private void cancelChangesOnGeneralInfoPage() {
+		searchDisplay.resetMessageDisplay();
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
+		searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
+	}
+	
+	private void resetMessagesAndSetPageDirty(boolean isPageDirty) {
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 			searchDisplay.resetMessageDisplay();
-			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(true);
+			searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(isPageDirty);
 		}
+	}
+	
+	private void saveCQLGeneralInfo() {
+		
+		resetMessagesAndSetPageDirty(false);
+		
+		String libraryName = searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().getText().trim();
+		if (libraryName.isEmpty()) {
+			searchDisplay.getCqlGeneralInformationView().getLibNameGroup().setValidationState(ValidationState.ERROR);
+			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+					.createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
+		} else {
+
+			if (validator.validateForAliasNameSpecialChar(libraryName)) {
+				saveCQLGeneralInformation();
+			} else {
+				searchDisplay.getCqlGeneralInformationView().getLibNameGroup().setValidationState(ValidationState.ERROR);
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
+			}
+
+		}
+	
 	}
 	
 	/**
@@ -3294,6 +3291,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(SaveUpdateCQLResult result) {
 						if (result != null) {
 							cqlLibraryName = result.getCqlModel().getLibraryName().trim();
+							cqlLibraryComment = result.getCqlModel().getLibraryComment();
 							searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
 							searchDisplay.getCqlGeneralInformationView().getComments().setText(result.getCqlModel().getLibraryComment());
 							searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
@@ -3451,7 +3449,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				if (result.getCqlModel().getLibraryName() != null) {
 					cqlLibraryName = searchDisplay.getCqlGeneralInformationView()
 							.createCQLLibraryName(MatContext.get().getCurrentCQLLibraryeName());
-
+					cqlLibraryComment = result.getCqlModel().getLibraryComment();
 					String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
 
 					libraryVersion = libraryVersion.replaceAll("Draft ", "").trim();
@@ -3459,7 +3457,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 						libraryVersion = libraryVersion.substring(1);
 					}
 					searchDisplay.getCqlGeneralInformationView().setGeneralInfoOfLibrary(cqlLibraryName, libraryVersion,
-							result.getCqlModel().getQdmVersion(), "QDM", result.getCqlModel().getLibraryComment());
+							result.getCqlModel().getQdmVersion(), "QDM", cqlLibraryComment);
 				}
 
 				List<CQLQualityDataSetDTO> appliedAllValueSetList = new ArrayList<CQLQualityDataSetDTO>();
@@ -5193,6 +5191,7 @@ private void addCodeSearchPanelHandlers() {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 			}
 			searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
+			searchDisplay.getCqlGeneralInformationView().getComments().setText(cqlLibraryComment);
 		}
 		searchDisplay.setGeneralInfoHeading();
 		searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);

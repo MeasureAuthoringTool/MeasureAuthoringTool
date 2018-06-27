@@ -17,6 +17,6 @@ public class CQLLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 		getModal().addModifiedBySection();
 		getModal().addOwnedBySection();
 		getModal().addButtonSection();
-		getModal().setTitleOfPanel(DESCRIPTION_OF_MODAL_FOR_508);
+		getModal().setHelpBlock(DESCRIPTION_OF_MODAL_FOR_508);
 	}
 }

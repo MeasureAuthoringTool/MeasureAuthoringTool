@@ -5,6 +5,7 @@ import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -24,6 +25,7 @@ public class AdvancedSearchModal {
 	private Modal panel;
 	private Input searchText;
 	private ModalBody modalBody;
+	private HelpBlock helpBlock = new HelpBlock();
 
 	private FormGroup searchTextGroup;
 	private FormGroup searchGroup;
@@ -67,8 +69,11 @@ public class AdvancedSearchModal {
 		panel.setRemoveOnHide(true);
 		panel.setTitle("Advanced Search");
 		panel.getElement().setAttribute("tabindex", "0");
-		
+
+		helpBlock.setText("");
 		modalBody = new ModalBody();
+		modalBody.getElement().setAttribute("role", "alert");
+		modalBody.add(helpBlock);
 		panel.add(modalBody);
 		panel.getElement().focus();
 	}
@@ -313,11 +318,12 @@ public class AdvancedSearchModal {
 		modalBody.add(buttonToolBar);
 	}
 	
-	public void setTitleOfPanel(String message) {
-		panel.getElement().setTitle(message);
+	/*Hidden panel with info about what the modal does for 508 compliance*/
+	public void setHelpBlock (String message) {
+		helpBlock.setColor("transparent");
+		helpBlock.setHeight("0px");
+		helpBlock.setText(message);
 	}
-	
-	
 	
 	public Modal getPanel() {
 		return panel;

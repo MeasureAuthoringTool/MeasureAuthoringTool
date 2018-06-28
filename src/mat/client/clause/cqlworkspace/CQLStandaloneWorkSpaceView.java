@@ -18,19 +18,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
-<<<<<<< HEAD
-import mat.client.buttons.Definition_FuntionButtonToolBar;
-=======
-import mat.client.buttons.Definition_FunctionButtonToolBar;
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLFunctionArgument;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLStandaloneWorkSpaceView.
- */
 public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresenter.ViewDisplay{
 	
 	/** The main horizontal panel. */
@@ -61,7 +53,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	private CQLParametersView cqlParametersView;
 	
 	/** The cql definitions view. */
-	private CQlDefinitionsView cqlDefinitionsView;
+	private CQLDefinitionsView cqlDefinitionsView;
 	
 	/** The cql functions view. */
 	private CQLFunctionsView cqlFunctionsView;
@@ -87,7 +79,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	public CQLStandaloneWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		cqlParametersView = new CQLParametersView();
-		cqlDefinitionsView = new CQlDefinitionsView();
+		cqlDefinitionsView = new CQLDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
@@ -475,7 +467,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
      * @see mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter.ViewDisplay#getCQLDefinitionsView()
      */
     @Override
-    public CQlDefinitionsView getCQLDefinitionsView(){
+    public CQLDefinitionsView getCQLDefinitionsView(){
     	return cqlDefinitionsView;
     }
     
@@ -542,11 +534,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	}
 	
 	@Override
-<<<<<<< HEAD
-	public Definition_FuntionButtonToolBar getParameterButtonBar() {
-=======
-	public Definition_FunctionButtonToolBar getParameterButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	public DefinitionFunctionButtonToolBar getParameterButtonBar() {
 		return cqlParametersView.getParameterButtonBar();
 	}
 
@@ -557,11 +545,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * getDefineButtonBar()
 	 */
 	@Override
-<<<<<<< HEAD
-	public Definition_FuntionButtonToolBar getDefineButtonBar() {
-=======
-	public Definition_FunctionButtonToolBar getDefineButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	public DefinitionFunctionButtonToolBar getDefineButtonBar() {
 		return cqlDefinitionsView.getDefineButtonBar();
 	}
 
@@ -572,11 +556,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 	 * getFunctionButtonBar()
 	 */
 	@Override
-<<<<<<< HEAD
-	public Definition_FuntionButtonToolBar getFunctionButtonBar() {
-=======
-	public Definition_FunctionButtonToolBar getFunctionButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	public DefinitionFunctionButtonToolBar getFunctionButtonBar() {
 		return cqlFunctionsView.getFunctionButtonBar();
 	}
 	

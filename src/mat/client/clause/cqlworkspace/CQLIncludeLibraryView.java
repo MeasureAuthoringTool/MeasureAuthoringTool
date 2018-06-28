@@ -50,8 +50,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
-import mat.client.buttons.Definition_FunctionButtonToolBar;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
@@ -76,8 +76,8 @@ public class CQLIncludeLibraryView {
 	private static final int TABLE_ROW_COUNT = 5;
 	private MatSimplePager spager;
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
-	private Definition_FunctionButtonToolBar includesButtonBar = new Definition_FunctionButtonToolBar("includes");
-	private Definition_FunctionButtonToolBar includesModifyButtonBar = new Definition_FunctionButtonToolBar("includesAliasModify");
+	private DefinitionFunctionButtonToolBar includesButtonBar = new DefinitionFunctionButtonToolBar("includes");
+	private DefinitionFunctionButtonToolBar includesModifyButtonBar = new DefinitionFunctionButtonToolBar("includesAliasModify");
 	private VerticalPanel buttonPanel = new VerticalPanel();
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Search", "Enter Search Text here");
 	private MatTextBox aliasNameTxtBox = new MatTextBox();
@@ -334,11 +334,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @return the CQL button tool bar
 	 */
-<<<<<<< HEAD
-	private Definition_FuntionButtonToolBar createIncludesButtonBar() {
-=======
-	private Definition_FunctionButtonToolBar createIncludesButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	private DefinitionFunctionButtonToolBar createIncludesButtonBar() {
 		includesButtonBar.getSaveButton().setVisible(true);
 		includesButtonBar.getEraseButton().setVisible(true);
 		includesButtonBar.getCloseButton().setVisible(false);
@@ -354,11 +350,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @return the CQL button tool bar
 	 */
-<<<<<<< HEAD
-	private Definition_FuntionButtonToolBar createReadOnlyViewIncludesButtonBar() {
-=======
-	private Definition_FunctionButtonToolBar createReadOnlyViewIncludesButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	private DefinitionFunctionButtonToolBar createReadOnlyViewIncludesButtonBar() {
 		includesModifyButtonBar.getDeleteButton().setVisible(true);
 		includesModifyButtonBar.getEditButton().setVisible(true);
 		includesModifyButtonBar.getEditButton().setIcon(IconType.RETWEET);
@@ -704,19 +696,11 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @return the includes button bar
 	 */
-<<<<<<< HEAD
-	public Definition_FuntionButtonToolBar getIncludesButtonBar() {
+	public DefinitionFunctionButtonToolBar getIncludesButtonBar() {
 		return this.includesButtonBar;
 	}
 	
-	public Definition_FuntionButtonToolBar getIncludesModifyButtonBar() {
-=======
-	public Definition_FunctionButtonToolBar getIncludesButtonBar() {
-		return this.includesButtonBar;
-	}
-	
-	public Definition_FunctionButtonToolBar getIncludesModifyButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	public DefinitionFunctionButtonToolBar getIncludesModifyButtonBar() {
 		return includesModifyButtonBar;
 	}
 
@@ -751,11 +735,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @param includesButtonBar the new includes button bar
 	 */
-<<<<<<< HEAD
-	public void setIncludesButtonBar(Definition_FuntionButtonToolBar includesButtonBar) {
-=======
-	public void setIncludesButtonBar(Definition_FunctionButtonToolBar includesButtonBar) {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	public void setIncludesButtonBar(DefinitionFunctionButtonToolBar includesButtonBar) {
 		this.includesButtonBar = includesButtonBar;
 	}
 	

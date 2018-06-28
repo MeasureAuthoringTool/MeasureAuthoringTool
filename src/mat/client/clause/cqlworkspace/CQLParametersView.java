@@ -25,23 +25,13 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceCommand;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
-<<<<<<< HEAD
-import mat.client.buttons.Definition_FuntionButtonToolBar;
-=======
-import mat.client.buttons.Definition_FunctionButtonToolBar;
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
 import mat.client.shared.CQLAddNewButton;
+import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLParametersView.
- *
- * @author jnarang
- */
 public class CQLParametersView {
 
 	/**
@@ -53,11 +43,7 @@ public class CQLParametersView {
 	private AceEditor parameterAceEditor = new AceEditor();
 
 	/** The parameter button bar. */
-<<<<<<< HEAD
-	private Definition_FuntionButtonToolBar parameterButtonBar = new Definition_FuntionButtonToolBar("parameter");
-=======
-	private Definition_FunctionButtonToolBar parameterButtonBar = new Definition_FunctionButtonToolBar("parameter");
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar("parameter");
 
 	/** The parameter add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
@@ -258,11 +244,7 @@ public class CQLParametersView {
 	 *
 	 * @return the parameter button bar
 	 */
-<<<<<<< HEAD
-	public Definition_FuntionButtonToolBar getParameterButtonBar() {
-=======
-	public Definition_FunctionButtonToolBar getParameterButtonBar() {
->>>>>>> fbe7f0aeb31800f29768e9d55e7b99601e924fb4
+	public DefinitionFunctionButtonToolBar getParameterButtonBar() {
 		return parameterButtonBar;
 	}
 

@@ -8,14 +8,14 @@ import org.gwtbootstrap3.client.ui.ButtonToolBar;
  * with buttons (in order) 'Copy', 'Paste', 'Select All',
  * 'Clear'.
  */
-public class Codes_ValuesetsButtonToolBar {
+public class CodesValuesetsButtonToolBar {
 	
 	private ButtonToolBar buttonBar = new ButtonToolBar();
 	private Button copyButton, pasteButton, selectAllButton, clearButton;
 	private String sectionName;
 	
 	
-	public Codes_ValuesetsButtonToolBar(String sectionName) {
+	public CodesValuesetsButtonToolBar(String sectionName) {
 		this.sectionName = sectionName;
 		buttonBar.getElement().setAttribute("style", "margin-left:580px");
 		buttonBar.setId("copyPasteClear_"+sectionName);

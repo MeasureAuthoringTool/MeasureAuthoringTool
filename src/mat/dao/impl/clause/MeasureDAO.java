@@ -140,7 +140,6 @@ mat.dao.clause.MeasureDAO {
 	 *            the d ao service
 	 */
 	public MeasureDAO(DAOService dAOService) {
-		// allow to test using DAOService
 		this.dAOService = dAOService;
 	}
 	
@@ -176,7 +175,6 @@ mat.dao.clause.MeasureDAO {
 			mCriteria.add(Restrictions.or(
 					Restrictions.eq("owner.id", user.getId()),
 					Restrictions.eq("share.shareUser.id", user.getId())));
-			/* mCriteria.add(Restrictions.ne("deleted", "softDeleted")); */
 			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
 		}
 		
@@ -185,21 +183,12 @@ mat.dao.clause.MeasureDAO {
 	}
 	
 	private List<MeasureAuditLog> getMeasureAuditLogByMeasure(Measure measure){
-		
-		/*CriteriaBuilder builder = getSessionFactory().getCurrentSession().getCriteriaBuilder();
-		CriteriaQuery<MeasureAuditLog> criteria = builder.createQuery(MeasureAuditLog.class);
-		Root<MeasureAuditLog> userRoot = criteria.from(MeasureAuditLog.class);
-		criteria.select(userRoot);
-		criteria .where(builder.eq(userRoot.get("measure.id"), measure.getId()));
-		List<MeasureAuditLog> results = getSessionFactory().getCurrentSession().createQuery(criteria).getResultList();*/
-		
-		
+
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureAuditLog.class);
 		mCriteria.add(Restrictions.or(
 				Restrictions.eq("measure.id", measure.getId())));
 		
-		//mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		
 		return mCriteria.list();
 		
@@ -517,13 +506,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		return dtoList;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.dao.clause.MeasureDAO#getMeasuresForDraft(mat.model.User, int,
-	 * int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize) {
 		List<MeasureShareDTO> dtoList = getMeasuresForDraft(user);
@@ -534,11 +517,7 @@ mat.dao.clause.MeasureDAO {
 			return dtoList;
 		}
 	}
-	
-		
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareForMeasure(java.lang.String)
-	 */
+
 	@Override
 	public List<MeasureShare> getMeasureShareForMeasure(String measureId) {
 		List<MeasureShare> measureShare = new ArrayList<MeasureShare>();
@@ -572,9 +551,7 @@ mat.dao.clause.MeasureDAO {
 		Criteria userCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(User.class);
 		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
-		//Added restriction for Active user's for User story MAT:2900.
 		userCriteria.add(Restrictions.eq("status.id", "1"));
-		//Added restriction for Search by user name MAT-8907.
 		if(StringUtils.isNotBlank(userName)) {
 			userCriteria.add(Restrictions.or(Restrictions.ilike("firstName", "%" + userName + "%"),
 					Restrictions.ilike("lastName", "%" + userName + "%")));
@@ -582,7 +559,6 @@ mat.dao.clause.MeasureDAO {
 		userCriteria.add(Restrictions.ne("id",
 				LoggedInUserUtil.getLoggedInUser()));
 		userCriteria.setFirstResult(startIndex);
-		// userCriteria.setMaxResults(pageSize);
 		userCriteria.addOrder(Order.asc("lastName"));
 		
 		List<User> userResults = userCriteria.list();
@@ -618,10 +594,7 @@ mat.dao.clause.MeasureDAO {
 			return orderedDTOList;
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForMeasureAndUser(java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId) {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
@@ -639,9 +612,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		return shareDTOList;
 	}
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(java.lang.String, mat.model.User, int, int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText,
 			User user, int startIndex, int pageSize) {
@@ -651,7 +622,7 @@ mat.dao.clause.MeasureDAO {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
 		mCriteria.addOrder(Order.desc("measureSet.id"))
 		.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		// mCriteria.add(Restrictions.isNull("deleted"));
+
 		mCriteria.setFirstResult(startIndex);
 		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
@@ -669,17 +640,6 @@ mat.dao.clause.MeasureDAO {
 			boolean matchesSearch = searchResultsForMeasure(searchTextLC, su,
 					measure);
 			
-			// measure steward (only check if necessary)
-			/*
-			 * if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
-			 * List<Metadata> mdList =
-			 * metadataDAO.getMeasureDetails(measure.getId(), "MeasureSteward");
-			 * for(Metadata md : mdList)
-			 * if(md.getName().equalsIgnoreCase("MeasureSteward") &&
-			 * md.getValue().toLowerCase().contains(searchTextLC)){
-			 * matchesSearch = true; break; } }
-			 */
-			
 			if (matchesSearch) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				measureIdDTOMap.put(measure.getId(), dto);
@@ -689,18 +649,11 @@ mat.dao.clause.MeasureDAO {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureShare.class);
 		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-		/*shareCriteria.add(Restrictions.in("measure.id",
-				measureIdDTOMap.keySet()));*/
+
 		List<MeasureShare> shareList = shareCriteria.list();
 		
 		if (orderedDTOList.size() > 0) {
-			/*Criteria shareCriteria = getSessionFactory().getCurrentSession()
-					.createCriteria(MeasureShare.class);
-			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-			shareCriteria.add(Restrictions.in("measure.id",
-					measureIdDTOMap.keySet()));
-			List<MeasureShare> shareList = shareCriteria.list();*/
-			// get share level for each measure set and set it on each dto
+
 			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (MeasureShare share : shareList) {
 				String msid = share.getMeasure().getMeasureSet().getId();
@@ -727,18 +680,12 @@ mat.dao.clause.MeasureDAO {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(mat.model.User, int, int)
-	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(User user,
 			int startIndex, int pageSize) {
 		return getMeasureShareInfoForUser("", user, startIndex, pageSize);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, int, int, int)
-	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
 			String searchText, int startIndex, int pageSize, int filter) {
@@ -767,9 +714,6 @@ mat.dao.clause.MeasureDAO {
 		return filterMeasureListForAdmin(orderedDTOList);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, mat.model.User, int, int, int)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user) {
@@ -891,15 +835,11 @@ mat.dao.clause.MeasureDAO {
 		
 		return locked;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#isMeasureLocked(java.lang.String)
-	 */
+
 	@Override
 	public boolean isMeasureLocked(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
-		//String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
-		//		+ measureId + "'";
+
 		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = :measureId";
 		
 		Query query = session.createQuery(sql);
@@ -942,19 +882,13 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#saveandReturnMaxEMeasureId(mat.model.clause.Measure)
-	 */
+
 	@Override
 	public int saveandReturnMaxEMeasureId(Measure measure) {
 		int eMeasureId = getMaxEMeasureId() + 1;
 		MeasureSet ms = measure.getMeasureSet();
 		Session session = getSessionFactory().getCurrentSession();
-		//		SQLQuery query = session
-		//				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
-		//						+ eMeasureId + " where m.MEASURE_SET_ID = '"
-		//						+ ms.getId() + "';");
+
 		String sql = "update MEASURE m set m.EMEASURE_ID = :eMeasureId where m.MEASURE_SET_ID = :MEASURE_SET_ID";
 		SQLQuery query = session.createSQLQuery(sql);
 		query.setInteger("eMeasureId", eMeasureId);
@@ -963,10 +897,7 @@ mat.dao.clause.MeasureDAO {
 		return eMeasureId;
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#saveMeasure(mat.model.clause.Measure)
-	 */
+
 	@Override
 	public void saveMeasure(Measure measure) {
 		if (dAOService != null) {

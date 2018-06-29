@@ -52,6 +52,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.ValidationUtility;
 
 /**
@@ -133,87 +134,53 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Autowired
 	private CQLLibraryAuditLogDAO cqlLibraryAuditLogDAO;
 	
-	//	@Override
-	//	public void clone(Measure measurePackage, String newCloneName) {
-	//		measureDAO.clone(measurePackage, newCloneName);
-	//	}
-	
 	/** The validator. */
 	private ValidationUtility validator = new ValidationUtility();
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#count()
-	 */
+
 	@Override
 	public long count() {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.countMeasureShareInfoForUser(user);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#count(int)
-	 */
+
 	@Override
 	public long count(final int filter) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.countMeasureShareInfoForUser(filter, user);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#count(java.lang.String)
-	 */
+
 	@Override
 	public long count(final String searchText) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.countMeasureShareInfoForUser(searchText, user);
 	}
-	
-		
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#countUsersForMeasureShare()
-	 */
+
 	@Override
 	public int countUsersForMeasureShare() {
 		return measureDAO.countUsersForMeasureShare();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#deleteExistingPackages(java.lang.String)
-	 */
+
 	@Override
 	public void deleteExistingPackages(final String measureId) {
 		packagerDAO.deleteAllPackages(measureId);
 		
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findDataTypeForSupplimentalCodeList(java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	public DataType findDataTypeForSupplimentalCodeList(final String dataTypeName , final String categoryId){
 		return dataTypeDAO.findDataTypeForSupplimentalCodeList(dataTypeName, categoryId);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findMeasureSet(java.lang.String)
-	 */
+
 	@Override
 	public MeasureSet findMeasureSet(final String id) {
 		return measureSetDAO.findMeasureSet(id);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findOutMaximumVersionNumber(java.lang.String)
-	 */
+
 	@Override
 	public String findOutMaximumVersionNumber(final String measureSetId) {
 		return measureDAO.findMaxVersion(measureSetId);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findOutVersionNumber(java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	public String findOutVersionNumber(final String measureId, final String measureSetId) {
 		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
@@ -268,25 +235,16 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getById(java.lang.String)
-	 */
 	@Override
 	public Measure getById(final String id) {
 		return measureDAO.find(id);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getMaxEMeasureId()
-	 */
+
 	@Override
 	public int getMaxEMeasureId() {
 		return measureDAO.getMaxEMeasureId();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getMeasureXmlForMeasure(java.lang.String)
-	 */
+
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
@@ -299,18 +257,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getUniqueOid()
-	 */
+
 	@Override
 	public String getUniqueOid() {
 		return qualityDataSetDAO.generateUniqueOid();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getUsersForShare(String, java.lang.String, int, int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getUsersForShare(final String userName, final String measureId, final int startIndex, final int pageSize) {
 		return measureDAO.getMeasureShareInfoForMeasure(userName, measureId, startIndex - 1, pageSize);
@@ -324,19 +276,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public ValidationUtility getValidator() {
 		return validator;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#isMeasureLocked(java.lang.String)
-	 */
+
 	@Override
 	public boolean isMeasureLocked(final String id) {
 		boolean isLocked = measureDAO.isMeasureLocked(id);
 		return isLocked;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#retrieveStewardOID(java.lang.String)
-	 */
+
 	@Override
 	public String retrieveStewardOID(final String stewardName) {
 		String oid = null;
@@ -352,10 +298,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		
 		return oid;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#save(mat.model.clause.Measure)
-	 */
+
 	@Override
 	public void save(final Measure measurePackage) {
 		if (measurePackage.getOwner() == null) {
@@ -366,28 +309,17 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		measureDAO.save(measurePackage);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#save(mat.model.clause.MeasureSet)
-	 */
+
 	@Override
 	public void save(final MeasureSet measureSet) {
 		measureSetDAO.save(measureSet);
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#saveAndReturnMaxEMeasureId(mat.model.clause.Measure)
-	 */
 	@Override
 	public int saveAndReturnMaxEMeasureId(final Measure measure) {
 		return measureDAO.saveandReturnMaxEMeasureId(measure);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#saveMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
-	 */
+
 	@Override
 	public void saveMeasureXml(final MeasureXmlModel measureXmlModel) {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureXmlModel.getMeasureId());
@@ -400,37 +332,25 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		measureXMLDAO.save(measureXML);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#saveSupplimentalQDM(mat.model.QualityDataSet)
-	 */
+
 	@Override
 	public void saveSupplimentalQDM(final QualityDataSet qds) {
 		qualityDataSetDAO.save(qds);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#search(int, int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> search(final int startIndex,
 			final int numResults) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.getMeasureShareInfoForUser(user, startIndex - 1, numResults);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#search(java.lang.String, int, int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> search(final String searchText, final int startIndex, final int numResults) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.getMeasureShareInfoForUser(searchText,  user, startIndex - 1, numResults);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchForAdminWithFilter(java.lang.String, int, int, int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> searchForAdminWithFilter(String searchText,
 			int startIndex, int numResults, int filter) {
@@ -438,20 +358,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchWithFilter(java.lang.String, int, int, int)
-	 */
 	@Override
-	public List<MeasureShareDTO> searchWithFilter(final String searchText, final int startIndex,
-			final int numResults, final int filter) {
+	public List<MeasureShareDTO> searchWithFilter(AdvancedSearchModel advancedSearchModel) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measureDAO.getMeasureShareInfoForUserWithFilter(searchText,  user, startIndex - 1, numResults, filter);
+		return measureDAO.getMeasureShareInfoForUserWithFilter(advancedSearchModel, user);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getComponentMeasuresInfo(java.util.List)
-	 */
+
 	@Override
 	public List<Measure> getComponentMeasuresInfo(List<String> measureIds){
 		return measureDAO.getComponentMeasureInfoForMeasures(measureIds);
@@ -465,10 +377,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public void setValidator(ValidationUtility validator) {
 		this.validator = validator;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#transferMeasureOwnerShipToUser(java.util.List, java.lang.String)
-	 */
+
 	@Override
 	public void transferMeasureOwnerShipToUser(final List<String> list, final String toEmail) {
 		User userTo = userDAO.findByEmail(toEmail);
@@ -526,28 +435,19 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#updateLockedOutDate(mat.model.clause.Measure)
-	 */
+
 	@Override
 	public void updateLockedOutDate(final Measure m) {
 		measureDAO.resetLockDate(m);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#updatePrivateColumnInMeasure(java.lang.String, boolean)
-	 */
+
 	@Override
 	public void updatePrivateColumnInMeasure(final String measureId, final boolean isPrivate){
 		measureDAO.updatePrivateColumnInMeasure(measureId, isPrivate);
 		measureAuditLogDAO.recordMeasureEvent(getById(measureId), isPrivate
 				? "Measure Private " : "Measure Public", "");
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#updateUsersShare(mat.client.measure.ManageMeasureShareModel)
-	 */
+
 	@Override
 	public void updateUsersShare(final ManageMeasureShareModel model) {
 		StringBuilder auditLogAdditionlInfo = new StringBuilder("Measure shared with ");
@@ -618,9 +518,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
-	 */
 	@Override
 	public ValidateMeasureResult validateMeasureForExport(final String key,
 			final List<MatValueSet> matValueSetsList) throws Exception {
@@ -631,10 +528,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		result.setValidationMessages(message);
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getHumanReadableForNode(java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	public String getHumanReadableForNode(final String measureId, final String populationSubXML){
 		String humanReadableHTML = "";
@@ -646,10 +540,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		return humanReadableHTML;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getMeasure(java.lang.String)
-	 */
+
 	@Override
 	public boolean getMeasure(String measureId) {
 		return measureDAO.getMeasure(measureId);

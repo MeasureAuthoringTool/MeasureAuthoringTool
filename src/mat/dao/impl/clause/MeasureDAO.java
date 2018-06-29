@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jetty.util.StringUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -25,10 +26,13 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+import com.ibm.icu.util.Calendar;
+
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
 import mat.model.LockedUserInfo;
+import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -37,6 +41,7 @@ import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.StringUtility;
 
 
@@ -46,18 +51,15 @@ import mat.shared.StringUtility;
  */
 public class MeasureDAO extends GenericDAO<Measure, String> implements
 mat.dao.clause.MeasureDAO {
+
+	private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
 	
 	/*
 	 * assumption: measures here are all part of the same measure set
 	 */
-	/*
-	 * The Class MeasureComparator.
-	 */
+
 	class MeasureComparator implements Comparator<Measure> {
-		
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
+
 		@Override
 		public int compare(Measure o1, Measure o2) {
 			// 1 if either isDraft
@@ -152,12 +154,6 @@ mat.dao.clause.MeasureDAO {
 	private Criteria buildMeasureShareForUserCriteria(User user) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
-		/*
-		 * if(user.getSecurityRole().getId().equals("3")) {
-		 * mCriteria.add(Restrictions.or(Restrictions.eq("owner.id",
-		 * user.getId()), Restrictions.eq("share.shareUser.id", user.getId())));
-		 * mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN); }
-		 */
 		
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
@@ -187,6 +183,18 @@ mat.dao.clause.MeasureDAO {
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
 	}
+	
+	private List<MeasureAuditLog> getMeasureAuditLogByMeasure(Measure measure){
+
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(MeasureAuditLog.class);
+		mCriteria.add(Restrictions.or(
+				Restrictions.eq("measure.id", measure.getId())));
+		
+		return mCriteria.list();
+		
+	}
+	
 	@Override
 	public List<Measure> getMeasureListForMeasureOwner(User user){
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
@@ -196,9 +204,6 @@ mat.dao.clause.MeasureDAO {
 		return sortMeasureListForMeasureOwner(measureList);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getComponentMeasureInfoForMeasures(java.util.List)
-	 */
 	@Override
 	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds) {
 		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureIds);
@@ -222,11 +227,6 @@ mat.dao.clause.MeasureDAO {
 		return mCriteria;
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(int, mat.model.User)
-	 */
 	@Override
 	public int countMeasureShareInfoForUser(int filter, User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user,
@@ -237,9 +237,6 @@ mat.dao.clause.MeasureDAO {
 		return ms.size();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(java.lang.String, mat.model.User)
-	 */
 	@Override
 	public int countMeasureShareInfoForUser(String searchText, User user) {
 		
@@ -261,10 +258,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		return count;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(mat.model.User)
-	 */
+
 	@Override
 	public int countMeasureShareInfoForUser(User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
@@ -273,10 +267,7 @@ mat.dao.clause.MeasureDAO {
 		measureList = getAllMeasuresInSet(measureList);
 		return measureList.size();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countUsersForMeasureShare()
-	 */
+
 	@Override
 	public int countUsersForMeasureShare() {
 		Criteria criteria = getSessionFactory().getCurrentSession()
@@ -302,7 +293,6 @@ mat.dao.clause.MeasureDAO {
 		dto.setMeasureName(measure.getDescription());
 		dto.setScoringType(measure.getMeasureScoring());
 		dto.setShortName(measure.getaBBRName());
-		/*dto.setStatus(measure.getMeasureStatus());*/
 		dto.setPackaged(measure.getExportedDate() != null);
 		dto.setOwnerUserId(measure.getOwner().getId());
 		
@@ -374,9 +364,6 @@ mat.dao.clause.MeasureDAO {
 		return updatedMeasureList;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#findByOwnerId(java.lang.String)
-	 */
 	@Override
 	public java.util.List<Measure> findByOwnerId(String measureOwnerId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -385,9 +372,6 @@ mat.dao.clause.MeasureDAO {
 		return criteria.list();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#findMaxOfMinVersion(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public String findMaxOfMinVersion(String measureSetId, String version) {
 		logger.info("In MeasureDao.findMaxOfMinVersion()");
@@ -404,11 +388,6 @@ mat.dao.clause.MeasureDAO {
 		}
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
-		// mCriteria.add(Restrictions.and(Restrictions.eq("measureSet.id",
-		// measureSetId),
-		// Restrictions.and(Restrictions.sizeGt("version",
-		// minVal),Restrictions.sizeLt("version", maxVal))));
-		// mCriteria.setProjection(Projections.max("version"));
 		logger.info("Query Using Measure Set Id:" + measureSetId);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
 		mCriteria.add(Restrictions.ne("draft", true));
@@ -439,16 +418,11 @@ mat.dao.clause.MeasureDAO {
 		return maxOfMinVersion;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#findMaxVersion(java.lang.String)
-	 */
 	@Override
 	public String findMaxVersion(String measureSetId) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
-		// add check to filter Draft's version number when finding max version
-		// number.
 		mCriteria.add(Restrictions.ne("draft", true));
 		mCriteria.setProjection(Projections.max("version"));
 		String maxVersion = (String) mCriteria.list().get(0);
@@ -479,9 +453,6 @@ mat.dao.clause.MeasureDAO {
 		return sortMeasureList(ms);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMaxEMeasureId()
-	 */
 	@Override
 	public int getMaxEMeasureId() {
 		Session session = getSessionFactory().getCurrentSession();
@@ -495,20 +466,6 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 	}
-	
-	
-	
-	/*@Override
-	public List<MeasureShareDTO> getMeasuresForDraft(String text,User user, int startIndex,
-			int pageSize) {
-		List<MeasureShareDTO> dtoList = getMeasuresForDraft(text, user);
-		if (pageSize < dtoList.size()) {
-			return dtoList.subList(startIndex,
-					Math.min(startIndex + pageSize, dtoList.size()));
-		} else {
-			return dtoList;
-		}
-	}*/
 	
 	/** Gets the measures for draft.
 	 * 
@@ -805,19 +762,12 @@ mat.dao.clause.MeasureDAO {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
-			String searchText, User user, int startIndex, int pageSize,
-			int filter) {
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user) {
 		
-		String searchTextLC = searchText.toLowerCase().trim();
-		
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user,
-				filter);
-		// mCriteria.add(Restrictions.isNull("deleted"));//("deleted",
-		// "softDeleted"));
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.getFilter());
 		mCriteria.addOrder(Order.desc("measureSet.id"))
 		.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(startIndex);
+		mCriteria.setFirstResult(1);
 		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
 		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
@@ -825,7 +775,7 @@ mat.dao.clause.MeasureDAO {
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
 				.equals("3")
-				&& (filter == MeasureSearchFilterPanel.ALL_MEASURES);
+				&& (advancedSearchModel.getFilter() == MeasureSearchFilterPanel.ALL_MEASURES);
 		
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -834,9 +784,7 @@ mat.dao.clause.MeasureDAO {
 		
 		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
-			
-			if (searchResultsForMeasure(searchTextLC, su,
-					measure)) {
+			if (advanceSearchResultsForMeasure(advancedSearchModel, su, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if(isDraft){
@@ -849,11 +797,8 @@ mat.dao.clause.MeasureDAO {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureShare.class);
 		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-		/*shareCriteria.add(Restrictions.in("measure.id",
-				measureIdDTOMap.keySet()));*/
 		List<MeasureShare> shareList = shareCriteria.list();
 		if (orderedDTOList.size() > 0) {
-			// get share level for each measure set and set it on each dto
 			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (MeasureShare share : shareList) {
 				String msid = share.getMeasure().getMeasureSet().getId();
@@ -908,8 +853,8 @@ mat.dao.clause.MeasureDAO {
 				
 			}
 		}
-		if (pageSize < orderedDTOList.size()) {
-			return orderedDTOList.subList(0, pageSize);
+		if (MAX_PAGE_SIZE < orderedDTOList.size()) {
+			return orderedDTOList.subList(0, MAX_PAGE_SIZE);
 		} else {
 			return orderedDTOList;
 		}
@@ -1060,6 +1005,77 @@ mat.dao.clause.MeasureDAO {
 																	.contains(searchTextLC) ? true
 																			: false;
 		return matchesSearch;
+	}
+	
+	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, StringUtility stringUtility, Measure measure) {
+		if(StringUtil.isNotBlank(model.getSearchTerm())) {
+			String searchTerm = model.getSearchTerm().toLowerCase();
+			String measureAbbName = measure.getaBBRName().toLowerCase();
+			String measureDesc = measure.getDescription().toLowerCase();
+			if(!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm)) {
+				return false;
+			}
+		}
+		if(model.getAdvanceSearch() != null && model.getAdvanceSearch()) {
+
+			if(model.getType() != null && measure.isDraft() != model.getType()) {
+				return false;
+			}
+			if(model.getPatientBased() != null && measure.isPatientBased() != model.getPatientBased()) {
+				return false;
+			}
+			if(model.getScoringTypes() != null && model.getScoringTypes().size() > 0) {
+				if(!model.getScoringTypes().contains(measure.getMeasureScoring())) {
+					return false;
+				}
+			}
+			if(StringUtil.isNotBlank(model.getOwner())) {
+				String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
+				if(!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
+					return false;
+				}
+			}
+			
+			if(StringUtils.isNotEmpty(model.getModifiedOwner()) || !model.getModifiedDate().equals("All Measures")) {
+				List<MeasureAuditLog> auditLog = getMeasureAuditLogByMeasure(measure);
+				if(auditLog == null) {
+					return false;
+				}
+				String date = model.getModifiedDate();
+				Timestamp time = new Timestamp(System.currentTimeMillis());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(time);
+				
+				if(date.contains("14")) {
+					cal.add(Calendar.DAY_OF_WEEK, -14);
+				}
+				if(date.contains("30")) {
+					cal.add(Calendar.DAY_OF_WEEK, -30);
+				}
+				if(date.contains("60")) {
+					cal.add(Calendar.DAY_OF_WEEK, -60);
+				}
+				if(date.contains("90")) {
+					cal.add(Calendar.DAY_OF_WEEK, -90);
+				}
+				time = new Timestamp(cal.getTime().getTime());
+				
+				MeasureAuditLog log = auditLog.get(0);
+				
+				if(log.getTime().before(time)){
+					return false;
+				}
+				
+				if(StringUtils.isNotEmpty(model.getModifiedOwner())){
+					if(!log.getUserId().contains(model.getModifiedOwner())) {
+						return false;
+					}
+				}
+			}
+			
+		
+		}
+		return true;
 	}
 	
 	/**

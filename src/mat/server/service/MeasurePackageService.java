@@ -12,6 +12,7 @@ import mat.model.QualityDataSet;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
+import mat.shared.AdvancedSearchModel;
 // TODO: Auto-generated Javadoc
 /**MeasurePackageService.java.**/
 public interface MeasurePackageService {
@@ -261,8 +262,7 @@ public interface MeasurePackageService {
 	 *            - {@link Integer}.
 	 * @return {@link List} of {@link MeasureShareDTO}. *
 	 */
-	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
-			int numResults, int filter);
+	List<MeasureShareDTO> searchWithFilter(AdvancedSearchModel advancedSearchModel);
 	
 	/**
 	 * Transfer measure owner ship to user.

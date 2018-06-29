@@ -253,12 +253,8 @@ public interface MeasureService extends RemoteService {
 	 * 
 	 * @param searchText
 	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * @param advancedSearchModel
+	 * 			the model that the search method uses to search
 	 * @return the manage measure search model
 	 */
 	ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel);

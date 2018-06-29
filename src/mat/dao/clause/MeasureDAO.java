@@ -10,10 +10,6 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.shared.AdvancedSearchModel;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface MeasureDAO.
- */
 public interface MeasureDAO extends IDAO<Measure, String> {
 	
 	/**

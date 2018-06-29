@@ -1309,16 +1309,10 @@ public class MetaDataPresenter  implements MatPresenter {
 		showAdminSearchingBusy(true);
 		metaDataDisplay.setSaveButtonEnabled(false);
 		
-		AdvancedSearchModel model = new AdvancedSearchModel();
-        model.setSearchTerm(searchText);
-        model.setStartIndex(startIndex + 1);
-        model.setPageSize(startIndex + PAGE_SIZE);
-        model.setFilter(filter);
+		AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex + 1, startIndex + PAGE_SIZE, searchText, searchText);
+
 		
-		MatContext
-		.get()
-		.getMeasureService()
-		.search(model,
+		MatContext.get().getMeasureService().search(model,
 				new AsyncCallback<ManageMeasureSearchModel>() {
 			
 			@Override

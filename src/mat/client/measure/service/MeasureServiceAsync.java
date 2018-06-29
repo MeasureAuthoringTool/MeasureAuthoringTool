@@ -266,16 +266,10 @@ public interface MeasureServiceAsync {
 	/**
 	 * Search.
 	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * @param advancedSearchModel
+	 * 			the model the search is performed off of
 	 * @param callback
-	 *            the callback
+	 *          the callback
 	 */
 	void search(AdvancedSearchModel advancedSearchModel, AsyncCallback<ManageMeasureSearchModel> callback);
 	

@@ -45,10 +45,6 @@ import mat.shared.AdvancedSearchModel;
 import mat.shared.StringUtility;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MeasureDAO.
- */
 public class MeasureDAO extends GenericDAO<Measure, String> implements
 mat.dao.clause.MeasureDAO {
 
@@ -188,11 +184,7 @@ mat.dao.clause.MeasureDAO {
 				.createCriteria(MeasureAuditLog.class);
 		mCriteria.add(Restrictions.or(
 				Restrictions.eq("measure.id", measure.getId())));
-		
-<<<<<<< HEAD
-=======
-		
->>>>>>> MAT-9216 removing excess code
+
 		return mCriteria.list();
 		
 	}
@@ -721,7 +713,7 @@ mat.dao.clause.MeasureDAO {
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user) {
 		
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.getFilter());
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.isMyMeasureSearch());
 		mCriteria.addOrder(Order.desc("measureSet.id"))
 		.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(1);
@@ -732,7 +724,7 @@ mat.dao.clause.MeasureDAO {
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
 				.equals("3")
-				&& (advancedSearchModel.getFilter() == MeasureSearchFilterPanel.ALL_MEASURES);
+				&& (advancedSearchModel.isMyMeasureSearch() == MeasureSearchFilterPanel.ALL_MEASURES);
 		
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -962,14 +954,14 @@ mat.dao.clause.MeasureDAO {
 		}
 		if(model.getAdvanceSearch() != null && model.getAdvanceSearch()) {
 
-			if(model.getType() != null && measure.isDraft() != model.getType()) {
+			if(model.isDraft() != null && measure.isDraft() != model.isDraft()) {
 				return false;
 			}
-			if(model.getPatientBased() != null && measure.isPatientBased() != model.getPatientBased()) {
+			if(model.isPatientBased() != null && measure.isPatientBased() != model.isPatientBased()) {
 				return false;
 			}
 			if(model.getScoringTypes() != null && model.getScoringTypes().size() > 0) {
-				if(!model.getScoringTypes().contains(measure.getMeasureScoring())) {
+				if(!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
 					return false;
 				}
 			}
@@ -980,28 +972,19 @@ mat.dao.clause.MeasureDAO {
 				}
 			}
 			
-			if(StringUtils.isNotEmpty(model.getModifiedOwner()) || !model.getModifiedDate().equals("All Measures")) {
+			if(StringUtils.isNotEmpty(model.getModifiedOwner()) || model.getModifiedDate() > 0) {
 				List<MeasureAuditLog> auditLog = getMeasureAuditLogByMeasure(measure);
 				if(auditLog == null) {
 					return false;
 				}
-				String date = model.getModifiedDate();
+				int date = model.getModifiedDate();
 				Timestamp time = new Timestamp(System.currentTimeMillis());
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(time);
 				
-				if(date.contains("14")) {
-					cal.add(Calendar.DAY_OF_WEEK, -14);
-				}
-				if(date.contains("30")) {
-					cal.add(Calendar.DAY_OF_WEEK, -30);
-				}
-				if(date.contains("60")) {
-					cal.add(Calendar.DAY_OF_WEEK, -60);
-				}
-				if(date.contains("90")) {
-					cal.add(Calendar.DAY_OF_WEEK, -90);
-				}
+				//multiply by negative one to subtract
+				cal.add(Calendar.DAY_OF_WEEK, -1 * date);
+
 				time = new Timestamp(cal.getTime().getTime());
 				
 				MeasureAuditLog log = auditLog.get(0);

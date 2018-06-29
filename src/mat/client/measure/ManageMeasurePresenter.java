@@ -944,11 +944,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 			pageSize = 25;
 			showSearchingBusy(true);
-			AdvancedSearchModel model = new AdvancedSearchModel();
-			model.setSearchTerm(searchText);
-			model.setStartIndex(startIndex);
-			model.setPageSize(pageSize);
-			model.setFilter(filter);
+			AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex, pageSize, searchText, searchText);
+
 			MatContext.get().getMeasureService().search(model,
 					new AsyncCallback<ManageMeasureSearchModel>() {
 						@Override
@@ -1003,12 +1000,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 		} else {
-			AdvancedSearchModel model = new AdvancedSearchModel();
-			model.setSearchTerm(searchText);
-			model.setStartIndex(startIndex);
-			model.setPageSize(25);
-			model.setFilter(filter);
-			model.setLastSearchText(lastSearchText);
+			AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex, 25, lastSearchText, searchText);
 			advancdeSearch(model);
 		}
 	}
@@ -1029,7 +1021,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
 
-						if (advancedSearchModel.getFilter() != 0) {
+						if (advancedSearchModel.isMyMeasureSearch() != 0) {
 							searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
 						} else {
 							searchDisplay.getMeasureSearchView().setMeasureListLabel("My Measures");
@@ -1211,7 +1203,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 						SearchResultUpdate sru = new SearchResultUpdate();
 						sru.update(result, (TextBox) searchDisplay.getSearchString(), advancedSearchModel.getLastSearchText());
-						searchDisplay.buildCellTable(manageMeasureSearchModel, advancedSearchModel.getFilter(), advancedSearchModel);
+						searchDisplay.buildCellTable(manageMeasureSearchModel, advancedSearchModel.isMyMeasureSearch(), advancedSearchModel);
 						showSearchingBusy(false);
 
 					}

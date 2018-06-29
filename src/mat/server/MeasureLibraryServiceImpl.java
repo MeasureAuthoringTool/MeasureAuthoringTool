@@ -2350,7 +2350,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
 			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(advancedSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
-					advancedSearchModel.getFilter());
+					advancedSearchModel.isMyMeasureSearch());
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			List<MeasureShareDTO> measureTotalList = measureList;
 			searchModel.setResultsTotal(measureTotalList.size());

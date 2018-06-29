@@ -314,16 +314,9 @@ public class AddEditComponentMeasuresView implements
 						}
 					};
 
-					AdvancedSearchModel model = new AdvancedSearchModel();
-			        model.setSearchTerm(searchText);
-			        model.setStartIndex(start + 1);
-			        model.setPageSize(start + PAGE_SIZE);
-			        model.setFilter(1);
+					AdvancedSearchModel model = new AdvancedSearchModel(1,start + 1, start + PAGE_SIZE, searchText, searchText);
 					
-					MatContext
-							.get()
-							.getMeasureService()
-							.search(model, callback);
+					MatContext.get().getMeasureService().search(model, callback);
 				}
 			};
 			table.setRowData(selectedMeasureList);

@@ -8,18 +8,37 @@ public class AdvancedSearchModel implements IsSerializable{
 	
 	private Boolean advanceSearch;
 	private String searchTerm;
-	private Boolean type;
+	private Boolean isDraft;
 	private List<String> scoringTypes;
-	private Boolean PatientBased;
-	private String modifiedDate;
+	private Boolean isPatientBased;
+	private int modifiedDate;
 	private String modifiedOwner;
 	private String owner;
 	private int startIndex;
 	private int pageSize;
-	private int filter;
+	private int isMyMeasureSearch;
 	private String lastSearchText;
 	
+	
+	public final static String ONLY_MY_MEASURE = "Only My Measures";
+	public final static int MY_MEASURES = 0;
+	public final static int ALL_MEASURES = 1;
+	public final static String VERSION_MEASURE = "Versioned Measures";
+	public final static String DRAFT_MEASURE ="Draft Measures";
+	public final static String PATIENT_BASED = "Yes, Patient-based";
+	public final static String NOT_PATIENT_BASED = "No, Not Patient-based";
+	
+	
 	public AdvancedSearchModel() {
+		
+	}
+	
+	public AdvancedSearchModel(int myMeasureSearch,int startIndex, int pageSize, String lastSearchText, String searchTerm) {
+		this.isMyMeasureSearch =myMeasureSearch;
+		this.startIndex = startIndex;
+		this.pageSize = pageSize;
+		this.lastSearchText = lastSearchText;
+		this.searchTerm = searchTerm;
 		
 	}
 	
@@ -29,22 +48,22 @@ public class AdvancedSearchModel implements IsSerializable{
 	public void setSearchTerm(String searchTerm) {
 		this.searchTerm = searchTerm;
 	}
-	public Boolean getType() {
-		return type;
+	public Boolean isDraft() {
+		return isDraft;
 	}
-	public void setType(Boolean type) {
-		this.type = type;
+	public void setIsDraft(Boolean type) {
+		this.isDraft = type;
 	}
-	public Boolean getPatientBased() {
-		return PatientBased;
+	public Boolean isPatientBased() {
+		return isPatientBased;
 	}
 	public void setPatientBased(Boolean patientBased) {
-		PatientBased = patientBased;
+		isPatientBased = patientBased;
 	}
-	public String getModifiedDate() {
+	public int getModifiedDate() {
 		return modifiedDate;
 	}
-	public void setModifiedDate(String modifiedDate) {
+	public void setModifiedDate(int modifiedDate) {
 		this.modifiedDate = modifiedDate;
 	}
 	public String getModifiedOwner() {
@@ -71,11 +90,11 @@ public class AdvancedSearchModel implements IsSerializable{
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
-	public int getFilter() {
-		return filter;
+	public int isMyMeasureSearch() {
+		return isMyMeasureSearch;
 	}
-	public void setFilter(int filter) {
-		this.filter = filter;
+	public void setIsMyMeasureSearch(int filter) {
+		this.isMyMeasureSearch = filter;
 	}
 	public String getLastSearchText() {
 		return lastSearchText;

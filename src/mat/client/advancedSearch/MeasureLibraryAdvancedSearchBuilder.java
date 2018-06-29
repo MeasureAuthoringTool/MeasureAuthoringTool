@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.shared.AdvancedSearchModel;
+import mat.shared.MatConstants;
 
 public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	
@@ -32,42 +33,57 @@ public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 		AdvancedSearchModel model = new AdvancedSearchModel();
 		
 		model.setSearchTerm(getModal().getSearchText().getValue());
-		if(getModal().getSearchBoxList().getSelectedValue().equals("Only My Measures")) {
-			model.setFilter(MeasureSearchFilterPanel.MY_MEASURES);
+		if(getModal().getSearchBoxList().getSelectedValue().equals(AdvancedSearchModel.ONLY_MY_MEASURE)) {
+			model.setIsMyMeasureSearch(AdvancedSearchModel.MY_MEASURES);
 		} else {
-			model.setFilter(MeasureSearchFilterPanel.ALL_MEASURES);
+			model.setIsMyMeasureSearch(AdvancedSearchModel.ALL_MEASURES);
 		}
 		model.setOwner(getModal().getSearchBoxList().getSelectedValue());
-		if(getModal().getSearchStateList().getSelectedValue().equals("Versioned Measures")) {
-			model.setType(false);
+		if(getModal().getSearchStateList().getSelectedValue().equals(AdvancedSearchModel.VERSION_MEASURE)) {
+			model.setIsDraft(false);
 		}
-		else if(getModal().getSearchStateList().getSelectedValue().equals("Draft Measures")) {
-			model.setType(true);
+		else if(getModal().getSearchStateList().getSelectedValue().equals(AdvancedSearchModel.DRAFT_MEASURE)) {
+			model.setIsDraft(true);
 		}
 		List<String> scoring = new ArrayList<String>();
 		if(getModal().getCohortCheckbox().getValue()) {
-			scoring.add("Cohort");
+			scoring.add(MatConstants.COHORT);
 		}
 		if(getModal().getContVariableCheckbox().getValue()) {
-			scoring.add("Continuous Variable");
+			scoring.add(MatConstants.CONTINUOUS_VARIABLE);
 		}
 		if(getModal().getProportionCheckbox().getValue()) {
-			scoring.add("Proportion");
+			scoring.add(MatConstants.PROPORTION);
 		}
 		if(getModal().getRatioCheckbox().getValue()) {
-			scoring.add("Ratio");
+			scoring.add(MatConstants.RATIO);
 		}
 		model.setScoringTypes(scoring);
-		if((getModal().getPatientIndecatorList().getSelectedValue().equals("Yes, Patient-based"))){
+		if((getModal().getPatientIndecatorList().getSelectedValue().equals(AdvancedSearchModel.PATIENT_BASED))){
 			model.setPatientBased(true);
 		}
-		else if((getModal().getPatientIndecatorList().getSelectedValue().equals("No, Not Patient-based"))){
+		else if((getModal().getPatientIndecatorList().getSelectedValue().equals(AdvancedSearchModel.NOT_PATIENT_BASED))){
 			model.setPatientBased(false);
 		}
 		else {
 			model.setPatientBased(null);
 		}
-		model.setModifiedDate(getModal().getModifiedOnList().getSelectedValue());
+		
+		String stringTime = getModal().getModifiedOnList().getSelectedValue();
+		int time = 0;
+		if(stringTime.contains("14")) {
+			time = 14;
+		}
+		else if(stringTime.contains("30")) {
+			time = 30;
+		}
+		else if(stringTime.contains("60")) {
+			time = 60;
+		}
+		else if(stringTime.contains("90")) {
+			time = 90;
+		}
+		model.setModifiedDate(time);
 		model.setModifiedOwner(getModal().getModifiedBy().getValue());
 		model.setOwner(getModal().getOwnedBy().getValue());
 		model.setAdvanceSearch(true);

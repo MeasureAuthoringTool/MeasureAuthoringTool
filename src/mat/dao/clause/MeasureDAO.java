@@ -1,12 +1,14 @@
 package mat.dao.clause;
 
 import java.util.List;
+
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
+import mat.shared.AdvancedSearchModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -203,8 +205,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the filter
 	 * @return the measure share info for user with filter
 	 */
-	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, User user,
-			int startIndex, int pageSize, int filter);
+	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user);
 	
 	/**
 	 * Checks if is measure locked.

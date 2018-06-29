@@ -50,6 +50,7 @@ import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
 
 // TODO: Auto-generated Javadoc
@@ -313,11 +314,16 @@ public class AddEditComponentMeasuresView implements
 						}
 					};
 
+					AdvancedSearchModel model = new AdvancedSearchModel();
+			        model.setSearchTerm(searchText);
+			        model.setStartIndex(start + 1);
+			        model.setPageSize(start + PAGE_SIZE);
+			        model.setFilter(1);
+					
 					MatContext
 							.get()
 							.getMeasureService()
-							.search(searchText, start + 1, start + PAGE_SIZE,
-									1, callback);
+							.search(model, callback);
 				}
 			};
 			table.setRowData(selectedMeasureList);

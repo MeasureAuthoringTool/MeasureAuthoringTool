@@ -35,6 +35,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -234,9 +235,8 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#search(java.lang.String, int, int, int)
 	 */
 	@Override
-	public ManageMeasureSearchModel search(String searchText, int startIndex,
-			int pageSize, int filter) {
-		return this.getMeasureLibraryService().search(searchText, startIndex, pageSize, filter);
+	public ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel) {
+		return this.getMeasureLibraryService().search(advancedSearchModel);
 	}
 	
 	

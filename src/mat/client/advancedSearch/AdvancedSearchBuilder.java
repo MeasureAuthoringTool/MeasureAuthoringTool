@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.shared.AdvancedSearchModel;
+
 public abstract class AdvancedSearchBuilder {
 	private AdvancedSearchModal modal;
 	private Anchor anchor;
@@ -47,5 +49,7 @@ public abstract class AdvancedSearchBuilder {
 	}
 	
 	protected abstract void createAdvancedSearch();
+	
+	protected abstract AdvancedSearchModel generateAdvancedSearchModel();
 
 }

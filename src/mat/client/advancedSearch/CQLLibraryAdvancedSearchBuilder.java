@@ -1,5 +1,6 @@
 package mat.client.advancedSearch;
 
+import mat.shared.AdvancedSearchModel;
 
 public class CQLLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	
@@ -18,5 +19,11 @@ public class CQLLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 		getModal().addOwnedBySection();
 		getModal().addButtonSection();
 		getModal().setTitleOfPanel(DESCRIPTION_OF_MODAL_FOR_508);
+	}
+
+	@Override
+	protected AdvancedSearchModel generateAdvancedSearchModel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

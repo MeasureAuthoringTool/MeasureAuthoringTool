@@ -16,11 +16,13 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 
 public class AdvancedSearchModal {	
 	private final String HEIGHT_OF_BOXES = "30px";
+	private final String WIDTH_OF_BOXES = "200px";
 	
 	private Modal panel;
 	private Input searchText;
@@ -88,7 +90,8 @@ public class AdvancedSearchModal {
 		searchTextLabel.setMarginRight(10);
 		searchTextLabel.setFor("searchTextId");
 		searchText = new Input(InputType.TEXT);
-		searchText.setWidth("250px");
+		searchText.getElement().getStyle().setPaddingLeft(1, Unit.PX);
+		searchText.setWidth("450px");
 		searchText.setHeight(HEIGHT_OF_BOXES);
 		searchText.setTitle(" Search Text");
 		searchText.setId("searchTextId");
@@ -109,6 +112,7 @@ public class AdvancedSearchModal {
 		searchLabel.setFor("searchTextInput");
 		searchLabel.setStyleName("advancedSearchLabels");
 		searchBoxList = new ListBox();
+		searchBoxList.setWidth(WIDTH_OF_BOXES);
 		searchBoxList.setHeight(HEIGHT_OF_BOXES);
 		searchBoxList.addItem("All " + pluralType, "All " + pluralType);
 		searchBoxList.setId("searchTextInput");
@@ -127,7 +131,9 @@ public class AdvancedSearchModal {
 		stateLabel.setFor("stateId");
 		stateLabel.setFor("stateGroup");
 		stateLabel.setStyleName("advancedSearchLabels");
+		stateLabel.setPaddingRight(16);
 		searchStateList = new ListBox();
+		searchStateList.setWidth(WIDTH_OF_BOXES);
 		searchStateList.setHeight(HEIGHT_OF_BOXES);
 		searchStateList.setId("stateGroup");
 		searchStateList.addItem("All " + pluralType, "All " + pluralType);
@@ -186,6 +192,7 @@ public class AdvancedSearchModal {
 		patientLabel.setFor("patientBase");
 		patientIndecatorList = new ListBox();
 		patientIndecatorList.setHeight(HEIGHT_OF_BOXES);
+		patientIndecatorList.setWidth(WIDTH_OF_BOXES);
 		patientIndecatorList.setId("patientBase");
 		patientIndecatorList.addItem("All Measures", "All Measures");
 		patientIndecatorList.addItem("Yes, Patient-based", "Yes, Patient-based");
@@ -204,6 +211,7 @@ public class AdvancedSearchModal {
 		daysLabel.setStyleName("advancedSearchLabels");
 		daysLabel.setFor("modifiedDate");
 		modifiedOnList = new ListBox();
+		modifiedOnList.setWidth(WIDTH_OF_BOXES);
 		modifiedOnList.setHeight(HEIGHT_OF_BOXES);
 		modifiedOnList.setId("modifiedDate");
 		modifiedOnList.addItem("All " + pluralType, "All " + pluralType);

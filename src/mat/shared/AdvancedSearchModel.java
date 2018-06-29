@@ -32,7 +32,7 @@ public class AdvancedSearchModel implements IsSerializable{
 	public AdvancedSearchModel() {
 		
 	}
-	
+
 	public AdvancedSearchModel(int myMeasureSearch,int startIndex, int pageSize, String lastSearchText, String searchTerm) {
 		this.isMyMeasureSearch =myMeasureSearch;
 		this.startIndex = startIndex;
@@ -41,7 +41,7 @@ public class AdvancedSearchModel implements IsSerializable{
 		this.searchTerm = searchTerm;
 		
 	}
-	
+
 	public String getSearchTerm() {
 		return searchTerm;
 	}
@@ -90,6 +90,7 @@ public class AdvancedSearchModel implements IsSerializable{
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
 	}
+
 	public int isMyMeasureSearch() {
 		return isMyMeasureSearch;
 	}

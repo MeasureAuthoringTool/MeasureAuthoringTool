@@ -718,6 +718,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		        
 		        model.setStartIndex(start + 1);
 		        model.setPageSize(start + PAGE_SIZE);
+
 		        model.setIsMyMeasureSearch(filter);
 		        
 		        MatContext.get().getMeasureService().search(model,callback);

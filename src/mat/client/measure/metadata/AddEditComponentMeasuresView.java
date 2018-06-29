@@ -317,6 +317,7 @@ public class AddEditComponentMeasuresView implements
 					AdvancedSearchModel model = new AdvancedSearchModel(1,start + 1, start + PAGE_SIZE, searchText, searchText);
 					
 					MatContext.get().getMeasureService().search(model, callback);
+
 				}
 			};
 			table.setRowData(selectedMeasureList);

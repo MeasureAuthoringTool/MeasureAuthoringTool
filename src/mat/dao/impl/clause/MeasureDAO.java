@@ -712,8 +712,9 @@ mat.dao.clause.MeasureDAO {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user) {
-		
+
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.isMyMeasureSearch());
+
 		mCriteria.addOrder(Order.desc("measureSet.id"))
 		.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(1);
@@ -724,7 +725,8 @@ mat.dao.clause.MeasureDAO {
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
 				.equals("3")
-				&& (advancedSearchModel.isMyMeasureSearch() == MeasureSearchFilterPanel.ALL_MEASURES);
+				&& (advancedSearchModel.isMyMeasureSearch() == AdvancedSearchModel.ALL_MEASURES);
+
 		
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -962,6 +964,7 @@ mat.dao.clause.MeasureDAO {
 			}
 			if(model.getScoringTypes() != null && model.getScoringTypes().size() > 0) {
 				if(!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
+
 					return false;
 				}
 			}
@@ -978,10 +981,11 @@ mat.dao.clause.MeasureDAO {
 					return false;
 				}
 				int date = model.getModifiedDate();
+
 				Timestamp time = new Timestamp(System.currentTimeMillis());
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(time);
-				
+
 				//multiply by negative one to subtract
 				cal.add(Calendar.DAY_OF_WEEK, -1 * date);
 

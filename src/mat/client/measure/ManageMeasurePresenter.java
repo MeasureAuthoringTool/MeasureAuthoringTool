@@ -1001,6 +1001,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					});
 		} else {
 			AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex, 25, lastSearchText, searchText);
+
 			advancdeSearch(model);
 		}
 	}
@@ -1020,6 +1021,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
+
 
 						if (advancedSearchModel.isMyMeasureSearch() != 0) {
 							searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
@@ -1203,7 +1205,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 						SearchResultUpdate sru = new SearchResultUpdate();
 						sru.update(result, (TextBox) searchDisplay.getSearchString(), advancedSearchModel.getLastSearchText());
+
 						searchDisplay.buildCellTable(manageMeasureSearchModel, advancedSearchModel.isMyMeasureSearch(), advancedSearchModel);
+
 						showSearchingBusy(false);
 
 					}

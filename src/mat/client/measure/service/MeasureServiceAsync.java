@@ -36,9 +36,7 @@ import mat.shared.AdvancedSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-/**
- * The Interface MeasureServiceAsync.
- */
+
 public interface MeasureServiceAsync {
 	
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, AsyncCallback<Void> callback);

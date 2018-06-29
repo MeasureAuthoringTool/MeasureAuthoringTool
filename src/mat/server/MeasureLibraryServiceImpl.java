@@ -2351,6 +2351,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
 			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(advancedSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
 					advancedSearchModel.isMyMeasureSearch());
+
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			List<MeasureShareDTO> measureTotalList = measureList;
 			searchModel.setResultsTotal(measureTotalList.size());

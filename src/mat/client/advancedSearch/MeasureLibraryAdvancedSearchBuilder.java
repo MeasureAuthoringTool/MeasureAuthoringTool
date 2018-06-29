@@ -3,7 +3,6 @@ package mat.client.advancedSearch;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.measure.MeasureSearchFilterPanel;
 import mat.shared.AdvancedSearchModel;
 import mat.shared.MatConstants;
 
@@ -90,5 +89,4 @@ public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 		
 		return model;
 	}
-
 }

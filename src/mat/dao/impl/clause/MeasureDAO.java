@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jetty.util.StringUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -25,10 +26,13 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+import com.ibm.icu.util.Calendar;
+
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
 import mat.model.LockedUserInfo;
+import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -37,27 +41,21 @@ import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.StringUtility;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MeasureDAO.
- */
 public class MeasureDAO extends GenericDAO<Measure, String> implements
 mat.dao.clause.MeasureDAO {
+
+	private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
 	
 	/*
 	 * assumption: measures here are all part of the same measure set
 	 */
-	/*
-	 * The Class MeasureComparator.
-	 */
+
 	class MeasureComparator implements Comparator<Measure> {
-		
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
+
 		@Override
 		public int compare(Measure o1, Measure o2) {
 			// 1 if either isDraft
@@ -138,7 +136,6 @@ mat.dao.clause.MeasureDAO {
 	 *            the d ao service
 	 */
 	public MeasureDAO(DAOService dAOService) {
-		// allow to test using DAOService
 		this.dAOService = dAOService;
 	}
 	
@@ -152,12 +149,6 @@ mat.dao.clause.MeasureDAO {
 	private Criteria buildMeasureShareForUserCriteria(User user) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
-		/*
-		 * if(user.getSecurityRole().getId().equals("3")) {
-		 * mCriteria.add(Restrictions.or(Restrictions.eq("owner.id",
-		 * user.getId()), Restrictions.eq("share.shareUser.id", user.getId())));
-		 * mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN); }
-		 */
 		
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
@@ -180,13 +171,24 @@ mat.dao.clause.MeasureDAO {
 			mCriteria.add(Restrictions.or(
 					Restrictions.eq("owner.id", user.getId()),
 					Restrictions.eq("share.shareUser.id", user.getId())));
-			/* mCriteria.add(Restrictions.ne("deleted", "softDeleted")); */
 			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
 		}
 		
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
 	}
+	
+	private List<MeasureAuditLog> getMeasureAuditLogByMeasure(Measure measure){
+
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(MeasureAuditLog.class);
+		mCriteria.add(Restrictions.or(
+				Restrictions.eq("measure.id", measure.getId())));
+
+		return mCriteria.list();
+		
+	}
+	
 	@Override
 	public List<Measure> getMeasureListForMeasureOwner(User user){
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
@@ -196,9 +198,6 @@ mat.dao.clause.MeasureDAO {
 		return sortMeasureListForMeasureOwner(measureList);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getComponentMeasureInfoForMeasures(java.util.List)
-	 */
 	@Override
 	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds) {
 		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureIds);
@@ -222,11 +221,6 @@ mat.dao.clause.MeasureDAO {
 		return mCriteria;
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(int, mat.model.User)
-	 */
 	@Override
 	public int countMeasureShareInfoForUser(int filter, User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user,
@@ -237,9 +231,6 @@ mat.dao.clause.MeasureDAO {
 		return ms.size();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(java.lang.String, mat.model.User)
-	 */
 	@Override
 	public int countMeasureShareInfoForUser(String searchText, User user) {
 		
@@ -261,10 +252,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		return count;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(mat.model.User)
-	 */
+
 	@Override
 	public int countMeasureShareInfoForUser(User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
@@ -273,10 +261,7 @@ mat.dao.clause.MeasureDAO {
 		measureList = getAllMeasuresInSet(measureList);
 		return measureList.size();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#countUsersForMeasureShare()
-	 */
+
 	@Override
 	public int countUsersForMeasureShare() {
 		Criteria criteria = getSessionFactory().getCurrentSession()
@@ -302,7 +287,6 @@ mat.dao.clause.MeasureDAO {
 		dto.setMeasureName(measure.getDescription());
 		dto.setScoringType(measure.getMeasureScoring());
 		dto.setShortName(measure.getaBBRName());
-		/*dto.setStatus(measure.getMeasureStatus());*/
 		dto.setPackaged(measure.getExportedDate() != null);
 		dto.setOwnerUserId(measure.getOwner().getId());
 		
@@ -374,9 +358,6 @@ mat.dao.clause.MeasureDAO {
 		return updatedMeasureList;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#findByOwnerId(java.lang.String)
-	 */
 	@Override
 	public java.util.List<Measure> findByOwnerId(String measureOwnerId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -385,9 +366,6 @@ mat.dao.clause.MeasureDAO {
 		return criteria.list();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#findMaxOfMinVersion(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public String findMaxOfMinVersion(String measureSetId, String version) {
 		logger.info("In MeasureDao.findMaxOfMinVersion()");
@@ -404,11 +382,6 @@ mat.dao.clause.MeasureDAO {
 		}
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
-		// mCriteria.add(Restrictions.and(Restrictions.eq("measureSet.id",
-		// measureSetId),
-		// Restrictions.and(Restrictions.sizeGt("version",
-		// minVal),Restrictions.sizeLt("version", maxVal))));
-		// mCriteria.setProjection(Projections.max("version"));
 		logger.info("Query Using Measure Set Id:" + measureSetId);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
 		mCriteria.add(Restrictions.ne("draft", true));
@@ -439,16 +412,11 @@ mat.dao.clause.MeasureDAO {
 		return maxOfMinVersion;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#findMaxVersion(java.lang.String)
-	 */
 	@Override
 	public String findMaxVersion(String measureSetId) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
-		// add check to filter Draft's version number when finding max version
-		// number.
 		mCriteria.add(Restrictions.ne("draft", true));
 		mCriteria.setProjection(Projections.max("version"));
 		String maxVersion = (String) mCriteria.list().get(0);
@@ -479,9 +447,6 @@ mat.dao.clause.MeasureDAO {
 		return sortMeasureList(ms);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMaxEMeasureId()
-	 */
 	@Override
 	public int getMaxEMeasureId() {
 		Session session = getSessionFactory().getCurrentSession();
@@ -495,20 +460,6 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 	}
-	
-	
-	
-	/*@Override
-	public List<MeasureShareDTO> getMeasuresForDraft(String text,User user, int startIndex,
-			int pageSize) {
-		List<MeasureShareDTO> dtoList = getMeasuresForDraft(text, user);
-		if (pageSize < dtoList.size()) {
-			return dtoList.subList(startIndex,
-					Math.min(startIndex + pageSize, dtoList.size()));
-		} else {
-			return dtoList;
-		}
-	}*/
 	
 	/** Gets the measures for draft.
 	 * 
@@ -550,13 +501,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		return dtoList;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.dao.clause.MeasureDAO#getMeasuresForDraft(mat.model.User, int,
-	 * int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize) {
 		List<MeasureShareDTO> dtoList = getMeasuresForDraft(user);
@@ -567,11 +512,7 @@ mat.dao.clause.MeasureDAO {
 			return dtoList;
 		}
 	}
-	
-		
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareForMeasure(java.lang.String)
-	 */
+
 	@Override
 	public List<MeasureShare> getMeasureShareForMeasure(String measureId) {
 		List<MeasureShare> measureShare = new ArrayList<MeasureShare>();
@@ -605,9 +546,7 @@ mat.dao.clause.MeasureDAO {
 		Criteria userCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(User.class);
 		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
-		//Added restriction for Active user's for User story MAT:2900.
 		userCriteria.add(Restrictions.eq("status.id", "1"));
-		//Added restriction for Search by user name MAT-8907.
 		if(StringUtils.isNotBlank(userName)) {
 			userCriteria.add(Restrictions.or(Restrictions.ilike("firstName", "%" + userName + "%"),
 					Restrictions.ilike("lastName", "%" + userName + "%")));
@@ -615,7 +554,6 @@ mat.dao.clause.MeasureDAO {
 		userCriteria.add(Restrictions.ne("id",
 				LoggedInUserUtil.getLoggedInUser()));
 		userCriteria.setFirstResult(startIndex);
-		// userCriteria.setMaxResults(pageSize);
 		userCriteria.addOrder(Order.asc("lastName"));
 		
 		List<User> userResults = userCriteria.list();
@@ -651,10 +589,7 @@ mat.dao.clause.MeasureDAO {
 			return orderedDTOList;
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForMeasureAndUser(java.lang.String, java.lang.String)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId) {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
@@ -672,9 +607,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		return shareDTOList;
 	}
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(java.lang.String, mat.model.User, int, int)
-	 */
+
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText,
 			User user, int startIndex, int pageSize) {
@@ -684,7 +617,7 @@ mat.dao.clause.MeasureDAO {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
 		mCriteria.addOrder(Order.desc("measureSet.id"))
 		.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		// mCriteria.add(Restrictions.isNull("deleted"));
+
 		mCriteria.setFirstResult(startIndex);
 		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
@@ -702,17 +635,6 @@ mat.dao.clause.MeasureDAO {
 			boolean matchesSearch = searchResultsForMeasure(searchTextLC, su,
 					measure);
 			
-			// measure steward (only check if necessary)
-			/*
-			 * if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
-			 * List<Metadata> mdList =
-			 * metadataDAO.getMeasureDetails(measure.getId(), "MeasureSteward");
-			 * for(Metadata md : mdList)
-			 * if(md.getName().equalsIgnoreCase("MeasureSteward") &&
-			 * md.getValue().toLowerCase().contains(searchTextLC)){
-			 * matchesSearch = true; break; } }
-			 */
-			
 			if (matchesSearch) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				measureIdDTOMap.put(measure.getId(), dto);
@@ -722,18 +644,11 @@ mat.dao.clause.MeasureDAO {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureShare.class);
 		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-		/*shareCriteria.add(Restrictions.in("measure.id",
-				measureIdDTOMap.keySet()));*/
+
 		List<MeasureShare> shareList = shareCriteria.list();
 		
 		if (orderedDTOList.size() > 0) {
-			/*Criteria shareCriteria = getSessionFactory().getCurrentSession()
-					.createCriteria(MeasureShare.class);
-			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-			shareCriteria.add(Restrictions.in("measure.id",
-					measureIdDTOMap.keySet()));
-			List<MeasureShare> shareList = shareCriteria.list();*/
-			// get share level for each measure set and set it on each dto
+
 			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (MeasureShare share : shareList) {
 				String msid = share.getMeasure().getMeasureSet().getId();
@@ -760,18 +675,12 @@ mat.dao.clause.MeasureDAO {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(mat.model.User, int, int)
-	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(User user,
 			int startIndex, int pageSize) {
 		return getMeasureShareInfoForUser("", user, startIndex, pageSize);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, int, int, int)
-	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
 			String searchText, int startIndex, int pageSize, int filter) {
@@ -800,24 +709,15 @@ mat.dao.clause.MeasureDAO {
 		return filterMeasureListForAdmin(orderedDTOList);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, mat.model.User, int, int, int)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
-			String searchText, User user, int startIndex, int pageSize,
-			int filter) {
-		
-		String searchTextLC = searchText.toLowerCase().trim();
-		
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user,
-				filter);
-		// mCriteria.add(Restrictions.isNull("deleted"));//("deleted",
-		// "softDeleted"));
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user) {
+
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.isMyMeasureSearch());
+
 		mCriteria.addOrder(Order.desc("measureSet.id"))
 		.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(startIndex);
+		mCriteria.setFirstResult(1);
 		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
 		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
@@ -825,7 +725,8 @@ mat.dao.clause.MeasureDAO {
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId()
 				.equals("3")
-				&& (filter == MeasureSearchFilterPanel.ALL_MEASURES);
+				&& (advancedSearchModel.isMyMeasureSearch() == AdvancedSearchModel.ALL_MEASURES);
+
 		
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -834,9 +735,7 @@ mat.dao.clause.MeasureDAO {
 		
 		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
-			
-			if (searchResultsForMeasure(searchTextLC, su,
-					measure)) {
+			if (advanceSearchResultsForMeasure(advancedSearchModel, su, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if(isDraft){
@@ -849,11 +748,8 @@ mat.dao.clause.MeasureDAO {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureShare.class);
 		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-		/*shareCriteria.add(Restrictions.in("measure.id",
-				measureIdDTOMap.keySet()));*/
 		List<MeasureShare> shareList = shareCriteria.list();
 		if (orderedDTOList.size() > 0) {
-			// get share level for each measure set and set it on each dto
 			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String, String>();
 			for (MeasureShare share : shareList) {
 				String msid = share.getMeasure().getMeasureSet().getId();
@@ -908,8 +804,8 @@ mat.dao.clause.MeasureDAO {
 				
 			}
 		}
-		if (pageSize < orderedDTOList.size()) {
-			return orderedDTOList.subList(0, pageSize);
+		if (MAX_PAGE_SIZE < orderedDTOList.size()) {
+			return orderedDTOList.subList(0, MAX_PAGE_SIZE);
 		} else {
 			return orderedDTOList;
 		}
@@ -936,15 +832,11 @@ mat.dao.clause.MeasureDAO {
 		
 		return locked;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#isMeasureLocked(java.lang.String)
-	 */
+
 	@Override
 	public boolean isMeasureLocked(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
-		//String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
-		//		+ measureId + "'";
+
 		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = :measureId";
 		
 		Query query = session.createQuery(sql);
@@ -987,19 +879,13 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#saveandReturnMaxEMeasureId(mat.model.clause.Measure)
-	 */
+
 	@Override
 	public int saveandReturnMaxEMeasureId(Measure measure) {
 		int eMeasureId = getMaxEMeasureId() + 1;
 		MeasureSet ms = measure.getMeasureSet();
 		Session session = getSessionFactory().getCurrentSession();
-		//		SQLQuery query = session
-		//				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
-		//						+ eMeasureId + " where m.MEASURE_SET_ID = '"
-		//						+ ms.getId() + "';");
+
 		String sql = "update MEASURE m set m.EMEASURE_ID = :eMeasureId where m.MEASURE_SET_ID = :MEASURE_SET_ID";
 		SQLQuery query = session.createSQLQuery(sql);
 		query.setInteger("eMeasureId", eMeasureId);
@@ -1008,10 +894,7 @@ mat.dao.clause.MeasureDAO {
 		return eMeasureId;
 		
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#saveMeasure(mat.model.clause.Measure)
-	 */
+
 	@Override
 	public void saveMeasure(Measure measure) {
 		if (dAOService != null) {
@@ -1060,6 +943,72 @@ mat.dao.clause.MeasureDAO {
 																	.contains(searchTextLC) ? true
 																			: false;
 		return matchesSearch;
+	}
+	
+	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, StringUtility stringUtility, Measure measure) {
+		if(StringUtil.isNotBlank(model.getSearchTerm())) {
+			String searchTerm = model.getSearchTerm().toLowerCase();
+			String measureAbbName = measure.getaBBRName().toLowerCase();
+			String measureDesc = measure.getDescription().toLowerCase();
+			if(!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm)) {
+				return false;
+			}
+		}
+
+		if(AdvancedSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
+			return false;
+		}
+		if(AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
+			return false;
+		}
+		if(AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.isPatientBased()) {
+			return false;
+		}
+		if(AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.isPatientBased()) {
+			return false;
+		}
+		if(model.getScoringTypes().size() > 0) {
+			if(!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
+				return false;
+			}
+		}
+		if(StringUtil.isNotBlank(model.getOwner())) {
+			String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
+			if(!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
+				return false;
+			}
+		}
+		
+		if(StringUtils.isNotEmpty(model.getModifiedOwner()) || model.getModifiedDate() > 0) {
+			List<MeasureAuditLog> auditLog = getMeasureAuditLogByMeasure(measure);
+			if(auditLog == null) {
+				return false;
+			}
+			int date = model.getModifiedDate();
+
+			Timestamp time = new Timestamp(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(time);
+
+			//multiply by negative one to subtract
+			cal.add(Calendar.DAY_OF_WEEK, -1 * date);
+
+			time = new Timestamp(cal.getTime().getTime());
+			
+			MeasureAuditLog log = auditLog.get(0);
+			
+			if(log.getTime().before(time)){
+				return false;
+			}
+			
+			if(StringUtils.isNotEmpty(model.getModifiedOwner())){
+				if(!log.getUserId().contains(model.getModifiedOwner())) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 	
 	/**

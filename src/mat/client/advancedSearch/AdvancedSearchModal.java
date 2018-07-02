@@ -481,6 +481,10 @@ public class AdvancedSearchModal {
 		panel.show();
 	}
 	
+	public void closeAdvanceSearch() {
+		panel.hide();
+	}
+	
 	public ListBox getSearchBoxList() {
 		return searchBoxList;
 	}

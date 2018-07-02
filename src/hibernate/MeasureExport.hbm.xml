@@ -9,8 +9,11 @@
         <generator class="uuid"/>
     </id>
     <many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID" unique="true"/>
-	<property name="simpleXML" column="SIMPLE_XML" />
 	<property name="codeList" type="blob" column="CODE_LIST" />
+	
+	<property name="simpleXML" type="string">
+		<column name="SIMPLE_XML" sql-type="longtext" />
+	</property>
 	<property name="humanReadable" type="string">
 		<column name="HUMAN_READABLE" sql-type="longtext" />
 	</property>

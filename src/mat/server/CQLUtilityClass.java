@@ -382,8 +382,9 @@ public final class CQLUtilityClass {
 				sb.append("include ").append(includeLib.getCqlLibraryName());
 				sb.append(" version ").append("'").append(includeLib.getVersion()).append("' ");
 				sb.append("called ").append(includeLib.getAliasName());
-				sb.append("\n\n");
+				sb.append("\n");
 			}
+			sb.append("\n");
 		}
 		return sb.toString();
 	}

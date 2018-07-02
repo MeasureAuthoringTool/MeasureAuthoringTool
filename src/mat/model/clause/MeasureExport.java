@@ -28,6 +28,16 @@ public class MeasureExport {
 	
 	/** The measure. */
 	private Measure measure;
+
+	private String humanReadable;
+	
+	private String hqmf; 
+	
+	private String cql; 
+	
+	private String elm; 
+	
+	private String json; 
 	
 	/** XMLProcessor instance to be used for HQMF Export related tasks**/
 	private XmlProcessor hqmfXMLProcessor;
@@ -130,6 +140,46 @@ public class MeasureExport {
   	public Blob getCodeList() {  
 		  return this.codeList; 
 	  } 
+  	
+	public String getHumanReadable() {
+		return humanReadable;
+	}
+
+	public void setHumanReadable(String humanReadable) {
+		this.humanReadable = humanReadable;
+	}
+
+	public String getHqmf() {
+		return hqmf;
+	}
+
+	public void setHqmf(String hqmf) {
+		this.hqmf = hqmf;
+	}
+
+	public String getCql() {
+		return cql;
+	}
+
+	public void setCql(String cql) {
+		this.cql = cql;
+	}
+
+	public String getElm() {
+		return elm;
+	}
+
+	public void setElm(String elm) {
+		this.elm = elm;
+	}
+
+	public String getJson() {
+		return json;
+	}
+
+	public void setJson(String json) {
+		this.json = json;
+	}
 	  
 	  /**
 	 * To byte array.
@@ -215,7 +265,5 @@ public class MeasureExport {
 
 	public void setHumanReadableProcessor(XmlProcessor humanReadableProcessor) {
 		this.humanReadableProcessor = humanReadableProcessor;
-	}
-	  
-	
+	}	
 }

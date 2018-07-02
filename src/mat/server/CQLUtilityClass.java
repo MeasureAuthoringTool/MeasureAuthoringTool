@@ -3,7 +3,6 @@ package mat.server;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,13 +10,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.InputSource;
 
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
-import mat.dao.IDAO;
-import mat.dao.clause.CQLLibraryDAO;
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -29,7 +24,6 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.LibHolderObject;
 
 public final class CQLUtilityClass {
 
@@ -99,7 +93,12 @@ public final class CQLUtilityClass {
 			sb.append("library ").append(cqlModel.getLibraryName());
 			sb.append(" version ").append("'" + cqlModel.getVersionUsed()).append("'");
 			sb.append("\n\n");
-
+			
+			if(StringUtils.isNotBlank(cqlModel.getLibraryComment())) {
+				sb.append("/*").append(cqlModel.getLibraryComment()).append("*/");
+				sb.append("\n\n");
+			}
+			
 			sb.append("using QDM version ");			
 			sb.append("'").append(cqlModel.getQdmVersion()).append("'");
 			sb.append("\n\n");			

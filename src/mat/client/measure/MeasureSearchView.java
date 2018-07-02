@@ -678,6 +678,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 *
 	 * @param results the results
 	 * @param filter the filter
+	 * @param AdvancedSearchModel 
+	 * 		which represents the model of the selections the user selected to do an advance search
 	 */
 	public void buildCellTable(ManageMeasureSearchModel results,final int filter, AdvancedSearchModel model) {
 		cellTablePanel.clear();
@@ -721,7 +723,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 
 		        model.setIsMyMeasureSearch(filter);
 		        
-		        MatContext.get().getMeasureService().search(model,callback);
+		        MatContext.get().getMeasureService().search(model, callback);
 		      }
 		    };
 		   

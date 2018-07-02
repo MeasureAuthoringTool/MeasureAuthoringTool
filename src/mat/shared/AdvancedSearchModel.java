@@ -1,16 +1,16 @@
 package mat.shared;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class AdvancedSearchModel implements IsSerializable{
 	
-	private Boolean advanceSearch;
 	private String searchTerm;
-	private Boolean isDraft;
+	private VersionMeasureType versionMeasureType;
 	private List<String> scoringTypes;
-	private Boolean isPatientBased;
+	private PatientBasedType patientBasedType;
 	private int modifiedDate;
 	private String modifiedOwner;
 	private String owner;
@@ -28,18 +28,48 @@ public class AdvancedSearchModel implements IsSerializable{
 	public final static String PATIENT_BASED = "Yes, Patient-based";
 	public final static String NOT_PATIENT_BASED = "No, Not Patient-based";
 	
+	public enum VersionMeasureType {ALL, VERSION, DRAFT};
+	
+	public enum PatientBasedType {ALL, PATIENT, NOT_PATIENT};
 	
 	public AdvancedSearchModel() {
+		this.searchTerm = "";
+		this.versionMeasureType = VersionMeasureType.ALL;
+		this.scoringTypes = new ArrayList<String>();
+		this.patientBasedType = patientBasedType.ALL;
+		this.modifiedDate = 0;
+		this.modifiedOwner = "";
+		this.owner = "";
+		this.startIndex = 1;
+		this.pageSize = Integer.MAX_VALUE;
+		this.isMyMeasureSearch = MY_MEASURES;
+	}
+	
+	public AdvancedSearchModel(String searchterm, VersionMeasureType versionMeasureType, List<String> scoringTypes, PatientBasedType patientBasedType,
+			int modifiedDate, String modifiedOwner, String owner, int startIndex, int pageSize, int isMyMeasureSearch, String lastSearchText) {
 		
+		this.searchTerm = searchterm;
+		this.versionMeasureType = versionMeasureType;
+		this.scoringTypes = scoringTypes;
+		this.patientBasedType = patientBasedType;
+		this.modifiedDate = modifiedDate;
+		this.modifiedOwner = modifiedOwner;
+		this.owner = owner;
+		this.startIndex = startIndex;
+		this.pageSize = pageSize;
+		this.isMyMeasureSearch = isMyMeasureSearch;
+		this.lastSearchText = lastSearchText;
 	}
 
-	public AdvancedSearchModel(int myMeasureSearch,int startIndex, int pageSize, String lastSearchText, String searchTerm) {
-		this.isMyMeasureSearch =myMeasureSearch;
+	public AdvancedSearchModel(int myMeasureSearch, int startIndex, int pageSize, String lastSearchText, String searchTerm) {
+		this();
+		
+		this.isMyMeasureSearch = myMeasureSearch;
 		this.startIndex = startIndex;
 		this.pageSize = pageSize;
 		this.lastSearchText = lastSearchText;
 		this.searchTerm = searchTerm;
-		
+
 	}
 
 	public String getSearchTerm() {
@@ -48,17 +78,17 @@ public class AdvancedSearchModel implements IsSerializable{
 	public void setSearchTerm(String searchTerm) {
 		this.searchTerm = searchTerm;
 	}
-	public Boolean isDraft() {
-		return isDraft;
+	public VersionMeasureType isDraft() {
+		return versionMeasureType;
 	}
-	public void setIsDraft(Boolean type) {
-		this.isDraft = type;
+	public void setIsDraft(VersionMeasureType version) {
+		this.versionMeasureType = version;
 	}
-	public Boolean isPatientBased() {
-		return isPatientBased;
+	public PatientBasedType isPatientBased() {
+		return patientBasedType;
 	}
-	public void setPatientBased(Boolean patientBased) {
-		isPatientBased = patientBased;
+	public void setPatientBased(PatientBasedType patientBased) {
+		patientBasedType = patientBased;
 	}
 	public int getModifiedDate() {
 		return modifiedDate;
@@ -110,14 +140,6 @@ public class AdvancedSearchModel implements IsSerializable{
 
 	public void setScoringTypes(List<String> scoringTypes) {
 		this.scoringTypes = scoringTypes;
-	}
-	
-	public Boolean getAdvanceSearch() {
-		return advanceSearch;
-	}
-	
-	public void setAdvanceSearch(Boolean advanceSearch) {
-		this.advanceSearch = advanceSearch;
 	}
 	
 }

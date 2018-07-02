@@ -954,58 +954,60 @@ mat.dao.clause.MeasureDAO {
 				return false;
 			}
 		}
-		if(model.getAdvanceSearch() != null && model.getAdvanceSearch()) {
 
-			if(model.isDraft() != null && measure.isDraft() != model.isDraft()) {
-				return false;
-			}
-			if(model.isPatientBased() != null && measure.isPatientBased() != model.isPatientBased()) {
-				return false;
-			}
-			if(model.getScoringTypes() != null && model.getScoringTypes().size() > 0) {
-				if(!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
-
-					return false;
-				}
-			}
-			if(StringUtil.isNotBlank(model.getOwner())) {
-				String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
-				if(!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
-					return false;
-				}
-			}
-			
-			if(StringUtils.isNotEmpty(model.getModifiedOwner()) || model.getModifiedDate() > 0) {
-				List<MeasureAuditLog> auditLog = getMeasureAuditLogByMeasure(measure);
-				if(auditLog == null) {
-					return false;
-				}
-				int date = model.getModifiedDate();
-
-				Timestamp time = new Timestamp(System.currentTimeMillis());
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(time);
-
-				//multiply by negative one to subtract
-				cal.add(Calendar.DAY_OF_WEEK, -1 * date);
-
-				time = new Timestamp(cal.getTime().getTime());
-				
-				MeasureAuditLog log = auditLog.get(0);
-				
-				if(log.getTime().before(time)){
-					return false;
-				}
-				
-				if(StringUtils.isNotEmpty(model.getModifiedOwner())){
-					if(!log.getUserId().contains(model.getModifiedOwner())) {
-						return false;
-					}
-				}
-			}
-			
-		
+		if(AdvancedSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
+			return false;
 		}
+		if(AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
+			return false;
+		}
+		if(AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.isPatientBased()) {
+			return false;
+		}
+		if(AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.isPatientBased()) {
+			return false;
+		}
+		if(model.getScoringTypes().size() > 0) {
+			if(!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
+				return false;
+			}
+		}
+		if(StringUtil.isNotBlank(model.getOwner())) {
+			String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
+			if(!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
+				return false;
+			}
+		}
+		
+		if(StringUtils.isNotEmpty(model.getModifiedOwner()) || model.getModifiedDate() > 0) {
+			List<MeasureAuditLog> auditLog = getMeasureAuditLogByMeasure(measure);
+			if(auditLog == null) {
+				return false;
+			}
+			int date = model.getModifiedDate();
+
+			Timestamp time = new Timestamp(System.currentTimeMillis());
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(time);
+
+			//multiply by negative one to subtract
+			cal.add(Calendar.DAY_OF_WEEK, -1 * date);
+
+			time = new Timestamp(cal.getTime().getTime());
+			
+			MeasureAuditLog log = auditLog.get(0);
+			
+			if(log.getTime().before(time)){
+				return false;
+			}
+			
+			if(StringUtils.isNotEmpty(model.getModifiedOwner())){
+				if(!log.getUserId().contains(model.getModifiedOwner())) {
+					return false;
+				}
+			}
+		}
+
 		return true;
 	}
 	

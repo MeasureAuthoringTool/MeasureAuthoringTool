@@ -189,16 +189,10 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	/**
 	 * Gets the measure share info for user with filter.
 	 * 
-	 * @param searchText
-	 *            the search text
+	 * @param advancesSearchModel
+	 * 		which represents the model of the selections the user selected to do an advance search
 	 * @param user
-	 *            the user
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * 		the current logged in user
 	 * @return the measure share info for user with filter
 	 */
 	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user);

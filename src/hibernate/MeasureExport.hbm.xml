@@ -11,10 +11,10 @@
     <many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID" unique="true"/>
 	<property name="simpleXML" column="SIMPLE_XML" />
 	<property name="codeList" type="blob" column="CODE_LIST" />
-	<property name="humanReadable" type="longtext" column="HUMAN_READABLE"/>
-	<property name="hqmf" type="longtext" column="HQMF"/>
-	<property name="cql" type="longtext" column="CQL"/>
-	<property name="elm" type="longtext" column="ELM"/>
-	<property name="json" type="longtext" column="JSON"/>
+	<property name="humanReadable" column="HUMAN_READABLE"/>
+	<property name="hqmf" column="HQMF"/>
+	<property name="cql" column="CQL"/>
+	<property name="elm" column="ELM"/>
+	<property name="json" column="JSON"/>
   </class>
 </hibernate-mapping>

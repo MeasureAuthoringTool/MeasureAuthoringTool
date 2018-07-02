@@ -16,11 +16,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
 /**
@@ -41,7 +41,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private Input securityAnswer;
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("forgotPwd");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("forgotPwd");
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();

@@ -16,13 +16,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
@@ -62,7 +62,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("personalInfo");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("personalInfo");
 	
 	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();

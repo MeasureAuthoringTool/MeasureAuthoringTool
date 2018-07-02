@@ -25,13 +25,13 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.CQLLibraryNameLabel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -44,7 +44,7 @@ public class CQLLibraryShareView implements CqlLibraryPresenter.ShareDisplay{
 
 	private static final int PAGE_SIZE = 25;
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("cqlShare");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("cqlShare");
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	/** The content. */

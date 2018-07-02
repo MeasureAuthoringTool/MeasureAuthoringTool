@@ -55,8 +55,8 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
+import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.CQLAddNewButton;
-import mat.client.shared.CQLButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SkipListBuilder;
@@ -112,7 +112,7 @@ public class CQLFunctionsView {
 	private Button addNewArgument = new Button();
 
 	/** The function button bar. */
-	CQLButtonToolBar functionButtonBar = new CQLButtonToolBar("function");
+	private DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar("function");
 	
 	/** The context group. */
 	private ButtonGroup contextGroup = new ButtonGroup();
@@ -852,7 +852,7 @@ public class CQLFunctionsView {
 	 *
 	 * @return the function button bar
 	 */
-	public CQLButtonToolBar getFunctionButtonBar() {
+	public DefinitionFunctionButtonToolBar getFunctionButtonBar() {
 		return functionButtonBar;
 	}
 
@@ -879,7 +879,7 @@ public class CQLFunctionsView {
 	 *
 	 * @param functionButtonBar the new function button bar
 	 */
-	public void setFunctionButtonBar(CQLButtonToolBar functionButtonBar) {
+	public void setFunctionButtonBar(DefinitionFunctionButtonToolBar functionButtonBar) {
 		this.functionButtonBar = functionButtonBar;
 	}
 

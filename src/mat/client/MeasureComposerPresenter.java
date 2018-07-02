@@ -224,8 +224,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
 				//int index = ((SelectionEvent<Integer>)event).getSelectedItem();
-				buttonBar.setPreviousButtonVisible(measureComposerTabLayout.hasPreviousTab());
-				buttonBar.setContinueButtonVisible(measureComposerTabLayout.hasNextTab());
 				buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 				buttonBar.setPageNamesOnState();
 			}

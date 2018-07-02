@@ -13,13 +13,13 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.PasswordRules;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
@@ -32,7 +32,7 @@ public class ChangePasswordView implements ChangePasswordPresenter.Display {
 	private Panel mainPanel;
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("changePassword");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("changePassword");
 	
 	/** The password widget. */
 	private ChangePasswordWidget passwordWidget = new ChangePasswordWidget();

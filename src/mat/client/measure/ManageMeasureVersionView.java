@@ -13,17 +13,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
 public class ManageMeasureVersionView implements VersionDisplay {
 	
 	private ManageMeasureSearchModel.Result selectedMeasure;
 
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measuVersion");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("measuVersion");
 
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 

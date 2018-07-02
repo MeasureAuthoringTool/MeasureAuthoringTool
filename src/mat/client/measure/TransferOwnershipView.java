@@ -25,13 +25,13 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.TransferOwnerShipModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -47,7 +47,7 @@ public class TransferOwnershipView {
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("transferMOwnership");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("transferMOwnership");
 	
 	/** The success messages. */
 	protected MessageAlert successMessages = new SuccessMessageAlert();

@@ -62,7 +62,7 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.measure.service.CQLLibraryServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CQLButtonToolBar;
+import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.ValueSetNameInputValidator;
@@ -193,7 +193,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		CQLParametersView getCQLParametersView();
 
-		CQlDefinitionsView getCQLDefinitionsView();
+		CQLDefinitionsView getCQLDefinitionsView();
 
 		CQLFunctionsView getCQLFunctionsView();
 
@@ -227,11 +227,11 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 		void createAddArgumentViewForFunctions(List<CQLFunctionArgument> argumentList);
 
-		CQLButtonToolBar getParameterButtonBar();
+		DefinitionFunctionButtonToolBar getParameterButtonBar();
 
-		CQLButtonToolBar getDefineButtonBar();
+		DefinitionFunctionButtonToolBar getDefineButtonBar();
 
-		CQLButtonToolBar getFunctionButtonBar();
+		DefinitionFunctionButtonToolBar getFunctionButtonBar();
 
 		TextBox getDefineNameTxtArea();
 
@@ -1625,7 +1625,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addGeneralInfoEventHandlers() {
 		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInfo());
-		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(event -> cancelChangesOnGeneralInfoPage());
 		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
 		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
 	}

@@ -268,70 +268,24 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 	}
 
-	/**
-	 * The Interface VersionDisplay.
-	 */
 	public static interface VersionDisplay{
 
-		/**
-		 * Builds the data table.
-		 *
-		 * @param result the result
-		 */
 		void buildDataTable(SaveCQLLibraryResult result);
 
-		/**
-		 * As widget.
-		 *
-		 * @return the widget
-		 */
 		Widget asWidget();
 
-		/**
-		 * Gets the major radio button.
-		 *
-		 * @return the major radio button
-		 */
 		RadioButton getMajorRadioButton();
 
-		/**
-		 * Gets the minor radio.
-		 *
-		 * @return the minor radio
-		 */
 		RadioButton getMinorRadio();
 
-		/**
-		 * Gets the error messages.
-		 *
-		 * @return the error messages
-		 */
 		ErrorMessageAlert getErrorMessages();
 
-		/**
-		 * Gets the save button.
-		 *
-		 * @return the save button
-		 */
 		Button getSaveButton();
 
-		/**
-		 * Gets the cancel button.
-		 *
-		 * @return the cancel button
-		 */
 		Button getCancelButton();
 
-		/**
-		 * Gets the selected library.
-		 *
-		 * @return the selected library
-		 */
 		CQLLibraryDataSetObject getSelectedLibrary();
 
-		/**
-		 * Clear radio button selection.
-		 */
 		void clearRadioButtonSelection();
 
 		void setSelectedLibraryObject(CQLLibraryDataSetObject selectedLibraryObject);

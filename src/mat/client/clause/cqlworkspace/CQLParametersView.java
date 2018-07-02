@@ -26,18 +26,12 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.CQLAddNewButton;
-import mat.client.shared.CQLButtonToolBar;
+import mat.client.buttons.DefinitionFunctionButtonToolBar;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLParametersView.
- *
- * @author jnarang
- */
 public class CQLParametersView {
 
 	/**
@@ -49,7 +43,7 @@ public class CQLParametersView {
 	private AceEditor parameterAceEditor = new AceEditor();
 
 	/** The parameter button bar. */
-	private CQLButtonToolBar parameterButtonBar = new CQLButtonToolBar("parameter");
+	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar("parameter");
 
 	/** The parameter add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
@@ -250,7 +244,7 @@ public class CQLParametersView {
 	 *
 	 * @return the parameter button bar
 	 */
-	public CQLButtonToolBar getParameterButtonBar() {
+	public DefinitionFunctionButtonToolBar getParameterButtonBar() {
 		return parameterButtonBar;
 	}
 

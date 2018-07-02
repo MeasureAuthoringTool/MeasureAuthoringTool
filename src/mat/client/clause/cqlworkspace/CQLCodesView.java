@@ -48,7 +48,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
-import mat.client.shared.CQLCopyPasteClearButtonToolBar;
+import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -136,8 +136,7 @@ public class CQLCodesView {
 	 */
 	private boolean isLoading; 
 	
-	
-	CQLCopyPasteClearButtonToolBar copyPasteClearButtonToolBar = new CQLCopyPasteClearButtonToolBar("codes");
+	private CodesValuesetsButtonToolBar copyPasteClearButtonToolBar = new CodesValuesetsButtonToolBar("codes");
 
 	private MultiSelectionModel<CQLCode> selectionModel;
 

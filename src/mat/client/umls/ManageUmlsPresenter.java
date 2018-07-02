@@ -22,10 +22,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 
@@ -55,7 +55,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		 * 
 		 * @return the button bar
 		 */
-		SaveCancelButtonBar getButtonBar() ;
+		SaveContinueCancelButtonBar getButtonBar() ;
 		
 		/**
 		 * Gets the error message display.

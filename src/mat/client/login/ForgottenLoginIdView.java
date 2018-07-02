@@ -1,11 +1,11 @@
 package mat.client.login;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -31,7 +31,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 	private TextBox email;
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar;
+	private SaveContinueCancelButtonBar buttonBar;
 	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
@@ -76,7 +76,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		bluePanel.add(new SpacerWidget());
 		bluePanel.add(new SpacerWidget());
 		
-		buttonBar = new SaveCancelButtonBar("forgotUser");
+		buttonBar = new SaveContinueCancelButtonBar("forgotUser");
 		buttonBar.getSaveButton().setText("Submit");
 		bluePanel.add(buttonBar);
 		

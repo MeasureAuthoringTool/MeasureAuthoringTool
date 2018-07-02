@@ -204,7 +204,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		CQLParametersView getCQLParametersView();
 
-		CQlDefinitionsView getCQlDefinitionsView();
+		CQLDefinitionsView getCQlDefinitionsView();
 
 		CQLFunctionsView getCqlFunctionsView();
 
@@ -1662,7 +1662,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addGeneralInfoEventHandlers() {
 		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInformation());
-		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(event -> resetMessagesAndSetPageDirty(false));
 		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
 	}
 	

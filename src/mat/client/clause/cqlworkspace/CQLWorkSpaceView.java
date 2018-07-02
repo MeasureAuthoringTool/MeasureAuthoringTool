@@ -37,7 +37,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	private CQLParametersView cqlParametersView;
 	
-	private CQlDefinitionsView cqlDefinitionsView;
+	private CQLDefinitionsView cqlDefinitionsView;
 	
 	private CQLFunctionsView cqlFunctionsView;
 	
@@ -50,7 +50,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public CQLWorkSpaceView() {
 		generalInformationView = new CQLGeneralInformationView();
 		cqlParametersView = new CQLParametersView();
-		cqlDefinitionsView = new CQlDefinitionsView();
+		cqlDefinitionsView = new CQLDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
 		codesView = new CQLCodesView();
 		valueSetView = new CQLAppliedValueSetView();
@@ -355,7 +355,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 
 	@Override
-	public CQlDefinitionsView getCQlDefinitionsView(){
+	public CQLDefinitionsView getCQlDefinitionsView(){
 		return cqlDefinitionsView;
 	}
 

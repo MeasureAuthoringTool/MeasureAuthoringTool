@@ -14,9 +14,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.CqlLibraryPresenter;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
@@ -31,7 +31,7 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 	/**  The edit confirmation box. */
 	private EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
 	
-	SaveCancelButtonBar buttonToolBar = new SaveCancelButtonBar("cqlDetail");
+	SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
 	
 	public CQLLibraryDetailView(){
 		resetAll();

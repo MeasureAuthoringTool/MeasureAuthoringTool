@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageAlert;
@@ -27,7 +28,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.TextAreaWithMaxLength;
 
@@ -45,7 +45,7 @@ public class ManageMeasureDetailView implements DetailDisplay{
 	
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
 	
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("measureDetail");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("measureDetail");
 	
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
@@ -172,10 +172,6 @@ public class ManageMeasureDetailView implements DetailDisplay{
 		patientBasedFormGrp.add(msgPanel);
 		
 		FormGroup buttonFormGroup = new FormGroup();
-		buttonBar.getSaveButton().setText("Save and Continue");
-		buttonBar.getSaveButton().setTitle("Save and Continue");
-		buttonBar.getCancelButton().setTitle("Cancel");
-		buttonBar.getElement().setId("buttonBar_SaveCancelButtonBar");
 		buttonFormGroup.add(buttonBar);
 		
 		messageFormGrp.add(helpBlock);

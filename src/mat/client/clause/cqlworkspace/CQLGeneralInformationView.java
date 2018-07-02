@@ -9,16 +9,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.buttons.SaveToolBarButton;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-/**
- * The Class CQLGeneralInformationView.
- */
 public class CQLGeneralInformationView {
 
 	private HorizontalPanel generalInfoMainHPanel = new HorizontalPanel();
@@ -26,7 +23,7 @@ public class CQLGeneralInformationView {
 	private MatTextBox libraryVersionValue = new MatTextBox();
 	private MatTextBox usingModelValue = new MatTextBox();
 	private MatTextBox modelVersionValue = new MatTextBox();
-	private DefinitionFunctionButtonToolBar saveAndDeleteBtn = new DefinitionFunctionButtonToolBar("GeneralInfo");
+	private SaveToolBarButton saveButton = new SaveToolBarButton("GeneralInfo");
 	private FormGroup libNameGroup = new FormGroup();
 	private FormGroup usingModelGroup = new FormGroup();
 	private FormGroup libVersionGroup = new FormGroup();
@@ -43,9 +40,7 @@ public class CQLGeneralInformationView {
 	private static final int COMMENTS_MAX_LENGTH = 2500;
 	private CustomTextAreaWithMaxLength comments = new CustomTextAreaWithMaxLength(COMMENTS_MAX_LENGTH);
 	
-	/**
-	 * Instantiates a new CQL general information view.
-	 */
+
 	public CQLGeneralInformationView(){
 		generalInfoMainHPanel.clear();
 	}
@@ -145,17 +140,8 @@ public class CQLGeneralInformationView {
 	
 	public void buildButtonLayoutPanel(){
 		
-		saveAndDeleteBtn.getSaveButton().setVisible(true);
-		saveAndDeleteBtn.getCloseButton().setVisible(true);
-		saveAndDeleteBtn.getEraseButton().removeFromParent();
-		saveAndDeleteBtn.getDeleteButton().removeFromParent();
-		saveAndDeleteBtn.getInfoButton().removeFromParent();
-		saveAndDeleteBtn.getInsertButton().removeFromParent();
-		saveAndDeleteBtn.getTimingExpButton().removeFromParent();
-		saveAndDeleteBtn.setStylePrimaryName("floatLeft");
-		
 		VerticalPanel generalInfoVPanel = new VerticalPanel();
-		generalInfoVPanel.add(saveAndDeleteBtn);
+		generalInfoVPanel.add(saveButton);
 		
 		FormLabel commentsLabel = new FormLabel();
 		commentsLabel.setId("commentsLabel");
@@ -251,11 +237,7 @@ public class CQLGeneralInformationView {
 	}
 	
 	public Button getSaveButton(){
-		return saveAndDeleteBtn.getSaveButton();
-	}
-	
-	public Button getCancelButton(){
-		return saveAndDeleteBtn.getCloseButton();
+		return saveButton;
 	}
 
 	public void setWidgetReadOnlyForMeasure(boolean isEditable) {
@@ -270,7 +252,6 @@ public class CQLGeneralInformationView {
 
 	private void setButtonsAndCommentsReadOnly(boolean isEditable){
 		getSaveButton().setEnabled(isEditable);
-		getCancelButton().setEnabled(isEditable);
 		if(isEditable) {
 			getComments().getElement().removeAttribute(DISABLED);
 		} else {

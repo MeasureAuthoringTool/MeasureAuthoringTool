@@ -1625,7 +1625,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addGeneralInfoEventHandlers() {
 		searchDisplay.getCqlGeneralInformationView().getSaveButton().addClickHandler(event -> saveCQLGeneralInfo());
-		searchDisplay.getCqlGeneralInformationView().getCancelButton().addClickHandler(event -> cancelChangesOnGeneralInfoPage());
 		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().addKeyUpHandler(event -> resetMessagesAndSetPageDirty(true));
 		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
 	}

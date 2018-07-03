@@ -1,6 +1,7 @@
 package mat.dao.impl.clause;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1036,7 +1037,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	 */
 	@Override
 	public void save(Measure entity) {
-		entity.setLastModifiedOn(new Timestamp(System.currentTimeMillis()));
+		entity.setLastModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
 		entity.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
 		super.save(entity);
 	}

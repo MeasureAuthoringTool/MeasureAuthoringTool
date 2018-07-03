@@ -29,76 +29,30 @@ import mat.client.shared.MessageAlert;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 
-/**
- * The Class ManageUmlsPresenter.
- */
 public class ManageUmlsPresenter implements MatPresenter{
 	
-	
-	/** The show welcome message. */
 	private boolean showWelcomeMessage = false;
 	
-	/**
-	 * The Interface UMLSDisplay.
-	 */
 	public interface UMLSDisplay {
 		
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
 		Widget asWidget();
 		
-		/**
-		 * Gets the button bar.
-		 * 
-		 * @return the button bar
-		 */
 		SaveContinueCancelButtonBar getButtonBar() ;
 		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
-		/**
-		 * Gets the external link disclaimer.
-		 * 
-		 * @return the external link disclaimer
-		 */
 		VerticalPanel getExternalLinkDisclaimer();
 		
-		/**
-		 * Gets the submit.
-		 * 
-		 * @return the submit
-		 */
 		Button getSubmit();
 		
 		Button getCancel();
 		
 		Button getContinue();
 		
-		/**
-		 * Gets the umls external link.
-		 * 
-		 * @return the umls external link
-		 */
 		Anchor getUmlsExternalLink();
 		
-		/**
-		 * Gets the umls trouble logging.
-		 * 
-		 * @return the umls trouble logging
-		 */
 		Anchor getUmlsTroubleLogging();
 		
-		/**
-		 * Sets the initial focus.
-		 */
 		void setInitialFocus();
 
 		Input getUserIdText();
@@ -120,13 +74,10 @@ public class ManageUmlsPresenter implements MatPresenter{
 		ModalFooter getFooter();
 	}
 	
-	/** The display. */
 	private  UMLSDisplay display;
 	
-	/** The welcome message. */
 	private String userFirstName;
 
-	/**Key down handler to trap enter key.**/
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(final KeyDownEvent event) {
@@ -136,7 +87,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 		}
 	};
 	
-	/** The vsacapi service. */
 	private VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	
 	/**
@@ -199,16 +149,13 @@ public class ManageUmlsPresenter implements MatPresenter{
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
+	
 	@Override
 	public void beforeClosingDisplay() {
 		resetWidget();
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
+	
+	
 	@Override
 	public void beforeDisplay() {
 	
@@ -225,9 +172,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
 	@Override
 	public Widget getWidget() {		
 		return display.asWidget();

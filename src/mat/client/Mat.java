@@ -81,26 +81,14 @@ import mat.shared.ConstantMessages;
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserver{
 	
-	/**
-	 * The Class EnterKeyDownHandler.
-	 */
 	class EnterKeyDownHandler implements KeyDownHandler {
 		
-		/** The counter. */
 		final private int counter;
 		
-		/**
-		 * Instantiates a new enter key down handler.
-		 *
-		 * @param index the index
-		 */
 		public EnterKeyDownHandler(int index){
 			counter = index;
 		}
 		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.event.dom.client.KeyDownHandler#onKeyDown(com.google.gwt.event.dom.client.KeyDownEvent)
-		 */
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
@@ -109,11 +97,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		}
 	}
 	
-	/**
-	 * Focus skip lists.
-	 *
-	 * @param skipstr the skipstr
-	 */
 	public static void focusSkipLists(String skipstr){
 		Widget widget = SkipListBuilder.buildSkipList(skipstr);
 		getSkipList().clear();
@@ -121,20 +104,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		getSkipList().setFocus(true);
 	}
 	
-	/**
-	 * Gets the user agent.
-	 *
-	 * @return the user agent
-	 */
 	public static native String getUserAgent() /*-{
 		return navigator.userAgent.toLowerCase();
 	}-*/;
 	
-	/**
-	 * Removes the input box from focus panel.
-	 *
-	 * @param element the element
-	 */
+
 	public static void removeInputBoxFromFocusPanel(Element element) {
 		if(element.hasChildNodes() && element.getFirstChild().getNodeName().equalsIgnoreCase("input")){// this is done for 508 issue to fix the input box in FF
 			element.removeChild(element.getFirstChild());
@@ -157,8 +131,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private ManageAdminReportingPresenter reportingPresenter;
 	private int tabIndex;
 	
-	
-	/** The user role callback. */
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
 		
 		@Override
@@ -198,39 +170,23 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			});
 			}
 	};
-	
-	/** Builds the admin presenter.
-	 * 
-	 * @return the mat presenter */
+
 	private MatPresenter buildAdminPresenter() {
 		ManageAdminPresenter adminPresenter = new ManageAdminPresenter();
 		return adminPresenter;
 	}
 	
-	/**
-	 * Builds the measure composer.
-	 *
-	 * @return the measure composer presenter
-	 */
+
 	private MeasureComposerPresenter buildMeasureComposer() {
 		return new MeasureComposerPresenter();
 	}
 	
-	/**
-	 * Builds the cql composer.
-	 *
-	 * @return the cql composer presenter
-	 */
+
 	private CqlComposerPresenter buildCqlComposer() {
 		return new CqlComposerPresenter();
 	}
 	
-	/**
-	 * Builds the measure library widget.
-	 *
-	 * @param isAdmin the is admin
-	 * @return the manage measure presenter
-	 */
+
 	private ManageMeasurePresenter buildMeasureLibraryWidget(Boolean isAdmin) {
 		ManageMeasurePresenter measurePresenter = null;
 		if(isAdmin){
@@ -260,12 +216,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		
 	}
 	
-	/**
-	 * Builds the cql library widget.
-	 *
-	 * @param isAdmin the is admin
-	 * @return the cql library presenter
-	 */
+
 	private CqlLibraryPresenter buildCqlLibraryWidget() {
 		CqlLibraryView cqlLibraryView = new CqlLibraryView();
 		CQLLibraryDetailView detailView = new CQLLibraryDetailView();
@@ -276,11 +227,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				versionView, shareView, historyView);
 		return cqlLibraryPresenter;
 	}
-	/**
-	 * Builds the my account widget.
-	 *
-	 * @return the mat presenter
-	 */
+
+	
 	private MatPresenter buildMyAccountWidget() {
 		PersonalInformationView informationView = new PersonalInformationView();
 		PersonalInformationPresenter personalInfoPrsnter = new PersonalInformationPresenter(informationView);
@@ -294,9 +242,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		return accountPresenter;
 	}
 	
-	/**
-	 * Call sign out.
-	 */
+
 	private void callSignOut(){
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 			
@@ -312,9 +258,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		});
 	}
 	
-	/**
-	 * Call sign out without redirect.
-	 */
+
 	private void callSignOutWithoutRedirect(){
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 			@Override
@@ -324,18 +268,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		});
 	}
 	
-	/**
-	 * Close browser.
-	 */
+
 	private native void closeBrowser()
 	/*-{
 		$wnd.open('', '_self');
 		$wnd.close();
 	}-*/;
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MainLayout#initEntryPoint()
-	 */
+
 	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
@@ -420,18 +360,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		});
 	}
 	
-	/**
-	 * Load mat widgets.
-	 *
-	 * @param userFirstName the user first name
-	 * @param isAlreadySignedIn the is already signed in
-	 * @param resultMatVersion 
-	 */
+
 	@SuppressWarnings("unchecked")
 	private void loadMatWidgets(String userFirstName, boolean isAlreadySignedIn, String resultMatVersion){
-		//US212 begin updating user sign in time at regular intervals
 		MatContext.get().startUserLockUpdate();
-		//US154 LOGIN_EVENT
 		MatContext.get().recordTransactionEvent(null, null, "LOGIN_EVENT", null, 1);
 		
 		mainTabLayout = new MatTabLayoutPanel(this);
@@ -489,6 +421,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
+			hideBonnieActive();
 			
 			
 		}
@@ -546,6 +479,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		getLogoutPanel().add(signout);
 		getWelcomeUserPanel(userFirstName);
 		getVersionPanel(resultMatVersion);
+		setIndicatorsVisible();
 		/*
 		 * no delay desired when hiding loading message here
 		 * tab selection below will fail if loading
@@ -579,7 +513,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
-		getSigninLink().addClickHandler(new ClickHandler() {
+		getUMLSButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -587,6 +521,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				login.showUMLSLogInDialog();
 				new ManageUmlsPresenter(login, userFirstName, isAlreadySignedIn);
 				login.showModal();
+			}
+		});
+		
+		getBonnieButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				BonnieModal bonnieModal = new BonnieModal();
+				bonnieModal.show();
 			}
 		});
 		
@@ -665,12 +608,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	}
 	
 	
-	/**
-	 * implementing enabled interface
-	 * consider adding ui component enablement by invoking setEnabled on the active presenter.
-	 *
-	 * @param enabled the new enabled
-	 */
+
 	@Override
 	public void setEnabled(boolean enabled){
 		mainTabLayout.setEnabled(enabled);

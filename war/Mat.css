@@ -1305,12 +1305,13 @@ padding: 2px;
 .logoutPanel{
 	float: right;
 	position: relative;
-	padding-top: 5px;
+	padding-top: 10px;
+	padding-right: 15px;
 	cursor: pointer;
 	font-size:small;
 }
 
-.umlsStatePanel{
+.statePanel{
 	float: right;
 	position: relative;
 	padding-top: 20px;
@@ -1334,7 +1335,6 @@ padding: 2px;
 .logoutAndUMLSPanel{
 	float: right;
 	position: relative;
-	/*padding-top: 12px;*/
 	font-size:small;
 }
 

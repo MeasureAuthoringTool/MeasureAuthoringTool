@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
+import org.springframework.util.CollectionUtils;
 import org.xml.sax.InputSource;
 
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
@@ -84,7 +84,7 @@ public final class CQLUtilityClass {
 	private static String createLibraryNameSection(CQLModel cqlModel) {
 		StringBuilder sb = new StringBuilder();
 
-		if (cqlModel.getLibraryName() != null) {
+		if (StringUtils.isNotBlank(cqlModel.getLibraryName())) {
 
 			sb.append("library ").append(cqlModel.getLibraryName());
 			sb.append(" version ").append("'" + cqlModel.getVersionUsed()).append("'");
@@ -370,7 +370,7 @@ public final class CQLUtilityClass {
 
 	private static String createIncludesSection(List<CQLIncludeLibrary> includeLibList) {
 		StringBuilder sb = new StringBuilder();
-		if(includeLibList != null){
+		if(!CollectionUtils.isEmpty(includeLibList)){
 			for(CQLIncludeLibrary includeLib : includeLibList){
 				sb.append("include ").append(includeLib.getCqlLibraryName());
 				sb.append(" version ").append("'").append(includeLib.getVersion()).append("' ");
@@ -388,7 +388,7 @@ public final class CQLUtilityClass {
 
 		List<String> codeSystemAlreadyUsed = new ArrayList<>();
 
-		if(codeSystemList != null){
+		if(!CollectionUtils.isEmpty(codeSystemList)){
 
 			for(CQLCode codes : codeSystemList){
 
@@ -423,7 +423,7 @@ public final class CQLUtilityClass {
 
 		List<String> valueSetAlreadyUsed = new ArrayList<>();
 
-		if (valueSetList != null) {
+		if (!CollectionUtils.isEmpty(valueSetList)) {
 
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 
@@ -453,7 +453,7 @@ public final class CQLUtilityClass {
 
 		List<String> codesAlreadyUsed = new ArrayList<String>();
 
-		if(codeList != null){
+		if(!CollectionUtils.isEmpty(codeList)){
 
 			for(CQLCode codes : codeList){
 
@@ -480,7 +480,7 @@ public final class CQLUtilityClass {
 
 	private static StringBuilder createParameterSection(List<CQLParameter> paramList, StringBuilder cqlStr, String toBeInserted) {
 		
-		if (paramList != null) {
+		if (!CollectionUtils.isEmpty(paramList)) {
 
 			for (CQLParameter parameter : paramList) {
 

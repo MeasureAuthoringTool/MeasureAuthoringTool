@@ -27,7 +27,6 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
-
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
@@ -733,9 +732,8 @@ mat.dao.clause.MeasureDAO {
 		}
 		measureResultList = sortMeasureList(measureResultList);
 		
-		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
-			if (advanceSearchResultsForMeasure(advancedSearchModel, su, measure)) {
+			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if(isDraft){
@@ -945,7 +943,7 @@ mat.dao.clause.MeasureDAO {
 		return matchesSearch;
 	}
 	
-	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, StringUtility stringUtility, Measure measure) {
+	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
 		if(StringUtil.isNotBlank(model.getSearchTerm())) {
 			String searchTerm = model.getSearchTerm().toLowerCase();
 			String measureAbbName = measure.getaBBRName().toLowerCase();

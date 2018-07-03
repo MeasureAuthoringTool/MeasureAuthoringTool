@@ -24,11 +24,13 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import com.ibm.icu.util.Calendar;
 
 import mat.client.measure.MeasureSearchFilterPanel;
+import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
 import mat.model.LockedUserInfo;
@@ -49,6 +51,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 mat.dao.clause.MeasureDAO {
 
 	private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
+	
+	@Autowired
+	private UserDAO userDAO; 
 	
 	/*
 	 * assumption: measures here are all part of the same measure set
@@ -1203,6 +1208,13 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 		return measureIds;
+	}
+	
+	@Override
+	public void save(Measure entity) {
+		entity.setLastModifiedOn(new Timestamp(System.currentTimeMillis()));
+		entity.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
+		super.save(entity);
 	}
 	
 }

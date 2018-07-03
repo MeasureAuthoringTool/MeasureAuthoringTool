@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import mat.dao.ListObjectDAO;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.ListObject;
 import mat.model.QualityDataModelWrapper;
@@ -31,6 +32,9 @@ mat.dao.clause.MeasureXMLDAO {
 	/**DataTypeDAO.**/
 	@Autowired
 	private mat.dao.DataTypeDAO dataTypeDAO;
+	
+	@Autowired
+	private MeasureDAO measureDAO; 
 
 	/**supplemental data OID and Data type name map.**/
 	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
@@ -158,5 +162,15 @@ mat.dao.clause.MeasureXMLDAO {
 		String dataTypeName = suppDataOidAndDataTypeNameMap.get(oid);
 		dataType = (dataTypeDAO.findDataTypeForSupplimentalCodeList(dataTypeName, categoryId)).getDescription();
 		return dataType;
+	}
+	
+	@Override
+	public void save(MeasureXML measureXML) {
+		updateLastUpdatedInformationForMeasure(measureXML.getMeasureId());
+		super.save(measureXML);
+	}
+	
+	private void updateLastUpdatedInformationForMeasure(String measureId) {
+		measureDAO.save(measureDAO.find(measureId)); // triggers the update 
 	}
 }

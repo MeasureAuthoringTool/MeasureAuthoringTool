@@ -1,5 +1,6 @@
 package mat.server.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -307,6 +308,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 				measurePackage.setOwner(currentUser);
 			}
 		}
+		
 		measureDAO.save(measurePackage);
 	}
 
@@ -330,6 +332,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			measureXML.setMeasureId(measureXmlModel.getMeasureId());
 			measureXML.setMeasureXMLAsByteArray(measureXmlModel.getXml());
 		}
+				
 		measureXMLDAO.save(measureXML);
 	}
 

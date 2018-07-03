@@ -34,5 +34,11 @@
         class="mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
     <property name="isPrivate" column="PRIVATE"/>
     <property name="releaseVersion" column="RELEASE_VERSION" />
+       
+    <property name="lastModifiedOn" column="LAST_MODIFIED_ON" />
+    
+    <many-to-one name="lastModifiedBy" column="LAST_MODIFIED_BY" 
+       class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+
   </class>
 </hibernate-mapping>

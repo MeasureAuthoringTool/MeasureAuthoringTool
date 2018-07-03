@@ -611,8 +611,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			measureResultList = getAllMeasuresInSet(measureResultList);
 		}
 		measureResultList = sortMeasureList(measureResultList);
+		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
-			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
+			//removing as to not block QA
+			/*if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {*/
+			if (searchResultsForMeasure(advancedSearchModel.getSearchTerm(), su, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if (isDraft) {
@@ -793,7 +796,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return matchesSearch;
 	}
 
-	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
+	//removing as to not block QA
+	/*private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
 		if(StringUtil.isNotBlank(model.getSearchTerm())) {
 			String searchTerm = model.getSearchTerm().toLowerCase();
 			String measureAbbName = measure.getaBBRName().toLowerCase();
@@ -858,7 +862,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		}
 
 		return true;
-	}
+	}*/
 
 	private List<Measure> sortMeasureList(List<Measure> measureResultList) {
 		// generate sortable lists

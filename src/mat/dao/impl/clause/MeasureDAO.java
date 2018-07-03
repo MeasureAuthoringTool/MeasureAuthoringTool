@@ -3,6 +3,7 @@ package mat.dao.impl.clause;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -28,7 +29,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.ibm.icu.util.Calendar;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.UserDAO;

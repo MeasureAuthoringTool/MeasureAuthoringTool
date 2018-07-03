@@ -2057,7 +2057,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
 					rs = incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
 					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 						if(measureExport != null) {
 							String simpleXML = measureExport.getSimpleXML();
 							saveSimpleXML(m, measureExport, simpleXML);
@@ -2073,7 +2073,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					versionNumber = versionArr[0] + "." + versionArr[1];
 					rs = incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
 					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 						if(measureExport != null) {
 							String simpleXML = measureExport.getSimpleXML();
 							saveSimpleXML(m, measureExport, simpleXML);

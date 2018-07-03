@@ -3,6 +3,7 @@ package mat.model.clause;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
+
 import mat.model.User;
 
 public class Measure {

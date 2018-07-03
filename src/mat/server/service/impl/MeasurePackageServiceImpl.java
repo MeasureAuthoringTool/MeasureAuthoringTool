@@ -1,6 +1,5 @@
 package mat.server.service.impl;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,86 +55,63 @@ import mat.server.util.ExportSimpleXML;
 import mat.shared.AdvancedSearchModel;
 import mat.shared.ValidationUtility;
 
-/**
- * The Class MeasurePackageServiceImpl.
- */
 public class MeasurePackageServiceImpl implements MeasurePackageService {
 	
-	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasurePackageServiceImpl.class);
 	
-	/** The data type dao. */
 	@Autowired
 	private DataTypeDAO dataTypeDAO;
 	
-	/** The e measure service. */
 	@Autowired
 	private SimpleEMeasureService eMeasureService;
 	
-	/** The measure audit log dao. */
 	@Autowired
 	private MeasureAuditLogDAO measureAuditLogDAO;
 	
-	/** The measure dao. */
 	@Autowired
 	private MeasureDAO measureDAO;
 	
-	/** The Organization dao. */
 	@Autowired
 	private OrganizationDAO organizationDAO;
 	
-	/** The measure export dao. */
 	@Autowired
 	private MeasureExportDAO measureExportDAO;
 	
-	/** The measure set dao. */
 	@Autowired
 	private MeasureSetDAO measureSetDAO;
 	
-	/** The measure share dao. */
 	@Autowired
 	private MeasureShareDAO measureShareDAO;
 	
-	/** The measure xmldao. */
 	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
 	
-	/** The packager dao. */
 	@Autowired
 	private PackagerDAO packagerDAO;
 	
-	/** The quality data set dao. */
 	@Autowired
 	private QualityDataSetDAO qualityDataSetDAO;
 	
-	/** The share level dao. */
 	@Autowired
 	private ShareLevelDAO shareLevelDAO;
 	
-	/** The steward dao. */
 	@Autowired
 	private StewardDAO stewardDAO;
 	
-	/** The user dao. */
 	@Autowired
 	private UserDAO userDAO;
-	
-	/** The current release version. */
-	private String currentReleaseVersion;
-	
-	/** The cql library dao. */
+		
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
 	
-	/** The cql library share DAO. */
 	@Autowired
 	private CQLLibraryShareDAO cqlLibraryShareDAO;
-	
-	/** The cql library audit log DAO. */
+
 	@Autowired
 	private CQLLibraryAuditLogDAO cqlLibraryAuditLogDAO;
 	
-	/** The validator. */
+	private String currentReleaseVersion;
+	
 	private ValidationUtility validator = new ValidationUtility();
 
 	@Override
@@ -187,19 +163,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
 	}
 	
-	
-	/**
-	 * Generate export.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param message
-	 *            the message
-	 * @param matValueSetList
-	 *            the mat value set list
-	 * @throws Exception
-	 *             the exception
-	 */
 	private void generateExport(final String measureId, final List<String> message ,
 			final List<MatValueSet> matValueSetList) throws Exception {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
@@ -222,7 +185,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		//replace all @id attributes of <elementLookUp>/<qdm> with @uuid attribute value
 		exportedXML = ExportSimpleXML.setQDMIdAsUUID(exportedXML);
 		
-		MeasureExport export = measureExportDAO.findForMeasure(measureId);
+		MeasureExport export = measureExportDAO.findByMeasureId(measureId);
 		if (export == null) {
 			export = new MeasureExport();
 			export.setMeasure(measure);
@@ -269,11 +232,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.getMeasureShareInfoForMeasure(userName, measureId, startIndex - 1, pageSize);
 	}
 	
-	/**
-	 * Gets the validator.
-	 * 
-	 * @return the validator
-	 */
 	public ValidationUtility getValidator() {
 		return validator;
 	}
@@ -357,7 +315,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public List<MeasureShareDTO> searchForAdminWithFilter(String searchText,
 			int startIndex, int numResults, int filter) {
-		//User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
 	}
 	
@@ -371,12 +328,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public List<Measure> getComponentMeasuresInfo(List<String> measureIds){
 		return measureDAO.getComponentMeasureInfoForMeasures(measureIds);
 	}
-	/**
-	 * Sets the validator.
-	 * 
-	 * @param validator
-	 *            the new validator
-	 */
+
 	public void setValidator(ValidationUtility validator) {
 		this.validator = validator;
 	}
@@ -412,15 +364,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		
 	}
-	
-	/**
-	 * Transfer associated CQL library onwner ship to user.
-	 *
-	 * @param measureId the measure id
-	 * @param user the user
-	 * @param emailUser the email user
-	 */
-	//Transferring associated CQL Library ownership when the measure owner ship is changed.
+
 	private void transferAssociatedCQLLibraryOnwnerShipToUser(String measureId, User user, String emailUser){
 		CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measureId);
 		if(cqlLibrary != null){
@@ -507,7 +451,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			}
 		}
 		
-		//US 170. Log share event
 		if (recordShareEvent || recordRevokeShareEvent) {
 			if (recordShareEvent && recordRevokeShareEvent) {
 				auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
@@ -549,38 +492,18 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.getMeasure(measureId);
 	}
 
-	/**
-	 * Gets the current release version.
-	 *
-	 * @return the current release version
-	 */
 	public String getCurrentReleaseVersion() {
 		return currentReleaseVersion;
 	}
 
-	/**
-	 * Sets the current release version.
-	 *
-	 * @param currentReleaseVersion the new current release version
-	 */
 	public void setCurrentReleaseVersion(String currentReleaseVersion) {
 		this.currentReleaseVersion = currentReleaseVersion;
 	}
 
-	/**
-	 * Gets the cql library DAO.
-	 *
-	 * @return the cql library DAO
-	 */
 	public CQLLibraryDAO getCqlLibraryDAO() {
 		return cqlLibraryDAO;
 	}
 
-	/**
-	 * Sets the cql library DAO.
-	 *
-	 * @param cqlLibraryDAO the new cql library DAO
-	 */
 	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
 		this.cqlLibraryDAO = cqlLibraryDAO;
 	}

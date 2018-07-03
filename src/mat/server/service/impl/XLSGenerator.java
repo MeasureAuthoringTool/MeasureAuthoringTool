@@ -379,7 +379,7 @@ public abstract class XLSGenerator {
 	 * @return HSSFWorkbook. * */
 	public final HSSFWorkbook getXLS(final String measureId,
 			final MeasureExportDAO measureExportDAO) {
-		MeasureExport me = measureExportDAO.findForMeasure(measureId);
+		MeasureExport me = measureExportDAO.findByMeasureId(measureId);
 		me.getCodeListBarr();
 		try {
 			byte[] barr = me.getCodeListBarr();

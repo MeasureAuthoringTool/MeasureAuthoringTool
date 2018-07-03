@@ -21,9 +21,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**MeasureXMLDAO.java.**/
-public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
-mat.dao.clause.MeasureXMLDAO {
+public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements mat.dao.clause.MeasureXMLDAO {
 
 	/**ListObjectDAO.**/
 	@Autowired
@@ -36,7 +34,6 @@ mat.dao.clause.MeasureXMLDAO {
 	@Autowired
 	private MeasureDAO measureDAO; 
 
-	/**supplemental data OID and Data type name map.**/
 	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
 
 	static {
@@ -46,13 +43,6 @@ mat.dao.clause.MeasureXMLDAO {
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.3591", ConstantMessages.PATIENT_CHARACTERISTIC_PAYER);
 	}
 
-	/**
-	 * Find for measure.
-	 * 
-	 * @param measureId
-	 *            - {@link String}.
-	 * @return {@link MeasureXML}. *
-	 */
 	@Override
 	public final MeasureXML findForMeasure(final String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession()
@@ -67,12 +57,6 @@ mat.dao.clause.MeasureXMLDAO {
 		}
 	}
 
-	/**
-	 * This method will create QDM elements for Timing Elements based on the OID
-	 * list argument passed to it.
-	 * @param qdmOidList - {@link List}.
-	 * @return {@link QualityDataModelWrapper}.
-	 */
 	@Override
 	public final QualityDataModelWrapper createTimingElementQDMs(
 			final List<String> qdmOidList) {
@@ -112,17 +96,6 @@ mat.dao.clause.MeasureXMLDAO {
 		return wrapper;
 	}
 
-	/**
-	 * Creates the supplimental qdm.
-	 * 
-	 * @param measureId
-	 *            - {@link String}.
-	 * @param isClone
-	 *            - {@link Boolean}.
-	 * @param uuidMap
-	 *            - {@link HashMap}.
-	 * @return {@link QualityDataModelWrapper}.
-	 */
 	@Override
 	public final CQLQualityDataModelWrapper createSupplimentalQDM(final String measureId,
 			final boolean isClone, final HashMap<String, String> uuidMap) {
@@ -151,12 +124,6 @@ mat.dao.clause.MeasureXMLDAO {
 		return wrapper;
 	}
 
-
-	/** Method to find data type description based on OID and category Id.
-	 *@param oid - String.
-	 *@param categoryId - String.
-	 *@return String - String.
-	 * **/
 	private String findDataTypeForOID(final String oid, final String categoryId) {
 		String dataType = null;
 		String dataTypeName = suppDataOidAndDataTypeNameMap.get(oid);
@@ -169,8 +136,8 @@ mat.dao.clause.MeasureXMLDAO {
 		updateLastUpdatedInformationForMeasure(measureXML.getMeasureId());
 		super.save(measureXML);
 	}
-	
+
 	private void updateLastUpdatedInformationForMeasure(String measureId) {
-		measureDAO.save(measureDAO.find(measureId)); // triggers the update 
+		measureDAO.save(measureDAO.find(measureId)); 
 	}
 }

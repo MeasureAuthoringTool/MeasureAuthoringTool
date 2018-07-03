@@ -29,7 +29,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
@@ -612,10 +611,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			measureResultList = getAllMeasuresInSet(measureResultList);
 		}
 		measureResultList = sortMeasureList(measureResultList);
-
-		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
-			if (advanceSearchResultsForMeasure(advancedSearchModel, su, measure)) {
+			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if (isDraft) {
@@ -796,9 +793,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return matchesSearch;
 	}
 
-	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, StringUtility stringUtility,
-			Measure measure) {
-		if (StringUtil.isNotBlank(model.getSearchTerm())) {
+	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
+		if(StringUtil.isNotBlank(model.getSearchTerm())) {
 			String searchTerm = model.getSearchTerm().toLowerCase();
 			String measureAbbName = measure.getaBBRName().toLowerCase();
 			String measureDesc = measure.getDescription().toLowerCase();

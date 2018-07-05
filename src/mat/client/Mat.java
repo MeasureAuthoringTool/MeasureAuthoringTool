@@ -36,6 +36,7 @@ import mat.client.admin.ManageCQLLibraryAdminPresenter;
 import mat.client.admin.ManageCQLLibraryAdminView;
 import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
+import mat.client.bonnie.BonnieModal;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;

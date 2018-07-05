@@ -29,29 +29,13 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class QDMDialogBox.
- */
+
 public class QDMDialogBox {
 	
-	/** The Constant TIMING_ELEMENT. */
-	private static final String TIMING_ELEMENT = "Timing Element";
-	
-	/** The Constant ATTRIBUTES. */
 	private static final String ATTRIBUTES = "attributes";
 	
-	/** The is selected. */
 	private static boolean isSelected;
 	
-	/**
-	 * Show qdm dialog box.
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param isAdd
-	 *            the is add
-	 */
 	public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay,
 			boolean isAdd) {
 		final DialogBox dialogBox = new DialogBox(false, true);
@@ -143,20 +127,7 @@ public class QDMDialogBox {
 		dialogBox.center();
 	}
 	
-	/**
-	 * Adds the list box handler.
-	 * 
-	 * @param listBox
-	 *            the list box
-	 * @param suggestBox
-	 *            the suggest box
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param dialogBox
-	 *            the dialog box
-	 * @param isAdd
-	 *            the is add
-	 */
+	
 	private static void addListBoxHandler(final ListBox listBox,
 			final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay,
 			final DialogBox dialogBox, final boolean isAdd) {
@@ -181,6 +152,7 @@ public class QDMDialogBox {
 						xmlTreeDisplay.addNode(value, value, uuid,
 								CellTreeNode.ELEMENT_REF_NODE);
 					} else {
+						@SuppressWarnings("unchecked")
 						List<CellTreeNode> attributeList = (List<CellTreeNode>) xmlTreeDisplay
 								.getSelectedNode().getExtraInformation(ATTRIBUTES);
 						if (attributeList != null) {
@@ -196,14 +168,6 @@ public class QDMDialogBox {
 		});
 	}
 	
-	/**
-	 * Adds the suggest handler.
-	 * 
-	 * @param suggestBox
-	 *            the suggest box
-	 * @param listBox
-	 *            the list box
-	 */
 	private static void addSuggestHandler(final SuggestBox suggestBox,
 			final ListBox listBox) {
 		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
@@ -222,14 +186,7 @@ public class QDMDialogBox {
 		});
 	}
 	
-	/**
-	 * Adds the qdm names to list box.
-	 * 
-	 * @param listBox
-	 *            the list box
-	 * @param currentSelectedQDMUuid
-	 *            the current selected qdm uuid
-	 */
+
 	private static void addQDMNamesToListBox(ListBox listBox,
 			String currentSelectedQDMUuid) {
 		Set<Entry<String, Node>> elementLookUpNodes = PopulationWorkSpaceConstants
@@ -271,10 +228,6 @@ public class QDMDialogBox {
 	/**
 	 * This method will check for data type of the node to be "Attribute" or
 	 * "Timing Element". If yes, return true, else return false.
-	 * 
-	 * @param node
-	 *            the node
-	 * @return true, if is data type attrib
 	 */
 	private static boolean isDataTypeAttrib(Node node) {
 		boolean returnType = false;
@@ -286,12 +239,7 @@ public class QDMDialogBox {
 		
 		return returnType;
 	}
-	
-	/**
-	 * Creates the suggest oracle.
-	 * 
-	 * @return the multi word suggest oracle
-	 */
+
 	private static MultiWordSuggestOracle createSuggestOracle() {
 		MultiWordSuggestOracle multiWordSuggestOracle = new MultiWordSuggestOracle();
 		multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.getElementLookUpName()
@@ -299,20 +247,10 @@ public class QDMDialogBox {
 		return multiWordSuggestOracle;
 	}
 	
-	/**
-	 * Checks if is selected.
-	 *
-	 * @return true, if is selected
-	 */
 	public static boolean isSelected() {
 		return isSelected;
 	}
 	
-	/**
-	 * Sets the selected.
-	 *
-	 * @param isSelected the new selected
-	 */
 	public static void setSelected(boolean isSelected) {
 		QDMDialogBox.isSelected = isSelected;
 	}

@@ -661,6 +661,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param clonedMeasureId
 	 *            the cloned measure id
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public final void cloneMeasureXml(final boolean creatingDraft, final String oldMeasureId,
 			final String clonedMeasureId) {
@@ -3428,8 +3429,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML);
 
-		List<String> message = new ArrayList<String>();
-		
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, null);
 		
 		if(cqlResult.getCqlErrors() != null && cqlResult.getCqlErrors().isEmpty()) {

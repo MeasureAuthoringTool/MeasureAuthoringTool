@@ -72,7 +72,7 @@ public class FileNameUtility {
 	 *            the name
 	 * @return the parent path
 	 */
-	public static String getParentPath(String name) {
+	public String getParentPath(String name) {
 		return name.replaceAll("\\W","") + "_Artifacts";
 	}
 	

@@ -37,6 +37,7 @@ public interface IDAO<T, ID extends Serializable> {
 	 * @param ids
 	 *            the ids
 	 */
+	@SuppressWarnings("unchecked")
 	public abstract void delete(ID...ids) ;
 
 	/**
@@ -45,6 +46,7 @@ public interface IDAO<T, ID extends Serializable> {
 	 * @param entities
 	 *            the entities
 	 */
+	@SuppressWarnings("unchecked")
 	public abstract void delete(T...entities) ;
 
 	/**

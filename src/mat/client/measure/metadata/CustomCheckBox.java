@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * {@example com.google.gwt.examples.CheckBoxExample}
  * </p>
  */
+@SuppressWarnings("deprecation")
 public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Boolean> {
   
   /** The input elem. */
@@ -117,7 +118,7 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	 * @param isLabelRequired2
 	 *            the is label required2
 	 */
-  protected CustomCheckBox(Element elem,String title, boolean isLabelRequired2) {
+protected CustomCheckBox(Element elem,String title, boolean isLabelRequired2) {
     //super(DOM.createSpan());
 	  super(DOM.createDiv());
 	  
@@ -171,7 +172,7 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	 * @param labelOrder
 	 *            the label order
 	 */
-  protected CustomCheckBox(Element elem,String title,int labelOrder) {
+protected CustomCheckBox(Element elem,String title,int labelOrder) {
 	    //super(DOM.createSpan());
 		  super(DOM.createDiv());
  

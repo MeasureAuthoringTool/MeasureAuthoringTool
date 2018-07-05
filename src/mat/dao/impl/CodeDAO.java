@@ -15,11 +15,13 @@ import org.hibernate.criterion.Restrictions;
 /**
  * The Class CodeDAO.
  */
+@SuppressWarnings("deprecation")
 public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO {
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeDAO#deleteCodes(java.util.List)
 	 */
+	@SuppressWarnings("rawtypes")
 	public void deleteCodes(List<Code> codes){
 		Session session = getSessionFactory().getCurrentSession();
 	                String hql = "delete from mat.model.Code c where c in (:codesList)";
@@ -45,7 +47,7 @@ public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO
 		Criteria codesCriteria = getSessionFactory().getCurrentSession().createCriteria(Code.class);
 		codesCriteria.add(Restrictions.eq("codeListID", codeListId));
 		@SuppressWarnings("unchecked")
-		ArrayList<Code> results = (ArrayList)codesCriteria.list();
+		ArrayList<Code> results = (ArrayList<Code>)codesCriteria.list();
 		Collections.sort(results,new Code.Comparator());
 		List<Code> filteredList = new ArrayList<Code>();
 		if(results.size() > pageSize){

@@ -5,15 +5,11 @@ package mat.model;
  */
 public class CQLLibraryOwnerReportDTO extends OwnerReportDTO {
 	
-	private String cqlLibraryName; 
-	
 	private String type; 
 	
 	private String status; 
 	
 	private String versionNumber; 
-	
-	private String id; 
 	
 	private String setId;
 

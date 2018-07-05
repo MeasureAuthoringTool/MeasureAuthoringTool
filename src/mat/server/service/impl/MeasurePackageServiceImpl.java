@@ -232,6 +232,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 * @throws Exception
 	 *             the exception
 	 */
+	@SuppressWarnings("deprecation")
 	private void generateExport(final String measureId, final List<String> message ,
 			final List<MatValueSet> matValueSetList) throws Exception {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);

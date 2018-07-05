@@ -25,6 +25,7 @@ import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.shared.ConstantMessages;
 
 
+@SuppressWarnings("deprecation")
 public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserver {
 	/**
 	 * The Class EnterKeyDownHandler.
@@ -155,8 +156,6 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 					notifyCurrentTabOfClosing();
 					cqlComposerTabLayout.updateHeaderSelection(0);
 					cqlComposerTabLayout.setSelectedIndex(0);
-					/*buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
-					buttonBar.setPageNamesOnState();*/
 				} else {
 					DeferredCommand.addCommand(this);
 				}
@@ -171,8 +170,6 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 			notifyCurrentTabOfClosing();
 			cqlComposerTabLayout.updateHeaderSelection(0);
 			cqlComposerTabLayout.setSelectedIndex(0);
-			/*buttonBar.state = measureComposerTabLayout.getSelectedIndex();
-			buttonBar.setPageNamesOnState();*/
 			if (MatContext.get().getCurrentLibraryInfo() != null) {
 				MatContext.get().getCurrentLibraryInfo().setCqlLibraryId("");
 			}
@@ -299,8 +296,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	@Override
 	public boolean isValid() {
 		boolean isValid = true;
-		cqlStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
-		if (cqlStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty()) {
+		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+		if (CQLStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty()) {
 			isValid = false;
 		}
 		return isValid;
@@ -315,7 +312,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	public void showUnsavedChangesError() {
 		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
 		String auditMessage = null;
-		saveErrorMessageAlert = cqlStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+		saveErrorMessageAlert = CQLStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
 		if(saveErrorMessageAlert != null) {
 			showErrorMessageAlert(saveErrorMessageAlert);
 		}

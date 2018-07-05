@@ -52,10 +52,6 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class AddEditComponentMeasuresView.
- */
 public class AddEditComponentMeasuresView implements
 		MetaDataPresenter.AddEditComponentMeasuresDisplay {
 
@@ -448,33 +444,6 @@ public class AddEditComponentMeasuresView implements
 		table.redraw();
 	}
 
-	/**
-	 * Update component measures selected list.
-	 * 
-	 * @param componentMeasureList
-	 *            the component measure list
-	 */
-	private void updateComponentMeasuresSelectedList(
-			List<ManageMeasureSearchModel.Result> componentMeasureList) {
-		if (componentMeasuresList.size() != 0) {
-			for (int i = 0; i < componentMeasuresList.size(); i++) {
-				for (int j = 0; j < componentMeasureList.size(); j++) {
-					if (componentMeasuresList
-							.get(i)
-							.getId()
-							.equalsIgnoreCase(
-									componentMeasureList.get(j).getId())) {
-						componentMeasuresList.set(i,
-								componentMeasureList.get(j));
-						break;
-					}
-				}
-			}
-		}
-
-	}
-
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -520,6 +489,7 @@ public class AddEditComponentMeasuresView implements
 	 *            the ts
 	 * @return the string
 	 */
+	@SuppressWarnings("deprecation")
 	private String convertTimestampToString(Timestamp ts) {
 		String tsStr;
 		if (ts == null) {

@@ -960,7 +960,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				dataCriteriaElem.removeChild(templateIdNode);
 			}
 			catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -2666,19 +2665,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	}
 	
 	/**
-	 * Add comment before specific Node.
-	 *
-	 * @param xmlProcessor the xml processor
-	 * @param commentText the comment text
-	 * @param insertBeforeNode the insert before node
-	 */
-	private void addCommentNode(XmlProcessor xmlProcessor, String commentText, Node insertBeforeNode) {
-		Comment comment = xmlProcessor.getOriginalDoc().createComment(commentText);
-		insertBeforeNode.getParentNode().insertBefore(comment, insertBeforeNode);
-		
-	}
-	
-	/**
 	 * Creates the code for datatype.
 	 *
 	 * @param templateNode the template node
@@ -2842,7 +2828,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				ageAtFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForAGE_AT);
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -2893,7 +2878,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				satisfiesFuncNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathForSatisfiesAllAny);
 			}
 		}catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -192,6 +192,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
+	@SuppressWarnings("deprecation")
 	private static String transform(Node node) {
 		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 		TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();

@@ -8,9 +8,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class SecurityRole implements IsSerializable {
 	
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-	
 	/** The Constant ADMIN_ROLE. */
 	public static final String ADMIN_ROLE = "Administrator";
 	

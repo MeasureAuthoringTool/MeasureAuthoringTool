@@ -127,6 +127,7 @@ class TimeoutManager {
 	//US 153
 	/** The timeout warning. */
 	private Timer timeoutWarning = new Timer() {
+		@SuppressWarnings("deprecation")
 		public void run() {			
 			    Date today = new Date();
 			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.		
@@ -235,6 +236,7 @@ class TimeoutManager {
 	 * @param id
 	 *            the id
 	 */
+	@SuppressWarnings("deprecation")
 	protected void setId(Widget widget, String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}

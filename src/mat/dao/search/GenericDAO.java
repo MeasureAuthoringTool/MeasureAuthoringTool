@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
  *            the generic type
  */
 @Transactional
+@SuppressWarnings("unchecked")
 public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T, ID> {
 	
 	/** The clazz. */
@@ -43,6 +44,7 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 	/**
 	 * Instantiates a new generic dao.
 	 */
+
 	public GenericDAO() {
 		Type[] parameters = ((ParameterizedType) getClass()
 				.getGenericSuperclass()).getActualTypeArguments();
@@ -117,6 +119,7 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 		String query = MessageFormat.format("delete from {0} sometable where sometable.id IN ({1})", clazz.getName(), sb.toString());
 
 		Session session = getSessionFactory().getCurrentSession();
+		@SuppressWarnings({ "rawtypes", "deprecation" })
 		org.hibernate.Query q = session.createQuery(query);
 		q.executeUpdate();
 	}
@@ -169,6 +172,7 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 		List<T>	list = null;
 		
 		Session	session = getSessionFactory().getCurrentSession();
+		@SuppressWarnings("deprecation")
 		Criteria criteria = session.createCriteria(clazz);				
 		// obtain the actual records
         list = criteria.list();

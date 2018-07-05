@@ -64,6 +64,7 @@ public class ManageLoadingView {
 	 * @param id
 	 *            the id
 	 */
+	@SuppressWarnings("deprecation")
 	protected static void setId(final Widget widget, final String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}

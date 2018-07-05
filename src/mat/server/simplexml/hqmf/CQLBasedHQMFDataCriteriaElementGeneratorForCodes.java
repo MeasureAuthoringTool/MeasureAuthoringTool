@@ -4,8 +4,6 @@ package mat.server.simplexml.hqmf;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,9 +20,6 @@ import mat.shared.UUIDUtilClient;
 public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generator {
 
 	protected String extensionValue = null;
-
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(CQLBasedHQMFDataCriteriaElementGeneratorForCodes.class);
 
 	/**
 	 * Generate hqm for measure.

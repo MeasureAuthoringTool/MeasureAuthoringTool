@@ -6,10 +6,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.shared.CQLSuggestOracle;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -27,14 +23,17 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.CQLSuggestOracle;
+
 /**
  * The Class CQLDefinitionsDialogBox.
  * This class is used to show a pop-up of all the CQL Definitions which can be attached to the population workspace.
@@ -431,18 +430,6 @@ public class CQLArtifactsDialogBox {
 		
 	}
 
-	/**
-	 * Creates the suggest oracle.
-	 * 
-	 * @return the multi word suggest oracle
-	 */
-	private static MultiWordSuggestOracle createSuggestOracle() {
-		MultiWordSuggestOracle multiWordSuggestOracle = new MultiWordSuggestOracle();
-		multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.getSubTreeLookUpName()
-				.values());
-		return multiWordSuggestOracle;
-	}
-	
 	/**
 	 * Checks if is selected.
 	 *

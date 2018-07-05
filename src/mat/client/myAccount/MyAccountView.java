@@ -38,6 +38,7 @@ public class MyAccountView implements MyAccountPresenter.Display, TabObserver {
 	 * @param cpp
 	 *            the cpp
 	 */
+	@SuppressWarnings("unchecked")
 	public MyAccountView(PersonalInformationPresenter pip,
 			SecurityQuestionsPresenter sqp, 
 			ChangePasswordPresenter cpp) {

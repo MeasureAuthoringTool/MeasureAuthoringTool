@@ -14,17 +14,8 @@ public class FocusableImageButton extends FocusableWidget {
 	
 	/** The image. */
 	private Image image;
-	
-	/**
-	 * Instantiates a new focusable image button.
-	 * 
-	 * @param imageUrl
-	 *            the image url
-	 * @param title
-	 *            Note: alt attribute is being set to title, but if you want
-	 *            different values for alt and title then implement a 3-arg
-	 *            constructor.
-	 */
+
+	@SuppressWarnings("deprecation")
 	public FocusableImageButton(ImageResource imageUrl, String title) {
 		super(new Image(imageUrl));
 		image = (Image)getWidget();

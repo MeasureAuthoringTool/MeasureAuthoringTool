@@ -61,8 +61,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.ImageResources;
-import mat.client.buttons.DeleteButton;
-import mat.client.buttons.SaveButton;
 import mat.client.buttons.SaveDeleteMeasureDetailsButtonBarBuilder;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -1966,6 +1964,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return dialogBox;
 	}
 	
+	@SuppressWarnings("deprecation")
 	private String convertTimestampToString(Timestamp ts) {
 		String tsStr;
 		if (ts == null) {

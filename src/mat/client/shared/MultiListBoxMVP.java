@@ -19,6 +19,7 @@ public class MultiListBoxMVP extends ListBox implements HasValue<List<String>> {
 	/**
 	 * Instantiates a new multi list box mvp.
 	 */
+	@SuppressWarnings("deprecation")
 	public MultiListBoxMVP() {
 		super(true);
 		addChangeHandler( new ChangeHandler() {

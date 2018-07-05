@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.json.XML;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.client.clause.QDSAttributesService;
 import mat.dao.DataTypeDAO;
@@ -35,19 +34,6 @@ import mat.server.util.ResourceLoader;
 @SuppressWarnings("serial")
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 implements QDSAttributesService {
-	
-	/** The q ds attributes dao. */
-	@Autowired
-	private QDSAttributesDAO qDSAttributesDAO;
-	
-	@Autowired
-	private AttributesDAO attributesDAO;
-	
-	@Autowired
-	private ModesAttributesDAO modesAttributesDAO;
-	
-	@Autowired
-	private ModesDAO modesDAO;
 	
 	/*
 	 * (non-Javadoc)
@@ -237,7 +223,6 @@ implements QDSAttributesService {
 	 *
 	 * @return the string
 	 */
-	@SuppressWarnings("resource")
 	private String convertXmlToString() {
 		String fileName = "SimplifiedAttributePatterns.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
@@ -272,7 +257,6 @@ implements QDSAttributesService {
 	 *
 	 * @return the string
 	 */
-	@SuppressWarnings("resource")
 	private String convertModeDetailsXmlToString() {
 		String fileName = "ModeDetails.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);

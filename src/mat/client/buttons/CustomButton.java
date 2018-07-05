@@ -1,4 +1,4 @@
-package mat.client.shared;
+package mat.client.buttons;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
@@ -6,33 +6,19 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
 
-/**
- * The Class CustomButton.
- */
+@SuppressWarnings("deprecation")
 public class CustomButton extends Button { 
 	
-	/** The text. */
 	private String text; 
 	
-	/** The img. */
 	Image img;
 	
-	/**
-	 * Instantiates a new custom button.
-	 */
 	public CustomButton(){
 		super();
 		getElement().removeAttribute("class");
 	}
 	
-	/**
-	 * Sets the resource.
-	 * 
-	 * @param imageResource
-	 *            the image resource
-	 * @param imageTitle
-	 *            the image title
-	 */
+	
 	public void setResource(ImageResource imageResource, String imageTitle){ 
 		img = new Image(imageResource); 
 		img.setAltText(imageTitle);
@@ -42,9 +28,6 @@ public class CustomButton extends Button {
 		setText(imageTitle);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.google.gwt.user.client.ui.ButtonBase#setText(java.lang.String)
-	 */
 	@Override 
 	public void setText(String text) { 
 		this.text = text; 
@@ -54,19 +37,11 @@ public class CustomButton extends Button {
 		DOM.insertChild(getElement(), span, 0); 
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.google.gwt.user.client.ui.ButtonBase#getText()
-	 */
 	@Override 
 	public String getText() { 
 		return this.text; 
 	} 
 	
-	/**
-	 * Gets the image.
-	 * 
-	 * @return the image
-	 */
 	public Image getImage(){
 		return this.img;
 	}

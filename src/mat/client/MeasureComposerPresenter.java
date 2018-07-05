@@ -123,6 +123,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	private MatTabLayoutPanel measureComposerTabLayout;
 		
 	/** The measure package presenter. */
+	@SuppressWarnings("unused")
 	private MeasurePackagePresenter measurePackagePresenter;
 	
 	/** The meta data presenter. */
@@ -476,10 +477,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay2().clearAlert();
 			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
 		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
-			CQLWorkSpacePresenter presenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
-			presenter.getSearchDisplay().resetMessageDisplay();
-			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
-			auditMessage = presenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+			CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+			saveErrorMessageAlert = CQLWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+			auditMessage = CQLWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
 			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();

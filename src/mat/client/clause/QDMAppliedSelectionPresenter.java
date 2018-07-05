@@ -25,11 +25,11 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.buttons.CustomButton;
 import mat.client.clause.QDMAppliedSelectionView.Observer;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;

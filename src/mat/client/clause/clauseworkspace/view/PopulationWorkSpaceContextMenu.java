@@ -11,33 +11,18 @@ import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 
-/**
- * The Class PopulationWorkSpaceContextMenu.
- *
- * @author jnarang
- */
 public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
-	/**
-	 * Stratum Node name.
-	 */
+
 	private static final String STRATUM = "Stratum";
 	
-	/** The Constant MEASURE_OBSERVATION. */
 	private static final String MEASURE_OBSERVATION = "Measure Observation";
-	/**
-	 * Stratification Node name.
-	 */
+
 	private static final String STRATIFICATION = "Stratification";
 	
 	private static final String MEASURE_OBSERVATIONS = "Measure Observations";
-	MenuItem viewHumanReadableMenu;
-	/**
-	 * Instantiates a new population work space context menu.
-	 *
-	 * @param treeDisplay - XmlTreeDisplay.
-	 * @param popPanel - PopupPanel.
-	 */
 	
+	MenuItem viewHumanReadableMenu;
+
 	public PopulationWorkSpaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		super(treeDisplay, popPanel);
 		Command viewHumanReadableCmd = new Command() {
@@ -71,9 +56,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		};
 		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu#displayMenuItems(com.google.gwt.user.client.ui.PopupPanel)
-	 */
+
 	@Override
 	public void displayMenuItems(final PopupPanel popupPanel) {
 		popupMenuBar.clearItems();
@@ -84,11 +67,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		deleteMenu.setEnabled(false);
 		pasteMenu.setEnabled(false);
 		cutMenu.setEnabled(false);
-		/*
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(false);
-		pasteFromClipboardMenu.setEnabled(false);
-		CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
 		viewHumanReadableMenu.setEnabled(false);
 		showHideExpandMenu();
 		
@@ -121,7 +99,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					}
 				};
 				
-				//TODO by Ravi
 				addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0))
 						, true, addNodeCmd);
 				popupMenuBar.addItem(addMenu);
@@ -174,7 +151,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);				
-				/*addMenu = new MenuItem("Add", subMenuBar);*/
 				Command addCQLFunctionCmd = new Command() {
 					@Override
 					public void execute() {
@@ -186,17 +162,10 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				addMenu = new MenuItem("Add Function", true, addCQLFunctionCmd);
 				
 				popupMenuBar.addItem(addMenu);
-				/*createAddCQLFunctionsMenuItem(subMenuBar);*/
-				
-				
-				
+	
 				if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 					addMenu.setEnabled(false);
 				}
-				
-				/*MenuBar cqlAggFuncMenubar = new MenuBar(true);
-				createEditCQLAggFunctionsMenuItems(cqlAggFuncMenubar);
-				replaceMenu = new MenuItem("Replace", cqlAggFuncMenubar);*/
 				
 				Command addCQLAggFunctionCmd = new Command() {
 					@Override
@@ -218,9 +187,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			case CellTreeNode.CLAUSE_NODE:							
 					
 				if(!xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION)) {
-					//subMenuBar = new MenuBar(true);
-					//subMenuBar.setAutoOpen(true);				
-					
 					Command addCQLDefinitionCmd = new Command() {
 						@Override
 						public void execute() {
@@ -230,21 +196,13 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						}
 					};
 					addMenu = new MenuItem("Add Definition", true, addCQLDefinitionCmd); // 1st level menu
-					//subMenuBar.addItem(item);
-					
-					
+
 					popupMenuBar.addItem(addMenu);
 					
-					//createAddCQLDefinitionMenuItem(subMenuBar);
 								
 				}else{
 					subMenuBar = new MenuBar(true);
 					subMenuBar.setAutoOpen(true);	
-					//addMenu = new MenuItem("Add", subMenuBar);
-					
-					
-					/*MenuBar cqlAggFunctionMenubar = new MenuBar(true);
-					createAddCQLAggFunctionsMenuItems(cqlAggFunctionMenubar);*/
 					Command addCQLAggregateFuncCmd = new Command() {
 						@Override
 						public void execute() {
@@ -269,9 +227,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 						addFuncMenu.setEnabled(false);
 					}
-					//subMenuBar.addItem(aggFuncMenu);
-					
-					//createAddCQLFunctionsMenuItem(subMenuBar);
 					popupMenuBar.addItem(addMenu);
 					popupMenuBar.addItem(addFuncMenu);
 									
@@ -286,10 +241,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
 				}
-				//Add "View Human Readable" right click option for all populations: Start
 				popupMenuBar.addItem(viewHumanReadableMenu);
 				viewHumanReadableMenu.setEnabled(true);
-				//Add "View Human Readable" right click option for all populations: End
 							
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
@@ -308,16 +261,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.ROOT_NODE)) {
 					pasteMenu.setEnabled(true);
 				}
-				/*
-				 * POC Global Copy Paste.
-				 * copyToClipBoardMenu.setEnabled(true);
-				//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
-				if ((copiedNode != null)
-						&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
-						&& (copiedNode.getNodeType() != CellTreeNode.ROOT_NODE)) {
-					pasteMenu.setEnabled(true);
-					pasteFromClipboardMenu.setEnabled(true);
-				}*/
+
 				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(STRATUM))
 						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(MEASURE_OBSERVATION))) {
@@ -398,9 +342,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				popupMenuBar.addItem(moveDownMenu);
 				moveDownMenu.setEnabled(checkIfLastChildNode());
 				deleteMenu.setEnabled(true);
-				/*
-				 * POC Global Copy Paste.
-				 * copyToClipBoardMenu.setEnabled(true);*/
 				Command editClauseCmd = new Command() {
 					@Override
 					public void execute() {
@@ -416,30 +357,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 		}
 	}
-	
-	
-	/**
-	 * Common Menu's ie : (Cut/Paste/Delete/Copy/Expand) Enable/Disabled state.
-	 * @param isCopyEnabled - boolean.
-	 * @param isCutEnabled - boolean
-	 * @param isDeleteEnabled - boolean
-	 * @param isPasteEnabled - boolean
-	 * @param isExpandEnabled - boolean
-	 */
-	@SuppressWarnings("unused")
-	private void commonMenuEnableState(boolean isCopyEnabled , boolean isCutEnabled, boolean isDeleteEnabled
-			, boolean isPasteEnabled , boolean isExpandEnabled) {
-		copyMenu.setEnabled(isCopyEnabled);
-		cutMenu.setEnabled(isCutEnabled);
-		deleteMenu.setEnabled(isDeleteEnabled);
-		pasteMenu.setEnabled(isPasteEnabled);
-		expandMenu.setEnabled(isExpandEnabled);
-	}
-	/**
-	 * Creates the add clause menu item.
-	 *
-	 * @param menuBar - MenuBar.
-	 */
+
 	private void createAddClauseMenuItem(MenuBar menuBar) {
 		Command addClauseCmd = new Command() {
 			@Override
@@ -452,101 +370,4 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		MenuItem item = new MenuItem("Clause", true, addClauseCmd);
 		menuBar.addItem(item);
 	}
-	
-	/**
-	 * Add Definition MenuItem.
-	 * @param menuBar
-	 */
-	private void createAddCQLFunctionsMenuItem(MenuBar menuBar){
-		
-		Command addCQLAggregateFunctionCmd = new Command() {
-			@Override
-			public void execute() {
-				popupPanel.hide();
-				//To show CQL Definitions on Population Workspace
-				CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, false);
-			}
-		};
-		MenuItem item = new MenuItem("Functions", true, addCQLAggregateFunctionCmd);
-		menuBar.addItem(item);
-	}
-	
-	/**
-	 * Add CQL Aggregate functions menu items.
-	 * @param cqlAggFuncMenubar
-	 */
-	/*private void createAddCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
-		List<String> functionNames = new ArrayList<String>();
-		functionNames.add("Count");
-		functionNames.add("Sum");
-		functionNames.add("Average");
-		functionNames.add("Sample Standard Deviation");
-		functionNames.add("Sample Variance");
-		functionNames.add("Population Standard Deviation");
-		functionNames.add("Population Variance");
-		functionNames.add("Minimum");
-		functionNames.add("Maximum");
-		functionNames.add("Median");
-		functionNames.add("Mode");
-		
-		for (final String name : functionNames) {
-			Command addCmd = new Command() {
-				@Override
-				public void execute() {
-					xmlTreeDisplay.setDirty(true);
-					popupPanel.hide();
-					xmlTreeDisplay.addNode(name, name, CellTreeNode.CQL_AGG_FUNCTION_NODE);
-					
-				}
-			};
-			MenuItem menu = new MenuItem(name, true, addCmd);
-			cqlAggFuncMenubar.addItem(menu);
-		}
-	}*/
-	
-	/*private void createEditCQLAggFunctionsMenuItems(MenuBar cqlAggFuncMenubar) {
-		List<String> functionNames = new ArrayList<String>();
-		functionNames.add("Count");
-		functionNames.add("Sum");
-		functionNames.add("Average");
-		functionNames.add("Sample Standard Deviation");
-		functionNames.add("Sample Variance");
-		functionNames.add("Population Standard Deviation");
-		functionNames.add("Population Variance");
-		functionNames.add("Minimum");
-		functionNames.add("Maximum");
-		functionNames.add("Median");
-		functionNames.add("Mode");
-		
-		for (final String name : functionNames) {
-			Command addCmd = new Command() {
-				@Override
-				public void execute() {
-					xmlTreeDisplay.setDirty(true);
-					xmlTreeDisplay.editNode(name, name);
-					
-				}
-			};
-			MenuItem menu = new MenuItem(name, true, addCmd);
-			cqlAggFuncMenubar.addItem(menu);
-		}
-	}*/
-	
-	/**
-	 * Add Definition MenuItem.
-	 * @param menuBar
-	 */
-	private void createAddCQLDefinitionMenuItem(MenuBar menuBar){
-		Command addCQLDefinitionCmd = new Command() {
-			@Override
-			public void execute() {
-				popupPanel.hide();
-				//To show CQL Definitions on Population Workspace
-				CQLArtifactsDialogBox.showCQLArtifactsDialogBox(xmlTreeDisplay, true, true);
-			}
-		};
-		MenuItem item = new MenuItem("Definition", true, addCQLDefinitionCmd);
-		menuBar.addItem(item);
-	}
-	
 }

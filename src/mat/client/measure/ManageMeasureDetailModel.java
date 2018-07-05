@@ -1502,6 +1502,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	 *            the list b
 	 * @return true, if is equal
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean isEqual(List listA, List listB) {
 		if (listA.size() != listB.size()) {
 			return false;

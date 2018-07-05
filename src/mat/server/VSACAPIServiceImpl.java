@@ -9,35 +9,24 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.VSACApiService;
 
-/** VSACAPIServiceImpl class. **/
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 
 	private static final long serialVersionUID = 1L;
 	
 	@Autowired VSACApiService vsacapi;
 	
-	/**
-	 *	Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.
-	 * **/
 	@Override
 	public final void inValidateVsacUser() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		this.vsacapi.inValidateVsacUser(sessionId);
 	}
 	
-	/**
-	 *	Method to check if User already signed in at VSAC.
-	 *	@return Boolean.
-	 **/
 	@Override
 	public final boolean isAlreadySignedIn() {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.isAlreadySignedIn(sessionId);
 	}
 	
-	/* 
-	 * {@inheritDoc}
-	 */
 	@Override
 	public final VsacApiResult getAllVersionListByOID(String oid) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
@@ -46,19 +35,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
-	 *@param userName - String.
-	 *@param password - String.
-	 *@return Boolean.
-	 * **/
+	 **/
 	@Override
 	public final boolean validateVsacUser(final String userName, final String password) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.validateVsacUser(userName, password,sessionId);
 	}
 	
-	/* 
-	 * {@inheritDoc}
-	 */
 	@Override
 	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();

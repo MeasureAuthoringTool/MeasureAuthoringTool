@@ -8,18 +8,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 /**
  * The Class DateUtility.
  */
 public class DateUtility {
-	
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(DateUtility.class);
-	
 	
 	/**
 	 * Convert date to string.

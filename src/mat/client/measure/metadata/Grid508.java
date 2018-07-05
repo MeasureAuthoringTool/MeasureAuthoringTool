@@ -146,7 +146,8 @@ public class Grid508 extends Grid{
  * for GridWithTableHeaders.java
  *****************************************************/
   
-	  protected Element createHeaderCell(){
+	  @SuppressWarnings("deprecation")
+	protected Element createHeaderCell(){
 		Element th = DOM.createTH();
 		// Add a non-breaking space to the TD. This ensures that the cell is
 	    // displayed.

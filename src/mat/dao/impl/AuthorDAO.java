@@ -13,17 +13,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
-/**
- * The Class AuthorDAO.
- */
 public class AuthorDAO extends GenericDAO<Author, String> implements mat.dao.AuthorDAO {
 	
-	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(AuthorDAO.class);
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.AuthorDAO#getAllAuthors()
-	 */
+	@SuppressWarnings({ "deprecation", "unchecked" })
 	public List<AuthorDTO> getAllAuthors(){
 		
 		List<AuthorDTO> AuthorDTOList = new ArrayList<AuthorDTO>();

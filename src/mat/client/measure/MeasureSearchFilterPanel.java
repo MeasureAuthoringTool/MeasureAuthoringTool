@@ -49,6 +49,7 @@ public class MeasureSearchFilterPanel {
 	/**
 	 * Instantiates a new measure search filter panel.
 	 */
+	@SuppressWarnings("deprecation")
 	public MeasureSearchFilterPanel(){
 		DOM.setElementAttribute(listBox.getElement(), "id", title);
 		DOM.setElementAttribute(listBox.getElement(), "name", title);

@@ -63,264 +63,151 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLLeftNavBarPanel.
- */
 public class CQLLeftNavBarPanelView {
 	
-	/** The right hand nav panel. */
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
 	
-	/**
-	 * TreeMap defineNameMap.
-	 */
 	private Map<String, String> defineNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
-	/**
-	 * TreeMap funcNameMap.
-	 */
 	private Map<String, String> funcNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
-	/** The include library name map. */
 	private Map<String, String> includeLibraryNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-	/**
-	 * HashMap definitionMap.
-	 */
+
 	private HashMap<String, CQLDefinition> definitionMap = new HashMap<String, CQLDefinition>();
 
-	/**
-	 * HashMap definitionMap.
-	 */
 	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
 
-	/** The include library map. */
 	private HashMap<String, CQLIncludeLibrary> includeLibraryMap = new HashMap<String, CQLIncludeLibrary>();
 
-	/** The includes badge. */
 	private Badge includesBadge = new Badge();
 	
-	/** The valuesets badge. */
 	private Badge valueSetBadge = new Badge();
 	
-	/** The codes badge. */
 	private Badge codesBadge = new Badge();
 
-	/** The param badge. */
 	private Badge paramBadge = new Badge();
 
-	/** The define badge. */
 	private Badge defineBadge = new Badge();
 
-	/** The Function badge. */
 	private Badge functionBadge = new Badge();
 
-	/** The includes label. */
 	private Label includesLabel = new Label("Includes");
 	
-	/** The value Set label. */
 	private Label valueSetLabel = new Label("Value Sets");
 	
-	/** The codes label. */
 	private Label codesLabel = new Label("Codes");
 
-	/** The param label. */
 	private Label paramLabel = new Label("Parameter");
 
-	/** The define label. */
 	private Label defineLabel = new Label("Definition");
 
-	/** The function Lib Label. */
 	private Label functionLibLabel = new Label("Function");
 
-	/** The param collapse. */
 	PanelCollapse paramCollapse = new PanelCollapse();
 
-	/** The define collapse. */
 	PanelCollapse defineCollapse = new PanelCollapse();
 	
-	/** The function Collapse. */
 	PanelCollapse functionCollapse = new PanelCollapse();
 	
-	/** The Includes Collapse. */
 	PanelCollapse includesCollapse = new PanelCollapse();
 	
-	/** The codes Collapse. */
 	PanelCollapse codesCollapse = new PanelCollapse();
 	
-	/** The ValueSets Collapse. */
 	PanelCollapse valueSetCollapse = new PanelCollapse();
 	
-	/** The view cql. */
 	private AnchorListItem viewCQL;
 
-	/** The applied QDM Element anchorItem. */
 	private AnchorListItem appliedQDM;
 	
-	/** The codes anchorItem. */
 	private AnchorListItem codesLibrary;
 
-	/** The general information. */
 	private AnchorListItem generalInformation;
 
-	/** The includes section. */
 	private AnchorListItem includesLibrary;
 
-	/** The parameter library. */
 	private AnchorListItem parameterLibrary;
 
-	/** The definition library. */
 	private AnchorListItem definitionLibrary;
 
-	/** The function library. */
 	private AnchorListItem functionLibrary;
 	
-	/** The view include librarys. */
 	private List<CQLIncludeLibrary> viewIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
 	
-	/** The view parameter list. */
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
 	
-	/** The view definitions. */
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
 
-	/** The applied qdm list. */
-	//private List<CQLQualityDataSetDTO> appliedQdmList = new ArrayList<CQLQualityDataSetDTO>();
-
-	/** The codes list. */
 	private List<CQLCode> codesList = new ArrayList<CQLCode>();
 	
-	/** The applied qdm to show in Table list. */
 	private List<CQLQualityDataSetDTO> appliedQdmTableList = new ArrayList<CQLQualityDataSetDTO>();
 	
 	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
 
-	/** The include library list. */
 	private List<CQLLibraryDataSetObject> includeLibraryList = new ArrayList<CQLLibraryDataSetObject>();
 
-	/**
-	 * List viewFunctions.
-	 */
 	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
 
-	/** The includes name listbox. */
 	private ListBox includesNameListbox = new ListBox();
 
-	/**
-	 * ListBox defineNameListBox.
-	 */
 	private ListBox defineNameListBox = new ListBox();
 
-	/**
-	 * ListBox funcNameListBox.
-	 */
 	private ListBox funcNameListBox = new ListBox();
 
-	/**
-	 * SuggestBox searchSuggestDefineTextBox.
-	 */
 	private SuggestBox searchSuggestDefineTextBox;
 
-	/**
-	 * SuggestBox searchSuggestFuncTextBox.
-	 */
 	private SuggestBox searchSuggestIncludeTextBox;
 
-	/**
-	 * SuggestBox searchSuggestFuncTextBox.
-	 */
 	private SuggestBox searchSuggestFuncTextBox;
 
-	
-	/**
-	 * SuggestBox searchSuggestTextBox.
-	 */
 	private SuggestBox searchSuggestParamTextBox;
 
-	/**
-	 * TreeMap parameterNameMap.
-	 */
 	private Map<String, String> parameterNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-	/**
-	 * HashMap parameterMap.
-	 */
+
 	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
 
-	/**
-	 * ListBox parameterNameListBox.
-	 */
 	private ListBox parameterNameListBox = new ListBox();
 	
-	/** The message panel. */
 	private VerticalPanel messagePanel = new VerticalPanel();
 	
-	/** The CQL success message. */
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 
-	/**  The CQL warning message. */
 	private MessageAlert warningMessageAlert = new WarningMessageAlert();
 
-	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 
-	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 
-	/**  The delete confirmation box. */
 	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 
-	/** The CQL warning message. */
 	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
 	
-	/** The delete confirmation messge alert. */
-	//private DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert = new DeleteConfirmationMessageAlert();
-	
-	/** The dirty flag for page. */
 	private Boolean isPageDirty = false;
 
-	/** The is double click. */
 	private Boolean isDoubleClick = false;
 
-	/** The is nav bar click. */
 	private Boolean isNavBarClick = false;
 	
-	/** The Loading flag for page. */
 	private Boolean isLoading = false;
 	
-	/** The current selected definition obj id. */
 	private String currentSelectedDefinitionObjId = null;
 
-	/** The current selected paramerter obj id. */
 	private String currentSelectedParamerterObjId = null;
 
-	/** The current selected function obj id. */
 	private String currentSelectedFunctionObjId = null;
 	
-	/** The current selected function argument obj id. */
 	private String currentSelectedFunctionArgumentObjId = null;
 	
-	/** The current selected function argument name. */
 	private String currentSelectedFunctionArgumentName = null;
 
-	/** The current selected inc library obj id. */
 	private String currentSelectedIncLibraryObjId = null;
 	
-	/** The current selected valueset obj id. */
 	private String currentSelectedValueSetObjId = null;
 	
-	/** The current selected codes obj id. */
 	private String currentSelectedCodesObjId = null;
 	
-	/** The available QDS attribute list. */
 	private List<QDSAttributes> availableQDSAttributeList;
 
-	
 
-	/**
-	 * Builds the measure lib CQL view.
-	 *
-	 * @return the vertical panel
-	 */
 	public VerticalPanel buildMeasureLibCQLView(){
 		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 		includesCollapse = createIncludesCollapsablePanel();
@@ -330,11 +217,7 @@ public class CQLLeftNavBarPanelView {
 		buildLeftHandNavBar();
 		return rightHandNavPanel;
 	}
-	
 
-	/**
-	 * Builds the left hand nav nar.
-	 */
 	private void buildLeftHandNavBar() {
 		
 		rightHandNavPanel.clear();
@@ -364,7 +247,6 @@ public class CQLLeftNavBarPanelView {
 		includesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
 				event.stopPropagation();
 			}
 		});
@@ -389,7 +271,6 @@ public class CQLLeftNavBarPanelView {
 		valueSetAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
 				event.stopPropagation();
 			}
 		});
@@ -410,7 +291,6 @@ public class CQLLeftNavBarPanelView {
 		codesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
 				event.stopPropagation();
 			}
 		});
@@ -431,7 +311,6 @@ public class CQLLeftNavBarPanelView {
 		paramAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
 				event.stopPropagation();
 			}
 		});
@@ -457,7 +336,6 @@ public class CQLLeftNavBarPanelView {
 		defineAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
 				event.stopPropagation();
 			}
 		});
@@ -465,7 +343,6 @@ public class CQLLeftNavBarPanelView {
 		defineLabel.setId("defineLabel_Label");
 		defineAnchor.add(defineLabel);
 		defineBadge.setPull(Pull.RIGHT);
-		// defineBadge.setMarginLeft(52);
 		defineAnchor.add(defineBadge);
 		defineBadge.setId("defineBadge_Badge");
 		defineAnchor.setDataParent("#navGroup");
@@ -484,7 +361,6 @@ public class CQLLeftNavBarPanelView {
 		funcAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				// TODO Auto-generated method stub
 				event.stopPropagation();
 			}
 		});
@@ -493,7 +369,6 @@ public class CQLLeftNavBarPanelView {
 		funcAnchor.add(functionLibLabel);
 		functionBadge.setPull(Pull.RIGHT);
 
-		// functionBadge.setMarginLeft(57);
 		funcAnchor.add(functionBadge);
 		functionBadge.setId("functionBadge_Badge");
 		funcAnchor.setDataParent("#navGroup");
@@ -523,18 +398,12 @@ public class CQLLeftNavBarPanelView {
 		messagePanel.add(errorMessageAlert);
 		messagePanel.add(warningConfirmationMessageAlert);
 		messagePanel.add(globalWarningConfirmationMessageAlert);
-		//messagePanel.add(deleteConfirmationMessgeAlert);
 		messagePanel.setStyleName("marginLeft15px");
 
-		// rightHandNavPanel.add(messagePanel);
 		rightHandNavPanel.add(navPills);
 	}
 
-	/**
-	 * Creates the includes collapsable panel.
-	 *
-	 * @return the panel collapse
-	 */
+
 	private PanelCollapse createIncludesCollapsablePanel() {
 
 		includesCollapse.setId("collapseIncludes");
@@ -1301,39 +1170,21 @@ public class CQLLeftNavBarPanelView {
 		this.parameterNameMap = parameterNameMap;
 	}
 
-
-	/**
-	 * Gets the parameter map.
-	 *
-	 * @return the parameter map
-	 */
 	public HashMap<String, CQLParameter> getParameterMap() {
 		return parameterMap;
 	}
 
-
-	/**
-	 * Sets the parameter map.
-	 *
-	 * @param parameterMap the parameter map
-	 */
 	public void setParameterMap(HashMap<String, CQLParameter> parameterMap) {
 		this.parameterMap = parameterMap;
 	}
 
 
-	/**
-	 * Update suggest define oracle.
-	 */
 	public void updateNewSuggestDefineOracle() {
 		if (searchSuggestDefineTextBox != null) {
 			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(defineNameMap.values());
 		}
 	}
 
-	/**
-	 * Update suggest func oracle.
-	 */
 	public void updateNewSuggestFuncOracle() {
 		if (searchSuggestFuncTextBox != null) {
 			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(funcNameMap.values());

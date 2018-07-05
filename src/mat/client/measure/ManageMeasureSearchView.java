@@ -39,6 +39,8 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	private Button bulkExportButton = new Button("Export Selected");	
 
 	Button createMeasureButton = new Button("New Measure"); 
+	
+	Button createCompositeMeasureButton = new Button("New Composite Measure");
 
 	CellTable<ManageMeasureSearchModel.Result> table;
 	
@@ -346,6 +348,15 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		this.createMeasureButton = createMeasureButton;
 	}
 
+
+	public Button getCreateCompositeMeasureButton() {
+		return createCompositeMeasureButton;
+	}
+
+	public void setCreateCompositeMeasureButton(Button createCompositeMeasureButton) {
+		this.createCompositeMeasureButton = createCompositeMeasureButton;
+	}
+	
 	public void setErrorMeasureDeletion(MessageAlert errorMeasureDeletion) {
 		this.errorMeasureDeletion = errorMeasureDeletion;
 	}

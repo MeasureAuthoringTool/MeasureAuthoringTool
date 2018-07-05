@@ -47,6 +47,8 @@ public interface SearchDisplay extends BaseDisplay {
 	public HasClickHandlers getBulkExportButton();
 
 	Button getCreateMeasureButton();
+	
+	Button getCreateCompositeMeasureButton();
 
 	public MessageAlert getErrorMeasureDeletion();
 

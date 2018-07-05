@@ -10,6 +10,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,7 +26,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -67,7 +67,6 @@ import mat.shared.AdvancedSearchModel;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
-@SuppressWarnings("deprecation")
 public class ManageMeasurePresenter implements MatPresenter {
 
 	private List<String> bulkExportMeasureIds;
@@ -86,6 +85,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private ManageMeasureSearchModel.Result resultToFireEvent ;
 
 	private ManageMeasureDetailModel currentDetails;
+	
+	private ManageCompositeMeasureDetailModel currentCompositeMeasureDetails;
 
 	private String currentExportId;
 
@@ -94,6 +95,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	final String currentUserRole = MatContext.get().getLoggedInUserRole();
 
 	private DetailDisplay detailDisplay;
+	
+	private DetailDisplay compositeDetailDisplay;
 
 	private ExportDisplay exportDisplay;
 
@@ -141,13 +144,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private VersionDisplay versionDisplay;
 
-	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, ShareDisplay shareDisplayArg,
+	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ShareDisplay shareDisplayArg,
 			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
-			VersionDisplay vDisplay, /* DraftDisplay dDisplay, */
+			VersionDisplay vDisplay,
 			final TransferOwnershipView transferDisplay) {
 
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
+		compositeDetailDisplay = compositeDisplayArg;
 		historyDisplay = hDisplay;
 		shareDisplay = shareDisplayArg;
 		exportDisplay = exportDisplayArg;
@@ -242,7 +246,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if (!MatContext.get().getMeasureLockService().isResettingLock()) {
 					displaySearch();
 				} else {
-					DeferredCommand.addCommand(this);
+					Scheduler.get().scheduleDeferred(this);
 				}
 			}
 		};
@@ -355,11 +359,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 		cloneMeasure(currentDetails, true);
 	}
 
-	private void createNew() {
+	private void createNewMeasure() {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		currentDetails = new ManageMeasureDetailModel();
 		displayDetailForAdd();
+		Mat.focusSkipLists("MeasureLibrary");
+	}
+	
+	protected void createNewCompositeMeasure() {
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+		currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
+		displayDetailForAddComposite();
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
@@ -434,16 +446,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
 						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
 						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
-						resetPatientBasedInput(); 
+						resetPatientBasedInput(detailDisplay); 
 						
 						// default the selected index to be 1, which is yes.  
 						
 						detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 						detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
 						detailDisplay.getHelpBlock().setColor("transparent");
-						detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
-						
-						
+						detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");	
 				}
 				
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
@@ -462,7 +472,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
-		resetPatientBasedInput(); 
+		resetPatientBasedInput(detailDisplay); 
 			
 		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
 		setDetailsToView();
@@ -470,10 +480,24 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.showCautionMsg(false);
 		panel.setContent(detailDisplay.asWidget());
 	}
+	
+	private void displayDetailForAddComposite() {
+		panel.getButtonPanel().clear();
+		
+		resetPatientBasedInput(compositeDetailDisplay);
+		
+		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");
+		
+		setCompositeDetailsToView();
+		
+		compositeDetailDisplay.showMeasureName(false);
+		compositeDetailDisplay.showCautionMsg(false);
+		panel.setContent(compositeDetailDisplay.asWidget());
+	}
 
 	private void displayDetailForClone() {
 		detailDisplay.clearFields();
-		resetPatientBasedInput(); 
+		resetPatientBasedInput(detailDisplay); 
 		
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
@@ -501,7 +525,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
-		resetPatientBasedInput(); 
+		resetPatientBasedInput(detailDisplay); 
 				
 		panel.setHeading("My Measures > Edit Measure", "MeasureLibrary");
 		detailDisplay.showMeasureName(false);
@@ -522,11 +546,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 
-	private void resetPatientBasedInput() {
-		detailDisplay.getPatientBasedInput().clear();
-		detailDisplay.getPatientBasedInput().addItem("No", "No");
-		detailDisplay.getPatientBasedInput().addItem("Yes", "Yes");
-		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
+	private void resetPatientBasedInput(DetailDisplay currentDisplay) {
+		currentDisplay.getPatientBasedInput().clear();
+		currentDisplay.getPatientBasedInput().addItem("No", "No");
+		currentDisplay.getPatientBasedInput().addItem("Yes", "Yes");
+		currentDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
 	private void displayHistory(String measureId, String measureName) {
@@ -565,7 +589,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			search(searchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			searchRecentMeasures();
 			buildCreateMeasure(); 
-			
+			buildCreateCompositeMeasure();
 			fp.add(searchDisplay.asWidget());
 		}
 
@@ -585,6 +609,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getCreateMeasureButton().setStyleName("createNewButton");
 		panel.getButtonPanel().add(searchDisplay.getCreateMeasureButton());
 	}
+	
+	private void buildCreateCompositeMeasure() {
+		searchDisplay.getCreateCompositeMeasureButton().setId("newCompositeMeasure_button");
+		searchDisplay.getCreateCompositeMeasureButton().setIcon(IconType.SITEMAP);
+		searchDisplay.getCreateCompositeMeasureButton().setIconSize(IconSize.LARGE);
+		searchDisplay.getCreateCompositeMeasureButton().setType(ButtonType.LINK);
+		searchDisplay.getCreateCompositeMeasureButton().setTitle("Click to create new composite measure");
+		searchDisplay.getCreateCompositeMeasureButton().setStyleName("createNewButton");
+		searchDisplay.getCreateCompositeMeasureButton().setPaddingLeft(5);
+		panel.getButtonPanel().add(searchDisplay.getCreateCompositeMeasureButton());
+	}
+	
 
 	private void displayShare(String userName, String id, String name) {
 		//Setting this value so that visiting this page every time from share link, any previously entered value is reset
@@ -1280,7 +1316,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 											}
 										}
 									} else {
-										DeferredCommand.addCommand(this);
+										Scheduler.get().scheduleDeferred(this);
 									}
 								}
 							};
@@ -1328,7 +1364,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 											}
 										}
 									} else {
-										DeferredCommand.addCommand(this);
+										Scheduler.get().scheduleDeferred(this);
 									}
 								}
 							};
@@ -1344,7 +1380,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 				measureDeletion = false;
 				isMeasureDeleted = false;
 				isMeasureVersioned = false;
-				createNew(); 
+				createNewMeasure(); 
+			}
+		});
+		
+		searchDisplay.getCreateCompositeMeasureButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				measureDeletion = false;
+				isMeasureDeleted = false;
+				isMeasureVersioned = false;
+				createNewCompositeMeasure();
 			}
 		});
 
@@ -1527,6 +1575,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		this.bulkExportMeasureIds = bulkExportMeasureIds;
 	}
 
+	private void setCompositeDetailsToView() {
+		compositeDetailDisplay.getName().setValue(currentCompositeMeasureDetails.getName());
+		compositeDetailDisplay.getShortName().setValue(currentCompositeMeasureDetails.getShortName());
+		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
+	}
+	
 	private void setDetailsToView() {
 		detailDisplay.getName().setValue(currentDetails.getName());
 		detailDisplay.getShortName().setValue(currentDetails.getShortName());

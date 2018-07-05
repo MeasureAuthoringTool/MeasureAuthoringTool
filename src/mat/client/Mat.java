@@ -49,6 +49,7 @@ import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.login.service.SessionManagementService;
+import mat.client.measure.ManageCompositeMeasureDetailView;
 import mat.client.measure.ManageMeasureDetailView;
 import mat.client.measure.ManageMeasureExportView;
 import mat.client.measure.ManageMeasureHistoryView;
@@ -238,10 +239,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
 			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, historyView, null, /*null,*/ transferOS);
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, historyView, null, transferOS);
 		}else{
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
+			ManageCompositeMeasureDetailView compositeMeasureDetailView = new ManageCompositeMeasureDetailView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 			ManageMeasureShareView measureShareView = new ManageMeasureShareView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
@@ -252,12 +254,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				measureExportView = new ManageMeasureExportView(false);
 			}
 			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView, historyView, versionView, /*measureDraftView,*/ null);
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, compositeMeasureDetailView ,measureShareView, measureExportView, historyView, versionView, null);
 		}
 		
-		
 		return measurePresenter;
-		
 	}
 	
 	/**
@@ -489,8 +489,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
-			
-			
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{

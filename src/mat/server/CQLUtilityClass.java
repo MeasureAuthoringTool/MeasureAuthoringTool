@@ -88,7 +88,7 @@ public final class CQLUtilityClass {
 
 			sb.append("library ").append(cqlModel.getLibraryName());
 			sb.append(" version ").append("'" + cqlModel.getVersionUsed()).append("'");
-			sb.append("\n\n");
+			sb.append(System.lineSeparator()).append(System.lineSeparator());
 			
 			if(StringUtils.isNotBlank(cqlModel.getLibraryComment())) {
 				sb.append(createCommentString(cqlModel.getLibraryComment()));

@@ -1,7 +1,10 @@
 package mat.client.measure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -35,6 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
@@ -76,8 +80,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void onClick(ClickEvent event) {
 			isClone = false;
 
-			detailDisplay.getName().setValue("");
-			detailDisplay.getShortName().setValue("");
+			if(detailDisplay != null) {
+				detailDisplay.getName().setValue("");
+				detailDisplay.getShortName().setValue("");
+			}
+
+			if(compositeDetailDisplay != null) {
+				compositeDetailDisplay.getName().setValue("");
+				compositeDetailDisplay.getShortName().setValue("");
+			}
 			displaySearch();
 		}
 	};
@@ -178,6 +189,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		if (detailDisplay != null) {
 			detailDisplayHandlers(detailDisplay);
+		}
+		if(compositeDetailDisplay != null) {
+			compositeDetailDisplayHandlers(compositeDetailDisplay);
 		}
 		if (exportDisplay != null) {
 			exportDisplayHandlers(exportDisplay);
@@ -384,6 +398,98 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 		clearRadioButtonSelection();
 	}
+	
+	private void compositeDetailDisplayHandlers(final DetailDisplay compositeDetailDisplay) {
+		compositeDetailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
+		
+		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
+			}
+
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {
+				compositeDetailDisplay.setScoringChoices(result);
+				
+				//TODO add this to server side when we implement functionality and add a database table
+				String allOrNothingTxt = "All or Nothing";
+				String opportunityTxt = "Opportunity";
+				String patientLevelLinearTxt = "Patient-level Linear";
+				List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<CompositeMeasureScoreDTO>();
+				CompositeMeasureScoreDTO allOrNothing = new CompositeMeasureScoreDTO();
+				allOrNothing.setId("1");
+				allOrNothing.setScore(allOrNothingTxt);
+				compositeChoices.add(allOrNothing);
+				
+				CompositeMeasureScoreDTO opportunity = new CompositeMeasureScoreDTO();
+				opportunity.setId("2");
+				opportunity.setScore(opportunityTxt);
+				compositeChoices.add(opportunity);
+				
+				CompositeMeasureScoreDTO patientLevelLinear = new CompositeMeasureScoreDTO();
+				patientLevelLinear.setId("3");
+				patientLevelLinear.setScore(patientLevelLinearTxt);
+				compositeChoices.add(patientLevelLinear);
+				
+				List<? extends HasListBox> defaultList = result;	
+				List<? extends HasListBox> proportionRatioList = defaultList.stream().filter((x) -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
+				List<? extends HasListBox> continuousVariableList = defaultList.stream().filter((x) -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
+				Map<String, List<? extends HasListBox>> selectionMap = new HashMap<String, List<? extends HasListBox>>(){
+					private static final long serialVersionUID = -8329823017052579496L;
+
+					{
+						put(MatContext.PLEASE_SELECT, defaultList);
+						put(allOrNothingTxt, proportionRatioList);
+						put(opportunityTxt, proportionRatioList);
+						put(patientLevelLinearTxt, continuousVariableList);
+					}
+				};
+				
+				((ManageCompositeMeasureDetailView)compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
+				((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringMethodInput().addChangeHandler(new ChangeHandler() {
+					
+					@Override
+					public void onChange(ChangeEvent event) {
+						String compositeScoringValue = ((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue();
+						compositeDetailDisplay.setScoringChoices(selectionMap.get(compositeScoringValue));
+					}
+				});
+			}
+		});
+		
+
+		compositeDetailDisplay.getMeasScoringChoice().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				if(compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
+						compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
+						compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
+						resetPatientBasedInput(compositeDetailDisplay); 
+						
+						// default the selected index to be 1, which is yes.  
+						
+						compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(1);
+						compositeDetailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+						compositeDetailDisplay.getHelpBlock().setColor("transparent");
+						compositeDetailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");	
+				}
+				
+				if(compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+
+					// yes is the second element in the list, so the 1 index. 
+					compositeDetailDisplay.getPatientBasedInput().removeItem(1);
+					compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(0);
+					compositeDetailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+					compositeDetailDisplay.getHelpBlock().setColor("transparent");
+					compositeDetailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
+					
+				}
+			}			
+		});
+
+	}
 
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
 		
@@ -426,7 +532,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 
 		detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
-
+		
 		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
 			@Override
 			public void onFailure(Throwable caught) {

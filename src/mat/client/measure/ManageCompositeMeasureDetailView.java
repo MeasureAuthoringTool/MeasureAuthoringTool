@@ -1,16 +1,21 @@
 package mat.client.measure;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 import mat.client.buttons.SaveContinueCancelButtonBar;
+import mat.client.codelist.HasListBox;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 
 public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetailView {
@@ -78,6 +83,16 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		mainPanel.add(fPanel);
 	}
 	
+	@Override
+	public HasClickHandlers getCancelButton() {
+		return buttonBar.getCancelButton();
+	}
+	
+	@Override
+	public HasClickHandlers getSaveButton() {
+		return buttonBar.getSaveButton();
+	}
+	
 	protected FlowPanel buildFlowPanel() {
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.getElement().setId("fPanel_FlowPanel");
@@ -128,5 +143,16 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		compositeScoringMethodInput.setVisibleItemCount(1);
 		compositeScoringMethodInput.setWidth("18em");
 	}
+
+	public void setCompositeScoringChoices(List<? extends HasListBox> texts) {
+		setListBoxItems(compositeScoringMethodInput, texts, MatContext.PLEASE_SELECT);
+	}
 	
+	public ListBoxMVP getCompositeScoringMethodInput() {
+		return compositeScoringMethodInput;
+	}
+
+	public String getCompositeScoringValue() {
+		return compositeScoringMethodInput.getItemText(compositeScoringMethodInput.getSelectedIndex());
+	}
 }

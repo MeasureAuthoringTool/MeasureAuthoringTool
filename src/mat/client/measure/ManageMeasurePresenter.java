@@ -374,18 +374,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void createNewMeasure() {
-		detailDisplay.getErrorMessageDisplay().clearAlert();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+		clearErrorMessageAlerts();
 		currentDetails = new ManageMeasureDetailModel();
 		displayDetailForAdd();
-		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	protected void createNewCompositeMeasure() {
-		detailDisplay.getErrorMessageDisplay().clearAlert();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+		clearErrorMessageAlerts();
 		currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
 		displayDetailForAddComposite();
+	}
+	
+	private void clearErrorMessageAlerts() {
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
@@ -576,29 +578,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 
-	private void displayDetailForAdd() {
+	private void displayCommonDetailForAdd(DetailDisplay detailDisplay) {
 		panel.getButtonPanel().clear();
-		resetPatientBasedInput(detailDisplay); 
-			
-		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
-		setDetailsToView();
+		resetPatientBasedInput(detailDisplay);
+		
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(false);
 		panel.setContent(detailDisplay.asWidget());
 	}
 	
+	private void displayDetailForAdd() {
+		displayCommonDetailForAdd(detailDisplay);
+		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
+		setDetailsToView();
+	}
+	
 	private void displayDetailForAddComposite() {
-		panel.getButtonPanel().clear();
-		
-		resetPatientBasedInput(compositeDetailDisplay);
-		
-		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");
-		
+		displayCommonDetailForAdd(compositeDetailDisplay);	
+		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");	
 		setCompositeDetailsToView();
-		
-		compositeDetailDisplay.showMeasureName(false);
-		compositeDetailDisplay.showCautionMsg(false);
-		panel.setContent(compositeDetailDisplay.asWidget());
 	}
 
 	private void displayDetailForClone() {

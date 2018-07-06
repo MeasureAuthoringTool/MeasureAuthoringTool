@@ -599,13 +599,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void buildCreateMeasure() {
 		panel.getButtonPanel().clear();
-
 		searchDisplay.getCreateMeasureButton().setId("newMeasure_button");
 		searchDisplay.getCreateMeasureButton().setIcon(IconType.LIGHTBULB_O);
 		searchDisplay.getCreateMeasureButton().setIconSize(IconSize.LARGE);
 		searchDisplay.getCreateMeasureButton().setType(ButtonType.LINK);
 		searchDisplay.getCreateMeasureButton().setTitle("Click to create new measure");
-				
 		searchDisplay.getCreateMeasureButton().setStyleName("createNewButton");
 		panel.getButtonPanel().add(searchDisplay.getCreateMeasureButton());
 	}
@@ -616,8 +614,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getCreateCompositeMeasureButton().setIconSize(IconSize.LARGE);
 		searchDisplay.getCreateCompositeMeasureButton().setType(ButtonType.LINK);
 		searchDisplay.getCreateCompositeMeasureButton().setTitle("Click to create new composite measure");
-		searchDisplay.getCreateCompositeMeasureButton().setStyleName("createNewButton");
-		searchDisplay.getCreateCompositeMeasureButton().setPaddingLeft(5);
+		searchDisplay.getCreateCompositeMeasureButton().setStyleName("createNewCompositeButton");
 		panel.getButtonPanel().add(searchDisplay.getCreateCompositeMeasureButton());
 	}
 	

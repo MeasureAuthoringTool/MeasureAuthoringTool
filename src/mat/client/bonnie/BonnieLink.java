@@ -1,22 +1,18 @@
 package mat.client.bonnie;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import mat.dao.impl.BonnieLinkDAO;
+import mat.server.service.impl.BonnieUtility;
 
 public class BonnieLink{
 	
 	private String responseType;
 	private String clientID;
 	private String redirectURI;
-	
-	//@Autowired 
-	//private BonnieLinkDAO linkDAO;
-	
+
 	public BonnieLink() {
-		//responseType = linkDAO.getResponseType();
-		//clientID = linkDAO.getClientID();
-		//redirectURI = linkDAO.getRedirectURI();
+		BonnieUtility.setLink();
+		responseType = System.getProperty("BonnieResponseType");
+		clientID = System.getProperty("BonnieClientID");
+		redirectURI = System.getProperty("BonnieRedirectURI");
 	}
 
 	public String getResponseType() {

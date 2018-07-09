@@ -1,7 +1,6 @@
 package mat.dao.service;
 
 import mat.dao.AuditLogDAO;
-import mat.dao.BonnieLinkDAO;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.CategoryDAO;
 import mat.dao.CodeDAO;
@@ -50,10 +49,6 @@ import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributeDetailsDAO;
 import mat.dao.clause.QDSAttributesDAO;
 
-
-/**
- * The Class DAOService.
- */
 public class DAOService {
 	
 	private AttributeDetailsDAO attributeDetailsDAO;
@@ -62,7 +57,6 @@ public class DAOService {
 	
 	private AuditLogDAO auditLogDAO;
 	
-	private BonnieLinkDAO bonnieLinkDAO;
 	
 	private CategoryDAO categoryDAO;
 	
@@ -167,14 +161,6 @@ public class DAOService {
 
 	public AuditLogDAO getAuditLogDAO() {
 		return auditLogDAO;
-	}
-
-	public BonnieLinkDAO getBonnieLinkDAO() {
-		return bonnieLinkDAO;
-	}
-	
-	public void setBonnieLinkDAO(BonnieLinkDAO link) {
-		bonnieLinkDAO = link;
 	}
 	
 	public CategoryDAO getCategoryDAO() {

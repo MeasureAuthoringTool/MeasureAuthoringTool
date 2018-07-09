@@ -24,7 +24,7 @@ public class IndicatorButton{
 		panel.clear();
 		link = new HTML("<button type=\"button\" title='"
 				+ inactiveText + "' tabindex=\"0\" class=\"btn btn-link\" > "
-			+ "<i class=\"fa fa-circle\" style=\"color: red;\"></i><span>"+ 
+			+ "<i class=\"fa fa-circle\" style=\"color: DarkRed;\"></i><span>"+ 
 				"  "  + inactiveText + "</span></button>");
 		link.getElement().setTabIndex(0);
 		panel.add(link);
@@ -35,7 +35,7 @@ public class IndicatorButton{
 		panel.clear();
 		link = new HTML("<button type=\"button\" title='"
 				+ activeText + "' tabindex=\"0\" class=\"btn btn-link\" > "
-				+ "<i class=\"fa fa-circle\" style=\"color: green;\"></i><span>"+
+				+ "<i class=\"fa fa-circle\" style=\"color: DarkGreen;\"></i><span>"+
 				"  "+ activeText + "</span></button>");
 		link.getElement().setTabIndex(0);
 		panel.add(link);

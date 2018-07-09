@@ -123,9 +123,13 @@
     <servlet-name>vsacAPIServiceImpl</servlet-name>
     <servlet-class>mat.server.VSACAPIServiceImpl</servlet-class>
   </servlet>
-    <servlet>
+  <servlet>
       <servlet-name>cqlConstantService</servlet-name>
       <servlet-class>mat.server.CQLConstantServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+      <servlet-name>bonnieService</servlet-name>
+      <servlet-class>mat.server.BonnieServiceImpl</servlet-class>
   </servlet>
   <servlet>
       <servlet-name>populationService</servlet-name>
@@ -172,6 +176,10 @@
       <url-pattern>/mat/cqlconstant</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+      <servlet-name>bonnieService</servlet-name>
+      <url-pattern>/mat/bonnie</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>packageServiceImpl</servlet-name>
     <url-pattern>/mat/package</url-pattern>
   </servlet-mapping>  
@@ -198,6 +206,10 @@
    <servlet-mapping>
       <servlet-name>cqlConstantService</servlet-name>
       <url-pattern>/mat/cqlConstantService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>bonnieService</servlet-name>
+      <url-pattern>/mat/bonnieService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
       <servlet-name>populationService</servlet-name>

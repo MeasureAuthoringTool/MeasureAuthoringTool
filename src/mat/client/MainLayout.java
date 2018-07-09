@@ -2,6 +2,7 @@ package mat.client;
 
 import java.util.List;
 
+import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Progress;
 import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
@@ -237,13 +238,13 @@ public abstract class MainLayout {
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
 
-		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
 		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
+		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
 		
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(logOutPanel);
-		vp.add(showBonnieState.getPanel());
 		vp.add(showUMLSState.getPanel());
+		vp.add(showBonnieState.getPanel());
 		vp.addStyleName("logoutAndUMLSPanel");
 		
 		horizontalBanner.add(vp);
@@ -373,4 +374,8 @@ public abstract class MainLayout {
 		showUMLSState.setVisible();
 	}
 	
+	//method to easily remove bonnie link from page
+	public void removeBonnieLink() {
+		showBonnieState.getPanel().removeFromParent();
+	}
 }

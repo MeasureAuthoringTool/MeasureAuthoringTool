@@ -1,5 +1,6 @@
 package mat.client.bonnie;
 
+
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
@@ -7,7 +8,6 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Label;
 
 import mat.client.buttons.NoButton;
 import mat.client.buttons.YesButton;
+import mat.client.shared.MatContext;
 
 public class BonnieModal {
 	private final String MESSAGE = "You are leaving the Measure Authoring Tool (MAT) and entering another website. "
@@ -30,7 +31,7 @@ public class BonnieModal {
 	private Label messageLabel = new Label();
 
 	public BonnieModal(){
-		String bonnieLink = buildBonnieLink();
+		MatContext.get().buildBonnieLink();
 		panel.setClosable(false);
 		panel.setFade(true);
 		panel.getElement().setTabIndex(0);
@@ -53,7 +54,7 @@ public class BonnieModal {
 			@Override
 			public void onClick(ClickEvent event) {
 				panel.setVisible(false);
-				Window.open(bonnieLink, "_self", "");
+				Window.open(MatContext.get().getBonnieLink(), "_self", "");
 			}
 		});
 		
@@ -65,22 +66,10 @@ public class BonnieModal {
 		panel.add(modalFooter);
 		panel.getElement().setAttribute("role", "dialog");
 	}
-	
-	private String buildBonnieLink() {
-		BonnieLink bonnieLinkInfo = new BonnieLink();
-		String responseType = bonnieLinkInfo.getResponseType();
-		String clientId = bonnieLinkInfo.getClientId();
-		String redirectURI = bonnieLinkInfo.getRedirectURI();
 		
-		String link = "https://bonnie-prior.ahrqstg.org/oauth/authorize?response_type="
-					+ responseType + "&client_id=" + clientId + "&redirect_uri=" + redirectURI;
-		
-		return link;
-	}
-	
-	public void show() {
-		panel.show();
-		panel.getElement().focus();		
+	public void show(){
+		panel.show();	
+		messageLabel.getElement().focus();
 	}
 		
 }

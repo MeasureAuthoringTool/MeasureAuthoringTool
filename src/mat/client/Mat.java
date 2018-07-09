@@ -525,14 +525,19 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
-		getBonnieButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				BonnieModal bonnieModal = new BonnieModal();
-				bonnieModal.show();
-			}
-		});
+		if(resultMatVersion.equals("v5.6")) {
+			getBonnieButton().addClickHandler(new ClickHandler() {
+				
+				@Override
+				public void onClick(ClickEvent event) {
+					BonnieModal bonnieModal = new BonnieModal();
+					bonnieModal.show();
+				}
+			});
+		}
+		else {
+			removeBonnieLink();
+		}
 		
 		
 		/*

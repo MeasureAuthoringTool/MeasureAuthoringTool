@@ -26,6 +26,8 @@ import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
+import mat.client.bonnie.BonnieService;
+import mat.client.bonnie.BonnieServiceAsync;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
@@ -91,7 +93,9 @@ public class MatContext implements IsSerializable {
 	private static MatContext instance = new MatContext();
 
 	private String currentModule;
-
+	
+	private String bonnieLink;
+	
 	private LoginServiceAsync loginService;
 
 	private MeasureServiceAsync measureService;
@@ -151,7 +155,7 @@ public class MatContext implements IsSerializable {
 	private int errorTabIndex;
 
 	private boolean isErrorTab;
-
+	
 	public List<String> timings = new ArrayList<String>();
 
 	public List<String> functions = new ArrayList<String>();
@@ -1373,5 +1377,27 @@ public class MatContext implements IsSerializable {
 		if(model != null) {
 			this.cqlModel = model;
 		}
+	}
+	
+	public void buildBonnieLink() {
+		BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
+
+		bonnie.getBonnieLink(new AsyncCallback<String>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				bonnieLink = result;
+			}
+			
+		});
+	}
+	
+	public String getBonnieLink() {
+		return bonnieLink;
 	}
 }

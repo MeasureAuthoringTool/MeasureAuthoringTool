@@ -17,7 +17,7 @@
 	    <property name="privacyPolicyUseUrl" value="${mat.privacypolicy.url}"/>	
 	    <property name="userGuideUrl" value="${mat.userguide.url}"/>
 	</bean>
-        
+
     <bean id="securityQuestionsService" class="mat.server.service.impl.SecurityQuestionsServiceImpl">
     </bean>    
             
@@ -58,8 +58,13 @@
     
     <bean id="userAuditService" class="mat.server.service.impl.UserAuditServiceImpl">
     </bean>
+    
     <bean id="codeListAuditService" class="mat.server.service.impl.CodeListAuditServiceImpl">
     </bean>
+    
+    <bean id="bonnieService" class="mat.server.BonnieServiceImpl">
+    </bean>
+    
    <!--  <bean id="suppDataElementsGenerator" class="mat.server.export.SuppDataElementsGenerator"> 
     </bean>-->
     <!-- US154 -->

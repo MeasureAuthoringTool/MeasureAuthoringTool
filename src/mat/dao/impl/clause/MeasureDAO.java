@@ -809,11 +809,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		if (AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
 			return false;
 		}
-		if (AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.isPatientBased()) {
+		if (AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
 			return false;
 		}
 		if (AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased())
-				&& measure.isPatientBased()) {
+				&& measure.getPatientBased()) {
 			return false;
 		}
 		if (model.getScoringTypes().size() > 0) {

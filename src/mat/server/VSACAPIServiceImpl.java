@@ -35,14 +35,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		return this.vsacapi.isAlreadySignedIn(sessionId);
 	}
 	
-	/* 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final VsacApiResult getAllVersionListByOID(String oid) {
-		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.vsacapi.getAllVersionListByOID(oid,sessionId);
-	}
 	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
@@ -55,10 +47,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		String sessionId = getThreadLocalRequest().getSession().getId();
 		return this.vsacapi.validateVsacUser(userName, password,sessionId);
 	}
-	
-	/* 
-	 * {@inheritDoc}
-	 */
+
 	@Override
 	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();

@@ -967,25 +967,7 @@ public class MatContext implements IsSerializable {
 			}
 		});
 	}	
-
-	public void getAllVersionsByOID(String oid, int index){
-		vsacapiServiceAsync.getAllVersionListByOID(oid, new AsyncCallback<VsacApiResult>() {
-			
-			@Override
-			public void onSuccess(VsacApiResult result) {
-				if (result.getVsacExpProfileResp() != null) {
-					
-				}
-				
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {				
-			}
-		});
-	}
 	
-
 	public void setModifyQDMPopUpWidget(
 			QDMAvailableValueSetWidget modifyQDMPopUpWidget) {
 		this.modifyQDMPopUpWidget = modifyQDMPopUpWidget;

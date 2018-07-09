@@ -32,7 +32,6 @@ import mat.model.DirectReferenceCode;
 import mat.model.MatValueSet;
 import mat.model.VSACExpansionProfileWrapper;
 import mat.model.VSACValueSetWrapper;
-import mat.model.VSACVersionWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.VSACApiService;
@@ -156,46 +155,6 @@ public class VSACApiServImpl implements VSACApiService{
 		return profileDetails;
 	}
 	
-	/**
-	 * Caster conversion for Version list.
-	 * @param xmlPayLoad - String
-	 * @return VSACVersionWrapper
-	 */
-	private VSACVersionWrapper convertXmlToVersionList(final String xmlPayLoad) {
-		LOGGER.info("Start VSACAPIServiceImpl convertXmlToVersionList");
-		VSACVersionWrapper versionDetails = null;
-		String xml = xmlPayLoad;
-		if ((xml != null) && StringUtils.isNotBlank(xml)) {
-			LOGGER.info("xml To reterive RetrieveVSACVersionListResponse tag is not null ");
-		}
-		try {
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("VSACVersionMapping.xml"));
-			Unmarshaller unmar = new Unmarshaller(mapping);
-			unmar.setClass(VSACVersionWrapper.class);
-			unmar.setWhitespacePreserve(true);
-			versionDetails = (VSACVersionWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
-			if (versionDetails.getVersionList() != null) {
-				LOGGER.info("unmarshalling complete..RetrieveVSACVersionListResponse" + versionDetails.getVersionList().get(0).getName());
-			} else {
-				LOGGER.info("unmarshalling complete..RetrieveVSACVersionListResponse Empty Version List");
-			}
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				LOGGER.info("Failed to load VSACVersionMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				LOGGER.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				LOGGER.info("Unmarshalling Failed" + e);
-			} else {
-				LOGGER.info("Other Exception" + e);
-			}
-		}
-		LOGGER.info("End VSACAPIServiceImpl convertXmlToVersionList");
-		return versionDetails;
-	}
-	
-	
 	private DirectReferenceCode convertXmltoDirectCodeRef(final String xmlPayLoad) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");		
 		DirectReferenceCode details = null;
@@ -285,45 +244,6 @@ public class VSACApiServImpl implements VSACApiService{
 			LOGGER.info("VSACAPIServiceImpl getAllExpIdentifierList :: UMLS Login is required");
 		}
 		LOGGER.info("End VSACAPIServiceImpl getAllExpIdentifierList method :");
-		return result;
-	}
-	
-	
-	/* 
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final VsacApiResult getAllVersionListByOID(String oid, String sessionId) {
-		VsacApiResult result = new VsacApiResult();
-		LOGGER.info("Start VSACAPIServiceImpl getAllProfileList method :");
-		if (isAlreadySignedIn(sessionId)) {
-			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId));
-			VSACResponseResult vsacResponseResult = null;
-			try {
-				vsacResponseResult = vGroovyClient.reteriveVersionListForOid(oid, fiveMinuteServiceTicket);
-			} catch (Exception ex) {
-				LOGGER.info("VSACAPIServiceImpl VersionList failed in method :: getAllVersionListByOID");
-			}
-			if ((vsacResponseResult != null) && (vsacResponseResult.getXmlPayLoad() != null)) {
-				if (vsacResponseResult.getIsFailResponse() && (vsacResponseResult.getFailReason() == VSAC_TIME_OUT_FAILURE_CODE)) {
-					LOGGER.info("Version List reterival failed at VSAC with Failure Reason: " + vsacResponseResult.getFailReason());
-					result.setSuccess(false);
-					result.setFailureReason(vsacResponseResult.getFailReason());
-					return result;
-				}
-				if ((vsacResponseResult.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsacResponseResult.getXmlPayLoad())) {
-					// Caster conversion here.
-					VSACVersionWrapper wrapper = convertXmlToVersionList(vsacResponseResult.getXmlPayLoad());
-					result.setVsacVersionResp(wrapper.getVersionList());
-					return result;
-				}
-			}
-		} else {
-			result.setSuccess(false);
-			result.setFailureReason(VsacApiResult.UMLS_NOT_LOGGEDIN);
-			LOGGER.info("VSACAPIServiceImpl getAllVersionListByOID :: UMLS Login is required");
-		}
-		LOGGER.info("End VSACAPIServiceImpl getAllVersionListByOID method :");
 		return result;
 	}
 	

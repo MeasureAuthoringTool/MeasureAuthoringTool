@@ -610,7 +610,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			measureResultList = getAllMeasuresInSet(measureResultList);
 		}
 		measureResultList = sortMeasureList(measureResultList);
-		StringUtility su = new StringUtility();
+
 		for (Measure measure : measureResultList) {
 			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
@@ -792,7 +792,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 														: false;
 		return matchesSearch;
 	}
-	
+
 	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
 		if(StringUtils.isNotBlank(model.getSearchTerm())) {
 			String searchTerm = model.getSearchTerm().toLowerCase();

@@ -1580,6 +1580,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
+		//removing as to not block QA
 		searchDisplay.getMeasureLibraryAdvancedSearchBuilder().getModal().getSearch().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

@@ -23,8 +23,6 @@ public class BonnieModal {
 			+ " website, you will be subject to that site's Privacy Policy. After a successful "
 			+ "login you will be automatically redirected back to your open MAT session. Do you wish to continue?" ;
 	
-	@Autowired private BonnieLink bonnieLinkInfo;
-	
 	private YesButton yesButton = new YesButton("BonnieModal");
 	private NoButton noButton = new NoButton("BonnieModal");
 	private Modal panel = new Modal();
@@ -69,6 +67,7 @@ public class BonnieModal {
 	}
 	
 	private String buildBonnieLink() {
+		BonnieLink bonnieLinkInfo = new BonnieLink();
 		String responseType = bonnieLinkInfo.getResponseType();
 		String clientId = bonnieLinkInfo.getClientId();
 		String redirectURI = bonnieLinkInfo.getRedirectURI();

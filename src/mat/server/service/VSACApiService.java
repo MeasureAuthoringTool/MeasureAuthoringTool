@@ -6,9 +6,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.cql.CQLQualityDataSetDTO;
 
 
-/**
- * The Interface MeasureLibraryService.
- */
 public interface VSACApiService {
 	void inValidateVsacUser(String sessionId);
 	

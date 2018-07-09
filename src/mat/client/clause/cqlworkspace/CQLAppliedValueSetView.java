@@ -293,7 +293,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		programLabel.setText(TEXT_PROGRAM);
 		programLabel.setTitle(TEXT_PROGRAM);
 		programPanel.add(programLabel);
-		programListBox.setTitle("Program selection list");
+		programListBox.setTitle("Program selection list. Program is a required field.");
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
 		initProgramListBoxContent();
@@ -383,14 +383,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	public void initializeReleaseListBoxContent() {
 		getReleaseListBox().clear();
-		getReleaseListBox().setEnabled(false);
+		getReleaseListBox().setEnabled(true);
 		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 	}
 	
 	
 	public void initProgramListBoxContent() {
-		getProgramListBox().clear();
-		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
+		getProgramListBox().clear();	
 	}
 
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
@@ -521,31 +520,29 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			
-			// Version Column
-			Column<CQLQualityDataSetDTO, SafeHtml> versionColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+			// Program Column
+			Column<CQLQualityDataSetDTO, SafeHtml> programColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLQualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
-					String version = null;
+					String program = null;
 					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if ((object.getVersion() != null) && (object.getVersion().equals("1.0")
-								|| object.getVersion().equals("1"))) {
-							version = (object.getRelease() == null || object.getRelease().isEmpty()) ? "Most Recent" : "";
-							title.append("Version : ").append(version);
-							
+						if (object.getProgram() != null) {
+							program = object.getProgram();							
 						} else {
-							version = object.getVersion();
-							title.append("Version : ").append(version);
+							program = "";
 						}
+						title.append("Program : ").append(program);
 					} else {
-						version = "";
+						program = "";
 					}
-					return CellTableUtility.getColumnToolTip(version, title.toString());
+					return CellTableUtility.getColumnToolTip(program, title.toString());
 				}
 			};
-			table.addColumn(versionColumn,
-					SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version" + "</span>"));
+			table.addColumn(programColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
+	
 			
 			// Release Column
 			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
@@ -1157,7 +1154,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getSaveButton().setEnabled(false);
 		
 		initializeReleaseListBoxContent();
-		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
+		getProgramListBox().setSelectedIndex(0);
 		getProgramListBox().setEnabled(true);
 		
 		getUpdateFromVSACButton().setEnabled(true);

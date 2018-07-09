@@ -353,7 +353,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 					SaveUpdateCQLResult saveUpdateCQLResult = cqlService.getCQLLibraryData(versionLibraryXml);
 					List<String> usedCodeList = saveUpdateCQLResult.getUsedCQLArtifacts().getUsedCQLcodes();
 					processor.removeUnusedDefaultCodes(usedCodeList);
-					
+					processor.clearValuesetVersionAttribute();
 					versionLibraryXml = processor.transform(processor.getOriginalDoc());
 				} catch (XPathExpressionException e) {
 					e.printStackTrace();

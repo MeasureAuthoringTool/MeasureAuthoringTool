@@ -2598,6 +2598,7 @@ public class CQLServiceImpl implements CQLService {
 		qds.setOriginalCodeListName(valueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
 		qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
 		qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
+		qds.setVersion("");
 
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
@@ -2605,15 +2606,12 @@ public class CQLServiceImpl implements CQLService {
 			qds.setTaxonomy(matValueSet.getCodeSystemName());
 		}
 		qds.setUuid(UUID.randomUUID().toString());
-		
-		qds.setVersion(getValueSetVersion(valueSetTransferObject.isVersion(), 
-				valueSetTransferObject.getCqlQualityDataSetDTO().getRelease(), valueSetTransferObject.getMatValueSet().getVersion()));
+
 		
 		ArrayList<CQLQualityDataSetDTO> qualityDataSetDTOs = (ArrayList<CQLQualityDataSetDTO>) valueSetTransferObject
 				.getAppliedQDMList();
 
 		// Treat as regular QDM
-
 		if (!isDuplicate(valueSetTransferObject, true)) {
 			wrapper.getQualityDataDTO().add(qds);
 			String xmlString = generateXmlForAppliedValueset(wrapper);
@@ -2627,15 +2625,6 @@ public class CQLServiceImpl implements CQLService {
 		}
 
 		return result;
-	}
-	
-	private String getValueSetVersion(boolean hasVersion, String release, String version) {	
-				
-		if (StringUtils.isNotBlank(release)){
-			return "" ;
-		} else {
-			return hasVersion ? version : "1.0" ;			
-		}
 	}
 
 	/**
@@ -2860,9 +2849,6 @@ public class CQLServiceImpl implements CQLService {
 				qds.setTaxonomy(matValueSet.getCodeSystemName());
 			}
 			
-			qds.setVersion(getValueSetVersion(matValueSetTransferObject.isVersion(), 
-					matValueSetTransferObject.getCqlQualityDataSetDTO().getRelease(), matValueSetTransferObject.getMatValueSet().getVersion()));
-			
 			CQLQualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
 					(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 
@@ -2909,7 +2895,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
 				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
-				newNode.getAttributes().getNamedItem("version").setNodeValue(getValueSetVersion(true, modifyWithDTO.getRelease(), modifyWithDTO.getVersion()));
+				newNode.getAttributes().getNamedItem("version").setNodeValue(""); 
 				if (newNode.getAttributes().getNamedItem("release") != null) {
 					newNode.getAttributes().getNamedItem("release").setNodeValue(modifyWithDTO.getRelease());
 					newNode.getAttributes().getNamedItem("program").setNodeValue(modifyWithDTO.getProgram());
@@ -3210,8 +3196,6 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult deleteInclude(String xml, CQLIncludeLibrary toBeModifiedIncludeObj, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		logger.info("DELETE Include CLICK " + toBeModifiedIncludeObj.getAliasName());
-
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
 		XmlProcessor processor = new XmlProcessor(xml);

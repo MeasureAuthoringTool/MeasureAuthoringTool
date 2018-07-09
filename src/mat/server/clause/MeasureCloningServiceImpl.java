@@ -249,6 +249,7 @@ implements MeasureCloningService {
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
+			xmlProcessor.clearValuesetVersionAttribute();
 			
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) 
 					|| currentDetails.isPatientBased()) {

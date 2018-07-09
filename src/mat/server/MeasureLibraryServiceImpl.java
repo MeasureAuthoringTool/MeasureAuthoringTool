@@ -682,7 +682,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measureDetailModel.getId());
 		measureXmlModel.setXml(createXml(measureDetailModel).toString());
-		measureXmlModel.setToReplaceNode(MEASURE_DETAILS);
+		measureXmlModel.setToReplaceNode(MEASURE_DETAILS);		
 		saveMeasureXml(measureXmlModel);
 		logger.info("Clone of Measure_xml is Successful");
 	}

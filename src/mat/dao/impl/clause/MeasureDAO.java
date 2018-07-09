@@ -18,7 +18,6 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jetty.util.StringUtil;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -613,9 +612,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		measureResultList = sortMeasureList(measureResultList);
 		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
-			//removing as to not block QA
-			/*if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {*/
-			if (searchResultsForMeasure(advancedSearchModel.getSearchTerm(), su, measure)) {
+			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if (isDraft) {
@@ -795,10 +792,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 														: false;
 		return matchesSearch;
 	}
-
-	//removing as to not block QA
-	/*private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
-		if(StringUtil.isNotBlank(model.getSearchTerm())) {
+	
+	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
+		if(StringUtils.isNotBlank(model.getSearchTerm())) {
 			String searchTerm = model.getSearchTerm().toLowerCase();
 			String measureAbbName = measure.getaBBRName().toLowerCase();
 			String measureDesc = measure.getDescription().toLowerCase();
@@ -825,16 +821,25 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				return false;
 			}
 		}
-		if (StringUtil.isNotBlank(model.getOwner())) {
+		if(StringUtils.isNotBlank(model.getOwner())) {
 			String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
 			if (!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
 				return false;
 			}
 		}
 
-		if (StringUtils.isNotEmpty(model.getModifiedOwner()) || model.getModifiedDate() > 0) {
-			List<MeasureAuditLog> auditLog = getMeasureAuditLogByMeasure(measure);
-			if (auditLog == null) {
+		if (StringUtils.isNotEmpty(model.getModifiedOwner())) {
+			if(measure.getLastModifiedBy() == null) {
+				return false;
+			}
+			User user =  measure.getLastModifiedBy();
+			String lastModifiedByName = user.getFirstName() + " " + user.getFirstName();
+			if (!lastModifiedByName.toLowerCase().contains(model.getModifiedOwner().toLowerCase())) {
+				return false;
+			}
+		}
+		if (model.getModifiedDate() > 0) {
+			if(measure.getLastModifiedOn() == null) {
 				return false;
 			}
 			int date = model.getModifiedDate();
@@ -847,22 +852,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			cal.add(Calendar.DAY_OF_WEEK, -1 * date);
 
 			time = new Timestamp(cal.getTime().getTime());
-
-			MeasureAuditLog log = auditLog.get(0);
-
-			if (log.getTime().before(time)) {
+			
+			Timestamp modifiedTime =  measure.getLastModifiedOn();
+			if (modifiedTime.before(time)) {
 				return false;
-			}
-
-			if (StringUtils.isNotEmpty(model.getModifiedOwner())) {
-				if (!log.getUserId().contains(model.getModifiedOwner())) {
-					return false;
-				}
 			}
 		}
 
 		return true;
-	}*/
+	}
 
 	private List<Measure> sortMeasureList(List<Measure> measureResultList) {
 		// generate sortable lists

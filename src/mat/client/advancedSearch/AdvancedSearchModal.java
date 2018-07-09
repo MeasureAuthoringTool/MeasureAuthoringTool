@@ -329,6 +329,7 @@ public class AdvancedSearchModal {
 	/*Hidden panel with info about what the modal does for 508 compliance*/
 	public void setHelpBlock (String message) {
 		helpBlock.setColor("transparent");
+		helpBlock.setVisible(false);
 		helpBlock.setHeight("0px");
 		helpBlock.setText(message);
 	}

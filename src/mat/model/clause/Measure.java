@@ -45,7 +45,7 @@ public class Measure {
 	
 	private String releaseVersion;
 	
-	private boolean isPatientBased;
+	private Boolean patientBased;
 	
 	private Timestamp lastModifiedOn; 
 	
@@ -240,12 +240,12 @@ public class Measure {
 		this.releaseVersion = releaseVersion;
 	}
 
-	public boolean isPatientBased() {
-		return isPatientBased;
+	public Boolean getPatientBased() {
+		return patientBased;
 	}
 
-	public void setPatientBased(boolean isPatientBased) {
-		this.isPatientBased = isPatientBased;
+	public void setPatientBased(Boolean patientBased) {
+		this.patientBased = patientBased;
 	}
 
 	public Timestamp getLastModifiedOn() {

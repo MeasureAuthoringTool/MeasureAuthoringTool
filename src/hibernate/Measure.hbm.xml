@@ -39,6 +39,8 @@
     
     <many-to-one name="lastModifiedBy" column="LAST_MODIFIED_BY" 
        class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
-
+       
+	<property name="patientBased" column="PATIENT_BASED"/>
+	
   </class>
 </hibernate-mapping>

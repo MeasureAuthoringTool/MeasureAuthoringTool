@@ -2,7 +2,6 @@ package mat.client.buttons;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.user.client.ui.Composite;
 
@@ -17,7 +16,6 @@ public class BackSaveCancelButtonBar extends Composite {
 		buttonToolBar = new ButtonToolBar();
 		saveButton = new SaveAndContinueButton(uniqueSection);
 		cancelButton = new CancelButton(uniqueSection);
-		cancelButton.setPull(Pull.RIGHT);
 		backButton = new BackButton(uniqueSection);
 		
 		buttonToolBar.add(backButton);

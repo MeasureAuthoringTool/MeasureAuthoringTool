@@ -88,6 +88,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			if(compositeDetailDisplay != null) {
 				compositeDetailDisplay.getName().setValue("");
 				compositeDetailDisplay.getShortName().setValue("");
+				compositeDetailDisplay.clearFields();
 			}
 			displaySearch();
 		}
@@ -611,7 +612,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void displayComponentDetails() {
-		//TODO implement this
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create New Composite Measure > Component Measures", "MeasureLibrary");
 		panel.setContent(componentMeasureDisplay.asWidget());

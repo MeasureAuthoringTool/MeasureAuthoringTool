@@ -37,7 +37,7 @@ import mat.shared.ClickableSafeHtmlCell;
 public class ComponentMeasureDisplay implements BaseDisplay {
 	private SimplePanel mainPanel = new SimplePanel();
 	private MessageAlert errorMessages = new ErrorMessageAlert();
-	private HelpBlock helpBlock = new HelpBlock();
+	protected HelpBlock helpBlock = new HelpBlock();
 	private Panel availableMeasuresPanel = new Panel();
 	private Panel appliedComponentMeasuresPanel = new Panel();
 	
@@ -245,7 +245,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				//TODO need patient based indicator
 				return CellTableUtility.getColumnToolTip("");
 			}
 		};

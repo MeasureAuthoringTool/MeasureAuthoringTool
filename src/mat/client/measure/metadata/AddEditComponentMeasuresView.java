@@ -2,7 +2,6 @@ package mat.client.measure.metadata;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -54,6 +53,10 @@ import mat.client.util.CellTableUtility;
 import mat.shared.AdvancedSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddEditComponentMeasuresView.
+ */
 public class AddEditComponentMeasuresView implements
 		MetaDataPresenter.AddEditComponentMeasuresDisplay {
 
@@ -445,6 +448,33 @@ public class AddEditComponentMeasuresView implements
 		table.redraw();
 	}
 
+	/**
+	 * Update component measures selected list.
+	 * 
+	 * @param componentMeasureList
+	 *            the component measure list
+	 */
+	private void updateComponentMeasuresSelectedList(
+			List<ManageMeasureSearchModel.Result> componentMeasureList) {
+		if (componentMeasuresList.size() != 0) {
+			for (int i = 0; i < componentMeasuresList.size(); i++) {
+				for (int j = 0; j < componentMeasureList.size(); j++) {
+					if (componentMeasuresList
+							.get(i)
+							.getId()
+							.equalsIgnoreCase(
+									componentMeasureList.get(j).getId())) {
+						componentMeasuresList.set(i,
+								componentMeasureList.get(j));
+						break;
+					}
+				}
+			}
+		}
+
+	}
+
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -491,23 +521,20 @@ public class AddEditComponentMeasuresView implements
 	 * @return the string
 	 */
 	private String convertTimestampToString(Timestamp ts) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(ts);
-		
 		String tsStr;
 		if (ts == null) {
 			tsStr = "";
 		} else {
-			int hours = cal.get(Calendar.HOUR);
+			int hours = ts.getHours();
 			String ap = hours < 12 ? "AM" : "PM";
 			int modhours = hours % 12;
-			String mins = cal.get(Calendar.MINUTE) + "";
+			String mins = ts.getMinutes() + "";
 			if (mins.length() == 1) {
 				mins = "0" + mins;
 			}
 			String hoursStr = modhours == 0 ? "12" : modhours + "";
-			tsStr = (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DATE) + "/"
-					+ (cal.get(Calendar.YEAR) + 1900) + " " + hoursStr + ":" + mins + " "
+			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/"
+					+ (ts.getYear() + 1900) + " " + hoursStr + ":" + mins + " "
 					+ ap;
 		}
 		return tsStr;

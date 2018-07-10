@@ -163,6 +163,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
 	}
 	
+	private void generateExport(final String measureId, final List<String> message ,
 			final List<MatValueSet> matValueSetList) throws Exception {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		Measure measure = measureDAO.find(measureId);

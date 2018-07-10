@@ -48,6 +48,8 @@ public abstract class MainLayout {
 	
 	protected static FocusableWidget skipListHolder;
 
+	private String version = "";
+	
 	static HTML welcomeUserLabel;
 	
 	static HTML versionLabel;
@@ -236,13 +238,15 @@ public abstract class MainLayout {
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
 
-		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
-		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
-		
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(logOutPanel);
+		
+		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
 		vp.add(showUMLSState.getPanel());
+		
+		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
 		vp.add(showBonnieState.getPanel());
+	
 		vp.addStyleName("logoutAndUMLSPanel");
 		
 		horizontalBanner.add(vp);

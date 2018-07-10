@@ -32,8 +32,12 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
 import mat.dao.CodeDAO;
+import mat.dao.CodeListAuditLogDAO;
+import mat.dao.CodeListDAO;
 import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
+import mat.dao.ListObjectDAO;
+import mat.dao.ListObjectLTDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureTypeDAO;
 import mat.dao.ObjectStatusDAO;
@@ -42,6 +46,7 @@ import mat.dao.StewardDAO;
 import mat.dao.UnitDAO;
 import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
+import mat.dao.UserDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.model.Category;
 import mat.model.Code;
@@ -93,6 +98,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Autowired
 	private CodeDAO codeDAO;
 
+	/** The code list audit log dao. */
+	@Autowired
+	private CodeListAuditLogDAO codeListAuditLogDAO;
+
+	/** The code list dao. */
+	@Autowired
+	private CodeListDAO codeListDAO;
+
 	/** The code system dao. */
 	@Autowired
 	private CodeSystemDAO codeSystemDAO;
@@ -100,6 +113,18 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	/** The data type dao. */
 	@Autowired
 	private DataTypeDAO dataTypeDAO;
+
+	/** The list object dao. */
+	@Autowired
+	private ListObjectDAO listObjectDAO;
+
+	/** The list object ltdao. */
+	@Autowired
+	private ListObjectLTDAO listObjectLTDAO;
+
+	/** The measure dao. */
+	@Autowired
+	private mat.dao.clause.MeasureDAO measureDAO;
 
 	/** The measure score dao. */
 	@Autowired
@@ -136,6 +161,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	/** The unit type matrix dao. */
 	@Autowired
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
+
+	/** The user dao. */
+	@Autowired
+	private UserDAO userDAO;
 
 	/**
 	 * Method to extract qdm element node created after marshalling of
@@ -377,7 +406,79 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return isQDSExist;
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * mat.server.service.CodeListService#countSearchResultsWithFilter(java.
+	 * lang.String, boolean, int)
+	 */
+	/*@Override
+	public int countSearchResultsWithFilter(final String searchText,
+			final boolean defaultCodeList, final int filter) {
+		String loggedInUserid = LoggedInUserUtil.getLoggedInUser();
+		return listObjectLTDAO.countSearchResultsWithFilter(searchText,
+				loggedInUserid, defaultCodeList, filter);
+	}*/
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.server.service.CodeListService#createClone(java.lang.String)
+	 */
+	/*@Override
+	public ManageValueSetSearchModel createClone(String id) {
+		ManageValueSetSearchModel model = new ManageValueSetSearchModel();
+		ListObject lo = listObjectDAO.find(id);
+		ListObject clone = lo.clone();
+		User user = getLoggedInUser();
+		clone.setOid(listObjectDAO.generateUniqueOid(user));
+		String name = listObjectDAO.generateUniqueName(clone.getName(), user);
+		if (name == null) {
+			return null;
+		}
+		clone.setName(name);
+		// non-clone specific alterations, we want these fields to have these
+		// values
+		clone.setDraft(true);
+		clone.setLastModified(null);
+		clone.setObjectOwner(user);
+		listObjectDAO.save(clone);
+		ManageValueSetSearchModel.Result result = new ManageValueSetSearchModel.Result();
+		result.setId(clone.getId());
+		result.setGrouped(clone.getCodeSystem().getDescription()
+				.equalsIgnoreCase("Grouping"));
+		model.getData().add(result);
+		model.setResultsTotal(1);
+		return model;
+	}*/
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.server.service.CodeListService#createDraft(java.lang.String,
+	 * java.lang.String)
+	 */
+	/*@Override
+	public ManageValueSetSearchModel createDraft(String id, String oid) {
+		ManageValueSetSearchModel model = new ManageValueSetSearchModel();
+		if (!listObjectDAO.hasDraft(oid)) {
+			ListObject lo = listObjectDAO.find(id);
+			ListObject clone = lo.clone();
+			// non-clone specific alterations, we want these fields to have
+			// these values
+			clone.setDraft(true);
+			clone.setLastModified(null);
+			// if(clone.getCodeSystemVersion().equalsIgnoreCase("Grouping")){
+			listObjectDAO.save(clone);
+			// }else{
+			// codeListDAO.save(clone);
+			// }
+			qualityDataSetDAO.updateListObjectId(id, clone.getId());
+			model.setResultsTotal(1);
+		}
+		return model;
+	}*/
 
 	/**
 	 * Method to create XML from QualityDataModelWrapper object.
@@ -424,6 +525,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            - {@link QualityDataModelWrapper}.
 	 * @return {@link ByteArrayOutputStream}.
 	 * */
+	private ByteArrayOutputStream createNewXML(
 			final QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In ManageCodeLiseServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
@@ -575,6 +677,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			Category category = categoryDAO.find(categoryId);
 			for (CodeSystem codeSys : category.getCodeSystems()) {
 				String codeSysDesc = codeSys.getDescription();
+				// TODO:- don't need to check for grouping code System. Since in
+				// another user story it is been removed.
+				// US 424. As per new Appendix LOINC should be displayed
+				// US 594. The Supplimental Value Sets Code System should not be
+				// included in the codeSystem dropDown.
 				if (!ConstantMessages.GROUPING_CODE_SYSTEM
 						.equalsIgnoreCase(codeSysDesc)
 						&& !ConstantMessages.HL7_ADMINGENDER_CODE_SYSTEM

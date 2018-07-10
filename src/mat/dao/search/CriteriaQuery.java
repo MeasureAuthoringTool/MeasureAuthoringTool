@@ -169,6 +169,7 @@ public class CriteriaQuery implements IQuery{
 	 */
 	@SuppressWarnings("rawtypes")
 	public Criteria buildCriteria(Session session, Class clazz) {
+		Criteria criteria = session.createCriteria(clazz);
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 
 		HashMap<String, String> alias = getAliases();

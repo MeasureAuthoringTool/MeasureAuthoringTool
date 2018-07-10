@@ -19,8 +19,16 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	@Override
 	public String getBonnieLink() {
-		return "https://bonnie-prior.ahrqstg.org/oauth/authorize?response_type="
-			+ getResponseType() + "&client_id=" + getClientId() + "&redirect_uri=" + getRedirectURI();
+		String responseType = getResponseType();
+		String clientId = getClientId();
+		String redirectURI = getRedirectURI();
+		
+		if(redirectURI == null && clientId == null && responseType == null) {
+			return "";
+		} else {
+			return "https://bonnie-prior.ahrqstg.org/oauth/authorize?response_type="
+					+ responseType + "&client_id=" + clientId + "&redirect_uri=" + redirectURI;
+		}
 	}
 
 }

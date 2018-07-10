@@ -812,7 +812,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @return MeasureExport. *
 	 */
 	private MeasureExport getMeasureExport(final String measureId) {
-		MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+		MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 		if (measureExport == null) {
 			return null;
 		}

@@ -18,7 +18,7 @@ public class MeasureExportDAO extends GenericDAO<MeasureExport, String>
 	 * @see mat.dao.clause.MeasureExportDAO#findForMeasure(java.lang.String)
 	 */
 	@Override
-	public MeasureExport findForMeasure(String measureId) {
+	public MeasureExport findByMeasureId(String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(MeasureExport.class);
 		criteria.add(Restrictions.eq("measure.id", measureId));
 		List<MeasureExport> results =  criteria.list();

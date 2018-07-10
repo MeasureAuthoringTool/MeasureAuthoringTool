@@ -10,12 +10,14 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.CustomButton;
+import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.SearchWidgetWithFilter;
+import mat.shared.AdvancedSearchModel;
 
 public interface SearchDisplay extends BaseDisplay {
 	@Override
@@ -36,7 +38,7 @@ public interface SearchDisplay extends BaseDisplay {
 
 	void setAdminObserver(AdminObserver adminObserver);
 
-	public void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
+	public void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, AdvancedSearchModel model);
 
 	void buildMostRecentWidget();
 
@@ -45,6 +47,8 @@ public interface SearchDisplay extends BaseDisplay {
 	public HasClickHandlers getBulkExportButton();
 
 	Button getCreateMeasureButton();
+	
+	Button getCreateCompositeMeasureButton();
 
 	public MessageAlert getErrorMeasureDeletion();
 
@@ -85,4 +89,6 @@ public interface SearchDisplay extends BaseDisplay {
 	EditConfirmationDialogBox getDraftConfirmationDialogBox();
 
 	public void resetMessageDisplay();
+	
+	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder();
 }

@@ -225,4 +225,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates.xml"/>
        	<include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates2.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9282_New_Export_Columns.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9288_Measure_Update_Information.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9287_Measure_Patient_Based.xml"/>
    	</databaseChangeLog>

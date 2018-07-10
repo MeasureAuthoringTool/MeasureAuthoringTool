@@ -132,6 +132,7 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.CQLValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
@@ -2057,7 +2058,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
 					rs = incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
 					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 						if(measureExport != null) {
 							String simpleXML = measureExport.getSimpleXML();
 							saveSimpleXML(m, measureExport, simpleXML);
@@ -2073,7 +2074,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					versionNumber = versionArr[0] + "." + versionArr[1];
 					rs = incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
 					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);
+						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 						if(measureExport != null) {
 							String simpleXML = measureExport.getSimpleXML();
 							saveSimpleXML(m, measureExport, simpleXML);
@@ -2343,25 +2344,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final ManageMeasureSearchModel search(final String searchText, final int startIndex, final int pageSize,
-			final int filter) {
+	public final ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(searchText, 1, Integer.MAX_VALUE,
-					filter);
+			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(advancedSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
+					advancedSearchModel.isMyMeasureSearch());
+
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			List<MeasureShareDTO> measureTotalList = measureList;
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (pageSize < measureTotalList.size()) {
-				measureList = measureTotalList.subList(startIndex - 1, pageSize);
-			} else if (pageSize > measureList.size()) {
-				measureList = measureTotalList.subList(startIndex - 1, measureList.size());
+			if (advancedSearchModel.getPageSize() < measureTotalList.size()) {
+				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, advancedSearchModel.getPageSize());
+			} else if (advancedSearchModel.getPageSize() > measureList.size()) {
+				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, measureList.size());
 			}
-			searchModel.setStartIndex(startIndex);
+			searchModel.setStartIndex(advancedSearchModel.getStartIndex());
 			searchModel.setData(detailModelList);
 
 			for (MeasureShareDTO dto : measureList) {
@@ -2382,16 +2382,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				detailModelList.add(detail);
 			}
 		} else {
-			List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, 1, Integer.MAX_VALUE, filter);
+			List<MeasureShareDTO> measureList = getService().searchWithFilter(advancedSearchModel);
 			List<MeasureShareDTO> measureTotalList = measureList;
-
+			
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (pageSize <= measureTotalList.size()) {
-				measureList = measureTotalList.subList(startIndex - 1, pageSize);
-			} else if (pageSize > measureList.size()) {
-				measureList = measureTotalList.subList(startIndex - 1, measureList.size());
+			if (advancedSearchModel.getPageSize() <= measureTotalList.size()) {
+				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, advancedSearchModel.getPageSize());
+			} else if (advancedSearchModel.getPageSize() > measureList.size()) {
+				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, measureList.size());
 			}
-			searchModel.setStartIndex(startIndex);
+			searchModel.setStartIndex(advancedSearchModel.getStartIndex());
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			searchModel.setData(detailModelList);
 			for (MeasureShareDTO dto : measureList) {

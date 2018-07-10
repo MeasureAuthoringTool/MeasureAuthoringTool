@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -30,14 +32,11 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/**
- * The Interface MeasureServiceAsync.
- */
 public interface MeasureServiceAsync {
 	
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, AsyncCallback<Void> callback);
@@ -265,18 +264,12 @@ public interface MeasureServiceAsync {
 	/**
 	 * Search.
 	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * @param advancedSearchModel
+	 * 			the model the search is performed off of
 	 * @param callback
-	 *            the callback
+	 *          the callback
 	 */
-	void search(String searchText, int startIndex, int pageSize,int filter, AsyncCallback<ManageMeasureSearchModel> callback);
+	void search(AdvancedSearchModel advancedSearchModel, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Search users.

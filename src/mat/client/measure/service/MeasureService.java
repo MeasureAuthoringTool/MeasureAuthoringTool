@@ -34,6 +34,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -252,16 +253,11 @@ public interface MeasureService extends RemoteService {
 	 * 
 	 * @param searchText
 	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * @param advancedSearchModel
+	 * 			the model that the search method uses to search
 	 * @return the manage measure search model
 	 */
-	ManageMeasureSearchModel search(String searchText, int startIndex,
-			int pageSize, int filter);
+	ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel);
 	
 	/**
 	 * Search users.

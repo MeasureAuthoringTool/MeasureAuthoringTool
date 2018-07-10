@@ -1,7 +1,10 @@
 package mat.client.measure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -10,6 +13,7 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -25,7 +29,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -35,6 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
@@ -63,10 +67,10 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
+import mat.shared.AdvancedSearchModel;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
-@SuppressWarnings("deprecation")
 public class ManageMeasurePresenter implements MatPresenter {
 
 	private List<String> bulkExportMeasureIds;
@@ -76,8 +80,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void onClick(ClickEvent event) {
 			isClone = false;
 
-			detailDisplay.getName().setValue("");
-			detailDisplay.getShortName().setValue("");
+			if(detailDisplay != null) {
+				detailDisplay.getName().setValue("");
+				detailDisplay.getShortName().setValue("");
+			}
+
+			if(compositeDetailDisplay != null) {
+				compositeDetailDisplay.getName().setValue("");
+				compositeDetailDisplay.getShortName().setValue("");
+			}
 			displaySearch();
 		}
 	};
@@ -85,6 +96,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private ManageMeasureSearchModel.Result resultToFireEvent ;
 
 	private ManageMeasureDetailModel currentDetails;
+	
+	private ManageCompositeMeasureDetailModel currentCompositeMeasureDetails;
 
 	private String currentExportId;
 
@@ -93,6 +106,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	final String currentUserRole = MatContext.get().getLoggedInUserRole();
 
 	private DetailDisplay detailDisplay;
+	
+	private DetailDisplay compositeDetailDisplay;
 
 	private ExportDisplay exportDisplay;
 
@@ -140,13 +155,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private VersionDisplay versionDisplay;
 
-	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, ShareDisplay shareDisplayArg,
+	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ShareDisplay shareDisplayArg,
 			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
-			VersionDisplay vDisplay, /* DraftDisplay dDisplay, */
+			VersionDisplay vDisplay,
 			final TransferOwnershipView transferDisplay) {
 
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
+		compositeDetailDisplay = compositeDisplayArg;
 		historyDisplay = hDisplay;
 		shareDisplay = shareDisplayArg;
 		exportDisplay = exportDisplayArg;
@@ -173,6 +189,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		if (detailDisplay != null) {
 			detailDisplayHandlers(detailDisplay);
+		}
+		if(compositeDetailDisplay != null) {
+			compositeDetailDisplayHandlers(compositeDetailDisplay);
 		}
 		if (exportDisplay != null) {
 			exportDisplayHandlers(exportDisplay);
@@ -241,7 +260,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if (!MatContext.get().getMeasureLockService().isResettingLock()) {
 					displaySearch();
 				} else {
-					DeferredCommand.addCommand(this);
+					Scheduler.get().scheduleDeferred(this);
 				}
 			}
 		};
@@ -354,11 +373,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		cloneMeasure(currentDetails, true);
 	}
 
-	private void createNew() {
-		detailDisplay.getErrorMessageDisplay().clearAlert();
-		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+	private void createNewMeasure() {
+		clearErrorMessageAlerts();
 		currentDetails = new ManageMeasureDetailModel();
 		displayDetailForAdd();
+	}
+	
+	protected void createNewCompositeMeasure() {
+		clearErrorMessageAlerts();
+		currentCompositeMeasureDetails = new ManageCompositeMeasureDetailModel();
+		displayDetailForAddComposite();
+	}
+	
+	private void clearErrorMessageAlerts() {
+		detailDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
@@ -370,6 +399,98 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(versionDisplay.asWidget());
 		Mat.focusSkipLists("MeasureLibrary");
 		clearRadioButtonSelection();
+	}
+	
+	private void compositeDetailDisplayHandlers(final DetailDisplay compositeDetailDisplay) {
+		compositeDetailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
+		
+		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
+			}
+
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {
+				compositeDetailDisplay.setScoringChoices(result);
+				
+				//TODO add this to server side when we implement functionality and add a database table
+				String allOrNothingTxt = "All or Nothing";
+				String opportunityTxt = "Opportunity";
+				String patientLevelLinearTxt = "Patient-level Linear";
+				List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<CompositeMeasureScoreDTO>();
+				CompositeMeasureScoreDTO allOrNothing = new CompositeMeasureScoreDTO();
+				allOrNothing.setId("1");
+				allOrNothing.setScore(allOrNothingTxt);
+				compositeChoices.add(allOrNothing);
+				
+				CompositeMeasureScoreDTO opportunity = new CompositeMeasureScoreDTO();
+				opportunity.setId("2");
+				opportunity.setScore(opportunityTxt);
+				compositeChoices.add(opportunity);
+				
+				CompositeMeasureScoreDTO patientLevelLinear = new CompositeMeasureScoreDTO();
+				patientLevelLinear.setId("3");
+				patientLevelLinear.setScore(patientLevelLinearTxt);
+				compositeChoices.add(patientLevelLinear);
+				
+				List<? extends HasListBox> defaultList = result;	
+				List<? extends HasListBox> proportionRatioList = defaultList.stream().filter((x) -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
+				List<? extends HasListBox> continuousVariableList = defaultList.stream().filter((x) -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
+				Map<String, List<? extends HasListBox>> selectionMap = new HashMap<String, List<? extends HasListBox>>(){
+					private static final long serialVersionUID = -8329823017052579496L;
+
+					{
+						put(MatContext.PLEASE_SELECT, defaultList);
+						put(allOrNothingTxt, proportionRatioList);
+						put(opportunityTxt, proportionRatioList);
+						put(patientLevelLinearTxt, continuousVariableList);
+					}
+				};
+				
+				((ManageCompositeMeasureDetailView)compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
+				((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringMethodInput().addChangeHandler(new ChangeHandler() {
+					
+					@Override
+					public void onChange(ChangeEvent event) {
+						String compositeScoringValue = ((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue();
+						compositeDetailDisplay.setScoringChoices(selectionMap.get(compositeScoringValue));
+					}
+				});
+			}
+		});
+		
+
+		compositeDetailDisplay.getMeasScoringChoice().addChangeHandler(new ChangeHandler() {
+
+			@Override
+			public void onChange(ChangeEvent event) {
+				if(compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
+						compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
+						compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
+						resetPatientBasedInput(compositeDetailDisplay); 
+						
+						// default the selected index to be 1, which is yes.  
+						
+						compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(1);
+						compositeDetailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+						compositeDetailDisplay.getHelpBlock().setColor("transparent");
+						compositeDetailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");	
+				}
+				
+				if(compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+
+					// yes is the second element in the list, so the 1 index. 
+					compositeDetailDisplay.getPatientBasedInput().removeItem(1);
+					compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(0);
+					compositeDetailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+					compositeDetailDisplay.getHelpBlock().setColor("transparent");
+					compositeDetailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
+					
+				}
+			}			
+		});
+
 	}
 
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
@@ -413,7 +534,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 
 		detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
-
+		
 		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -433,16 +554,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
 						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
 						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
-						resetPatientBasedInput(); 
+						resetPatientBasedInput(detailDisplay); 
 						
 						// default the selected index to be 1, which is yes.  
 						
 						detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 						detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
 						detailDisplay.getHelpBlock().setColor("transparent");
-						detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
-						
-						
+						detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");	
 				}
 				
 				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
@@ -459,20 +578,30 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 
-	private void displayDetailForAdd() {
+	private void displayCommonDetailForAdd(DetailDisplay detailDisplay) {
 		panel.getButtonPanel().clear();
-		resetPatientBasedInput(); 
-			
-		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
-		setDetailsToView();
+		resetPatientBasedInput(detailDisplay);
+		
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(false);
 		panel.setContent(detailDisplay.asWidget());
 	}
+	
+	private void displayDetailForAdd() {
+		displayCommonDetailForAdd(detailDisplay);
+		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
+		setDetailsToView();
+	}
+	
+	private void displayDetailForAddComposite() {
+		displayCommonDetailForAdd(compositeDetailDisplay);	
+		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");	
+		setCompositeDetailsToView();
+	}
 
 	private void displayDetailForClone() {
 		detailDisplay.clearFields();
-		resetPatientBasedInput(); 
+		resetPatientBasedInput(detailDisplay); 
 		
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
@@ -500,7 +629,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
-		resetPatientBasedInput(); 
+		resetPatientBasedInput(detailDisplay); 
 				
 		panel.setHeading("My Measures > Edit Measure", "MeasureLibrary");
 		detailDisplay.showMeasureName(false);
@@ -521,11 +650,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 
-	private void resetPatientBasedInput() {
-		detailDisplay.getPatientBasedInput().clear();
-		detailDisplay.getPatientBasedInput().addItem("No", "No");
-		detailDisplay.getPatientBasedInput().addItem("Yes", "Yes");
-		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
+	private void resetPatientBasedInput(DetailDisplay currentDisplay) {
+		currentDisplay.getPatientBasedInput().clear();
+		currentDisplay.getPatientBasedInput().addItem("No", "No");
+		currentDisplay.getPatientBasedInput().addItem("Yes", "Yes");
+		currentDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
 	private void displayHistory(String measureId, String measureName) {
@@ -564,7 +693,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			search(searchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
 			searchRecentMeasures();
 			buildCreateMeasure(); 
-			
+			buildCreateCompositeMeasure();
 			fp.add(searchDisplay.asWidget());
 		}
 
@@ -574,16 +703,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void buildCreateMeasure() {
 		panel.getButtonPanel().clear();
-
 		searchDisplay.getCreateMeasureButton().setId("newMeasure_button");
 		searchDisplay.getCreateMeasureButton().setIcon(IconType.LIGHTBULB_O);
 		searchDisplay.getCreateMeasureButton().setIconSize(IconSize.LARGE);
 		searchDisplay.getCreateMeasureButton().setType(ButtonType.LINK);
 		searchDisplay.getCreateMeasureButton().setTitle("Click to create new measure");
-				
 		searchDisplay.getCreateMeasureButton().setStyleName("createNewButton");
 		panel.getButtonPanel().add(searchDisplay.getCreateMeasureButton());
 	}
+	
+	private void buildCreateCompositeMeasure() {
+		searchDisplay.getCreateCompositeMeasureButton().setId("newCompositeMeasure_button");
+		searchDisplay.getCreateCompositeMeasureButton().setIcon(IconType.SITEMAP);
+		searchDisplay.getCreateCompositeMeasureButton().setIconSize(IconSize.LARGE);
+		searchDisplay.getCreateCompositeMeasureButton().setType(ButtonType.LINK);
+		searchDisplay.getCreateCompositeMeasureButton().setTitle("Click to create new composite measure");
+		searchDisplay.getCreateCompositeMeasureButton().setStyleName("createNewCompositeButton");
+		panel.getButtonPanel().add(searchDisplay.getCreateCompositeMeasureButton());
+	}
+	
 
 	private void displayShare(String userName, String id, String name) {
 		//Setting this value so that visiting this page every time from share link, any previously entered value is reset
@@ -943,7 +1081,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 			pageSize = 25;
 			showSearchingBusy(true);
-			MatContext.get().getMeasureService().search(searchText, startIndex, pageSize, filter,
+			AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex, pageSize, searchText, searchText);
+
+			MatContext.get().getMeasureService().search(model,
 					new AsyncCallback<ManageMeasureSearchModel>() {
 						@Override
 						public void onFailure(Throwable caught) {
@@ -997,213 +1137,220 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 		} else {
-			pageSize = 25;
-			showSearchingBusy(true);
-			MatContext.get().getMeasureService().search(searchText, startIndex, pageSize, filter,
-					new AsyncCallback<ManageMeasureSearchModel>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							detailDisplay.getErrorMessageDisplay()
-									.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							MatContext.get().recordTransactionEvent(null, null, null,
-									"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-							showSearchingBusy(false);
-						}
+			AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex, 25, lastSearchText, searchText);
 
-						@Override
-						public void onSuccess(ManageMeasureSearchModel result) {
-
-							if (searchDisplay.getMeasureSearchFilterWidget().getSelectedFilter() != 0) {
-								searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
-							} else {
-								searchDisplay.getMeasureSearchView().setMeasureListLabel("My Measures");
-							}
-							if (result.getData().size() > 0) {
-								searchDisplay.getExportSelectedButton().setVisible(true);
-							} else {
-								searchDisplay.getExportSelectedButton().setVisible(false);
-							}
-
-							searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
-								@Override
-								public void onCloneClicked(ManageMeasureSearchModel.Result result) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									isClone = true;
-									editClone(result.getId());
-								}
-
-								@Override
-								public void onEditClicked(ManageMeasureSearchModel.Result result) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									edit(result.getId());
-								}
-
-								@Override
-								public void onExportClicked(ManageMeasureSearchModel.Result result) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									export(result);
-								}
-
-								@Override
-								public void onExportSelectedClicked(Result result, boolean isCBChecked) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-									updateExportedIDs(result, manageMeasureSearchModel, isCBChecked);
-
-								}
-
-								@Override
-								public void onExportSelectedClicked(CustomCheckBox checkBox) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-									if (checkBox.getValue()) {
-										if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
-											searchDisplay.getErrorMessageDisplayForBulkExport()
-													.createAlert("Export file has a limit of 90 measures");
-											searchDisplay.getExportSelectedButton().setFocus(true);
-											checkBox.setValue(false);
-										} else {
-											manageMeasureSearchModel.getSelectedExportIds()
-													.add(checkBox.getFormValue());
-										}
-									} else {
-										manageMeasureSearchModel.getSelectedExportIds().remove(checkBox.getFormValue());
-									}
-								}
-
-								@Override
-								public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									historyDisplay.setReturnToLinkText("<< Return to Measure Library");
-									displayHistory(result.getId(), result.getName());
-								}
-
-								@Override
-								public void onShareClicked(ManageMeasureSearchModel.Result result) {
-									measureDeletion = false;
-									measureShared = false;
-									isMeasureDeleted = false;
-									isMeasureVersioned = false;
-									searchDisplay.getSuccessMeasureDeletion().clearAlert();
-									searchDisplay.getErrorMeasureDeletion().clearAlert();
-									displayShare(null, result.getId(), result.getName());
-								}
-
-								@Override
-								public void onClearAllBulkExportClicked() {
-
-									manageMeasureSearchModel.getSelectedExportResults()
-											.removeAll(manageMeasureSearchModel.getSelectedExportResults());
-									manageMeasureSearchModel.getSelectedExportIds()
-											.removeAll(manageMeasureSearchModel.getSelectedExportIds());
-
-								}
-
-								@Override
-								public void onCreateClicked(Result object) {
-									ManageMeasureSearchModel.Result selectedMeasure = object;
-									if (!isLoading && selectedMeasure.isDraftable()) {
-										if (((selectedMeasure != null) && (selectedMeasure.getId() != null))) {
-											showSearchingBusy(true);
-											MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
-													new AsyncCallback<ManageMeasureDetailModel>() {
-														@Override
-														public void onFailure(Throwable caught) {
-															showSearchingBusy(false);
-															searchDisplay.getErrorMessageDisplay()
-																	.createAlert(MatContext.get().getMessageDelegate()
-																			.getGenericErrorMessage());
-															MatContext.get().recordTransactionEvent(null, null, null,
-																	"Unhandled Exception: "
-																			+ caught.getLocalizedMessage(),
-																	0);
-														}
-
-														@Override
-														public void onSuccess(ManageMeasureDetailModel result) {
-															searchDisplay.getErrorMessageDisplay().clearAlert();
-															currentDetails = result;
-															createDraftOfSelectedVersion(currentDetails);
-														}
-													});
-										}
-									} else if (!isLoading && selectedMeasure.isVersionable()) {
-										versionDisplay.setSelectedMeasure(selectedMeasure);
-										createVersion();
-									}
-
-								}
-
-							});
-							result.setSelectedExportIds(new ArrayList<String>());
-							result.setSelectedExportResults(new ArrayList<Result>());
-							manageMeasureSearchModel = result;
-							MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
-
-							if ((result.getResultsTotal() == 0) && !lastSearchText.isEmpty()) {
-								searchDisplay.getErrorMessageDisplay()
-										.createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
-							} else {
-								searchDisplay.getErrorMessageDisplay().clearAlert();
-								searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-								if (measureDeletion) {
-									if (isMeasureDeleted) {
-										searchDisplay.getSuccessMeasureDeletion().createAlert(measureDelMessage);
-									} else {
-										if (measureDelMessage != null) {
-											searchDisplay.getErrorMeasureDeletion().createAlert(measureDelMessage);
-										}
-									}
-								} else if (measureShared) {
-									searchDisplay.getSuccessMessageDisplay().createAlert(measureShareMessage);
-									measureShared = false;
-								} else {
-									searchDisplay.resetMessageDisplay();
-								}if(isMeasureVersioned){
-									searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
-								} 
-							}
-							SearchResultUpdate sru = new SearchResultUpdate();
-							sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchText);
-							searchDisplay.buildCellTable(manageMeasureSearchModel, filter, searchText);
-							showSearchingBusy(false);
-
-						}
-
-					});
+			advancdeSearch(model);
 		}
 	}
 	
+	private void advancdeSearch(AdvancedSearchModel advancedSearchModel) {
+		showSearchingBusy(true);
+		MatContext.get().getMeasureService().search(advancedSearchModel,
+				new AsyncCallback<ManageMeasureSearchModel>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						detailDisplay.getErrorMessageDisplay()
+								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null,
+								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+						showSearchingBusy(false);
+					}
+
+					@Override
+					public void onSuccess(ManageMeasureSearchModel result) {
+
+
+						if (advancedSearchModel.isMyMeasureSearch() != 0) {
+							searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
+						} else {
+							searchDisplay.getMeasureSearchView().setMeasureListLabel("My Measures");
+						}
+						if (result.getData().size() > 0) {
+							searchDisplay.getExportSelectedButton().setVisible(true);
+						} else {
+							searchDisplay.getExportSelectedButton().setVisible(false);
+						}
+
+						searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
+							@Override
+							public void onCloneClicked(ManageMeasureSearchModel.Result result) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								isClone = true;
+								editClone(result.getId());
+							}
+
+							@Override
+							public void onEditClicked(ManageMeasureSearchModel.Result result) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								edit(result.getId());
+							}
+
+							@Override
+							public void onExportClicked(ManageMeasureSearchModel.Result result) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								export(result);
+							}
+
+							@Override
+							public void onExportSelectedClicked(Result result, boolean isCBChecked) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+								updateExportedIDs(result, manageMeasureSearchModel, isCBChecked);
+
+							}
+
+							@Override
+							public void onExportSelectedClicked(CustomCheckBox checkBox) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+								if (checkBox.getValue()) {
+									if (manageMeasureSearchModel.getSelectedExportIds().size() > 89) {
+										searchDisplay.getErrorMessageDisplayForBulkExport()
+												.createAlert("Export file has a limit of 90 measures");
+										searchDisplay.getExportSelectedButton().setFocus(true);
+										checkBox.setValue(false);
+									} else {
+										manageMeasureSearchModel.getSelectedExportIds()
+												.add(checkBox.getFormValue());
+									}
+								} else {
+									manageMeasureSearchModel.getSelectedExportIds().remove(checkBox.getFormValue());
+								}
+							}
+
+							@Override
+							public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								historyDisplay.setReturnToLinkText("<< Return to Measure Library");
+								displayHistory(result.getId(), result.getName());
+							}
+
+							@Override
+							public void onShareClicked(ManageMeasureSearchModel.Result result) {
+								measureDeletion = false;
+								measureShared = false;
+								isMeasureDeleted = false;
+								isMeasureVersioned = false;
+								searchDisplay.getSuccessMeasureDeletion().clearAlert();
+								searchDisplay.getErrorMeasureDeletion().clearAlert();
+								displayShare(null, result.getId(), result.getName());
+							}
+
+							@Override
+							public void onClearAllBulkExportClicked() {
+
+								manageMeasureSearchModel.getSelectedExportResults()
+										.removeAll(manageMeasureSearchModel.getSelectedExportResults());
+								manageMeasureSearchModel.getSelectedExportIds()
+										.removeAll(manageMeasureSearchModel.getSelectedExportIds());
+
+							}
+
+							@Override
+							public void onCreateClicked(Result object) {
+								ManageMeasureSearchModel.Result selectedMeasure = object;
+								if (!isLoading && selectedMeasure.isDraftable()) {
+									if (((selectedMeasure != null) && (selectedMeasure.getId() != null))) {
+										showSearchingBusy(true);
+										MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
+												new AsyncCallback<ManageMeasureDetailModel>() {
+													@Override
+													public void onFailure(Throwable caught) {
+														showSearchingBusy(false);
+														searchDisplay.getErrorMessageDisplay()
+																.createAlert(MatContext.get().getMessageDelegate()
+																		.getGenericErrorMessage());
+														MatContext.get().recordTransactionEvent(null, null, null,
+																"Unhandled Exception: "
+																		+ caught.getLocalizedMessage(),
+																0);
+													}
+
+													@Override
+													public void onSuccess(ManageMeasureDetailModel result) {
+														searchDisplay.getErrorMessageDisplay().clearAlert();
+														currentDetails = result;
+														createDraftOfSelectedVersion(currentDetails);
+													}
+												});
+									}
+								} else if (!isLoading && selectedMeasure.isVersionable()) {
+									versionDisplay.setSelectedMeasure(selectedMeasure);
+									createVersion();
+								}
+
+							}
+
+						});
+						result.setSelectedExportIds(new ArrayList<String>());
+						result.setSelectedExportResults(new ArrayList<Result>());
+						manageMeasureSearchModel = result;
+						MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
+
+						if ((result.getResultsTotal() == 0) && !advancedSearchModel.getLastSearchText().isEmpty()) {
+							searchDisplay.getErrorMessageDisplay()
+									.createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
+						} else {
+							searchDisplay.getErrorMessageDisplay().clearAlert();
+							searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
+							if (measureDeletion) {
+								if (isMeasureDeleted) {
+									searchDisplay.getSuccessMeasureDeletion().createAlert(measureDelMessage);
+								} else {
+									if (measureDelMessage != null) {
+										searchDisplay.getErrorMeasureDeletion().createAlert(measureDelMessage);
+									}
+								}
+							} else if (measureShared) {
+								searchDisplay.getSuccessMessageDisplay().createAlert(measureShareMessage);
+								measureShared = false;
+							} else {
+								searchDisplay.resetMessageDisplay();
+							}if(isMeasureVersioned){
+								searchDisplay.getSuccessMeasureDeletion().createAlert(measureVerMessage);
+							} 
+						}
+						SearchResultUpdate sru = new SearchResultUpdate();
+						sru.update(result, (TextBox) searchDisplay.getSearchString(), advancedSearchModel.getLastSearchText());
+
+						searchDisplay.buildCellTable(manageMeasureSearchModel, advancedSearchModel.isMyMeasureSearch(), advancedSearchModel);
+
+						showSearchingBusy(false);
+
+					}
+
+				});
+	}
 
 	public static void setSubSkipEmbeddedLink(String name) {
 		if (subSkipContentHolder == null) {
@@ -1270,7 +1417,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 											}
 										}
 									} else {
-										DeferredCommand.addCommand(this);
+										Scheduler.get().scheduleDeferred(this);
 									}
 								}
 							};
@@ -1318,7 +1465,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 											}
 										}
 									} else {
-										DeferredCommand.addCommand(this);
+										Scheduler.get().scheduleDeferred(this);
 									}
 								}
 							};
@@ -1334,7 +1481,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 				measureDeletion = false;
 				isMeasureDeleted = false;
 				isMeasureVersioned = false;
-				createNew(); 
+				createNewMeasure(); 
+			}
+		});
+		
+		searchDisplay.getCreateCompositeMeasureButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.resetMessageDisplay();
+				measureDeletion = false;
+				isMeasureDeleted = false;
+				isMeasureVersioned = false;
+				createNewCompositeMeasure();
 			}
 		});
 
@@ -1420,7 +1579,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 				search(searchDisplay.getAdminSearchString().getValue(), startIndex, Integer.MAX_VALUE, filter);
 			}
 		});
-
+		
+		//removing as to not block QA
+		searchDisplay.getMeasureLibraryAdvancedSearchBuilder().getModal().getSearch().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				AdvancedSearchModel model = searchDisplay.getMeasureLibraryAdvancedSearchBuilder().generateAdvancedSearchModel();
+				model.setStartIndex(1);
+				model.setPageSize(Integer.MAX_VALUE);
+				model.setLastSearchText("");
+				advancdeSearch(model);
+				searchDisplay.getMeasureLibraryAdvancedSearchBuilder().getModal().closeAdvanceSearch();
+			}
+		});
+		
 		searchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1504,6 +1676,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		this.bulkExportMeasureIds = bulkExportMeasureIds;
 	}
 
+	private void setCompositeDetailsToView() {
+		compositeDetailDisplay.getName().setValue(currentCompositeMeasureDetails.getName());
+		compositeDetailDisplay.getShortName().setValue(currentCompositeMeasureDetails.getShortName());
+		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
+	}
+	
 	private void setDetailsToView() {
 		detailDisplay.getName().setValue(currentDetails.getName());
 		detailDisplay.getShortName().setValue(currentDetails.getShortName());

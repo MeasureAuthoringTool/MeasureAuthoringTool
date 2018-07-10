@@ -75,10 +75,6 @@
 	<bean id="auditLogDAO"
 		class="mat.dao.impl.AuditLogDAO" parent="baseDAO">
 	</bean>
-	
-	<bean id="bonnieLinkDAO"
-		class="mat.dao.impl.BonnieLinkDAO" parent="baseDAO">
-	</bean>
 		
 	<bean id="securityRoleDAO"
 		class="mat.dao.impl.SecurityRoleDAO" parent="baseDAO">
@@ -289,7 +285,6 @@
 	
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
-		<property name="bonnieLinkDAO" ref = "bonnieLinkDAO" />
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
 		<property name="statusDAO" ref="statusDAO"/>
 		<property name="userDAO" ref="userDAO"/>

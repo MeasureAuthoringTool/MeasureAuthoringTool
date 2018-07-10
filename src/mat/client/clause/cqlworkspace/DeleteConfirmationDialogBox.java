@@ -9,19 +9,20 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
 
+import mat.client.buttons.NoButton;
+import mat.client.buttons.YesButton;
 import mat.client.shared.ErrorMessageAlert;
 
 
 
 public class DeleteConfirmationDialogBox {
 
-	private  final Button yesButton = new Button("Yes"); 
-	private final Button noButton = new Button("Cancel");
+	private  final Button yesButton = new YesButton("DeleteConfirmationBox"); 
+	private final Button noButton = new NoButton("DeleteConfirmationBox");
 	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
 	
@@ -34,8 +35,6 @@ public class DeleteConfirmationDialogBox {
 	}
 
 	public DeleteConfirmationDialogBox() {
-		yesButton.getElement().setId("yes_Button");
-		noButton.getElement().setId("no_Button");
 	}
 	
 	public void show() {
@@ -62,10 +61,6 @@ public class DeleteConfirmationDialogBox {
 		
 		ModalFooter modalFooter = new ModalFooter(); 
 		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
-		yesButton.setType(ButtonType.PRIMARY);
-		yesButton.setSize(ButtonSize.SMALL);
-		noButton.setType(ButtonType.DANGER);
-		noButton.setSize(ButtonSize.SMALL);
 		yesButton.setDataDismiss(ButtonDismiss.MODAL);
 		noButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(yesButton);

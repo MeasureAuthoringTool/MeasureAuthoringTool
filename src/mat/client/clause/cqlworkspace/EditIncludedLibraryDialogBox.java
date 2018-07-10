@@ -47,6 +47,7 @@ import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.buttons.CancelButton;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
@@ -95,7 +96,7 @@ public class EditIncludedLibraryDialogBox {
 	private String currentLibraryId = null; 
 	
 	private Button applyButton = new Button();
-	private Button closeButton = new Button();
+	private Button closeButton = new CancelButton("EditInclude");
 	private Modal dialogModal = new Modal();
 	
 	HorizontalPanel progressBarPanel = new HorizontalPanel();
@@ -133,10 +134,6 @@ public class EditIncludedLibraryDialogBox {
 		applyButton.setTitle("Apply");
 		applyButton.setType(ButtonType.PRIMARY);
 		applyButton.setSize(ButtonSize.SMALL);
-		
-		closeButton.setText("Cancel");
-		closeButton.setTitle("Cancel");
-		closeButton.setType(ButtonType.DANGER);
 		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(applyButton);

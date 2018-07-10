@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.CancelButton;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
@@ -27,7 +28,7 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	private Button transferButton = new Button();
 	
 	/** The save button. */
-	private Button clearAllButton = new Button();
+	private Button clearAllButton = new CancelButton("managecqllibadminview");
 	
 	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
@@ -77,9 +78,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		transferButton.setText("Transfer");
 		transferButton.getElement().setAttribute("aria-label", "Transfer");
 		
-		
-		clearAllButton.setType(ButtonType.DANGER);
-		clearAllButton.getElement().setId("clearAllButton");
 		clearAllButton.setMarginLeft(10.00);
 		clearAllButton.setTitle("Clear All");
 		clearAllButton.setText("Clear All");

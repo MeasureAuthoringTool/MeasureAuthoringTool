@@ -61,6 +61,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.buttons.CancelButton;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.CustomQuantityTextBox;
@@ -88,7 +89,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	static final String EXTENSIONAL_QDM = " (E)";
 	private Boolean isLoading = false;
 	private final String TEXT_APPLY = "Apply";
-	private final String TEXT_CANCEL = "Cancel";
 	private final String TEXT_OID = "OID";
 	private final String TEXT_NAME = "Name";
 	private final String TEXT_PROGRAM = "Program";
@@ -139,7 +139,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private CheckBox specificOcurChkBox;
 	private MatSimplePager spager;
 	private Button saveValueSet = new Button(TEXT_APPLY);
-	private Button cancelButton = new Button(TEXT_CANCEL);
+	private Button cancelButton = new CancelButton("appliedvaluesetview");
 	private VerticalPanel mainPanel;
 	private PanelHeader searchHeader = new PanelHeader();
 	private HelpBlock helpBlock = new HelpBlock(); 
@@ -258,8 +258,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		saveValueSet.setTitle(TEXT_APPLY);
 		saveValueSet.setType(ButtonType.PRIMARY);
 		
-		cancelButton.setType(ButtonType.DANGER);
-		cancelButton.setTitle(TEXT_CANCEL);
 		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);

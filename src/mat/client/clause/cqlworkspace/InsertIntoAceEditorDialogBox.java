@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.buttons.NoButton;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.shared.ListBoxMVP;
@@ -187,13 +188,10 @@ public class InsertIntoAceEditorDialogBox {
 		addButton.setType(ButtonType.PRIMARY);
 		addButton.setSize(ButtonSize.SMALL);
 		addButton.setId("addButton_Insert");
-		Button closeButton = new Button();
+		Button closeButton = new NoButton("InsertIntoAceEditor");
 		closeButton.setText("Close");
 		closeButton.setTitle("Close");
-		closeButton.setType(ButtonType.DANGER);
-		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
-		closeButton.setId("closeButton_Cancel");
 		buttonToolBar.add(addButton);
 		buttonToolBar.add(closeButton);
 		modalFooter.add(buttonToolBar);

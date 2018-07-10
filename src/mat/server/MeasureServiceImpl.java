@@ -42,8 +42,7 @@ import mat.shared.SaveUpdateCQLResult;
 /**
  * The Class MeasureServiceImpl.
  */
-public class MeasureServiceImpl extends SpringRemoteServiceServlet implements
-MeasureService {
+public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
 	
 	private static final long serialVersionUID = 2280421300224680146L;
 	

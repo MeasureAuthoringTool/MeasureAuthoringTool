@@ -809,11 +809,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		if (AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
 			return false;
 		}
+		//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
+		if(!AdvancedSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
+			return false;
+		}
 		if (AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
 			return false;
 		}
-		if (AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased())
-				&& measure.getPatientBased()) {
+		if (AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.getPatientBased()) {
+
 			return false;
 		}
 		if (model.getScoringTypes().size() > 0) {
@@ -833,7 +837,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				return false;
 			}
 			User user =  measure.getLastModifiedBy();
-			String lastModifiedByName = user.getFirstName() + " " + user.getFirstName();
+			String lastModifiedByName = user.getFirstName() + " " + user.getLastName();
 			if (!lastModifiedByName.toLowerCase().contains(model.getModifiedOwner().toLowerCase())) {
 				return false;
 			}

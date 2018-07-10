@@ -247,6 +247,8 @@ public class XmlProcessor {
 	
 	private static final String XPATH_FOR_CODES = "//cqlLookUp/codes/code";
 	
+	private static final String XPATH_FOR_VALUESETS = "//cqlLookUp/valuesets/valueset";
+	
 	private static final String ATTRIBUTE_CODE_OID = "codeOID";
 	private static final String ATTRIBUTE_CODE_NAME = "codeName";
 	private static final String ATTRIBUTE_READ_ONLY = "readOnly";
@@ -1504,7 +1506,25 @@ public class XmlProcessor {
 			removeUnusedCodeSystems(codeSystemOIDsToRemove);
 		} catch (XPathExpressionException e) {LOG.error(e.getMessage());}
 	}
-
+	
+	/**
+	 * When drafting or cloning a measure or cql library, the version attribute should become an empty string in the valueset tag. 
+	 * 
+	 * It is an empty string because MAT still needs to support the version attribute because valuesets that had a version in an already 
+	 * versioned measure should retain those values. 
+	 */
+	public void clearValuesetVersionAttribute() {
+		try {
+			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_VALUESETS);
+			for(int i = 0; i < nodeList.getLength(); i++) {
+				Node valuesetNode = nodeList.item(i);
+				valuesetNode.getAttributes().getNamedItem("version").setNodeValue("");
+			}
+		} catch (XPathExpressionException e) {
+			LOG.error(e.getMessage());
+		}
+	}
+	
 	private void removeUnusedCodeSystems(List<String> codeSystemOIDsToRemove) {
 		try {
 			NodeList nodeList = findNodeList(getOriginalDoc(), XPATH_FOR_CODES);

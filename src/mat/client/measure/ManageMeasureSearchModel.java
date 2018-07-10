@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.search.SearchResults;
 import mat.model.LockedUserInfo;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureSearchModel.
  */

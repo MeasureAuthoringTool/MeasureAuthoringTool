@@ -36,7 +36,6 @@ public class SearchWidgetBootStrap {
 		iGroupButton.add(go);
 		iGroup.add(searchBox);
 		iGroup.add(iGroupButton);
-		iGroup.setWidth("300px");
 		return iGroup;
 	}
 

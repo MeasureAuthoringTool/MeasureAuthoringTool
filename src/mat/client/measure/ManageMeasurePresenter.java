@@ -108,6 +108,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private DetailDisplay detailDisplay;
 	
 	private DetailDisplay compositeDetailDisplay;
+	
+	private ComponentMeasureDisplay componentMeasureDisplay;
 
 	private ExportDisplay exportDisplay;
 
@@ -155,7 +157,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private VersionDisplay versionDisplay;
 
-	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ShareDisplay shareDisplayArg,
+	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ComponentMeasureDisplay componentMeasureDisplayArg, ShareDisplay shareDisplayArg,
 			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
 			VersionDisplay vDisplay,
 			final TransferOwnershipView transferDisplay) {
@@ -163,6 +165,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
 		compositeDetailDisplay = compositeDisplayArg;
+		componentMeasureDisplay = componentMeasureDisplayArg;
 		historyDisplay = hDisplay;
 		shareDisplay = shareDisplayArg;
 		exportDisplay = exportDisplayArg;
@@ -490,6 +493,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			}			
 		});
+		
+		compositeDetailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				displayComponentDetails();
+			}
+		});
 
 	}
 
@@ -597,6 +608,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");	
 		setCompositeDetailsToView();
+	}
+	
+	private void displayComponentDetails() {
+		//TODO implement this
+		panel.getButtonPanel().clear();
+		panel.setHeading("My Measures > Create New Composite Measure > Component Measures", "MeasureLibrary");
+		panel.setContent(componentMeasureDisplay.asWidget());
 	}
 
 	private void displayDetailForClone() {

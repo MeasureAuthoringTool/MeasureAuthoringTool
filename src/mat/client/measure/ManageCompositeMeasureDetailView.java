@@ -28,6 +28,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	public void clearFields() {
 		super.clearFields();
 		compositeScoringMethodInput.setSelectedIndex(0);//default to --Select-- value.
+		//TODO debug this not resetting on composite measure screen
 	}
 	
 	public ManageCompositeMeasureDetailView() {
@@ -70,6 +71,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		
 		FormGroup buttonFormGroup = new FormGroup();
 		buttonBar.getSaveButton().setText("Continue");
+		buttonBar.getSaveButton().setTitle("Continue");
 		buttonFormGroup.add(buttonBar);
 		
 		messageFormGrp.add(helpBlock);

@@ -218,7 +218,6 @@ public abstract class MainLayout {
 		titleImage.setStylePrimaryName("topBannerImage");
 		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
 		HTML desc = new HTML("<h4 style=\"font-size:0;\"><b>Measure Authoring Tool</b></h4>");// Doing this for 508 when CSS turned off
-		@SuppressWarnings("deprecation")
 		com.google.gwt.user.client.Element heading = desc.getElement();
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		versionPanel = new VerticalFlowPanel();
@@ -311,7 +310,6 @@ public abstract class MainLayout {
 	}
 
 	
-	@SuppressWarnings("deprecation")
 	protected void setId(final Widget widget, final String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}

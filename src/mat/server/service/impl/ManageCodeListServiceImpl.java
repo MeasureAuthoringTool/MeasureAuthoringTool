@@ -145,7 +145,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            - {@link QualityDataModelWrapper}.
 	 * @return String - {@link String}.
 	 * */
-	@SuppressWarnings("deprecation")
 	private String addAppliedQDMInMeasureXML(
 			final QualityDataModelWrapper qualityDataSetDTOWrapper) {
 		logger.info("addAppliedQDMInMeasureXML Method Call Start.");
@@ -159,7 +158,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return xmlString;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private String addNewAppliedQDMInMeasureXML(
 			final QualityDataModelWrapper qualityDataSetDTOWrapper) {
 		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
@@ -388,7 +386,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            - {@link QualityDataModelWrapper}.
 	 * @return {@link ByteArrayOutputStream}.
 	 * */
-	@SuppressWarnings("deprecation")
 	private ByteArrayOutputStream createXML(
 			final QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In ManageCodeLiseServiceImpl.createXml()");
@@ -427,8 +424,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            - {@link QualityDataModelWrapper}.
 	 * @return {@link ByteArrayOutputStream}.
 	 * */
-	@SuppressWarnings("deprecation")
-	private ByteArrayOutputStream createNewXML(
 			final QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In ManageCodeLiseServiceImpl.createXml()");
 		Mapping mapping = new Mapping();

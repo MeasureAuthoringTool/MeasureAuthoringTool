@@ -17,7 +17,6 @@ import mat.client.ImageResources;
  * Extended DialogBox widget with close button inside the pop-up header.
  * {@link DialogBox}
  */
-@SuppressWarnings("deprecation")
 public class DialogBoxWithCloseButton extends DialogBox {
 
     /**

@@ -56,7 +56,6 @@ public class EditSubTreeDialogBox {
 	 * @param xmlTreeDisplay the xml tree display
 	 * @param cellTreeNode the cell tree node
 	 */
-	@SuppressWarnings("deprecation")
 	public static void showEditDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		
 		dialogBox.setGlassEnabled(true);
@@ -242,7 +241,6 @@ public class EditSubTreeDialogBox {
 	 * @param xmlTreeDisplay the xml tree display
 	 * @param cellTreeNode the cell tree node
 	 */
-	@SuppressWarnings("deprecation")
 	public static void showAddDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);

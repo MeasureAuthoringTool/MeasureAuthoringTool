@@ -2,6 +2,7 @@ package mat.client.measure.metadata;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
@@ -489,22 +490,24 @@ public class AddEditComponentMeasuresView implements
 	 *            the ts
 	 * @return the string
 	 */
-	@SuppressWarnings("deprecation")
 	private String convertTimestampToString(Timestamp ts) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(ts);
+		
 		String tsStr;
 		if (ts == null) {
 			tsStr = "";
 		} else {
-			int hours = ts.getHours();
+			int hours = cal.get(Calendar.HOUR);
 			String ap = hours < 12 ? "AM" : "PM";
 			int modhours = hours % 12;
-			String mins = ts.getMinutes() + "";
+			String mins = cal.get(Calendar.MINUTE) + "";
 			if (mins.length() == 1) {
 				mins = "0" + mins;
 			}
 			String hoursStr = modhours == 0 ? "12" : modhours + "";
-			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/"
-					+ (ts.getYear() + 1900) + " " + hoursStr + ":" + mins + " "
+			tsStr = (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DATE) + "/"
+					+ (cal.get(Calendar.YEAR) + 1900) + " " + hoursStr + ":" + mins + " "
 					+ ap;
 		}
 		return tsStr;

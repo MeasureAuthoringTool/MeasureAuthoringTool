@@ -4594,7 +4594,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(true);
+				enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
 				enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
 				
 				previousIsApplyButtonEnabled = isApplyButtonEnabled;
@@ -4627,7 +4627,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 				searchDisplay.getValueSetView().getReleaseListBox().setEnabled(isReleaseListBoxEnabled);
 				enableOrDisableVersionListBoxBasedOnProgramReleaseListBoxes();
-				searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(true);
+				enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
 				
 				previousIsApplyButtonEnabled = isApplyButtonEnabled;
 				isApplyButtonEnabled = false; 
@@ -4785,7 +4785,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
 			loadPrograms();
 		} else {
-			searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(true);
+			enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes();
 		}
 		
 		alert508StateChanges();
@@ -4807,6 +4807,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getVersionListBox().setEnabled(isVersionListBoxEnabled);
 	}
 	
+	private void enableOrDisableRetrieveButtonBasedOnProgramReleaseListBoxes() {		
+		previousIsRetrieveButtonEnabled = isRetrieveButtonEnabled;
+
+		String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+		String release = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+		if ((release.equals(MatContext.PLEASE_SELECT) && program.equals(MatContext.PLEASE_SELECT))
+				|| (!release.equals(MatContext.PLEASE_SELECT) && !program.equals(MatContext.PLEASE_SELECT))) {
+			isRetrieveButtonEnabled = true;
+		} else {
+			isRetrieveButtonEnabled = false;
+		}
+		
+		
+		searchDisplay.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+	}
 	
 	
 	private void alert508StateChanges() {
@@ -5196,6 +5211,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		return refCode;
 	}
 
+	/**
+	 * Update vsac value sets.
+	 */
 	private void updateVSACValueSets() {
 		showSearchingBusy(true);
 		service.updateCQLVSACValueSets(MatContext.get().getCurrentMeasureId(), null,
@@ -5270,6 +5288,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 
+		// OID validation.
 		if ((url == null) || url.trim().isEmpty()) {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getUMLS_CODE_IDENTIFIER_REQUIRED());
@@ -5290,6 +5309,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Retrieve code references.
+	 *
+	 * @param url
+	 *            the url
+	 */
 	private void retrieveCodeReferences(String url) {
 
 		showSearchingBusy(true);
@@ -5329,12 +5354,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				
 				showSearchingBusy(false);
+				// 508 : Shift focus to code search panel.
 				searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getCodesView().getCodeSearchInput());
 			}
 		});
 	}
 
 	/**
+	 * MAT-8977. 
 	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
 	 * the first time the value sets page is loaded.
 	 * If the values have been loaded previously, no calls are made.
@@ -5356,6 +5383,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		pgmRelMap.forEach((k, v) -> searchDisplay.getValueSetView().getProgramListBox().addItem(k));
 	}
 	
+	/**
+	 * Search value set in vsac.
+	 *
+	 * @param version
+	 *            the version
+	 * @param expansionProfile
+	 *            the expansion profile
+	 */
 	private void searchValueSetInVsac(String expansionProfile) {
 		currentMatValueSet = null;
 		showSearchingBusy(true);
@@ -5367,6 +5402,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 
+		// OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 					.createAlert(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
@@ -5427,6 +5463,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Adds the QDS with value set.
+	 */
 	private void addVSACCQLValueset() {
 
 		String measureID = MatContext.get().getCurrentMeasureId();
@@ -5437,6 +5476,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		final String codeListName = (originalCodeListName != null ? originalCodeListName : "")
 				+ (!suffix.isEmpty() ? " (" + suffix + ")" : "");
 
+		// Check if QDM name already exists in the list.
 		if (!searchDisplay.getValueSetView().checkNameInValueSetList(codeListName, appliedValueSetTableList)) {
 			showSearchingBusy(true);
 			MatContext.get().getMeasureService().saveCQLValuesettoMeasure(matValueSetTransferObject,
@@ -5493,6 +5533,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Adds the selected code listto measure.
+	 *
+	 * @param isUserDefinedValueSet
+	 *            the is user defined QDM
+	 */
 	private void addNewValueSet(final boolean isUserDefinedValueSet) {
 		if (!isUserDefinedValueSet) {
 			addVSACCQLValueset();
@@ -5501,6 +5547,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Adds the QDS with out value set.
+	 */
 	private void addUserDefinedValueSet() {
 
 		CQLValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(
@@ -5540,7 +5589,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												getAppliedValueSetList();
 											}
 										} else {
-											processFailure(result);
+											if (result.getFailureReason() == SaveUpdateCQLResult.ALREADY_EXISTS) {
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+														.createAlert(MatContext.get().getMessageDelegate()
+																.getDuplicateAppliedValueSetMsg(result
+																		.getCqlQualityDataSetDTO().getName()));
+											} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
+												searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+														.createAlert("Invalid input data.");
+											}
 										}
 									}
 
@@ -5564,18 +5621,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 
 	}
-	
-	private void processFailure(SaveUpdateCQLResult result) {
-		if (result.getFailureReason() == SaveUpdateCQLResult.ALREADY_EXISTS) {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get()
-					.getMessageDelegate().getDuplicateAppliedValueSetMsg(result.getCqlQualityDataSetDTO().getName()));
-		
-		} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert("Invalid input data.");
-		}
-	}
 
-	
+	/**
+	 * Modify QDM.
+	 *
+	 * @param isUserDefined
+	 *            the is user defined
+	 */
 	protected final void modifyValueSetOrUserDefined(final boolean isUserDefined) {
 		if (!isUserDefined) { // Normal Available Value Set Flow
 			modifyValueSet();
@@ -5584,6 +5636,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Modify value set QDM.
+	 */
 	private void modifyValueSet() {
 		// Normal Available QDM Flow
 		MatValueSet modifyWithDTO = currentMatValueSet;
@@ -5637,6 +5692,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Modify QDM with out value set.
+	 */
 	private void modifyUserDefinedValueSet() {
 		modifyValueSetDTO.setVersion("");
 		if ((searchDisplay.getValueSetView().getUserDefinedInput().getText().trim().length() > 0)) {
@@ -5676,6 +5734,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Update applied Value Set list.
+	 *
+	 * @param matValueSet
+	 *            the mat value set
+	 * @param codeListSearchDTO
+	 *            the code list search DTO
+	 * @param qualityDataSetDTO
+	 *            the quality data set DTO
+	 * @param isUSerDefined
+	 *            the is U ser defined
+	 */
 	private void updateAppliedValueSetsList(final MatValueSet matValueSet, final CodeListSearchDTO codeListSearchDTO,
 			final CQLQualityDataSetDTO qualityDataSetDTO) {
 		String version = searchDisplay.getValueSetView()
@@ -5724,7 +5794,17 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										MatContext.get().getMessageDelegate().getSUCCESSFUL_MODIFY_APPLIED_VALUESET());
 								getAppliedValueSetList();
 							} else {
-								processFailure(result);
+
+								if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
+											MatContext.get().getMessageDelegate().getDuplicateAppliedValueSetMsg(
+													result.getCqlQualityDataSetDTO().getName()));
+
+								} else if (result
+										.getFailureReason() == SaveUpdateCodeListResult.SERVER_SIDE_VALIDATION) {
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+											.createAlert("Invalid Input data.");
+								}
 							}
 						}
 						searchDisplay.getValueSetView().getSaveButton().setEnabled(false);
@@ -5734,6 +5814,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Modify QDM list.
+	 *
+	 * @param qualityDataSetDTO
+	 *            the quality data set DTO
+	 */
 	private void modifyValueSetList(CQLQualityDataSetDTO qualityDataSetDTO) {
 		for (int i = 0; i < appliedValueSetTableList.size(); i++) {
 			if (qualityDataSetDTO.getName().equals(appliedValueSetTableList.get(i).getName())) {
@@ -5744,6 +5830,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Gets the applied QDM list.
+	 *
+	 * @return the applied QDM list
+	 */
 	private void getAppliedValueSetList() {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
@@ -5765,6 +5856,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * Creates the value set transfer object.
+	 *
+	 * @param measureID
+	 *            the measure ID
+	 * @return the CQL value set transfer object
+	 */
 	private CQLValueSetTransferObject createValueSetTransferObject(String measureID) {
 		if (currentMatValueSet == null) {
 			currentMatValueSet = new MatValueSet();
@@ -5788,6 +5886,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setName(originalCodeListName);
 		}
 		
+		// set them to empty strings to begin with
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease("");
 		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram("");
 		String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue(); 
@@ -5823,6 +5922,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	/**
 	 * Gets the VSAC version list by oid. if the default Expansion Profile is
 	 * present then we are not making this VSAC call.
+	 * 
+	 * @param oid
+	 *            the oid
+	 * @return the VSAC version list by oid
 	 */
 	private void getVSACVersionListByOID(String oid) {
 		vsacapiService.getAllVersionListByOID(oid, new AsyncCallback<VsacApiResult>() {
@@ -5846,6 +5949,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 
+	/**
+	 * On modify value set qdm.
+	 *
+	 * @param result
+	 *            the result
+	 * @param isUserDefined
+	 *            the is user defined
+	 */
 	private void onModifyValueSet(CQLQualityDataSetDTO result, boolean isUserDefined) {
 		String oid = isUserDefined ? "" : result.getOid();
 		searchDisplay.getValueSetView().getOIDInput().setEnabled(true);
@@ -5950,22 +6061,43 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				});
 	}
 
+	/**
+	 * 
+	 */
 	private void resetAceEditor(AceEditor aceEditor) {
 		aceEditor.clearAnnotations();
 		aceEditor.removeAllMarkers();
+		// Commenting below code as its taking away focus and that makes our application
+		// not 508 compliant with other fields.
+		// aceEditor.redisplay();
 		aceEditor.setText("");
 	}
 
-
+	/**
+	 * @param panelCollapse
+	 * 
+	 */
 	public void resetViewCQLCollapsiblePanel(PanelCollapse panelCollapse) {
 		panelCollapse.getElement().setClassName("panel-collapse collapse");
 	}
 
-
+	/**
+	 * Gets the version list.
+	 *
+	 * @param list
+	 *            the list
+	 * @return the version list
+	 */
 	private List<? extends HasListBox> getVersionList(List<VSACVersion> list) {
 		return list;
 	}
 
+	/**
+	 * Show searching busy.
+	 *
+	 * @param busy
+	 *            the busy
+	 */
 	private void showSearchingBusy(final boolean busy) {
 		showSearchBusyOnDoubleClick(busy);
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -6017,7 +6149,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	/**
 	 * This method sets the value sets to value set list for table and for short cut
-	 * key. Also builds the table.
+	 * key.Also builds the table.
+	 * 
+	 * @param result
+	 *            - {@link CQLQualityDataModelWrapper}
 	 */
 	private void setAppliedValueSetListInTable(List<CQLQualityDataSetDTO> valueSetList) {
 		appliedValueSetTableList.clear();

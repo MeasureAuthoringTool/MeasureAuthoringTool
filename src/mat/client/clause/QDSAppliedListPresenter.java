@@ -24,6 +24,7 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
+@Deprecated
 public class QDSAppliedListPresenter implements MatPresenter {
 	
 	public static interface SearchDisplay {

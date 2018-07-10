@@ -15,7 +15,6 @@ public class FocusableImageButton extends FocusableWidget {
 	/** The image. */
 	private Image image;
 
-	@SuppressWarnings("deprecation")
 	public FocusableImageButton(ImageResource imageUrl, String title) {
 		super(new Image(imageUrl));
 		image = (Image)getWidget();

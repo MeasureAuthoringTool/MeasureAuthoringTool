@@ -10,7 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window.Navigator;
@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * {@example com.google.gwt.examples.CheckBoxExample}
  * </p>
  */
-@SuppressWarnings("deprecation")
+
 public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Boolean> {
   
   /** The input elem. */

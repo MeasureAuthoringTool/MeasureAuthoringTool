@@ -49,7 +49,6 @@ import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 
-@SuppressWarnings("deprecation")
 public class PackagerServiceImpl implements PackagerService {
 
 	/** The Constant logger. */

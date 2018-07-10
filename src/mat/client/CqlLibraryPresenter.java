@@ -71,7 +71,6 @@ import mat.shared.ConstantMessages;
  * The Class CqlLibraryPresenter.
 
  */
-@SuppressWarnings("deprecation")
 public class CqlLibraryPresenter implements MatPresenter {
 
 	/** The panel. */

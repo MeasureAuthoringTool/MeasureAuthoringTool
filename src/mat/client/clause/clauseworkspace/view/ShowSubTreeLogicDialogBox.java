@@ -48,7 +48,6 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public static void showSubTreeLogicDialogBox(
 			final XmlTreeDisplay xmlTreeDisplay, boolean isAdd) {
 		final ScrollPanel panel = new ScrollPanel();

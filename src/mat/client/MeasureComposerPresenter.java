@@ -45,7 +45,6 @@ import mat.shared.ConstantMessages;
 /**
  * The Class MeasureComposerPresenter.
  */
-@SuppressWarnings("deprecation")
 public class MeasureComposerPresenter implements MatPresenter, Enableable, TabObserver {
 	/**
 	 * The Class EnterKeyDownHandler.

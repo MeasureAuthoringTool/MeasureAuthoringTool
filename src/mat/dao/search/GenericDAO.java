@@ -172,8 +172,6 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 		List<T>	list = null;
 		
 		Session	session = getSessionFactory().getCurrentSession();
-		@SuppressWarnings("deprecation")
-		Criteria criteria = session.createCriteria(clazz);				
 		// obtain the actual records
         list = criteria.list();
 		return list;

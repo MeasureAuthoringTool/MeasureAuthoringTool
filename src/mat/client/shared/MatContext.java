@@ -610,7 +610,6 @@ public class MatContext implements IsSerializable {
 	 * @param widget The widget to be rendered or no longer rendered
 	 * @param visible Widget's rendering status
 	 */
-	@SuppressWarnings("deprecation")
 	public void setVisible(Widget widget, Boolean visible){
 		widget.setVisible(visible);
 		// disable the widget, maybe best to check if this is a FocusWidget and make an explicit setEnabled call

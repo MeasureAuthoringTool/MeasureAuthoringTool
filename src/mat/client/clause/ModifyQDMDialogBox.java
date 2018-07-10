@@ -14,9 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.DialogBoxWithCloseButton;
 import mat.model.QualityDataSetDTO;
 
-/**
- * The Class ModifyQDMDialogBox.
- */
+@Deprecated
 public class ModifyQDMDialogBox {
 	
 	/** The dialog box. */
@@ -31,7 +29,7 @@ public class ModifyQDMDialogBox {
 	 * @param modifyValueSetDTO - DTO to set caption heading.
 	 * @param qdmAvailableValueSetPresenter - QDMAvailableValueSetPresenter.
 	 */
-	@SuppressWarnings("deprecation")
+
 	public static void showModifyDialogBox(final Widget widget, final QualityDataSetDTO modifyValueSetDTO,
 			final QDMAvailableValueSetPresenter qdmAvailableValueSetPresenter) {
 		String text = "Modify Applied QDM ( ";

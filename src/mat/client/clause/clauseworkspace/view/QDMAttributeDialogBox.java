@@ -99,7 +99,6 @@ public class QDMAttributeDialogBox {
 	
 	private static final String ATTRIBUTE_DATE = "attrDate";
 	
-	@SuppressWarnings("deprecation")
 	private static ListBox modeListBox  = new ListBox(false);
 
 	private static final class DigitsOnlyKeyPressHandler implements
@@ -189,7 +188,6 @@ public class QDMAttributeDialogBox {
 		dialogContents.setSpacing(5);
 		qdmAttributeDialogBox.setWidget(dialogContents);
 		
-		@SuppressWarnings("deprecation")
 		final ListBox attributeListBox = new ListBox(false);
 		attributeListBox.getElement().setId("qdmAttributeDialog_attributeListBox");
 		attributeListBox.setVisibleItemCount(1);
@@ -315,7 +313,6 @@ public class QDMAttributeDialogBox {
 		
 		modeListBox.addChangeHandler(new ChangeHandler() {
 			
-			@SuppressWarnings("deprecation")
 			@Override
 			public void onChange(ChangeEvent event) {
 				hPanel.clear();
@@ -621,7 +618,6 @@ public class QDMAttributeDialogBox {
 	 * @param modeListBox the mode list box
 	 * @param dialogContents1 the dialog contents1
 	 */
-	@SuppressWarnings("deprecation")
 	private static void setExistingAttributeInPopup(CellTreeNode  attributeNode,ListBox attributeListBox,ListBox modeListBox,
 			VerticalPanel dialogContents1){
 		if (attributeNode == null) {

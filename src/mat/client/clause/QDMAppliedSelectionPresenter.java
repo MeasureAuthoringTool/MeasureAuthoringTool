@@ -45,9 +45,7 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-/**
- * The Class VSACProfileSelectionPresenter.
- */
+@Deprecated
 public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
 	/**

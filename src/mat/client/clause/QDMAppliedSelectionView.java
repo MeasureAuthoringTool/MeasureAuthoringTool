@@ -64,10 +64,7 @@ import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 
-
-/**
- * The Class QDMAppliedSelectionView.
- */
+@Deprecated
 public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.SearchDisplay,
 HasSelectionHandlers<Boolean> {
 	

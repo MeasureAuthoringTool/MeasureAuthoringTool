@@ -41,6 +41,7 @@ import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 
+@Deprecated
 public class QDSCodeListSearchPresenter implements MatPresenter {
 	
 	public  interface SearchDisplay {

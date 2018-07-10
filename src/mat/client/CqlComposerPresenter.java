@@ -25,7 +25,6 @@ import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.shared.ConstantMessages;
 
 
-@SuppressWarnings("deprecation")
 public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserver {
 	/**
 	 * The Class EnterKeyDownHandler.

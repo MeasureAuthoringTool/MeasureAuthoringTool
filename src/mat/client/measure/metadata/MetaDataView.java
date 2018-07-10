@@ -1964,7 +1964,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return dialogBox;
 	}
 	
-	@SuppressWarnings("deprecation")
 	private String convertTimestampToString(Timestamp ts) {
 		String tsStr;
 		if (ts == null) {

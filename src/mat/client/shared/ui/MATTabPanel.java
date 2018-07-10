@@ -79,7 +79,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 
 //Cannot do anything about tab panel implementing TabListener until next release.
-@SuppressWarnings("deprecation")
 public class MATTabPanel extends Composite implements TabListener,
     SourcesTabEvents, HasWidgets, HasAnimation, IndexedPanel,
     HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>, Enableable {

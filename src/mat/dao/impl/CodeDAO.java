@@ -15,8 +15,6 @@ import org.hibernate.criterion.Restrictions;
 /**
  * The Class CodeDAO.
  */
-@SuppressWarnings("deprecation")
-public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO {
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.CodeDAO#deleteCodes(java.util.List)

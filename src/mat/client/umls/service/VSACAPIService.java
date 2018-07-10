@@ -1,4 +1,6 @@
-
+/**
+ * 
+ */
 package mat.client.umls.service;
 
 import java.util.List;
@@ -10,14 +12,11 @@ import mat.model.cql.CQLQualityDataSetDTO;
 
 @RemoteServiceRelativePath("vsacapi")
 public interface VSACAPIService extends RemoteService {
-	
 	void inValidateVsacUser();
-	
-	boolean isAlreadySignedIn();
-	
-	boolean validateVsacUser(String userName, String password);
 
-	VsacApiResult getAllVersionListByOID(String oid);
+	boolean isAlreadySignedIn();
+
+	boolean validateVsacUser(String userName, String password);
 
 	VsacApiResult getMostRecentValueSetByOID(String oid, String profile);
 
@@ -26,5 +25,4 @@ public interface VSACAPIService extends RemoteService {
 	VsacApiResult getDirectReferenceCode(String url);
 
 	VsacApiResult getVSACProgramsAndReleases();
-	
 }

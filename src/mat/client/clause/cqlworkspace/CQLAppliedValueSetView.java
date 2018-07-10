@@ -30,8 +30,6 @@ import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.OptionElement;
-import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -63,7 +61,6 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import mat.client.CustomPager;
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
-import mat.client.codelist.HasListBox;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
@@ -93,17 +90,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private final String TEXT_NAME = "Name";
 	private final String TEXT_PROGRAM = "Program";
 	private final String TEXT_RELEASE = "Release";
-	private final String TEXT_VERSION = "Version";
 	private final String ENTER_OID = "Enter OID";
 	private final String ENTER_NAME = "Enter Name";
 	private final String RETRIEVE_OID = "Retrieve OID";
 	
 	public static interface Observer {
-
 		void onModifyClicked(CQLQualityDataSetDTO result);
-
 		void onDeleteClicked(CQLQualityDataSetDTO result, int index);
-		
 	}
 	
 	private Observer observer;
@@ -118,9 +111,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private MultiSelectionModel<CQLQualityDataSetDTO> selectionModel;
 	private ListDataProvider<CQLQualityDataSetDTO> listDataProvider;
 	private Button updateVSACButton = new Button("Update From VSAC ");
-	private List<String> versionList = new ArrayList<String>();
 	private CQLQualityDataSetDTO lastSelectedObject;
-	private ListBox versionListBox = new ListBox();
 	private ListBox programListBox = new ListBox();
 	private ListBox releaseListBox = new ListBox();
 	private MatTextBox nameInput = new MatTextBox();
@@ -133,6 +124,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 	};
+	
 	private Button goButton = new Button(RETRIEVE_OID);
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
 	private boolean isEditable;
@@ -248,11 +240,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixInput.setTitle("Suffix must be an integer between 1-4 characters");
 		suffixInput.setWidth("150px");
 		suffixInput.setHeight("30px");
-
-		versionListBox.getElement().setId("Version_ListBox");
-		versionListBox.getElement().setTitle("Version Selection List");
-		versionListBox.setEnabled(false);
-		versionListBox.setWidth("600px");
 		
 		saveValueSet.setText(TEXT_APPLY);
 		saveValueSet.setTitle(TEXT_APPLY);
@@ -346,19 +333,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixPanel.add(suffixInput);
 		suffixPanel.add(new SpacerWidget());
 
-		VerticalPanel versionFormGroup = new VerticalPanel();
-		FormLabel verLabel = new FormLabel();
-		verLabel.setText(TEXT_VERSION);
-		verLabel.setTitle(TEXT_VERSION);
-		verLabel.setFor("Version_ListBox");
-		versionFormGroup.add(verLabel);
-		versionFormGroup.add(versionListBox);
-		versionFormGroup.add(new SpacerWidget());
-
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
-		
 		
 		Grid oidGrid = new Grid(1, 1);
 		oidGrid.setWidget(0, 0, searchWidgetFormGroup);
@@ -366,14 +343,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		nameGrid.setWidget(0, 0, namePanel);
 		nameGrid.setWidget(0, 1, suffixPanel);
 		nameGrid.getElement().getStyle().setProperty("marginLeft", "10px");
-		Grid versionGrid = new Grid(2, 1);
-		versionGrid.setWidget(0, 0, versionFormGroup);
-		versionGrid.setWidget(1, 0, buttonFormGroup);
-		versionGrid.getElement().getStyle().setProperty("marginLeft", "10px");
+		Grid buttonGrid = new Grid(2, 1);
+		buttonGrid.setWidget(1, 0, buttonFormGroup);
+		buttonGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 
 		searchPanelBody.add(oidGrid);
 		searchPanelBody.add(nameGrid);
-		searchPanelBody.add(versionGrid);
+		searchPanelBody.add(buttonGrid);
 
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
@@ -431,8 +407,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
-										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
+										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -440,8 +416,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
-										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
+										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -517,7 +493,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				}
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
-			
+
 			// Program Column
 			Column<CQLQualityDataSetDTO, SafeHtml> programColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -848,14 +824,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 	}
 
-	public String getVersionValue(ListBox inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-
 	public String getExpansionProfileValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -869,33 +837,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				.checkForEditPermission();
 	}
 
-	public void setQDMVersionListBoxOptions(List<? extends HasListBox> texts){
-		setVersionListBoxItems(versionListBox, texts, MatContext.PLEASE_SELECT);
-	}
-
-	private void setVersionListBoxItems(ListBox dataTypeListBox,
-			List<? extends HasListBox> itemList, String defaultOption) {
-		dataTypeListBox.clear();
-		dataTypeListBox.addItem(defaultOption, "");
-		if (itemList != null) {
-			for (HasListBox listBoxContent : itemList) {
-				dataTypeListBox.addItem(listBoxContent.getItem(),""+listBoxContent.getValue());
-			}
-			
-			SelectElement selectElement = SelectElement.as(dataTypeListBox.getElement());
-			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
-					.getOptions();
-			for (int i = 0; i < options.getLength(); i++) {
-				OptionElement optionElement = options.getItem(i);
-				optionElement.setTitle(optionElement.getText());
-			}
-		}
-	}
-
 	public void resetVSACValueSetWidget() {
-	
 		if(checkForEnable()){
-			versionListBox.setEnabled(false);
 			oidInput.setTitle(ENTER_OID);
 			nameInput.setTitle(ENTER_NAME);	
 		}
@@ -949,10 +892,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 	}
 
-	public List<String> getVersionList() {
-		return versionList;
-	}
-
 	public Button getCancelQDMButton() {
 		return cancelButton;
 	}
@@ -971,10 +910,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 	public CQLQualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
-	}
-
-	public ListBox getVersionListBox() {
-		return versionListBox;
 	}
 	
 	public ListBox getProgramListBox() {
@@ -1033,20 +968,17 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 
 	public void setWidgetsReadOnly(boolean editable){
-		
 		getOIDInput().setEnabled(editable);
 		getUserDefinedInput().setEnabled(editable);
 		getCancelQDMButton().setEnabled(editable);
 		getRetrieveFromVSACButton().setEnabled(editable);
 		getUpdateFromVSACButton().setEnabled(editable);
 		getSaveButton().setEnabled(false);
-		getVersionListBox().setEnabled(false);
 		getProgramListBox().setEnabled(editable);
 		getSuffixInput().setEnabled(editable);
 	}
 
 	public void setWidgetToDefault() {
-		getVersionListBox().clear();
 		getOIDInput().setValue("");
 		getUserDefinedInput().setValue("");
 		getSaveButton().setEnabled(false);
@@ -1101,7 +1033,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 		} else if (getUserDefinedInput().getValue().length() > 0) {
 			isUserDefined = true;
-			getVersionListBox().clear();
 			getUserDefinedInput().setEnabled(true);
 			getSaveButton().setEnabled(true);
 			getOIDInput().setTitle(ENTER_OID);
@@ -1147,8 +1078,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getSuffixInput().setValue("");
 		getSuffixInput().setTitle("Suffix must be an integer between 1-4 characters");
 		
-		getVersionListBox().clear();
-		getVersionListBox().setEnabled(false);
 		getSaveButton().setEnabled(false);
 		
 		initializeReleaseListBoxContent();
@@ -1221,10 +1150,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					if(!cqlQualityDataSetDTO.getVersion().isEmpty() && !cqlQualityDataSetDTO.getVersion().equals("1.0") && !cqlQualityDataSetDTO.getVersion().equals("1")) {
-						cqlValueSetTransferObject.setVersion(true);
-						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
-					}
 					List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
 					MatConcept matConcept = new MatConcept();
 					matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());

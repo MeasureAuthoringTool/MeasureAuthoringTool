@@ -109,6 +109,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponenentTable = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
 		appliedComponenentTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		appliedComponenentTable.setWidth("100%");
 		buildAppliedComponentMeasuresTableColumns();
 		appliedComponentMeasuresPanel.add(appliedComponenentTable);
 		return appliedComponentMeasuresPanel;
@@ -125,6 +126,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		availableMeasuresTable = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
 		availableMeasuresTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		availableMeasuresTable.setWidth("100%");
 		buildAvailableMeasuresTableColumns();
 		availableMeasuresPanel.add(availableMeasuresTable);
 		return availableMeasuresPanel;

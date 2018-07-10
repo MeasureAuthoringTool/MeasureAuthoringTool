@@ -518,13 +518,11 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService()
 						.checkForEditPermission()) {
-					xmlTreeDisplay.clearMessages();
 					MatContext.get().getCurrentMeasureId();
 					final int selectedClauseindex = xmlTreeDisplay.getClauseNamesListBox().getSelectedIndex();
 					if(selectedClauseindex < 0){
 						return;
 					}
-					xmlTreeDisplay.getClauseNamesListBox().getValue(selectedClauseindex);
 					final String clauseName = xmlTreeDisplay.getClauseNamesListBox().getItemText(selectedClauseindex);
 
 					final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay

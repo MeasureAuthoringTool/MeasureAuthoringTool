@@ -2,11 +2,10 @@ package mat.client.buttons;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
 
-@SuppressWarnings("deprecation")
 public class CustomButton extends Button { 
 	
 	private String text; 

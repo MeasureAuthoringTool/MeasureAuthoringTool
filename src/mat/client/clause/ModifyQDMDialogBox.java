@@ -15,6 +15,9 @@ import mat.client.shared.DialogBoxWithCloseButton;
 import mat.model.QualityDataSetDTO;
 
 @Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
+ */
 public class ModifyQDMDialogBox {
 	
 	/** The dialog box. */

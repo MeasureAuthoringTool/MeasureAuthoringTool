@@ -65,6 +65,9 @@ import mat.shared.ConstantMessages;
 
 
 @Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
+ */
 public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.SearchDisplay,
 HasSelectionHandlers<Boolean> {
 	

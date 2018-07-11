@@ -81,7 +81,8 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	private Button transferButton = new Button("Transfer");
 	
-	private MeasureLibraryAdvancedSearchBuilder measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearchBuilder();
+	//TODO in MAT-9216 add this code back in!
+	/*private MeasureLibraryAdvancedSearchBuilder measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearchBuilder();*/
 	
 	MeasureSearchView searchView;
 	
@@ -113,7 +114,8 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
 		measureFilterVP.add(measureSearchFilterWidget);
-		measureFilterVP.add(measureLibraryAdvancedSearchBuilder.asWidget());
+		//TODO in MAT-9216 add this code back in!
+		//measureFilterVP.add(measureLibraryAdvancedSearchBuilder.asWidget());
 		buildMostRecentWidget();
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(measureFilterVP);
@@ -445,6 +447,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 
 	@Override
 	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder() {
-		return measureLibraryAdvancedSearchBuilder;
+		//TODO in MAT-9216 add this code back in!
+		return null;//measureLibraryAdvancedSearchBuilder;
 	}
 }

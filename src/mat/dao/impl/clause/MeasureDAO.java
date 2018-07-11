@@ -794,75 +794,82 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	}
 
 	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
-		if(StringUtils.isNotBlank(model.getSearchTerm())) {
-			String searchTerm = model.getSearchTerm().toLowerCase();
-			String measureAbbName = measure.getaBBRName().toLowerCase();
-			String measureDesc = measure.getDescription().toLowerCase();
-			if (!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm)) {
+		try {
+			if(StringUtils.isNotBlank(model.getSearchTerm())) {
+				String searchTerm = model.getSearchTerm().toLowerCase();
+				String measureAbbName = measure.getaBBRName().toLowerCase();
+				String measureDesc = measure.getDescription().toLowerCase();
+				String owner = measure.getOwner().getFirstName().toLowerCase() + " " + measure.getOwner().getLastName().toLowerCase();
+				if (!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm) && !owner.contains(searchTerm)) {
+					return false;
+				}
+			}
+			//TODO in MAT-9216 add this code back in!
+			/*if (AdvancedSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
 				return false;
 			}
-		}
+			if (AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
+				return false;
+			}
+			//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
+			if(!AdvancedSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
+				return false;
+			}
 
-		if (AdvancedSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
+			if (AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
+				return false;
+			}
+			if (AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.getPatientBased()) {
+	
+				return false;
+			}
+			if (model.getScoringTypes().size() > 0) {
+				if (!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
+					return false;
+				}
+			}
+			if(StringUtils.isNotBlank(model.getOwner())) {
+				String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
+				if (!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
+					return false;
+				}
+			}
+	
+			if (StringUtils.isNotEmpty(model.getModifiedOwner())) {
+				if(measure.getLastModifiedBy() == null) {
+					return false;
+				}
+				User user =  measure.getLastModifiedBy();
+				String lastModifiedByName = user.getFirstName() + " " + user.getLastName();
+				if (!lastModifiedByName.toLowerCase().contains(model.getModifiedOwner().toLowerCase())) {
+					return false;
+				}
+			}
+			if (model.getModifiedDate() > 0) {
+				if(measure.getLastModifiedOn() == null) {
+					return false;
+				}
+				int date = model.getModifiedDate();
+	
+				Timestamp time = new Timestamp(System.currentTimeMillis());
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(time);
+	
+				// multiply by negative one to subtract
+				cal.add(Calendar.DAY_OF_WEEK, -1 * date);
+	
+				time = new Timestamp(cal.getTime().getTime());
+				
+				Timestamp modifiedTime =  measure.getLastModifiedOn();
+				if (modifiedTime.before(time)) {
+					return false;
+				}
+			}*/
+		}
+		catch(Exception e) {
+			logger.error("Measure search Failed " + e);
 			return false;
 		}
-		if (AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
-			return false;
-		}
-		//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
-		if(!AdvancedSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
-			return false;
-		}
-		if (AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
-			return false;
-		}
-		if (AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.getPatientBased()) {
-
-			return false;
-		}
-		if (model.getScoringTypes().size() > 0) {
-			if (!model.getScoringTypes().contains(measure.getMeasureScoring().toLowerCase())) {
-				return false;
-			}
-		}
-		if(StringUtils.isNotBlank(model.getOwner())) {
-			String userFullName = measure.getOwner().getFirstName() + measure.getOwner().getLastName();
-			if (!userFullName.toLowerCase().contains(model.getOwner().toLowerCase())) {
-				return false;
-			}
-		}
-
-		if (StringUtils.isNotEmpty(model.getModifiedOwner())) {
-			if(measure.getLastModifiedBy() == null) {
-				return false;
-			}
-			User user =  measure.getLastModifiedBy();
-			String lastModifiedByName = user.getFirstName() + " " + user.getLastName();
-			if (!lastModifiedByName.toLowerCase().contains(model.getModifiedOwner().toLowerCase())) {
-				return false;
-			}
-		}
-		if (model.getModifiedDate() > 0) {
-			if(measure.getLastModifiedOn() == null) {
-				return false;
-			}
-			int date = model.getModifiedDate();
-
-			Timestamp time = new Timestamp(System.currentTimeMillis());
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(time);
-
-			// multiply by negative one to subtract
-			cal.add(Calendar.DAY_OF_WEEK, -1 * date);
-
-			time = new Timestamp(cal.getTime().getTime());
-			
-			Timestamp modifiedTime =  measure.getLastModifiedOn();
-			if (modifiedTime.before(time)) {
-				return false;
-			}
-		}
-
 		return true;
 	}
 

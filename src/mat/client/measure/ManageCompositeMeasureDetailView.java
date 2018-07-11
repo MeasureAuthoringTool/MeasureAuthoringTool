@@ -162,3 +162,4 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		return errorMessages;
 	}
 }
+

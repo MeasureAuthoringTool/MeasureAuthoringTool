@@ -1,6 +1,5 @@
 package mat.client.bonnie;
 
-
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
@@ -66,7 +65,7 @@ public class BonnieModal {
 		panel.add(modalFooter);
 		panel.getElement().setAttribute("role", "dialog");
 	}
-		
+
 	public void show(){
 		panel.show();	
 		messageLabel.getElement().focus();

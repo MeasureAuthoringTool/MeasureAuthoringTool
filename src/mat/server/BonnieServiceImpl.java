@@ -30,5 +30,4 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 					+ responseType + "&client_id=" + clientId + "&redirect_uri=" + redirectURI;
 		}
 	}
-
 }

@@ -57,7 +57,6 @@ import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
-import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
@@ -89,7 +88,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			if(compositeDetailDisplay != null) {
 				compositeDetailDisplay.getName().setValue("");
 				compositeDetailDisplay.getShortName().setValue("");
-				compositeDetailDisplay.clearFields();
 			}
 			displaySearch();
 		}
@@ -500,11 +498,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				updateCompositeDetailsFromView();
-				if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
-					return;
-				}
-				
 				displayComponentDetails();
 			}
 		});
@@ -618,6 +611,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void displayComponentDetails() {
+		//TODO implement this
 		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create New Composite Measure > Component Measures", "MeasureLibrary");
 		panel.setContent(componentMeasureDisplay.asWidget());
@@ -972,22 +966,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			detailDisplay.getErrorMessageDisplay().clearAlert();
 			searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-		}
-		return valid;
-	}
-	
-	private boolean isValidCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasureDetails) {
-		ManageCompositeMeasureModelValidator manageMeasureModelValidator = new ManageCompositeMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.validateMeasureWithClone(compositeMeasureDetails, isClone);
-		boolean valid = message.size() == 0;
-		if(!valid) {
-			String errorMessage = "";
-			if(message.size() > 0) {
-				errorMessage = message.get(0);
-			}
-			compositeDetailDisplay.getErrorMessageDisplay().createAlert(errorMessage);
-		} else {
-			compositeDetailDisplay.getErrorMessageDisplay().clearAlert();
 		}
 		return valid;
 	}
@@ -1975,20 +1953,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext.get().setCurrentMeasureName(currentDetails.getName());
 		MatContext.get().setCurrentShortName(currentDetails.getShortName());
 		MatContext.get().setCurrentMeasureScoringType(currentDetails.getMeasScoring());
-	}
-	
-	private void updateCompositeDetailsFromView() {
-		currentCompositeMeasureDetails.setName(compositeDetailDisplay.getName().getValue().trim());
-		currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getShortName().getValue().trim());
-		currentCompositeMeasureDetails.setCompositeScoringMethod(((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue());
-		String measureScoring = compositeDetailDisplay.getMeasScoringValue();
-		currentCompositeMeasureDetails.setMeasScoring(measureScoring);
-		if(compositeDetailDisplay.getPatientBasedInput().getItemText(compositeDetailDisplay.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
-			currentCompositeMeasureDetails.setIsPatientBased(true);
-		} else {
-			currentCompositeMeasureDetails.setIsPatientBased(false);
-		}
-		currentCompositeMeasureDetails.scrubForMarkUp();
 	}
 
 	private void updateTransferIDs(Result result, ManageMeasureSearchModel model) {

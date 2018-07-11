@@ -215,7 +215,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, compositeMeasureDetailView , componentMeasureDisplay , measureShareView, measureExportView, historyView, versionView, null);
 		}
 		
+		
 		return measurePresenter;
+		
 	}
 	
 
@@ -423,7 +425,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
-
+			hideBonnieActive();
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{

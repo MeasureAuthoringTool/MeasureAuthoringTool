@@ -59,7 +59,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.buttons.CancelButton;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
@@ -86,6 +85,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	static final String EXTENSIONAL_QDM = " (E)";
 	private Boolean isLoading = false;
 	private final String TEXT_APPLY = "Apply";
+	private final String TEXT_CANCEL = "Cancel";
 	private final String TEXT_OID = "OID";
 	private final String TEXT_NAME = "Name";
 	private final String TEXT_PROGRAM = "Program";
@@ -95,8 +95,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private final String RETRIEVE_OID = "Retrieve OID";
 	
 	public static interface Observer {
+
 		void onModifyClicked(CQLQualityDataSetDTO result);
+
 		void onDeleteClicked(CQLQualityDataSetDTO result, int index);
+		
 	}
 	
 	private Observer observer;
@@ -124,14 +127,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 	};
-	
 	private Button goButton = new Button(RETRIEVE_OID);
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
 	private boolean isEditable;
 	private CheckBox specificOcurChkBox;
 	private MatSimplePager spager;
 	private Button saveValueSet = new Button(TEXT_APPLY);
-	private Button cancelButton = new CancelButton("appliedvaluesetview");
+	private Button cancelButton = new Button(TEXT_CANCEL);
 	private VerticalPanel mainPanel;
 	private PanelHeader searchHeader = new PanelHeader();
 	private HelpBlock helpBlock = new HelpBlock(); 
@@ -240,11 +242,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixInput.setTitle("Suffix must be an integer between 1-4 characters");
 		suffixInput.setWidth("150px");
 		suffixInput.setHeight("30px");
-		
+
 		saveValueSet.setText(TEXT_APPLY);
 		saveValueSet.setTitle(TEXT_APPLY);
 		saveValueSet.setType(ButtonType.PRIMARY);
 		
+		cancelButton.setType(ButtonType.DANGER);
+		cancelButton.setTitle(TEXT_CANCEL);
 		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);
@@ -278,7 +282,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		programLabel.setText(TEXT_PROGRAM);
 		programLabel.setTitle(TEXT_PROGRAM);
 		programPanel.add(programLabel);
-		programListBox.setTitle("Program selection list. Program is a required field.");
+		programListBox.setTitle("Program selection list");
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
 		initProgramListBoxContent();
@@ -333,9 +337,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixPanel.add(suffixInput);
 		suffixPanel.add(new SpacerWidget());
 
+
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
+		
 		
 		Grid oidGrid = new Grid(1, 1);
 		oidGrid.setWidget(0, 0, searchWidgetFormGroup);
@@ -343,13 +349,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		nameGrid.setWidget(0, 0, namePanel);
 		nameGrid.setWidget(0, 1, suffixPanel);
 		nameGrid.getElement().getStyle().setProperty("marginLeft", "10px");
-		Grid buttonGrid = new Grid(2, 1);
-		buttonGrid.setWidget(1, 0, buttonFormGroup);
-		buttonGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 
 		searchPanelBody.add(oidGrid);
 		searchPanelBody.add(nameGrid);
-		searchPanelBody.add(buttonGrid);
 
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
@@ -357,13 +359,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	public void initializeReleaseListBoxContent() {
 		getReleaseListBox().clear();
-		getReleaseListBox().setEnabled(true);
+		getReleaseListBox().setEnabled(false);
 		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 	}
 	
 	
 	public void initProgramListBoxContent() {
-		getProgramListBox().clear();	
+		getProgramListBox().clear();
+		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
 	}
 
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
@@ -493,30 +496,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				}
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
-
-			// Program Column
-			Column<CQLQualityDataSetDTO, SafeHtml> programColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-					new SafeHtmlCell()) {
-				@Override
-				public SafeHtml getValue(CQLQualityDataSetDTO object) {
-					StringBuilder title = new StringBuilder();
-					String program = null;
-					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if (object.getProgram() != null) {
-							program = object.getProgram();							
-						} else {
-							program = "";
-						}
-						title.append("Program : ").append(program);
-					} else {
-						program = "";
-					}
-					return CellTableUtility.getColumnToolTip(program, title.toString());
-				}
-			};
-			table.addColumn(programColumn,
-					SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
-	
+			
 			
 			// Release Column
 			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
@@ -838,6 +818,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 
 	public void resetVSACValueSetWidget() {
+	
 		if(checkForEnable()){
 			oidInput.setTitle(ENTER_OID);
 			nameInput.setTitle(ENTER_NAME);	
@@ -968,6 +949,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 
 	public void setWidgetsReadOnly(boolean editable){
+		
 		getOIDInput().setEnabled(editable);
 		getUserDefinedInput().setEnabled(editable);
 		getCancelQDMButton().setEnabled(editable);
@@ -1081,7 +1063,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		getSaveButton().setEnabled(false);
 		
 		initializeReleaseListBoxContent();
-		getProgramListBox().setSelectedIndex(0);
+		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
 		getProgramListBox().setEnabled(true);
 		
 		getUpdateFromVSACButton().setEnabled(true);

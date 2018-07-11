@@ -43,13 +43,12 @@ public abstract class MainLayout {
 	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 	
 	private static IndicatorButton showUMLSState;
+
 	
 	private static IndicatorButton showBonnieState;
 	
 	protected static FocusableWidget skipListHolder;
 
-	private String version = "";
-	
 	static HTML welcomeUserLabel;
 	
 	static HTML versionLabel;
@@ -220,6 +219,7 @@ public abstract class MainLayout {
 		titleImage.setStylePrimaryName("topBannerImage");
 		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
 		HTML desc = new HTML("<h4 style=\"font-size:0;\"><b>Measure Authoring Tool</b></h4>");// Doing this for 508 when CSS turned off
+		@SuppressWarnings("deprecation")
 		com.google.gwt.user.client.Element heading = desc.getElement();
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		versionPanel = new VerticalFlowPanel();
@@ -238,15 +238,14 @@ public abstract class MainLayout {
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
 
+		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
+		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
+		
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(logOutPanel);
-		
-		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
 		vp.add(showUMLSState.getPanel());
-		
-		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
 		vp.add(showBonnieState.getPanel());
-	
+
 		vp.addStyleName("logoutAndUMLSPanel");
 		
 		horizontalBanner.add(vp);
@@ -313,7 +312,6 @@ public abstract class MainLayout {
 		initEntryPoint();
 	}
 
-	
 	protected void setId(final Widget widget, final String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}

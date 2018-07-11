@@ -2076,23 +2076,5 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		}
 	}
 	
-	/**
-	 * Gets the steward value.
-	 *
-	 * @return the steward value
-	 */
-	/*public String getStewardValue() {
-		return stewardValue;
-	}*/
-	
-	/**
-	 * Sets the steward value.
-	 *
-	 * @param stewardValue the new steward value
-	 */
-	/*public void setStewardValue(String stewardValue) {
-		this.stewardValue = stewardValue;
-	}*/
-	
 	
 }

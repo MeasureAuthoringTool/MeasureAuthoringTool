@@ -273,7 +273,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 			public Boolean getValue(Result object) {
 				boolean isSelected = false;
 				if (availableMeasuresList != null
-						&& availableMeasuresList.size() > 0) {
+						&& !availableMeasuresList.isEmpty()) {
 					for (int i = 0; i < availableMeasuresList.size(); i++) {
 						if (availableMeasuresList.get(i).getId()
 								.equalsIgnoreCase(object.getId())) {
@@ -281,9 +281,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 							break;
 						}
 					}
-				} else {
-					isSelected = false;
 				}
+				
 				return isSelected;
 			}
 		};

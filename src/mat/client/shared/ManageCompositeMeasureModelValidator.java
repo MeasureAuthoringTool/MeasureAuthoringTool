@@ -3,8 +3,6 @@ package mat.client.shared;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.shared.MatConstants;
 
@@ -16,10 +14,7 @@ public class ManageCompositeMeasureModelValidator extends ManageMeasureModelVali
 		if(!isClone) {
 			message.addAll(validateNQF(model));
 		}
-		GWT.log("message size: " + message.size());
-		for(int i = 0; i<message.size(); i++) {
-			GWT.log("message: " + message.get(i));
-		}
+
 		return message;
 	}
 	

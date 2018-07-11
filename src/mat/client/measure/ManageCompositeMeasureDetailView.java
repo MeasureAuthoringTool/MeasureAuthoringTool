@@ -16,6 +16,7 @@ import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 
 public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetailView {
@@ -23,7 +24,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	private ListBoxMVP  compositeScoringMethodInput = new ListBoxMVP();
     private FormGroup compositeScoringGroup = new FormGroup();
 	SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("compositeMeasureDetail");
-
+	
 	@Override
 	public void clearFields() {
 		super.clearFields();
@@ -70,6 +71,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		
 		FormGroup buttonFormGroup = new FormGroup();
 		buttonBar.getSaveButton().setText("Continue");
+		buttonBar.getSaveButton().setTitle("Continue");
 		buttonFormGroup.add(buttonBar);
 		
 		messageFormGrp.add(helpBlock);
@@ -155,4 +157,9 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	public String getCompositeScoringValue() {
 		return compositeScoringMethodInput.getItemText(compositeScoringMethodInput.getSelectedIndex());
 	}
+	
+	public MessageAlert getErrorMessageDisplay() {
+		return errorMessages;
+	}
 }
+

@@ -49,7 +49,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private static final int PAGE_SIZE = 25;
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
-	private CellTable<ManageMeasureSearchModel.Result> appliedComponenentTable;
+	private CellTable<ManageMeasureSearchModel.Result> appliedComponentTable;
 	private BackSaveCancelButtonBar buttonBar = new BackSaveCancelButtonBar("componentMeasures");
 	
 	public ComponentMeasureDisplay() {
@@ -106,12 +106,12 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponentMeasuresPanel.add(appliedComponentMeasureHeader);
 		appliedComponentMeasuresPanel.add(new SpacerWidget());
 		
-		appliedComponenentTable = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
+		appliedComponentTable = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
-		appliedComponenentTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		appliedComponenentTable.setWidth("100%");
+		appliedComponentTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		appliedComponentTable.setWidth("100%");
 		buildAppliedComponentMeasuresTableColumns();
-		appliedComponentMeasuresPanel.add(appliedComponenentTable);
+		appliedComponentMeasuresPanel.add(appliedComponentTable);
 		return appliedComponentMeasuresPanel;
 	}
 
@@ -133,9 +133,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	}
 	
 	private void buildAppliedComponentMeasuresTableColumns() {
-		appliedComponenentTable.setPageSize(PAGE_SIZE);
-		appliedComponenentTable.redraw();
-		appliedComponenentTable.setRowData(appliedComponentMeasuresList);
+		appliedComponentTable.setPageSize(PAGE_SIZE);
+		appliedComponentTable.redraw();
+		appliedComponentTable.setRowData(appliedComponentMeasuresList);
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
@@ -144,7 +144,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return getMeasureNameColumnToolTip(object);
 			}
 		};
-		appliedComponenentTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>"
+		appliedComponentTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>"
 				+ "Measure Name" + "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
@@ -154,7 +154,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return CellTableUtility.getColumnToolTip(object.getVersion());
 			}
 		};
-		appliedComponenentTable.addColumn(version, SafeHtmlUtils
+		appliedComponentTable.addColumn(version, SafeHtmlUtils
 				.fromSafeConstant("<span title='Version'>" + "Version"
 						+ "</span>"));
 		
@@ -166,7 +166,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return CellTableUtility.getColumnToolTip(object.getScoringType());
 			}
 		};
-		appliedComponenentTable.addColumn(scoringType, SafeHtmlUtils
+		appliedComponentTable.addColumn(scoringType, SafeHtmlUtils
 				.fromSafeConstant("<span title='Measure Scoring'>" + "Measure Scoring"
 						+ "</span>"));
 		
@@ -177,7 +177,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return CellTableUtility.getColumnToolTip("Assign Alias");
 			}
 		};
-		appliedComponenentTable.addColumn(aliasColumn, SafeHtmlUtils
+		appliedComponentTable.addColumn(aliasColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title='Assign Alias'>" + "Assign Alias"
 						+ "</span>"));
 		
@@ -188,7 +188,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return CellTableUtility.getColumnToolTip("");
 			}
 		};
-		appliedComponenentTable.addColumn(emptyColumn, SafeHtmlUtils
+		appliedComponentTable.addColumn(emptyColumn, SafeHtmlUtils
 				.fromSafeConstant(""));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> deleteColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
@@ -198,7 +198,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return CellTableUtility.getColumnToolTip("Delete");
 			}
 		};
-		appliedComponenentTable.addColumn(deleteColumn, SafeHtmlUtils
+		appliedComponentTable.addColumn(deleteColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title='Delete'>" + "Delete"
 						+ "</span>"));
 		

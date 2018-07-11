@@ -16,7 +16,7 @@ public class ManageMeasureModelValidator {
 		return message;
 	}
 	
-	private boolean isValidValue(String value) {
+	protected boolean isValidValue(String value) {
 		return !value.equalsIgnoreCase("--Select--") && !value.equals("");
 	}
 
@@ -28,7 +28,7 @@ public class ManageMeasureModelValidator {
 		return message;
 	}
 	
-	private List<String> validateNQF(ManageMeasureDetailModel model) {
+	protected List<String> validateNQF(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		if(Optional.ofNullable(model.getEndorseByNQF()).orElse(false)) { 
 			if(StringUtility.isEmptyOrNull(model.getNqfId())) {

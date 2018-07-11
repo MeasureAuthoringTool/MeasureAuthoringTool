@@ -1284,7 +1284,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the include library
 	 * @return the string
 	 */
-	@SuppressWarnings("deprecation")
 	private String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) {
 		logger.info("In CQLServiceImpl.createIncludeLibraryXML");
 		Mapping mapping = new Mapping();
@@ -1826,7 +1825,8 @@ public class CQLServiceImpl implements CQLService {
 			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName("cqlLookUp");
 		}
 		try {
-			if (xml == null) {
+			if (xml == null) {// TODO: This Check should be replaced when the
+				// DataConversion is complete.
 				logger.info("xml is null or xml doesn't contain cqlLookUp tag");
 
 			} else {
@@ -1860,7 +1860,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the CQLParameter
 	 * @return the string
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public String createParametersXML(CQLParameter parameter) {
 
@@ -1905,7 +1904,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the CQLFunctions
 	 * @return the string
 	 */
-	@SuppressWarnings("deprecation")
 	private String createFunctionsXML(CQLFunctions function) {
 
 		logger.info("In CQLServiceImpl.createFunctionsXML");
@@ -1948,7 +1946,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the definition
 	 * @return the string
 	 */
-	@SuppressWarnings("deprecation")
 	@Override
 	public String createDefinitionsXML(CQLDefinition definition) {
 
@@ -2987,7 +2984,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the quality data set DTO wrapper
 	 * @return the string
 	 */
-	@SuppressWarnings("deprecation")
 	private String generateXmlForAppliedValueset(final CQLQualityDataModelWrapper qualityDataSetDTOWrapper) {
 		logger.info("addNewAppliedQDMInMeasureXML Method Call Start.");
 		ByteArrayOutputStream stream = createNewXML(qualityDataSetDTOWrapper);
@@ -2998,7 +2994,6 @@ public class CQLServiceImpl implements CQLService {
 		return xmlString;
 	}
 
-	@SuppressWarnings("deprecation")
 	private String generateXmlForAppliedCode(CQLCodeWrapper wrapper) {
 		logger.info("generateXmlForAppliedCode Method Call Start.");
 		ByteArrayOutputStream stream = createNewCodeXML(wrapper);
@@ -3009,7 +3004,6 @@ public class CQLServiceImpl implements CQLService {
 		return xmlString;
 	}
 
-	@SuppressWarnings("deprecation")
 	private String generateXmlForAppliedCodeSystem(CQLCodeSystemWrapper wrapper) {
 		logger.info("generateXmlForAppliedCodeSystem Method Call Start.");
 		ByteArrayOutputStream stream = createNewCodeSystemXML(wrapper);
@@ -3027,7 +3021,6 @@ public class CQLServiceImpl implements CQLService {
 	 *            the quality data set DTO
 	 * @return the byte array output stream
 	 */
-	@SuppressWarnings("deprecation")
 	private ByteArrayOutputStream createNewXML(final CQLQualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In CQLServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
@@ -3055,7 +3048,6 @@ public class CQLServiceImpl implements CQLService {
 		return stream;
 	}
 
-	@SuppressWarnings("deprecation")
 	private ByteArrayOutputStream createNewCodeXML(final CQLCodeWrapper wrapper) {
 		logger.info("In CQLServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
@@ -3083,7 +3075,6 @@ public class CQLServiceImpl implements CQLService {
 		return stream;
 	}
 
-	@SuppressWarnings("deprecation")
 	private ByteArrayOutputStream createNewCodeSystemXML(final CQLCodeSystemWrapper wrapper) {
 		logger.info("In CQLServiceImpl.createNewCodeSystemXML()");
 		Mapping mapping = new Mapping();

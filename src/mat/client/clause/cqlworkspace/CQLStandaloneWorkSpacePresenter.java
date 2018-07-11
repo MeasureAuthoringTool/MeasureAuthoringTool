@@ -1623,6 +1623,12 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlGeneralInformationView().getComments().addValueChangeHandler(event -> resetMessagesAndSetPageDirty(true));
 	}
 	
+	private void cancelChangesOnGeneralInfoPage() {
+		searchDisplay.resetMessageDisplay();
+		searchDisplay.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
+		searchDisplay.getCqlGeneralInformationView().getComments().setCursorPos(0);
+	}
+	
 	private void resetMessagesAndSetPageDirty(boolean isPageDirty) {
 		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
 			searchDisplay.resetMessageDisplay();

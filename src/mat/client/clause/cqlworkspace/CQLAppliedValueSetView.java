@@ -804,14 +804,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 	}
 
-	public String getVersionValue(ListBox inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-
 	public String getExpansionProfileValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -1140,10 +1132,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					if(!cqlQualityDataSetDTO.getVersion().isEmpty() && !cqlQualityDataSetDTO.getVersion().equals("1.0") && !cqlQualityDataSetDTO.getVersion().equals("1")) {
-						cqlValueSetTransferObject.setVersion(true);
-						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
-					}
 					List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
 					MatConcept matConcept = new MatConcept();
 					matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());

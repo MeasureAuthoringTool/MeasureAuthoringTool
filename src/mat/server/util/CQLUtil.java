@@ -710,19 +710,14 @@ public class CQLUtil {
 		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
 
 			LibHolderObject libHolderObject = cqlModel.getIncludedCQLLibXMLMap().get(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName());
-			String alias = cqlIncludeLibrary.getAliasName();
+			cqlIncludeLibrary.getAliasName();
 
-			String xml = libHolderObject.getMeasureXML();
-			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			libHolderObject.getMeasureXML();
 		}
 	}
 
-	/**
-	 * The Class CQLArtifactHolder.
-	 */
 	public class CQLArtifactHolder {
 
-		/** The cql definition UUID set. */
 		private Set<String> cqlDefinitionUUIDSet = new HashSet<String>();
 
 		/** The cql function UUID set. */

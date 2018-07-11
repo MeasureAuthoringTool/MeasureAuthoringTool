@@ -41,109 +41,69 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class QDMAttributeDialogBox.
- */
 public class QDMAttributeDialogBox {
-	
-	/** The Constant NEGATION_RATIONALE. */
 	private static final String NEGATION_RATIONALE = "negation rationale";
 	
-	/** The Constant INSTANCE. */
 	private static final String INSTANCE = "instance";
-	// Declare all constants
-	/** The Constant DATATYPE. */
+
 	static final String DATATYPE = "datatype";
 	
-	/** The Constant GREATER_THAN_OR_EQUAL_TO. */
 	private static final String GREATER_THAN_OR_EQUAL_TO = "Greater Than Or Equal To";
 	
-	/** The Constant LESS_THAN_OR_EQUAL_TO. */
 	private static final String LESS_THAN_OR_EQUAL_TO = "Less Than Or Equal To";
 	
-	/** The Constant EQUAL_TO. */
 	private static final String EQUAL_TO = "Equal To";
 	
-	/** The Constant GREATER_THAN. */
 	private static final String GREATER_THAN = "Greater Than";
 	
-	/** The Constant LESS_THAN. */
 	private static final String LESS_THAN = "Less Than";
 	
-	/** The Constant UNIT. */
 	private static final String UNIT = "unit";
 	
-	/** The Constant COMPARISON_VALUE. */
 	private static final String COMPARISON_VALUE = "comparisonValue";
 	
-	/** The Constant QDM_UUID. */
 	private static final String QDM_UUID = "qdmUUID";
 	
-	/** The Constant MODE. */
 	private static final String MODE = "mode";
 	
-	/** The Constant VALUE_SET. */
 	private static final String VALUE_SET = "Value Set";
 	
-	/** The Constant CHECK_IF_PRESENT. */
 	private static final String CHECK_IF_PRESENT = "Check if Present";
 	
-	/** The Constant NAME. */
 	private static final String NAME = "name";
 	
-	/** The Constant ATTRIBUTE. */
 	static final String ATTRIBUTE = "attribute";
 	
-	/** The Constant ATTRIBUTES. */
 	private static final String ATTRIBUTES = "attributes";
 	
-	/** The Constant QDM_ATTRIBUTES_TITLE. */
 	private static final String QDM_ATTRIBUTES_TITLE = "Edit Attribute";
 	
-	/** The Constant SELECT. */
 	private static final String SELECT = "--Select--";
 	
-	/** The Constant UUID. */
 	private static final String UUID = "uuid";
 	
-	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
 	
-	/** The Constant unitNames. */
 	private static final List<String> unitNames = new ArrayList<String>();
 	
-	/** The Constant attributeList. */
 	private static final List<String> attributeList = new ArrayList<String>();
 	
-	/** The quantity text box. */
 	private static  TextBox quantityTextBox = new TextBox();
 	
-	/** The units list box. */
 	private static  ListBox unitsListBox = new ListBox();
 	
-	/** The qdm list box. */
 	private static  ListBox qdmListBox = new ListBox();
 	
-	/** The qdm attribute date. */
 	private static DateBoxWithCalendar  qdmAttributeDate = new DateBoxWithCalendar();
 	
-	/** The Constant ATTRIBUTE_DATE. */
 	private static final String ATTRIBUTE_DATE = "attrDate";
 	
 	private static ListBox modeListBox  = new ListBox(false);
-	
-	
-	/**
-	 * The Class DigitsOnlyKeyPressHandler.
-	 */
+
 	private static final class DigitsOnlyKeyPressHandler implements
 	KeyPressHandler {
-		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
-		 */
+
 		@Override
 		public void onKeyPress(KeyPressEvent event) {
 			TextBox sender = (TextBox) event.getSource();
@@ -159,15 +119,7 @@ public class QDMAttributeDialogBox {
 			}
 		}
 	}
-	
-	/**
-	 * Show qdm attribute dialog box.
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 */
+
 	public static void showQDMAttributeDialogBox(XmlTreeDisplay xmlTreeDisplay,
 			CellTreeNode cellTreeNode) {
 		// If the CellTreeNode type isn't CellTreeNode.ELEMENT_REF_NODE then
@@ -212,19 +164,9 @@ public class QDMAttributeDialogBox {
 			findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
 					xmlTreeDisplay, cellTreeNode);
 		}
-		// buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay,
-		// cellTreeNode);
 	}
 	
-	/**
-	 * Builds the and display dialog box.
-	 *
-	 * @param qdmDataType            the qdm data type
-	 * @param mode            the mode
-	 * @param xmlTreeDisplay            the xml tree display
-	 * @param cellTreeNode            the cell tree node
-	 * @param checkForRemovedDataType the check for removed data type
-	 */
+
 	private static void buildAndDisplayDialogBox(final String qdmDataType,
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay,
 			final CellTreeNode cellTreeNode, boolean checkForRemovedDataType) {
@@ -279,6 +221,7 @@ public class QDMAttributeDialogBox {
 		modeListBox.setVisibleItemCount(1);
 		modeListBox.setWidth("200px");
 		modeListBox.addItem(QDMAttributeDialogBox.SELECT);
+		@SuppressWarnings("unchecked")
 		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode
 				.getExtraInformation(ATTRIBUTES);
 		final int rows = (attributeNodeList == null) ? 0 : attributeNodeList
@@ -353,7 +296,6 @@ public class QDMAttributeDialogBox {
 							.getOptions();
 					
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
-					//attributeListBox.setTitle(optionElement.getTitle());
 					modifyModeList(JSONAttributeModeUtility.getAttrModeList(optionElement.getTitle()));
 					modeListBox.setEnabled(true);
 					qdmAttributeDate.setValue("");
@@ -983,30 +925,10 @@ public class QDMAttributeDialogBox {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
-		
-		
 	}
 	
-	/*
-	 * private static Node findElementLookUpNode(String name) {
-	 * Set<Entry<String, Node>> qdmNames =
-	 * ClauseConstants.getElementLookUpNode().entrySet(); for(Entry
-	 * qdmName:qdmNames){ if(qdmName.getKey().equals(name)){
-	 * com.google.gwt.xml.client.Node qdmNode =
-	 * ClauseConstants.getElementLookUpNode().get(qdmName.getKey()); return
-	 * qdmNode; } } return null; }
-	 */
-	
-	/**
-	 * Sets the tool tip for each element in listbox.
-	 * 
-	 * @param listBox
-	 *            the new tool tip for each element in listbox
-	 */
 	private static void setToolTipForEachElementInListbox(ListBox listBox) {
 		// Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
@@ -1018,12 +940,7 @@ public class QDMAttributeDialogBox {
 		}
 	}
 	
-	/**
-	 * Sets the tool tip for each element in qdm list box.
-	 * 
-	 * @param listBox
-	 *            the new tool tip for each element in qdm list box
-	 */
+
 	private static void setToolTipForEachElementInQdmListBox(ListBox listBox) {
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
@@ -1045,21 +962,6 @@ public class QDMAttributeDialogBox {
 		}
 	}
 	
-	
-	/**
-	 * Checks if is valid attribute.
-	 *
-	 * @param attributeListBox the attribute list box
-	 * @return true, if is valid attribute
-	 */
-	private static boolean isValidAttribute(ListBox attributeListBox){
-		boolean isValid = true;
-		if(attributeListBox.getSelectedIndex() == 0){
-			attributeListBox.setStyleName("gwt-TextBoxRed");
-			isValid = false;
-		}
-		return isValid;
-	}
 	
 	/**
 	 * Checks if is valid mode.

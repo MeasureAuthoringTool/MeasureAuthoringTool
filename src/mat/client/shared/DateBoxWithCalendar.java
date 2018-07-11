@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
 /**
@@ -84,8 +83,6 @@ public class DateBoxWithCalendar extends Composite{
 	private FocusHandler focusHandler = new FocusHandler() {
 		@Override
 		public void onFocus(FocusEvent event) {
-			Widget source = (Widget)event.getSource();
-			//source.setStylePrimaryName("focus-border");
 			hideInvalidDateMessage();
 		}
 	};
@@ -95,24 +92,6 @@ public class DateBoxWithCalendar extends Composite{
 	
 	/** The inv label. */
 	public Label invLabel;
-	
-	/** The key down handler. */
-	private KeyDownHandler keyDownHandler = new KeyDownHandler() {
-		
-		@Override
-		public void onKeyDown(KeyDownEvent event) {
-			datePickerPopup.hide();
-		}
-	};
-	
-	/*private ClickHandler clickHandler = new ClickHandler() {
-		
-		@Override
-		public void onClick(ClickEvent arg0) {
-			datePickerPopup.hide();
-			
-		}
-	};*/
 
 	/** The label. */
 	public String label;

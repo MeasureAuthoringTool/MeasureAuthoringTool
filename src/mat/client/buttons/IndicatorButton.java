@@ -39,6 +39,7 @@ public class IndicatorButton{
 				"  "+ activeText + "</span></button>");
 		link.getElement().setTabIndex(0);
 		panel.add(link);
+		panel.getElement().focus();
 	}
 	
 	public void setVisible() {

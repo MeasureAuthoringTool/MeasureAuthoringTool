@@ -256,8 +256,6 @@ public class CheckUserLastLoginTask {
 		
 		Boolean isValidUser = true;
 		
-		//final Date terminationDate = user.getTerminationDate();
-		final Date signInDate = user.getSignInDate();
 		if(user.getStatus().getId().equals("2")){
 			isValidUser = false;
 		}

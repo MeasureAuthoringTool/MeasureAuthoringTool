@@ -95,8 +95,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private final String RETRIEVE_OID = "Retrieve OID";
 	
 	public static interface Observer {
+
 		void onModifyClicked(CQLQualityDataSetDTO result);
+
 		void onDeleteClicked(CQLQualityDataSetDTO result, int index);
+		
 	}
 	
 	private Observer observer;
@@ -124,7 +127,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 	};
-	
 	private Button goButton = new Button(RETRIEVE_OID);
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
 	private boolean isEditable;
@@ -240,7 +242,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixInput.setTitle("Suffix must be an integer between 1-4 characters");
 		suffixInput.setWidth("150px");
 		suffixInput.setHeight("30px");
-		
+
 		saveValueSet.setText(TEXT_APPLY);
 		saveValueSet.setTitle(TEXT_APPLY);
 		saveValueSet.setType(ButtonType.PRIMARY);
@@ -335,9 +337,11 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixPanel.add(suffixInput);
 		suffixPanel.add(new SpacerWidget());
 
+
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
+		
 		
 		Grid oidGrid = new Grid(1, 1);
 		oidGrid.setWidget(0, 0, searchWidgetFormGroup);
@@ -345,13 +349,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		nameGrid.setWidget(0, 0, namePanel);
 		nameGrid.setWidget(0, 1, suffixPanel);
 		nameGrid.getElement().getStyle().setProperty("marginLeft", "10px");
-		Grid buttonGrid = new Grid(2, 1);
-		buttonGrid.setWidget(1, 0, buttonFormGroup);
-		buttonGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 
 		searchPanelBody.add(oidGrid);
 		searchPanelBody.add(nameGrid);
-		searchPanelBody.add(buttonGrid);
 
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
@@ -410,8 +410,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
-										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
+										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -419,8 +419,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
-										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
+										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -496,7 +496,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				}
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
-
+			
+			
 			// Release Column
 			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
 					new SafeHtmlCell()) {
@@ -803,6 +804,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 	}
 
+	public String getVersionValue(ListBox inputListBox) {
+		if (inputListBox.getSelectedIndex() >= 0) {
+			return inputListBox.getValue(inputListBox.getSelectedIndex());
+		} else {
+			return "";
+		}
+	}
+
 	public String getExpansionProfileValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
 			return inputListBox.getValue(inputListBox.getSelectedIndex());
@@ -817,6 +826,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 
 	public void resetVSACValueSetWidget() {
+	
 		if(checkForEnable()){
 			oidInput.setTitle(ENTER_OID);
 			nameInput.setTitle(ENTER_NAME);	
@@ -947,6 +957,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 
 	public void setWidgetsReadOnly(boolean editable){
+		
 		getOIDInput().setEnabled(editable);
 		getUserDefinedInput().setEnabled(editable);
 		getCancelQDMButton().setEnabled(editable);
@@ -1129,6 +1140,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
+					if(!cqlQualityDataSetDTO.getVersion().isEmpty() && !cqlQualityDataSetDTO.getVersion().equals("1.0") && !cqlQualityDataSetDTO.getVersion().equals("1")) {
+						cqlValueSetTransferObject.setVersion(true);
+						matValueSet.setVersion(cqlQualityDataSetDTO.getVersion());
+					}
 					List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
 					MatConcept matConcept = new MatConcept();
 					matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());

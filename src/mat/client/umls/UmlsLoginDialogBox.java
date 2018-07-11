@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.CancelButton;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
@@ -49,15 +50,12 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 	private MessageAlert successMessageAlert = new SuccessMessageAlert();
 	
-	/** The confirm button. */
 	private  Button submitButton;
 	
-	/** The close button. */
 	private  Button closeButton;
 	
 	private Button continueButton;
 
-	/** The password entered. */
 	private  String passwordEntered;
 	
 	private  Modal panel;
@@ -66,10 +64,8 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 	FocusPanel focusPanel = new FocusPanel();
 	
-	/** The umls external link. */
 	Anchor umlsExternalLink ;
 	
-	/** The umls trouble logging. */
 	Anchor umlsTroubleLogging ;
 	
 	SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("umls");
@@ -78,13 +74,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
-	
-	/**
-	 * showDeletionConfimationDialog.
-	 *
-	 * @param message
-	 *            the message
-	 */
+
 	public void showUMLSLogInDialog() {
 		
 		CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
@@ -163,9 +153,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		submitButton.setType(ButtonType.SUCCESS);
 		submitButton.setSize(ButtonSize.DEFAULT);
 
-		closeButton = new Button("Cancel");
-		closeButton.setType(ButtonType.DANGER);
-		closeButton.setSize(ButtonSize.DEFAULT);
+		closeButton = new CancelButton("UMLSSignIn");
 		closeButton.setMarginLeft(10.00);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
 		
@@ -245,39 +233,19 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 	public void showModal() {
 		panel.show();
 	}
-	
-	/**
-	 * Gets the confirm button.
-	 *
-	 * @return the confirm button
-	 */
+
 	public Button getSubmitButton() {
 		return submitButton;
 	}
 
-	/**
-	 * Gets the password entered.
-	 *
-	 * @return the password entered
-	 */
 	public  String getPasswordEntered() {
 		return passwordEntered;
 	}
 
-	/**
-	 * Sets the password entered.
-	 *
-	 * @param passwordEntered the new password entered
-	 */
 	public  void setPasswordEntered(String passwordEntered) {
 		this.passwordEntered = passwordEntered;
 	}
 
-	/**
-	 * Gets the confirmbutton.
-	 *
-	 * @return the confirmbutton
-	 */
 	public  Button getsubmitbutton() {
 		return submitButton;
 	}

@@ -11,10 +11,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MatCheckBoxCell.
- */
+
 public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 
 	/**
@@ -215,16 +212,6 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean, Boolean> {
 			}
 		}
 		
-	}
-
-	/**
-	 * Check for enable.
-	 * 
-	 * @return true, if successful
-	 */
-	private boolean checkForEnable() {
-
-		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 }
 

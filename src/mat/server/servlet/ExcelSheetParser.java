@@ -35,6 +35,7 @@ public class ExcelSheetParser {
 	 * @throws ExcelParsingException
 	 *             the excel parsing exception
 	 */
+	@SuppressWarnings({ "resource", "deprecation", "unlikely-arg-type" })
 	public HashSet<Code> readExcel(InputStream fileInputStream,String fileName) throws ExcelParsingException{
 		Workbook workbook = null;
 		Sheet s = null;

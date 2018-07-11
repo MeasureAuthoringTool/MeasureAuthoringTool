@@ -19,6 +19,8 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
+import mat.client.buttons.CancelButton;
+
 
 public class AdvancedSearchModal {	
 	private final String HEIGHT_OF_BOXES = "30px";
@@ -266,10 +268,7 @@ public class AdvancedSearchModal {
 	private void buildButtonSection() {
 		buttonToolBar = new ButtonToolBar();
 		
-		cancel = new Button();
-		cancel.setText("Cancel");
-		cancel.setTitle("Cancel");
-		cancel.setType(ButtonType.DANGER);
+		cancel = new CancelButton("AdvancedSearchModal");
 		cancel.setDataDismiss(ButtonDismiss.MODAL);
 		
 		search = new Button();

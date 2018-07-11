@@ -121,20 +121,11 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return humanReadableHTML;
 	}
 	
-	/**
-	 * Generate html for population or subtree.
-	 *
-	 * @param measureId the measure id
-	 * @param subXML the sub xml
-	 * @param measureXML the measure xml
-	 * @return the string
-	 */
 	public static String generateHTMLForPopulationOrSubtree(String measureId,
 			String subXML, String measureXML) {
 		
@@ -142,7 +133,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		// replace the <subTree> tags in 'populationSubXML' with the appropriate
 		// subTree tags from 'simpleXML'.
 		try {
-			//System.out.println("Original subXML:" + subXML);
 			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(
 					subXML, measureXML, true);
 			
@@ -184,10 +174,8 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 			parseAndBuildHTML(populationOrSubtreeXMLProcessor,
 					populationOrSubtreeListElement);
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//System.out.println(htmlDocument);
 		String returnHTML = "";
 		if (htmlDocument != null) {
 			returnHTML = htmlDocument.toString();
@@ -195,12 +183,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		return returnHTML;
 	}
 	
-	/**
-	 * Check if population.
-	 *
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @return true, if successful
-	 */
 	private static boolean checkIfPopulation(
 			XmlProcessor populationOrSubtreeXMLProcessor) {
 		boolean returnFlag = false;
@@ -462,21 +444,13 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 						"//subTree/@displayName").getNodeValue();
 			}
 		} catch (DOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return name;
 	}
 	
-	/**
-	 * Parses the and build html.
-	 *
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @param populationOrSubtreeListElement the population or subtree list element
-	 */
 	private static void parseAndBuildHTML(
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			Element populationOrSubtreeListElement) {
@@ -487,19 +461,10 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 			parseAndBuildHTML(populationOrSubtreeXMLProcessor,
 					populationOrSubtreeListElement, rootNode, 0);
 		} catch (DOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	/**
-	 * Parses the and build html.
-	 *
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @param populationOrSubtreeListElement the population or subtree list element
-	 * @param clauseNode the clause node
-	 * @param currentGroupNumber the current group number
-	 */
 	private static void parseAndBuildHTML(
 			XmlProcessor populationOrSubtreeXMLProcessor,
 			Element populationOrSubtreeListElement, Node clauseNode,
@@ -548,30 +513,16 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 						populationOrSubtreeXMLProcessor, false);
 			}
 		} catch (DOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	/**
-	 * Parses the child.
-	 *
-	 * @param item the item
-	 * @param parentListElement the parent list element
-	 * @param parentNode the parent node
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @param satisfiesAnyAll the satisfies any all
-	 */
 	private static void parseChild(Node item, Element parentListElement,
 			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
-		//		System.out.println("parseChild - Node Name: " + nodeName);
-		//		System.out.println("parseChild - Parent List Element: " + parentListElement);
-		
 		
 		
 		if (LOGICAL_OP.equals(nodeName)) {
@@ -586,7 +537,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 					if (isNestedNot) {
-						// liElement.appendText(nodeDisplayName+":");
 					} else {
 						parentListElement = parentListElement
 								.appendElement(HTML_LI);
@@ -774,8 +724,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 					&& lhsID.contains(item.getAttributes()
 							.getNamedItem("id").getNodeValue())) {
 				if (item.hasChildNodes()) {
-					// TODO: Don't know how this will work with
-					// "negation rationale" attribute. Need to ask Nicole.
 					parentListElement.appendText(getAttributeText(
 							item.getFirstChild(),
 							populationOrSubtreeXMLProcessor) + " ");
@@ -785,9 +733,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 						|| SET_OP.equals(parentNode.getNodeName())) {
 					Element liElement = parentListElement
 							.appendElement(HTML_LI);
-					// liElement.appendText(getNodeText(parentNode,
-					// populationOrSubtreeXMLProcessor)+getNodeText(item,
-					// populationOrSubtreeXMLProcessor));
 					if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 						liElement.appendText(getNodeText(parentNode,
 								populationOrSubtreeXMLProcessor)
@@ -1050,20 +995,11 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 				retValue = true;
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return retValue;
 	}
 	
-	/**
-	 * Display initial pop.
-	 *
-	 * @param populationOrSubtreeListElement the population or subtree list element
-	 * @param populationOrSubtreeXMLProcessor the population or subtree xml processor
-	 * @param clause the clause
-	 * @param loop the loop
-	 */
 	private static void displayInitialPop(
 			Element populationOrSubtreeListElement,
 			XmlProcessor populationOrSubtreeXMLProcessor, Node clause, int loop) {
@@ -1094,7 +1030,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 				list.appendText("AND: Initial Population");
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -1254,25 +1189,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		}
 		
 		return retValue;
-	}
-	
-	/**
-	 * Check if qdm variable.
-	 *
-	 * @param node the node
-	 * @return true, if successful
-	 */
-	private static boolean checkIfQDMVariable(Node node) {
-		if (SUB_TREE.equals(node.getNodeName())) {
-			if (node.getAttributes().getNamedItem("qdmVariable") != null) {
-				String qdmVariable = node.getAttributes()
-						.getNamedItem("qdmVariable").getNodeValue();
-				if (qdmVariable.equalsIgnoreCase("true")) {
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 	
 	/**
@@ -1439,7 +1355,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 					attributeText = "";
 				}
 			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				attributeText = "";
 			}
@@ -1577,7 +1492,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 	
 	/**
 	 * This will look at the elementRef node and return an appropriate display
-	 * text for human readable HTML for that QDM. TODO: Write code to take
+	 * text for human readable HTML for that QDM. 
 	 * <attributes> into account.
 	 *
 	 * @return the org.jsoup.nodes. document
@@ -1653,8 +1568,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		populationCriteriaLI
 		.append("<a href=\"#d1e405\">Population Criteria</a>");
 		
-		// TODO:code to decide if we need to add 'Measure observations'
-		
 		Element dataVariables = tocULElement.appendElement(HTML_LI);
 		dataVariables
 		.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
@@ -1662,8 +1575,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI
 		.append("<a href=\"#d1e647\">Data Criteria (QDM Data Elements)</a>");
-		
-		// TODO:code to decide if we need to add 'Reporting Stratification'
 		
 		Element supplementalCriteriaLI = tocULElement.appendElement(HTML_LI);
 		supplementalCriteriaLI
@@ -1929,7 +1840,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 						qdm);
 			}
 			
-			List<String> qdmNameList = new ArrayList(qdmNodeMap.keySet());
+			List<String> qdmNameList = new ArrayList<String>(qdmNodeMap.keySet());
 			Collections.sort(qdmNameList, new Comparator<String>() {
 				@Override
 				public int compare(String o1, String o2) {
@@ -2242,7 +2153,6 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 				}
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return stringAssoc;
@@ -2385,12 +2295,7 @@ public class HQMFHumanReadableGenerator implements MatConstants{
 				Node parentNode = clauseNode.getParentNode();
 				parentNode.replaceChild(importedClauseNode, clauseNode);
 			}
-			// removeNode("/measure/subTreeLookUp",simpleXMLProcessor);
-			/*System.out.println("Expanded simple xml:"
-					+ simpleXMLProcessor.transform(simpleXMLProcessor
-							.getOriginalDoc()));*/
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return simpleXMLProcessor;

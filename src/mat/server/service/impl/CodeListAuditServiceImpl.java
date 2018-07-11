@@ -2,23 +2,18 @@ package mat.server.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.DTO.SearchHistoryDTO;
 import mat.dao.CodeListAuditLogDAO;
 import mat.dao.ListObjectDAO;
 import mat.model.ListObject;
 import mat.server.service.CodeListAuditService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * Service implementation for Code List Audit Service.
  */
 public class CodeListAuditServiceImpl implements CodeListAuditService{
-	
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(CodeListAuditServiceImpl.class);
 	
 	/** The list object dao. */
 	@Autowired

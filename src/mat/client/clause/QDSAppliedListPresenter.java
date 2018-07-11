@@ -20,11 +20,9 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 
 @Deprecated
 /*
@@ -32,114 +30,39 @@ import mat.shared.ConstantMessages;
  */
 public class QDSAppliedListPresenter implements MatPresenter {
 	
-	/**
-	 * Search Display inner interface which is implemented by QDSAppliedListView
-	 * class.
-	 */
 	public static interface SearchDisplay {
 		
-		/**
-		 * As widget.
-		 * 
-		 * @return {@link Widget}
-		 */
 		Widget asWidget();
 		
-		/** Builds the cell Table.
-		 * 
-		 * @param appliedListModel - {@link QDSAppliedListModel} */
 		void buildCellTable(QDSAppliedListModel appliedListModel);
 		
-		/**
-		 * Gets the all applied qdm list.
-		 * 
-		 * @return {@link List} of {@link QualityDataSetDTO}
-		 */
 		List<QualityDataSetDTO> getAllAppliedQDMList();
 		
-		/**
-		 * Gets the apply to measure success msg.
-		 * 
-		 * @return {@link SuccessMessageDisplayInterface}
-		 */
 		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return {@link ErrorMessageDisplayInterface}
-		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
-		/**
-		 * Gets the modify button.
-		 * 
-		 * @return {@link Button}
-		 */
 		Button getModifyButton();
 		
-		/**
-		 * Gets the removes the button.
-		 * 
-		 * @return {@link Button}
-		 */
 		Button getRemoveButton();
 		
-		/**
-		 * Gets the selected element to remove.
-		 * 
-		 * @return {@link QualityDataSetDTO}
-		 */
 		QualityDataSetDTO getSelectedElementToRemove();
 		
-		/**
-		 * Gets the update vsac button.
-		 * 
-		 * @return {@link Button}
-		 */
 		Button getUpdateVsacButton();
 		
-		/**
-		 * Sets the applied qdm list.
-		 * 
-		 * @param appliedQDMList
-		 *            the new applied qdm list {@link ArrayList} of
-		 *            {@link QualityDataSetDTO}
-		 */
 		void setAppliedQDMList(List<QualityDataSetDTO> appliedQDMList);
 		
 		InProgressMessageDisplay getInProgressMessageDisplay();
 	}
-	/**
-	 * List of all Applied QDM's.
-	 */
+
 	private List<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
-	/**
-	 * SimplePanel Instance.
-	 */
+
 	private SimplePanel panel = new SimplePanel();
-	
-	/**
-	 * SearchDisplay instance.
-	 */
+
 	private SearchDisplay searchDisplay;
-	/**
-	 * Measure Service Instance.
-	 */
+	
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-	
-	
-	/**
-	 * VSACAPIService Instance.
-	 */
-	private VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
-	
-	/**
-	 * Instantiates a new qDS applied list presenter.
-	 * 
-	 * @param sDisplayArg
-	 *            the s display arg {@link SearchDisplay}
-	 */
+
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
 		searchDisplay = sDisplayArg;
 		getAppliedQDMList(true);
@@ -220,21 +143,14 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				resetQDSFields();
 				searchDisplay.getInProgressMessageDisplay().setMessage("Loading Please Wait...");
-			//	updateVSACValueSets();
 			}
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
 	@Override
 	public void beforeClosingDisplay() {
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
 	@Override
 	public void beforeDisplay() {
 		resetQDSFields();
@@ -310,17 +226,12 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
+	
 	@Override
 	public Widget getWidget() {
 		return panel;
 	}
 	
-	/**
-	 * Method to load Applied QDM's List in to view.
-	 */
 	final void loadAppliedListData() {
 		panel.clear();
 		getAppliedQDMList(true);
@@ -363,28 +274,6 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				
 			}
 		});
-	}
-	
-	/**
-	 * Method to show/hide Loading please wait message.
-	 * @param busy
-	 *            - {@link Boolean}
-	 */
-	private void showSearchingBusy(final boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		searchDisplay.getUpdateVsacButton().setEnabled(!busy);
-	}
-	
-	/**
-	 * Service Call to updateVsacValueSet.
-	 */
-	private void updateVSACValueSets() {
-		//showSearchingBusy(true);
-		
 	}
 	
 }

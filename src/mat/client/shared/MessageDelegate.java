@@ -2584,7 +2584,7 @@ public class MessageDelegate {
 	 *
 	 * @return the welcome message
 	 */
-	public static String getWelcomeMessage(String userFristName) {
+	public String getWelcomeMessage(String userFristName) {
 		return "Welcome "+ userFristName+"! " +WELCOME_MESSAGE;
 	}
 	

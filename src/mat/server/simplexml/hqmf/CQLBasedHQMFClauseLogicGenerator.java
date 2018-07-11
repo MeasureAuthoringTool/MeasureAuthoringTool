@@ -21,10 +21,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class HQMFClauseLogicGenerator.
- */
 public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	/** The Constant GROUPER_CRITERIA. */
 	private static final String GROUPER_CRITERIA = "grouperCriteria";
@@ -161,7 +157,7 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 		NodeList subTreeNodeList = measureExport.getSimpleXMLProcessor().findNodeList(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
 		for(int i=0;i<subTreeNodeList.getLength();i++){
 			Node subTreeNode = subTreeNodeList.item(i);
-			String clauseName = subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+			subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			String uuid = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
 			if((subTreeNodeInPOPMap.containsKey(uuid)&&subTreeNodeInMOMap.containsKey(uuid))
 					|| subTreeNodeInPOPMap.containsKey(uuid) || subTreeNodeInRAMap.containsKey(uuid)){
@@ -282,7 +278,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 				RAV = true;
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return RAV;
@@ -2853,7 +2848,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 			}
 			
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -2931,7 +2925,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 				
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return usedSubTreeRefIds;
@@ -2996,7 +2989,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 			}
 			
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

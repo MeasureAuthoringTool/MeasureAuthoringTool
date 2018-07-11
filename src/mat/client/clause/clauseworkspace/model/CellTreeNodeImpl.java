@@ -259,6 +259,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	 * @see
 	 * mat.client.clause.clauseworkspace.model.CellTreeNode#getQdmAttribute()
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public String getQdmAttribute() {
 		String attrib = "";
@@ -308,12 +309,8 @@ public class CellTreeNodeImpl implements CellTreeNode {
 		}
 		return attrib;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CellTreeNode#getQdmAttributeCount
-	 * ()
-	 */
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public int getQdmAttributeCount() {
 		if (getNodeType() == ELEMENT_REF_NODE) {
@@ -324,13 +321,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 		}
 		return 0;
 	}
-	// TODO : this is called every time when we make a change to the Celltree,
-	// instead we can have a title variable in the CellTreeNodeImpl and set it
-	// for each functionality.
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CellTreeNode#getTitle()
-	 */
+
 	@Override
 	public String getTitle() {
 		String title = getName();
@@ -339,15 +330,13 @@ public class CellTreeNodeImpl implements CellTreeNode {
 			nodeLabel = nodeLabel.substring(0, PopulationWorkSpaceConstants.LABEL_MAX_LENGTH - 1)
 					.concat("...");
 		}
-		if (getNodeType() == CellTreeNode.ELEMENT_REF_NODE) { // checking if QDM
-			// node
+		if (getNodeType() == CellTreeNode.ELEMENT_REF_NODE) {
 			String oid = "";
 			if (PopulationWorkSpaceConstants.getElementLookUpNode().get(
 					getName() + "~" + getUUID()) != null) {
 				oid = PopulationWorkSpaceConstants.getElementLookUpNode()
 						.get(getName() + "~" + getUUID()).getAttributes()
-						.getNamedItem("oid").getNodeValue(); // getting the OID
-				// for the QDM
+						.getNamedItem("oid").getNodeValue(); // getting the OID for the QDM
 			}
 			int attrCount = getQdmAttributeCount();
 			if (attrCount > 1) { // if count greater than 1 just append the

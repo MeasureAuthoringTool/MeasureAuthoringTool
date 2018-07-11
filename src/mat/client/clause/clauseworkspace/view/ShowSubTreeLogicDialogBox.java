@@ -23,77 +23,31 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
-//TODO by Ravi
-/**
- * The Class ShowSubTreeLogicDialogBox.
- */
 public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 
-	/** The Constant dialogBox. */
 	final static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(
 			StringUtils.EMPTY);
 
-	/** The clause tree display. */
 	private static XmlTreeDisplay clauseTreeDisplay;
 
-	/** The Constant NODESIZE. */
 	private static final int NODESIZE = 500;
 
-	/**
-	 * The Interface TreeResources.
-	 */
 	interface TreeResources extends CellTree.Resources {
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeClosedItem
-		 * ()
-		 */
 		@Override
 		@Source("mat/client/images/plus.png")
 		ImageResource cellTreeClosedItem();
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeOpenItem
-		 * ()
-		 */
 		@Override
 		@Source("mat/client/images/minus.png")
 		ImageResource cellTreeOpenItem();
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeStyle
-		 * ()
-		 */
 		@Override
 		@Source("mat/client/images/CwCellTree.css")
 		CellTree.Style cellTreeStyle();
 
-		/*
-		 * @Source("mat/client/images/cms_gov_footer.png")
-		 * 
-		 * @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
-		 * ImageResource cellTreeSelectedBackground();
-		 */
 	}
 
-	/**
-	 * Show sub tree logic dialog box.
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param isAdd
-	 *            the is add
-	 */
 	public static void showSubTreeLogicDialogBox(
 			final XmlTreeDisplay xmlTreeDisplay, boolean isAdd) {
 		final ScrollPanel panel = new ScrollPanel();
@@ -102,7 +56,6 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.getElement().setAttribute("id", "ClauseLogicDialogBox");
 		DOM.setStyleAttribute(dialogBox.getElement(), "width", "800px");
-		//DOM.setStyleAttribute(dialogBox.getElement(), "height", "400px");
 		dialogContents.clear();
 		dialogBox.setWidget(panel);
 		dialogBox.addCloseHandler(new CloseHandler<PopupPanel>() {
@@ -124,13 +77,6 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 
 	}
 
-	/**
-	 * Load clause logic.
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @return the simple panel
-	 */
 	private final static VerticalPanel loadClauseLogic(
 			XmlTreeDisplay xmlTreeDisplay) {
 
@@ -169,16 +115,6 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 		return simplePanel;
 	}
 
-	/**
-	 * Change clause.
-	 * 
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 * @param selectedClauseName
-	 *            the selected clause name
-	 * @param selectedClauseUUID
-	 *            the selected clause uuid
-	 */
 	private static void showClause(CellTreeNode cellTreeNode,
 			String selectedClauseName, String selectedClauseUUID) {
 
@@ -209,13 +145,6 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 		subTreeCellTreeNode = (CellTreeNode) treeNode.getChildValue(0);
 	}
 
-	/**
-	 * Check if clause and append.
-	 * 
-	 * @param treeNode
-	 *            the tree node
-	 * @return the cell tree node
-	 */
 	private static TreeNode checkIfClauseAndAppend(TreeNode treeNode) {
 
 		if (treeNode != null) {

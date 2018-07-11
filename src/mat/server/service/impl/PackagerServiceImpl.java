@@ -49,9 +49,6 @@ import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 
-/**
- * The Class PackagerServiceImpl.
- */
 public class PackagerServiceImpl implements PackagerService {
 
 	/** The Constant logger. */
@@ -373,20 +370,7 @@ public class PackagerServiceImpl implements PackagerService {
 		return hasAllStratusHasChild;
 	}
 
-	/*
-	 * private Node checkIfSubTreeLookUpExist(XmlProcessor processor){ Node node
-	 * = null; try { node = processor.findNode(processor.getOriginalDoc(),
-	 * XPATH_MEASURE_SUBTREE_LOOKUP); } catch (XPathExpressionException e) { //
-	 * TODO Auto-generated catch block e.printStackTrace(); } return node; }
-	 */
-	/**
-	 * Method to create XML from QualityDataModelWrapper object for
-	 * supplementalDataElement .
-	 * 
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @return the byte array output stream
-	 */
+	
 	private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
 		Mapping mapping = new Mapping();

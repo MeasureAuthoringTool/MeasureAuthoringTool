@@ -12,7 +12,7 @@ import mat.model.MatValueSet;
 
 /**
  * ValueSetXLSGenerator java class.
- * **/
+ **/
 public class ValueSetXLSGenerator extends XLSGenerator {
 
 	/**

@@ -23,6 +23,7 @@ public class PhoneNumberWidget extends Composite {
 		
 		@Override
 		public void onKeyUp(KeyUpEvent event) {
+			@SuppressWarnings("unchecked")
 			HasValue<String> source = (HasValue<String>) event.getSource();
 			String value = source.getValue();
 			String newValue = "";

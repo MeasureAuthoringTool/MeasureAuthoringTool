@@ -126,6 +126,7 @@ public abstract class XLSGenerator {
 	/** Adds the disclaimer.
 	 * 
 	 * @param wkbk - HSSFWorkbook. * */
+	@SuppressWarnings("deprecation")
 	protected final void addDisclaimer(final HSSFWorkbook wkbk) {
 		String disclaimerText = "The codes that you are exporting directly reflect the codes you entered into the "
 				+ "Measure Authoring Tool.  These codes may be owned by a third party and "
@@ -274,6 +275,7 @@ public abstract class XLSGenerator {
 	 * @param rownum - Integer.
 	 * @param style - HSSFCellStyle.
 	 * @return HSSFRow. * */
+	@SuppressWarnings("deprecation")
 	protected final HSSFRow createXLSRow(final HSSFSheet wkst, final String[] values, final int rownum,
 			final HSSFCellStyle style) {
 		HSSFRow row = wkst.createRow(rownum);
@@ -289,10 +291,6 @@ public abstract class XLSGenerator {
 				values[revisionDate]);
 		row.createCell(standardconcept, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[standardconcept]);
-		/*
-		 * row.createCell(standardcategory, HSSFCell.CELL_TYPE_STRING)
-		 * .setCellValue(values[standardcategory]);
-		 */
 		row.createCell(standardtaxonomy, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[standardtaxonomy]);
 		row.createCell(standardtaxonomyversion, HSSFCell.CELL_TYPE_STRING)

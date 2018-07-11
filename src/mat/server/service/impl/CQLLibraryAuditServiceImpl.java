@@ -3,8 +3,6 @@ package mat.server.service.impl;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.DTO.SearchHistoryDTO;
@@ -17,9 +15,6 @@ import mat.server.service.CQLLibraryAuditService;
  * Service implementation for Measure Audit Service.
  */
 public class CQLLibraryAuditServiceImpl implements CQLLibraryAuditService{
-	
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(CQLLibraryAuditServiceImpl.class);
 	
 	/** The measure dao. */
 	@Autowired

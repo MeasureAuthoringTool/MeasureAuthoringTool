@@ -44,8 +44,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.ImageResources;
+import mat.client.buttons.CustomButton;
 import mat.client.codelist.HasListBox;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
@@ -62,8 +62,6 @@ import mat.client.util.CellTableUtility;
 import mat.client.util.MatTextBox;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
-
 
 
 @Deprecated

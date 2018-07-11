@@ -7,52 +7,29 @@ import java.util.Map;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.shared.UUIDUtilClient;
 
-/**
- * CQLCellTreeNodeImpl.java.
- */
+@SuppressWarnings("unchecked")
 public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 	
-	/** The childs. {@link List} of child {@link CQLCellTreeNode}. */
 	private List<CQLCellTreeNode> childs;
 	
-	/** The extra information map. {@link HashMap} of Node's extra information. */
 	private Map<String, Object> extraInformationMap = new HashMap<String, Object>();
-	/**
-	 * Node open/close status.
-	 */
+
 	private boolean isOpen;
-	/**
-	 * Valid node.
-	 */
+
 	private boolean isValid = true;
-	/**
-	 * Node Label.
-	 */
+
 	private String label;
-	/**
-	 * Node Name.
-	 */
+	
 	private String name;
-	/**
-	 * Node type.
-	 */
+
 	private short nodeType;
-	/**
-	 * Node Parent.
-	 */
+	
 	private CQLCellTreeNode parent;
-	/**
-	 * Node UUID information.
-	 */
+	
 	private String uuid;
 	
 	private String nodeText;
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#appendChild(mat.
-	 * client.clause.clauseworkspace.model.CQLCellTreeNode)
-	 */
+
 	@Override
 	public final CQLCellTreeNode appendChild(CQLCellTreeNode child) {
 		child.setParent(this);
@@ -66,10 +43,7 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		isOpen = true;
 		return child;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#cloneNode()
-	 */
+	
 	@Override
 	public final CQLCellTreeNode cloneNode() {
 		CQLCellTreeNode copyModel = createCopyOfTreeModel(this);
@@ -78,12 +52,7 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		}
 		return copyModel;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#createChild(java
-	 * .lang.String, java.lang.String, short)
-	 */
+	
 	@Override
 	public final CQLCellTreeNode createChild(String nodeName, String nodeLabel, short nodesType) {
 		CQLCellTreeNode CQLCellTreeNode = new CQLCellTreeNodeImpl();
@@ -98,14 +67,6 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		return appendChild(CQLCellTreeNode);
 	}
 	
-	/**
-	 * Creates the copy childs.
-	 * 
-	 * @param childNodes
-	 *            - {@link List} of {@link CQLCellTreeNode}.
-	 * @param parentNode
-	 *            - {@link CQLCellTreeNode}.
-	 */
 	private void createCopyChilds(List<CQLCellTreeNode> childNodes, CQLCellTreeNode parentNode) {
 		List<CQLCellTreeNode> newChilds = new ArrayList<CQLCellTreeNode>();
 		for (CQLCellTreeNode treeNode : childNodes) {
@@ -119,13 +80,6 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		}
 	}
 	
-	/**
-	 * Creates the copy of tree model.
-	 * 
-	 * @param model
-	 *            - {@link CQLCellTreeNode}.
-	 * @return {@link CQLCellTreeNode}.
-	 */
 	private CQLCellTreeNode createCopyOfTreeModel(CQLCellTreeNode model) {
 		CQLCellTreeNode copyModel = new CQLCellTreeNodeImpl();
 		copyModel.setLabel(model.getLabel());
@@ -134,14 +88,8 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		copyModel.setOpen(model.isOpen());
 		Map<String, Object> extraInfos = new HashMap<String, Object>();
 		if (model.getNodeType() == ELEMENT_REF_NODE) {
-			// MAT-2282 : Bug fix for issue
-			// "Copy/Paste in Clause Workspace Dropping Attributes".
-			// List<CQLCellTreeNode> attributes = (List<CQLCellTreeNode>)
-			// extraInformationMap.get("attributes");
-			@SuppressWarnings("unchecked")
 			List<CQLCellTreeNode> attributes = (List<CQLCellTreeNode>) model
 			.getExtraInformation("attributes");
-			// MAT-2282 : Bug fix ends.
 			if (attributes != null) {
 				List<CQLCellTreeNode> extraAttrList = new ArrayList<CQLCellTreeNode>();
 				for (CQLCellTreeNode CQLCellTreeNode : attributes) {
@@ -160,10 +108,8 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 			}
 		} else if ((model.getNodeType() == LOGICAL_OP_NODE)
 				|| (model.getNodeType() == SUBTREE_REF_NODE)) {
-			@SuppressWarnings("unchecked")
 			List<CQLCellTreeNode> attributes = (List<CQLCellTreeNode>) model
 			.getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-			// MAT-2282 : Bug fix ends.
 			if (attributes != null) {
 				List<CQLCellTreeNode> extraAttrList = new ArrayList<CQLCellTreeNode>();
 				for (CQLCellTreeNode CQLCellTreeNode : attributes) {
@@ -192,73 +138,41 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		}
 		return copyModel;
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getChilds()
-	 */
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getChilds()
-	 */
+
 	@Override
 	public List<CQLCellTreeNode> getChilds() {
 		return childs;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getExtraInformation
-	 * (java.lang.String)
-	 */
+
 	@Override
 	public Object getExtraInformation(String key) {
 		return extraInformationMap.get(key);
 	}
 	
-	/**
-	 * Gets the extra information map.
-	 * 
-	 * @return the extraInformationMap
-	 */
 	public Map<String, Object> getExtraInformationMap() {
 		return extraInformationMap;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getLabel()
-	 */
+	
 	@Override
 	public String getLabel() {
 		return label;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getName()
-	 */
+	
 	@Override
 	public String getName() {
 		return name;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getNodeType()
-	 */
+	
 	@Override
 	public short getNodeType() {
 		return nodeType;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getParent()
-	 */
+	
 	@Override
 	public CQLCellTreeNode getParent() {
 		return parent;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getQdmAttribute()
-	 */
+	
 	@Override
 	public String getQdmAttribute() {
 		String attrib = "";
@@ -324,13 +238,7 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		}
 		return 0;
 	}
-	// TODO : this is called every time when we make a change to the Celltree,
-	// instead we can have a title variable in the CQLCellTreeNodeImpl and set it
-	// for each functionality.
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getTitle()
-	 */
+
 	@Override
 	public String getTitle() {
 		String title = getName();
@@ -374,44 +282,27 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		setLabel(nodeLabel);
 		return title;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getUUID()
-	 */
+
 	@Override
 	public String getUUID() {
 		return uuid;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#getValidNode()
-	 */
+
 	@Override
 	public boolean getValidNode() {
 		return isValid;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#hasChildren()
-	 */
+
 	@Override
 	public boolean hasChildren() {
 		return (childs != null) && (childs.size() > 0);
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see mat.client.clause.clauseworkspace.model.CQLCellTreeNode#isOpen()
-	 */
+
 	@Override
 	public boolean isOpen() {
 		return isOpen;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#removeChild(mat.
-	 * client.clause.clauseworkspace.model.CQLCellTreeNode)
-	 */
+
 	@Override
 	public CQLCellTreeNode removeChild(CQLCellTreeNode child) {
 		if ((this.getChilds() != null) && (this.getChilds().size() > 0)) {
@@ -419,114 +310,60 @@ public class CQLCellTreeNodeImpl implements CQLCellTreeNode {
 		}
 		return child;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setChilds(java.util
-	 * .List)
-	 */
+
 	@Override
 	public void setChilds(List<CQLCellTreeNode> childNodes) {
 		childs = childNodes;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setExtraInformation
-	 * (java.lang.String, java.lang.Object)
-	 */
+
 	@Override
 	public void setExtraInformation(String key, Object value) {
 		extraInformationMap.put(key, value);
 	}
-	
-	/**
-	 * Sets the extra information map.
-	 * 
-	 * @param extraInformationMap
-	 *            the extraInformationMap to set
-	 */
+
 	public void setExtraInformationMap(Map<String, Object> extraInformationMap) {
 		this.extraInformationMap = extraInformationMap;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setLabel(java.lang
-	 * .String)
-	 */
-	@Override
+	
 	public void setLabel(String nodeLabel) {
 		label = nodeLabel;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setName(java.lang
-	 * .String)
-	 */
+
 	@Override
 	public void setName(String nodeName) {
 		name = nodeName;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setNodeType(short)
-	 */
+
 	@Override
 	public void setNodeType(short type) {
 		nodeType = type;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setOpen(boolean)
-	 */
+	
 	@Override
 	public void setOpen(boolean isNodeOpen) {
 		isOpen = isNodeOpen;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setParent(mat.client
-	 * .clause.clauseworkspace.model.CQLCellTreeNode)
-	 */
+
 	@Override
 	public void setParent(CQLCellTreeNode parentNode) {
 		parent = parentNode;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setUUID(java.lang
-	 * .String)
-	 */
+	
 	@Override
 	public void setUUID(String nodeUUID) {
 		uuid = nodeUUID;
 	}
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * mat.client.clause.clauseworkspace.model.CQLCellTreeNode#setValidNode(boolean
-	 * )
-	 */
+	
 	@Override
 	public void setValidNode(boolean isNodeValid) {
 		isValid = isNodeValid;
 	}
-	/**
-	 * @return the nodeText
-	 */
+	
 	@Override
 	public String getNodeText() {
 		return nodeText;
 	}
-	/**
-	 * @param nodeText the nodeText to set
-	 */
+
 	@Override
 	public void setNodeText(String nodeText) {
 		this.nodeText = nodeText;

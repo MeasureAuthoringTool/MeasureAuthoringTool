@@ -28,7 +28,7 @@ public class CategoryDAO extends GenericDAO<Category, String> implements mat.dao
 		logger.info("Getting all the categories from the category table");
 		Session session = getSessionFactory().getCurrentSession();
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "deprecation" })
 		List<Category> categoryList = session.createCriteria(Category.class).list();
 		for(Category category: categoryList){
 			if(!category.getDescription().equalsIgnoreCase("Measure Timing")){

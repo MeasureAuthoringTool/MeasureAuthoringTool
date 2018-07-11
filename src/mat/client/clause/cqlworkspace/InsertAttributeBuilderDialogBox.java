@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.buttons.CancelButton;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.shared.CustomDateTimeTextBox;
@@ -222,10 +223,7 @@ public class InsertAttributeBuilderDialogBox {
 		addButton.setType(ButtonType.PRIMARY);
 		addButton.setSize(ButtonSize.SMALL);
 		addButton.setId("addButton_Button");
-		Button closeButton = new Button();
-		closeButton.setText("Cancel");
-		closeButton.setTitle("Cancel");
-		closeButton.setType(ButtonType.DANGER);
+		Button closeButton = new CancelButton("InsertAttributeBox");
 		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
 		closeButton.setId("Cancel_button");

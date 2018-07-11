@@ -86,7 +86,6 @@ import com.google.gwt.user.client.ui.Widget;
  * revision by aschmidt
  *
  */
-@SuppressWarnings("deprecation")
 public class MATTabBar extends Composite implements SourcesTabEvents,
     HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>,
     ClickListener, KeyboardListener {

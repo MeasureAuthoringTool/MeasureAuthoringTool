@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.CancelButton;
 import mat.client.shared.RequiredIndicator;
 
 /**
@@ -41,7 +42,7 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 	private FormGroup messageFormGrp = new FormGroup();
 	private HelpBlock helpBlock = new HelpBlock();
 	private Button submitButton = new Button("Submit");
-	private Button resetButton = new Button("Cancel");
+	private Button resetButton = new CancelButton("ForgottenLoginId");
 	/**
 	 * Instantiates a new forgotten login id view.
 	 */
@@ -95,9 +96,7 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		submitButton.setType(ButtonType.PRIMARY);
 		submitButton.setTitle("Submit");
-		
-		resetButton.setType(ButtonType.DANGER);
-		resetButton.setTitle("Cancel");
+
 		buttonToolBar.add(submitButton);
 		buttonToolBar.add(resetButton);
 		

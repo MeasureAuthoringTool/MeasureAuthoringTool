@@ -2,7 +2,6 @@ package mat.client;
 
 import java.util.List;
 
-import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Progress;
 import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
@@ -44,6 +43,7 @@ public abstract class MainLayout {
 	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 	
 	private static IndicatorButton showUMLSState;
+
 	
 	private static IndicatorButton showBonnieState;
 	
@@ -245,6 +245,7 @@ public abstract class MainLayout {
 		vp.add(logOutPanel);
 		vp.add(showUMLSState.getPanel());
 		vp.add(showBonnieState.getPanel());
+
 		vp.addStyleName("logoutAndUMLSPanel");
 		
 		horizontalBanner.add(vp);
@@ -311,8 +312,6 @@ public abstract class MainLayout {
 		initEntryPoint();
 	}
 
-	
-	@SuppressWarnings("deprecation")
 	protected void setId(final Widget widget, final String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}

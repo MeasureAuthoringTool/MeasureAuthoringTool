@@ -1,8 +1,7 @@
 package mat.client.clause;
 
-import mat.client.shared.DialogBoxWithCloseButton;
-import mat.model.QualityDataSetDTO;
 import org.apache.commons.lang3.StringUtils;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -11,6 +10,9 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.shared.DialogBoxWithCloseButton;
+import mat.model.QualityDataSetDTO;
 
 @Deprecated
 /*
@@ -30,6 +32,7 @@ public class ModifyQDMDialogBox {
 	 * @param modifyValueSetDTO - DTO to set caption heading.
 	 * @param qdmAvailableValueSetPresenter - QDMAvailableValueSetPresenter.
 	 */
+
 	public static void showModifyDialogBox(final Widget widget, final QualityDataSetDTO modifyValueSetDTO,
 			final QDMAvailableValueSetPresenter qdmAvailableValueSetPresenter) {
 		String text = "Modify Applied QDM ( ";

@@ -1,7 +1,5 @@
 package mat.client.shared;
 
-import mat.client.ImageResources;
-
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.user.client.Element;
@@ -12,6 +10,8 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.ImageResources;
 
 /**
  * Extended DialogBox widget with close button inside the pop-up header.

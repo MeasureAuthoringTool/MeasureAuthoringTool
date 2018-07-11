@@ -65,10 +65,10 @@ public class BonnieModal {
 		panel.add(modalFooter);
 		panel.getElement().setAttribute("role", "dialog");
 	}
-	
-	public void show() {
-		panel.show();
-		panel.getElement().focus();		
+
+	public void show(){
+		panel.show();	
+		messageLabel.getElement().focus();
 	}
 		
 }

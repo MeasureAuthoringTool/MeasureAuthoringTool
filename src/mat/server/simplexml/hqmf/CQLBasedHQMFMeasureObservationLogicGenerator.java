@@ -10,10 +10,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.model.clause.MeasureExport;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
@@ -21,6 +17,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import mat.model.clause.MeasureExport;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 /**
  * The Class HQMFPopulationLogicGenerator.
  */
@@ -31,16 +31,10 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
 	/** The measure grouping map. */
 	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<Integer, NodeList>();
-	/** The elementRefList. */
-	//private List<Node> elementRefList;
 	/** The MeasureExport object. */
 	private MeasureExport me;
 	/** The Measure Scoring type. */
 	private String scoringType;
-	/** The denominator. */
-	private Node denominator;
-	/** The numerator. */
-	private Node numerator;
 	/** HQMFClauseLogicGenerator. */
 	private HQMFClauseLogicGenerator clauseLogicGenerator = new HQMFClauseLogicGenerator();
 	private boolean clauseLogicHasElementRef = false;
@@ -141,11 +135,9 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 						}
 						break;
 					case "denominator" :
-						denominator = groupingChildListItem;
-						break;
+					break;
 					case "numerator" :
-						numerator = groupingChildListItem;
-						break;
+					break;
 					default:
 						//do nothing.
 						break;

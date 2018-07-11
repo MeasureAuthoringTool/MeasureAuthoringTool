@@ -980,16 +980,12 @@ public class AceEditor extends Composite implements RequiresResize, HasText, Tak
 			var editor = this.@edu.ycp.cs.dh.acegwt.client.ace.AceEditor::editor;
 			return editor.getReadOnly();
 		}-*/;
-	//Method Added by MAT Team End :
-	
-	
 	
 	/**
-	 * Adds the auto completions.
 	 * This method is used for CQL definitions, functions and parameters to be
 	 * available for AceEditor dynamically on Keyboard Shortcuts.
 	 */
-	public static native void addAutoCompletions()/*-{
+	public native void addAutoCompletions()/*-{
 	  $wnd.definitioList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createDefinitionsJsArrayString();
 	  
 	  $wnd.paramList = @edu.ycp.cs.dh.acegwt.client.ace.AceEditor::createParamsJsArrayString();

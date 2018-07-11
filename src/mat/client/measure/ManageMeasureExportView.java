@@ -1,5 +1,7 @@
 package mat.client.measure;
 
+import mat.client.buttons.CancelButton;
+import mat.client.buttons.SaveButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureNameLabel;
@@ -40,9 +42,9 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	private RadioButton cqlLibraryRadio = new RadioButton("format", "CQL Library");
 	
-	private Button saveButton = new Button("Save");
+	private Button saveButton = new SaveButton("manageMeasureexportview");
 	
-	private Button cancelButton = new Button("Cancel");
+	private Button cancelButton = new CancelButton("manageMeasureexportview");
 	
 	private Button openButton = new Button("Open");
 	
@@ -62,12 +64,8 @@ public class ManageMeasureExportView implements ExportDisplay {
 		content.add(new SpacerWidget());
 
 		ButtonToolBar buttonPanel = new ButtonToolBar();
-		saveButton.setType(ButtonType.PRIMARY);
-		cancelButton.setType(ButtonType.DANGER);
 		
 		openButton.setType(ButtonType.PRIMARY);
-		saveButton.setTitle("Save");
-		cancelButton.setTitle("Cancel");
 		openButton.setTitle("Open");
 		buttonPanel.add(saveButton);
 		buttonPanel.add(openButton);

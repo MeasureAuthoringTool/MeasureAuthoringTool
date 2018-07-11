@@ -11,21 +11,22 @@ import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
+import mat.client.buttons.NoButton;
+import mat.client.buttons.YesButton;
 import mat.client.cql.ConfirmationObserver;
 import mat.client.shared.ErrorMessageAlert;
 
 
 
 public class ConfirmationDialogBox {
-	private  final Button yesButton = new Button("Yes"); 
-	private final Button noButton = new Button("No");
+	private  final Button yesButton = new YesButton("ConfirmDialogBox"); 
+	private final Button noButton = new NoButton("ConfirmDialogBox");
 	private ConfirmationObserver observer; 
 	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 	Modal panel = new Modal();
@@ -38,10 +39,9 @@ public class ConfirmationDialogBox {
 	public void setMessageAlert(ErrorMessageAlert messageAlert) {
 		this.messageAlert = messageAlert;
 	}
-
+	
 	public ConfirmationDialogBox() {
-		yesButton.getElement().setId("yes_Button");
-		noButton.getElement().setId("no_Button");
+		
 	}
 	
 	public ConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
@@ -101,9 +101,7 @@ public class ConfirmationDialogBox {
 		
 		ModalFooter modalFooter = new ModalFooter(); 
 		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
-		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.SMALL);
-		noButton.setType(ButtonType.DANGER);
 		noButton.setSize(ButtonSize.SMALL);
 		yesButton.setDataDismiss(ButtonDismiss.MODAL);
 		noButton.setDataDismiss(ButtonDismiss.MODAL);

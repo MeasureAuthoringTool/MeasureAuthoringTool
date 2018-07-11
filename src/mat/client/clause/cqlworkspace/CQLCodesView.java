@@ -48,6 +48,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
+import mat.client.buttons.CancelButton;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
@@ -113,7 +114,7 @@ public class CQLCodesView {
 
 	private Button saveCode = new Button("Apply");
 
-	private Button cancelButton = new Button("Cancel");
+	private Button cancelButton = new CancelButton("CQLCodesView");
 
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve","Enter Code Identifier");
 
@@ -221,9 +222,6 @@ public class CQLCodesView {
 		saveCode.setText("Apply");
 		saveCode.setTitle("Apply");
 		saveCode.setType(ButtonType.PRIMARY);
-
-		cancelButton.setType(ButtonType.DANGER);
-		cancelButton.setTitle("Cancel");
 
 		Grid searchGrid = new Grid(1, 1);
 		Grid codeDescriptorAndSuffixGrid = new Grid(1, 2);

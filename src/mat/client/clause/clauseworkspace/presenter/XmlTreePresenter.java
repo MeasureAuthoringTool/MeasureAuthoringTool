@@ -44,81 +44,45 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
-/**
- * The Class XmlTreePresenter.
- */
+
 public class XmlTreePresenter {
 	
-	/** The Constant COMMENT. */
 	private static final String COMMENT = "COMMENT";
-	/**
-	 * Cell Tree Node Size to remove show more.
-	 */
+
 	private static final int NODESIZE = 500;
 	
-	/** The is specific occ. */
 	boolean isSpecificOcc = false;
 	
-	/** The current selected clause. */
 	String currentSelectedClause = null;
 	
-	/** The is unsaved data. */
-	//	private boolean isUnsavedData = false;
-	/**
-	 * Pop up Panel for Right Context Menu.
-	 */
 	private PopupPanel popupPanel = new PopupPanel(true, false);
 	
-	/** The Map of presenters. */
 	private Map<Integer, MatPresenter> selectedTreeMap;
 	
-	/**
-	 * The Interface TreeResources.
-	 */
 	interface TreeResources extends CellTree.Resources {
 		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeClosedItem()
-		 */
 		@Override
 		@Source("mat/client/images/plus.png")
 		ImageResource cellTreeClosedItem();
 		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeOpenItem()
-		 */
 		@Override
 		@Source("mat/client/images/minus.png")
 		ImageResource cellTreeOpenItem();
 		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeStyle()
-		 */
 		@Override
 		@Source("mat/client/images/CwCellTree.css")
 		CellTree.Style cellTreeStyle();
-		
-		/*
-		 * @Source("mat/client/images/cms_gov_footer.png")
-		 *
-		 * @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
-		 * ImageResource cellTreeSelectedBackground();
-		 */
+
 	}
 	
-	/** The xml tree display. */
 	private XmlTreeDisplay xmlTreeDisplay;
 	
-	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
-	/** The Constant MEASURE. */
 	private static final String MEASURE = "measure";
 	
-	/** The root node. */
 	private String rootNode;
 	
-	/** The panel. */
 	private SimplePanel panel;
 	
 	/**
@@ -130,14 +94,7 @@ public class XmlTreePresenter {
 	 * method.
 	 */
 	private String originalXML = "";
-	
-	
-	/**
-	 * Load xml tree.
-	 *
-	 * @param populationWorkSpacePanel the SimplePanel
-	 * @param panelName the panel name
-	 */
+
 	public final void loadXmlTree(SimplePanel populationWorkSpacePanel, String panelName) {
 		
 		if (originalXML.length() > 0) {
@@ -164,7 +121,6 @@ public class XmlTreePresenter {
 			TreeNode treeNode = cellTree.getRootTreeNode();
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
-					// ((CellTreeNode)treeNode.getChildValue(i)).setOpen(true);
 					treeNode.setChildOpen(i, true, true);
 				}
 			}
@@ -174,8 +130,6 @@ public class XmlTreePresenter {
 			panel.clear();
 			panel.add(xmlTreeDisplay.asWidget());
 			invokeSaveHandler();
-			//invokeValidateHandler();
-//			invokeValidateHandlerPopulationWorkspace();//added to handle the validate button
 		} else {
 			Mat.hideLoadingMessage();
 		}
@@ -183,10 +137,7 @@ public class XmlTreePresenter {
 		Mat.focusSkipLists("MeasureComposer");
 		
 	}
-	/**
-	 * Method to create Clause Work space View.
-	 * @param clauseWorkSpacePanel - SimplePanel.
-	 */
+
 	public final void loadClauseWorkSpaceView(SimplePanel clauseWorkSpacePanel) {
 		panel = clauseWorkSpacePanel;
 		panel.getElement().setAttribute("id", "ClauseWorkSpacePanel");
@@ -213,8 +164,6 @@ public class XmlTreePresenter {
 		setRootNode(cellTree.getRootTreeNode().toString());
 		xmlTreeDisplay = xmlTreeView;
 		xmlTreeDisplay.setEnabled(false);
-		/*xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
-				.checkForEditPermission());*/
 		panel.clear();
 		panel.add(xmlTreeDisplay.asWidget());
 		invokeSaveHandler();
@@ -226,9 +175,7 @@ public class XmlTreePresenter {
 		xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
 		xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(false);
 	}
-	/**
-	 * Adds the clause handler.
-	 */
+
 	private void addClauseHandler() {
 		
 		xmlTreeDisplay.getClauseNamesListBox().addChangeHandler(
@@ -295,7 +242,6 @@ public class XmlTreePresenter {
 								
 								@Override
 								public void onFailure(Throwable caught) {
-									// TODO Auto-generated method stub
 									
 								}
 								
@@ -547,8 +493,8 @@ public class XmlTreePresenter {
 									"CLAUSEWORKSPACE_TAB_SAVE_EVENT",
 									rootNode.toUpperCase().concat(" Saved."),
 									ConstantMessages.DB_LOG);
-							final String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
-							final String nodeName = cellTreeNode.getChilds().get(0).getName();
+							cellTreeNode.getChilds().get(0).getUUID();
+							cellTreeNode.getChilds().get(0).getName();
 							//for adding qdmVariable as an attribute
 							String isQdmVariable = xmlTreeDisplay.getIncludeQdmVaribale().getValue().toString();
 							CellTreeNode subTreeNode = cellTreeNode.getChilds().get(0);
@@ -557,7 +503,7 @@ public class XmlTreePresenter {
 							subTreeNode.setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, map);
 							String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
 
-							final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
+							createMeasureXmlModel(xml);
 						} else {
 							xmlTreeDisplay.getErrorMessageDisplay().setMessage(
 									"Unable to save clause as no subTree found under it.");
@@ -572,13 +518,11 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService()
 						.checkForEditPermission()) {
-					xmlTreeDisplay.clearMessages();
-					String measureId = MatContext.get().getCurrentMeasureId();
+					MatContext.get().getCurrentMeasureId();
 					final int selectedClauseindex = xmlTreeDisplay.getClauseNamesListBox().getSelectedIndex();
 					if(selectedClauseindex < 0){
 						return;
 					}
-					final String clauseUUID = xmlTreeDisplay.getClauseNamesListBox().getValue(selectedClauseindex);
 					final String clauseName = xmlTreeDisplay.getClauseNamesListBox().getItemText(selectedClauseindex);
 
 					final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
@@ -939,7 +883,6 @@ public class XmlTreePresenter {
 			service.isQDMVariableEnabled(MatContext.get().getCurrentMeasureId(), clauseUUID, new AsyncCallback<Boolean>(){
 				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
 				}
 				@Override
 				public void onSuccess(Boolean result) {
@@ -952,15 +895,9 @@ public class XmlTreePresenter {
 		}
 	}
 	
-	/**
-	 * @return the selectedTreeMap
-	 */
 	public Map<Integer, MatPresenter> getSelectedTreeMap() {
 		return selectedTreeMap;
 	}
-	/**
-	 * @param selectedTreeMap the selectedTreeMap to set
-	 */
 	public void setSelectedTreeMap(Map<Integer, MatPresenter> selectedTreeMap) {
 		this.selectedTreeMap = selectedTreeMap;
 	}

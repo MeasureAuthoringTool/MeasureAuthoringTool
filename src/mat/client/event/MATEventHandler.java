@@ -10,8 +10,6 @@ import com.google.gwt.user.client.Window;
  * Control center for MAT conditionally executed events handleEvent
  * implementation is responsible for determining whether or not to execute an
  * event.
- * 
- * @author aschmidt
  */
 public abstract class MATEventHandler implements EventHandler{
 	
@@ -21,6 +19,7 @@ public abstract class MATEventHandler implements EventHandler{
 	 * @param event
 	 *            the event
 	 */
+	@SuppressWarnings("rawtypes") 
 	protected abstract void onEvent(GwtEvent event);
 	
 	/**
@@ -39,6 +38,7 @@ public abstract class MATEventHandler implements EventHandler{
 	 * @param event
 	 *            the event
 	 */
+	@SuppressWarnings("rawtypes")
 	protected void handleEvent(GwtEvent event){
 		if(!MatContext.get().isLoading()){
 			this.onEvent(event);

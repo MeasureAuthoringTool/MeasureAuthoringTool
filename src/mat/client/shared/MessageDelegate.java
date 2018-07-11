@@ -127,7 +127,7 @@ public class MessageDelegate {
 	// US - 421
 	/** The Constant s_ERR_MEASURE_SCORE_REQUIRED. */
 	public static final String s_ERR_MEASURE_SCORE_REQUIRED = "Measure Scoring is required.";
-	
+		
 	/** The Constant CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR. */
 	public static final String CONTINOUS_VARIABLE_IS_NOT_PATIENT_BASED_ERROR = "Continous Variable measures must not be patient based.";
 	

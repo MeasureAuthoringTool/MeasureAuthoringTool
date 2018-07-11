@@ -16,13 +16,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import mat.client.util.MatTextBox;
 import mat.shared.UUIDUtilClient;
 
-// TODO: Auto-generated Javadoc
 /** MeasureSearchFilterWidget.java. */
 public class SearchWidget extends Composite implements ClickHandler {
-	/** Search Button Left Margin Value. */
-//	private static final int SEARCH_BTN_MRGN_LEFT = 5;
-	/** Text Box height Value. */
-//	private static final int TEXT_BOX_HT = 20;
 	/** Search button - {@link Button}. */
 	private Button searchButton;
 	
@@ -57,7 +52,6 @@ public class SearchWidget extends Composite implements ClickHandler {
 		searchButton.setPaddingBottom(5.0);
 		searchInput.setWidth("150px");
 		searchInput.setHeight("32px");
-		//searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
 		VerticalPanel topPanel = new VerticalPanel();
 		topPanel.getElement().setId("SearchFilterWidget_verticalPanel"+UUIDUtilClient.uuid(4));
 		HorizontalPanel horizontalPanel = new HorizontalPanel();

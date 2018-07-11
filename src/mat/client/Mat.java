@@ -50,6 +50,7 @@ import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.login.service.SessionManagementService;
+import mat.client.measure.ComponentMeasureDisplay;
 import mat.client.measure.ManageCompositeMeasureDetailView;
 import mat.client.measure.ManageMeasureDetailView;
 import mat.client.measure.ManageMeasureExportView;
@@ -196,7 +197,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
 			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, historyView, null, transferOS);
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, null, historyView, null, transferOS);
 		}else{
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
@@ -210,8 +211,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}else{
 				measureExportView = new ManageMeasureExportView(false);
 			}
-			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, compositeMeasureDetailView ,measureShareView, measureExportView, historyView, versionView, null);
+			ComponentMeasureDisplay componentMeasureDisplay = new ComponentMeasureDisplay();
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, compositeMeasureDetailView , componentMeasureDisplay , measureShareView, measureExportView, historyView, versionView, null);
 		}
 		
 		return measurePresenter;

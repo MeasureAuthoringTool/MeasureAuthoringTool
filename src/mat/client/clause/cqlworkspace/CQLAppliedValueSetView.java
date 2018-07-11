@@ -410,8 +410,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
-										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
+										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -419,8 +419,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Version in Third Column, Edit in the Fourth Column, Delete in the Fifth Column"
-										+ "and Copy in Sixth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
+										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",

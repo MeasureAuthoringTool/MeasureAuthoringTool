@@ -9,6 +9,8 @@ import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.shared.MatConstants;
 
 public class ManageCompositeMeasureModelValidator extends ManageMeasureModelValidator {
+	public static final String ERR_COMPOSITE_MEASURE_SCORE_REQUIRED = "Composite Scoring Method is required. ";
+
 	public List<String> validateMeasureWithClone(ManageCompositeMeasureDetailModel model, boolean isClone) {
 		List<String> message = performCommonMeasureValidation(model);
 		if(!isClone) {
@@ -37,7 +39,7 @@ public class ManageCompositeMeasureModelValidator extends ManageMeasureModelVali
 		String compositeScoring = model.getCompositeScoringMethod();
 		if((compositeScoring == null) || !isValidValue(compositeScoring)) {
 			MatContext.get().getMessageDelegate();
-			message.add(MessageDelegate.s_ERR_COMPOSITE_MEASURE_SCORE_REQUIRED);
+			message.add(ERR_COMPOSITE_MEASURE_SCORE_REQUIRED);
 		}
 		
 		String scoring = model.getMeasScoring();

@@ -2,6 +2,7 @@ package mat.client;
 
 import java.util.List;
 
+import org.aspectj.weaver.tools.MatchingContext;
 import org.gwtbootstrap3.client.ui.Progress;
 import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
@@ -10,7 +11,6 @@ import org.gwtbootstrap3.client.ui.constants.ProgressType;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -21,59 +21,36 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.IndicatorButton;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
 import mat.client.shared.VerticalFlowPanel;
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MainLayout.
- */
 public abstract class MainLayout {
 	
-	/** The active umls image. */
-	private static Image activeUmlsImage;
-	
-	/** The alert image. */
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
 	
-	/** The alert title. */
 	private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
 	
-	/** The Constant DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS. */
 	private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
 	
-	/** The in active umls image. */
-	private static  Image inActiveUmlsImage;
-	
-	/** The loading panel. */
 	private static Panel loadingPanel;
 	
-	/** The loading widget. */
 	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 	
-	/** The show umls state. */
-	private static Panel showUMLSState;
+	private static IndicatorButton showUMLSState;
 	
-	/** The skip list holder. */
+	private static IndicatorButton showBonnieState;
+	
 	protected static FocusableWidget skipListHolder;
-	
-	/** The umls active status label. */
-	static HTML umlsActiveStatusLabel;
-	
-	/** The umls inactive status label. */
-	static Anchor umlsInactiveStatusLabel;
-	
-	/** The welcome user label. */
+
 	static HTML welcomeUserLabel;
 	
-	/** The version label. */
 	static HTML versionLabel;
 	
 	static Progress progress = new Progress();
@@ -88,36 +65,14 @@ public abstract class MainLayout {
 		MatContext.get().getLoadingQueue().poll();
 		if(MatContext.get().getLoadingQueue().size() == 0){
 			getLoadingPanel().clear();
-			/*getLoadingPanel().remove(alertImage);
-			getLoadingPanel().remove(loadingWidget);
-			getLoadingPanel().removeStyleName("msg-alert");*/
 			getLoadingPanel().getElement().removeAttribute("role");
 		}
 	}
 	
-	/**
-	 * Gets the loading panel.
-	 *
-	 * @return the loading panel
-	 */
 	protected static Panel getLoadingPanel(){
 		return loadingPanel;
 	}
-	
-	/**
-	 * Gets the show umls state.
-	 *
-	 * @return the show umls state
-	 */
-	protected static Panel getShowUMLSState(){
-		return showUMLSState;
-	}
 
-	/**
-	 * Gets the skip list.
-	 *
-	 * @return the skip list
-	 */
 	protected static FocusableWidget getSkipList(){
 		return skipListHolder;
 	}
@@ -155,23 +110,9 @@ public abstract class MainLayout {
 			delegateHideLoadingMessage();
 		}
 	}
+
+
 	
-	/**
-	 * Hide umls active.
-	 */
-	public static void hideUMLSActive(){
-		getShowUMLSState().clear();
-		getShowUMLSState().remove(activeUmlsImage);
-		getShowUMLSState().remove(umlsActiveStatusLabel);
-		
-		getShowUMLSState().add(inActiveUmlsImage);
-		getShowUMLSState().add(umlsInactiveStatusLabel);
-		getShowUMLSState().getElement().setAttribute("role", "alert");
-	}
-	
-	/**
-	 * Show loading message.
-	 */
 	public static void showLoadingMessage(){
 		getLoadingPanel().clear();
 		
@@ -192,48 +133,24 @@ public abstract class MainLayout {
 		getLoadingPanel().getElement().setAttribute("role", "alert");
 		MatContext.get().getLoadingQueue().add("node");
 	}
+
 	
-	/**
-	 * Show sign out message.
-	 */
 	public static void showSignOutMessage(){
 		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
 		showLoadingMessage();
 	}
 	
-	/**
-	 * Show umls active.
-	 */
-	public static void showUMLSActive(){
-		getShowUMLSState().clear();
-		if(getShowUMLSState().getElement().hasChildNodes()){
-			getShowUMLSState().remove(inActiveUmlsImage);
-			getShowUMLSState().remove(umlsInactiveStatusLabel);
-		}
-		
-		getShowUMLSState().add(activeUmlsImage);
-		getShowUMLSState().add(umlsActiveStatusLabel);
-		getShowUMLSState().getElement().setAttribute("role", "alert");
-	}
+
 	
-	/** The content. */
 	private FocusPanel content;
 	
-	
-	/** The log out panel. */
 	private HorizontalFlowPanel logOutPanel;
 	
-	/** The welcome user panel. */
 	private HorizontalFlowPanel welcomeUserPanel;
 	
-	/** The version panel. */
 	private FlowPanel versionPanel;
 	
-	/**
-	 * Builds the content panel.
-	 *
-	 * @return the panel
-	 */
+
 	private Panel buildContentPanel() {
 		content = new FocusPanel();
 		content.getElement().setAttribute("id", "MainLayout.content");
@@ -264,11 +181,7 @@ public abstract class MainLayout {
 		return footerMainPanel;
 	}
 	
-	/**
-	 * Builds the loading panel.
-	 *
-	 * @return the panel
-	 */
+
 	private Panel buildLoadingPanel() {
 		loadingPanel = new HorizontalPanel();
 		loadingPanel.setHeight("30px");
@@ -287,22 +200,13 @@ public abstract class MainLayout {
 		return loadingPanel;
 	}
 	
-	/**
-	 * Builds the skip content.
-	 *
-	 * @return the panel
-	 */
 	private Panel buildSkipContent() {
 		skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
 		Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
 		return skipListHolder;
 	}
 	
-	/**
-	 * Builds the top panel.
-	 *
-	 * @return the panel
-	 */
+
 	private Panel buildTopPanel() {
 		final VerticalPanel topPanel = new VerticalPanel();
 		topPanel.setStylePrimaryName("topBanner");
@@ -315,6 +219,7 @@ public abstract class MainLayout {
 		titleImage.setStylePrimaryName("topBannerImage");
 		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
 		HTML desc = new HTML("<h4 style=\"font-size:0;\"><b>Measure Authoring Tool</b></h4>");// Doing this for 508 when CSS turned off
+		@SuppressWarnings("deprecation")
 		com.google.gwt.user.client.Element heading = desc.getElement();
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		versionPanel = new VerticalFlowPanel();
@@ -332,59 +237,28 @@ public abstract class MainLayout {
 		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
+
+		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
+		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
 		
-		showUMLSState = buildUMLStatePanel();
-		showUMLSState.addStyleName("umlsStatePanel");
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(logOutPanel);
-		vp.add(showUMLSState);
-		vp.add(new SpacerWidget());
+		vp.add(showUMLSState.getPanel());
+		vp.add(showBonnieState.getPanel());
 		vp.addStyleName("logoutAndUMLSPanel");
+		
 		horizontalBanner.add(vp);
-
 		topPanel.add(horizontalBanner);
 		topPanel.add(buildLoadingPanel());
 		return topPanel;
 
 	}
 	
-	/**
-	 * Builds the uml state panel.
-	 *
-	 * @return the panel
-	 */
-	private Panel buildUMLStatePanel() {
-		showUMLSState = new HorizontalFlowPanel();
-		showUMLSState.getElement().setAttribute("id", "showUMLSStateContainer");
-		showUMLSState.getElement().setAttribute("aria-role", "application");
-		showUMLSState.getElement().setAttribute("aria-labelledby", "LiveRegion");
-		showUMLSState.getElement().setAttribute("aria-live", "assertive");
-		showUMLSState.getElement().setAttribute("aria-atomic", "true");
-		showUMLSState.getElement().setAttribute("aria-relevant", "all");
-		activeUmlsImage = new Image(ImageResources.INSTANCE.bullet_green());
-		activeUmlsImage.setStylePrimaryName("imageMiddleAlign");
-		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
-		umlsActiveStatusLabel.getElement().setAttribute("tabIndex", "0");
-		umlsActiveStatusLabel.setStylePrimaryName("htmlDescription");
-		inActiveUmlsImage = new Image(ImageResources.INSTANCE.bullet_red());
-		inActiveUmlsImage.setStylePrimaryName("imageMiddleAlign");
-		umlsInactiveStatusLabel = new Anchor("Sign into UMLS");
-		umlsInactiveStatusLabel.setTitle("Sign into UMLS");
-		umlsInactiveStatusLabel.getElement().setAttribute("tabIndex", "0");
-		umlsInactiveStatusLabel.getElement().setAttribute("id", "Anchor_signInUMLS");
-		return showUMLSState;
-	}
-	/**
-	 * Fetch andcreate footer links.
-	 *
-	 * @return the html
-	 */
+
 	private HTML fetchAndcreateFooterLinks() {
 		MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				//This will create Footer links with default values.
-				//createFooterLinks(footerLinks);
 			}
 			
 			@Override
@@ -399,48 +273,21 @@ public abstract class MainLayout {
 		});
 		return FooterPanelBuilderUtility.buildFooterLinksPanel();
 	}
-	
-	/**
-	 * Gets the content panel.
-	 *
-	 * @return the content panel
-	 */
+
 	protected  FocusPanel getContentPanel() {
 		return content;
 	}
-	
-	/**
-	 * Gets the logout panel.
-	 *
-	 * @return the logout panel
-	 */
+
 	protected HorizontalFlowPanel getLogoutPanel(){
 		return logOutPanel;
 	}
-	
-	/**
-	 * Gets the navigation list.
-	 *
-	 * @return the navigation list
-	 */
+
 	protected Widget getNavigationList(){
 		return null;
 	}
-	
-	protected Anchor getSigninLink() {
-		return umlsInactiveStatusLabel;
-	}
-	
-	
-	
-	/**
-	 * Inits the entry point.
-	 */
+
 	protected abstract void initEntryPoint();
-	
-	/**
-	 * On module load.
-	 */
+
 	public final void onModuleLoad() {
 		
 		final Panel skipContent = buildSkipContent();
@@ -464,31 +311,18 @@ public abstract class MainLayout {
 		initEntryPoint();
 	}
 
-	/**
-	 * Sets the id.
-	 *
-	 * @param widget the widget
-	 * @param id the id
-	 */
+	
+	@SuppressWarnings("deprecation")
 	protected void setId(final Widget widget, final String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}
+
 	
-	/**
-	 * Sets the logout.
-	 *
-	 * @param logOutPanel the new logout
-	 */
 	protected void setLogout(final HorizontalFlowPanel logOutPanel){
 		this.logOutPanel = logOutPanel;
 	}
 	
-	/**
-	 * Gets the welcome user panel.
-	 *
-	 * @param userFirstName the user first name
-	 * @return the welcome user panel
-	 */
+
 	public HorizontalFlowPanel getWelcomeUserPanel(String userFirstName) {
 		welcomeUserLabel = new HTML("<h9><b>Successful login - Welcome, "+ userFirstName+"!</b></h9>");
 		welcomeUserLabel.getElement().setId("welcomeUserLabel_HTML");
@@ -499,11 +333,7 @@ public abstract class MainLayout {
 		return welcomeUserPanel;
 	}
 	
-	/**
-	 * Gets the Version panel.
-	 *
-	 * @return the Flow panel
-	 */
+
 	public FlowPanel getVersionPanel(String resultMatVersion) {
 		//Since mat-bootstrap CSS always overrides Mat css settings hardcoded inline style for version. In future need to change this.
 		String versionStyle = "font-family: Arial;font-size:small;font-weight: bold;line-height:1.25;margin-top: 15px;";
@@ -515,4 +345,37 @@ public abstract class MainLayout {
 		return versionPanel;
 	}
 	
+	public static void hideUMLSActive() {
+		showUMLSState.hideActive();
+	}
+	
+	public static void showUMLSActive() {
+		showUMLSState.showActive();
+	}
+	
+	public static void hideBonnieActive() {
+		showBonnieState.hideActive();
+	}
+	
+	public static void showBonnieActive() {
+		showBonnieState.showActive();
+	}
+	
+	public HTML getUMLSButton() {
+		return showUMLSState.getLink();
+	}
+	
+	public HTML getBonnieButton() {
+		return showBonnieState.getLink();
+	}
+
+	public void setIndicatorsVisible() {
+		showBonnieState.setVisible();
+		showUMLSState.setVisible();
+	}
+	
+	//method to easily remove bonnie link from page
+	public void removeBonnieLink() {
+		showBonnieState.getPanel().removeFromParent();
+	}
 }

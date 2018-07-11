@@ -25,9 +25,10 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-// TODO: Auto-generated Javadoc
-/**
- * QDSAppliedListPresenter.java.
+
+@Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
  */
 public class QDSAppliedListPresenter implements MatPresenter {
 	

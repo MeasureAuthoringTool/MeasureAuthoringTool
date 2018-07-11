@@ -42,7 +42,11 @@ import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 
-/**QDSCodeListSearchPresenter.java.**/
+
+@Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
+ */
 public class QDSCodeListSearchPresenter implements MatPresenter {
 	
 	/**

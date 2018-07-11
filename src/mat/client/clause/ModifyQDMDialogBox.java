@@ -12,8 +12,9 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * The Class ModifyQDMDialogBox.
+@Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
  */
 public class ModifyQDMDialogBox {
 	

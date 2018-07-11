@@ -26,6 +26,8 @@ import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
+import mat.client.bonnie.BonnieService;
+import mat.client.bonnie.BonnieServiceAsync;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
@@ -69,9 +71,6 @@ import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
 import mat.shared.SaveUpdateCQLResult;
 
-/**
- * The Class MatContext.
- */
 public class MatContext implements IsSerializable {
 	
 	private CQLModel cqlModel;
@@ -89,12 +88,14 @@ public class MatContext implements IsSerializable {
 
 	private final int userLockUpdateTime = 2*60*1000;
 
-	public static final String PLEASE_SELECT = "--Select--";
+	public final static String PLEASE_SELECT = "--Select--";
 
 	private static MatContext instance = new MatContext();
 
 	private String currentModule;
-
+	
+	private String bonnieLink;
+	
 	private LoginServiceAsync loginService;
 
 	private MeasureServiceAsync measureService;
@@ -143,8 +144,6 @@ public class MatContext implements IsSerializable {
 
 	private QDSCodeListSearchView qdsView;
 
-	private QDMAppliedSelectionView qdmAppliedSelectionView;
-
 	private QDMAvailableValueSetWidget modifyQDMPopUpWidget;
 
 	private ManageMeasureSearchView manageMeasureSearchView;
@@ -156,7 +155,7 @@ public class MatContext implements IsSerializable {
 	private int errorTabIndex;
 
 	private boolean isErrorTab;
-
+	
 	public List<String> timings = new ArrayList<String>();
 
 	public List<String> functions = new ArrayList<String>();
@@ -232,7 +231,6 @@ public class MatContext implements IsSerializable {
 	 * @param view the new VSAC profile view
 	 */
 	public void setQDMAppliedSelectionView(QDMAppliedSelectionView view){
-		qdmAppliedSelectionView = view;
 	}
 	
 	
@@ -612,6 +610,7 @@ public class MatContext implements IsSerializable {
 	 * @param widget The widget to be rendered or no longer rendered
 	 * @param visible Widget's rendering status
 	 */
+	@SuppressWarnings("deprecation")
 	public void setVisible(Widget widget, Boolean visible){
 		widget.setVisible(visible);
 		// disable the widget, maybe best to check if this is a FocusWidget and make an explicit setEnabled call
@@ -620,8 +619,10 @@ public class MatContext implements IsSerializable {
 		setAriaHidden(widget, !visible);
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public HashMap enableRegistry = new HashMap<String, Enableable>();
 
+	@SuppressWarnings("rawtypes")
 	public HashMap tabRegistry = new HashMap<String, TabPanel>();
 
 	public MeasureSelectedEvent getCurrentMeasureInfo(){
@@ -967,7 +968,7 @@ public class MatContext implements IsSerializable {
 			}
 		});
 	}	
-	
+
 	public void setModifyQDMPopUpWidget(
 			QDMAvailableValueSetWidget modifyQDMPopUpWidget) {
 		this.modifyQDMPopUpWidget = modifyQDMPopUpWidget;
@@ -1287,7 +1288,7 @@ public class MatContext implements IsSerializable {
 		for(Map.Entry<String,String> unitsMap : cqlConstantContainer.getCqlUnitMap().entrySet()){
 			
 			MatContext.get();
-			if (!unitsMap.getValue().equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			if (!unitsMap.getValue().equalsIgnoreCase(PLEASE_SELECT)) {
 				if (!getNonQuotesUnits().contains(unitsMap.getValue())) {
 					shorcutKeyUnits.add("'" + unitsMap.getValue() + "'");
 				} else {
@@ -1358,5 +1359,27 @@ public class MatContext implements IsSerializable {
 		if(model != null) {
 			this.cqlModel = model;
 		}
+	}
+	
+	public void buildBonnieLink() {
+		BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
+
+		bonnie.getBonnieLink(new AsyncCallback<String>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				bonnieLink = result;
+			}
+			
+		});
+	}
+	
+	public String getBonnieLink() {
+		return bonnieLink;
 	}
 }

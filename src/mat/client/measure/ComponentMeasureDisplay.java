@@ -10,6 +10,7 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -81,6 +82,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		searchWidgetBootStrap.getSearchWidget().setWidth("100%");
 
 		measureFilterVP.add(searchWidgetBootStrap.getSearchWidget());
+		measureFilterVP.getElement().getStyle().setMarginLeft(3, Unit.PX);
 		contentPanel.add(measureFilterVP);
 		
 		contentPanel.add(new SpacerWidget());
@@ -103,6 +105,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponentMeasuresPanel.setWidth("100%");
 		appliedComponentMeasuresPanel.setType(PanelType.PRIMARY);
 		appliedComponentMeasureHeader.setText("Applied Component Measures");
+		appliedComponentMeasureHeader.setTitle("Applied Component Measures");
 		appliedComponentMeasureHeader.getElement().setAttribute("tabIndex", "0");
 		appliedComponentMeasuresPanel.add(appliedComponentMeasureHeader);
 		appliedComponentMeasuresPanel.add(new SpacerWidget());
@@ -121,6 +124,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		availableMeasuresPanel.setType(PanelType.PRIMARY);
 		availableMeasuresPanel.setWidth("100%");
 		availableMeasureHeader.setText("Available Measures");
+		availableMeasureHeader.setTitle("Available Measures");
 		availableMeasureHeader.getElement().setAttribute("tabIndex", "0");
 		availableMeasuresPanel.add(availableMeasureHeader);
 		availableMeasuresPanel.add(new SpacerWidget());
@@ -146,7 +150,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return getMeasureNameColumnToolTip(object);
 			}
 		};
-		appliedComponentTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>"
+		appliedComponentTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
 				+ "Measure Name" + "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
@@ -217,7 +221,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				return getMeasureNameColumnToolTip(object);
 			}
 		};
-		availableMeasuresTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>"
+		availableMeasuresTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
 				+ "Measure Name" + "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(

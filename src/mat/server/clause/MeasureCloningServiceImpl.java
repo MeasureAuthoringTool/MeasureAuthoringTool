@@ -217,8 +217,9 @@ implements MeasureCloningService {
 			clonedMeasure.setDescription(currentDetails.getName());
 			
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
-			
 			clonedMeasure.setDraft(Boolean.TRUE);
+			clonedMeasure.setPatientBased(currentDetails.isPatientBased());
+
 			if (currentDetails.getMeasScoring() != null) {
 				clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring());
 			} else {

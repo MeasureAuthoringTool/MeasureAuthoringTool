@@ -103,6 +103,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponentMeasuresPanel.setWidth("100%");
 		appliedComponentMeasuresPanel.setType(PanelType.PRIMARY);
 		appliedComponentMeasureHeader.setText("Applied Component Measures");
+		appliedComponentMeasureHeader.getElement().setAttribute("tabIndex", "0");
 		appliedComponentMeasuresPanel.add(appliedComponentMeasureHeader);
 		appliedComponentMeasuresPanel.add(new SpacerWidget());
 		
@@ -120,6 +121,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		availableMeasuresPanel.setType(PanelType.PRIMARY);
 		availableMeasuresPanel.setWidth("100%");
 		availableMeasureHeader.setText("Available Measures");
+		availableMeasureHeader.getElement().setAttribute("tabIndex", "0");
 		availableMeasuresPanel.add(availableMeasureHeader);
 		availableMeasuresPanel.add(new SpacerWidget());
 		

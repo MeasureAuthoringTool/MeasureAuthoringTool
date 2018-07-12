@@ -1,5 +1,7 @@
 package mat.dao.impl.clause;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,14 +9,17 @@ import java.util.Map;
 import java.util.UUID;
 
 import mat.dao.ListObjectDAO;
+import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.ListObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.LoggedInUserUtil;
 import mat.shared.ConstantMessages;
 
 import org.hibernate.Criteria;
@@ -33,6 +38,9 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements mat
 	
 	@Autowired
 	private MeasureDAO measureDAO; 
+	
+	@Autowired
+	private UserDAO userDAO; 
 
 	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
 
@@ -133,11 +141,11 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements mat
 	
 	@Override
 	public void save(MeasureXML measureXML) {
-		updateLastUpdatedInformationForMeasure(measureXML.getMeasureId());
+		String measureId = measureXML.getMeasureId();
+		Measure measure = measureDAO.find(measureId);
+		measure.setLastModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+		measure.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
+		measureDAO.save(measure);
 		super.save(measureXML);
-	}
-
-	private void updateLastUpdatedInformationForMeasure(String measureId) {
-		measureDAO.save(measureDAO.find(measureId)); 
 	}
 }

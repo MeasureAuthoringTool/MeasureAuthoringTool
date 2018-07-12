@@ -754,14 +754,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	@Override
 	public int saveandReturnMaxEMeasureId(Measure measure) {
 		int eMeasureId = getMaxEMeasureId() + 1;
-		MeasureSet ms = measure.getMeasureSet();
-		Session session = getSessionFactory().getCurrentSession();
-
-		String sql = "update MEASURE m set m.EMEASURE_ID = :eMeasureId where m.MEASURE_SET_ID = :MEASURE_SET_ID";
-		SQLQuery query = session.createSQLQuery(sql);
-		query.setInteger("eMeasureId", eMeasureId);
-		query.setString("MEASURE_SET_ID", ms.getId());
-		query.executeUpdate();
+		List<Measure> measuresToGetSetFor = new ArrayList<>(); 
+		measuresToGetSetFor.add(measure);
+		
+		List<Measure> measuresInSet = getAllMeasuresInSet(measuresToGetSetFor);
+		for(Measure m : measuresInSet) {
+			m.seteMeasureId(eMeasureId);
+			save(m);
+		}
+		
 		return eMeasureId;
 
 	}
@@ -1030,18 +1031,4 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 
 		return measureIds;
 	}
-
-	/**
-	 * Overrides the save method in the GeneralDAO class. This method acts as a "catch" for whenever a measure is saved and sets the last modified on
-	 * and last modified by values in the Measure table. It then calls the super class implementation of save.
-	 * 
-	 * This method was overriden since it was not possible to add a the last modified on/by updates to the super class implementation of save. 
-	 */
-	@Override
-	public void save(Measure entity) {
-		entity.setLastModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
-		entity.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
-		super.save(entity);
-	}
-
 }

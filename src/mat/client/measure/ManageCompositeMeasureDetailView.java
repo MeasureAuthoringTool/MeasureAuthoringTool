@@ -29,6 +29,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	public void clearFields() {
 		super.clearFields();
 		compositeScoringMethodInput.setSelectedIndex(0);//default to --Select-- value.
+		errorMessages.clearAlert();
 	}
 	
 	public ManageCompositeMeasureDetailView() {

@@ -50,6 +50,8 @@ public class Measure {
 	private Timestamp lastModifiedOn; 
 	
 	private User lastModifiedBy;
+	
+	private String qdmVersion;
 
 	public Timestamp getValueSetDate() {
 		return valueSetDate;
@@ -262,5 +264,13 @@ public class Measure {
 
 	public void setLastModifiedBy(User lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
 	}
 }

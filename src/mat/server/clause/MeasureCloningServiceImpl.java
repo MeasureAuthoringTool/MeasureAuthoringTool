@@ -216,6 +216,7 @@ implements MeasureCloningService {
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
 			
+			clonedMeasure.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
 			clonedMeasure.setDraft(Boolean.TRUE);
 			clonedMeasure.setPatientBased(currentDetails.isPatientBased());

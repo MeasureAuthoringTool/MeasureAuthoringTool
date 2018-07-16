@@ -1921,6 +1921,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				setMeasureCreated(false);
 				pkg = new Measure();
 				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
@@ -2574,6 +2575,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measure.setDraft(model.isDraft());
 		measure.setRevisionNumber(model.getRevisionNumber());
 		measure.seteMeasureId(model.geteMeasureId());
+
 		if ((model.getFinalizedDate() != null) && !model.getFinalizedDate().equals("")) {
 			measure.setFinalizedDate(
 					new Timestamp(DateUtility.convertStringToDate(model.getFinalizedDate()).getTime()));

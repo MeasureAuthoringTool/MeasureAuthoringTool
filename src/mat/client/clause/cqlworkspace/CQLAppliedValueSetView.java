@@ -217,28 +217,27 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		PanelBody searchPanelBody = new PanelBody();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("cqlvalueSetSearchPanel");
-		
+
 		searchHeader.setStyleName("CqlWorkSpaceTableHeader");
 		searchPanel.add(searchHeader);
 		searchPanelBody.add(new SpacerWidget());
-		
-		FormGroup messageFormGroup = new FormGroup(); 
+
+		FormGroup messageFormGroup = new FormGroup();
 		messageFormGroup.add(helpBlock);
 		messageFormGroup.getElement().setAttribute("role", "alert");
 		helpBlock.setColor("transparent");
 		helpBlock.setHeight("0px");
 		searchPanelBody.add(messageFormGroup);
 
-		
 		nameInput.getElement().setId("nameInput_TextBox");
 		nameInput.getElement().setAttribute("tabIndex", "0");
-		
+
 		nameInput.setTitle(ENTER_NAME);
 		nameInput.setWidth("450px");
 		nameInput.setHeight("30px");
-		
+
 		suffixInput.getElement().setId("suffixInput_TextBox");
-		
+
 		suffixInput.setTitle("Suffix must be an integer between 1-4 characters");
 		suffixInput.setWidth("150px");
 		suffixInput.setHeight("30px");
@@ -246,20 +245,19 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		saveValueSet.setText(TEXT_APPLY);
 		saveValueSet.setTitle(TEXT_APPLY);
 		saveValueSet.setType(ButtonType.PRIMARY);
-		
+
 		cancelButton.setType(ButtonType.DANGER);
 		cancelButton.setTitle(TEXT_CANCEL);
-		
+
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);
 		buttonToolBar.add(cancelButton);
-		
+
 		VerticalPanel buttonPanel = new VerticalPanel();
 		buttonPanel.add(new SpacerWidget());
 		buttonPanel.add(buttonToolBar);
 		buttonPanel.add(new SpacerWidget());
-		
-		
+
 		VerticalPanel searchWidgetFormGroup = new VerticalPanel();
 		searchWidgetFormGroup.getElement().getStyle().setProperty("padding", "10px");
 		searchWidgetFormGroup.getElement().getStyle().setProperty("border", "solid 1px #e8eff7");
@@ -273,9 +271,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		oidInput.setTitle(ENTER_OID);
 		searchWidgetFormGroup.add(oidInput);
 		searchWidgetFormGroup.add(new SpacerWidget());
-		
-		Grid programReleaseGrid = new Grid(1,3);
-		
+
+		Grid programReleaseGrid = new Grid(1, 3);
+
 		VerticalPanel programPanel = new VerticalPanel();
 		programPanel.setWidth("225px");
 		FormLabel programLabel = new FormLabel();
@@ -286,8 +284,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
 		initProgramListBoxContent();
-			
-		
+
 		VerticalPanel releasePanel = new VerticalPanel();
 		releasePanel.setWidth("225px");
 		FormLabel releaseLabel = new FormLabel();
@@ -298,7 +295,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		releaseListBox.setWidth("200px");
 		releasePanel.add(releaseListBox);
 		initializeReleaseListBoxContent();
-		
+
 		VerticalPanel goPanel = new VerticalPanel();
 		goPanel.setWidth("150px");
 		goPanel.add(new SpacerWidget());
@@ -311,7 +308,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		goButton.setPull(Pull.RIGHT);
 		goButton.getElement().getStyle().setProperty("marginRight", "5px");
 		goPanel.add(goButton);
-		
+
 		programReleaseGrid.setWidget(0, 0, programPanel);
 		programReleaseGrid.setWidget(0, 1, releasePanel);
 		programReleaseGrid.setWidget(0, 2, goPanel);
@@ -337,21 +334,23 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixPanel.add(suffixInput);
 		suffixPanel.add(new SpacerWidget());
 
-
 		VerticalPanel buttonFormGroup = new VerticalPanel();
 		buttonFormGroup.add(buttonToolBar);
 		buttonFormGroup.add(new SpacerWidget());
-		
-		
+
 		Grid oidGrid = new Grid(1, 1);
 		oidGrid.setWidget(0, 0, searchWidgetFormGroup);
 		Grid nameGrid = new Grid(1, 2);
 		nameGrid.setWidget(0, 0, namePanel);
 		nameGrid.setWidget(0, 1, suffixPanel);
 		nameGrid.getElement().getStyle().setProperty("marginLeft", "10px");
+		Grid buttonGrid = new Grid(2, 1);
+		buttonGrid.setWidget(1, 0, buttonFormGroup);
+		buttonGrid.getElement().getStyle().setProperty("marginLeft", "10px");
 
 		searchPanelBody.add(oidGrid);
 		searchPanelBody.add(nameGrid);
+		searchPanelBody.add(buttonGrid);
 
 		searchPanel.add(searchPanelBody);
 		return searchPanel;
@@ -1186,9 +1185,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
         }
 	}
 
-
 	public List<CQLQualityDataSetDTO> getAllValueSets() {
 		return allValueSetsList;
-	}
-	
+	}	
 }

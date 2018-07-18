@@ -1773,6 +1773,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											@Override
 											public void onSuccess(SaveUpdateCQLResult result) {
 												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
+												searchDisplay.getValueSetView().loadReleases();
 												if (result != null) {
 													if (result.isSuccess()) {
 														searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(

@@ -64,7 +64,7 @@ import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
@@ -1310,7 +1310,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		metaDataDisplay.setSaveButtonEnabled(false);
 		
 
-		AdvancedSearchModel model = new AdvancedSearchModel(filter, startIndex + 1, startIndex + PAGE_SIZE, searchText, searchText);
+		MeasureSearchModel model = new MeasureSearchModel(filter, startIndex + 1, startIndex + PAGE_SIZE, searchText, searchText);
 		
 		MatContext.get().getMeasureService().search(model,
 				new AsyncCallback<ManageMeasureSearchModel>() {

@@ -59,7 +59,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
 
 /**
@@ -678,10 +678,10 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 *
 	 * @param results the results
 	 * @param filter the filter
-	 * @param AdvancedSearchModel 
+	 * @param MeasureSearchModel 
 	 * 		which represents the model of the selections the user selected to do an advance search
 	 */
-	public void buildCellTable(ManageMeasureSearchModel results,final int filter, AdvancedSearchModel model) {
+	public void buildCellTable(ManageMeasureSearchModel results,final int filter, MeasureSearchModel model) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if((results.getData()!=null) && (results.getData().size() > 0)){

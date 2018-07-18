@@ -38,7 +38,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.CQLValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
@@ -264,7 +264,7 @@ public interface MeasureLibraryService {
 	 *            the filter
 	 * @return the manage measure search model
 	 */
-	ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel);
+	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 		
 	/**

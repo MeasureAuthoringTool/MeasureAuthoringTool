@@ -8,7 +8,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 
 public interface MeasureDAO extends IDAO<Measure, String> {
 	
@@ -195,7 +195,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * 		the current logged in user
 	 * @return the measure share info for user with filter
 	 */
-	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel, User user);
+	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel advancedSearchModel, User user);
 	
 	/**
 	 * Checks if is measure locked.

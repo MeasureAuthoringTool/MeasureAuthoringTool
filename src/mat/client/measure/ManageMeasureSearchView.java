@@ -32,7 +32,7 @@ import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.ClientConstants;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 
 public class ManageMeasureSearchView implements SearchDisplay {
 
@@ -181,7 +181,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	@Override
 	public void buildDataTable(ManageMeasureSearchModel
 			manageMeasureSearchModel, int filter, String searchText){
-		AdvancedSearchModel model = new AdvancedSearchModel();
+		MeasureSearchModel model = new MeasureSearchModel();
 		model.setSearchTerm(searchText);
 		measureSearchView.buildCellTable(manageMeasureSearchModel,filter,model);
 		
@@ -189,7 +189,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 
 	@Override
 	public void buildCellTable(ManageMeasureSearchModel
-			manageMeasureSearchModel, int filter, AdvancedSearchModel model) {
+			manageMeasureSearchModel, int filter, MeasureSearchModel model) {
 		measureSearchView.getCellTablePanel().clear();
 		measureSearchView.buildCellTable(manageMeasureSearchModel,filter, model);
 	}

@@ -3,9 +3,9 @@ package mat.client.advancedSearch;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.shared.AdvancedSearchModel;
-import mat.shared.AdvancedSearchModel.PatientBasedType;
-import mat.shared.AdvancedSearchModel.VersionMeasureType;
+import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.PatientBasedType;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.MatConstants;
 
 public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
@@ -30,23 +30,23 @@ public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	}
 
 	@Override
-	public AdvancedSearchModel generateAdvancedSearchModel() {
+	public MeasureSearchModel generateAdvancedSearchModel() {
 		
 		String searchTerm = getModal().getSearchText().getValue();
 		int isMyMeasureIndicator = 0;
-		if(getModal().getSearchBoxList().getSelectedValue().equals(AdvancedSearchModel.ONLY_MY_MEASURE)) {
-			isMyMeasureIndicator = AdvancedSearchModel.MY_MEASURES;
+		if(getModal().getSearchBoxList().getSelectedValue().equals(MeasureSearchModel.ONLY_MY_MEASURE)) {
+			isMyMeasureIndicator = MeasureSearchModel.MY_MEASURES;
 		} else {
-			isMyMeasureIndicator = AdvancedSearchModel.ALL_MEASURES;
+			isMyMeasureIndicator = MeasureSearchModel.ALL_MEASURES;
 		}
 		VersionMeasureType versionMeasureType;
-		if(getModal().getSearchStateList().getSelectedValue().equals(AdvancedSearchModel.VERSION_MEASURE)) {
-			versionMeasureType = AdvancedSearchModel.VersionMeasureType.VERSION;
+		if(getModal().getSearchStateList().getSelectedValue().equals(MeasureSearchModel.VERSION_MEASURE)) {
+			versionMeasureType = MeasureSearchModel.VersionMeasureType.VERSION;
 		}
-		else if(getModal().getSearchStateList().getSelectedValue().equals(AdvancedSearchModel.DRAFT_MEASURE)) {
-			versionMeasureType = AdvancedSearchModel.VersionMeasureType.DRAFT;
+		else if(getModal().getSearchStateList().getSelectedValue().equals(MeasureSearchModel.DRAFT_MEASURE)) {
+			versionMeasureType = MeasureSearchModel.VersionMeasureType.DRAFT;
 		} else {
-			versionMeasureType = AdvancedSearchModel.VersionMeasureType.ALL;
+			versionMeasureType = MeasureSearchModel.VersionMeasureType.ALL;
 		}
 		List<String> scoring = new ArrayList<String>();
 		if(getModal().getCohortCheckbox().getValue()) {
@@ -62,14 +62,14 @@ public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 			scoring.add(MatConstants.RATIO.toLowerCase());
 		}
 		PatientBasedType patientBasedType;
-		if((getModal().getPatientIndecatorList().getSelectedValue().equals(AdvancedSearchModel.PATIENT_BASED))){
-			patientBasedType = AdvancedSearchModel.PatientBasedType.PATIENT;
+		if((getModal().getPatientIndecatorList().getSelectedValue().equals(MeasureSearchModel.PATIENT_BASED))){
+			patientBasedType = MeasureSearchModel.PatientBasedType.PATIENT;
 		}
-		else if((getModal().getPatientIndecatorList().getSelectedValue().equals(AdvancedSearchModel.NOT_PATIENT_BASED))){
-			patientBasedType = AdvancedSearchModel.PatientBasedType.NOT_PATIENT;
+		else if((getModal().getPatientIndecatorList().getSelectedValue().equals(MeasureSearchModel.NOT_PATIENT_BASED))){
+			patientBasedType = MeasureSearchModel.PatientBasedType.NOT_PATIENT;
 		}
 		else {
-			patientBasedType = AdvancedSearchModel.PatientBasedType.ALL;
+			patientBasedType = MeasureSearchModel.PatientBasedType.ALL;
 		}
 		
 		String stringTime = getModal().getModifiedOnList().getSelectedValue();
@@ -90,7 +90,7 @@ public class MeasureLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 		String modifiedBy = getModal().getModifiedBy().getValue();
 		String ownedBy = getModal().getOwnedBy().getValue();
 		
-		AdvancedSearchModel model = new AdvancedSearchModel(searchTerm, versionMeasureType, scoring, patientBasedType, time, modifiedBy, ownedBy, 1, Integer.MAX_VALUE, isMyMeasureIndicator, searchTerm);
+		MeasureSearchModel model = new MeasureSearchModel(searchTerm, versionMeasureType, scoring, patientBasedType, time, modifiedBy, ownedBy, 1, Integer.MAX_VALUE, isMyMeasureIndicator, searchTerm);
 		
 		return model;
 	}

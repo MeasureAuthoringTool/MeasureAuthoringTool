@@ -3,6 +3,7 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelHeader;
@@ -12,12 +13,12 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,6 +35,7 @@ import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.MeasureSearchModel;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
 	private SimplePanel mainPanel = new SimplePanel();
@@ -147,7 +149,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return getMeasureNameColumnToolTip(object);
+				return CellTableUtility.getColumnToolTip(object.getName());
 			}
 		};
 		appliedComponentTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
@@ -210,15 +212,24 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		
 	}
 	
+	public void populateAvailableMeasuresTableCells(ManageMeasureSearchModel
+			manageMeasureSearchModel, int filter, MeasureSearchModel model) {
+		availableMeasuresList = new ArrayList<>();
+		availableMeasuresList.addAll(manageMeasureSearchModel.getData());
+		availableMeasuresTable.setRowCount(manageMeasureSearchModel.getResultsTotal(), true);
+		availableMeasuresPanel = buildAvailableMeasuresTable();
+		availableMeasuresTable.redraw();
+	}
+	
 	private void buildAvailableMeasuresTableColumns() {
 		availableMeasuresTable.setPageSize(PAGE_SIZE);
-		availableMeasuresTable.redraw();
+		GWT.log("availableMeasuresList size: " + availableMeasuresList.size());
 		availableMeasuresTable.setRowData(availableMeasuresList);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return getMeasureNameColumnToolTip(object);
+				return CellTableUtility.getColumnToolTip(object.getName());
 			}
 		};
 		availableMeasuresTable.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
@@ -277,19 +288,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 			@Override
 			public Boolean getValue(Result object) {
-				boolean isSelected = false;
-				if (availableMeasuresList != null
-						&& !availableMeasuresList.isEmpty()) {
-					for (int i = 0; i < availableMeasuresList.size(); i++) {
-						if (availableMeasuresList.get(i).getId()
-								.equalsIgnoreCase(object.getId())) {
-							isSelected = true;
-							break;
-						}
-					}
-				}
-				
-				return isSelected;
+				return false;
 			}
 		};
 
@@ -315,31 +314,26 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 					}
 				});
 		availableMeasuresTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Select\">" + "Select" + "</span>"));
+		availableMeasuresTable.redraw();
 	}
 	
-	/**
-	 * Gets the measure name column tool tip.
-	 *
-	 * @param object the object
-	 * @return the measure name column tool tip
-	 */
-	private SafeHtml getMeasureNameColumnToolTip(ManageMeasureSearchModel.Result object){
-		SafeHtmlBuilder sb = new SafeHtmlBuilder();
-		String cssClass = "customCascadeButton";
-		if (object.isMeasureFamily()) {
-			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-					+ "style=\"text-decoration:none\" tabindex=\"-1\">"
-					+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
-			sb.appendHtmlConstant("</a></div>");
-		} else {
-			sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
-					+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
-			sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\""
-					+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-			sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
-			sb.appendHtmlConstant("</a></div>");
-		}
-		return sb.toSafeHtml();		
+	public Button getSaveButton() {
+		return buttonBar.getSaveButton();
+	}
+	
+	public Button getCancelButton() {
+		return buttonBar.getCancelButton();
+	}
+	
+	public Button getBackButton() {
+		return buttonBar.getBackButton();
+	}
+	
+	public Button getSearchButton() {
+		return searchWidgetBootStrap.getGo();
+	}
+	
+	public HasValue<String> getSearchString() {
+		return searchWidgetBootStrap.getSearchBox();
 	}
 }

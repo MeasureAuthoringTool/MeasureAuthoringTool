@@ -52,7 +52,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
 
 public class MeasurePackageServiceImpl implements MeasurePackageService {
@@ -319,7 +319,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	@Override
-	public List<MeasureShareDTO> searchWithFilter(AdvancedSearchModel advancedSearchModel) {
+	public List<MeasureShareDTO> searchWithFilter(MeasureSearchModel advancedSearchModel) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.getMeasureShareInfoForUserWithFilter(advancedSearchModel, user);
 	}

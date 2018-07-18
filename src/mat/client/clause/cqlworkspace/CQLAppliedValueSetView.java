@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -277,13 +278,14 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		VerticalPanel programPanel = new VerticalPanel();
 		programPanel.setWidth("225px");
 		FormLabel programLabel = new FormLabel();
+		programLabel.setShowRequiredIndicator(true);
 		programLabel.setText(TEXT_PROGRAM);
-		programLabel.setTitle(TEXT_PROGRAM);
+		programLabel.setTitle(TEXT_PROGRAM + " (required)");
 		programPanel.add(programLabel);
 		programListBox.setTitle("Program selection list");
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
-		initProgramListBoxContent();
+		loadPrograms();
 
 		VerticalPanel releasePanel = new VerticalPanel();
 		releasePanel.setWidth("225px");
@@ -358,14 +360,35 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	public void initializeReleaseListBoxContent() {
 		getReleaseListBox().clear();
-		getReleaseListBox().setEnabled(false);
+		getReleaseListBox().setEnabled(true);
 		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
+	}
+		
+	private void loadPrograms() {
+		getProgramListBox().clear();	
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases(); 
+		pgmRelMap.forEach((k, v) -> getProgramListBox().addItem(k));
+	}
+	
+	//loadPrograms() MUST be called before loadReleases()
+	public void loadReleases() {
+		List<String> releases = new ArrayList<>();
+		releases.add(MatContext.PLEASE_SELECT);
+		releases.addAll(MatContext.get().getProgramToReleases().get(getProgramListBox().getSelectedValue()));
+		getReleaseListBox().clear();
+		for(String release : releases) {
+			getReleaseListBox().addItem(release, release);
+		}
 	}
 	
 	
-	public void initProgramListBoxContent() {
-		getProgramListBox().clear();
-		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
+	public void loadProgramsAndReleases() {
+		loadPrograms();
+		loadReleases();
+	}
+	
+	public void setProgramAndReleaseBoxesEnabled(Boolean isEnabled) {
+		getProgramListBox().setEnabled(isEnabled);
 	}
 
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
@@ -409,8 +432,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
-										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in the Second Column, Program in the third column, Release in the fourth column, "
+										+ "Edit in the fifth Column, Delete in the sixth Column"
+										+ "and Copy in seventh Column. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -418,8 +442,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
-										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in the Second Column, Program in the third column, Release in the fourth column, "
+										+ "Edit in the fifth Column, Delete in the sixth Column"
+										+ "and Copy in seventh Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -496,6 +521,24 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			
+			// Program Column
+			Column<CQLQualityDataSetDTO, SafeHtml> programColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+					new SafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(CQLQualityDataSetDTO object) {
+					StringBuilder title = new StringBuilder();
+					String program = null;
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						program = (object.getProgram() == null ? "" : object.getProgram());
+						title.append("Program : ").append(program);
+					} else {
+						program = "";
+					}
+					return CellTableUtility.getColumnToolTip(program, title.toString());
+				}
+			};
+			table.addColumn(programColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
 			
 			// Release Column
 			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
@@ -1061,9 +1104,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		getSaveButton().setEnabled(false);
 		
-		initializeReleaseListBoxContent();
+		
 		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
 		getProgramListBox().setEnabled(true);
+		initializeReleaseListBoxContent();
 		
 		getUpdateFromVSACButton().setEnabled(true);
 	}
@@ -1187,5 +1231,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 	public List<CQLQualityDataSetDTO> getAllValueSets() {
 		return allValueSetsList;
-	}	
+	}
+
 }

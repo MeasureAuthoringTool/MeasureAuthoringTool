@@ -1023,7 +1023,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setId(dto.getMeasureId());
 		detail.setStatus(dto.getStatus());
 		detail.seteMeasureId(dto.geteMeasureId());
-
+		detail.setPatientBased(dto.isPatientBased());
+		
 		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 		if (measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
 				|| measureReleaseVersion.startsWith("v3")) {
@@ -1222,7 +1223,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
 			detail.setMeasureLocked(isLocked);
 			detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
-
+			if(measure.getPatientBased() != null) {
+				detail.setPatientBased(measure.getPatientBased());
+			}
+			
 			if (isLocked && (measure.getLockedUser() != null)) {
 				LockedUserInfo lockedUserInfo = new LockedUserInfo();
 				lockedUserInfo.setUserId(measure.getLockedUser().getId());
@@ -2380,6 +2384,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				detail.setOwnerLastName(user.getLastName());
 				detail.setOwnerEmailAddress(user.getEmailAddress());
 				detail.setMeasureSetId(dto.getMeasureSetId());
+				detail.setPatientBased(dto.isPatientBased());
 				detailModelList.add(detail);
 			}
 		} else {
@@ -3210,6 +3215,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.getRevisionNumber(), measure.isDraft());
 		detail.setVersion(formattedVersion);
 		detail.setFinalizedDate(measure.getFinalizedDate());
+		if(measure.getPatientBased() != null) {
+			detail.setPatientBased(measure.getPatientBased());
+		}
 		return detail;
 	}
 

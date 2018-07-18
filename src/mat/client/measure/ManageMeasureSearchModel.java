@@ -95,6 +95,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		
 		private boolean isVersionable;
 		
+		private Boolean isPatientBased;
+		
 		/**
 		 * Checks if is measure family.
 		 *
@@ -589,8 +591,14 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setVersionable(boolean isVersionable) {
 			this.isVersionable = isVersionable;
 		}
-		
-		
+
+		public Boolean isPatientBased() {
+			return isPatientBased;
+		}
+
+		public void setPatientBased(Boolean isPatientBased) {
+			this.isPatientBased = isPatientBased;
+		}
 	}
 	
 	/** The data. */

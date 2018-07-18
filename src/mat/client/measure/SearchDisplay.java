@@ -17,7 +17,7 @@ import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.SearchWidgetWithFilter;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 
 public interface SearchDisplay extends BaseDisplay {
 	@Override
@@ -38,7 +38,7 @@ public interface SearchDisplay extends BaseDisplay {
 
 	void setAdminObserver(AdminObserver adminObserver);
 
-	public void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, AdvancedSearchModel model);
+	public void buildCellTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, MeasureSearchModel model);
 
 	void buildMostRecentWidget();
 

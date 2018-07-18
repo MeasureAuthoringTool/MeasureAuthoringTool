@@ -1,6 +1,6 @@
 package mat.client.advancedSearch;
 
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 
 public class CQLLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	
@@ -22,7 +22,7 @@ public class CQLLibraryAdvancedSearchBuilder extends AdvancedSearchBuilder {
 	}
 
 	@Override
-	protected AdvancedSearchModel generateAdvancedSearchModel() {
+	protected MeasureSearchModel generateAdvancedSearchModel() {
 		// TODO Auto-generated method stub
 		return null;
 	}

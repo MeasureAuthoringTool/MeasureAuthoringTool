@@ -32,7 +32,7 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -269,7 +269,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *          the callback
 	 */
-	void search(AdvancedSearchModel advancedSearchModel, AsyncCallback<ManageMeasureSearchModel> callback);
+	void search(MeasureSearchModel advancedSearchModel, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Search users.

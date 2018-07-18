@@ -78,7 +78,8 @@ public class MeasureShareDTO implements IsSerializable {
 	
 	private boolean isVersionable;
 	
-	
+	private Boolean isPatientBased;
+
 	/**
 	 * Gets the scoring type.
 	 * 
@@ -490,6 +491,12 @@ public class MeasureShareDTO implements IsSerializable {
 		this.isVersionable = isVersionable;
 	}
 	
-	
+	public Boolean isPatientBased() {
+		return isPatientBased;
+	}
+
+	public void setPatientBased(Boolean isPatientBased) {
+		this.isPatientBased = isPatientBased;
+	}
 	
 }

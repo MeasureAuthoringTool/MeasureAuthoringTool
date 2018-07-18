@@ -223,7 +223,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private void buildAvailableMeasuresTableColumns() {
 		availableMeasuresTable.setPageSize(PAGE_SIZE);
-		GWT.log("availableMeasuresList size: " + availableMeasuresList.size());
 		availableMeasuresTable.setRowData(availableMeasuresList);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
@@ -262,7 +261,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return CellTableUtility.getColumnToolTip("");
+				String patientBasedString = (object.isPatientBased() != null) ? Boolean.toString(object.isPatientBased()) : null;
+				return CellTableUtility.getColumnToolTip(patientBasedString);
 			}
 		};
 		availableMeasuresTable.addColumn(patientBasedIndicator, SafeHtmlUtils.fromSafeConstant("<span title=\"Patient-based Indicator\">" + "Patient-based Indicator" + "</span>"));

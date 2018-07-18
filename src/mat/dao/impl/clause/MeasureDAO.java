@@ -212,6 +212,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		dto.setRevisionNumber(measure.getRevisionNumber());
 		boolean isLocked = isLocked(measure.getLockedOutDate());
 		dto.setLocked(isLocked);
+		if(measure.getPatientBased() != null) {
+			dto.setPatientBased(measure.getPatientBased());
+		}
+
 		if (isLocked && (measure.getLockedUser() != null)) {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
 			lockedUserInfo.setUserId(measure.getLockedUser().getId());

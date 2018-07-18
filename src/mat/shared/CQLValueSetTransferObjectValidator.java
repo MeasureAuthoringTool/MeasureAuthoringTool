@@ -11,18 +11,10 @@ public class CQLValueSetTransferObjectValidator {
 		if(object.getMatValueSet() != null){
 			if(StringUtility.isEmptyOrNull(object.getMatValueSet().getDisplayName())) {
 				isValid = false;
-			} else if((StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) && StringUtility.isEmptyOrNull(object.getCqlQualityDataSetDTO().getRelease())) || (StringUtility.isEmptyOrNull(object.getCqlQualityDataSetDTO().getProgram()) && StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getRelease()))) {
-				isValid = false;
-			} else if((StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) || StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getRelease())) && object.isVersion()){
-				isValid = false;
-			}
+			} 
 		} else if(object.getUserDefinedText().trim().isEmpty()){
 			isValid = false;
-		} else {
-			if(StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getProgram()) || StringUtility.isNotBlank(object.getCqlQualityDataSetDTO().getRelease()) || object.isVersion()){
-				isValid = false;
-			}
-		}
+		} 
 		
 		List<CQLQualityDataSetDTO> existingQDSList = object.getAppliedQDMList();
 		for (CQLQualityDataSetDTO dataSetDTO : existingQDSList) {

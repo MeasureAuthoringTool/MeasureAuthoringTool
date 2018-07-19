@@ -42,5 +42,6 @@
        
 	<property name="patientBased" column="PATIENT_BASED"/>
 	<property name="qdmVersion" column="QDM_VERSION"></property>
+	<property name = "isCompositeMeasure" column = "IS_COMPOSITE_MEASURE"/>
   </class>
 </hibernate-mapping>

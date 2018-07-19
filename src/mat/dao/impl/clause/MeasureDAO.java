@@ -592,20 +592,28 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel advancedSearchModel,
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
 			User user) {
 
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.isMyMeasureSearch());
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
 
+		if(measureSearchModel.getQdmVersion() != null) {
+			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
+		}
+		
+/*		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
+			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
+		}*/
+		
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(1);
-
+		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
 		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
 		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3")
-				&& (advancedSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
+				&& (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
 
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -613,7 +621,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		measureResultList = sortMeasureList(measureResultList);
 
 		for (Measure measure : measureResultList) {
-			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
+			if (advanceSearchResultsForMeasure(measureSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if (isDraft) {

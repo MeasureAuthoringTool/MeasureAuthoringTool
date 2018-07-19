@@ -319,9 +319,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	@Override
-	public List<MeasureShareDTO> searchWithFilter(MeasureSearchModel advancedSearchModel) {
+	public List<MeasureShareDTO> searchWithFilter(MeasureSearchModel measureSearchModel) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measureDAO.getMeasureShareInfoForUserWithFilter(advancedSearchModel, user);
+		return measureDAO.getMeasureShareInfoForUserWithFilter(measureSearchModel, user);
 	}
 
 	@Override

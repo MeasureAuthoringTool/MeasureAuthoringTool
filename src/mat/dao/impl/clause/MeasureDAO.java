@@ -601,9 +601,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
 		}
 		
-/*		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
+		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
 			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
-		}*/
+		}
 		
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(1);

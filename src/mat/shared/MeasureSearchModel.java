@@ -17,7 +17,7 @@ public class MeasureSearchModel implements IsSerializable {
 	private int pageSize;
 	private int isMyMeasureSearch;
 	private String lastSearchText;
-	private String measureType; //TODO what will we name this column to indicate composite measures?
+	private Boolean omitCompositeMeasure;
 	private String qdmVersion;
 
 	public final static String ONLY_MY_MEASURE = "Only My Measures";
@@ -141,13 +141,6 @@ public class MeasureSearchModel implements IsSerializable {
 	public void setScoringTypes(List<String> scoringTypes) {
 		this.scoringTypes = scoringTypes;
 	}
-	public String getMeasureType() {
-		return measureType;
-	}
-
-	public void setMeasureType(String measureType) {
-		this.measureType = measureType;
-	}
 
 	public String getQdmVersion() {
 		return qdmVersion;
@@ -156,4 +149,13 @@ public class MeasureSearchModel implements IsSerializable {
 	public void setQdmVersion(String qdmVersion) {
 		this.qdmVersion = qdmVersion;
 	}
+	
+	public Boolean isOmitCompositeMeasure() {
+		return omitCompositeMeasure;
+	}
+
+	public void setOmitCompositeMeasure(Boolean omitCompositeMeasure) {
+		this.omitCompositeMeasure = omitCompositeMeasure;
+	}
+	
 }

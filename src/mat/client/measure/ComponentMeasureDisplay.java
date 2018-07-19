@@ -19,7 +19,9 @@ import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,6 +34,7 @@ import mat.client.buttons.BackSaveCancelButtonBar;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
@@ -55,7 +58,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private PanelHeader availableMeasureHeader = new PanelHeader();
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
 	
-	private static final int PAGE_SIZE = 25;
+	private static final int PAGE_SIZE = 10;
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
 	private CellTable<ManageMeasureSearchModel.Result> appliedComponentTable;
@@ -125,6 +128,11 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponentTable.setWidth("100%");
 		buildAppliedComponentMeasuresTableColumns();
 		appliedComponentMeasuresPanel.add(appliedComponentTable);
+    	Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("appliedComponentMeasureSearchSummary",
+				"In the following Applied Component Measure table, Measure Name is given in first column,"
+						+ " Version in second column, Measure Scoring in third column,"
+						+ "Assign Alias in fourth column, Delete in fifth column.");
+    	appliedComponentMeasuresPanel.add(invisibleLabel);
 		return appliedComponentMeasuresPanel;
 	}
 
@@ -144,6 +152,11 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		availableMeasuresTable.setWidth("100%");
 		buildAvailableMeasuresTableColumns();
 		availableMeasuresPanel.add(availableMeasuresTable);
+    	Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("availableComponentMeasureSearchSummary",
+				"In the following Available Component Measure table, Measure Name is given in first column,"
+						+ " Version in second column, Measure Scoring in third column,"
+						+ "Patient-based Indicator in fourth column, Owner in fifth column, Select in sixth column.");
+    	availableMeasuresPanel.add(invisibleLabel);
 		return availableMeasuresPanel;
 	}
 	
@@ -237,12 +250,25 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 					}
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
-						List<ManageMeasureSearchModel.Result> manageMeasureSearchList = 
-								new ArrayList<ManageMeasureSearchModel.Result>();		        	  
-						manageMeasureSearchList.addAll(result.getData());
-						availableMeasuresList = manageMeasureSearchList;
-						/*		        	  buildCellTableCssStyle();*/
-						updateRowData(start, manageMeasureSearchList);
+						if ((result.getData() != null) && (result.getData().size() > 0)) {
+							List<ManageMeasureSearchModel.Result> manageMeasureSearchList = 
+									new ArrayList<ManageMeasureSearchModel.Result>();		        	  
+							manageMeasureSearchList.addAll(result.getData());
+							availableMeasuresList = manageMeasureSearchList;
+							updateRowData(start, manageMeasureSearchList);
+						} else {
+							availableMeasuresPanel.clear();
+							availableMeasuresPanel.setType(PanelType.PRIMARY);
+							availableMeasuresPanel.setWidth("100%");
+							availableMeasureHeader.setText("Available Measures");
+							availableMeasureHeader.setTitle("Available Measures");
+							availableMeasureHeader.getElement().setAttribute("tabIndex", "0");
+							HTML desc = new HTML("<p> No available measures. </p>");
+							availableMeasuresPanel.clear();
+							availableMeasuresPanel.add(availableMeasureHeader);
+							availableMeasuresPanel.add(new SpacerWidget());
+							availableMeasuresPanel.add(desc);
+						}
 					}
 				};
 

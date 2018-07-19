@@ -417,7 +417,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchComponentMeasures(componentMeasureDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, SearchWidgetWithFilter.ALL);
+				searchComponentMeasures(componentMeasureDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, SearchWidgetWithFilter.MY);
 			}
 		});
 	}
@@ -1201,9 +1201,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	protected void searchComponentMeasures(String searchText, int startIndex, int pageSize, int filter) {
 		setComponentSearchingBusy(true);
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-		//TODO add filters for same version of qdm, etc.
 		
 		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, Integer.MAX_VALUE, lastSearchText, searchText);
+		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
+		searchModel.setOmitCompositeMeasure(true);
 		
 		MatContext.get().getMeasureService().search(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override

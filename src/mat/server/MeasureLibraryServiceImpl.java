@@ -2349,24 +2349,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel) {
+	public final ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(advancedSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
-					advancedSearchModel.isMyMeasureSearch());
+			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(measureSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
+					measureSearchModel.isMyMeasureSearch());
 
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			List<MeasureShareDTO> measureTotalList = measureList;
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (advancedSearchModel.getPageSize() < measureTotalList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, advancedSearchModel.getPageSize());
-			} else if (advancedSearchModel.getPageSize() > measureList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, measureList.size());
+			if (measureSearchModel.getPageSize() < measureTotalList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureSearchModel.getPageSize());
+			} else if (measureSearchModel.getPageSize() > measureList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
 			}
-			searchModel.setStartIndex(advancedSearchModel.getStartIndex());
+			searchModel.setStartIndex(measureSearchModel.getStartIndex());
 			searchModel.setData(detailModelList);
 
 			for (MeasureShareDTO dto : measureList) {
@@ -2388,16 +2388,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				detailModelList.add(detail);
 			}
 		} else {
-			List<MeasureShareDTO> measureList = getService().searchWithFilter(advancedSearchModel);
+			List<MeasureShareDTO> measureList = getService().searchWithFilter(measureSearchModel);
 			List<MeasureShareDTO> measureTotalList = measureList;
 			
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (advancedSearchModel.getPageSize() <= measureTotalList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, advancedSearchModel.getPageSize());
-			} else if (advancedSearchModel.getPageSize() > measureList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, measureList.size());
+			if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureSearchModel.getPageSize());
+			} else if (measureSearchModel.getPageSize() > measureList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
 			}
-			searchModel.setStartIndex(advancedSearchModel.getStartIndex());
+			searchModel.setStartIndex(measureSearchModel.getStartIndex());
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			searchModel.setData(detailModelList);
 			for (MeasureShareDTO dto : measureList) {

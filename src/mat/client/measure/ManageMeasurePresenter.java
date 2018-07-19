@@ -1203,7 +1203,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 		//TODO add filters for same version of qdm, etc.
 		
-		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, 25, lastSearchText, searchText);
+		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, Integer.MAX_VALUE, lastSearchText, searchText);
 		
 		MatContext.get().getMeasureService().search(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override

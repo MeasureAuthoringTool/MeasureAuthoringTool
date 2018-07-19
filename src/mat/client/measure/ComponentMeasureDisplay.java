@@ -18,18 +18,24 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
+import mat.client.CustomPager;
 import mat.client.buttons.BackSaveCancelButtonBar;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
@@ -54,6 +60,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
 	private CellTable<ManageMeasureSearchModel.Result> appliedComponentTable;
 	private BackSaveCancelButtonBar buttonBar = new BackSaveCancelButtonBar("componentMeasures");
+	private int index;
 	
 	public ComponentMeasureDisplay() {
 		buildMainPanel();
@@ -218,6 +225,46 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		availableMeasuresList.addAll(manageMeasureSearchModel.getData());
 		availableMeasuresTable.setRowCount(manageMeasureSearchModel.getResultsTotal(), true);
 		availableMeasuresPanel = buildAvailableMeasuresTable();
+		
+		AsyncDataProvider<ManageMeasureSearchModel.Result> provider = new AsyncDataProvider<ManageMeasureSearchModel.Result>() {
+			@Override
+			protected void onRangeChanged(HasData<ManageMeasureSearchModel.Result> display) {
+				final int start = display.getVisibleRange().getStart();
+				index = start;
+				AsyncCallback<ManageMeasureSearchModel> callback = new AsyncCallback<ManageMeasureSearchModel>() {
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+					@Override
+					public void onSuccess(ManageMeasureSearchModel result) {
+						List<ManageMeasureSearchModel.Result> manageMeasureSearchList = 
+								new ArrayList<ManageMeasureSearchModel.Result>();		        	  
+						manageMeasureSearchList.addAll(result.getData());
+						availableMeasuresList = manageMeasureSearchList;
+						/*		        	  buildCellTableCssStyle();*/
+						updateRowData(start, manageMeasureSearchList);
+					}
+				};
+
+				model.setStartIndex(start + 1);
+				model.setPageSize(start + PAGE_SIZE);
+
+				model.setIsMyMeasureSearch(filter);
+
+				MatContext.get().getMeasureService().search(model, callback);
+			}
+		};
+
+
+		provider.addDataDisplay(availableMeasuresTable);
+		
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"componentMeasureDisplay");
+		spager.setPageStart(0);
+		spager.setDisplay(availableMeasuresTable);
+		spager.setPageSize(PAGE_SIZE);
+		availableMeasuresPanel.add(new SpacerWidget());
+		availableMeasuresPanel.add(spager);
 		availableMeasuresTable.redraw();
 	}
 	
@@ -261,7 +308,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				String patientBasedString = (object.isPatientBased() != null) ? Boolean.toString(object.isPatientBased()) : null;
+				String patientBasedString = (object.isPatientBased() != null) ? Boolean.toString(object.isPatientBased()) : "";
 				return CellTableUtility.getColumnToolTip(patientBasedString);
 			}
 		};

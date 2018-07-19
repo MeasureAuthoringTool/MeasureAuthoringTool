@@ -1216,7 +1216,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(ManageMeasureSearchModel result) {
-				//TODO populate the table/click handlers
 				if ((result.getResultsTotal() == 0) && !lastSearchText.isEmpty()) {
 					componentMeasureDisplay.getErrorMessageDisplay()
 							.createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());

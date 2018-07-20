@@ -9,7 +9,11 @@
 	        <sql>
 	        	<!-- MAT-9272 -->
 	  		 	CREATE TABLE `USER_BONNIE_CONNECTION` ( 
+<<<<<<< HEAD
 		  		 	`ID` INT NOT NULL AUTO_INCREMENT,
+=======
+		  		 	`ID` varchar(40) NOT NULL, 
+>>>>>>> 7e1ad7903c31cf81221d971c56aa43c6dbd126a6
 		  		 	`USER_ID` varchar(40) NOT NULL, 
 		  		 	`REFRESH_TOKEN` varchar(250) NOT NULL,
 	  				`ACCESS_TOKEN` varchar(250) NOT NULL,

@@ -1,6 +1,6 @@
 package mat.model;
 
-public class UserBonnieConnection {
+public class UserBonnieAccessInfo {
 	private int id;
 	
 	private User user;

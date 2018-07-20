@@ -4,6 +4,7 @@ public class CompositeMeasures {
 	private int id;
 	private String compositeMeasureId;
 	private String componentMeasureId;
+	private String alias;
 	
 	public int getId() {
 		return id;
@@ -23,6 +24,11 @@ public class CompositeMeasures {
 	public void setComponentMeasureId(String componentMeasureId) {
 		this.componentMeasureId = componentMeasureId;
 	}
-	
+	public String getAlias() {
+		return alias;
+	}
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 	
 }

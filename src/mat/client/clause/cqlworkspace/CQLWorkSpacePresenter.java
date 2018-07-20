@@ -4660,9 +4660,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					searchDisplay.resetMessageDisplay();					
-					String expansionProfile = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
-					expansionProfile = MatContext.PLEASE_SELECT.equals(expansionProfile) ? null : expansionProfile;
-					searchValueSetInVsac(expansionProfile);
+					String release;
+					String expansionProfile = null;
+					
+					release = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
+					release = MatContext.PLEASE_SELECT.equals(release) ? null : release;
+					
+					String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
+					program = MatContext.PLEASE_SELECT.equals(program) ? null : program;
+					
+					if(null == release && null != program) {
+						HashMap<String, String> pgmProfileMap = (HashMap<String, String>) MatContext.get().getProgramToLatestProfile();
+						expansionProfile = pgmProfileMap.get(program);
+					}
+					searchValueSetInVsac(release, expansionProfile);
 					// 508 compliance for Value Sets
 					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput());
 				}
@@ -5309,7 +5320,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param expansionProfile
 	 *            the expansion profile
 	 */
-	private void searchValueSetInVsac(String expansionProfile) {
+	private void searchValueSetInVsac(String release, String expansionProfile) {
 		currentMatValueSet = null;
 		showSearchingBusy(true);
 		final String oid = searchDisplay.getValueSetView().getOIDInput().getValue();
@@ -5329,7 +5340,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			return;
 		}
 
-		vsacapiService.getMostRecentValueSetByOID(oid, expansionProfile, new AsyncCallback<VsacApiResult>() {
+		vsacapiService.getMostRecentValueSetByOID(oid, release, expansionProfile, new AsyncCallback<VsacApiResult>() {
 
 			@Override
 			public void onFailure(final Throwable caught) {

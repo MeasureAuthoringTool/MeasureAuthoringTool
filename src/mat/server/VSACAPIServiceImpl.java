@@ -49,9 +49,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 
 	@Override
-	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId) {
+	public final VsacApiResult getMostRecentValueSetByOID(final String oid, final String release, String expansionId) {
 		String sessionId = getThreadLocalRequest().getSession().getId();
-		return this.vsacapi.getMostRecentValueSetByOID(oid, expansionId,sessionId);
+		return this.vsacapi.getMostRecentValueSetByOID(oid, release, expansionId, sessionId);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 
 	@Override
-	public VsacApiResult getVSACProgramsAndReleases() {
-		return this.vsacapi.getVSACProgramsAndReleases();
+	public VsacApiResult getVSACProgramsReleasesAndProfiles() {
+		return this.vsacapi.getVSACProgramsReleasesAndProfiles();
 	}
 }

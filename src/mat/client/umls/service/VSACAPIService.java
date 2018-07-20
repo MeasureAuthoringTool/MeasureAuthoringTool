@@ -18,11 +18,11 @@ public interface VSACAPIService extends RemoteService {
 
 	boolean validateVsacUser(String userName, String password);
 
-	VsacApiResult getMostRecentValueSetByOID(String oid, String profile);
+	VsacApiResult getMostRecentValueSetByOID(String oid, String release, String profile);
 
 	VsacApiResult updateCQLVSACValueSets(List<CQLQualityDataSetDTO> appliedQDMList, String defaultExpId);
 
 	VsacApiResult getDirectReferenceCode(String url);
 
-	VsacApiResult getVSACProgramsAndReleases();
+	VsacApiResult getVSACProgramsReleasesAndProfiles();
 }

@@ -204,6 +204,8 @@ public class MatContext implements IsSerializable {
 	
 	//VSAC Programs and Releases 
 	private HashMap<String, List<String>> programToReleases = new HashMap<>();
+	
+	private HashMap<String, String> programToLatestProfile = new HashMap<>();
 
 	public void clearDVIMessages(){
 		if(qdsView !=null){
@@ -1329,9 +1331,17 @@ public class MatContext implements IsSerializable {
 		this.programToReleases = (HashMap<String, List<String>>) programToReleases;
 	}
 
+	public Map<String, String> getProgramToLatestProfile() {
+		return programToLatestProfile;
+	}
+
+	public void setProgramToLatestProfile(Map<String, String> programToLatestProfile) {
+		this.programToLatestProfile = (HashMap<String, String>) programToLatestProfile;
+	}
+
 	public void getProgramsAndReleasesFromVSAC() {
 		
-		MatContext.get().getVsacapiServiceAsync().getVSACProgramsAndReleases(new AsyncCallback<VsacApiResult>() {
+		MatContext.get().getVsacapiServiceAsync().getVSACProgramsReleasesAndProfiles(new AsyncCallback<VsacApiResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -1341,7 +1351,8 @@ public class MatContext implements IsSerializable {
 			@Override
 			public void onSuccess(VsacApiResult result) {
 				if(result != null) {
-					MatContext.get().setProgramToReleases(result.getProgramToReleases());					
+					MatContext.get().setProgramToReleases(result.getProgramToReleases());
+					MatContext.get().setProgramToLatestProfile(result.getProgramToProfiles());
 				}
 				
 			}

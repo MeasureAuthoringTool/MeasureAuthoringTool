@@ -445,15 +445,11 @@ public class VSACApiServImpl implements VSACApiService{
 		return result;
 	}
 	
-	
-	/* 
-	 * {@inheritDoc}
-	 */
 	@Override
-	public final VsacApiResult getMostRecentValueSetByOID(final String oid, String expansionId, String sessionId) {
+	public final VsacApiResult getMostRecentValueSetByOID(final String oid, final String release, String expansionId, String sessionId) {
 		Callable<VsacApiResult> getValuesetTask = new Callable<VsacApiResult>() {
 			public VsacApiResult call() {
-				return getMostRecentValuesetByOID(oid, expansionId, sessionId);
+				return getMostRecentValuesetByOID(oid, release, expansionId, sessionId);
 			}
 		};
 		
@@ -491,7 +487,7 @@ public class VSACApiServImpl implements VSACApiService{
 	 * @param timeout the timeout in seconds
 	 * @return
 	 */
-	private final VsacApiResult getMostRecentValuesetByOID(final String oid, String expansionId, String sessionId) {
+	private final VsacApiResult getMostRecentValuesetByOID(final String oid, String release, String expansionId, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid
 				+ "for Expansion Identifier :" + expansionId);
 		VsacApiResult result = new VsacApiResult();
@@ -503,10 +499,13 @@ public class VSACApiServImpl implements VSACApiService{
 				String fiveMinServiceTicket = vGroovyClient.getServiceTicket(eightHourTicket);
 				VSACResponseResult vsacResponseResult = null;
 		
-				if (StringUtils.isNotBlank(expansionId)){					
+				if (StringUtils.isNotBlank(release)){					
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(oid.trim(), expansionId, fiveMinServiceTicket);
-				}else {  
-					expansionId = getDefaultExpId();
+				} else {
+					if (StringUtils.isBlank(expansionId)) {
+						expansionId = getDefaultExpId();
+					}
+					
 					vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOID(oid.trim(),fiveMinServiceTicket, expansionId);
 				}
 								
@@ -561,7 +560,7 @@ public class VSACApiServImpl implements VSACApiService{
 	}
 
 	@Override
-	public VsacApiResult getVSACProgramsAndReleases() {
+	public VsacApiResult getVSACProgramsReleasesAndProfiles() {
 
 		LOGGER.info("Start VSACAPIServiceImpl getProgramsList method :");
 		VsacApiResult result = new VsacApiResult();
@@ -580,18 +579,21 @@ public class VSACApiServImpl implements VSACApiService{
 				} else {
 					
 					Map<String, List<String>> programToReleases = new HashMap<>();
+					Map<String, String> programToProfiles = new HashMap<>();
 					
 					for (String program : vsacResponseResult.getPgmRels()) {
 						programToReleases.put(program, getReleasesListForProgram(program));
+						programToProfiles.put(program, getLatestProfileOfProgram(program));
 					}
 					
 					result.setProgramToReleases(programToReleases);
+					result.setProgramToProfiles(programToProfiles);
 				}
 
 			}				
 
-		} catch (Exception ex) {
-			LOGGER.info("VSACAPIServiceImpl failed in method :: getProgramsList");
+		} catch (Exception e) {
+			LOGGER.error("getVSACProgramsAndReleases : " + e.getMessage());
 		}
 
 		return result;
@@ -603,9 +605,20 @@ public class VSACApiServImpl implements VSACApiService{
 		VSACResponseResult vsacResponseResult = null;
 		try {
 			vsacResponseResult = vGroovyClient.getReleasesOfProgram(programName);
-		} catch (Exception ex) {
-			LOGGER.info("VSACAPIServiceImpl failed in method :: getProgramsList");
+		} catch (Exception e) {
+			LOGGER.error("getReleasesListForProgram: " + e.getMessage());
 		}
 		return vsacResponseResult != null ? vsacResponseResult.getPgmRels() : null;
+	}
+	
+	private String getLatestProfileOfProgram(String programName) {
+		LOGGER.info("Start getProfilesForProgram method :");
+		VSACResponseResult vsacResponseResult = null;
+		try {
+			vsacResponseResult = vGroovyClient.getLatestProfileOfProgram(programName);
+		} catch (Exception e) {
+			LOGGER.error("getLatestProfileOfProgram: " + e.getMessage());
+		}
+		return vsacResponseResult != null ? vsacResponseResult.getXmlPayLoad() : null;
 	}
 }

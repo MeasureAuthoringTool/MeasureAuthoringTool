@@ -62,6 +62,9 @@ public class VsacApiResult implements IsSerializable {
 	//VSAC Programs and Releases 
 	private Map<String, List<String>> programToReleases = new HashMap<>();
 	
+	//VSAC Programs and Latest Profiles 
+	private Map<String, String> programToProfiles = new HashMap<>();
+	
 	/**
 	 * Gets the failure reason.
 	 * 
@@ -199,6 +202,14 @@ public class VsacApiResult implements IsSerializable {
 
 	public void setProgramToReleases(Map<String, List<String>> programToReleases) {
 		this.programToReleases = programToReleases;
+	}
+
+	public Map<String, String> getProgramToProfiles() {
+		return programToProfiles;
+	}
+
+	public void setProgramToProfiles(Map<String, String> programToProfiles) {
+		this.programToProfiles = programToProfiles;
 	}
 
 }

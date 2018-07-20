@@ -18,9 +18,9 @@ public interface VSACAPIServiceAsync {
 
 	void validateVsacUser(String userName, String password, AsyncCallback<Boolean> callback);
 	
-    void getMostRecentValueSetByOID(final String oid, final String profile, AsyncCallback<VsacApiResult> callback);
+    void getMostRecentValueSetByOID(final String oid, final String release, final String profile, AsyncCallback<VsacApiResult> callback);
 
 	void getDirectReferenceCode(String url, AsyncCallback<VsacApiResult> callback);
 	
-	void getVSACProgramsAndReleases(AsyncCallback<VsacApiResult> callback);	
+	void getVSACProgramsReleasesAndProfiles(AsyncCallback<VsacApiResult> callback);	
 }

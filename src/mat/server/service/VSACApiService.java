@@ -12,7 +12,7 @@ public interface VSACApiService {
 		
 	boolean validateVsacUser(String userName, String password, String sessionId);
 	
-	VsacApiResult getMostRecentValueSetByOID(String oid, String expansionId, String sessionId);
+	VsacApiResult getMostRecentValueSetByOID(String oid, String release, String expansionId, String sessionId);
 	
 	VsacApiResult getAllExpIdentifierList(String sessionId);
 
@@ -21,5 +21,5 @@ public interface VSACApiService {
 
 	VsacApiResult getDirectReferenceCode(String oid, String sessionId);
 	
-	VsacApiResult getVSACProgramsAndReleases();
+	VsacApiResult getVSACProgramsReleasesAndProfiles();
 }

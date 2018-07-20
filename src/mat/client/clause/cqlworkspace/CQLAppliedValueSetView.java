@@ -62,7 +62,6 @@ import mat.client.CustomPager;
 import mat.client.buttons.CodesValuesetsButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -283,7 +282,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		programListBox.setTitle("Program selection list");
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
-		initProgramListBoxContent();
+		CQLAppliedValueSetUtility.loadPrograms(getProgramListBox());
 
 		VerticalPanel releasePanel = new VerticalPanel();
 		releasePanel.setWidth("225px");
@@ -294,7 +293,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		releaseListBox.setTitle("Release selection list");
 		releaseListBox.setWidth("200px");
 		releasePanel.add(releaseListBox);
-		initializeReleaseListBoxContent();
+		CQLAppliedValueSetUtility.initializeReleaseListBoxContent(getReleaseListBox());
 
 		VerticalPanel goPanel = new VerticalPanel();
 		goPanel.setWidth("150px");
@@ -356,16 +355,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return searchPanel;
 	}
 	
-	public void initializeReleaseListBoxContent() {
-		getReleaseListBox().clear();
-		getReleaseListBox().setEnabled(false);
-		getReleaseListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
-	}
 	
-	
-	public void initProgramListBoxContent() {
-		getProgramListBox().clear();
-		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);		
+	public void setProgramReleaseBoxEnabled(Boolean isEnabled) {
+		getProgramListBox().setEnabled(isEnabled);
 	}
 
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {
@@ -409,8 +401,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
-										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in the Second Column, Program in the third column, Release in the fourth column, "
+										+ "Edit in the fifth Column, Delete in the sixth Column"
+										+ "and Copy in seventh Column. The Applied Value Sets are listed alphabetically in a table.");
 				
 				
 			} else {
@@ -418,8 +411,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 						.buildInvisibleLabel(
 								"appliedQDMTableSummary",
 								"In the Following Applied Value Sets table Name in First Column"
-										+ "OID in Second Column, Edit in the Third Column, Delete in the Fourth Column"
-										+ "and Copy in Fifth Column. The Applied Value Sets are listed alphabetically in a table.");
+										+ "OID in the Second Column, Program in the third column, Release in the fourth column, "
+										+ "Edit in the fifth Column, Delete in the sixth Column"
+										+ "and Copy in seventh Column. The Applied Value Sets are listed alphabetically in a table.");
 			}
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby",
@@ -478,75 +472,26 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 
 			// OID Column
-			Column<CQLQualityDataSetDTO, SafeHtml> oidColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-					new SafeHtmlCell()) {
-				@Override
-				public SafeHtml getValue(CQLQualityDataSetDTO object) {
-					StringBuilder title = new StringBuilder();
-					String oid = null;
-					if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
-						oid = ConstantMessages.USER_DEFINED_CONTEXT_DESC;
-					} else {
-						title.append("OID : ").append(object.getOid());
-						oid = object.getOid();
-					}
-					return getOIDColumnToolTip(oid, title, object.isHasModifiedAtVSAC(), object.isNotFoundInVSAC());
-				}
-			};
-			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
+			table.addColumn(CQLAppliedValueSetUtility.createOIDColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			
+			// Program Column
+			table.addColumn(CQLAppliedValueSetUtility.createProgramColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
 			
 			// Release Column
-			Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-					new SafeHtmlCell()) {
-				@Override
-				public SafeHtml getValue(CQLQualityDataSetDTO object) {
-					StringBuilder title = new StringBuilder();
-					String release = "";
-					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						title.append("Release : ").append(object.getRelease());
-						release = object.getRelease() != null ? object.getRelease() : "";
-					}
-					return CellTableUtility.getColumnToolTip(release, title.toString());
-				}
-			};
-			table.addColumn(releaseColumn,
-					SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
+			table.addColumn(CQLAppliedValueSetUtility.createReleaseColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
 			
 			String colName = "";
 			// Edit Column
 			colName = "Edit";
-			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
-					getCompositeCell(isEditable, getModifyButtonCell())) {
-
-				@Override
-				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
-					return object;
-				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
+			table.addColumn(createEditColumn(), SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
 			// Delete Column
 			colName = "Delete";
-			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
-					getCompositeCell(isEditable, getDeleteButtonCell())) {
-				
-				@Override
-				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
-					return object;
-				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
+			table.addColumn(createDeleteColumn(), SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 			
 			// Copy Column
 			colName = "Copy";
-			table.addColumn(new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
-					getCompositeCell(true, getCheckBoxCell())) {
-
-				@Override
-				public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
-					return object;
-				}
-			}, SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
+			table.addColumn(createCopyColumn(), SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
 			table.setWidth("100%", true);
 			table.setColumnWidth(0, 25.0, Unit.PCT);
@@ -560,6 +505,45 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		}
 
 		return table;
+	}
+	
+	private Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> createEditColumn() {
+		Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> col = new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+				getCompositeCell(isEditable, getModifyButtonCell())) {
+
+			@Override
+			public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+				return object;
+			}
+		};
+				
+		return col;
+	}
+	
+	private Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> createDeleteColumn() {
+		Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> col = new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+				getCompositeCell(isEditable, getDeleteButtonCell())) {
+			
+			@Override
+			public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+				return object;
+			}
+		};
+				
+		return col;
+	}
+	
+	private Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> createCopyColumn() {
+		Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> col = new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
+				getCompositeCell(true, getCheckBoxCell())) {
+
+			@Override
+			public CQLQualityDataSetDTO getValue(CQLQualityDataSetDTO object) {
+				return object;
+			}
+		};
+				
+		return col;
 	}
 	
 	
@@ -787,38 +771,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return specificOcurChkBox;
 	}
 
-	public String getDataTypeText(ListBoxMVP inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getItemText(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-
-	public String getDataTypeValue(ListBoxMVP inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-
-	public String getExpansionProfileValue(ListBox inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
-	}
-
-	private boolean checkForEnable() {
-		return MatContext.get().getMeasureLockService()
-				.checkForEditPermission();
-	}
-
 	public void resetVSACValueSetWidget() {
 	
-		if(checkForEnable()){
+		if(CQLAppliedValueSetUtility.checkForEnable()){
 			oidInput.setTitle(ENTER_OID);
 			nameInput.setTitle(ENTER_NAME);	
 		}
@@ -844,33 +799,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		this.observer = observer;
 	}
 
-	private SafeHtml getOIDColumnToolTip(String columnText,
-			StringBuilder title, boolean hasImage, boolean isUserDefined) {
-		if (hasImage && !isUserDefined) {
-			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"Value set is updated from VSAC.\""
-					+ "title = \"Value set is updated from VSAC.\"/>"
-					+ "<span tabIndex = \"0\" title='" + title + "'>"
-					+ columnText + "</span></body>" + "</html>";
-			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
-					.toSafeHtml();
-		} else if (hasImage && isUserDefined) {
-			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
-					+ "alt=\"Warning : Value set is not available in VSAC.\""
-					+ " title=\"Value set is not available in VSAC.\"/>"
-					+ "<span tabIndex = \"0\" title='" + title + "'>"
-					+ columnText + "</span></body>" + "</html>";
-			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
-					.toSafeHtml();
-		} else {
-			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><span tabIndex = \"0\" title='"
-					+ title + "'>" + columnText + "</span></body>" + "</html>";
-			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
-					.toSafeHtml();
-		}
-	}
+
 
 	public Button getCancelQDMButton() {
 		return cancelButton;
@@ -1061,9 +990,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		
 		getSaveButton().setEnabled(false);
 		
-		initializeReleaseListBoxContent();
+		
 		getProgramListBox().setSelectedIndex(0); // go back to '--Select--'
 		getProgramListBox().setEnabled(true);
+		CQLAppliedValueSetUtility.initializeReleaseListBoxContent(getReleaseListBox());
 		
 		getUpdateFromVSACButton().setEnabled(true);
 	}
@@ -1187,5 +1117,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 	public List<CQLQualityDataSetDTO> getAllValueSets() {
 		return allValueSetsList;
-	}	
+	}
+
 }

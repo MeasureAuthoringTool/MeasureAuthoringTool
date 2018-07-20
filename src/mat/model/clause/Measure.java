@@ -275,7 +275,6 @@ public class Measure {
 	public void setQdmVersion(String qdmVersion) {
 		this.qdmVersion = qdmVersion;
 	}
-	
 	public Boolean getIsCompositeMeasure() {
 		return isCompositeMeasure;
 	}

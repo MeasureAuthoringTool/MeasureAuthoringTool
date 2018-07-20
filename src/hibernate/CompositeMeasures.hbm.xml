@@ -10,5 +10,6 @@
 	</id>	
 	<property name="compositeMeasureId" column="COMPOSITE_MEASURE_ID" />
 	<property name="componentMeasureId" column="COMPONENT_MEASURE_ID" />
+	<property name="alias" column="ALIAS" />
   </class>
 </hibernate-mapping>

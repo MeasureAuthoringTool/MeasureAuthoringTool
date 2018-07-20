@@ -1,6 +1,8 @@
-package mat.client.measure;
+package mat.client.export.measure;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+
+import mat.client.measure.BaseDisplay;
 
 public interface ExportDisplay extends BaseDisplay {
 
@@ -22,9 +24,7 @@ public interface ExportDisplay extends BaseDisplay {
 
 	public boolean isSimpleXML();
 
-	public void setMeasureName(String name);
-
 	boolean isCQLLibrary();
 
-	public void setVersion_Based_ExportOptions(String releaseVersion);
+	public void setExportOptionsBasedOnVersion(String releaseVersion);
 }

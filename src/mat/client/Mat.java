@@ -49,11 +49,13 @@ import mat.client.event.LogoffEvent;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
+import mat.client.export.ManageExportPresenter;
+import mat.client.export.ManageExportView;
+import mat.client.export.measure.ManageMeasureExportView;
 import mat.client.login.service.SessionManagementService;
 import mat.client.measure.ComponentMeasureDisplay;
 import mat.client.measure.ManageCompositeMeasureDetailView;
 import mat.client.measure.ManageMeasureDetailView;
-import mat.client.measure.ManageMeasureExportView;
 import mat.client.measure.ManageMeasureHistoryView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchView;
@@ -187,32 +189,30 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 	private ManageMeasurePresenter buildMeasureLibraryWidget(Boolean isAdmin) {
 		ManageMeasurePresenter measurePresenter = null;
-		if(isAdmin){
+		if (isAdmin) {
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
-			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, null, historyView, null, transferOS);
-		}else{
+
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, null, null, null, null, historyView,
+					null, transferOS);
+		} else {
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
 			ManageCompositeMeasureDetailView compositeMeasureDetailView = new ManageCompositeMeasureDetailView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 			ManageMeasureShareView measureShareView = new ManageMeasureShareView();
-			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
-			ManageMeasureExportView measureExportView;
-			if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
-				measureExportView = new ManageMeasureExportView(true);
-			}else{
-				measureExportView = new ManageMeasureExportView(false);
-			}
+			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();		
+			ManageExportView exportView = new ManageExportView();		
 			ComponentMeasureDisplay componentMeasureDisplay = new ComponentMeasureDisplay();
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, compositeMeasureDetailView , componentMeasureDisplay , measureShareView, measureExportView, historyView, versionView, null);
+			
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView,
+					compositeMeasureDetailView, componentMeasureDisplay, measureShareView, exportView,
+					historyView, versionView, null);
 		}
-		
-		
+
 		return measurePresenter;
-		
+
 	}
 	
 

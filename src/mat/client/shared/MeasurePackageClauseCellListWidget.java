@@ -285,7 +285,7 @@ public class MeasurePackageClauseCellListWidget {
 		SpacerWidget spacer = new SpacerWidget();
 		spacer.setStylePrimaryName("clearBoth");
 		packageGroupingPanelBody.add(spacer);
-
+		
 		packageGroupingPanelBody.add(saveGroupingButton);
 		mainFlowPanel.add(packageGroupingPanel);
 	}

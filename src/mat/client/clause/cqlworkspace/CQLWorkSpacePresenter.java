@@ -3489,7 +3489,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	}
 
 	private void loadProgramsAndReleases() {
-		searchDisplay.getValueSetView().loadProgramsAndReleases();
+		CQLAppliedValueSetUtility.loadProgramsAndReleases(searchDisplay.getValueSetView().getProgramListBox(), searchDisplay.getValueSetView().getReleaseListBox());
 	}
 
 	
@@ -4611,7 +4611,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				isApplyButtonEnabled = false; 
 				searchDisplay.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
 				
-				searchDisplay.getValueSetView().loadReleases();
+				CQLAppliedValueSetUtility.loadReleases(searchDisplay.getValueSetView().getReleaseListBox(), searchDisplay.getValueSetView().getProgramListBox());
 				
 				alert508StateChanges();
 			}
@@ -5420,7 +5420,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											.createAlert(message);
 									previousIsProgramReleaseBoxEnabled = isProgramReleaseBoxEnabled;
 									isProgramReleaseBoxEnabled = true;
-									searchDisplay.getValueSetView().loadProgramsAndReleases();
 									loadProgramsAndReleases(); 
 									
 									getAppliedValueSetList();
@@ -5575,7 +5574,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setProgram(programValue);
 			} else {
-				modifyValueSetDTO.setProgram(MatContext.get().getDefaultValueSetProgram());
+				modifyValueSetDTO.setProgram("");
 			}
 			
 			modifyValueSetList(modifyValueSetDTO);
@@ -5793,7 +5792,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
 		}
 		
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(MatContext.get().getDefaultValueSetProgram());
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram("");
 		String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
 		if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);

@@ -1773,7 +1773,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 											@Override
 											public void onSuccess(SaveUpdateCQLResult result) {
 												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
-												searchDisplay.getValueSetView().loadReleases();
+												CQLAppliedValueSetUtility.loadReleases(searchDisplay.getValueSetView().getReleaseListBox(), searchDisplay.getValueSetView().getProgramListBox());
 												if (result != null) {
 													if (result.isSuccess()) {
 														searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
@@ -3898,7 +3898,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				isApplyButtonEnabled = false; 
 				searchDisplay.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
 				
-				searchDisplay.getValueSetView().loadReleases();
+				CQLAppliedValueSetUtility.loadReleases(searchDisplay.getValueSetView().getReleaseListBox(), searchDisplay.getValueSetView().getProgramListBox());
 				
 				alert508StateChanges();
 			}
@@ -4620,7 +4620,7 @@ private void addCodeSearchPanelHandlers() {
 			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setProgram(programValue);
 			} else {
-				modifyValueSetDTO.setProgram(MatContext.get().getDefaultValueSetProgram());
+				modifyValueSetDTO.setProgram("");
 			}
 			
 			modifyValueSetList(modifyValueSetDTO);
@@ -4790,7 +4790,6 @@ private void addCodeSearchPanelHandlers() {
 									
 									previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
 									isProgramListBoxEnabled = true;
-									searchDisplay.getValueSetView().loadProgramsAndReleases();
 									loadProgramsAndReleases(); 
 									getAppliedValueSetList();
 								} else {
@@ -4920,7 +4919,7 @@ private void addCodeSearchPanelHandlers() {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
 		}
 		
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(MatContext.get().getDefaultValueSetProgram());
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram("");
 		String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
 		if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
@@ -5858,7 +5857,7 @@ private void addCodeSearchPanelHandlers() {
 	
 
 	private void loadProgramsAndReleases() {
-		searchDisplay.getValueSetView().loadProgramsAndReleases();
+		CQLAppliedValueSetUtility.loadProgramsAndReleases(searchDisplay.getValueSetView().getProgramListBox(), searchDisplay.getValueSetView().getReleaseListBox());
 	}
 
 	private boolean isValidExpressionName(String expressionName) {

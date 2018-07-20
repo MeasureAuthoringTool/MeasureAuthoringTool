@@ -72,9 +72,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.SaveUpdateCQLResult;
 
 public class MatContext implements IsSerializable {
-	
-	private final String defaultValueSetProgram = "CMS eCQM";
-	
+		
 	private CQLModel cqlModel;
 
 	private boolean isUMLSLoggedIn = false;
@@ -1384,7 +1382,4 @@ public class MatContext implements IsSerializable {
 		return bonnieLink;
 	}
 	
-	public String getDefaultValueSetProgram() {
-		return defaultValueSetProgram;
-	}
 }

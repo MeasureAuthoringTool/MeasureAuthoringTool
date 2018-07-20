@@ -1,4 +1,4 @@
-package mat.server;
+package mat.server.bonnie;
 
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
@@ -13,6 +13,8 @@ import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
 import mat.shared.BonnieOAuthResult;
+import mat.server.LoggedInUserUtil;
+import mat.server.SpringRemoteServiceServlet;
 
 @SuppressWarnings("serial")
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService{

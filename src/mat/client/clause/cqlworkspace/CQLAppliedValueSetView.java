@@ -392,7 +392,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		loadReleases();
 	}
 	
-	public void setProgramAndReleaseBoxesEnabled(Boolean isEnabled) {
+	public void setProgramReleaseBoxEnabled(Boolean isEnabled) {
 		getProgramListBox().setEnabled(isEnabled);
 	}
 

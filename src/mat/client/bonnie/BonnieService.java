@@ -7,6 +7,5 @@ import mat.shared.BonnieOAuthResult;
 @RemoteServiceRelativePath("bonnieService")
 public interface BonnieService extends RemoteService {
 	String getBonnieAccessLink();
-
 	BonnieOAuthResult exchangeCodeForTokens(String code);
 }

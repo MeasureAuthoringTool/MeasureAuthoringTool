@@ -50,6 +50,9 @@ import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.event.MeasureVersionEvent;
+import mat.client.export.ManageExportPresenter;
+import mat.client.export.ManageExportView;
+import mat.client.export.measure.ExportDisplay;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureCloningService;
@@ -119,8 +122,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private ComponentMeasureDisplay componentMeasureDisplay;
 
-	private ExportDisplay exportDisplay;
-
 	private HistoryDisplay historyDisplay;
 
 	private boolean isClone;
@@ -165,8 +166,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private VersionDisplay versionDisplay;
 
+	private ManageExportView exportView;
+
 	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg, DetailDisplay compositeDisplayArg, ComponentMeasureDisplay componentMeasureDisplayArg, ShareDisplay shareDisplayArg,
-			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
+			ManageExportView exportView, HistoryDisplay hDisplay,
 			VersionDisplay vDisplay,
 			final TransferOwnershipView transferDisplay) {
 
@@ -176,7 +179,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		componentMeasureDisplay = componentMeasureDisplayArg;
 		historyDisplay = hDisplay;
 		shareDisplay = shareDisplayArg;
-		exportDisplay = exportDisplayArg;
+//		exportDisplay = exportDisplayArg;
+		this.exportView = exportView; 
 
 		versionDisplay = vDisplay;
 		this.transferDisplay = transferDisplay;
@@ -203,8 +207,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		if(compositeDetailDisplay != null) {
 			compositeDetailDisplayHandlers(compositeDetailDisplay);
-		}
-		
+		}		
 		if(componentMeasureDisplay != null) {
 			componentMeasureDisplayHandlers();
 		}
@@ -289,14 +292,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	private String buildExportURL() {
-		String url = GWT.getModuleBaseURL() + "export?id=" + currentExportId + "&format=";
-		System.out.println("URL: " + url);
 
-		url += (exportDisplay.isHQMF() ? "hqmf" : exportDisplay.isHumanReadable() ? "humanreadable" : exportDisplay.isSimpleXML() ? "simplexml" : 
-			exportDisplay.isCQLLibrary() ? "cqlLibrary" : exportDisplay.isELM() ? "elm" : exportDisplay.isJSON() ? "json" : "zip");
-		return url;
-	}
 
 	private void bulkExport(List<String> selectedMeasureIds) {
 		String measureId = "";
@@ -366,7 +362,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				});
 	}
 
-	private void fireMeasureSelected(ManageMeasureSearchModel.Result result){
+	public void fireMeasureSelected(ManageMeasureSearchModel.Result result){
 		fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
 				result.getShortName(), result.getScoringType(), result.isEditable(),
 				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()));
@@ -728,7 +724,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureLibrary");
 	}
 
-	private void displaySearch() {
+	public void displaySearch() {
 		searchDisplay.getCellTablePanel().clear();
 		String heading = "Measure Library";
 		int filter;
@@ -889,32 +885,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}
 
 				});
+
+		ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this);
+
 		currentExportId = id;
-		exportDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		panel.getButtonPanel().clear();
-		exportDisplay.setVersion_Based_ExportOptions(result.getHqmfReleaseVersion());
-		panel.setHeading("My Measures > Export", "MeasureLibrary");
-		panel.setContent(exportDisplay.asWidget());
-		exportDisplay.setMeasureName(name);
+		panel.setContent(exportPresenter.getWidget());
 		Mat.focusSkipLists("MeasureLibrary");
-	}
-
-	private void exportDisplayHandlers(final ExportDisplay exportDisplay) {
-		exportDisplay.getCancelButton().addClickHandler(cancelClickHandler);
-		exportDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				saveExport();
-			}
-		});
-		exportDisplay.getOpenButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				openExport();
-			}
-		});
-
 	}
 
 	private void fireMeasureEditEvent() {
@@ -1023,13 +1001,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		return valid;
 	}
 
-	private void openExport() {
-		Window.open(buildExportURL() + "&type=open", "_blank", "");
-	}
 
-	private void saveExport() {
-		Window.open(buildExportURL() + "&type=save", "_self", "");
-	}
 	
 	private void getUnusedLibraryDialog(String measureId, String measureName, boolean isMajor, String version, boolean shouldPackage) {
 		ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(
@@ -1583,7 +1555,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 				detailDisplay.getErrorMessageDisplay().clearAlert();
 				historyDisplay.getErrorMessageDisplay().clearAlert();
-				exportDisplay.getErrorMessageDisplay().clearAlert();
 				shareDisplay.getErrorMessageDisplay().clearAlert();
 				if (manageMeasureSearchModel.getSelectedExportIds().isEmpty()) {
 					searchDisplay.getErrorMessageDisplayForBulkExport()
@@ -2111,4 +2082,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMeasureDeletion().clearAlert();
 	}
 
+	public ContentWithHeadingWidget getPanel() {
+		return panel;
+	}
 }

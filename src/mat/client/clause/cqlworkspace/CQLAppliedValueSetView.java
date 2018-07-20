@@ -278,9 +278,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		VerticalPanel programPanel = new VerticalPanel();
 		programPanel.setWidth("225px");
 		FormLabel programLabel = new FormLabel();
-		programLabel.setShowRequiredIndicator(true);
 		programLabel.setText(TEXT_PROGRAM);
-		programLabel.setTitle(TEXT_PROGRAM + " (required)");
+		programLabel.setTitle(TEXT_PROGRAM);
 		programPanel.add(programLabel);
 		programListBox.setTitle("Program selection list");
 		programListBox.setWidth("200px");
@@ -365,19 +364,25 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	}
 		
 	private void loadPrograms() {
-		getProgramListBox().clear();	
+		getProgramListBox().clear();
+		getProgramListBox().addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases(); 
 		pgmRelMap.forEach((k, v) -> getProgramListBox().addItem(k));
 	}
 	
 	//loadPrograms() MUST be called before loadReleases()
 	public void loadReleases() {
+		getReleaseListBox().setEnabled(false);
 		List<String> releases = new ArrayList<>();
 		releases.add(MatContext.PLEASE_SELECT);
-		releases.addAll(MatContext.get().getProgramToReleases().get(getProgramListBox().getSelectedValue()));
-		getReleaseListBox().clear();
-		for(String release : releases) {
-			getReleaseListBox().addItem(release, release);
+		String program = getProgramListBox().getSelectedValue();
+		if(!program.equals(MatContext.PLEASE_SELECT)) {
+			getReleaseListBox().setEnabled(true);
+			releases.addAll(MatContext.get().getProgramToReleases().get(getProgramListBox().getSelectedValue()));
+			getReleaseListBox().clear();
+			for(String release : releases) {
+				getReleaseListBox().addItem(release, release);
+			}
 		}
 	}
 	

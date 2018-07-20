@@ -73,6 +73,8 @@ import mat.shared.SaveUpdateCQLResult;
 
 public class MatContext implements IsSerializable {
 	
+	private final String defaultValueSetProgram = "CMS eCQM";
+	
 	private CQLModel cqlModel;
 
 	private boolean isUMLSLoggedIn = false;
@@ -1025,8 +1027,7 @@ public class MatContext implements IsSerializable {
 	public void getCurrentReleaseVersion(AsyncCallback<String> currentReleaseVersionCallback){
 		getSessionService().getCurrentReleaseVersion(currentReleaseVersionCallback);
 	}
-
-
+	
 	public List<CQLIdentifierObject> getValuesets() {
 		return this.valuesets;
 	}
@@ -1381,5 +1382,9 @@ public class MatContext implements IsSerializable {
 	
 	public String getBonnieLink() {
 		return bonnieLink;
+	}
+	
+	public String getDefaultValueSetProgram() {
+		return defaultValueSetProgram;
 	}
 }

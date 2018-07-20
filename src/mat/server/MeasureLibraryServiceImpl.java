@@ -132,7 +132,7 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.CQLValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
@@ -1023,7 +1023,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setId(dto.getMeasureId());
 		detail.setStatus(dto.getStatus());
 		detail.seteMeasureId(dto.geteMeasureId());
-
+		detail.setPatientBased(dto.isPatientBased());
+		
 		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 		if (measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
 				|| measureReleaseVersion.startsWith("v3")) {
@@ -1222,7 +1223,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
 			detail.setMeasureLocked(isLocked);
 			detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
-
+			if(measure.getPatientBased() != null) {
+				detail.setPatientBased(measure.getPatientBased());
+			}
+			
 			if (isLocked && (measure.getLockedUser() != null)) {
 				LockedUserInfo lockedUserInfo = new LockedUserInfo();
 				lockedUserInfo.setUserId(measure.getLockedUser().getId());
@@ -2345,24 +2349,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel) {
+	public final ManageMeasureSearchModel search(MeasureSearchModel measureSearchModel) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
-			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(advancedSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
-					advancedSearchModel.isMyMeasureSearch());
+			List<MeasureShareDTO> measureList = getService().searchForAdminWithFilter(measureSearchModel.getSearchTerm(), 1, Integer.MAX_VALUE,
+					measureSearchModel.isMyMeasureSearch());
 
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			List<MeasureShareDTO> measureTotalList = measureList;
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (advancedSearchModel.getPageSize() < measureTotalList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, advancedSearchModel.getPageSize());
-			} else if (advancedSearchModel.getPageSize() > measureList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, measureList.size());
+			if (measureSearchModel.getPageSize() < measureTotalList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureSearchModel.getPageSize());
+			} else if (measureSearchModel.getPageSize() > measureList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
 			}
-			searchModel.setStartIndex(advancedSearchModel.getStartIndex());
+			searchModel.setStartIndex(measureSearchModel.getStartIndex());
 			searchModel.setData(detailModelList);
 
 			for (MeasureShareDTO dto : measureList) {
@@ -2380,19 +2384,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				detail.setOwnerLastName(user.getLastName());
 				detail.setOwnerEmailAddress(user.getEmailAddress());
 				detail.setMeasureSetId(dto.getMeasureSetId());
+				detail.setPatientBased(dto.isPatientBased());
 				detailModelList.add(detail);
 			}
 		} else {
-			List<MeasureShareDTO> measureList = getService().searchWithFilter(advancedSearchModel);
+			List<MeasureShareDTO> measureList = getService().searchWithFilter(measureSearchModel);
 			List<MeasureShareDTO> measureTotalList = measureList;
 			
 			searchModel.setResultsTotal(measureTotalList.size());
-			if (advancedSearchModel.getPageSize() <= measureTotalList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, advancedSearchModel.getPageSize());
-			} else if (advancedSearchModel.getPageSize() > measureList.size()) {
-				measureList = measureTotalList.subList(advancedSearchModel.getStartIndex() - 1, measureList.size());
+			if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureSearchModel.getPageSize());
+			} else if (measureSearchModel.getPageSize() > measureList.size()) {
+				measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
 			}
-			searchModel.setStartIndex(advancedSearchModel.getStartIndex());
+			searchModel.setStartIndex(measureSearchModel.getStartIndex());
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			searchModel.setData(detailModelList);
 			for (MeasureShareDTO dto : measureList) {
@@ -3210,6 +3215,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measure.getRevisionNumber(), measure.isDraft());
 		detail.setVersion(formattedVersion);
 		detail.setFinalizedDate(measure.getFinalizedDate());
+		if(measure.getPatientBased() != null) {
+			detail.setPatientBased(measure.getPatientBased());
+		}
 		return detail;
 	}
 

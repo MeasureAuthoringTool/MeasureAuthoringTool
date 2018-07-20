@@ -5,8 +5,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class AdvancedSearchModel implements IsSerializable{
-	
+public class MeasureSearchModel implements IsSerializable {
 	private String searchTerm;
 	private VersionMeasureType versionMeasureType;
 	private List<String> scoringTypes;
@@ -18,8 +17,10 @@ public class AdvancedSearchModel implements IsSerializable{
 	private int pageSize;
 	private int isMyMeasureSearch;
 	private String lastSearchText;
-	
-	
+	private Boolean omitCompositeMeasure;
+	private String qdmVersion;
+	private Boolean omitPrivate;
+
 	public final static String ONLY_MY_MEASURE = "Only My Measures";
 	public final static int MY_MEASURES = 0;
 	public final static int ALL_MEASURES = 1;
@@ -32,11 +33,11 @@ public class AdvancedSearchModel implements IsSerializable{
 	
 	public enum PatientBasedType {ALL, PATIENT, NOT_PATIENT};
 	
-	public AdvancedSearchModel() {
+	public MeasureSearchModel() {
 		this.searchTerm = "";
 		this.versionMeasureType = VersionMeasureType.ALL;
 		this.scoringTypes = new ArrayList<String>();
-		this.patientBasedType = patientBasedType.ALL;
+		this.patientBasedType = PatientBasedType.ALL;
 		this.modifiedDate = 0;
 		this.modifiedOwner = "";
 		this.owner = "";
@@ -45,7 +46,7 @@ public class AdvancedSearchModel implements IsSerializable{
 		this.isMyMeasureSearch = MY_MEASURES;
 	}
 	
-	public AdvancedSearchModel(String searchterm, VersionMeasureType versionMeasureType, List<String> scoringTypes, PatientBasedType patientBasedType,
+	public MeasureSearchModel(String searchterm, VersionMeasureType versionMeasureType, List<String> scoringTypes, PatientBasedType patientBasedType,
 			int modifiedDate, String modifiedOwner, String owner, int startIndex, int pageSize, int isMyMeasureSearch, String lastSearchText) {
 		
 		this.searchTerm = searchterm;
@@ -61,7 +62,7 @@ public class AdvancedSearchModel implements IsSerializable{
 		this.lastSearchText = lastSearchText;
 	}
 
-	public AdvancedSearchModel(int myMeasureSearch, int startIndex, int pageSize, String lastSearchText, String searchTerm) {
+	public MeasureSearchModel(int myMeasureSearch, int startIndex, int pageSize, String lastSearchText, String searchTerm) {
 		this();
 		
 		this.isMyMeasureSearch = myMeasureSearch;
@@ -141,5 +142,28 @@ public class AdvancedSearchModel implements IsSerializable{
 	public void setScoringTypes(List<String> scoringTypes) {
 		this.scoringTypes = scoringTypes;
 	}
+
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
+	}
 	
+	public Boolean isOmitCompositeMeasure() {
+		return omitCompositeMeasure;
+	}
+
+	public void setOmitCompositeMeasure(Boolean omitCompositeMeasure) {
+		this.omitCompositeMeasure = omitCompositeMeasure;
+	}
+	
+	public Boolean getOmitPrivate() {
+		return omitPrivate;
+	}
+
+	public void setOmitPrivate(Boolean omitPrivate) {
+		this.omitPrivate = omitPrivate;
+	}
 }

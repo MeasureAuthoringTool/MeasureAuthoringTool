@@ -35,7 +35,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -171,7 +171,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public ManageMeasureSearchModel search(AdvancedSearchModel advancedSearchModel) {
+	public ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel) {
 		return this.getMeasureLibraryService().search(advancedSearchModel);
 	}
 	

@@ -1,7 +1,6 @@
 package mat.dao.impl.clause;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -20,7 +19,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -37,12 +35,12 @@ import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
-import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
-import mat.shared.AdvancedSearchModel;
+import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.StringUtility;
 
 public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.clause.MeasureDAO {
@@ -215,6 +213,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		dto.setRevisionNumber(measure.getRevisionNumber());
 		boolean isLocked = isLocked(measure.getLockedOutDate());
 		dto.setLocked(isLocked);
+		if(measure.getPatientBased() != null) {
+			dto.setPatientBased(measure.getPatientBased());
+		}
+
 		if (isLocked && (measure.getLockedUser() != null)) {
 			LockedUserInfo lockedUserInfo = new LockedUserInfo();
 			lockedUserInfo.setUserId(measure.getLockedUser().getId());
@@ -591,20 +593,36 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(AdvancedSearchModel advancedSearchModel,
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
 			User user) {
 
-		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, advancedSearchModel.isMyMeasureSearch());
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
 
+		if(measureSearchModel.getQdmVersion() != null) {
+			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
+		}
+		
+		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
+			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
+		}
+		
+		if(measureSearchModel.getOmitPrivate() != null && measureSearchModel.getOmitPrivate()) {
+			mCriteria.add(Restrictions.and(Restrictions.eq("isPrivate", false)));
+			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
+					Restrictions.eq("share.shareUser.id", user.getId())));
+			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
+		}
+
+		
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(1);
-
+		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
 		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
 		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
 		List<Measure> measureResultList = mCriteria.list();
 		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3")
-				&& (advancedSearchModel.isMyMeasureSearch() == AdvancedSearchModel.ALL_MEASURES);
+				&& (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
 
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -612,7 +630,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		measureResultList = sortMeasureList(measureResultList);
 
 		for (Measure measure : measureResultList) {
-			if (advanceSearchResultsForMeasure(advancedSearchModel, measure)) {
+			if (advanceSearchResultsForMeasure(measureSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				boolean isDraft = dto.isDraft();
 				if (isDraft) {
@@ -794,7 +812,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return matchesSearch;
 	}
 
-	private boolean advanceSearchResultsForMeasure(AdvancedSearchModel model, Measure measure) {
+	private boolean advanceSearchResultsForMeasure(MeasureSearchModel model, Measure measure) {
 		if(StringUtils.isNotBlank(model.getSearchTerm())) {
 			String searchTerm = model.getSearchTerm().toLowerCase();
 			String measureAbbName = measure.getaBBRName().toLowerCase();
@@ -804,20 +822,20 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			}
 		}
 
-		if (AdvancedSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
+		if (MeasureSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
 			return false;
 		}
-		if (AdvancedSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
+		if (MeasureSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
 			return false;
 		}
 		//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
-		if(!AdvancedSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
+		if(!MeasureSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
 			return false;
 		}
-		if (AdvancedSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
+		if (MeasureSearchModel.PatientBasedType.PATIENT.equals(model.isPatientBased()) && !measure.getPatientBased()) {
 			return false;
 		}
-		if (AdvancedSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.getPatientBased()) {
+		if (MeasureSearchModel.PatientBasedType.NOT_PATIENT.equals(model.isPatientBased()) && measure.getPatientBased()) {
 
 			return false;
 		}

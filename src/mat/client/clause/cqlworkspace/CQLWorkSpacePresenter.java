@@ -5572,7 +5572,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			
 			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
-			modifyValueSetDTO.setProgram(programValue);
+			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setProgram(programValue);
+			} else {
+				modifyValueSetDTO.setProgram(MatContext.get().getDefaultValueSetProgram());
+			}
+			
 			modifyValueSetList(modifyValueSetDTO);
 			if (!searchDisplay.getValueSetView().checkNameInValueSetList(displayName, appliedValueSetTableList)) {
 				
@@ -5788,8 +5793,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
 		}
 		
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(MatContext.get().getDefaultValueSetProgram());
 		String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
+		if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
+		}
 
 		
 		CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();

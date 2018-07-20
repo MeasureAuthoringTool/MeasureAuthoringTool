@@ -4617,7 +4617,12 @@ private void addCodeSearchPanelHandlers() {
 			}
 			
 			String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
-			modifyValueSetDTO.setProgram(programValue);
+			if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+				modifyValueSetDTO.setProgram(programValue);
+			} else {
+				modifyValueSetDTO.setProgram(MatContext.get().getDefaultValueSetProgram());
+			}
+			
 			modifyValueSetList(modifyValueSetDTO);
 			
 			
@@ -4915,8 +4920,11 @@ private void addCodeSearchPanelHandlers() {
 			matValueSetTransferObject.getCqlQualityDataSetDTO().setRelease(releaseValue);
 		}
 		
+		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(MatContext.get().getDefaultValueSetProgram());
 		String programValue = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
-		matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
+		if(!programValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			matValueSetTransferObject.getCqlQualityDataSetDTO().setProgram(programValue);
+		}
 		
 		CodeListSearchDTO codeListSearchDTO = new CodeListSearchDTO();
 		codeListSearchDTO.setName(searchDisplay.getValueSetView().getUserDefinedInput().getText());

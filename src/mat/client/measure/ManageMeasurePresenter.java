@@ -1242,8 +1242,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					componentMeasureDisplay.getErrorMessageDisplay().clearAlert();
 				}
 				setComponentSearchingBusy(false);
-				ManageMeasureSearchModel manageMeasureSearchModel = result;
-				componentMeasureDisplay.populateAvailableMeasuresTableCells(manageMeasureSearchModel, filter, searchModel);
+				componentMeasureDisplay.populateAvailableMeasuresTableCells(result, filter, searchModel);
 			}
 		});
 	}

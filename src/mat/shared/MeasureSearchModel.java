@@ -19,6 +19,7 @@ public class MeasureSearchModel implements IsSerializable {
 	private String lastSearchText;
 	private Boolean omitCompositeMeasure;
 	private String qdmVersion;
+	private Boolean omitPrivate;
 
 	public final static String ONLY_MY_MEASURE = "Only My Measures";
 	public final static int MY_MEASURES = 0;
@@ -158,4 +159,11 @@ public class MeasureSearchModel implements IsSerializable {
 		this.omitCompositeMeasure = omitCompositeMeasure;
 	}
 	
+	public Boolean getOmitPrivate() {
+		return omitPrivate;
+	}
+
+	public void setOmitPrivate(Boolean omitPrivate) {
+		this.omitPrivate = omitPrivate;
+	}
 }

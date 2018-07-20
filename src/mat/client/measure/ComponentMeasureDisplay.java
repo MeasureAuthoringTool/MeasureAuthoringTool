@@ -55,15 +55,15 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+	
 	private PanelHeader availableMeasureHeader = new PanelHeader();
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
-	
 	private static final int PAGE_SIZE = 10;
+	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
 	private CellTable<ManageMeasureSearchModel.Result> appliedComponentTable;
 	private BackSaveCancelButtonBar buttonBar = new BackSaveCancelButtonBar("componentMeasures");
-	private int index;
 	
 	public ComponentMeasureDisplay() {
 		buildMainPanel();
@@ -77,6 +77,15 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	@Override
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
+	}
+	
+	public void clearFields() {
+		availableMeasuresList.clear();
+		appliedComponentMeasuresList.clear();
+		buildAppliedComponentMeasuresTable();
+		buildAvailableMeasuresTable();
+		searchWidgetBootStrap.getSearchBox().setText("");
+		errorMessages.clearAlert();
 	}
 
 	private void buildMainPanel() {
@@ -243,7 +252,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 			@Override
 			protected void onRangeChanged(HasData<ManageMeasureSearchModel.Result> display) {
 				final int start = display.getVisibleRange().getStart();
-				index = start;
 				AsyncCallback<ManageMeasureSearchModel> callback = new AsyncCallback<ManageMeasureSearchModel>() {
 					@Override
 					public void onFailure(Throwable caught) {

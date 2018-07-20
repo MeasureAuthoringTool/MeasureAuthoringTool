@@ -40,6 +40,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.StringUtility;
 
 public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.clause.MeasureDAO {
@@ -604,6 +605,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
 			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
 		}
+		
+		if(measureSearchModel.getOmitPrivate() != null && measureSearchModel.getOmitPrivate()) {
+			mCriteria.add(Restrictions.and(Restrictions.eq("isPrivate", false)));
+			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
+					Restrictions.eq("share.shareUser.id", user.getId())));
+			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
+		}
+
 		
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(1);

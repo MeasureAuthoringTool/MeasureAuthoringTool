@@ -70,6 +70,7 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 
@@ -91,6 +92,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 				compositeDetailDisplay.getName().setValue("");
 				compositeDetailDisplay.getShortName().setValue("");
 				compositeDetailDisplay.clearFields();
+			}
+			
+			if(componentMeasureDisplay != null) {
+				componentMeasureDisplay.clearFields();
 			}
 			displaySearch();
 		}
@@ -417,7 +422,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				searchComponentMeasures(componentMeasureDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, SearchWidgetWithFilter.MY);
+				searchComponentMeasures(componentMeasureDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE, SearchWidgetWithFilter.ALL);
+			}
+		});
+		componentMeasureDisplay.getCancelButton().addClickHandler(cancelClickHandler);
+		componentMeasureDisplay.getBackButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				displayDetailForAddComposite();
 			}
 		});
 	}
@@ -515,6 +528,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				if(componentMeasureDisplay != null) {
+					componentMeasureDisplay.clearFields();
+				}
 				updateCompositeDetailsFromView();
 				if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
 					return;
@@ -1205,6 +1221,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, Integer.MAX_VALUE, lastSearchText, searchText);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		searchModel.setOmitCompositeMeasure(true);
+		searchModel.setOmitPrivate(true);
+		searchModel.setIsDraft(VersionMeasureType.VERSION);
 		
 		MatContext.get().getMeasureService().search(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override

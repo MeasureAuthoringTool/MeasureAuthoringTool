@@ -6,7 +6,7 @@
 <hibernate-mapping auto-import="false">
   <class name="mat.model.UserBonnieConnection" table="USER_BONNIE_CONNECTION" lazy="false"> 
 	<id name="id" column="ID">
-		<generator class="uuid"/>
+		<generator class="increment"/>
 	</id>
 	<many-to-one name="user" class="mat.model.User" column="USER_ID" unique="true"/>
 	<property name="refreshToken" column="REFRESH_TOKEN" />

@@ -1,7 +1,7 @@
 package mat.model;
 
 public class UserBonnieConnection {
-	private String id;
+	private int id;
 	
 	private User user;
 	
@@ -9,11 +9,11 @@ public class UserBonnieConnection {
 	
 	private String accessToken;
 	
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 	
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 	

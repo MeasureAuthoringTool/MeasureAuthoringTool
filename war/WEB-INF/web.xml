@@ -168,6 +168,10 @@
    <url-pattern>/mat/loginService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+   <servlet-name>logoutServiceImpl</servlet-name>
+   <url-pattern>/bonnie/loginService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>codelistServiceImpl</servlet-name>
     <url-pattern>/mat/codelist</url-pattern>
   </servlet-mapping>
@@ -210,6 +214,10 @@
   <servlet-mapping>
       <servlet-name>bonnieService</servlet-name>
       <url-pattern>/mat/bonnieService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>bonnieService</servlet-name>
+      <url-pattern>/bonnie/bonnieService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
       <servlet-name>populationService</servlet-name>

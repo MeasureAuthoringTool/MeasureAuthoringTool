@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface BonnieServiceAsync {
 	
-	public void getBonnieLink(AsyncCallback<String> asyncCallback);
+	public void getBonnieAccessLink(AsyncCallback<String> asyncCallback);
 	
+	public void getBonnieTokens(String code, AsyncCallback<String> asyncCallback);
 }

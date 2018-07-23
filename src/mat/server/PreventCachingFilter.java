@@ -50,11 +50,11 @@ public class PreventCachingFilter implements Filter{
 			}
 			httpResponse.setHeader("Location", url);
 		}
-		else if(requestURI.indexOf("/Mat.html") >= 0) {
+		else if(requestURI.indexOf("/Mat.html") >= 0 || requestURI.indexOf("/Bonnie.html") >= 0) {
 			logger.info("PreventCachingFilter");
 			
 			//
-			// prevent the mat.html file from being cached somewhere
+			// prevent the mat.html and bonnie.html file from being cached somewhere
 			//
 			Date now = new Date();
 			httpResponse.setDateHeader("Date", now.getTime());
@@ -75,7 +75,7 @@ public class PreventCachingFilter implements Filter{
 				chain.doFilter(request, response);
 			}
 		}
-		else if (requestURI.contains("mat.nocache.")) {
+		else if (requestURI.contains("mat.nocache.") || requestURI.contains("bonnie.nocache.")) {
 			   Date now = new Date();
 			   httpResponse.setDateHeader("Date", now.getTime());
 			   // one day old

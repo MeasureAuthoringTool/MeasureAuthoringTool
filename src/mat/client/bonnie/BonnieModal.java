@@ -12,6 +12,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.NoButton;
 import mat.client.buttons.YesButton;
@@ -53,6 +54,7 @@ public class BonnieModal {
 			@Override
 			public void onClick(ClickEvent event) {
 				panel.setVisible(false);
+				//MatContext.get().redirectToHtmlPage(ClientConstants.HTML_BONNIE);
 				Window.open(MatContext.get().getBonnieLink(), "_self", "");
 			}
 		});
@@ -70,5 +72,8 @@ public class BonnieModal {
 		panel.show();	
 		messageLabel.getElement().focus();
 	}
-		
+	
+	public Widget asWidget() {
+		return panel;
+	}
 }

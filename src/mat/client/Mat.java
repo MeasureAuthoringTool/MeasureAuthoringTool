@@ -159,14 +159,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 						final Date lastSignOut = result.signOutDate;
 						final Date current = new Date();
 						final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
-						if(isAlreadySignedIn){
-							redirectToLogin();
-						}
-						else{
-							MatContext.get().setUserSignInDate(result.userId);
-							MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
-							loadMatWidgets(result.userFirstName, isAlreadySignedIn, resultMatVersion);
-						}
+						MatContext.get().setUserSignInDate(result.userId);
+						MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
+						loadMatWidgets(result.userFirstName, isAlreadySignedIn, resultMatVersion);
 					}
 					
 				}
@@ -533,6 +528,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				public void onClick(ClickEvent event) {
 					BonnieModal bonnieModal = new BonnieModal();
 					bonnieModal.show();
+					//TODO add open of bonnie
+					//MatContext.get().redirectToHtmlPage(ClientConstants.HTML_BONNIE);
 				}
 			});
 		}
@@ -569,15 +566,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				Mat.showSignOutMessage();
 				MatContext.get().getSynchronizationDelegate().setLogOffFlag();
 				MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
-			}
-		});
-		
-		Window.addCloseHandler(new CloseHandler<Window>() {
-			@Override
-			public void onClose(CloseEvent<Window> arg0) {
-				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
-					MatContext.get().handleSignOut("WINDOW_CLOSE_EVENT", false);
-				}
 			}
 		});
 		

@@ -37,6 +37,8 @@ public class ClientConstants {
 	/** The Constant HTML_MAT. */
 	public final static String HTML_MAT ="/Mat.html";
 	
+	public final static String HTML_BONNIE = "/Bonnie.html";
+	
 	/** The Constant MAINLAYOUT_ALERT_TITLE. */
 	public final static String MAINLAYOUT_ALERT_TITLE ="Informational Alert";
 	

@@ -16,8 +16,10 @@
 
     <http use-expressions="true">
         <intercept-url pattern="/Mat.html" access="isAuthenticated()"  />
+        <intercept-url pattern="/Bonnie.html" access="isAuthenticated()"  />
         <intercept-url pattern="/mat/**" access="isAuthenticated()"  />
         <form-login default-target-url="/Mat.html?gwt.codesvr=127.0.0.1:9997" login-page="/Login.html?gwt.codesvr=127.0.0.1:9997"/>
+        <form-login default-target-url="/Bonnie.html?gwt.codesvr=127.0.0.1:9997" login-page="/Login.html?gwt.codesvr=127.0.0.1:9997"/>
         <!-- <logout invalidate-session="true"  success-handler-ref="logoutSuccessHandler"/> -->
       	<logout/>
        

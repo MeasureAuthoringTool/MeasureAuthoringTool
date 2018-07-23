@@ -12,8 +12,10 @@
     	<csrf disabled="true"/>
         <!-- Above is commented as proxy changes are done to not use https. -->
         <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="any" />
+        <intercept-url pattern="/Bonnie.html" access="isAuthenticated()" requires-channel="any" />
         <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="any" />
         <form-login default-target-url="/Mat.html" login-page="/Login.html"/>
+        <form-login default-target-url="/Bonnie.html" login-page="/Login.html"/>
         <logout/>
         <session-management invalid-session-url="/Login.html">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />

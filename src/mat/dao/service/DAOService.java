@@ -28,6 +28,7 @@ import mat.dao.UnitDAO;
 import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
 import mat.dao.UserAuditLogDAO;
+import mat.dao.UserBonnieAccessInfoDAO;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordDAO;
 import mat.dao.UserPasswordHistoryDAO;
@@ -128,6 +129,8 @@ public class DAOService {
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
 	
 	private UserDAO userDAO;
+	
+	private UserBonnieAccessInfoDAO userBonnieAccessInfoDAO;
 	
 	private UserPasswordDAO userPasswordDAO;
 	
@@ -303,6 +306,10 @@ public class DAOService {
 		return userPasswordDAO;
 	}
 	
+	public UserBonnieAccessInfoDAO getUserBonnieAccessInfoDAO() {
+		return userBonnieAccessInfoDAO;
+	}
+	
 	public UserSecurityQuestionDAO getUserSecurityQuestionDAO() {
 		return userSecurityQuestionDAO;
 	}
@@ -435,6 +442,10 @@ public class DAOService {
 	
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
+	}
+	
+	public void setUserBonnieAccessInfoDAO(UserBonnieAccessInfoDAO userBonnieAccessInfoDAO) {
+		this.userBonnieAccessInfoDAO = userBonnieAccessInfoDAO;
 	}
 	
 	public void setUserPasswordDAO(UserPasswordDAO userPasswordDAO) {

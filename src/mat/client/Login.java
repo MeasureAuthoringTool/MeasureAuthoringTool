@@ -123,7 +123,6 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onForgottenLoginID(final ForgotLoginIDEvent event) {
 				content.clear();
-				//forgottenLoginIdPresenter.go(content);
 				forgottenLoginIdNewPresenter.go(content);
 			}
 		});
@@ -132,7 +131,6 @@ public class Login extends MainLayout implements EntryPoint {
 			
 			@Override
 			public void onSuccessfulLogin(final SuccessfulLoginEvent event) {
-				//				MatContext.get().openNewHtmlPage("/Mat.html");
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 			}
 		});
@@ -142,7 +140,6 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onReturnToLogin(final ReturnToLoginEvent event) {
 				content.clear();
-				//loginPresenter.go(content);
 				loginNewPresenter.go(content);
 			}
 		});

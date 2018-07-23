@@ -101,6 +101,10 @@
 		class="mat.dao.impl.UserDAO" parent="baseDAO">
 	</bean>
 	
+	<bean id="userBonnieAccessInfoDAO"
+		class="mat.dao.impl.UserBonnieAccessInfoDAO" parent="baseDAO">
+	</bean>
+	
 	<bean id="userPasswordDAO"
 		class="mat.dao.impl.UserPasswordDAO" parent="baseDAO">
 	</bean>
@@ -301,6 +305,7 @@
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
 		<property name="statusDAO" ref="statusDAO"/>
 		<property name="userDAO" ref="userDAO"/>
+		<property name="userBonnieAccessInfoDAO" ref="userBonnieAccessInfoDAO"/>
 		<property name="userPasswordDAO" ref="userPasswordDAO"/>
 		<property name="userSecurityQuestionDAO" ref="userSecurityQuestionDAO"/>
 		<property name="categoryDAO" ref="categoryDAO"/>

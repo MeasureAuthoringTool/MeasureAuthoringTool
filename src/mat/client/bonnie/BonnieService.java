@@ -4,5 +4,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("bonnieService")
 public interface BonnieService extends RemoteService {
-	String getBonnieLink();
+	String getBonnieAccessLink();
+
+	String getBonnieTokens(String code);
 }

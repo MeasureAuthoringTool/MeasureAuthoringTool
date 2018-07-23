@@ -294,6 +294,8 @@ public  class ConstantMessages {
 	/** The Constant LOGIN_MODULE. */
 	public static final String LOGIN_MODULE = "LOGIN";
 	
+	public static final String BONNIE_MODULE = "BONNIE";
+	
 	//UNITS
 	/** The Constant UNIT_FUNCTION. */
 	public static final String UNIT_FUNCTION = "Function";

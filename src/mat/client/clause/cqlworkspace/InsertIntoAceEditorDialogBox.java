@@ -721,9 +721,21 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 	 *  true otherwise
 	 */
 	private static boolean isValidPair(String dataType, CQLCode code) {
+
+		//this means that code is a valueset, and valuesets can be inserted without a datatype
+		if(code == null) {
+			return true;
+
+		//birth date and dead codes cannot be inserted without the correct datatype
+		} else if(dataType == null && (isBirthdate(code) || isDead(code))) {
+			return false;
+		
+		//non birthdate/dead codes can be inserted without a datatype
+		} else if(dataType == null) {
+			return true;
 		
 		//valid pair
-		if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
+		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
 			return true;
 		
 		//valid pair

@@ -2,15 +2,15 @@ package mat.server.bonnie.api;
 
 import java.util.List;
 
-import mat.server.bonnie.api.error.BonnieAlreadyExistsException;
-import mat.server.bonnie.api.error.BonnieBadParameterException;
-import mat.server.bonnie.api.error.BonnieNotFoundException;
-import mat.server.bonnie.api.error.BonnieServerException;
-import mat.server.bonnie.api.error.BonnieUnauthorizedException;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.bonnie.api.result.BonnieMeasureUploadResult;
-import mat.server.bonnie.api.result.BonnieUserInformationResult;
+import mat.shared.bonnie.error.BonnieAlreadyExistsException;
+import mat.shared.bonnie.error.BonnieBadParameterException;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 public interface BonnieAPI {
 	

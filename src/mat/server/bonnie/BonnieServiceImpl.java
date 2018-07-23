@@ -6,18 +6,28 @@ import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import mat.client.Bonnie;
 import mat.client.bonnie.BonnieService;
 import mat.dao.UserBonnieAccessInfoDAO;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
-import mat.shared.BonnieOAuthResult;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.bonnie.api.BonnieAPI;
+import mat.server.bonnie.api.BonnieAPIv1;
+import mat.server.bonnie.api.error.BonnieUnauthorizedException;
+import mat.server.bonnie.api.result.BonnieUserInformationResult;
+import mat.shared.BonnieOAuthResult;
 
 @SuppressWarnings("serial")
-public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService{
+@Service
+public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService {
+	
+	@Autowired
+	private BonnieAPIv1 bonnieApi; 
 
 	/** The user DAO. */
 	@Autowired
@@ -147,5 +157,17 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		}
         
         userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
+	}
+	
+	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId) throws BonnieUnauthorizedException {	
+		return bonnieApi.getUserInformationByToken("fake token");
+	}
+
+	public BonnieAPI getBonnieApi() {
+		return bonnieApi;
+	}
+
+	public void setBonnieApi(BonnieAPIv1 bonnieApi) {
+		this.bonnieApi = bonnieApi;
 	}
 }

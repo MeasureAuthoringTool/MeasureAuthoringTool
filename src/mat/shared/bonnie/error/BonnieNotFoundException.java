@@ -1,4 +1,4 @@
-package mat.server.bonnie.api.error;
+package mat.shared.bonnie.error;
 
 public class BonnieNotFoundException extends Exception {
 

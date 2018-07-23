@@ -129,7 +129,7 @@
   </servlet>
   <servlet>
       <servlet-name>bonnieService</servlet-name>
-      <servlet-class>mat.server.BonnieServiceImpl</servlet-class>
+      <servlet-class>mat.server.bonnie.BonnieServiceImpl</servlet-class>
   </servlet>
   <servlet>
       <servlet-name>populationService</servlet-name>

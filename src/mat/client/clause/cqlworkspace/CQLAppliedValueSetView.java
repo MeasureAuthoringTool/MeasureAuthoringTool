@@ -80,8 +80,7 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.ConstantMessages;
 
 public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
-	static final String GROUPING_QDM = " (G)";
-	static final String EXTENSIONAL_QDM = " (E)";
+
 	private Boolean isLoading = false;
 	private final String TEXT_APPLY = "Apply";
 	private final String TEXT_CANCEL = "Cancel";
@@ -445,40 +444,18 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
 			table.setSelectionModel(selectionModel);
 
+		
 			// Name Column
-			Column<CQLQualityDataSetDTO, SafeHtml> nameColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-					new SafeHtmlCell()) {
-				@Override
-				public SafeHtml getValue(CQLQualityDataSetDTO object) {
-					StringBuilder title = new StringBuilder();
-					StringBuilder value = new StringBuilder();
-					String qdmType = new String();
-					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-						if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
-							qdmType = GROUPING_QDM;
-						} else {
-							qdmType = EXTENSIONAL_QDM;
-						}
-					}
-
-					value.append(object.getName()).append(qdmType);
-					title.append("Name : ").append(value);
-
-					title.append("");
-
-					return CellTableUtility.getNameColumnToolTip(value.toString(), title.toString());
-				}
-			};
-			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
+			table.addColumn(createNameColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 
 			// OID Column
-			table.addColumn(CQLAppliedValueSetUtility.createOIDColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
+			table.addColumn(createOIDColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			
 			// Program Column
-			table.addColumn(CQLAppliedValueSetUtility.createProgramColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
+			table.addColumn(createProgramColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
 			
 			// Release Column
-			table.addColumn(CQLAppliedValueSetUtility.createReleaseColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
+			table.addColumn(createReleaseColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
 			
 			String colName = "";
 			// Edit Column
@@ -506,7 +483,47 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 		return table;
 	}
+
+	public Column<CQLQualityDataSetDTO, SafeHtml> createReleaseColumn() {
+		Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+				new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(CQLQualityDataSetDTO object) {
+				String title = CQLAppliedValueSetUtility.buildReleaseTitle(object);
+				String release = CQLAppliedValueSetUtility.buildReleaseColumnRelease(object);
+				return CellTableUtility.getColumnToolTip(release, title);
+			}
+		};
+		return releaseColumn;
+	}
+
+	public Column<CQLQualityDataSetDTO, SafeHtml> createOIDColumn() {
+		Column<CQLQualityDataSetDTO, SafeHtml> oidColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+				new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(CQLQualityDataSetDTO object) {
+				StringBuilder title = CQLAppliedValueSetUtility.buildOIDTitle(object);
+				String oid = CQLAppliedValueSetUtility.buildOidColumnOid(object);
+				return CQLAppliedValueSetUtility.getOIDColumnToolTip(oid, title, object.isHasModifiedAtVSAC(), object.isNotFoundInVSAC());
+			}
+		};
+		return oidColumn;
+	}
 	
+	
+	public Column<CQLQualityDataSetDTO, SafeHtml> createProgramColumn() {
+		Column<CQLQualityDataSetDTO, SafeHtml> programColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+				new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(CQLQualityDataSetDTO object) {
+				String program = CQLAppliedValueSetUtility.getProgramColumnProgram(object);
+				String title = CQLAppliedValueSetUtility.getProgramTitle(object, program);
+				return CellTableUtility.getColumnToolTip(program, title);
+			}
+		};
+		return programColumn;
+	}
+
 	private Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> createEditColumn() {
 		Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> col = new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
 				getCompositeCell(isEditable, getModifyButtonCell())) {
@@ -533,6 +550,19 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		return col;
 	}
 	
+	public Column<CQLQualityDataSetDTO, SafeHtml> createNameColumn() {
+		Column<CQLQualityDataSetDTO, SafeHtml> nameColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
+				new SafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(CQLQualityDataSetDTO object) {
+				String value = CQLAppliedValueSetUtility.buildNameValue(object);
+				String title = CQLAppliedValueSetUtility.buildNameTitle(object, value);
+				return CellTableUtility.getNameColumnToolTip(value, title);
+			}
+		};
+		return nameColumn;
+	}
+	
 	private Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> createCopyColumn() {
 		Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO> col = new Column<CQLQualityDataSetDTO, CQLQualityDataSetDTO>(
 				getCompositeCell(true, getCheckBoxCell())) {
@@ -545,7 +575,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 				
 		return col;
 	}
-	
+
 	
 	private CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable,  HasCell<CQLQualityDataSetDTO, ?> cellToAdd) {
 		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<HasCell<CQLQualityDataSetDTO, ?>>();

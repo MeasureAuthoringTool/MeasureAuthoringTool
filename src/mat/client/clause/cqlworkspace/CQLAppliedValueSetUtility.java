@@ -2,11 +2,17 @@ package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.ListBox;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.Column;
@@ -18,6 +24,8 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 public class CQLAppliedValueSetUtility {
+	static final String GROUPING_QDM = " (G)";
+	static final String EXTENSIONAL_QDM = " (E)";
 	
 	public String getExpansionProfileValue(ListBox inputListBox) {
 		if (inputListBox.getSelectedIndex() >= 0) {
@@ -48,62 +56,81 @@ public class CQLAppliedValueSetUtility {
 				.checkForEditPermission();
 	}
 	
-	public static Column<CQLQualityDataSetDTO, SafeHtml> createOIDColumn() {
-		Column<CQLQualityDataSetDTO, SafeHtml> oidColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-				new SafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(CQLQualityDataSetDTO object) {
-				StringBuilder title = new StringBuilder();
-				String oid = null;
-				if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
-					oid = ConstantMessages.USER_DEFINED_CONTEXT_DESC;
-				} else {
-					title.append("OID : ").append(object.getOid());
-					oid = object.getOid();
-				}
-				return getOIDColumnToolTip(oid, title, object.isHasModifiedAtVSAC(), object.isNotFoundInVSAC());
-			}
-		};
-		return oidColumn;
+	public static String getProgramTitle(CQLQualityDataSetDTO object, String program) {
+		String title = null;
+		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			title = "Program : " + program;
+		}
+		return title;
 	}
 	
-	public static Column<CQLQualityDataSetDTO, SafeHtml> createProgramColumn() {
-		Column<CQLQualityDataSetDTO, SafeHtml> programColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-				new SafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(CQLQualityDataSetDTO object) {
-				StringBuilder title = new StringBuilder();
-				String program = null;
-				if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					program = (object.getProgram() == null ? "" : object.getProgram());
-					title.append("Program : ").append(program);
-				} else {
-					program = "";
-				}
-				return CellTableUtility.getColumnToolTip(program, title.toString());
+	public static String getProgramColumnProgram(CQLQualityDataSetDTO object) {
+		String program = null;
+		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			program = (object.getProgram() == null ? "" : object.getProgram());
+		} else {
+			program = "";
+		}
+		return program;
+	}
+
+	public static String buildNameValue(CQLQualityDataSetDTO object) {
+		StringBuilder value = new StringBuilder();
+		String qdmType = new String();
+		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
+				qdmType = GROUPING_QDM;
+			} else {
+				qdmType = EXTENSIONAL_QDM;
 			}
-		};
-		return programColumn;
+		}
+		value.append(object.getName()).append(qdmType);
+		return value.toString();
 	}
 	
-	public static Column<CQLQualityDataSetDTO, SafeHtml> createReleaseColumn() {
-		Column<CQLQualityDataSetDTO, SafeHtml> releaseColumn = new Column<CQLQualityDataSetDTO, SafeHtml>(
-				new SafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(CQLQualityDataSetDTO object) {
-				StringBuilder title = new StringBuilder();
-				String release = "";
-				if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					title.append("Release : ").append(object.getRelease());
-					release = object.getRelease() != null ? object.getRelease() : "";
-				}
-				return CellTableUtility.getColumnToolTip(release, title.toString());
-			}
-		};
-		return releaseColumn;
+	public static StringBuilder buildOIDTitle(CQLQualityDataSetDTO object) {
+		StringBuilder title = new StringBuilder();
+		if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
+		} else {
+			title.append("OID : ").append(object.getOid());
+		}
+		return title;
 	}
 	
+	public static String buildOidColumnOid(CQLQualityDataSetDTO object) {
+		String oid = null;
+		if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			oid = ConstantMessages.USER_DEFINED_CONTEXT_DESC;
+		} else {
+			oid = object.getOid();
+		}
+		return oid;
+	}
+	
+	public static String buildNameTitle(CQLQualityDataSetDTO object, String value) {
+		StringBuilder title = new StringBuilder();
+		title.append("Name : ").append(value);
+		title.append("");
+		return title.toString();
+	}
+	
+	public static String buildReleaseTitle(CQLQualityDataSetDTO object) {
+		StringBuilder title = new StringBuilder();
+		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			title.append("Release : ").append(object.getRelease());
+		}
+		return title.toString();
+	}
+	
+	public static String buildReleaseColumnRelease(CQLQualityDataSetDTO object) {
+		String release = "";
+		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			release = object.getRelease() != null ? object.getRelease() : "";
+		}
+		return release;
+	}
+		
 	public static void initializeReleaseListBoxContent(ListBox releaseBox) {
 		releaseBox.clear();
 		releaseBox.setEnabled(true);
@@ -139,7 +166,7 @@ public class CQLAppliedValueSetUtility {
 		loadReleases(releases, programs);
 	}
 	
-	private static SafeHtml getOIDColumnToolTip(String columnText,
+	public static SafeHtml getOIDColumnToolTip(String columnText,
 			StringBuilder title, boolean hasImage, boolean isUserDefined) {
 		if (hasImage && !isUserDefined) {
 			String htmlConstant = "<html>"
@@ -165,5 +192,48 @@ public class CQLAppliedValueSetUtility {
 			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant)
 					.toSafeHtml();
 		}
+	}
+	
+	
+	public static CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable,  HasCell<CQLQualityDataSetDTO, ?> cellToAdd) {
+		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<HasCell<CQLQualityDataSetDTO, ?>>();
+		
+		if(isEditable){
+			cells.add(cellToAdd);
+		}
+		
+		CompositeCell<CQLQualityDataSetDTO> cell = new CompositeCell<CQLQualityDataSetDTO>(
+				cells) {
+			@Override
+			public void render(Context context, CQLQualityDataSetDTO object,
+					SafeHtmlBuilder sb) {
+				sb.appendHtmlConstant("<table tabindex=\"-1\"><tbody><tr tabindex=\"-1\">");
+				for (HasCell<CQLQualityDataSetDTO, ?> hasCell : cells) {
+					render(context, object, sb, hasCell);
+				}
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			
+			@Override
+			protected <X> void render(Context context,
+					CQLQualityDataSetDTO object, SafeHtmlBuilder sb,
+					HasCell<CQLQualityDataSetDTO, X> hasCell) {
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td class='emptySpaces' tabindex=\"0\">");
+				if ((object != null)) {
+					cell.render(context, hasCell.getValue(object), sb);
+				} else {
+					sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+				}
+				sb.appendHtmlConstant("</td>");
+			}
+			
+			@Override
+			protected Element getContainerElement(Element parent) {
+				return parent.getFirstChildElement().getFirstChildElement()
+						.getFirstChildElement();
+			}
+		};
+		return cell;
 	}
 }

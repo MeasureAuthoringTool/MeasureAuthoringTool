@@ -179,7 +179,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		componentMeasureDisplay = componentMeasureDisplayArg;
 		historyDisplay = hDisplay;
 		shareDisplay = shareDisplayArg;
-//		exportDisplay = exportDisplayArg;
 		this.exportView = exportView; 
 
 		versionDisplay = vDisplay;
@@ -210,10 +209,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}		
 		if(componentMeasureDisplay != null) {
 			componentMeasureDisplayHandlers();
-		}
-		
-		if (exportDisplay != null) {
-			exportDisplayHandlers(exportDisplay);
 		}
 
 		// This event will be called when measure is successfully deleted and

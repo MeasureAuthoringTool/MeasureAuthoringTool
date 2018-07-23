@@ -28,6 +28,7 @@ public class BonnieExportView implements BaseDisplay {
 	private VerticalPanel alertPanel = new VerticalPanel(); 
 	
 	private BonnieUploadCancelButtonBar bonnieUploadCancelButtonBar;
+	private Button bonnieSignOutButton;
 
 	public BonnieExportView() {
 		mainPanel.add(new SpacerWidget());
@@ -40,14 +41,6 @@ public class BonnieExportView implements BaseDisplay {
 	}
 	
 	private void createAlertWidget() {
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
-		alertPanel.add(new SpacerWidget());
 		contentPanel.add(alertPanel);
 	}
 	
@@ -77,27 +70,27 @@ public class BonnieExportView implements BaseDisplay {
 		bonnieIdLabel.setTitle("Bonnie ID");
 		bonnieIdLabel.setPaddingRight(5.0);
 		
-		HorizontalPanel panel = new HorizontalPanel();
+		HorizontalPanel bonniePanel = new HorizontalPanel();
 		
-		panel.add(bonnieIdLabel);		
-		panel.add(bonnieIdText);
+		bonniePanel.add(bonnieIdLabel);		
+		bonniePanel.add(bonnieIdText);
 
-		contentPanel.add(panel);
+		contentPanel.add(bonniePanel);
 	}
 	
 	private void createSignoutOfBonnieButton() {
-		Button button = new Button("Sign out of Bonnie");
-		button.setTitle("Sign out of Bonnie");
-		button.setType(ButtonType.LINK);
-		button.setIcon(IconType.SIGN_OUT);
-		button.setPaddingLeft(0.0);
+		bonnieSignOutButton = new Button("Sign out of Bonnie");
+		bonnieSignOutButton.setTitle("Sign out of Bonnie");
+		bonnieSignOutButton.setType(ButtonType.LINK);
+		bonnieSignOutButton.setIcon(IconType.SIGN_OUT);
+		bonnieSignOutButton.setPaddingLeft(0.0);
 		
 		HorizontalPanel panel = new HorizontalPanel();
-		panel.add(button);
+		panel.add(bonnieSignOutButton);
 
 		contentPanel.add(panel);
 	}
-	
+
 	private void createBonnieButtonToolBar() {
 		bonnieUploadCancelButtonBar = new BonnieUploadCancelButtonBar("bonnie_upload");
 		mainPanel.add(bonnieUploadCancelButtonBar);
@@ -136,5 +129,14 @@ public class BonnieExportView implements BaseDisplay {
 	
 	public Label getBonnieIdLabel() {
 		return bonnieIdText;
+	}
+	
+	
+	public Button getBonnieSignOutButton() {
+		return bonnieSignOutButton;
+	}
+
+	public void setBonnieSignOutButton(Button bonnieSignOutButton) {
+		this.bonnieSignOutButton = bonnieSignOutButton;
 	}
 }

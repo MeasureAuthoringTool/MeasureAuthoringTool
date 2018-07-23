@@ -119,6 +119,8 @@ public class MatContext implements IsSerializable {
 	private QDSAttributesServiceAsync qdsAttributesServiceAsync;
 
 	private PopulationServiceAsync populationService;
+	
+	private BonnieServiceAsync bonnieService;
 
 	private HandlerManager eventBus;
 
@@ -392,6 +394,13 @@ public class MatContext implements IsSerializable {
 		return packageServiceAsync;
 	}
 
+	public BonnieServiceAsync getBonnieService(){
+		if(bonnieService == null){
+			bonnieService = (BonnieServiceAsync) GWT.create(BonnieService.class);
+		}
+		return bonnieService;
+	}
+	
 	public static MatContext get(){
 		return instance;
 	}

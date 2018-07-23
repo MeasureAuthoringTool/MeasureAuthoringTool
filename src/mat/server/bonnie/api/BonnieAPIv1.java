@@ -2,18 +2,28 @@ package mat.server.bonnie.api;
 
 import java.util.List;
 
-import mat.server.bonnie.api.error.BonnieAlreadyExistsException;
-import mat.server.bonnie.api.error.BonnieBadParameterException;
-import mat.server.bonnie.api.error.BonnieNotFoundException;
-import mat.server.bonnie.api.error.BonnieServerException;
-import mat.server.bonnie.api.error.BonnieUnauthorizedException;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Service;
+
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.bonnie.api.result.BonnieMeasureUploadResult;
-import mat.server.bonnie.api.result.BonnieUserInformationResult;
+import mat.shared.bonnie.error.BonnieAlreadyExistsException;
+import mat.shared.bonnie.error.BonnieBadParameterException;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.result.BonnieUserInformationResult;
 
+
+@Configurable
+@Service
 public class BonnieAPIv1 implements BonnieAPI {
 
+	public BonnieAPIv1() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	@Override
 	public List<BonnieMeasureResult> getMeasuresForUser(String bearerToken) throws BonnieUnauthorizedException {
 		// TODO Auto-generated method stub
@@ -54,8 +64,10 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 	@Override
 	public BonnieUserInformationResult getUserInformationByToken(String bearerToken) {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("IN GET USER INFO");
+		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
+		userInformationResult.setBonnieUsername("Jack's Bonnie Username");	
+		return userInformationResult;
 	}
 
 }

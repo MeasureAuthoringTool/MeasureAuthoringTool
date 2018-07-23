@@ -1,11 +1,15 @@
 package mat.client.export.bonnie;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.MatPresenter;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.MatContext;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 public class BonnieExportPresenter implements MatPresenter {
 
@@ -19,8 +23,29 @@ public class BonnieExportPresenter implements MatPresenter {
 		this.result = result; 
 		addClickHandlers();
 		initializeContent();
-//		createErrorMessage("This is a message");
-		setBonnieUserId("JaMeyer9286");
+		getBonnieUserInformation();
+	}
+	
+	private void getBonnieUserInformation() {
+		String matUserId = MatContext.get().getLoggedinUserId();
+		MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
+			
+			@Override
+			public void onSuccess(BonnieUserInformationResult result) {
+				setBonnieUserId(result.getBonnieUsername());
+				view.getBonnieSignOutButton().setVisible(true);
+				view.getUploadButton().setEnabled(true);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof BonnieUnauthorizedException) {
+					view.getBonnieSignOutButton().setVisible(false);
+					view.getUploadButton().setEnabled(false);
+					createErrorMessage("Please sign into Bonnie.");
+				}
+			}
+		});
 	}
 	
 	private void initializeContent() {

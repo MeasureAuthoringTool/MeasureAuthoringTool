@@ -30,26 +30,16 @@
     <bean id="measurePackageService" class="mat.server.service.impl.MeasurePackageServiceImpl">
     	<property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
     </bean>
-    
-   <!--  <bean id="clauseService" class="mat.server.clause.ClauseServiceImpl">
-    </bean>  -->   
-     
+         
     <bean id="packagerService" class="mat.server.service.impl.PackagerServiceImpl">
     </bean>
+  
    <bean id="qDSAttributesService" class="mat.server.clause.QDSAttributesServiceImpl">
     </bean> 
+  
     <bean id="eMeasureService" class="mat.server.service.impl.SimpleEMeasureServiceImpl">
     </bean>
-   <!--  <bean id="elementLookupGenerator" class="mat.server.export.ElementLookupGenerator">
-    </bean> -->
-    <!-- <bean id="headerInfoGenerator" class="mat.server.export.HeaderInfoGenerator">
-    </bean> -->
-    <!-- <bean id="attachmentGenerator" class="mat.server.export.AttachmentGenerator">
-    </bean>
-    <bean id="clauseBusinessService" class="mat.server.clause.ClauseBusinessServiceImpl">
-    </bean>
-    <bean id="clauseCloningService" class="mat.server.clause.ClauseCloningServiceImpl">
-    </bean> -->
+
     <bean id="measureAuditService" class="mat.server.service.impl.MeasureAuditServiceImpl">
     </bean>
     
@@ -62,12 +52,6 @@
     <bean id="codeListAuditService" class="mat.server.service.impl.CodeListAuditServiceImpl">
     </bean>
     
-    <bean id="bonnieService" class="mat.server.BonnieServiceImpl">
-    </bean>
-    
-   <!--  <bean id="suppDataElementsGenerator" class="mat.server.export.SuppDataElementsGenerator"> 
-    </bean>-->
-    <!-- US154 -->
     <bean id="transactionAuditService" class="mat.server.service.impl.TransactionAuditServiceImpl">
     </bean>
       
@@ -75,7 +59,6 @@
     </bean>  
     
     <bean id="measureLibraryService" class="mat.server.MeasureLibraryServiceImpl">
-    <!--  <property name="releaseDate" value="${mat.measure.release.date}"/>-->
     	<property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
     	<property name="cqlService" ref="cqlService"/>
     
@@ -88,7 +71,6 @@
    
     <bean id="vsacapi" class="mat.server.VSACApiServImpl">
     	<property name="defaultExpId" value="${mat.qdm.default.expansion.id}"/>
-    	<!-- <property name="vsacServerUrl" value="${mat.vsac.server.url}"/> -->
     </bean>
     
     <bean id="matOtpValidator" class="${2FA_AUTH_CLASS}"/>
@@ -96,7 +78,7 @@
     <bean id="matOtpValidatorService" class="mat.server.twofactorauth.TwoFactorValidationService">
         <property name="otpValidatorInterfaceForUser" ref="matOtpValidator"/>
     </bean>
-    
+        
     <bean id="matPropertiesService" class="mat.server.util.MATPropertiesService">
         <property name="currentReleaseVersion" value="${mat.measure.current.release.version}"/>
         <property name="qmdVersion" value="${mat.measure.current.qdm.version}"/>

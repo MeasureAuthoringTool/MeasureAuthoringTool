@@ -3122,8 +3122,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
 		
-		//Load VSAC Programs and Releases
-		getProgramsAndReleases();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -5295,23 +5293,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		});
 	}
 
-	/**
-	 * MAT-8977. 
-	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
-	 * the first time the value sets page is loaded.
-	 * If the values have been loaded previously, no calls are made.
-	 */
-	private void getProgramsAndReleases() {
-
-		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
-
-		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
-			MatContext.get().getProgramsAndReleasesFromVSAC();	
-		}		
-
-	}
-
-	
 	/**
 	 * Search value set in vsac.
 	 *

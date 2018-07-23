@@ -3368,10 +3368,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				isCQLWorkSpaceLoaded = false;
 			}
 		}
-		
-		//Load VSAC Programs and Releases
-		getProgramsAndReleases();
-		
+	
 		CqlComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 		Mat.focusSkipLists("CqlComposer");
 
@@ -5851,21 +5848,6 @@ private void addCodeSearchPanelHandlers() {
 		searchDisplay.getCqlLeftNavBarPanelView().updateValueSetMap(appliedValueSetTableList);
 	}
 
-	/**
-	 * MAT-8977. 
-	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
-	 * the first time the value sets page is loaded.
-	 * If the values have been loaded previously, no calls are made.
-	 */
-	private void getProgramsAndReleases() {
-
-		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
-
-		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
-			MatContext.get().getProgramsAndReleasesFromVSAC();	
-		}				
-	}
-	
 	
 
 	private void loadProgramsAndReleases() {

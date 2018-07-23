@@ -281,6 +281,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		programListBox.setTitle("Program selection list");
 		programListBox.setWidth("200px");
 		programPanel.add(programListBox);
+		CQLAppliedValueSetUtility.getProgramsAndReleases();
 		CQLAppliedValueSetUtility.loadPrograms(getProgramListBox());
 
 		VerticalPanel releasePanel = new VerticalPanel();

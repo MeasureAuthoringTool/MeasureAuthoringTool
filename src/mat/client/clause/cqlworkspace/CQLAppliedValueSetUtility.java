@@ -10,16 +10,12 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.Column;
 
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
@@ -236,4 +232,21 @@ public class CQLAppliedValueSetUtility {
 		};
 		return cell;
 	}
+	
+	/**
+	 * Get the program and releases from VSAC using REST calls and set it in the MatContext 
+	 * the first time the value sets page is loaded.
+	 * If the values have been loaded previously, no calls are made.
+	 */
+	public static void getProgramsAndReleases() {
+
+		HashMap<String, List<String>> pgmRelMap = (HashMap<String, List<String>>) MatContext.get().getProgramToReleases();
+
+		if (pgmRelMap == null || pgmRelMap.isEmpty()) {
+			MatContext.get().getProgramsAndReleasesFromVSAC();	
+		}		
+
+	}
 }
+
+

@@ -9,10 +9,13 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.TextInputCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
@@ -39,6 +42,7 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
+import mat.client.shared.MatTextCell;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
@@ -95,7 +99,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		
 		VerticalPanel contentPanel = new VerticalPanel();
 		contentPanel.setWidth("100%");
-		
+		new LabelBuilder();
+		contentPanel.add(LabelBuilder.buildInvisibleLabel("componentMeasureInstructions", "To use this page, users should search for the measures they want to include as component measures within their composite measure. Selecting the checkboxes in-line with the measure name in the search results will put that measure into the Applied Components list in the bottom half of the page. Users should select all component measures that will be needed for their composite measure and will then need to assign an alias to each component measure using the fields in the Applied Components list before clicking Save and Continue."));
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.setWidth("100%");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
@@ -207,13 +212,14 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				.fromSafeConstant("<span title='Measure Scoring'>" + "Measure Scoring"
 						+ "</span>"));
 		
-		Column<ManageMeasureSearchModel.Result, SafeHtml> aliasColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
+		Column<ManageMeasureSearchModel.Result, String> aliasColumn = new Column<ManageMeasureSearchModel.Result, String>(
+				new MatTextCell(new TextInputCell(), "Assign Alias")) {
 			@Override
-			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return CellTableUtility.getColumnToolTip("Assign Alias");
+			public String getValue(ManageMeasureSearchModel.Result object) {
+				return "";
 			}
 		};
+		
 		appliedComponentTable.addColumn(aliasColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title='Assign Alias'>" + "Assign Alias"
 						+ "</span>"));
@@ -228,13 +234,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponentTable.addColumn(emptyColumn, SafeHtmlUtils
 				.fromSafeConstant(""));
 		
-		Column<ManageMeasureSearchModel.Result, SafeHtml> deleteColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
-			@Override
-			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return CellTableUtility.getColumnToolTip("Delete");
-			}
-		};
+		Column<ManageMeasureSearchModel.Result, SafeHtml> deleteColumn = buildDeleteColumn();
 		appliedComponentTable.addColumn(deleteColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title='Delete'>" + "Delete"
 						+ "</span>"));
@@ -247,6 +247,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		availableMeasuresList.addAll(manageMeasureSearchModel.getData());
 		availableMeasuresTable.setRowCount(manageMeasureSearchModel.getResultsTotal(), true);
 		availableMeasuresPanel = buildAvailableMeasuresTable();
+		appliedComponentMeasuresPanel = buildAppliedComponentMeasuresTable();
 		
 		AsyncDataProvider<ManageMeasureSearchModel.Result> provider = new AsyncDataProvider<ManageMeasureSearchModel.Result>() {
 			@Override
@@ -362,13 +363,16 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		
 		MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		availableMeasuresTable.setSelectionModel(selectionModel);
-		
+
 		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
 		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(
 				chbxCell) {
 
 			@Override
 			public Boolean getValue(Result object) {
+				if(appliedComponentMeasuresList.contains(object)) {
+					return true;
+				}
 				return false;
 			}
 		};
@@ -380,22 +384,43 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 					public void update(int index, Result object, Boolean value) {
 						selectionModel.setSelected(object, value);
 						if (value) {
-							availableMeasuresList.add(object);
+							appliedComponentMeasuresList.add(object);
 						} else {
-							for (int i = 0; i < availableMeasuresList
-									.size(); i++) {
-								if (availableMeasuresList.get(i).getId()
-										.equalsIgnoreCase(object.getId())) {
-									availableMeasuresList.remove(i);
-									break;
-								}
-							}
+							appliedComponentMeasuresList.remove(object);
 						}
-
+						buildAppliedComponentMeasuresTable();
 					}
 				});
 		availableMeasuresTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Select\">" + "Select" + "</span>"));
 		availableMeasuresTable.redraw();
+	}
+	
+	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildDeleteColumn() {
+		Cell<SafeHtml> deleteButtonCell = new ClickableSafeHtmlCell();
+		
+		Column<ManageMeasureSearchModel.Result, SafeHtml> deleteColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(deleteButtonCell) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to Delete " + object.getName();
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-trash fa-lg";
+					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+			
+				return sb.toSafeHtml();
+			}
+		};
+		
+		deleteColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+			@Override
+			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				appliedComponentMeasuresList.remove(object);
+				buildAppliedComponentMeasuresTable();
+				buildAvailableMeasuresTable();
+			}
+		});
+		
+		return deleteColumn; 
 	}
 	
 	public Button getSaveButton() {

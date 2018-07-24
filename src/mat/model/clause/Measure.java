@@ -53,7 +53,7 @@ public class Measure {
 	
 	private String qdmVersion;
 	
-	private Boolean isCompositeMeasure;
+	private Boolean isCompositeMeasure = false;
 
 	public Timestamp getValueSetDate() {
 		return valueSetDate;

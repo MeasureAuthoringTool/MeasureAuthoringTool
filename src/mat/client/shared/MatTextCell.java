@@ -1,37 +1,43 @@
 package mat.client.shared;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.AbstractSafeHtmlCell;
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.cell.client.TextInputCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+
+import mat.shared.StringUtility;
 
 
-public class MatTextCell extends AbstractSafeHtmlCell<String> {
+public class MatTextCell extends TextInputCell {
 	private String tooltip;
-	private AbstractCell<String> cell;
-
-	public MatTextCell(AbstractCell<String> cell, String tooltip) {
-		super(SimpleSafeHtmlRenderer.getInstance(), BrowserEvents.CLICK, BrowserEvents.KEYDOWN);
-		this.cell = cell;
+    public MatTextCell() {}
+    
+	public MatTextCell(String tooltip) {
+		super();
 		this.tooltip = tooltip;
+		GWT.log("tooltip: " + tooltip);
 	}
+	
+    @Override
+    public void render(Context context, String value, SafeHtmlBuilder sb) {
+        Object key = context.getKey();
+        ViewData viewData = getViewData(key);
+        if (viewData != null && viewData.getCurrentValue().equals(value)) {
+            clearViewData(key);
+            viewData = null;
+        }
 
-	@Override
-	protected void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
-		sb.appendHtmlConstant("<div title=\"" + tooltip + "\">");
-		cell.render(context, data.asString(), sb);
-		sb.appendHtmlConstant("</div>");
-	}
+        String s = (viewData != null) ? viewData.getCurrentValue() : value;
+        if (!StringUtility.isEmptyOrNull(s)) {
+    		sb.appendHtmlConstant("<input type=\"text\" tabindex=\"-1\" value=\"" + s + "\" title=\"" + s + "\"></input>");
+        } else {
+        	if(tooltip != null) {
+        		sb.appendHtmlConstant("<input type=\"text\" tabindex=\"-1\" title=\"" + tooltip + "\"></input>");
+        	} else {
+        		sb.appendHtmlConstant("<input type=\"text\" tabindex=\"-1\" title=\"\"></input>");
+        	}
+            
+        }
+    }
 
-	@Override
-	public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context, Element parent, String value, NativeEvent event, ValueUpdater<String> valueUpdater)
-	{
-		cell.onBrowserEvent(context, parent, value, event, valueUpdater);
-	}
 
 }

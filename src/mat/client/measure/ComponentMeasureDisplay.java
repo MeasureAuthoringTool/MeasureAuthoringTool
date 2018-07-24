@@ -1,7 +1,9 @@
 package mat.client.measure;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -59,6 +61,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+	private Map<ManageMeasureSearchModel.Result, String> aliasMapping = new HashMap<ManageMeasureSearchModel.Result, String>();
 	
 	private PanelHeader availableMeasureHeader = new PanelHeader();
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
@@ -84,6 +87,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	}
 	
 	public void clearFields() {
+		aliasMapping.clear();
 		availableMeasuresList.clear();
 		appliedComponentMeasuresList.clear();
 		buildAppliedComponentMeasuresTable();
@@ -213,12 +217,19 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 						+ "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, String> aliasColumn = new Column<ManageMeasureSearchModel.Result, String>(
-				new MatTextCell(new TextInputCell(), "Assign Alias")) {
+				new MatTextCell("Assign Alias")) {
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
 				return "";
 			}
 		};
+		
+		aliasColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+			@Override
+			public void update(int index, Result object, String value) {
+				GWT.log("updating object: " + object.getName() + " with value: " + value);
+			}
+		});
 		
 		appliedComponentTable.addColumn(aliasColumn, SafeHtmlUtils
 				.fromSafeConstant("<span title='Assign Alias'>" + "Assign Alias"
@@ -387,6 +398,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 							appliedComponentMeasuresList.add(object);
 						} else {
 							appliedComponentMeasuresList.remove(object);
+							if(aliasMapping.containsKey(object)) {
+								aliasMapping.remove(object);
+							}
 						}
 						buildAppliedComponentMeasuresTable();
 					}
@@ -415,6 +429,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
 				appliedComponentMeasuresList.remove(object);
+				if(aliasMapping.containsKey(object)) {
+					aliasMapping.remove(object);
+				}
 				buildAppliedComponentMeasuresTable();
 				buildAvailableMeasuresTable();
 			}

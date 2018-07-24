@@ -16,6 +16,7 @@ public class BonnieUploadCancelButtonBar extends Composite {
 	public BonnieUploadCancelButtonBar(String uniqueSection) {
 		buttonToolBar = new ButtonToolBar();
 		uploadButton = new UploadButton(uniqueSection);
+		uploadButton.setTitle("Upload to Bonnie");
 		cancelButton = new CancelButton(uniqueSection);
 		
 		buttonToolBar.add(uploadButton);

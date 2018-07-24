@@ -220,6 +220,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatTextCell("Assign Alias")) {
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
+				if(aliasMapping.containsKey(object)) {
+					return aliasMapping.get(object);
+				}
 				return "";
 			}
 		};
@@ -227,7 +230,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		aliasColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 			@Override
 			public void update(int index, Result object, String value) {
-				GWT.log("updating object: " + object.getName() + " with value: " + value);
+				aliasMapping.put(object, value);
 			}
 		});
 		

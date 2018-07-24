@@ -1,7 +1,6 @@
 package mat.client.shared;
 
 import com.google.gwt.cell.client.TextInputCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 import mat.shared.StringUtility;
@@ -14,7 +13,6 @@ public class MatTextCell extends TextInputCell {
 	public MatTextCell(String tooltip) {
 		super();
 		this.tooltip = tooltip;
-		GWT.log("tooltip: " + tooltip);
 	}
 	
     @Override

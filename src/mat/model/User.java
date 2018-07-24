@@ -47,6 +47,8 @@ public class User  {
 	
 	private SecurityRole securityRole;	
 	
+	private UserBonnieAccessInfo userBonnieAccessInfo;
+	
 	private List<UserSecurityQuestion> userSecurityQuestions = new ArrayList<UserSecurityQuestion>();
 	
 	private Set<MeasureShare> measureShares = new HashSet<MeasureShare>();
@@ -60,6 +62,8 @@ public class User  {
 	private String loginId;
 	
 	private Set<UserPasswordHistory> passwordHistory = new  HashSet<UserPasswordHistory>();
+	
+	
 
 	public String getId() {
 		return id;
@@ -250,7 +254,13 @@ public class User  {
 			this.lockedOutDate = null;
 		}
 	}
-
+	public UserBonnieAccessInfo getUserBonnieAccessInfo() {
+		return userBonnieAccessInfo;
+	}
+	
+	public void setUserBonnieAccessInfo(UserBonnieAccessInfo userBonnieAccessInfo) {
+		this.userBonnieAccessInfo = userBonnieAccessInfo;
+	}
 	public Set<MeasureShare> getMeasureShares() {
 		return measureShares;
 	}

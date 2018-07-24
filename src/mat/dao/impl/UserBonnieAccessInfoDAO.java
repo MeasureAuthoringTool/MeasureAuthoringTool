@@ -1,50 +1,42 @@
 package mat.dao.impl;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
+import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
 
 public class UserBonnieAccessInfoDAO extends GenericDAO<UserBonnieAccessInfo, String> implements
 mat.dao.UserBonnieAccessInfoDAO{
+	
+	@Autowired
+	private UserDAO userDAO;
+
 
 	@Override
-	public Boolean userExists(String userId) {
-		Session session = getSessionFactory().getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<UserBonnieAccessInfo> criteria = builder.createQuery(UserBonnieAccessInfo.class);
-		Root<UserBonnieAccessInfo> userBonnieAccessInfoRoot = criteria.from(UserBonnieAccessInfo.class);
-		criteria.select(userBonnieAccessInfoRoot);
-		criteria .where(builder.equal(userBonnieAccessInfoRoot.get("userId"), userId));
-		List<UserBonnieAccessInfo> results = session.createQuery(criteria).getResultList();
-		if(results.size() > 1 || results.size() == 0) {
-			return false;
-		} else {
-			return true;
-		}
+	public UserBonnieAccessInfo getUserBonnieAccessInfo(String userBonnieAccessId) {
+		return find(userBonnieAccessId);
 	}
 
 	@Override
-	public UserBonnieAccessInfo getUserBonnieAccess(String userBonnieAccessId) {
-		UserBonnieAccessInfo info  = find(userBonnieAccessId);
-		return info;
-	}
-
-	@Override
-	public void saveUserBonnieAccessDetails(UserBonnieAccessInfo userBonnieAccessInfo) {
+	public void saveOrUpdate(UserBonnieAccessInfo userBonnieAccessInfo) {
 		Session session = null;
 		Transaction transaction = null;
-		try {
+		try {			
+			UserBonnieAccessInfo exsistingUserBonnieAccessInfo = findByUserId(userBonnieAccessInfo.getUser().getId());
 			session = getSessionFactory().openSession();
 			transaction = session.beginTransaction();
-			session.saveOrUpdate(userBonnieAccessInfo);
+			if(exsistingUserBonnieAccessInfo == null) {
+				super.save(userBonnieAccessInfo);
+			} else {
+				exsistingUserBonnieAccessInfo.setAccessToken(userBonnieAccessInfo.getAccessToken());
+				exsistingUserBonnieAccessInfo.setRefreshToken(userBonnieAccessInfo.getRefreshToken());
+				super.save(exsistingUserBonnieAccessInfo);
+			}
+			
 			transaction.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,33 +47,17 @@ mat.dao.UserBonnieAccessInfoDAO{
 	}
 
 	@Override
-	public void setAccessToken(String accessToken, String userBonnieAccessInfoId) {
-		UserBonnieAccessInfo info  = find(userBonnieAccessInfoId);
-		info.setAccessToken(accessToken);
-		save(info);
-	}
-
-	@Override
-	public void setRefreshToken(String refreshToken, String userBonnieAccessInfoId) {
-		UserBonnieAccessInfo info  = find(userBonnieAccessInfoId);
-		info.setRefreshToken(refreshToken);
-		save(info);
-	}
-
-	@Override
 	public UserBonnieAccessInfo findByUserId(String userID) {
-		Session session = getSessionFactory().getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<UserBonnieAccessInfo> criteria = builder.createQuery(UserBonnieAccessInfo.class);
-		Root<UserBonnieAccessInfo> userBonnieAccessInfoRoot = criteria.from(UserBonnieAccessInfo.class);
-		criteria.select(userBonnieAccessInfoRoot);
-		criteria .where(builder.equal(userBonnieAccessInfoRoot.get("userId"), userID));
-		List<UserBonnieAccessInfo> results = session.createQuery(criteria).getResultList();
-		if(results.size() > 1 || results.size() == 0) {
-			return null;
-		} else {
-			return results.get(0);
-		}
+		User user = userDAO.find(userID);
+		return user.getUserBonnieAccessInfo();
+	}
+
+	public UserDAO getUserDAO() {
+		return userDAO;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
 	}
 
 }

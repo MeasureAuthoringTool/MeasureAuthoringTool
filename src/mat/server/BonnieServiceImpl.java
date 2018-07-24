@@ -1,16 +1,18 @@
 package mat.server;
 
+import org.apache.oltu.oauth2.client.OAuthClient;
+import org.apache.oltu.oauth2.client.URLConnectionClient;
+import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
+import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 import mat.client.bonnie.BonnieService;
-import mat.dao.UserDAO;
 import mat.dao.UserBonnieAccessInfoDAO;
+import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
+import mat.shared.BonnieOauthResult;
 
 @SuppressWarnings("serial")
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService{
@@ -50,37 +52,89 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 					+ responseType + "&client_id=" + clientId + "&redirect_uri=" + redirectURI;
 		}
 	}
-	
-	@Override
-	public String getBonnieTokens(String code) {
-		ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-        resourceDetails.setClientSecret(getClientSecret());
-        resourceDetails.setClientId(getClientId());
-        resourceDetails.setAccessTokenUri("https://bonnie-prior.ahrqstg.org/oauth/token");
 
-        
+	public BonnieOauthResult refreshBonnieTokens() {
+		BonnieOauthResult result = null;
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		result = getBonnieRefreshResult(user.getUserBonnieAccessInfo());
+		SaveBonnieOauthResult(result);
 		
-        OAuth2RestTemplate oAuthRestTemplate = new OAuth2RestTemplate(resourceDetails);
+		return result;
+	}
+	
+	private BonnieOauthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
+		try {
+			 OAuthClient client = new OAuthClient(new URLConnectionClient());
 
-        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        headers.setContentType( MediaType.APPLICATION_JSON );
-        
-        OAuth2AccessToken token = oAuthRestTemplate.getAccessToken();
+	         OAuthClientRequest request =
+	                 OAuthClientRequest.tokenLocation("https://bonnie-prior.ahrqstg.org/oauth/token")
+	                 .setClientId(getClientId())
+	                 .setGrantType(GrantType.AUTHORIZATION_CODE)
+	                 .setClientSecret(getClientSecret())
+	                 .setRefreshToken(userBonnieAccessInfo.getRefreshToken())
+	                 .setRedirectURI(getRedirectURI())
+	                 .buildQueryMessage();
+	         
+	         
+	         OAuthJSONAccessTokenResponse token =
+	                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);
+	         BonnieOauthResult result = new BonnieOauthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
+	         return result;
+			}
+			catch(Exception exn) {
+				exn.printStackTrace();
+				return null;
+			}
+	}
 
-        System.out.println(oAuthRestTemplate.getResource());
-        System.out.println(oAuthRestTemplate.getOAuth2ClientContext());
-        System.out.println(token);
-        
-        User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+	@Override
+	public BonnieOauthResult authenticateBonnieUser(String code) {        
+		BonnieOauthResult result = null;
+		try {
+			result = getBonnieOauthResult(code);
+			SaveBonnieOauthResult(result);
+            
+        } catch (Exception exn) {
+            exn.printStackTrace();
+            return result;
+        }
+		
+		return result;
+	}
+	
+	private BonnieOauthResult getBonnieOauthResult(String code) {
+		try {
+		 OAuthClient client = new OAuthClient(new URLConnectionClient());
+
+         OAuthClientRequest request =
+                 OAuthClientRequest.tokenLocation("https://bonnie-prior.ahrqstg.org/oauth/token")
+                 .setClientId(getClientId())
+                 .setGrantType(GrantType.AUTHORIZATION_CODE)
+                 .setClientSecret(getClientSecret())
+                 .setCode(code)
+                 .setRedirectURI(getRedirectURI())
+                 .buildQueryMessage();
+         
+         
+         OAuthJSONAccessTokenResponse token =
+                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);
+         BonnieOauthResult result = new BonnieOauthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
+         return result;
+		}
+		catch(Exception exn) {
+			exn.printStackTrace();
+			return null;
+		}
+	}
+	
+	private void SaveBonnieOauthResult(BonnieOauthResult result) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
         
         UserBonnieAccessInfo tokens = new UserBonnieAccessInfo();
-        tokens.setAccessToken("1234567890");
-        tokens.setRefreshToken("0987654321");
+        tokens.setAccessToken(result.getAccessToken());
+        tokens.setRefreshToken(result.getRefreshToken());
         tokens.setUser(user);
         
-        userBonnieAccessInfoDAO.saveUserBonnieAccessDetails(tokens);
-        //UserBonnieAccessInfo user2 = userBonnieAccessInfoDAO.findByUserId(user.getId());
-        //System.out.println(user2.getAccessToken());
-		return "";
+        userBonnieAccessInfoDAO.saveOrUpdate(tokens);
 	}
 }

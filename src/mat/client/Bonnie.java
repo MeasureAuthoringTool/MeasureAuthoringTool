@@ -4,21 +4,15 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Panel;
 
-import mat.client.bonnie.BonniePresenter;
 import mat.client.bonnie.BonnieService;
 import mat.client.bonnie.BonnieServiceAsync;
 import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
+import mat.shared.BonnieOauthResult;
 
 public class Bonnie extends MainLayout implements EntryPoint {
 
-	private Panel content;
-
-	private String bonnieTokenURL;
-
-	private BonniePresenter bonniePresenter;
 
 	private BonnieServiceAsync bonnie = (BonnieServiceAsync) GWT.create(BonnieService.class);
 	
@@ -29,7 +23,7 @@ public class Bonnie extends MainLayout implements EntryPoint {
 	}
 
 	private void getToken(String code) {
-		bonnie.getBonnieTokens(code, new AsyncCallback<String>() {
+		bonnie.authenticateBonnieUser(code, new AsyncCallback<BonnieOauthResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -38,7 +32,7 @@ public class Bonnie extends MainLayout implements EntryPoint {
 			}
 
 			@Override
-			public void onSuccess(String result) {
+			public void onSuccess(BonnieOauthResult result) {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 			}
 

@@ -1,18 +1,9 @@
 package mat.dao;
 
-import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
 
 public interface UserBonnieAccessInfoDAO extends IDAO<UserBonnieAccessInfo, String> {
 	
-	/**
-	 * User bonnie Access exists. Check with UserId
-	 * 
-	 * @param userid
-	 *            the userid
-	 * @return the boolean
-	 */
-	public Boolean userExists(String userId);
 	
 	/**
 	 * Gets the user bonnie access info.
@@ -21,35 +12,8 @@ public interface UserBonnieAccessInfoDAO extends IDAO<UserBonnieAccessInfo, Stri
 	 *            the user bonnie access id
 	 * @return the userBonnieAccessInfo
 	 */
-	public UserBonnieAccessInfo getUserBonnieAccess(String userBonnieAccessId);
-	
-	/**
-	 * Save user bonnie access details.
-	 * 
-	 * @param userBonnieAccessInfo
-	 *            the user bonnie access details
-	 */
-	public void saveUserBonnieAccessDetails(UserBonnieAccessInfo userBonnieAccessInfo);
-	
-	/**
-	 * Sets the users accessToken.
-	 * 
-	 * @param accessToken
-	 * 			the new accessToken
-	 * @param userBonnieAccessInfoId
-	 *            the user Bonnie Access Info Id to set
-	 */
-	public void setAccessToken(String accessToken, String userBonnieAccessInfoId);
-	
-	/**
-	 * Sets the users refreshToken.
-	 * 
-	 * @param refreshToken
-	 * 			the new refreshToken
-	 * @param userid
-	 *            the user to set
-	 */
-	public void setRefreshToken(String refreshToken, String userBonnieAccessInfoId);
+	public UserBonnieAccessInfo getUserBonnieAccessInfo(String userBonnieAccessId);
+
 	
 	/**
 	 * Find by User bonnie access id.
@@ -59,5 +23,13 @@ public interface UserBonnieAccessInfoDAO extends IDAO<UserBonnieAccessInfo, Stri
 	 * @return the user bonnie access id
 	 */
 	public UserBonnieAccessInfo findByUserId(String userID);
+	
+	/**
+	 * Saves or updates the user bonnie access info object in the database.
+	 * 
+	 * @param userBonnieAccessInfo
+	 * 				the object to save or update
+	 */
+	public void saveOrUpdate(UserBonnieAccessInfo userBonnieAccessInfo);
 
 }

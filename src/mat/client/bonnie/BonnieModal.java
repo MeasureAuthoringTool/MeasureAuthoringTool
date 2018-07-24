@@ -54,11 +54,9 @@ public class BonnieModal {
 			@Override
 			public void onClick(ClickEvent event) {
 				panel.setVisible(false);
-				//MatContext.get().redirectToHtmlPage(ClientConstants.HTML_BONNIE);
 				Window.open(MatContext.get().getBonnieLink(), "_self", "");
 			}
 		});
-		
 		buttonToolBar.add(yesButton);
 		buttonToolBar.add(noButton);
 		modalFooter.add(buttonToolBar);
@@ -71,9 +69,5 @@ public class BonnieModal {
 	public void show(){
 		panel.show();	
 		messageLabel.getElement().focus();
-	}
-	
-	public Widget asWidget() {
-		return panel;
 	}
 }

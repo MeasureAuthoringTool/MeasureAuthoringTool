@@ -528,8 +528,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				public void onClick(ClickEvent event) {
 					BonnieModal bonnieModal = new BonnieModal();
 					bonnieModal.show();
-					//TODO add open of bonnie
-					//MatContext.get().redirectToHtmlPage(ClientConstants.HTML_BONNIE);
 				}
 			});
 		}

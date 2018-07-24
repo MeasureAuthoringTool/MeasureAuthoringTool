@@ -23,13 +23,6 @@ public interface UserBonnieAccessInfoDAO extends IDAO<UserBonnieAccessInfo, Stri
 	 * @return the user bonnie access id
 	 */
 	public UserBonnieAccessInfo findByUserId(String userID);
-	
-	/**
-	 * Saves or updates the user bonnie access info object in the database.
-	 * 
-	 * @param userBonnieAccessInfo
-	 * 				the object to save or update
-	 */
-	public void saveOrUpdate(UserBonnieAccessInfo userBonnieAccessInfo);
+
 
 }

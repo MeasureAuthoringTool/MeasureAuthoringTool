@@ -6,10 +6,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpclient-cache-4.5.5.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpcore-4.4.9.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/httpmime-4.5.5.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/spring-security-oauth2-2.3.3.RELEASE.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jakarta-oro-2.0.8.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-annotations-2.9.6.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-core-2.9.4.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/org.apache.oltu.oauth2.client-1.0.2.jar"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="com.google.gwt.eclipse.core.GWT_CONTAINER"/>

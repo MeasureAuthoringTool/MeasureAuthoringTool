@@ -8,7 +8,6 @@ import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import mat.client.Bonnie;
 import mat.client.bonnie.BonnieService;
 import mat.dao.UserBonnieAccessInfoDAO;
 import mat.dao.UserDAO;
@@ -18,9 +17,10 @@ import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.bonnie.api.BonnieAPI;
 import mat.server.bonnie.api.BonnieAPIv1;
-import mat.server.bonnie.api.error.BonnieUnauthorizedException;
-import mat.server.bonnie.api.result.BonnieUserInformationResult;
 import mat.shared.BonnieOAuthResult;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 @SuppressWarnings("serial")
 @Service
@@ -50,7 +50,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	private String getClientSecret() {
 		return System.getProperty("BONNIE_CLIENT_SECRET");
 	}
-	private String getBonnieBaseURL() {
+	
+	public String getBonnieBaseURL() {
 		return "https://bonnie-prior.ahrqstg.org";
 	}
 
@@ -104,7 +105,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 
 	@Override
-	public BonnieOAuthResult exchangeCodeForTokens(String code) {        
+	public BonnieOAuthResult exchangeCodeForTokens(String code) {     
+		System.out.println("EXCHANING!");
 		BonnieOAuthResult result = null;
 		try {
 			result = getBonnieOAuthResult(code);
@@ -159,8 +161,22 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
         userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
 	}
 	
-	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId) throws BonnieUnauthorizedException {	
-		return bonnieApi.getUserInformationByToken("fake token");
+	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId) throws Exception {	
+		UserBonnieAccessInfo bonnieAccessInfo = userBonnieAccessInfoDAO.findByUserId(userId);
+		if(bonnieAccessInfo == null) {
+			// if they have no credentials in the database, then they are not authorized with bonnie
+			throw new BonnieUnauthorizedException();
+		}
+		
+		try {
+			BonnieUserInformationResult bonnieInformationResult = bonnieApi.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
+			return bonnieInformationResult;
+		} catch (BonnieUnauthorizedException e) {
+			// if an unauthorized exception is thrown and the user had credentials in the database, delete them because they 
+			// are invalid, and the surface the error
+			userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
+			throw e; 
+		}
 	}
 
 	public BonnieAPI getBonnieApi() {

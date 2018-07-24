@@ -106,6 +106,9 @@ public interface BonnieAPI {
 	 * Gets user information from the access token
 	 * @param bearerToken the bearer authentication token for the user
 	 * @return the user information which was fetched by the token
+	 * @throws BonnieServerException 
+	 * @throws BonnieUnauthorizedException 
+	 * @throws Exception 
 	 */
-	BonnieUserInformationResult getUserInformationByToken(String bearerToken);
+	BonnieUserInformationResult getUserInformationByToken(String bearerToken) throws BonnieServerException, BonnieUnauthorizedException, Exception;
 }

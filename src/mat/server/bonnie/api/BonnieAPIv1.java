@@ -1,10 +1,21 @@
 package mat.server.bonnie.api;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
+import mat.server.bonnie.BonnieServiceImpl;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.bonnie.api.result.BonnieMeasureUploadResult;
@@ -19,6 +30,11 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 @Configurable
 @Service
 public class BonnieAPIv1 implements BonnieAPI {
+	
+	@Autowired private BonnieServiceImpl bonnieServiceImpl;
+	
+	private static final Log logger = LogFactory.getLog(BonnieAPIv1.class);
+
 
 	public BonnieAPIv1() {
 		// TODO Auto-generated constructor stub
@@ -63,11 +79,62 @@ public class BonnieAPIv1 implements BonnieAPI {
 	}
 
 	@Override
-	public BonnieUserInformationResult getUserInformationByToken(String bearerToken) {
-		System.out.println("IN GET USER INFO");
+	public BonnieUserInformationResult getUserInformationByToken(String token) throws Exception {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
-		userInformationResult.setBonnieUsername("Jack's Bonnie Username");	
+		try {
+			HttpURLConnection connection = get(token, "/oauth/token/info");
+			connection.connect();
+			logger.info("GET " + connection.getURL());
+			
+			String code = Integer.toString(connection.getResponseCode());						
+			if(code.startsWith("2")) {
+				String response = getResponse(connection.getInputStream());
+				JSONObject jsonObject = new JSONObject(response);
+				String email = jsonObject.getString("user_email");
+				userInformationResult.setBonnieUsername(email);			
+			} else if(code.startsWith("4")) { 
+				// if the server throws a 401 or 404, we should return unauthorized exception since the tokens were not valid
+				String response = getResponse(connection.getErrorStream());
+				logger.error(response);
+				throw new BonnieUnauthorizedException();
+			} else if (code.startsWith("5")) {
+				String response = getResponse(connection.getErrorStream());
+				logger.error(response);
+				throw new BonnieServerException();
+			}
+		} catch (IOException e) {
+			throw new BonnieServerException();
+		}
+		
 		return userInformationResult;
 	}
 
+	private String getResponse(InputStream stream) throws IOException {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(stream));) {
+			String inputLine;
+			StringBuilder builder = new StringBuilder();
+
+			while ((inputLine = in.readLine()) != null) {
+				builder.append(inputLine);
+			}
+			
+			return builder.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+	
+	private HttpURLConnection get(String token, String uri) throws IOException {
+		String baseURL = bonnieServiceImpl.getBonnieBaseURL();
+		String requestUrl = baseURL + uri;
+		String bearerToken = "Bearer " + token;
+		
+
+		URL url = new URL(requestUrl);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		connection.setRequestMethod("GET");
+		connection.setRequestProperty("Authorization", bearerToken);
+		return connection; 
+	}
 }

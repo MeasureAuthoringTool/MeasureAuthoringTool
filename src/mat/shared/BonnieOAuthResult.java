@@ -2,17 +2,17 @@ package mat.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class BonnieOAuthResultAgain implements IsSerializable{
+public class BonnieOAuthResult implements IsSerializable{
 	private String accessToken;
 	private String refreshToken;
 	private Long expiresIn;
 	private String body;
 	
-	public BonnieOAuthResultAgain() {
+	public BonnieOAuthResult() {
 		
 	}
 	
-	public BonnieOAuthResultAgain(String accessToken, String refreshToken, long expiresIn, String body){
+	public BonnieOAuthResult(String accessToken, String refreshToken, long expiresIn, String body){
 		this.accessToken = accessToken;
 		this.refreshToken = refreshToken;
 		this.expiresIn = expiresIn;

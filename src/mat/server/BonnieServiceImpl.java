@@ -12,7 +12,7 @@ import mat.dao.UserBonnieAccessInfoDAO;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
-import mat.shared.BonnieOAuthResultAgain;
+import mat.shared.BonnieOAuthResult;
 
 @SuppressWarnings("serial")
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService{
@@ -57,8 +57,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		}
 	}
 
-	public BonnieOAuthResultAgain refreshBonnieTokens() {
-		BonnieOAuthResultAgain result = null;
+	public BonnieOAuthResult refreshBonnieTokens() {
+		BonnieOAuthResult result = null;
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		result = getBonnieRefreshResult(user.getUserBonnieAccessInfo());
 		SaveBonnieAccessInfo(result);
@@ -66,7 +66,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return result;
 	}
 	
-	private BonnieOAuthResultAgain getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
+	private BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
 		try {
 			 OAuthClient client = new OAuthClient(new URLConnectionClient());
 
@@ -82,7 +82,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	         
 	         OAuthJSONAccessTokenResponse token =
 	                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-	         BonnieOAuthResultAgain result = new BonnieOAuthResultAgain(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
+	         BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
 	         return result;
 			}
 			catch(Exception exn) {
@@ -92,8 +92,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 
 	@Override
-	public BonnieOAuthResultAgain exchangeCodeForTokens(String code) {        
-		BonnieOAuthResultAgain result = null;
+	public BonnieOAuthResult exchangeCodeForTokens(String code) {        
+		BonnieOAuthResult result = null;
 		try {
 			result = getBonnieOAuthResult(code);
 			SaveBonnieAccessInfo(result);
@@ -106,7 +106,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return result;
 	}
 	
-	private BonnieOAuthResultAgain getBonnieOAuthResult(String code) {
+	private BonnieOAuthResult getBonnieOAuthResult(String code) {
 		try {
 		 OAuthClient client = new OAuthClient(new URLConnectionClient());
 
@@ -122,7 +122,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
          
          OAuthJSONAccessTokenResponse token =
                  client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-         BonnieOAuthResultAgain result = new BonnieOAuthResultAgain(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
+         BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
          return result;
 		}
 		catch(Exception exn) {
@@ -131,7 +131,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		}
 	}
 	
-	private void SaveBonnieAccessInfo(BonnieOAuthResultAgain result) {
+	private void SaveBonnieAccessInfo(BonnieOAuthResult result) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo();
 		if(userBonnieAccessInfo == null) {

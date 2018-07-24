@@ -13,11 +13,9 @@ public class BonnieUserInformationResult implements IsSerializable {
 		
 	}
 
-
 	public String getBonnieUsername() {
 		return bonnieUsername;
 	}
-
 
 	public void setBonnieUsername(String bonnieUsername) {
 		this.bonnieUsername = bonnieUsername;

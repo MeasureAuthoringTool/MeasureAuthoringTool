@@ -9,7 +9,7 @@ import mat.client.bonnie.BonnieService;
 import mat.client.bonnie.BonnieServiceAsync;
 import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
-import mat.shared.BonnieOAuthResult;
+import mat.shared.BonnieOAuthResultAgain;
 
 public class Bonnie extends MainLayout implements EntryPoint {
 
@@ -23,7 +23,7 @@ public class Bonnie extends MainLayout implements EntryPoint {
 	}
 
 	private void getToken(String code) {
-		bonnie.exchangeCodeForTokens(code, new AsyncCallback<BonnieOAuthResult>() {
+		bonnie.exchangeCodeForTokens(code, new AsyncCallback<BonnieOAuthResultAgain>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -32,7 +32,7 @@ public class Bonnie extends MainLayout implements EntryPoint {
 			}
 
 			@Override
-			public void onSuccess(BonnieOAuthResult result) {
+			public void onSuccess(BonnieOAuthResultAgain result) {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
 			}
 

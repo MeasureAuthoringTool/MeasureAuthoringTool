@@ -26,12 +26,12 @@ public class MatTextCell extends TextInputCell {
 
         String s = (viewData != null) ? viewData.getCurrentValue() : value;
         if (!StringUtility.isEmptyOrNull(s)) {
-    		sb.appendHtmlConstant("<input type=\"text\" tabindex=\"-1\" value=\"" + s + "\" title=\"" + s + "\"></input>");
+    		sb.appendHtmlConstant("<input type=\"text\" value=\"" + s + "\" title=\"" + s + "\"></input>");
         } else {
         	if(tooltip != null) {
-        		sb.appendHtmlConstant("<input type=\"text\" tabindex=\"-1\" title=\"" + tooltip + "\"></input>");
+        		sb.appendHtmlConstant("<input type=\"text\" title=\"" + tooltip + "\"></input>");
         	} else {
-        		sb.appendHtmlConstant("<input type=\"text\" tabindex=\"-1\" title=\"\"></input>");
+        		sb.appendHtmlConstant("<input type=\"text\" title=\"\"></input>");
         	}
             
         }

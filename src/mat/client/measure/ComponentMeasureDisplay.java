@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.HelpBlock;
@@ -13,7 +14,6 @@ import org.gwtbootstrap3.client.ui.constants.PanelType;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.TextInputCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -61,7 +61,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
-	private Map<ManageMeasureSearchModel.Result, String> aliasMapping = new HashMap<ManageMeasureSearchModel.Result, String>();
+	private Map<String, String> aliasMapping = new HashMap<String, String>();
 	
 	private PanelHeader availableMeasureHeader = new PanelHeader();
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
@@ -94,6 +94,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		buildAvailableMeasuresTable();
 		searchWidgetBootStrap.getSearchBox().setText("");
 		errorMessages.clearAlert();
+		helpBlock.setText("");
+		helpBlock.setTitle("");
 	}
 
 	private void buildMainPanel() {
@@ -127,6 +129,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		
 		contentPanel.add(buttonBar);
 		
+		helpBlock.setColor("transparent");
+		helpBlock.setVisible(false);
+		helpBlock.setHeight("0px");
+		contentPanel.add(helpBlock);
 		mainPanel.add(contentPanel);
 	}
 	
@@ -220,8 +226,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatTextCell("Assign Alias")) {
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
-				if(aliasMapping.containsKey(object)) {
-					return aliasMapping.get(object);
+				if(aliasMapping.containsKey(object.getId())) {
+					return aliasMapping.get(object.getId());
 				}
 				return "";
 			}
@@ -230,7 +236,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		aliasColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 			@Override
 			public void update(int index, Result object, String value) {
-				aliasMapping.put(object, value);
+				aliasMapping.put(object.getId(), value);
 			}
 		});
 		
@@ -384,7 +390,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 			@Override
 			public Boolean getValue(Result object) {
-				if(appliedComponentMeasuresList.contains(object)) {
+				if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() > 0) {
+					selectionModel.setSelected(object, true);
 					return true;
 				}
 				return false;
@@ -398,11 +405,19 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 					public void update(int index, Result object, Boolean value) {
 						selectionModel.setSelected(object, value);
 						if (value) {
-							appliedComponentMeasuresList.add(object);
+							if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() == 0) {
+								appliedComponentMeasuresList.add(object);
+							}
+							helpBlock.setText(object.getName() + "has been selected and added to the applied measures list");
 						} else {
-							appliedComponentMeasuresList.remove(object);
-							if(aliasMapping.containsKey(object)) {
-								aliasMapping.remove(object);
+							helpBlock.setText(object.getName() + "has been deselected and removed from the applied measures list");
+							List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
+							for(Result matchingResult: matchingList) {
+								appliedComponentMeasuresList.remove(matchingResult);
+							}
+
+							if(aliasMapping.containsKey(object.getId())) {
+								aliasMapping.remove(object.getId());
 							}
 						}
 						buildAppliedComponentMeasuresTable();
@@ -431,9 +446,12 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		deleteColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-				appliedComponentMeasuresList.remove(object);
-				if(aliasMapping.containsKey(object)) {
-					aliasMapping.remove(object);
+				List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
+				for(Result matchingResult: matchingList) {
+					appliedComponentMeasuresList.remove(matchingResult);
+				}
+				if(aliasMapping.containsKey(object.getId())) {
+					aliasMapping.remove(object.getId());
 				}
 				buildAppliedComponentMeasuresTable();
 				buildAvailableMeasuresTable();

@@ -137,6 +137,7 @@ public class CQLAppliedValueSetUtility {
 		for(int i = 0; i< view.getProgramListBox().getItemCount(); i++) {
 			if(program.equals(view.getProgramListBox().getItemText(i))) {
 				view.getProgramListBox().setSelectedIndex(i);
+				break;
 			}
 		}	
 	}
@@ -145,6 +146,7 @@ public class CQLAppliedValueSetUtility {
 		for(int i = 0; i< view.getReleaseListBox().getItemCount(); i++) {
 			if(release.equals(view.getReleaseListBox().getItemText(i))) {
 				view.getReleaseListBox().setSelectedIndex(i);
+				break;
 			}
 		}
 	}

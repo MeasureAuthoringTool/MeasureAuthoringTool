@@ -7,11 +7,12 @@ import org.gwtbootstrap3.client.ui.TabContent;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.BaseDisplay;
+import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 
 public class ManageExportView implements BaseDisplay {
@@ -38,8 +39,8 @@ public class ManageExportView implements BaseDisplay {
 		tabs = new NavTabs();
 		content = new TabContent();
 		
-		createExportTab(tabs, content);
-		createBonnieExportTab(tabs, content);
+		createExportTab();
+		createBonnieExportTab();		
 
 		panelBody.add(tabs);
 		panelBody.add(content);
@@ -47,7 +48,7 @@ public class ManageExportView implements BaseDisplay {
 		mainPanel.add(panelBody);
 	}
 	
-	private void createExportTab(NavTabs tabs, TabContent content) {
+	private void createExportTab() {
 		exportItem = new TabListItem();
 		exportItem.setActive(true);
 		exportItem.setDataTarget("exportTab");
@@ -62,7 +63,7 @@ public class ManageExportView implements BaseDisplay {
 		content.add(exportPane);
 	}
 	
-	private void createBonnieExportTab(NavTabs tabs, TabContent content) {
+	private void createBonnieExportTab() {
 		bonnieExportItem = new TabListItem();
 		bonnieExportItem.setDataTarget("exportBonnieTab");
 		bonnieExportItem.setText("Upload to Bonnie");

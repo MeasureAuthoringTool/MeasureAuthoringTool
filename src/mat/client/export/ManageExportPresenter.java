@@ -1,5 +1,7 @@
 package mat.client.export;
 
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.MatPresenter;
@@ -9,6 +11,7 @@ import mat.client.export.measure.ManageMeasureExportPresenter;
 import mat.client.export.measure.ManageMeasureExportView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.shared.MatContext;
 
 public class ManageExportPresenter implements MatPresenter {
 	
@@ -32,11 +35,36 @@ public class ManageExportPresenter implements MatPresenter {
 
 	private void initializeBonnieExportView() {
 		view.getBonnieExportPane().clear();
+
 		this.view.getBonnieExportItem().setActive(false);
 		this.view.getBonnieExportPane().setActive(false);
 		bonnieExportView = new BonnieExportView();
 		BonnieExportPresenter bonnieExportPresenter = new BonnieExportPresenter(bonnieExportView, result, manageMeasurePresenter);
 		this.view.getBonnieExportPane().add(bonnieExportView.asWidget());
+		
+		double releaseVersion = Double.parseDouble(result.getHqmfReleaseVersion().replace("v", ""));
+		MatContext.get().getCurrentReleaseVersion(new AsyncCallback<String>() {
+			
+			@Override
+			public void onSuccess(String result) {
+				
+				if(releaseVersion >= 5.4 && result.equals("v5.6")) {
+					setBonnieExportVisible(true);
+				} else {
+					setBonnieExportVisible(false);
+				}				
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+		});
+	}
+	
+	private void setBonnieExportVisible(boolean isVisible) {
+		this.view.getBonnieExportItem().setVisible(isVisible);
+		this.view.getBonnieExportPane().setVisible(isVisible);
 	}
 
 	private void initializeExportView() {

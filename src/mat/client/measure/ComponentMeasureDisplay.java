@@ -105,7 +105,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		
 		VerticalPanel contentPanel = new VerticalPanel();
 		contentPanel.setWidth("100%");
-		new LabelBuilder();
 		contentPanel.add(LabelBuilder.buildInvisibleLabel("componentMeasureInstructions", "To use this page, users should search for the measures they want to include as component measures within their composite measure. Selecting the checkboxes in-line with the measure name in the search results will put that measure into the Applied Components list in the bottom half of the page. Users should select all component measures that will be needed for their composite measure and will then need to assign an alias to each component measure using the fields in the Applied Components list before clicking Save and Continue."));
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.setWidth("100%");

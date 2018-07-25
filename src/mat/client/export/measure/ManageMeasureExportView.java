@@ -84,6 +84,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	public void createMeasureInformationContent() {
 		measureNameLink.getElement().setId("measureNameLabel");
 		measureNameLink.setType(ButtonType.LINK);
+		measureNameLink.setTitle("Link to Measure Details for Measure");
 		
 		FormGroup group = new FormGroup();
 		FormLabel measureNameLabel = new FormLabel();

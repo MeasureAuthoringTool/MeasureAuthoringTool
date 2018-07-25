@@ -83,9 +83,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
 		try {
 			HttpURLConnection connection = get(token, "/oauth/token/info");
-			connection.connect();
 			logger.info("GET " + connection.getURL());
-			
+	
 			String code = Integer.toString(connection.getResponseCode());						
 			if(code.startsWith("2")) {
 				String response = getResponse(connection.getInputStream());
@@ -103,7 +102,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 				throw new BonnieServerException();
 			}
 		} catch (IOException e) {
-			throw new BonnieServerException();
+			throw new Exception();
 		}
 		
 		return userInformationResult;
@@ -135,6 +134,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Authorization", bearerToken);
+		connection.connect();
 		return connection; 
 	}
 }

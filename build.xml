@@ -137,6 +137,7 @@
 			<arg value="${web.output.dir}" />
 			<arg value="mat.Mat" />
 			<arg value="mat.Login" />
+			<arg value="mat.Bonnie" />
 		</java>
 
 	</target>

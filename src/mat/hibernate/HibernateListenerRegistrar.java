@@ -10,12 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import mat.dao.impl.AuditEventListener;
+import mat.server.export.MeasureArtifactGenerator;
+import mat.server.service.SimpleEMeasureService;
 
 @Component
 public class HibernateListenerRegistrar {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	private SimpleEMeasureService eMeasureService;
 	
 	@PostConstruct
 	protected void init() {
@@ -27,6 +32,7 @@ public class HibernateListenerRegistrar {
 		eventListenerRegistry.prependListeners(EventType.PRE_INSERT, auditEventListener);
 		eventListenerRegistry.prependListeners(EventType.PRE_UPDATE, auditEventListener);
 		eventListenerRegistry.prependListeners(EventType.PRE_DELETE, auditEventListener);
-
+		
+		MeasureArtifactGenerator.seteMeasureService(eMeasureService);
 	}
 }

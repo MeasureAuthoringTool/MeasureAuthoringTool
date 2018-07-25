@@ -48,6 +48,7 @@ import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.LoggedInUserUtil;
+import mat.server.export.MeasureArtifactGenerator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
@@ -163,7 +164,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
 	}
 	
-	private void generateExport(final String measureId, final List<String> message ,
+	private void generateExport(final String measureId,
 			final List<MatValueSet> matValueSetList) throws Exception {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		Measure measure = measureDAO.find(measureId);
@@ -196,9 +197,20 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		measure.setExportedDate(new Date());
 		measureDAO.save(measure);
 		measureExportDAO.save(export);
+		//MAT-9283
+		createPackageArtifacts(measureId, measure.getReleaseVersion(), export);
 	}
 	
-	
+	private void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export) {
+		export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
+		export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
+		export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
+		export.setElm(MeasureArtifactGenerator.getELMArtifact(measureId));
+		export.setJson(MeasureArtifactGenerator.getJSONArtifact(measureId));
+		
+		measureExportDAO.save(export);
+	}
+
 	@Override
 	public Measure getById(final String id) {
 		return measureDAO.find(id);
@@ -467,10 +479,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public ValidateMeasureResult validateMeasureForExport(final String key,
 			final List<MatValueSet> matValueSetsList) throws Exception {
-		List<String> message = new ArrayList<String>();
-		generateExport(key, message, matValueSetsList);
+		List<String> message = new ArrayList<>();
+		generateExport(key, matValueSetsList);
 		ValidateMeasureResult result = new ValidateMeasureResult();
-		result.setValid(message.size() == 0);
+		result.setValid(message.isEmpty());
 		result.setValidationMessages(message);
 		return result;
 	}

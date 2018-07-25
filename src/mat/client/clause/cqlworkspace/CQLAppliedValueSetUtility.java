@@ -132,6 +132,33 @@ public class CQLAppliedValueSetUtility {
 		releaseBox.setEnabled(true);
 		releaseBox.addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 	}
+	
+	private static void setProgram(String program, CQLAppliedValueSetView view) {
+		for(int i = 0; i< view.getProgramListBox().getItemCount(); i++) {
+			if(program.equals(view.getProgramListBox().getItemText(i))) {
+				view.getProgramListBox().setSelectedIndex(i);
+			}
+		}	
+	}
+	
+	private static void setRelease(String release, CQLAppliedValueSetView view) {
+		for(int i = 0; i< view.getReleaseListBox().getItemCount(); i++) {
+			if(release.equals(view.getReleaseListBox().getItemText(i))) {
+				view.getReleaseListBox().setSelectedIndex(i);
+			}
+		}
+	}
+	
+	public static void setProgramsAndReleases(String program, String release, CQLAppliedValueSetView view) {
+		if(program != null) {
+			setProgram(program, view);		
+			loadReleases(view.getReleaseListBox(), view.getProgramListBox());
+			if(release != null) {
+				setRelease(release, view);
+			}
+		}
+		view.setProgramReleaseBoxEnabled(true);
+	}
 		
 	public static void loadPrograms(ListBox programBox) {
 		programBox.clear();
@@ -142,14 +169,13 @@ public class CQLAppliedValueSetUtility {
 	
 	//loadPrograms() MUST be called before loadReleases()
 	public static void loadReleases(ListBox releaseBox, ListBox programBox) {
-		releaseBox.setEnabled(false);
+		releaseBox.clear();
+		releaseBox.setEnabled(true);
 		List<String> releases = new ArrayList<>();
-		releases.add(MatContext.PLEASE_SELECT);
+		releaseBox.addItem(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 		String program = programBox.getSelectedValue();
 		if(!program.equals(MatContext.PLEASE_SELECT)) {
-			releaseBox.setEnabled(true);
 			releases.addAll(MatContext.get().getProgramToReleases().get(programBox.getSelectedValue()));
-			releaseBox.clear();
 			for(String release : releases) {
 				releaseBox.addItem(release, release);
 			}

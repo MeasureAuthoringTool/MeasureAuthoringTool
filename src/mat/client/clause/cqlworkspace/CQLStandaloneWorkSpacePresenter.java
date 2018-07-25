@@ -405,12 +405,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
 	private void setReleaseAndProgramFieldsOnEdit(CQLQualityDataSetDTO result) {
 		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-		
-		loadProgramsAndReleases();
-		
+		CQLAppliedValueSetUtility.setProgramsAndReleases(result.getProgram(), result.getRelease(), searchDisplay.getValueSetView());
 		isProgramListBoxEnabled = true;
-				
-		searchDisplay.getValueSetView().setProgramReleaseBoxEnabled(isProgramListBoxEnabled);
 	}
 	
 	
@@ -3732,14 +3728,20 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					String program = searchDisplay.getValueSetView().getProgramListBox().getSelectedValue();
 					program = MatContext.PLEASE_SELECT.equals(program) ? null : program;
 					
+									
 					if(null == release && null != program) {
 						HashMap<String, String> pgmProfileMap = (HashMap<String, String>) MatContext.get().getProgramToLatestProfile();
 						expansionProfile = pgmProfileMap.get(program);
 					}
-					searchValueSetInVsac(release, expansionProfile);
 					
-					//508 compliance for Value Sets
-					searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput()); 
+					if(release != null && program == null) {
+						searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(SharedCQLWorkspaceUtility.MUST_HAVE_PROGRAM_WITH_RELEASE);
+					} else {
+						searchValueSetInVsac(release, expansionProfile);
+						
+						//508 compliance for Value Sets
+						searchDisplay.getCqlLeftNavBarPanelView().setFocus(searchDisplay.getValueSetView().getOIDInput()); 
+					}
 				}
 			}
 		});
@@ -4618,7 +4620,9 @@ private void addCodeSearchPanelHandlers() {
 			}
 			
 			String releaseValue = searchDisplay.getValueSetView().getReleaseListBox().getSelectedValue();
-			if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			if(releaseValue == null) {
+				modifyValueSetDTO.setRelease("");
+			} else if(!releaseValue.equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
 				modifyValueSetDTO.setRelease(releaseValue);
 				modifyValueSetDTO.setVersion("");
 			} else {

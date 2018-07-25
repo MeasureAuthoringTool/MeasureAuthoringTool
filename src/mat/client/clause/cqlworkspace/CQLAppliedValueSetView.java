@@ -358,6 +358,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	public void setProgramReleaseBoxEnabled(Boolean isEnabled) {
 		getProgramListBox().setEnabled(isEnabled);
+		getReleaseListBox().setEnabled(isEnabled);
 	}
 
 	public void buildAppliedValueSetCellTable(List<CQLQualityDataSetDTO> appliedValueSetList, boolean isEditable) {

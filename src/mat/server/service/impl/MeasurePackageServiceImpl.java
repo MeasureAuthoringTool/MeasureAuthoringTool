@@ -507,4 +507,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public void setCqlLibraryDAO(CQLLibraryDAO cqlLibraryDAO) {
 		this.cqlLibraryDAO = cqlLibraryDAO;
 	}
+
+	@Override
+	public List<MeasureShareDTO> searchComponentMeasuresWithFilter(MeasureSearchModel measureSearchModel) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measureDAO.getComponentMeasureShareInfoForUserWithFilter(measureSearchModel, user);
+	}
 }

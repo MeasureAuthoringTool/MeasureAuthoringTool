@@ -260,6 +260,17 @@ public interface MeasureService extends RemoteService {
 	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 	/**
+	 * Search component measures.
+	 * 
+	 * @param searchText
+	 *            the search text
+	 * @param advancedSearchModel
+	 * 			the model that the search method uses to search
+	 * @return the manage measure search model
+	 */
+	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
+	
+	/**
 	 * Search users.
 	 *
 	 * @param searchText the search text

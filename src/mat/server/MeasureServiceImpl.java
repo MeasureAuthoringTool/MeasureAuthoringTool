@@ -510,4 +510,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		return this.getMeasureLibraryService().modifyCQLCodeInMeasure(modifyCQLCode, refCode, measureId);
 	}
 
+	@Override
+	public ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel) {
+		return this.getMeasureLibraryService().searchComponentMeasures(searchModel);
+	}
+
 }

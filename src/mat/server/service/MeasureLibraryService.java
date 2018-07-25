@@ -736,4 +736,6 @@ public interface MeasureLibraryService {
 
 	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model);
 
+	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
+
 }

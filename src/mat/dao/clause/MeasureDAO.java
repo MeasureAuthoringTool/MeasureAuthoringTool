@@ -276,4 +276,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the share level
 	 */
 	ShareLevel findShareLevelForUser(String measureId, String userID, String measureSetId);
+
+	List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
+			User user);
 }

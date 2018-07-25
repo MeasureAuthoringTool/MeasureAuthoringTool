@@ -340,4 +340,6 @@ public interface MeasurePackageService {
 	 * @return the measure
 	 */
 	boolean getMeasure(String measureId);
+
+	List<MeasureShareDTO> searchComponentMeasuresWithFilter(MeasureSearchModel measureSearchModel);
 }

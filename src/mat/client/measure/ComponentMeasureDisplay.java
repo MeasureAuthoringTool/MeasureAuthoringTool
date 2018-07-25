@@ -65,7 +65,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private PanelHeader availableMeasureHeader = new PanelHeader();
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
-	private static final int PAGE_SIZE = 10;
+	private static final int PAGE_SIZE = 25;
 	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
@@ -305,7 +305,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 				model.setIsMyMeasureSearch(filter);
 
-				MatContext.get().getMeasureService().search(model, callback);
+				MatContext.get().getMeasureService().searchComponentMeasures(model, callback);
 			}
 		};
 

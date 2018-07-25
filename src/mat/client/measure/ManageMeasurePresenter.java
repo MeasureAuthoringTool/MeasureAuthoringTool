@@ -1184,14 +1184,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 	protected void searchComponentMeasures(String searchText, int startIndex, int pageSize, int filter) {
 		setComponentSearchingBusy(true);
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-		
-		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, Integer.MAX_VALUE, lastSearchText, searchText);
+		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		searchModel.setOmitCompositeMeasure(true);
-		searchModel.setOmitPrivate(true);
 		searchModel.setIsDraft(VersionMeasureType.VERSION);
 		
-		MatContext.get().getMeasureService().search(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
+		MatContext.get().getMeasureService().searchComponentMeasures(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				componentMeasureDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());

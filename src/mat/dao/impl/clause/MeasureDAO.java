@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import mat.client.measure.MeasureSearchFilterPanel;
+import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
@@ -137,7 +138,6 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds) {
 		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureIds);
 		List<Measure> measure = mCriteria.list();
-		System.out.println("Measure List Size: " + measure.size());
 		return measure;
 	}
 
@@ -597,38 +597,16 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			User user) {
 
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
+		
+		List<Measure> measureResultList = fetchMeasureResultListForCritera(mCriteria, measureSearchModel, user);
+		
+		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
+	}
 
-		if(measureSearchModel.getQdmVersion() != null) {
-			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
-		}
-		
-		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
-			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
-		}
-		
-		if(measureSearchModel.getOmitPrivate() != null && measureSearchModel.getOmitPrivate()) {
-			mCriteria.add(Restrictions.and(Restrictions.eq("isPrivate", false)));
-			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
-					Restrictions.eq("share.shareUser.id", user.getId())));
-			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
-		}
-
-		
-		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(1);
-		
-		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
-		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
+	private List<MeasureShareDTO> getOrderedDTOListFromMeasureResults(MeasureSearchModel measureSearchModel, User user,
+			List<Measure> measureResultList) {
 		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
-		List<Measure> measureResultList = mCriteria.list();
-		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3")
-				&& (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
-
-		if (!user.getSecurityRole().getId().equals("2")) {
-			measureResultList = getAllMeasuresInSet(measureResultList);
-		}
-		measureResultList = sortMeasureList(measureResultList);
-
+		Map<String, MeasureShareDTO> measureSetIdDraftableMap = new HashMap<String, MeasureShareDTO>();
 		for (Measure measure : measureResultList) {
 			if (advanceSearchResultsForMeasure(measureSearchModel, measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
@@ -636,10 +614,12 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				if (isDraft) {
 					measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
 				}
-				measureIdDTOMap.put(measure.getId(), dto);
 				orderedDTOList.add(dto);
 			}
 		}
+		
+		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3")
+				&& (measureSearchModel.isMyMeasureSearch() == MeasureSearchModel.ALL_MEASURES);
 		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
 		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
 		List<MeasureShare> shareList = shareCriteria.list();
@@ -698,6 +678,20 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		} else {
 			return orderedDTOList;
 		}
+	}
+
+	private List<Measure> fetchMeasureResultListForCritera(Criteria mCriteria, MeasureSearchModel measureSearchModel, User user) {
+		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
+		mCriteria.setFirstResult(1);
+		
+		@SuppressWarnings("unchecked")
+		List<Measure> measureResultList = mCriteria.list();
+
+		if (!user.getSecurityRole().getId().equals("2")) {
+			measureResultList = getAllMeasuresInSet(measureResultList);
+		}
+		measureResultList = sortMeasureList(measureResultList);
+		return measureResultList;
 	}
 
 	/**
@@ -1048,5 +1042,34 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		}
 
 		return measureIds;
+	}
+
+	@Override
+	public List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
+			User user) {		
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
+
+		if(measureSearchModel.getQdmVersion() != null) {
+			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
+		}
+		
+		if(measureSearchModel.isOmitCompositeMeasure() != null && measureSearchModel.isOmitCompositeMeasure()) {
+			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
+		}
+		
+		List<Measure> measureResultList = fetchMeasureResultListForCritera(mCriteria, measureSearchModel, user);
+		measureResultList = getCQLMeasures(measureResultList);
+		
+		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
+	}
+
+	private List<Measure> getCQLMeasures(List<Measure> measureResultList) {
+		List<Measure> cqlMeasures = new ArrayList<Measure>();
+		for(Measure measureResult: measureResultList) {
+			if(!StringUtility.isEmptyOrNull(measureResult.getReleaseVersion()) && MatContext.get().isCQLMeasure(measureResult.getReleaseVersion())) {
+				cqlMeasures.add(measureResult);
+			}
+		}
+		return cqlMeasures;
 	}
 }

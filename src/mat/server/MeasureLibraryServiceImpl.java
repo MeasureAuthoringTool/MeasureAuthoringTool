@@ -5692,4 +5692,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return result;
 		}		
 	}
+
+	@Override
+	public ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel measureSearchModel) {
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
+		
+		List<MeasureShareDTO> measureList = getService().searchComponentMeasuresWithFilter(measureSearchModel);
+		List<MeasureShareDTO> measureTotalList = measureList;
+		
+		searchModel.setResultsTotal(measureTotalList.size());
+		if (measureSearchModel.getPageSize() <= measureTotalList.size()) {
+			measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureSearchModel.getPageSize());
+		} else if (measureSearchModel.getPageSize() > measureList.size()) {
+			measureList = measureTotalList.subList(measureSearchModel.getStartIndex() - 1, measureList.size());
+		}
+		searchModel.setStartIndex(measureSearchModel.getStartIndex());
+		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
+		searchModel.setData(detailModelList);
+		for (MeasureShareDTO dto : measureList) {
+			ManageMeasureSearchModel.Result detail = extractMeasureSearchModelDetail(currentUserId, isSuperUser, dto);
+			detailModelList.add(detail);
+		}
+
+		updateMeasureFamily(detailModelList);
+		return searchModel;
+	}
 }

@@ -719,4 +719,6 @@ public interface MeasureServiceAsync {
 	void modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
+	void searchComponentMeasures(MeasureSearchModel searchModel, AsyncCallback<ManageMeasureSearchModel> asyncCallback);
+
 }

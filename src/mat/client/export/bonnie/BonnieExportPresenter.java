@@ -1,5 +1,6 @@
 package mat.client.export.bonnie;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -8,11 +9,15 @@ import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
+import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 public class BonnieExportPresenter implements MatPresenter {
 
+	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
+	private static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to connect at this time. Please try again. If the problem persists, contact the MAT Support Desk.";
+	
 	private BonnieExportView view;
 	private ManageMeasurePresenter manageMeasurePresenter;
 	private Result result; 
@@ -42,7 +47,20 @@ public class BonnieExportPresenter implements MatPresenter {
 				if(caught instanceof BonnieUnauthorizedException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
-					createErrorMessage("Please sign into Bonnie.");
+					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
+					return; 
+				}
+				
+				if(caught instanceof BonnieServerException) {
+					view.getBonnieSignOutButton().setVisible(false);
+					view.getUploadButton().setEnabled(false);
+					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
+					return;
+				}
+				
+				// has to be last
+				if(caught instanceof Exception) {
+					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 			}
 		});

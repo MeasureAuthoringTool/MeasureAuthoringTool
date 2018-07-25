@@ -80,8 +80,6 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 		this.isEditable = isEditable;
 		this.isLocked = isLocked;
 		this.lockedUserId = lockedUserId;
-		
-		int i = 1; 
 	}
 	
 	

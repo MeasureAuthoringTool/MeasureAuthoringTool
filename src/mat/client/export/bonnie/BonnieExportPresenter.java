@@ -81,7 +81,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	}
 	
 	private void uploadButtonClickHandler() {
-		createErrorMessage("THIS IS AN ERROR");
+		// TODO: Implement Upload Button Handler
 	}
 	
 	private void cancelButtonClickHandler() {

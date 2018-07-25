@@ -408,9 +408,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 							if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() == 0) {
 								appliedComponentMeasuresList.add(object);
 							}
-							helpBlock.setText(object.getName() + "has been selected and added to the applied measures list");
+							helpBlock.setText(object.getName() + "has been selected and added to the applied component measures list");
 						} else {
-							helpBlock.setText(object.getName() + "has been deselected and removed from the applied measures list");
+							helpBlock.setText(object.getName() + "has been deselected and removed from the applied component measures list");
 							List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 							for(Result matchingResult: matchingList) {
 								appliedComponentMeasuresList.remove(matchingResult);

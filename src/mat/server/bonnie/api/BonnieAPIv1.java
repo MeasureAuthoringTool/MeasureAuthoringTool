@@ -15,6 +15,7 @@ import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,7 +174,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		return connection;
 	}
 
-	public BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
+	public BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) throws BonnieUnauthorizedException {
 		try {
 			// TODO remove when this is in JVM variables
 			setProxyVMVariables();
@@ -188,7 +189,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
-		} catch (Exception exn) {
+		} catch (OAuthProblemException e) {
+			e.printStackTrace();
+			throw new BonnieUnauthorizedException();
+		}
+		catch (Exception exn) {
 			exn.printStackTrace();
 			return null;
 		}

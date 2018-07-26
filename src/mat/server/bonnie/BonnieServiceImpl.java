@@ -64,10 +64,16 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return result;
 	}
 
-	private BonnieOAuthResult refreshBonnieTokens(String userId) {
+	private BonnieOAuthResult refreshBonnieTokens(String userId) throws BonnieUnauthorizedException {
 		BonnieOAuthResult result = null;
 		User user = userDAO.find(userId);
-		result = bonnieApi.getBonnieRefreshResult(user.getUserBonnieAccessInfo());
+		try {
+			result = bonnieApi.getBonnieRefreshResult(user.getUserBonnieAccessInfo());
+		} catch (BonnieUnauthorizedException e) {
+			handleBonnieUnauthorizedException(user.getUserBonnieAccessInfo());
+			throw e;
+		}
+		
 		saveBonnieAccessInfo(result);
 
 		return result;
@@ -104,12 +110,16 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 					.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
 			return bonnieInformationResult;
 		} catch (BonnieUnauthorizedException e) {
-			// if an unauthorized exception is thrown and the user had credentials in the
-			// database, delete them because they
-			// are invalid, and the surface the error
-			userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
+			handleBonnieUnauthorizedException(bonnieAccessInfo);
 			throw e;
 		}
+	}
+
+	private void handleBonnieUnauthorizedException(UserBonnieAccessInfo bonnieAccessInfo) {
+		// if an unauthorized exception is thrown and the user had credentials in the
+		// database, delete them because they
+		// are invalid, and the surface the error
+		userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
 	}
 
 	public BonnieAPI getBonnieApi() {

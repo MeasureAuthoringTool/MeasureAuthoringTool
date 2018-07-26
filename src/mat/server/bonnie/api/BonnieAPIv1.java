@@ -89,7 +89,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			HttpURLConnection connection = get(token, "/oauth/token/info");
 			logger.info("GET " + connection.getURL());
-			logger.info(connection.getHeaderFields());
+			logger.info(connection.);
 	
 			String code = Integer.toString(connection.getResponseCode());						
 			if(code.startsWith("2")) {
@@ -150,7 +150,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			SocketAddress address = new InetSocketAddress(getProxyUrl(), Integer.parseInt(getProxyPort()));
 			Proxy proxy = new Proxy(Type.HTTP, address);
 			URL url = new URL(requestUrl);
-			connection = (HttpURLConnection) url.openConnection(proxy);
+			connection = (HttpURLConnection) url.openConnection(proxy);			
 		} else {
 			URL url = new URL(requestUrl);
 			connection = (HttpURLConnection) url.openConnection();

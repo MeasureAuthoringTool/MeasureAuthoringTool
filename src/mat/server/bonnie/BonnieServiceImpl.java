@@ -1,7 +1,14 @@
 package mat.server.bonnie;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
+import java.net.URL;
+import java.net.Proxy.Type;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
@@ -64,6 +71,15 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	public String getBonnieBaseURL() {
 		return "https://bonnie-prior.ahrqstg.org";
 	}
+	
+	private String getProxyUrl() {
+		return System.getProperty("vsac_proxy_host");
+	}
+	
+	private String getProxyPort() {
+		return System.getProperty("vsac_proxy_port");
+	}
+	
 
 	@Override
 	public String getBonnieAccessLink() {
@@ -101,7 +117,16 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	                 .setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 	                 .setRedirectURI(getRedirectURI())
 	                 .buildQueryMessage();
-	         //request.addHeader(name, header);
+	 		
+	         if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
+		         request.addHeader("X-Forwarded-Host", getProxyUrl());
+		         request.addHeader("X-Forwarded-Port", getProxyPort());		
+			} 
+	         
+	         
+
+	         
+	         System.out.println(request.getHeaders());
 	         
 	         OAuthJSONAccessTokenResponse token =
 	                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);

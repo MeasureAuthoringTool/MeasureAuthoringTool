@@ -8,21 +8,20 @@ import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
 
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.shared.ErrorMessageAlert;
 
 
 
 public class DeleteConfirmationDialogBox {
 
-	private  final Button yesButton = new YesButton("DeleteConfirmationBox"); 
-	private final Button noButton = new NoButton("DeleteConfirmationBox");
+	private  final Button yesButton = new BlueButtonSmall("DeleteConfirmationBox", "Yes"); 
+	private final Button noButton = new RedButtonSmall("DeleteConfirmationBox", "No");
 	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 
 	

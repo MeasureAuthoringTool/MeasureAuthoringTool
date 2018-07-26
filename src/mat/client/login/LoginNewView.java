@@ -20,18 +20,19 @@ import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnOffset;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
+
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.GreenButton;
 import mat.client.shared.ChangePasswordWidget;
 
 /**
@@ -48,7 +49,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 	
 	private Input userIdText = new Input(InputType.TEXT);
 	private TextBox securityCodeInput = new TextBox();
-	private Button submitButton = new Button("Sign In");
+	private Button submitButton = new GreenButton("Login","Sign In");
 	private FormGroup passwordGroup = new FormGroup();
 	private FormGroup userIdGroup = new FormGroup();
 	private FormGroup authTokenGroup = new FormGroup();
@@ -154,8 +155,6 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		authTokenGroup.add(securityInputGroup);
 		
 		FormGroup buttonFormGroup = new FormGroup();
-		submitButton.setType(ButtonType.SUCCESS);
-		submitButton.setTitle("Sign In");
 		buttonFormGroup.add(submitButton);
 		
 		FieldSet formFieldSet = new FieldSet();

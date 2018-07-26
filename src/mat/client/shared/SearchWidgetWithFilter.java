@@ -1,7 +1,6 @@
 package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,6 +14,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.buttons.BlueButton;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.util.MatTextBox;
 
@@ -63,16 +63,13 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 	 */
 	public SearchWidgetWithFilter(String cssStyleTopPanel, String cssStyleDisclosurePanel, String forView) {
 		mainFocusPanel = new FocusPanel();
-		searchButton = new Button("Search");
-		searchButton.setType(ButtonType.PRIMARY);
-		searchButton.setTitle("Search");
+		searchButton = new BlueButton("SearchWidgetButton_" + forView, "Search");
 		
 		searchButton.setHeight("32px");
 		searchButton.setMarginLeft(5.0);
 		searchButton.setPaddingBottom(5.0);
 		searchInput.setWidth("150px");
 		searchInput.setHeight("32px");
-		searchButton.setId("SearchWidgetButton_" + forView);
 		VerticalPanel topPanel = new VerticalPanel();
 		
 		topPanel.getElement().setId("SearchFilterWidget_verticalPanel_" + forView);

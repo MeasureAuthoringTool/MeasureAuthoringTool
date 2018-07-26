@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.buttons.BlueButton;
 import mat.client.util.MatTextBox;
 import mat.shared.UUIDUtilClient;
 
@@ -40,12 +41,8 @@ public class SearchWidget extends Composite implements ClickHandler {
 	 */
 	public SearchWidget(String btnLabel, String placeHolder, String style) {
 		// searchInput.setWatermark("Search");
-		searchButton = new Button();
-		searchButton.setType(ButtonType.PRIMARY);
-		searchButton.setText(btnLabel);
-		searchButton.setTitle(btnLabel);
+		searchButton = new BlueButton("searchButton_Button"+UUIDUtilClient.uuid(4), btnLabel);
 		searchButton.addClickHandler(this);
-		searchButton.getElement().setId("searchButton_Button"+UUIDUtilClient.uuid(4));
 		
 		searchButton.setHeight("32px");
 		searchButton.setMarginLeft(5.0);

@@ -12,8 +12,8 @@ public class SaveContinueCancelButtonBar extends Composite {
 
 	public SaveContinueCancelButtonBar(String uniqueSection) {
 		buttonToolBar = new ButtonToolBar();
-		saveButton = new SaveAndContinueButton(uniqueSection);
-		cancelButton = new CancelButton(uniqueSection);
+		saveButton = new BlueButton(uniqueSection, "Save and Continue");
+		cancelButton = new RedButton(uniqueSection, "Cancel");
 		
 		buttonToolBar.add(saveButton);
 		buttonToolBar.add(cancelButton);

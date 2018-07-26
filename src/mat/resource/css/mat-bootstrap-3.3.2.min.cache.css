@@ -3384,15 +3384,15 @@ select[multiple].form-group-lg .form-control,textarea.form-group-lg .form-contro
 
 .btn-success {
 	color: #fff;
-	background-color: #5cb85c;
-	border-color: #4cae4c
+	background-color: #008000;
+	border-color: #008000
 }
 
 .btn-success.active,.btn-success.focus,.btn-success:active,.btn-success:focus,.btn-success:hover,.open>.dropdown-toggle.btn-success
 	{
 	color: #fff;
-	background-color: #449d44;
-	border-color: #398439
+	background-color: #006400;
+	border-color: #006400
 }
 
 .btn-success.active,.btn-success:active,.open>.dropdown-toggle.btn-success
@@ -3470,15 +3470,15 @@ select[multiple].form-group-lg .form-control,textarea.form-group-lg .form-contro
 
 .btn-danger {
 	color: #fff;
-	background-color: #d9534f;
-	border-color: #d43f3a
+	background-color: #9d0000;
+	border-color: #8b0000
 }
 
 .btn-danger.active,.btn-danger.focus,.btn-danger:active,.btn-danger:focus,.btn-danger:hover,.open>.dropdown-toggle.btn-danger
 	{
 	color: #fff;
-	background-color: #c9302c;
-	border-color: #ac2925
+	background-color: #8b0000;
+	border-color: #8b0000
 }
 
 .btn-danger.active,.btn-danger:active,.open>.dropdown-toggle.btn-danger

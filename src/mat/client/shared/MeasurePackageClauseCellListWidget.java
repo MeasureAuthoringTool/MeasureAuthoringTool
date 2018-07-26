@@ -8,6 +8,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -26,19 +33,10 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -48,6 +46,8 @@ import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.GreenButton;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
@@ -585,11 +585,8 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	private Button buildSaveButton(IconType icon, String text) {
-		Button button = new Button(); 
-		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
-		button.setType(ButtonType.PRIMARY);
+		Button button = new BlueButton(text.replaceAll(" ", "_") + "_button", text); 
 		button.setIcon(icon);
-		button.setText(text);
 		button.setTitle("Click to " + text);
 		
 		return button; 
@@ -603,10 +600,8 @@ public class MeasurePackageClauseCellListWidget {
 	 * @return the button
 	 */
 	private Button buildAddButton(IconType icon , String id) {
-		Button btn = new Button();
-		btn.getElement().setAttribute("id", id);
+		Button btn = new GreenButton(id, "");
 		btn.setIcon(icon);
-		btn.setType(ButtonType.SUCCESS);
 		btn.setPaddingBottom(3.0);
 		btn.setPaddingTop(3.0);
 		btn.setWidth("50px");

@@ -13,7 +13,8 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.RedButton;
 import mat.client.buttons.SaveButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
@@ -45,9 +46,9 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	private Button saveButton = new SaveButton("manageMeasureexportview");
 	
-	private Button cancelButton = new CancelButton("manageMeasureexportview");
+	private Button cancelButton = new RedButton("manageMeasureexportview", "Cancel");
 	
-	private Button openButton = new Button("Open");
+	private Button openButton = new BlueButton("ManageMeasureExportView","Open");
 	
 	VerticalPanel vp = new VerticalPanel();
 
@@ -69,9 +70,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 		content.add(new SpacerWidget());
 
 		ButtonToolBar buttonPanel = new ButtonToolBar();
-		
-		openButton.setType(ButtonType.PRIMARY);
-		openButton.setTitle("Open");
+
 		buttonPanel.add(saveButton);
 		buttonPanel.add(openButton);
 		buttonPanel.add(cancelButton);

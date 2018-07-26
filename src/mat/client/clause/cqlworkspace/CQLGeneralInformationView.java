@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import mat.client.buttons.SaveToolBarButton;
+import mat.client.buttons.toolBar.SaveToolBarButton;
 import mat.client.shared.CustomTextAreaWithMaxLength;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;

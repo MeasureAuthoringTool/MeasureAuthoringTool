@@ -4,13 +4,14 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+
+import mat.client.buttons.BlueButton;
 
 public class DeleteConfirmationMessageAlert extends MessageAlert implements WarningConfirmationAlertInterface{
 
-	private Button yesButton = new Button();
-	private Button noButton = new Button();
+	private Button yesButton = new BlueButton("MessageAlertDeleteConfirm", "Yes");
+	private Button noButton = new BlueButton("MessageAlertDeleteConfirm", "Cancel");
 	
 	@Override
 	public void createAlert () {
@@ -56,18 +57,10 @@ public class DeleteConfirmationMessageAlert extends MessageAlert implements Warn
 		setType(AlertType.WARNING);
 		add(new SpacerWidget());
 		
-		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.EXTRA_SMALL);
-		yesButton.setTitle("Yes");
-		yesButton.setText("Yes");
-		yesButton.setId("Clear_Yes_Button");
 		
-		noButton.setType(ButtonType.PRIMARY);
 		noButton.setSize(ButtonSize.EXTRA_SMALL);
 		noButton.setMarginLeft(15);
-		noButton.setTitle("Cancel");
-		noButton.setText("Cancel");
-		noButton.setId("Clear_No_Button");
 
 		add(new SpacerWidget());
 		ButtonToolBar buttonToolBar = new ButtonToolBar();

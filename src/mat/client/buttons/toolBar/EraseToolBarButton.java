@@ -1,11 +1,11 @@
-package mat.client.buttons;
+package mat.client.buttons.toolBar;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-public class ClearToolBarButton extends GenericToolbarButton{
+public class EraseToolBarButton extends GenericToolbarButton{
 
-	public ClearToolBarButton(String sectionName) {
-		super("Clear", sectionName);
+	public EraseToolBarButton(String sectionName) {
+		super("Erase", sectionName);
 		setIcon();
 		setSize();
 	}
@@ -19,4 +19,5 @@ public class ClearToolBarButton extends GenericToolbarButton{
 	public void setSize() {
 		super.setSize("70px", "30px");
 	}
+
 }

@@ -2,8 +2,6 @@ package mat.client.shared;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.dom.client.Element;
@@ -12,6 +10,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.buttons.BlueButtonSmall;
 import mat.shared.ConstantMessages;
 
 /** CreateNewItemWidget.java. */
@@ -25,10 +24,7 @@ public class CreateNewItemWidget extends Composite {
 	public CreateNewItemWidget(String forView) {
 
 		VerticalPanel topPanel = new VerticalPanel();
-		createItemButton = new Button("Create");
-		createItemButton.setType(ButtonType.PRIMARY);
-		createItemButton.setSize(ButtonSize.SMALL);
-		createItemButton.setTitle("Create");
+		createItemButton = new BlueButtonSmall("newItemWidget","Create");
 		createItemButton.setPull(Pull.RIGHT);
 		createItemButton.setMarginLeft(5.0);
 		createItemButton.setHeight("30px");

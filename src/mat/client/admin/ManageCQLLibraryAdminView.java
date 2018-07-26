@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -13,7 +12,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.RedButton;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
@@ -25,10 +25,10 @@ import mat.model.cql.CQLLibraryDataSetObject;
 public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter.ViewDisplay {
 	
 	/** The Insert button. */
-	private Button transferButton = new Button();
+	private Button transferButton = new BlueButton("ManageCQLLibAdmin","Transfer");
 	
 	/** The save button. */
-	private Button clearAllButton = new CancelButton("managecqllibadminview");
+	private Button clearAllButton = new RedButton("managecqllibadminview", "Cancel");
 	
 	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
@@ -72,10 +72,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public ManageCQLLibraryAdminView() {
 		mainPanel.setWidth("100%");
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
-		transferButton.setType(ButtonType.PRIMARY);
-		transferButton.getElement().setId("transferButton");
-		transferButton.setTitle("Transfer");
-		transferButton.setText("Transfer");
 		transferButton.getElement().setAttribute("aria-label", "Transfer");
 		
 		clearAllButton.setMarginLeft(10.00);

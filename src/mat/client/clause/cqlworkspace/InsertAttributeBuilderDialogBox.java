@@ -16,8 +16,6 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
@@ -37,7 +35,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.shared.CustomDateTimeTextBox;
@@ -217,16 +216,9 @@ public class InsertAttributeBuilderDialogBox {
 
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		Button addButton = new Button();
-		addButton.setText("Insert");
-		addButton.setTitle("Insert");
-		addButton.setType(ButtonType.PRIMARY);
-		addButton.setSize(ButtonSize.SMALL);
-		addButton.setId("addButton_Button");
-		Button closeButton = new CancelButton("InsertAttributeBox");
-		closeButton.setSize(ButtonSize.SMALL);
+		Button addButton = new BlueButtonSmall("insertattrbuilderadd", "Insert");
+		Button closeButton = new RedButtonSmall("InsertAttributeBoxcancel", "Cancel");
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
-		closeButton.setId("Cancel_button");
 		buttonToolBar.add(addButton);
 		buttonToolBar.add(closeButton);
 		modalFooter.add(buttonToolBar);

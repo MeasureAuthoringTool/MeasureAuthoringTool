@@ -32,6 +32,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
+import mat.client.buttons.BlueButton;
+
 /**
  * The Class DateBoxWithCalendar.
  */
@@ -378,8 +380,7 @@ public class DateBoxWithCalendar extends Composite{
 	{
 		
 		//calendar = new FocusableImageButton(ImageResources.INSTANCE.calendar(), "Calendar");
-		calendar = new Button();
-		calendar.setType(ButtonType.PRIMARY);
+		calendar = new BlueButton("Calendardatebox","");
 		calendar.setIcon(IconType.CALENDAR);
 		/*calendar.getElement().setId("calendar_CustomButton");
 		calendar.removeStyleName("gwt-button");

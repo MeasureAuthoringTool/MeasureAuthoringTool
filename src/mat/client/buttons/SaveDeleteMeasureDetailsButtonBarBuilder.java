@@ -13,7 +13,7 @@ public class SaveDeleteMeasureDetailsButtonBarBuilder extends Composite{
 
 	public SaveDeleteMeasureDetailsButtonBarBuilder(String sectionName, String saveID, String deleteID) {
 		super();
-		delete = new DeleteButton("sectionName");
+		delete = new RedButton("sectionName", "Delete");
 		delete.setTitle("Delete Measure");
 		delete.setText("Delete Measure");
 		delete.getElement().setId(deleteID);

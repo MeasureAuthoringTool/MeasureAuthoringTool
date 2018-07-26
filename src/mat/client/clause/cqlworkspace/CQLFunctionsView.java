@@ -55,7 +55,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
-import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.buttons.toolBar.DefinitionFunctionButtonToolBar;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.MatSimplePager;

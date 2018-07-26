@@ -3,14 +3,13 @@ package mat.client.shared;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.InputGroup;
 import org.gwtbootstrap3.client.ui.InputGroupButton;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 
 import com.google.gwt.user.client.ui.TextBox;
 
+import mat.client.buttons.BlueButtonSmall;
 import mat.client.util.MatTextBox;
 
 public class SearchWidgetBootStrap {
@@ -18,12 +17,9 @@ public class SearchWidgetBootStrap {
 	private MatTextBox searchBox = new MatTextBox();
 	
 	public SearchWidgetBootStrap(String buttonText , String placeHolderText){
-		go = new Button(buttonText);
-		go.setType(ButtonType.PRIMARY);
+		go = new BlueButtonSmall("serchwidget",buttonText);
 		go.setIcon(IconType.SEARCH);
 		go.setIconPosition(IconPosition.LEFT);
-		go.setSize(ButtonSize.SMALL);
-		go.setTitle(buttonText);
 		go.setPull(Pull.LEFT);
 	
 		searchBox.setHeight("30px");

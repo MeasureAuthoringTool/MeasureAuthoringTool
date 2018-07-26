@@ -11,7 +11,6 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.cell.client.Cell;
@@ -48,8 +47,9 @@ import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.Mat;
-import mat.client.buttons.CancelButton;
-import mat.client.buttons.CodesValuesetsButtonToolBar;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.RedButton;
+import mat.client.buttons.toolBar.CodesValuesetsButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -112,9 +112,9 @@ public class CQLCodesView {
 
 	private MatSimplePager spager;
 
-	private Button saveCode = new Button("Apply");
+	private Button saveCode = new BlueButton("codes","Apply");
 
-	private Button cancelButton = new CancelButton("CQLCodesView");
+	private Button cancelButton = new RedButton("CQLCodesView", "Cancel");
 
 	private SearchWidgetBootStrap sWidget = new SearchWidgetBootStrap("Retrieve","Enter Code Identifier");
 
@@ -218,10 +218,6 @@ public class CQLCodesView {
 		searchPanel.add(searchHeader);
 		searchPanel.setHeight("350px");
 		searchPanelBody.add(new SpacerWidget());
-
-		saveCode.setText("Apply");
-		saveCode.setTitle("Apply");
-		saveCode.setType(ButtonType.PRIMARY);
 
 		Grid searchGrid = new Grid(1, 1);
 		Grid codeDescriptorAndSuffixGrid = new Grid(1, 2);

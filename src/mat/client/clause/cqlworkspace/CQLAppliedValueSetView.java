@@ -16,8 +16,6 @@ import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -59,7 +57,10 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.buttons.CodesValuesetsButtonToolBar;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButton;
+import mat.client.buttons.toolBar.CodesValuesetsButtonToolBar;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -111,7 +112,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private List<CQLQualityDataSetDTO> allValueSetsList;
 	private MultiSelectionModel<CQLQualityDataSetDTO> selectionModel;
 	private ListDataProvider<CQLQualityDataSetDTO> listDataProvider;
-	private Button updateVSACButton = new Button("Update From VSAC ");
+	private Button updateVSACButton = new BlueButton("vsacUpdate","Update From VSAC ");
 	private CQLQualityDataSetDTO lastSelectedObject;
 	private ListBox programListBox = new ListBox();
 	private ListBox releaseListBox = new ListBox();
@@ -125,13 +126,13 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			}
 		}
 	};
-	private Button goButton = new Button(RETRIEVE_OID);
+	private Button goButton = new BlueButtonSmall("valueset",RETRIEVE_OID);
 	private CustomQuantityTextBox suffixInput = new CustomQuantityTextBox(4);
 	private boolean isEditable;
 	private CheckBox specificOcurChkBox;
 	private MatSimplePager spager;
-	private Button saveValueSet = new Button(TEXT_APPLY);
-	private Button cancelButton = new Button(TEXT_CANCEL);
+	private Button saveValueSet = new BlueButton("valueset",TEXT_APPLY);
+	private Button cancelButton = new RedButton("valueset", TEXT_CANCEL);
 	private VerticalPanel mainPanel;
 	private PanelHeader searchHeader = new PanelHeader();
 	private HelpBlock helpBlock = new HelpBlock(); 
@@ -176,14 +177,10 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		vPanel.setStyleName("cqlqdsContentPanel");
 		vPanel.getElement().setId("hPanel_HorizontalPanel");
 		vPanel.setWidth("100%");
-		updateVSACButton.setType(ButtonType.PRIMARY);
 		updateVSACButton.setTitle("Retrieve the most recent versions of value sets from VSAC");
-		updateVSACButton.getElement().setId("updateVsacButton_Button");
 
 		updateVSACButton.setMarginTop(10);
 		updateVSACButton.setMarginRight(2);
-		updateVSACButton.setTitle("Update From VSAC");
-		updateVSACButton.setText("Update From VSAC");
 		updateVSACButton.setIcon(IconType.REFRESH);
 		updateVSACButton.setIconSize(IconSize.LARGE);
 		updateVSACButton.setPull(Pull.RIGHT);
@@ -240,13 +237,6 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		suffixInput.setWidth("150px");
 		suffixInput.setHeight("30px");
 
-		saveValueSet.setText(TEXT_APPLY);
-		saveValueSet.setTitle(TEXT_APPLY);
-		saveValueSet.setType(ButtonType.PRIMARY);
-
-		cancelButton.setType(ButtonType.DANGER);
-		cancelButton.setTitle(TEXT_CANCEL);
-
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		buttonToolBar.add(saveValueSet);
 		buttonToolBar.add(cancelButton);
@@ -299,11 +289,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		goPanel.setWidth("150px");
 		goPanel.add(new SpacerWidget());
 		goPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		goButton.setType(ButtonType.PRIMARY);
 		goButton.setIcon(IconType.SEARCH);
 		goButton.setIconPosition(IconPosition.LEFT);
-		goButton.setSize(ButtonSize.SMALL);
-		goButton.setTitle(RETRIEVE_OID);
 		goButton.setPull(Pull.RIGHT);
 		goButton.getElement().getStyle().setProperty("marginRight", "5px");
 		goPanel.add(goButton);

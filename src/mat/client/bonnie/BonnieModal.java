@@ -12,10 +12,9 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.shared.MatContext;
 
 public class BonnieModal {
@@ -24,8 +23,8 @@ public class BonnieModal {
 			+ " website, you will be subject to that site's Privacy Policy. After a successful "
 			+ "login you will be automatically redirected back to your open MAT session. Do you wish to continue?" ;
 	
-	private YesButton yesButton = new YesButton("BonnieModal");
-	private NoButton noButton = new NoButton("BonnieModal");
+	private BlueButtonSmall yesButton = new BlueButtonSmall("BonnieModal", "Yes");
+	private RedButtonSmall noButton = new RedButtonSmall("BonnieModal", "No");
 	private Modal panel = new Modal();
 	private ModalBody modalBody = new ModalBody(); 
 	private Label messageLabel = new Label();

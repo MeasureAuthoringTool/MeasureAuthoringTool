@@ -12,14 +12,15 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.RedButton;
+
 
 
 public class AdvancedSearchModal {	
@@ -268,13 +269,10 @@ public class AdvancedSearchModal {
 	private void buildButtonSection() {
 		buttonToolBar = new ButtonToolBar();
 		
-		cancel = new CancelButton("AdvancedSearchModal");
+		cancel = new RedButton("AdvancedSearchModal", "Cancel");
 		cancel.setDataDismiss(ButtonDismiss.MODAL);
 		
-		search = new Button();
-		search.setText("Search");
-		search.setTitle("Search");
-		search.setType(ButtonType.PRIMARY);
+		search = new BlueButton("advancedSearch", "Search");
 		
 		buttonToolBar.add(search);
 		buttonToolBar.add(cancel);

@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
-import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.buttons.toolBar.DefinitionFunctionButtonToolBar;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLFunctionArgument;

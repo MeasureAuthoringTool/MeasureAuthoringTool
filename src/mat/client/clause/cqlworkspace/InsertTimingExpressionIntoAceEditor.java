@@ -36,7 +36,10 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButton;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.shared.DropDownSubMenu;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.ListBoxMVP;
@@ -87,8 +90,8 @@ public class InsertTimingExpressionIntoAceEditor {
 	    timingExpStr = null;
 	    dateTimePrecisonExp = null;
 	    quantityOffsetExp = null;
-		Button insertButton = new Button();
-	    Button cancelButton = new CancelButton("InsertTimingIntoAceEditor");
+		Button insertButton = new BlueButton("insertButtonTimingEditor", "Insert");
+	    Button cancelButton = new RedButton("InsertTimingIntoAceEditor", "Cancel");
 	    final HelpBlock helpBlock = new HelpBlock();
 	    final AnchorListItem timingQualifierItem = new AnchorListItem();
 		final AnchorListItem quantityOffsetItem = new AnchorListItem();
@@ -159,12 +162,7 @@ public class InsertTimingExpressionIntoAceEditor {
 		
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
 		
-		insertButton.setType(ButtonType.PRIMARY);
-		insertButton.getElement().setId("cqlInsertButton_Button");
 		insertButton.setMarginTop(10);
-		insertButton.setTitle("Insert");
-		insertButton.setText("Insert");
-		insertButton.setId("InsertButton_Id");
 		cancelButton.setMarginTop(10);
 		buttonToolBar.add(insertButton);
 		buttonToolBar.add(cancelButton);
@@ -411,16 +409,9 @@ public class InsertTimingExpressionIntoAceEditor {
 		
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		Button addButton = new Button();
-		addButton.setText("Replace");
-		addButton.setTitle("Replace");
-		addButton.setType(ButtonType.PRIMARY);
-		addButton.setSize(ButtonSize.SMALL);
-		addButton.setId("addButton_Button");
-		Button closeButton = new CancelButton("TimingInAceEditor");
-		closeButton.setSize(ButtonSize.SMALL);
+		Button addButton = new BlueButtonSmall("timingAddButton", "Replace");
+		Button closeButton = new RedButtonSmall("TimingInAceEditor", "Cancel");
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
-		closeButton.setId("Cancel_button");
 		buttonToolBar.add(addButton);
 		buttonToolBar.add(closeButton);
 		modalFooter.add(buttonToolBar);
@@ -531,13 +522,8 @@ public class InsertTimingExpressionIntoAceEditor {
 		
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		Button addButton = new Button();
-		addButton.setText("Apply");
-		addButton.setTitle("Apply");
-		addButton.setType(ButtonType.PRIMARY);
-		addButton.setSize(ButtonSize.SMALL);
-		Button closeButton = new CancelButton("InsertTimingExpressionIntoAceEditor");
-		closeButton.setSize(ButtonSize.SMALL);
+		Button addButton = new BlueButtonSmall("timingApplyButton", "Apply");
+		Button closeButton = new RedButtonSmall("InsertTimingExpressionIntoAceEditor", "Cancel");
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(addButton);
 		buttonToolBar.add(closeButton);

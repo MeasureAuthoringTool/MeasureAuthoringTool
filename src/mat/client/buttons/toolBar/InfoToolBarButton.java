@@ -1,4 +1,4 @@
-package mat.client.buttons;
+package mat.client.buttons.toolBar;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Toggle;

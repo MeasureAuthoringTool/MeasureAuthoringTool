@@ -16,8 +16,6 @@ import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.Progress;
 import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 import org.gwtbootstrap3.client.ui.constants.ProgressType;
@@ -47,7 +45,8 @@ import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
@@ -95,8 +94,8 @@ public class EditIncludedLibraryDialogBox {
 	
 	private String currentLibraryId = null; 
 	
-	private Button applyButton = new Button();
-	private Button closeButton = new CancelButton("EditInclude");
+	private Button applyButton = new BlueButtonSmall("editInclude", "Apply");
+	private Button closeButton = new RedButtonSmall("EditInclude", "Cancel");
 	private Modal dialogModal = new Modal();
 	
 	HorizontalPanel progressBarPanel = new HorizontalPanel();
@@ -130,11 +129,6 @@ public class EditIncludedLibraryDialogBox {
 
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		applyButton.setText("Apply");
-		applyButton.setTitle("Apply");
-		applyButton.setType(ButtonType.PRIMARY);
-		applyButton.setSize(ButtonSize.SMALL);
-		closeButton.setSize(ButtonSize.SMALL);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(applyButton);
 		buttonToolBar.add(closeButton);

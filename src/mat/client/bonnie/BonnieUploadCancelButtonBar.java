@@ -5,7 +5,7 @@ import org.gwtbootstrap3.client.ui.ButtonToolBar;
 
 import com.google.gwt.user.client.ui.Composite;
 
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.RedButton;
 import mat.client.buttons.UploadButton;
 
 public class BonnieUploadCancelButtonBar extends Composite {
@@ -17,7 +17,7 @@ public class BonnieUploadCancelButtonBar extends Composite {
 		buttonToolBar = new ButtonToolBar();
 		uploadButton = new UploadButton(uniqueSection);
 		uploadButton.setTitle("Upload to Bonnie");
-		cancelButton = new CancelButton(uniqueSection);
+		cancelButton = new RedButton(uniqueSection, "Cancel");
 		
 		buttonToolBar.add(uploadButton);
 		buttonToolBar.add(cancelButton);

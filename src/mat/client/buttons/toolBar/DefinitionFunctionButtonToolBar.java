@@ -1,4 +1,4 @@
-package mat.client.buttons;
+package mat.client.buttons.toolBar;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
@@ -6,6 +6,8 @@ import org.gwtbootstrap3.client.ui.DropDownMenu;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+
+import mat.client.buttons.InfoDropDownMenu;
 
 
 /**

@@ -6,11 +6,13 @@ import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import mat.client.buttons.BlueButtonSmall;
+
 public class WarningConfirmationMessageAlert extends MessageAlert implements WarningConfirmationAlertInterface  {
 	
-	private Button yesButton = new Button();
+	private Button yesButton = new BlueButtonSmall("warningConfirmationMessageAlert", "Yes");
 	
-	private Button noButton = new Button();
+	private Button noButton = new BlueButtonSmall("warningConfirmationMessageAlert", "Yes");
 	
 	@Override
 	public void createAlert () {
@@ -56,18 +58,10 @@ public class WarningConfirmationMessageAlert extends MessageAlert implements War
 	private void createButtons() {
 		add(new SpacerWidget());
 		
-		yesButton.setType(ButtonType.PRIMARY);
 		yesButton.setSize(ButtonSize.EXTRA_SMALL);
-		yesButton.setTitle("Yes");
-		yesButton.setText("Yes");
-		yesButton.setId("Clear_Yes_Button");
 		
-		noButton.setType(ButtonType.PRIMARY);
 		noButton.setSize(ButtonSize.EXTRA_SMALL);
 		noButton.setMarginLeft(15);
-		noButton.setTitle("No");
-		noButton.setText("No");
-		noButton.setId("Clear_No_Button");
 
 		add(new SpacerWidget());
 		ButtonToolBar buttonToolBar = new ButtonToolBar();

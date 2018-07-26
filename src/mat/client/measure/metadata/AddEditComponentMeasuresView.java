@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -37,6 +36,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.buttons.BlueButton;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
@@ -50,8 +50,8 @@ import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
-import mat.shared.MeasureSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
+import mat.shared.MeasureSearchModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -111,10 +111,10 @@ public class AddEditComponentMeasuresView implements
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
 
 	/** The return button. */
-	protected Button returnButton = new Button("Return to Previous");
+	protected Button returnButton = new BlueButton("returnButton","Return to Previous");
 
 	/** The addto component measures. */
-	protected Button applytoComponentMeasures = new Button("Apply to Component Measures List");
+	protected Button applytoComponentMeasures = new BlueButton("ApplyComponentMeasuresButton","Apply to Component Measures List");
 
 	/** The success messages. */ 
 	private SuccessMessageAlert successMessages = new SuccessMessageAlert();
@@ -569,8 +569,6 @@ public class AddEditComponentMeasuresView implements
 	 * #getRetButton()
 	 */
 	public Button getRetButton() {
-		returnButton.getElement().setId("returnButton_Button");
-		returnButton.setType(ButtonType.PRIMARY);
 		return returnButton;
 	}
 
@@ -582,8 +580,6 @@ public class AddEditComponentMeasuresView implements
 	 * #getAddtoComponentMeasuresBtn()
 	 */
 	public Button getApplytoComponentMeasuresBtn() {
-		applytoComponentMeasures.getElement().setId("applytoComponentMeasures_Button");
-		applytoComponentMeasures.setType(ButtonType.PRIMARY);
 		return applytoComponentMeasures;
 	}
 

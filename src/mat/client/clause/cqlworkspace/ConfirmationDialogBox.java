@@ -17,16 +17,16 @@ import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.cql.ConfirmationObserver;
 import mat.client.shared.ErrorMessageAlert;
 
 
 
 public class ConfirmationDialogBox {
-	private  final Button yesButton = new YesButton("ConfirmDialogBox"); 
-	private final Button noButton = new NoButton("ConfirmDialogBox");
+	private  final Button yesButton = new BlueButtonSmall("ConfirmDialogBox", "Yes"); 
+	private final Button noButton = new RedButtonSmall("ConfirmDialogBox", "No");
 	private ConfirmationObserver observer; 
 	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
 	Modal panel = new Modal();

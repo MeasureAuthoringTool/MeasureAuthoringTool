@@ -47,6 +47,8 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.GreenButton;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
@@ -909,21 +911,16 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	private Button buildButton(IconType icon, String text) {
-		Button button = new Button(); 
-		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
-		button.setType(ButtonType.PRIMARY);
+		Button button = new BlueButton(text.replaceAll(" ", "_") + "_button", text); 
 		button.setIcon(icon);
-		button.setText(text);
 		button.setTitle("Click to " + text);
 		
 		return button; 
 	}
 
 	private Button buildArrowButton(IconType icon, String id) {
-		Button btn = new Button();
-		btn.getElement().setAttribute("id", id);
+		Button btn = new GreenButton(id, "");
 		btn.setIcon(icon);
-		btn.setType(ButtonType.SUCCESS);
 		btn.setPaddingBottom(3.0);
 		btn.setPaddingTop(3.0);
 		btn.setWidth("50px");		

@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import mat.client.buttons.BlueButton;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.RequiredIndicator;
@@ -52,7 +53,7 @@ public class DeleteConfirmDialogBox {
 	public void showDeletionConfimationDialog(String message) {
 		focusPanel.clear();
 	    panel = new Modal();
-	    confirmButton = new Button("Confirm");
+	    confirmButton = new BlueButton("deleteConfirmDialogueBox","Confirm");
 	    passwordEntered = "";
 		ModalBody modalBody = new ModalBody();
 		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
@@ -112,8 +113,7 @@ public class DeleteConfirmDialogBox {
 
 		ModalFooter modalFooter = new ModalFooter();
 
-		confirmButton.setType(ButtonType.PRIMARY);
-		confirmButton.setSize(ButtonSize.DEFAULT);
+
 		confirmButton.setDataDismiss(ButtonDismiss.MODAL);
 		confirmButton.setEnabled(false);
 

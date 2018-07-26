@@ -61,6 +61,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.ImageResources;
+import mat.client.buttons.BlueButton;
 import mat.client.buttons.SaveDeleteMeasureDetailsButtonBarBuilder;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -147,9 +148,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  definitionsInput = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength guidanceInput = new TextAreaWithMaxLength();
 	protected TextAreaWithMaxLength transmissionFormatInput = new TextAreaWithMaxLength();
-	private Button addEditCmponentMeasures = new Button("Add/Edit Component Measures");
+	private Button addEditCmponentMeasures = new BlueButton("metaData","Add/Edit Component Measures");
 	private Button AddRowButton = new Button("Add Reference");
-	private Button generateeMeasureIDButton = new Button("Generate Identifier");
+	private Button generateeMeasureIDButton = new BlueButton("metadata","Generate Identifier");
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
 	private SimplePanel referencePlaceHolder = new SimplePanel();
 	private final FlexTable referenceTable = new FlexTable();
@@ -184,7 +185,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			new SaveDeleteMeasureDetailsButtonBarBuilder("MeasureDetailsBottom", "saveButton_Button" ,"deleteMeasure_Button");
 	
 	public MetaDataView(){
-		generateeMeasureIDButton.setType(ButtonType.PRIMARY);
 		generateeMeasureIDButton.setMarginLeft(14.00);
 		
 		AddRowButton.setType(ButtonType.LINK);
@@ -195,7 +195,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		successMessages2.setWidth("900px");
 		errorMessages2.setWidth("900px");
 		saveErrorDisplay.setWidth("900px");
-		addEditCmponentMeasures.setType(ButtonType.PRIMARY);
 		addEditCmponentMeasures.setTitle("Add or Edit Component Measures.");
 		
 		addClickHandlers();

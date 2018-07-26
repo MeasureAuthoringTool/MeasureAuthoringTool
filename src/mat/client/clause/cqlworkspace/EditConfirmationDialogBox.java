@@ -8,23 +8,21 @@ import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
-import org.gwtbootstrap3.client.ui.constants.ButtonSize;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 
 import com.google.gwt.dom.client.Style;
 
+import mat.client.buttons.BlueButtonSmall;
 import mat.client.shared.SuccessMessageAlert;
 
 
 
 public class EditConfirmationDialogBox {
 
-	private  final Button yesButton = new Button("Yes"); 
+	private  final Button yesButton = new BlueButtonSmall("editconfirmationbox","Yes"); 
 
 	
 	public EditConfirmationDialogBox() {
-		yesButton.getElement().setId("yes_Button");
 	}
 	
 	public void show(String message) {
@@ -54,8 +52,6 @@ public class EditConfirmationDialogBox {
 		
 		ModalFooter modalFooter = new ModalFooter(); 
 		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
-		yesButton.setType(ButtonType.PRIMARY);
-		yesButton.setSize(ButtonSize.SMALL);
 		yesButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(yesButton);
 	

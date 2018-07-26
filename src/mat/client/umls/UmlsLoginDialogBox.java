@@ -25,7 +25,9 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.GreenButton;
+import mat.client.buttons.RedButton;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
 import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
@@ -149,17 +151,13 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		HorizontalPanel hp = new HorizontalPanel();
 		
 
-		submitButton = new Button("Sign In");
-		submitButton.setType(ButtonType.SUCCESS);
-		submitButton.setSize(ButtonSize.DEFAULT);
+		submitButton = new GreenButton("UMLSDialogBox","Sign In");
 
-		closeButton = new CancelButton("UMLSSignIn");
+		closeButton = new RedButton("UMLSSignIn", "Cancel");
 		closeButton.setMarginLeft(10.00);
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);
 		
-		continueButton = new Button("Continue");
-		continueButton.setType(ButtonType.PRIMARY);
-		continueButton.setSize(ButtonSize.DEFAULT);
+		continueButton = new BlueButton("UMLSDialogBox","Continue");
 		continueButton.setMarginLeft(10.00);
 		continueButton.setDataDismiss(ButtonDismiss.MODAL);
 		continueButton.setVisible(false);

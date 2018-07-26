@@ -52,7 +52,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.CqlComposerPresenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.buttons.toolBar.DefinitionFunctionButtonToolBar;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;

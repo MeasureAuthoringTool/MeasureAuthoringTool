@@ -14,7 +14,6 @@ import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.Row;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnOffset;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.InputType;
@@ -25,7 +24,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.buttons.CancelButton;
+import mat.client.buttons.BlueButton;
+import mat.client.buttons.RedButton;
 import mat.client.shared.RequiredIndicator;
 
 /**
@@ -41,8 +41,8 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 	/** The error messages. */
 	private FormGroup messageFormGrp = new FormGroup();
 	private HelpBlock helpBlock = new HelpBlock();
-	private Button submitButton = new Button("Submit");
-	private Button resetButton = new CancelButton("ForgottenLoginId");
+	private Button submitButton = new BlueButton("ForgottenLoginId","Submit");
+	private Button resetButton = new RedButton("ForgottenLoginId", "Cancel");
 	/**
 	 * Instantiates a new forgotten login id view.
 	 */
@@ -94,9 +94,6 @@ public class ForgottenLoginIdNewView  implements ForgottenLoginIdNewPresenter.Di
 		
 		FormGroup buttonFormGroup = new FormGroup();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		submitButton.setType(ButtonType.PRIMARY);
-		submitButton.setTitle("Submit");
-
 		buttonToolBar.add(submitButton);
 		buttonToolBar.add(resetButton);
 		

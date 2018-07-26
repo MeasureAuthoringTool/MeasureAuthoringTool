@@ -25,8 +25,8 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
+import mat.client.buttons.BlueButtonSmall;
+import mat.client.buttons.RedButtonSmall;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLFunctionArgument;
@@ -182,10 +182,10 @@ public class AddFunctionArgumentDialogBox {
 		modalBody.add(bodyForm);
 		ModalFooter modalFooter = new ModalFooter();
 		ButtonToolBar buttonToolBar = new ButtonToolBar();
-		final Button addButton = new YesButton("addFxnArgsBox");
+		final Button addButton = new BlueButtonSmall("addFxnArgsBox", "Yes");
 		addButton.setText(saveButtonText);
 		addButton.setTitle(saveButtonText);
-		Button closeButton = new NoButton("addFxnArgsBox");
+		Button closeButton = new RedButtonSmall("addFxnArgsBox", "No");
 		closeButton.setText("Close");
 		closeButton.setTitle("Close");
 		closeButton.setDataDismiss(ButtonDismiss.MODAL);

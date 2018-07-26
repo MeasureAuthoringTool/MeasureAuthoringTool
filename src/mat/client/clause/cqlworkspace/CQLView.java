@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.buttons.BlueButton;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 
@@ -25,17 +26,15 @@ public class CQLView {
 
 	private AceEditor cqlAceEditor = new AceEditor();
 	
-	private Button exportErrorFile = new Button();
+	private Button exportErrorFile = new BlueButton("Button_exportErrorFile", "Export Error File");
+	
 	
 	HTML heading = new HTML();
 	
 	public CQLView(){
 		cqlViewVP.clear();
-		exportErrorFile.setType(ButtonType.PRIMARY);
 		exportErrorFile.setIcon(IconType.DOWNLOAD);
-		exportErrorFile.setText("Export Error File");
 		exportErrorFile.setTitle("Click to download Export Error File.");
-		exportErrorFile.setId("Button_exportErrorFile");
 		cqlAceEditor.startEditor();
 	}
 	

@@ -1,7 +1,6 @@
 package mat.client.measure;
 
 import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -18,7 +17,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.ImageResources;
 import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
+import mat.client.buttons.BlueButton;
 import mat.client.buttons.CustomButton;
+import mat.client.buttons.RedButton;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -36,7 +37,7 @@ import mat.shared.MeasureSearchModel;
 
 public class ManageMeasureSearchView implements SearchDisplay {
 
-	private Button bulkExportButton = new Button("Export Selected");	
+	private Button bulkExportButton = new BlueButton("managemeasuresearch","Export Selected");	
 
 	Button createMeasureButton = new Button("New Measure"); 
 	
@@ -50,7 +51,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	private MessageAlert errorMeasureDeletion = new ErrorMessageAlert();
 	
-	private Button clearButton = new Button("Clear All");
+	private Button clearButton = new RedButton("measuresearch","Clear All");
 	
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
@@ -79,7 +80,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	
 	EditConfirmationDialogBox draftConfirmationDialogBox = new EditConfirmationDialogBox();
 	
-	private Button transferButton = new Button("Transfer");
+	private Button transferButton = new BlueButton("measuresearch","Transfer");
 	
 	private MeasureLibraryAdvancedSearchBuilder measureLibraryAdvancedSearchBuilder = new MeasureLibraryAdvancedSearchBuilder();
 	
@@ -106,7 +107,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
-		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
 		VerticalPanel measureFilterVP = new VerticalPanel();
@@ -146,10 +146,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
 		flowPanel.setStyleName("rightAlignButton");
-		bulkExportButton.setTitle("Bulk Export");
-		bulkExportButton.setType(ButtonType.PRIMARY);
 		bulkExportButton.setIcon(IconType.DOWNLOAD);
-		bulkExportButton.setTitle(bulkExportButton.getText());
 		flowPanel.add(bulkExportButton);
 		form.setWidget(flowPanel);
 		form.getElement().setId("measureLibrary_bottomPanelForm");
@@ -160,10 +157,6 @@ public class ManageMeasureSearchView implements SearchDisplay {
 			MessageAlert errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.add(errorMessageDisplay);
-		transferButton.setTitle("Transfer");
-		clearButton.setTitle("Clear All");
-		transferButton.setType(ButtonType.PRIMARY);
-		clearButton.setType(ButtonType.DANGER);
 		clearButton.setMarginLeft(10.00);
 		flowPanel.add(transferButton);
 		flowPanel.add(clearButton);

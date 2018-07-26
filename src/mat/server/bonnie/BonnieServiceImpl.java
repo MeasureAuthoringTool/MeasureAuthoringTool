@@ -2,12 +2,6 @@ package mat.server.bonnie;
 
 import java.io.IOException;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,154 +22,61 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 @SuppressWarnings("serial")
 @Service
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService {
-	
+
 	@Autowired
-	private BonnieAPIv1 bonnieApi; 
+	private BonnieAPIv1 bonnieApi;
 
 	/** The user DAO. */
 	@Autowired
 	private UserDAO userDAO;
-	
+
 	@Autowired
 	private UserBonnieAccessInfoDAO userBonnieAccessInfoDAO;
-	
-	private String getResponseType() {
-		return System.getProperty("BONNIE_RESPONSE_TYPE");
-	}
-
-	private String getClientId() {
-		return System.getProperty("BONNIE_CLIENT_ID");
-	}
-
-	private String getRedirectURI() {
-		return System.getProperty("BONNIE_REDIRECT_URI");
-	}
-	private String getClientSecret() {
-		return System.getProperty("BONNIE_CLIENT_SECRET");
-	}
-	
-	public String getBonnieBaseURL() {
-		return "https://bonnie-prior.ahrqstg.org";
-	}
-	
-	private String getProxyUrl() {
-		return System.getProperty("vsac_proxy_host");
-	}
-	
-	private String getProxyPort() {
-		return System.getProperty("vsac_proxy_port");
-	}
-	
 
 	@Override
 	public String getBonnieAccessLink() {
-		String baseURL = getBonnieBaseURL();
-		String responseType = getResponseType();
-		String clientId = getClientId();
-		String redirectURI = getRedirectURI();
-		
-		if(redirectURI == null && clientId == null && responseType == null) {
+		String baseURL = bonnieApi.getBonnieBaseURL();
+		String responseType = bonnieApi.getResponseType();
+		String clientId = bonnieApi.getClientId();
+		String redirectURI = bonnieApi.getRedirectURI();
+
+		if (redirectURI == null && clientId == null && responseType == null) {
 			return "";
 		} else {
-			return baseURL + "/oauth/authorize?response_type="
-					+ responseType + "&client_id=" + clientId + "&redirect_uri=" + redirectURI;
+			return baseURL + "/oauth/authorize?response_type=" + responseType + "&client_id=" + clientId
+					+ "&redirect_uri=" + redirectURI;
 		}
-	}
-
-	public BonnieOAuthResult refreshBonnieTokens() {
-		BonnieOAuthResult result = null;
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		result = getBonnieRefreshResult(user.getUserBonnieAccessInfo());
-		SaveBonnieAccessInfo(result);
-		
-		return result;
-	}
-
-	private BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
-		try {		
-			 OAuthClient client = new OAuthClient(new URLConnectionClient());
-
-			 
-	         OAuthClientRequest request = 
-	                 OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
-	                 .setClientId(getClientId())
-	                 .setGrantType(GrantType.AUTHORIZATION_CODE)
-	                 .setClientSecret(getClientSecret())
-	                 .setRefreshToken(userBonnieAccessInfo.getRefreshToken())
-	                 .setRedirectURI(getRedirectURI())
-	                 .buildQueryMessage();
-	         
-	         if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
-		         request.addHeader("X-Forwarded-Host", getProxyUrl());
-		         request.addHeader("X-Forwarded-Port", getProxyPort());		
-			} 
-	         
-	         
-	         
-	         
-	         System.out.println(request.getHeaders());
-	         
-	         OAuthJSONAccessTokenResponse token =
-	                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-	         BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
-	         return result;
-			}
-			catch(Exception exn) {
-				exn.printStackTrace();
-				return null;
-			}
 	}
 
 	@Override
-	public BonnieOAuthResult exchangeCodeForTokens(String code) {     
+	public BonnieOAuthResult exchangeCodeForTokens(String code) {
 		System.out.println("EXCHANING!");
 		BonnieOAuthResult result = null;
 		try {
-			result = getBonnieOAuthResult(code);
-			SaveBonnieAccessInfo(result);
-            
-        } catch (Exception exn) {
-            exn.printStackTrace();
-            return result;
-        }
-		
+			result = bonnieApi.getBonnieOAuthResult(code);
+			saveBonnieAccessInfo(result);
+
+		} catch (Exception exn) {
+			exn.printStackTrace();
+			return result;
+		}
+
 		return result;
 	}
-	
-	private BonnieOAuthResult getBonnieOAuthResult(String code) {
-		try {
-		System.setProperty("https.proxyHost", getProxyUrl());
-		System.setProperty("https.proxyPort", getProxyPort());
-		 OAuthClient client = new OAuthClient(new URLConnectionClient());
 
-         OAuthClientRequest request =
-                 OAuthClientRequest.tokenLocation("https://bonnie-prior.ahrqstg.org/oauth/token")
-                 .setClientId(getClientId())
-                 .setGrantType(GrantType.AUTHORIZATION_CODE)
-                 .setClientSecret(getClientSecret())
-                 .setCode(code)
-                 .setRedirectURI(getRedirectURI())
-                 .buildQueryMessage();
-         
-         
-         OAuthJSONAccessTokenResponse token =
-                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-         
-         
-         
-         BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
-         return result;
-		}
-		catch(Exception exn) {
-			exn.printStackTrace();
-			return null;
-		}
+	private BonnieOAuthResult refreshBonnieTokens(String userId) {
+		BonnieOAuthResult result = null;
+		User user = userDAO.find(userId);
+		result = bonnieApi.getBonnieRefreshResult(user.getUserBonnieAccessInfo());
+		saveBonnieAccessInfo(result);
+
+		return result;
 	}
-	
-	private void SaveBonnieAccessInfo(BonnieOAuthResult result) {
+
+	private void saveBonnieAccessInfo(BonnieOAuthResult result) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo();
-		if(userBonnieAccessInfo == null) {
+		if (userBonnieAccessInfo == null) {
 			userBonnieAccessInfo = new UserBonnieAccessInfo();
 			userBonnieAccessInfo.setAccessToken(result.getAccessToken());
 			userBonnieAccessInfo.setRefreshToken(result.getRefreshToken());
@@ -184,25 +85,30 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			userBonnieAccessInfo.setAccessToken(result.getAccessToken());
 			userBonnieAccessInfo.setRefreshToken(result.getRefreshToken());
 		}
-        
-        userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
+
+		userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
 	}
-	
-	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId) throws BonnieUnauthorizedException, BonnieServerException, IOException {	
+
+	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId)
+			throws BonnieUnauthorizedException, BonnieServerException, IOException {
+		refreshBonnieTokens(userId);
 		UserBonnieAccessInfo bonnieAccessInfo = userBonnieAccessInfoDAO.findByUserId(userId);
-		if(bonnieAccessInfo == null) {
-			// if they have no credentials in the database, then they are not authorized with bonnie
+		if (bonnieAccessInfo == null) {
+			// if they have no credentials in the database, then they are not authorized
+			// with bonnie
 			throw new BonnieUnauthorizedException();
 		}
-		
+
 		try {
-			BonnieUserInformationResult bonnieInformationResult = bonnieApi.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
+			BonnieUserInformationResult bonnieInformationResult = bonnieApi
+					.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
 			return bonnieInformationResult;
 		} catch (BonnieUnauthorizedException e) {
-			// if an unauthorized exception is thrown and the user had credentials in the database, delete them because they 
+			// if an unauthorized exception is thrown and the user had credentials in the
+			// database, delete them because they
 			// are invalid, and the surface the error
 			userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
-			throw e; 
+			throw e;
 		}
 	}
 

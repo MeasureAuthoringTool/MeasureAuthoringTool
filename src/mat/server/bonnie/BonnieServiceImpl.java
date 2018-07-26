@@ -2,6 +2,14 @@ package mat.server.bonnie;
 
 import java.io.IOException;
 
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HttpContext;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -31,6 +39,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	@Autowired
 	private BonnieAPIv1 bonnieApi; 
 
+	/** The user DAO. */
 	@Autowired
 	private UserDAO userDAO;
 	
@@ -52,7 +61,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return System.getProperty("BONNIE_CLIENT_SECRET");
 	}
 	
-
 	public String getBonnieBaseURL() {
 		return "https://bonnie-prior.ahrqstg.org";
 	}
@@ -82,9 +90,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 	
 	private BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
-		try {
+		try {			
 			 OAuthClient client = new OAuthClient(new URLConnectionClient());
-
+			
 	         OAuthClientRequest request =
 	                 OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 	                 .setClientId(getClientId())
@@ -93,7 +101,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	                 .setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 	                 .setRedirectURI(getRedirectURI())
 	                 .buildQueryMessage();
-	         
+	         request.addHeader(name, header);
 	         
 	         OAuthJSONAccessTokenResponse token =
 	                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);
@@ -108,6 +116,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	@Override
 	public BonnieOAuthResult exchangeCodeForTokens(String code) {     
+		System.out.println("EXCHANING!");
 		BonnieOAuthResult result = null;
 		try {
 			result = getBonnieOAuthResult(code);
@@ -137,7 +146,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
          
          OAuthJSONAccessTokenResponse token =
                  client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-         System.out.println("TOKEN **************** " + token.getBody());
          BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
          return result;
 		}
@@ -177,7 +185,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			// if an unauthorized exception is thrown and the user had credentials in the database, delete them because they 
 			// are invalid, and the surface the error
 			userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
-			e.printStackTrace();
 			throw e; 
 		}
 	}

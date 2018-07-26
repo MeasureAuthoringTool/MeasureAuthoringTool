@@ -143,18 +143,10 @@ public class BonnieAPIv1 implements BonnieAPI {
 		String baseURL = bonnieServiceImpl.getBonnieBaseURL();
 		String requestUrl = baseURL + uri;
 		String bearerToken = "Bearer " + token;
-		
-		HttpURLConnection connection; 
-		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
-			SocketAddress address = new InetSocketAddress(getProxyUrl(), Integer.parseInt(getProxyPort()));
-			Proxy proxy = new Proxy(Type.HTTP, address);
-			URL url = new URL(requestUrl);
-			connection = (HttpURLConnection) url.openConnection(proxy);			
-		} else {
-			URL url = new URL(requestUrl);
-			connection = (HttpURLConnection) url.openConnection();
-		}		
-
+		System.setProperty("https.proxyHost", getProxyUrl());
+		System.setProperty("https.proxyPort", getProxyPort());
+		URL url = new URL(requestUrl);
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Authorization", bearerToken);
 		connection.connect();

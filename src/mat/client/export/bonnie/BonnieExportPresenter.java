@@ -48,18 +48,15 @@ public class BonnieExportPresenter implements MatPresenter {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
 					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
-					return; 
 				}
 				
-				if(caught instanceof BonnieServerException) {
+				else if(caught instanceof BonnieServerException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
 					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
-					return;
 				}
 				
-				// has to be last
-				if(caught instanceof Exception) {
+				else {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 			}

@@ -686,10 +686,19 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		
 		@SuppressWarnings("unchecked")
 		List<Measure> measureResultList = mCriteria.list();
-
 		if (!user.getSecurityRole().getId().equals("2")) {
 			measureResultList = getAllMeasuresInSet(measureResultList);
 		}
+		measureResultList = sortMeasureList(measureResultList);
+		return measureResultList;
+	}
+	
+	private List<Measure> fetchComponentMeasureResultListForCritera(Criteria mCriteria, MeasureSearchModel measureSearchModel, User user) {
+		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
+		mCriteria.setFirstResult(1);
+		
+		@SuppressWarnings("unchecked")
+		List<Measure> measureResultList = mCriteria.list();
 		measureResultList = sortMeasureList(measureResultList);
 		return measureResultList;
 	}
@@ -1048,7 +1057,6 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	public List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
 			User user) {		
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, measureSearchModel.isMyMeasureSearch());
-
 		if(measureSearchModel.getQdmVersion() != null) {
 			mCriteria.add(Restrictions.and(Restrictions.eq("qdmVersion", measureSearchModel.getQdmVersion())));
 		}
@@ -1057,9 +1065,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
 		}
 		
-		List<Measure> measureResultList = fetchMeasureResultListForCritera(mCriteria, measureSearchModel, user);
+		List<Measure> measureResultList = fetchComponentMeasureResultListForCritera(mCriteria, measureSearchModel, user);
 		measureResultList = getCQLMeasures(measureResultList);
-		
 		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);
 	}
 

@@ -89,7 +89,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			HttpURLConnection connection = get(token, "/oauth/token/info");
 			logger.info("GET " + connection.getURL());
-			logger.info(connection.);
 	
 			String code = Integer.toString(connection.getResponseCode());						
 			if(code.startsWith("2")) {

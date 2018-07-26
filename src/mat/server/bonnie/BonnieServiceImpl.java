@@ -138,6 +138,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
          
          OAuthJSONAccessTokenResponse token =
                  client.accessToken(request, OAuthJSONAccessTokenResponse.class);
+         System.out.println("TOKEN **************** " + token.getBody());
          BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
          return result;
 		}

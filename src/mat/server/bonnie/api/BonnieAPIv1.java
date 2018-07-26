@@ -180,16 +180,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 			OAuthClient client = new OAuthClient(new URLConnectionClient());
 
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
-					.setClientId(getClientId()).setGrantType(GrantType.AUTHORIZATION_CODE)
+					.setClientId(getClientId()).setGrantType(GrantType.REFRESH_TOKEN)
 					.setClientSecret(getClientSecret()).setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
-
-			if (!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
-				request.addHeader("X-Forwarded-Host", getProxyUrl());
-				request.addHeader("X-Forwarded-Port", getProxyPort());
-			}
-
-			System.out.println(request.getHeaders());
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
@@ -208,7 +201,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			OAuthClient client = new OAuthClient(new URLConnectionClient());
 
 			OAuthClientRequest request = OAuthClientRequest
-					.tokenLocation("https://bonnie-prior.ahrqstg.org/oauth/token").setClientId(getClientId())
+					.tokenLocation(getBonnieBaseURL() + "/oauth/token").setClientId(getClientId())
 					.setGrantType(GrantType.AUTHORIZATION_CODE).setClientSecret(getClientSecret()).setCode(code)
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 

@@ -1,22 +1,8 @@
 package mat.server.bonnie;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
-import java.net.URL;
-import java.net.Proxy.Type;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HttpContext;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -104,12 +90,13 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		
 		return result;
 	}
-	
+
 	private BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) {
-		try {			
+		try {		
 			 OAuthClient client = new OAuthClient(new URLConnectionClient());
-			
-	         OAuthClientRequest request =
+
+			 
+	         OAuthClientRequest request = 
 	                 OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 	                 .setClientId(getClientId())
 	                 .setGrantType(GrantType.AUTHORIZATION_CODE)
@@ -117,14 +104,14 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	                 .setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 	                 .setRedirectURI(getRedirectURI())
 	                 .buildQueryMessage();
-	 		
+	         
 	         if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
 		         request.addHeader("X-Forwarded-Host", getProxyUrl());
 		         request.addHeader("X-Forwarded-Port", getProxyPort());		
 			} 
 	         
 	         
-
+	         
 	         
 	         System.out.println(request.getHeaders());
 	         
@@ -157,6 +144,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	
 	private BonnieOAuthResult getBonnieOAuthResult(String code) {
 		try {
+		System.setProperty("http.proxyHost", getProxyUrl());
+		System.setProperty("http.proxyPort", getProxyPort());
 		 OAuthClient client = new OAuthClient(new URLConnectionClient());
 
          OAuthClientRequest request =
@@ -171,7 +160,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
          
          OAuthJSONAccessTokenResponse token =
                  client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-         System.out.println("TOKEN **************** " + token.getBody());
+         
+         
+         
          BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(), token.getExpiresIn(), token.getBody());
          return result;
 		}

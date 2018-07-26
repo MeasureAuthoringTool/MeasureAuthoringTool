@@ -16,8 +16,6 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -49,9 +47,8 @@ import mat.client.event.LogoffEvent;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
-import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
-import mat.client.export.measure.ManageMeasureExportView;
+import mat.client.export.bonnie.BonnieExportPresenter;
 import mat.client.login.service.SessionManagementService;
 import mat.client.measure.ComponentMeasureDisplay;
 import mat.client.measure.ManageCompositeMeasureDetailView;
@@ -77,8 +74,10 @@ import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.util.ClientConstants;
-import mat.model.SecurityRole;
 import mat.shared.ConstantMessages;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 
 /**
@@ -420,7 +419,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
-			hideBonnieActive();
+			setBonnieActiveLink();
+			//hideBonnieActive();
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
@@ -581,6 +581,33 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().restartTimeoutWarning();
 	}
 	
+	private void setBonnieActiveLink() {
+		String matUserId = MatContext.get().getLoggedinUserId();
+		MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
+			
+			@Override
+			public void onSuccess(BonnieUserInformationResult result) {
+				showBonnieActive();
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				if(caught instanceof BonnieUnauthorizedException) {
+					hideBonnieActive();
+				}
+				
+				else if(caught instanceof BonnieServerException) {
+					hideBonnieActive();
+					Window.alert(BonnieExportPresenter.UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
+				} 
+								
+				else {
+					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
+			}
+		});
+	}
+
 	/**
 	 * Redirect to login.
 	 */

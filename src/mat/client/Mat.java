@@ -602,6 +602,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				} 
 								
 				else {
+					hideBonnieActive();
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 			}

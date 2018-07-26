@@ -79,7 +79,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 	}
 
 	@Override
-	public BonnieUserInformationResult getUserInformationByToken(String token) throws Exception {
+	public BonnieUserInformationResult getUserInformationByToken(String token) throws BonnieUnauthorizedException, BonnieServerException, IOException {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
 		try {
 			HttpURLConnection connection = get(token, "/oauth/token/info");
@@ -102,7 +102,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 				throw new BonnieServerException();
 			}
 		} catch (IOException e) {
-			throw new Exception();
+			e.printStackTrace();
+			throw new IOException();
 		}
 		
 		return userInformationResult;

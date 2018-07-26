@@ -1,5 +1,7 @@
 package mat.server.bonnie;
 
+import java.io.IOException;
+
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -161,7 +163,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
         userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
 	}
 	
-	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId) throws Exception {	
+	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId) throws BonnieUnauthorizedException, BonnieServerException, IOException {	
 		UserBonnieAccessInfo bonnieAccessInfo = userBonnieAccessInfoDAO.findByUserId(userId);
 		if(bonnieAccessInfo == null) {
 			// if they have no credentials in the database, then they are not authorized with bonnie

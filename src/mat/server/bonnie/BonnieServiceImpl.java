@@ -144,8 +144,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	
 	private BonnieOAuthResult getBonnieOAuthResult(String code) {
 		try {
-		System.setProperty("http.proxyHost", getProxyUrl());
-		System.setProperty("http.proxyPort", getProxyPort());
+		System.setProperty("https.proxyHost", getProxyUrl());
+		System.setProperty("https.proxyPort", getProxyPort());
 		 OAuthClient client = new OAuthClient(new URLConnectionClient());
 
          OAuthClientRequest request =

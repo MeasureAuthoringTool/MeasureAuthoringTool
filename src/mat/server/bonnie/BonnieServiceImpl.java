@@ -101,7 +101,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	                 .setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 	                 .setRedirectURI(getRedirectURI())
 	                 .buildQueryMessage();
-	         request.addHeader(name, header);
+	         //request.addHeader(name, header);
 	         
 	         OAuthJSONAccessTokenResponse token =
 	                 client.accessToken(request, OAuthJSONAccessTokenResponse.class);

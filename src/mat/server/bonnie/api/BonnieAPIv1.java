@@ -5,9 +5,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.net.URL;
+import java.net.Proxy.Type;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
@@ -125,14 +130,31 @@ public class BonnieAPIv1 implements BonnieAPI {
 		}
 	}
 	
+	private String getProxyUrl() {
+		return System.getProperty("vsac_proxy_host");
+	}
+	
+	private String getProxyPort() {
+		return System.getProperty("vsac_proxy_port");
+	}
+	
+	
 	private HttpURLConnection get(String token, String uri) throws IOException {
 		String baseURL = bonnieServiceImpl.getBonnieBaseURL();
 		String requestUrl = baseURL + uri;
 		String bearerToken = "Bearer " + token;
 		
+		HttpURLConnection connection; 
+		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
+			SocketAddress address = new InetSocketAddress(getProxyUrl(), Integer.parseInt(getProxyPort()));
+			Proxy proxy = new Proxy(Type.HTTP, address);
+			URL url = new URL(requestUrl);
+			connection = (HttpURLConnection) url.openConnection(proxy);
+		} else {
+			URL url = new URL(requestUrl);
+			connection = (HttpURLConnection) url.openConnection();
+		}		
 
-		URL url = new URL(requestUrl);
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		connection.setRequestProperty("Authorization", bearerToken);
 		connection.connect();

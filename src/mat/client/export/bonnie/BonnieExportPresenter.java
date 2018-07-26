@@ -1,5 +1,7 @@
 package mat.client.export.bonnie;
 
+import java.net.ConnectException;
+
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,6 +35,8 @@ public class BonnieExportPresenter implements MatPresenter {
 	
 	private void getBonnieUserInformation() {
 		String matUserId = MatContext.get().getLoggedinUserId();
+		
+		
 		MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
 			
 			@Override
@@ -54,8 +58,8 @@ public class BonnieExportPresenter implements MatPresenter {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
 					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
-				}
-				
+				} 
+								
 				else {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}

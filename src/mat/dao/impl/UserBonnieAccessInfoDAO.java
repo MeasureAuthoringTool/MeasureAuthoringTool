@@ -1,7 +1,5 @@
 package mat.dao.impl;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.dao.UserDAO;

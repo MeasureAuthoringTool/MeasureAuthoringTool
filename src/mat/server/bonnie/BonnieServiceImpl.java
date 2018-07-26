@@ -31,7 +31,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	@Autowired
 	private BonnieAPIv1 bonnieApi; 
 
-	/** The user DAO. */
 	@Autowired
 	private UserDAO userDAO;
 	
@@ -53,6 +52,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return System.getProperty("BONNIE_CLIENT_SECRET");
 	}
 	
+
 	public String getBonnieBaseURL() {
 		return "https://bonnie-prior.ahrqstg.org";
 	}
@@ -108,7 +108,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	@Override
 	public BonnieOAuthResult exchangeCodeForTokens(String code) {     
-		System.out.println("EXCHANING!");
 		BonnieOAuthResult result = null;
 		try {
 			result = getBonnieOAuthResult(code);
@@ -177,6 +176,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			// if an unauthorized exception is thrown and the user had credentials in the database, delete them because they 
 			// are invalid, and the surface the error
 			userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
+			e.printStackTrace();
 			throw e; 
 		}
 	}

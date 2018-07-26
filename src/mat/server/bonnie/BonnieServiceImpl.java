@@ -97,22 +97,22 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId)
 			throws BonnieUnauthorizedException, BonnieServerException, IOException {
-		refreshBonnieTokens(userId);
+		
+		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
+		BonnieUserInformationResult bonnieInformationResult = bonnieApi.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
+		return bonnieInformationResult;
+	}
+
+	private UserBonnieAccessInfo validateOrRefreshBonnieTokensForUser(String userId) throws BonnieUnauthorizedException {
 		UserBonnieAccessInfo bonnieAccessInfo = userBonnieAccessInfoDAO.findByUserId(userId);
 		if (bonnieAccessInfo == null) {
 			// if they have no credentials in the database, then they are not authorized
 			// with bonnie
 			throw new BonnieUnauthorizedException();
 		}
-
-		try {
-			BonnieUserInformationResult bonnieInformationResult = bonnieApi
-					.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
-			return bonnieInformationResult;
-		} catch (BonnieUnauthorizedException e) {
-			handleBonnieUnauthorizedException(bonnieAccessInfo);
-			throw e;
-		}
+		
+		refreshBonnieTokens(userId);
+		return bonnieAccessInfo;
 	}
 
 	private void handleBonnieUnauthorizedException(UserBonnieAccessInfo bonnieAccessInfo) {

@@ -7,10 +7,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelHeader;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
+import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -54,8 +57,11 @@ import mat.shared.MeasureSearchModel;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
 	private SimplePanel mainPanel = new SimplePanel();
+	FlowPanel flowPanel = new FlowPanel();
+	Form componentMeasureForm = new Form();
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	protected HelpBlock helpBlock = new HelpBlock();
+	FormGroup messageFormGroup = new FormGroup();
 	private Panel availableMeasuresPanel = new Panel();
 	private Panel appliedComponentMeasuresPanel = new Panel();
 	
@@ -131,8 +137,13 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		helpBlock.setColor("transparent");
 		helpBlock.setVisible(false);
 		helpBlock.setHeight("0px");
-		contentPanel.add(helpBlock);
-		mainPanel.add(contentPanel);
+		helpBlock.getElement().setId("helpBlock");
+		messageFormGroup.add(helpBlock);
+		messageFormGroup.getElement().setAttribute("role", "alert");
+		componentMeasureForm.add(messageFormGroup);
+		flowPanel.add(componentMeasureForm);
+		flowPanel.add(contentPanel);
+		mainPanel.add(flowPanel);
 	}
 	
 	private Panel buildAppliedComponentMeasuresTable() {
@@ -407,9 +418,11 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 							if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() == 0) {
 								appliedComponentMeasuresList.add(object);
 							}
-							helpBlock.setText(object.getName() + "has been selected and added to the applied component measures list");
+							helpBlock.setColor("transparent");
+							helpBlock.setText(object.getName() + " has been selected and added to the applied component measures list");
 						} else {
-							helpBlock.setText(object.getName() + "has been deselected and removed from the applied component measures list");
+							helpBlock.setColor("transparent");
+							helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");
 							List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 							for(Result matchingResult: matchingList) {
 								appliedComponentMeasuresList.remove(matchingResult);
@@ -446,6 +459,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
 				List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
+				helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");
+
 				for(Result matchingResult: matchingList) {
 					appliedComponentMeasuresList.remove(matchingResult);
 				}

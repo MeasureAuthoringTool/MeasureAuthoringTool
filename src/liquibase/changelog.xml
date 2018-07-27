@@ -229,6 +229,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9287_Measure_Patient_Based.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9293_Add_Measure_QDM_Version.xml"/>      
         <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Create_new_table_for_composite_measure.xml"/>
-        <!-- <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Add_Column_Composite_Measure_Flag.xml"/> -->
+        <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Add_Column_Composite_Measure_Flag.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9272_Add_Bonnie_Table.xml"/>
    	</databaseChangeLog>

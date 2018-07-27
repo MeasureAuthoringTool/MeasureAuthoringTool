@@ -7,6 +7,8 @@ import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 import org.gwtbootstrap3.client.ui.constants.ProgressType;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -20,6 +22,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.bonnie.BonnieModal;
 import mat.client.buttons.IndicatorButton;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
@@ -353,6 +356,14 @@ public abstract class MainLayout {
 	
 	public static void hideBonnieActive() {
 		showBonnieState.hideActive();
+		getBonnieButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				BonnieModal bonnieModal = new BonnieModal();
+				bonnieModal.show();
+			}
+		});
 	}
 	
 	public static void showBonnieActive() {
@@ -363,7 +374,7 @@ public abstract class MainLayout {
 		return showUMLSState.getLink();
 	}
 	
-	public HTML getBonnieButton() {
+	public static HTML getBonnieButton() {
 		return showBonnieState.getLink();
 	}
 

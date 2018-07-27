@@ -43,7 +43,6 @@ public abstract class MainLayout {
 	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 	
 	private static IndicatorButton showUMLSState;
-
 	
 	private static IndicatorButton showBonnieState;
 	

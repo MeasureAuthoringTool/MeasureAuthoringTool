@@ -30,6 +30,9 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.buttons.HelpButton;
+import mat.client.buttons.HelpButton1;
+import mat.client.buttons.HelpButton2;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.SkipListBuilder;
@@ -137,10 +140,14 @@ public class CQLDefinitionsView {
 		defineNameTxtArea.setName("defineName");
 		defineNameTxtArea.setTitle("Enter Definition Name");
 		
+		HelpButton1 nameHelp = new HelpButton1("DefinitionSection", "Name");
+		nameHelp.setHelpInformation("This is how to set the name blah blah blah blah blah ...");
+		
 		HorizontalPanel defineNameHPanel = new HorizontalPanel();
 		defineNameHPanel.add(defineNameLabel);
 		defineNameHPanel.add(defineNameTxtArea);
 		defineNameHPanel.setWidth("700px");
+		defineNameHPanel.add(nameHelp);
 			
 		defineNameGroup.add(defineNameHPanel);
 		
@@ -186,9 +193,13 @@ public class CQLDefinitionsView {
 		defineCommentTextArea.setName("Definition Comment");
 		defineCommentTextArea.setTitle("Enter Comment");
 		
+		HelpButton commentHelp = new HelpButton("DefinitionSection", "Comment");
+		commentHelp.setHelpInformation("How to use comment section ........................................");
+		
 		HorizontalPanel defineCommenttHPanel = new HorizontalPanel();
 		defineCommenttHPanel.add(defineCommentLabel);
 		defineCommenttHPanel.add(defineCommentTextArea);
+		defineCommenttHPanel.add(commentHelp);
 		defineCommenttHPanel.setWidth("700px");
 		
 		defineCommentGroup.add(defineCommenttHPanel);
@@ -201,6 +212,9 @@ public class CQLDefinitionsView {
 		returnTypeLabel.setId("returnType_Label");
 		returnTypeLabel.setFor("returnTypeTextArea_Id");
 		
+		HelpButton2 returnTypeHelp = new HelpButton2("DefinitionSection", "Return type");
+		returnTypeHelp.setHelpInformation("how to use return type box blah blah balh why is it greyed out blah blah blah");
+		
 		returnTypeTextBox.setId("returnTypeTextArea_Id");
 		returnTypeTextBox.setTitle("Return Type of CQL Expression");
 		returnTypeTextBox.setReadOnly(true);
@@ -210,6 +224,7 @@ public class CQLDefinitionsView {
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
+		returnTypeHP.add(returnTypeHelp);
 		//returnTypeHP.add(defineButtonBar);
 		
 		returnTypeAndButtonPanelGroup.add(returnTypeHP);

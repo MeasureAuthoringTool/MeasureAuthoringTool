@@ -2,6 +2,21 @@ body#main * {
 	/*font-family:Arial;
 	 font-size:small; */
 }
+
+.helpbtn {
+	background-color: transparent;
+	border-color: transparent;
+	cursor: default;
+}
+
+.helpbtn.active,.helpbtn.focus,.helpbtn:active,.helpbtn:focus,.helpbtn:hover,.open>.dropdown-toggle.helpbtn
+	{
+	background-color: transparent;
+	border-color: transparent;
+	cursor: default;
+}
+
+
 body#main {
 	font-family:Arial;
 	color:black;

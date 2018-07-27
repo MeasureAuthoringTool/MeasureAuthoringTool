@@ -24,7 +24,7 @@ public class ManageMeasureExportPresenter implements MatPresenter {
 	}
 	
 	private void intializeContent() {
-		this.view.getMeasureNameLink().setText(result.getShortName());
+		this.view.getMeasureNameLink().setText(result.getName());
 	}
 	
 	private void addClickHandlers() {

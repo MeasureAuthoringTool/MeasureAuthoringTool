@@ -95,7 +95,7 @@ public class LoginNewView implements LoginNewPresenter.LoginViewDisplay  {
 		mainCol.setOffset(ColumnOffset.SM_3);
 		//Login Panel.
 		Panel loginPanel = new Panel();
-		loginPanel.setWidth("300px");
+		loginPanel.setWidth("33%");
 		//Login Panel Header.
 		PanelHeader header = new PanelHeader();
 		header.setStyleName("loginNewBlueTitleHolder");

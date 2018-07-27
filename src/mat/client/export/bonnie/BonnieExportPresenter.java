@@ -66,7 +66,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	}
 	
 	private void initializeContent() {
-		this.view.getMeasureNameLink().setText(result.getShortName());
+		this.view.getMeasureNameLink().setText(result.getName());
 	}
 	
 	private void addClickHandlers() {

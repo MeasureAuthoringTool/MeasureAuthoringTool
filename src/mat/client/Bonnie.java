@@ -19,7 +19,6 @@ public class Bonnie extends MainLayout implements EntryPoint {
 	@Override
 	protected void initEntryPoint() {
 		String code = com.google.gwt.user.client.Window.Location.getParameter("code");
-		System.out.println("CODE " + code);
 		getToken(code);
 	}
 

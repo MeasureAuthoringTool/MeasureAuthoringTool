@@ -420,7 +420,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
 			if(resultMatVersion.equals("v5.6")) {
-				//hideBonnieActive();
 				setBonnieActiveLink();
 			}
 		}
@@ -582,12 +581,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			@Override
 			public void onFailure(Throwable caught) {
+				hideBonnieActive();
 				if(caught instanceof BonnieUnauthorizedException) {
-					hideBonnieActive();
+					//Place holder for any future code that would need to happen on unauthorized
 				}
 				
 				else if(caught instanceof BonnieServerException) {
-					hideBonnieActive();
 					Window.alert(BonnieExportPresenter.UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				} 
 								

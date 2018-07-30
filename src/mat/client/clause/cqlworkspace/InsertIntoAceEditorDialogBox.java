@@ -726,28 +726,30 @@ private static void getAllAttibutesByDataType(final ListBoxMVP availableAttribut
 		if(code == null) {
 			return true;
 
-		//birth date and dead codes cannot be inserted without the correct datatype
-		} else if(dataType == null && (isBirthdate(code) || isDead(code))) {
-			return false;
-		
-		//non birthdate/dead codes can be inserted without a datatype
+			//birth date and dead codes cannot be inserted without the correct datatype
 		} else if(dataType == null) {
-			return true;
-		
-		//valid pair
+			if((isBirthdate(code) || isDead(code))) {
+				return false;
+
+			} else {
+				//non birthdate/dead codes can be inserted without a datatype
+				return true;
+			}
+
+			//valid pair
 		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) && isBirthdate(code)) {
 			return true;
-		
-		//valid pair
+
+			//valid pair
 		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) && isDead(code)) {
 			return true;
-		
-		//by elimination of above, must be invalid pair
+
+			//by elimination of above, must be invalid pair
 		} else if(dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED) ||dataType.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE) ||
 				isDead(code) || isBirthdate(code)) {
 			return false;
-		
-		//valid pair consisting of none of the datatypes or codes we are considering in the scope of this method
+
+			//valid pair consisting of none of the datatypes or codes we are considering in the scope of this method
 		} else {
 			return true;
 		}

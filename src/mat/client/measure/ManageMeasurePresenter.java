@@ -1606,8 +1606,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		//removing as to not block QA
-		searchDisplay.getMeasureLibraryAdvancedSearchBuilder().getModal().getSearch().addClickHandler(new ClickHandler() {
+		//TODO in MAT-9216 add this code back in!
+		/*searchDisplay.getMeasureLibraryAdvancedSearchBuilder().getModal().getSearch().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				MeasureSearchModel model = searchDisplay.getMeasureLibraryAdvancedSearchBuilder().generateAdvancedSearchModel();
@@ -1617,7 +1617,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				advancedSearch(model);
 				searchDisplay.getMeasureLibraryAdvancedSearchBuilder().getModal().closeAdvanceSearch();
 			}
-		});
+		});*/
 		
 		searchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
 			@Override

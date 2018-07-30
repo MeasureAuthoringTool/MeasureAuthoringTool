@@ -788,7 +788,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 			measureSearchHeader.setStyleName("recentSearchHeader");
 			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No "+ getMeasureListLabel()+".</p>");
+			HTML desc = new HTML("<p> No measures returned. Please search again.</p>");
 			cellTablePanel.add(measureSearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);

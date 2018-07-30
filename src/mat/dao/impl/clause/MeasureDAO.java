@@ -815,7 +815,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return matchesSearch;
 	}
 
+
 	private boolean advanceSearchResultsForMeasure(MeasureSearchModel model, Measure measure) {
+
 		try {
 			if(StringUtils.isNotBlank(model.getSearchTerm())) {
 				String searchTerm = model.getSearchTerm().toLowerCase();
@@ -834,7 +836,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				return false;
 			}
 			//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
-			if(!MeasureSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
+			if(!AdvancedSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
 				return false;
 			}
 

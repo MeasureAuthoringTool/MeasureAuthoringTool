@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm;
 
 import java.util.ArrayList;
 import java.util.HashMap;

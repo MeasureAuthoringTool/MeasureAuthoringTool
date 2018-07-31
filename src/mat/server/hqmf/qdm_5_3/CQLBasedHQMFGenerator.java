@@ -1,6 +1,8 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.qdm.Generator;
+import mat.server.hqmf.qdm.HQMFFinalCleanUp;
 import mat.server.util.XmlProcessor;
 
 /**

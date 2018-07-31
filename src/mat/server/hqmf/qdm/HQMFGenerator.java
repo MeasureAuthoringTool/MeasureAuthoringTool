@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

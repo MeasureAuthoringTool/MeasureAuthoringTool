@@ -1,6 +1,7 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf;
 
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.qdm_5_3.CQLBasedHQMFDataCriteriaGenerator;
 import mat.shared.MatConstants;
 
 import org.apache.commons.logging.Log;

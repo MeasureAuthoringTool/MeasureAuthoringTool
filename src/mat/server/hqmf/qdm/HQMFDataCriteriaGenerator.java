@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm;
 
 import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;

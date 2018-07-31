@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import java.io.File;
 import java.net.URISyntaxException;

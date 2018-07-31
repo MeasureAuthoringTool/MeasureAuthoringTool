@@ -1,5 +1,5 @@
 
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -11,6 +11,8 @@ import org.w3c.dom.NodeList;
 
 import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.qdm.Generator;
+import mat.server.hqmf.qdm.HQMFDataCriteriaGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 

@@ -8,7 +8,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
-import mat.server.hqmf.qdm.Generator;
+import mat.server.hqmf.Generator;
 import mat.server.service.impl.XMLUtility;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;

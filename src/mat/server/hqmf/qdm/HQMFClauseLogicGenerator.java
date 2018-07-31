@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
@@ -49,7 +50,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	private static final String DATA_CRITERIA_SECTION = "dataCriteriaSection";
 	
 	/** The sub tree node map. */
-	Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
+	private Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
 	
 	/** The measure export. */
 	MeasureExport measureExport;
@@ -179,7 +180,7 @@ public class HQMFClauseLogicGenerator implements Generator {
 	 * @param subTreeNode the sub tree node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	protected Node generateSubTreeXML( Node subTreeNode, boolean msrObsDateTimeDiffSubTree) throws XPathExpressionException {
+	public Node generateSubTreeXML( Node subTreeNode, boolean msrObsDateTimeDiffSubTree) throws XPathExpressionException {
 		
 		/**
 		 * If this is an empty or NULL clause, return right now.

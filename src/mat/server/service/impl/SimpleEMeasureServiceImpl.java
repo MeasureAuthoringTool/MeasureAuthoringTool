@@ -53,6 +53,9 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.export.ExportResult;
+import mat.server.hqmf.Generator;
+import mat.server.hqmf.HQMFGeneratorFactory;
 import mat.server.hqmf.qdm.HQMFGenerator;
 import mat.server.hqmf.qdm_5_3.CQLBasedHQMFGenerator;
 import mat.server.service.MeasurePackageService;
@@ -464,10 +467,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * mat.server.service.SimpleEMeasureService#getEMeasureXML(java.lang.String)
 	 */
 	@Override
-	public final ExportResult getEMeasureXML(final String measureId) throws Exception {
-
+	public final ExportResult getHQMFForV3Measure(final String measureId) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
-		return getEMeasureXML(measureId, measureExport);
+		return getHQMFForv3Measure(measureId, measureExport);
 	}
 
 	/**
@@ -481,8 +483,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @throws Exception
 	 *             - Exception.
 	 */
-	public final ExportResult getEMeasureXML(final String measureId, final MeasureExport measureExport)
-			throws Exception {
+	private final ExportResult getHQMFForv3Measure(final String measureId, final MeasureExport measureExport) throws Exception {
 		XMLUtility xmlUtility = new XMLUtility();
 		String tempXML = xmlUtility.applyXSL(measureExport.getSimpleXML(), xmlUtility.getXMLResource(conversionFile1));
 		String eMeasureXML = xmlUtility.applyXSL(tempXML, xmlUtility.getXMLResource(conversionFile2));
@@ -502,18 +503,16 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	@Override
 	public final ExportResult getEMeasureHTML(final String measureId) throws Exception {
-		ExportResult result = getEMeasureXML(measureId);
+		ExportResult result = getHQMFForV3Measure(measureId);
 		String html = emeasureXMLToEmeasureHTML(result.export);
 		result.export = html;
 		return result;
 	}
 
 	@Override
-	public final ExportResult getNewEMeasureHTML(final String measureId, final String measureVersionNumber)
-			throws Exception {
+	public final ExportResult getHumanReadable(final String measureId, final String measureVersionNumber) throws Exception {
 		MeasureExport measureExport = getMeasureExport(measureId);
-		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(),
-				measureVersionNumber);
+		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber);
 		ExportResult exportResult = new ExportResult();
 		exportResult.export = emeasureHTMLStr;
 		exportResult.measureName = measureExport.getMeasure().getaBBRName();
@@ -695,7 +694,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr,
 				me.getMeasure().getReleaseVersion());
 
-		ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
+		ExportResult emeasureExportResult = getHQMF(measureId);
 		String emeasureXML = emeasureExportResult.export;
 
 		ExportResult exportResult = getCQLLibraryFile(measureId);
@@ -708,63 +707,27 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				me.getMeasure().getReleaseVersion());
 	}
 
-	/**
-	 * Gets the human readable for measure.
-	 *
-	 * @param measureId
-	 *            the measure id
-	 * @param simpleXmlStr
-	 *            the simple xml str
-	 * @param measureVersionNumber
-	 * @return the human readable for measure
-	 */
 	private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber) {
-
-		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber,
-				cqlLibraryDAO);
+		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
 		return html;
 
 	}
 
-	public ExportResult getNewEMeasureXML(String measureId) {
+	public ExportResult getHQMF(String measureId) {
 		MeasureExport measureExport = getMeasureExport(measureId);
-		Measure measure = measureDAO.find(measureId);
 
-		String measureXML = "";
-
-		if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
-			measureXML = getCQLBasedEMeasureXML(measureExport);
-		} else {
-			measureXML = getNewEMeasureXML(measureExport);
+		Generator hqmfGenerator = HQMFGeneratorFactory.getHQMFGenerator(measureExport.getMeasure().getReleaseVersion());
+		String hqmf = "";
+		try {
+			hqmf = hqmfGenerator.generate(measureExport);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
+		
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
-		result.export = measureXML;
+		result.export = hqmf;
 		return result;
-	}
-
-	/**
-	 * Helper function which will generate an HQMF document for v4.x measures.
-	 * 
-	 * @param me
-	 * @return eMeasurexml the eMeasurexml for 4.x measures.
-	 */
-	private String getNewEMeasureXML(MeasureExport me) {
-		String eMeasurexml = new HQMFGenerator().generate(me);
-		return eMeasurexml;
-	}
-
-	/**
-	 * Helper function which will generate an HQMF document for 5.x measures (CQL
-	 * based)
-	 * 
-	 * @param me
-	 * @return eMeasurexml the eMeasurexml for 5.x measures
-	 */
-	private String getCQLBasedEMeasureXML(MeasureExport me) {
-		String eMeasurexml = new CQLBasedHQMFGenerator().generate(me);
-		return eMeasurexml;
 	}
 
 	/**
@@ -786,7 +749,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			String releaseVersion) throws Exception {
 		byte[] wkbkbarr = null;
 		StringUtility su = new StringUtility();
-		ExportResult emeasureXMLResult = getEMeasureXML(measureId);
+		ExportResult emeasureXMLResult = getHQMFForV3Measure(measureId);
 		String emeasureName = emeasureXMLResult.measureName;
 		String emeasureXMLStr = emeasureXMLResult.export;
 		String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -942,7 +905,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr,
 				me.getMeasure().getReleaseVersion());
-		ExportResult emeasureExportResult = getNewEMeasureXML(measureId);
+		ExportResult emeasureExportResult = getHQMF(measureId);
 		String emeasureXMLStr = emeasureExportResult.export;
 		String emeasureName = me.getMeasure().getaBBRName();
 		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
@@ -980,7 +943,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			final Map<String, byte[]> filesMap, final String seqNum) throws Exception {
 		byte[] wkbkbarr = null;
 		StringUtility su = new StringUtility();
-		ExportResult emeasureXMLResult = getEMeasureXML(measureId, me);
+		ExportResult emeasureXMLResult = getHQMFForv3Measure(measureId, me);
 		String emeasureName = emeasureXMLResult.measureName;
 		String emeasureXMLStr = emeasureXMLResult.export;
 		String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

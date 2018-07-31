@@ -685,10 +685,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @return - LocalVariable Name.
 	 * @throws XPathExpressionException - Exception
 	 */
-	private String generateClauseLogicForChildsInsideFnxOp(Node clauseNodes, boolean checkIfDatimeDiff
-			) throws XPathExpressionException {
-		Node generatedClauseEntryNode = clauseLogicGenerator
-				.generateSubTreeXML(clauseNodes, checkIfDatimeDiff);
+	private String generateClauseLogicForChildsInsideFnxOp(Node clauseNodes, boolean checkIfDatimeDiff) throws XPathExpressionException {
+		Node generatedClauseEntryNode = clauseLogicGenerator.generateSubTreeXML(clauseNodes, checkIfDatimeDiff);
 		String localVariableNameValue = null;
 		if (generatedClauseEntryNode != null) {
 			localVariableNameValue = findSubTreeDisplayName(clauseNodes);
@@ -700,22 +698,21 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				if (localVariableElement != null) {
 					localVariableElement.setAttribute(VALUE, localVariableNameValue);
 				} else {
-					localVariableElement = generatedClauseEntryNode
-							.getOwnerDocument().createElement("localVariableName");
+					localVariableElement = generatedClauseEntryNode.getOwnerDocument()
+							.createElement("localVariableName");
 					localVariableElement.setAttribute(VALUE, localVariableNameValue);
-					generatedClauseEntryNode.insertBefore(localVariableElement
-							, generatedClauseEntryNode.getFirstChild());
+					generatedClauseEntryNode.insertBefore(localVariableElement,
+							generatedClauseEntryNode.getFirstChild());
 				}
 			} else {
-				Element localVariableElement = generatedClauseEntryNode
-						.getOwnerDocument().createElement("localVariableName");
+				Element localVariableElement = generatedClauseEntryNode.getOwnerDocument()
+						.createElement("localVariableName");
 				localVariableElement.setAttribute(VALUE, localVariableNameValue);
-				generatedClauseEntryNode.insertBefore(localVariableElement
-						, generatedClauseEntryNode.getFirstChild());
+				generatedClauseEntryNode.insertBefore(localVariableElement, generatedClauseEntryNode.getFirstChild());
 			}
 		} else {
-			if (clauseLogicGenerator.subTreeNodeMap.containsKey(
-					clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
+			if (clauseLogicGenerator.getSubTreeNodeMap()
+					.containsKey(clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
 				localVariableNameValue = findSubTreeDisplayName(clauseNodes);
 			}
 		}

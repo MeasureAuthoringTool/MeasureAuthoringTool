@@ -11,7 +11,7 @@ import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 
 import mat.client.shared.MatContext;
-import mat.server.service.SimpleEMeasureService.ExportResult;
+import mat.server.export.ExportResult;
 import mat.shared.FileNameUtility;
 
 /**

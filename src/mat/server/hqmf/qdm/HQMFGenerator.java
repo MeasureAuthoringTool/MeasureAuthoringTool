@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
@@ -17,10 +18,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class HQMFGenerator.
- */
 public class HQMFGenerator implements Generator {
 	
 	/**
@@ -45,8 +42,7 @@ public class HQMFGenerator implements Generator {
 			me.setHQMFXmlProcessor(hqmfProcessor);
 			
 			generateNarrative(me);
-			hqmfXML = finalCleanUp(me);
-						
+			hqmfXML = finalCleanUp(me);			
 		} catch(Exception e){
 			LOG.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
 			e.printStackTrace();

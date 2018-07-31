@@ -18,7 +18,7 @@ import org.w3c.dom.Node;
  */
 public class HQMFMeasureDetailsGenerator implements Generator {
 
-	private static final String conversionFileForHQMF_Header = "xsl/new_measureDetails.xsl";
+	private static final String conversionFileForHQMF_Header = "xsl/qdm_v4_x_measure_details.xsl";
 
 	@Override
 	public String generate(MeasureExport me) {

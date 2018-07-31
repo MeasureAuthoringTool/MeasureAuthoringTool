@@ -13,12 +13,17 @@ import mat.server.hqmf.Generator;
 import mat.server.simplexml.HQMFHumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
 public class HQMFGenerator implements Generator {
+	
+	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
+
 	
 	/**
 	 * Generate hqm for measure.
@@ -44,7 +49,7 @@ public class HQMFGenerator implements Generator {
 			generateNarrative(me);
 			hqmfXML = finalCleanUp(me);			
 		} catch(Exception e){
-			LOG.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
+			logger.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
 			e.printStackTrace();
 		}
 		return hqmfXML;

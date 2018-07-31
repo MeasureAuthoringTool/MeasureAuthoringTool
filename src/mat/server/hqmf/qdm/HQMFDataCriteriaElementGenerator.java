@@ -738,7 +738,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		String xPathForTemplate = "/templates/template[text()='" + dataType.toLowerCase() + "']";
 		String actNodeStr = "";
 		try {
@@ -1661,7 +1661,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		 * Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");
 		 */
 		// boolean isLengthOfStayValueSet = false;
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attrName.toLowerCase() + "']");
 		Node targetNode = templateNode.getAttributes().getNamedItem("target");
@@ -1792,7 +1792,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode)
 			throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attributeName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -1826,7 +1826,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode)
 			throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attributeName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -1861,7 +1861,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			throws XPathExpressionException {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/template[text()='" + qdmName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -1901,7 +1901,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 			String attribUUID = (String) attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 
-			XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+			XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 					"/templates/AttrTemplate[text()='" + attrName + "']");
 			logger.info("----------");
@@ -1988,7 +1988,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attrName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -2145,7 +2145,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| "Functional Status, Performed".equalsIgnoreCase(qdmName)
 				|| "Risk Category Assessment".equalsIgnoreCase(qdmName));
 
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attrName.toLowerCase() + "']");
 		boolean isRadiation = false;

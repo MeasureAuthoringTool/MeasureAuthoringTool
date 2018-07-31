@@ -23,7 +23,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class CQLBasedHQMFClauseLogicGenerator implements Generator {
+public class HQMFClauseLogicGenerator implements Generator {
 	private static final String GROUPER_CRITERIA = "grouperCriteria";
 	private static final String CONJUNCTION_CODE = "conjunctionCode";
 	private static final String LOCAL_VARIABLE_NAME = "localVariableName";
@@ -47,7 +47,7 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 
 	public MeasureExport measureExport;
 
-	private static final Log logger = LogFactory.getLog(CQLBasedHQMFClauseLogicGenerator.class);
+	private static final Log logger = LogFactory.getLog(HQMFClauseLogicGenerator.class);
 
 	/**
 	 * MAP of Functional Ops NON Subset Type.

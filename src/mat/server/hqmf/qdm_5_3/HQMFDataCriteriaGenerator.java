@@ -7,7 +7,7 @@ import mat.server.util.XmlProcessor;
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
-public class CQLBasedHQMFDataCriteriaGenerator implements Generator {
+public class HQMFDataCriteriaGenerator implements Generator {
 	
 	/**
 	 * Generate hqmf for measure.
@@ -19,13 +19,13 @@ public class CQLBasedHQMFDataCriteriaGenerator implements Generator {
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		
-		CQLBasedHQMFDataCriteriaElementGenerator cqlBasedHQMFDataCriteriaElementGenerator = new CQLBasedHQMFDataCriteriaElementGenerator();
+		HQMFDataCriteriaElementGenerator cqlBasedHQMFDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
 		cqlBasedHQMFDataCriteriaElementGenerator.generate(me);
 		
-		CQLBasedHQMFPopulationLogicGenerator cqlBasedHQMFPopulationLogicGenerator = new CQLBasedHQMFPopulationLogicGenerator();
+		HQMFPopulationLogicGenerator cqlBasedHQMFPopulationLogicGenerator = new HQMFPopulationLogicGenerator();
 		cqlBasedHQMFPopulationLogicGenerator.generate(me);
 		
-		CQLBasedHQMFMeasureObservationLogicGenerator cqlBasedHQMFMeasureObservationLogicGenerator = new CQLBasedHQMFMeasureObservationLogicGenerator();
+		HQMFMeasureObservationLogicGenerator cqlBasedHQMFMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
 		cqlBasedHQMFMeasureObservationLogicGenerator.generate(me);
 		
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();

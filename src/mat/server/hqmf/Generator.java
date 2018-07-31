@@ -1,11 +1,6 @@
 package mat.server.hqmf;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import mat.model.clause.MeasureExport;
-import mat.server.hqmf.qdm.HQMFDataCriteriaGenerator;
-import mat.server.hqmf.qdm_5_3.CQLBasedHQMFDataCriteriaGenerator;
 import mat.shared.MatConstants;
 
 public interface Generator extends MatConstants {
@@ -184,9 +179,5 @@ public interface Generator extends MatConstants {
 	
 	public static final String ACTION_NEGATION_IND = "actionNegationInd";
 	
-	public final Log LOG = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
-	
-	public final Log LOGGER = LogFactory.getLog(CQLBasedHQMFDataCriteriaGenerator.class);
-
 	public String generate(MeasureExport me) throws Exception;
 }

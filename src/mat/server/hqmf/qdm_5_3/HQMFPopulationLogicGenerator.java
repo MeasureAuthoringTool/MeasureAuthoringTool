@@ -23,7 +23,7 @@ import mat.shared.UUIDUtilClient;
 /**
  * The Class HQMFPopulationLogicGenerator.
  */
-public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogicGenerator {
+public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	
 	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<Integer, NodeList>();
 	

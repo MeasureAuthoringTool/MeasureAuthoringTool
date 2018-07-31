@@ -7,18 +7,17 @@ import java.net.URL;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 
-public class CQLBasedHQMFTemplateXMLSingleton {
+public class QDMTemplatesSingleton {
 	
 	private final static XmlProcessor templateXMLProcessor;
 	
 	static {
-		String fileName = "CQLHQMFTemplates.xml";
+		String fileName = "qdm_templates/qdm_5_3_datatype_templates.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
 		File templateFile = null;
 		try {
 			templateFile = new File(templateFileUrl.toURI());
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		templateXMLProcessor = new XmlProcessor(templateFile);

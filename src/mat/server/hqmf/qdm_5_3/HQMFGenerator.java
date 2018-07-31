@@ -10,7 +10,7 @@ import mat.server.util.XmlProcessor;
  *
  * @author jmeyer
  */
-public class CQLBasedHQMFGenerator implements Generator {
+public class HQMFGenerator implements Generator {
 	
 
 	/**
@@ -26,13 +26,13 @@ public class CQLBasedHQMFGenerator implements Generator {
 		try {
 
 			// MAT 6911: Export CQL based HQMF w/ Meta Data Section
-			String eMeasureDetailsXML = new CQLBasedHQMFMeasureDetailsGenerator().generate(me);
+			String eMeasureDetailsXML = new MeasureDetailsGenerator().generate(me);
 			// Inline comments are added after the end of last componentOf tag.
 			// This is removed in this method
 			eMeasureDetailsXML = replaceInlineCommentFromEnd(eMeasureDetailsXML);
 			hqmfXML += eMeasureDetailsXML;
 
-			String dataCriteriaXML = new CQLBasedHQMFDataCriteriaGenerator().generate(me);
+			String dataCriteriaXML = new DataCriteriaGenerator().generate(me);
 			hqmfXML= appendToHQMF(dataCriteriaXML, hqmfXML);
 			
 			XmlProcessor hqmfProcessor = new XmlProcessor(hqmfXML);

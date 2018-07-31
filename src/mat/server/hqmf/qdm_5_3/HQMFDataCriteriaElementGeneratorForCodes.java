@@ -19,7 +19,7 @@ import mat.shared.UUIDUtilClient;
 /**
  * The Class CQLBasedHQMFDataCriteriaElementGenerator.
  */
-public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generator {
+public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 
 	protected String extensionValue = null;
 
@@ -132,7 +132,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			XmlProcessor simpleXmlprocessor) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 
-		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		String xPathForTemplate = "/templates/template[text()='" + dataType.toLowerCase() + "']";
 		String actNodeStr = "";
 		try {

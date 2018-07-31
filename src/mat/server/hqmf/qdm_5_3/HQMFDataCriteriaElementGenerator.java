@@ -28,7 +28,7 @@ import mat.shared.UUIDUtilClient;
 /**
  * The Class HQMFDataCriteriaGenerator.
  */
-public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
+public class HQMFDataCriteriaElementGenerator implements Generator {
 	
 	
 	/** The occurrence map. */
@@ -37,7 +37,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	protected String extensionValue = null;
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(CQLBasedHQMFDataCriteriaElementGenerator.class);
+	private static final Log logger = LogFactory.getLog(HQMFDataCriteriaElementGenerator.class);
 	
 	/**
 	 * Generate hqm for measure.
@@ -161,7 +161,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 			generateCQLQDMNodeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmNoAttributeNodeList);
 			
-			CQLBasedHQMFDataCriteriaElementGeneratorForCodes cqlBasedHQMFDataCriteriaElementGeneratorForCodes = new CQLBasedHQMFDataCriteriaElementGeneratorForCodes();
+			HQMFDataCriteriaElementGeneratorForCodes cqlBasedHQMFDataCriteriaElementGeneratorForCodes = new HQMFDataCriteriaElementGeneratorForCodes();
 			cqlBasedHQMFDataCriteriaElementGeneratorForCodes.generate(me);
 						
 //			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
@@ -369,7 +369,7 @@ public class CQLBasedHQMFDataCriteriaElementGenerator implements Generator {
 	private void createXmlForDataCriteria(Node qdmNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		
-		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		String xPathForTemplate = "/templates/template[text()='"
 				+ dataType.toLowerCase() + "']";
 		String actNodeStr = "";

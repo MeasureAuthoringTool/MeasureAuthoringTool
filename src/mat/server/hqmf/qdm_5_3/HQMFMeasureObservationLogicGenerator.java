@@ -19,14 +19,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import mat.model.clause.MeasureExport;
-import mat.server.hqmf.qdm.HQMFClauseLogicGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
 /**
  * The Class HQMFPopulationLogicGenerator.
  */
-public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFClauseLogicGenerator {
+public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
 	private static final int DATETIMEDIFF_CHILD_COUNT = 2;
 
 	private Map<String, Node> clauseLogicMap = new HashMap<String, Node>();
@@ -37,7 +36,6 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 
 	private String scoringType;
 
-	private HQMFClauseLogicGenerator clauseLogicGenerator = new HQMFClauseLogicGenerator();
 	private boolean clauseLogicHasElementRef = false;
 
 	/**
@@ -80,7 +78,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		this.me = me;
-		clauseLogicGenerator.setMeasureExport(me);
+		setMeasureExport(me);
 		getMeasureScoringType(me);
 		generateClauseLogicMap(me);
 		getAllMeasureGroupings(me);
@@ -101,7 +99,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName)
 			throws XPathExpressionException {
-		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
 		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute=\"" + attributeName + "\"]";
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {
@@ -836,7 +834,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 	 */
 	private String generateClauseLogicForChildsInsideFnxOp(Node clauseNodes, boolean checkIfDatimeDiff)
 			throws XPathExpressionException {
-		Node generatedClauseEntryNode = clauseLogicGenerator.generateSubTreeXML(clauseNodes, checkIfDatimeDiff);
+		Node generatedClauseEntryNode = generateSubTreeXML(clauseNodes, checkIfDatimeDiff);
 		String localVariableNameValue = null;
 		if (generatedClauseEntryNode != null) {
 			localVariableNameValue = findSubTreeDisplayName(clauseNodes);
@@ -861,8 +859,7 @@ public class CQLBasedHQMFMeasureObservationLogicGenerator extends CQLBasedHQMFCl
 				generatedClauseEntryNode.insertBefore(localVariableElement, generatedClauseEntryNode.getFirstChild());
 			}
 		} else {
-			if (clauseLogicGenerator.getSubTreeNodeMap()
-					.containsKey(clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
+			if (getSubTreeNodeMap().containsKey(clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
 				localVariableNameValue = findSubTreeDisplayName(clauseNodes);
 			}
 		}

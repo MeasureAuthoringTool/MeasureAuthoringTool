@@ -7,12 +7,12 @@ import java.net.URL;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 
-public class TemplateXMLSingleton {
+public class QDMTemplatesSingleton {
 	
 	private final static XmlProcessor templateXMLProcessor;
 	
 	static {
-		String fileName = "templates.xml";
+		String fileName = "qdm_templates/qdm_v4_x_datatype_templates.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
 		File templateFile = null;
 		try {

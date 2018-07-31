@@ -224,7 +224,7 @@
       <url-pattern>/mat/populationService</url-pattern>
   </servlet-mapping>
   <session-config>
-        <session-timeout>70</session-timeout>
+        <session-timeout>30</session-timeout>
         <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
         <!-- <cookie-config>
            <http-only>true</http-only>

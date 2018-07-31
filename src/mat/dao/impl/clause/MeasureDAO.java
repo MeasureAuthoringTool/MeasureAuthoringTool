@@ -828,15 +828,17 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 					return false;
 				}
 			}
-			//TODO in MAT-9216 add this code back in!
-			/*if (MeasureSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
+			
+			if (MeasureSearchModel.VersionMeasureType.DRAFT.equals(model.isDraft()) && !measure.isDraft()) {
 				return false;
 			}
 			if (MeasureSearchModel.VersionMeasureType.VERSION.equals(model.isDraft()) && measure.isDraft()) {
 				return false;
 			}
+			//TODO in MAT-9216 add this code back in!
+			/*
 			//null check is necessary because measures prior to 5.0 do not have patient based indicator and it will be null in the database
-			if(!AdvancedSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
+			if(!MeasureSearchModel.PatientBasedType.ALL.equals(model.isPatientBased()) && measure.getPatientBased() == null) {
 				return false;
 			}
 

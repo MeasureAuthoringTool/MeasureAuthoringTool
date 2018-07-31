@@ -52,12 +52,12 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.event.MeasureVersionEvent;
 import mat.client.export.ManageExportPresenter;
 import mat.client.export.ManageExportView;
-import mat.client.export.measure.ExportDisplay;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
+import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ManageCompositeMeasureModelValidator;
@@ -72,10 +72,10 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
-import mat.shared.MeasureSearchModel;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
+import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 
 public class ManageMeasurePresenter implements MatPresenter {
 
@@ -110,7 +110,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private ManageCompositeMeasureDetailModel currentCompositeMeasureDetails;
 
-	private String currentExportId;
 
 	private ManageMeasureShareModel currentShareDetails;
 
@@ -424,6 +423,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 				displayDetailForAddComposite();
 			}
 		});
+		componentMeasureDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				// TODO Auto-generated method stub
+				updateCompositeDetailsFromComponentMeasureDisplay();
+				if(!isValidCompositeMeasureForSave(currentCompositeMeasureDetails)){
+					return;
+				}
+			}
+		});
 	}
 
 	private void compositeDetailDisplayHandlers(final DetailDisplay compositeDetailDisplay) {
@@ -522,7 +532,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if(componentMeasureDisplay != null) {
 					componentMeasureDisplay.clearFields();
 				}
-				updateCompositeDetailsFromView();
+				updateCompositeDetailsFromCompositeDetailView();
 				if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
 					return;
 				}
@@ -867,7 +877,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void export(ManageMeasureSearchModel.Result result) {
 		String id = result.getId();
-		String name = result.getName();
 		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Exported", null, true,
 				new AsyncCallback<Boolean>() {
 					@Override
@@ -883,7 +892,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		ManageExportPresenter exportPresenter = new ManageExportPresenter(exportView, result, this);
 
-		currentExportId = id;
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setContent(exportPresenter.getWidget());
@@ -981,8 +989,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private boolean isValidCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasureDetails) {
-		ManageCompositeMeasureModelValidator manageMeasureModelValidator = new ManageCompositeMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.validateMeasureWithClone(compositeMeasureDetails, isClone);
+		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
+		List<String> message = manageCompositeMeasureModelValidator.validateMeasureWithClone(compositeMeasureDetails, isClone);
 		boolean valid = message.size() == 0;
 		if(!valid) {
 			String errorMessage = "";
@@ -995,7 +1003,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		return valid;
 	}
-
+	
+	private boolean isValidCompositeMeasureForSave(ManageCompositeMeasureDetailModel compositeMeasureDetails) {
+		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
+		List<String> message = manageCompositeMeasureModelValidator.validateCompositeMeasure(compositeMeasureDetails);
+		boolean valid = message.size() == 0;
+		if(!valid) {
+			String errorMessage = "";
+			if(message.size() > 0) {
+				errorMessage = message.get(0);
+			}
+			componentMeasureDisplay.getErrorMessageDisplay().createAlert(errorMessage);
+		} else {
+			componentMeasureDisplay.getErrorMessageDisplay().clearAlert();
+		}
+		return valid;
+	}
 
 	
 	private void getUnusedLibraryDialog(String measureId, String measureName, boolean isMajor, String version, boolean shouldPackage) {
@@ -1968,7 +1991,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext.get().setCurrentMeasureScoringType(currentDetails.getMeasScoring());
 	}
 	
-	private void updateCompositeDetailsFromView() {
+	private void updateCompositeDetailsFromCompositeDetailView() {
 		currentCompositeMeasureDetails.setName(compositeDetailDisplay.getName().getValue().trim());
 		currentCompositeMeasureDetails.setShortName(compositeDetailDisplay.getShortName().getValue().trim());
 		currentCompositeMeasureDetails.setCompositeScoringMethod(((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue());
@@ -1980,6 +2003,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 			currentCompositeMeasureDetails.setIsPatientBased(false);
 		}
 		currentCompositeMeasureDetails.scrubForMarkUp();
+	}
+	
+	private void updateCompositeDetailsFromComponentMeasureDisplay() {
+		currentCompositeMeasureDetails.setAppliedComponentMeasures(componentMeasureDisplay.getAppliedComponentMeasuresList());
+		currentCompositeMeasureDetails.setAliasMapping(componentMeasureDisplay.getAliasMapping());
 	}
 
 	private void updateTransferIDs(Result result, ManageMeasureSearchModel model) {

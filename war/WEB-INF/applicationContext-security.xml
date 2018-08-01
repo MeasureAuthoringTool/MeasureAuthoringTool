@@ -24,6 +24,12 @@
         <session-management invalid-session-url="/Login.html">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
         </session-management>
+        <session-management invalid-session-url="/Mat.html">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
+        <session-management invalid-session-url="/Bonnie.html">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+        </session-management>
     </http>
 	
 	<authentication-manager>

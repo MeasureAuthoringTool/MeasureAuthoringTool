@@ -59,6 +59,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -70,6 +71,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
@@ -132,12 +134,12 @@ import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
-import mat.shared.MeasureSearchModel;
 import mat.shared.CQLValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -239,6 +241,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private MeasureAuditServiceImpl auditService; 
+	
+	@Autowired
+	private PackageServiceImpl packageService;
 
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
@@ -1024,6 +1029,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setStatus(dto.getStatus());
 		detail.seteMeasureId(dto.geteMeasureId());
 		detail.setPatientBased(dto.isPatientBased());
+		detail.setQdmVersion(measure.getQdmVersion());
+		detail.setIsComposite(measure.getIsCompositeMeasure());
 		
 		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 		if (measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
@@ -5719,5 +5726,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		updateMeasureFamily(detailModelList);
 		return searchModel;
+	}
+
+	@Override
+	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		Map<String, MeasurePackageOverview> packageMap = packageService.getClausesAndPackagesForMeasures(manageCompositeMeasureDetailModel.getAppliedComponentMeasures());
+		manageCompositeMeasureDetailModel.setPackageMap(packageMap);
+		return manageCompositeMeasureDetailModel;
 	}
 }

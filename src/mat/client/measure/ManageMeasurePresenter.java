@@ -57,7 +57,6 @@ import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
-import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ManageCompositeMeasureModelValidator;
@@ -109,7 +108,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private ManageMeasureDetailModel currentDetails;
 	
 	private ManageCompositeMeasureDetailModel currentCompositeMeasureDetails;
-
 
 	private ManageMeasureShareModel currentShareDetails;
 
@@ -427,11 +425,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
 				updateCompositeDetailsFromComponentMeasureDisplay();
-				if(!isValidCompositeMeasureForSave(currentCompositeMeasureDetails)){
-					return;
-				}
+				
+				MatContext.get().getMeasureService().buildCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<ManageCompositeMeasureDetailModel>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						/*						GWT.log("onFailure");
+						GWT.log(caught.getCause().getMessage());*/
+					}
+
+					@Override
+					public void onSuccess(ManageCompositeMeasureDetailModel result) {
+						currentCompositeMeasureDetails = result;
+						if(!isValidCompositeMeasureForSave(currentCompositeMeasureDetails)){
+							return;
+						}
+					}
+					
+				});
 			}
 		});
 	}
@@ -1007,6 +1019,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private boolean isValidCompositeMeasureForSave(ManageCompositeMeasureDetailModel compositeMeasureDetails) {
 		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
 		List<String> message = manageCompositeMeasureModelValidator.validateCompositeMeasure(compositeMeasureDetails);
+		GWT.log("message size: " + message.size());
 		boolean valid = message.size() == 0;
 		if(!valid) {
 			String errorMessage = "";
@@ -2002,6 +2015,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			currentCompositeMeasureDetails.setIsPatientBased(false);
 		}
+		currentCompositeMeasureDetails.setQdmVersion(MatContext.get().getCurrentQDMVersion());
 		currentCompositeMeasureDetails.scrubForMarkUp();
 	}
 	

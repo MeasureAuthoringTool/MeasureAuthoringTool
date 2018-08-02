@@ -7,6 +7,7 @@ import java.util.List;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -513,6 +514,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel) {
 		return this.getMeasureLibraryService().searchComponentMeasures(searchModel);
+	}
+
+	@Override
+	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasure) {
+		return this.getMeasureLibraryService().buildCompositeMeasure(compositeMeasure);
 	}
 
 }

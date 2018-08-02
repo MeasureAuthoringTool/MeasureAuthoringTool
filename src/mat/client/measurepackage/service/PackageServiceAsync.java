@@ -1,7 +1,12 @@
 package mat.client.measurepackage.service;
 
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+
+import java.util.List;
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -19,6 +24,17 @@ public interface PackageServiceAsync {
 	 * @return the clauses and packages for measure
 	 */
 	public void getClausesAndPackagesForMeasure(String measureId, AsyncCallback<MeasurePackageOverview> callback);
+	
+	
+	/**
+	 * Gets the clauses and packages for measures.
+	 * 
+	 * @param measureList 
+	 * @param callback
+	 *            the callback
+	 * @return the clauses and packages for measures
+	 */
+	public void getClausesAndPackagesForMeasures(List<ManageMeasureSearchModel.Result> measureList, AsyncCallback<Map<String, MeasurePackageOverview>> callback);
 	
 	/**
 	 * Save.

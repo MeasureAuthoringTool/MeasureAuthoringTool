@@ -5,13 +5,15 @@ import java.util.Map;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import mat.client.measurepackage.MeasurePackageOverview;
 import mat.model.BaseModel;
 
 public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel implements IsSerializable, BaseModel {
 
 	private String compositeScoringMethod;
-	List<ManageMeasureSearchModel.Result> appliedComponentMeasures;
-	Map<String, String> aliasMapping;
+	private List<ManageMeasureSearchModel.Result> appliedComponentMeasures;
+	private Map<String, String> aliasMapping;
+	private Map<String, MeasurePackageOverview> packageMap;
 
 	@Override
 	public void scrubForMarkUp() {
@@ -31,7 +33,6 @@ public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel 
 		return appliedComponentMeasures;
 	}
 
-
 	public void setAppliedComponentMeasures(List<ManageMeasureSearchModel.Result> appliedComponentMeasures) {
 		this.appliedComponentMeasures = appliedComponentMeasures;
 	}
@@ -42,5 +43,13 @@ public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel 
 
 	public void setAliasMapping(Map<String, String> aliasMapping) {
 		this.aliasMapping = aliasMapping;
+	}
+	
+	public Map<String, MeasurePackageOverview> getPackageMap() {
+		return packageMap;
+	}
+
+	public void setPackageMap(Map<String, MeasurePackageOverview> packageMap) {
+		this.packageMap = packageMap;
 	}
 }

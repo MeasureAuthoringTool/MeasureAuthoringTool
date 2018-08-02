@@ -208,7 +208,9 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	
 	private MeasureDetailResult measureDetailResult; 
 	
+	private String qdmVersion;
 	
+
 	/**
 	 * Checks if is calender year.
 	 *
@@ -2047,6 +2049,14 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 	 */
 	public void setMeasureDetailResult(MeasureDetailResult measureDetailResult) {
 		this.measureDetailResult = measureDetailResult;
+	}
+	
+	public String getQdmVersion() {
+		return qdmVersion;
+	}
+
+	public void setQdmVersion(String qdmVersion) {
+		this.qdmVersion = qdmVersion;
 	}
 	
 	

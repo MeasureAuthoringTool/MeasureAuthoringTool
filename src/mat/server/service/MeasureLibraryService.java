@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -737,5 +738,7 @@ public interface MeasureLibraryService {
 	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model);
 
 	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
+
+	ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 
 }

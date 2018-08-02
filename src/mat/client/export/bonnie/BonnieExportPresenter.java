@@ -16,7 +16,7 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 public class BonnieExportPresenter implements MatPresenter {
 
 	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
-	public static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to connect at this time. Please try again. If the problem persists, contact the MAT Support Desk.";
+	public static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to connect to Bonnie at this time. Please try again. If the problem persists, contact the MAT Support Desk.";
 	
 	private BonnieExportView view;
 	private ManageMeasurePresenter manageMeasurePresenter;

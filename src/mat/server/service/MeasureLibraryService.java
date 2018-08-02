@@ -41,6 +41,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.MeasureSearchModel;
 import mat.shared.CQLValidationResult;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -741,4 +742,5 @@ public interface MeasureLibraryService {
 
 	ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 
+	CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 }

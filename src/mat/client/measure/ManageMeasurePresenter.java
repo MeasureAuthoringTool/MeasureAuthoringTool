@@ -71,6 +71,7 @@ import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
@@ -427,7 +428,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				updateCompositeDetailsFromComponentMeasureDisplay();
 				
-				MatContext.get().getMeasureService().buildCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<ManageCompositeMeasureDetailModel>() {
+				MatContext.get().getMeasureService().validateCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<CompositeMeasureValidationResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -436,13 +437,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}
 
 					@Override
-					public void onSuccess(ManageCompositeMeasureDetailModel result) {
-						currentCompositeMeasureDetails = result;
-						if(!isValidCompositeMeasureForSave(currentCompositeMeasureDetails)){
+					public void onSuccess(CompositeMeasureValidationResult result) {
+						currentCompositeMeasureDetails = result.getModel();
+						if(!isValidCompositeMeasureForSave(result.getMessages())){
 							return;
 						}
 					}
-					
 				});
 			}
 		});
@@ -1016,9 +1016,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		return valid;
 	}
 	
-	private boolean isValidCompositeMeasureForSave(ManageCompositeMeasureDetailModel compositeMeasureDetails) {
-		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
-		List<String> message = manageCompositeMeasureModelValidator.validateCompositeMeasure(compositeMeasureDetails);
+	private boolean isValidCompositeMeasureForSave(List<String> message) {
 		GWT.log("message size: " + message.size());
 		boolean valid = message.size() == 0;
 		if(!valid) {

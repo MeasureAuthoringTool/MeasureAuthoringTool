@@ -36,6 +36,7 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.MeasureSearchModel;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -688,4 +689,6 @@ public interface MeasureService extends RemoteService {
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
 	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasure);
+	
+	public CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 }

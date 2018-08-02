@@ -62,6 +62,7 @@ import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
@@ -135,6 +136,7 @@ import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLValidationResult;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
@@ -148,6 +150,12 @@ import mat.shared.model.util.MeasureDetailsUtil;
  * The Class MeasureLibraryServiceImpl.
  */
 public class MeasureLibraryServiceImpl implements MeasureLibraryService {
+	public static final String ERR_COMPOSITE_MEASURE_SCORE_REQUIRED = "Composite Scoring Method is required. ";
+	public static final String ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED = "A composite measure must have more than one component measure.";
+	public static final String ERR_COMPONENT_MEASURE_DOES_NOT_CONTAIN_PACKAGE = " does not have a measure package and can not be used as a component measure.";
+	public static final String ERR_COMPONENT_MEASURES_MUST_HAVE_SAME_PATIENT_BASED_INDICATOR = "All component measures must have the same patient-based indicator setting";
+	public static final String ERR_COMPONENT_MEASURES_MUST_ALL_HAVE_ALIAS = "An alias is required for each component measure.";
+	public static final String ERR_COMPONENT_MEASURE_CANNOT_BE_COMPOSITE = "A component measure can not be a composite measure.";
 
 	private static final int NESTED_CLAUSE_DEPTH = 10;
 
@@ -2187,6 +2195,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("exportCQLibraryFromMeasure method :: END");
 	}
 
+	//TODO the model shouldn't reside in the client if we're using it in the server side logic, move to shared
 	@Override
 	public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) {
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
@@ -5733,5 +5742,113 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Map<String, MeasurePackageOverview> packageMap = packageService.getClausesAndPackagesForMeasures(manageCompositeMeasureDetailModel.getAppliedComponentMeasures());
 		manageCompositeMeasureDetailModel.setPackageMap(packageMap);
 		return manageCompositeMeasureDetailModel;
+	}
+
+	@Override
+	public CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		manageCompositeMeasureDetailModel = buildCompositeMeasure(manageCompositeMeasureDetailModel);
+		CompositeMeasureValidationResult validationResult = new CompositeMeasureValidationResult();
+		List<String> messages = new ArrayList<>();
+		if(!compositeMeasureContainsMoreThanOneComponentMeasure(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED);
+		}
+
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			if(!appliedComponentMeasureContainsAPackage(appliedComponentMeasure, manageCompositeMeasureDetailModel)) {
+				messages.add(appliedComponentMeasure.getName() + ERR_COMPONENT_MEASURE_DOES_NOT_CONTAIN_PACKAGE); //TODO
+				break;
+			}
+		}
+		
+		if(compositeMeasureIncludedLibrariesHaveSameNameAndDifferentVersion(manageCompositeMeasureDetailModel)) {
+			//TODO implement this
+		}
+		
+		//check qdm version
+		if(!manageCompositeMeasureDetailModel.getQdmVersion().equals(MATPropertiesService.get().getQmdVersion())) {
+			messages.add("The measure " + manageCompositeMeasureDetailModel.getName() + " is not using the correct version of the QDM");
+		} else {
+			for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+				if(!appliedComponentMeasure.getQdmVersion().equals(MATPropertiesService.get().getQmdVersion())) {
+					messages.add("The measure " + appliedComponentMeasure.getName() + " is not using the correct version of the QDM");
+					break;
+				}
+			}
+		}
+		
+		Set<Boolean> patientBasedSet = new HashSet<>();
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			patientBasedSet.add(appliedComponentMeasure.isPatientBased());
+		}
+		if(patientBasedSet.size() > 1) {
+			messages.add(ERR_COMPONENT_MEASURES_MUST_HAVE_SAME_PATIENT_BASED_INDICATOR);
+		}
+		
+		if(!allComponentMeasuresHaveAnAlias(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_COMPONENT_MEASURES_MUST_ALL_HAVE_ALIAS);
+		}
+		
+		//TODO check for spaces, special characters, cql keywords, etc. in alias **
+		
+		
+		if(anyComponentMeasureIsACompositeMeasure(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_COMPONENT_MEASURE_CANNOT_BE_COMPOSITE);
+		}
+
+		
+		//TODO check the measure scoring of the component measure based on the scoring type of the composite measure
+		//manageCompositeMeasureDetailModel.getMeasScoring()?
+		
+		//TODO check that component measures only have one measure grouping
+		
+		validationResult.setMessages(messages);
+		validationResult.setModel(manageCompositeMeasureDetailModel);
+		return validationResult;
+	}
+	
+	private boolean anyComponentMeasureIsACompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			if(appliedComponentMeasure.getIsComposite()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean allComponentMeasuresHaveAnAlias(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			Map<String, String> aliasMapping = manageCompositeMeasureDetailModel.getAliasMapping();
+			if(!aliasMapping.containsKey(appliedComponentMeasure.getId())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean compositeMeasureIncludedLibrariesHaveSameNameAndDifferentVersion(
+			ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean appliedComponentMeasureContainsAPackage(Result appliedComponentMeasure, ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		if(!manageCompositeMeasureDetailModel.getPackageMap().containsKey(appliedComponentMeasure.getId())) {
+			return false;
+		} else {
+			MeasurePackageOverview packageOverview = manageCompositeMeasureDetailModel.getPackageMap().get(appliedComponentMeasure.getId());
+			if(packageOverview.getPackages() != null && packageOverview.getPackages().size() > 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {
+		boolean containsMoreThanOne = false;
+		if(model.getAppliedComponentMeasures().size() > 1) {
+			containsMoreThanOne = true;
+		}
+		return containsMoreThanOne;
 	}
 }

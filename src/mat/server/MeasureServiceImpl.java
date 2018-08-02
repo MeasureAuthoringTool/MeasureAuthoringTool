@@ -37,6 +37,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.MeasureSearchModel;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -521,4 +522,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		return this.getMeasureLibraryService().buildCompositeMeasure(compositeMeasure);
 	}
 
+	@Override
+	public CompositeMeasureValidationResult validateCompositeMeasure(
+			ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		return this.getMeasureLibraryService().validateCompositeMeasure(manageCompositeMeasureDetailModel);
+	}
+
+	
 }

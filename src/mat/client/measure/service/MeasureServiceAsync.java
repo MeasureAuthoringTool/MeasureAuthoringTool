@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -723,4 +724,7 @@ public interface MeasureServiceAsync {
 	void searchComponentMeasures(MeasureSearchModel searchModel, AsyncCallback<ManageMeasureSearchModel> asyncCallback);
 	
 	void buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, AsyncCallback<ManageCompositeMeasureDetailModel> callback);
+
+	void validateCompositeMeasure(ManageCompositeMeasureDetailModel currentCompositeMeasureDetails,
+			AsyncCallback<CompositeMeasureValidationResult> asyncCallback);
 }

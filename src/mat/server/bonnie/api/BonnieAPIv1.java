@@ -132,8 +132,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw new IOException();
 		} finally {
 			if (connection != null) {
+				logger.info("Disconnecting " + connection.getURL());
 				connection.disconnect();
-				logger.info("Disconnected " + connection.getURL());
 			}
 		}
 
@@ -184,7 +184,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			// TODO remove when this is in JVM variables
 			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
-			logger.info("Connecting to refrsh bonnie oauth");
+			logger.info("Connecting to refresh bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 					.setClientId(getClientId()).setGrantType(GrantType.REFRESH_TOKEN)
 					.setClientSecret(getClientSecret()).setRefreshToken(userBonnieAccessInfo.getRefreshToken())
@@ -205,7 +205,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
-				logger.info("Disconnected from refrsh bonnie oauth");
+				logger.info("Disconnected from refresh bonnie oauth");
 			}
 		}
 	}

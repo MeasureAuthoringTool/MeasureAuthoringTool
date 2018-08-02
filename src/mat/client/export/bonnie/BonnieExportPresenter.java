@@ -59,7 +59,7 @@ public class BonnieExportPresenter implements MatPresenter {
 				} 
 								
 				else {
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					Window.alert(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				}
 			}
 		});

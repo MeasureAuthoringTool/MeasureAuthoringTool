@@ -582,17 +582,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			@Override
 			public void onFailure(Throwable caught) {
 				hideBonnieActive();
-				if(caught instanceof BonnieUnauthorizedException) {
-					//Place holder for any future code that would need to happen on unauthorized
-				}
-				
-				else if(caught instanceof BonnieServerException) {
-					Window.alert(BonnieExportPresenter.UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
-				} 
-								
-				else {
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				}
 			}
 		});
 	}

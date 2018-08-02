@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
@@ -87,7 +88,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @return String dot notation.
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName) throws XPathExpressionException {
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute=\"" + attributeName + "\"]";
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {

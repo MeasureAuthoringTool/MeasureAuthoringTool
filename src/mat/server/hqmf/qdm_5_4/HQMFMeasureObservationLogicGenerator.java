@@ -19,6 +19,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
@@ -101,7 +102,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName)
 			throws XPathExpressionException {
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.4);
 		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute=\"" + attributeName + "\"]";
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {

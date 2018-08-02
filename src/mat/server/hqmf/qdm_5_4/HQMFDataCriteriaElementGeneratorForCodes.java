@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
 import mat.server.hqmf.qdm.HQMFDataCriteriaGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
@@ -132,7 +133,7 @@ public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 			XmlProcessor simpleXmlprocessor) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.4);
 		String xPathForTemplate = "/templates/template[text()='" + dataType.toLowerCase() + "']";
 		String actNodeStr = "";
 		try {

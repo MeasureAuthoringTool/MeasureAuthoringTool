@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathExpressionException;
-import mat.model.clause.MeasureExport;
-import mat.server.hqmf.Generator;
-import mat.server.util.XmlProcessor;
-import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +16,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
+import mat.server.util.XmlProcessor;
+import mat.shared.UUIDUtilClient;
 
 /**
  * The Class HQMFDataCriteriaGenerator.
@@ -107,7 +111,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		dataCriteriaElem.appendChild(titleElem);
 		// creating text for DataCriteria
 		Element textElem = outputProcessor.getOriginalDoc().createElement("text");
-		// textElem.setAttribute(VALUE, "Data Criteria text");
 		dataCriteriaElem.appendChild(textElem);
 
 		return outputProcessor;
@@ -479,11 +482,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 */
 	private void generateQDMAttributeEntries(XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor,
 			NodeList qdmAttributeNodeList) throws XPathExpressionException {
-
-		// if(qdmAttributeNodeList == null){
-		// return;
-		// }
-
 		if (qdmAttributeNodeList != null) {
 			for (int i = 0; i < qdmAttributeNodeList.getLength(); i++) {
 				Node attributeQDMNode = qdmAttributeNodeList.item(i);
@@ -738,7 +736,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor simpleXmlprocessor, Node attributeQDMNode) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		String xPathForTemplate = "/templates/template[text()='" + dataType.toLowerCase() + "']";
 		String actNodeStr = "";
 		try {
@@ -827,7 +825,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Attr nameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:xsi");
 		nameSpaceAttr.setNodeValue(nameSpace);
 		componentElem.setAttributeNodeNS(nameSpaceAttr);
-		// xmlns:qdm="urn:hhs-qdm:hqmf-r2-extensions:v1"
 		Attr qdmNameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:qdm");
 		qdmNameSpaceAttr.setNodeValue("urn:hhs-qdm:hqmf-r2-extensions:v1");
 		componentElem.setAttributeNodeNS(qdmNameSpaceAttr);
@@ -891,9 +888,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				Node valueCodeSystemName = templateNode.getAttributes().getNamedItem("valueCodeSystemName");
 
 				Element displayNameElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(DISPLAY_NAME);
-				// displayNameElem.setAttribute(VALUE,
-				// HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName)+" "+qdmTaxonomy+"
-				// Value Set");
 				if ((valueCode != null) && (valueCodeSystem != null)) {
 					valueElem.setAttribute("code", valueCode.getNodeValue());
 					valueElem.setAttribute("codeSystem", valueCodeSystem.getNodeValue());
@@ -919,7 +913,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				appendSubTemplateNode(templateNode, dataCriteriaXMLProcessor, templateXMLProcessor, dataCriteriaElem,
 						qdmNode, attributeQDMNode);
 			}
-			// checkForAttributes
 
 			appendEntryElem = true;
 		}
@@ -929,7 +922,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						attributeQDMNode, false);
 			}
 			dataCriteriaSectionElem.appendChild(entryElem);
-			// addCommentNode(dataCriteriaXMLProcessor, entryCommentText, entryElem);
 		}
 
 	}
@@ -943,9 +935,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 *            the value elem
 	 */
 	protected void addValueSetVersion(Node qdmNode, Element valueElem) {
-		/**
-		 * This is to be commented until we start getting value set versions from VSAC.
-		 */
 		String valueSetVersion = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		boolean addVersionToValueTag = false;
 		if ("1.0".equals(valueSetVersion) || "1".equals(valueSetVersion) || StringUtils.isBlank(valueSetVersion)) {
@@ -1657,11 +1646,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 		Node attrOID = attributeQDMNode.getAttributes().getNamedItem(OID);
-		/*
-		 * Node attrVersion = attributeQDMNode.getAttributes().getNamedItem("version");
-		 */
-		// boolean isLengthOfStayValueSet = false;
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attrName.toLowerCase() + "']");
 		Node targetNode = templateNode.getAttributes().getNamedItem("target");
@@ -1673,10 +1658,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		if (CHECK_IF_PRESENT.equals(attrMode)) {
 			targetQuantityTag.setAttribute(FLAVOR_ID, "ANY.NONNULL");
 		} else if (VALUE_SET.equals(attrMode)) {
-			/*
-			 * if (attrName.equalsIgnoreCase(LENGTH_OF_STAY)) { isLengthOfStayValueSet =
-			 * true; } else {
-			 */
 			targetQuantityTag.setAttribute(NULL_FLAVOR, "UNK");
 			Element translationNode = dataCriteriaElem.getOwnerDocument().createElement(TRANSLATION);
 			translationNode.setAttribute("valueSet", attrOID.getNodeValue());
@@ -1711,9 +1692,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					uncertainRangeNode.setAttribute("highClosed", "false");
 				}
 				Element lowNode = dataCriteriaElem.getOwnerDocument().createElement(LOW);
-				/* if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){ */
 				lowNode.setAttribute("xsi:type", "PQ");
-				// }
 				lowNode.setAttribute("nullFlavor", "NINF");
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
 				highNode.setAttribute("xsi:type", "PQ");
@@ -1740,9 +1719,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 					lowNode.setAttribute("unit", getUnitString(unitAttrib.getNodeValue()));
 				}
 				Element highNode = dataCriteriaElem.getOwnerDocument().createElement(HIGH);
-				// if(attrName.equalsIgnoreCase(LENGTH_OF_STAY)){
 				highNode.setAttribute("xsi:type", "PQ");
-				// }
 				highNode.setAttribute("nullFlavor", "PINF");
 				uncertainRangeNode.appendChild(lowNode);
 				uncertainRangeNode.appendChild(highNode);
@@ -1757,17 +1734,13 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				if (outBoundElement != null) {
 					outBoundElement.getParentNode().insertBefore(targetQuantityTag, outBoundElement);
 				} else {
-					// if(!isLengthOfStayValueSet){
 					checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
-					// }
 				}
 			} else {
 				checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
 			}
 		} else {
-			// if(!isLengthOfStayValueSet){
 			checkIfOutBoundOcc(dataCriteriaElem, targetQuantityTag);
-			// }
 		}
 
 	}
@@ -1792,7 +1765,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode)
 			throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attributeName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -1826,7 +1799,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor, Node attributeQDMNode)
 			throws XPathExpressionException {
 		String attributeName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attributeName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -1861,7 +1834,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			throws XPathExpressionException {
 		String qdmName = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/template[text()='" + qdmName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -1901,7 +1874,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 			String attribUUID = (String) attributeQDMNode.getUserData(ATTRIBUTE_UUID);
 
-			XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+			XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 			Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 					"/templates/AttrTemplate[text()='" + attrName + "']");
 			logger.info("----------");
@@ -1988,7 +1961,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String attrName = (String) attributeQDMNode.getUserData(ATTRIBUTE_NAME);
 		String attrMode = (String) attributeQDMNode.getUserData(ATTRIBUTE_MODE);
 
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attrName.toLowerCase() + "']");
 		if (templateNode == null) {
@@ -2145,7 +2118,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				|| "Functional Status, Performed".equalsIgnoreCase(qdmName)
 				|| "Risk Category Assessment".equalsIgnoreCase(qdmName));
 
-		XmlProcessor templateXMLProcessor = QDMTemplatesSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		Node templateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
 				"/templates/AttrTemplate[text()='" + attrName.toLowerCase() + "']");
 		boolean isRadiation = false;
@@ -2593,7 +2566,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		}
 		if (templateNode.getAttributes().getNamedItem("childTarget") != null) {
 			String qdmOidValue = attributeQDMNode.getAttributes().getNamedItem(OID).getNodeValue();
-			// String version = attributeQDMNode.getAttributes().getNamedItem("version")
 			// .getNodeValue();
 			Element valueElem = dataCriteriaXMLProcessor.getOriginalDoc().createElement(ITEM);
 			valueElem.setAttribute("valueSet", qdmOidValue);
@@ -2924,9 +2896,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		prepForUUID(me);
 		prepForAGE_AT(me);
 		prepForSatisfiesAll_Any(me);
-		// System.out.println("Done prepping for HQMF Clause generation.");
-		// System.out.println(me.getSimpleXMLProcessor().transform(me.getSimpleXMLProcessor().getOriginalDoc(),
-		// true));
 		logger.info("Done prepping for HQMF Clause generation.");
 	}
 
@@ -3002,7 +2971,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 
 				// hold on to the first child of Age At
 				Node firstChild = cloneAgeAtRelNode.getFirstChild();
-				// Node firstChild = ageAtFuncNode.getFirstChild();
 				NamedNodeMap attribMap = ageAtFuncNode.getAttributes();
 				Element newRelationalOp = xmlProcessor.getOriginalDoc().createElement("relationalOp");
 

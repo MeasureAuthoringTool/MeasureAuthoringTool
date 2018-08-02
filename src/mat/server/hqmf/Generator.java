@@ -136,8 +136,6 @@ public interface Generator extends MatConstants {
 	public static final String ATTRIBUTE_DATE = "attrDate";
 	
 	public final String nameSpace = "http://www.w3.org/2001/XMLSchema-instance";
-
-	public static final String DATA_CRITERIA_CQL_EXTENSION = "2017-08-01";
 	
 	public static final String LESS_THAN = "Less Than";
 	

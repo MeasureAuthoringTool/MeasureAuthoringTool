@@ -30,7 +30,8 @@ import mat.shared.UUIDUtilClient;
  */
 public class HQMFDataCriteriaElementGenerator implements Generator {
 	
-	
+	private final String DATA_CRITERIA_EXTENSION = "2017-08-01";
+
 	/** The occurrence map. */
 	private Map<String, Node> occurrenceMap = new HashMap<String, Node>();
 	
@@ -69,9 +70,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String simpleXMLStr = me.getSimpleXML();
 		XmlProcessor simpleXmlprocessor = new XmlProcessor(simpleXMLStr);
 		me.setSimpleXMLProcessor(simpleXmlprocessor);
-		
-	//	prepHQMF(me);
-		
+				
 		createDataCriteriaForQDMELements(me, dataCriteriaXMLProcessor, simpleXmlprocessor);
 		addDataCriteriaComment(dataCriteriaXMLProcessor);
 		return dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true);
@@ -96,8 +95,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		Element itemChild = outputProcessor.getOriginalDoc()
 				.createElement(ITEM);
 		itemChild.setAttribute(ROOT, "2.16.840.1.113883.10.20.28.2.6");
-		//itemChild.setAttribute("extension", getDataCriteriaExtValueBasedOnVersion(me));
-		itemChild.setAttribute("extension", DATA_CRITERIA_CQL_EXTENSION);
+		itemChild.setAttribute("extension", DATA_CRITERIA_EXTENSION);
 		templateId.appendChild(itemChild);
 		// creating Code Element for DataCriteria
 		Element codeElem = outputProcessor.getOriginalDoc()
@@ -111,9 +109,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		titleElem.setAttribute(VALUE, "Data Criteria Section");
 		dataCriteriaElem.appendChild(titleElem);
 		// creating text for DataCriteria
-		Element textElem = outputProcessor.getOriginalDoc()
-				.createElement("text");
-		//textElem.setAttribute(VALUE, "Data Criteria text");
+		Element textElem = outputProcessor.getOriginalDoc().createElement("text");
 		dataCriteriaElem.appendChild(textElem);
 		
 		return outputProcessor;
@@ -142,21 +138,12 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @throws Exception 
 	 */
 	private void createDataCriteriaForQDMELements(MeasureExport me, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor simpleXmlprocessor) throws Exception {
-		//XPath String for only QDM's.
-		//String xPathForOccurQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute'][@instance]";
-		//String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype != 'attribute']";
 		String xPathForQDMNoAttribs = "/measure/elementLookUp/qdm[@datatype and @code ='false']";
-		//String xPathForQDMAttributes = "/measure/elementLookUp/qdm[@datatype = 'attribute']";
-		//String xpathForSupplementalQDMs = "/measure/elementLookUp/qdm[@suppDataElement = 'true']";
 		String xpathForOtherSupplementalQDMs = "/measure/supplementalDataElements/elementRef/@id";
 		String xpathForMeasureGroupingItemCount = "/measure//itemCount/elementRef/@id";
 		
 		
-		try {
-			
-//			NodeList occurQdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForOccurQDMNoAttribs);
-//			generateOccurrenceQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, occurQdmNoAttributeNodeList);
-			
+		try {			
 			NodeList qdmNoAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMNoAttribs);
 			generateCQLQDMNodeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
 					qdmNoAttributeNodeList);
@@ -164,13 +151,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 			HQMFDataCriteriaElementGeneratorForCodes cqlBasedHQMFDataCriteriaElementGeneratorForCodes = new HQMFDataCriteriaElementGeneratorForCodes();
 			cqlBasedHQMFDataCriteriaElementGeneratorForCodes.generate(me);
 						
-//			NodeList qdmAttributeNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xPathForQDMAttributes);
-//			generateQDMAttributeEntries(dataCriteriaXMLProcessor, simpleXmlprocessor,
-//					qdmAttributeNodeList);
-			//generating QDM Entries for default Supplemental Data Elements
-//			NodeList supplementalQDMNodeList = simpleXmlprocessor.findNodeList(simpleXmlprocessor.getOriginalDoc(), xpathForSupplementalQDMs);
-//			generateSupplementalDataQDMEntries(simpleXmlprocessor, dataCriteriaXMLProcessor, supplementalQDMNodeList);
-			
 			//generating QDM Entries for other Supplemental Data Elements
 			NodeList supplementalDataElements = me.getSimpleXMLProcessor().findNodeList(me.getSimpleXMLProcessor().getOriginalDoc(),
 					xpathForOtherSupplementalQDMs);

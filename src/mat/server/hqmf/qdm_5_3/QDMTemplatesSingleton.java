@@ -12,7 +12,7 @@ public class QDMTemplatesSingleton {
 	private final static XmlProcessor templateXMLProcessor;
 	
 	static {
-		String fileName = "qdm_templates/qdm_5_3_datatype_templates.xml";
+		String fileName = "qdm_templates/qdm_v5_3_datatype_templates.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
 		File templateFile = null;
 		try {
@@ -20,6 +20,7 @@ public class QDMTemplatesSingleton {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+		
 		templateXMLProcessor = new XmlProcessor(templateFile);
 	}
 	

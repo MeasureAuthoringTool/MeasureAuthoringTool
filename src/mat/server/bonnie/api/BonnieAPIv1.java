@@ -133,6 +133,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if (connection != null) {
 				connection.disconnect();
+				logger.info("Disconnected " + connection.getURL());
 			}
 		}
 
@@ -183,13 +184,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 			// TODO remove when this is in JVM variables
 			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
-
+			logger.info("Connecting to refrsh bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 					.setClientId(getClientId()).setGrantType(GrantType.REFRESH_TOKEN)
 					.setClientSecret(getClientSecret()).setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
+			logger.info("Received Bonnie refresh tokens");
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
@@ -203,6 +205,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
+				logger.info("Disconnected from refrsh bonnie oauth");
 			}
 		}
 	}
@@ -213,14 +216,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 			// TODO remove when this is in JVM variables
 			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
-
+			logger.info("Connecting to bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest
 					.tokenLocation(getBonnieBaseURL() + "/oauth/token").setClientId(getClientId())
 					.setGrantType(GrantType.AUTHORIZATION_CODE).setClientSecret(getClientSecret()).setCode(code)
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-
+			logger.info("Received Bonnie tokens");
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
@@ -230,6 +233,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} finally {
 			if(urlConnection != null) {
 				urlConnection.shutdown();
+				logger.info("Disconnected from bonnie oauth");
 			}
 		}
 	}

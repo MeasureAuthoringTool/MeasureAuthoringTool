@@ -1,14 +1,20 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
+import mat.server.hqmf.qdm.HQMFFinalCleanUp;
 import mat.server.util.XmlProcessor;
 
 /**
- * The Class CQLbasedHQMFGenerator.
- *
- * @author jmeyer
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
-public class CQLBasedHQMFGenerator implements Generator {
+public class HQMFGenerator implements Generator {
+	
+	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);
+
 	
 
 	/**
@@ -24,13 +30,13 @@ public class CQLBasedHQMFGenerator implements Generator {
 		try {
 
 			// MAT 6911: Export CQL based HQMF w/ Meta Data Section
-			String eMeasureDetailsXML = new CQLBasedHQMFMeasureDetailsGenerator().generate(me);
+			String eMeasureDetailsXML = new HQMFMeasureDetailsGenerator().generate(me);
 			// Inline comments are added after the end of last componentOf tag.
 			// This is removed in this method
 			eMeasureDetailsXML = replaceInlineCommentFromEnd(eMeasureDetailsXML);
 			hqmfXML += eMeasureDetailsXML;
 
-			String dataCriteriaXML = new CQLBasedHQMFDataCriteriaGenerator().generate(me);
+			String dataCriteriaXML = new HQMFDataCriteriaGenerator().generate(me);
 			hqmfXML= appendToHQMF(dataCriteriaXML, hqmfXML);
 			
 			XmlProcessor hqmfProcessor = new XmlProcessor(hqmfXML);
@@ -39,7 +45,7 @@ public class CQLBasedHQMFGenerator implements Generator {
 			//generateNarrative(me);
 			hqmfXML = finalCleanUp(me);
 		} catch (Exception e) {
-			LOGGER.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
+			logger.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
 			e.printStackTrace();
 		}
 		return hqmfXML;

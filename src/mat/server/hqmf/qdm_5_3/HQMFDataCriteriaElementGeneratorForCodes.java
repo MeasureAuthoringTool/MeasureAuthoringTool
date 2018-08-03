@@ -1,5 +1,5 @@
 
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -11,13 +11,16 @@ import org.w3c.dom.NodeList;
 
 import mat.client.shared.MatContext;
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
+import mat.server.hqmf.qdm.HQMFDataCriteriaGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
 /**
- * The Class CQLBasedHQMFDataCriteriaElementGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
-public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generator {
+public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 
 	protected String extensionValue = null;
 
@@ -130,7 +133,7 @@ public class CQLBasedHQMFDataCriteriaElementGeneratorForCodes implements Generat
 			XmlProcessor simpleXmlprocessor) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 
-		XmlProcessor templateXMLProcessor = CQLBasedHQMFTemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(5.3);
 		String xPathForTemplate = "/templates/template[text()='" + dataType.toLowerCase() + "']";
 		String actNodeStr = "";
 		try {

@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.QDMTemplateProcessorFactory;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +19,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 /**
- * The Class HQMFPopulationLogicGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
 	private static final int DATETIMEDIFF_CHILD_COUNT = 2;
@@ -87,7 +89,7 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @return String dot notation.
 	 */
 	private String getQdmAttributeMapppingDotNotation(String attributeName, String dataTypeName) throws XPathExpressionException {
-		XmlProcessor templateXMLProcessor = TemplateXMLSingleton.getTemplateXmlProcessor();
+		XmlProcessor templateXMLProcessor = QDMTemplateProcessorFactory.getTemplateProcessor(4.3);
 		String xPath = "/templates/attributeMappings/attributeMapping[@qdmAttribute=\"" + attributeName + "\"]";
 		Node attributeMappingNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), xPath);
 		if (attributeMappingNode == null) {
@@ -685,10 +687,8 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 	 * @return - LocalVariable Name.
 	 * @throws XPathExpressionException - Exception
 	 */
-	private String generateClauseLogicForChildsInsideFnxOp(Node clauseNodes, boolean checkIfDatimeDiff
-			) throws XPathExpressionException {
-		Node generatedClauseEntryNode = clauseLogicGenerator
-				.generateSubTreeXML(clauseNodes, checkIfDatimeDiff);
+	private String generateClauseLogicForChildsInsideFnxOp(Node clauseNodes, boolean checkIfDatimeDiff) throws XPathExpressionException {
+		Node generatedClauseEntryNode = clauseLogicGenerator.generateSubTreeXML(clauseNodes, checkIfDatimeDiff);
 		String localVariableNameValue = null;
 		if (generatedClauseEntryNode != null) {
 			localVariableNameValue = findSubTreeDisplayName(clauseNodes);
@@ -700,22 +700,21 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				if (localVariableElement != null) {
 					localVariableElement.setAttribute(VALUE, localVariableNameValue);
 				} else {
-					localVariableElement = generatedClauseEntryNode
-							.getOwnerDocument().createElement("localVariableName");
+					localVariableElement = generatedClauseEntryNode.getOwnerDocument()
+							.createElement("localVariableName");
 					localVariableElement.setAttribute(VALUE, localVariableNameValue);
-					generatedClauseEntryNode.insertBefore(localVariableElement
-							, generatedClauseEntryNode.getFirstChild());
+					generatedClauseEntryNode.insertBefore(localVariableElement,
+							generatedClauseEntryNode.getFirstChild());
 				}
 			} else {
-				Element localVariableElement = generatedClauseEntryNode
-						.getOwnerDocument().createElement("localVariableName");
+				Element localVariableElement = generatedClauseEntryNode.getOwnerDocument()
+						.createElement("localVariableName");
 				localVariableElement.setAttribute(VALUE, localVariableNameValue);
-				generatedClauseEntryNode.insertBefore(localVariableElement
-						, generatedClauseEntryNode.getFirstChild());
+				generatedClauseEntryNode.insertBefore(localVariableElement, generatedClauseEntryNode.getFirstChild());
 			}
 		} else {
-			if (clauseLogicGenerator.subTreeNodeMap.containsKey(
-					clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
+			if (clauseLogicGenerator.getSubTreeNodeMap()
+					.containsKey(clauseNodes.getAttributes().getNamedItem("uuid").getNodeValue())) {
 				localVariableNameValue = findSubTreeDisplayName(clauseNodes);
 			}
 		}

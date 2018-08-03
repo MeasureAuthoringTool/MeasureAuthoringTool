@@ -18,12 +18,10 @@ import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import mat.model.UserBonnieAccessInfo;
-import mat.server.bonnie.BonnieServiceImpl;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.bonnie.api.result.BonnieMeasureUploadResult;
@@ -107,8 +105,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public BonnieUserInformationResult getUserInformationByToken(String token)
 			throws BonnieUnauthorizedException, BonnieServerException, IOException {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
+		HttpURLConnection connection = null;
 		try {
-			HttpURLConnection connection = get(token, "/oauth/token/info");
+			connection = get(token, "/oauth/token/info");
 			logger.info("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());
@@ -131,6 +130,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IOException();
+		} finally {
+			if (connection != null) {
+				logger.info("Disconnecting " + connection.getURL());
+				connection.disconnect();
+			}
 		}
 
 		return userInformationResult;
@@ -175,17 +179,19 @@ public class BonnieAPIv1 implements BonnieAPI {
 	}
 
 	public BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) throws BonnieUnauthorizedException {
+		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
 			// TODO remove when this is in JVM variables
 			setProxyVMVariables();
-			OAuthClient client = new OAuthClient(new URLConnectionClient());
-
+			OAuthClient client = new OAuthClient(urlConnection);
+			logger.info("Connecting to refresh bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 					.setClientId(getClientId()).setGrantType(GrantType.REFRESH_TOKEN)
 					.setClientSecret(getClientSecret()).setRefreshToken(userBonnieAccessInfo.getRefreshToken())
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
+			logger.info("Received Bonnie refresh tokens");
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
@@ -196,28 +202,39 @@ public class BonnieAPIv1 implements BonnieAPI {
 		catch (Exception exn) {
 			exn.printStackTrace();
 			return null;
+		} finally {
+			if(urlConnection != null) {
+				urlConnection.shutdown();
+				logger.info("Disconnected from refresh bonnie oauth");
+			}
 		}
 	}
 
 	public BonnieOAuthResult getBonnieOAuthResult(String code) {
+		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
 			// TODO remove when this is in JVM variables
 			setProxyVMVariables();
-			OAuthClient client = new OAuthClient(new URLConnectionClient());
-
+			OAuthClient client = new OAuthClient(urlConnection);
+			logger.info("Connecting to bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest
 					.tokenLocation(getBonnieBaseURL() + "/oauth/token").setClientId(getClientId())
 					.setGrantType(GrantType.AUTHORIZATION_CODE).setClientSecret(getClientSecret()).setCode(code)
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);
-
+			logger.info("Received Bonnie tokens");
 			BonnieOAuthResult result = new BonnieOAuthResult(token.getAccessToken(), token.getRefreshToken(),
 					token.getExpiresIn(), token.getBody());
 			return result;
 		} catch (Exception exn) {
 			exn.printStackTrace();
 			return null;
+		} finally {
+			if(urlConnection != null) {
+				urlConnection.shutdown();
+				logger.info("Disconnected from bonnie oauth");
+			}
 		}
 	}
 	/**

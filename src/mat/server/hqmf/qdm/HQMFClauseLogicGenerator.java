@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
@@ -21,7 +22,10 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class CQLBasedHQMFClauseLogicGenerator implements Generator {
+/**
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
+ */
+public class HQMFClauseLogicGenerator implements Generator {
 	/** The Constant GROUPER_CRITERIA. */
 	private static final String GROUPER_CRITERIA = "grouperCriteria";
 	/** The Constant CONJUNCTION_CODE. */
@@ -46,14 +50,14 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	private static final String DATA_CRITERIA_SECTION = "dataCriteriaSection";
 	
 	/** The sub tree node map. */
-	Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
+	private Map<String, Node> subTreeNodeMap = new HashMap<String,Node>();
 	
 	/** The measure export. */
 	MeasureExport measureExport;
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
-			.getLog(CQLBasedHQMFClauseLogicGenerator.class);
+			.getLog(HQMFClauseLogicGenerator.class);
 	
 	/**
 	 * MAP of Functional Ops NON Subset Type.
@@ -157,7 +161,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 		NodeList subTreeNodeList = measureExport.getSimpleXMLProcessor().findNodeList(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
 		for(int i=0;i<subTreeNodeList.getLength();i++){
 			Node subTreeNode = subTreeNodeList.item(i);
-			subTreeNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			String uuid = subTreeNode.getAttributes().getNamedItem(UUID).getNodeValue();
 			if((subTreeNodeInPOPMap.containsKey(uuid)&&subTreeNodeInMOMap.containsKey(uuid))
 					|| subTreeNodeInPOPMap.containsKey(uuid) || subTreeNodeInRAMap.containsKey(uuid)){
@@ -174,13 +177,10 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	
 	/**
 	 * Generate sub tree xml.
-	 *
 	 * @param subTreeNode the sub tree node
-	 * @param msrObsDateTimeDiffSubTree the msr obs date time diff sub tree
-	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	protected Node generateSubTreeXML( Node subTreeNode, boolean msrObsDateTimeDiffSubTree) throws XPathExpressionException {
+	public Node generateSubTreeXML( Node subTreeNode, boolean msrObsDateTimeDiffSubTree) throws XPathExpressionException {
 		
 		/**
 		 * If this is an empty or NULL clause, return right now.
@@ -262,11 +262,10 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * This method is used to discover weither a given class name and UUID is a risk adjustment variable.
-	 *
-	 * @param subTreeUUID the sub tree uuid
-	 * @param clauseName the clause name
-	 * @return the boolean
+	 * This method is used to discover weither a given class name and UUID is a risk adjustment variable
+	 * @param subTreeUUID
+	 * @param clauseName
+	 * @return
 	 */
 	private Boolean isRiskAdjustmentVariable(String subTreeUUID,
 			String clauseName) {
@@ -445,7 +444,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param functionalNode the functional node
 	 * @param dataCriteriaSectionElem the data criteria section elem
-	 * @param clauseName the clause name
 	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -514,7 +512,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param firstChildNode - SubTreeRef Node.
 	 * @param dataCriteriaSectionElem - Data Criteria Element.
-	 * @param clauseName the clause name
 	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -560,7 +557,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param elementRefNode the element ref node
 	 * @param parentNode the parent node
-	 * @param clauseName the clause name
 	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -683,8 +679,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param subTreeRefNode the sub tree ref node
 	 * @param parentNode the parent node
-	 * @param clauseName the clause name
-	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private Node generateSubTreeHQMF(Node subTreeRefNode, Node parentNode, String clauseName) throws XPathExpressionException {
@@ -771,7 +765,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param setOpNode the set op node
 	 * @param parentNode the parent node
-	 * @param clauseName the clause name
 	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -893,7 +886,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param childNode -Node
 	 * @param outboundRelElem - outBoundElement
-	 * @param clauseName the clause name
 	 * @throws XPathExpressionException -Exception
 	 */
 	private void generateCritRefFunctionalOp(Node childNode, Element outboundRelElem, String clauseName)
@@ -962,7 +954,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param relOpNode the rel op node
 	 * @param dataCriteriaSectionElem the data criteria section elem
-	 * @param clauseName the clause name
 	 * @return the node
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -1059,15 +1050,12 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	
 	/**
 	 * When we have a case of "First:(Encounter,Performed:Inpatient) During Measurement Period"; we
-	 * need to generate a entry with Grouper.
-	 *
-	 * @param relOpNode the rel op node
-	 * @param functionEntryNode the function entry node
-	 * @param rhsNode the rhs node
-	 * @param dataCriteriaSectionElem the data criteria section elem
-	 * @param clauseName the clause name
-	 * @return the node
-	 * @throws XPathExpressionException the x path expression exception
+	 * need to generate a entry with Grouper
+	 * @param relOpNode
+	 * @param functionEntryNode
+	 * @param rhsNode
+	 * @param dataCriteriaSectionElem
+	 * @param clauseName
 	 */
 	private Node createSpecialGrouperForRelOp(Node relOpNode,
 			Node functionEntryNode, Node rhsNode, Node dataCriteriaSectionElem, String clauseName) throws XPathExpressionException {
@@ -1194,10 +1182,9 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * This is to be called when you want to check If the node passed is a FunctionOp with it's child being an elementRef/QDM.
 	 * If the node passed is a SubTree/Clause node then this will "recursively" look into the child of that SubTree/Clause
 	 * node to see if that child is a FunctionOp with child being an elementRef/QDM.
-	 *
-	 * @param node the node
-	 * @return the node
-	 * @throws XPathExpressionException the x path expression exception
+	 * @param lhsNode
+	 * @return
+	 * @throws XPathExpressionException
 	 */
 	private Node checkLHSFunctionalOpWithChildQDM(Node node) throws XPathExpressionException {
 		Node returnFunctionalNode = null;
@@ -1230,7 +1217,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @param lhsNode the lhs node
 	 * @param rhsNode the rhs node
-	 * @param clauseName the clause name
 	 * @return the functional op lhs
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -1313,10 +1299,7 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Find node.
-	 *
-	 * @param criteriaNodeInEntry the criteria node in entry
-	 * @param nodeName the node name
+	 * @param criteriaNodeInEntry
 	 * @return idNode
 	 */
 	private Node findNode(Node criteriaNodeInEntry, String nodeName) {
@@ -1348,7 +1331,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @param lhsNode the lhs node
 	 * @param rhsNode the rhs node
-	 * @param clauseName the clause name
 	 * @return the rel op lhs subtree
 	 */
 	private Node getrelOpLHSSubtree( Node relOpNode,
@@ -1552,7 +1534,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @param lhsNode the lhs node
 	 * @param rhsNode the rhs node
-	 * @param clauseName the clause name
 	 * @return the rel op lhs set op
 	 */
 	private Node getrelOpLHSSetOp(Node relOpNode,
@@ -1633,7 +1614,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @param lhsNode the lhs node
 	 * @param rhsNode the rhs node
-	 * @param clauseName the clause name
 	 * @return the rel op lhs rel op
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -1717,7 +1697,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @param lhsNode the lhs node
 	 * @param rhsNode the rhs node
-	 * @param clauseName the clause name
 	 * @return the rel op lhsqdm
 	 * @throws XPathExpressionException the x path expression exception
 	 */
@@ -1813,7 +1792,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param dataCriteriaSectionElem the data criteria section elem
 	 * @param rhsNode the rhs node
 	 * @param temporallyRelatedInfoNode the temporally related info node
-	 * @param clauseName the clause name
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void handleRelOpRHS( Node dataCriteriaSectionElem,
@@ -2330,7 +2308,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param hqmfXmlProcessor the hqmf xml processor
 	 * @param childNode the child node
 	 * @param outboundRelElem the outbound rel elem
-	 * @param clauseName the clause name
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateCritRefRelOp( Node parentNode,
@@ -2377,7 +2354,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param hqmfXmlProcessor the hqmf xml processor
 	 * @param childNode the child node
 	 * @param outboundRelElem the outbound rel elem
-	 * @param clauseName the clause name
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateCritRefSetOp( Node parentNode,
@@ -2417,7 +2393,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 *
 	 * @param outboundRelElem the outbound rel elem
 	 * @param childNode the child node
-	 * @param clauseName the clause name
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void generateCritRefForNode(Node outboundRelElem, Node childNode , String clauseName) throws XPathExpressionException {
@@ -2429,7 +2404,7 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 				generateCritRefElementRef( outboundRelElem, childNode,hqmfXmlProcessor);
 				break;
 			case SUB_TREE_REF:
-				generateCritRefCQLDefine(outboundRelElem, childNode, hqmfXmlProcessor, true);
+				generateCritRefSubTreeRef(outboundRelElem, childNode, hqmfXmlProcessor, true);
 				break;
 				
 			default:
@@ -2447,8 +2422,8 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * @param hqmfXmlProcessor the hqmf xml processor
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	protected void generateCritRefCQLDefine(Node outboundRelElem, Node subTreeRefNode, XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
-		generateCritRefCQLDefine(outboundRelElem, subTreeRefNode, hqmfXmlProcessor, false);
+	protected void generateCritRefSubTreeRef(Node outboundRelElem, Node subTreeRefNode, XmlProcessor hqmfXmlProcessor) throws XPathExpressionException {
+		generateCritRefSubTreeRef(outboundRelElem, subTreeRefNode, hqmfXmlProcessor, false);
 	}
 	
 	
@@ -2457,42 +2432,101 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	 * and have the <id> tag pointing to the <grouperCriteria> for the referenced subTree/clause.
 	 *
 	 * @param outboundRelElem the outbound rel elem
-	 * @param cqlDefineNode the sub tree ref node
+	 * @param subTreeRefNode the sub tree ref node
 	 * @param hqmfXmlProcessor the hqmf xml processor
 	 * @param checkExisting check in the map if already existing
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	
-	protected void generateCritRefCQLDefine( Node outboundRelElem, Node cqlDefineNode, XmlProcessor hqmfXmlProcessor, 
-			boolean checkExisting) throws XPathExpressionException {
+	protected void generateCritRefSubTreeRef( Node outboundRelElem, Node subTreeRefNode, XmlProcessor hqmfXmlProcessor, boolean checkExisting) throws XPathExpressionException {
 		
-		String cqlDefUUID = cqlDefineNode.getAttributes().getNamedItem(UUID).getNodeValue();
+		String subTreeUUID = subTreeRefNode.getAttributes().getNamedItem(ID).getNodeValue();
+		String root = subTreeUUID;
 		
-		String xpath = "/measure/cqlLookUp//definition[@id='"+cqlDefUUID+"']";
-		Node definitionNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
-		if(definitionNode != null ) {
-			String defineName = definitionNode.getAttributes().getNamedItem("name").getNodeValue();
-			Node cqlUUIDNode =  measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), "/measure/measureDetails/cqlUUID");
-			Node cqlLibraryNode =  measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), "/measure/cqlLookUp/library");
-			if(cqlUUIDNode != null && cqlLibraryNode != null){
-		            String uuid = cqlUUIDNode.getTextContent();
-		            String libraryName = cqlLibraryNode.getTextContent();
-		            String ext = libraryName + ".\""+defineName+"\"";
+		String xpath = "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']";
+		Node subTreeNode = measureExport.getSimpleXMLProcessor().findNode(measureExport.getSimpleXMLProcessor().getOriginalDoc(), xpath);
+		if(subTreeNode != null ) {
+			String isQdmVariable = subTreeNode.getAttributes()
+					.getNamedItem(QDM_VARIABLE).getNodeValue();
+			Node firstChild = subTreeNode.getFirstChild();
+			String firstChildName = firstChild.getNodeName();
+			
+			String ext = StringUtils.deleteWhitespace(firstChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue());
+			if(FUNCTIONAL_OP.equals(firstChildName) || RELATIONAL_OP.equals(firstChildName) || SET_OP.equals(firstChildName)){
+				ext += "_" + firstChild.getAttributes().getNamedItem(UUID).getNodeValue();
+			}
+			String occText = null;
+			// Handled Occurrence Of QDM Variable.
+			if(subTreeNode.getAttributes().getNamedItem(INSTANCE_OF) != null){
+				occText = "occ"+subTreeNode.getAttributes().getNamedItem(INSTANCE).getNodeValue()+"of_";
+			}
+			//if(subTreeNode.getAttributes().getNamedItem(INSTANCE_OF) == null) {
+			if(ELEMENT_REF.equals(firstChildName) ){
+				ext = getElementRefExt(firstChild, measureExport.getSimpleXMLProcessor());
+			} else if(FUNCTIONAL_OP.equals(firstChildName)){
+				if(firstChild.getFirstChild() != null) {
+					Node functionChild = firstChild.getFirstChild();
+					if(functionChild != null) {
+						if (functionChild.getNodeName().equalsIgnoreCase(SUB_TREE_REF)) {
+							ext = functionChild.getAttributes()
+									.getNamedItem(ID).getNodeValue();
+						}else if(functionChild.getNodeName().equalsIgnoreCase(ELEMENT_REF)){
+							ext = getElementRefExt(functionChild, measureExport.getSimpleXMLProcessor());
+						}else{
+							ext = (StringUtils.deleteWhitespace(functionChild.getAttributes()
+									.getNamedItem(DISPLAY_NAME).getNodeValue()
+									+ "_"
+									+ functionChild.getAttributes().getNamedItem(UUID).getNodeValue())
+									.replaceAll(":", "_"));
+						}
+					}
+				}
+			}
+			//}
+			
+			if(TRUE.equalsIgnoreCase(isQdmVariable)){
+				if (occText != null) {
+					ext = occText + "qdm_var_"+ext;
+				} else {
+					ext = "qdm_var_"+ext;
+				}
+				
+			}
+			
+			/**
+			 * Check if the Clause has already been generated.
+			 * If it is not generated yet, then generate it by
+			 * calling the 'generateSubTreeXML' method.
+			 */
+			if(checkExisting && !subTreeNodeMap.containsKey(subTreeUUID)){
+				generateSubTreeXML( subTreeNode, false);
+			}
+			Node idNodeQDM = hqmfXmlProcessor.findNode(hqmfXmlProcessor.getOriginalDoc(), "//entry/*/id[@root='"+root+"'][@extension=\""+ext+"\"]");
+			
+			if(idNodeQDM != null){
+				Node parent = idNodeQDM.getParentNode();
+				if(parent != null){
+					NamedNodeMap attribMap = parent.getAttributes();
+					String classCode = attribMap.getNamedItem(CLASS_CODE).getNodeValue();
+					String moodCode = attribMap.getNamedItem(MOOD_CODE).getNodeValue();
+					
 					//create criteriaRef
 					Element criteriaReference = hqmfXmlProcessor.getOriginalDoc().createElement(CRITERIA_REFERENCE);
-					criteriaReference.setAttribute(CLASS_CODE, "OBS");
-					criteriaReference.setAttribute(MOOD_CODE, "EVN");
+					criteriaReference.setAttribute(CLASS_CODE, classCode);
+					criteriaReference.setAttribute(MOOD_CODE, moodCode);
 					
 					Element id = hqmfXmlProcessor.getOriginalDoc().createElement(ID);
-					id.setAttribute(ROOT, uuid);
+					id.setAttribute(ROOT, root);
 					id.setAttribute(EXTENSION, ext);
 					
 					criteriaReference.appendChild(id);
 					outboundRelElem.appendChild(criteriaReference);
 				}
+			}else{
+				Comment comment = hqmfXmlProcessor.getOriginalDoc().createComment("CHECK:Could not find an entry for subTree:"+"//entry/*/id[@root='"+root+"'][@extension='"+ext+"']");
+				outboundRelElem.appendChild(comment);
 			}
+		}
 	}
-	
 	
 	/**
 	 * Generate crit ref element ref.
@@ -2953,9 +2987,8 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	/**
 	 * Utility method which will try to find the tag "localVariableName" and set the given string value to its
 	 * VALUE attribute.
-	 *
-	 * @param node the node
-	 * @param localVarName the local var name
+	 * @param node
+	 * @param localVarName
 	 */
 	private void updateLocalVar(Node node, String localVarName) {
 		if(node == null){
@@ -2997,8 +3030,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Gets the sub tree node map.
-	 *
 	 * @return the subTreeNodeMap
 	 */
 	public Map<String, Node> getSubTreeNodeMap() {
@@ -3006,8 +3037,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Sets the sub tree node map.
-	 *
 	 * @param subTreeNodeMap the subTreeNodeMap to set
 	 */
 	public void setSubTreeNodeMap(Map<String, Node> subTreeNodeMap) {
@@ -3015,8 +3044,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Gets the measure export.
-	 *
 	 * @return the measureExport
 	 */
 	public MeasureExport getMeasureExport() {
@@ -3024,8 +3051,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Sets the measure export.
-	 *
 	 * @param measureExport the measureExport to set
 	 */
 	public void setMeasureExport(MeasureExport measureExport) {
@@ -3033,8 +3058,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Gets the sub tree node in mo map.
-	 *
 	 * @return the subTreeNodeInMOMap
 	 */
 	public Map<String, Node> getSubTreeNodeInMOMap() {
@@ -3042,8 +3065,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Sets the sub tree node in mo map.
-	 *
 	 * @param subTreeNodeInMOMap the subTreeNodeInMOMap to set
 	 */
 	public void setSubTreeNodeInMOMap(Map<String, Node> subTreeNodeInMOMap) {
@@ -3051,8 +3072,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Gets the sub tree node in ra map.
-	 *
 	 * @return the subTreeNodeInMOMap
 	 */
 	public Map<String, Node> getSubTreeNodeInRAMap() {
@@ -3060,17 +3079,13 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Sets the sub tree node in ra map.
-	 *
-	 * @param subTreeNodeInRAMap the sub tree node in ra map
+	 * @param subTreeNodeInMOMap the subTreeNodeInMOMap to set
 	 */
 	public void setSubTreeNodeInRAMap(Map<String, Node> subTreeNodeInRAMap) {
 		this.subTreeNodeInRAMap = subTreeNodeInRAMap;
 	}
 	
 	/**
-	 * Gets the sub tree node in pop map.
-	 *
 	 * @return the subTreeNodeInPOPMap
 	 */
 	public Map<String, Node> getSubTreeNodeInPOPMap() {
@@ -3078,8 +3093,6 @@ public class CQLBasedHQMFClauseLogicGenerator implements Generator {
 	}
 	
 	/**
-	 * Sets the sub tree node in pop map.
-	 *
 	 * @param subTreeNodeInPOPMap the subTreeNodeInPOPMap to set
 	 */
 	public void setSubTreeNodeInPOPMap(Map<String, Node> subTreeNodeInPOPMap) {

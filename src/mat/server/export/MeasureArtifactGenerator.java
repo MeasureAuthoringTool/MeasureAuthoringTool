@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import mat.server.service.SimpleEMeasureService;
-import mat.server.service.SimpleEMeasureService.ExportResult;
 
 @Component
 public class MeasureArtifactGenerator {
@@ -21,7 +20,7 @@ public class MeasureArtifactGenerator {
 	public static String getHQMFArtifact(final String id, String releaseVersion) {
 		ExportResult exportResult = null;
 		try {
-			exportResult = releaseVersion.equals("v3") ? eMeasureService.getEMeasureXML(id) : eMeasureService.getNewEMeasureXML(id);
+			exportResult = releaseVersion.equals("v3") ? eMeasureService.getHQMFForV3Measure(id) : eMeasureService.getHQMF(id);
 		} catch (Exception e) {
 			logger.error("getHQMFArtifact: " + e.getMessage());
 		}
@@ -33,7 +32,7 @@ public class MeasureArtifactGenerator {
 	public static String getHumanReadableArtifact(final String id, String releaseVersion) {
 		ExportResult exportResult = null;
 		try {
-			exportResult = releaseVersion.equals("v3") ? eMeasureService.getEMeasureHTML(id) : eMeasureService.getNewEMeasureHTML(id, releaseVersion);
+			exportResult = releaseVersion.equals("v3") ? eMeasureService.getEMeasureHTML(id) : eMeasureService.getHumanReadable(id, releaseVersion);
 		} catch (Exception e) {
 			logger.error("getHumanReadableArtifact: " + e.getMessage());
 		}

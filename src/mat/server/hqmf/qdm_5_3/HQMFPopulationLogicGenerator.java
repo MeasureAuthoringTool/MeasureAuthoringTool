@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,10 @@ import mat.model.clause.MeasureExport;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class HQMFPopulationLogicGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
-public class CQLBasedHQMFPopulationLogicGenerator extends CQLBasedHQMFClauseLogicGenerator {
+public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	
 	private TreeMap<Integer, NodeList> measureGroupingMap = new TreeMap<Integer, NodeList>();
 	

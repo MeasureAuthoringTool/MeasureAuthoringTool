@@ -19,8 +19,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 /**
- * The Class HQMFPopulationLogicGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
 	private static final int DATETIMEDIFF_CHILD_COUNT = 2;

@@ -3,9 +3,7 @@ package mat.server.hqmf.qdm;
 import mat.model.clause.MeasureExport;
 
 /**
- * @deprecated this class is depcreated since it is an old version of QDM. It should not be modified. 
- * @author jmeyer
- *
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFAttributeGenerator extends HQMFDataCriteriaElementGenerator {
 

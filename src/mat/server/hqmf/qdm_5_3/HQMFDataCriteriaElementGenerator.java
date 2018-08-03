@@ -24,6 +24,9 @@ import mat.server.hqmf.qdm.HQMFDataCriteriaGenerator;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
+/**
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
+ */
 public class HQMFDataCriteriaElementGenerator implements Generator {
 
 	private final String DATA_CRITERIA_EXTENSION = "2017-08-01";

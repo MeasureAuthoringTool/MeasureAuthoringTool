@@ -23,6 +23,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
+ */
 public class HQMFClauseLogicGenerator implements Generator {
 	private static final String GROUPER_CRITERIA = "grouperCriteria";
 	private static final String CONJUNCTION_CODE = "conjunctionCode";

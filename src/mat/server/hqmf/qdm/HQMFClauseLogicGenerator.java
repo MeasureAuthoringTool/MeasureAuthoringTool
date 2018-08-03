@@ -23,7 +23,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * The Class HQMFClauseLogicGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFClauseLogicGenerator implements Generator {
 	/** The Constant GROUPER_CRITERIA. */

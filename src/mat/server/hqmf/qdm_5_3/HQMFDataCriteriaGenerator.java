@@ -5,7 +5,7 @@ import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 
 /**
- * The Class HQMFDataCriteriaGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
 public class HQMFDataCriteriaGenerator implements Generator {
 	

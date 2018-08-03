@@ -19,9 +19,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class HQMFPopulationLogicGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFPopulationLogicGenerator extends HQMFClauseLogicGenerator {
 	/** The clause logic map. */

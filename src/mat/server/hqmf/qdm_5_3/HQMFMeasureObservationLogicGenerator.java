@@ -24,7 +24,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
 /**
- * The Class HQMFPopulationLogicGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
 public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerator {
 	private static final int DATETIMEDIFF_CHILD_COUNT = 2;

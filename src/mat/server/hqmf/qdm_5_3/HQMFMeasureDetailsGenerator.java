@@ -14,6 +14,9 @@ import mat.server.service.impl.XMLUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
+/**
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
+ */
 public class HQMFMeasureDetailsGenerator implements Generator  {
 	
 	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/qdm_v5_3_measure_details.xsl"; 

@@ -20,6 +20,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
 
+/**
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
+ */
 public class HQMFGenerator implements Generator {
 	
 	private final Log logger = LogFactory.getLog(HQMFDataCriteriaGenerator.class);

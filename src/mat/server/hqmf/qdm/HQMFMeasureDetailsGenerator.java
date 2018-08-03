@@ -14,7 +14,7 @@ import mat.server.util.XmlProcessor;
 import org.w3c.dom.Node;
 
 /**
- * The Class HQMFMeasureDetailsGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFMeasureDetailsGenerator implements Generator {
 
@@ -53,7 +53,7 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 			return simpleXML;
 		}
 
-		releaseVersion = formatRealeaseVersion(releaseVersion);
+		releaseVersion = formatQDMVersion(releaseVersion);
 		int measureDetailsTagIndex = simpleXML.indexOf("<measureDetails>");
 		if (measureDetailsTagIndex > -1) {
 			simpleXML = simpleXML.substring(0, measureDetailsTagIndex) + "<measureReleaseVersion releaseVersion=\""
@@ -63,11 +63,12 @@ public class HQMFMeasureDetailsGenerator implements Generator {
 		return simpleXML;
 	}
 
-	private String formatRealeaseVersion(String version) {
+	private String formatQDMVersion(String version) {
 		String formatVersion = null;
 		if ("v4".equals(version)) {
 			formatVersion = "4.1.2";
 		} else if ("v4.3".equals(version)) {
+			//This is 4.2 because were on qdm version 4.2 and export 4.3. The QDM version needs to appear in the comments
 			formatVersion = "4.2";
 		}
 

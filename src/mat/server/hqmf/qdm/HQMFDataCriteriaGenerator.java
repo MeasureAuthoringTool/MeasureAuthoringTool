@@ -4,6 +4,9 @@ import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 
+/**
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
+ */
 public class HQMFDataCriteriaGenerator implements Generator {
 	
 	@Override

@@ -37,7 +37,7 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 			 return simpleXML;
 		 }
 		
-		 releaseVersion = formatRealeaseVersion(releaseVersion);
+		 releaseVersion = getQDMVersion();
 		 int measureDetailsTagIndex = simpleXML.indexOf("<measureDetails>");
 		 if(measureDetailsTagIndex > -1){
 			 simpleXML = simpleXML.substring(0, measureDetailsTagIndex) + "<measureReleaseVersion releaseVersion=\""+releaseVersion + "\"/>" + simpleXML.substring(measureDetailsTagIndex);
@@ -46,8 +46,8 @@ public class HQMFMeasureDetailsGenerator implements Generator  {
 		 return simpleXML;
 	 }
 	
-	private String formatRealeaseVersion(String version){
-		return "5.3";
+	private String getQDMVersion(){
+		return "5.4";
 		
 	}
 	

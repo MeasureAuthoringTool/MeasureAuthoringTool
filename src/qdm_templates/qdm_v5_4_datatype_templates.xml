@@ -162,6 +162,8 @@
     <!--  Negative Assessment Datatypes -->
     <template oid="2.16.840.1.113883.10.20.28.4.118" class="OBS" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueSetInCode="true" addCodeTag="true" addValueTag="false" specificExtensionValue="2018-05-01">assessment, not recommended</template>
     <template oid="2.16.840.1.113883.10.20.28.4.117" class="OBS" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueSetInCode="true" addCodeTag="true" specificExtensionValue = "2017-08-01" addValueTag="false">assessment, not performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.4.131" class="OBS" mood="RQO" status="ACTIVE" actionNegationInd="TRUE" addValueSetInCode="true" addCodeTag="true" specificExtensionValue="2018-05-01" addValueTag="false">assessment, not ordered</template>
+    
     
     <!-- Negative communication -->
     <!-- Not Done --><template oid="2.16.840.1.113883.10.20.28.4.8" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" partType="IRCP" valueType="CD" addValueSetInCode="true" addCodeTag="true" includeSubTemplate="communication-FromPatient-ToProvider" specificExtensionValue = "2017-08-01" addValueTag="false">communication: from patient to provider, not done</template>

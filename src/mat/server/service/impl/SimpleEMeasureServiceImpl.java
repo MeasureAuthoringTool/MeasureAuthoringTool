@@ -65,7 +65,6 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
 import net.sf.saxon.TransformerFactoryImpl;
 
-/** SimpleEMeasureServiceImpl.java **/
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	/** Constant for New_HQMD.xsl. **/
@@ -127,17 +126,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	@Autowired
 	private ListObjectDAO listObjectDAO;
+	
+	@Autowired
+	private HQMFGeneratorFactory hqmfGeneratoryFactory; 
 
 	/** MeasureExportDAO. **/
 	private HSSFWorkbook wkbk = null;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.SimpleEMeasureService#exportMeasureIntoSimpleXML(java.lang
-	 * .String, java.lang.String, java.util.List)
-	 */
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString,
 			final List<MatValueSet> matValueSets) throws Exception {
@@ -712,7 +707,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public ExportResult getHQMF(String measureId) {
 		MeasureExport measureExport = getMeasureExport(measureId);
 
-		Generator hqmfGenerator = HQMFGeneratorFactory.getHQMFGenerator(measureExport.getMeasure().getReleaseVersion());
+		Generator hqmfGenerator = hqmfGeneratoryFactory.getHQMFGenerator(measureExport.getMeasure().getReleaseVersion());
 		String hqmf = "";
 		try {
 			hqmf = hqmfGenerator.generate(measureExport);

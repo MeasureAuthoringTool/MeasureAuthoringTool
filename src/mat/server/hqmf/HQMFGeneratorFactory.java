@@ -2,17 +2,19 @@ package mat.server.hqmf;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * Factory class to select the proper HQMF generator based on version of MAT. This class specifically excludes v3 MAT HQMF files
  * due to the fact that they do not follow the same pattern. This class would not suit the needs of v3 MAT HQMF files.  
  */
+@Component
 public class HQMFGeneratorFactory {
 	
 	private static final Log logger = LogFactory.getLog(HQMFGeneratorFactory.class);
 
 	
-	public static Generator getHQMFGenerator(String matVersionNumber) {
+	public Generator getHQMFGenerator(String matVersionNumber) {
 		matVersionNumber = matVersionNumber.replace("v", "");
 		double matVersion = Double.parseDouble(matVersionNumber);
 		

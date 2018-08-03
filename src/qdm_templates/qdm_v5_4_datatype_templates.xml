@@ -158,6 +158,7 @@
     <!--  Non Negative Assessment Datatypes -->
     <template oid="2.16.840.1.113883.10.20.28.4.118" class="OBS" mood="INT" status="ACTIVE" addValueSetInCode="true" addCodeTag="true" addValueTag="false" specificExtensionValue="2018-05-01">assessment, recommended</template>
     <template oid="2.16.840.1.113883.10.20.28.4.117" class="OBS" mood="EVN" status="COMPLETED" addValueSetInCode="true" addCodeTag="true" specificExtensionValue = "2017-08-01" addValueTag="false">assessment, performed</template>
+    <template oid="2.16.840.1.113883.10.20.28.4.131" class="OBS" mood="RQO" status="ACTIVE" addValueSetInCode="true" addCodeTag="true" specificExtensionValue="2018-05-01" addValueTag="false">assessment, order</template>
     
     <!--  Negative Assessment Datatypes -->
     <template oid="2.16.840.1.113883.10.20.28.4.118" class="OBS" mood="INT" status="ACTIVE" actionNegationInd="TRUE" addValueSetInCode="true" addCodeTag="true" addValueTag="false" specificExtensionValue="2018-05-01">assessment, not recommended</template>

@@ -31,7 +31,7 @@
 		<property name="contexts" value="prod" />
 	</bean>
     
-   <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+  	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/MAT_APP"/>
         <property name="username" value="username"/>
@@ -40,6 +40,7 @@
     
     <context:annotation-config />
     <context:component-scan base-package="mat.hibernate"/>
+    <context:component-scan base-package="mat.server.hqmf"/>
     <context:component-scan base-package="mat.server.bonnie"/>
 
 	<!-- Hibernate SessionFactory -->

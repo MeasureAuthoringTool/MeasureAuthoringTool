@@ -26,6 +26,7 @@
 
 	<context:annotation-config transaction-manager="txManager"/>
 	<context:component-scan base-package="mat.hibernate"/>
+  	<context:component-scan base-package="mat.server.hqmf"/>
 	<context:component-scan base-package="mat.server.bonnie"/>
 	<tx:annotation-driven transaction-manager="txManager"/>
 	

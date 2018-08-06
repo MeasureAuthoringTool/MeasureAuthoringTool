@@ -1,10 +1,11 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
 import mat.server.util.XmlProcessor;
 
 /**
- * The Class HQMFDataCriteriaGenerator.
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
 public class HQMFDataCriteriaGenerator implements Generator {
 	
@@ -18,15 +19,15 @@ public class HQMFDataCriteriaGenerator implements Generator {
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		
-		HQMFDataCriteriaElementGenerator hqmfDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
-		hqmfDataCriteriaElementGenerator.generate(me);
+		HQMFDataCriteriaElementGenerator cqlBasedHQMFDataCriteriaElementGenerator = new HQMFDataCriteriaElementGenerator();
+		cqlBasedHQMFDataCriteriaElementGenerator.generate(me);
 		
-		HQMFClauseLogicGenerator hqmfClauseLogicGenerator = new HQMFClauseLogicGenerator();
-		hqmfClauseLogicGenerator.generate(me);
-		HQMFPopulationLogicGenerator hqmfPopulationLogicGenerator = new HQMFPopulationLogicGenerator();
-		hqmfPopulationLogicGenerator.generate(me);
-		HQMFMeasureObservationLogicGenerator hqmfMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
-		hqmfMeasureObservationLogicGenerator.generate(me);
+		HQMFPopulationLogicGenerator cqlBasedHQMFPopulationLogicGenerator = new HQMFPopulationLogicGenerator();
+		cqlBasedHQMFPopulationLogicGenerator.generate(me);
+		
+		HQMFMeasureObservationLogicGenerator cqlBasedHQMFMeasureObservationLogicGenerator = new HQMFMeasureObservationLogicGenerator();
+		cqlBasedHQMFMeasureObservationLogicGenerator.generate(me);
+		
 		XmlProcessor dataCriteriaXMLProcessor = me.getHQMFXmlProcessor();
 		return removePreambleAndRootTags(dataCriteriaXMLProcessor.transform(dataCriteriaXMLProcessor.getOriginalDoc(), true));
 	}

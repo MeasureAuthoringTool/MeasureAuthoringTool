@@ -50,10 +50,10 @@ import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
 import mat.server.LoggedInUserUtil;
+import mat.server.export.ExportResult;
 import mat.server.export.MeasureArtifactGenerator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
@@ -185,7 +185,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		if (exportedXML.length() == 0) {
 			return;
 		}
-		SimpleEMeasureService.ExportResult exportResult =
+		
+		ExportResult exportResult =
 				eMeasureService.exportMeasureIntoSimpleXML(measureId, exportedXML, matValueSetList);
 		
 		//replace all @id attributes of <elementLookUp>/<qdm> with @uuid attribute value

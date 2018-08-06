@@ -27,83 +27,86 @@ import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
 import mat.model.clause.Measure;
+import mat.server.export.ExportResult;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
 import mat.server.service.impl.ZipPackager;
 import mat.shared.CQLErrors;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.SaveUpdateCQLResult;
+
 /**
  * The Class ExportServlet.
  */
 public class ExportServlet extends HttpServlet {
-	
+
 	private static final String LIBRARY_ID = "libraryid";
+
 	private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
+
 	private static final String EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE = "errorFileStandAlone";
+
 	private static final String EXPORT_CQL_ERROR_FILE_FOR_MEASURE = "errorFileMeasure";
 
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
+
 	private static final String EXPORT_ALL_USERS_CSV = "exportAllUsersCSV";
+
 	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
+
 	private static final String EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP = "exportCQLLibraryOwner";
-	
+
 	private static final String ZIP = "zip";
-	
+
 	private static final String SUBTREE_HTML = "subtreeHTML";
-	
+
 	private static final String CODELIST = "codelist";
-	
+
 	private static final String SAVE = "save";
-	
+
 	private static final String ATTACHMENT_FILENAME = "attachment; filename=";
-	
+
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
-	
-	private static final String TEXT_CSV =  "text/csv";
+
+	private static final String TEXT_CSV = "text/csv";
 
 	private static final String APPLICATION_ZIP = "application/zip";
-	
+
 	private static final String CONTENT_TYPE = "Content-Type";
-	
+
 	private static final String HQMF = "hqmf";
-	
+
 	private static final String HUMAN_READABLE = "humanreadable";
-	
+
 	private static final String SIMPLEXML = "simplexml";
-	
+
 	private static final String TYPE_PARAM = "type";
-	
+
 	private static final String XML_PARAM = "xml";
-	
+
 	private static final String FORMAT_PARAM = "format";
-	
+
 	private static final String ID_PARAM = "id";
-	
+
 	private static final Log logger = LogFactory.getLog(ExportServlet.class);
-	
+
 	private static final long serialVersionUID = 4539514145289378238L;
-	
+
 	protected ApplicationContext context;
-	
+
 	private static final String CQL_LIBRARY = "cqlLibrary";
-	private static final String ELM = "elm"; 
-	private static final String JSON =  "json"; 
-	
-	private static final String ADMINISTRATOR =  "Administrator";
-	
+	private static final String ELM = "elm";
+	private static final String JSON = "json";
+
+	private static final String ADMINISTRATOR = "Administrator";
+
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
-	/* (non-Javadoc)
-	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-	 */
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		MeasurePackageService service = getMeasurePackageService();
 		MeasureLibraryService measureLibraryService = getMeasureLibraryService();
@@ -117,77 +120,78 @@ public class ExportServlet extends HttpServlet {
 
 		logger.info("FORMAT: " + format);
 
-		if (id!= null) {
+		if (id != null) {
 			measure = service.getById(id);
 			exportDate = measure.getExportedDate();
 		}
 
 		try {
-			switch(format) {
-			case SIMPLEXML :
+			switch (format) {
+			case SIMPLEXML:
 				exportSimpleXML(resp, id, type, measure);
 				break;
-			case HQMF :
-				exportHQMFForNewMeasures(resp, id, type, measure);
+			case HQMF:
+				exportHQMF(resp, id, type, measure);
 				break;
-			case HUMAN_READABLE :
+			case HUMAN_READABLE:
 				exportHumanReadableForNewMeasures(resp, id, type, measure);
 				break;
-			case CODELIST :
+			case CODELIST:
 				exportCodeListXLS(resp, id, measure);
 				break;
-			case CQL_LIBRARY :
+			case CQL_LIBRARY:
 				exportCQLLibraryFile(resp, id, type);
 				break;
-			case ELM :
-				exportELMFile(resp, id, type); 
+			case ELM:
+				exportELMFile(resp, id, type);
 				break;
-			case JSON :
-				exportJSONFile(resp, id, type); 
+			case JSON:
+				exportJSONFile(resp, id, type);
 				break;
-			case ZIP :
+			case ZIP:
 				exportEmeasureZip(resp, id, measure, exportDate);
 				break;
-			case SUBTREE_HTML :
+			case SUBTREE_HTML:
 				exportSubTreeHumanReadable(req, resp, id);
 				break;
-			case EXPORT_ACTIVE_NON_ADMIN_USERS_CSV :
+			case EXPORT_ACTIVE_NON_ADMIN_USERS_CSV:
 				exportActiveUserListCSV(resp);
 				break;
-			case EXPORT_ACTIVE_OID_CSV :
+			case EXPORT_ACTIVE_OID_CSV:
 				exportActiveOrganizationListCSV(resp);
 				break;
-			case EXPORT_MEASURE_OWNER :
+			case EXPORT_MEASURE_OWNER:
 				exportActiveUserMeasureOwnershipListCSV(resp);
 				break;
-			case EXPORT_ALL_USERS_CSV :
+			case EXPORT_ALL_USERS_CSV:
 				exportAllUserCSV(resp);
 				break;
-			case EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP :
+			case EXPORT_ACTIVE_USER_CQL_LIBRARY_OWNERSHIP:
 				exportActiveUserCQLLibraryOwnershipListCSV(resp);
 				break;
-			case EXPORT_CQL_ERROR_FILE_FOR_MEASURE :
+			case EXPORT_CQL_ERROR_FILE_FOR_MEASURE:
 				exportErrorFileForMeasure(resp, measureLibraryService, id);
 				break;
-			case EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE :
+			case EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE:
 				exportErrorFileForStandAloneLib(resp, libraryId);
 				break;
 			}
 
 		} catch (Exception e) {
 			throw new ServletException(e);
-		}finally {
-			if(resp!=null && resp.getOutputStream()!=null)
+		} finally {
+			if (resp != null && resp.getOutputStream() != null)
 				resp.getOutputStream().close();
-		}		
-	}		
-	
-	private void exportErrorFileForMeasure(HttpServletResponse resp, MeasureLibraryService measureLibraryService, String id) throws IOException {
+		}
+	}
+
+	private void exportErrorFileForMeasure(HttpServletResponse resp, MeasureLibraryService measureLibraryService,
+			String id) throws IOException {
 		SaveUpdateCQLResult result = measureLibraryService.getMeasureCQLLibraryData(id);
 		addLineNumberAndErrorMessageToCQLErrorExport(resp, result);
 	}
-	
-	private void exportErrorFileForStandAloneLib(HttpServletResponse resp,	String id) throws IOException {
+
+	private void exportErrorFileForStandAloneLib(HttpServletResponse resp, String id) throws IOException {
 		SaveUpdateCQLResult result = getCQLLibraryService().getCQLLibraryFileData(id);
 		addLineNumberAndErrorMessageToCQLErrorExport(resp, result);
 	}
@@ -197,40 +201,42 @@ public class ExportServlet extends HttpServlet {
 		StringBuilder sb = new StringBuilder();
 		String cqlString = result.getCqlString();
 		String[] cqlLinesArray = cqlString.split("\n");
-		for(int i=0;i<cqlLinesArray.length;i++) {			
-			sb.append((i+1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
+		for (int i = 0; i < cqlLinesArray.length; i++) {
+			sb.append((i + 1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
 		}
 		if (!result.getCqlErrors().isEmpty()) {
-			
+
 			Collections.sort(result.getCqlErrors());
-			sb.append("/*******************************************************************************************************************");
+			sb.append(
+					"/*******************************************************************************************************************");
 			for (CQLErrors error : result.getCqlErrors()) {
 				StringBuilder errorMessage = new StringBuilder();
-				errorMessage.append("Line ").append(error.getErrorInLine()).append(": ").append(error.getErrorMessage());				
-				sb.append("\r\n").append(errorMessage).append("\r\n");								
+				errorMessage.append("Line ").append(error.getErrorInLine()).append(": ")
+						.append(error.getErrorMessage());
+				sb.append("\r\n").append(errorMessage).append("\r\n");
 			}
-			sb.append("*******************************************************************************************************************/");
+			sb.append(
+					"*******************************************************************************************************************/");
 		}
-		
+
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + result.getLibraryName() + ".txt");
 		resp.getOutputStream().write(sb.toString().getBytes());
 	}
 
-	
-	
 	private void exportELMFile(HttpServletResponse resp, String id, String type) throws Exception {
 
-		ExportResult export = getService().getELMFile(id); 
+		ExportResult export = getService().getELMFile(id);
 
-		if(!export.getIncludedCQLExports().isEmpty()){
+		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
 			zp.getCQLZipBarr(export, "xml");
 
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "ELM"));
+			resp.setHeader(CONTENT_DISPOSITION,
+					ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "ELM"));
 			resp.setContentType(APPLICATION_ZIP);
 			resp.getOutputStream().write(export.zipbarr);
 			export.zipbarr = null;
-		}else {
+		} else {
 			if (SAVE.equals(type)) {
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".xml");
 			}
@@ -239,84 +245,85 @@ public class ExportServlet extends HttpServlet {
 			resp.getOutputStream().write(export.export.getBytes());
 		}
 	}
-	
+
 	private void exportJSONFile(HttpServletResponse resp, String id, String type) throws Exception {
 
-		ExportResult export = getService().getJSONFile(id); 
+		ExportResult export = getService().getJSONFile(id);
 
-		if(!export.getIncludedCQLExports().isEmpty()){
+		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
 			zp.getCQLZipBarr(export, "json");
 
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "JSON"));
+			resp.setHeader(CONTENT_DISPOSITION,
+					ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "JSON"));
 			resp.setContentType(APPLICATION_ZIP);
 			resp.getOutputStream().write(export.zipbarr);
 			export.zipbarr = null;
-		}else {
+		} else {
 			if (SAVE.equals(type)) {
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".json");	
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".json");
 			}
 			resp.setHeader(CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-			resp.getOutputStream().write(export.export.getBytes()); 
+			resp.getOutputStream().write(export.export.getBytes());
 		}
 	}
 
-	
-	
 	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type) throws Exception {
 
 		ExportResult export = getService().getCQLLibraryFile(id);
 
-		if(!export.getIncludedCQLExports().isEmpty()){
+		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
 			zp.getCQLZipBarr(export, "cql");
 
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "CQL"));
+			resp.setHeader(CONTENT_DISPOSITION,
+					ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + "CQL"));
 			resp.setContentType(APPLICATION_ZIP);
 			resp.getOutputStream().write(export.zipbarr);
 			export.zipbarr = null;
-		}else {
+		} else {
 			if (SAVE.equals(type)) {
-				resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);				
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName()+".cql");
-			}else {
-				resp.setHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);	
+				resp.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + export.getCqlLibraryName() + ".cql");
+			} else {
+				resp.setHeader(CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
 			}
 
 			resp.getOutputStream().write(export.export.getBytes());
 		}
 	}
-	
+
 	private void generateCSVFile(HttpServletResponse resp, String name) throws MatException {
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		if (ADMINISTRATOR.equalsIgnoreCase(userRole)) {
 			String csvFileString = "";
-			switch(name) {
-				case "activeOrganizationOids" :
-					csvFileString = generateCSVOfActiveUserOIDs();
-					break;
-				case "activeUsers" :
-					csvFileString = generateCSVOfActiveUserEmails();
-					break;
-				case "allUsersReport" :
-					csvFileString = generateCSVOfAllUser();
-					break;
-				case "activeUsersMeasureOwnership" :
+			switch (name) {
+			case "activeOrganizationOids":
+				csvFileString = generateCSVOfActiveUserOIDs();
+				break;
+			case "activeUsers":
+				csvFileString = generateCSVOfActiveUserEmails();
+				break;
+			case "allUsersReport":
+				csvFileString = generateCSVOfAllUser();
+				break;
+			case "activeUsersMeasureOwnership":
 				try {
 					csvFileString = generateCSVOfMeasureOwnershipForActiveUser();
 				} catch (XPathExpressionException e1) {
 					logger.debug("generateCSVFile:" + name + e1.getMessage());
 					throw new MatException(e1.getMessage());
 				}
-					break;
-				case "activeUsersCQLLibraryOwnership" :
-					csvFileString = generateCSVOfCQLLibraryOwnershipForActiveUser();
-					break;
+				break;
+			case "activeUsersCQLLibraryOwnership":
+				csvFileString = generateCSVOfCQLLibraryOwnershipForActiveUser();
+				break;
 			}
-			
+
 			String activeUserCSVDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT));
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName(name, activeUserCSVDate) + ";");
+			resp.setHeader(CONTENT_DISPOSITION,
+					ATTACHMENT_FILENAME + FileNameUtility.getCSVFileName(name, activeUserCSVDate) + ";");
 			resp.setContentType(TEXT_CSV);
 			try {
 				resp.getOutputStream().write(csvFileString.getBytes());
@@ -326,90 +333,113 @@ public class ExportServlet extends HttpServlet {
 			}
 		}
 	}
-	
+
 	private void exportActiveOrganizationListCSV(HttpServletResponse resp) throws MatException {
 		generateCSVFile(resp, "activeOrganizationOids");
 	}
-	
+
 	private void exportActiveUserListCSV(HttpServletResponse resp) throws MatException {
 		generateCSVFile(resp, "activeUsers");
 	}
-	
+
 	private void exportAllUserCSV(HttpServletResponse resp) throws MatException {
 		generateCSVFile(resp, "allUsersReport");
 	}
-	
+
 	private void exportActiveUserMeasureOwnershipListCSV(HttpServletResponse resp) throws MatException {
 		generateCSVFile(resp, "activeUsersMeasureOwnership");
 	}
-	
+
 	private void exportActiveUserCQLLibraryOwnershipListCSV(HttpServletResponse resp) throws MatException {
 		generateCSVFile(resp, "activeUsersCQLLibraryOwnership");
 	}
-	
-	private void exportSubTreeHumanReadable(HttpServletRequest req, HttpServletResponse resp, String id) throws Exception {
+
+	private void exportSubTreeHumanReadable(HttpServletRequest req, HttpServletResponse resp, String id)
+			throws Exception {
 		String nodeXML = req.getParameter(XML_PARAM);
-		logger.info("Export servlet received node xml:"+nodeXML +" and Measure ID:"+id);
-		ExportResult export = getService().getHumanReadableForNode(id,nodeXML);
+		logger.info("Export servlet received node xml:" + nodeXML + " and Measure ID:" + id);
+		ExportResult export = getService().getHumanReadableForNode(id, nodeXML);
 		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
 		resp.getOutputStream().println(export.export);
 	}
-	
-	private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate) throws Exception {
-		ExportResult export = getService().getEMeasureZIP(id,exportDate);
-				
+
+	private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
+			throws Exception {
+		ExportResult export = getService().getEMeasureZIP(id, exportDate);
+
 		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + currentReleaseVersion));
+		resp.setHeader(CONTENT_DISPOSITION,
+				ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + currentReleaseVersion));
 		resp.setContentType(APPLICATION_ZIP);
 		resp.getOutputStream().write(export.zipbarr);
 		export.zipbarr = null;
 	}
-	
+
 	private void exportCodeListXLS(HttpServletResponse resp, String id, Measure measure) throws Exception {
 		ExportResult export = getService().getEMeasureXLS(id);
 
 		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureXLSName(export.measureName + "_" + currentReleaseVersion, export.packageDate));
+		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility
+				.getEmeasureXLSName(export.measureName + "_" + currentReleaseVersion, export.packageDate));
 		resp.setContentType("application/vnd.ms-excel");
 		resp.getOutputStream().write(export.wkbkbarr);
 		export.wkbkbarr = null;
 	}
-	
-	private void exportHQMFForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		String currentReleaseVersion = measure.getReleaseVersion();
-		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureXML(id) : getService().getNewEMeasureXML(id);
-		if (SAVE.equals(type)) {
-			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
-		}
-		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
 
-		resp.getOutputStream().write(export.export.getBytes());
+	private ExportResult getHQMFExportForMeasure(String id, String currentReleaseVersion) throws Exception {
+		ExportResult export; 
+		if(currentReleaseVersion.equals("v3")) {
+			export = getService().getHQMFForV3Measure(id);
+		} else {
+			export = getService().getHQMF(id);
+		}
+		return export;
 	}
 	
-	private void exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
-		String currentReleaseVersion = measure.getReleaseVersion();
-		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureHTML(id) : getService().getNewEMeasureHTML(id, currentReleaseVersion);
+	private void exportHQMF(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
+		String currentReleaseVersion = measure.getReleaseVersion();		
+		
+		ExportResult export = getHQMFExportForMeasure(id, currentReleaseVersion);
+		
 		if (SAVE.equals(type)) {
 			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getEmeasureHumanReadableName(export.measureName + "_" + currentReleaseVersion));
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ FileNameUtility.getEmeasureXMLName(export.measureName + "_" + currentReleaseVersion));
+		}
+		
+		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
+		resp.getOutputStream().write(export.export.getBytes());
+	}
+
+
+
+	private void exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure)
+			throws Exception {
+		String currentReleaseVersion = measure.getReleaseVersion();
+		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureHTML(id)
+				: getService().getHumanReadable(id, currentReleaseVersion);
+		if (SAVE.equals(type)) {
+			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ FileNameUtility.getEmeasureHumanReadableName(export.measureName + "_" + currentReleaseVersion));
 		}
 		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_HTML_VALUE);
 
 		resp.getOutputStream().write(export.export.getBytes());
 	}
-	
+
 	private void exportSimpleXML(HttpServletResponse resp, String id, String type, Measure measure) throws Exception {
 		ExportResult export = getService().getSimpleXML(id);
 		if (SAVE.equals(type)) {
 			String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
-			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + FileNameUtility.getSimpleXMLName(export.measureName + "_" + currentReleaseVersion));
-		} 
+			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+					+ FileNameUtility.getSimpleXMLName(export.measureName + "_" + currentReleaseVersion));
+		}
 		resp.setHeader(CONTENT_TYPE, MediaType.TEXT_XML_VALUE);
 
 		resp.getOutputStream().write(export.export.getBytes());
 	}
-	
+
 	/**
 	 * Generate csv of active user emails.
 	 * 
@@ -419,22 +449,22 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private String generateCSVOfActiveUserEmails() {
 		logger.info("Generating CSV of email addrs for all Active Users...");
-		//Get all the active users
+		// Get all the active users
 		List<User> allNonAdminActiveUsersList = getUserService().getAllNonAdminActiveUsers();
-		
-		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
+
+		// Iterate through the 'allNonAdminActiveUsersList' and generate a csv
 		return createCSVOfAllNonAdminActiveUsers(allNonAdminActiveUsersList);
 	}
-	
+
 	private String generateCSVOfAllUser() {
 		logger.info("Generating CSV For All Users...");
-		//Get all the active users
+		// Get all the active users
 		List<User> allUsersList = getUserService().getAllUsers();
-		
-		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
+
+		// Iterate through the 'allNonAdminActiveUsersList' and generate a csv
 		return createCSVOfUsers(allUsersList);
 	}
-	
+
 	/**
 	 * Generate csv of active user emails.
 	 * 
@@ -445,39 +475,41 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private String generateCSVOfMeasureOwnershipForActiveUser() throws XPathExpressionException {
 		logger.info("Generating CSV of Measure Ownership for all Active Non Admin Users...");
-		List<MeasureOwnerReportDTO> ownerReList = 	getMeasureLibraryService().getMeasuresForMeasureOwner();
-		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
+		List<MeasureOwnerReportDTO> ownerReList = getMeasureLibraryService().getMeasuresForMeasureOwner();
+		// Iterate through the 'allNonAdminActiveUsersList' and generate a csv
 		return createCSVOfActiveUserMeasures(ownerReList);
 	}
-	
+
 	/**
 	 * Generate csv of cql library ownership for all active users
+	 * 
 	 * @return the csv string
 	 */
 	private String generateCSVOfCQLLibraryOwnershipForActiveUser() {
 		logger.info("Generating CSV of CQL Library Ownership for all Active Non Admin Users...");
 		List<CQLLibraryOwnerReportDTO> ownerList = getCQLLibraryService().getCQLLibrariesForOwner();
 		return createCSVOfActiveUserCQLLibrary(ownerList);
-		
+
 	}
-	
+
 	/**
 	 * Generate csv of active OIDs.
+	 * 
 	 * @return the string
 	 */
 	private String generateCSVOfActiveUserOIDs() {
 		logger.info("Generating CSV of Active User OID's...");
-		//Get all the active users
+		// Get all the active users
 		List<User> allNonTerminatedUsersList = getUserService().searchForNonTerminatedUsers();
 		Map<String, String> activeOidsMap = new TreeMap<String, String>();
 		for (User user : allNonTerminatedUsersList) {
 			activeOidsMap.put(user.getOrgOID(), user.getOrganizationName());
 		}
-		
-		//Iterate through the 'allNonTerminatedUsersList' and generate a csv
+
+		// Iterate through the 'allNonTerminatedUsersList' and generate a csv
 		return createCSVOfAllActiveUsersOID(activeOidsMap);
 	}
-	
+
 	/**
 	 * Creates the csv of Active User's OIDs.
 	 * 
@@ -486,19 +518,19 @@ public class ExportServlet extends HttpServlet {
 	 * @return the string
 	 */
 	private String createCSVOfAllActiveUsersOID(final Map<String, String> activeOidsMap) {
-		
+
 		StringBuilder csvStringBuilder = new StringBuilder();
-		//Add the header row
+		// Add the header row
 		csvStringBuilder.append("Organization,Organization Id");
 		csvStringBuilder.append("\r\n");
-		//Add data rows
+		// Add data rows
 		for (Map.Entry<String, String> entry : activeOidsMap.entrySet()) {
-			csvStringBuilder.append("\"" + entry.getValue() + "\",\"" + entry.getKey() +  "\"");
+			csvStringBuilder.append("\"" + entry.getValue() + "\",\"" + entry.getKey() + "\"");
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();
 	}
-	
+
 	/**
 	 * Creates the csv of all non admin active users.
 	 * 
@@ -507,63 +539,58 @@ public class ExportServlet extends HttpServlet {
 	 * @return the string
 	 */
 	private String createCSVOfAllNonAdminActiveUsers(final List<User> allNonAdminActiveUsersList) {
-		
+
 		StringBuilder csvStringBuilder = new StringBuilder();
-		//Add the header row
+		// Add the header row
 		csvStringBuilder.append("User ID,Last Name,First Name,Email Address,Organization,User Role,Organization Id");
 		csvStringBuilder.append("\r\n");
-		
-		
-		//Add data rows
-		for (User user:allNonAdminActiveUsersList) {
-			csvStringBuilder.append("\"" + user.getLoginId() 
-					+ "\",\"" + user.getLastName() + "\",\"" + user.getFirstName()
-					+ "\",\"" + user.getEmailAddress() + "\",\"" + user.getOrganizationName()
-					+ "\",\"" + user.getSecurityRole().getDescription()
-					+ "\",\"" + user.getOrgOID() + "\"");
+
+		// Add data rows
+		for (User user : allNonAdminActiveUsersList) {
+			csvStringBuilder.append("\"" + user.getLoginId() + "\",\"" + user.getLastName() + "\",\""
+					+ user.getFirstName() + "\",\"" + user.getEmailAddress() + "\",\"" + user.getOrganizationName()
+					+ "\",\"" + user.getSecurityRole().getDescription() + "\",\"" + user.getOrgOID() + "\"");
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();
 	}
-	
+
 	private String createCSVOfUsers(final List<User> allNonAdminActiveUsersList) {
-		
+
 		StringBuilder csvStringBuilder = new StringBuilder();
-		//Add the header row
-		csvStringBuilder.append("User ID,Last Name,First Name,Organization,Organization Id,Email Address,User Status,Role,Date Of Termination");
+		// Add the header row
+		csvStringBuilder.append(
+				"User ID,Last Name,First Name,Organization,Organization Id,Email Address,User Status,Role,Date Of Termination");
 		csvStringBuilder.append("\r\n");
-		
-		
-		//Add data rows
-		for (User user:allNonAdminActiveUsersList) {
-			csvStringBuilder.append("\"" + user.getLoginId() 
-					+ "\",\"" + user.getLastName() + "\",\"" + user.getFirstName()
-					+ "\",\"" + user.getOrganizationName()
-					+ "\",\"" + user.getOrgOID()
-					+ "\",\"" + user.getEmailAddress()
-					+ "\",\"" + user.getStatus().getDescription()
-					+ "\",\"" + user.getSecurityRole().getDescription()
-					+ "\",\"" + user.getTerminationDate() + "\"");
+
+		// Add data rows
+		for (User user : allNonAdminActiveUsersList) {
+			csvStringBuilder.append("\"" + user.getLoginId() + "\",\"" + user.getLastName() + "\",\""
+					+ user.getFirstName() + "\",\"" + user.getOrganizationName() + "\",\"" + user.getOrgOID() + "\",\""
+					+ user.getEmailAddress() + "\",\"" + user.getStatus().getDescription() + "\",\""
+					+ user.getSecurityRole().getDescription() + "\",\"" + user.getTerminationDate() + "\"");
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();
 	}
-	
+
 	/**
 	 * Generates Measure and Measure Owner report for Active Non Admin Users.
-	 * @param ownerReList - List.
+	 * 
+	 * @param ownerReList
+	 *            - List.
 	 * @return CSV String
 	 */
 	private String createCSVOfActiveUserMeasures(final List<MeasureOwnerReportDTO> ownerReList) {
-		
+
 		StringBuilder csvStringBuilder = new StringBuilder();
-		//Add the header row
+		// Add the header row
 		csvStringBuilder.append("Last Name,First Name,Organization,Measure Name,Emeasure Id , GUID ,NQF Number");
 		csvStringBuilder.append("\r\n");
 		for (MeasureOwnerReportDTO measureOwnerReportDTO : ownerReList) {
-			csvStringBuilder.append("\"" + measureOwnerReportDTO.getLastName() + "\",\"" + measureOwnerReportDTO.getFirstName()
-					+ "\",\"" + measureOwnerReportDTO.getOrganization()
-					+ "\",\"" + measureOwnerReportDTO.getName() + "\",\"");
+			csvStringBuilder.append("\"" + measureOwnerReportDTO.getLastName() + "\",\""
+					+ measureOwnerReportDTO.getFirstName() + "\",\"" + measureOwnerReportDTO.getOrganization() + "\",\""
+					+ measureOwnerReportDTO.getName() + "\",\"");
 			if (measureOwnerReportDTO.getCmsNumber() != 0) {
 				csvStringBuilder.append(measureOwnerReportDTO.getCmsNumber() + "\",\"");
 			} else {
@@ -583,37 +610,39 @@ public class ExportServlet extends HttpServlet {
 		}
 		return csvStringBuilder.toString();
 	}
-	
+
 	/**
 	 * Creates the csv string for the cql library ownership report
-	 * @param ownerList the list of cql library owner reports
+	 * 
+	 * @param ownerList
+	 *            the list of cql library owner reports
 	 * @return the csv string
 	 */
 	private String createCSVOfActiveUserCQLLibrary(final List<CQLLibraryOwnerReportDTO> ownerList) {
 		StringBuilder csvStringBuilder = new StringBuilder();
-		
+
 		// add the header
-		csvStringBuilder.append("CQL Library Name,Type,Status,Version #,ID #,Set ID #,First Name,Last Name,Organization");
+		csvStringBuilder
+				.append("CQL Library Name,Type,Status,Version #,ID #,Set ID #,First Name,Last Name,Organization");
 		csvStringBuilder.append("\r\n");
-		
+
 		// add data
-		for(CQLLibraryOwnerReportDTO cqlLibraryOwnerReport : ownerList) {
+		for (CQLLibraryOwnerReportDTO cqlLibraryOwnerReport : ownerList) {
 			csvStringBuilder.append("\"" + cqlLibraryOwnerReport.getName() + "\",\"");
-			csvStringBuilder.append(cqlLibraryOwnerReport.getType()+ "\",\"");
-			csvStringBuilder.append(cqlLibraryOwnerReport.getStatus()+ "\",\"");
-			csvStringBuilder.append(cqlLibraryOwnerReport.getVersionNumber()+ "\",\"");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getType() + "\",\"");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getStatus() + "\",\"");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getVersionNumber() + "\",\"");
 			csvStringBuilder.append(cqlLibraryOwnerReport.getId() + "\",\"");
-			csvStringBuilder.append(cqlLibraryOwnerReport.getSetId()+ "\",\"");
-			csvStringBuilder.append(cqlLibraryOwnerReport.getFirstName()+ "\",\"");
-			csvStringBuilder.append(cqlLibraryOwnerReport.getLastName()+ "\",\"");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getSetId() + "\",\"");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getFirstName() + "\",\"");
+			csvStringBuilder.append(cqlLibraryOwnerReport.getLastName() + "\",\"");
 			csvStringBuilder.append(cqlLibraryOwnerReport.getOrganization() + "" + "\"");
 			csvStringBuilder.append("\r\n");
 		}
-		
-		
+
 		return csvStringBuilder.toString();
 	}
-	
+
 	/**
 	 * Gets the service.
 	 * 
@@ -622,7 +651,7 @@ public class ExportServlet extends HttpServlet {
 	private SimpleEMeasureService getService() {
 		return (SimpleEMeasureService) context.getBean("eMeasureService");
 	}
-	
+
 	/**
 	 * Gets the user service.
 	 * 
@@ -631,7 +660,7 @@ public class ExportServlet extends HttpServlet {
 	private UserService getUserService() {
 		return (UserService) context.getBean("userService");
 	}
-	
+
 	/**
 	 * Gets the measure package service.
 	 *
@@ -640,18 +669,19 @@ public class ExportServlet extends HttpServlet {
 	private MeasurePackageService getMeasurePackageService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
 	}
-	
+
 	/**
 	 * Gets the measure library service.
 	 *
 	 * @return the measure library service
 	 */
-	private MeasureLibraryService getMeasureLibraryService(){
+	private MeasureLibraryService getMeasureLibraryService() {
 		return (MeasureLibraryService) context.getBean("measureLibraryService");
-	}	
-	
+	}
+
 	/**
 	 * Gets the cql library service
+	 * 
 	 * @return the cql library service
 	 */
 	private CQLLibraryService getCQLLibraryService() {

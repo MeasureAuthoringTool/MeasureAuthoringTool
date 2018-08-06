@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * The Class HQMFFinalCleanUp.
+ * @deprecated this class is deprecated since it is an old version of QDM. It should not be modified. 
  */
 public class HQMFFinalCleanUp {
 	

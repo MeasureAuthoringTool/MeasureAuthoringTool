@@ -1,4 +1,4 @@
-package mat.server.simplexml.hqmf;
+package mat.server.hqmf.qdm_5_3;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -6,26 +6,20 @@ import java.util.Calendar;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.client.shared.MatContext;
+import org.w3c.dom.Node;
+
 import mat.model.clause.MeasureExport;
+import mat.server.hqmf.Generator;
 import mat.server.service.impl.XMLUtility;
-import mat.server.util.MATPropertiesService;
 import mat.server.util.XmlProcessor;
 import mat.shared.UUIDUtilClient;
 
-import org.w3c.dom.Node;
-
 /**
- * The Class CQLbasedHQMFMeasureDetailsGenerator
- * 
- * This class generates the measure details for the hqmf document.
- * @author jmeyer
- *
+ * @deprecated this class is deprecated since it is an old version of QDM (qdm v5.3). It should not be modified. 
  */
-public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
+public class HQMFMeasureDetailsGenerator implements Generator  {
 	
-	/** The Constant conversionFileForCQLbasedHQMF_Header */
-	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/cql_measureDetails.xsl"; 
+	private static final String conversionFileForCQLbasedHQMF_Header = "xsl/qdm_v5_3_measure_details.xsl"; 
 
 	@Override
 	public String generate(MeasureExport me) {
@@ -35,29 +29,18 @@ public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 		simpleXML = addReleaseVersionToSimpleXML(simpleXML,releaseVersion);
 		
 		XMLUtility xmlUtility = new XMLUtility();
-		String measureDetailsHQMF_XML = xmlUtility.applyXSL(simpleXML, 
-				xmlUtility.getXMLResource(conversionFileForCQLbasedHQMF_Header));
+		String measureDetailsHQMF_XML = xmlUtility.applyXSL(simpleXML, xmlUtility.getXMLResource(conversionFileForCQLbasedHQMF_Header));
 		measureDetailsHQMF_XML = incrementEndDatebyOne(measureDetailsHQMF_XML);
 		return measureDetailsHQMF_XML.replaceAll("xmlns=\"\"", "");
 	}
 	
-	/**
-	  * This method will add a new tag '<measureReleaseVersion releaseVersion={version}/>' right under the '<measure>' tag.
-	  * This will contain the QDM version used in the measure.
-	  * If Measure Release Version is 'v4', then QDM Version is '4.1.2'; else it is '4.3'
-	  * The 'new_measureDetails.xsl' will then read the '<measureReleaseVersion releaseVersion={version}/>' tag and 
-	  * add a comment with the value of 'releaseVersion' attribute in it.
-	  * @param simpleXML
-	  * @param releaseVersion
-	  * @return
-	  */
 	 private String addReleaseVersionToSimpleXML(String simpleXML, String releaseVersion) {
 		 if(releaseVersion == null || releaseVersion.trim().length() == 0){
 			 UUIDUtilClient.uuid();
 			 return simpleXML;
 		 }
 		
-		 releaseVersion = formatRealeaseVersion(releaseVersion);
+		 releaseVersion = getQDMVersion();
 		 int measureDetailsTagIndex = simpleXML.indexOf("<measureDetails>");
 		 if(measureDetailsTagIndex > -1){
 			 simpleXML = simpleXML.substring(0, measureDetailsTagIndex) + "<measureReleaseVersion releaseVersion=\""+releaseVersion + "\"/>" + simpleXML.substring(measureDetailsTagIndex);
@@ -66,17 +49,8 @@ public class CQLBasedHQMFMeasureDetailsGenerator implements Generator  {
 		 return simpleXML;
 	 }
 	
-	private String formatRealeaseVersion(String version){
-		String formatVersion = null;
-		if("v4".equals(version)){
-			formatVersion = "4.1.2";
-		}else if("v4.3".equals(version)){
-			//This is 4.2 because were on qdm version 4.2 and export 4.3. The QDM version needs to appear in the comments
-			formatVersion = "4.2";
-		}else if(MatContext.get().isCQLMeasure(version)) {
-			formatVersion = MATPropertiesService.get().getQmdVersion();
-		}
-		return formatVersion;
+	private String getQDMVersion(){
+		return "5.3";
 		
 	}
 	

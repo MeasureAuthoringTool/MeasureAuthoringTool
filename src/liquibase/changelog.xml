@@ -231,5 +231,6 @@
         <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Create_new_table_for_composite_measure.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Add_Column_Composite_Measure_Flag.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9272_Add_Bonnie_Table.xml"/>
-        <include file="classpath:/liquibase/deploy_Sprint-149_MAT-9330_Measure_Composite_Scoring.xml"/>
-   	</databaseChangeLog>
+		<include file="classpath:/liquibase/deploy_Sprint-149_MAT-9319_Create_new_table_for_CQL_LIBRARY_EXPORT.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-149_MAT-9330_Measure_Composite_Scoring.xml"/>   	
+</databaseChangeLog>

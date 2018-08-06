@@ -208,10 +208,12 @@
 
 
 	<!-- Communication Datatypes -->
-  	<template oid="2.16.840.1.113883.10.20.28.4.132" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueSetInCode="false" addCodeTag="false" specificExtensionValue="2018-05-01" includeSubTemplate="communication-not-performed" addValueTag="false">communication, not performed</template>
+  	<template oid="2.16.840.1.113883.10.20.28.4.132" class="ACT" mood="EVN" status="COMPLETED" actionNegationInd="TRUE" addValueSetInCode="false" addCodeTag="false" specificExtensionValue="2018-05-01" includeSubTemplate="communication" addValueTag="false">communication, not performed</template>
+  	 <template oid="2.16.840.1.113883.10.20.28.4.132" class="ACT" mood="EVN" status="COMPLETED" addValueSetInCode="false" addCodeTag="false" specificExtensionValue="2018-05-01" includeSubTemplate="communication" addValueTag="false">communication, performed</template>
+  	
   
 	<subtemplates>
-		<communication-not-performed changeAttribute="value,item,id">
+		<communication changeAttribute="value,item,id">
 			<outboundRelationship typeCode="RSON">
 				<observationCriteria classCode="OBS" moodCode="EVN">
 					<templateId>
@@ -225,7 +227,7 @@
 					<value xsi:type="CD"/>
 				</observationCriteria>
 			</outboundRelationship>
-		</communication-not-performed>
+		</communication>
 
 
 		<transfer changeAttribute="code">

@@ -216,6 +216,8 @@ public interface MeasureServiceAsync {
 	 */
 	void save(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
+	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
+	
 	/**
 	 * Save and delete measure.
 	 * 

@@ -439,8 +439,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(CompositeMeasureValidationResult result) {
 						currentCompositeMeasureDetails = result.getModel();
-						if(!isValidCompositeMeasureForSave(result.getMessages())){
-							return;
+						if(isValidCompositeMeasureForSave(result.getMessages())){
+							saveCompositeMeasure();
 						}
 					}
 				});
@@ -1953,26 +1953,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(SaveMeasureResult result) {
-					if (result.isSuccess()) {
-						if (isInsert) {
-							fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true, false,
-									null);
-							fireMeasureEditEvent();
-						} else {
-							displaySearch();
-						}
-					} else {
-						String message = null;
-						switch (result.getFailureReason()) {
-						case SaveMeasureResult.INVALID_DATA:
-							message = "Data Validation Failed.Please verify data.";
-							break;
-						default:
-							message = "Unknown Code " + result.getFailureReason();
-						}
-						detailDisplay.getErrorMessageDisplay().createAlert(message);
-					}
-					setSearchingBusy(false);
+					postSaveMeasureEvents(isInsert, result, detailDisplay, name, shortName, scoringType, version);
+
 				}
 			});
 		}
@@ -2021,6 +2003,54 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentCompositeMeasureDetails.setAppliedComponentMeasures(componentMeasureDisplay.getAppliedComponentMeasuresList());
 		currentCompositeMeasureDetails.setAliasMapping(componentMeasureDisplay.getAliasMapping());
 	}
+	
+	private void postSaveMeasureEvents(boolean isInsert, SaveMeasureResult result, DetailDisplay detailDisplay,
+			String name, String shortName, String scoringType, String version) {
+		
+		if (result.isSuccess()) {
+			if (isInsert) {
+				fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true, false, null);
+				fireMeasureEditEvent();
+			} else {
+				displaySearch();
+			}
+		} else {
+			String message = null;
+			if(SaveMeasureResult.INVALID_DATA == result.getFailureReason()) {
+				message = "Data Validation Failed.Please verify data.";
+			} else {
+				message = "Unknown Code " + result.getFailureReason();
+			}
+			detailDisplay.getErrorMessageDisplay().createAlert(message);
+		}
+		setSearchingBusy(false);
+	
+	}
+	
+	private void saveCompositeMeasure() {
+		setSearchingBusy(true);
+		final boolean isInsert = currentCompositeMeasureDetails.getId() == null;
+		final String name = currentCompositeMeasureDetails.getName();
+		final String shortName = currentCompositeMeasureDetails.getShortName();
+		final String scoringType = currentCompositeMeasureDetails.getMeasScoring();
+		final String version = currentCompositeMeasureDetails.getVersionNumber() + "." + currentCompositeMeasureDetails.getRevisionNumber();
+		
+		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
+				setSearchingBusy(false);				
+			}
+
+			@Override
+			public void onSuccess(SaveMeasureResult result) {
+				postSaveMeasureEvents(isInsert, result, compositeDetailDisplay, name, shortName, scoringType, version);
+			}
+			
+		});
+	}
+
 
 	private void updateTransferIDs(Result result, ManageMeasureSearchModel model) {
 		if (result.isTransferable()) {

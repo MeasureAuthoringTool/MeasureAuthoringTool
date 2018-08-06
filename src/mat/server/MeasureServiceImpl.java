@@ -152,6 +152,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+		return this.getMeasureLibraryService().saveCompositeMeasure(model);
+	}
+	
+	@Override
 	public void saveAndDeleteMeasure(String measureID,  String loginUserId) {
 		this.getMeasureLibraryService().saveAndDeleteMeasure(measureID,loginUserId);
 	}

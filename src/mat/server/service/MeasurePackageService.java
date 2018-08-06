@@ -9,6 +9,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.model.DataType;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSet;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
@@ -342,4 +343,6 @@ public interface MeasurePackageService {
 	boolean getMeasure(String measureId);
 
 	List<MeasureShareDTO> searchComponentMeasuresWithFilter(MeasureSearchModel measureSearchModel);
+	
+	void save(ComponentMeasure componentMeasure);
 }

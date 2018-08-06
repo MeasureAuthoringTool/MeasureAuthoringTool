@@ -74,6 +74,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
@@ -104,6 +105,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
@@ -951,7 +953,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measureXmlModel.setParentNode(parentNode);
 		return measureXmlModel;
 	}
-
+	
 	/**
 	 * Method to create XML from QualityDataModelWrapper object.
 	 * 
@@ -998,7 +1000,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		measureDetailModel.getMeasureTypeSelectedList();
 		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
+			if(measureDetailModel instanceof ManageCompositeMeasureDetailModel) {
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CompositeMeasureDetailsModelMapping.xml"));
+			} else {
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));	
+			}
+			
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
 			marshaller.setMapping(mapping);
 			marshaller.marshal(measureDetailModel);
@@ -1977,6 +1984,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return result;
 		}
 	}
+
 
 	@Override
 	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {
@@ -5976,4 +5984,88 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return containsMoreThanOne;
 	}
+	
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+		// Scrubbing out Mark Up.
+		if (model != null) {
+			model.scrubForMarkUp();
+		}
+		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
+		List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
+		if (message.isEmpty()) {
+			Measure pkg = null;
+			MeasureSet measureSet = null;
+			if (model.getId() != null) {
+				setMeasureCreated(true);
+				// editing an existing measure
+				pkg = getService().getById(model.getId());
+				model.setVersionNumber(pkg.getVersion());
+				if (pkg.isDraft()) {
+					model.setRevisionNumber(pkg.getRevisionNumber());
+				} else {
+					model.setRevisionNumber("000");
+				}
+				if (pkg.getMeasureSet().getId() != null) {
+					measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
+				}
+				if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+					// US 194 User is changing the measure scoring. Make sure to
+					// delete any groupings for that measure and save.
+					getMeasurePackageService().deleteExistingPackages(pkg.getId());
+				}
+			} else {
+				// creating a new measure.
+				setMeasureCreated(false);
+				pkg = new Measure();
+				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+				pkg.setIsCompositeMeasure(Boolean.TRUE);
+				pkg.setCompositeScoring(model.getCompositeScoringMethod());
+				model.setRevisionNumber("000");
+				measureSet = new MeasureSet();
+				measureSet.setId(UUID.randomUUID().toString());
+				getService().save(measureSet);
+			}
+			pkg.setMeasureSet(measureSet);
+			setValueFromModel(model, pkg);
+			SaveMeasureResult result = new SaveMeasureResult();
+			try {
+				getAndValidateValueSetDate(model.getValueSetDate());
+				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
+				getService().save(pkg);
+				saveComponentMeasure(pkg.getId(), model);
+			} catch (InvalidValueSetDateException e) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+				result.setId(pkg.getId());
+				return result;
+			}
+			result.setSuccess(true);
+			result.setId(pkg.getId());
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			return result;
+		} else {
+			logger.info("Validation Failed for measure :: Invalid Data Issues.");
+			SaveMeasureResult result = new SaveMeasureResult();
+			result.setSuccess(false);
+			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
+			return result;
+		}
+	}
+	
+	private void saveComponentMeasure(String measureId, ManageCompositeMeasureDetailModel model) {
+		List<ComponentMeasure> componentMeasuresList = new ArrayList<>();
+		for(ManageMeasureSearchModel.Result result : model.getAppliedComponentMeasures()) {
+			ComponentMeasure componentMeasure = new ComponentMeasure();
+			componentMeasure.setCompositeMeasureId(measureId);
+			componentMeasure.setComponentMeasureId(result.getId());	
+			componentMeasuresList.add(componentMeasure);
+		}
+		
+		for(ComponentMeasure component : componentMeasuresList) {
+			component.setAlias(model.getAliasMapping().get(component.getComponentMeasureId()));
+			getService().save(component);
+		}
+	}
+	
 }

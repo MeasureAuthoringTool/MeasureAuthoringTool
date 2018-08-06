@@ -2,6 +2,7 @@ package mat.model.clause;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import mat.model.User;
@@ -22,6 +23,8 @@ public class Measure {
 	private String revisionNumber;
 	
 	private String measureScoring;
+	
+	private String compositeScoring;
 	
 	private Date exportedDate;
 	
@@ -54,6 +57,8 @@ public class Measure {
 	private String qdmVersion;
 	
 	private Boolean isCompositeMeasure = false;
+	
+	private List<ComponentMeasure> componentMeasures;
 
 	public Timestamp getValueSetDate() {
 		return valueSetDate;
@@ -172,6 +177,14 @@ public class Measure {
 		this.measureScoring = measureScoring;
 	}
 
+	public String getCompositeScoring() {
+		return compositeScoring;
+	}
+
+	public void setCompositeScoring(String compositeScoring) {
+		this.compositeScoring = compositeScoring;
+	}
+
 	public User getOwner() {
 		return owner;
 	}
@@ -281,5 +294,13 @@ public class Measure {
 
 	public void setIsCompositeMeasure(Boolean isCompositeMeasure) {
 		this.isCompositeMeasure = isCompositeMeasure;
+	}
+
+	public List<ComponentMeasure> getComponentMeasures() {
+		return componentMeasures;
+	}
+
+	public void setComponentMeasures(List<ComponentMeasure> componentMeasures) {
+		this.componentMeasures = componentMeasures;
 	}
 }

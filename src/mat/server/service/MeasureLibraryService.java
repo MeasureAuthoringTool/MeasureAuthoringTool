@@ -212,6 +212,8 @@ public interface MeasureLibraryService {
 	 */
 	SaveMeasureResult save(ManageMeasureDetailModel model);
 	
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	
 	/**
 	 * Save and delete measure.
 	 * 

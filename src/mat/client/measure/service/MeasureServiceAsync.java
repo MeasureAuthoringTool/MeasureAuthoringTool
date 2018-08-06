@@ -9,6 +9,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.shared.CompositeMeasureValidationResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -213,6 +215,8 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 */
 	void save(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
+	
+	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
 	/**
 	 * Save and delete measure.
@@ -720,5 +724,9 @@ public interface MeasureServiceAsync {
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
 	void searchComponentMeasures(MeasureSearchModel searchModel, AsyncCallback<ManageMeasureSearchModel> asyncCallback);
+	
+	void buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, AsyncCallback<ManageCompositeMeasureDetailModel> callback);
 
+	void validateCompositeMeasure(ManageCompositeMeasureDetailModel currentCompositeMeasureDetails,
+			AsyncCallback<CompositeMeasureValidationResult> asyncCallback);
 }

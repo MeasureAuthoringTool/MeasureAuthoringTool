@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -40,6 +41,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.MeasureSearchModel;
 import mat.shared.CQLValidationResult;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -209,6 +211,8 @@ public interface MeasureLibraryService {
 	 * @return the save measure result
 	 */
 	SaveMeasureResult save(ManageMeasureDetailModel model);
+	
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
 	
 	/**
 	 * Save and delete measure.
@@ -738,4 +742,7 @@ public interface MeasureLibraryService {
 
 	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
 
+	ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
+
+	CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 }

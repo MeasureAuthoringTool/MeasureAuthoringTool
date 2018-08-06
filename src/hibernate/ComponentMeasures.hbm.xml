@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.org/dtd/hibernate-mapping.dtd">
+
+<hibernate-mapping auto-import="false">
+	<class name="mat.model.clause.ComponentMeasure" table="COMPONENT_MEASURES" lazy="false">
+		<id name="id" type="java.lang.Integer">
+			<column name="ID" />
+			<generator class="increment" />
+		</id>
+		<property name="compositeMeasureId" column="COMPOSITE_MEASURE_ID" type="string" />
+		<property name="componentMeasureId" column="COMPONENT_MEASURE_ID" type="string" />
+		<property name="alias" column="ALIAS" type="string" />
+	</class>
+</hibernate-mapping>

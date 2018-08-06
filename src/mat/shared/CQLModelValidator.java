@@ -3,7 +3,6 @@ package mat.shared;
 import com.google.gwt.regexp.shared.RegExp;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQLModelValidator.
  */

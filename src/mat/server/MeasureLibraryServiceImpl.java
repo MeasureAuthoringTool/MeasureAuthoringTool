@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -59,8 +60,10 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
@@ -70,6 +73,8 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
@@ -100,6 +105,7 @@ import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
@@ -126,18 +132,21 @@ import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.service.impl.MeasureAuditServiceImpl;
 import mat.server.service.impl.PatientBasedValidator;
 import mat.server.util.CQLUtil;
+import mat.server.util.CQLValidationUtil;
 import mat.server.util.ExportSimpleXML;
 import mat.server.util.MATPropertiesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
 import mat.server.util.XmlProcessor;
-import mat.shared.MeasureSearchModel;
+import mat.shared.CQLModelValidator;
 import mat.shared.CQLValidationResult;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.model.util.MeasureDetailsUtil;
@@ -146,7 +155,16 @@ import mat.shared.model.util.MeasureDetailsUtil;
  * The Class MeasureLibraryServiceImpl.
  */
 public class MeasureLibraryServiceImpl implements MeasureLibraryService {
-
+	public static final String ERR_COMPOSITE_MEASURE_SCORE_REQUIRED = "Composite Scoring Method is required. ";
+	public static final String ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED = "A composite measure must have more than one component measure.";
+	public static final String ERR_COMPONENT_MEASURE_DOES_NOT_CONTAIN_PACKAGE = " does not have a measure package and can not be used as a component measure.";
+	public static final String ERR_COMPONENT_MEASURES_MUST_HAVE_SAME_PATIENT_BASED_INDICATOR = "All component measures must have the same patient-based indicator setting";
+	public static final String ERR_COMPONENT_MEASURES_MUST_ALL_HAVE_ALIAS = "An alias is required for each component measure.";
+	public static final String ERR_COMPONENT_MEASURE_CANNOT_BE_COMPOSITE = "A component measure can not be a composite measure.";
+	public static final String ERR_COMPONENT_MEASURE_HAS_MORE_THAN_ONE_PACKAGE_GROUPING = " has more than one measure grouping and can not be used as a component measure. ";
+	public static final String ERR_ALIAS_NOT_VALID = " cannot be saved. An alias for a component measure must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), must not contain spaces, and it must be unique.\" Please correct and try again.";
+	public static final String ERR_LIBRARIES_MUST_HAVE_SAME_VERSION_AND_CONTENT = "CQL libraries within a composite measure can not have the same name with different library content or version.";
+	
 	private static final int NESTED_CLAUSE_DEPTH = 10;
 
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
@@ -239,6 +257,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private MeasureAuditServiceImpl auditService; 
+	
+	@Autowired
+	private PackageServiceImpl packageService;
 
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
@@ -932,7 +953,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measureXmlModel.setParentNode(parentNode);
 		return measureXmlModel;
 	}
-
+	
 	/**
 	 * Method to create XML from QualityDataModelWrapper object.
 	 * 
@@ -979,7 +1000,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		measureDetailModel.getMeasureTypeSelectedList();
 		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
+			if(measureDetailModel instanceof ManageCompositeMeasureDetailModel) {
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CompositeMeasureDetailsModelMapping.xml"));
+			} else {
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));	
+			}
+			
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
 			marshaller.setMapping(mapping);
 			marshaller.marshal(measureDetailModel);
@@ -1024,6 +1050,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setStatus(dto.getStatus());
 		detail.seteMeasureId(dto.geteMeasureId());
 		detail.setPatientBased(dto.isPatientBased());
+		detail.setQdmVersion(measure.getQdmVersion());
+		detail.setIsComposite(measure.getIsCompositeMeasure());
 		
 		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
 		if (measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
@@ -1956,6 +1984,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return result;
 		}
 	}
+
 
 	@Override
 	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {
@@ -5720,4 +5749,323 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		updateMeasureFamily(detailModelList);
 		return searchModel;
 	}
+
+	@Override
+	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		Map<String, MeasurePackageOverview> packageMap = packageService.getClausesAndPackagesForMeasures(manageCompositeMeasureDetailModel.getAppliedComponentMeasures());
+		manageCompositeMeasureDetailModel.setPackageMap(packageMap);
+		return manageCompositeMeasureDetailModel;
+	}
+
+	@Override
+	public CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		manageCompositeMeasureDetailModel = buildCompositeMeasure(manageCompositeMeasureDetailModel);
+		CompositeMeasureValidationResult validationResult = new CompositeMeasureValidationResult();
+		List<String> messages = new ArrayList<>();
+		if(!compositeMeasureContainsMoreThanOneComponentMeasure(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED);
+		}
+
+		List<String> packageErrors = validateMeasuresContainAPackage(manageCompositeMeasureDetailModel);
+		messages.addAll(packageErrors);
+
+		if(!includedLibrariesAllHaveTheSameVersionAndContent(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_LIBRARIES_MUST_HAVE_SAME_VERSION_AND_CONTENT);
+		}
+		
+		List<String> qdmErrors = validateMeasuresAllUseTheCorrectQDMVersion(manageCompositeMeasureDetailModel);
+		messages.addAll(qdmErrors);
+		
+		if(!allMeasuresHaveTheSamePatientBasedIndicator(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_COMPONENT_MEASURES_MUST_HAVE_SAME_PATIENT_BASED_INDICATOR);
+		}
+		
+		if(!allComponentMeasuresHaveAnAlias(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_COMPONENT_MEASURES_MUST_ALL_HAVE_ALIAS);
+		}
+		
+		List<String> aliasValidationErrors = validateAliasIsValidAndNotDuplicate(manageCompositeMeasureDetailModel);
+		messages.addAll(aliasValidationErrors);
+		
+		if(anyComponentMeasureIsACompositeMeasure(manageCompositeMeasureDetailModel)) {
+			messages.add(ERR_COMPONENT_MEASURE_CANNOT_BE_COMPOSITE);
+		}
+		
+		List<String> scoringTypeErrors = validateComponentMeasureScoringType(manageCompositeMeasureDetailModel);
+		messages.addAll(scoringTypeErrors);
+		
+		List<String> packageGroupingErrors = validateComponentMeasuresHaveOnePackageGrouping(manageCompositeMeasureDetailModel);
+		messages.addAll(packageGroupingErrors);
+		
+		validationResult.setMessages(messages);
+		validationResult.setModel(manageCompositeMeasureDetailModel);
+		return validationResult;
+	}
+
+	private List<String> validateComponentMeasuresHaveOnePackageGrouping(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		List<String> messages = new ArrayList<>();
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			ManageMeasureDetailModel appliedComponentModel = getMeasure(appliedComponentMeasure.getId());
+			if(componentMeasureHasMoreThanOnePackageGrouping(appliedComponentModel)) {
+				messages.add(appliedComponentMeasure.getName() + ERR_COMPONENT_MEASURE_HAS_MORE_THAN_ONE_PACKAGE_GROUPING);
+			}
+		}
+		return messages;
+	}
+
+	private List<String> validateComponentMeasureScoringType(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		List<String> messages = new ArrayList<>();
+		String scoringType = manageCompositeMeasureDetailModel.getMeasScoring();
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			switch(scoringType) {
+			case "Proportion":
+				if(!appliedComponentMeasure.getScoringType().equals("Proportion") && !appliedComponentMeasure.getScoringType().equals("Ratio") ) {
+					messages.add("Component measure " + appliedComponentMeasure.getName() + " can not be saved. A proportion composite measure can only contain component measures that have a measure scoring of proportion or ratio.");
+				}
+				break;
+			case "Ratio":
+				if(!appliedComponentMeasure.getScoringType().equals("Proportion") && !appliedComponentMeasure.getScoringType().equals("Ratio") ) {
+					messages.add("Component measure " + appliedComponentMeasure.getName() + " can not be saved. A ratio composite measure can only contain component measures that have a measure scoring of proportion or ratio.");
+				}
+				break;
+			case "Continuous Variable":
+				if(!appliedComponentMeasure.getScoringType().equals("Proportion") && !appliedComponentMeasure.getScoringType().equals("Ratio") && !appliedComponentMeasure.getScoringType().equals("Continuous Variable")) {
+					messages.add("Component measure " + appliedComponentMeasure.getName() + " can not be saved. A continuous variable composite measure can only contain component measures that have a measure scoring of proportion, ratio, or continuous variable.");
+				}
+				break;
+			}
+		};
+		return messages;
+	}
+
+	private List<String> validateAliasIsValidAndNotDuplicate(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		List<String> messages = new ArrayList<>();
+		String templateXml = getTemplateXmlString();	
+		Map<String, String> aliasMapping = manageCompositeMeasureDetailModel.getAliasMapping();
+		
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			if(aliasMapping.containsKey(appliedComponentMeasure.getId())) {
+				String aliasName = aliasMapping.get(appliedComponentMeasure.getId());
+				if(Collections.frequency(aliasMapping.values(), aliasName) > 1) {
+					messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
+				} else {
+					CQLModelValidator modelValidator = new CQLModelValidator();
+					if(!modelValidator.validateForAliasNameSpecialChar(aliasName) || CQLValidationUtil.isDuplicateIdentifierName(aliasName, templateXml)) {
+						messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
+					}
+				}
+			}
+		}
+		return messages;
+	}
+
+	private boolean allMeasuresHaveTheSamePatientBasedIndicator(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		Set<Boolean> patientBasedSet = new HashSet<>();
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			patientBasedSet.add(appliedComponentMeasure.isPatientBased());
+		}
+		if(patientBasedSet.size() > 1) {
+			return false;
+		}
+		return true;
+	}
+
+	private List<String> validateMeasuresAllUseTheCorrectQDMVersion(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		List<String> messages = new ArrayList<>();
+		if(!manageCompositeMeasureDetailModel.getQdmVersion().equals(MATPropertiesService.get().getQmdVersion())) {
+			messages.add("The measure " + manageCompositeMeasureDetailModel.getName() + " is not using the correct version of the QDM");
+		} else {
+			for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+				if(!appliedComponentMeasure.getQdmVersion().equals(MATPropertiesService.get().getQmdVersion())) {
+					messages.add("The measure " + appliedComponentMeasure.getName() + " is not using the correct version of the QDM");
+				}
+			}
+		}
+		return messages;
+	}
+
+	private List<String> validateMeasuresContainAPackage(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		List<String> messages = new ArrayList<>();
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			if(!appliedComponentMeasureContainsAPackage(appliedComponentMeasure, manageCompositeMeasureDetailModel)) {
+				messages.add(appliedComponentMeasure.getName() + ERR_COMPONENT_MEASURE_DOES_NOT_CONTAIN_PACKAGE);
+			}
+		}
+		return messages;
+	}
+
+	private boolean includedLibrariesAllHaveTheSameVersionAndContent(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		List<CQLIncludeLibrary> seenLibraries = new ArrayList<>();
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(appliedComponentMeasure.getId());
+			String componentXml = xmlModel.getXml();
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(componentXml);
+			Map<CQLIncludeLibrary, CQLModel> includedLibraryMap = includeCqlModel.getIncludedLibrarys();
+			Iterator<CQLIncludeLibrary> includedLibraryIter = includedLibraryMap.keySet().iterator();
+			while(includedLibraryIter.hasNext()) {
+				CQLIncludeLibrary includeLibrary = includedLibraryIter.next();
+				if(seenLibraries.stream().filter(s -> s.getCqlLibraryName().equals(includeLibrary.getCqlLibraryName()) && (!s.getId().equals(includeLibrary.getId()) || s.getVersion().equals(includeLibrary.getVersion()))).count() > 0) {
+					return false;
+				}
+				seenLibraries.add(includeLibrary);
+			}
+		}
+		return true;
+	}
+
+	private String getTemplateXmlString() {
+		String templateXml = "";
+		try {
+			XmlProcessor xmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
+			XPath xPath = XPathFactory.newInstance().newXPath();
+			Node measureNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPath+"/measure");
+			templateXml = xmlProcessor.transform(measureNode);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return templateXml;
+	}
+	
+	private boolean componentMeasureHasMoreThanOnePackageGrouping(ManageMeasureDetailModel appliedComponentModel) {
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(appliedComponentModel.getId());
+		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				String XPATH_MEASURE_GROUPING = "/measure/measureGrouping/group";
+				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XPATH_MEASURE_GROUPING,
+						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
+				if(measureGroupingNodeList.getLength() > 1) {
+					return true;
+				}
+			} catch (XPathExpressionException e) {
+				return false;
+			}
+			
+		}
+		return false;
+	}
+
+	private boolean anyComponentMeasureIsACompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			if(appliedComponentMeasure.getIsComposite()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean allComponentMeasuresHaveAnAlias(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			Map<String, String> aliasMapping = manageCompositeMeasureDetailModel.getAliasMapping();
+			if(!aliasMapping.containsKey(appliedComponentMeasure.getId())) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean appliedComponentMeasureContainsAPackage(Result appliedComponentMeasure, ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		if(!manageCompositeMeasureDetailModel.getPackageMap().containsKey(appliedComponentMeasure.getId())) {
+			return false;
+		} else {
+			MeasurePackageOverview packageOverview = manageCompositeMeasureDetailModel.getPackageMap().get(appliedComponentMeasure.getId());
+			if(packageOverview.getPackages() != null && packageOverview.getPackages().size() > 0) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {
+		boolean containsMoreThanOne = false;
+		if(model.getAppliedComponentMeasures().size() > 1) {
+			containsMoreThanOne = true;
+		}
+		return containsMoreThanOne;
+	}
+	
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+		// Scrubbing out Mark Up.
+		if (model != null) {
+			model.scrubForMarkUp();
+		}
+		ManageCompositeMeasureModelValidator manageCompositeMeasureModelValidator = new ManageCompositeMeasureModelValidator();
+		List<String> message = manageCompositeMeasureModelValidator.validateMeasure(model);
+		if (message.isEmpty()) {
+			Measure pkg = null;
+			MeasureSet measureSet = null;
+			if (model.getId() != null) {
+				setMeasureCreated(true);
+				// editing an existing measure
+				pkg = getService().getById(model.getId());
+				model.setVersionNumber(pkg.getVersion());
+				if (pkg.isDraft()) {
+					model.setRevisionNumber(pkg.getRevisionNumber());
+				} else {
+					model.setRevisionNumber("000");
+				}
+				if (pkg.getMeasureSet().getId() != null) {
+					measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
+				}
+				if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+					// US 194 User is changing the measure scoring. Make sure to
+					// delete any groupings for that measure and save.
+					getMeasurePackageService().deleteExistingPackages(pkg.getId());
+				}
+			} else {
+				// creating a new measure.
+				setMeasureCreated(false);
+				pkg = new Measure();
+				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+				pkg.setIsCompositeMeasure(Boolean.TRUE);
+				pkg.setCompositeScoring(model.getCompositeScoringMethod());
+				model.setRevisionNumber("000");
+				measureSet = new MeasureSet();
+				measureSet.setId(UUID.randomUUID().toString());
+				getService().save(measureSet);
+			}
+			pkg.setMeasureSet(measureSet);
+			setValueFromModel(model, pkg);
+			SaveMeasureResult result = new SaveMeasureResult();
+			try {
+				getAndValidateValueSetDate(model.getValueSetDate());
+				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
+				getService().save(pkg);
+				saveComponentMeasure(pkg.getId(), model);
+			} catch (InvalidValueSetDateException e) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+				result.setId(pkg.getId());
+				return result;
+			}
+			result.setSuccess(true);
+			result.setId(pkg.getId());
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			return result;
+		} else {
+			logger.info("Validation Failed for measure :: Invalid Data Issues.");
+			SaveMeasureResult result = new SaveMeasureResult();
+			result.setSuccess(false);
+			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
+			return result;
+		}
+	}
+	
+	private void saveComponentMeasure(String measureId, ManageCompositeMeasureDetailModel model) {
+		List<ComponentMeasure> componentMeasuresList = new ArrayList<>();
+		for(ManageMeasureSearchModel.Result result : model.getAppliedComponentMeasures()) {
+			ComponentMeasure componentMeasure = new ComponentMeasure();
+			componentMeasure.setCompositeMeasureId(measureId);
+			componentMeasure.setComponentMeasureId(result.getId());	
+			componentMeasuresList.add(componentMeasure);
+		}
+		
+		for(ComponentMeasure component : componentMeasuresList) {
+			component.setAlias(model.getAliasMapping().get(component.getComponentMeasureId()));
+			getService().save(component);
+		}
+	}
+	
 }

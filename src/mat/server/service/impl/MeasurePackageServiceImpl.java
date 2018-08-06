@@ -22,6 +22,7 @@ import mat.dao.StewardDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
+import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
@@ -37,6 +38,7 @@ import mat.model.MeasureSteward;
 import mat.model.QualityDataSet;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
@@ -110,6 +112,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	@Autowired
 	private CQLLibraryAuditLogDAO cqlLibraryAuditLogDAO;
+	
+	@Autowired
+	private ComponentMeasuresDAO componentMeasuresDAO;
 	
 	private String currentReleaseVersion;
 	
@@ -525,5 +530,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public List<MeasureShareDTO> searchComponentMeasuresWithFilter(MeasureSearchModel measureSearchModel) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measureDAO.getComponentMeasureShareInfoForUserWithFilter(measureSearchModel, user);
+	}
+
+	@Override
+	public void save(ComponentMeasure componentMeasure) {
+		componentMeasuresDAO.save(componentMeasure);
 	}
 }

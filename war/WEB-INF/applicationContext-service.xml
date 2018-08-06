@@ -42,7 +42,7 @@
 
     <bean id="measureAuditService" class="mat.server.service.impl.MeasureAuditServiceImpl">
     </bean>
-    
+
     <bean id="cqlLibraryAuditService" class="mat.server.service.impl.CQLLibraryAuditServiceImpl">
     </bean>
     

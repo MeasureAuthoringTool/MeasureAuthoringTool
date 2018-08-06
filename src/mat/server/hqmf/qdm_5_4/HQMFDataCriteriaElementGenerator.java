@@ -664,13 +664,6 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
 		
-		System.out.println("i am here");
-		
-		System.out.println(qdmOidValue);
-		System.out.println(qdmName);
-		System.out.println(qdmTaxonomy);
-		System.out.println(qdmNameDataType);
-		
 		if (subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
 			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
 			for (String changeAttribute : attributeToBeModified) {

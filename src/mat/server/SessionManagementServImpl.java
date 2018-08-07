@@ -1,6 +1,8 @@
 package mat.server;
 
 
+import java.sql.Timestamp;
+
 import mat.client.login.service.SessionManagementService;
 import mat.model.User;
 import mat.server.service.MeasureLibraryService;
@@ -22,9 +24,8 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 	@Override
 	public SessionManagementService.Result getCurrentUserRole() {
 		SessionManagementService.Result result = new SessionManagementService.Result();
+		result.sessionCreationTimestamp = new Timestamp(getThreadLocalRequest().getSession(false).getCreationTime());
 		result.userId = LoggedInUserUtil.getLoggedInUser();
-		//result.userRole = LoggedInUserUtil.getLoggedInUserRole();
-		
 		User user= getUserService().getById(result.userId);
 		result.userRole = user.getSecurityRole().getDescription();
 		result.loginId = user.getLoginId();

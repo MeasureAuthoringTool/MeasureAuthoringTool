@@ -153,7 +153,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 				@Override
 				public void onSuccess(String resultMatVersion) {
-					if(result == null){
+					if(result == null || (checkIfResultIsNotNull(result) && result.sessionCreationTimestamp.before(result.signInDate))){
 						redirectToLogin();
 					}else{
 						final Date lastSignIn = result.signInDate;
@@ -165,6 +165,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 						loadMatWidgets(result.userFirstName, isAlreadySignedIn, resultMatVersion);
 					}
 					
+				}
+
+				private boolean checkIfResultIsNotNull(final SessionManagementService.Result result) {
+					return result != null && result.sessionCreationTimestamp != null && result.signInDate != null;
 				}
 			});
 			}

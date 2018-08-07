@@ -404,10 +404,10 @@ public interface MeasureLibraryService {
 	/**
 	 * Gets the component measures.
 	 *
-	 * @param measureIds the measure ids
+	 * @param measureId the measure ids
 	 * @return the component measures
 	 */
-	ManageMeasureSearchModel getComponentMeasures(List<String> measureIds);
+	ManageMeasureSearchModel getComponentMeasures(String measureId);
 	
 	
 	

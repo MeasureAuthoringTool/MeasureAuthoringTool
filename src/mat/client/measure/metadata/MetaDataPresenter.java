@@ -484,13 +484,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		PrimaryButton getSearchButton();
 		
 		/**
-		 * Gets the adds the edit cmponent measures.
-		 *
-		 * @return the adds the edit cmponent measures
-		 */
-		HasClickHandlers getAddEditComponentMeasures();
-		
-		/**
 		 * Gets the dialog box.
 		 *
 		 * @return the dialog box
@@ -858,9 +851,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	
 	private HandlerRegistration nqfHandlerRegistration;
 	
-	/** The add edit component measures display. */
-	private AddEditComponentMeasuresDisplay addEditComponentMeasuresDisplay;
-	
 	/** The current measure detail. */
 	private ManageMeasureDetailModel currentMeasureDetail;
 	
@@ -954,13 +944,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	private void addHandlersToMetaDataDisplay() {
 		HandlerManager eventBus = MatContext.get().getEventBus();
-		metaDataDisplay.getAddEditComponentMeasures().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getMetaDataDisplay().getSaveErrorMsg().clearAlert();
-				displayAddEditComponentMeasures();
-			}
-		});
 		
 		metaDataDisplay.getDeleteMeasure().addClickHandler(new ClickHandler() {
 			@Override
@@ -1269,15 +1252,9 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * @return the component measures
 	 */
 	public final void getComponentMeasures(){
-		currentMeasureDetail.setComponentMeasuresSelectedList(metaDataDisplay.getComponentMeasureSelectedList());
-		List<String> listIds = new ArrayList<String>();
-		for(int i = 0;i<currentMeasureDetail.getComponentMeasuresSelectedList().size();i++){
-			listIds.add(currentMeasureDetail.getComponentMeasuresSelectedList().get(i).getId());
-		}
-		if((listIds!=null) && (listIds.size()>0)){
 			MatContext
 			.get()
-			.getMeasureService().getComponentMeasures(listIds, new AsyncCallback<ManageMeasureSearchModel>() {
+			.getMeasureService().getComponentMeasures(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureSearchModel>() {
 				
 				@Override
 				public void onFailure(Throwable caught) {
@@ -1290,76 +1267,6 @@ public class MetaDataPresenter  implements MatPresenter {
 					metaDataDisplay.buildComponentMeasuresSelectedList(measureSelectedList, editable);
 				}
 			});
-		} else {
-			metaDataDisplay.buildComponentMeasuresSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList(), editable);
-		}
-	}
-	
-	/**
-	 * Search measures list.
-	 *
-	 * @param searchText the search text
-	 * @param startIndex the start index
-	 * @param pageSize the page size
-	 * @param filter the filter
-	 */
-	private void searchMeasuresList(final String searchText, int startIndex, int pageSize,
-			int filter){
-		addEditComponentMeasuresDisplay.getSuccessMessageDisplay().clearAlert();
-		showAdminSearchingBusy(true);
-		metaDataDisplay.setSaveButtonEnabled(false);
-		
-
-		MeasureSearchModel model = new MeasureSearchModel(filter, startIndex + 1, startIndex + PAGE_SIZE, searchText, searchText);
-		
-		MatContext.get().getMeasureService().search(model,
-				new AsyncCallback<ManageMeasureSearchModel>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				metaDataDisplay
-				.getErrorMessageDisplay()
-				.createAlert(
-						MatContext
-						.get()
-						.getMessageDelegate()
-						.getGenericErrorMessage());
-				MatContext
-				.get()
-				.recordTransactionEvent(
-						null,
-						null,
-						null,
-						"Unhandled Exception: "
-								+ caught.getLocalizedMessage(),
-								0);
-				showAdminSearchingBusy(false);
-			}
-			
-			@Override
-			public void onSuccess(ManageMeasureSearchModel result) {
-				showAdminSearchingBusy(false);
-				manageMeasureSearchModel = result;
-				addEditComponentMeasuresDisplay.buildCellTable(manageMeasureSearchModel,searchText, currentMeasureDetail.getComponentMeasuresSelectedList());
-			}
-		});
-	}
-	
-	/**
-	 * Show admin searching busy.
-	 *
-	 * @param busy the busy
-	 */
-	private void showAdminSearchingBusy(boolean busy) {
-		if (busy) {
-			Mat.showLoadingMessage();
-		} else {
-			Mat.hideLoadingMessage();
-		}
-		((org.gwtbootstrap3.client.ui.Button) addEditComponentMeasuresDisplay.getSearchButton()).setEnabled(!busy);
-		((com.google.gwt.user.client.ui.TextBox) (addEditComponentMeasuresDisplay.getSearchString())).setEnabled(!busy);
-		((Button) addEditComponentMeasuresDisplay.getReturnButton()).setEnabled(!busy);
-		addEditComponentMeasuresDisplay.getApplytoComponentMeasuresBtn().setEnabled(!busy);
 	}
 			
 	/**
@@ -1989,73 +1896,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		if ((metaDataDisplay.getEmeasureId().getValue() != null) && !metaDataDisplay.getEmeasureId().getValue().equals("")) {
 			currentMeasureDetail.seteMeasureId(new Integer(metaDataDisplay.getEmeasureId().getValue()));
 		}
-	}
-	
-	/**
-	 * Display add edit component measures.
-	 */
-	private void displayAddEditComponentMeasures() {
-		AddEditComponentMeasuresView cmDisplay = new AddEditComponentMeasuresView();
-		addEditComponentMeasuresDisplay = cmDisplay;
-		addEditComponenetMeasuresClickHandlers();
-		isSubView = true;
-		clearMessages();
-		VerticalPanel vPanel = new VerticalPanel();
-		searchMeasuresList("",1,PAGE_SIZE,1);
-		panel.clear();
-		panel.setStyleName("contentWithHeadingPanel");
-		vPanel.add(addEditComponentMeasuresDisplay.asWidget());
-		vPanel.add(new SpacerWidget());
-		vPanel.add(new SpacerWidget());
-		vPanel.add(addEditComponentMeasuresDisplay.getRetButton());
-		panel.add(vPanel);
-		previousContinueButtons.setVisible(false);
-		Mat.focusSkipLists("MeasureComposer");
-	}
-	
-	/**
-	 * Adds the edit componenet measures click handlers.
-	 */
-	private void addEditComponenetMeasuresClickHandlers() {
-		//AddToComponentMeasures Button clickHandler Handler
-		addEditComponentMeasuresDisplay.getApplytoComponentMeasuresButtonHandler().addClickHandler(
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						addEditComponentMeasuresDisplay
-						.getSuccessMessageDisplay()
-						.createAlert(
-								MatContext
-								.get()
-								.getMessageDelegate()
-								.getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
-						metaDataDisplay
-						.setComponentMeasureSelectedList(addEditComponentMeasuresDisplay
-								.getComponentMeasuresList());
-					}
-				});
-		
-		//Component Measures Search clickHandler handler
-		addEditComponentMeasuresDisplay.getSearchButton().addClickHandler(
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						searchMeasuresList(addEditComponentMeasuresDisplay
-								.getSearchString().getValue(), 1, PAGE_SIZE, 1);
-					}
-				});
-		
-		//component Measures Return click handler
-		addEditComponentMeasuresDisplay.getReturnButton().addClickHandler(
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						isSubView = false;
-						metaDataDisplay.setSaveButtonEnabled(editable);
-						getComponentMeasures();
-						backToDetail();
-					}
-				});
 	}
 	
 	/* (non-Javadoc)

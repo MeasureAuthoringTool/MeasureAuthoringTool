@@ -147,7 +147,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  definitionsInput = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength guidanceInput = new TextAreaWithMaxLength();
 	protected TextAreaWithMaxLength transmissionFormatInput = new TextAreaWithMaxLength();
-	private Button addEditCmponentMeasures = new Button("Add/Edit Component Measures");
 	private Button AddRowButton = new Button("Add Reference");
 	private Button generateeMeasureIDButton = new Button("Generate Identifier");
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
@@ -182,6 +181,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			new SaveDeleteMeasureDetailsButtonBarBuilder("MeasureDetailsTop", "saveButton_Button1", "deleteMeasure_Button1");
 	private SaveDeleteMeasureDetailsButtonBarBuilder buttonBarBottom = 
 			new SaveDeleteMeasureDetailsButtonBarBuilder("MeasureDetailsBottom", "saveButton_Button" ,"deleteMeasure_Button");
+	private VerticalPanel componentMeasurePanel;
 	
 	public MetaDataView(){
 		generateeMeasureIDButton.setType(ButtonType.PRIMARY);
@@ -195,8 +195,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		successMessages2.setWidth("900px");
 		errorMessages2.setWidth("900px");
 		saveErrorDisplay.setWidth("900px");
-		addEditCmponentMeasures.setType(ButtonType.PRIMARY);
-		addEditCmponentMeasures.setTitle("Add or Edit Component Measures.");
 		
 		addClickHandlers();
 		searchString.setHeight("20px");
@@ -294,9 +292,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		// Measure Type Table
 		buildMeasureTypeTableComponent(moreMeasureDetailsVP);
-		moreMeasureDetailsVP.add(new SpacerWidget());
-	
-		buildComponentMeasureTableComponent(moreMeasureDetailsVP);
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		
 		buildStratificationInputComponent(moreMeasureDetailsVP);
@@ -677,9 +672,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		CompMeasureTableLabel.setStyleName("measureDetailLabelStyle");
 		moreMeasureDetailsVP.add(CompMeasureTableLabel);
 		moreMeasureDetailsVP.add(componentMeasuresListSPanel);
-		moreMeasureDetailsVP.add(new SpacerWidget());
-		moreMeasureDetailsVP.add(addEditCmponentMeasures);
-		addEditCmponentMeasures.setId("addEditCmponentMeasures_Button");
 	}
 
 	private void buildMeasureTypeTableComponent(VerticalPanel moreMeasureDetailsVP) {
@@ -808,6 +800,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 	private PanelGroup buildMeasureMetadeta() {
+		VerticalPanel wrapperPanel = new VerticalPanel();
 		HorizontalPanel generalMainPanel = new HorizontalPanel();
 		VerticalPanel generalLeftPanel = new VerticalPanel();
 		
@@ -895,6 +888,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		generalMainPanel.add(generalLeftPanel);
 		generalMainPanel.add(generalRightPanel);
 		
+		componentMeasurePanel = new VerticalPanel();
+		buildComponentMeasureTableComponent(componentMeasurePanel);
+		wrapperPanel.add(generalMainPanel);
+		wrapperPanel.add(new SpacerWidget());
+		wrapperPanel.add(componentMeasurePanel);
+		
 		PanelCollapse panelCollapse = new PanelCollapse();
 		Anchor viewMetadataAnchor = new Anchor();
 
@@ -915,12 +914,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		panelCollapse.setId("panelCollapse");
 		PanelBody body = new PanelBody();
 
-		body.add(generalMainPanel);
+		body.add(wrapperPanel);
 		panelCollapse.add(body);
 
 		panel.add(header);
 		panel.add(panelCollapse);
-		panel.setWidth("900px");
 
 		panelGroup.add(panel);
 	
@@ -1043,22 +1041,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureObservationsInput.setMaxLength(15000);
 		
 		eMeasureIdentifierInput.setMaxLength(6);
-	}
-
-	public void updateComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> measuresSelectedList) {
-		if (componentMeasureSelectedList.size() != 0) {
-			for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
-				for (int j = 0; j < measuresSelectedList.size(); j++) {
-					if (componentMeasureSelectedList.get(i).getId().
-							equalsIgnoreCase(measuresSelectedList.get(j).getId())) {
-						componentMeasureSelectedList.set(i, measuresSelectedList.get(j));
-						break;
-					}
-				}
-			}
-		}
-	}
-	
+	}	
 
 	public void updateMeasureTypeSelectedList(List<MeasureType> measureTypeList) {
 		if (measureTypeSelectedList.size() != 0) {
@@ -1115,52 +1098,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		caption.appendChild(measureSearchHeader.getElement());
 		measureSelectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		componentMeasureCellTable.setSelectionModel(measureSelectionModel);
-		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
-		
-		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(
-				chbxCell) {
-			
-			@Override
-			public Boolean getValue(Result object) {
-				boolean isSelected = false;
-				if ((componentMeasureSelectedList != null)
-						&& (componentMeasureSelectedList.size() > 0)) {
-					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
-						if (componentMeasureSelectedList.get(i).getId()
-								.equalsIgnoreCase(object.getId())) {
-							isSelected = true;
-							break;
-						}
-					}
-				} else {
-					isSelected = false;
-				}
-				return isSelected;
-			}
-		};
-		
-		selectColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
-			@Override
-			public void update(int index, Result object, Boolean value) {
-				measureSelectionModel.setSelected(object, value);
-				if (value) {
-					componentMeasureSelectedList.add(object);
-				} else {
-					for (int i = 0; i < componentMeasureSelectedList
-							.size(); i++) {
-						if (componentMeasureSelectedList.get(i).getId()
-								.equalsIgnoreCase(object.getId())) {
-							componentMeasureSelectedList.remove(i);
-							break;
-						}
-					}
-				}
-			}
-		});
-		
-		componentMeasureCellTable.addColumn(selectColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
-						+ "Select" + "</span>"));
+
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureNameColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new SafeHtmlCell()) {
@@ -1186,20 +1124,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				SafeHtmlUtils.fromSafeConstant("<span title='Version'>"
 						+ "Version" + "</span>"));
 		
-		Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDateColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new SafeHtmlCell()) {
-			@Override
-			public SafeHtml getValue(Result object) {
-				return CellTableUtility
-						.getColumnToolTip(convertTimestampToString(object
-								.getFinalizedDate()));
-			}
-		};
-		
-		componentMeasureCellTable.addColumn(finalizedDateColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='Finalized Date'>"
-						+ "Finalized Date" + "</span>"));
-		
 		return componentMeasureCellTable;
 	}
 
@@ -1223,23 +1147,22 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			updateLoadingState(componentMeasureCellTable);
 			componentMeasureSelectedList = result;
 			componentMeasureCellTable = addMeasuresColumnToTable(editable);
-			updateComponentMeasuresSelectedList(selectedMeasureList);
 			sortProvider.addDataDisplay(componentMeasureCellTable);
 			componentMeasureCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
-					"In the following Component Measure List table,Select is given in first Column, Measure Name is given in Second column,"
-							+ " Version in Third column, Finalized Date in fouth column.");
+					"In the following Component Measure List table, Measure Name is given in first column,"
+							+ " Version in second column.");
 			componentMeasureCellTable.getElement().setAttribute("id", "ComponentMeasuresListCellTable");
 			componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
 			componentMeasureCellTable.setWidth("99%");
 			VerticalPanel vp = new VerticalPanel();
 			vp.add(invisibleLabel);
 			vp.add(componentMeasureCellTable);
-			vp.setSize("750px", "150px");
+			vp.setSize("100%", "150px");
 			componentMeasuresListSPanel.setWidget(vp);
+			componentMeasurePanel.setVisible(true);
 		} else {
-			HTML desc = new HTML("<p> No Component Measures Selected.</p>");
-			componentMeasuresListSPanel.setWidget(desc);
+			componentMeasurePanel.setVisible(false);
 		}
 	}
 	
@@ -1527,12 +1450,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public HasKeyDownHandlers getFocusPanel(){
 		return focusPanel;
-	}
-	
-
-	@Override
-	public HasClickHandlers getAddEditComponentMeasures() {
-		return addEditCmponentMeasures;
 	}
 
 	@Override
@@ -1886,7 +1803,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 	@Override
 	public void setAddEditButtonsVisible(boolean b) {
-		addEditCmponentMeasures.setEnabled(b);
 		measurePeriodFromInput.setEnableCSS(b);
 		measurePeriodToInput.setEnableCSS(b);
 		AddRowButton.setEnabled(b);

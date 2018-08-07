@@ -2,7 +2,6 @@ package mat.dao.impl.clause;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -35,13 +34,13 @@ import mat.model.LockedUserInfo;
 import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
-import mat.shared.MeasureSearchModel.VersionMeasureType;
 import mat.shared.StringUtility;
 
 public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.clause.MeasureDAO {
@@ -135,15 +134,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	}
 
 	@Override
-	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds) {
-		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureIds);
-		List<Measure> measure = mCriteria.list();
+	public List<ComponentMeasure> getComponentMeasureInfoForMeasures(String measureId) {
+		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureId);
+		List<ComponentMeasure> measure = mCriteria.list();
 		return measure;
 	}
 
-	private Criteria buildComponentMeasureShareForUserCriteria(List<String> listComponentMeasureIds) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		mCriteria.add(Restrictions.in("id", listComponentMeasureIds));
+	private Criteria buildComponentMeasureShareForUserCriteria(String measureId) {
+		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(ComponentMeasure.class);
+		mCriteria.add(Restrictions.eq("compositeMeasureId", measureId));
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
 	}

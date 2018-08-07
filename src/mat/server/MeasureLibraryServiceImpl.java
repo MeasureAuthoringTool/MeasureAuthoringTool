@@ -3217,9 +3217,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public ManageMeasureSearchModel getComponentMeasures(List<String> measureIds) {
+	public ManageMeasureSearchModel getComponentMeasures(String measureId) {
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<Measure> measureList = getService().getComponentMeasuresInfo(measureIds);
+		List<Measure> measureList = getService().getComponentMeasuresInfo(measureId);
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 		searchModel.setData(detailModelList);
 		for (Measure measure : measureList) {

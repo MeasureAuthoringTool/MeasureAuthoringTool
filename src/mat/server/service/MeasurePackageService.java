@@ -329,10 +329,10 @@ public interface MeasurePackageService {
 	/**
 	 * Gets the component measures info.
 	 *
-	 * @param measureIds the measure ids
+	 * @param measureId the measure ids
 	 * @return the component measures info
 	 */
-	List<Measure> getComponentMeasuresInfo(List<String> measureIds);
+	List<Measure> getComponentMeasuresInfo(String measureId);
 	
 	/**
 	 * Gets the measure.

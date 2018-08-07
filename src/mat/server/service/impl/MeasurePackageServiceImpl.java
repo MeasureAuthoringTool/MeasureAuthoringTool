@@ -343,8 +343,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	@Override
-	public List<Measure> getComponentMeasuresInfo(List<String> measureIds){
-		return measureDAO.getComponentMeasureInfoForMeasures(measureIds);
+	public List<Measure> getComponentMeasuresInfo(String measureId){
+		List<Measure> componentMeasures = new ArrayList<>();
+		List<ComponentMeasure> components = measureDAO.getComponentMeasureInfoForMeasures(measureId);
+		for(ComponentMeasure cm : components) {
+			componentMeasures.add(measureDAO.find(cm.getComponentMeasureId()));
+		}
+		return componentMeasures;
 	}
 
 	public void setValidator(ValidationUtility validator) {

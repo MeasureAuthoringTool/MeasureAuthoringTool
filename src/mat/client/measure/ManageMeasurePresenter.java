@@ -76,6 +76,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
 import mat.shared.MeasureSearchModel.VersionMeasureType;
+import mat.shared.StringUtility;
 
 public class ManageMeasurePresenter implements MatPresenter {
 
@@ -432,6 +433,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
+						/*						GWT.log("onFailure");
+						GWT.log(caught.getCause().getMessage());*/
 					}
 
 					@Override
@@ -542,12 +545,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if(componentMeasureDisplay != null) {
 					componentMeasureDisplay.clearFields();
 				}
-				updateCompositeDetailsFromCompositeDetailView();
+
+				String panelHeading = "My Measures > Create New Composite Measure > Component Measures";
+				if(StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
+					updateCompositeDetailsFromCompositeDetailView();
+				} else {
+					panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
+				}
+
 				if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
 					return;
 				}
 				
-				displayComponentDetails();
+				displayComponentDetails(panelHeading);
 			}
 		});
 
@@ -659,9 +669,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		setCompositeDetailsToView();
 	}
 	
-	private void displayComponentDetails() {
+	private void displayComponentDetails(String panelHeading) {
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Create New Composite Measure > Component Measures", "MeasureLibrary");
+		panel.setHeading(panelHeading, "MeasureLibrary");
 		panel.setContent(componentMeasureDisplay.asWidget());
 	}
 
@@ -843,25 +853,45 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 
-	private void edit(String name) {
+	private void edit(String measureId, Boolean isComposite) {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-		MatContext.get().getMeasureService().getMeasure(name, new AsyncCallback<ManageMeasureDetailModel>() {
+		if(isComposite) {
+			MatContext.get().getMeasureService().getCompositeMeasure(measureId, new AsyncCallback<ManageCompositeMeasureDetailModel>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				detailDisplay.getErrorMessageDisplay()
-						.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null,
-						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-			}
+				@Override
+				public void onFailure(Throwable caught) {
+					detailDisplay.getErrorMessageDisplay()
+					.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					MatContext.get().recordTransactionEvent(null, null, null,
+							"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				}
 
-			@Override
-			public void onSuccess(ManageMeasureDetailModel result) {
-				currentDetails = result;
-				displayDetailForEdit();
-			}
-		});
+				@Override
+				public void onSuccess(ManageCompositeMeasureDetailModel result) {
+					currentCompositeMeasureDetails = result;
+					componentMeasureDisplay.setAppliedComponentMeasuresList(currentCompositeMeasureDetails.getAppliedComponentMeasures());
+					//TODO edit composite measure
+				}
+			});
+		} else {
+			MatContext.get().getMeasureService().getMeasure(measureId, new AsyncCallback<ManageMeasureDetailModel>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					detailDisplay.getErrorMessageDisplay()
+							.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					MatContext.get().recordTransactionEvent(null, null, null,
+							"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				}
+
+				@Override
+				public void onSuccess(ManageMeasureDetailModel result) {
+					currentDetails = result;
+					displayDetailForEdit();
+				}
+			});
+		}
 	}
 
 	private void editClone(String id) {
@@ -1180,7 +1210,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 									searchDisplay.getErrorMessageDisplay().clearAlert();
 									searchDisplay.getErrorMessagesForTransferOS().clearAlert();
 									updateTransferIDs(result, manageMeasureSearchModel);
-
 								}
 
 								@Override
@@ -1276,7 +1305,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							@Override
 							public void onEditClicked(ManageMeasureSearchModel.Result result) {
 								resetMeasureFlags();
-								edit(result.getId());
+								edit(result.getId(), result.getIsComposite());
 							}
 
 							@Override
@@ -1720,7 +1749,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								isMeasureDeleted = false;
 								isMeasureVersioned = false;
 								searchDisplay.resetMessageDisplay();
-								edit(result.getId());
+								edit(result.getId(), result.getIsComposite());
 
 							}
 

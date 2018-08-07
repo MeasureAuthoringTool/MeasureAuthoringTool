@@ -529,7 +529,6 @@ public class CQLUtil {
 			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
 
 			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString);
-
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
@@ -947,6 +946,7 @@ public class CQLUtil {
 			libNode.setAttribute("alias", cqlLibrary.getAliasName());
 			libNode.setAttribute("name", cqlLibrary.getCqlLibraryName());
 			libNode.setAttribute("version", cqlLibrary.getVersion());
+			libNode.setAttribute("setId", cqlLibrary.getSetId());
 			libNode.setAttribute("isUnUsedGrandChild", "false");
 
 			allUsedLibsNode.appendChild(libNode);
@@ -1002,6 +1002,7 @@ public class CQLUtil {
 								libNode.setAttribute("alias", grandChildLib.getAliasName());
 								libNode.setAttribute("name", grandChildLib.getCqlLibraryName());
 								libNode.setAttribute("version", grandChildLib.getVersion());
+								libNode.setAttribute("setId", grandChildLib.getSetId());
 								libNode.setAttribute("isUnUsedGrandChild", "true");
 								allUsedLibsNode.appendChild(libNode);
 							}

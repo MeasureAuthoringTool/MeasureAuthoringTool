@@ -47,7 +47,7 @@ public class HQMFGenerator implements Generator {
 			//generateNarrative(me);
 			hqmfXML = finalCleanUp(me);
 		} catch (Exception e) {
-			logger.error("Unable to generate human readable. Exception Stack Strace is as followed : ");
+			logger.error("Unable to generate HQMF for QDM v5.4. Exception Stack Strace is as followed : ");
 			e.printStackTrace();
 		}
 		return hqmfXML;

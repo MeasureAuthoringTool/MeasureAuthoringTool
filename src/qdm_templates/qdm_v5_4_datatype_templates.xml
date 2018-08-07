@@ -220,10 +220,10 @@
 						<item root="2.16.840.1.113883.10.20.28.4.88" extension="2017-05-01"></item>
 					</templateId>
 					<id root="$UUID" extension="$extensionUUID"/>
-					<title value="Reason"></title>
 					<code code="410666004" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED CT">
 						<displayName value="Reason" />
 					</code>
+					<title value="Reason" />
 					<value xsi:type="CD"/>
 				</observationCriteria>
 			</outboundRelationship>

@@ -754,10 +754,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            - Measure
 	 * @return ManageMeasureDetailModel
 	 */
-	private <T> T convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
+	private ManageMeasureDetailModel convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
 
-		Object details = null;
+		ManageMeasureDetailModel details = null;
 		String xml = null;
 		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
@@ -772,16 +772,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} catch (Exception e) {
 			logger.info(OTHER_EXCEPTION + e.getMessage());
 		}
-		return (T) details;
+		return details;
 	}
 
-	private <T> T createModelForNoXML(final Measure measure) {
-		T details;
+	private ManageMeasureDetailModel createModelForNoXML(final Measure measure) {
+		ManageMeasureDetailModel details = null;
 		if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
-			details = (T) new ManageCompositeMeasureDetailModel();
+			details = new ManageCompositeMeasureDetailModel();
 			createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) details, measure);
 		} else {
-			details = (T) new ManageMeasureDetailModel();
+			details = new ManageMeasureDetailModel();
 			createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) details, measure);
 		}
 		
@@ -790,10 +790,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	private void createMeasureDetailsModelForCompositeMeasure(final ManageCompositeMeasureDetailModel model, final Measure measure) {
 		createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) model, measure);
+		model.setCompositeScoringMethod(measure.getCompositeScoring());
+		
+		List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList = new ArrayList<>();
+		Map<String, String> aliasMapping = new HashMap<>();
+		
 		for(ComponentMeasure component : measure.getComponentMeasures()) {
-			ManageMeasureDetailModel result = getMeasure(component.getComponentMeasureId());
+			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasureId()));			
 		}
 		
+		model.setComponentMeasuresSelectedList(componentMeasuresSelectedList);
+		
+		for(ComponentMeasure component : measure.getComponentMeasures() ) {
+			aliasMapping.put(component.getComponentMeasureId(), component.getAlias());
+		}
+		
+		model.setAliasMapping(aliasMapping);
 	}
 	
 	private <T> T createModelFromXML(String xml, final Measure measure) {
@@ -1269,45 +1281,50 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>) recentMSRActivityLogDAO
 				.getRecentMeasureActivityLog(userId);
 		ManageMeasureSearchModel manageMeasureSearchModel = new ManageMeasureSearchModel();
-		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
+		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
 		manageMeasureSearchModel.setData(detailModelList);
 		
 		for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
-			Measure measure = getMeasureDAO().find(activityLog.getMeasureId());
-			ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
-			detail.setName(measure.getDescription());
-			detail.setShortName(measure.getaBBRName());
-			detail.setId(measure.getId());
-			detail.setDraft(measure.isDraft());
-			detail.setExportable(measure.getExportedDate() != null); // to show export icon.
-			detail.setHqmfReleaseVersion(measure.getReleaseVersion());
-			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
-					measure.getRevisionNumber(), measure.isDraft());
-			detail.setVersion(formattedVersion);
-			detail.setFinalizedDate(measure.getFinalizedDate());
-			detail.setOwnerfirstName(measure.getOwner().getFirstName());
-			detail.setOwnerLastName(measure.getOwner().getLastName());
-			detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
-			detail.setMeasureSetId(measure.getMeasureSet().getId());
-			detail.setScoringType(measure.getMeasureScoring());
-			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
-			detail.setMeasureLocked(isLocked);
-			detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
-			if(measure.getPatientBased() != null) {
-				detail.setPatientBased(measure.getPatientBased());
-			}
-			
-			if (isLocked && (measure.getLockedUser() != null)) {
-				LockedUserInfo lockedUserInfo = new LockedUserInfo();
-				lockedUserInfo.setUserId(measure.getLockedUser().getId());
-				lockedUserInfo.setEmailAddress(measure.getLockedUser().getEmailAddress());
-				lockedUserInfo.setFirstName(measure.getLockedUser().getFirstName());
-				lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
-				detail.setLockedUserInfo(lockedUserInfo);
-			}
+			ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId());			
 			detailModelList.add(detail);
 		}
 		return manageMeasureSearchModel;
+	}
+	
+	private ManageMeasureSearchModel.Result buildSearchModelResultObjectFromMeasureId(String measureId){
+		Measure measure = getMeasureDAO().find(measureId);
+		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
+		detail.setName(measure.getDescription());
+		detail.setShortName(measure.getaBBRName());
+		detail.setId(measure.getId());
+		detail.setDraft(measure.isDraft());
+		detail.setExportable(measure.getExportedDate() != null); // to show export icon.
+		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
+		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
+				measure.getRevisionNumber(), measure.isDraft());
+		detail.setVersion(formattedVersion);
+		detail.setFinalizedDate(measure.getFinalizedDate());
+		detail.setOwnerfirstName(measure.getOwner().getFirstName());
+		detail.setOwnerLastName(measure.getOwner().getLastName());
+		detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
+		detail.setMeasureSetId(measure.getMeasureSet().getId());
+		detail.setScoringType(measure.getMeasureScoring());
+		boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
+		detail.setMeasureLocked(isLocked);
+		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
+		detail.setPatientBased(measure.getPatientBased());
+
+		if (isLocked && (measure.getLockedUser() != null)) {
+			LockedUserInfo lockedUserInfo = new LockedUserInfo();
+			lockedUserInfo.setUserId(measure.getLockedUser().getId());
+			lockedUserInfo.setEmailAddress(measure.getLockedUser().getEmailAddress());
+			lockedUserInfo.setFirstName(measure.getLockedUser().getFirstName());
+			lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
+			detail.setLockedUserInfo(lockedUserInfo);
+		}
+
+		return detail;
+
 	}
 
 	/**
@@ -1485,7 +1502,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
 		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
 		
-		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = convertXmltoModel(xml, measure);
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXmltoModel(xml, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		
 		return manageCompositeMeasureDetailModel;

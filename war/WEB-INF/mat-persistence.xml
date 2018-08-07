@@ -40,12 +40,7 @@
     
     <context:annotation-config />
     <context:component-scan base-package="mat.hibernate"/>
-<<<<<<< HEAD
     <context:component-scan base-package="mat.server"/>
-=======
-    <context:component-scan base-package="mat.server.hqmf"/>
-    <context:component-scan base-package="mat.server.bonnie"/>
->>>>>>> dc61ff17bcede1749b0abf7fa923ccef3696856e
 
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"

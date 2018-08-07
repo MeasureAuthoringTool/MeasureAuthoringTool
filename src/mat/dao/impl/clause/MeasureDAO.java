@@ -824,7 +824,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				String measureAbbName = measure.getaBBRName().toLowerCase();
 				String measureDesc = measure.getDescription().toLowerCase();
 				String owner = measure.getOwner().getFirstName().toLowerCase() + " " + measure.getOwner().getLastName().toLowerCase();
-				if (!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm) && !owner.contains(searchTerm)) {
+				String measureId = new Integer(measure.geteMeasureId()).toString();
+				if (!measureAbbName.contains(searchTerm) && !measureDesc.contains(searchTerm) && !owner.contains(searchTerm) && !measureId.contains(searchTerm)) {
 					return false;
 				}
 			}

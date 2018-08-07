@@ -1304,6 +1304,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setShortName(measure.getaBBRName());
 		detail.setId(measure.getId());
 		detail.setDraft(measure.isDraft());
+		detail.setIsComposite(measure.getIsCompositeMeasure());
 		detail.setExportable(measure.getExportedDate() != null); // to show export icon.
 		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
@@ -1328,7 +1329,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
 			detail.setLockedUserInfo(lockedUserInfo);
 		}
-
+		
 		return detail;
 
 	}

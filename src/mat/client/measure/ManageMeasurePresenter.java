@@ -726,6 +726,31 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 
+	private void displayDetailForEditComposite() {
+		panel.getButtonPanel().clear();
+		resetPatientBasedInput(compositeDetailDisplay); 
+		panel.setHeading("My Measures > Edit Composite Measure", "MeasureLibrary");
+		compositeDetailDisplay.showMeasureName(false);
+		compositeDetailDisplay.showCautionMsg(true);
+			
+		setCompositeDetailsToView();
+
+		// set the patient based indicators, yes is index 1, no is index 0
+		if(currentCompositeMeasureDetails.isPatientBased()) {
+			compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(1);
+		} else {
+			compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(0);
+		}
+		
+		if(currentCompositeMeasureDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+			compositeDetailDisplay.getPatientBasedInput().removeItem(1);
+		}
+		
+		panel.setContent(compositeDetailDisplay.asWidget());
+		
+		
+	}
+
 	private void resetPatientBasedInput(DetailDisplay currentDisplay) {
 		currentDisplay.getPatientBasedInput().clear();
 		currentDisplay.getPatientBasedInput().addItem("No", "No");
@@ -856,7 +881,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void edit(String measureId, Boolean isComposite) {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-		if(isComposite) {
+		if(isComposite != null && isComposite) {
 			MatContext.get().getMeasureService().getCompositeMeasure(measureId, new AsyncCallback<ManageCompositeMeasureDetailModel>() {
 
 				@Override
@@ -871,7 +896,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				public void onSuccess(ManageCompositeMeasureDetailModel result) {
 					currentCompositeMeasureDetails = result;
 					componentMeasureDisplay.setAppliedComponentMeasuresList(currentCompositeMeasureDetails.getAppliedComponentMeasures());
-					//TODO edit composite measure
+					displayDetailForEditComposite();
 				}
 			});
 		} else {

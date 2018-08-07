@@ -248,8 +248,8 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public ManageMeasureSearchModel getComponentMeasures(List<String> measureIds){
-		return getMeasureLibraryService().getComponentMeasures(measureIds);
+	public ManageMeasureSearchModel getComponentMeasures(String measureId){
+		return getMeasureLibraryService().getComponentMeasures(measureId);
 	}
 	
 	@Override

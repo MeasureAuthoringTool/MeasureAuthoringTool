@@ -393,7 +393,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureIds the measure ids
 	 * @return the component measures
 	 */
-	ManageMeasureSearchModel getComponentMeasures(List<String> measureIds);
+	ManageMeasureSearchModel getComponentMeasures(String measureId);
 	
 	/**
 	 * Validate package grouping.

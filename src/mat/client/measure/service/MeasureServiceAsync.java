@@ -417,7 +417,7 @@ public interface MeasureServiceAsync {
 	 * @param callback the callback
 	 * @return the component measures
 	 */
-	void getComponentMeasures(List<String> measureIds, AsyncCallback<ManageMeasureSearchModel> callback);
+	void getComponentMeasures(String measureId, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Validate package grouping.

@@ -432,8 +432,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						/*						GWT.log("onFailure");
-						GWT.log(caught.getCause().getMessage());*/
 					}
 
 					@Override

@@ -808,26 +808,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		model.setAliasMapping(aliasMapping);
 	}
 	
-	private <T> T createModelFromXML(String xml, final Measure measure) {
+	private ManageMeasureDetailModel createModelFromXML(String xml, final Measure measure) {
 		Object result = null;
+		boolean isComposite = BooleanUtils.isTrue(measure.getIsCompositeMeasure());
 		try {
 			
 			Mapping mapping = new Mapping();			
 			XMLContext xmlContext = new XMLContext();
-			xmlContext.addMapping(mapping);
-
 			Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
 
-			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+			if(isComposite) {
 				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CompositeMeasureDetailsModelMapping.xml"));
 				unmarshaller.setClass(ManageCompositeMeasureDetailModel.class);
 			} else {
 				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
 				unmarshaller.setClass(ManageMeasureDetailModel.class);
 			}
+			xmlContext.addMapping(mapping);
 			unmarshaller.setWhitespacePreserve(true);
 			result = unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
-			convertAddlXmlElementsToModel((ManageMeasureDetailModel)result, measure);
+			
+			if(isComposite) {
+				createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) result, measure);
+			} else {
+				convertAddlXmlElementsToModel((ManageMeasureDetailModel) result, measure);	
+			}
+			
 
 		} catch (MappingException e) {
 			logger.info(MAPPING_FAILED + e.getMessage());
@@ -838,7 +844,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} catch(Exception e) {
 			logger.info(OTHER_EXCEPTION + e.getMessage());
 		}
-		return (T) result;
+		return (ManageMeasureDetailModel) result;
 	}
 
 	/**

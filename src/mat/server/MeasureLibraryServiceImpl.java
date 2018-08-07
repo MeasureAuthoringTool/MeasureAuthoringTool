@@ -30,6 +30,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -40,6 +41,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.exolab.castor.xml.XMLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
@@ -752,39 +754,79 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            - Measure
 	 * @return ManageMeasureDetailModel
 	 */
-	private ManageMeasureDetailModel convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
+	private <T> T convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
-		ManageMeasureDetailModel details = null;
+
+		Object details = null;
 		String xml = null;
 		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 		}
 		try {
 			if (xml == null) { 
-				// DataConversion is complete.
-				logger.info("xml is null or xml doesn't contain measureDetails tag");
-				details = new ManageMeasureDetailModel();
-				createMeasureDetailsModelFromMeasure(details, measure);
+				details = createModelForNoXML(measure);
 			} else {
-				Mapping mapping = new Mapping();
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
-				Unmarshaller unmar = new Unmarshaller(mapping);
-				unmar.setClass(ManageMeasureDetailModel.class);
-				unmar.setWhitespacePreserve(true);
-				details = (ManageMeasureDetailModel) unmar.unmarshal(new InputSource(new StringReader(xml)));
-				convertAddlXmlElementsToModel(details, measure);
+				details = createModelFromXML(xml, measure);
 			}
 
-		} catch (IOException e) {
-			logger.info("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
-		}  catch (MappingException e) {
+		} catch (Exception e) {
+			logger.info(OTHER_EXCEPTION + e.getMessage());
+		}
+		return (T) details;
+	}
+
+	private <T> T createModelForNoXML(final Measure measure) {
+		T details;
+		if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+			details = (T) new ManageCompositeMeasureDetailModel();
+			createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) details, measure);
+		} else {
+			details = (T) new ManageMeasureDetailModel();
+			createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) details, measure);
+		}
+		
+		return details;	
+	}
+	
+	private void createMeasureDetailsModelForCompositeMeasure(final ManageCompositeMeasureDetailModel model, final Measure measure) {
+		createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) model, measure);
+		for(ComponentMeasure component : measure.getComponentMeasures()) {
+			ManageMeasureDetailModel result = getMeasure(component.getComponentMeasureId());
+		}
+		
+	}
+	
+	private <T> T createModelFromXML(String xml, final Measure measure) {
+		Object result = null;
+		try {
+			
+			Mapping mapping = new Mapping();			
+			XMLContext xmlContext = new XMLContext();
+			xmlContext.addMapping(mapping);
+
+			Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
+
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CompositeMeasureDetailsModelMapping.xml"));
+				unmarshaller.setClass(ManageCompositeMeasureDetailModel.class);
+			} else {
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
+				unmarshaller.setClass(ManageMeasureDetailModel.class);
+			}
+			unmarshaller.setWhitespacePreserve(true);
+			result = unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
+			convertAddlXmlElementsToModel((ManageMeasureDetailModel)result, measure);
+
+		} catch (MappingException e) {
 			logger.info(MAPPING_FAILED + e.getMessage());
-		} catch (MarshalException e) {
+		}catch (IOException e) {
+			logger.info("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+		}  catch (MarshalException e) {
 			logger.info(UNMARSHALLING_FAILED + e.getMessage());
 		} catch(Exception e) {
 			logger.info(OTHER_EXCEPTION + e.getMessage());
 		}
-		return details;
+		return (T) result;
 	}
 
 	/**
@@ -1438,6 +1480,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
+	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
+		Measure measure = getService().getById(measureId);
+		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
+		
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = convertXmltoModel(xml, measure);
+		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		
+		return manageCompositeMeasureDetailModel;
+	}
+
+	@Override
 	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
 		logger.info("In MeasureLibraryServiceImpl. updateMeasureXmlForDeletedComponentMeasureAndOrg() method..");
 		logger.info("Updating Measure for MeasueId: " + measureId);
@@ -1983,6 +2037,73 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
 			return result;
 		}
+	}
+	
+	private SaveMeasureResult saveMeasure(ManageMeasureDetailModel model) {
+		
+		// Scrubbing out Mark Up.
+		if (model != null) {
+			model.scrubForMarkUp();
+		}
+		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
+		List<String> message = manageMeasureModelValidator.validateMeasure(model);
+		if (message.isEmpty()) {
+			Measure pkg = null;
+			MeasureSet measureSet = null;
+			if (model.getId() != null) {
+				setMeasureCreated(true);
+				// editing an existing measure
+				pkg = getService().getById(model.getId());
+				model.setVersionNumber(pkg.getVersion());
+				if (pkg.isDraft()) {
+					model.setRevisionNumber(pkg.getRevisionNumber());
+				} else {
+					model.setRevisionNumber("000");
+				}
+				if (pkg.getMeasureSet().getId() != null) {
+					measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
+				}
+				if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
+					// US 194 User is changing the measure scoring. Make sure to
+					// delete any groupings for that measure and save.
+					getMeasurePackageService().deleteExistingPackages(pkg.getId());
+				}
+			} else {
+				// creating a new measure.
+				setMeasureCreated(false);
+				pkg = new Measure();
+				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
+				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
+				model.setRevisionNumber("000");
+				measureSet = new MeasureSet();
+				measureSet.setId(UUID.randomUUID().toString());
+				getService().save(measureSet);
+			}
+			pkg.setMeasureSet(measureSet);
+			setValueFromModel(model, pkg);
+			SaveMeasureResult result = new SaveMeasureResult();
+			try {
+				getAndValidateValueSetDate(model.getValueSetDate());
+				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
+				getService().save(pkg);
+			} catch (InvalidValueSetDateException e) {
+				result.setSuccess(false);
+				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+				result.setId(pkg.getId());
+				return result;
+			}
+			result.setSuccess(true);
+			result.setId(pkg.getId());
+			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			return result;
+		} else {
+			logger.info("Validation Failed for measure :: Invalid Data Issues.");
+			SaveMeasureResult result = new SaveMeasureResult();
+			result.setSuccess(false);
+			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
+			return result;
+		}
+	
 	}
 
 

@@ -503,6 +503,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		return appliedComponentMeasuresList;
 	}
 	
+	public void setAppliedComponentMeasuresList(List<ManageMeasureSearchModel.Result> appliedComponentMeasures) {
+		this.appliedComponentMeasuresList = appliedComponentMeasures;
+	}
+	
 	public Map<String, String> getAliasMapping() {
 		return aliasMapping;
 	}

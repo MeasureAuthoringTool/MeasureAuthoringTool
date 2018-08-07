@@ -39,10 +39,10 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
-import mat.shared.MeasureSearchModel;
 import mat.shared.CQLValidationResult;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 
 /**
@@ -120,9 +120,6 @@ public interface MeasureLibraryService {
 	 *            the check for supplement data
 	 * @return the applied qdm from measure xml
 	 */
-	//	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
-	//			boolean checkForSupplementData);
-	
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
 	
@@ -141,6 +138,8 @@ public interface MeasureLibraryService {
 	 * @return the measure
 	 */
 	ManageMeasureDetailModel getMeasure(String key);
+	
+	ManageCompositeMeasureDetailModel getCompositeMeasure(String key);
 	
 	/**
 	 * Gets the measure xml for measure.

@@ -136,6 +136,8 @@ public interface MeasureServiceAsync {
 	 */
 	void getMeasure(String key, AsyncCallback<ManageMeasureDetailModel> callback);
 	
+	void getCompositeMeasure(String measureId, AsyncCallback<ManageCompositeMeasureDetailModel> callback);
+	
 	/**
 	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
 	 *

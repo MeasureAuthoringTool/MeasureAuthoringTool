@@ -103,6 +103,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
+	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
+		return this.getMeasureLibraryService().getCompositeMeasure(measureId);
+	}
+	
+	@Override
 	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String measureId, String userId) {
 		ManageMeasureDetailModel manageMeasureDetailModel = getMeasure(measureId);
 		if(manageMeasureDetailModel != null){

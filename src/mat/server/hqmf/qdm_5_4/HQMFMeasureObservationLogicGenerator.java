@@ -71,13 +71,6 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		INCLUDED_FUNCTIONAL_NAMES.put("DATETIMEDIFF", "DATETIMEDIFF");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.simplexml.hqmf.HQMFClauseLogicGenerator#generate(mat.model.clause.
-	 * MeasureExport)
-	 */
 	@Override
 	public String generate(MeasureExport me) throws Exception {
 		this.me = me;
@@ -210,21 +203,21 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		measurObSectionElement.appendChild(definitionElement);
 	}
 
-	private void generateCQLLogicForMeasureObservation(Node msrObsClauseNode, Element measureObDefinitionElement) {
+	private void generateCQLLogicForMeasureObservation(Node measureObservationNode, Element measureObservationElementNode) {
 
-		if (!msrObsClauseNode.hasChildNodes()) {
+		if (!measureObservationNode.hasChildNodes()) {
 			return;
 		}
 
 		String extensionAttribute = "";
 
-		Document doc = measureObDefinitionElement.getOwnerDocument();
+		Document doc = measureObservationElementNode.getOwnerDocument();
 
 		Element valueElement = doc.createElement(VALUE);
 		valueElement.setAttribute("xsi:type", "INT");
 		valueElement.setAttribute("nullFlavor", "DER");
 
-		Node firstChildNode = msrObsClauseNode.getFirstChild();
+		Node firstChildNode = measureObservationNode.getFirstChild();
 		String firstChildNodeName = firstChildNode.getNodeName();
 
 		if ("cqlfunction".equals(firstChildNodeName)) {
@@ -232,9 +225,9 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			String functionName = firstChildNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			extensionAttribute += functionName;
 
-			Element expressionElement = createExpressionTag(msrObsClauseNode, doc, firstChildNode);
+			Element expressionElement = createExpressionTag(measureObservationNode, doc, firstChildNode);
 			valueElement.appendChild(expressionElement);
-			measureObDefinitionElement.appendChild(valueElement);
+			measureObservationElementNode.appendChild(valueElement);
 
 		} else if ("cqlaggfunction".equals(firstChildNodeName)) {
 
@@ -249,9 +242,9 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 				String functionName = aggNodeChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 				extensionAttribute += functionName;
 
-				Element expressionElement = createExpressionTag(msrObsClauseNode, doc, aggNodeChild);
+				Element expressionElement = createExpressionTag(measureObservationNode, doc, aggNodeChild);
 				valueElement.appendChild(expressionElement);
-				measureObDefinitionElement.appendChild(valueElement);
+				measureObservationElementNode.appendChild(valueElement);
 			}
 
 			Element methodCodeElement = doc.createElement("methodCode");
@@ -260,11 +253,11 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 			itemElement.setAttribute(CODE_SYSTEM, "2.16.840.1.113883.5.84");
 
 			methodCodeElement.appendChild(itemElement);
-			measureObDefinitionElement.appendChild(methodCodeElement);
+			measureObservationElementNode.appendChild(methodCodeElement);
 		}
 
 		if (extensionAttribute.length() > 0) {
-			NodeList idList = measureObDefinitionElement.getElementsByTagName(ID);
+			NodeList idList = measureObservationElementNode.getElementsByTagName(ID);
 			if (idList.getLength() > 0) {
 				Node id = idList.item(0);
 				id.getAttributes().getNamedItem(EXTENSION).setNodeValue(extensionAttribute);
@@ -272,77 +265,59 @@ public class HQMFMeasureObservationLogicGenerator extends HQMFClauseLogicGenerat
 		}
 
 		// check for associated population id and add related HQMF nodes.
-		handleMsrObsAssociations(msrObsClauseNode, measureObDefinitionElement);
+		handleMeasureObservationAssociations(measureObservationNode, measureObservationElementNode);
 	}
 
-	private void handleMsrObsAssociations(Node msrObsClauseNode, Element measureObDefinitionElement) {
-
-		String associatedPopuUUID = getAssociatedPopId(msrObsClauseNode);
-
-		String associatedClauseXPath = "//measureGrouping/group/clause[@uuid = '" + associatedPopuUUID + "']";
-
+	private void handleMeasureObservationAssociations(Node measureObservationNode, Element measureObDefinitionElement) {
+		Node associatedPopulationNode = null;
 		try {
-			Node associatedPopNode = me.getSimpleXMLProcessor().findNode(msrObsClauseNode.getOwnerDocument(),
-					associatedClauseXPath);
+			associatedPopulationNode = getAssociatedPopulationNode(measureObservationNode);
+			if (associatedPopulationNode != null && associatedPopulationNode.hasChildNodes()) {
+				
+				// the measure observation criteria reference root and extension should come from the root and extension values of the associated
+				// population 
+				String measureObservationCriteriaReferenceIdRoot = associatedPopulationNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				String measureObservationCriteriaReferenceIdExtension = associatedPopulationNode.getAttributes().getNamedItem("type").getNodeValue();
 
-			if (associatedPopNode != null && associatedPopNode.hasChildNodes()) {
-				Node firstChild = associatedPopNode.getFirstChild();
-				if ("cqldefinition".equals(firstChild.getNodeName())) {
+				Document doc = measureObDefinitionElement.getOwnerDocument();
 
-					Node cqlUUIDNode = me.getSimpleXMLProcessor().findNode(me.getSimpleXMLProcessor().getOriginalDoc(),
-							"/measure/measureDetails/cqlUUID");
-					String cqlUUIDString = "";
-					if (cqlUUIDNode != null) {
-						cqlUUIDString = cqlUUIDNode.getTextContent();
-					}
+				Element component = doc.createElement("component");
+				component.setAttribute(TYPE_CODE, "COMP");
 
-					String cqlLibraryNameXPath = "//cqlLookUp/library";
-					Node cqlLibraryNameNode = me.getSimpleXMLProcessor().findNode(msrObsClauseNode.getOwnerDocument(),
-							cqlLibraryNameXPath);
-					String libraryName = "";
-					if (cqlLibraryNameNode != null) {
-						libraryName = cqlLibraryNameNode.getTextContent();
-					}
+				Element criteriaReference = doc.createElement("criteriaReference");
+				criteriaReference.setAttribute(CLASS_CODE, "OBS");
+				criteriaReference.setAttribute(MOOD_CODE, "EVN");
 
-					String associatedDefnName = firstChild.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-					String extensionAttribute = libraryName + ".\"" + associatedDefnName + "\"";
+				Element id = doc.createElement(ID);
+				id.setAttribute(ROOT, measureObservationCriteriaReferenceIdRoot);
+				id.setAttribute(EXTENSION, measureObservationCriteriaReferenceIdExtension);
 
-					Document doc = measureObDefinitionElement.getOwnerDocument();
-
-					Element component = doc.createElement("component");
-					component.setAttribute(TYPE_CODE, "COMP");
-
-					Element criteriaReference = doc.createElement("criteriaReference");
-					criteriaReference.setAttribute(CLASS_CODE, "OBS");
-					criteriaReference.setAttribute(MOOD_CODE, "EVN");
-
-					Element id = doc.createElement(ID);
-					id.setAttribute(ROOT, cqlUUIDString);
-					id.setAttribute(EXTENSION, extensionAttribute);
-
-					measureObDefinitionElement.appendChild(component);
-					component.appendChild(criteriaReference);
-					criteriaReference.appendChild(id);
-
-				}
+				measureObDefinitionElement.appendChild(component);
+				component.appendChild(criteriaReference);
+				criteriaReference.appendChild(id);
 			}
-
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
-			return;
 		}
-
 	}
 
-	public String getAssociatedPopId(Node msrObsClauseNode) {
+	private Node getAssociatedPopulationNode(Node measureObservationNode) throws XPathExpressionException {
+		String associatedPopulationUUID = getAssociatedPopulationUUID(measureObservationNode);
+		String associatedClauseXPath = "//measureGrouping/group/clause[@uuid = '" + associatedPopulationUUID + "']";
+
+		Node associatedPopulationNode = me.getSimpleXMLProcessor().findNode(measureObservationNode.getOwnerDocument(),
+				associatedClauseXPath);
+		return associatedPopulationNode;
+	}
+
+	public String getAssociatedPopulationUUID(Node msrObsClauseNode) {
 		String associatedPopuUUID = "";
 
 		if (scoringType.equalsIgnoreCase("Continuous Variable")) {
 			associatedPopuUUID = findMeasurePopulationUUID(msrObsClauseNode.getParentNode());
 		} else {
 			if (msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID) != null) {
-				associatedPopuUUID = msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID)
-						.getNodeValue();
+				associatedPopuUUID = msrObsClauseNode.getAttributes().getNamedItem(ASSOCIATED_POPULATION_UUID).getNodeValue();
 			}
 		}
 

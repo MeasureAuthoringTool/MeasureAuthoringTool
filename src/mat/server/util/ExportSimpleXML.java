@@ -42,8 +42,10 @@ import mat.dao.OrganizationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.model.Organization;
+import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
+import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.shared.CQLExpressionObject;
@@ -291,14 +293,11 @@ public class ExportSimpleXML {
 		removeNode("/measure/subTreeLookUp", originalDoc);
 		expandAndHandleGrouping(originalDoc);
 		removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
-
-		// addUUIDToFunctions(originalDoc);
-		// modify the <startDate> and <stopDate> tags to have date in YYYYMMDD
-		// format
 		modifyHeaderStart_Stop_Dates(originalDoc);
 		modifyMeasureGroupingSequence(originalDoc);
 		removeEmptyCommentsFromPopulationLogic(originalDoc);
 
+		
 		return transform(originalDoc);
 	}
 
@@ -331,11 +330,19 @@ public class ExportSimpleXML {
 		
 		resolveAllValueSets_Codes(originalDoc, result, cqlModel);
 
+		updateCqlLibraryToHaveSetId(cqlLibraryDAO, result);
 		CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
 		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
 		CQLUtil.addUnUsedGrandChildrentoSimpleXML(originalDoc, result, cqlModel, cqlLibraryDAO);
 
 		System.out.println("All included libs:" + cqlModel.getIncludedCQLLibXMLMap().keySet());
+	}
+	
+	private static void updateCqlLibraryToHaveSetId(CQLLibraryDAO cqlLibraryDAO, SaveUpdateCQLResult result) {
+		for(CQLIncludeLibrary library : result.getUsedCQLArtifacts().getIncludeLibMap().values()) {
+			CQLLibrary includedLibrary = cqlLibraryDAO.find(library.getCqlLibraryId());
+			library.setSetId(includedLibrary.getSet_id());
+		}
 	}
 
 	/**

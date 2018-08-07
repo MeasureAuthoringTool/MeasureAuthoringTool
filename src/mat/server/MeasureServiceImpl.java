@@ -7,6 +7,7 @@ import java.util.List;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -36,6 +37,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
 import mat.shared.MeasureSearchModel;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -147,6 +149,11 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public SaveMeasureResult save(ManageMeasureDetailModel model) {
 		return this.getMeasureLibraryService().save(model);
+	}
+	
+	@Override
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+		return this.getMeasureLibraryService().saveCompositeMeasure(model);
 	}
 	
 	@Override
@@ -515,4 +522,16 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 		return this.getMeasureLibraryService().searchComponentMeasures(searchModel);
 	}
 
+	@Override
+	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasure) {
+		return this.getMeasureLibraryService().buildCompositeMeasure(compositeMeasure);
+	}
+
+	@Override
+	public CompositeMeasureValidationResult validateCompositeMeasure(
+			ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		return this.getMeasureLibraryService().validateCompositeMeasure(manageCompositeMeasureDetailModel);
+	}
+
+	
 }

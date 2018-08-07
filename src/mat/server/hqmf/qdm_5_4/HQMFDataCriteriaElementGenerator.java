@@ -392,10 +392,8 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 		qdmLocalVariableName = StringUtils.deleteWhitespace(qdmLocalVariableName);
 		localVariableName = StringUtils.deleteWhitespace(localVariableName);
 
-		Element dataCriteriaSectionElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc()
-				.getElementsByTagName("dataCriteriaSection").item(0);
-		Element componentElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName("component")
-				.item(0);
+		Element dataCriteriaSectionElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName("dataCriteriaSection").item(0);
+		Element componentElem = (Element) dataCriteriaXMLProcessor.getOriginalDoc().getElementsByTagName("component").item(0);
 		Attr nameSpaceAttr = dataCriteriaXMLProcessor.getOriginalDoc().createAttribute("xmlns:xsi");
 		nameSpaceAttr.setNodeValue(nameSpace);
 		componentElem.setAttributeNodeNS(nameSpaceAttr);
@@ -589,8 +587,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @param qdmNode the qdm node
 	 * @param dataCriteriaElem - Element
 	 */
-	private void addCodeElementToDataCriteriaElement(Node templateNode, XmlProcessor dataCriteriaXMLProcessor,
-			Node qdmNode, Element dataCriteriaElem) {
+	private void addCodeElementToDataCriteriaElement(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, Node qdmNode, Element dataCriteriaElem) {
 		String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID).getNodeValue();
 
@@ -639,8 +636,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	 * @return version
 	 */
 	private String valueSetVersionStringValue(Node qdmNode){
-		String version = qdmNode.getAttributes().getNamedItem("version")
-				.getNodeValue();
+		String version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		if (!"1.0".equals(version) && !"1".equals(version) && StringUtils.isNotBlank(version)) {
 			version = qdmNode.getAttributes().getNamedItem("version").getNodeValue();
 		}  else {
@@ -661,17 +657,15 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 	private void appendSubTemplateNode(Node templateNode, XmlProcessor dataCriteriaXMLProcessor, XmlProcessor templateXMLProcessor,
 			Element dataCriteriaElem, Node qdmNode) throws XPathExpressionException {
 		String subTemplateName = templateNode.getAttributes().getNamedItem("includeSubTemplate").getNodeValue();
-		Node subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(),
-				"/templates/subtemplates/" + subTemplateName);
-		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(),
-				"/templates/subtemplates/" + subTemplateName + "/child::node()");
+		Node subTemplateNode = templateXMLProcessor.findNode(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/" + subTemplateName);
+		NodeList subTemplateNodeChilds = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(), "/templates/subtemplates/" + subTemplateName + "/child::node()");
 		String qdmOidValue = qdmNode.getAttributes().getNamedItem(OID).getNodeValue();
 		String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 		String qdmNameDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmTaxonomy = qdmNode.getAttributes().getNamedItem(TAXONOMY).getNodeValue();
+		
 		if (subTemplateNode.getAttributes().getNamedItem("changeAttribute") != null) {
-			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute")
-					.getNodeValue().split(",");
+			String[] attributeToBeModified = subTemplateNode.getAttributes().getNamedItem("changeAttribute").getNodeValue().split(",");
 			for (String changeAttribute : attributeToBeModified) {
 				NodeList attributedToBeChangedInNode = null;
 				attributedToBeChangedInNode = templateXMLProcessor.findNodeList(templateXMLProcessor.getOriginalDoc(),
@@ -679,8 +673,7 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 				if (changeAttribute.equalsIgnoreCase(ID)) {
 					String rootId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("root").setNodeValue(rootId);
-					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension")
-							.setNodeValue(UUIDUtilClient.uuid());
+					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("extension").setNodeValue(UUIDUtilClient.uuid());
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
 					if (attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("code") != null) {
 						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("code");
@@ -702,35 +695,37 @@ public class HQMFDataCriteriaElementGenerator implements Generator {
 						attributedToBeChangedInNode.item(0).getAttributes().removeNamedItem("valueSetVersion");
 					}
 
-					Attr attrNodeValueSet = attributedToBeChangedInNode.item(0).getOwnerDocument()
-							.createAttribute("valueSet");
+					Attr attrNodeValueSet = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSet");
 					attrNodeValueSet.setNodeValue(qdmOidValue);
 					attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNodeValueSet);
 					String valueSetVersion = valueSetVersionStringValue(qdmNode);
 
 					if (valueSetVersion != null) {
-						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument()
-								.createAttribute("valueSetVersion");
+						Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSetVersion");
 						attrNode.setNodeValue(valueSetVersion);
 						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNode);
 					}
 
 				} else if (changeAttribute.equalsIgnoreCase(DISPLAY_NAME)) {
-					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("value")
-							.setNodeValue(HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName) + " "
-									+ qdmTaxonomy + " value set");
+					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("value").setNodeValue(HQMFDataCriteriaGenerator.removeOccurrenceFromName(qdmName) + " " + qdmTaxonomy + " value set");
 				} else if (changeAttribute.equalsIgnoreCase(TITLE)) {
-					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("value")
-							.setNodeValue(qdmNameDataType);
+					attributedToBeChangedInNode.item(0).getAttributes().getNamedItem("value").setNodeValue(qdmNameDataType);
 				} else if (changeAttribute.equalsIgnoreCase(ITEM)) {
 					for (int count = 0; count < attributedToBeChangedInNode.getLength(); count++) {
 						Node itemNode = attributedToBeChangedInNode.item(count);
 						itemNode.getAttributes().getNamedItem("extension").setNodeValue(extensionValue);
 					}
 
-				}
+				} else if (changeAttribute.equalsIgnoreCase("value")) {	
+					Attr attrNode = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("valueSet");
+					attrNode.setNodeValue(qdmOidValue);
+					attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(attrNode);
+
+				} 
+
 			}
 		}
+
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {
 			Node childNode = subTemplateNodeChilds.item(i);
 			Node nodeToAttach = dataCriteriaXMLProcessor.getOriginalDoc().importNode(childNode, true);

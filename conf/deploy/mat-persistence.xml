@@ -26,8 +26,7 @@
 
 	<context:annotation-config transaction-manager="txManager"/>
 	<context:component-scan base-package="mat.hibernate"/>
-  	<context:component-scan base-package="mat.server.hqmf"/>
-	<context:component-scan base-package="mat.server.bonnie"/>
+  	<context:component-scan base-package="mat.server"/>
 	<tx:annotation-driven transaction-manager="txManager"/>
 	
 	<!-- Hibernate SessionFactory -->
@@ -289,6 +288,10 @@
 		class="mat.dao.impl.EmailAuditLogDAO" parent="baseDAO">
 	</bean>
 	
+	<bean id="componentMeasuresDAO"
+		class="mat.dao.impl.clause.ComponentMeasureDAO" parent="baseDAO">
+	</bean>
+	
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
@@ -339,6 +342,7 @@
 		<property name="cqlLibraryAuditLogDAO" ref="cqlLibraryAuditLogDAO"/>
 		<property name="cqlLibraryShareDAO" ref="cqlLibraryShareDAO"/>
 		<property name="emailAuditLogDAO" ref="emailAuditLogDAO" />
+		<property name="componentMeasureDAO" ref="componentMeasuresDAO"/>
 	</bean>
      
 </beans>

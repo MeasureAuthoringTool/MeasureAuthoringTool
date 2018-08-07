@@ -67,6 +67,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+
 	private Map<String, String> aliasMapping = new HashMap<String, String>();
 	
 	private PanelHeader availableMeasureHeader = new PanelHeader();
@@ -141,6 +142,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		messageFormGroup.add(helpBlock);
 		messageFormGroup.getElement().setAttribute("role", "alert");
 		componentMeasureForm.add(messageFormGroup);
+		
+		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
+		flowPanel.add(errorMessages);
+		
 		flowPanel.add(componentMeasureForm);
 		flowPanel.add(contentPanel);
 		mainPanel.add(flowPanel);
@@ -493,5 +498,12 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
+	}
+	public List<ManageMeasureSearchModel.Result> getAppliedComponentMeasuresList() {
+		return appliedComponentMeasuresList;
+	}
+	
+	public Map<String, String> getAliasMapping() {
+		return aliasMapping;
 	}
 }

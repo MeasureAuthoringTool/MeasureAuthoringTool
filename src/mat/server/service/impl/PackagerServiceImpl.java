@@ -23,6 +23,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -48,7 +49,7 @@ import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
-
+@Service
 public class PackagerServiceImpl implements PackagerService {
 
 	/** The Constant logger. */

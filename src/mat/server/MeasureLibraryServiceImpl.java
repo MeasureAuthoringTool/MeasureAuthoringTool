@@ -5850,7 +5850,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
 				} else {
 					CQLModelValidator modelValidator = new CQLModelValidator();
-					if(!modelValidator.validateForAliasNameSpecialChar(aliasName) || CQLValidationUtil.isDuplicateIdentifierName(aliasName, templateXml)) {
+					if(!modelValidator.validateForAliasNameSpecialChar(aliasName) || CQLValidationUtil.isDuplicateIdentifierName(aliasName, templateXml) || CQLValidationUtil.isCQLReservedWord(aliasName)) {
 						messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
 					}
 				}

@@ -36,7 +36,7 @@ public class CQLModelValidator {
 	 * @param identifierName the identifier name
 	 * @return true, if successful
 	 */
-	public boolean validateForSpecialChar(String identifierName) {
+	public boolean hasSpecialCharacter(String identifierName) {
 		
 		boolean isValidSpecialChar = regExp.test(identifierName);
 		

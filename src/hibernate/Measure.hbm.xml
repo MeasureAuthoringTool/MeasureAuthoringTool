@@ -45,11 +45,10 @@
 	<property name="qdmVersion" column="QDM_VERSION"></property>
 	<property name = "isCompositeMeasure" column = "IS_COMPOSITE_MEASURE"/>
 	
-	<list name="componentMeasures" cascade="none" lazy="false">
-		<key column="COMPOSITE_MEASURE_ID" />
-		<list-index column="ID" base="1"/>
-		<one-to-many class="mat.model.clause.ComponentMeasure"/>
-	</list>
+	<bag name="componentMeasures" cascade="none" lazy="false">
+        <key column="COMPOSITE_MEASURE_ID" />
+        <one-to-many class="mat.model.clause.ComponentMeasure"/>
+    </bag>
 	
   </class>
 </hibernate-mapping>

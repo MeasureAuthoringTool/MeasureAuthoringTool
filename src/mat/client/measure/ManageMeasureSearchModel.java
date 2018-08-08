@@ -496,7 +496,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		 * 
 		 * @return the ownerfirst name
 		 */
-		public String getOwnerfirstName() {
+		public String getOwnerFirstName() {
 			return ownerfirstName;
 		}
 		

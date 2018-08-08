@@ -95,8 +95,14 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	public void clearFields() {
 		aliasMapping.clear();
-		availableMeasuresList.clear();
-		appliedComponentMeasuresList.clear();
+		if(availableMeasuresList != null) {
+			availableMeasuresList.clear();
+		}
+
+		if(appliedComponentMeasuresList != null) {
+			appliedComponentMeasuresList.clear();
+		}
+
 		buildAppliedComponentMeasuresTable();
 		buildAvailableMeasuresTable();
 		searchWidgetBootStrap.getSearchBox().setText("");
@@ -259,15 +265,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				.fromSafeConstant("<span title='Assign Alias'>" + "Assign Alias"
 						+ "</span>"));
 		
-		Column<ManageMeasureSearchModel.Result, SafeHtml> emptyColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-				new MatSafeHTMLCell()) {
-			@Override
-			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return CellTableUtility.getColumnToolTip("");
-			}
-		};
-		appliedComponentTable.addColumn(emptyColumn, SafeHtmlUtils
-				.fromSafeConstant(""));
+		Column<ManageMeasureSearchModel.Result, SafeHtml> replaceColumn = buildReplaceColumnn();
+		appliedComponentTable.addColumn(replaceColumn, SafeHtmlUtils
+				.fromSafeConstant("<span title='Replace'>" + "Replace"
+						+ "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, SafeHtml> deleteColumn = buildDeleteColumn();
 		appliedComponentTable.addColumn(deleteColumn, SafeHtmlUtils
@@ -389,8 +390,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				return CellTableUtility.getColumnToolTip(object.getOwnerfirstName()
-						+ "  " + object.getOwnerLastName(),object.getOwnerfirstName()
+				return CellTableUtility.getColumnToolTip(object.getOwnerFirstName()
+						+ "  " + object.getOwnerLastName(),object.getOwnerFirstName()
 						+ "  " + object.getOwnerLastName());
 			}
 		};
@@ -442,6 +443,33 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				});
 		availableMeasuresTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Select\">" + "Select" + "</span>"));
 		availableMeasuresTable.redraw();
+	}
+	
+	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildReplaceColumnn() {
+		Cell<SafeHtml> replaceButtonCell = new ClickableSafeHtmlCell();
+		
+		Column<ManageMeasureSearchModel.Result, SafeHtml> replaceColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(replaceButtonCell) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String title = "Click to Replace " + object.getName();
+				String cssClass = "btn btn-link";
+				String iconCss = "fa fa-retweet fa-lg";
+					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+			
+				return sb.toSafeHtml();
+			}
+		};
+		
+		replaceColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+			@Override
+			public void update(int index, Result object, SafeHtml value) {
+				// TODO Auto-generated method stub
+				GWT.log("component measure clicked: " + object.getId());
+			}
+		});
+		
+		return replaceColumn;
 	}
 	
 	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildDeleteColumn() {

@@ -464,8 +464,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		replaceColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
-				// TODO Auto-generated method stub
-				GWT.log("component measure clicked: " + object.getId());
+				EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox = new EditIncludedComponentMeasureDialogBox("Replace Component Measure");
+				editIncludedComponentMeasureDialogBox.findAvailableMeasures(object.getMeasureSetId(), object.getId(), false);
 			}
 		});
 		

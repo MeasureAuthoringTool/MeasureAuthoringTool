@@ -37,6 +37,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.view.client.ListDataProvider;
@@ -49,9 +51,13 @@ import mat.client.buttons.CancelButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.SearchWidgetWithFilter;
 import mat.client.util.CellTableUtility;
+import mat.shared.MeasureSearchModel;
+import mat.shared.MeasureSearchModel.VersionMeasureType;
 
 public class EditIncludedComponentMeasureDialogBox {
 	
@@ -144,24 +150,27 @@ public class EditIncludedComponentMeasureDialogBox {
 		cellTablePanel.removeStyleName("cellTablePanel");
 		cellTablePanel.add(progress);
 
-		//TODO make a call to get replace compoment measures that match component filter criteria
-/*		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId, filterForInclude,
-				new AsyncCallback<SaveCQLLibraryResult>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						cellTablePanel.remove(progress);
+		MeasureSearchModel searchModel = new MeasureSearchModel(SearchWidgetWithFilter.ALL, 1, Integer.MAX_VALUE, null, null);
+		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
+		searchModel.setOmitCompositeMeasure(true);
+		searchModel.setIsDraft(VersionMeasureType.VERSION);
+		searchModel.setMeasureSetId(setId);
+		MatContext.get().getMeasureService().searchComponentMeasures(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 
-					}
-					@Override
-					public void onSuccess(SaveCQLLibraryResult result) {
-						currentLibraryId = currentId; 
-						libraries = result.getCqlLibraryDataSetObjects();
-						cellTablePanel.remove(progress);
-						buildIncludeLibraryCellTable();
-					}
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				cellTablePanel.remove(progress);
+			}
 
-				});*/
+			@Override
+			public void onSuccess(ManageMeasureSearchModel result) {
+				componentMeasuresList = result.getData();
+				cellTablePanel.remove(progress);
+				buildIncludeComponentMeasureCellTable();
+			}
+		});
+		
 	}
 
 	private void buildIncludeComponentMeasureCellTable() {
@@ -181,9 +190,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		selectedObject = null;
 		
 		List<ManageMeasureSearchModel.Result> tempMeasures = new ArrayList<>();
-		//TODO populate this list in search method above
-		List<ManageMeasureSearchModel.Result> componentMeasures = new ArrayList<>();
-		tempMeasures.addAll(componentMeasures);
+		tempMeasures.addAll(componentMeasuresList);
 		// filter out the component measure that is the 'current component measure'
 		for(ManageMeasureSearchModel.Result currentMeasure : tempMeasures) {
 			if(currentMeasure.getId().equalsIgnoreCase(currentMeasureId)) {
@@ -194,10 +201,8 @@ public class EditIncludedComponentMeasureDialogBox {
 		
 		if (tempMeasures.size() > 0) {
 			table = new CellTable<ManageMeasureSearchModel.Result>();
-			// setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			listDataProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
-			/* qdmSelectedList = new ArrayList<CQLLibraryModel>(); */
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();	

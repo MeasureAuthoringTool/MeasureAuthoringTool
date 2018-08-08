@@ -1077,6 +1077,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			mCriteria.add(Restrictions.and(Restrictions.ne("isCompositeMeasure", true)));
 		}
 		
+		if(measureSearchModel.getMeasureSetId() != null) {
+			mCriteria.add(Restrictions.and(Restrictions.eq("measureSet.id", measureSearchModel.getMeasureSetId())));
+		}
+		
 		List<Measure> measureResultList = fetchComponentMeasureResultListForCritera(mCriteria, measureSearchModel, user);
 		measureResultList = getCQLMeasures(measureResultList);
 		return getOrderedDTOListFromMeasureResults(measureSearchModel, user, measureResultList);

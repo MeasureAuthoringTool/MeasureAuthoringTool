@@ -221,15 +221,15 @@
 				<id root="{cqlUUID}" />
 				<text mediaType="text/cql">
 					<reference
-						value="http://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{../cqlLookUp/library}-{../cqlLookUp/version}.cql" />
+						value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{../cqlLookUp/library}-{../cqlLookUp/version}.cql" />
 					<translation mediaType="application/elm+xml">
-						<reference value="http://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{../cqlLookUp/library}-{../cqlLookUp/version}.xml" />
+						<reference value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{../cqlLookUp/library}-{../cqlLookUp/version}.xml" />
 					</translation>
 					<translation mediaType="application/elm+json">
-						<reference value="http://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{../cqlLookUp/library}-{../cqlLookUp/version}.json" />
+						<reference value="https://emeasuretool.cms.gov/libraries/{../measureDetails/guid}/{../cqlLookUp/library}-{../cqlLookUp/version}.json" />
 					</translation>
 				</text>
-				<setId root="http://emeasuretool.cms.gov/libraries" extension="{../measureDetails/guid}" identifierName="{../cqlLookUp/library}"/>
+				<setId root="https://emeasuretool.cms.gov/libraries" extension="{../measureDetails/guid}" identifierName="{../cqlLookUp/library}"/>
 				<versionNumber value="{../cqlLookUp/version}"/>
 			</expressionDocument>
 		</relatedDocument>
@@ -239,15 +239,15 @@
 				<expressionDocument>
 					<id root="{@id}" />
 					<text mediaType="text/cql">
-						<reference value="http://emeasuretool.cms.gov/libraries/{@setId}/{@name}-{@version}.cql" />
+						<reference value="https://emeasuretool.cms.gov/libraries/{@setId}/{@name}-{@version}.cql" />
 						<translation mediaType="application/elm+xml">
-							<reference value="http://emeasuretool.cms.gov/libraries/{@setId}/{@name}-{@version}.xml" />
+							<reference value="https://emeasuretool.cms.gov/libraries/{@setId}/{@name}-{@version}.xml" />
 						</translation>
 						<translation mediaType="application/elm+json">
-							<reference value="http://emeasuretool.cms.gov/libraries/{@setId}/{@name}-{@version}.json" />
+							<reference value="https://emeasuretool.cms.gov/libraries/{@setId}/{@name}-{@version}.json" />
 						</translation>
 					</text>
-					<setId root="http://emeasuretool.cms.gov/libraries" extension="{@setId}" identifierName="{@name}"/>
+					<setId root="https://emeasuretool.cms.gov/libraries" extension="{@setId}" identifierName="{@name}"/>
 					<versionNumber value="{@version}"/>
 				</expressionDocument>
 			</relatedDocument>

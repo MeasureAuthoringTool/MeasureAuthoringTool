@@ -423,8 +423,7 @@ public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 					
 					Node clonedNode = attributedToBeChangedInNode.item(0).cloneNode(true);
 					clonedNode.getAttributes().getNamedItem("root").setNodeValue(rootId);
-					clonedNode.getAttributes().getNamedItem("extension")
-							.setNodeValue(UUIDUtilClient.uuid());
+					clonedNode.getAttributes().getNamedItem("extension").setNodeValue(UUIDUtilClient.uuid());
 					
 					replaceParentNodeWithClonedNode(attributedToBeChangedInNode.item(0), clonedNode);
 				} else if (changeAttribute.equalsIgnoreCase(CODE)) {
@@ -486,6 +485,12 @@ public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 					String codeOID = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 					String codeSystemOID = qdmNode.getAttributes().getNamedItem("codeSystemOID").getNodeValue();
 					String codeSystemName = qdmNode.getAttributes().getNamedItem("taxonomy").getNodeValue();
+					String codeSystemVersion = qdmNode.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+					Node isCodeSystemVersionIncludedNode = qdmNode.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+					boolean isCodeSystemVersionIncluded = true;
+					if(isCodeSystemVersionIncludedNode != null) {
+						isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+					}
 					
 					Attr codeAttribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("code");
 					codeAttribute.setNodeValue(codeOID);
@@ -498,7 +503,13 @@ public class HQMFDataCriteriaElementGeneratorForCodes implements Generator {
 					Attr codeSystemNameAttribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("codeSystemName");
 					codeSystemNameAttribute.setNodeValue(codeSystemName);
 					attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(codeSystemNameAttribute);
-				} 
+					
+					if(isCodeSystemVersionIncluded) {
+						Attr codeSystemVersionAttribute = attributedToBeChangedInNode.item(0).getOwnerDocument().createAttribute("codeSystemVersion");
+						codeSystemVersionAttribute.setNodeValue(codeSystemVersion);
+						attributedToBeChangedInNode.item(0).getAttributes().setNamedItem(codeSystemVersionAttribute);
+					}
+ 				} 
 			}
 		}
 		for (int i = 0; i < subTemplateNodeChilds.getLength(); i++) {

@@ -4,7 +4,6 @@ import java.util.List;
 
 import mat.dao.IDAO;
 import mat.model.User;
-import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
@@ -241,13 +240,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 */
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 	
-	/**
-	 * Gets the component measure info for measures.
-	 *
-	 * @param measureIds the measure ids
-	 * @return the component measure info for measures
-	 */
-	public List<ComponentMeasure> getComponentMeasureInfoForMeasures(String measureId);
 	
 	/**
 	 * Gets the measure.

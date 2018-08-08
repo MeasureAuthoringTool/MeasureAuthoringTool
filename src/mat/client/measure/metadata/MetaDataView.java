@@ -1245,7 +1245,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		Collections.sort(measureTypeDTOList, new MeasureType.Comparator());
 		
-		removeCompositeMeasureTypeFromList(measureTypeDTOList);
+		measureTypeDTOList.removeIf(m -> m.getAbbrName().equals(COMPOSITE));
 		
 		if (measureTypeDTOList.size() > 0) {
 			measureTypeCellTable = new CellTable<MeasureType>();
@@ -1270,16 +1270,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			vp.setSize("750px", "150px");
 			measureTypeSPanel.setWidget(vp);
 		}
-	}
-	
-	private void removeCompositeMeasureTypeFromList(List<MeasureType> measureTypeDTOList) {
-		for(MeasureType measure: measureTypeDTOList) {
-			if(measure.getAbbrName().equals(COMPOSITE)) {
-				measureTypeDTOList.remove(measure);
-				break;
-			}
-		}
-		
 	}
 
 	@Override

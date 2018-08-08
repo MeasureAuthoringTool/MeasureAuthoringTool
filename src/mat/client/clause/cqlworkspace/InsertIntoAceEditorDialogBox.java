@@ -33,6 +33,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.NoButton;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
+import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;

@@ -101,6 +101,12 @@ public class ClientConstants {
 	/** The Constant TITLE_MEASURE_LIB_CHANGE_OWNERSHIP. */
 	public final static String TITLE_MEASURE_LIB_CHANGE_OWNERSHIP ="Measure Library Ownership";
 	
+	public final static String COMPOSITE_MEASURE_EDIT = "Composite Measure Edit";
+	
+	public final static String CQL_LIBRARY_OWNERSHIP = "CQL Library Ownership";
+	
+	public final static String ADMIN_REPORTS = "Administrator Reports";
+	
 	/** The Constant TITLE_MY_ACCOUNT. */
 	public final static String TITLE_MY_ACCOUNT="MAT Account";
 	

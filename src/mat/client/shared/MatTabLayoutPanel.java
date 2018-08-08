@@ -52,9 +52,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 	
 	@Override
-	public void add(Widget w, String title) {
+	public void add(Widget w, String title, boolean isVisible) {
 		String tabText = dynamicTabBarFormatter.normalTitle(title);
-		insert(w, tabText, true, getWidgetCount());
+		insert(w, tabText, true, getWidgetCount(), isVisible);
 		int index = getWidgetCount() - 1;
 		dynamicTabBarFormatter.insertTitle(index, tabText);
 	}

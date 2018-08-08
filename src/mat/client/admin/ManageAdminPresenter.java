@@ -40,9 +40,9 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 		manageOrganizationPresenter = new ManageOrganizationPresenter(manageOrganizationView, manageOrganizationDetailView);
 		tabLayout = new MatTabLayoutPanel(this);
 		tabLayout.getElement().setAttribute("id", "qdmElementTabLayout");
-		tabLayout.add(manageUsersPresenter.getWidget(), "Manage User");
+		tabLayout.add(manageUsersPresenter.getWidget(), "Manage User", true);
 		presenterList.add(manageUsersPresenter);
-		tabLayout.add(manageOrganizationPresenter.getWidget(), "Manage Organization");
+		tabLayout.add(manageOrganizationPresenter.getWidget(), "Manage Organization", true);
 		presenterList.add(manageOrganizationPresenter);
 		tabLayout.setHeight("98%");
 		tabLayout.getElement().setAttribute("id", "myAccountTabLayout");

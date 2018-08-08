@@ -143,21 +143,21 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
-		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details");
+		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details", true);
 		presenterList.add(metaDataPresenter);
 		MatPresenter cqlWorkspacePresenter = buildCQLWorkSpaceTab();
-		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace");
+		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace", true);
 		presenterList.add(cqlWorkspacePresenter);
 		MatPresenter cqlPopulationWorkspacePresenter = buildCQLPopulationWorkspaceTab();
-		measureComposerTabLayout.add(cqlPopulationWorkspacePresenter.getWidget(), "Population Workspace");
+		measureComposerTabLayout.add(cqlPopulationWorkspacePresenter.getWidget(), "Population Workspace", true);
 		presenterList.add(cqlPopulationWorkspacePresenter);
 		MatPresenter measurePackagePresenter = buildMeasurePackageWidget();
-		measureComposerTabLayout.add(measurePackagePresenter.getWidget(), "Measure Packager");
+		measureComposerTabLayout.add(measurePackagePresenter.getWidget(), "Measure Packager", true);
 		presenterList.add(measurePackagePresenter);
-		measureComposerTabLayout.add(clauseWorkSpacePresenter.getWidget(), "Clause Workspace");
+		measureComposerTabLayout.add(clauseWorkSpacePresenter.getWidget(), "Clause Workspace", true);
 		presenterList.add(clauseWorkSpacePresenter);
 		MatPresenter appliedQDMPresenter = buildAppliedQDMPresenter();
-		measureComposerTabLayout.add(appliedQDMPresenter.getWidget(), "QDM Elements");
+		measureComposerTabLayout.add(appliedQDMPresenter.getWidget(), "QDM Elements", true);
 		presenterList.add(appliedQDMPresenter);
 		measureComposerTabLayout.setHeight("98%");
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;

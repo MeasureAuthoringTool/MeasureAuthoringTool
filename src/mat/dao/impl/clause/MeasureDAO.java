@@ -34,7 +34,6 @@ import mat.model.LockedUserInfo;
 import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
-import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
@@ -131,20 +130,6 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		mCriteria.add(Restrictions.eq("owner.id", user.getId()));
 		List<Measure> measureList = mCriteria.list();
 		return sortMeasureListForMeasureOwner(measureList);
-	}
-
-	@Override
-	public List<ComponentMeasure> getComponentMeasureInfoForMeasures(String measureId) {
-		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureId);
-		List<ComponentMeasure> measure = mCriteria.list();
-		return measure;
-	}
-
-	private Criteria buildComponentMeasureShareForUserCriteria(String measureId) {
-		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(ComponentMeasure.class);
-		mCriteria.add(Restrictions.eq("compositeMeasureId", measureId));
-		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return mCriteria;
 	}
 
 	@Override

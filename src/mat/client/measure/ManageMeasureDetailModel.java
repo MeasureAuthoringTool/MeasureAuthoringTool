@@ -1400,15 +1400,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 			return false;
 		}
 		
-		
-		if(toCompareComponentMeasures == null){
-			if(other.toCompareComponentMeasures != null){
-				return false;
-			}
-		} else if(!isEqual(toCompareComponentMeasures, other.toCompareComponentMeasures)){
-			return false;
-		}
-		
 		if(endorseByNQF) {
 			if (trimToNull(nqfId) == null) {
 				if (trimToNull(other.nqfId) != null) {

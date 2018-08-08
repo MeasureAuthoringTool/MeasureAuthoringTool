@@ -19,6 +19,8 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -464,8 +466,27 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		replaceColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
+				String measureId = object.getId();
 				EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox = new EditIncludedComponentMeasureDialogBox("Replace Component Measure");
-				editIncludedComponentMeasureDialogBox.findAvailableMeasures(object.getMeasureSetId(), object.getId(), false);
+				editIncludedComponentMeasureDialogBox.findAvailableMeasures(object.getMeasureSetId(), measureId, false);
+				editIncludedComponentMeasureDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						for(ManageMeasureSearchModel.Result currentComponentMeasure: appliedComponentMeasuresList) {
+							if(currentComponentMeasure.getId().equals(measureId)) {
+								appliedComponentMeasuresList.remove(currentComponentMeasure);
+							}
+						}
+						appliedComponentMeasuresList.addAll(editIncludedComponentMeasureDialogBox.getSelectedList());
+						if(aliasMapping.containsKey(measureId)) {
+							aliasMapping.remove(measureId);
+						}
+						buildAppliedComponentMeasuresTable();
+						buildAvailableMeasuresTable();
+						editIncludedComponentMeasureDialogBox.getDialogModal().hide();
+					}
+				});
 			}
 		});
 		

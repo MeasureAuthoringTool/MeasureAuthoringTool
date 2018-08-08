@@ -11,6 +11,7 @@ import mat.client.Mat;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
 import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryPresenter;
 import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 
@@ -416,7 +417,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 
 	@Override
-	public CQLComponentLibraryView getComponentView() {
+	public mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView getComponentView() {
 		return componentPresenter.getView();
 	}
 

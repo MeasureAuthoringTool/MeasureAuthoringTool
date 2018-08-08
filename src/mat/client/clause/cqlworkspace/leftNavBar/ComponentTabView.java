@@ -21,7 +21,6 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -70,7 +69,7 @@ public class ComponentTabView extends AnchorListItem {
 		super.setDataToggle(Toggle.COLLAPSE);
 		super.setHref("#collapseComponent");
 		super.add(collapse);
-	}	
+	}
 	
 	private PanelCollapse createComponentCollapsablePanel() {
 		collapse.setId("collapseComponent");
@@ -96,6 +95,7 @@ public class ComponentTabView extends AnchorListItem {
 	}
 	
 	private void buildListBox() {
+		listBox.clear();
 		listBox.setWidth("180px");
 		listBox.setVisibleItemCount(10);
 		listBox.getElement().setAttribute("id", "componentsListBox");
@@ -231,6 +231,5 @@ public class ComponentTabView extends AnchorListItem {
 	public void setSuggestBox(CQLSuggestOracle cqlSuggestOracle) {
 		this.suggestBox = new SuggestBox(cqlSuggestOracle);
 	}
-
 	
 }

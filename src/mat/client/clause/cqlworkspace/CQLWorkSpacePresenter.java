@@ -53,8 +53,8 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
 import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -193,7 +193,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		CQLGeneralInformationView getCqlGeneralInformationView();
 		
-		CQLComponentLibraryView getComponentView();
+		CqlComponentView getComponentView();
 
 		CQLIncludeLibraryView getIncludeView();
 
@@ -232,7 +232,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		JSONAttributeModeUtility.getAllAttrModeList();
 		JSONAttributeModeUtility.getAllModeDetailsList();
 	}
-
+	
 	private void buildInsertPopUp() {
 		searchDisplay.resetMessageDisplay();
 		InsertIntoAceEditorDialogBox
@@ -3338,6 +3338,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
 					&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
 				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+				setComponentMeasureInformationForComponentsTab(result);
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
@@ -3358,6 +3359,12 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
+	}
+	
+	private void setComponentMeasureInformationForComponentsTab(SaveUpdateCQLResult result) {
+		//TODO
+		
+		
 	}
 
 	/**
@@ -3705,6 +3712,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_COMPONENTS_MENU;
 		searchDisplay.getMainFlowPanel().clear();
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateSearchBox();
 		searchDisplay.buildComponentsView();
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
@@ -3862,7 +3870,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(false);
 			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_COMPONENTS_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().setActive(false);
+<<<<<<< HEAD
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().setSelectedIndex(-1);
+=======
+>>>>>>> MAT-9302: Component tab gui is in place, and the update button directs to an edit page successfully. The search/list box is not populate, and the tab at the top of the screen is not hidden.
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setActive(false);

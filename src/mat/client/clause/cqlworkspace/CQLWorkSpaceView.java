@@ -8,6 +8,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
+import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentPresenter;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 
@@ -45,10 +48,15 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
 	
+	private CQLComponentPresenter componentPresenter;
+	
 	private HelpBlock helpBlock = new HelpBlock();
+	
 
-	public CQLWorkSpaceView() {
+
+	public CQLWorkSpaceView( ) {
 		generalInformationView = new CQLGeneralInformationView();
+		componentPresenter = new CQLComponentPresenter();
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQLDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
@@ -152,6 +160,23 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 	
+	public void buildComponentsView() {
+		unsetEachSectionSelectedObject();
+		mainFlowPanel.clear();
+		resetMessageDisplay();
+		VerticalPanel componentsTopPanel = new VerticalPanel();
+		componentPresenter.getView().reset();
+		componentsTopPanel.add(componentPresenter.getView().asWidget());
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setStyleName("cqlRightContainer");
+		vp.setWidth("700px");
+		componentsTopPanel.setWidth("700px");
+		componentsTopPanel.setStyleName("marginLeft15px");
+		vp.add(componentsTopPanel);
+		mainFlowPanel.add(vp);
+	}
+	
 
 	@Override
 	public void buildIncludesView() {
@@ -207,7 +232,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.clear();
 		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		inclView.setAliasNameTxtArea("");
-		
+		//TODO cqlLeftNavBarPanelView.getComponents().getView().clear();
 		cqlLeftNavBarPanelView.getViewIncludeLibrarys().clear();
 		cqlLeftNavBarPanelView.getViewParameterList().clear();
 		cqlLeftNavBarPanelView.getViewDefinitions().clear();
@@ -388,5 +413,12 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
 	}
+
+
+	@Override
+	public CqlComponentView getComponentView() {
+		return componentPresenter.getView();
+	}
+
 	
 }

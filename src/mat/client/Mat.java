@@ -42,6 +42,7 @@ import mat.client.cql.CQLLibraryVersionView;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.CQLLibraryEditEvent;
+import mat.client.event.EditCompositeMeasureEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
@@ -131,6 +132,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private CqlLibraryPresenter cqlLibrary;
 	private ManageAdminReportingPresenter reportingPresenter;
 	private int tabIndex;
+	private CompositeMeasureEdit compositeMeasureEdit;
 	
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
 		
@@ -348,6 +350,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
+		MatContext.get().getEventBus().addHandler(EditCompositeMeasureEvent.TYPE, new EditCompositeMeasureEvent.Handler() {
+			
+			@Override
+			public void onFire(EditCompositeMeasureEvent event) {
+				mainTabLayout.selectTab(presenterList.indexOf(compositeMeasureEdit));
+			}
+		});
+
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(Throwable arg0) {
@@ -418,7 +428,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			mainTabLayout.add(myAccountPresenter.getWidget(), title);
 			presenterList.add(myAccountPresenter);
 			
-			tabIndex = presenterList.indexOf(myAccountPresenter);
+			title = ClientConstants.COMPOSITE_MEASURE_EDIT;
+			compositeMeasureEdit = new CompositeMeasureEdit();
+			mainTabLayout.add(compositeMeasureEdit.getWidget(), title);
+			presenterList.add(compositeMeasureEdit);
+			
+			tabIndex = presenterList.indexOf(compositeMeasureEdit);
 			hideUMLSActive();
 			if(resultMatVersion.equals("v5.6")) {
 				setBonnieActiveLink();

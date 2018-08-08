@@ -405,32 +405,32 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			measureLibrary = buildMeasureLibraryWidget(false);
 			title = ClientConstants.TITLE_MEASURE_LIB;
-			mainTabLayout.add(measureLibrary.getWidget(), title);
+			mainTabLayout.add(measureLibrary.getWidget(), title, true);
 			presenterList.add(measureLibrary);
 			
 			measureComposer= buildMeasureComposer();
 			title = ClientConstants.TITLE_MEASURE_COMPOSER;
-			mainTabLayout.add(measureComposer.getWidget(), title);
+			mainTabLayout.add(measureComposer.getWidget(), title, true);
 			presenterList.add(measureComposer);
 			
 			cqlLibrary = buildCqlLibraryWidget();
 			title = ClientConstants.TITLE_CQL_LIB;
-			mainTabLayout.add(cqlLibrary.getWidget(), title);
+			mainTabLayout.add(cqlLibrary.getWidget(), title, true);
 			presenterList.add(cqlLibrary);
 			
 			cqlComposer= buildCqlComposer();
 			title = ClientConstants.TITLE_CQL_COMPOSER;
-			mainTabLayout.add(cqlComposer.getWidget(), title);
+			mainTabLayout.add(cqlComposer.getWidget(), title, true);
 			presenterList.add(cqlComposer);
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;
 			MatPresenter myAccountPresenter = buildMyAccountWidget();
-			mainTabLayout.add(myAccountPresenter.getWidget(), title);
+			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
 			presenterList.add(myAccountPresenter);
 			
 			title = ClientConstants.COMPOSITE_MEASURE_EDIT;
 			compositeMeasureEdit = new CompositeMeasureEdit();
-			mainTabLayout.add(compositeMeasureEdit.getWidget(), title);
+			mainTabLayout.add(compositeMeasureEdit.getWidget(), title, false);
 			presenterList.add(compositeMeasureEdit);
 			
 			tabIndex = presenterList.indexOf(compositeMeasureEdit);
@@ -443,12 +443,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		{
 			adminPresenter = buildAdminPresenter();
 			title = ClientConstants.TITLE_ADMIN;
-			mainTabLayout.add(adminPresenter.getWidget(), title);
+			mainTabLayout.add(adminPresenter.getWidget(), title, true);
 			presenterList.add(adminPresenter);
 			
 			measureLibrary = buildMeasureLibraryWidget(true);
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;
-			mainTabLayout.add(measureLibrary.getWidget(), title);
+			mainTabLayout.add(measureLibrary.getWidget(), title, true);
 			presenterList.add(measureLibrary);
 			
 			ManageCQLLibraryAdminView cqlLibraryAdminView = new ManageCQLLibraryAdminView();
@@ -456,18 +456,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			cqlLibraryAdminPresenter = new ManageCQLLibraryAdminPresenter(cqlLibraryAdminView,historyView,transferOS);
 			title = "CQL Library Ownership";
-			mainTabLayout.add(cqlLibraryAdminPresenter.getWidget(), title);
+			mainTabLayout.add(cqlLibraryAdminPresenter.getWidget(), title, true);
 			presenterList.add(cqlLibraryAdminPresenter);
 			
 			ManageAdminReportingView adminReportingView = new ManageAdminReportingView();
 			reportingPresenter = new ManageAdminReportingPresenter(adminReportingView);
 			title = "Administrator Reports";
-			mainTabLayout.add(reportingPresenter.getWidget(), title);
+			mainTabLayout.add(reportingPresenter.getWidget(), title, true);
 			presenterList.add(reportingPresenter);
 			
 			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
 			MatPresenter myAccountPresenter = buildMyAccountWidget();
-			mainTabLayout.add(myAccountPresenter.getWidget(), title);
+			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
 			presenterList.add(myAccountPresenter);
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 		}

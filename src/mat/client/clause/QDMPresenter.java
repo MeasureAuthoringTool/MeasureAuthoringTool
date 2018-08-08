@@ -60,9 +60,9 @@ public class QDMPresenter implements MatPresenter, TabObserver{
 		presenterList = new LinkedList<MatPresenter>();
 		tabLayout = new MatTabLayoutPanel(this);
 		tabLayout.getElement().setAttribute("id", "qdmElementTabLayout");
-		tabLayout.add(codeListSearchPresenter.getWidget(),"Create Element");
+		tabLayout.add(codeListSearchPresenter.getWidget(),"Create Element", true);
 		presenterList.add(codeListSearchPresenter);
-		tabLayout.add(qdsAppliedListPresenter.getWidget(),"Applied Elements");
+		tabLayout.add(qdsAppliedListPresenter.getWidget(),"Applied Elements", true);
 		presenterList.add(qdsAppliedListPresenter);
 		tabLayout.setHeight("98%");
 		MatContext.get().tabRegistry.put("Old QDM Elements",tabLayout);

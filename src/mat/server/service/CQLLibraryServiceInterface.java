@@ -128,4 +128,10 @@ public interface CQLLibraryServiceInterface {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
 
 	SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId);
+
+	String getCQLLibraryNameFromMeasureId(String id);
+
+	String getCQLLibraryOwnerNameFromMeasureId(String id);
+
+	String getCQLLibraryContentFromMeasureId(String id);
 }

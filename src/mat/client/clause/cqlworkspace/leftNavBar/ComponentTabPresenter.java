@@ -28,9 +28,9 @@ public class ComponentTabPresenter {
 
 	private ComponentTabView view;
 	
-	private String owner = "";
-	private String name = "";
-	private String content = "";
+	private String libOwner = "";
+	private String libName = "";
+	private String libContent = "";
 	
 	public ComponentTabPresenter() {
 		view = new ComponentTabView();
@@ -95,54 +95,40 @@ public class ComponentTabPresenter {
 			}
 		});
 		
-//		view.getListBox().addKeyPressHandler(new KeyPressHandler() {
-//			@Override
-//			public void onKeyPress(KeyPressEvent event) {
-//				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-//					DomEvent.fireNativeEvent(Document.get().createDblClickEvent(view.getListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false, false), view.getListBox());
-//				}
-//			}
-//		});
-//		
-//		view.getListBox().addDoubleClickHandler(new DoubleClickHandler() {
-//			@Override
-//			public void onDoubleClick(DoubleClickEvent event) {
-//				int selectedIndex = view.getListBox().getSelectedIndex();
-//				if(selectedIndex != -1) {
-//					final String selectedComponentMeasureId = view.getListBox().getValue(selectedIndex);
-//					view.setSelectedAlias(view.getAliases().get(selectedComponentMeasureId));
-//					view.setSelectedOwner(view.getLibOwner().get(selectedComponentMeasureId));
-//					view.setSelectedLibraryName(view.getLibName().get(selectedComponentMeasureId));
-//					view.setSelectedContent(view.getLibContent().get(selectedComponentMeasureId));
-//				}
-//			}
-//		});
+		view.getListBox().addKeyPressHandler(new KeyPressHandler() {
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+					DomEvent.fireNativeEvent(Document.get().createDblClickEvent(view.getListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false, false), view.getListBox());
+				}
+			}
+		});
 		
 	}
 	
+	public void populateComponentInformation() {
+		int selectedIndex = view.getListBox().getSelectedIndex();
+		if(selectedIndex != -1) {
+			final String selectedComponentMeasureId = view.getListBox().getValue(selectedIndex);
+			view.setSelectedAlias(view.getComponentObjectsMap().get(selectedComponentMeasureId).getAlias());
+			view.setSelectedOwner("owner");//TODO view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibOwner());
+			view.setSelectedLibraryName(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibName());
+			view.setSelectedContent(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibContent());
+		}
+	}
+	
 	public void updateComponentTabInformation() {
-		view.getAliases().clear();
-		view.getLibContent().clear();
-		view.getLibName().clear();
-		view.getLibOwner().clear();
+		view.getComponentObjectsList().clear();
+		view.getComponentObjectsMap().clear();
 		
 		updateListOfComponentObjects();
-		
-		for(ComponentMeasureTabObject measure : view.getComponentObjects()) {
-			view.getAliases().put(measure.getComponentId(), measure.getAlias());
-			view.getLibContent().put(measure.getComponentId(), measure.getLibContent());
-			view.getLibName().put(measure.getComponentId(), measure.getLibName());
-			view.getLibOwner().put(measure.getComponentId(), measure.getLibOwner());
-		}
-		
+
 		updateNewSuggestComponentOracle();
 		view.setBadgeNumber();
 	}
 	
 	private void updateNewSuggestComponentOracle() {
-		if (view.getSuggestBox() != null) {
-			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(view.getAliases().values());
-		}
+		view.setSuggestBox(new CQLSuggestOracle(view.getAliases().values()));
 	}
 	
 	
@@ -152,6 +138,7 @@ public class ComponentTabPresenter {
 
 	public void closeSearch() {
 		view.getCollapse().getElement().setClassName("panel-collapse collapse");
+		view.getListBox().clear();
 	}
 
 	public void populateSearchBox() {
@@ -159,8 +146,6 @@ public class ComponentTabPresenter {
 	}
 	
 	private void updateListOfComponentObjects(){
-		view.getComponentObjects().clear();
-		
 		//Get list of component measures
 		MatContext.get().getMeasureService().getComponentMeasures(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
@@ -176,7 +161,7 @@ public class ComponentTabPresenter {
 						public void onFailure(Throwable caught) {}
 						@Override
 						public void onSuccess(String result) {
-							owner = result;
+							libOwner = result;
 							
 							//Get the name of the cql library of the component measure
 							MatContext.get().getCQLLibraryService().getCQLLibraryNameFromMeasureId(res.getId(), new AsyncCallback<String>() {
@@ -184,7 +169,7 @@ public class ComponentTabPresenter {
 								public void onFailure(Throwable caught) {}
 								@Override
 								public void onSuccess(String result) {
-									name = result;
+									libName = result;
 									
 									//Get the content of the cql library of the component measure
 									MatContext.get().getCQLLibraryService().getCQLLibraryContentFromMeasureId(res.getId(), new AsyncCallback<String>() {
@@ -192,11 +177,12 @@ public class ComponentTabPresenter {
 										public void onFailure(Throwable caught) {}
 										@Override
 										public void onSuccess(String result) {
-											content = result;
+											libContent = result;
 											
 											//Populate the componentObject list
-											ComponentMeasureTabObject obj = new ComponentMeasureTabObject(res.getName(), owner , name , content, res.getId());
-											view.getComponentObjects().add(obj);
+											ComponentMeasureTabObject obj = new ComponentMeasureTabObject(res.getName(), libOwner , libName , libContent, res.getId());
+											view.getComponentObjectsList().add(obj);
+											view.getComponentObjectsMap().put(obj.getComponentId(), obj);
 											view.clearAndAddToListBox();
 										}
 									});

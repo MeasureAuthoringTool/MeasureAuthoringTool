@@ -95,15 +95,12 @@ public class ComponentTabPresenter {
 	
 	public void populateComponentInformation() {
 		int selectedIndex = view.getListBox().getSelectedIndex();
-		GWT.log("" + selectedIndex);
 		if(selectedIndex != -1) {
 			final String selectedComponentMeasureId = view.getListBox().getValue(selectedIndex);
 			view.setSelectedAlias(view.getComponentObjectsMap().get(selectedComponentMeasureId).getMeasureName());
 			view.setSelectedOwner(view.getComponentObjectsMap().get(selectedComponentMeasureId).getOwnerName());
 			view.setSelectedLibraryName(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibraryName());
 			view.setSelectedContent(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibraryContent());
-			
-			GWT.log("after");
 		}
 	}
 

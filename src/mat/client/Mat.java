@@ -47,8 +47,8 @@ import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.export.ManageExportView;
-import mat.client.export.bonnie.BonnieExportPresenter;
 import mat.client.login.service.SessionManagementService;
+import mat.client.login.service.SessionManagementService.Result;
 import mat.client.measure.ComponentMeasureDisplay;
 import mat.client.measure.ManageCompositeMeasureDetailView;
 import mat.client.measure.ManageMeasureDetailView;
@@ -74,8 +74,6 @@ import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
-import mat.shared.bonnie.error.BonnieServerException;
-import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 
@@ -152,7 +150,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 
 				@Override
 				public void onSuccess(String resultMatVersion) {
-					if(result == null || (checkIfResultIsNotNull(result) && result.sessionCreationTimestamp.before(result.signInDate))){
+                    if(result == null || (checkIfResultIsNotNull(result) && !result.activeSessionId.equals(result.currentSessionId))){
+                    	Window.alert(result.activeSessionId +" "+result.currentSessionId);
 						redirectToLogin();
 					}else{
 						final Date lastSignIn = result.signInDate;
@@ -163,12 +162,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 						MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
 						loadMatWidgets(result.userFirstName, isAlreadySignedIn, resultMatVersion);
 					}
-					
 				}
 
-				private boolean checkIfResultIsNotNull(final SessionManagementService.Result result) {
-					return result != null && result.sessionCreationTimestamp != null && result.signInDate != null;
-				}
+				private boolean checkIfResultIsNotNull(Result result) {
+                    return result != null && result.activeSessionId != null && result.currentSessionId != null;
+
+				}   
 			});
 			}
 	};

@@ -900,6 +900,7 @@ public class UserServiceImpl implements UserService {
 		Date signoutDate = new Date();
 		User user = userDAO.find(userId);
 		user.setSignOutDate(signoutDate);
+		user.setSessionId(null);
 		try{
 			userDAO.save(user);
 			transactionAuditLogDAO.save(auditLog);

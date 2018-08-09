@@ -310,9 +310,10 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public LoginModel isValidUser(String userId, String password, String oneTimePassword) {
+	public LoginModel isValidUser(String userId, String password, String oneTimePassword,String sessionId) {
 		LoginModel validateUserLoginModel = new LoginModel();
 		MatUserDetails validateUserMatUserDetails = (MatUserDetails) hibernateUserService.loadUserByUsername(userId);
+		validateUserMatUserDetails.setSessionId(sessionId);
 		Date currentDate = new Date();
 		currentTimeStamp = new Timestamp(currentDate.getTime());
 		validateUserLoginModel = isValidUserIdPassword(userId, password, validateUserLoginModel, validateUserMatUserDetails);

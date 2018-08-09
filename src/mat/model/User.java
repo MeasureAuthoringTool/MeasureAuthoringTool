@@ -61,10 +61,10 @@ public class User  {
 	
 	private String loginId;
 	
+	private String sessionId;
+	
 	private Set<UserPasswordHistory> passwordHistory = new  HashSet<UserPasswordHistory>();
 	
-	
-
 	public String getId() {
 		return id;
 	}
@@ -285,7 +285,14 @@ public class User  {
 	public String getLoginId() {
 		return loginId;
 	}
+	
+	public String getSessionId() {
+		return sessionId;
+	}
 
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
 	public Organization getOrganization() {
 		return organization;
 	}

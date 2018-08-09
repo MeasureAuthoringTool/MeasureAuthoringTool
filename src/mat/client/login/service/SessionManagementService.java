@@ -42,7 +42,9 @@ public interface SessionManagementService extends RemoteService{
 		/** The user first name. */
 		public String userFirstName;
 		
-		public Timestamp sessionCreationTimestamp;
+		public String currentSessionId;
+		
+		public String activeSessionId;
 	}
 	
 	/**

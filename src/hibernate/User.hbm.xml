@@ -25,6 +25,7 @@
 	<!-- <property name="orgOID" column="ORG_OID"/> -->
 	<!-- <property name="rootOID" column="ROOT_OID"/> -->
 	<property name="loginId" column="LOGIN_ID"/>
+	<property name="sessionId" column="SESSION_ID"/>
 	<one-to-one name="password" class="mat.model.UserPassword" lazy="proxy" property-ref="user"  cascade="all"/>
 	<one-to-one name="userBonnieAccessInfo" class="mat.model.UserBonnieAccessInfo" lazy="proxy" property-ref="user"  cascade="all"/>
 	<many-to-one name="organization" column="ORG_ID" 

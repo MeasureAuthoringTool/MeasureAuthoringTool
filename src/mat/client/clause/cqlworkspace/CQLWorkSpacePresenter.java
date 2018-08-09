@@ -3384,6 +3384,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.hideAceEditorAutoCompletePopUp();
+				searchDisplay.getCqlLeftNavBarPanelView().getComponents().updateComponentTabInformation();
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_COMPONENTS_MENU;
 					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();

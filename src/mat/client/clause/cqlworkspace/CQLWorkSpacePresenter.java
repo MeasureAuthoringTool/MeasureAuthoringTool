@@ -54,12 +54,13 @@ import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
 import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
@@ -194,7 +195,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		CQLGeneralInformationView getCqlGeneralInformationView();
 		
-		CqlComponentView getComponentView();
+		CQLComponentLibraryView getComponentView();
 
 		CQLIncludeLibraryView getIncludeView();
 
@@ -957,6 +958,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
+				GWT.log("double click");
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateComponentInformation();
 				searchDisplay.getComponentView().setPageInformation(searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView());
 			}
@@ -3400,7 +3402,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
 				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
 				searchDisplay.hideAceEditorAutoCompletePopUp();
-				searchDisplay.getCqlLeftNavBarPanelView().getComponents().updateComponentTabInformation();
 				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
 					nextSection = CQLWorkSpaceConstants.CQL_COMPONENTS_MENU;
 					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
@@ -3707,7 +3708,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_COMPONENTS_MENU;
 		searchDisplay.getMainFlowPanel().clear();
-		searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateSearchBox();
 		searchDisplay.buildComponentsView();
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());

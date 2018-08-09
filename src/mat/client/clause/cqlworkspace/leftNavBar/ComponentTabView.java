@@ -21,7 +21,6 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -30,7 +29,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.ComponentMeasureTabObject;
-import mat.client.shared.MatContext;
 
 
 public class ComponentTabView extends AnchorListItem {
@@ -45,12 +43,6 @@ public class ComponentTabView extends AnchorListItem {
 	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
 	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
 	private Map<String, String> aliases = new HashMap<String,String>();
-<<<<<<< HEAD
-=======
-	private String name;
-	private String owner;
-	private String content;
->>>>>>> 9302: TODO- direct update button to the newly made edit composite measure screen; fix issue with getting library owner name; get the cql library name, not the measure library name; put alias in list box/search box; get cql library as a string, not as a blob; fix method to remove component tab if not composite (checkCompositeMeasure() in CQLWorkspacePresenter)
 	
 	private String selectedLibaryName;
 	private String selectedOwner;
@@ -76,46 +68,7 @@ public class ComponentTabView extends AnchorListItem {
 		super.setDataToggle(Toggle.COLLAPSE);
 		super.setHref("#collapseComponent");
 		super.add(collapse);
-	}
-
-	public String getCQLLibraryOwnerNameFromMeasureId(String id) {
-		MatContext.get().getCQLLibraryService().getCQLLibraryOwnerNameFromMeasureId(id, new AsyncCallback<String>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				owner = "";
-			}
-
-			@Override
-			public void onSuccess(String result) {
-				owner = result;
-			}
-		});
-		
-		return owner;
-	}
-	
-	public String getCQLLibraryNameFromMeasureId(String id) {
-		MatContext.get().getCQLLibraryService().getCQLLibraryNameFromMeasureId(id, new AsyncCallback<String>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				name = "";
-			}
-
-			@Override
-			public void onSuccess(String result) {
-				name = result;
-			}
-		});
-		return name;
-	}
-	
-	public String getCQLLibraryContentFromMeasaureId(String id){
-		
-		
-		return content;
-	}
+	}	
 	
 	private PanelCollapse createComponentCollapsablePanel() {
 		collapse.setId("collapseComponent");
@@ -141,7 +94,6 @@ public class ComponentTabView extends AnchorListItem {
 	}
 	
 	private void buildListBox() {
-		listBox.clear();
 		listBox.setWidth("180px");
 		listBox.setVisibleItemCount(10);
 		listBox.getElement().setAttribute("id", "componentsListBox");
@@ -161,19 +113,12 @@ public class ComponentTabView extends AnchorListItem {
 		suggestBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
 	}
 	
-<<<<<<< HEAD
+	
 	public void setBadgeNumber(int size) {
 		if (size < 10) {
 			badge.setText("0" + size);
 		} else {
 			badge.setText("" + size);
-=======
-	public void setBadgeNumber() {
-		if (componentObjectsList.size() < 10) {
-			badge.setText("0" + componentObjectsList.size());
-		} else {
-			badge.setText("" + componentObjectsList.size());
->>>>>>> 9302: TODO- direct update button to the newly made edit composite measure screen; fix issue with getting library owner name; get the cql library name, not the measure library name; put alias in list box/search box; get cql library as a string, not as a blob; fix method to remove component tab if not composite (checkCompositeMeasure() in CQLWorkspacePresenter)
 		}
 	}
 	
@@ -185,10 +130,7 @@ public class ComponentTabView extends AnchorListItem {
 			listBox.clear();
 			componentObjectsList = sortComponentsList(componentObjectsList);
 			for (ComponentMeasureTabObject object : componentObjectsList) {
-<<<<<<< HEAD
 				componentObjectsMap.put(object.getComponentId(), object);
-=======
->>>>>>> 9302: TODO- direct update button to the newly made edit composite measure screen; fix issue with getting library owner name; get the cql library name, not the measure library name; put alias in list box/search box; get cql library as a string, not as a blob; fix method to remove component tab if not composite (checkCompositeMeasure() in CQLWorkspacePresenter)
 				listBox.addItem(object.getAlias(), object.getComponentId());
 			}
 			// Set tooltips for each element in listbox
@@ -288,9 +230,5 @@ public class ComponentTabView extends AnchorListItem {
 	public void setSuggestBox(CQLSuggestOracle cqlSuggestOracle) {
 		this.suggestBox = new SuggestBox(cqlSuggestOracle);
 	}
-<<<<<<< HEAD
-=======
-
->>>>>>> 9302: TODO- direct update button to the newly made edit composite measure screen; fix issue with getting library owner name; get the cql library name, not the measure library name; put alias in list box/search box; get cql library as a string, not as a blob; fix method to remove component tab if not composite (checkCompositeMeasure() in CQLWorkspacePresenter)
 	
 }

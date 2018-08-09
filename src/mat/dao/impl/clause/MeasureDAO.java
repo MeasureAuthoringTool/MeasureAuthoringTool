@@ -666,7 +666,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 
 	private List<Measure> fetchMeasureResultListForCritera(Criteria mCriteria, MeasureSearchModel measureSearchModel, User user) {
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.setFirstResult(measureSearchModel.getStartIndex() - 1);
+		mCriteria.setFirstResult(0);
 		
 		@SuppressWarnings("unchecked")
 		List<Measure> measureResultList = mCriteria.list();

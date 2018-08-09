@@ -24,7 +24,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-public class CqlComponentView extends GenericView  {
+public class CQLComponentLibraryView extends GenericView  {
 
 	private static final String LABEL_WIDTH = "150px";
 	private static final String LABEL_STYLE = "font-size:90%;margin-left:15px;";
@@ -40,7 +40,7 @@ public class CqlComponentView extends GenericView  {
 	private AceEditor cqlAceEditor = new AceEditor();
 	public ManageMeasurePresenter mmp;
 	
-	public CqlComponentView() {
+	public CQLComponentLibraryView() {
 		super();
 		buildButton();
 		setTextBoxes();

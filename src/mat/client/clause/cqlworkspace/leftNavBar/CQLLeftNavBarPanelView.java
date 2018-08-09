@@ -1915,220 +1915,72 @@ public class CQLLeftNavBarPanelView {
 		return warningMessageAlert;
 	}
 
-
-	/**
-	 * Gets the error message alert.
-	 *
-	 * @return the error message alert
-	 */
 	public MessageAlert getErrorMessageAlert() {
 		return errorMessageAlert;
 	}
 
-
-	/**
-	 * Gets the warning confirmation message alert.
-	 *
-	 * @return the warning confirmation message alert
-	 */
 	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
 		return warningConfirmationMessageAlert;
 	}
 
-
-	/**
-	 * Gets the global warning confirmation message alert.
-	 *
-	 * @return the global warning confirmation message alert
-	 */
 	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
 		return globalWarningConfirmationMessageAlert;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * getCurrentSelectedDefinitionObjId()
-	 */
-	/**
-	 * Gets the current selected definition obj id.
-	 *
-	 * @return the current selected definition obj id
-	 */
+
 	public String getCurrentSelectedDefinitionObjId() {
 		return currentSelectedDefinitionObjId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * setCurrentSelectedDefinitionObjId(java.lang.String)
-	 */
-	/**
-	 * Sets the current selected definition obj id.
-	 *
-	 * @param currentSelectedDefinitionObjId
-	 *            the new current selected definition obj id
-	 */
 	public void setCurrentSelectedDefinitionObjId(String currentSelectedDefinitionObjId) {
 		this.currentSelectedDefinitionObjId = currentSelectedDefinitionObjId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * getCurrentSelectedParamerterObjId()
-	 */
-	/**
-	 * Gets the current selected paramerter obj id.
-	 *
-	 * @return the current selected paramerter obj id
-	 */
 	public String getCurrentSelectedParamerterObjId() {
 		return currentSelectedParamerterObjId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * setCurrentSelectedParamerterObjId(java.lang.String)
-	 */
-	/**
-	 * Sets the current selected paramerter obj id.
-	 *
-	 * @param currentSelectedParamerterObjId
-	 *            the new current selected paramerter obj id
-	 */
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
 	}
-	
-	/**
-	 * Sets the checks if is page dirty.
-	 *
-	 * @param isPageDirty the new checks if is page dirty
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsPageDirty(java.lang.Boolean)
-	 */
+
 	public void setIsPageDirty(Boolean isPageDirty) {
 		this.isPageDirty = isPageDirty;
 	}
-
-	/**
-	 * Sets the checks if is double click.
-	 *
-	 * @param isDoubleClick the new checks if is double click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsDoubleClick(java.lang.Boolean)
-	 */
+	
 	public void setIsDoubleClick(Boolean isDoubleClick) {
 		this.isDoubleClick = isDoubleClick;
 	}
 
-	/**
-	 * Checks if is double click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isDoubleClick()
-	 */
 	public Boolean isDoubleClick() {
 		return isDoubleClick;
 	}
 
-	/**
-	 * Sets the checks if is nav bar click.
-	 *
-	 * @param isNavBarClick the new checks if is nav bar click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsNavBarClick(java.lang.Boolean)
-	 */
 	public void setIsNavBarClick(Boolean isNavBarClick) {
 		this.isNavBarClick = isNavBarClick;
 	}
 
-	/**
-	 * Checks if is nav bar click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isNavBarClick()
-	 */
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-	
-	/**
-	 * Gets the checks if is page dirty.
-	 *
-	 * @return the checks if is page dirty
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getIsPageDirty()
-	 */
+
 	public Boolean getIsPageDirty() {
 		return isPageDirty;
 	}
 
-	
-	
-	
-	
-	/**
-	 * Show unsaved changes warning.
-	 */
 	public void showUnsavedChangesWarning() {
 		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 
-	/**
-	 * Show global unsaved changes warning.
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * showGlobalUnsavedChangesWarning()
-	 */
 	public void showGlobalUnsavedChangesWarning() {
 		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -2144,8 +1996,6 @@ public class CQLLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().createWarningAlert(message);
-		//getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	
 	

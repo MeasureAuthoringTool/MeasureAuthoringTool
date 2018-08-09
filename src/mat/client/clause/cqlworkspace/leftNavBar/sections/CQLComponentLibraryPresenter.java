@@ -6,12 +6,12 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import mat.client.event.EditCompositeMeasureEvent;
 import mat.client.shared.MatContext;
 
-public class CQLComponentPresenter {
+public class CQLComponentLibraryPresenter {
 	
-	CqlComponentView view;
+	CQLComponentLibraryView view;
 	
-	public CQLComponentPresenter() {
-		view = new CqlComponentView();
+	public CQLComponentLibraryPresenter() {
+		view = new CQLComponentLibraryView();
 		addEventHandlers();
 	}
 
@@ -37,7 +37,7 @@ public class CQLComponentPresenter {
 		MatContext.get().getEventBus().fireEvent(editEvent);	
 	}
 	
-	public CqlComponentView getView() {
+	public CQLComponentLibraryView getView() {
 		return view;
 	}
 }

@@ -3,38 +3,60 @@ package mat.client.shared;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ComponentMeasureTabObject implements IsSerializable{
-	private String measureAlias;
-	private String libName;
-	private String libOwner;
-	private String libContent;
+	private String measureName;
+	private String libraryAlias; 
+	private String libraryName;
+	private String ownerName;
+	private String libraryContent;
 	private String componentId;
 	
-	public ComponentMeasureTabObject(String measureAlias, String name, String owner, String content, String componentId) {
-		this.measureAlias = measureAlias;
-		this.libName = name;
-		this.libOwner = owner;
-		this.libContent = content;
+	public ComponentMeasureTabObject() {
+		
+	}
+	
+	public ComponentMeasureTabObject(String measureName, String libraryAlias, String libraryName, String ownerName, String content, String componentId) {
+		this.setMeasureName(measureName);
+		this.setLibraryAlias(libraryAlias); 
+		this.libraryName = libraryName;
+		this.ownerName = ownerName;
+		this.libraryContent = content;
 		this.componentId = componentId;
 	}
 	
 	public String getAlias() {
-		return measureAlias;
+		return libraryAlias;
 	}
 	
-	public String getLibName() {
-		return libName;
+	public String getLibraryName() {
+		return libraryName;
 	}
 
-	public String getLibOwner() {
-		return libOwner;
+	public String getOwnerName() {
+		return ownerName;
 	}
 
-	public String getLibContent() {
-		return libContent;
+	public String getLibraryContent() {
+		return libraryContent;
 	}
 
 	public String getComponentId() {
 		return componentId;
+	}
+
+	public String getLibraryAlias() {
+		return libraryAlias;
+	}
+
+	public void setLibraryAlias(String libraryAlias) {
+		this.libraryAlias = libraryAlias;
+	}
+
+	public String getMeasureName() {
+		return measureName;
+	}
+
+	public void setMeasureName(String measureName) {
+		this.measureName = measureName;
 	}
 	
 }

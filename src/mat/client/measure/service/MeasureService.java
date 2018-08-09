@@ -15,6 +15,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
+import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
@@ -690,9 +691,11 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId);
 
-	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
-			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
+	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList, List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
+	
 	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasure);
 	
 	public CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
+
+	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId);
 }

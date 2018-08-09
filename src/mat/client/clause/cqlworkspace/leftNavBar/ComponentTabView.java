@@ -45,9 +45,6 @@ public class ComponentTabView extends AnchorListItem {
 	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
 	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
 	private Map<String, String> aliases = new HashMap<String,String>();
-	private String name;
-	private String owner;
-	private String content;
 	
 	private String selectedLibaryName;
 	private String selectedOwner;
@@ -62,7 +59,7 @@ public class ComponentTabView extends AnchorListItem {
 		super.setId("component_Anchor");
 		label.setStyleName("transparentLabel");
 		label.setId("componentsLabel_Label");
-		setBadgeNumber();
+		setBadgeNumber(0);
 		badge.setPull(Pull.RIGHT);
 		badge.setMarginLeft(52);
 		badge.setId("componentsBadge_Badge");
@@ -73,46 +70,7 @@ public class ComponentTabView extends AnchorListItem {
 		super.setDataToggle(Toggle.COLLAPSE);
 		super.setHref("#collapseComponent");
 		super.add(collapse);
-	}
-
-	public String getCQLLibraryOwnerNameFromMeasureId(String id) {
-		MatContext.get().getCQLLibraryService().getCQLLibraryOwnerNameFromMeasureId(id, new AsyncCallback<String>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				owner = "";
-			}
-
-			@Override
-			public void onSuccess(String result) {
-				owner = result;
-			}
-		});
-		
-		return owner;
-	}
-	
-	public String getCQLLibraryNameFromMeasureId(String id) {
-		MatContext.get().getCQLLibraryService().getCQLLibraryNameFromMeasureId(id, new AsyncCallback<String>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				name = "";
-			}
-
-			@Override
-			public void onSuccess(String result) {
-				name = result;
-			}
-		});
-		return name;
-	}
-	
-	public String getCQLLibraryContentFromMeasaureId(String id){
-		
-		
-		return content;
-	}
+	}	
 	
 	private PanelCollapse createComponentCollapsablePanel() {
 		collapse.setId("collapseComponent");
@@ -125,7 +83,6 @@ public class ComponentTabView extends AnchorListItem {
 		Label componentsLabel = new Label("Components");
 		buildSearchBox();
 		buildListBox();
-		clearAndAddToListBox();
 
 		rightVerticalPanel.add(suggestBox);
 		rightVerticalPanel.add(listBox);
@@ -139,7 +96,6 @@ public class ComponentTabView extends AnchorListItem {
 	}
 	
 	private void buildListBox() {
-		listBox.clear();
 		listBox.setWidth("180px");
 		listBox.setVisibleItemCount(10);
 		listBox.getElement().setAttribute("id", "componentsListBox");
@@ -159,19 +115,23 @@ public class ComponentTabView extends AnchorListItem {
 		suggestBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
 	}
 	
-	public void setBadgeNumber() {
-		if (componentObjectsList.size() < 10) {
-			badge.setText("0" + componentObjectsList.size());
+	public void setBadgeNumber(int size) {
+		if (size < 10) {
+			badge.setText("0" + size);
 		} else {
-			badge.setText("" + componentObjectsList.size());
+			badge.setText("" + size);
 		}
 	}
 	
-	public void clearAndAddToListBox() {
+	public void clearAndAddToListBox(List<ComponentMeasureTabObject> componentMeasures) {
+		componentObjectsList.clear();
+		componentObjectsMap.clear();
+		componentObjectsList.addAll(componentMeasures);
 		if (listBox != null) {
 			listBox.clear();
 			componentObjectsList = sortComponentsList(componentObjectsList);
 			for (ComponentMeasureTabObject object : componentObjectsList) {
+				componentObjectsMap.put(object.getComponentId(), object);
 				listBox.addItem(object.getAlias(), object.getComponentId());
 			}
 			// Set tooltips for each element in listbox
@@ -183,6 +143,8 @@ public class ComponentTabView extends AnchorListItem {
 				optionElement.setTitle(title);
 			}
 		}
+		
+		setBadgeNumber(componentMeasures.size());
 	}
 	
 	private List<ComponentMeasureTabObject> sortComponentsList(List<ComponentMeasureTabObject> objectList) {

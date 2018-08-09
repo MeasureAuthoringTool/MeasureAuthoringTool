@@ -9,8 +9,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentPresenter;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryPresenter;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 
@@ -48,7 +48,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
 	
-	private CQLComponentPresenter componentPresenter;
+	private CQLComponentLibraryPresenter componentPresenter;
 	
 	private HelpBlock helpBlock = new HelpBlock();
 	
@@ -56,7 +56,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	public CQLWorkSpaceView( ) {
 		generalInformationView = new CQLGeneralInformationView();
-		componentPresenter = new CQLComponentPresenter();
+		componentPresenter = new CQLComponentLibraryPresenter();
 		cqlParametersView = new CQLParametersView();
 		cqlDefinitionsView = new CQLDefinitionsView();
 		cqlFunctionsView = new CQLFunctionsView();
@@ -416,7 +416,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 
 	@Override
-	public CqlComponentView getComponentView() {
+	public CQLComponentLibraryView getComponentView() {
 		return componentPresenter.getView();
 	}
 

@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -76,6 +77,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
@@ -3276,14 +3278,50 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public ManageMeasureSearchModel getComponentMeasures(String measureId) {
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<Measure> measureList = measurePackageService.getComponentMeasuresInfo(measureId);
+		List<Measure> componentMeasures = measurePackageService.getComponentMeasuresInfo(measureId);
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 		searchModel.setData(detailModelList);
-		for (Measure measure : measureList) {
-			ManageMeasureSearchModel.Result detail = extractManageMeasureSearchModelDetail(measure);
+		for (Measure componentMeasure : componentMeasures) {
+			ManageMeasureSearchModel.Result detail = extractManageMeasureSearchModelDetail(componentMeasure);
 			detailModelList.add(detail);
 		}
+		
 		return searchModel;
+	}
+	
+	@Override
+	public List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId) {
+		List<ComponentMeasureTabObject> componentMeasureInformationList = new ArrayList<>();
+		Measure compositeMeasure = measureDAO.find(compositeMeasureId);
+		
+		List<ComponentMeasure> componentMeasures = compositeMeasure.getComponentMeasures();
+		
+		for(ComponentMeasure componentMeasure : componentMeasures) {
+			Measure measure = measureDAO.find(componentMeasure.getComponentMeasureId());
+			String measureName = measure.getDescription();
+			String ownerName = measure.getOwner().getFullName();
+			String alias = componentMeasure.getAlias();
+			String componentId = measure.getId();
+
+			CQLLibrary library = cqlLibraryDAO.getLibraryByMeasureId(componentId);
+			
+			String libraryName = library.getName();
+			String data = "";
+			try {
+				data = new String( library.getCqlXML().getBytes(1, (int) library.getCqlXML().length()));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
+			String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "");
+						
+			ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, ownerName, libraryContent, componentId);
+			componentMeasureInformationList.add(o);
+		}
+		
+		return componentMeasureInformationList;
+		
 	}
 
 	/**

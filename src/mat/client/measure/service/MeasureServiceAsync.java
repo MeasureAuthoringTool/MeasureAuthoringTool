@@ -15,6 +15,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
+import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -731,4 +732,6 @@ public interface MeasureServiceAsync {
 
 	void validateCompositeMeasure(ManageCompositeMeasureDetailModel currentCompositeMeasureDetails,
 			AsyncCallback<CompositeMeasureValidationResult> asyncCallback);
+	
+	void getCQLLibraryInformationForComponentMeasure(String compositeMeasureId, AsyncCallback<List<ComponentMeasureTabObject>> callback);
 }

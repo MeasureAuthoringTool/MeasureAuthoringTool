@@ -29,9 +29,9 @@ public class ComponentTabPresenter {
 
 	private ComponentTabView view;
 	
-	private String owner = "";
-	private String name = "";
-	private String content = "";
+	private String libOwner = "";
+	private String libName = "";
+	private String libContent = "";
 	
 	public ComponentTabPresenter() {
 		view = new ComponentTabView();
@@ -104,6 +104,7 @@ public class ComponentTabPresenter {
 			}
 		});
 		
+<<<<<<< HEAD
 	}
 	
 	public void populateComponentInformation() {
@@ -115,6 +116,33 @@ public class ComponentTabPresenter {
 			view.setSelectedLibraryName(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibraryName());
 			view.setSelectedContent(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibraryContent());
 		}
+=======
+	}
+	
+	public void populateComponentInformation() {
+		int selectedIndex = view.getListBox().getSelectedIndex();
+		if(selectedIndex != -1) {
+			final String selectedComponentMeasureId = view.getListBox().getValue(selectedIndex);
+			view.setSelectedAlias(view.getComponentObjectsMap().get(selectedComponentMeasureId).getAlias());
+			view.setSelectedOwner("owner");//TODO view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibOwner());
+			view.setSelectedLibraryName(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibName());
+			view.setSelectedContent(view.getComponentObjectsMap().get(selectedComponentMeasureId).getLibContent());
+		}
+	}
+	
+	public void updateComponentTabInformation() {
+		view.getComponentObjectsList().clear();
+		view.getComponentObjectsMap().clear();
+		
+		updateListOfComponentObjects();
+
+		updateNewSuggestComponentOracle();
+		view.setBadgeNumber();
+	}
+	
+	private void updateNewSuggestComponentOracle() {
+		view.setSuggestBox(new CQLSuggestOracle(view.getAliases().values()));
+>>>>>>> 9302: TODO- direct update button to the newly made edit composite measure screen; fix issue with getting library owner name; get the cql library name, not the measure library name; put alias in list box/search box; get cql library as a string, not as a blob; fix method to remove component tab if not composite (checkCompositeMeasure() in CQLWorkspacePresenter)
 	}
 
 	public ComponentTabView getView() {
@@ -123,6 +151,7 @@ public class ComponentTabPresenter {
 
 	public void closeSearch() {
 		view.getCollapse().getElement().setClassName("panel-collapse collapse");
+		view.getListBox().clear();
 	}
 
 	
@@ -131,8 +160,6 @@ public class ComponentTabPresenter {
 	}
 	
 	private void updateListOfComponentObjects(){
-		view.getComponentObjects().clear();
-		
 		//Get list of component measures
 		MatContext.get().getMeasureService().getComponentMeasures(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
@@ -148,7 +175,7 @@ public class ComponentTabPresenter {
 						public void onFailure(Throwable caught) {}
 						@Override
 						public void onSuccess(String result) {
-							owner = result;
+							libOwner = result;
 							
 							//Get the name of the cql library of the component measure
 							MatContext.get().getCQLLibraryService().getCQLLibraryNameFromMeasureId(res.getId(), new AsyncCallback<String>() {
@@ -156,7 +183,7 @@ public class ComponentTabPresenter {
 								public void onFailure(Throwable caught) {}
 								@Override
 								public void onSuccess(String result) {
-									name = result;
+									libName = result;
 									
 									//Get the content of the cql library of the component measure
 									MatContext.get().getCQLLibraryService().getCQLLibraryContentFromMeasureId(res.getId(), new AsyncCallback<String>() {
@@ -164,11 +191,12 @@ public class ComponentTabPresenter {
 										public void onFailure(Throwable caught) {}
 										@Override
 										public void onSuccess(String result) {
-											content = result;
+											libContent = result;
 											
 											//Populate the componentObject list
-											ComponentMeasureTabObject obj = new ComponentMeasureTabObject(res.getName(), owner , name , content, res.getId());
-											view.getComponentObjects().add(obj);
+											ComponentMeasureTabObject obj = new ComponentMeasureTabObject(res.getName(), libOwner , libName , libContent, res.getId());
+											view.getComponentObjectsList().add(obj);
+											view.getComponentObjectsMap().put(obj.getComponentId(), obj);
 											view.clearAndAddToListBox();
 										}
 									});

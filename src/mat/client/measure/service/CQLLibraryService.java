@@ -110,4 +110,10 @@ public interface CQLLibraryService extends RemoteService {
 
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
+	
+	String getCQLLibraryOwnerNameFromMeasureId(String id);
+
+	String getCQLLibraryNameFromMeasureId(String id);
+
+	String getCQLLibraryContentFromMeasureId(String id);
 }

@@ -1948,4 +1948,22 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 
 		logger.info("CQLLibraryService: DeleteCQLLibrary End : cqlLibraryId:: " + cqllibId);
 	}
+
+	@Override
+	public String getCQLLibraryNameFromMeasureId(String id) {
+		String result =  cqlLibraryDAO.getLibraryByMeasureId(id).getName();
+		return result;
+	}
+
+	@Override
+	public String getCQLLibraryOwnerNameFromMeasureId(String id) {
+		User user = cqlLibraryDAO.getLibraryByMeasureId(id).getOwnerId(); 
+		return user.getFirstName() + " " + user.getLastName();
+	}
+
+	@Override
+	public String getCQLLibraryContentFromMeasureId(String id) {
+		String res =  cqlLibraryDAO.getLibraryByMeasureId(id).getCqlXML().toString();
+		return res;
+	}
 }

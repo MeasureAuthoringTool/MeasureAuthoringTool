@@ -127,4 +127,5 @@ public interface CQLLibraryServiceAsync {
 
 	void modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
+
 }

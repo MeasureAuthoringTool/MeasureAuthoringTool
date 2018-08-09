@@ -15,6 +15,7 @@ import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
@@ -532,6 +533,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 			ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		return this.getMeasureLibraryService().validateCompositeMeasure(manageCompositeMeasureDetailModel);
 	}
-
 	
+	@Override
+	public List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId) {
+		return this.getMeasureLibraryService().getCQLLibraryInformationForComponentMeasure(compositeMeasureId);
+	}
 }

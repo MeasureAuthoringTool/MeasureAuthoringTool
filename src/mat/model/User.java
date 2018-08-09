@@ -317,5 +317,9 @@ public class User  {
 	public void setOwnedCQLLibraryShares(Set<CQLLibraryShare> ownedCQLLibraryShares) {
 		this.ownedCQLLibraryShares = ownedCQLLibraryShares;
 	}
+	
+	public String getFullName() {
+		return this.firstName + " " + this.lastName;
+	}
 
 }

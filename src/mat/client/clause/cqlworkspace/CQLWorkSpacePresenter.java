@@ -974,7 +974,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				GWT.log("double click");
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateComponentInformation();
 				searchDisplay.getComponentView().setPageInformation(searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView());
 			}

@@ -2,6 +2,7 @@ package mat.client.measure.service;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -109,4 +110,10 @@ public interface CQLLibraryService extends RemoteService {
 
 	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
+	
+	String getCQLLibraryOwnerNameFromMeasureId(String id);
+
+	String getCQLLibraryNameFromMeasureId(String id);
+
+	String getCQLLibraryContentFromMeasureId(String id);
 }

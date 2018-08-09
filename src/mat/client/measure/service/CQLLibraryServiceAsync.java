@@ -128,6 +128,12 @@ public interface CQLLibraryServiceAsync {
 	void modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
+	void getCQLLibraryOwnerNameFromMeasureId(String id, AsyncCallback<String> asyncCallback);
+
+	void getCQLLibraryNameFromMeasureId(String id, AsyncCallback<String> asyncCallback);
+
+	void getCQLLibraryContentFromMeasureId(String id, AsyncCallback<String> asyncCallback);
+
 	//void searchForStandaloneIncludes(String setId, String searchText,
 		//	AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 }

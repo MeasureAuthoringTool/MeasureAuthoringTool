@@ -241,4 +241,16 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId) {
 		return this.getCQLLibraryService().saveValueSetList(transferObjectList, appliedValueSetList, cqlLibraryId);
 	}
+	@Override
+	public String getCQLLibraryOwnerNameFromMeasureId(String id) {
+		return this.getCQLLibraryService().getCQLLibraryOwnerNameFromMeasureId(id);
+	}
+	@Override
+	public String getCQLLibraryNameFromMeasureId(String id) {
+		return this.getCQLLibraryService().getCQLLibraryNameFromMeasureId(id);
+	}
+	@Override
+	public String getCQLLibraryContentFromMeasureId(String id) {
+		return this.getCQLLibraryService().getCQLLibraryContentFromMeasureId(id);
+	}
 }

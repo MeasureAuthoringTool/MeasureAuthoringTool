@@ -101,7 +101,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			session.invalidate();
 		}
 		session = getThreadLocalRequest().getSession(true);
-		LoginModel loginModel = loginCredentialService.isValidUser(userId, password, oneTimePassword);
+		LoginModel loginModel = loginCredentialService.isValidUser(userId, password, oneTimePassword,session.getId());
 		return loginModel;
 	}
 	
@@ -326,6 +326,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 							Date currentDate = new Date();
 							Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
 							userDetails.setSignOutDate(currentTimeStamp);
+							userDetails.setSessionId(null);
 							userDetails.getUserPassword()
 							.setPasswordlockCounter(0);
 							userDAO.saveUserDetails(userDetails);

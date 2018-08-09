@@ -62,12 +62,26 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
     /** The user last name. */
     private String userLastName;
     
+    /** Session ID Tracker */
+    private String sessionId;
+    
     /**
 	 * Instantiates a new mat user details.
 	 */
     public MatUserDetails() {
     	
     }
+
+    
+	public String getSessionId() {
+		return sessionId;
+	}
+
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
 
 	/**
 	 * Gets the email address.

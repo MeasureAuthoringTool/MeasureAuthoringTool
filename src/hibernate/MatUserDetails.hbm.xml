@@ -21,5 +21,6 @@
     <property name="emailAddress" column="EMAIL_ADDRESS" type="string"/>
     <property name="loginId" column="LOGIN_ID" type="string"/>
     <property name="userLastName" column="LAST_NAME" />
+    <property name="sessionId" column="SESSION_ID" />
    </class>
 </hibernate-mapping>

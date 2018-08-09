@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
@@ -196,6 +197,14 @@ public class CqlComponentView extends GenericView  {
 			
 	public Button getUpdateButton() {
 		return updateButton;
+	}
+
+	public void setPageInformation(ComponentTabView view) {
+		setMeasureName(view.getSelectedAlias());
+		setOwnerName(view.getSelectedOwner());
+		setLibraryName(view.getSelectedLibraryName());
+		cqlAceEditor.setText(view.getSelectedContent());
+		
 	}
 	
 }

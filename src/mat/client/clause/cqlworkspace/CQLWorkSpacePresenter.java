@@ -53,10 +53,11 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
 import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentView;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.JSONAttributeModeUtility;
@@ -234,11 +235,19 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	}
 	
-	//TODO
 	private void checkCompositeMeasure() {
-		if(false) {
-			searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().removeFromParent();
-		}
+		MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureDetailModel>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {}
+			
+			@Override
+			public void onSuccess(ManageMeasureDetailModel result) {
+				if(result.getComponentMeasuresSelectedList()  == null || result.getComponentMeasuresSelectedList().isEmpty()) {
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().removeFromParent();
+				}
+			}
+		});
 	}
 
 	private void buildInsertPopUp() {
@@ -960,6 +969,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the list box event handler.
 	 */
 	private void addListBoxEventHandler() {
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateComponentInformation();
+				searchDisplay.getComponentView().setPageInformation(searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView());
+			}
+		});
 
 		// Double Click Handler Event for Parameter Name ListBox in Parameter Section
 		searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox()
@@ -3316,7 +3333,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
 					&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
 				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
-				setComponentMeasureInformationForComponentsTab(result);
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
@@ -3337,12 +3353,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
-	}
-	
-	private void setComponentMeasureInformationForComponentsTab(SaveUpdateCQLResult result) {
-		//TODO
-		
-		
 	}
 
 	/**

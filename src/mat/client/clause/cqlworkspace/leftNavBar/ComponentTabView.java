@@ -42,11 +42,9 @@ public class ComponentTabView extends AnchorListItem {
 	private SuggestBox suggestBox;
 	private Anchor anchor;
 	
-	private List<ComponentMeasureTabObject> componentObjects = new ArrayList<>();
+	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
+	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
 	private Map<String, String> aliases = new HashMap<String,String>();
-	private Map<String, String> libContent = new HashMap<String,String>();
-	private Map<String, String> libOwner = new HashMap<String,String>();
-	private Map<String, String> libName = new HashMap<String,String>();
 	private String name;
 	private String owner;
 	private String content;
@@ -150,11 +148,11 @@ public class ComponentTabView extends AnchorListItem {
 	
 	private void buildSearchBox() {
 		aliases.clear();
-		for(ComponentMeasureTabObject obj : componentObjects) {
+		for(ComponentMeasureTabObject obj : componentObjectsList) {
 			aliases.put(obj.getComponentId(), obj.getAlias());
 		}
 		
-		suggestBox = new SuggestBox(getSuggestOracle(new ArrayList<String>()));
+		suggestBox = new SuggestBox(getSuggestOracle(aliases.values()));
 		suggestBox.setWidth("180px");
 		suggestBox.setText("Search");
 		suggestBox.setTitle("Search Component Alias");
@@ -162,18 +160,18 @@ public class ComponentTabView extends AnchorListItem {
 	}
 	
 	public void setBadgeNumber() {
-		if (componentObjects.size() < 10) {
-			badge.setText("0" + componentObjects.size());
+		if (componentObjectsList.size() < 10) {
+			badge.setText("0" + componentObjectsList.size());
 		} else {
-			badge.setText("" + componentObjects.size());
+			badge.setText("" + componentObjectsList.size());
 		}
 	}
 	
 	public void clearAndAddToListBox() {
 		if (listBox != null) {
 			listBox.clear();
-			componentObjects = sortComponentsList(componentObjects);
-			for (ComponentMeasureTabObject object : componentObjects) {
+			componentObjectsList = sortComponentsList(componentObjectsList);
+			for (ComponentMeasureTabObject object : componentObjectsList) {
 				listBox.addItem(object.getAlias(), object.getComponentId());
 			}
 			// Set tooltips for each element in listbox
@@ -221,28 +219,19 @@ public class ComponentTabView extends AnchorListItem {
 		return anchor;
 	}
 
-	public List<ComponentMeasureTabObject> getComponentObjects() {
-		return componentObjects;
+	public List<ComponentMeasureTabObject> getComponentObjectsList() {
+		return componentObjectsList;
+	}
+	
+	public Map<String, ComponentMeasureTabObject> getComponentObjectsMap() {
+		return componentObjectsMap;
 	}
 
 	public Map<String, String> getAliases() {
 		return aliases;
 	}
-
-	public Map<String, String> getLibContent() {
-		return libContent;
-	}
-
-	public Map<String, String> getLibOwner() {
-		return libOwner;
-	}
-
-	public Map<String, String> getLibName() {
-		return libName;
-	}
-
 	public void setComponentObjects(List<ComponentMeasureTabObject> list) {
-		this.componentObjects = list;
+		this.componentObjectsList = list;
 	}
 	
 	public String getSelectedLibraryName() {
@@ -275,6 +264,10 @@ public class ComponentTabView extends AnchorListItem {
 
 	public void setSelectedAlias(String selectedAlias) {
 		this.selectedAlias = selectedAlias;
+	}
+
+	public void setSuggestBox(CQLSuggestOracle cqlSuggestOracle) {
+		this.suggestBox = new SuggestBox(cqlSuggestOracle);
 	}
 
 	

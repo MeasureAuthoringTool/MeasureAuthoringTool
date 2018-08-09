@@ -21,6 +21,7 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
 
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -28,8 +29,8 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.MatContext;
-import mat.model.ComponentMeasureTabObject;
 
 
 public class ComponentTabView extends AnchorListItem {
@@ -69,6 +70,45 @@ public class ComponentTabView extends AnchorListItem {
 		super.setDataToggle(Toggle.COLLAPSE);
 		super.setHref("#collapseComponent");
 		super.add(collapse);
+	}
+
+	public String getCQLLibraryOwnerNameFromMeasureId(String id) {
+		MatContext.get().getCQLLibraryService().getCQLLibraryOwnerNameFromMeasureId(id, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				owner = "";
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				owner = result;
+			}
+		});
+		
+		return owner;
+	}
+	
+	public String getCQLLibraryNameFromMeasureId(String id) {
+		MatContext.get().getCQLLibraryService().getCQLLibraryNameFromMeasureId(id, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				name = "";
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				name = result;
+			}
+		});
+		return name;
+	}
+	
+	public String getCQLLibraryContentFromMeasaureId(String id){
+		
+		
+		return content;
 	}
 	
 	private PanelCollapse createComponentCollapsablePanel() {

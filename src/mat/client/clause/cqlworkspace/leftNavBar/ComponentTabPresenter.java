@@ -1,6 +1,7 @@
 package mat.client.clause.cqlworkspace.leftNavBar;
 
 import com.google.gwt.core.client.GWT;
+import java.util.List;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -15,11 +16,22 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
+
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.shared.CQLSuggestOracle;
+import mat.client.shared.ComponentMeasureTabObject;
+import mat.client.shared.MatContext;
 
 public class ComponentTabPresenter {
 
 	private ComponentTabView view;
+	
+	private String owner = "";
+	private String name = "";
+	private String content = "";
 	
 	public ComponentTabPresenter() {
 		view = new ComponentTabView();
@@ -113,6 +125,62 @@ public class ComponentTabPresenter {
 		view.getCollapse().getElement().setClassName("panel-collapse collapse");
 	}
 
+	
+	public void clickEventOnListBox() {
+		view.fireEvent(new DoubleClickEvent(){});
+	}
+	
+	private void updateListOfComponentObjects(){
+		view.getComponentObjects().clear();
+		
+		//Get list of component measures
+		MatContext.get().getMeasureService().getComponentMeasures(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureSearchModel>() {
+			@Override
+			public void onFailure(Throwable caught) {}
+			@Override
+			public void onSuccess(ManageMeasureSearchModel result) {
+				List<Result> componentMeasures = result.getData();
+				for(Result res : componentMeasures) {
+					
+					//get the owner name of the cql library of the component measure
+					MatContext.get().getCQLLibraryService().getCQLLibraryOwnerNameFromMeasureId(res.getId(), new AsyncCallback<String>() {
+						@Override
+						public void onFailure(Throwable caught) {}
+						@Override
+						public void onSuccess(String result) {
+							owner = result;
+							
+							//Get the name of the cql library of the component measure
+							MatContext.get().getCQLLibraryService().getCQLLibraryNameFromMeasureId(res.getId(), new AsyncCallback<String>() {
+								@Override
+								public void onFailure(Throwable caught) {}
+								@Override
+								public void onSuccess(String result) {
+									name = result;
+									
+									//Get the content of the cql library of the component measure
+									MatContext.get().getCQLLibraryService().getCQLLibraryContentFromMeasureId(res.getId(), new AsyncCallback<String>() {
+										@Override
+										public void onFailure(Throwable caught) {}
+										@Override
+										public void onSuccess(String result) {
+											content = result;
+											
+											//Populate the componentObject list
+											ComponentMeasureTabObject obj = new ComponentMeasureTabObject(res.getName(), owner , name , content, res.getId());
+											view.getComponentObjects().add(obj);
+											view.clearAndAddToListBox();
+										}
+									});
+								}
+							});
+						}
+					});
+				}
+			}
+		});
+	}
+	
 	
 	public void clickEventOnListBox() {
 		view.fireEvent(new DoubleClickEvent(){});

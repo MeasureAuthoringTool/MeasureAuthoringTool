@@ -151,7 +151,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 				@Override
 				public void onSuccess(String resultMatVersion) {
                     if(result == null || (checkIfResultIsNotNull(result) && !result.activeSessionId.equals(result.currentSessionId))){
-                    	Window.alert(result.activeSessionId +" "+result.currentSessionId);
 						redirectToLogin();
 					}else{
 						final Date lastSignIn = result.signInDate;

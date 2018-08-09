@@ -2094,7 +2094,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		
 		boolean isValidFunctionName = isValidExpressionName(functionName);
 		if (isValidFunctionName) {
-			if (validator.validateForSpecialChar(functionName.trim())) {
+			if (validator.hasSpecialCharacter(functionName.trim())) {
 				searchDisplay.getCQLFunctionsView().getFuncNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR());
@@ -2284,7 +2284,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		
 		boolean isValidParamaterName = isValidExpressionName(parameterName);
 		if (isValidParamaterName) {
-			if (validator.validateForSpecialChar(parameterName.trim())) {
+			if (validator.hasSpecialCharacter(parameterName.trim())) {
 				searchDisplay.getCQLParametersView().getParamNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
@@ -2439,7 +2439,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		
 		boolean isValidDefinitionName = isValidExpressionName(definitionName);
 		if (isValidDefinitionName) {
-			if (validator.validateForSpecialChar(definitionName.trim())) {
+			if (validator.hasSpecialCharacter(definitionName.trim())) {
 
 				searchDisplay.getCQLDefinitionsView().getDefineNameGroup().setValidationState(ValidationState.ERROR);
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()

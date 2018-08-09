@@ -7,6 +7,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.NodeList;
 
+import mat.client.shared.MatContext;
+import mat.model.cql.CQLKeywords;
+import mat.server.CQLKeywordsUtil;
+
 /**
  * The Class CQLUtil.
  */
@@ -18,9 +22,6 @@ public class CQLValidationUtil {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLValidationUtil.class);
 
-
-
-	
 	/**
 	 * Checks if is duplicate identifier name.
 	 *
@@ -52,6 +53,14 @@ public class CQLValidationUtil {
 		}
 
 		return false;
+	}
+	
+	public static boolean isCQLReservedWord(String expressionName) {
+		final String trimmedExpresion = expressionName.trim();
+				
+		return trimmedExpresion.equalsIgnoreCase("Patient") 
+				|| trimmedExpresion.equalsIgnoreCase("Population")
+				|| CQLKeywordsUtil.getCQLKeywords().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimmedExpresion));
 	}
 }
 

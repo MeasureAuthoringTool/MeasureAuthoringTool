@@ -345,7 +345,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public List<Measure> getComponentMeasuresInfo(String measureId){
 		List<Measure> componentMeasures = new ArrayList<>();
-		List<ComponentMeasure> components = measureDAO.getComponentMeasureInfoForMeasures(measureId);
+		List<ComponentMeasure> components = new ArrayList<>();
+		Measure copositeMeasure = measureDAO.find(measureId);
+		if(copositeMeasure != null) {
+			components = copositeMeasure.getComponentMeasures();
+		}
+		
 		for(ComponentMeasure cm : components) {
 			componentMeasures.add(measureDAO.find(cm.getComponentMeasureId()));
 		}

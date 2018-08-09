@@ -183,6 +183,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			new SaveDeleteMeasureDetailsButtonBarBuilder("MeasureDetailsBottom", "saveButton_Button" ,"deleteMeasure_Button");
 	private VerticalPanel componentMeasurePanel;
 	
+	private static final String COMPOSITE = "COMPOSITE";
+	
 	public MetaDataView(){
 		generateeMeasureIDButton.setType(ButtonType.PRIMARY);
 		generateeMeasureIDButton.setMarginLeft(14.00);
@@ -1243,6 +1245,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		Collections.sort(measureTypeDTOList, new MeasureType.Comparator());
 		
+		measureTypeDTOList.removeIf(m -> m.getAbbrName().equals(COMPOSITE));
+		
 		if (measureTypeDTOList.size() > 0) {
 			measureTypeCellTable = new CellTable<MeasureType>();
 			measureTypeCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -1267,7 +1271,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			measureTypeSPanel.setWidget(vp);
 		}
 	}
-	
+
 	@Override
 	public void buildAuthorCellTable(List<Author> currentAuthorsList, boolean editable) {
 		authorSPanel.clear();

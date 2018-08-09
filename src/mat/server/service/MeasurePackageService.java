@@ -14,8 +14,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.MeasureSearchModel;
-// TODO: Auto-generated Javadoc
-/**MeasurePackageService.java.**/
+
 public interface MeasurePackageService {
 	
 	/**
@@ -344,5 +343,8 @@ public interface MeasurePackageService {
 
 	List<MeasureShareDTO> searchComponentMeasuresWithFilter(MeasureSearchModel measureSearchModel);
 	
-	void save(ComponentMeasure componentMeasure);
+	void saveComponentMeasures(List<ComponentMeasure> componentMeasuresList);
+	
+	void updateComponentMeasures(String compositeMeasureId, List<ComponentMeasure> componentMeasuresList);
+	
 }

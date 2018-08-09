@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -791,7 +792,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void createMeasureDetailsModelForCompositeMeasure(final ManageCompositeMeasureDetailModel model, final Measure measure) {
 		createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) model, measure);
 		model.setCompositeScoringMethod(measure.getCompositeScoring());
-		
+		model.setQdmVersion(measure.getQdmVersion());
 		List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList = new ArrayList<>();
 		Map<String, String> aliasMapping = new HashMap<>();
 		
@@ -1305,6 +1306,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setId(measure.getId());
 		detail.setDraft(measure.isDraft());
 		detail.setIsComposite(measure.getIsCompositeMeasure());
+		detail.setQdmVersion(measure.getQdmVersion());
 		detail.setExportable(measure.getExportedDate() != null); // to show export icon.
 		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
 		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
@@ -6158,6 +6160,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					// delete any groupings for that measure and save.
 					getMeasurePackageService().deleteExistingPackages(pkg.getId());
 				}
+				
 			} else {
 				// creating a new measure.
 				setMeasureCreated(false);
@@ -6178,7 +6181,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				getAndValidateValueSetDate(model.getValueSetDate());
 				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
 				getService().save(pkg);
-				saveComponentMeasure(pkg.getId(), model);
+				if(isMeasureCreated()) {
+					saveComponentMeasures(pkg.getId(), model);
+				} else {
+					if (null != model.getAppliedComponentMeasures()) {
+						deleteAndSaveComponentMeasures(model);
+					}
+				}
+					
 			} catch (InvalidValueSetDateException e) {
 				result.setSuccess(false);
 				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
@@ -6198,19 +6208,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	private void saveComponentMeasure(String measureId, ManageCompositeMeasureDetailModel model) {
-		List<ComponentMeasure> componentMeasuresList = new ArrayList<>();
-		for(ManageMeasureSearchModel.Result result : model.getAppliedComponentMeasures()) {
-			ComponentMeasure componentMeasure = new ComponentMeasure();
-			componentMeasure.setCompositeMeasureId(measureId);
-			componentMeasure.setComponentMeasureId(result.getId());	
-			componentMeasuresList.add(componentMeasure);
-		}
-		
-		for(ComponentMeasure component : componentMeasuresList) {
-			component.setAlias(model.getAliasMapping().get(component.getComponentMeasureId()));
-			getService().save(component);
-		}
+	private void saveComponentMeasures(String compositeMeasureId, ManageCompositeMeasureDetailModel model) {		
+		List<ComponentMeasure> componentMeasuresList = buildComponentMeasuresList(compositeMeasureId, model);
+		getService().saveComponentMeasures(componentMeasuresList);
+	}
+	
+	private void deleteAndSaveComponentMeasures(ManageCompositeMeasureDetailModel model) {		
+		List<ComponentMeasure> componentMeasuresList = buildComponentMeasuresList(model.getId(), model);
+		getService().updateComponentMeasures(model.getId(), componentMeasuresList);
+	}
+	
+	private List<ComponentMeasure> buildComponentMeasuresList(String measureId, ManageCompositeMeasureDetailModel model) {
+		return model.getAppliedComponentMeasures().stream().map(result -> 
+				new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
 	}
 	
 }

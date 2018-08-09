@@ -99,7 +99,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 			
 			if(componentMeasureDisplay != null) {
-				componentMeasureDisplay.clearFields();
+				componentMeasureDisplay.clearFields(false);
 			}
 			displaySearch();
 		}
@@ -433,8 +433,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						/*						GWT.log("onFailure");
-						GWT.log(caught.getCause().getMessage());*/
 					}
 
 					@Override
@@ -542,8 +540,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				boolean isEdit = false;
 				if(componentMeasureDisplay != null) {
-					componentMeasureDisplay.clearFields();
+					if(currentCompositeMeasureDetails.getId()!=null) {
+						isEdit = true;
+					}
+					componentMeasureDisplay.clearFields(isEdit);
 				}
 
 				String panelHeading = "My Measures > Create New Composite Measure > Component Measures";
@@ -726,7 +728,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(detailDisplay.asWidget());
 	}
 
-	private void displayDetailForEditComposite() {
+	private void displayDetailForEditComposite(String compositeScoringMethod) {
 		panel.getButtonPanel().clear();
 		resetPatientBasedInput(compositeDetailDisplay); 
 		panel.setHeading("My Measures > Edit Composite Measure", "MeasureLibrary");
@@ -745,9 +747,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if(currentCompositeMeasureDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
 			compositeDetailDisplay.getPatientBasedInput().removeItem(1);
 		}
-		
+		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue(compositeScoringMethod);
 		panel.setContent(compositeDetailDisplay.asWidget());
-		
 		
 	}
 
@@ -895,8 +896,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 				@Override
 				public void onSuccess(ManageCompositeMeasureDetailModel result) {
 					currentCompositeMeasureDetails = result;
-					componentMeasureDisplay.setAppliedComponentMeasuresList(currentCompositeMeasureDetails.getAppliedComponentMeasures());
-					displayDetailForEditComposite();
+					componentMeasureDisplay.setAppliedComponentMeasuresList(result.getComponentMeasuresSelectedList());
+					componentMeasureDisplay.setAliasMapping(result.getAliasMapping());
+					displayDetailForEditComposite(result.getCompositeScoringMethod());
 				}
 			});
 		} else {

@@ -67,10 +67,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private Panel availableMeasuresPanel = new Panel();
 	private Panel appliedComponentMeasuresPanel = new Panel();
 	
-	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
-	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<>();
+	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<>();
 
-	private Map<String, String> aliasMapping = new HashMap<String, String>();
+	private Map<String, String> aliasMapping = new HashMap<>();
 	
 	private PanelHeader availableMeasureHeader = new PanelHeader();
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
@@ -95,16 +95,12 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		return errorMessages;
 	}
 	
-	public void clearFields() {
-		aliasMapping.clear();
-		if(availableMeasuresList != null) {
-			availableMeasuresList.clear();
+	public void clearFields(boolean isEdit) {
+		if(!isEdit) {
+			aliasMapping.clear();
+			appliedComponentMeasuresList = new ArrayList<>();	
 		}
-
-		if(appliedComponentMeasuresList != null) {
-			appliedComponentMeasuresList.clear();
-		}
-
+		availableMeasuresList = new ArrayList<>();
 		buildAppliedComponentMeasuresTable();
 		buildAvailableMeasuresTable();
 		searchWidgetBootStrap.getSearchBox().setText("");
@@ -469,28 +465,32 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				String measureId = object.getId();
 				EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox = new EditIncludedComponentMeasureDialogBox("Replace Component Measure");
 				editIncludedComponentMeasureDialogBox.findAvailableMeasures(object.getMeasureSetId(), measureId, false);
-				editIncludedComponentMeasureDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
-					
-					@Override
-					public void onClick(ClickEvent event) {
-						for(ManageMeasureSearchModel.Result currentComponentMeasure: appliedComponentMeasuresList) {
-							if(currentComponentMeasure.getId().equals(measureId)) {
-								appliedComponentMeasuresList.remove(currentComponentMeasure);
-							}
-						}
-						appliedComponentMeasuresList.addAll(editIncludedComponentMeasureDialogBox.getSelectedList());
-						if(aliasMapping.containsKey(measureId)) {
-							aliasMapping.remove(measureId);
-						}
-						buildAppliedComponentMeasuresTable();
-						buildAvailableMeasuresTable();
-						editIncludedComponentMeasureDialogBox.getDialogModal().hide();
-					}
-				});
+				editIncludedComponentMeasureDialogBox.getApplyButton().addClickHandler(event -> replaceComponentMeasure(measureId, editIncludedComponentMeasureDialogBox));
 			}
 		});
 		
 		return replaceColumn;
+	}
+	
+	private void replaceComponentMeasure(String measureId, EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox) {
+
+		if (null != editIncludedComponentMeasureDialogBox.getSelectedList() && !editIncludedComponentMeasureDialogBox.getSelectedList().isEmpty()) {
+			for(ManageMeasureSearchModel.Result currentComponentMeasure: appliedComponentMeasuresList) {
+				if(currentComponentMeasure.getId().equals(measureId)) {
+					appliedComponentMeasuresList.remove(currentComponentMeasure);
+				}
+			}
+			appliedComponentMeasuresList.addAll(editIncludedComponentMeasureDialogBox.getSelectedList());
+			if(aliasMapping.containsKey(measureId)) {
+				aliasMapping.remove(measureId);
+			}
+			buildAppliedComponentMeasuresTable();
+			buildAvailableMeasuresTable();
+			editIncludedComponentMeasureDialogBox.getDialogModal().hide();	
+		} else {
+			editIncludedComponentMeasureDialogBox.getErrorMessageAlert().createAlert("Please select a Component Measure to replace.");
+		}
+	
 	}
 	
 	private Column<ManageMeasureSearchModel.Result, SafeHtml> buildDeleteColumn() {
@@ -558,5 +558,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	public Map<String, String> getAliasMapping() {
 		return aliasMapping;
+	}
+
+	public void setAliasMapping(Map<String, String> aliasMapping) {
+		this.aliasMapping = aliasMapping;
 	}
 }

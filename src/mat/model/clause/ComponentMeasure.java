@@ -1,5 +1,10 @@
 package mat.model.clause;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "COMPONENT_MEASURES")
 public class ComponentMeasure {
 
 	private int id;
@@ -39,6 +44,17 @@ public class ComponentMeasure {
 	}
 
 	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
+	public ComponentMeasure() {
+		super();
+	}
+
+	public ComponentMeasure(String compositeMeasureId, String componentMeasureId, String alias) {
+		super();
+		this.compositeMeasureId = compositeMeasureId;
+		this.componentMeasureId = componentMeasureId;
 		this.alias = alias;
 	}
 	

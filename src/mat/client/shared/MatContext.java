@@ -561,6 +561,15 @@ public class MatContext implements IsSerializable {
 			return false;
 		}
 	}
+	
+	public boolean isMeasureDraft() {
+		if(currentMeasureInfo != null) {
+			return currentMeasureInfo.isDraft();
+		}
+		else {
+			return false;
+		}
+	}
 
 	public void renewSession() {
 		getSessionService().renewSession(new AsyncCallback<Void>() {

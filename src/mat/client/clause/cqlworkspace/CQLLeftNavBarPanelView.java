@@ -2453,16 +2453,20 @@ public class CQLLeftNavBarPanelView {
 	
 	public boolean checkForIncludedLibrariesQDMVersion(){
 		boolean isValid = true;
-		List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();
-		if(includedLibraryList.size()==0){
-			isValid = true;
-		} else {
-			for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
-				if(cqlIncludeLibrary.getQdmVersion()==null){
-					continue;
-				}else if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
-					isValid = false;
-					break;
+		//We check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
+		//Versioned measures have been versioned with valid QDM versioned libraries included.
+		if(MatContext.get().isMeasureDraft()) {
+			List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();
+			if(includedLibraryList.size()==0){
+				isValid = true;
+			} else {
+				for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
+					if(cqlIncludeLibrary.getQdmVersion()==null){
+						continue;
+					}else if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
+						isValid = false;
+						break;
+					}
 				}
 			}
 		}

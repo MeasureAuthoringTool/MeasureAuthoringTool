@@ -48,6 +48,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.buttons.CancelButton;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -162,8 +163,14 @@ public class EditIncludedComponentMeasureDialogBox {
 			}
 
 			@Override
-			public void onSuccess(ManageMeasureSearchModel result) {
+			public void onSuccess(ManageMeasureSearchModel result) {				
 				componentMeasuresList = result.getData();
+				for(ManageMeasureSearchModel.Result r : result.getData()) {
+					if(r.getId().equals(currentId)) {
+						componentMeasuresList.remove(r);
+					}
+				}
+								
 				cellTablePanel.remove(progress);
 				buildIncludeComponentMeasureCellTable();
 			}
@@ -181,7 +188,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		searchHeader.setStyleName("measureGroupingTableHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
 
-		HTML searchHeaderText = new HTML("<strong>Available Libraries</strong>");
+		HTML searchHeaderText = new HTML("<strong>Available Measures</strong>");
 		searchHeader.add(searchHeaderText);
 		cellTablePanel.add(searchHeader);
 		selectedList = new ArrayList<ManageMeasureSearchModel.Result>();

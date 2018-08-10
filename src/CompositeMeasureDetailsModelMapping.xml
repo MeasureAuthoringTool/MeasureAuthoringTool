@@ -169,32 +169,8 @@
   		</class>
       </bind-xml>
     </field>
-    
-<!--     <field name="qdsSelectedList"  -->
-<!--             type="mat.model.QualityDataSetDTO" -->
-<!-- 			collection="arraylist"> -->
-<!-- 			<bind-xml name="elementRef" location="itemCount"> -->
-<!-- 				<class name="mat.model.QualityDataSetDTO"> -->
-<!-- 					<field name="uuid" type="java.lang.String"> -->
-<!-- 						<bind-xml name="id" node="attribute" /> -->
-<!-- 					</field> -->
-<!-- 					<field name="codeListName" type="java.lang.String"> -->
-<!-- 						<bind-xml name="name" node="attribute" /> -->
-<!-- 					</field> -->
-<!-- 					<field name="dataType" type="java.lang.String"> -->
-<!-- 						<bind-xml name="dataType" node="attribute" /> -->
-<!-- 					</field> -->
-<!-- 					<field name="occurrenceText" type="java.lang.String"> -->
-<!-- 						<bind-xml name="instance" node="attribute" /> -->
-<!-- 					</field> -->
-<!-- 					<field name="oid" type="java.lang.String"> -->
-<!-- 						<bind-xml name="oid" node="attribute" /> -->
-<!-- 					</field> -->
-<!-- 				</class> -->
-<!-- 			</bind-xml> -->
-<!-- 		</field> -->
-		
-		<field name="componentMeasuresSelectedList" 
+
+		<field name="appliedComponentMeasures" 
             type="mat.client.measure.ManageMeasureSearchModel$Result"
 			collection="arraylist">
 			<bind-xml name="measure" location="componentMeasures">

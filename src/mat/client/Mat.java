@@ -132,7 +132,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private CqlLibraryPresenter cqlLibrary;
 	private ManageAdminReportingPresenter reportingPresenter;
 	private int tabIndex;
-	private CompositeMeasureEdit compositeMeasureEdit;
+	//TODO add instance var: private *composite screen type* compositeMeasureEdit;
 	
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
 		
@@ -354,7 +354,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			@Override
 			public void onFire(EditCompositeMeasureEvent event) {
-				mainTabLayout.selectTab(presenterList.indexOf(compositeMeasureEdit));
+				//TODO switch to edit screen:
+				//mainTabLayout.selectTab(presenterList.indexOf(*insert edit screen object*));
 			}
 		});
 
@@ -428,12 +429,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
 			presenterList.add(myAccountPresenter);
 			
+			//TODO add edit screen page in hidden tab;
 			title = ClientConstants.COMPOSITE_MEASURE_EDIT;
-			compositeMeasureEdit = new CompositeMeasureEdit();
-			mainTabLayout.add(compositeMeasureEdit.getWidget(), title, false);
-			presenterList.add(compositeMeasureEdit);
+			//TODO - instantiate object: compositeMeasureEdit = new CompositeMeasureEdit();
+			//TODO: add object to tab: mainTabLayout.add(compositeMeasureEdit.getWidget(), title, false);
+			//TODO add object to list: presenterList.add(compositeMeasureEdit);
 			
-			tabIndex = presenterList.indexOf(compositeMeasureEdit);
+			//TODO set tabIndex of last object tabIndex = presenterList.indexOf(compositeMeasureEdit);
+			tabIndex = presenterList.indexOf(myAccountPresenter);
 			hideUMLSActive();
 			if(resultMatVersion.equals("v5.6")) {
 				setBonnieActiveLink();
@@ -455,13 +458,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			CQLLibraryHistoryView historyView = new CQLLibraryHistoryView();
 			TransferOwnershipView transferOS = new TransferOwnershipView();
 			cqlLibraryAdminPresenter = new ManageCQLLibraryAdminPresenter(cqlLibraryAdminView,historyView,transferOS);
-			title = "CQL Library Ownership";
+			title = ClientConstants.CQL_LIBRARY_OWNERSHIP;
 			mainTabLayout.add(cqlLibraryAdminPresenter.getWidget(), title, true);
 			presenterList.add(cqlLibraryAdminPresenter);
 			
 			ManageAdminReportingView adminReportingView = new ManageAdminReportingView();
 			reportingPresenter = new ManageAdminReportingPresenter(adminReportingView);
-			title = "Administrator Reports";
+			title = ClientConstants.ADMIN_REPORTS;
 			mainTabLayout.add(reportingPresenter.getWidget(), title, true);
 			presenterList.add(reportingPresenter);
 			

@@ -29,8 +29,8 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.MatContext;
+import mat.model.ComponentMeasureTabObject;
 
 
 public class ComponentTabView extends AnchorListItem {
@@ -61,7 +61,7 @@ public class ComponentTabView extends AnchorListItem {
 		label.setId("componentsLabel_Label");
 		setBadgeNumber(0);
 		badge.setPull(Pull.RIGHT);
-		badge.setMarginLeft(52);
+		badge.setMarginLeft(45);
 		badge.setId("componentsBadge_Badge");
 		anchor = (Anchor) (super.getWidget(0));	
 		anchor.add(label);

@@ -57,10 +57,8 @@ import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
 import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
-import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.JSONAttributeModeUtility;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.MatContext;
@@ -70,6 +68,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
@@ -232,23 +231,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
 		JSONAttributeModeUtility.getAllAttrModeList();
 		JSONAttributeModeUtility.getAllModeDetailsList();
-		checkCompositeMeasure();
-
-	}
-	
-	private void checkCompositeMeasure() {
-		MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureDetailModel>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {}
-			
-			@Override
-			public void onSuccess(ManageMeasureDetailModel result) {
-				if(result.getComponentMeasuresSelectedList()  == null || result.getComponentMeasuresSelectedList().isEmpty()) {
-					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().removeFromParent();
-				}
-			}
-		});
 	}
 
 	private void buildInsertPopUp() {
@@ -3127,6 +3109,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement()
 				.setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement()
@@ -3262,13 +3245,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void onSuccess(List<ComponentMeasureTabObject> results) {
-				searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().clearAndAddToListBox(results);
+				
+				if(results.size() == 0) {
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(false);
+				}
+				else {
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(true);
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().clearAndAddToListBox(results);
+				}
 			}
 		});
 	}

@@ -5981,23 +5981,84 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	private boolean includedLibrariesAllHaveTheSameVersionAndContent(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
-		List<CQLIncludeLibrary> seenLibraries = new ArrayList<>();
-		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
-			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(appliedComponentMeasure.getId());
-			String componentXml = xmlModel.getXml();
-			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(componentXml);
-			Map<CQLIncludeLibrary, CQLModel> includedLibraryMap = includeCqlModel.getIncludedLibrarys();
-			Iterator<CQLIncludeLibrary> includedLibraryIter = includedLibraryMap.keySet().iterator();
-			while(includedLibraryIter.hasNext()) {
-				CQLIncludeLibrary includeLibrary = includedLibraryIter.next();
-				if(seenLibraries.stream().filter(s -> s.getCqlLibraryName().equals(includeLibrary.getCqlLibraryName()) && (!s.getId().equals(includeLibrary.getId()) || s.getVersion().equals(includeLibrary.getVersion()))).count() > 0) {
-					return false;
-				}
-				seenLibraries.add(includeLibrary);
+		Map<String, String> nameToVersionMap = new HashMap<>(); 
+		Map<String, String> nameVersionToIdMap = new HashMap<>(); 
+		
+		if(manageCompositeMeasureDetailModel.getId() != null) {
+			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(manageCompositeMeasureDetailModel.getId());
+			String compositeXML = xmlModel.getXml();
+			CQLModel compositeCQLModel = CQLUtilityClass.getCQLModelFromXML(compositeXML);
+			nameToVersionMap.put(compositeCQLModel.getLibraryName(), compositeCQLModel.getVersionUsed());
+			boolean hasLibrariesThatAlreadyExistInAlreadyAppliedComponents = hasLibraryThatAlreadyExists(compositeCQLModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap); 
+			if(!hasLibrariesThatAlreadyExistInAlreadyAppliedComponents) {
+				return false; 
 			}
 		}
+		
+	
+		
+		List<Result> appliedComponents = manageCompositeMeasureDetailModel.getAppliedComponentMeasures();
+		for(Result newlyAppliedComponent : appliedComponents) {
+			MeasureXmlModel newlyAppliedComponenetXMLModel = getMeasureXmlForMeasure(newlyAppliedComponent.getId());
+			String newlyAppliedComponenetXML = newlyAppliedComponenetXMLModel.getXml();
+			CQLModel newlyAppliedComponentCQLModel = CQLUtilityClass.getCQLModelFromXML(newlyAppliedComponenetXML);
+			
+			String componenetLibraryName = newlyAppliedComponentCQLModel.getLibraryName();
+			String componentLibraryVersion = newlyAppliedComponentCQLModel.getVersionUsed();
+			String cqlLibraryId = cqlLibraryDAO.getLibraryByMeasureId(newlyAppliedComponent.getId()).getId();
+			
+			
+			
+			// check if there is a name with a different version in the map
+			if(nameToVersionMap.get(componenetLibraryName) != null && !nameToVersionMap.get(componenetLibraryName).equals(componentLibraryVersion)) {
+				return false; 
+			}	
+			
+			String formattedName = componenetLibraryName + "-" + componentLibraryVersion;
+			if(nameVersionToIdMap.get(formattedName) != null && !nameVersionToIdMap.get(formattedName).equals(cqlLibraryId)) {
+				return false; 
+			}
+			
+			nameToVersionMap.put(componenetLibraryName, componentLibraryVersion);
+			nameVersionToIdMap.put(formattedName, cqlLibraryId);
+			
+			if(!hasLibraryThatAlreadyExists(newlyAppliedComponentCQLModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap)) {
+				return false; 
+			}
+		}
+
+		
 		return true;
+	} 
+	
+	private boolean hasLibraryThatAlreadyExists(List<CQLIncludeLibrary> libraries, Map<String, String> nameToVersionMap, Map<String, String> nameVersionToIdMap) {
+		for(CQLIncludeLibrary includedLibrary : libraries) {			
+			String libraryName = includedLibrary.getCqlLibraryName();
+			String libraryVersion = includedLibrary.getVersion();
+			String libraryId = includedLibrary.getId();
+			
+			// check if there is a name with a different version in the map
+			if(nameToVersionMap.get(libraryName) != null && !nameToVersionMap.get(libraryName).equals(libraryVersion)) {
+				return false; 
+			}
+			
+			// check if there is a name-version combination with a different id in the map
+			String formattedName = libraryName + "-" + libraryVersion; 
+			if(nameVersionToIdMap.get(formattedName) != null && !nameVersionToIdMap.get(formattedName).equals(libraryId)) {
+				return false; 
+			}
+			
+			nameToVersionMap.put(libraryName, libraryVersion);
+			nameVersionToIdMap.put(formattedName, libraryId);
+			
+			CQLLibrary libraryModel = cqlLibraryDAO.find(includedLibrary.getCqlLibraryId());
+			CQLModel includedLibraryModel = CQLUtilityClass.getCQLModelFromXML(new String(libraryModel.getCQLByteArray()));
+			hasLibraryThatAlreadyExists(includedLibraryModel.getCqlIncludeLibrarys(), nameToVersionMap, nameVersionToIdMap);
+		}
+		
+		return true; 
 	}
+	
 
 	private String getTemplateXmlString() {
 		String templateXml = "";

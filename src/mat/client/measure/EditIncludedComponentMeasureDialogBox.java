@@ -165,12 +165,7 @@ public class EditIncludedComponentMeasureDialogBox {
 			@Override
 			public void onSuccess(ManageMeasureSearchModel result) {				
 				componentMeasuresList = result.getData();
-				for(ManageMeasureSearchModel.Result r : result.getData()) {
-					if(r.getId().equals(currentId)) {
-						componentMeasuresList.remove(r);
-					}
-				}
-								
+				componentMeasuresList.removeIf(component -> component.getId().equals(currentId));	
 				cellTablePanel.remove(progress);
 				buildIncludeComponentMeasureCellTable();
 			}

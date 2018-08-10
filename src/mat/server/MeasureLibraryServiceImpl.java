@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -30,6 +31,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -40,6 +42,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.exolab.castor.xml.XMLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
@@ -754,37 +757,101 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private ManageMeasureDetailModel convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
+
 		ManageMeasureDetailModel details = null;
 		String xml = null;
-		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
-			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
-		}
+	
 		try {
-			if (xml == null) { 
-				// DataConversion is complete.
-				logger.info("xml is null or xml doesn't contain measureDetails tag");
-				details = new ManageMeasureDetailModel();
-				createMeasureDetailsModelFromMeasure(details, measure);
-			} else {
-				Mapping mapping = new Mapping();
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
-				Unmarshaller unmar = new Unmarshaller(mapping);
-				unmar.setClass(ManageMeasureDetailModel.class);
-				unmar.setWhitespacePreserve(true);
-				details = (ManageMeasureDetailModel) unmar.unmarshal(new InputSource(new StringReader(xml)));
-				convertAddlXmlElementsToModel(details, measure);
+			if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
+				xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 			}
 
-		} catch (IOException e) {
-			logger.info("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
-		}  catch (MappingException e) {
-			logger.info(MAPPING_FAILED + e.getMessage());
-		} catch (MarshalException e) {
-			logger.info(UNMARSHALLING_FAILED + e.getMessage());
-		} catch(Exception e) {
-			logger.info(OTHER_EXCEPTION + e.getMessage());
+			details = (xml == null) ? createModelForNoXML(measure) : createModelFromXML(xml, measure);
+			
+		} catch (Exception e) {
+			logger.error("Exception in convertXmltoModel: " + e);
 		}
 		return details;
+	}
+
+	private ManageMeasureDetailModel createModelForNoXML(final Measure measure) {
+		ManageMeasureDetailModel details = null;
+		if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+			details = new ManageCompositeMeasureDetailModel();
+			createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) details, measure);
+		} else {
+			details = new ManageMeasureDetailModel();
+			createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) details, measure);
+		}
+		
+		return details;	
+	}
+	
+	private void createMeasureDetailsModelForCompositeMeasure(final ManageCompositeMeasureDetailModel model, final Measure measure) {
+		createMeasureDetailsModelFromMeasure((ManageMeasureDetailModel) model, measure);
+		model.setCompositeScoringMethod(measure.getCompositeScoring());
+		model.setQdmVersion(measure.getQdmVersion());
+		List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList = new ArrayList<>();
+		Map<String, String> aliasMapping = new HashMap<>();
+		
+		for(ComponentMeasure component : measure.getComponentMeasures()) {
+			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasureId()));			
+		}
+		
+		model.setComponentMeasuresSelectedList(componentMeasuresSelectedList);
+		
+		for(ComponentMeasure component : measure.getComponentMeasures() ) {
+			aliasMapping.put(component.getComponentMeasureId(), component.getAlias());
+		}
+		
+		model.setAliasMapping(aliasMapping);
+	}
+	
+	private ManageMeasureDetailModel createModelFromXML(String xml, final Measure measure) {
+		Object result = null;
+		try {
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				createObjectFromXMLMapping(xml, "CompositeMeasureDetailsModelMapping.xml", ManageCompositeMeasureDetailModel.class);
+				createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) result, measure);
+			} else {
+				createObjectFromXMLMapping(xml, "MeasureDetailsModelMapping.xml", ManageMeasureDetailModel.class);
+				convertAddlXmlElementsToModel((ManageMeasureDetailModel) result, measure);
+			}
+
+		} catch(Exception e) {
+			logger.error("Exception in createModelFromXML: " + e);
+		}
+		return (ManageMeasureDetailModel) result;
+	}
+
+	private ManageMeasureDetailModel createObjectFromXMLMapping(String xml, String xmlMapping, Class<?> clazz) {
+
+		Object result = null;
+
+		try {
+			Mapping mapping = new Mapping();			
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL(xmlMapping));
+			
+			XMLContext xmlContext = new XMLContext();			
+			xmlContext.addMapping(mapping);
+			
+			Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
+			unmarshaller.setClass(clazz);
+			unmarshaller.setWhitespacePreserve(true);
+			
+			result = unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
+
+		} catch (MappingException e) {
+			logger.error(MAPPING_FAILED + e);
+		}catch (IOException e) {
+			logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+		}  catch (MarshalException e) {
+			logger.error(UNMARSHALLING_FAILED + e);
+		} catch(Exception e) {
+			logger.error(OTHER_EXCEPTION + e);
+		}
+		return (ManageMeasureDetailModel) result;
+		
 	}
 
 	/**
@@ -1227,45 +1294,52 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>) recentMSRActivityLogDAO
 				.getRecentMeasureActivityLog(userId);
 		ManageMeasureSearchModel manageMeasureSearchModel = new ManageMeasureSearchModel();
-		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
+		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<>();
 		manageMeasureSearchModel.setData(detailModelList);
 		
 		for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
-			Measure measure = getMeasureDAO().find(activityLog.getMeasureId());
-			ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
-			detail.setName(measure.getDescription());
-			detail.setShortName(measure.getaBBRName());
-			detail.setId(measure.getId());
-			detail.setDraft(measure.isDraft());
-			detail.setExportable(measure.getExportedDate() != null); // to show export icon.
-			detail.setHqmfReleaseVersion(measure.getReleaseVersion());
-			String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
-					measure.getRevisionNumber(), measure.isDraft());
-			detail.setVersion(formattedVersion);
-			detail.setFinalizedDate(measure.getFinalizedDate());
-			detail.setOwnerfirstName(measure.getOwner().getFirstName());
-			detail.setOwnerLastName(measure.getOwner().getLastName());
-			detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
-			detail.setMeasureSetId(measure.getMeasureSet().getId());
-			detail.setScoringType(measure.getMeasureScoring());
-			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
-			detail.setMeasureLocked(isLocked);
-			detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
-			if(measure.getPatientBased() != null) {
-				detail.setPatientBased(measure.getPatientBased());
-			}
-			
-			if (isLocked && (measure.getLockedUser() != null)) {
-				LockedUserInfo lockedUserInfo = new LockedUserInfo();
-				lockedUserInfo.setUserId(measure.getLockedUser().getId());
-				lockedUserInfo.setEmailAddress(measure.getLockedUser().getEmailAddress());
-				lockedUserInfo.setFirstName(measure.getLockedUser().getFirstName());
-				lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
-				detail.setLockedUserInfo(lockedUserInfo);
-			}
+			ManageMeasureSearchModel.Result detail = buildSearchModelResultObjectFromMeasureId(activityLog.getMeasureId());			
 			detailModelList.add(detail);
 		}
 		return manageMeasureSearchModel;
+	}
+	
+	private ManageMeasureSearchModel.Result buildSearchModelResultObjectFromMeasureId(String measureId){
+		Measure measure = getMeasureDAO().find(measureId);
+		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
+		detail.setName(measure.getDescription());
+		detail.setShortName(measure.getaBBRName());
+		detail.setId(measure.getId());
+		detail.setDraft(measure.isDraft());
+		detail.setIsComposite(measure.getIsCompositeMeasure());
+		detail.setQdmVersion(measure.getQdmVersion());
+		detail.setExportable(measure.getExportedDate() != null); // to show export icon.
+		detail.setHqmfReleaseVersion(measure.getReleaseVersion());
+		String formattedVersion = MeasureUtility.getVersionTextWithRevisionNumber(measure.getVersion(),
+				measure.getRevisionNumber(), measure.isDraft());
+		detail.setVersion(formattedVersion);
+		detail.setFinalizedDate(measure.getFinalizedDate());
+		detail.setOwnerfirstName(measure.getOwner().getFirstName());
+		detail.setOwnerLastName(measure.getOwner().getLastName());
+		detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
+		detail.setMeasureSetId(measure.getMeasureSet().getId());
+		detail.setScoringType(measure.getMeasureScoring());
+		boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
+		detail.setMeasureLocked(isLocked);
+		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
+		detail.setPatientBased(measure.getPatientBased());
+
+		if (isLocked && (measure.getLockedUser() != null)) {
+			LockedUserInfo lockedUserInfo = new LockedUserInfo();
+			lockedUserInfo.setUserId(measure.getLockedUser().getId());
+			lockedUserInfo.setEmailAddress(measure.getLockedUser().getEmailAddress());
+			lockedUserInfo.setFirstName(measure.getLockedUser().getFirstName());
+			lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
+			detail.setLockedUserInfo(lockedUserInfo);
+		}
+		
+		return detail;
+
 	}
 
 	/**
@@ -1435,6 +1509,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 		return manageMeasureDetailModel;
 
+	}
+
+	@Override
+	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
+		Measure measure = getService().getById(measureId);
+		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
+		
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXmltoModel(xml, measure);
+		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		
+		return manageCompositeMeasureDetailModel;
 	}
 
 	@Override
@@ -1984,7 +2070,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			return result;
 		}
 	}
-
+	
 
 	@Override
 	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {
@@ -6013,6 +6099,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					// delete any groupings for that measure and save.
 					getMeasurePackageService().deleteExistingPackages(pkg.getId());
 				}
+				
 			} else {
 				// creating a new measure.
 				setMeasureCreated(false);
@@ -6033,7 +6120,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				getAndValidateValueSetDate(model.getValueSetDate());
 				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
 				getService().save(pkg);
-				saveComponentMeasure(pkg.getId(), model);
+				if(isMeasureCreated()) {
+					saveComponentMeasures(pkg.getId(), model);
+				} else {
+					if (null != model.getAppliedComponentMeasures()) {
+						deleteAndSaveComponentMeasures(model);
+					}
+				}
+					
 			} catch (InvalidValueSetDateException e) {
 				result.setSuccess(false);
 				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
@@ -6053,19 +6147,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	private void saveComponentMeasure(String measureId, ManageCompositeMeasureDetailModel model) {
-		List<ComponentMeasure> componentMeasuresList = new ArrayList<>();
-		for(ManageMeasureSearchModel.Result result : model.getAppliedComponentMeasures()) {
-			ComponentMeasure componentMeasure = new ComponentMeasure();
-			componentMeasure.setCompositeMeasureId(measureId);
-			componentMeasure.setComponentMeasureId(result.getId());	
-			componentMeasuresList.add(componentMeasure);
-		}
-		
-		for(ComponentMeasure component : componentMeasuresList) {
-			component.setAlias(model.getAliasMapping().get(component.getComponentMeasureId()));
-			getService().save(component);
-		}
+	private void saveComponentMeasures(String compositeMeasureId, ManageCompositeMeasureDetailModel model) {		
+		List<ComponentMeasure> componentMeasuresList = buildComponentMeasuresList(compositeMeasureId, model);
+		getService().saveComponentMeasures(componentMeasuresList);
+	}
+	
+	private void deleteAndSaveComponentMeasures(ManageCompositeMeasureDetailModel model) {		
+		List<ComponentMeasure> componentMeasuresList = buildComponentMeasuresList(model.getId(), model);
+		getService().updateComponentMeasures(model.getId(), componentMeasuresList);
+	}
+	
+	private List<ComponentMeasure> buildComponentMeasuresList(String measureId, ManageCompositeMeasureDetailModel model) {
+		return model.getAppliedComponentMeasures().stream().map(result -> 
+				new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
 	}
 	
 }

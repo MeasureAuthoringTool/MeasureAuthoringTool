@@ -7,7 +7,9 @@ import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 
+import com.google.gwt.dom.client.BRElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -21,8 +23,13 @@ import mat.client.shared.SpacerWidget;
 
 public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetailView {
 	private String cautionMsgStr = "Caution: The Composite Scoring Method field controls the options available in the Measure Scoring field. The Measure Scoring field controls the options available in the Patient-based Measure field. Changing the selection in the Composite Scoring Method will reset the Measure Scoring and Patient-based Measure fields. Changing the Measure Scoring field will reset the Patient-based Measure field.";
-	private ListBoxMVP  compositeScoringMethodInput = new ListBoxMVP();
+	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
     private FormGroup compositeScoringGroup = new FormGroup();
+    protected HTML compScoringMsgPlaceHolder = new HTML();
+	private String compScoringMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Composite Scoring Method and/or Measure Scoring' will have the following impacts:<br/>" +
+			   "<img src='images/bullet.png'/> Populations in the Population Workspace that do not apply to the new settings will be deleted.<br/>" +
+      "<img src='images/bullet.png'/> Existing Groupings in the Measure Packager will be deleted.</div>";
+
 	SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("compositeMeasureDetail");
 	
 	@Override
@@ -51,7 +58,8 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		FormLabel compositeScoringLabel = buildCompositeScoringLabel();
 		compositeScoringGroup.add(compositeScoringLabel);
 		buildCompositeScoringInput();
-		compositeScoringGroup.add(compositeScoringMethodInput);
+		HorizontalPanel compositeScoringPanel = buildCompositeScoringPanel();
+		compositeScoringGroup.add(compositeScoringPanel);
 		
 		FormLabel scoringLabel = buildScoringLabel();
 		scoringGroup.add(scoringLabel);
@@ -113,6 +121,8 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 		fPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
+		fPanel.getElement().appendChild(DOM.createElement(BRElement.TAG));
+		
 		return fPanel;
 	}
 	
@@ -161,6 +171,35 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessages;
+	}
+	
+	public void setCompositeScoringSelectedValue(String compositeScoringMethod) {
+		if ("All or Nothing".equals(compositeScoringMethod)) {
+			getCompositeScoringMethodInput().setSelectedIndex(1);	
+		} else if ("Opportunity".equals(compositeScoringMethod)) {
+			getCompositeScoringMethodInput().setSelectedIndex(2);
+		} else if ("Patient-level Linear".equals(compositeScoringMethod)) {
+			getCompositeScoringMethodInput().setSelectedIndex(3);
+		}
+		
+	}
+	
+	@Override
+	public void showCautionMsg(boolean show) {
+		super.showCautionMsg(show);
+		if(show){
+			compScoringMsgPlaceHolder.setHTML(compScoringMsgStr);
+		}else{
+			compScoringMsgPlaceHolder.setHTML("");
+		}
+	}
+	
+	private HorizontalPanel buildCompositeScoringPanel() {
+		HorizontalPanel scoringPanel = new HorizontalPanel();
+		scoringPanel.add(compositeScoringMethodInput);
+		scoringPanel.add(new HTML("&nbsp;"));
+		scoringPanel.add(compScoringMsgPlaceHolder);
+		return scoringPanel;
 	}
 }
 

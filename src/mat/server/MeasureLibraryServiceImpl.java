@@ -796,7 +796,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		for(ComponentMeasure component : measure.getComponentMeasures()) {
 			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasureId()));			
 		}
-		
+		model.setAppliedComponentMeasures(componentMeasuresSelectedList);
 		model.setComponentMeasuresSelectedList(componentMeasuresSelectedList);
 		
 		for(ComponentMeasure component : measure.getComponentMeasures() ) {
@@ -807,20 +807,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	private ManageMeasureDetailModel createModelFromXML(String xml, final Measure measure) {
-		Object result = null;
+		ManageMeasureDetailModel result = null;
 		try {
 			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
-				createObjectFromXMLMapping(xml, "CompositeMeasureDetailsModelMapping.xml", ManageCompositeMeasureDetailModel.class);
+				result = createObjectFromXMLMapping(xml, "CompositeMeasureDetailsModelMapping.xml", ManageCompositeMeasureDetailModel.class);
 				createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) result, measure);
 			} else {
-				createObjectFromXMLMapping(xml, "MeasureDetailsModelMapping.xml", ManageMeasureDetailModel.class);
-				convertAddlXmlElementsToModel((ManageMeasureDetailModel) result, measure);
+				result = createObjectFromXMLMapping(xml, "MeasureDetailsModelMapping.xml", ManageMeasureDetailModel.class);
 			}
-
+			convertAddlXmlElementsToModel(result, measure);
 		} catch(Exception e) {
 			logger.error("Exception in createModelFromXML: " + e);
 		}
-		return (ManageMeasureDetailModel) result;
+		return result;
 	}
 
 	private ManageMeasureDetailModel createObjectFromXMLMapping(String xml, String xmlMapping, Class<?> clazz) {
@@ -5820,6 +5819,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return compositeMeasureValidator.validateCompositeMeasure(manageCompositeMeasureDetailModel);
 	}
 
+	private List<MeasureType> getMeasureTypeForComposite() {
+		List<MeasureType> measureTypeList = new ArrayList<>(1);
+		MeasureType measureType = new MeasureType();
+		measureType.setAbbrName("COMPOSITE");
+		measureType.setDescription("Composite");
+		measureTypeList.add(measureType);
+		return measureTypeList;
+	}
+	
 	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
 		// Scrubbing out Mark Up.
 		if (model != null) {
@@ -5885,6 +5893,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			result.setSuccess(true);
 			result.setId(pkg.getId());
+			model.setMeasureTypeSelectedList(getMeasureTypeForComposite());
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
 			return result;
 		} else {

@@ -1,4 +1,4 @@
-package mat.client.shared;
+package mat.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 

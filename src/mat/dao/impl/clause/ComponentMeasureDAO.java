@@ -40,7 +40,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 			tx.commit();
 			
 		} catch (Exception e) {
-			logger.error("Error updating component measures: " + e.getMessage());
+			logger.error("Error updating component measures: " + e);
 			if (tx != null) {
 				tx.rollback();
 			}

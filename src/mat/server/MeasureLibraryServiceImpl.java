@@ -760,18 +760,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		ManageMeasureDetailModel details = null;
 		String xml = null;
-		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
-			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
-		}
+	
 		try {
-			if (xml == null) { 
-				details = createModelForNoXML(measure);
-			} else {
-				details = createModelFromXML(xml, measure);
+			if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
+				xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 			}
 
+			details = (xml == null) ? createModelForNoXML(measure) : createModelFromXML(xml, measure);
+			
 		} catch (Exception e) {
-			logger.info(OTHER_EXCEPTION + e.getMessage());
+			logger.error("Exception in convertXmltoModel: " + e);
 		}
 		return details;
 	}
@@ -811,41 +809,49 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	private ManageMeasureDetailModel createModelFromXML(String xml, final Measure measure) {
 		Object result = null;
-		boolean isComposite = BooleanUtils.isTrue(measure.getIsCompositeMeasure());
 		try {
-			
-			Mapping mapping = new Mapping();			
-			XMLContext xmlContext = new XMLContext();
-			Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
-
-			if(isComposite) {
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("CompositeMeasureDetailsModelMapping.xml"));
-				unmarshaller.setClass(ManageCompositeMeasureDetailModel.class);
-			} else {
-				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
-				unmarshaller.setClass(ManageMeasureDetailModel.class);
-			}
-			xmlContext.addMapping(mapping);
-			unmarshaller.setWhitespacePreserve(true);
-			result = unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
-			
-			if(isComposite) {
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				createObjectFromXMLMapping(xml, "CompositeMeasureDetailsModelMapping.xml", ManageCompositeMeasureDetailModel.class);
 				createMeasureDetailsModelForCompositeMeasure((ManageCompositeMeasureDetailModel) result, measure);
 			} else {
-				convertAddlXmlElementsToModel((ManageMeasureDetailModel) result, measure);	
+				createObjectFromXMLMapping(xml, "MeasureDetailsModelMapping.xml", ManageMeasureDetailModel.class);
+				convertAddlXmlElementsToModel((ManageMeasureDetailModel) result, measure);
 			}
-			
 
-		} catch (MappingException e) {
-			logger.info(MAPPING_FAILED + e.getMessage());
-		}catch (IOException e) {
-			logger.info("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
-		}  catch (MarshalException e) {
-			logger.info(UNMARSHALLING_FAILED + e.getMessage());
 		} catch(Exception e) {
-			logger.info(OTHER_EXCEPTION + e.getMessage());
+			logger.error("Exception in createModelFromXML: " + e);
 		}
 		return (ManageMeasureDetailModel) result;
+	}
+
+	private ManageMeasureDetailModel createObjectFromXMLMapping(String xml, String xmlMapping, Class<?> clazz) {
+
+		Object result = null;
+
+		try {
+			Mapping mapping = new Mapping();			
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL(xmlMapping));
+			
+			XMLContext xmlContext = new XMLContext();			
+			xmlContext.addMapping(mapping);
+			
+			Unmarshaller unmarshaller = xmlContext.createUnmarshaller();
+			unmarshaller.setClass(clazz);
+			unmarshaller.setWhitespacePreserve(true);
+			
+			result = unmarshaller.unmarshal(new InputSource(new StringReader(xml)));
+
+		} catch (MappingException e) {
+			logger.error(MAPPING_FAILED + e);
+		}catch (IOException e) {
+			logger.error("Failed to load MeasureDetailsModelMapping.xml" + e.getMessage());
+		}  catch (MarshalException e) {
+			logger.error(UNMARSHALLING_FAILED + e);
+		} catch(Exception e) {
+			logger.error(OTHER_EXCEPTION + e);
+		}
+		return (ManageMeasureDetailModel) result;
+		
 	}
 
 	/**
@@ -2065,73 +2071,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	private SaveMeasureResult saveMeasure(ManageMeasureDetailModel model) {
-		
-		// Scrubbing out Mark Up.
-		if (model != null) {
-			model.scrubForMarkUp();
-		}
-		ManageMeasureModelValidator manageMeasureModelValidator = new ManageMeasureModelValidator();
-		List<String> message = manageMeasureModelValidator.validateMeasure(model);
-		if (message.isEmpty()) {
-			Measure pkg = null;
-			MeasureSet measureSet = null;
-			if (model.getId() != null) {
-				setMeasureCreated(true);
-				// editing an existing measure
-				pkg = getService().getById(model.getId());
-				model.setVersionNumber(pkg.getVersion());
-				if (pkg.isDraft()) {
-					model.setRevisionNumber(pkg.getRevisionNumber());
-				} else {
-					model.setRevisionNumber("000");
-				}
-				if (pkg.getMeasureSet().getId() != null) {
-					measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
-				}
-				if (!pkg.getMeasureScoring().equalsIgnoreCase(model.getMeasScoring())) {
-					// US 194 User is changing the measure scoring. Make sure to
-					// delete any groupings for that measure and save.
-					getMeasurePackageService().deleteExistingPackages(pkg.getId());
-				}
-			} else {
-				// creating a new measure.
-				setMeasureCreated(false);
-				pkg = new Measure();
-				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
-				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
-				model.setRevisionNumber("000");
-				measureSet = new MeasureSet();
-				measureSet.setId(UUID.randomUUID().toString());
-				getService().save(measureSet);
-			}
-			pkg.setMeasureSet(measureSet);
-			setValueFromModel(model, pkg);
-			SaveMeasureResult result = new SaveMeasureResult();
-			try {
-				getAndValidateValueSetDate(model.getValueSetDate());
-				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
-				getService().save(pkg);
-			} catch (InvalidValueSetDateException e) {
-				result.setSuccess(false);
-				result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
-				result.setId(pkg.getId());
-				return result;
-			}
-			result.setSuccess(true);
-			result.setId(pkg.getId());
-			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
-			return result;
-		} else {
-			logger.info("Validation Failed for measure :: Invalid Data Issues.");
-			SaveMeasureResult result = new SaveMeasureResult();
-			result.setSuccess(false);
-			result.setFailureReason(SaveMeasureResult.INVALID_DATA);
-			return result;
-		}
-	
-	}
-
 
 	@Override
 	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {

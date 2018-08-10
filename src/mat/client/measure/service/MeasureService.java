@@ -132,6 +132,8 @@ public interface MeasureService extends RemoteService {
 	 */
 	ManageMeasureDetailModel getMeasure(String key);
 	
+	ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId);
+	
 	/**
 	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
 	 *

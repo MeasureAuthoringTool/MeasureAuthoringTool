@@ -522,7 +522,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	public String getCurrentReleaseVersion() {
 		return currentReleaseVersion;
-	}
+	} 
 
 	public void setCurrentReleaseVersion(String currentReleaseVersion) {
 		this.currentReleaseVersion = currentReleaseVersion;
@@ -543,7 +543,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	@Override
-	public void save(ComponentMeasure componentMeasure) {
-		componentMeasuresDAO.save(componentMeasure);
+	public void saveComponentMeasures(List<ComponentMeasure> componentMeasuresList) {
+		componentMeasuresDAO.saveComponentMeasures(componentMeasuresList);
+	}
+
+	@Override
+	public void updateComponentMeasures(String compositeMeasureId, List<ComponentMeasure> componentMeasuresList) {
+		componentMeasuresDAO.updateComponentMeasures(compositeMeasureId, componentMeasuresList);		
 	}
 }

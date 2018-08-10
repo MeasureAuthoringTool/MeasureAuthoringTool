@@ -94,8 +94,6 @@ public class EditIncludedComponentMeasureDialogBox {
 
 	private String modalText;
 	
-	private String currentMeasureId = null; 
-	
 	private Button applyButton = new Button();
 	private Button closeButton = new CancelButton("EditInclude");
 	private Modal dialogModal = new Modal();
@@ -191,13 +189,6 @@ public class EditIncludedComponentMeasureDialogBox {
 		
 		List<ManageMeasureSearchModel.Result> tempMeasures = new ArrayList<>();
 		tempMeasures.addAll(componentMeasuresList);
-		// filter out the component measure that is the 'current component measure'
-		for(ManageMeasureSearchModel.Result currentMeasure : tempMeasures) {
-			if(currentMeasure.getId().equalsIgnoreCase(currentMeasureId)) {
-				tempMeasures.remove(currentMeasure); 
-				break; 
-			}
-		}
 		
 		if (tempMeasures.size() > 0) {
 			table = new CellTable<ManageMeasureSearchModel.Result>();

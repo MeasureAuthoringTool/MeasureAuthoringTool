@@ -839,10 +839,10 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<
 					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
-				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-					return CellTableUtility.getColumnToolTip(object.getOwnerFirstName()
-							+ "  " + object.getOwnerLastName(),object.getOwnerFirstName()
-							+ "  " + object.getOwnerLastName());
+				public SafeHtml getValue(ManageMeasureSearchModel.Result manageMeasureSearchModelResult) {
+					return CellTableUtility.getColumnToolTip(manageMeasureSearchModelResult.getOwnerFirstName()
+							+ "  " + manageMeasureSearchModelResult.getOwnerLastName(),manageMeasureSearchModelResult.getOwnerFirstName()
+							+ "  " + manageMeasureSearchModelResult.getOwnerLastName());
 				}
 			};
 			ownerName.setSortable(true);

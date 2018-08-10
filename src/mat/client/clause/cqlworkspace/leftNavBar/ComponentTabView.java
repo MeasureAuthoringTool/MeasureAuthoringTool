@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.ComponentMeasureTabObject;
+import mat.model.ComponentMeasureTabObject;
 
 
 public class ComponentTabView extends AnchorListItem {

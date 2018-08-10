@@ -77,7 +77,6 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
-import mat.client.shared.ComponentMeasureTabObject;
 import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;

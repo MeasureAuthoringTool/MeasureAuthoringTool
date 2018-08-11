@@ -19,8 +19,6 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -255,6 +253,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		aliasColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 			@Override
 			public void update(int index, Result object, String value) {
+				errorMessages.clearAlert();
 				aliasMapping.put(object.getId(), value);
 			}
 		});
@@ -417,6 +416,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 					@Override
 					public void update(int index, Result object, Boolean value) {
+						errorMessages.clearAlert();
 						selectionModel.setSelected(object, value);
 						if (value) {
 							if(appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList()).size() == 0) {
@@ -462,6 +462,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		replaceColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
+				errorMessages.clearAlert();
 				String measureId = object.getId();
 				EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox = new EditIncludedComponentMeasureDialogBox("Replace Component Measure");
 				editIncludedComponentMeasureDialogBox.findAvailableMeasures(object.getMeasureSetId(), measureId, false);
@@ -512,6 +513,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		deleteColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				errorMessages.clearAlert();
 				List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 				helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");
 

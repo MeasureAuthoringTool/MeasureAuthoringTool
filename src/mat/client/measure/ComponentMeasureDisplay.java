@@ -207,7 +207,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		appliedComponentTable.setPageSize(PAGE_SIZE);
 		appliedComponentTable.redraw();
 		appliedComponentTable.setRowData(appliedComponentMeasuresList);
-		
+		appliedComponentTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			@Override

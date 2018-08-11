@@ -5916,11 +5916,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
 				measurePackageService.save(pkg);
 				if(isMeasureCreated()) {
-					saveComponentMeasures(pkg.getId(), model);
-				} else {
 					if (null != model.getAppliedComponentMeasures()) {
 						deleteAndSaveComponentMeasures(model);
 					}
+				} else {
+					saveComponentMeasures(pkg.getId(), model);
 				}
 					
 			} catch (InvalidValueSetDateException e) {
@@ -5948,7 +5948,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measurePackageService.saveComponentMeasures(componentMeasuresList);
 	}	
 	
-	private void deleteAndSaveComponentMeasures(ManageCompositeMeasureDetailModel model) {		
+	private void deleteAndSaveComponentMeasures(ManageCompositeMeasureDetailModel model) {
 		List<ComponentMeasure> componentMeasuresList = buildComponentMeasuresList(model.getId(), model);
 		measurePackageService.updateComponentMeasures(model.getId(), componentMeasuresList);
 	}

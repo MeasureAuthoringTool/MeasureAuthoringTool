@@ -109,6 +109,8 @@ public class ComponentTabPresenter {
 
 	public void closeSearch() {
 		view.getCollapse().getElement().setClassName("panel-collapse collapse");
+		view.getSuggestBox().setText("Search");
+		view.getSuggestBox().setTitle("Search Component Alias");
 	}
 
 	

@@ -3110,6 +3110,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
 		searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
+		searchDisplay.getComponentView().clearAceEditor();
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement()
 				.setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement()
@@ -3864,6 +3865,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().setActive(false);
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().setSelectedIndex(-1);
 				searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
+				searchDisplay.getComponentView().clearAceEditor();
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setActive(false);
 				searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().setSelectedIndex(-1);

@@ -206,5 +206,10 @@ public class CQLComponentLibraryView extends GenericView  {
 		cqlAceEditor.setText(view.getSelectedContent());
 		
 	}
+
+	public void clearAceEditor() {
+		cqlAceEditor.setText("");
+		cqlAceEditor.redisplay();
+	}
 	
 }

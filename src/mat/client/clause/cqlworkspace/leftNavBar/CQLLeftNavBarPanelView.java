@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.leftNavBar;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -46,6 +47,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import mat.client.clause.cqlworkspace.DeleteConfirmationDialogBox;
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
@@ -206,7 +208,8 @@ public class CQLLeftNavBarPanelView {
 	private String currentSelectedCodesObjId = null;
 	
 	private List<QDSAttributes> availableQDSAttributeList;
-
+	
+	private ComponentTabPresenter components = new ComponentTabPresenter();
 
 	public VerticalPanel buildMeasureLibCQLView(){
 		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
@@ -223,6 +226,7 @@ public class CQLLeftNavBarPanelView {
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
+		navPills.setWidth("200px");
 
 		generalInformation = new AnchorListItem();
 		includesLibrary = new AnchorListItem();
@@ -233,12 +237,49 @@ public class CQLLeftNavBarPanelView {
 		functionLibrary = new AnchorListItem();
 		viewCQL = new AnchorListItem();
 
+		
+		buildGeneralInfoTab();
+		buildIncludesTab();
+		buildValueSetsTab();
+		buildCodesTab();
+		buildParameterTab();
+		buildDefinitionsTab();
+		buildFunctionsTab();
+		buildViewCQLTab();
+		buildMessagePanel();
+		
+		navPills.add(generalInformation);
+		navPills.add(components.getView());
+		navPills.add(includesLibrary);
+		navPills.add(appliedQDM);
+		navPills.add(codesLibrary);
+		navPills.add(parameterLibrary);
+		navPills.add(definitionLibrary);
+		navPills.add(functionLibrary);
+		navPills.add(viewCQL);
+
+		rightHandNavPanel.add(navPills);
+	}
+	
+	private void buildMessagePanel() {
+		messagePanel.add(successMessageAlert);
+		messagePanel.add(warningMessageAlert);
+		messagePanel.add(errorMessageAlert);
+		messagePanel.add(warningConfirmationMessageAlert);
+		messagePanel.add(globalWarningConfirmationMessageAlert);
+		messagePanel.setStyleName("marginLeft15px");
+	}
+	
+	private void buildGeneralInfoTab() {
 		generalInformation.setIcon(IconType.INFO);
 		generalInformation.setText("General Information");
 		generalInformation.setTitle("General Information");
 		generalInformation.setActive(true);
 		generalInformation.setId("generatalInformation_Anchor");
-
+	}
+	
+	
+	private void buildIncludesTab() {
 		includesLibrary.setIcon(IconType.PENCIL);
 		includesLibrary.setTitle("Includes");
 		includesBadge.setText("0" + viewIncludeLibrarys.size());
@@ -262,7 +303,9 @@ public class CQLLeftNavBarPanelView {
 		includesLibrary.setHref("#collapseIncludes");
 		includesLibrary.setId("includesLibrary_Anchor");
 		includesLibrary.add(includesCollapse);
-
+	}
+	
+	private void buildValueSetsTab() {
 		appliedQDM.setIcon(IconType.PENCIL);
 		appliedQDM.setTitle("Value Sets");
 		valueSetBadge.setText("0" + appliedQdmTableList.size());
@@ -282,7 +325,9 @@ public class CQLLeftNavBarPanelView {
 		valueSetBadge.setId("valueSetBadge_Badge");
 		valueSetAnchor.add(valueSetBadge);
 		valueSetAnchor.setDataParent("#navGroup");
-		
+	}
+	
+	private void buildCodesTab() {
 		codesLibrary.setIcon(IconType.PENCIL);
 		codesLibrary.setTitle("Codes");
 		codesBadge.setText("0" + codesList.size());
@@ -302,7 +347,9 @@ public class CQLLeftNavBarPanelView {
 		codesBadge.setId("codesBadge_Badge");
 		codesAnchor.add(codesBadge);
 		codesAnchor.setDataParent("#navGroup");
-
+	}
+	
+	private void buildParameterTab() {
 		parameterLibrary.setIcon(IconType.PENCIL);
 		parameterLibrary.setTitle("Parameter");
 		paramBadge.setText("" + viewParameterList.size());
@@ -326,7 +373,9 @@ public class CQLLeftNavBarPanelView {
 		parameterLibrary.setHref("#collapseParameter");
 		parameterLibrary.setId("parameterLibrary_Anchor");
 		parameterLibrary.add(paramCollapse);
-
+	}
+	
+	private void buildDefinitionsTab() {
 		definitionLibrary.setIcon(IconType.PENCIL);
 		definitionLibrary.setTitle("Define");
 		definitionLibrary.setId("definitionLibrary_Anchor");
@@ -348,9 +397,11 @@ public class CQLLeftNavBarPanelView {
 		defineAnchor.setDataParent("#navGroup");
 		definitionLibrary.setDataToggle(Toggle.COLLAPSE);
 		definitionLibrary.setHref("#collapseDefine");
-
 		definitionLibrary.add(defineCollapse);
 
+	}
+	
+	private void buildFunctionsTab() {
 		functionLibrary.setIcon(IconType.PENCIL);
 		functionLibrary.setId("functionLibrary_Anchor");
 		functionLibrary.setTitle("Functions");
@@ -374,35 +425,17 @@ public class CQLLeftNavBarPanelView {
 		funcAnchor.setDataParent("#navGroup");
 		functionLibrary.setDataToggle(Toggle.COLLAPSE);
 		functionLibrary.setHref("#collapseFunction");
-
 		functionLibrary.add(functionCollapse);
-
+	}
+	
+	private void buildViewCQLTab() {
 		viewCQL.setIcon(IconType.BOOK);
 		viewCQL.setText("View CQL");
 		viewCQL.setTitle("View CQL");
 		viewCQL.setId("viewCQL_Anchor");
-		navPills.add(generalInformation);
-		navPills.add(includesLibrary);
-		navPills.add(appliedQDM);
-		navPills.add(codesLibrary);
-		navPills.add(parameterLibrary);
-
-		navPills.add(definitionLibrary);
-		navPills.add(functionLibrary);
-		navPills.add(viewCQL);
-
-		navPills.setWidth("200px");
-		
-		messagePanel.add(successMessageAlert);
-		messagePanel.add(warningMessageAlert);
-		messagePanel.add(errorMessageAlert);
-		messagePanel.add(warningConfirmationMessageAlert);
-		messagePanel.add(globalWarningConfirmationMessageAlert);
-		messagePanel.setStyleName("marginLeft15px");
-
-		rightHandNavPanel.add(navPills);
 	}
-
+	
+	
 
 	private PanelCollapse createIncludesCollapsablePanel() {
 
@@ -827,7 +860,6 @@ public class CQLLeftNavBarPanelView {
 				for (int i = 0; i < listBox.getItemCount(); i++) {
 					if (selectedQDMName.equals(listBox.getItemText(i))) {
 						listBox.setItemSelected(i, true);
-						//listBox.setSelectedIndex(i);
 						listBox.setFocus(true);
 						break;
 					}
@@ -1128,6 +1160,10 @@ public class CQLLeftNavBarPanelView {
 	 */
 	public void setFunctionMap(HashMap<String, CQLFunctions> functionMap) {
 		this.functionMap = functionMap;
+	}
+	
+	public ComponentTabView getComponentsTab() {
+		return components.getView();
 	}
 
 
@@ -1879,220 +1915,72 @@ public class CQLLeftNavBarPanelView {
 		return warningMessageAlert;
 	}
 
-
-	/**
-	 * Gets the error message alert.
-	 *
-	 * @return the error message alert
-	 */
 	public MessageAlert getErrorMessageAlert() {
 		return errorMessageAlert;
 	}
 
-
-	/**
-	 * Gets the warning confirmation message alert.
-	 *
-	 * @return the warning confirmation message alert
-	 */
 	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
 		return warningConfirmationMessageAlert;
 	}
 
-
-	/**
-	 * Gets the global warning confirmation message alert.
-	 *
-	 * @return the global warning confirmation message alert
-	 */
 	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
 		return globalWarningConfirmationMessageAlert;
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * getCurrentSelectedDefinitionObjId()
-	 */
-	/**
-	 * Gets the current selected definition obj id.
-	 *
-	 * @return the current selected definition obj id
-	 */
+
 	public String getCurrentSelectedDefinitionObjId() {
 		return currentSelectedDefinitionObjId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * setCurrentSelectedDefinitionObjId(java.lang.String)
-	 */
-	/**
-	 * Sets the current selected definition obj id.
-	 *
-	 * @param currentSelectedDefinitionObjId
-	 *            the new current selected definition obj id
-	 */
 	public void setCurrentSelectedDefinitionObjId(String currentSelectedDefinitionObjId) {
 		this.currentSelectedDefinitionObjId = currentSelectedDefinitionObjId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * getCurrentSelectedParamerterObjId()
-	 */
-	/**
-	 * Gets the current selected paramerter obj id.
-	 *
-	 * @return the current selected paramerter obj id
-	 */
 	public String getCurrentSelectedParamerterObjId() {
 		return currentSelectedParamerterObjId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * setCurrentSelectedParamerterObjId(java.lang.String)
-	 */
-	/**
-	 * Sets the current selected paramerter obj id.
-	 *
-	 * @param currentSelectedParamerterObjId
-	 *            the new current selected paramerter obj id
-	 */
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
 	}
-	
-	/**
-	 * Sets the checks if is page dirty.
-	 *
-	 * @param isPageDirty the new checks if is page dirty
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsPageDirty(java.lang.Boolean)
-	 */
+
 	public void setIsPageDirty(Boolean isPageDirty) {
 		this.isPageDirty = isPageDirty;
 	}
-
-	/**
-	 * Sets the checks if is double click.
-	 *
-	 * @param isDoubleClick the new checks if is double click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsDoubleClick(java.lang.Boolean)
-	 */
+	
 	public void setIsDoubleClick(Boolean isDoubleClick) {
 		this.isDoubleClick = isDoubleClick;
 	}
 
-	/**
-	 * Checks if is double click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isDoubleClick()
-	 */
 	public Boolean isDoubleClick() {
 		return isDoubleClick;
 	}
 
-	/**
-	 * Sets the checks if is nav bar click.
-	 *
-	 * @param isNavBarClick the new checks if is nav bar click
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * setIsNavBarClick(java.lang.Boolean)
-	 */
 	public void setIsNavBarClick(Boolean isNavBarClick) {
 		this.isNavBarClick = isNavBarClick;
 	}
 
-	/**
-	 * Checks if is nav bar click.
-	 *
-	 * @return the boolean
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * isNavBarClick()
-	 */
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-	
-	/**
-	 * Gets the checks if is page dirty.
-	 *
-	 * @return the checks if is page dirty
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * getIsPageDirty()
-	 */
+
 	public Boolean getIsPageDirty() {
 		return isPageDirty;
 	}
 
-	
-	
-	
-	
-	/**
-	 * Show unsaved changes warning.
-	 */
 	public void showUnsavedChangesWarning() {
 		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getWarningConfirmationMessageAlert().createAlert();
 		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 
-	/**
-	 * Show global unsaved changes warning.
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * showGlobalUnsavedChangesWarning()
-	 */
 	public void showGlobalUnsavedChangesWarning() {
 		getWarningMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().clearAlert();
 		getGlobalWarningConfirmationMessageAlert().createAlert();
 		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
@@ -2108,8 +1996,6 @@ public class CQLLeftNavBarPanelView {
 		getErrorMessageAlert().clearAlert();
 		getSuccessMessageAlert().clearAlert();
 		getWarningConfirmationMessageAlert().clearAlert();
-		//getDeleteConfirmationMessgeAlert().createWarningAlert(message);
-		//getDeleteConfirmationMessgeAlert().getWarningConfirmationYesButton().setFocus(true);
 	}
 	
 	
@@ -2206,26 +2092,6 @@ public class CQLLeftNavBarPanelView {
 		this.warningMessageAlert = warningMessageAlert;
 	}
 
-
-	/**
-	 * Gets the delete confirmation messge alert.
-	 *
-	 * @return the delete confirmation messge alert
-	 */
-	/*public DeleteConfirmationMessageAlert getDeleteConfirmationMessgeAlert() {
-		return deleteConfirmationMessgeAlert;
-	}*/
-
-
-	/**
-	 * Sets the delete confirmation messge alert.
-	 *
-	 * @param deleteConfirmationMessgeAlert the new delete confirmation messge alert
-	 */
-	/*public void setDeleteConfirmationMessgeAlert(DeleteConfirmationMessageAlert deleteConfirmationMessgeAlert) {
-		this.deleteConfirmationMessgeAlert = deleteConfirmationMessgeAlert;
-	}*/
-	
 	
 	/**
 	 * Gets the included list.
@@ -2295,23 +2161,6 @@ public class CQLLeftNavBarPanelView {
 		return deleteConfirmationDialogBox.getNoButton();
 	}
 
-	/**
-	 * Gets the delete confirmation yes button.
-	 *
-	 * @return the delete confirmation yes button
-	 */
-	/*public Button getDeleteConfirmationYesButton() {
-		return deleteConfirmationMessgeAlert.getWarningConfirmationYesButton();
-	}*/
-
-	/**
-	 * Gets the delete confirmation no button.
-	 *
-	 * @return the delete confirmation no button
-	 */
-	/*public Button getDeleteConfirmationNoButton() {
-		return deleteConfirmationMessgeAlert.getWarningConfirmationNoButton();
-	}*/
 
 	/**
 	 * Sets the available QDS attribute list.
@@ -2467,5 +2316,9 @@ public class CQLLeftNavBarPanelView {
 			}
 		}
 		return isValid;
+	}
+
+	public ComponentTabPresenter getComponents() {
+		return components;
 	}
 }

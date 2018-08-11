@@ -53,6 +53,8 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
 import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
+import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -66,6 +68,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.CodeListSearchDTO;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.GlobalCopyPasteObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
@@ -95,9 +98,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 	private SimplePanel panel = new SimplePanel();
 
-	private String currentSection = "general";
+	private static String currentSection = "general";
 
-	private String nextSection = "general";
+	private static String nextSection = "general";
 
 	private QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
@@ -189,6 +192,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		CQLLeftNavBarPanelView getCqlLeftNavBarPanelView();
 
 		CQLGeneralInformationView getCqlGeneralInformationView();
+		
+		CQLComponentLibraryView getComponentView();
 
 		CQLIncludeLibraryView getIncludeView();
 
@@ -216,6 +221,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		
 		HelpBlock getHelpBlock();
 
+		void buildComponentsView();
+
 	}
 
 	public CQLWorkSpacePresenter(final ViewDisplay srchDisplay) {
@@ -224,9 +231,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		JSONCQLTimingExpressionUtility.getAllCQLTimingExpressionsList();
 		JSONAttributeModeUtility.getAllAttrModeList();
 		JSONAttributeModeUtility.getAllModeDetailsList();
-
 	}
-
+	
 	private void buildInsertPopUp() {
 		searchDisplay.resetMessageDisplay();
 		InsertIntoAceEditorDialogBox
@@ -263,6 +269,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		addViewCQLEventHandlers();
 		addListBoxEventHandler();
 	}
+	
 
 	private void addViewCQLEventHandlers() {
 		searchDisplay.getViewCQLView().getExportErrorFile().addClickHandler(new ClickHandler() {
@@ -945,6 +952,14 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the list box event handler.
 	 */
 	private void addListBoxEventHandler() {
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateComponentInformation();
+				searchDisplay.getComponentView().setPageInformation(searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView());
+			}
+		});
 
 		// Double Click Handler Event for Parameter Name ListBox in Parameter Section
 		searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox()
@@ -2172,15 +2187,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		}
 
 	}
-
-	/**
-	 * Method to Unset current Left Nav section and set next selected section when
-	 * user clicks yes on warning message (Dirty Check).
-	 */
-	private void changeSectionSelection() {
-		searchDisplay.hideInformationDropDown();
-		// Unset current selected section.
+	
+	private static void unsetCurrentSelection(){
 		switch (currentSection) {
+		case (CQLWorkSpaceConstants.CQL_COMPONENTS_MENU):
+			unsetActiveMenuItem(currentSection);
+			searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setActive(false);
+			break;
 		case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
 			unsetActiveMenuItem(currentSection);
 			searchDisplay.getCqlLeftNavBarPanelView().getIncludesLibrary().setActive(false);
@@ -2216,51 +2229,71 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		default:
 			break;
 		}
+	}
+	
+	public void setNextSelection() {
 		// Set Next Selected Section.
-		switch (nextSection) {
-		case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
-			currentSection = nextSection;
-			includesEvent();
-			searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement()
-					.setClassName("panel-collapse collapse in");
-			break;
-		case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
-			currentSection = nextSection;
-			functionEvent();
-			searchDisplay.getCqlLeftNavBarPanelView().getFunctionCollapse().getElement()
-					.setClassName("panel-collapse collapse in");
-			break;
-		case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
-			currentSection = nextSection;
-			parameterEvent();
-			searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement()
-					.setClassName("panel-collapse collapse in");
-			break;
-		case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
-			currentSection = nextSection;
-			definitionEvent();
-			searchDisplay.getCqlLeftNavBarPanelView().getDefineCollapse().getElement()
-					.setClassName("panel-collapse collapse in");
-			break;
-		case (CQLWorkSpaceConstants.CQL_GENERAL_MENU):
-			currentSection = nextSection;
-			generalInfoEvent();
-			break;
-		case (CQLWorkSpaceConstants.CQL_VIEW_MENU):
-			currentSection = nextSection;
-			viewCqlEvent();
-			break;
-		case (CQLWorkSpaceConstants.CQL_APPLIED_QDM):
-			currentSection = nextSection;
-			appliedQDMEvent();
-			break;
-		case (CQLWorkSpaceConstants.CQL_CODES):
-			currentSection = nextSection;
-			codesEvent();
-			break;
-		default:
-			break;
-		}
+				switch (nextSection) {
+				case (CQLWorkSpaceConstants.CQL_COMPONENTS_MENU):
+					currentSection = nextSection;
+					componentsEvent();
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().getCollapse().getElement()
+							.setClassName("panel-collapse collapse in");
+					break;
+				case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
+					currentSection = nextSection;
+					includesEvent();
+					searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement()
+							.setClassName("panel-collapse collapse in");
+					break;
+				case (CQLWorkSpaceConstants.CQL_FUNCTION_MENU):
+					currentSection = nextSection;
+					functionEvent();
+					searchDisplay.getCqlLeftNavBarPanelView().getFunctionCollapse().getElement()
+							.setClassName("panel-collapse collapse in");
+					break;
+				case (CQLWorkSpaceConstants.CQL_PARAMETER_MENU):
+					currentSection = nextSection;
+					parameterEvent();
+					searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement()
+							.setClassName("panel-collapse collapse in");
+					break;
+				case (CQLWorkSpaceConstants.CQL_DEFINE_MENU):
+					currentSection = nextSection;
+					definitionEvent();
+					searchDisplay.getCqlLeftNavBarPanelView().getDefineCollapse().getElement()
+							.setClassName("panel-collapse collapse in");
+					break;
+				case (CQLWorkSpaceConstants.CQL_GENERAL_MENU):
+					currentSection = nextSection;
+					generalInfoEvent();
+					break;
+				case (CQLWorkSpaceConstants.CQL_VIEW_MENU):
+					currentSection = nextSection;
+					viewCqlEvent();
+					break;
+				case (CQLWorkSpaceConstants.CQL_APPLIED_QDM):
+					currentSection = nextSection;
+					appliedQDMEvent();
+					break;
+				case (CQLWorkSpaceConstants.CQL_CODES):
+					currentSection = nextSection;
+					codesEvent();
+					break;
+				default:
+					break;
+				}
+	}
+
+	/**
+	 * Method to Unset current Left Nav section and set next selected section when
+	 * user clicks yes on warning message (Dirty Check).
+	 */
+	private void changeSectionSelection() {
+		searchDisplay.hideInformationDropDown();
+		unsetCurrentSelection();
+		setNextSelection();
+		
 	}
 
 	/**
@@ -3076,6 +3109,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement()
 				.setClassName("panel-collapse collapse");
 		searchDisplay.getCqlLeftNavBarPanelView().getParamCollapse().getElement()
@@ -3118,10 +3152,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.resetMessageDisplay();
 		panel.add(searchDisplay.asWidget());
 		getCQLDataForLoad();
+		getComponentMeasureData();
 		if (searchDisplay.getCqlFunctionsView().getFunctionArgumentList().size() > 0) {
 			searchDisplay.getCqlFunctionsView().getFunctionArgumentList().clear();
 		}
-		
+		unsetAllSections();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("CQLWorkspaceView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
@@ -3201,9 +3236,29 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					public void onSuccess(SaveUpdateCQLResult result) {
 						handleCQLData(result);
 						showSearchingBusy(false);
-
 					}
-				});
+				});		
+	}
+	
+	private void getComponentMeasureData() {
+		MatContext.get().getMeasureService().getCQLLibraryInformationForComponentMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<List<ComponentMeasureTabObject>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(List<ComponentMeasureTabObject> results) {
+				
+				if(results.size() == 0) {
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(false);
+				}
+				else {
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(true);
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().clearAndAddToListBox(results);
+				}
+			}
+		});
 	}
 
 	private void handleCQLData(SaveUpdateCQLResult result) {
@@ -3282,8 +3337,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
 					&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
-				searchDisplay.getCqlLeftNavBarPanelView()
-						.setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
@@ -3333,6 +3387,24 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					event.stopPropagation();
 				} else {
 					includesEvent();
+				}
+
+			}
+		});
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getAnchor().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
+				searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+				searchDisplay.hideAceEditorAutoCompletePopUp();
+				if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+					nextSection = CQLWorkSpaceConstants.CQL_COMPONENTS_MENU;
+					searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+					event.stopPropagation();
+				} else {
+					componentsEvent();
 				}
 
 			}
@@ -3619,6 +3691,26 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getCQLParametersView().setHeading("CQL Workspace > Parameter", "mainParamViewVerticalPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
+	
+	/**
+	 * Build View for Components when components AnchorList item is clicked.
+	 */
+	private void componentsEvent() {
+		unsetActiveMenuItem(currentSection);
+		searchDisplay.hideInformationDropDown();
+		searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(true);
+		searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(false);
+		searchDisplay.getValueSetView().getCellTableMainPanel().clear();
+		searchDisplay.getCodesView().getCellTableMainPanel().clear();
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setActive(true);
+		currentSection = CQLWorkSpaceConstants.CQL_COMPONENTS_MENU;
+		searchDisplay.getMainFlowPanel().clear();
+		searchDisplay.buildComponentsView();
+		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
+		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
+		Mat.focusSkipLists("MeasureComposer");
+	}
+	
 
 	/**
 	 * Build View for Includes when Includes AnchorList item is clicked.
@@ -3763,11 +3855,15 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * @param menuClickedBefore
 	 *            the menu clicked before
 	 */
-	private void unsetActiveMenuItem(String menuClickedBefore) {
+	private static void unsetActiveMenuItem(String menuClickedBefore) {
 		if (!searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
 			searchDisplay.resetMessageDisplay();
 			if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(false);
+			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_COMPONENTS_MENU)) {
+				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().setActive(false);
+				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().setSelectedIndex(-1);
+				searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setActive(false);
 				searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().setSelectedIndex(-1);
@@ -6008,6 +6104,18 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList() != null
 				&& MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList() != null
 				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
+	}
+	
+	//unsets all sections except general info section because that is the default section
+	public void unsetAllSections() {
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getIncludesLibrary().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getAppliedQDM().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getCodesLibrary().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getFunctionLibrary().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getDefinitionLibrary().setActive(false);
+		searchDisplay.getCqlLeftNavBarPanelView().getViewCQL().setActive(false);
 	}
 
 }

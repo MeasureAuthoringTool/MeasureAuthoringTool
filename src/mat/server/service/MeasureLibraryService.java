@@ -20,6 +20,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureOwnerReportDTO;
@@ -744,4 +745,6 @@ public interface MeasureLibraryService {
 	ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 
 	CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
+
+	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String measureId);
 }

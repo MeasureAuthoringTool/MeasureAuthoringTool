@@ -170,6 +170,7 @@ public class CQLWorkSpaceConstants {
 	}
 	
 	
+	public static final String CQL_COMPONENTS_MENU = "components";
 	public final static String CQL_FUNCTION_MENU = "func";
 	public final static String CQL_VIEW_MENU = "view";
 	public final static String CQL_DEFINE_MENU = "define";

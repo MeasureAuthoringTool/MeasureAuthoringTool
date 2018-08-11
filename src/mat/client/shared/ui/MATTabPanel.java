@@ -166,7 +166,7 @@ public class MATTabPanel extends Composite implements TabListener,
 	 *            the before index
 	 */
     protected void insertProtected(Widget w, String tabText, boolean asHTML,
-        int beforeIndex) {
+        int beforeIndex, boolean isVisible) {
 
       // Check to see if the TabPanel already contains the Widget. If so,
       // remove it and see if we need to shift the position to the left.
@@ -178,7 +178,7 @@ public class MATTabPanel extends Composite implements TabListener,
         }
       }
 
-      tabBar.insertTabProtected(tabText, asHTML, beforeIndex);
+      tabBar.insertTabProtected(tabText, asHTML, beforeIndex, isVisible);
       super.insert(w, beforeIndex);
     }
 
@@ -192,7 +192,7 @@ public class MATTabPanel extends Composite implements TabListener,
 	 * @param beforeIndex
 	 *            the before index
 	 */
-    protected void insertProtected(Widget w, Widget tabWidget, int beforeIndex) {
+    protected void insertProtected(Widget w, Widget tabWidget, int beforeIndex, boolean isVisible) {
 
       // Check to see if the TabPanel already contains the Widget. If so,
       // remove it and see if we need to shift the position to the left.
@@ -204,7 +204,7 @@ public class MATTabPanel extends Composite implements TabListener,
         }
       }
 
-      tabBar.insertTabProtected(tabWidget, beforeIndex);
+      tabBar.insertTabProtected(tabWidget, beforeIndex, isVisible);
       super.insert(w, beforeIndex);
     }
   }
@@ -219,7 +219,7 @@ public class MATTabPanel extends Composite implements TabListener,
      * @see mat.client.shared.ui.MATTabBar#insertTab(java.lang.String, boolean, int)
      */
     @Override
-    public void insertTab(String text, boolean asHTML, int beforeIndex) {
+    public void insertTab(String text, boolean asHTML, int beforeIndex, boolean isVisible) {
       throw new UnsupportedOperationException(
           "Use TabPanel.insert() to alter the TabBar");
     }
@@ -228,7 +228,7 @@ public class MATTabPanel extends Composite implements TabListener,
      * @see mat.client.shared.ui.MATTabBar#insertTab(com.google.gwt.user.client.ui.Widget, int)
      */
     @Override
-    public void insertTab(Widget widget, int beforeIndex) {
+    public void insertTab(Widget widget, int beforeIndex, boolean isVisible) {
       throw new UnsupportedOperationException(
           "Use TabPanel.insert() to alter the TabBar");
     }
@@ -243,8 +243,8 @@ public class MATTabPanel extends Composite implements TabListener,
 	 * @param beforeIndex
 	 *            the before index
 	 */
-    public void insertTabProtected(String text, boolean asHTML, int beforeIndex) {
-      super.insertTab(text, asHTML, beforeIndex);
+    public void insertTabProtected(String text, boolean asHTML, int beforeIndex, boolean isVisible) {
+      super.insertTab(text, asHTML, beforeIndex, isVisible);
     }
 
     /**
@@ -255,8 +255,8 @@ public class MATTabPanel extends Composite implements TabListener,
 	 * @param beforeIndex
 	 *            the before index
 	 */
-    public void insertTabProtected(Widget widget, int beforeIndex) {
-      super.insertTab(widget, beforeIndex);
+    public void insertTabProtected(Widget widget, int beforeIndex, boolean isVisible) {
+      super.insertTab(widget, beforeIndex, isVisible);
     }
 
     /* (non-Javadoc)
@@ -332,8 +332,8 @@ public class MATTabPanel extends Composite implements TabListener,
    * @param w the widget to be added
    * @param tabText the text to be shown on its tab
    */
-  public void add(Widget w, String tabText) {
-    insert(w, tabText, getWidgetCount());
+  public void add(Widget w, String tabText, boolean isVisible) {
+    insert(w, tabText, getWidgetCount(), isVisible);
   }
 
   /**
@@ -344,8 +344,8 @@ public class MATTabPanel extends Composite implements TabListener,
    * @param tabText the text to be shown on its tab
    * @param asHTML <code>true</code> to treat the specified text as HTML
    */
-  public void add(Widget w, String tabText, boolean asHTML) {
-    insert(w, tabText, asHTML, getWidgetCount());
+  public void add(Widget w, String tabText, boolean asHTML, boolean isVisible) {
+    insert(w, tabText, asHTML, getWidgetCount(), isVisible);
   }
 
   /**
@@ -355,8 +355,8 @@ public class MATTabPanel extends Composite implements TabListener,
    * @param w the widget to be added
    * @param tabWidget the widget to be shown in the tab
    */
-  public void add(Widget w, Widget tabWidget) {
-    insert(w, tabWidget, getWidgetCount());
+  public void add(Widget w, Widget tabWidget, boolean isVisible) {
+    insert(w, tabWidget, getWidgetCount(), isVisible);
   }
 
   /* (non-Javadoc)
@@ -449,9 +449,9 @@ public class MATTabPanel extends Composite implements TabListener,
    * @param beforeIndex the index before which it will be inserted
    */
   public void insert(Widget widget, String tabText, boolean asHTML,
-      int beforeIndex) {
+      int beforeIndex, boolean isVisible) {
     // Delegate updates to the TabBar to our DeckPanel implementation
-    deck.insertProtected(widget, tabText, asHTML, beforeIndex);
+    deck.insertProtected(widget, tabText, asHTML, beforeIndex, isVisible);
   }
 
   /**
@@ -462,9 +462,9 @@ public class MATTabPanel extends Composite implements TabListener,
    * @param tabWidget the widget to be shown on its tab.
    * @param beforeIndex the index before which it will be inserted.
    */
-  public void insert(Widget widget, Widget tabWidget, int beforeIndex) {
+  public void insert(Widget widget, Widget tabWidget, int beforeIndex, boolean isVisible) {
     // Delegate updates to the TabBar to our DeckPanel implementation
-    deck.insertProtected(widget, tabWidget, beforeIndex);
+    deck.insertProtected(widget, tabWidget, beforeIndex, isVisible);
   }
 
   /**
@@ -475,8 +475,8 @@ public class MATTabPanel extends Composite implements TabListener,
    * @param tabText the text to be shown on its tab
    * @param beforeIndex the index before which it will be inserted
    */
-  public void insert(Widget widget, String tabText, int beforeIndex) {
-    insert(widget, tabText, false, beforeIndex);
+  public void insert(Widget widget, String tabText, int beforeIndex, boolean isVisible) {
+    insert(widget, tabText, false, beforeIndex, isVisible);
   }
 
   /* (non-Javadoc)

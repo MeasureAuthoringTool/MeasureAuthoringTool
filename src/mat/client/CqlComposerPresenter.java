@@ -106,7 +106,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		cqlStandaloneWorkSpacePresenter = (CQLStandaloneWorkSpacePresenter) buildCQLWorkSpaceTab();
 		cqlComposerTabLayout = new MatTabLayoutPanel(this);
 		cqlComposerTabLayout.getElement().setAttribute("id", "cqlComposerTabLayout");
-		cqlComposerTabLayout.add(cqlStandaloneWorkSpacePresenter.getWidget(), "CQL Library Workspace");
+		cqlComposerTabLayout.add(cqlStandaloneWorkSpacePresenter.getWidget(), "CQL Library Workspace", true);
 		
 		cqlComposerTabLayout.setHeight("98%");
 		cqlComposerTab = ConstantMessages.CQL_COMPOSER_TAB;

@@ -1,0 +1,210 @@
+package mat.client.clause.cqlworkspace.leftNavBar.sections;
+
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.LabelType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
+
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
+import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabView;
+import mat.client.measure.ManageMeasurePresenter;
+import mat.client.shared.SkipListBuilder;
+import mat.client.shared.SpacerWidget;
+import mat.client.util.MatTextBox;
+
+public class CQLComponentLibraryView extends GenericView  {
+
+	private static final String LABEL_WIDTH = "150px";
+	private static final String LABEL_STYLE = "font-size:90%;margin-left:15px;";
+	private static final String TEXT_BOX_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
+	
+	private Button updateButton = new Button("Update Component Measures");
+	private FormLabel measureLabel = new FormLabel();
+	private FormLabel ownerLabel = new FormLabel ();
+	private FormLabel libraryLabel = new FormLabel ();
+	private MatTextBox measureTextBox = new MatTextBox();
+	private MatTextBox ownerTextBox = new MatTextBox();
+	private MatTextBox libraryTextBox = new MatTextBox();
+	private AceEditor cqlAceEditor = new AceEditor();
+	public ManageMeasurePresenter mmp;
+	
+	public CQLComponentLibraryView() {
+		super();
+		buildButton();
+		setTextBoxes();
+		setLabels();
+		buildHeading();
+		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.getElement().setId("vPanel_VerticalPanelIncludeSection");
+		verticalPanel.add(heading);
+		verticalPanel.add(new SpacerWidget());	
+		verticalPanel.add(getMessagePanel());
+		verticalPanel.add(new SpacerWidget());
+		
+		VerticalPanel buttonPanel = new VerticalPanel();
+		buttonPanel.add(updateButton);
+		buttonPanel.add(new SpacerWidget());
+		buttonPanel.add(new SpacerWidget());
+		buttonPanel.getElement().getStyle().setPaddingLeft(15, Unit.PX);
+		
+		FormGroup measureGroup = new FormGroup();
+		measureGroup.add(measureLabel);
+		measureGroup.add(measureTextBox);
+		
+		FormGroup ownerGroup = new FormGroup();
+		ownerGroup.add(ownerLabel);
+		ownerGroup.add(ownerTextBox);
+		
+		FormGroup libGroup = new FormGroup();
+		libGroup.add(libraryLabel);
+		libGroup.add(libraryTextBox);
+
+		verticalPanel.add(buttonPanel);
+		verticalPanel.add(measureGroup);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(ownerGroup);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(libGroup);
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(buildAceEditor());
+		verticalPanel.setWidth("700px");
+		containerPanel.getElement().setAttribute("id", "ComponentSectionContainerPanel");
+		containerPanel.add(verticalPanel);
+		containerPanel.setStyleName("cqlqdsContentPanel");
+	}
+	
+	private void buildHeading() {
+		setHeading("CQL Workspace > Components", "ComponentsSectionContainerPanel");
+		super.heading.addStyleName("leftAligned");
+	}
+	
+	private void setLabels() {
+		measureLabel.getElement().setAttribute("style", LABEL_STYLE);
+		measureLabel.setWidth(LABEL_WIDTH);
+		measureLabel.setFor("measureTextBox");
+		measureLabel.setText("Measure Name");
+		measureLabel.setTitle("Measure Name");
+		
+		ownerLabel.getElement().setAttribute("style", LABEL_STYLE);
+		ownerLabel.setWidth(LABEL_WIDTH);
+		ownerLabel.setFor("ownerTextBox");
+		ownerLabel.setText("Owner Name");
+		ownerLabel.setTitle("Owner Name");
+		
+		libraryLabel.getElement().setAttribute("style", LABEL_STYLE);
+		libraryLabel.setWidth(LABEL_WIDTH);
+		libraryLabel.setFor("libraryTextBox");		
+		libraryLabel.setText("CQL Library Name");
+		libraryLabel.setTitle("CQL Library Name");
+	}
+	
+	private void buildButton() {
+		updateButton.setIcon(IconType.PENCIL);
+		updateButton.setTitle(updateButton.getText());
+		updateButton.setType(ButtonType.PRIMARY);
+		updateButton.setWidth("250px");
+	}
+	
+	private void setTextBoxes() {
+		reset();
+		
+		measureTextBox.getElement().setAttribute("style", TEXT_BOX_STYLE);
+		measureTextBox.setEnabled(false);
+		measureTextBox.getElement().setId("measureTextBox");
+		
+		ownerTextBox.getElement().setAttribute("style", TEXT_BOX_STYLE);
+		ownerTextBox.setEnabled(false);
+		ownerTextBox.getElement().setId("ownerTextBox");
+		
+		libraryTextBox.getElement().setAttribute("style", TEXT_BOX_STYLE);
+		libraryTextBox.setEnabled(false);
+		libraryTextBox.getElement().setId("libraryTextBox");
+	}
+	
+	private Panel buildAceEditor() {
+		cqlAceEditor.startEditor();
+		cqlAceEditor.setMode(AceEditorMode.CQL);
+		cqlAceEditor.setTheme(AceEditorTheme.ECLIPSE);
+		cqlAceEditor.getElement().getStyle().setFontSize(14, Unit.PX);
+		cqlAceEditor.setText("");
+		cqlAceEditor.setSize("650px", "500px");
+		cqlAceEditor.setAutocompleteEnabled(true);
+		cqlAceEditor.setReadOnly(true);
+		cqlAceEditor.setUseWrapMode(true);
+		cqlAceEditor.clearAnnotations();
+		
+		Label viewCQlFileLabel = new Label(LabelType.INFO);
+		viewCQlFileLabel.setText("View CQL file here");
+		viewCQlFileLabel.setTitle("View CQL file here");
+		
+		Panel viewCQLPanel = new Panel(PanelType.PRIMARY);	
+		viewCQLPanel.setMarginTop(20);
+		viewCQLPanel.setId("IncludeCQLViewPanel_Id");
+		
+		PanelHeader viewCQLHeader = new PanelHeader();
+		viewCQLHeader.setText("View CQL file here");
+		viewCQLHeader.setTitle("View CQL file here");
+		viewCQLHeader.setId("IncludeCQLViewPanelHeader_id");
+		
+		PanelBody viewCQLBody = new PanelBody();
+		viewCQLBody.setId("IncludeCQLViewBody_Id");
+		viewCQLBody.add(cqlAceEditor);
+		
+		viewCQLPanel.add(viewCQLHeader);
+		viewCQLPanel.add(viewCQLBody);
+		
+		return viewCQLPanel;
+	}
+	
+	public void setHeading(String text, String linkName) {
+		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
+		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
+	}
+	
+	public void setMeasureName(String name) {
+		measureTextBox.setTitle(name);
+		measureTextBox.setText(name);
+	}
+	
+	public void setOwnerName(String name) {
+		ownerTextBox.setTitle(name);
+		ownerTextBox.setText(name);
+	}
+	
+	public void setLibraryName(String name) {
+		libraryTextBox.setTitle(name);
+		libraryTextBox.setText(name);
+	}
+		
+	public void reset() {
+		setMeasureName("");
+		setOwnerName("");
+		setLibraryName("");
+	}
+			
+	public Button getUpdateButton() {
+		return updateButton;
+	}
+
+	public void setPageInformation(ComponentTabView view) {
+		setMeasureName(view.getSelectedAlias());
+		setOwnerName(view.getSelectedOwner());
+		setLibraryName(view.getSelectedLibraryName());
+		cqlAceEditor.setText(view.getSelectedContent());
+		
+	}
+	
+}

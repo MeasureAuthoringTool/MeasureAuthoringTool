@@ -1212,12 +1212,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		}
 		if (obj == null) {
 			return false;
-		}
-				
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		
+		}		
 	
 		ManageMeasureDetailModel other = (ManageMeasureDetailModel) obj;
 		if (toCompareAuthor == null) {

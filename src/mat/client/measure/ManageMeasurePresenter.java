@@ -427,12 +427,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				setComponentBusy(true);
 				updateCompositeDetailsFromComponentMeasureDisplay();
 				
 				MatContext.get().getMeasureService().validateCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<CompositeMeasureValidationResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
+						setComponentBusy(false);
 					}
 
 					@Override
@@ -1078,6 +1080,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			String errorMessage = "";
 			if(message.size() > 0) {
 				errorMessage = message.get(0);
+				setComponentBusy(false);
 			}
 			componentMeasureDisplay.getErrorMessageDisplay().createAlert(errorMessage);
 		} else {
@@ -1270,7 +1273,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	protected void searchComponentMeasures(String searchText, int startIndex, int pageSize, int filter) {
-		setComponentSearchingBusy(true);
+		setComponentBusy(true);
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 		MeasureSearchModel searchModel = new MeasureSearchModel(filter, startIndex, pageSize, lastSearchText, searchText);
 		searchModel.setQdmVersion(MatContext.get().getCurrentQDMVersion());
@@ -1283,7 +1286,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				componentMeasureDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-				setComponentSearchingBusy(false);
+				setComponentBusy(false);
 			}
 
 			@Override
@@ -1294,7 +1297,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				} else {
 					componentMeasureDisplay.getErrorMessageDisplay().clearAlert();
 				}
-				setComponentSearchingBusy(false);
+				setComponentBusy(false);
 				componentMeasureDisplay.populateAvailableMeasuresTableCells(result, filter, searchModel);
 			}
 		});
@@ -1881,9 +1884,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	}
 	
-	private void setComponentSearchingBusy(boolean busy) {
+	private void setComponentBusy(boolean busy) {
 		toggleLoadingMessage(busy);
 		componentMeasureDisplay.getSearchButton().setEnabled(!busy);
+		componentMeasureDisplay.getSaveButton().setEnabled(!busy);
+		componentMeasureDisplay.getBackButton().setEnabled(!busy);
+		componentMeasureDisplay.getCancelButton().setEnabled(!busy);
 	}
 
 	private void setSearchingBusy(boolean busy) {
@@ -2008,7 +2014,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				@Override
 				public void onSuccess(SaveMeasureResult result) {
 					postSaveMeasureEvents(isInsert, result, detailDisplay, name, shortName, scoringType, version);
-
+					setSearchingBusy(false);
 				}
 			});
 		}
@@ -2076,13 +2082,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 				message = "Unknown Code " + result.getFailureReason();
 			}
 			detailDisplay.getErrorMessageDisplay().createAlert(message);
-		}
-		setSearchingBusy(false);
-	
+		}	
+		
+		setComponentBusy(false);
 	}
 	
+
+	
 	private void saveCompositeMeasure() {
-		setSearchingBusy(true);
 		final boolean isInsert = currentCompositeMeasureDetails.getId() == null;
 		final String name = currentCompositeMeasureDetails.getName();
 		final String shortName = currentCompositeMeasureDetails.getShortName();
@@ -2094,12 +2101,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				compositeDetailDisplay.getErrorMessageDisplay().createAlert(caught.getLocalizedMessage());
-				setSearchingBusy(false);				
+				setComponentBusy(false);
 			}
 
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				postSaveMeasureEvents(isInsert, result, compositeDetailDisplay, name, shortName, scoringType, version);
+				setComponentBusy(false);
 			}
 			
 		});

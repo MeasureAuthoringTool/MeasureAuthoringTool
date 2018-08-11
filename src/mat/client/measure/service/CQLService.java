@@ -206,5 +206,6 @@ public interface CQLService {
 	SaveUpdateCQLResult getCQLLibraryData(String xmlString);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
-
+	
+	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary);
 }

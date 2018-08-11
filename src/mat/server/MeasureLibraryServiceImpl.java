@@ -248,6 +248,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 
+	@Autowired
 	private CQLService cqlService;
 	
 	@Autowired
@@ -5933,6 +5934,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setId(pkg.getId());
 			model.setMeasureTypeSelectedList(getMeasureTypeForComposite());
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
+			createIncludedMeasureAsLibraryInMeasureXML(pkg.getId(), model);
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");
@@ -5958,4 +5960,58 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
 	}
 	
+	private void createIncludedMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {
+		List<CQLIncludeLibrary> cqlIncludeLibraryList = new ArrayList<>();
+		for(ManageMeasureSearchModel.Result measure : model.getAppliedComponentMeasures()) {			
+			CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());			
+			CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
+			incLibrary.setId(UUID.randomUUID().toString());
+			incLibrary.setAliasName(model.getAliasMapping().get(measure.getId()));		
+			incLibrary.setCqlLibraryId(cqlLibrary.getId());
+			incLibrary.setVersion(measure.getVersion());
+			incLibrary.setCqlLibraryName(measure.getName());
+			incLibrary.setQdmVersion(measure.getQdmVersion());
+			incLibrary.setSetId(measure.getMeasureSetId());	
+			cqlIncludeLibraryList.add(incLibrary);
+		}
+		
+		updateComponentMeasuresAsIncludedLibrariesInMeasureXML(measureId, cqlIncludeLibraryList);
+	}
+	
+	private void updateComponentMeasuresAsIncludedLibrariesInMeasureXML(String measureId, List<CQLIncludeLibrary> cqlIncludeLibraryList) {
+		try {
+			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());		
+			String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
+			Node nodeIncludes;
+
+			nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
+			if (nodeIncludes != null) {
+				for(CQLIncludeLibrary library : cqlIncludeLibraryList) {
+					removeIncludedComponentMeasuresInMeasureXML(measureId, library, processor);
+					String cqlString = getCqlService().createIncludeLibraryXML(library);
+					processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDES);
+					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
+				}
+			}
+			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+			measurePackageService.saveMeasureXml(xmlModel);
+		} catch (XPathExpressionException | SAXException | IOException e) {
+			logger.error("Exception in createIncludedMeasureAsLibrary: " + e);
+		}
+	}
+	
+	private void removeIncludedComponentMeasuresInMeasureXML(String measureId, CQLIncludeLibrary library, XmlProcessor processor) {
+		String XPATH_EXPRESSION_EXISTING_INCLUDES = "//includeLibrary[@cqlLibRefId='" + library.getCqlLibraryId()+ "']";
+		Node nodeExisting;
+		try {
+			nodeExisting = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_EXISTING_INCLUDES);
+			if (nodeExisting != null) {
+				processor.removeFromParent(nodeExisting);
+			}
+		} catch (XPathExpressionException e) {
+			logger.error("Exception in removeIncludedComponentMeasuresInMeasureXML: " + e);
+		}
+
+	}
 }

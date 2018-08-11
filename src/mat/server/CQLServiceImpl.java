@@ -1285,7 +1285,7 @@ public class CQLServiceImpl implements CQLService {
 	 *            the include library
 	 * @return the string
 	 */
-	private String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) {
+	public String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) {
 		logger.info("In CQLServiceImpl.createIncludeLibraryXML");
 		Mapping mapping = new Mapping();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();

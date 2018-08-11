@@ -5971,7 +5971,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			incLibrary.setVersion(measure.getVersion());
 			incLibrary.setCqlLibraryName(measure.getName());
 			incLibrary.setQdmVersion(measure.getQdmVersion());
-			incLibrary.setSetId(measure.getMeasureSetId());	
+			incLibrary.setSetId(measure.getMeasureSetId());
+			incLibrary.setIsComposite("true");
 			cqlIncludeLibraryList.add(incLibrary);
 		}
 		

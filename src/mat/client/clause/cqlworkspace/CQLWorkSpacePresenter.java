@@ -3338,7 +3338,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
 					&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
-				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+				List<CQLIncludeLibrary> libraries = result.getCqlModel().getCqlIncludeLibrarys();
+				libraries.removeIf(lib -> lib.getIsComposite() != null && lib.getIsComposite().equals("true"));
+				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(libraries);
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);

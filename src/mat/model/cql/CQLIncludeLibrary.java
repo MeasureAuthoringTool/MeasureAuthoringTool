@@ -25,6 +25,8 @@ public class CQLIncludeLibrary implements IsSerializable {
 	
 	private String setId; 
 	
+	private String isComposite; 
+	
 	public String getSetId() {
 		return setId;
 	}
@@ -197,5 +199,14 @@ public class CQLIncludeLibrary implements IsSerializable {
 	public String toString(){
 		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|" + this.version; 
 	}
+
+	public String getIsComposite() {
+		return isComposite;
+	}
+
+	public void setIsComposite(String isComposite) {
+		this.isComposite = isComposite;
+	}
+
 
 }

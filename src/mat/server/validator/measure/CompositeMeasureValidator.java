@@ -49,7 +49,7 @@ public class CompositeMeasureValidator {
 	private static final String ERR_COMPONENT_MEASURES_MUST_ALL_HAVE_ALIAS = "An alias is required for each component measure.";
 	private static final String ERR_COMPONENT_MEASURE_CANNOT_BE_COMPOSITE = "A component measure can not be a composite measure.";
 	private static final String ERR_COMPONENT_MEASURE_HAS_MORE_THAN_ONE_PACKAGE_GROUPING = " has more than one measure grouping and can not be used as a component measure. ";
-	private static final String ERR_ALIAS_NOT_VALID = " cannot be saved. An alias for a component measure must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), must not contain spaces, and it must be unique.Please correct and try again.";
+	private static final String ERR_ALIAS_NOT_VALID = " cannot be saved. An alias for a component measure must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), must not contain spaces, and it must be unique. Please correct and try again.";
 	private static final String ERR_LIBRARIES_MUST_HAVE_SAME_VERSION_AND_CONTENT = "CQL libraries within a composite measure can not have the same name with different library content or version.";
 
 	@Autowired

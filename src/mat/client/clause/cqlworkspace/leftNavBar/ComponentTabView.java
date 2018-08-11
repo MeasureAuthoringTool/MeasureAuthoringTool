@@ -113,7 +113,6 @@ public class ComponentTabView extends AnchorListItem {
 		suggestBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
 	}
 	
-	
 	public void setBadgeNumber(int size) {
 		if (size < 10) {
 			badge.setText("0" + size);

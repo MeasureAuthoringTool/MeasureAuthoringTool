@@ -9,7 +9,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CqlComponentLibraryView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryPresenter;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 

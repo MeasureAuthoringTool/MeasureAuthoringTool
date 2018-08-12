@@ -3793,6 +3793,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		
 		searchDisplay.getValueSetView().getOIDInput().sinkBitlessEvent("input");
 		
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(false);
+		
 		searchDisplay.getValueSetView().setObserver(new CQLAppliedValueSetView.Observer() {
 			@Override
 			public void onModifyClicked(CQLQualityDataSetDTO result) {

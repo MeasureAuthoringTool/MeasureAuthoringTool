@@ -253,7 +253,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		aliasColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 			@Override
 			public void update(int index, Result object, String value) {
-				errorMessages.clearAlert();
 				aliasMapping.put(object.getId(), value);
 				errorMessages.clearAlert();
 			}

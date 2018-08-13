@@ -188,6 +188,7 @@
 		<keyword>ends</keyword>
 		<keyword>except</keyword>
 		<keyword>exists</keyword>
+		<keyword>expand</keyword>
 		<keyword>false</keyword>
 		<keyword>flatten</keyword>
 		<keyword>from</keyword>
@@ -227,6 +228,7 @@
 		<keyword>or more</keyword>
 		<keyword>overlaps</keyword>
 		<keyword>parameter</keyword>
+		<keyword>per</keyword>
 		<keyword>predecessor</keyword>
 		<keyword>private</keyword>
 		<keyword>properly</keyword>

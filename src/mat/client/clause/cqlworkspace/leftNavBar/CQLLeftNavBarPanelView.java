@@ -2304,7 +2304,7 @@ public class CQLLeftNavBarPanelView {
 		boolean isValid = true;
 		//We check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
 		//Versioned measures have been versioned with valid QDM versioned libraries included.
-		if(MatContext.get().isMeasureDraft()) {
+		if(MatContext.get().isDraftMeasure()) {
 			List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();
 			if(includedLibraryList.size()==0){
 				isValid = true;

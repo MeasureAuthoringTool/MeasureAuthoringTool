@@ -562,13 +562,8 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
-	public boolean isMeasureDraft() {
-		if(currentMeasureInfo != null) {
-			return currentMeasureInfo.isDraft();
-		}
-		else {
-			return false;
-		}
+	public boolean isDraftMeasure() {
+		return (currentMeasureInfo != null) ? currentMeasureInfo.isDraft() : false;
 	}
 
 	public void renewSession() {

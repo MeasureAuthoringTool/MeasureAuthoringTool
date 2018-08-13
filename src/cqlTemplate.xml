@@ -3,10 +3,12 @@
 	<!-- CQL Data type list -->
 	<datatypes>
 		<datatype>Boolean</datatype>
+		<datatype>Date</datatype>
 		<datatype>DateTime</datatype>
 		<datatype>Decimal</datatype>
 		<datatype>Integer</datatype>
 		<datatype>QDM Datatype</datatype>
+		<datatype>Ratio</datatype>
 		<datatype>String</datatype>
 		<datatype>Time</datatype>
 		<datatype>Others</datatype>

@@ -8,10 +8,10 @@ var SqlHighlightRules = function() {
 
 	var keywords = (
 	        "after|all|and|as|asc|ascending|before|begins|begun|between|Boolean|by|called|case|cast|Choice|Code|codesystem|codesystems|" +
-	        "collapse|Concept|contains|context|convert|date|DateTime|day|days|Decimal|default|define|desc|descending|difference|display|distinct|div|duration|during|" +
+	        "collapse|Concept|contains|context|convert|date|Date|DateTime|day|days|Decimal|default|define|desc|descending|difference|display|distinct|div|duration|during|" +
 	        "else|end|ends|except|exists|false|flatten|from|function|hour|hours|if|implies|in|include|included|included in|includes|Integer|intersect|Interval|is|less|let|library|List|" +
 	        "maximum|meets|millisecond|milliseconds|minimum|minute|minutes|mod|month|months|more|not|null|occurs|of|on|or|or after|or before|or less|or more|overlaps|parameter|" +
-	        "predecessor|predecessor of|private|properly|properly included in|properly includes|public|QDM|Quantity|return|same|second|seconds|singleton|singleton from|sort|" +
+	        "predecessor|predecessor of|private|properly|properly included in|properly includes|public|QDM|Quantity|Ratio|return|same|second|seconds|singleton|singleton from|sort|" +
 	        "sort by|start|starts|String|successor|such|such that|Sum|that|than|then|Time|time|timezone|to|true|Tuple|union|using|valueset|version|week|weeks|when|where|width|with|" +
 	        "within|without|xor|year|years"
 	    );

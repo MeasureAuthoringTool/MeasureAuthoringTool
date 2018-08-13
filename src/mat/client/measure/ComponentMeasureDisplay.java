@@ -78,6 +78,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
 	private CellTable<ManageMeasureSearchModel.Result> appliedComponentTable;
 	private BackSaveCancelButtonBar buttonBar = new BackSaveCancelButtonBar("componentMeasures");
+	private CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+	private MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"componentMeasureDisplay");
 	
 	public ComponentMeasureDisplay() {
 		buildMainPanel();
@@ -198,6 +200,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 						+ " Version in second column, Measure Scoring in third column,"
 						+ "Patient-based Indicator in fourth column, Owner in fifth column, Select in sixth column.");
     	availableMeasuresPanel.add(invisibleLabel);
+    	setPagination();
 		return availableMeasuresPanel;
 	}
 	
@@ -325,14 +328,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 
 		provider.addDataDisplay(availableMeasuresTable);
-		
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true,"componentMeasureDisplay");
-		spager.setPageStart(0);
-		spager.setDisplay(availableMeasuresTable);
-		spager.setPageSize(PAGE_SIZE);
-		availableMeasuresPanel.add(new SpacerWidget());
-		availableMeasuresPanel.add(spager);
 		availableMeasuresTable.redraw();
 	}
 	
@@ -529,6 +524,16 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		});
 		
 		return deleteColumn; 
+	}
+	
+	public void setPagination() {
+		spager.setPageStart(0);
+		spager.setDisplay(availableMeasuresTable);
+		spager.setPageSize(PAGE_SIZE);
+		if(availableMeasuresTable.getRowCount() > 0) {
+			availableMeasuresPanel.add(new SpacerWidget());
+			availableMeasuresPanel.add(spager);
+		}
 	}
 	
 	public Button getSaveButton() {

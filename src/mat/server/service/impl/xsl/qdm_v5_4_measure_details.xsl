@@ -258,6 +258,7 @@
 
 		<!-- Measure Period -->
 		<xsl:call-template name="measure_specific_data_elements" />
+		<xsl:call-template name="compositeMeasureAttributeTemplate" />
 
 		<subjectOf>
 			<measureAttribute>
@@ -746,7 +747,24 @@
 			</controlVariable>
 		</xsl:if>
 	</xsl:template>
-
+	
+	
+	
+	<xsl:template name="compositeMeasureAttributeTemplate">
+		<xsl:if test="componentMeasures">
+			<subjectOf>
+				<measureAttribute>
+ 					<code code="CMPMSRMTH" codeSystem="2.16.840.1.113883.5.4"/>
+					<value xsi:type="CD" codeSystem="2.16.840.1.113883.5.1063">
+						<xsl:attribute name="code">
+							<xsl:value-of select="compositeScoringMethod/@id"></xsl:value-of>
+						</xsl:attribute>
+					</value> 					
+				</measureAttribute>
+			</subjectOf>
+		</xsl:if>
+	</xsl:template>
+	
 	<xsl:template name="componentOfTemplate">
 		<xsl:if test="componentMeasures">
 			<xsl:for-each select="componentMeasures/measure">
@@ -758,6 +776,13 @@
 								name="trim">
                                      <xsl:with-param
 								name="textString" select="@id" />
+                                 </xsl:call-template>
+                            </xsl:attribute>
+                         	<xsl:attribute name="identifierName">
+                                 <xsl:call-template
+								name="trim">
+                                     <xsl:with-param
+								name="textString" select="@name" />
                                  </xsl:call-template>
                             </xsl:attribute>
 						</id>

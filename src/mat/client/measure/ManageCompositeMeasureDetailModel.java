@@ -11,6 +11,7 @@ import mat.model.BaseModel;
 public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel implements IsSerializable, BaseModel {
 
 	private String compositeScoringMethod;
+	private String compositeScoringAbbreviation; 
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasures;
 	private Map<String, String> aliasMapping;
 	private Map<String, MeasurePackageOverview> packageMap;
@@ -51,5 +52,13 @@ public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel 
 
 	public void setPackageMap(Map<String, MeasurePackageOverview> packageMap) {
 		this.packageMap = packageMap;
+	}
+
+	public String getCompositeScoringAbbreviation() {
+		return compositeScoringAbbreviation;
+	}
+
+	public void setCompositeScoringAbbreviation(String compositeScoringAbbreviation) {
+		this.compositeScoringAbbreviation = compositeScoringAbbreviation;
 	}
 }

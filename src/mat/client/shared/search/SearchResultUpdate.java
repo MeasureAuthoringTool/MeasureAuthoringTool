@@ -21,6 +21,8 @@ public class SearchResultUpdate {
 	 *            the last search text
 	 */
 	public void update(SearchResults<?> result, TextBox searchTextBox, String lastSearchText){
+		// TODO this cannot be updated dynamically for 508 reasons
+		
 		String searchTitle = null;
 		if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
 			searchTitle = "No Records returned.";

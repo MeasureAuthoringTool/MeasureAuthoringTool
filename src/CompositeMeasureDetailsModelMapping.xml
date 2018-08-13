@@ -40,33 +40,12 @@
            type="java.lang.String">
       <bind-xml name="version" node="element"/>
     </field>
-       
-   <!--  <field name="measureStatus"
-           type="java.lang.String">
-      <bind-xml name="status" node="element"/>
-    </field> -->
-    
+           
     <field name="NqfModel"
            type="mat.client.measure.NqfModel">
       <bind-xml name="nqfid"/>
     </field>
-    
-    <!-- <field name="nqfElementTag"
-           type="java.lang.String">
-      <bind-xml name="nqfid" node="text" location="measureDetails/nqfid" />
-    </field> 
-        
-    <field name="nqfIdRoot"
-           type="java.lang.String">
-      <bind-xml name="root" node="attribute" location="measureDetails/nqfid"/>
-    </field>
-    
-    <field name="nqfId"
-           type="java.lang.String">
-      <bind-xml name="extension" node="attribute" location="measureDetails/nqfid"/>
-    </field> -->
-    
-    
+   
     <field name="periodModel"
            type="mat.client.measure.PeriodModel">
       <bind-xml name="period"/>
@@ -81,11 +60,6 @@
            type="java.lang.String">
       <bind-xml name="id" node="attribute" location="steward"/>
     </field>
-    
-    <!-- <field name="measStewardOther"
-           type="java.lang.String">
-     <bind-xml name="steward" node="element"/>
-    </field> -->
     
      <field name="authorSelectedList"
            type="mat.model.Author"
@@ -137,6 +111,11 @@
       <bind-xml name="compositeScoring" node="element"/>
     </field>
     
+     <field name="compositeScoringAbbreviation"
+           type="java.lang.String">
+      <bind-xml name="id" node="attribute" location="compositeScoring"/>
+    </field>
+    
 	<field name="measScoring"
            type="java.lang.String">
       <bind-xml name="scoring" node="element"/>
@@ -174,22 +153,10 @@
             type="mat.client.measure.ManageMeasureSearchModel$Result"
 			collection="arraylist">
 			<bind-xml name="measure" location="componentMeasures">
-				<class name="mat.client.measure.ManageMeasureSearchModel$Result">
-					<!-- <field name="name" type="java.lang.String">
-						<bind-xml name="name" node="attribute" />
-					</field> -->
-					
-					<!-- <field name="version" type="java.lang.String">
-						<bind-xml name="version" node="attribute" />
-					</field> -->
-					
+				<class name="mat.client.measure.ManageMeasureSearchModel$Result">					
 					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>
-					
-					<!-- <field name="finalizedDate" type="java.sql.Timestamp">
-						<bind-xml name="finalizedDate" node="attribute" />
-					</field> -->
 				</class>
 			</bind-xml>
 		</field>
@@ -321,21 +288,11 @@
 	           type="java.lang.String">
 	      <bind-xml name="startDate" node="element"/>
 	    </field>
-	    
-	    <!-- <field name="startDateUuid"
-	           type="java.lang.String">
-	      <bind-xml name="uuid" node="attribute" location="startDate"/>
-	    </field> -->
-	    
+	    	    
 	     <field name="stopDate"
 	           type="java.lang.String">
 	      <bind-xml name="stopDate" node="element"/>
 	    </field>
-	    
-	     <!-- <field name="stopDateUuid"
-	           type="java.lang.String">
-	      <bind-xml name="uuid" node="attribute" location="stopDate"/>
-	    </field> -->
   	</class>
   	
   	<class name="mat.client.measure.NqfModel">

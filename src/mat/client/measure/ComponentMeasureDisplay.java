@@ -526,7 +526,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		return deleteColumn; 
 	}
 	
-	public void setPagination() {
+	private void setPagination() {
 		spager.setPageStart(0);
 		spager.setDisplay(availableMeasuresTable);
 		spager.setPageSize(PAGE_SIZE);

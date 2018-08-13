@@ -2113,6 +2113,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onSuccess(SaveMeasureResult result) {
 				postSaveMeasureEvents(isInsert, result, compositeDetailDisplay, name, shortName, scoringType, version, isDraft);
 				setComponentBusy(false);
+
 			}
 			
 		});

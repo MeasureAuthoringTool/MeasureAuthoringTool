@@ -5963,17 +5963,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private void createIncludedMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {
 		List<CQLIncludeLibrary> cqlIncludeLibraryList = new ArrayList<>();
 		for(ManageMeasureSearchModel.Result measure : model.getAppliedComponentMeasures()) {			
-			CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());			
-			CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
-			incLibrary.setId(UUID.randomUUID().toString());
-			incLibrary.setAliasName(model.getAliasMapping().get(measure.getId()));		
-			incLibrary.setCqlLibraryId(cqlLibrary.getId());
-			incLibrary.setVersion(measure.getVersion());
-			incLibrary.setCqlLibraryName(measure.getName());
-			incLibrary.setQdmVersion(measure.getQdmVersion());
-			incLibrary.setSetId(measure.getMeasureSetId());
-			incLibrary.setIsComposite("true");
-			cqlIncludeLibraryList.add(incLibrary);
+			CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());		
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(new String(cqlLibrary.getCQLByteArray()));
+			CQLIncludeLibrary cqlIncludedLibraryCreatedFromComponentMeasure = new CQLIncludeLibrary();
+			cqlIncludedLibraryCreatedFromComponentMeasure.setId(UUID.randomUUID().toString());
+			cqlIncludedLibraryCreatedFromComponentMeasure.setAliasName(model.getAliasMapping().get(measure.getId()));		
+			cqlIncludedLibraryCreatedFromComponentMeasure.setCqlLibraryId(cqlLibrary.getId());
+			cqlIncludedLibraryCreatedFromComponentMeasure.setVersion(cqlModel.getVersionUsed());
+			cqlIncludedLibraryCreatedFromComponentMeasure.setCqlLibraryName(cqlLibrary.getName());
+			cqlIncludedLibraryCreatedFromComponentMeasure.setQdmVersion(measure.getQdmVersion());
+			cqlIncludedLibraryCreatedFromComponentMeasure.setSetId(measure.getMeasureSetId());
+			cqlIncludedLibraryCreatedFromComponentMeasure.setIsComposite("true");
+			cqlIncludeLibraryList.add(cqlIncludedLibraryCreatedFromComponentMeasure);
 		}
 		
 		updateComponentMeasuresAsIncludedLibrariesInMeasureXML(measureId, cqlIncludeLibraryList);

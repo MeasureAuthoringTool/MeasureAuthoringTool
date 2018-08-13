@@ -59,7 +59,6 @@ import org.xml.sax.SAXException;
 
 import mat.DTO.MeasureTypeDTO;
 import mat.DTO.OperatorDTO;
-import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
@@ -2598,9 +2597,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		
 		if(measureDetailModel instanceof ManageCompositeMeasureDetailModel) {
-			((ManageCompositeMeasureDetailModel) measureDetailModel).setCompositeScoringAbbreviation(MeasureDetailsUtil.getCompositeScoringAbbreviation(((ManageCompositeMeasureDetailModel) measureDetailModel).getCompositeScoringMethod()));
-			System.out.println("Set Composite Scoring ID " + ((ManageCompositeMeasureDetailModel) measureDetailModel).getCompositeScoringAbbreviation());
-
+			((ManageCompositeMeasureDetailModel) measureDetailModel).setCompositeScoringAbbreviation(getCompositeScoringAbbreviation(((ManageCompositeMeasureDetailModel) measureDetailModel).getCompositeScoringMethod()));
 		}
 		
 		if ((measureDetailModel.getEndorseByNQF() != null) && measureDetailModel.getEndorseByNQF()) {
@@ -2610,9 +2607,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			measureDetailModel.setEndorsement(null);
 			measureDetailModel.setEndorsementId(null);
 		}
-		
-		
-		
+				
 		NqfModel nqfModel = new NqfModel();
 		nqfModel.setExtension(measureDetailModel.getNqfId());
 		nqfModel.setRoot("2.16.840.1.113883.3.560.1");
@@ -2620,6 +2615,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (CollectionUtils.isEmpty(MeasureDetailsUtil.getTrimmedList(measureDetailModel.getReferencesList()))) {
 			measureDetailModel.setReferencesList(null);
 		}
+		
 		logger.info("Exiting MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()..");
 	}
 
@@ -2653,7 +2649,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return MeasureDetailsUtil.getScoringAbbr(measScoring);
 	}
 	
-	private String setCompositeScoringAbbreviation(final String compositeMeasureScoring) {
+	private String getCompositeScoringAbbreviation(final String compositeMeasureScoring) {
 		return MeasureDetailsUtil.getCompositeScoringAbbreviation(compositeMeasureScoring);
 	}
 

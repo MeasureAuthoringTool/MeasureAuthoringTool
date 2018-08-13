@@ -56,7 +56,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 	}
 
 	public String getBonnieBaseURL() {
-		return "https://bonnie-prior.ahrqstg.org";
+		return System.getProperty("BONNIE_URI");
 	}
 
 	public BonnieAPIv1() {

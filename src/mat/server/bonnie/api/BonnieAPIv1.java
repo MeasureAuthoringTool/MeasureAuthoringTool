@@ -60,26 +60,22 @@ public class BonnieAPIv1 implements BonnieAPI {
 	}
 
 	public BonnieAPIv1() {
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public List<BonnieMeasureResult> getMeasuresForUser(String bearerToken) throws BonnieUnauthorizedException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public BonnieMeasureResult getMeasureById(String bearerToken, String hqmfSetId)
 			throws BonnieUnauthorizedException, BonnieNotFoundException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public BonnieCalculatedResult getCalculatedResultsForMeasure(String bearerToken, String hqmfSetId)
 			throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -88,7 +84,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 			String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration)
 			throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException,
 			BonnieServerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -97,7 +92,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 			String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket,
 			String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException,
 			BonnieAlreadyExistsException, BonnieServerException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -168,7 +162,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		String baseURL = getBonnieBaseURL();
 		String requestUrl = baseURL + uri;
 		String bearerToken = "Bearer " + token;
-		// TODO remove when this is in JVM variables
+		// remove when this is in JVM variables
 		setProxyVMVariables();
 		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -181,7 +175,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) throws BonnieUnauthorizedException {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
-			// TODO remove when this is in JVM variables
+			// remove when this is in JVM variables
 			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
 			logger.info("Connecting to refresh bonnie oauth");
@@ -213,7 +207,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public BonnieOAuthResult getBonnieOAuthResult(String code) {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
-			// TODO remove when this is in JVM variables
+			// remove when this is in JVM variables
 			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
 			logger.info("Connecting to bonnie oauth");

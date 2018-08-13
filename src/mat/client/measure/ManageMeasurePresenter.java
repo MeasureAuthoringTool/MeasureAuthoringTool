@@ -359,7 +359,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public void fireMeasureSelected(ManageMeasureSearchModel.Result result){
 		fireMeasureSelectedEvent(result.getId(), result.getVersion(), result.getName(),
 				result.getShortName(), result.getScoringType(), result.isEditable(),
-				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()));
+				result.isMeasureLocked(), result.getLockedUserId(result.getLockedUserInfo()), result.isDraft());
 		setSearchingBusy(false);
 		isClone = false;
 	}
@@ -975,9 +975,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 
 	private void fireMeasureSelectedEvent(String id, String version, String name, String shortName, String scoringType,
-			boolean isEditable, boolean isLocked, String lockedUserId) {
+			boolean isEditable, boolean isLocked, String lockedUserId, boolean isDraft) {
 		MeasureSelectedEvent evt = new MeasureSelectedEvent(id, version, name, shortName, scoringType, isEditable,
-				isLocked, lockedUserId);
+				isLocked, lockedUserId, isDraft);
 		searchDisplay.resetMessageDisplay();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
@@ -1515,6 +1515,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							final String scoringType = result.getScoringType();
 							final boolean isEditable = result.isEditable();
 							final boolean isMeasureLocked = result.isMeasureLocked();
+							final boolean isDraft = result.isDraft();
 							final String userId = result.getLockedUserId(result.getLockedUserInfo());
 
 							MatContext.get().getMeasureLockService().isMeasureLocked(mid);
@@ -1525,13 +1526,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 									if (!synchDel.isCheckingLock()) {
 										if (!synchDel.measureIsLocked()) {
 											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
-													isEditable, isMeasureLocked, userId);
+													isEditable, isMeasureLocked, userId, isDraft);
 											if (isEditable) {
 												MatContext.get().getMeasureLockService().setMeasureLock();
 											}
 										} else {
 											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
-													isMeasureLocked, userId);
+													isMeasureLocked, userId, isDraft);
 											if (isEditable) {
 												MatContext.get().getMeasureLockService().setMeasureLock();
 											}
@@ -1564,6 +1565,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							final String scoringType = result.getScoringType();
 							final boolean isEditable = result.isEditable();
 							final boolean isMeasureLocked = result.isMeasureLocked();
+							final boolean isDraft = result.isDraft();
 							final String userId = result.getLockedUserId(result.getLockedUserInfo());
 							MatContext.get().getMeasureLockService().isMeasureLocked(mid);
 							Command waitForLockCheck = new Command() {
@@ -1573,13 +1575,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 									if (!synchDel.isCheckingLock()) {
 										if (!synchDel.measureIsLocked()) {
 											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType,
-													isEditable, isMeasureLocked, userId);
+													isEditable, isMeasureLocked, userId, isDraft);
 											if (isEditable) {
 												MatContext.get().getMeasureLockService().setMeasureLock();
 											}
 										} else {
 											fireMeasureSelectedEvent(mid, version, name, shortName, scoringType, false,
-													isMeasureLocked, userId);
+													isMeasureLocked, userId, isDraft);
 											if (isEditable) {
 												MatContext.get().getMeasureLockService().setMeasureLock();
 											}
@@ -2005,6 +2007,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			final String shortName = currentDetails.getShortName();
 			final String scoringType = currentDetails.getMeasScoring();
 			final String version = currentDetails.getVersionNumber()+"."+currentDetails.getRevisionNumber();		
+			final boolean isDraft = currentDetails.isDraft();
 			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
 
 				@Override
@@ -2015,7 +2018,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(SaveMeasureResult result) {
-					postSaveMeasureEvents(isInsert, result, detailDisplay, name, shortName, scoringType, version);
+					postSaveMeasureEvents(isInsert, result, detailDisplay, name, shortName, scoringType, version, isDraft);
 					setSearchingBusy(false);
 				}
 			});
@@ -2067,11 +2070,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void postSaveMeasureEvents(boolean isInsert, SaveMeasureResult result, DetailDisplay detailDisplay,
-			String name, String shortName, String scoringType, String version) {
+			String name, String shortName, String scoringType, String version, boolean isDraft) {
 		
 		if (result.isSuccess()) {
 			if (isInsert) {
-				fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true, false, null);
+				fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true, false, null, isDraft);
 				fireMeasureEditEvent();
 			} else {
 				displaySearch();
@@ -2097,7 +2100,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		final String shortName = currentCompositeMeasureDetails.getShortName();
 		final String scoringType = currentCompositeMeasureDetails.getMeasScoring();
 		final String version = currentCompositeMeasureDetails.getVersionNumber() + "." + currentCompositeMeasureDetails.getRevisionNumber();
-		
+		final boolean isDraft = currentCompositeMeasureDetails.isDraft();
 		MatContext.get().getMeasureService().saveCompositeMeasure(currentCompositeMeasureDetails, new AsyncCallback<SaveMeasureResult>() {
 
 			@Override
@@ -2108,8 +2111,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
-				postSaveMeasureEvents(isInsert, result, compositeDetailDisplay, name, shortName, scoringType, version);
+				postSaveMeasureEvents(isInsert, result, compositeDetailDisplay, name, shortName, scoringType, version, isDraft);
 				setComponentBusy(false);
+
 			}
 			
 		});

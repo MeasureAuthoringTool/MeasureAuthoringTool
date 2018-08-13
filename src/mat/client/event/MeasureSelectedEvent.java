@@ -26,29 +26,23 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 		public void onMeasureSelected(MeasureSelectedEvent event);
 	}
 
-	/** The measure id. */
 	private String measureId;
 	
-	/** The measure name. */
 	private String measureName;
 	
-	/** The short name. */
 	private String shortName;
 	
-	/** The scoring type. */
 	private String scoringType;
 	
-	/** The is editable. */
 	private boolean isEditable;
 	
-	/** The is locked. */
 	private boolean isLocked;
 	
-	/** The locked user id. */
 	private String lockedUserId;
 	
-	/** The measure version. */
 	private String measureVersion;
+	
+	private boolean isDraft;
 	
 
 	/**
@@ -70,8 +64,10 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 	 *            the is locked
 	 * @param lockedUserId
 	 *            the locked user id
+	 * @param isDraft
+	 * 			tells us if te measure is in a draft state
 	 */
-	public MeasureSelectedEvent(String measureId, String measureVersion, String measureName, String shortName, String scoringType, boolean isEditable,boolean isLocked,String lockedUserId) {
+	public MeasureSelectedEvent(String measureId, String measureVersion, String measureName, String shortName, String scoringType, boolean isEditable,boolean isLocked,String lockedUserId, boolean isDraft) {
 		this.measureId = measureId;
 		this.measureVersion = measureVersion;
 		this.measureName = measureName;
@@ -80,6 +76,7 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 		this.isEditable = isEditable;
 		this.isLocked = isLocked;
 		this.lockedUserId = lockedUserId;
+		this.setDraft(isDraft);
 	}
 	
 	
@@ -253,6 +250,18 @@ public class MeasureSelectedEvent extends GwtEvent<MeasureSelectedEvent.Handler>
 	 */
 	public void setLocked(boolean isLocked) {
 		this.isLocked = isLocked;
+	}
+
+
+
+	public boolean isDraft() {
+		return isDraft;
+	}
+
+
+
+	public void setDraft(boolean isDraft) {
+		this.isDraft = isDraft;
 	}
 
 }

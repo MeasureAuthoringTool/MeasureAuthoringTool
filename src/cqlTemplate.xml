@@ -127,6 +127,7 @@
 		<function>Exp()</function>
 		<function>First()</function>
 		<function>Floor()</function>
+		<function>GeometricMean()</function>
 		<function>IndexOf()</function>
 		<function>Last()</function>
 		<function>Length()</function>
@@ -139,6 +140,7 @@
 		<function>Now()</function>
 		<function>PopulationStdDev()</function>
 		<function>PopulationVariance()</function>
+		<function>Product()</function>
 		<function>Round()</function>
 		<function>StdDev()</function>
 		<function>Sum()</function>

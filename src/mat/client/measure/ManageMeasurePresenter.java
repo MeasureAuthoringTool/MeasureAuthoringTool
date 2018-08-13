@@ -550,13 +550,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 					componentMeasureDisplay.clearFields(isEdit);
 				}
 
-				String panelHeading = "My Measures > Create New Composite Measure > Component Measures";
+				String panelHeading = "";
 				if(StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
-					updateCompositeDetailsFromCompositeDetailView();
+					panelHeading = "My Measures > Create New Composite Measure > Component Measures";					
 				} else {
 					panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
 				}
-
+				
+				updateCompositeDetailsFromCompositeDetailView();
+				
 				if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
 					return;
 				}

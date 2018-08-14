@@ -757,7 +757,7 @@
  					<code code="CMPMSRMTH" codeSystem="2.16.840.1.113883.5.4"/>
 					<value xsi:type="CD" codeSystem="2.16.840.1.113883.5.1063">
 						<xsl:attribute name="code">
-							<xsl:value-of select="compositeScoringMethod/@id"></xsl:value-of>
+							<xsl:value-of select="compositeScoring/@id"></xsl:value-of>
 						</xsl:attribute>
 					</value> 					
 				</measureAttribute>

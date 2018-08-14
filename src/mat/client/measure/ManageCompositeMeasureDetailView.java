@@ -20,6 +20,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
+import mat.shared.CompositeMethodScoringConstant;
 
 public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetailView {
 	private String cautionMsgStr = "Caution: The Composite Scoring Method field controls the options available in the Measure Scoring field. The Measure Scoring field controls the options available in the Patient-based Measure field. Changing the selection in the Composite Scoring Method will reset the Measure Scoring and Patient-based Measure fields. Changing the Measure Scoring field will reset the Patient-based Measure field.";
@@ -174,12 +175,14 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	}
 	
 	public void setCompositeScoringSelectedValue(String compositeScoringMethod) {
-		if ("All or Nothing".equals(compositeScoringMethod)) {
+		if (CompositeMethodScoringConstant.ALL_OR_NOTHING.equals(compositeScoringMethod)) {
 			getCompositeScoringMethodInput().setSelectedIndex(1);	
-		} else if ("Opportunity".equals(compositeScoringMethod)) {
+		} else if (CompositeMethodScoringConstant.OPPORTUNITY.equals(compositeScoringMethod)) {
 			getCompositeScoringMethodInput().setSelectedIndex(2);
-		} else if ("Patient-level Linear".equals(compositeScoringMethod)) {
+		} else if (CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR.equals(compositeScoringMethod)) {
 			getCompositeScoringMethodInput().setSelectedIndex(3);
+		} else {
+			getCompositeScoringMethodInput().setSelectedIndex(0);
 		}
 		
 	}

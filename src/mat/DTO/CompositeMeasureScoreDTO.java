@@ -23,6 +23,12 @@ public class CompositeMeasureScoreDTO implements IsSerializable, HasListBox {
 		
 	}
 	
+	public CompositeMeasureScoreDTO(String id, String score) {
+		super();
+		this.id = id;
+		this.score = score;
+	}
+
 	/**
 	 * Gets the id.
 	 * 

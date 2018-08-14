@@ -174,7 +174,7 @@ public class CompositeMeasureValidator {
 	
 	private boolean hasLibraryThatAlreadyExists(List<CQLIncludeLibrary> libraries, Map<String, String> nameToVersionMap, Map<String, String> nameVersionToIdMap) {
 		for(CQLIncludeLibrary includedLibrary : libraries) {
-			boolean isNotCompositeLibrary = ((includedLibrary.getIsComposite() == null) || (includedLibrary.getIsComposite() != null && !includedLibrary.getIsComposite().equals("true")));
+			boolean isNotCompositeLibrary = includedLibrary.getIsComponent() == null || !includedLibrary.getIsComponent().equals("true");
 			
 			// only run this test if it is not a composite measure. Composite measures are tested by checking the applied composite measures previous to this call. 
 			if(isNotCompositeLibrary) {

@@ -34,8 +34,8 @@
 						<bind-xml name="qdmVersion" node="attribute" />
 					</field>
 					
-					<field name="isComposite" type="java.lang.String">
-						<bind-xml name="isComposite" node="attribute" />
+					<field name="isComponent" type="java.lang.String">
+						<bind-xml name="isComponent" node="attribute" />
 					</field>
 					
 				</class>

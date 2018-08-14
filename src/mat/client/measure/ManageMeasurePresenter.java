@@ -72,6 +72,7 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.CompositeMeasureValidationResult;
+import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
@@ -462,36 +463,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onSuccess(List<? extends HasListBox> result) {
 				compositeDetailDisplay.setScoringChoices(result);
 				
-				//TODO add this to server side when we implement functionality and add a database table
-				String allOrNothingTxt = "All or Nothing";
-				String opportunityTxt = "Opportunity";
-				String patientLevelLinearTxt = "Patient-level Linear";
-				List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<CompositeMeasureScoreDTO>();
-				CompositeMeasureScoreDTO allOrNothing = new CompositeMeasureScoreDTO();
-				allOrNothing.setId("1");
-				allOrNothing.setScore(allOrNothingTxt);
-				compositeChoices.add(allOrNothing);
-				
-				CompositeMeasureScoreDTO opportunity = new CompositeMeasureScoreDTO();
-				opportunity.setId("2");
-				opportunity.setScore(opportunityTxt);
-				compositeChoices.add(opportunity);
-				
-				CompositeMeasureScoreDTO patientLevelLinear = new CompositeMeasureScoreDTO();
-				patientLevelLinear.setId("3");
-				patientLevelLinear.setScore(patientLevelLinearTxt);
-				compositeChoices.add(patientLevelLinear);
+				List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<>();
+				compositeChoices.add(new CompositeMeasureScoreDTO("1", CompositeMethodScoringConstant.ALL_OR_NOTHING));
+				compositeChoices.add(new CompositeMeasureScoreDTO("2", CompositeMethodScoringConstant.OPPORTUNITY));
+				compositeChoices.add(new CompositeMeasureScoreDTO("3", CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR));
 				
 				List<? extends HasListBox> defaultList = result;	
-				List<? extends HasListBox> proportionRatioList = defaultList.stream().filter((x) -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
-				List<? extends HasListBox> continuousVariableList = defaultList.stream().filter((x) -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
+				List<? extends HasListBox> proportionRatioList = defaultList.stream().filter(x -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
+				List<? extends HasListBox> continuousVariableList = defaultList.stream().filter(x -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
 				Map<String, List<? extends HasListBox>> selectionMap = new HashMap<String, List<? extends HasListBox>>(){
 					private static final long serialVersionUID = -8329823017052579496L;
 					{
 						put(MatContext.PLEASE_SELECT, defaultList);
-						put(allOrNothingTxt, proportionRatioList);
-						put(opportunityTxt, proportionRatioList);
-						put(patientLevelLinearTxt, continuousVariableList);
+						put(CompositeMethodScoringConstant.ALL_OR_NOTHING, proportionRatioList);
+						put(CompositeMethodScoringConstant.OPPORTUNITY, proportionRatioList);
+						put(CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR, continuousVariableList);
 					}
 				};
 				
@@ -673,6 +659,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");	
 		setCompositeDetailsToView();
+		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue("");
 	}
 	
 	private void displayComponentDetails(String panelHeading) {

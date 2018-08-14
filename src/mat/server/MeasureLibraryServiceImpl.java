@@ -5911,12 +5911,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 				pkg.setIsCompositeMeasure(Boolean.TRUE);
-				pkg.setCompositeScoring(model.getCompositeScoringMethod());
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
 				measurePackageService.save(measureSet);
 			}
+			pkg.setCompositeScoring(model.getCompositeScoringMethod());
 			pkg.setMeasureSet(measureSet);
 			setValueFromModel(model, pkg);
 			SaveMeasureResult result = new SaveMeasureResult();
@@ -5981,7 +5981,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			cqlIncludedLibraryCreatedFromComponentMeasure.setCqlLibraryName(cqlLibrary.getName());
 			cqlIncludedLibraryCreatedFromComponentMeasure.setQdmVersion(measure.getQdmVersion());
 			cqlIncludedLibraryCreatedFromComponentMeasure.setSetId(measure.getMeasureSetId());
-			cqlIncludedLibraryCreatedFromComponentMeasure.setIsComposite("true");
+			cqlIncludedLibraryCreatedFromComponentMeasure.setIsComponent("true");
 			cqlIncludeLibraryList.add(cqlIncludedLibraryCreatedFromComponentMeasure);
 		}
 		

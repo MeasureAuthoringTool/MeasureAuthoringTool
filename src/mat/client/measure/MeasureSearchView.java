@@ -47,6 +47,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.Mat;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.resource.CellTableResource;
@@ -353,13 +354,14 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
-				return getCloneColumnToolTip(object);
+				return getCloneColumnHTML(object);
 			}
 		};
 		cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
 				if (object.isClonable())
+					Mat.showLoadingMessage();
 					observer.onCloneClicked(object);
 			}
 		});
@@ -473,18 +475,34 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 * @param object the object
 	 * @return the history column tool tip
 	 */
-	private SafeHtml getCloneColumnToolTip(Result object){
+	private SafeHtml getCloneColumnHTML(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title = "Cloneable";
-		String cssClass = "btn btn-link";
-		String iconCss = "fa fa-clone fa-lg";
-		if (object.isClonable()) {
+		String disabled = "";
+		
+		if(!object.isClonable()) {
+			title = "Not Cloneable";
+			disabled = " disabled style=\"color: gray;\"";
+		}
+		if(object.getIsComposite()) {
+			title = "Cannot clone compsite measures";
+			disabled = "\" disabled style=\"color: gray;\"\"";
+		}
+		
+		
+		
+		sb.appendHtmlConstant("<button type=\"button\" title='");
+		sb.appendHtmlConstant(title);
+		sb.appendHtmlConstant("' tabindex=\"0\" class=\"btn btn-link\"");
+		sb.appendHtmlConstant(disabled);
+		sb.appendHtmlConstant("><i class=\"fa fa-clone fa-lg\"></i><span style=\"font-size:0;\">Cloneable</span></button>");
+		/*if (object.isClonable()) {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span> </button>");
 		} else {
 			sb.appendHtmlConstant("<button type=\"button\" title='"
 					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span></button>");
-		}
+		}*/
 		
 		return sb.toSafeHtml();
 	}

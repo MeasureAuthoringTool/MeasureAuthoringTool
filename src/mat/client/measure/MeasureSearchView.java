@@ -496,13 +496,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		sb.appendHtmlConstant("' tabindex=\"0\" class=\"btn btn-link\"");
 		sb.appendHtmlConstant(disabled);
 		sb.appendHtmlConstant("><i class=\"fa fa-clone fa-lg\"></i><span style=\"font-size:0;\">Cloneable</span></button>");
-		/*if (object.isClonable()) {
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span> </button>");
-		} else {
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span></button>");
-		}*/
 		
 		return sb.toSafeHtml();
 	}

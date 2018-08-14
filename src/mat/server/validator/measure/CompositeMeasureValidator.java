@@ -12,6 +12,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -174,10 +175,8 @@ public class CompositeMeasureValidator {
 	
 	private boolean hasLibraryThatAlreadyExists(List<CQLIncludeLibrary> libraries, Map<String, String> nameToVersionMap, Map<String, String> nameVersionToIdMap) {
 		for(CQLIncludeLibrary includedLibrary : libraries) {
-			boolean isNotCompositeLibrary = includedLibrary.getIsComponent() == null || !includedLibrary.getIsComponent().equals("true");
-			
 			// only run this test if it is not a composite measure. Composite measures are tested by checking the applied composite measures previous to this call. 
-			if(isNotCompositeLibrary) {
+			if(!BooleanUtils.toBoolean(includedLibrary.getIsComponent())) {
 				CQLLibrary libraryModel = cqlLibraryDAO.find(includedLibrary.getCqlLibraryId());
 				String libraryName = libraryModel.getName();
 				String libraryVersion = includedLibrary.getVersion();

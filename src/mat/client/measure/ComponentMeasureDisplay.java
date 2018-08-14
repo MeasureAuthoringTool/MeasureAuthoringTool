@@ -56,6 +56,10 @@ import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.MeasureSearchModel;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
+	
+	protected HTML instructions = new HTML("Perform a search for a list of available component measures. "
+			+ "Select component measures with the checkbox in-line with the measure name and assign each component measure an alias.");
+	
 	private SimplePanel mainPanel = new SimplePanel();
 	FlowPanel flowPanel = new FlowPanel();
 	Form componentMeasureForm = new Form();
@@ -149,7 +153,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		flowPanel.add(errorMessages);
-		
+		flowPanel.add(instructions);
 		flowPanel.add(componentMeasureForm);
 		flowPanel.add(contentPanel);
 		mainPanel.add(flowPanel);
@@ -371,7 +375,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				String patientBasedString = (object.isPatientBased() != null) ? Boolean.toString(object.isPatientBased()) : "";
+				String patientBasedString = (object.isPatientBased() != null && object.isPatientBased()) ? "Yes" : "No";
 				return CellTableUtility.getColumnToolTip(patientBasedString);
 			}
 		};

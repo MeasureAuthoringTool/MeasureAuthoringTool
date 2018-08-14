@@ -659,7 +659,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displayCommonDetailForAdd(compositeDetailDisplay);	
 		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");	
 		setCompositeDetailsToView();
-		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue("");
 	}
 	
 	private void displayComponentDetails(String panelHeading) {
@@ -738,7 +737,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if(currentCompositeMeasureDetails.getMeasScoring().equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
 			compositeDetailDisplay.getPatientBasedInput().removeItem(1);
 		}
-		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue(compositeScoringMethod);
 		panel.setContent(compositeDetailDisplay.asWidget());
 		
 	}
@@ -1789,6 +1787,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		compositeDetailDisplay.getName().setValue(currentCompositeMeasureDetails.getName());
 		compositeDetailDisplay.getShortName().setValue(currentCompositeMeasureDetails.getShortName());
 		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
+		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
 	}
 	
 	private void setDetailsToView() {

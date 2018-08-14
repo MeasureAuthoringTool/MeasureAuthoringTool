@@ -481,12 +481,11 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		String disabled = "";
 		
 		if(!object.isClonable()) {
-			title = "Not Cloneable";
+			title = "Measure not cloneable";
 			disabled = " disabled style=\"color: gray;\"";
 		}
 		if(object.getIsComposite()) {
-			title = "Cannot clone compsite measures";
-			disabled = "\" disabled style=\"color: gray;\"\"";
+			title = "Composite measure not cloneable";
 		}
 		
 		

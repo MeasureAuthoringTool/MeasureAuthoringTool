@@ -1122,12 +1122,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setIsComposite(measure.getIsCompositeMeasure());
 		
 		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
-		if (measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-				|| measureReleaseVersion.startsWith("v3")) {
-			detail.setClonable(false);
-		} else {
-			detail.setClonable(isOwner || isSuperUser);
-		}
+		
+		detail.setClonable((isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
+				|| measureReleaseVersion.startsWith("v3")));
 
 		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
 		

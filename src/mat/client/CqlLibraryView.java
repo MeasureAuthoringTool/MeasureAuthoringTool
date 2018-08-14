@@ -11,7 +11,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.advancedSearch.CQLLibraryAdvancedSearchBuilder;
 import mat.client.buttons.CustomButton;
 import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.cql.CQLLibrarySearchView;
@@ -25,8 +24,6 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
-
-	private CQLLibraryAdvancedSearchBuilder cqlLibraryAdvancedSearchBuilder = new CQLLibraryAdvancedSearchBuilder();
 
 	private FlowPanel mainPanel = new FlowPanel();
 	
@@ -145,7 +142,8 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public Widget asWidget() {
 		widgetVP.clear();
 		widgetVP.add(searchFilterWidget);
-		widgetVP.add(cqlLibraryAdvancedSearchBuilder.asWidget());
+		//as a part of MAT-9305 - Commenting out Below as we might need it next release 
+		//widgetVP.add(cqlLibraryAdvancedSearchBuilder.asWidget());
 		
 		return mainPanel;
 	}

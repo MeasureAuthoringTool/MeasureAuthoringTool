@@ -942,6 +942,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onSuccess(ManageMeasureDetailModel result) {
 				currentDetails = result;
 				displayDetailForClone();
+				Mat.hideLoadingMessage();
 			}
 		});
 	}

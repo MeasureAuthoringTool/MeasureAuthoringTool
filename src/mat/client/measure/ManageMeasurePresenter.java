@@ -494,35 +494,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 		
 
-		compositeDetailDisplay.getMeasScoringChoice().addChangeHandler(new ChangeHandler() {
-
-			@Override
-			public void onChange(ChangeEvent event) {
-				if(compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
-						compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
-						compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
-						resetPatientBasedInput(compositeDetailDisplay); 
-						
-						// default the selected index to be 1, which is yes.  
-						
-						compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(1);
-						compositeDetailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
-						compositeDetailDisplay.getHelpBlock().setColor("transparent");
-						compositeDetailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");	
-				}
-				
-				if(compositeDetailDisplay.getMeasScoringChoice().getItemText(compositeDetailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
-
-					// yes is the second element in the list, so the 1 index. 
-					compositeDetailDisplay.getPatientBasedInput().removeItem(1);
-					compositeDetailDisplay.getPatientBasedInput().setSelectedIndex(0);
-					compositeDetailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
-					compositeDetailDisplay.getHelpBlock().setColor("transparent");
-					compositeDetailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
-					
-				}
-			}			
-		});
+		compositeDetailDisplay.getMeasScoringChoice().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay));
 		
 		compositeDetailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			
@@ -609,35 +581,28 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		detailDisplay.getMeasScoringChoice().addChangeHandler(new ChangeHandler() {
+		detailDisplay.getMeasScoringChoice().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
+	}
 
-			@Override
-			public void onChange(ChangeEvent event) {
-				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.PROPORTION) ||
-						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.COHORT) || 
-						detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.RATIO)) {
-						resetPatientBasedInput(detailDisplay); 
-						
-						// default the selected index to be 1, which is yes.  
-						
-						detailDisplay.getPatientBasedInput().setSelectedIndex(1);
-						detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
-						detailDisplay.getHelpBlock().setColor("transparent");
-						detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");	
-				}
-				
-				if(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+	private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
 
-					// yes is the second element in the list, so the 1 index. 
-					detailDisplay.getPatientBasedInput().removeItem(1);
-					detailDisplay.getPatientBasedInput().setSelectedIndex(0);
-					detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
-					detailDisplay.getHelpBlock().setColor("transparent");
-					detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
-					
-				}
-			}			
-		});
+		if (detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+			// yes is the second element in the list, so the 1 index. 
+			detailDisplay.getPatientBasedInput().removeItem(1);
+			detailDisplay.getPatientBasedInput().setSelectedIndex(0);
+			detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+			detailDisplay.getHelpBlock().setColor("transparent");
+			detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
+			
+		} else {
+			resetPatientBasedInput(detailDisplay); 
+			// default the selected index to be 1, which is yes.  				
+			detailDisplay.getPatientBasedInput().setSelectedIndex(1);
+			detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+			detailDisplay.getHelpBlock().setColor("transparent");
+			detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
+		}
+	
 	}
 
 	private void displayCommonDetailForAdd(DetailDisplay detailDisplay) {

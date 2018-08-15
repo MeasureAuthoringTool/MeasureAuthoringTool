@@ -586,7 +586,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
 
-		if (detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()).equalsIgnoreCase(MatConstants.CONTINUOUS_VARIABLE)) {
+		if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()))) {
 			// yes is the second element in the list, so the 1 index. 
 			detailDisplay.getPatientBasedInput().removeItem(1);
 			detailDisplay.getPatientBasedInput().setSelectedIndex(0);

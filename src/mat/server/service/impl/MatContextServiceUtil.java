@@ -105,8 +105,9 @@ public class MatContextServiceUtil {
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		MeasureShareDTO dto = measureDAO.extractDTOFromMeasure(measure);
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
+		boolean isComposite = measure.getIsCompositeMeasure();
 		
-		boolean isClonable = (isOwner || isSuperUser);
+		boolean isClonable = (isOwner || isSuperUser) && !isComposite;
 		return isClonable;
 	}
 	

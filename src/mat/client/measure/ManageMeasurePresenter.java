@@ -1315,9 +1315,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 						searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
 							@Override
 							public void onCloneClicked(ManageMeasureSearchModel.Result result) {
-								resetMeasureFlags();
-								isClone = true;
-								editClone(result.getId());
+								if(result.isClonable()) {
+									resetMeasureFlags();
+									isClone = true;
+									editClone(result.getId());
+								}
 							}
 
 							@Override

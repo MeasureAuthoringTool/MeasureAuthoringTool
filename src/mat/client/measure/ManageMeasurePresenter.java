@@ -461,72 +461,84 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(List<? extends HasListBox> result) {
+				
 				compositeDetailDisplay.setScoringChoices(result);
 				
-				List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<>();
-				compositeChoices.add(new CompositeMeasureScoreDTO("1", CompositeMethodScoringConstant.ALL_OR_NOTHING));
-				compositeChoices.add(new CompositeMeasureScoreDTO("2", CompositeMethodScoringConstant.OPPORTUNITY));
-				compositeChoices.add(new CompositeMeasureScoreDTO("3", CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR));
-				
-				List<? extends HasListBox> defaultList = result;	
-				List<? extends HasListBox> proportionRatioList = defaultList.stream().filter(x -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
-				List<? extends HasListBox> continuousVariableList = defaultList.stream().filter(x -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
-				Map<String, List<? extends HasListBox>> selectionMap = new HashMap<String, List<? extends HasListBox>>(){
-					private static final long serialVersionUID = -8329823017052579496L;
-					{
-						put(MatContext.PLEASE_SELECT, defaultList);
-						put(CompositeMethodScoringConstant.ALL_OR_NOTHING, proportionRatioList);
-						put(CompositeMethodScoringConstant.OPPORTUNITY, proportionRatioList);
-						put(CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR, continuousVariableList);
-					}
-				};
-				
-				((ManageCompositeMeasureDetailView)compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
-				((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringMethodInput().addChangeHandler(new ChangeHandler() {
-					
-					@Override
-					public void onChange(ChangeEvent event) {
-						String compositeScoringValue = ((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue();
-						compositeDetailDisplay.setScoringChoices(selectionMap.get(compositeScoringValue));
-					}
-				});
+				Map<String, List<? extends HasListBox>> selectionMap = createSelectionMap(result);
+				MatContext.get().setSelectionMap(selectionMap);
+
+				List<CompositeMeasureScoreDTO> compositeChoices = buildCompositeScoringChoiceList();
+				((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
+
 			}
 		});
-		
 
+		((ManageCompositeMeasureDetailView) compositeDetailDisplay).getCompositeScoringMethodInput().addChangeHandler(event -> createSelectionMapAndSetScorings());
+		
 		compositeDetailDisplay.getMeasScoringChoice().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay));
 		
-		compositeDetailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				boolean isEdit = false;
-				if(componentMeasureDisplay != null) {
-					if(currentCompositeMeasureDetails.getId()!=null) {
-						isEdit = true;
-					}
-					componentMeasureDisplay.clearFields(isEdit);
-				}
-
-				String panelHeading = "";
-				if(StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
-					panelHeading = "My Measures > Create New Composite Measure > Component Measures";					
-				} else {
-					panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
-				}
-				
-				updateCompositeDetailsFromCompositeDetailView();
-				
-				if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
-					return;
-				}
-				
-				displayComponentDetails(panelHeading);
-			}
-		});
+		compositeDetailDisplay.getSaveButton().addClickHandler(event -> updateCompositeDetailsOnContinueButton());
 
 	}
 
+	private void createSelectionMapAndSetScorings() {
+		String compositeScoringValue = ((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue();
+		compositeDetailDisplay.setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringValue));
+	}
+	
+	private Map<String, List<? extends HasListBox>> createSelectionMap(List<? extends HasListBox> result) {
+
+		List<? extends HasListBox> defaultList = result;	
+		List<? extends HasListBox> proportionRatioList = defaultList.stream().filter(x -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
+		List<? extends HasListBox> continuousVariableList = defaultList.stream().filter(x -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
+		
+		return new HashMap<String, List<? extends HasListBox>>(){
+			private static final long serialVersionUID = -8329823017052579496L;
+			{
+				put(MatContext.PLEASE_SELECT, defaultList);
+				put(CompositeMethodScoringConstant.ALL_OR_NOTHING, proportionRatioList);
+				put(CompositeMethodScoringConstant.OPPORTUNITY, proportionRatioList);
+				put(CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR, continuousVariableList);
+			}
+		};
+		
+	}
+	
+	private List<CompositeMeasureScoreDTO> buildCompositeScoringChoiceList(){
+		List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<>();
+		compositeChoices.add(new CompositeMeasureScoreDTO("1", CompositeMethodScoringConstant.ALL_OR_NOTHING));
+		compositeChoices.add(new CompositeMeasureScoreDTO("2", CompositeMethodScoringConstant.OPPORTUNITY));
+		compositeChoices.add(new CompositeMeasureScoreDTO("3", CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR));
+		return compositeChoices;
+	}
+	
+	private void updateCompositeDetailsOnContinueButton() { 
+
+		boolean isEdit = false;
+		if(componentMeasureDisplay != null) {
+			if(currentCompositeMeasureDetails.getId()!=null) {
+				isEdit = true;
+			}
+			componentMeasureDisplay.clearFields(isEdit);
+		}
+
+		String panelHeading = "";
+		if(StringUtility.isEmptyOrNull(currentCompositeMeasureDetails.getId())) {
+			panelHeading = "My Measures > Create New Composite Measure > Component Measures";					
+		} else {
+			panelHeading = "My Measures > Edit Composite Measure > Update Component Measures.";
+		}
+		
+		updateCompositeDetailsFromCompositeDetailView();
+		
+		if(!isValidCompositeMeasure(currentCompositeMeasureDetails)){
+			return;
+		}
+		
+		displayComponentDetails(panelHeading);
+	
+	}
+	
 	private void detailDisplayHandlers(final DetailDisplay detailDisplay) {
 		
 		detailDisplay.getConfirmationDialogBox().getYesButton().addClickHandler(new ClickHandler() {
@@ -1752,8 +1764,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void setCompositeDetailsToView() {
 		compositeDetailDisplay.getName().setValue(currentCompositeMeasureDetails.getName());
 		compositeDetailDisplay.getShortName().setValue(currentCompositeMeasureDetails.getShortName());
-		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
 		((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringSelectedValue(currentCompositeMeasureDetails.getCompositeScoringMethod());
+		compositeDetailDisplay.getMeasScoringChoice().setValueMetadata(currentCompositeMeasureDetails.getMeasScoring());
 	}
 	
 	private void setDetailsToView() {

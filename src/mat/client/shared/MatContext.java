@@ -34,6 +34,7 @@ import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.QDSCodeListSearchView;
+import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
@@ -209,6 +210,8 @@ public class MatContext implements IsSerializable {
 	
 	private HashMap<String, String> programToLatestProfile = new HashMap<>();
 
+	private HashMap<String, List<? extends HasListBox>> selectionMap = new HashMap<>();
+	
 	public void clearDVIMessages(){
 		if(qdsView !=null){
 			qdsView.getSuccessMessageDisplay().clear();
@@ -1373,6 +1376,13 @@ public class MatContext implements IsSerializable {
 	
 	}
 
+	public Map<String, List<? extends HasListBox>> getSelectionMap() {
+		return selectionMap;
+	}
+
+	public void setSelectionMap(Map<String, List<? extends HasListBox>> selectionMap) {
+		this.selectionMap = (HashMap<String, List<? extends HasListBox>>) selectionMap;
+	}
 
 	public CQLModel getCQLModel() {
 		return cqlModel;

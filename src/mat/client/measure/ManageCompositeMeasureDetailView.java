@@ -21,6 +21,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.shared.CompositeMethodScoringConstant;
+import mat.shared.StringUtility;
 
 public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetailView {
 	private String cautionMsgStr = "Caution: The Composite Scoring Method field controls the options available in the Measure Scoring field. The Measure Scoring field controls the options available in the Patient-based Measure field. Changing the selection in the Composite Scoring Method will reset the Measure Scoring and Patient-based Measure fields. Changing the Measure Scoring field will reset the Patient-based Measure field.";
@@ -185,6 +186,8 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 			getCompositeScoringMethodInput().setSelectedIndex(0);
 		}
 		
+		compositeScoringMethod = StringUtility.isEmptyOrNull(compositeScoringMethod) ? MatContext.PLEASE_SELECT : compositeScoringMethod;
+		setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringMethod));
 	}
 	
 	@Override

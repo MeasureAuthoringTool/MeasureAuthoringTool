@@ -5994,35 +5994,39 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());		
 			String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
-			Node nodeIncludes;
 
-			nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
-			if (nodeIncludes != null) {
-				for(CQLIncludeLibrary library : cqlIncludeLibraryList) {
-					removeIncludedComponentMeasuresInMeasureXML(measureId, library, processor);
-					String cqlString = getCqlService().createIncludeLibraryXML(library);
-					processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDES);
-					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-				}
+			removeAllIncludedComponentMeasuresInMeasureXML(processor);
+			for(CQLIncludeLibrary library : cqlIncludeLibraryList) {
+				String cqlString = getCqlService().createIncludeLibraryXML(library);
+				processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDES);
+				processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 			}
 			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			measurePackageService.saveMeasureXml(xmlModel);
-		} catch (XPathExpressionException | SAXException | IOException e) {
+		} catch (SAXException | IOException e) {
 			logger.error("Exception in createIncludedMeasureAsLibrary: " + e);
 		}
 	}
 	
-	private void removeIncludedComponentMeasuresInMeasureXML(String measureId, CQLIncludeLibrary library, XmlProcessor processor) {
-		String XPATH_EXPRESSION_EXISTING_INCLUDES = "//includeLibrary[@cqlLibRefId='" + library.getCqlLibraryId()+ "']";
-		Node nodeExisting;
+	private void removeAllIncludedComponentMeasuresInMeasureXML(XmlProcessor processor) {
+		String XPATH_EXPRESSION_EXISTING_COMPONENTS = "//cqlLookUp/includeLibrarys/*";
 		try {
-			nodeExisting = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_EXISTING_INCLUDES);
-			if (nodeExisting != null) {
-				processor.removeFromParent(nodeExisting);
+			NodeList componentNodesList = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_EXISTING_COMPONENTS);
+			if(componentNodesList != null && componentNodesList.getLength() > 0) {
+				int length = componentNodesList.getLength();
+				for(int i=0; i<length; i++) {
+					Node componentNode = componentNodesList.item(i);
+					if(isComponentNode(componentNode))
+						processor.removeFromParent(componentNode);
+				}
 			}
 		} catch (XPathExpressionException e) {
 			logger.error("Exception in removeIncludedComponentMeasuresInMeasureXML: " + e);
 		}
-
+	}
+	
+	private boolean isComponentNode(Node componentNode) {
+		return (componentNode.getAttributes().getNamedItem("isComponent") != null && 
+				("true").equals(componentNode.getAttributes().getNamedItem("isComponent").getNodeValue()));
 	}
 }

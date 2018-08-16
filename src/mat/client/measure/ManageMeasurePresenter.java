@@ -608,8 +608,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 		} else {
 			resetPatientBasedInput(detailDisplay); 
-			// default the selected index to be 1, which is yes.  				
-			detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 			detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
 		}
 
@@ -722,6 +720,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentDisplay.getPatientBasedInput().clear();
 		currentDisplay.getPatientBasedInput().addItem("No", "No");
 		currentDisplay.getPatientBasedInput().addItem("Yes", "Yes");
+		// default the selected index to be 1, which is yes.  				
+		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
 	private void displayHistory(String measureId, String measureName) {

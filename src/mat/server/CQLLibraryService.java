@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -41,6 +42,7 @@ import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.CQLLibraryExportDAO;
 import mat.dao.clause.CQLLibrarySetDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.ShareLevelDAO;
@@ -52,6 +54,7 @@ import mat.model.RecentCQLActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
+import mat.model.clause.CQLLibraryExport;
 import mat.model.clause.CQLLibrarySet;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
@@ -81,12 +84,14 @@ import mat.server.util.XmlProcessor;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
 
 /**
  * The Class CQLLibraryService.
  */
 @SuppressWarnings("serial")
+@Service
 public class CQLLibraryService extends SpringRemoteServiceServlet implements CQLLibraryServiceInterface {
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLLibraryService.class);
@@ -126,6 +131,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	/** The recent CQL activity log DAO. */
 	@Autowired
 	private RecentCQLActivityLogDAO recentCQLActivityLogDAO;
+	
+	@Autowired
+	private CQLLibraryExportDAO cqlLibraryExportDAO;
 	
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -221,8 +229,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	public void save(CQLLibrary library) {
 		library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 		this.cqlLibraryDAO.save(library);
-		
-		
 	}
 	
 	/**
@@ -474,6 +480,23 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}	
 	}
 	
+	public void saveCQLLiraryExport(CQLLibrary cqlLibrary, String cqlXML) {
+		CQLModel cqlModel = new CQLModel();
+		cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXML);
+		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
+		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
+		CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
+		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
+		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
+		SaveUpdateCQLResult latestCQLResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlModel.getExpressionListFromCqlModel(),true);
+		CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
+		cqlLibraryExport.setCqlLibrary(cqlLibrary);
+		cqlLibraryExport.setCql(cqlXML);
+		cqlLibraryExport.setElm(latestCQLResult.getElmString());
+		cqlLibraryExport.setJson(latestCQLResult.getJsonString());
+		cqlLibraryExportDAO.save(cqlLibraryExport);
+	}
+	
 	private void removeUnusedLibraries(CQLLibrary cqlLibrary, SaveUpdateCQLResult cqlResult) {
 		String cqlLibraryXml = getCQLLibraryXml(cqlLibrary);
 		XmlProcessor xmlProcessor = new XmlProcessor(cqlLibraryXml);
@@ -526,7 +549,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		updateCQLVersion(xmlProcessor, library.getRevisionNumber(),versionStr);
 		library.setCQLByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
 		cqlLibraryDAO.save(library);
-		
+		saveCQLLiraryExport(library,getCQLLibraryXml(library));
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setSuccess(true);
 		result.setId(library.getId());

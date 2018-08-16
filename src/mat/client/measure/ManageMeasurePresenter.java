@@ -587,22 +587,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void setPatientBasedIndicatorBasedOnScoringChoice(DetailDisplay detailDisplay) {
 
 		if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(detailDisplay.getMeasScoringChoice().getItemText(detailDisplay.getMeasScoringChoice().getSelectedIndex()))) {
-			// yes is the second element in the list, so the 1 index. 
-			detailDisplay.getPatientBasedInput().removeItem(1);
+			if(detailDisplay.getPatientBasedInput().getItemCount() > 1) {
+				// yes is the second element in the list, so the 1 index. 
+				detailDisplay.getPatientBasedInput().removeItem(1);
+			}
 			detailDisplay.getPatientBasedInput().setSelectedIndex(0);
-			detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
-			detailDisplay.getHelpBlock().setColor("transparent");
 			detailDisplay.getHelpBlock().setText("Patient based indicator set to no.");
 			
 		} else {
 			resetPatientBasedInput(detailDisplay); 
 			// default the selected index to be 1, which is yes.  				
 			detailDisplay.getPatientBasedInput().setSelectedIndex(1);
-			detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
-			detailDisplay.getHelpBlock().setColor("transparent");
 			detailDisplay.getHelpBlock().setText("Patient based indicator set to yes.");
 		}
-	
+
+		detailDisplay.getMessageFormGrp().setValidationState(ValidationState.SUCCESS);
+		detailDisplay.getHelpBlock().setColor("transparent");
 	}
 
 	private void displayCommonDetailForAdd(DetailDisplay detailDisplay) {
@@ -710,7 +710,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentDisplay.getPatientBasedInput().clear();
 		currentDisplay.getPatientBasedInput().addItem("No", "No");
 		currentDisplay.getPatientBasedInput().addItem("Yes", "Yes");
-		currentDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
 	private void displayHistory(String measureId, String measureName) {

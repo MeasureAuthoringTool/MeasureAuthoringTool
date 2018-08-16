@@ -129,5 +129,5 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId);
 	
-	public void saveCQLLiraryExport(CQLLibrary cqlLibrary, String cqlXML);
+	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
 }

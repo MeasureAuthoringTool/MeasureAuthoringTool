@@ -480,7 +480,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		}	
 	}
 	
-	public void saveCQLLiraryExport(CQLLibrary cqlLibrary, String cqlXML) {
+	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML) {
 		CQLModel cqlModel = new CQLModel();
 		cqlModel = CQLUtilityClass.getCQLModelFromXML(cqlXML);
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
@@ -549,7 +549,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		updateCQLVersion(xmlProcessor, library.getRevisionNumber(),versionStr);
 		library.setCQLByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()).getBytes());
 		cqlLibraryDAO.save(library);
-		saveCQLLiraryExport(library,getCQLLibraryXml(library));
+		saveCQLLibraryExport(library,getCQLLibraryXml(library));
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setSuccess(true);
 		result.setId(library.getId());

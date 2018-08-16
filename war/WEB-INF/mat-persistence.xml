@@ -41,7 +41,9 @@
     <context:annotation-config />
     <context:component-scan base-package="mat.hibernate"/>
     <context:component-scan base-package="mat.server"/>
-
+    <context:component-scan base-package="mat.dao"/>
+	<context:component-scan base-package="mat.model.clause"/>
+	
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="dataSource">
@@ -61,6 +63,11 @@
                 <!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->		
 			</props>
 		</property>
+		<property name="packagesToScan">
+	        <list>
+	            <value>mat.model</value>
+	        </list>
+   		 </property>
 		<property name="mappingLocations">
 			<list>
 				<value>

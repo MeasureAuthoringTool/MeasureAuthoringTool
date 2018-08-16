@@ -25,8 +25,11 @@
 	</bean>
 
 	<context:annotation-config transaction-manager="txManager"/>
-	<context:component-scan base-package="mat.hibernate"/>
-  	<context:component-scan base-package="mat.server"/>
+    <context:component-scan base-package="mat.hibernate"/>
+    <context:component-scan base-package="mat.server"/>
+    <context:component-scan base-package="mat.dao"/>
+	<context:component-scan base-package="mat.model.clause"/>
+	
 	<tx:annotation-driven transaction-manager="txManager"/>
 	
 	<!-- Hibernate SessionFactory -->
@@ -48,6 +51,11 @@
                 <!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->		
 			</props>
 		</property>
+		<property name="packagesToScan">
+	        <list>
+	           <value>mat.model</value>
+	        </list>
+   		 </property>
 		<property name="mappingLocations">
 			<list>
 				<value>

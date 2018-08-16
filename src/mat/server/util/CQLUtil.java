@@ -479,7 +479,7 @@ public class CQLUtil {
 	 * @param generateELM the generate ELM
 	 * @return the save update CQL result
 	 */
-	private static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
+	public static SaveUpdateCQLResult parseCQLLibraryForErrors(CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO,
 			List<String> exprList, boolean generateELM) {
 
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();

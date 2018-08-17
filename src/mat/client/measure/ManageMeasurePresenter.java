@@ -484,6 +484,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void createSelectionMapAndSetScorings() {
 		String compositeScoringValue = ((ManageCompositeMeasureDetailView)compositeDetailDisplay).getCompositeScoringValue();
 		compositeDetailDisplay.setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringValue));
+		setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay);
 	}
 	
 	private Map<String, List<? extends HasListBox>> createSelectionMap(List<? extends HasListBox> result) {
@@ -721,7 +722,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentDisplay.getPatientBasedInput().addItem("No", "No");
 		currentDisplay.getPatientBasedInput().addItem("Yes", "Yes");
 		// default the selected index to be 1, which is yes.  				
-		detailDisplay.getPatientBasedInput().setSelectedIndex(1);
+		currentDisplay.getPatientBasedInput().setSelectedIndex(1);
 	}
 
 	private void displayHistory(String measureId, String measureName) {

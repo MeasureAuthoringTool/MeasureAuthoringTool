@@ -162,6 +162,7 @@ public class PackagerServiceImpl implements PackagerService {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		Measure measure = measureDAO.find(measureId);
+		overview.setComposite(measure.getIsCompositeMeasure());
 		boolean isGroupRemoved = false;
 		List<QualityDataSetDTO> qdmSelectedList;
 		try {

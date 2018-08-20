@@ -41,6 +41,8 @@ public class MeasurePackageOverview implements IsSerializable{
 	
 	private String releaseVersion ;
 	
+	private boolean isComposite; 
+	
 	public String getReleaseVersion() {
 		return releaseVersion;
 	}
@@ -197,6 +199,14 @@ public class MeasurePackageOverview implements IsSerializable{
 	 */
 	public void setRiskAdjList(List<RiskAdjustmentDTO> riskAdjList) {
 		this.riskAdjList = riskAdjList;
+	}
+
+	public boolean isComposite() {
+		return isComposite;
+	}
+
+	public void setComposite(boolean isComposite) {
+		this.isComposite = isComposite;
 	}	
 	
 	

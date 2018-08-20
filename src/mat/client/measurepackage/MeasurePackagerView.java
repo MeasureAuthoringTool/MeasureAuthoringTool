@@ -1101,7 +1101,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	@Override
-	public HasClickHandlers getCreateNewButton() {
+	public Button getCreateNewButton() {
 		return createNewGroupingButton;
 	}
 	

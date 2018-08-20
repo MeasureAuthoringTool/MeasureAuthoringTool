@@ -338,7 +338,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 *
 		 * @return the creates the new button
 		 */
-		HasClickHandlers getCreateNewButton();
+		Button getCreateNewButton();
 		
 		/**
 		 * Builds the cell table.
@@ -704,6 +704,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	@Override
 	public void beforeDisplay() {
+		view.getCreateNewButton().setVisible(false);
 		showMeasurePackagerBusy(true);
 		clearMessages();
 		if ((MatContext.get().getCurrentMeasureId() != null)
@@ -894,6 +895,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setQDMElements(result.getQdmElements());
 		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(result.getPackages());
 		view.buildCellTable(packageList);
+		view.getCreateNewButton().setVisible(!result.isComposite());
+		
 		if (result.getPackages().size() > 0) {
 			if (currentDetail != null) {
 				for (int i = 0; i < result.getPackages().size(); i++) {
@@ -967,8 +970,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onSuccess(
 					final ManageMeasureDetailModel result) {
 				model = result;
-				getMeasurePackageOverview(MatContext.get()
-						.getCurrentMeasureId());
+				getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
 				displayMeasurePackageWorkspace();
 			}
 		});

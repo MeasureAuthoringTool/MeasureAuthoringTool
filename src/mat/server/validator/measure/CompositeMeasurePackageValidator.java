@@ -37,6 +37,10 @@ import mat.shared.SaveUpdateCQLResult;
 @Component
 public class CompositeMeasurePackageValidator {
 	
+	private static final String MEASURE_RISK_ADJUSTMENT_VARIABLES_CQLDEFINITION_XPATH = "/measure/riskAdjustmentVariables/cqldefinition";
+
+	private static final String MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION_XPATH = "/measure/supplementalDataElements/cqldefinition";
+
 	@Autowired
 	private CompositeMeasureValidator compositeMeasureValidator; 
 	
@@ -75,7 +79,7 @@ public class CompositeMeasurePackageValidator {
 	}
 	
 	private ManageCompositeMeasureDetailModel getCompositeMeasureDetailModel(String simpleXML) throws MarshalException, ValidationException, XPathExpressionException, IOException, MappingException {
-		ManageCompositeMeasureDetailModel tempModel = compositeMeasureDetailUtil.covertXMLIntoCompositeMeasureDetailModel(simpleXML);
+		ManageCompositeMeasureDetailModel tempModel = compositeMeasureDetailUtil.convertXMLIntoCompositeMeasureDetailModel(simpleXML);
 		replaceDashesInModelForMeasureIds(tempModel);
 		ManageCompositeMeasureDetailModel model = measureLibraryService.getCompositeMeasure(tempModel.getId(), simpleXML);
 		removeUnusedComponentsFromModel(model, tempModel);
@@ -173,13 +177,11 @@ public class CompositeMeasurePackageValidator {
 	}
 	
 	private Set<String> getSupplementalDataElementsFromSimpleXML(String simpleXML) throws XPathExpressionException {
-		String supplementalDataElementXpath = "/measure/supplementalDataElements/cqldefinition";
-		return getDefinitionNames(simpleXML, supplementalDataElementXpath);
+		return getDefinitionNames(simpleXML, MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION_XPATH);
 	}
 	
 	private Set<String> getRiskAdjustmentVariablesFromSimpleXML(String simpleXML) throws XPathExpressionException {
-		String riskAdjustmentVariablesXPath = "/measure/riskAdjustmentVariables/cqldefinition";
-		return getDefinitionNames(simpleXML, riskAdjustmentVariablesXPath);
+		return getDefinitionNames(simpleXML, MEASURE_RISK_ADJUSTMENT_VARIABLES_CQLDEFINITION_XPATH);
 	}
 	
 	private Set<String> getDefinitionNames(String simpleXML, String xPath) throws XPathExpressionException {

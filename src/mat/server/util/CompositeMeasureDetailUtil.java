@@ -24,7 +24,7 @@ public class CompositeMeasureDetailUtil {
 	
 	private final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
-	public ManageCompositeMeasureDetailModel covertXMLIntoCompositeMeasureDetailModel(String xml) throws IOException, MappingException, MarshalException, ValidationException, XPathExpressionException {
+	public ManageCompositeMeasureDetailModel convertXMLIntoCompositeMeasureDetailModel(String xml) throws IOException, MappingException, MarshalException, ValidationException, XPathExpressionException {
 		XmlProcessor processor = new XmlProcessor(xml);
 		String componentMeasuresXPath = "/measure/measureDetails";
 		Node measureDetailsNode = (Node) xPath.evaluate(componentMeasuresXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);

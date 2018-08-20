@@ -1,6 +1,5 @@
 package mat.server.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
@@ -42,7 +41,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.gwt.dev.util.collect.HashSet;
+import java.util.HashSet;
 
 import mat.dao.OrganizationDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -52,7 +51,6 @@ import mat.model.clause.CQLLibrary;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLIncludeLibrary;
-import mat.model.cql.CQLIncludeLibraryWrapper;
 import mat.model.cql.CQLModel;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.shared.CQLExpressionObject;
@@ -275,7 +273,7 @@ public class ExportSimpleXML {
 	 *            the original doc
 	 * @param organizationDAO
 	 *            the organization dao
-	 * @param MeasureDAO
+	 * @param measureDAO
 	 * @param measureId
 	 * @param cqlLibraryDAO
 	 * @return the string
@@ -288,10 +286,10 @@ public class ExportSimpleXML {
 	 * @throws ParserConfigurationException 
 	 * @throws SAXException 
 	 */
-	private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO MeasureDAO, String measureId, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
-		updateVersionforMeasureDetails(originalDoc, MeasureDAO, measureId);
+	private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO measureDAO, String measureId, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
+		updateVersionforMeasureDetails(originalDoc, measureDAO, measureId);
 		updateStewardAndDevelopersIdWithOID(originalDoc, organizationDAO);
-		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
+		setAttributesForComponentMeasures(originalDoc, measureDAO);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeNode("/measure/subTreeLookUp", originalDoc);

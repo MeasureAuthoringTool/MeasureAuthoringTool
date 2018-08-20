@@ -132,6 +132,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 		
 		HttpURLConnection connection = null;
 		try {
+			// remove when this is in JVM variables
+			setProxyVMVariables();
 			connection = getCalculationInformationConnection(bearerToken, uri);
 			logger.info("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
@@ -188,7 +190,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 		CloseableHttpResponse postResponse = null;
 		try {
 			
-			
+			// remove when this is in JVM variables
+			setProxyVMVariables();
 			httpClient = HttpClients.createDefault();
 			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
 			String bearerTokenString = "Bearer " + bearerToken;
@@ -260,6 +263,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 		CloseableHttpResponse putResponse = null;
 		CloseableHttpClient httpClient = null;
 		try {
+			// remove when this is in JVM variables
+			setProxyVMVariables();
 			httpClient = HttpClients.createDefault();
 			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
 			logger.info("Connecting " + putRequest.getURI());

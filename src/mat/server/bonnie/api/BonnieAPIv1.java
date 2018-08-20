@@ -49,6 +49,12 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 public class BonnieAPIv1 implements BonnieAPI {
 
 	private static final Log logger = LogFactory.getLog(BonnieAPIv1.class);
+	
+	private static final String UPDATE_MEASURE_URI = "/api_v1/measures";
+	
+	private static final String CALCULATE_MEASURE_RESULTS_URI = "/calculated_results";
+	
+	private static final String GET_USER_INFORMATION_URI = "/oauth/token/info";
 
 	public String getResponseType() {
 		return System.getProperty("BONNIE_RESPONSE_TYPE");
@@ -122,7 +128,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public BonnieCalculatedResult getCalculatedResultsForMeasure(String bearerToken, String hqmfSetId)
 			throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, IOException {
 		BonnieCalculatedResult calculatedResult = new BonnieCalculatedResult();
-		String uri = "/api_v1/measures/" + hqmfSetId.toUpperCase() + "/calculated_results";
+		String uri = UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase() + CALCULATE_MEASURE_RESULTS_URI;
 		
 		HttpURLConnection connection = null;
 		try {
@@ -179,12 +185,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 			BonnieServerException, IOException {
 		
 		CloseableHttpClient httpClient = null;
-		CloseableHttpResponse responseTest = null;
+		CloseableHttpResponse postResponse = null;
 		try {
 			
 			
 			httpClient = HttpClients.createDefault();
-			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + "/api_v1/measures");
+			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
 			String bearerTokenString = "Bearer " + bearerToken;
 			postRequest.addHeader("Authorization", bearerTokenString);
 			postRequest.addHeader("boundary", "APIPIE_RECORDER_EXAMPLE_BOUNDARY");
@@ -208,10 +214,10 @@ public class BonnieAPIv1 implements BonnieAPI {
 			
 			HttpEntity multipart = builder.build();
 			postRequest.setEntity(multipart);
-			responseTest = httpClient.execute(postRequest);
+			postResponse = httpClient.execute(postRequest);
 
 			
-			String code = String.valueOf(responseTest.getStatusLine().getStatusCode());
+			String code = String.valueOf(postResponse.getStatusLine().getStatusCode());
 			if(code.startsWith("2")) {
 				logger.info("Measure Upload success");
 			} else if (code.contains("401")) {
@@ -239,9 +245,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 				logger.info("Disconnecting post /api_v1/measures httpClient");
 				httpClient.close();
 			} 
-			if (responseTest != null) {
-				logger.info("Disconnecting post /api_v1/measures responseTest");
-				responseTest.close();
+			if (postResponse != null) {
+				logger.info("Disconnecting post /api_v1/measures postResponse");
+				postResponse.close();
 			}
 		}
 	}
@@ -251,11 +257,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 			String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket,
 			String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException,
 			BonnieDoesNotExistException, BonnieServerException, IOException {
-		CloseableHttpResponse responseTest = null;
+		CloseableHttpResponse putResponse = null;
 		CloseableHttpClient httpClient = null;
 		try {
 			httpClient = HttpClients.createDefault();
-			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + "/api_v1/measures/" + hqmfSetId.toUpperCase());
+			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
 			logger.info("Connecting " + putRequest.getURI());
 			String bearerTokenString = "Bearer " + bearerToken;
 			putRequest.addHeader("Authorization", bearerTokenString);
@@ -280,9 +286,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 			
 			HttpEntity multipart = builder.build();
 			putRequest.setEntity(multipart);
-			responseTest = httpClient.execute(putRequest);
+			putResponse = httpClient.execute(putRequest);
 			
-			String code = Integer.toString(responseTest.getStatusLine().getStatusCode());
+			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
 			if(code.startsWith("2")) {
 				logger.info("Measure Update successful");
 			} else if (code.contains("401")) {
@@ -313,9 +319,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 				logger.error("Disconecting httpClient /api_v1/measures/" + hqmfSetId);
 				httpClient.close();
 			}
-			if (responseTest != null) {
-				responseTest.close();
-				logger.error("Disconecting responseTest /api_v1/measures/" + hqmfSetId);
+			if (putResponse != null) {
+				putResponse.close();
+				logger.error("Disconecting putResponse /api_v1/measures/" + hqmfSetId);
 			}
 		}
 	}
@@ -326,7 +332,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
 		HttpURLConnection connection = null;
 		try {
-			connection = getInformationConnection(token, "/oauth/token/info");
+			connection = getInformationConnection(token, GET_USER_INFORMATION_URI);
 			logger.info("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());

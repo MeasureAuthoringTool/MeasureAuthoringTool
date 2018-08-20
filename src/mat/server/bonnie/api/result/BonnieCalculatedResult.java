@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class BonnieCalculatedResult implements IsSerializable{
 
-	byte[] result;
+	private byte[] result;
 	
 	public BonnieCalculatedResult() {
 		

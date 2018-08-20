@@ -66,7 +66,7 @@ public class BonnieExportPresenter implements MatPresenter {
 				} 
 								
 				else {
-					Window.alert(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
+					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				}
 			}
 		});
@@ -105,7 +105,7 @@ public class BonnieExportPresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 		
@@ -129,7 +129,7 @@ public class BonnieExportPresenter implements MatPresenter {
 					view.getUploadButton().setEnabled(false);
 					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				} else {
-					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 				Mat.hideLoadingMessage();
 			}

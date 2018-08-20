@@ -13,16 +13,18 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 
+@Component
 public class CompositeMeasureDetailUtil {
 	
-	private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	private final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
-	public static ManageCompositeMeasureDetailModel covertXMLIntoCompositeMeasureDetailModel(String xml) throws IOException, MappingException, MarshalException, ValidationException, XPathExpressionException {
+	public ManageCompositeMeasureDetailModel covertXMLIntoCompositeMeasureDetailModel(String xml) throws IOException, MappingException, MarshalException, ValidationException, XPathExpressionException {
 		XmlProcessor processor = new XmlProcessor(xml);
 		String componentMeasuresXPath = "/measure/measureDetails";
 		Node measureDetailsNode = (Node) xPath.evaluate(componentMeasuresXPath, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODE);
@@ -34,7 +36,6 @@ public class CompositeMeasureDetailUtil {
 		unmarshaller.setClass(ManageCompositeMeasureDetailModel.class);
 		unmarshaller.setWhitespacePreserve(true);
 		unmarshaller.setValidation(false);
-		ManageCompositeMeasureDetailModel model = (ManageCompositeMeasureDetailModel) unmarshaller.unmarshal(new InputSource(new StringReader(measureDetailsXML)));
-		return model;
+		return (ManageCompositeMeasureDetailModel) unmarshaller.unmarshal(new InputSource(new StringReader(measureDetailsXML)));
 	}
 }

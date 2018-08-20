@@ -49,6 +49,9 @@ public class CompositeMeasurePackageValidator {
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO; 
 	
+	@Autowired
+	private CompositeMeasureDetailUtil compositeMeasureDetailUtil;
+	
 	private static final Log logger = LogFactory.getLog(CompositeMeasurePackageValidator.class);
 		
 	private CompositeMeasurePackageValidationResult result = new CompositeMeasurePackageValidationResult(); 
@@ -72,7 +75,7 @@ public class CompositeMeasurePackageValidator {
 	}
 	
 	private ManageCompositeMeasureDetailModel getCompositeMeasureDetailModel(String simpleXML) throws MarshalException, ValidationException, XPathExpressionException, IOException, MappingException {
-		ManageCompositeMeasureDetailModel tempModel = CompositeMeasureDetailUtil.covertXMLIntoCompositeMeasureDetailModel(simpleXML);
+		ManageCompositeMeasureDetailModel tempModel = compositeMeasureDetailUtil.covertXMLIntoCompositeMeasureDetailModel(simpleXML);
 		replaceDashesInModelForMeasureIds(tempModel);
 		ManageCompositeMeasureDetailModel model = measureLibraryService.getCompositeMeasure(tempModel.getId(), simpleXML);
 		removeUnusedComponentsFromModel(model, tempModel);

@@ -747,47 +747,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		logger.info("Exiting easureLibraryServiceImpl.convertAddlXmlElementsToModel() method..");
 	}
-
-	/**
-	 * Method un marshalls MeasureXML into ManageMeasureDetailModel object.
-	 * 
-	 * @param xmlModel
-	 *            -MeasureXmlModel
-	 * @param measure
-	 *            - Measure
-	 * @return ManageMeasureDetailModel
-	 */
-	private ManageMeasureDetailModel convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
-		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
-
-		ManageMeasureDetailModel details = null;
-		String xml = null;
 	
-		try {
-			if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
-				xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
-			}
-
-			details = (xml == null) ? createModelForNoXML(measure) : createModelFromXML(xml, measure);
-			
-		} catch (Exception e) {
-			logger.error("Exception in convertXmltoModel: " + e);
-		}
-		return details;
-	}
-	
-	private ManageMeasureDetailModel covertXmlToModel(String xml, Measure measure) {
+	private ManageMeasureDetailModel convertSimpleXMLToModel(String simpleXML, Measure measure) {
 
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
 
 		ManageMeasureDetailModel details = null;
 	
 		try {
-			if (StringUtils.isNotBlank(xml)) {
-				xml = new XmlProcessor(xml).getXmlByTagName(MEASURE_DETAILS);
+			if (StringUtils.isNotBlank(simpleXML)) {
+				simpleXML = new XmlProcessor(simpleXML).getXmlByTagName(MEASURE_DETAILS);
 			}
 
-			details = (xml == null) ? createModelForNoXML(measure) : createModelFromXML(xml, measure);
+			details = (simpleXML == null) ? createModelForNoXML(measure) : createModelFromXML(simpleXML, measure);
 			
 		} catch (Exception e) {
 			logger.error("Exception in convertXmltoModel: " + e);
@@ -1519,10 +1491,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
 		logger.info("Loading Measure for MeasueId: " + key);
 		Measure measure = measurePackageService.getById(key);
-		MeasureXmlModel xml = getMeasureXmlForMeasure(key);
+		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
 		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
-		
-		ManageMeasureDetailModel manageMeasureDetailModel = convertXmltoModel(xml, measure);
+		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+		ManageMeasureDetailModel manageMeasureDetailModel = convertSimpleXMLToModel(xmlString, measure);
 		manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 	
 		return manageMeasureDetailModel;
@@ -1532,10 +1504,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
 		Measure measure = measurePackageService.getById(measureId);
-		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
-		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
-		
-		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXmltoModel(xml, measure);
+		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertSimpleXMLToModel(xmlString, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		
 		return manageCompositeMeasureDetailModel;
@@ -1545,8 +1517,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML) {
 		Measure measure = measurePackageService.getById(measureId);
 		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
-		
-		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) covertXmlToModel(simpleXML, measure);
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertSimpleXMLToModel(simpleXML, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		
 		return manageCompositeMeasureDetailModel;
@@ -6041,7 +6012,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			measurePackageService.saveMeasureXml(xmlModel);
-		} catch (XPathExpressionException | SAXException | IOException | MarshalException | MappingException | ValidationException e) {
+		} catch (SAXException | IOException | MarshalException | MappingException | ValidationException e) {
 			logger.error("Exception in createIncludedMeasureAsLibrary: " + e);
 		}
 	}

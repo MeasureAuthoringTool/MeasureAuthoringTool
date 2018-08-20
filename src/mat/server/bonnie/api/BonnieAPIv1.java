@@ -291,6 +291,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
 			if(code.startsWith("2")) {
 				logger.info("Measure Update successful");
+
 			} else if (code.contains("401")) {
 				//401 Unauthorized
 				logger.error("401: user unauthorized - Measure Update");
@@ -322,6 +323,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			if (putResponse != null) {
 				putResponse.close();
 				logger.error("Disconecting putResponse /api_v1/measures/" + hqmfSetId);
+
 			}
 		}
 	}
@@ -333,6 +335,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		HttpURLConnection connection = null;
 		try {
 			connection = getInformationConnection(token, GET_USER_INFORMATION_URI);
+
 			logger.info("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());

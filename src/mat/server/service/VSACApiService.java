@@ -3,6 +3,7 @@ package mat.server.service;
 import java.util.List;
 
 import mat.client.umls.service.VsacApiResult;
+import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLQualityDataSetDTO;
 
 public interface VSACApiService {
@@ -22,4 +23,6 @@ public interface VSACApiService {
 	VsacApiResult getDirectReferenceCode(String oid, String sessionId);
 	
 	VsacApiResult getVSACProgramsReleasesAndProfiles();
+
+	VsacTicketInformation getTicketGrantingTicket(String sessionId);
 }

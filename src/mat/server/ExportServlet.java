@@ -22,11 +22,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
 import mat.model.clause.Measure;
+import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
@@ -37,6 +39,9 @@ import mat.shared.CQLErrors;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 /**
  * The Class ExportServlet.
@@ -44,6 +49,8 @@ import mat.shared.SaveUpdateCQLResult;
 public class ExportServlet extends HttpServlet {
 
 	private static final String LIBRARY_ID = "libraryid";
+	
+	private static final String USER_ID = "userId";
 
 	private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
 
@@ -74,6 +81,8 @@ public class ExportServlet extends HttpServlet {
 	private static final String TEXT_CSV = "text/csv";
 
 	private static final String APPLICATION_ZIP = "application/zip";
+	
+	private static final String APPLICATION_XSL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 	private static final String CONTENT_TYPE = "Content-Type";
 
@@ -82,6 +91,8 @@ public class ExportServlet extends HttpServlet {
 	private static final String HUMAN_READABLE = "humanreadable";
 
 	private static final String SIMPLEXML = "simplexml";
+	
+	private static final String CALCULATE_BONNIE_MEASURE_RESULT = "calculateBonnieMeasureResult";
 
 	private static final String TYPE_PARAM = "type";
 
@@ -115,6 +126,7 @@ public class ExportServlet extends HttpServlet {
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
 		String libraryId = req.getParameter(LIBRARY_ID);
+		String userId = req.getParameter(USER_ID);
 		Measure measure = null;
 		Date exportDate = null;
 
@@ -175,6 +187,9 @@ public class ExportServlet extends HttpServlet {
 			case EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE:
 				exportErrorFileForStandAloneLib(resp, libraryId);
 				break;
+			case CALCULATE_BONNIE_MEASURE_RESULT:
+				exportBonnieMeasureCalculateion(resp, measure, userId);
+				break;
 			}
 
 		} catch (Exception e) {
@@ -183,6 +198,16 @@ public class ExportServlet extends HttpServlet {
 			if (resp != null && resp.getOutputStream() != null)
 				resp.getOutputStream().close();
 		}
+	}
+
+	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
+		BonnieCalculatedResult export = getService().getBonnieExportCalculation(measure.getMeasureSet().getId(), userId);
+
+		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
+		resp.setHeader(CONTENT_DISPOSITION,
+				ATTACHMENT_FILENAME + FileNameUtility.getBonnieMeasureXLSXName(measure.getDescription() + "_" + currentReleaseVersion));
+		resp.setContentType(APPLICATION_XSL);
+		resp.getOutputStream().write(export.getResult());
 	}
 
 	private void exportErrorFileForMeasure(HttpServletResponse resp, MeasureLibraryService measureLibraryService,

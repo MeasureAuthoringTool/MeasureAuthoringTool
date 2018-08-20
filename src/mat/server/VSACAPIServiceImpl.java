@@ -2,14 +2,21 @@ package mat.server;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Service;
 
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
+import mat.client.umls.service.VsacTicketInformation;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.VSACApiService;
 
 /** VSACAPIServiceImpl class. **/
+@Configurable
+@Service
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 
 	private static final long serialVersionUID = 1L;
@@ -31,8 +38,15 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	 **/
 	@Override
 	public final boolean isAlreadySignedIn() {
-		String sessionId = getThreadLocalRequest().getSession().getId();
+		HttpServletRequest thread = getThreadLocalRequest();
+		String sessionId = thread.getSession().getId();
 		return this.vsacapi.isAlreadySignedIn(sessionId);
+	}
+	
+	@Override
+	public final VsacTicketInformation getTicketGrantingToken() {
+		String sessionId = getThreadLocalRequest().getSession().getId();
+		return this.vsacapi.getTicketGrantingTicket(sessionId);
 	}
 	
 	

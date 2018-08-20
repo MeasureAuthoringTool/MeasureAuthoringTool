@@ -1,10 +1,15 @@
 package mat.server.service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 import mat.model.MatValueSet;
+import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 public interface SimpleEMeasureService {	
 	ExportResult getSimpleXML(String measureId) throws Exception;
@@ -34,4 +39,7 @@ public interface SimpleEMeasureService {
 	ExportResult getELMFile(String measureId) throws Exception;
 
 	ExportResult getJSONFile(String measureId) throws Exception;
+	
+	BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException;
+	
 }

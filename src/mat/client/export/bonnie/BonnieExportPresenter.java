@@ -88,7 +88,6 @@ public class BonnieExportPresenter implements MatPresenter {
 	}
 	
 	private void uploadButtonClickHandler() {
-		// TODO: Implement Upload Button Handler
 		Mat.showLoadingMessage();
 		clearMessagePanel();
 		MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
@@ -148,7 +147,6 @@ public class BonnieExportPresenter implements MatPresenter {
 	}
 
 	private void getExportFromBonnieForMeasure(String measureId, String matUserId, String successMessage) {
-		// TODO Auto-generated method stub
 		String url = GWT.getModuleBaseURL() + "export?id=" + result.getId() + "&userId=" + matUserId + "&format=calculateBonnieMeasureResult";
 		Window.open(url + "&type=open", "_blank", "");
 		createSuccessMessage(successMessage);

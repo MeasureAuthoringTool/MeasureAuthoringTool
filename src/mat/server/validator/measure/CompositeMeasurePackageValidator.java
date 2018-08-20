@@ -37,6 +37,10 @@ import mat.shared.SaveUpdateCQLResult;
 @Component
 public class CompositeMeasurePackageValidator {
 	
+	public static final String SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR = "A Supplemental Data Element that has the same name as a Supplemental Data Element in a component measure must return the same type.";
+
+	public static final String RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR = "A Risk Adjustment Variable that has the same name as a Risk Adjustment Variable in a component measure must return the same type.";
+
 	private static final String MEASURE_RISK_ADJUSTMENT_VARIABLES_CQLDEFINITION_XPATH = "/measure/riskAdjustmentVariables/cqldefinition";
 
 	private static final String MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_CQLDEFINITION_XPATH = "/measure/supplementalDataElements/cqldefinition";
@@ -59,7 +63,7 @@ public class CompositeMeasurePackageValidator {
 	private static final Log logger = LogFactory.getLog(CompositeMeasurePackageValidator.class);
 		
 	private CompositeMeasurePackageValidationResult result = new CompositeMeasurePackageValidationResult(); 
-	
+
 	public CompositeMeasurePackageValidationResult validate(String simpleXML) {
 		result.getMessages().clear();
 		try {	
@@ -140,15 +144,15 @@ public class CompositeMeasurePackageValidator {
 		}
 	}
 	
-	private void validateAllSupplementalDataElementsWithSameNameHaveSameType(String simpleXML) throws XPathExpressionException {
+	public void validateAllSupplementalDataElementsWithSameNameHaveSameType(String simpleXML) throws XPathExpressionException {
 		if(!isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(simpleXML, getSupplementalDataElementsFromSimpleXML(simpleXML))) {
-			result.getMessages().add("A Supplemental Data Element that has the same name as a Supplemental Data Element in a component measure must return the same type.");
+			result.getMessages().add(SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR);
 		}
 	}
 	
-	private void validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(String simpleXML) throws XPathExpressionException {
+	public void validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(String simpleXML) throws XPathExpressionException {
 		if(!isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(simpleXML, getRiskAdjustmentVariablesFromSimpleXML(simpleXML))) {
-			result.getMessages().add("A Risk Adjustment Variable that has the same name as a Risk Adjustment Variable in a component measure must return the same type.");
+			result.getMessages().add(RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
 		}
 	}
 	
@@ -216,5 +220,14 @@ public class CompositeMeasurePackageValidator {
 		}
 		
 		return true; 
+	}
+	
+	
+	public CompositeMeasurePackageValidationResult getResult() {
+		return result;
+	}
+
+	public void setResult(CompositeMeasurePackageValidationResult result) {
+		this.result = result;
 	}
 }

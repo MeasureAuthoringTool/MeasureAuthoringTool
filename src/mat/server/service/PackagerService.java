@@ -1,8 +1,12 @@
 package mat.server.service;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
+import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
+import mat.shared.packager.error.SaveSupplementalDataElementException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -40,13 +44,17 @@ public interface PackagerService {
 	 * 
 	 * @param detail
 	 *            the detail
+	 * @throws SaveSupplementalDataElementException 
+	 * @throws XPathExpressionException 
 	 */
-	public void saveQDMData(MeasurePackageDetail detail);
+	public void saveQDMData(MeasurePackageDetail detail) throws SaveSupplementalDataElementException;
 
 	/**
 	 * Save risk variables.
 	 *
 	 * @param detail the detail
+	 * @throws XPathExpressionException 
+	 * @throws SaveRiskAdjustmentVariableException 
 	 */
-	void saveRiskAdjVariables(MeasurePackageDetail detail);
-}
+	void saveRiskAdjVariables(MeasurePackageDetail detail) throws SaveRiskAdjustmentVariableException;
+	}

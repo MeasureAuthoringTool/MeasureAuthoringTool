@@ -104,7 +104,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 	private MessageAlert measureErrorMessages = new ErrorMessageAlert();
 	
-	private MessageAlert suppDataSuccessMessages = new SuccessMessageAlert();
+	private MessageAlert supplementalDataElementSuccessMessage = new SuccessMessageAlert();
+	
+	private MessageAlert supplementalDataElementErrorMessage = new ErrorMessageAlert();
 	
 	private MessageAlert inProgressMessageDisplay = new WarningMessageAlert();
 
@@ -172,7 +174,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private Button addAllRiskAdjustmentLeft = buildArrowButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
 	
-	private MessageAlert riskAdjustmentSuccessMessages = new SuccessMessageAlert();
+	private MessageAlert riskAdjustmentSuccessMessage = new SuccessMessageAlert();
+	
+	private MessageAlert riskAdjustmentErrorMessage = new ErrorMessageAlert();
 	
 	private Widget addRiskAdjustmentButtonPanel = buildRiskAdjustmentAddButtonWidget();
 		
@@ -464,7 +468,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		riskAdjustmentPanelHeader.setTitle("Risk Adjustment Variables");
 		
 		PanelBody riskAdjustmentPanelBody = new PanelBody();
-		riskAdjustmentPanelBody.add(riskAdjustmentSuccessMessages);
+		riskAdjustmentPanelBody.add(riskAdjustmentSuccessMessage);
+		riskAdjustmentPanelBody.add(riskAdjustmentErrorMessage);
 		
 		riskAdjustmentPanel.add(riskAdjustmentPanelHeader);
 		riskAdjustmentPanel.add(riskAdjustmentPanelBody);
@@ -506,7 +511,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		supplementalDataElementsPanelHeader.setTitle("Supplemental Data Elements");
 		
 		PanelBody supplementalDataElementsPanelBody = new PanelBody(); 
-		supplementalDataElementsPanelBody.add(suppDataSuccessMessages);
+		supplementalDataElementsPanelBody.add(supplementalDataElementSuccessMessage);
+		supplementalDataElementsPanelBody.add(supplementalDataElementErrorMessage);
 		
 		supplementalDataElementsPanel.add(supplementalDataElementsPanelHeader);
 		supplementalDataElementsPanel.add(supplementalDataElementsPanelBody);
@@ -1058,13 +1064,13 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 
 	@Override
-	public final MessageAlert getSuppDataSuccessMessageDisplay() {
-		return suppDataSuccessMessages;
+	public final MessageAlert getSupplementalDataElementSuccessMessageDisplay() {
+		return supplementalDataElementSuccessMessage;
 	}
 	
 	@Override
-	public final MessageAlert getRiskAdjSuccessMessageDisplay() {
-		return riskAdjustmentSuccessMessages;
+	public final MessageAlert getRiskAdjustmentVariableSuccessMessageDisplay() {
+		return riskAdjustmentSuccessMessage;
 	}
 
 	@Override
@@ -1391,5 +1397,21 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public WarningConfirmationMessageAlert getSaveErrorMessageDisplay() {
 		return saveErrorMessageDisplay;
+	}
+
+	public MessageAlert getSupplementalDataElementErrorMessageDisplay() {
+		return supplementalDataElementErrorMessage;
+	}
+
+	public void setSupplementalDataElementErrorMessage(MessageAlert supplementalDataErrorMessages) {
+		this.supplementalDataElementErrorMessage = supplementalDataErrorMessages;
+	}
+
+	public MessageAlert getRiskAdjustmentVariableErrorMessageDisplay() {
+		return riskAdjustmentErrorMessage;
+	}
+
+	public void setRiskAdjustmentErrorMessage(MessageAlert riskadjustmentErrorMessage) {
+		this.riskAdjustmentErrorMessage = riskadjustmentErrorMessage;
 	}
 }

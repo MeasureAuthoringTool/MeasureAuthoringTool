@@ -127,7 +127,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 		HttpURLConnection connection = null;
 		try {
 			connection = getCalculationInformationConnection(bearerToken, uri);
-			//connection.setRequestProperty("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 			logger.info("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
 			if (code.startsWith("2")) {
@@ -214,8 +213,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			
 			String code = String.valueOf(responseTest.getStatusLine().getStatusCode());
 			if(code.startsWith("2")) {
-				//YAY
-				//TODO do something here....
+				logger.info("Measure Upload success");
 			} else if (code.contains("401")) {
 				//401 Unauthorized
 				logger.error("401: user unauthorized - Measure Upload");
@@ -286,7 +284,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			
 			String code = Integer.toString(responseTest.getStatusLine().getStatusCode());
 			if(code.startsWith("2")) {
-				//TODO add something here idk what
+				logger.info("Measure Update successful");
 			} else if (code.contains("401")) {
 				//401 Unauthorized
 				logger.error("401: user unauthorized - Measure Update");

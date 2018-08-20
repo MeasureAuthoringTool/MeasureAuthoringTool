@@ -641,8 +641,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @return boolean.
 	 */
 	private boolean isValid() {
-		List<MeasurePackageClauseDetail> detailList = view
-				.getPackageGroupingWidget().getGroupingPopulationList();
+		List<MeasurePackageClauseDetail> detailList = view.getPackageGroupingWidget().getGroupingPopulationList();
 		List<String> messages = new ArrayList<String>();
 		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
 		MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();
@@ -653,7 +652,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		} else {
 			view.getPackageErrorMessageDisplay().clearAlert();
 		}
-		
+
 		return messages.size() == 0;
 	}
 	

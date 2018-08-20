@@ -39,6 +39,7 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 		Map<String, MeasurePackageOverview> packageMap = new HashMap<>();
 		for(ManageMeasureSearchModel.Result result: measureList) {
 			String measureId = result.getId();
+			System.out.println("MEAUSRE ID " + measureId);
 			MeasurePackageOverview overview = buildOverview(measureId);
 			packageMap.put(measureId, overview);
 		}

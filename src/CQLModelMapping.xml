@@ -293,6 +293,9 @@
 						<bind-xml name="isComponent" node="attribute" />
 					</field>
 					
+					<field name="measureId" type="java.lang.String">
+						<bind-xml name="measureId" node="attribute" />
+					</field>			
 				</class>
 			</bind-xml>
 		</field>

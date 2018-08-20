@@ -672,8 +672,10 @@ public class CQLUtil {
 			}
 			
 			usedArtifacts.setIncludeLibMap(includedLibraries);
+			usedArtifacts.setNameToReturnTypeMap(cqlFilter.getAllNamesToReturnTypeMap());
 			parsedCQL.setUsedCQLArtifacts(usedArtifacts);
 		}
+		
 		parsedCQL.setCqlObject(cqlObject);
 	}
 	

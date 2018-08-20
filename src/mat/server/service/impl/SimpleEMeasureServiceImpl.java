@@ -134,9 +134,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private HSSFWorkbook wkbk = null;
 
 	@Override
-	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString,
-			final List<MatValueSet> matValueSets) throws Exception {
-
+	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {
 		ExportResult result = new ExportResult();
 
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

@@ -313,8 +313,7 @@ public interface MeasurePackageService {
 	 * @throws Exception
 	 *             - {@link Exception}.
 	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
-			List<MatValueSet> matValueSetList) throws Exception;
+	ValidateMeasureResult validateAndCreateExports(String key, List<MatValueSet> matValueSetList) throws Exception;
 
 	/**
 	 * Gets the human readable for node.

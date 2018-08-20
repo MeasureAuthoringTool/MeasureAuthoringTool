@@ -59,6 +59,7 @@ public class CompositeMeasureValidator {
 	private MeasurePackageService measurePackageService;
 	@Autowired
 	private CQLLibraryService cqlLibraryService;
+	
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
 	
@@ -108,12 +109,8 @@ public class CompositeMeasureValidator {
 		return validationResult;
 	}
 
-	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {
-		boolean containsMoreThanOne = false;
-		if(model.getAppliedComponentMeasures().size() > 1) {
-			containsMoreThanOne = true;
-		}
-		return containsMoreThanOne;
+	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {		
+		return model.getAppliedComponentMeasures().size() > 1;
 	}
 	
 	private List<String> validateMeasuresContainAPackage(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
@@ -223,6 +220,7 @@ public class CompositeMeasureValidator {
 		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
 			patientBasedSet.add(appliedComponentMeasure.isPatientBased());
 		}
+		
 		if(patientBasedSet.size() > 1) {
 			return false;
 		}

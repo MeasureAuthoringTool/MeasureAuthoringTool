@@ -50,7 +50,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	@Override
 	public BonnieOAuthResult exchangeCodeForTokens(String code) {
-		System.out.println("EXCHANING!");
 		BonnieOAuthResult result = null;
 		try {
 			result = bonnieApi.getBonnieOAuthResult(code);

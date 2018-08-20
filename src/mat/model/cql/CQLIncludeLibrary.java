@@ -27,6 +27,8 @@ public class CQLIncludeLibrary implements IsSerializable {
 	
 	private String isComponent; 
 	
+	private String measureId;
+	
 	public String getSetId() {
 		return setId;
 	}
@@ -194,6 +196,14 @@ public class CQLIncludeLibrary implements IsSerializable {
 
 	public void setIsComponent(String isComponent) {
 		this.isComponent = isComponent;
+	}
+
+	public String getMeasureId() {
+		return measureId;
+	}
+
+	public void setMeasureId(String measureId) {
+		this.measureId = measureId;
 	}
 
 }

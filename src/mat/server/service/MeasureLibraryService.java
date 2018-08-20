@@ -747,4 +747,6 @@ public interface MeasureLibraryService {
 	CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
 
 	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String measureId);
+
+	ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML);
 }

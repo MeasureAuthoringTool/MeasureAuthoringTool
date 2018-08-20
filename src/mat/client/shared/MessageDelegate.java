@@ -536,7 +536,7 @@ public class MessageDelegate {
 	private final String FILE_NOT_SELECTED = "Please select a file.";
 	
 	/** The generic error message. */
-	private final String GENERIC_ERROR_MESSAGE = "The Measure Authoring Tool was unable to process the request. Please try again. If the problem persists please contact the Help Desk.";
+	public final static String GENERIC_ERROR_MESSAGE = "The Measure Authoring Tool was unable to process the request. Please try again. If the problem persists please contact the Help Desk.";
 	
 	/** The grouped name required. */
 	private final String GROUPED_NAME_REQUIRED = "Grouped Value Set Name is required.";

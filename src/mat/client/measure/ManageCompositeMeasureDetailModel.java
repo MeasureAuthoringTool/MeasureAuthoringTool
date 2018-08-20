@@ -1,5 +1,7 @@
 package mat.client.measure;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +14,9 @@ public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel 
 
 	private String compositeScoringMethod;
 	private String compositeScoringAbbreviation; 
-	private List<ManageMeasureSearchModel.Result> appliedComponentMeasures;
-	private Map<String, String> aliasMapping;
-	private Map<String, MeasurePackageOverview> packageMap;
+	private List<ManageMeasureSearchModel.Result> appliedComponentMeasures = new ArrayList<>();
+	private Map<String, String> aliasMapping = new HashMap<>();
+	private Map<String, MeasurePackageOverview> packageMap = new HashMap<>();
 
 	@Override
 	public void scrubForMarkUp() {

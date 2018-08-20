@@ -1,6 +1,11 @@
 package mat.client.measure.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -207,5 +212,5 @@ public interface CQLService {
 
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
 	
-	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary);
+	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
 }

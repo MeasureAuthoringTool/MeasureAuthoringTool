@@ -710,7 +710,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measureXmlModel.setMeasureId(measureDetailModel.getId());
 		measureXmlModel.setXml(createXml(measureDetailModel).toString());
 		measureXmlModel.setToReplaceNode(MEASURE_DETAILS);		
-		saveMeasureXml(measureXmlModel);
+		saveMeasureXml(measureXmlModel); 
 		logger.info("Clone of Measure_xml is Successful");
 	}
 
@@ -774,6 +774,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.error("Exception in convertXmltoModel: " + e);
 		}
 		return details;
+	}
+	
+	private ManageMeasureDetailModel covertXmlToModel(String xml, Measure measure) {
+
+		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
+
+		ManageMeasureDetailModel details = null;
+	
+		try {
+			if (StringUtils.isNotBlank(xml)) {
+				xml = new XmlProcessor(xml).getXmlByTagName(MEASURE_DETAILS);
+			}
+
+			details = (xml == null) ? createModelForNoXML(measure) : createModelFromXML(xml, measure);
+			
+		} catch (Exception e) {
+			logger.error("Exception in convertXmltoModel: " + e);
+		}
+		return details;
+	
 	}
 
 	private ManageMeasureDetailModel createModelForNoXML(final Measure measure) {
@@ -1521,6 +1541,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return manageCompositeMeasureDetailModel;
 	}
 
+	@Override
+	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML) {
+		Measure measure = measurePackageService.getById(measureId);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
+		
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) covertXmlToModel(simpleXML, measure);
+		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		
+		return manageCompositeMeasureDetailModel;
+	}
+	
 	@Override
 	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
 		logger.info("In MeasureLibraryServiceImpl. updateMeasureXmlForDeletedComponentMeasureAndOrg() method..");
@@ -3254,7 +3285,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList) throws MatException {
 		try {
-			return measurePackageService.validateMeasureForExport(key, matValueSetList);
+			return measurePackageService.validateAndCreateExports(key, matValueSetList);
 		} catch (Exception exc) {
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
@@ -5817,7 +5848,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
-			validateMeasureForExport(measureId, null);
+			ValidateMeasureResult measureExportValidation = validateMeasureForExport(measureId, null);
+			if(!measureExportValidation.isValid()) {
+				result.setSuccess(false);
+				result.setValidateResult(measureExportValidation);
+				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+			}
+			
 			auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
 			return result;
 		} catch (Exception e) {
@@ -5943,7 +5980,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setId(pkg.getId());
 			model.setMeasureTypeSelectedList(getMeasureTypeForComposite());
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
-			createIncludedMeasureAsLibraryInMeasureXML(pkg.getId(), model);
+			createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");
@@ -5969,7 +6006,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
 	}
 	
-	private void createIncludedMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {
+	private void createComponentMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {
 		List<CQLIncludeLibrary> cqlIncludeLibraryList = new ArrayList<>();
 		for(ManageMeasureSearchModel.Result measure : model.getAppliedComponentMeasures()) {			
 			CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());		
@@ -5983,6 +6020,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			cqlIncludedLibraryCreatedFromComponentMeasure.setQdmVersion(measure.getQdmVersion());
 			cqlIncludedLibraryCreatedFromComponentMeasure.setSetId(measure.getMeasureSetId());
 			cqlIncludedLibraryCreatedFromComponentMeasure.setIsComponent("true");
+			cqlIncludedLibraryCreatedFromComponentMeasure.setMeasureId(measure.getId());
 			cqlIncludeLibraryList.add(cqlIncludedLibraryCreatedFromComponentMeasure);
 		}
 		
@@ -6003,7 +6041,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			measurePackageService.saveMeasureXml(xmlModel);
-		} catch (SAXException | IOException e) {
+		} catch (XPathExpressionException | SAXException | IOException | MarshalException | MappingException | ValidationException e) {
 			logger.error("Exception in createIncludedMeasureAsLibrary: " + e);
 		}
 	}

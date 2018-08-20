@@ -51,6 +51,8 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.bonnie.BonnieServiceImpl;
+import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.server.hqmf.Generator;
 import mat.server.hqmf.HQMFGeneratorFactory;
@@ -63,6 +65,9 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import net.sf.saxon.TransformerFactoryImpl;
 
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
@@ -129,6 +134,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	@Autowired
 	private HQMFGeneratorFactory hqmfGeneratoryFactory; 
+	
+	@Autowired
+	private BonnieServiceImpl bonnieServiceImpl;
 
 	/** MeasureExportDAO. **/
 	private HSSFWorkbook wkbk = null;
@@ -951,5 +959,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		zp.createBulkExportZip(emeasureName, exportDate, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, emeasureXSLUrl,
 				(new Date()).toString(), simpleXmlStr, filesMap, seqNum, me.getMeasure().getReleaseVersion(),
 				cqlExportResult, elmExportResult, jsonExportResult);
+	}
+
+	@Override
+	public BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
+		BonnieCalculatedResult results = bonnieServiceImpl.getBonnieExportForMeasure(userId, measureId);
+		return results;
 	}
 }

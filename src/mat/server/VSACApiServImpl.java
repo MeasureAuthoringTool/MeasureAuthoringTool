@@ -3,6 +3,7 @@ package mat.server;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import org.vsac.VSACResponseResult;
 import org.xml.sax.InputSource;
 
 import mat.client.umls.service.VsacApiResult;
+import mat.client.umls.service.VsacTicketInformation;
 import mat.dao.DataTypeDAO;
 import mat.model.DataType;
 import mat.model.DirectReferenceCode;
@@ -39,7 +41,6 @@ import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.CQLModelValidator;
 import mat.shared.ConstantMessages;
-
 
 public class VSACApiServImpl implements VSACApiService{
 
@@ -195,6 +196,11 @@ public class VSACApiServImpl implements VSACApiService{
 		UMLSSessionTicket.remove(sessionId);
 		LOGGER.info("End VSACAPIServiceImpl inValidateVsacUser");
 	}
+	
+	@Override
+	public final VsacTicketInformation getTicketGrantingTicket(String sessionId) {
+		return UMLSSessionTicket.getTicket(sessionId);
+	}
 	/**
 	 *Method to check if User already signed in at VSAC.
 	 *@return Boolean.
@@ -202,7 +208,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final boolean isAlreadySignedIn(String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
-		String eightHourTicketForUser = UMLSSessionTicket.getTicket(sessionId);
+		VsacTicketInformation eightHourTicketForUser = UMLSSessionTicket.getTicket(sessionId);
 		LOGGER.info("End VSACAPIServiceImpl isAlreadySignedIn: ");
 		return eightHourTicketForUser != null;
 	}
@@ -217,7 +223,7 @@ public class VSACApiServImpl implements VSACApiService{
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl getAllExpIdentifierList method :");
 		if (isAlreadySignedIn(sessionId)) {
-			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId));
+			String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
 			VSACResponseResult vsacResponseResult = null;
 			try {
 				vsacResponseResult = vGroovyClient.getProfileList(fiveMinuteServiceTicket);
@@ -294,7 +300,7 @@ public class VSACApiServImpl implements VSACApiService{
 					VSACResponseResult vsacResponseResult = null;
 					try {
 						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
-								UMLSSessionTicket.getTicket(sessionId));
+								UMLSSessionTicket.getTicket(sessionId).getTicket());
 							if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
 									cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
@@ -378,7 +384,8 @@ public class VSACApiServImpl implements VSACApiService{
 	public final boolean validateVsacUser(final String userName, final String password, String sessionId) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
 		String eightHourTicketForUser = vGroovyClient.getTicketGrantingTicket(userName, password);
-		UMLSSessionTicket.put(sessionId, eightHourTicketForUser);
+		VsacTicketInformation ticketInformation = new VsacTicketInformation(eightHourTicketForUser, new Date());
+		UMLSSessionTicket.put(sessionId, ticketInformation);
 		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
 		return eightHourTicketForUser != null;
 	}
@@ -411,7 +418,7 @@ public class VSACApiServImpl implements VSACApiService{
 			return result;
 		}  
 		
-		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
+		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId).getTicket();
 		if (eightHourTicket != null) {
 			if ((url != null) && StringUtils.isNotEmpty(url) && StringUtils.isNotBlank(url)) {
 				LOGGER.info(" VSACAPIServiceImpl getDirectReferenceCode method Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
@@ -491,7 +498,7 @@ public class VSACApiServImpl implements VSACApiService{
 		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid
 				+ "for Expansion Identifier :" + expansionId);
 		VsacApiResult result = new VsacApiResult();
-		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId);
+		String eightHourTicket = UMLSSessionTicket.getTicket(sessionId).getTicket();
 		
 		if (eightHourTicket != null) {
 			if (oid != null && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {

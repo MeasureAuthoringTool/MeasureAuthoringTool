@@ -25,4 +25,7 @@ public interface VSACAPIService extends RemoteService {
 	VsacApiResult getDirectReferenceCode(String url);
 
 	VsacApiResult getVSACProgramsReleasesAndProfiles();
+
+	VsacTicketInformation getTicketGrantingToken();
+	
 }

@@ -32,6 +32,10 @@ public class FileNameUtility {
 		return name.replaceAll("\\W","") + "_"+packageDate+".xls";
 	}
 	
+	public static String getBonnieMeasureXLSXName(String name) {
+		return name.replaceAll("\\W","") + "_Bonnie_Calculation.xlsx";
+	}
+	
 	/**
 	 * Gets the zip name.
 	 * 

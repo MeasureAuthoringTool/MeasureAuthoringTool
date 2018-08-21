@@ -32,6 +32,7 @@ import org.apache.tools.zip.ZipOutputStream;
 import org.cqframework.cql.tools.formatter.CQLFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -70,6 +71,7 @@ import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import net.sf.saxon.TransformerFactoryImpl;
 
+@Service
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	/** Constant for New_HQMD.xsl. **/

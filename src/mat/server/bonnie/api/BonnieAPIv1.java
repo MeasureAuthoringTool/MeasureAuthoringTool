@@ -2,7 +2,6 @@ package mat.server.bonnie.api;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,12 +9,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
@@ -187,10 +188,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse postResponse = null;
 		try {
-			
-			
 			httpClient = HttpClients.createDefault();
 			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
+
+			getRequestConfigProxy(postRequest);
+			
 			String bearerTokenString = "Bearer " + bearerToken;
 			postRequest.addHeader("Authorization", bearerTokenString);
 			postRequest.addHeader("boundary", "APIPIE_RECORDER_EXAMPLE_BOUNDARY");
@@ -262,6 +264,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			httpClient = HttpClients.createDefault();
 			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
+			
+			getRequestConfigProxy(putRequest);
+						
 			logger.info("Connecting " + putRequest.getURI());
 			String bearerTokenString = "Bearer " + bearerToken;
 			putRequest.addHeader("Authorization", bearerTokenString);
@@ -333,6 +338,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		HttpURLConnection connection = null;
 		try {
 			connection = getInformationConnection(token, GET_USER_INFORMATION_URI);
+
 			logger.info("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());
@@ -473,6 +479,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 				urlConnection.shutdown();
 				logger.info("Disconnected from bonnie oauth");
 			}
+		}
+	}
+	
+	private void getRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
+		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
+			HttpHost proxy = new HttpHost(getProxyUrl(), Integer.valueOf(getProxyPort()));
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+			request.setConfig(config);
 		}
 	}
 	/**

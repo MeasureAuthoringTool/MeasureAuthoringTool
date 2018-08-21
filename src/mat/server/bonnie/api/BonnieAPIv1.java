@@ -15,6 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -194,6 +196,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 			setProxyVMVariables();
 			httpClient = HttpClients.createDefault();
 			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
+
+			postRequest.setConfig(getRequestConfigProxy());
 			String bearerTokenString = "Bearer " + bearerToken;
 			postRequest.addHeader("Authorization", bearerTokenString);
 			postRequest.addHeader("boundary", "APIPIE_RECORDER_EXAMPLE_BOUNDARY");
@@ -267,6 +271,10 @@ public class BonnieAPIv1 implements BonnieAPI {
 			setProxyVMVariables();
 			httpClient = HttpClients.createDefault();
 			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
+			
+			
+			putRequest.setConfig(getRequestConfigProxy());
+			
 			logger.info("Connecting " + putRequest.getURI());
 			String bearerTokenString = "Bearer " + bearerToken;
 			putRequest.addHeader("Authorization", bearerTokenString);
@@ -482,6 +490,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 				logger.info("Disconnected from bonnie oauth");
 			}
 		}
+	}
+	
+	private RequestConfig getRequestConfigProxy() {
+		HttpHost proxy = new HttpHost(getProxyUrl(), Integer.valueOf(getProxyPort()));
+		RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+		return config;
 	}
 	/**
 	 * We should remove when this is in JVM variables

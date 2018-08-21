@@ -115,7 +115,7 @@ public class MatTextCell extends AbstractEditableCell<String, MatTextCell.ViewDa
 
 
 	interface Template extends SafeHtmlTemplates {
-		@Template("<input type=\"text\" value=\"{0}\" title=\"{1}\" tabindex=\"-1\"></input>")
+		@Template("<input type=\"text\" value=\"{0}\" title=\"{1}\"></input>")
 		SafeHtml input(String value, String tooltip);
 	}
 	private String tooltip = "";

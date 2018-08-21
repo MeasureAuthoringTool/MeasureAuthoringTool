@@ -170,11 +170,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		}
 		return caluclatedResult;
 	}
-
-	/*private SimpleEMeasureService getService(){
-		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
-		return service;
-	}*/
 	
 	private BonnieOAuthResult refreshBonnieTokens(String userId) throws BonnieUnauthorizedException {
 		BonnieOAuthResult result = null;

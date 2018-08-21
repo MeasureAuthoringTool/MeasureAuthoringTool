@@ -1,13 +1,11 @@
 package mat.server.bonnie;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jetty.client.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import mat.client.bonnie.BonnieService;
@@ -27,9 +25,7 @@ import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.export.ExportResult;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.service.impl.SimpleEMeasureServiceImpl;
 import mat.shared.BonnieOAuthResult;
-import mat.shared.FileNameUtility;
 import mat.shared.bonnie.error.BonnieAlreadyExistsException;
 import mat.shared.bonnie.error.BonnieBadParameterException;
 import mat.shared.bonnie.error.BonnieDoesNotExistException;
@@ -60,7 +56,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	private VSACAPIServiceImpl vasacAPI;
 	
 	@Autowired
-	private SimpleEMeasureServiceImpl simpleEMeasureService;
+	@Qualifier("simpleEMeasureServiceImpl")
+	private SimpleEMeasureService simpleEMeasureService;
 
 	@Override
 	public String getBonnieAccessLink() {

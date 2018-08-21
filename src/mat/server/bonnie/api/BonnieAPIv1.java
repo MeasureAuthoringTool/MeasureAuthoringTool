@@ -2,7 +2,6 @@ package mat.server.bonnie.api;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,7 +9,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +16,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
@@ -192,11 +191,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 			httpClient = HttpClients.createDefault();
 			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
 
-			RequestConfig proxy = getRequestConfigProxy();
-			if(proxy != null) {
-				postRequest.setConfig(getRequestConfigProxy());
-			}
-
+			getRequestConfigProxy(postRequest);
+			
 			String bearerTokenString = "Bearer " + bearerToken;
 			postRequest.addHeader("Authorization", bearerTokenString);
 			postRequest.addHeader("boundary", "APIPIE_RECORDER_EXAMPLE_BOUNDARY");
@@ -269,11 +265,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 			httpClient = HttpClients.createDefault();
 			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
 			
-			RequestConfig proxy = getRequestConfigProxy();
-			if(proxy != null) {
-				putRequest.setConfig(getRequestConfigProxy());
-			}
-			
+			getRequestConfigProxy(putRequest);
+						
 			logger.info("Connecting " + putRequest.getURI());
 			String bearerTokenString = "Bearer " + bearerToken;
 			putRequest.addHeader("Authorization", bearerTokenString);
@@ -489,13 +482,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 		}
 	}
 	
-	private RequestConfig getRequestConfigProxy() {
+	private void getRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
 		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
 			HttpHost proxy = new HttpHost(getProxyUrl(), Integer.valueOf(getProxyPort()));
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-			return config;
+			request.setConfig(config);
 		}
-		return null;
 	}
 	/**
 	 * We should remove when this is in JVM variables

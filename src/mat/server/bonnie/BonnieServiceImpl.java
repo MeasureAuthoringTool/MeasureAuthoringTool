@@ -27,6 +27,7 @@ import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
 import mat.server.export.ExportResult;
 import mat.server.service.SimpleEMeasureService;
+import mat.server.service.impl.SimpleEMeasureServiceImpl;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.FileNameUtility;
 import mat.shared.bonnie.error.BonnieAlreadyExistsException;
@@ -57,6 +58,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	
 	@Autowired
 	private VSACAPIServiceImpl vasacAPI;
+	
+	@Autowired
+	private SimpleEMeasureServiceImpl simpleEMeasureService;
 
 	@Override
 	public String getBonnieAccessLink() {
@@ -122,7 +126,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		Date exportDate = new Date();
 		ExportResult export = null;
 		try {
-			export = getService().getEMeasureZIP(measureId, exportDate);
+			export = simpleEMeasureService.getEMeasureZIP(measureId, exportDate);
 		} catch (Exception e1) {
 			throw new BonnieServerException();
 		}
@@ -167,10 +171,10 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return caluclatedResult;
 	}
 
-	private SimpleEMeasureService getService(){
+	/*private SimpleEMeasureService getService(){
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
-	}
+	}*/
 	
 	private BonnieOAuthResult refreshBonnieTokens(String userId) throws BonnieUnauthorizedException {
 		BonnieOAuthResult result = null;

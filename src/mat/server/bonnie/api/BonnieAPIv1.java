@@ -134,8 +134,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 		
 		HttpURLConnection connection = null;
 		try {
-			// remove when this is in JVM variables
-			setProxyVMVariables();
 			connection = getCalculationInformationConnection(bearerToken, uri);
 			logger.info("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
@@ -191,13 +189,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse postResponse = null;
 		try {
-			
-			// remove when this is in JVM variables
-			setProxyVMVariables();
 			httpClient = HttpClients.createDefault();
 			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
 
-			postRequest.setConfig(getRequestConfigProxy());
+			RequestConfig proxy = getRequestConfigProxy();
+			if(proxy != null) {
+				postRequest.setConfig(getRequestConfigProxy());
+			}
+
 			String bearerTokenString = "Bearer " + bearerToken;
 			postRequest.addHeader("Authorization", bearerTokenString);
 			postRequest.addHeader("boundary", "APIPIE_RECORDER_EXAMPLE_BOUNDARY");
@@ -267,13 +266,13 @@ public class BonnieAPIv1 implements BonnieAPI {
 		CloseableHttpResponse putResponse = null;
 		CloseableHttpClient httpClient = null;
 		try {
-			// remove when this is in JVM variables
-			setProxyVMVariables();
 			httpClient = HttpClients.createDefault();
 			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
 			
-			
-			putRequest.setConfig(getRequestConfigProxy());
+			RequestConfig proxy = getRequestConfigProxy();
+			if(proxy != null) {
+				putRequest.setConfig(getRequestConfigProxy());
+			}
 			
 			logger.info("Connecting " + putRequest.getURI());
 			String bearerTokenString = "Bearer " + bearerToken;
@@ -491,9 +490,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 	}
 	
 	private RequestConfig getRequestConfigProxy() {
-		HttpHost proxy = new HttpHost(getProxyUrl(), Integer.valueOf(getProxyPort()));
-		RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-		return config;
+		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
+			HttpHost proxy = new HttpHost(getProxyUrl(), Integer.valueOf(getProxyPort()));
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+			return config;
+		}
+		return null;
 	}
 	/**
 	 * We should remove when this is in JVM variables

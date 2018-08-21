@@ -376,7 +376,7 @@ public class ExportSimpleXML {
 
 		updateCqlLibraryToHaveSetId(cqlLibraryDAO, result);
 		CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
-		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
+		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap(), cqlLibraryDAO);
 		CQLUtil.addUnUsedGrandChildrentoSimpleXML(originalDoc, result, cqlModel, cqlLibraryDAO);
 	}
 	

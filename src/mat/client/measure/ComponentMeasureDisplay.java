@@ -144,7 +144,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		contentPanel.add(buttonBar);
 		
 		helpBlock.setColor("transparent");
-		helpBlock.setVisible(false);
 		helpBlock.setHeight("0px");
 		helpBlock.getElement().setId("helpBlock");
 		messageFormGroup.add(helpBlock);
@@ -452,7 +451,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				String title = "Click to Replace " + object.getName();
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-retweet fa-lg";
-					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Replace</span></button>");
 			
 				return sb.toSafeHtml();
 			}

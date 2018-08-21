@@ -123,7 +123,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private Button createNewGroupingButton = buildButton(IconType.PLUS, "Create New Grouping") ;
 	
 	private Panel cellTablePanel = new Panel();
-	
+
 	private Observer observer;
 	
 	private WarningConfirmationMessageAlert saveErrorMessageDisplay = new WarningConfirmationMessageAlert();
@@ -1413,5 +1413,13 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 
 	public void setRiskAdjustmentErrorMessage(MessageAlert riskadjustmentErrorMessage) {
 		this.riskAdjustmentErrorMessage = riskadjustmentErrorMessage;
+	}
+	
+	public Panel getCellTablePanel() {
+		return cellTablePanel;
+	}
+
+	public void setCellTablePanel(Panel cellTablePanel) {
+		this.cellTablePanel = cellTablePanel;
 	}
 }

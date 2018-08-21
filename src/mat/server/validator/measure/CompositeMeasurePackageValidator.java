@@ -37,6 +37,10 @@ import mat.shared.SaveUpdateCQLResult;
 @Component
 public class CompositeMeasurePackageValidator {
 	
+	private static final String EVERY_RISK_ADJUSTMENT_VARIABLE_PRESENT_IN_COMPOSITE_ERROR = "Every Risk Adjustment Variable in a component measure must also be present in the composite measure.";
+
+	private static final String EVERY_SUPPLEMENTAL_DATA_ELEMENT_PRESENT_IN_COMPOSITE_ERROR = "Every Supplemental Data Element present in a component measure must also be present in the composite measure.";
+
 	public static final String SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR = "A Supplemental Data Element that has the same name as a Supplemental Data Element in a component measure must return the same type.";
 
 	public static final String RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR = "A Risk Adjustment Variable that has the same name as a Risk Adjustment Variable in a component measure must return the same type.";
@@ -115,7 +119,7 @@ public class CompositeMeasurePackageValidator {
 	}
 	
 	private void validateMeasureDetails(ManageCompositeMeasureDetailModel model) {
-		result.getMessages().addAll(compositeMeasureValidator.validateCompositeMeasure(model).getMessages());
+		result.getMessages().addAll(compositeMeasureValidator.validateCompositeMeasureOnPackage(model).getMessages());
 	}
 	
 	private void validatePresenceOfComponentSupplementalDataElementDefinitionsInComposite(ManageCompositeMeasureDetailModel model, String simpleXML) throws XPathExpressionException {
@@ -125,7 +129,7 @@ public class CompositeMeasurePackageValidator {
 			String componentSimpleXML = measureExportDAO.findByMeasureId(component.getId()).getSimpleXML();
 			Set<String> supplementalDataElementDefinitionNamesFromComponent = getSupplementalDataElementsFromSimpleXML(componentSimpleXML);		
 			if(!isSetASubset(supplementalDataElementDefinitionNamesFromComponent, supplementalDataElementDefinitionNamesFromComposite)) {
-				result.getMessages().add("Every SDE present in a component measure must also be present in the composite measure.");
+				result.getMessages().add(EVERY_SUPPLEMENTAL_DATA_ELEMENT_PRESENT_IN_COMPOSITE_ERROR);
 				return; 
 			}
 		}
@@ -138,7 +142,7 @@ public class CompositeMeasurePackageValidator {
 			String componentSimpleXML = measureExportDAO.findByMeasureId(component.getId()).getSimpleXML();
 			Set<String> supplementalDataElementDefinitionNamesFromComponent = getRiskAdjustmentVariablesFromSimpleXML(componentSimpleXML);		
 			if(!isSetASubset(supplementalDataElementDefinitionNamesFromComponent, riskAdjustmentVariableDefinitionNamesFromComposite)) {
-				result.getMessages().add("Every Risk Adjustment Variable in a component measure must also be present in the composite measure.");
+				result.getMessages().add(EVERY_RISK_ADJUSTMENT_VARIABLE_PRESENT_IN_COMPOSITE_ERROR);
 				return; 
 			}
 		}

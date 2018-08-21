@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 
 import com.google.gwt.core.client.GWT;
@@ -441,6 +442,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setQdmElementsLabel(boolean isCQLMeasure);
 		WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
 		void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit);
+		public Panel getCellTablePanel();
+		public void setCellTablePanel(Panel cellTablePanel);
 	}
 	
 	/** The vsacapi service async. */
@@ -726,6 +729,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	@Override
 	public void beforeDisplay() {
+		view.getCellTablePanel().setVisible(false);
 		view.getCreateNewButton().setVisible(false);
 		showMeasurePackagerBusy(true);
 		clearMessages();
@@ -916,8 +920,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
 		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(result.getPackages());
-		view.buildCellTable(packageList);
-		view.getCreateNewButton().setVisible(!result.isComposite());
+		
+		if(result.isComposite()) {
+			// don't show the cell table or create new grouping button for composite measures. 
+			view.getCellTablePanel().setVisible(false);
+			view.getCreateNewButton().setVisible(false);
+		} else {
+			view.buildCellTable(packageList);
+			view.getCreateNewButton().setVisible(true);
+		}
 		
 		if (result.getPackages().size() > 0) {
 			if (currentDetail != null) {
@@ -1004,7 +1015,16 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setSequence(Integer.toString(getMaxSequence(packageOverview) + 1));
 		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(packageOverview.getPackages());
-		view.buildCellTable(packageList);
+		
+		if(packageOverview.isComposite()) {
+			// don't show the cell table or create new grouping button for composite measures. 
+			view.getCellTablePanel().setVisible(false);
+			view.getCreateNewButton().setVisible(false);
+		} else {
+			view.buildCellTable(packageList);
+			view.getCreateNewButton().setVisible(true);
+		}
+		
 		setMeasurePackageDetailsOnView();
 	}
 

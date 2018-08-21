@@ -14,8 +14,6 @@ public class ManageCompositeMeasureDetailModel extends ManageMeasureDetailModel 
 
 	private String compositeScoringMethod;
 	private String compositeScoringAbbreviation; 
-
-
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
 	private Map<String, String> aliasMapping = new HashMap<>();
 	private Map<String, MeasurePackageOverview> packageMap = new HashMap<>();

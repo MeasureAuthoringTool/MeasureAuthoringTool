@@ -295,7 +295,6 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type) throws Exception {
-
 		ExportResult export = getService().getCQLLibraryFile(id);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
@@ -411,12 +410,13 @@ public class ExportServlet extends HttpServlet {
 		export.wkbkbarr = null;
 	}
 
-	private ExportResult getHQMFExportForMeasure(String id, String currentReleaseVersion) throws Exception {
-		ExportResult export; 
+	private ExportResult getHQMFExportForMeasure(String measureId, String currentReleaseVersion) throws Exception {
+		ExportResult export;
+		
 		if(currentReleaseVersion.equals("v3")) {
-			export = getService().getHQMFForV3Measure(id);
+			export = getService().getHQMFForV3Measure(measureId);
 		} else {
-			export = getService().getHQMF(id);
+			export = getService().getHQMF(measureId);
 		}
 		return export;
 	}

@@ -16,6 +16,7 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -28,7 +29,10 @@ import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 
 public class CQLPopulationDetailView implements CQLPopulationDetail {
-
+	
+	private final String cautionMessage = "Caution: Removing or invalidating a population will "
+			+ "cause any package groupings containing that population to be cleared on the Measure Packager.";
+	
 	private CQLPopulationObserver observer;
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
@@ -66,9 +70,10 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		scrollPanel.setSize("700px", "250px");
 
 		mainFlowPanel.add(new SpacerWidget());
-		PopulationWorkSpaceConstants.removePopulationMessage.getElement().setTabIndex(0);
-		PopulationWorkSpaceConstants.removePopulationMessage.setStyleName("marginLeft");
-		mainFlowPanel.add(PopulationWorkSpaceConstants.removePopulationMessage);
+		HTML cautionText = new HTML(cautionMessage);
+		cautionText.getElement().setTabIndex(0);
+		cautionText.setStyleName("marginLeft");
+		mainFlowPanel.add(cautionText);
 		
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());

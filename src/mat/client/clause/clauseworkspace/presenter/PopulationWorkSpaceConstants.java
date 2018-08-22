@@ -215,9 +215,6 @@ public class PopulationWorkSpaceConstants {
 
 	public static List<String> AggfuncNames = new ArrayList<String>();
 	
-	public static final HTML removePopulationMessage = new HTML("Caution: Removing or invalidating a population will "
-			+ "cause any package groupings containing that population to be cleared on the Measure Packager.");
-	
 	static {
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

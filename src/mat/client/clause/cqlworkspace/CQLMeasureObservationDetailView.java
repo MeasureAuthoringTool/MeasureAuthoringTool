@@ -67,6 +67,7 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		
 		HTML cautionText = new HTML(cautionMessage);
 		cautionText.setStyleName("marginLeft");
+		cautionText.getElement().setTabIndex(0);
 		mainFlowPanel.add(cautionText);
 		
 		mainFlowPanel.add(new SpacerWidget());

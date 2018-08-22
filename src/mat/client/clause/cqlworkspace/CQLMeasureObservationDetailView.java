@@ -19,7 +19,9 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
@@ -30,6 +32,10 @@ import mat.client.shared.SpacerWidget;
 
 public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 
+	private final String cautionMessage = "Caution: Both an aggregate function and a user-defined function are required for a Measure Observation. "
+			+ "Removing a function or an aggregate function from your Measure Observation will cause any package groupings containing that "
+			+ "Measure Observation to be cleared on the Measure Packager.";
+	
 	private CQLPopulationObserver observer;
 	private PopulationsObject populationsObject;
 	private PopulationDataModel populationDataModel;
@@ -59,6 +65,13 @@ public class CQLMeasureObservationDetailView implements CQLPopulationDetail {
 		ScrollPanel scrollPanel = new ScrollPanel(populationGrid);
 		scrollPanel.setSize("700px", "250px");
 
+		mainFlowPanel.add(new SpacerWidget());
+		
+		HTML cautionText = new HTML(cautionMessage);
+		cautionText.setStyleName("marginLeft");
+		mainFlowPanel.add(cautionText);
+		
+		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(new SpacerWidget());
 
 		HorizontalPanel btnPanel = new HorizontalPanel();

@@ -1,14 +1,11 @@
 package mat.client.clause.cqlworkspace.leftNavBar.sections;
 
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelHeader;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.gwtbootstrap3.client.ui.constants.PanelType;
 
@@ -30,7 +27,6 @@ public class CQLComponentLibraryView extends GenericView  {
 	private static final String LABEL_STYLE = "font-size:90%;margin-left:15px;";
 	private static final String TEXT_BOX_STYLE = "margin-left:15px;margin-bottom:-15px;width:250px;height:32px;";
 	
-	private Button updateButton = new Button("Update Component Measures");
 	private FormLabel measureLabel = new FormLabel();
 	private FormLabel ownerLabel = new FormLabel ();
 	private FormLabel libraryLabel = new FormLabel ();
@@ -42,7 +38,6 @@ public class CQLComponentLibraryView extends GenericView  {
 	
 	public CQLComponentLibraryView() {
 		super();
-		buildButton();
 		setTextBoxes();
 		setLabels();
 		buildHeading();
@@ -53,12 +48,6 @@ public class CQLComponentLibraryView extends GenericView  {
 		verticalPanel.add(new SpacerWidget());	
 		verticalPanel.add(getMessagePanel());
 		verticalPanel.add(new SpacerWidget());
-		
-		VerticalPanel buttonPanel = new VerticalPanel();
-		buttonPanel.add(updateButton);
-		buttonPanel.add(new SpacerWidget());
-		buttonPanel.add(new SpacerWidget());
-		buttonPanel.getElement().getStyle().setPaddingLeft(15, Unit.PX);
 		
 		FormGroup measureGroup = new FormGroup();
 		measureGroup.add(measureLabel);
@@ -72,7 +61,6 @@ public class CQLComponentLibraryView extends GenericView  {
 		libGroup.add(libraryLabel);
 		libGroup.add(libraryTextBox);
 
-		verticalPanel.add(buttonPanel);
 		verticalPanel.add(measureGroup);
 		verticalPanel.add(new SpacerWidget());
 		verticalPanel.add(ownerGroup);
@@ -109,13 +97,6 @@ public class CQLComponentLibraryView extends GenericView  {
 		libraryLabel.setFor("libraryTextBox");		
 		libraryLabel.setText("CQL Library Name");
 		libraryLabel.setTitle("CQL Library Name");
-	}
-	
-	private void buildButton() {
-		updateButton.setIcon(IconType.PENCIL);
-		updateButton.setTitle(updateButton.getText());
-		updateButton.setType(ButtonType.PRIMARY);
-		updateButton.setWidth("250px");
 	}
 	
 	private void setTextBoxes() {
@@ -193,10 +174,6 @@ public class CQLComponentLibraryView extends GenericView  {
 		setMeasureName("");
 		setOwnerName("");
 		setLibraryName("");
-	}
-			
-	public Button getUpdateButton() {
-		return updateButton;
 	}
 
 	public void setPageInformation(ComponentTabView view) {

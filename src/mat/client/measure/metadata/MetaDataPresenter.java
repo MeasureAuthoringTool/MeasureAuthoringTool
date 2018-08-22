@@ -1459,7 +1459,7 @@ public class MetaDataPresenter  implements MatPresenter {
 		boolean isEndorsedByNQF = currentMeasureDetail.getEndorseByNQF();
 		
 		if(isEndorsedByNQF){
-			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(1);;
+			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(1);
 		} else {
 			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(0);
 		}

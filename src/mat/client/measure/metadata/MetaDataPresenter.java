@@ -1361,8 +1361,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			nqfHandlerRegistration = metaDataDisplay.getEndorsedByListBox().addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					boolean isEndorsedByNQF = (metaDataDisplay.getEndorsedByListBox().getSelectedIndex() != 0);
-					setNQFTitle(isEndorsedByNQF);
+					setNQFTitle((metaDataDisplay.getEndorsedByListBox().getSelectedIndex() != 0));
 				}
 			});
 		}

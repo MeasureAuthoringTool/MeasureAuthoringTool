@@ -140,11 +140,11 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		if(bonnieMeasureResults != null && bonnieMeasureResults.getMeasureExsists()) {
 			//Measure exists in Bonnie Update
 			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
-			successMessage = export.measureName +  " has successfully updated the existing measure in Bonnie. Please click open or save below to view the results.";
+			successMessage = measure.getDescription() +  " has successfully updated the existing measure in Bonnie. Please click open or save below to view the results.";
 		} else {
 			//Measure doesn't exist in Bonnie upload measure
 			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
-			successMessage = export.measureName + " has been successfully uploaded as a new measure Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
+			successMessage = measure.getDescription() + " has been successfully uploaded as a new measure Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
 		}
 		
 		return successMessage;

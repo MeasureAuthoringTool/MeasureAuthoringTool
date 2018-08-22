@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
 import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.clause.cqlworkspace.model.PopulationsObject;
@@ -65,7 +66,13 @@ public class CQLPopulationDetailView implements CQLPopulationDetail {
 		scrollPanel.setSize("700px", "250px");
 
 		mainFlowPanel.add(new SpacerWidget());
-
+		PopulationWorkSpaceConstants.removePopulationMessage.getElement().setTabIndex(0);
+		PopulationWorkSpaceConstants.removePopulationMessage.setStyleName("marginLeft");
+		mainFlowPanel.add(PopulationWorkSpaceConstants.removePopulationMessage);
+		
+		mainFlowPanel.add(new SpacerWidget());
+		mainFlowPanel.add(new SpacerWidget());
+		
 		HorizontalPanel btnPanel = new HorizontalPanel();
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		btnPanel.setStyleName("marginLeftButtons");

@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.xml.client.Node;
 
 /**
@@ -213,6 +214,9 @@ public class PopulationWorkSpaceConstants {
 	public static final String CONTEXT_PATIENT = "Patient";
 
 	public static List<String> AggfuncNames = new ArrayList<String>();
+	
+	public static final HTML removePopulationMessage = new HTML("Caution: Removing or invalidating a population will "
+			+ "cause any package groupings containing that population to be cleared on the Measure Packager.");
 	
 	static {
 		constantsMap.put("populations", "Populations");

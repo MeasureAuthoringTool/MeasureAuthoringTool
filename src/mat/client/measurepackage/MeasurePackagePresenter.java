@@ -1262,7 +1262,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			vsacResponse = updateVsacResult.getVsacResponse();
 		}
 		
-		MatContext.get().getMeasureService().validateMeasureForExport(measureId, vsacResponse, new AsyncCallback<ValidateMeasureResult>() {
+		MatContext.get().getMeasureService().validateMeasureForExport(measureId, vsacResponse, true, new AsyncCallback<ValidateMeasureResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				Mat.hideLoadingMessage();

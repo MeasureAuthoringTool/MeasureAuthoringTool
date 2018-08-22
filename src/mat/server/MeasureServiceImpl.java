@@ -223,9 +223,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(String key , List<MatValueSet> matValueSetList)
+	public ValidateMeasureResult validateMeasureForExport(String key , List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts)
 			throws MatException {
-		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
+		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList, shouldCreateArtifacts);
 	}
 	
 	@Override
@@ -289,7 +289,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	 */
 	@Override
 	public SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel model) {
-		return this.getMeasureLibraryService().validateAndPackage(model);
+		return this.getMeasureLibraryService().validateAndPackage(model, true);
 	}
 	
 	@Override

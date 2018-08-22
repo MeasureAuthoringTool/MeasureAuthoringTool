@@ -345,7 +345,7 @@ public interface MeasureLibraryService {
 	 *             the mat exception
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
-			List<MatValueSet> matValueSetList) throws MatException;
+			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
 	
 	/**
 	 * Save measure at package.
@@ -738,7 +738,7 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId);
 
-	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model);
+	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts);
 
 	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
 

@@ -1791,20 +1791,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            - {@link String}.
 	 * @param mDetail
 	 *            - {@link ManageMeasureDetailModel}.
-	 * @param meas
+	 * @param measure
 	 *            - {@link Measure}.O
 	 * @return {@link SaveMeasureResult}. *
 	 */
 	private SaveMeasureResult incrementVersionNumberAndSave(final String maximumVersionNumber, final String incrementBy,
-			final ManageMeasureDetailModel mDetail, final Measure meas) {
+			final Measure measure) {
+		ManageMeasureDetailModel mDetail = getMeasure(measure.getId());
 		BigDecimal mVersion = new BigDecimal(maximumVersionNumber);
 		mVersion = mVersion.add(new BigDecimal(incrementBy));
 		mDetail.setVersionNumber(mVersion.toString());
 		Date currentDate = new Date();
 		mDetail.setFinalizedDate(DateUtility.convertDateToString(currentDate));
 		mDetail.setDraft(false);
-		setValueFromModel(mDetail, meas);
-		measurePackageService.save(meas);
+		setValueFromModel(mDetail, measure);
+		measurePackageService.save(measure);
 		String versionStr = mVersion.toString();
 		// Divide the number by 1 and check for a remainder.
 		// Any whole number should always have a remainder of 0 when divided by
@@ -1823,16 +1824,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		// This code is added to update version value for both measureDetails
 		// version tag and cqlLookUp version tag.
-		setVersionInMeasureDetailsAndCQLLookUp(meas, versionStr);
+		setVersionInMeasureDetailsAndCQLLookUp(measure, versionStr);
 
-		if (MatContext.get().isCQLMeasure(meas.getReleaseVersion())) {
-			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(meas.getId());
-			exportCQLibraryFromMeasure(meas, mDetail, xmlModel);
+		if (MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
+			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
+			exportCQLibraryFromMeasure(measure, mDetail, xmlModel);
 		}
 
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
-		result.setId(meas.getId());
+		result.setId(measure.getId());
 		versionStr = MeasureUtility.formatVersionText(versionStr);
 		result.setVersionStr(versionStr);
 		logger.info("Result passed for Version Number " + versionStr);
@@ -2102,30 +2103,76 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// return error if there are unused libraries in the measure
 		MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 		String measureXml = measureXmlModel.getXml();
-		if(!ignoreUnusedLibraries) {
-			if(CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
-				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
-				saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
-				logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
-				return saveMeasureResult;
-			}
+		if(!ignoreUnusedLibraries && CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
+			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+			saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+			logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
+			return saveMeasureResult;
 		}
 		
 		removeUnusedLibraries(measureXmlModel, cqlResult);
 		
 		if(shouldPackage) {
-			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId));
+			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
 			if(!validatePackageResult.isSuccess()) {
 				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
 				return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
 			}
 		}
+	
+		return updateVersionAndExports(isMajor, version, m);
 		
+	}
 
+	private SaveMeasureResult updateVersionAndExports(final boolean isMajor, final String version, Measure measure) {
+		String versionNumber = createVersionNumber(isMajor, version, measure.getMeasureSet().getId());
 
+		// Need to check for logic when to mark a measure as completed.
+		SaveMeasureResult rs = new SaveMeasureResult();
+
+		if (!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)) {
+			String[] versionArr = versionNumber.split("\\.");
+			if (isMajor) {
+				rs = createMajorVersion(versionNumber, versionArr, measure, rs);
+			} else {
+				rs = createMinorVersion(versionArr, measure, rs);
+			}
+
+		} else {
+			returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+		}
+
+		if(rs.isSuccess()) {
+			updateVersionInSimpleXMLAndGenerateArtifacts(measure);
+		}
+
+		return rs;
+	}
+	
+	private SaveMeasureResult createMajorVersion(String versionNumber, String[] versionArr, Measure measure, SaveMeasureResult rs) {
+		if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
+			String majorVersionNumber = StringUtils.substringBefore(versionNumber, ".");
+			rs = incrementVersionNumberAndSave(majorVersionNumber, "1", measure);
+		} else {
+			returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
+		}
+		return rs;
+	}
+	
+	private SaveMeasureResult createMinorVersion(String[] versionArr, Measure measure, SaveMeasureResult rs) {
+		if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
+			String minorVersionNumber = versionArr[0] + "." + versionArr[1];
+			rs = incrementVersionNumberAndSave(minorVersionNumber, "0.001", measure);
+		} else {
+			returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
+		}
+		return rs;
+	}
+	
+	private String createVersionNumber(boolean isMajor, final String version, final String measureSetId) {
 		String versionNumber = null;
 		if (isMajor) {
-			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());
+			versionNumber = findOutMaximumVersionNumber(measureSetId);
 			// For new measure's only draft entry will be
 			// available.findOutMaximumVersionNumber will return null.
 			if (versionNumber == null) {
@@ -2133,68 +2180,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			logger.info("Max Version Number loaded from DB: " + versionNumber);
 		} else {
-			int versionIndex = version.indexOf('v');
-			logger.info("Min Version number passed from Page Model: " + versionIndex);
-			String selectedVersion = version.substring(versionIndex + 1);
+			String selectedVersion = StringUtils.substringAfter(version, "v");
 			logger.info("Min Version number after trim: " + selectedVersion);
-			versionNumber = findOutVersionNumber(m.getMeasureSet().getId(), selectedVersion);
-
+			versionNumber = findOutVersionNumber(measureSetId, selectedVersion);
 		}
-		ManageMeasureDetailModel mDetail = getMeasure(measureId);
-		// Need to check for logic when to mark a measure as completed.
-		SaveMeasureResult rs = new SaveMeasureResult();
-		int endIndex = versionNumber.indexOf('.');
-		String majorVersionNumber = versionNumber.substring(0, endIndex);
-		if (!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)) {
-			String[] versionArr = versionNumber.split("\\.");
-			if (isMajor) {
-				if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
-					rs = incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
-					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-						if(measureExport != null) {
-							String simpleXML = measureExport.getSimpleXML();
-							saveSimpleXML(m, measureExport, simpleXML);
-						}
-
-					}
-				} else {
-					rs =  returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
-				}
-
-			} else {
-				if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
-					versionNumber = versionArr[0] + "." + versionArr[1];
-					rs = incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
-					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-						if(measureExport != null) {
-							String simpleXML = measureExport.getSimpleXML();
-							saveSimpleXML(m, measureExport, simpleXML);
-						}
-					}
-				} else {
-					rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
-				}
-			}
-
-		} else {
-			rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
-		}
-		return rs;
+		return versionNumber;
 	}
 
+	private void updateVersionInSimpleXMLAndGenerateArtifacts(Measure measure) {
+		MeasureExport measureExport = measureExportDAO.findByMeasureId(measure.getId());
+		if(measureExport != null) {
+			String simpleXML = measureExport.getSimpleXML();
+			String finalVersion = measure.getMajorVersionInt() + "." + measure.getMinorVersionInt() + "."  + measure.getRevisionNumber();
 
-	private void saveSimpleXML(Measure measure, MeasureExport measureExport, String simpleXML) {
-		String finalVersion = measure.getMajorVersionInt() + "." + measure.getMinorVersionInt() + "."  + measure.getRevisionNumber();
-		String updatedSimpleXML = "";
-		try {
-			updatedSimpleXML = replaceVersionInXMLString(simpleXML, finalVersion, measure.getId());
-		} catch (XPathExpressionException e) {
-			logger.debug("saveSimpleXML:" + e);
+			String updatedSimpleXML = "";
+			try {
+				updatedSimpleXML = replaceVersionInXMLString(simpleXML, finalVersion, measure.getId());
+
+			} catch (XPathExpressionException e) {
+				logger.debug("updateVersionInSimpleXMLAndGenerateArtifacts:" + e);
+			}
+
+			measureExport.setSimpleXML(updatedSimpleXML);
+			measureExportDAO.save(measureExport);		
+			measurePackageService.createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), measureExport);
 		}
-		measureExport.setSimpleXML(updatedSimpleXML);
-		measureExportDAO.save(measureExport);		
 	}
 
 	/**
@@ -3254,9 +3264,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList) throws MatException {
+	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException {
 		try {
-			return measurePackageService.validateAndCreateExports(key, matValueSetList);
+			return measurePackageService.validateAndCreateExports(key, matValueSetList, shouldCreateArtifacts);
 		} catch (Exception exc) {
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
@@ -5792,7 +5802,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model) {
+	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
 		SaveMeasureResult result = new SaveMeasureResult();
 		String measureId = model.getId();
 		try {
@@ -5819,7 +5829,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
-			ValidateMeasureResult measureExportValidation = validateMeasureForExport(measureId, null);
+			ValidateMeasureResult measureExportValidation = validateMeasureForExport(measureId, null, shouldCreateArtifacts);
 			if(!measureExportValidation.isValid()) {
 				result.setSuccess(false);
 				result.setValidateResult(measureExportValidation);

@@ -205,7 +205,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return export; 
 	}
 	
-	private void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export) {
+	@Override
+	public void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export) {
 		export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
 		export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
 		export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
@@ -491,7 +492,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	@Override
-	public ValidateMeasureResult validateAndCreateExports(final String key, final List<MatValueSet> matValueSetsList) throws Exception {
+	public ValidateMeasureResult validateAndCreateExports(final String key, final List<MatValueSet> matValueSetsList, boolean shouldCreateArtifacts) throws Exception {
 		MeasureExport export = generateExport(key, matValueSetsList);
 		ValidateMeasureResult result = new ValidateMeasureResult();
 		result.setValid(true);
@@ -504,19 +505,21 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		
 		if(result.isValid()) {
-			createAndSaveExportsAndArtifacts(export);
+			createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);
 		}
 		
 		return result;
 	}
 	
-	private void createAndSaveExportsAndArtifacts(MeasureExport export) {
+	private void createAndSaveExportsAndArtifacts(MeasureExport export, boolean shouldCreateArtifacts) {
 		Measure measure = export.getMeasure();
 		measure.setReleaseVersion(getCurrentReleaseVersion());
 		measure.setExportedDate(new Date());
 		measureDAO.save(measure);
 		measureExportDAO.save(export);
-		createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), export);
+		if (shouldCreateArtifacts) {
+			createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), export);
+		}
 	}
 	
 

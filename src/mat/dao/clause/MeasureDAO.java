@@ -273,6 +273,4 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 
 	List<MeasureShareDTO> getComponentMeasureShareInfoForUserWithFilter(MeasureSearchModel measureSearchModel,
 			User user);
-
-	MeasureExport getMeasureExportForMeasure(String measureId);
 }

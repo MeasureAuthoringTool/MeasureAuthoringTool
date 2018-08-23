@@ -111,7 +111,6 @@ public class ExportServlet extends HttpServlet {
 	private static final String CQL_LIBRARY = "cqlLibrary";
 	private static final String ELM = "elm";
 	private static final String JSON = "json";
-	private static final String COMPOSITE_MEASURE_ZIP = "compositeMeasureZip";
 
 	private static final String ADMINISTRATOR = "Administrator";
 
@@ -399,7 +398,6 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportCompositeMeasureZip(HttpServletResponse resp, String id, Measure measure) throws Exception {
-		// TODO Auto-generated method stub
 		List<ComponentMeasure> ComponentMeasures = measure.getComponentMeasures();
 		ExportResult export = getService().getCompositeExportResult(id, ComponentMeasures);
 

@@ -13,10 +13,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +35,6 @@ import mat.model.MeasureAuditLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
-import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
@@ -1083,18 +1078,5 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			}
 		}
 		return cqlMeasures;
-	}
-	@Override
-	public MeasureExport getMeasureExportForMeasure(String measureId) {
-		Measure measure = find(measureId);
-		Session session = getSessionFactory().getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<MeasureExport> criteria = builder.createQuery(MeasureExport.class);
-		Root<MeasureExport> measureExportRoot = criteria.from(MeasureExport.class);
-		
-		criteria.select(measureExportRoot);
-		criteria.where(builder.equal(measureExportRoot.get("measure"), measure));
-		MeasureExport measureExport = session.createQuery(criteria).getSingleResult();
-		return measureExport;
 	}
 }

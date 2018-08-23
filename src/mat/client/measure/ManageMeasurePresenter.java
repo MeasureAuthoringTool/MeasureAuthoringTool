@@ -631,14 +631,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void displayDetailForAddComposite() {
 		displayCommonDetailForAdd(compositeDetailDisplay);	
-		panel.setHeading("My Measures > Create New Composite Measure", "MeasureLibrary");	
+		panel.setHeading("My Measures > Create New Composite Measure", "CompositeMeasure");	
 		setCompositeDetailsToView();
+		Mat.focusSkipLists("CompositeMeasure");
 	}
 	
 	private void displayComponentDetails(String panelHeading) {
 		panel.getButtonPanel().clear();
-		panel.setHeading(panelHeading, "MeasureLibrary");
+		panel.setHeading(panelHeading, "ComponentMeasure");
 		panel.setContent(componentMeasureDisplay.asWidget());
+		Mat.focusSkipLists("ComponentMeasure");
 	}
 
 	private void displayDetailForClone() {

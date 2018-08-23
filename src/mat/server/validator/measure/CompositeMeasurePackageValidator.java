@@ -2,6 +2,7 @@ package mat.server.validator.measure;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MessageDelegate;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureExportDAO;
+import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
@@ -75,8 +77,8 @@ public class CompositeMeasurePackageValidator {
 			validateMeasureDetails(model);
 			validatePresenceOfComponentSupplementalDataElementDefinitionsInComposite(model, simpleXML);
 			validatePresenceOfComponentRiskAdjustmentVariableDefinitionsInComposite(model, simpleXML);
-			validateAllSupplementalDataElementsWithSameNameHaveSameType(simpleXML);
-			validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(simpleXML);
+			validateAllSupplementalDataElementsWithSameNameHaveSameType(model, simpleXML);
+			validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(model, simpleXML);
 		} catch (Exception e) {
 			result.getMessages().add(MessageDelegate.GENERIC_ERROR_MESSAGE);
 			e.printStackTrace();
@@ -124,7 +126,7 @@ public class CompositeMeasurePackageValidator {
 	
 	private void validatePresenceOfComponentSupplementalDataElementDefinitionsInComposite(ManageCompositeMeasureDetailModel model, String simpleXML) throws XPathExpressionException {
 		Set<String> supplementalDataElementDefinitionNamesFromComposite = getSupplementalDataElementsFromSimpleXML(simpleXML);
-		
+	
 		for(Result component : model.getAppliedComponentMeasures()) {
 			String componentSimpleXML = measureExportDAO.findByMeasureId(component.getId()).getSimpleXML();
 			Set<String> supplementalDataElementDefinitionNamesFromComponent = getSupplementalDataElementsFromSimpleXML(componentSimpleXML);		
@@ -148,38 +150,71 @@ public class CompositeMeasurePackageValidator {
 		}
 	}
 	
-	public void validateAllSupplementalDataElementsWithSameNameHaveSameType(String simpleXML) throws XPathExpressionException {
-		if(!isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(simpleXML, getSupplementalDataElementsFromSimpleXML(simpleXML))) {
-			result.getMessages().add(SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR);
-		}
-	}
-	
-	public void validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(String simpleXML) throws XPathExpressionException {
-		if(!isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(simpleXML, getRiskAdjustmentVariablesFromSimpleXML(simpleXML))) {
-			result.getMessages().add(RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
-		}
-	}
-	
-	private boolean isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(String simpleXML, Set<String> definitions) {
+	public void validateAllSupplementalDataElementsWithSameNameHaveSameType(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, String simpleXML) throws XPathExpressionException {
 		CQLModel model = CQLUtilityClass.getCQLModelFromXML(simpleXML);
-		SaveUpdateCQLResult result = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());			
-		List<Map<String, String>> componentMeasureReturnTypeMaps = new ArrayList<>(); 
+		SaveUpdateCQLResult cqlSaveUpdateResult = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());	
+		
+		for(Result componentMeasure : manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			String componentSimpleXML = measureExportDAO.findByMeasureId(componentMeasure.getId()).getSimpleXML();
+			Set<String> compositeSDEDefinitionNames = getSupplementalDataElementsFromSimpleXML(simpleXML);
+			Set<String> componentSDEDefinitionNames = getSupplementalDataElementsFromSimpleXML(componentSimpleXML);
+			String componentMeasureId = componentMeasure.getId();
+			
+			if(!isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(compositeSDEDefinitionNames, componentSDEDefinitionNames, componentMeasureId, model, cqlSaveUpdateResult)) {
+				result.getMessages().add(SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR);
+				return; 
+			}
+		}
+	}
+	
+	public void validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, String simpleXML) throws XPathExpressionException {
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(simpleXML);
+		SaveUpdateCQLResult cqlSaveUpdateResult = CQLUtil.parseCQLLibraryForErrors(model, cqlLibraryDAO, new ArrayList<>());	
+		
+		for(Result componentMeasure : manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
+			String componentSimpleXML = measureExportDAO.findByMeasureId(componentMeasure.getId()).getSimpleXML();
+			Set<String> compositeRAVDefinitionNames = getRiskAdjustmentVariablesFromSimpleXML(simpleXML);
+			Set<String> componentRAVDefinitionNames = getRiskAdjustmentVariablesFromSimpleXML(componentSimpleXML);
+			String componentMeasureId = componentMeasure.getId();
+			
+			if(!isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(compositeRAVDefinitionNames, componentRAVDefinitionNames, componentMeasureId, model, cqlSaveUpdateResult)) {
+				result.getMessages().add(RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
+				return; 
+			}
+		}
+	}
+	
+	private boolean isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(Set<String> compositeDefinitions, Set<String> componentDefinitions, String componentMeasureId, CQLModel model, SaveUpdateCQLResult result) {			
+		// find library associated with the component measure id
+		CQLIncludeLibrary libraryToCheckReturnTypes = null; 
 		for(CQLIncludeLibrary library : model.getCqlIncludeLibrarys()) {
-			if("true".equals(library.getIsComponent())) {
-				componentMeasureReturnTypeMaps.add(result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(library.getCqlLibraryName() + "-" + library.getVersion()));
+			if(componentMeasureId.equals(library.getMeasureId()) && "true".equals(library.getIsComponent())) {
+				libraryToCheckReturnTypes = library; 
+				break; 
 			}
 		}
 		
-		for(String definition : definitions) {
-			String compositeReturnType = result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(model.getLibraryName() + "-" +  model.getVersionUsed()).get(definition);
-			
-			for(Map<String, String> componentReturnTypeMap : componentMeasureReturnTypeMaps) {
-				String componentReturnType = componentReturnTypeMap.get(definition);
-				if(componentReturnType != null && !componentReturnType.equals(compositeReturnType)) {
-					return false; 
-				}
+		// if the library does not exist to check against because it was filtered out, or for some other reason, return true. 
+		if(libraryToCheckReturnTypes == null) {
+			return true; 
+		}
+		 		
+		// get the return types for the definitions that we want to check in that component measure. 
+		Map<String, String> componentMeasureReturnTypes = result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(libraryToCheckReturnTypes.getCqlLibraryName() + "-" + libraryToCheckReturnTypes.getVersion());
+		Map<String, String> componentMeasureDefinitionReturnTypes = new HashMap<>(); 
+		for(String componentDefinition : componentDefinitions) {
+			componentMeasureDefinitionReturnTypes.put(componentDefinition, componentMeasureReturnTypes.get(componentDefinition));
+		}
+		
+		// go through all of the composite definitions and check if the return type in the component measure is equivalent if there happens to be one with the same name
+		for(String compositeDefinition : compositeDefinitions) {
+			String compositeDefinitionReturnType = result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(model.getLibraryName() + "-" +  model.getVersionUsed()).get(compositeDefinition);
+			String componentDefinitionReturnType = componentMeasureDefinitionReturnTypes.get(compositeDefinition);
+			if(componentDefinitionReturnType != null && !compositeDefinitionReturnType.equals(componentDefinitionReturnType)) {
+				return false; 
 			}
 		}
+		
 		
 		return true; 
 	}

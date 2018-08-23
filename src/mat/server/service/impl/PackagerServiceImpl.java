@@ -45,6 +45,7 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
@@ -134,6 +135,9 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The cql library DAO. */
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
+	
+	@Autowired
+	private MeasureLibraryService measureLibraryService; 
 	
 	@Autowired
 	private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
@@ -1134,21 +1138,25 @@ public class PackagerServiceImpl implements PackagerService {
 		if (measure.getReleaseVersion() != null &&  MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
 			String updatedMeasureXML = saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
 			
-			compositeMeasurePackageValidator.getResult().getMessages().clear();
-			try {
-				compositeMeasurePackageValidator.validateAllSupplementalDataElementsWithSameNameHaveSameType(updatedMeasureXML);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-			
-			if(compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
-				measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
-				measureXMLDAO.save(measureXML);
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				compositeMeasurePackageValidator.getResult().getMessages().clear();
+				try {
+					compositeMeasurePackageValidator.validateAllSupplementalDataElementsWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedMeasureXML), updatedMeasureXML);
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();
+				}
+				
+				if(compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+					measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
+					measureXMLDAO.save(measureXML);
+				} else {
+					throw new SaveSupplementalDataElementException(CompositeMeasurePackageValidator.SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR); 
+				}
 			} else {
-				throw new SaveSupplementalDataElementException(CompositeMeasurePackageValidator.SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR); 
+				measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
 			}
-			
-			
+		
+			measureXMLDAO.save(measureXML);
 		} else {
 			saveQDMData(measureXML, detail.getSuppDataElements());
 		}
@@ -1254,18 +1262,23 @@ public class PackagerServiceImpl implements PackagerService {
 		if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
 			String updatedXML = saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
 			
-			try {
-				compositeMeasurePackageValidator.getResult().getMessages().clear();
-				compositeMeasurePackageValidator.validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(updatedXML);
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-			
-			if(compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				try {
+					compositeMeasurePackageValidator.getResult().getMessages().clear();
+					compositeMeasurePackageValidator.validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedXML), updatedXML);
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();
+				}
+				
+				if(compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+					measureXML.setMeasureXMLAsByteArray(updatedXML);
+					measureXMLDAO.save(measureXML);
+				} else {
+					throw new SaveRiskAdjustmentVariableException(CompositeMeasurePackageValidator.RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
+				}
+			} 	else {
 				measureXML.setMeasureXMLAsByteArray(updatedXML);
 				measureXMLDAO.save(measureXML);
-			} else {
-				throw new SaveRiskAdjustmentVariableException(CompositeMeasurePackageValidator.RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
 			}
 			
 

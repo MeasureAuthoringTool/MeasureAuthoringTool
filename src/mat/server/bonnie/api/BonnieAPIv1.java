@@ -90,7 +90,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throws BonnieUnauthorizedException, IOException {
 		BonnieMeasureResult measureResult = new BonnieMeasureResult();
 		String uri = "/api_v1/measures/" + hqmfSetId.toUpperCase();
-		
+
 		HttpURLConnection connection = null;
 		try {
 			connection = getInformationConnection(bearerToken, uri);

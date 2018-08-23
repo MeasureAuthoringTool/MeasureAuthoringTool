@@ -754,8 +754,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *             the exception
 	 */
 	public final void getZipBarr(final String measureId, final MeasureExport me, final String parentPath, ZipOutputStream zip) throws Exception {
-		//byte[] wkbkbarr = null;
-
 		String simpleXmlStr = me.getSimpleXML();
 		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion(), me);
 		ExportResult emeasureExportResult = getHQMF(measureId);
@@ -778,6 +776,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            the measure id
 	 * @param me
 	 *            the me
+	 * @param componentMeasures
+	 * 			  a list of component measures for the composite measure
 	 * @return the zip barr
 	 * @throws Exception
 	 *             the exception
@@ -1043,26 +1043,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	private void createCompositeFilesInBuildZip(String measureId, MeasureExport me, Map<String, byte[]> filesMap,
 			String format) throws Exception {
-		// TODO Auto-generated method stub
 		List<ComponentMeasure> componentMeasures = me.getMeasure().getComponentMeasures();
-		String currentRealeaseVersion = me.getMeasure().getReleaseVersion();
-		if(currentRealeaseVersion.contains(".")){
-	    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
-	    }
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	    ZipOutputStream zip = new ZipOutputStream(baos);
-	    
-	    
-		FileNameUtility fnu = new FileNameUtility();
+    
 		//get composite file
-		String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() +"_" + currentRealeaseVersion);
 		createFilesInBulkZip(measureId, me, filesMap, format);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
 			String getComponentMeasureId = measure.getComponentMeasureId();
 			MeasureExport ComponentMeasureExport = getMeasureExport(getComponentMeasureId);
-			String componentParentPath = parentPath + File.separator + fnu.getParentPath(ComponentMeasureExport.getMeasure().getaBBRName() +"_" + currentRealeaseVersion); 
 			createFilesInBulkZip(getComponentMeasureId, ComponentMeasureExport, filesMap, format);
 		}
 	}

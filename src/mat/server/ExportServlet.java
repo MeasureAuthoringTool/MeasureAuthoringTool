@@ -398,8 +398,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportCompositeMeasureZip(HttpServletResponse resp, String id, Measure measure) throws Exception {
-		List<ComponentMeasure> ComponentMeasures = measure.getComponentMeasures();
-		ExportResult export = getService().getCompositeExportResult(id, ComponentMeasures);
+		List<ComponentMeasure> componentMeasures = measure.getComponentMeasures();
+		ExportResult export = getService().getCompositeExportResult(id, componentMeasures);
 
 		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
 		resp.setHeader(CONTENT_DISPOSITION,

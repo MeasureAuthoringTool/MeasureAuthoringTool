@@ -988,7 +988,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				createCompositeFilesInBuildZip(measureId, me, filesMap, sequance, currentReleaseVersion, sequance);
 			} else {
 				String parentPath = fnu.getParentPath(sequance +"_"+ result.measureName + "_" + currentReleaseVersion);
-				createFilesInBulkZip(measureId, me, filesMap, format.format(fileNameCounter++), parentPath);
+				createFilesInBulkZip(measureId, me, filesMap, sequance, parentPath);
 			}
 		}
 

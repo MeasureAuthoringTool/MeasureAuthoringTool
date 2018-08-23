@@ -185,27 +185,18 @@ public class CompositeMeasurePackageValidator {
 	}
 	
 	private boolean isDefinitionPresentInCompositeHaveSameReturnTypeInComponent(Set<String> compositeDefinitions, Set<String> componentDefinitions, String componentMeasureId, CQLModel model, SaveUpdateCQLResult result) {			
-		// find library associated with the component measure id
-		CQLIncludeLibrary libraryToCheckReturnTypes = null; 
-		for(CQLIncludeLibrary library : model.getCqlIncludeLibrarys()) {
-			if(componentMeasureId.equals(library.getMeasureId()) && "true".equals(library.getIsComponent())) {
-				libraryToCheckReturnTypes = library; 
-				break; 
-			}
-		}
+		CQLIncludeLibrary libraryToCheckReturnTypes = findLibraryAssociatedWithMeasureId(componentMeasureId, model);
 		
 		// if the library does not exist to check against because it was filtered out, or for some other reason, return true. 
 		if(libraryToCheckReturnTypes == null) {
 			return true; 
 		}
 		 		
-		// get the return types for the definitions that we want to check in that component measure. 
-		Map<String, String> componentMeasureReturnTypes = result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(libraryToCheckReturnTypes.getCqlLibraryName() + "-" + libraryToCheckReturnTypes.getVersion());
-		Map<String, String> componentMeasureDefinitionReturnTypes = new HashMap<>(); 
-		for(String componentDefinition : componentDefinitions) {
-			componentMeasureDefinitionReturnTypes.put(componentDefinition, componentMeasureReturnTypes.get(componentDefinition));
-		}
-		
+		Map<String, String> componentMeasureDefinitionReturnTypes = getReturnTypesForDefinitions(componentDefinitions, result, libraryToCheckReturnTypes);
+		return isReturnTypesTheSame(compositeDefinitions, model, result, componentMeasureDefinitionReturnTypes); 
+	}
+
+	private boolean isReturnTypesTheSame(Set<String> compositeDefinitions, CQLModel model, SaveUpdateCQLResult result, Map<String, String> componentMeasureDefinitionReturnTypes) {
 		// go through all of the composite definitions and check if the return type in the component measure is equivalent if there happens to be one with the same name
 		for(String compositeDefinition : compositeDefinitions) {
 			String compositeDefinitionReturnType = result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(model.getLibraryName() + "-" +  model.getVersionUsed()).get(compositeDefinition);
@@ -215,8 +206,26 @@ public class CompositeMeasurePackageValidator {
 			}
 		}
 		
+		return true;
+	}
+
+	private Map<String, String> getReturnTypesForDefinitions(Set<String> componentDefinitions, SaveUpdateCQLResult result, CQLIncludeLibrary libraryToCheckReturnTypes) {
+		Map<String, String> componentMeasureReturnTypes = result.getUsedCQLArtifacts().getNameToReturnTypeMap().get(libraryToCheckReturnTypes.getCqlLibraryName() + "-" + libraryToCheckReturnTypes.getVersion());
+		Map<String, String> componentMeasureDefinitionReturnTypes = new HashMap<>(); 
+		for(String componentDefinition : componentDefinitions) {
+			componentMeasureDefinitionReturnTypes.put(componentDefinition, componentMeasureReturnTypes.get(componentDefinition));
+		}
+		return componentMeasureDefinitionReturnTypes;
+	}
+
+	private CQLIncludeLibrary findLibraryAssociatedWithMeasureId(String componentMeasureId, CQLModel model) {
+		for(CQLIncludeLibrary library : model.getCqlIncludeLibrarys()) {
+			if(componentMeasureId.equals(library.getMeasureId()) && "true".equals(library.getIsComponent())) {
+				return library; 
+			}
+		}
 		
-		return true; 
+		return null;
 	}
 	
 	private Set<String> getSupplementalDataElementsFromSimpleXML(String simpleXML) throws XPathExpressionException {

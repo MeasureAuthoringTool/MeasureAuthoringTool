@@ -5,6 +5,6 @@ import mat.model.clause.CQLLibraryExport;
 
 public interface CQLLibraryExportDAO extends IDAO<CQLLibraryExport, String>{
 
-	CQLLibraryExport findByLibraryId(String measureId);
+	CQLLibraryExport findByLibraryId(String libraryId);
 	
 }

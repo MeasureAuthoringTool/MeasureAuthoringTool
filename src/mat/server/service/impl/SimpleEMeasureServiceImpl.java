@@ -974,17 +974,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		int fileNameCounter = 1;
 		DecimalFormat format = new DecimalFormat("#00");
 		Date exportDate;
+		FileNameUtility fnu = new FileNameUtility();
 		for (String measureId : measureIds) {
 			result = new ExportResult();
 			result.measureName = getMeasureName(measureId).getaBBRName();
 			exportDate = getMeasureName(measureId).getExportedDate();
 			MeasureExport me = getMeasureExport(measureId);
+			String currentReleaseVersion = me.getMeasure().getReleaseVersion();
+			String sequance = format.format(fileNameCounter++);
 			if (me.getMeasure().getReleaseVersion().equals("v3")) {
-				createFilesInBulkZip(measureId, exportDate, me, filesMap, format.format(fileNameCounter++));
+				createFilesInBulkZip(measureId, exportDate, me, filesMap, sequance);
 			} else if(me.getMeasure().getIsCompositeMeasure()) {
-				createCompositeFilesInBuildZip(measureId, me, filesMap, format.format(fileNameCounter++));
+				createCompositeFilesInBuildZip(measureId, me, filesMap, sequance, currentReleaseVersion, sequance);
 			} else {
-				createFilesInBulkZip(measureId, me, filesMap, format.format(fileNameCounter++));
+				String parentPath = fnu.getParentPath(sequance +"_"+ result.measureName + "_" + currentReleaseVersion);
+				createFilesInBulkZip(measureId, me, filesMap, format.format(fileNameCounter++), parentPath);
 			}
 		}
 
@@ -1021,7 +1025,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *             the exception
 	 */
 	private void createFilesInBulkZip(final String measureId, final MeasureExport me,
-			final Map<String, byte[]> filesMap, final String seqNum) throws Exception {
+			final Map<String, byte[]> filesMap, final String seqNum, String parentPath) throws Exception {
 
 		byte[] wkbkbarr = null;
 
@@ -1038,20 +1042,22 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, (new Date()).toString(),
 				simpleXmlStr, filesMap, seqNum, currentReleaseVersion, cqlEportResult, elmExportResult,
-				jsonExportResult);
+				jsonExportResult, parentPath);
 	}
 	
 	private void createCompositeFilesInBuildZip(String measureId, MeasureExport me, Map<String, byte[]> filesMap,
-			String format) throws Exception {
+			String format, String currentReleaseVersion, String sequance) throws Exception {
 		List<ComponentMeasure> componentMeasures = me.getMeasure().getComponentMeasures();
-    
+		FileNameUtility fnu = new FileNameUtility();
+		String parentPath = fnu.getParentPath(sequance +"_"+ me.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
 		//get composite file
-		createFilesInBulkZip(measureId, me, filesMap, format);
+		createFilesInBulkZip(measureId, me, filesMap, format, parentPath);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
 			String getComponentMeasureId = measure.getComponentMeasureId();
 			MeasureExport ComponentMeasureExport = getMeasureExport(getComponentMeasureId);
-			createFilesInBulkZip(getComponentMeasureId, ComponentMeasureExport, filesMap, format);
+			String componentParentPath = parentPath + File.separator + fnu.getParentPath(ComponentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
+			createFilesInBulkZip(getComponentMeasureId, ComponentMeasureExport, filesMap, format, componentParentPath);
 		}
 	}
 

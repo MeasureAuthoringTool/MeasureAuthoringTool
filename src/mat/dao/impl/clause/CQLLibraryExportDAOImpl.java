@@ -20,9 +20,9 @@ public class CQLLibraryExportDAOImpl extends GenericDAO<CQLLibraryExport, String
 	}
 	
 	@Override
-	public CQLLibraryExport findByLibraryId(String measureId) {
+	public CQLLibraryExport findByLibraryId(String libraryId) {
 		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryExport.class);
-		criteria.add(Restrictions.eq("cqlLibrary.id", measureId));
+		criteria.add(Restrictions.eq("cqlLibrary.id", libraryId));
 		List<CQLLibraryExport> results =  criteria.list();
 		if(!results.isEmpty()) {
 			return results.get(0);

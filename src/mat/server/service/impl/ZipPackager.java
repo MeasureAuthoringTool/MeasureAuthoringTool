@@ -224,12 +224,9 @@ public class ZipPackager {
 	public void createBulkExportZip(String emeasureName, byte[] wkbkbarr,
 			String emeasureXMLStr, String emeasureHTMLStr,
 			String packageDate, String simpleXmlStr,
-			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult) throws Exception{
-			FileNameUtility fnu = new FileNameUtility();
-
+			Map<String, byte[]> filesMap, String seqNum, String currentReleaseVersion, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String parentPath) throws Exception{
 		try{
 			boolean isCQLMeasure = false;
-			String parentPath = "";
 			String emeasureHumanReadablePath = "";
 			String emeasureXMLPath = "";
 			isCQLMeasure = MatContext.get().isCQLMeasure(currentReleaseVersion);
@@ -237,8 +234,6 @@ public class ZipPackager {
 			if (currentReleaseVersion.contains(".")){
 				currentReleaseVersion = currentReleaseVersion.replace(".", "_");
 			}
-			
-			parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + "_" + currentReleaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" + currentReleaseVersion);
 			emeasureXMLPath = parentPath+File.separator+FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentReleaseVersion);
 

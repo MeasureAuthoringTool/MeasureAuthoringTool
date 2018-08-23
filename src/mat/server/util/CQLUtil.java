@@ -520,7 +520,7 @@ public class CQLUtil {
 
 		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
 			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlIncludeLibrary.getCqlLibraryId());
-
+			
 			if (cqlLibrary == null) {
 				logger.info("Could not find included library:" + cqlIncludeLibrary.getAliasName());
 				continue;
@@ -532,7 +532,33 @@ public class CQLUtil {
 			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
 					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
 			cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
-			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, includeCqlModel.getIncludedLibrarys(), cqlLibraryDAO);
+			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, includeCqlModel.getIncludedLibrarys(), cqlLibraryDAO, cqlIncludeLibrary);
+		}
+	}
+	
+	private static void getCQLIncludeMaps(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
+			Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap, CQLLibraryDAO cqlLibraryDAO, CQLIncludeLibrary parentCQLIncludeLibrary) {
+		List<CQLIncludeLibrary> cqlIncludeLibraries = cqlModel.getCqlIncludeLibrarys();
+		if (cqlIncludeLibraries == null) {
+			return;
+		}
+
+		for (CQLIncludeLibrary cqlIncludeLibrary : cqlIncludeLibraries) {
+			cqlIncludeLibrary.setIsComponent(parentCQLIncludeLibrary.getIsComponent());
+			CQLLibrary cqlLibrary = cqlLibraryDAO.find(cqlIncludeLibrary.getCqlLibraryId());
+			
+			if (cqlLibrary == null) {
+				logger.info("Could not find included library:" + cqlIncludeLibrary.getAliasName());
+				continue;
+			}
+
+			String includeCqlXMLString = new String(cqlLibrary.getCQLByteArray());
+
+			CQLModel includeCqlModel = CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString);
+			cqlLibNameMap.put(cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion() + "|" + cqlIncludeLibrary.getAliasName(),
+					new LibHolderObject(includeCqlXMLString, cqlIncludeLibrary));
+			cqlIncludeModelMap.put(cqlIncludeLibrary, includeCqlModel);
+			getCQLIncludeMaps(includeCqlModel, cqlLibNameMap, includeCqlModel.getIncludedLibrarys(), cqlLibraryDAO, cqlIncludeLibrary);
 		}
 	}
 
@@ -950,6 +976,8 @@ public class CQLUtil {
 			libNode.setAttribute("version", cqlLibrary.getVersion());
 			libNode.setAttribute("setId", cqlLibrary.getSetId());
 			libNode.setAttribute("isUnUsedGrandChild", "false");
+			//Marking if the library is a component measure
+			libNode.setAttribute("isComponent", cqlLibrary.getIsComponent());
 
 			allUsedLibsNode.appendChild(libNode);
 		}
@@ -1006,6 +1034,8 @@ public class CQLUtil {
 								libNode.setAttribute("version", grandChildLib.getVersion());
 								libNode.setAttribute("setId", grandChildLib.getSetId());
 								libNode.setAttribute("isUnUsedGrandChild", "true");
+								//Marking if the library is part of a component measure
+								libNode.setAttribute("isComponent", library.getIsComponent());
 								allUsedLibsNode.appendChild(libNode);
 							}
 						}

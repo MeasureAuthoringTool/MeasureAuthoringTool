@@ -173,24 +173,20 @@ public class ZipPackager {
 	 * @param string 
 	 * @return the zip barr
 	 */
-	public byte[] getZipBarr(String emeasureName, byte[] wkbkbarr,
-						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String currentRealeaseVersion) {
+	public void getZipBarr(String emeasureName, ZipOutputStream zip,
+						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String currentRealeaseVersion, String parentPath) {
 		byte[] ret = null;
 		
-		FileNameUtility fnu = new FileNameUtility();
-		
 		try{
-			String parentPath = "";
 			String emeasureHumanReadablePath = "";
 			String emeasureXMLPath = "";
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ZipOutputStream zip = new ZipOutputStream(baos);
+			
+		    
 		    String measureReleaseVersion = currentRealeaseVersion;
 		    if(currentRealeaseVersion.contains(".")){
 		    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
 		    }
 		    
-			parentPath = fnu.getParentPath(emeasureName +"_" + currentRealeaseVersion);
 			emeasureHumanReadablePath = parentPath+File.separator+FileNameUtility.getEmeasureHumanReadableName(emeasureName + "_" +currentRealeaseVersion);
 			emeasureXMLPath = parentPath+File.separator+FileNameUtility.getEmeasureXMLName(emeasureName + "_" + currentRealeaseVersion);
 						
@@ -201,14 +197,12 @@ public class ZipPackager {
 			    addFileToZip(cqlExportResult, parentPath, "cql", zip);
 			    addFileToZip(elmExportResult, parentPath, "xml", zip);
 			    addFileToZip(jsonExportResult, parentPath, "json", zip);
-		    }		    		    
-		    zip.close();
-		    ret = baos.toByteArray();
+		    }
+		    
 		}catch(Exception e){
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());
 		}
-		return ret;
 	}
 
 	/**

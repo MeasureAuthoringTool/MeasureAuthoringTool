@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import mat.model.MatValueSet;
+import mat.model.clause.ComponentMeasure;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.shared.bonnie.error.BonnieNotFoundException;
@@ -41,5 +42,7 @@ public interface SimpleEMeasureService {
 	ExportResult getJSONFile(String measureId) throws Exception;
 	
 	BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException;
+
+	ExportResult getCompositeExportResult(String id, List<ComponentMeasure> componentMeasures) throws Exception;
 	
 }

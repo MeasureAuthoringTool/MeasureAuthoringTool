@@ -1491,13 +1491,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
 		logger.info("Loading Measure for MeasueId: " + key);
 		Measure measure = measurePackageService.getById(key);
-		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
-		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
-		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
-		ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
-		manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
-	
-		return manageMeasureDetailModel;
+		if(!measure.getIsCompositeMeasure()) {
+			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
+			MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+			String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+			ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
+			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		
+			return manageMeasureDetailModel;
+		}
+		else {
+			return getCompositeMeasure(key);
+		}
+		
 
 	}
 

@@ -22,11 +22,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
@@ -111,6 +111,7 @@ public class ExportServlet extends HttpServlet {
 	private static final String CQL_LIBRARY = "cqlLibrary";
 	private static final String ELM = "elm";
 	private static final String JSON = "json";
+	private static final String COMPOSITE_MEASURE_ZIP = "compositeMeasureZip";
 
 	private static final String ADMINISTRATOR = "Administrator";
 
@@ -161,7 +162,7 @@ public class ExportServlet extends HttpServlet {
 				exportJSONFile(resp, id, type);
 				break;
 			case ZIP:
-				exportEmeasureZip(resp, id, measure, exportDate);
+				zipMeasure(resp, id, measure, exportDate);
 				break;
 			case SUBTREE_HTML:
 				exportSubTreeHumanReadable(req, resp, id);
@@ -198,6 +199,16 @@ public class ExportServlet extends HttpServlet {
 			if (resp != null && resp.getOutputStream() != null)
 				resp.getOutputStream().close();
 		}
+	}
+
+	private void zipMeasure(HttpServletResponse resp, String id, Measure measure, Date exportDate) throws Exception {
+		if(measure.getIsCompositeMeasure()) {
+			exportCompositeMeasureZip(resp, id, measure);
+		}
+		else {
+			exportEmeasureZip(resp, id, measure, exportDate);
+		}
+		
 	}
 
 	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
@@ -387,6 +398,19 @@ public class ExportServlet extends HttpServlet {
 		resp.getOutputStream().println(export.export);
 	}
 
+	private void exportCompositeMeasureZip(HttpServletResponse resp, String id, Measure measure) throws Exception {
+		// TODO Auto-generated method stub
+		List<ComponentMeasure> ComponentMeasures = measure.getComponentMeasures();
+		ExportResult export = getService().getCompositeExportResult(id, ComponentMeasures);
+
+		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
+		resp.setHeader(CONTENT_DISPOSITION,
+				ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + currentReleaseVersion));
+		resp.setContentType(APPLICATION_ZIP);
+		resp.getOutputStream().write(export.zipbarr);
+		export.zipbarr = null;
+	}
+	
 	private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
 			throws Exception {
 		ExportResult export = getService().getEMeasureZIP(id, exportDate);

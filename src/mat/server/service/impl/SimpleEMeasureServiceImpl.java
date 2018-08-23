@@ -306,7 +306,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	private void createCQLFileString(MeasureExport measureExport, CQLModel cqlModel) throws IOException {
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
 
 		if (cqlFileString != null && !cqlFileString.isEmpty()) {
 			CQLFormatter formatter = new CQLFormatter(); 
@@ -336,7 +336,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 					cqlLibraryExport.setCqlLibrary(cqlLibrary);
 				}
 				if(cqlLibraryExport.getCql() == null) {
-					String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString), "").toString();
+					String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLModelFromXML(includeCqlXMLString), "");
 		
 					try {
 						CQLFormatter formatter = new CQLFormatter(); 
@@ -369,7 +369,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureSimpleXML);
 
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 
@@ -437,7 +437,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureSimpleXML);
 
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		if(measureExport.getElm() == null) {
@@ -734,11 +734,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 	
-	public final ExportResult getCompositeExportResult(final String CompositeMeasureId, List<ComponentMeasure> componentMeasures) throws Exception {
-		MeasureExport CompositeMeasureExport = getMeasureExport(CompositeMeasureId);
+	public final ExportResult getCompositeExportResult(final String compositeMeasureId, List<ComponentMeasure> componentMeasures) throws Exception {
+		MeasureExport compositeMeasureExport = getMeasureExport(compositeMeasureId);
 		ExportResult result = new ExportResult();
-		result.measureName = getMeasureName(CompositeMeasureId).getaBBRName();
-		result.zipbarr = getCompositeZipBarr(CompositeMeasureId, CompositeMeasureExport, componentMeasures);
+		result.measureName = getMeasureName(compositeMeasureId).getaBBRName();
+		result.zipbarr = getCompositeZipBarr(compositeMeasureId, compositeMeasureExport, componentMeasures);
 		return result;
 	}
 	
@@ -800,10 +800,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		getZipBarr(measureId, me, parentPath, zip);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
-			String getComponentMeasureId = measure.getComponentMeasureId();
-			MeasureExport componentMeasureExport = getMeasureExport(getComponentMeasureId);
+			String componentMeasureId = measure.getComponentMeasureId();
+			MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
 			String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
-			getZipBarr(getComponentMeasureId, componentMeasureExport, componentParentPath, zip);
+			getZipBarr(componentMeasureId, componentMeasureExport, componentParentPath, zip);
 		}
 		
 		zip.close();
@@ -962,41 +962,40 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	@Override
 	public final ExportResult getBulkExportZIP(final String[] measureIds, final Date[] exportDates) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zip = new ZipOutputStream(baos);
-		Map<String, byte[]> filesMap = new HashMap<String, byte[]>();
 		ExportResult result = null;
-		int fileNameCounter = 1;
-		DecimalFormat format = new DecimalFormat("#00");
-		Date exportDate;
-		FileNameUtility fnu = new FileNameUtility();
-		for (String measureId : measureIds) {
-			result = new ExportResult();
-			result.measureName = getMeasureName(measureId).getaBBRName();
-			exportDate = getMeasureName(measureId).getExportedDate();
-			MeasureExport me = getMeasureExport(measureId);
-			String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
-			String sequence = format.format(fileNameCounter++);
-			if (me.getMeasure().getReleaseVersion().equals("v3")) {
-				createFilesInBulkZip(measureId, exportDate, me, filesMap, sequence);
-			} else if(me.getMeasure().getIsCompositeMeasure()) {
-				createCompositeFilesInBuildZip(measureId, me, filesMap, sequence, currentReleaseVersion, sequence);
-			} else {
-				String parentPath = fnu.getParentPath(sequence +"_"+ result.measureName + "_" + currentReleaseVersion);
-				createFilesInBulkZip(measureId, me, filesMap, sequence, parentPath);
+		try(ZipOutputStream zip = new ZipOutputStream(baos);){
+			Map<String, byte[]> filesMap = new HashMap<>();
+			int fileNameCounter = 1;
+			DecimalFormat format = new DecimalFormat("#00");
+			Date exportDate;
+			FileNameUtility fnu = new FileNameUtility();
+			for (String measureId : measureIds) {
+				result = new ExportResult();
+				result.measureName = getMeasureName(measureId).getaBBRName();
+				exportDate = getMeasureName(measureId).getExportedDate();
+				MeasureExport me = getMeasureExport(measureId);
+				String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
+				String sequence = format.format(fileNameCounter++);
+				if (me.getMeasure().getReleaseVersion().equals("v3")) {
+					createFilesInBulkZip(measureId, exportDate, me, filesMap, sequence);
+				} else if(me.getMeasure().getIsCompositeMeasure()) {
+					createCompositeFilesInBuildZip(measureId, me, filesMap, sequence, currentReleaseVersion, sequence);
+				} else {
+					String parentPath = fnu.getParentPath(sequence +"_"+ result.measureName + "_" + currentReleaseVersion);
+					createFilesInBulkZip(measureId, me, filesMap, sequence, parentPath);
+				}
+			}
+	
+			ZipPackager zp = new ZipPackager();
+			double size = 1024 * 1024 * 100;
+			Set<Entry<String, byte[]>> set = filesMap.entrySet();
+			for (Entry<String, byte[]> fileArr : set) {
+				zp.addBytesToZip(fileArr.getKey(), fileArr.getValue(), zip);
+			}
+			if (baos.size() > size) {
+				throw new ZipException("Exceeded Limit :" + baos.size());
 			}
 		}
-
-		ZipPackager zp = new ZipPackager();
-		double size = 1024 * 1024 * 100;
-		Set<Entry<String, byte[]>> set = filesMap.entrySet();
-		for (Entry<String, byte[]> fileArr : set) {
-			zp.addBytesToZip(fileArr.getKey(), fileArr.getValue(), zip);
-		}
-		if (baos.size() > size) {
-			zip.close();
-			throw new ZipException("Exceeded Limit :" + baos.size());
-		}
-		zip.close();
 		LOGGER.debug(baos.size());
 		result.zipbarr = baos.toByteArray();
 		return result;

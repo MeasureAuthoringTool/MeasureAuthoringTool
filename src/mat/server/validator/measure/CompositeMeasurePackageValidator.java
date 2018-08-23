@@ -192,8 +192,7 @@ public class CompositeMeasurePackageValidator {
 			return true; 
 		}
 		 		
-		Map<String, String> componentMeasureDefinitionReturnTypes = getReturnTypesForDefinitions(componentDefinitions, result, libraryToCheckReturnTypes);
-		return isReturnTypesTheSame(compositeDefinitions, model, result, componentMeasureDefinitionReturnTypes); 
+		return isReturnTypesTheSame(compositeDefinitions, model, result, getReturnTypesForDefinitions(componentDefinitions, result, libraryToCheckReturnTypes)); 
 	}
 
 	private boolean isReturnTypesTheSame(Set<String> compositeDefinitions, CQLModel model, SaveUpdateCQLResult result, Map<String, String> componentMeasureDefinitionReturnTypes) {

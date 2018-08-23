@@ -1039,6 +1039,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private boolean isValidCompositeMeasureForSave(List<String> message) {
 		GWT.log("message size: " + message.size());
 		boolean valid = message.size() == 0;
+		componentMeasureDisplay.getSuccessMessage().clearAlert();
 		if(!valid) {
 			String errorMessage = "";
 			if(message.size() > 0) {
@@ -1246,6 +1247,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext.get().getMeasureService().searchComponentMeasures(searchModel, new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
 			public void onFailure(Throwable caught) {
+				componentMeasureDisplay.getSuccessMessage().clearAlert();
 				componentMeasureDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null,
 						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
@@ -1254,6 +1256,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(ManageMeasureSearchModel result) {
+				componentMeasureDisplay.getSuccessMessage().clearAlert();
 				if ((result.getResultsTotal() == 0) && !lastSearchText.isEmpty()) {
 					componentMeasureDisplay.getErrorMessageDisplay()
 							.createAlert(MatContext.get().getMessageDelegate().getNoMeasuresMessage());

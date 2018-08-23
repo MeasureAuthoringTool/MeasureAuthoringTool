@@ -51,9 +51,11 @@ import mat.client.shared.MatTextCell;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.MeasureSearchModel;
+import mat.shared.StringUtility;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
 	
@@ -64,6 +66,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	FlowPanel flowPanel = new FlowPanel();
 	Form componentMeasureForm = new Form();
 	private MessageAlert errorMessages = new ErrorMessageAlert();
+	private MessageAlert successMessage = new SuccessMessageAlert();
+
 	protected HelpBlock helpBlock = new HelpBlock();
 	FormGroup messageFormGroup = new FormGroup();
 	private Panel availableMeasuresPanel = new Panel();
@@ -99,6 +103,14 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		return errorMessages;
 	}
 	
+	public MessageAlert getSuccessMessage() {
+		return successMessage;
+	}
+
+	public void setSuccessMessage(MessageAlert successMessage) {
+		this.successMessage = successMessage;
+	}
+	
 	public void clearFields(boolean isEdit) {
 		if(!isEdit) {
 			aliasMapping.clear();
@@ -109,6 +121,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		buildAvailableMeasuresTable();
 		searchWidgetBootStrap.getSearchBox().setText("");
 		errorMessages.clearAlert();
+		successMessage.clearAlert();
 		helpBlock.setText("");
 		helpBlock.setTitle("");
 	}
@@ -151,7 +164,9 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		componentMeasureForm.add(messageFormGroup);
 		
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
+		successMessage.getElement().setId("successMessages_SuccessMessageDisplay");
 		flowPanel.add(errorMessages);
+		flowPanel.add(successMessage);
 		flowPanel.add(instructions);
 		flowPanel.add(componentMeasureForm);
 		flowPanel.add(contentPanel);
@@ -260,6 +275,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 			@Override
 			public void update(int index, Result object, String value) {
 				aliasMapping.put(object.getId(), value);
+				successMessage.clearAlert();
 				errorMessages.clearAlert();
 			}
 		});
@@ -414,6 +430,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 					@Override
 					public void update(int index, Result object, Boolean value) {
+						successMessage.clearAlert();
 						errorMessages.clearAlert();
 						selectionModel.setSelected(object, value);
 						if (value) {
@@ -460,6 +477,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		replaceColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
+				successMessage.clearAlert();
 				errorMessages.clearAlert();
 				String measureId = object.getId();
 				EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox = new EditIncludedComponentMeasureDialogBox("Replace Component Measure");
@@ -474,18 +492,25 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private void replaceComponentMeasure(String measureId, EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox) {
 
 		if (null != editIncludedComponentMeasureDialogBox.getSelectedList() && !editIncludedComponentMeasureDialogBox.getSelectedList().isEmpty()) {
+			String replaceMessage = "";
 			for(ManageMeasureSearchModel.Result currentComponentMeasure: appliedComponentMeasuresList) {
 				if(currentComponentMeasure.getId().equals(measureId)) {
 					appliedComponentMeasuresList.remove(currentComponentMeasure);
+					String aliasName = aliasMapping.containsKey(measureId) ? " " + aliasMapping.get(measureId) : "";
+					replaceMessage += currentComponentMeasure.getName() + " " + currentComponentMeasure.getVersion() + " has been saved as the alias" + aliasName  + ".";
 				}
 			}
 			appliedComponentMeasuresList.addAll(editIncludedComponentMeasureDialogBox.getSelectedList());
 			if(aliasMapping.containsKey(measureId)) {
 				aliasMapping.remove(measureId);
+				
 			}
 			buildAppliedComponentMeasuresTable();
 			buildAvailableMeasuresTable();
 			editIncludedComponentMeasureDialogBox.getDialogModal().hide();	
+			if(!StringUtility.isEmptyOrNull(replaceMessage)) {
+				getSuccessMessage().createAlert(replaceMessage);
+			}
 		} else {
 			editIncludedComponentMeasureDialogBox.getErrorMessageAlert().createAlert("Please select a Component Measure to replace.");
 		}
@@ -511,6 +536,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		deleteColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				successMessage.clearAlert();
 				errorMessages.clearAlert();
 				List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 				helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");

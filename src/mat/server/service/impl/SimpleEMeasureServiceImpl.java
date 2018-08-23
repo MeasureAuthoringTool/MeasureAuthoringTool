@@ -809,13 +809,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		zip.close();
 		return baos.toByteArray();
 	}
-	
-	private byte[] combineByteArray(byte[] one, byte[] two) {
-		byte[] combined = new byte[one.length + two.length];
-		System.arraycopy(one, 0, combined, 0, one.length);
-		System.arraycopy(two, 0, combined, one.length, two.length);
-		return combined;
-	}
 
 	private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber, MeasureExport measureExport) {
 		if(measureExport.getHumanReadable() == null) {

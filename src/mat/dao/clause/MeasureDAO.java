@@ -5,7 +5,6 @@ import java.util.List;
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
-import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;

@@ -30,7 +30,5 @@ public interface ExportDisplay extends BaseDisplay {
 
 	boolean isCompositeMeasurePackageRadio();
 
-	void showCompositeMeasure();
-
-	void hideCompositeMeasure();
+	void showCompositeMeasure(boolean isComposite);
 }

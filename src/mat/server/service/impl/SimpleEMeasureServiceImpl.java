@@ -980,7 +980,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			result.measureName = getMeasureName(measureId).getaBBRName();
 			exportDate = getMeasureName(measureId).getExportedDate();
 			MeasureExport me = getMeasureExport(measureId);
-			String currentReleaseVersion = me.getMeasure().getReleaseVersion();
+			String currentReleaseVersion = me.getMeasure().getReleaseVersion().replace(".", "_");
 			String sequance = format.format(fileNameCounter++);
 			if (me.getMeasure().getReleaseVersion().equals("v3")) {
 				createFilesInBulkZip(measureId, exportDate, me, filesMap, sequance);

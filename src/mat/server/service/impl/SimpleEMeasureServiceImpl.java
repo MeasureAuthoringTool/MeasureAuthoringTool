@@ -26,10 +26,10 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipOutputStream;
 import org.cqframework.cql.tools.formatter.CQLFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -281,14 +281,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXML);
 		
 		if(measureExport.getCql() == null) {
-			String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
-	
-			if (cqlFileString != null && !cqlFileString.isEmpty()) {
-				CQLFormatter formatter = new CQLFormatter(); 
-				cqlFileString = formatter.format(cqlFileString);
-			}
-			measureExport.setCql(cqlFileString);
-			measureExportDAO.save(measureExport);
+			createCQLFileString(measureExport, cqlModel);
 		}
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
@@ -314,6 +307,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
+	private void createCQLFileString(MeasureExport measureExport, CQLModel cqlModel) throws IOException {
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+
+		if (cqlFileString != null && !cqlFileString.isEmpty()) {
+			CQLFormatter formatter = new CQLFormatter(); 
+			cqlFileString = formatter.format(cqlFileString);
+		}
+		measureExport.setCql(cqlFileString);
+		measureExportDAO.save(measureExport);
+	}
+
 	private void getIncludedCQLLibs(ExportResult result, XmlProcessor xmlProcessor) throws XPathExpressionException {
 
 		String xPathForIncludedLibs = "//allUsedCQLLibs/lib[not( preceding::lib/@id =@id)]";
@@ -322,7 +326,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		for (int i = 0; i < includedCQLLibNodes.getLength(); i++) {
 			Node libNode = includedCQLLibNodes.item(i);
 			
-			if(!getIsComoposite(libNode)) {
+			if(!isComposite(libNode)) {
 				String libId = libNode.getAttributes().getNamedItem("id").getNodeValue();
 				
 				CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
@@ -396,7 +400,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		for (int i = 0; i < includedCQLLibNodes.getLength(); i++) {
 			Node libNode = includedCQLLibNodes.item(i);
-			if(!getIsComoposite(libNode)) {
+			if(!isComposite(libNode)) {
 				String libId = libNode.getAttributes().getNamedItem("id").getNodeValue();
 				CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
 				CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
@@ -461,7 +465,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		for (int i = 0; i < includedCQLLibNodes.getLength(); i++) {
 			Node libNode = includedCQLLibNodes.item(i);
-			if(!getIsComoposite(libNode)) {
+			if(!isComposite(libNode)) {
 				String libId = libNode.getAttributes().getNamedItem("id").getNodeValue();
 				CQLLibrary cqlLibrary = this.cqlLibraryDAO.find(libId);
 				CQLLibraryExport cqlLibraryExport = cqlLibraryExportDAO.findByLibraryId(cqlLibrary.getId());
@@ -492,7 +496,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	}
 	
-	private boolean getIsComoposite(Node libNode) {
+	private boolean isComposite(Node libNode) {
 		return libNode.getAttributes().getNamedItem("isComponent") != null && 
 				("true").equals(libNode.getAttributes().getNamedItem("isComponent").getNodeValue());
 	}
@@ -720,12 +724,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		if (me.getMeasure().getReleaseVersion().equals("v3")) {
 			result.zipbarr = getZipBarr(measureId, exportDate, me, me.getMeasure().getReleaseVersion());
 		} else {
-			String currentRealeaseVersion = me.getMeasure().getReleaseVersion();
-			if(currentRealeaseVersion.contains(".")){
-		    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
-		    }
+			String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
 			FileNameUtility fnu = new FileNameUtility();
-			String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() +"_" + currentRealeaseVersion);
+			String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() +"_" + currentReleaseVersion);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
 		    getZipBarr(measureId, me, parentPath, zip);
@@ -771,6 +772,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				me.getMeasure().getReleaseVersion(), parentPath);
 	}
 	
+	private String getFormatedReleaseVersion(String currentReleaseVersion) {
+		return StringUtils.replace(currentReleaseVersion, ".", "_");
+	}
 	/**
 	 * Gets the zip barr.
 	 *
@@ -785,11 +789,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *             the exception
 	 */
 	public final byte[] getCompositeZipBarr(final String measureId, final MeasureExport me, List<ComponentMeasure> componentMeasures) throws Exception {
-		byte[] wkbkbarr = null;
-		String currentRealeaseVersion = me.getMeasure().getReleaseVersion();
-		if(currentRealeaseVersion.contains(".")){
-	    	currentRealeaseVersion = currentRealeaseVersion.replace(".", "_");
-	    }
+		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
+		currentReleaseVersion = getFormatedReleaseVersion(currentReleaseVersion);
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    ZipOutputStream zip = new ZipOutputStream(baos);
@@ -797,14 +798,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	    
 		FileNameUtility fnu = new FileNameUtility();
 		//get composite file
-		String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() +"_" + currentRealeaseVersion);
+		String parentPath = fnu.getParentPath(me.getMeasure().getaBBRName() +"_" + currentReleaseVersion);
 		getZipBarr(measureId, me, parentPath, zip);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
 			String getComponentMeasureId = measure.getComponentMeasureId();
-			MeasureExport ComponentMeasureExport = getMeasureExport(getComponentMeasureId);
-			String componentParentPath = parentPath + File.separator + fnu.getParentPath(ComponentMeasureExport.getMeasure().getaBBRName() +"_" + currentRealeaseVersion); 
-			getZipBarr(getComponentMeasureId, ComponentMeasureExport, componentParentPath, zip);
+			MeasureExport componentMeasureExport = getMeasureExport(getComponentMeasureId);
+			String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
+			getZipBarr(getComponentMeasureId, componentMeasureExport, componentParentPath, zip);
 		}
 		
 		zip.close();
@@ -982,15 +983,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			result.measureName = getMeasureName(measureId).getaBBRName();
 			exportDate = getMeasureName(measureId).getExportedDate();
 			MeasureExport me = getMeasureExport(measureId);
-			String currentReleaseVersion = me.getMeasure().getReleaseVersion().replace(".", "_");
-			String sequance = format.format(fileNameCounter++);
+			String currentReleaseVersion = getFormatedReleaseVersion(me.getMeasure().getReleaseVersion());
+			String sequence = format.format(fileNameCounter++);
 			if (me.getMeasure().getReleaseVersion().equals("v3")) {
-				createFilesInBulkZip(measureId, exportDate, me, filesMap, sequance);
+				createFilesInBulkZip(measureId, exportDate, me, filesMap, sequence);
 			} else if(me.getMeasure().getIsCompositeMeasure()) {
-				createCompositeFilesInBuildZip(measureId, me, filesMap, sequance, currentReleaseVersion, sequance);
+				createCompositeFilesInBuildZip(measureId, me, filesMap, sequence, currentReleaseVersion, sequence);
 			} else {
-				String parentPath = fnu.getParentPath(sequance +"_"+ result.measureName + "_" + currentReleaseVersion);
-				createFilesInBulkZip(measureId, me, filesMap, sequance, parentPath);
+				String parentPath = fnu.getParentPath(sequence +"_"+ result.measureName + "_" + currentReleaseVersion);
+				createFilesInBulkZip(measureId, me, filesMap, sequence, parentPath);
 			}
 		}
 
@@ -1057,9 +1058,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
 			String getComponentMeasureId = measure.getComponentMeasureId();
-			MeasureExport ComponentMeasureExport = getMeasureExport(getComponentMeasureId);
-			String componentParentPath = parentPath + File.separator + fnu.getParentPath(ComponentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
-			createFilesInBulkZip(getComponentMeasureId, ComponentMeasureExport, filesMap, format, componentParentPath);
+			MeasureExport componentMeasureExport = getMeasureExport(getComponentMeasureId);
+			String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
+			createFilesInBulkZip(getComponentMeasureId, componentMeasureExport, filesMap, format, componentParentPath);
 		}
 	}
 

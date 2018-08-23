@@ -129,37 +129,26 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void showCompositeMeasure() {
-		simpleXMLRadio.setVisible(false);
-		hqmfRadio.setVisible(false);
-		humanReadableRadio.setVisible(false);
-		cqlLibraryRadio.setVisible(false);
-		elmRadio.setVisible(false);
-		jsonRadio.setVisible(false);
-		eCQMPackageRadio.setVisible(false);
-		compositeMeasurePackageRadio.setVisible(true);
-	}
-	@Override
-	public void hideCompositeMeasure() {
-		simpleXMLRadio.setVisible(true);
-		hqmfRadio.setVisible(true);
-		humanReadableRadio.setVisible(true);
-		cqlLibraryRadio.setVisible(true);
-		elmRadio.setVisible(true);
-		jsonRadio.setVisible(true);
-		eCQMPackageRadio.setVisible(true);
-		compositeMeasurePackageRadio.setVisible(false);
+	public void showCompositeMeasure(boolean isComposite) {
+		simpleXMLRadio.setVisible(!isComposite);
+		hqmfRadio.setVisible(!isComposite);
+		humanReadableRadio.setVisible(!isComposite);
+		cqlLibraryRadio.setVisible(!isComposite);
+		elmRadio.setVisible(!isComposite);
+		jsonRadio.setVisible(!isComposite);
+		eCQMPackageRadio.setVisible(!isComposite);
+		compositeMeasurePackageRadio.setVisible(isComposite);
 	}
 
-	private void resetRadioButtonValues(boolean compositeMeasure) {
+	private void resetRadioButtonValues(boolean isComposite) {
 		simpleXMLRadio.setValue(false);
 		hqmfRadio.setValue(false);
 		humanReadableRadio.setValue(false);
 		cqlLibraryRadio.setValue(false);
 		elmRadio.setValue(false);
 		jsonRadio.setValue(false);
-		eCQMPackageRadio.setValue(!compositeMeasure);
-		compositeMeasurePackageRadio.setValue(compositeMeasure);
+		eCQMPackageRadio.setValue(!isComposite);
+		compositeMeasurePackageRadio.setValue(isComposite);
 	}
 
 	@Override

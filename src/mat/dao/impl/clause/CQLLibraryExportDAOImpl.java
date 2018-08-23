@@ -24,12 +24,7 @@ public class CQLLibraryExportDAOImpl extends GenericDAO<CQLLibraryExport, String
 		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryExport.class);
 		criteria.add(Restrictions.eq("cqlLibrary.id", libraryId));
 		List<CQLLibraryExport> results =  criteria.list();
-		if(!results.isEmpty()) {
-			return results.get(0);
-		}
-		else {
-			return null;
-		}
+		return !results.isEmpty() ? results.get(0) : null;
 	}
 	
 }

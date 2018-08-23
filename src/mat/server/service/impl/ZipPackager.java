@@ -148,7 +148,7 @@ public class ZipPackager {
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 						
 			if(MatContext.get().isCQLMeasure(releaseVersion)){
-				addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
+				addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
 				  
 		}catch(Exception e){
@@ -241,7 +241,7 @@ public class ZipPackager {
 			filesMap.put(emeasureXMLPath, emeasureXMLStr.getBytes());
 			
 			if(isCQLMeasure){
-				addCQL_ELM(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
+				addVersion5Exports(filesMap, cqlExportResult, elmExportResult, parentPath, jsonExportResult);
 			}
 			
 		}catch(Exception e){
@@ -258,7 +258,7 @@ public class ZipPackager {
 	 * @param parentPath
 	 * @param jsonExportResult 
 	 */
-	private void addCQL_ELM(Map<String, byte[]> filesMap,
+	private void addVersion5Exports(Map<String, byte[]> filesMap,
 			ExportResult cqlExportResult, ExportResult elmExportResult,
 			String parentPath, ExportResult jsonExportResult) {
 				

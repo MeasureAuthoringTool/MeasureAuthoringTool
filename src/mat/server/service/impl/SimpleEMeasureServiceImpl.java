@@ -786,7 +786,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	public final void getZipBarr(final String measureId, final MeasureExport me, final String parentPath, ZipOutputStream zip) throws Exception {
 		String simpleXmlStr = me.getSimpleXML();
-		String emeasureHTMLStr = createOrGetHumanReadibleFile(measureId, me, simpleXmlStr);
+		String emeasureHTMLStr = createOrGetHumanReadableFile(measureId, me, simpleXmlStr);
 		ExportResult emeasureExportResult = createOrGetHQMF(measureId);
 		String emeasureXML = emeasureExportResult.export;
 
@@ -1063,7 +1063,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		byte[] wkbkbarr = null;
 
 		String simpleXmlStr = me.getSimpleXML();
-		String emeasureHTMLStr = createOrGetHumanReadibleFile(measureId, me, simpleXmlStr);
+		String emeasureHTMLStr = createOrGetHumanReadableFile(measureId, me, simpleXmlStr);
 		ExportResult emeasureExportResult = createOrGetHQMF(measureId);
 		String emeasureXMLStr = emeasureExportResult.export;
 		String emeasureName = me.getMeasure().getaBBRName();
@@ -1158,7 +1158,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return cqlExportResult;
 	}
 	
-	public String createOrGetHumanReadibleFile(String measureId, MeasureExport measureExport, String simpleXmlStr) throws Exception {
+	public String createOrGetHumanReadableFile(String measureId, MeasureExport measureExport, String simpleXmlStr) throws Exception {
 		//if measure export is null then create the file
 		if(measureExport.getHumanReadable() == null) {
 			measureExport.setHumanReadable(getHumanReadableForMeasure(measureId, simpleXmlStr, measureExport.getMeasure().getReleaseVersion(), measureExport));

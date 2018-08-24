@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.sun.media.jfxmedia.logging.Logger;
-
 import mat.model.clause.Measure;
 import mat.server.export.ExportResult;
 import mat.server.service.MeasurePackageService;
@@ -75,7 +73,6 @@ public class BulkExportServlet extends HttpServlet {
 				PrintWriter out = resp.getWriter();
 				out.println("Exceeded Limit: " + humanReadableByteCount(new Long(e.getMessage().split(":")[1])));
 			} else {
-				System.out.println(e);
 				throw new ServletException(e);
 			}
 

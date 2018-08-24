@@ -369,20 +369,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		
-		String jsonString = "";
 
 		// if the cqlFile String is blank, don't even parse it.
 		if (!cqlFileString.isEmpty()) {
 			SaveUpdateCQLResult jsonResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-			jsonString = jsonResult.getJsonString();
+			result.export = jsonResult.getJsonString();
 			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		} else {
-			jsonString = "";
+			result.export = "";
 			result.measureName = measureExport.getMeasure().getaBBRName();
 			result.setCqlLibraryName(result.measureName);
 		}
-
-		result.export = jsonString;
 
 		getIncludedCQLJSONs(result, xmlProcessor);
 
@@ -438,20 +435,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
-		String elmString = "";
 
 		// if the cqlFile String is blank, don't even parse it.
 		if (!cqlFileString.isEmpty()) {
 			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-			elmString = elmResult.getElmString();
+			result.export = elmResult.getElmString();
 			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		} else {
-			elmString = "";
+			result.export = "";
 			result.measureName = measureExport.getMeasure().getaBBRName();
 			result.setCqlLibraryName(result.measureName);
 		}
-		
-		result.export = elmString;
 
 		getIncludedCQLELMs(result, xmlProcessor);
 
@@ -613,8 +607,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
 		XMLUtility xmlUtility = new XMLUtility();
-		String html = xmlUtility.applyXSL(emeasureXMLStr, xmlUtility.getXMLResource(conversionFileHtml));
-		return html;
+		return xmlUtility.applyXSL(emeasureXMLStr, xmlUtility.getXMLResource(conversionFileHtml));
 	}
 
 	/*
@@ -849,9 +842,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber, MeasureExport measureExport) {
-		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
-		return html;
-
+		return HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
 	}
 	
 
@@ -1208,12 +1199,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = fileString;
-		
-		if (fileString == null) {
-			result.setCqlLibraryName(result.measureName);
-		} else {
-			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
-		}
+		result.setCqlLibraryName(fileString == null ? result.measureName : cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
+
 		return result;
 	}
 

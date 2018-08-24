@@ -28,6 +28,7 @@ import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.server.service.MeasureLibraryService;
@@ -259,8 +260,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportELMFile(HttpServletResponse resp, String id, String type) throws Exception {
-
-		ExportResult export = getService().getELMFile(id);
+		MeasureExport measureExport = getService().getMeasureExport(id);
+		ExportResult export = getService().createOrGetELMLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
@@ -282,8 +283,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportJSONFile(HttpServletResponse resp, String id, String type) throws Exception {
-
-		ExportResult export = getService().getJSONFile(id);
+		MeasureExport measureExport = getService().getMeasureExport(id);
+		ExportResult export = getService().createOrGetJSONLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
@@ -305,7 +306,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type) throws Exception {
-		ExportResult export = getService().getCQLLibraryFile(id);
+		MeasureExport measureExport = getService().getMeasureExport(id);
+		ExportResult export = getService().createOrGetCQLLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
@@ -436,9 +438,9 @@ public class ExportServlet extends HttpServlet {
 		ExportResult export;
 		
 		if(currentReleaseVersion.equals("v3")) {
-			export = getService().getHQMFForV3Measure(measureId);
+			export = getService().createOrGetHQMFForv3Measure(measureId);
 		} else {
-			export = getService().getHQMF(measureId);
+			export = getService().createOrGetHQMF(measureId);
 		}
 		return export;
 	}
@@ -463,8 +465,8 @@ public class ExportServlet extends HttpServlet {
 	private void exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure)
 			throws Exception {
 		String currentReleaseVersion = measure.getReleaseVersion();
-		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureHTML(id)
-				: getService().getHumanReadable(id, currentReleaseVersion);
+		ExportResult export = currentReleaseVersion.equals("v3") ? getService().createOrGetEMeasureHTML(id)
+				: getService().createOrGetHumanReadable(id, currentReleaseVersion);
 		if (SAVE.equals(type)) {
 			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME

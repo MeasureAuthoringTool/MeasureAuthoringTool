@@ -558,7 +558,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		MeasureExport measureExport = getMeasureExport(measureId);
 		ExportResult result = createOrGetHQMFForv3Measure(measureId);
 		if(measureExport.getHumanReadable() == null) {
-			measureExport.setHumanReadable(emeasureXMLToEmeasureHTML(result.export, getMeasureExport(measureId)));
+			measureExport.setHumanReadable(createOrGetEmeasureXMLToEmeasureHTML(result.export, getMeasureExport(measureId)));
 			measureExportDAO.save(measureExport);
 		}
 		String html = measureExport.getHumanReadable();
@@ -598,7 +598,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - String.
 	 * @return String. *
 	 */
-	private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
+	private String createOrGetEmeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
 		if(measureExport.getHumanReadable() == null) {
 			XMLUtility xmlUtility = new XMLUtility();
 			String html = xmlUtility.applyXSL(emeasureXMLStr, xmlUtility.getXMLResource(conversionFileHtml));
@@ -607,6 +607,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		}
 		
 		return measureExport.getHumanReadable();
+	}
+	
+	private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr, final MeasureExport measureExport) {
+		XMLUtility xmlUtility = new XMLUtility();
+		String html = xmlUtility.applyXSL(emeasureXMLStr, xmlUtility.getXMLResource(conversionFileHtml));
+		return html;
 	}
 
 	/*
@@ -907,7 +913,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				+ "<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
 		emeasureXMLStr = repor + emeasureXMLStr.substring(repee.length());
 		if(me.getHumanReadable() == null) {
-			me.setHumanReadable(emeasureXMLToEmeasureHTML(emeasureXMLStr, me));
+			me.setHumanReadable(createOrGetEmeasureXMLToEmeasureHTML(emeasureXMLStr, me));
 			measureExportDAO.save(me);
 		}
 		String emeasureHTMLStr = me.getHumanReadable();
@@ -1128,7 +1134,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + su.nl
 				+ "<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
 		emeasureXMLStr = repor + emeasureXMLStr.substring(repee.length());
-		String emeasureHTMLStr = emeasureXMLToEmeasureHTML(emeasureXMLStr, me);
+		String emeasureHTMLStr = createOrGetEmeasureXMLToEmeasureHTML(emeasureXMLStr, me);
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);

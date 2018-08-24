@@ -279,18 +279,23 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXML = measureExport.getSimpleXML();
 
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXML);
-		
-		if(measureExport.getCql() == null) {
-			createCQLFileString(measureExport, cqlModel);
-		}
-		ExportResult result = new ExportResult();
-		result.measureName = measureExport.getMeasure().getaBBRName();
-		result.export = measureExport.getCql();
+
 		
 		// get the name from the simple xml
 		String xPathName = "/measure/cqlLookUp[1]/library[1]";
 		XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
 		Node cqlFileName = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), xPathName);
+		
+		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+
+		if (cqlFileString != null && !cqlFileString.isEmpty()) {
+			CQLFormatter formatter = new CQLFormatter(); 
+			cqlFileString = formatter.format(cqlFileString);
+		}
+
+		ExportResult result = new ExportResult();
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		result.export = cqlFileString;
 		
 		// if the cql file name is blank(before 4.5 measures), then we'll give the file
 		// name as
@@ -305,17 +310,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		getIncludedCQLLibs(result, xmlProcessor);
 
 		return result;
-	}
-
-	private void createCQLFileString(MeasureExport measureExport, CQLModel cqlModel) throws IOException {
-		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
-
-		if (cqlFileString != null && !cqlFileString.isEmpty()) {
-			CQLFormatter formatter = new CQLFormatter(); 
-			cqlFileString = formatter.format(cqlFileString);
-		}
-		measureExport.setCql(cqlFileString);
-		measureExportDAO.save(measureExport);
 	}
 
 	private void getIncludedCQLLibs(ExportResult result, XmlProcessor xmlProcessor) throws XPathExpressionException {
@@ -374,19 +368,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
+		
+		String jsonString = "";
 
-		if(measureExport.getJson() == null) {
-			SaveUpdateCQLResult jsonResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-			measureExport.setJson(jsonResult.getJsonString());
-			measureExportDAO.save(measureExport);
-		}
+		// if the cqlFile String is blank, don't even parse it.
 		if (!cqlFileString.isEmpty()) {
+			SaveUpdateCQLResult jsonResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			jsonString = jsonResult.getJsonString();
 			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		} else {
+			jsonString = "";
+			result.measureName = measureExport.getMeasure().getaBBRName();
 			result.setCqlLibraryName(result.measureName);
 		}
 
-		result.export = measureExport.getJson();
+		result.export = jsonString;
 
 		getIncludedCQLJSONs(result, xmlProcessor);
 
@@ -442,17 +438,20 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel, "");
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
-		if(measureExport.getElm() == null) {
-			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
-			measureExport.setElm(elmResult.getElmString());
-			measureExportDAO.save(measureExport);
-		}
+		String elmString = "";
+
+		// if the cqlFile String is blank, don't even parse it.
 		if (!cqlFileString.isEmpty()) {
+			SaveUpdateCQLResult elmResult = CQLUtil.generateELM(cqlModel, cqlLibraryDAO);
+			elmString = elmResult.getElmString();
 			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		} else {
+			elmString = "";
+			result.measureName = measureExport.getMeasure().getaBBRName();
 			result.setCqlLibraryName(result.measureName);
 		}
-		result.export = measureExport.getElm();
+		
+		result.export = elmString;
 
 		getIncludedCQLELMs(result, xmlProcessor);
 
@@ -500,43 +499,46 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return libNode.getAttributes().getNamedItem("isComponent") != null && 
 				("true").equals(libNode.getAttributes().getNamedItem("isComponent").getNodeValue());
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.SimpleEMeasureService#getEMeasureXML(java.lang.String)
-	 */
-	@Override
-	public final ExportResult getHQMFForV3Measure(final String measureId) throws Exception {
-		MeasureExport measureExport = getMeasureExport(measureId);
-		return getHQMFForv3Measure(measureId, measureExport);
-	}
 
 	/**
 	 * *.
 	 * 
 	 * @param measureId
 	 *            - String.
-	 * @param measureExport
-	 *            - MeasureExport.
 	 * @return ExportResult.
 	 * @throws Exception
 	 *             - Exception.
 	 */
-	private final ExportResult getHQMFForv3Measure(final String measureId, final MeasureExport measureExport) throws Exception {
-		XMLUtility xmlUtility = new XMLUtility();
-		if(measureExport.getHqmf() == null) {
-			String tempXML = xmlUtility.applyXSL(measureExport.getSimpleXML(), xmlUtility.getXMLResource(conversionFile1));
-			String eMeasureXML = xmlUtility.applyXSL(tempXML, xmlUtility.getXMLResource(conversionFile2));
-			measureExport.setHqmf(eMeasureXML);
-			measureExportDAO.save(measureExport);
-		}
+	@Override
+	public final ExportResult getHQMFForv3Measure(final String measureId) throws Exception {
+		MeasureExport measureExport = getMeasureExport(measureId);
+		
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
-		result.export = measureExport.getHqmf();
+		result.export = getHQMFForv3MeasureString(measureId, measureExport);
 
 		return result;
+	}
+	
+	public final ExportResult createOrGetHQMFForv3Measure(final String measureId) {
+		MeasureExport measureExport = getMeasureExport(measureId);
+		ExportResult result = new ExportResult();
+		
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		if(measureExport.getHqmf() == null) {
+			measureExport.setHqmf(getHQMFForv3MeasureString(measureId, measureExport));
+			measureExportDAO.save(measureExport);
+		}
+		result.export = measureExport.getHqmf();
+		return result;
+	}
+	
+	private String getHQMFForv3MeasureString(final String measureId, final MeasureExport measureExport) {
+		XMLUtility xmlUtility = new XMLUtility();
+		String tempXML = xmlUtility.applyXSL(measureExport.getSimpleXML(), xmlUtility.getXMLResource(conversionFile1));
+		String eMeasureXML = xmlUtility.applyXSL(tempXML, xmlUtility.getXMLResource(conversionFile2));
+		
+		return eMeasureXML;
 	}
 
 	/*
@@ -547,8 +549,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	@Override
 	public final ExportResult getEMeasureHTML(final String measureId) throws Exception {
-		ExportResult result = getHQMFForV3Measure(measureId);
+		ExportResult result = getHQMFForv3Measure(measureId);
 		String html = emeasureXMLToEmeasureHTML(result.export, getMeasureExport(measureId));
+		result.export = html;
+		return result;
+	}
+	
+	@Override
+	public final ExportResult createOrGetEMeasureHTML(final String measureId) throws Exception {
+		MeasureExport measureExport = getMeasureExport(measureId);
+		ExportResult result = createOrGetHQMFForv3Measure(measureId);
+		if(measureExport.getHumanReadable() == null) {
+			measureExport.setHumanReadable(emeasureXMLToEmeasureHTML(result.export, getMeasureExport(measureId)));
+			measureExportDAO.save(measureExport);
+		}
+		String html = measureExport.getHumanReadable();
 		result.export = html;
 		return result;
 	}
@@ -560,6 +575,20 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		ExportResult exportResult = new ExportResult();
 		exportResult.export = emeasureHTMLStr;
+		exportResult.measureName = measureExport.getMeasure().getaBBRName();
+		return exportResult;
+	}
+	
+	@Override
+	public final ExportResult createOrGetHumanReadable(final String measureId, final String measureVersionNumber) throws Exception {
+		MeasureExport measureExport = getMeasureExport(measureId);
+		if(measureExport.getHumanReadable() == null) {
+			measureExport.setHumanReadable(getHumanReadableForMeasure(measureId, measureExport.getSimpleXML(), measureVersionNumber, measureExport));
+			measureExportDAO.save(measureExport);
+		}
+
+		ExportResult exportResult = new ExportResult();
+		exportResult.export = measureExport.getHumanReadable();
 		exportResult.measureName = measureExport.getMeasure().getaBBRName();
 		return exportResult;
 	}
@@ -758,17 +787,18 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 */
 	public final void getZipBarr(final String measureId, final MeasureExport me, final String parentPath, ZipOutputStream zip) throws Exception {
 		String simpleXmlStr = me.getSimpleXML();
-		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion(), me);
-		ExportResult emeasureExportResult = getHQMF(measureId);
+		String emeasureHTMLStr = createOrGetHumanReadibleFile(measureId, me, simpleXmlStr);
+		ExportResult emeasureExportResult = createOrGetHQMF(measureId);
 		String emeasureXML = emeasureExportResult.export;
 
-		ExportResult exportResult = getCQLLibraryFile(measureId);
-		ExportResult elmExportResult = getELMFile(measureId);
-		ExportResult jsonExportResult = getJSONFile(measureId);
+		MeasureExport measureExport = getMeasureExport(measureId);
+		ExportResult cqlExportResult= createOrGetCQLLibraryFile(measureId, measureExport);
+		ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
+		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
 		ZipPackager zp = new ZipPackager();
 		zp.getZipBarr(me.getMeasure().getaBBRName(), zip, (new Date()).toString(), emeasureHTMLStr,
-				simpleXmlStr, emeasureXML, exportResult, elmExportResult, jsonExportResult,
+				simpleXmlStr, emeasureXML, cqlExportResult, elmExportResult, jsonExportResult,
 				me.getMeasure().getReleaseVersion(), parentPath);
 	}
 	
@@ -813,32 +843,43 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber, MeasureExport measureExport) {
-		if(measureExport.getHumanReadable() == null) {
-			measureExport.setHumanReadable(HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO));
-			measureExportDAO.save(measureExport);
-		}
-		return measureExport.getHumanReadable();
+		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
+		return html;
 
 	}
+	
 
 	public ExportResult getHQMF(String measureId) {
 		MeasureExport measureExport = getMeasureExport(measureId);
+		
+		ExportResult result = new ExportResult();
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		result.export = getHQMFString(measureExport);
+		return result;
+	}
+	
+	public ExportResult createOrGetHQMF(String measureId) {
+		MeasureExport measureExport = getMeasureExport(measureId);
 		if(measureExport.getHqmf() == null) {
-			Generator hqmfGenerator = hqmfGeneratoryFactory.getHQMFGenerator(measureExport.getMeasure().getReleaseVersion());
-			String hqmf = "";
-			try {
-				hqmf = hqmfGenerator.generate(measureExport);
-				measureExport.setHqmf(hqmf);
-				measureExportDAO.save(measureExport);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			measureExport.setHqmf(getHQMFString(measureExport));
+			measureExportDAO.save(measureExport);
 		}
 		
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
 		result.export = measureExport.getHqmf();
 		return result;
+	}
+	
+	private String getHQMFString(MeasureExport measureExport) {
+		Generator hqmfGenerator = hqmfGeneratoryFactory.getHQMFGenerator(measureExport.getMeasure().getReleaseVersion());
+		String hqmf = "";
+		try {
+			hqmf = hqmfGenerator.generate(measureExport);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hqmf;
 	}
 
 	/**
@@ -860,7 +901,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			String releaseVersion) throws Exception {
 		byte[] wkbkbarr = null;
 		StringUtility su = new StringUtility();
-		ExportResult emeasureXMLResult = getHQMFForV3Measure(measureId);
+		ExportResult emeasureXMLResult = createOrGetHQMFForv3Measure(measureId);
 		String emeasureName = emeasureXMLResult.measureName;
 		String emeasureXMLStr = emeasureXMLResult.export;
 		String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -888,7 +929,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 *            - String.
 	 * @return MeasureExport. *
 	 */
-	private MeasureExport getMeasureExport(final String measureId) {
+	public MeasureExport getMeasureExport(final String measureId) {
 		MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
 		if (measureExport == null) {
 			return null;
@@ -1019,24 +1060,26 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private void createFilesInBulkZip(final String measureId, final MeasureExport me,
+	public void createFilesInBulkZip(final String measureId, final MeasureExport me,
 			final Map<String, byte[]> filesMap, final String seqNum, String parentPath) throws Exception {
 
 		byte[] wkbkbarr = null;
 
 		String simpleXmlStr = me.getSimpleXML();
-		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr, me.getMeasure().getReleaseVersion(), me);
-		ExportResult emeasureExportResult = getHQMF(measureId);
+		String emeasureHTMLStr = createOrGetHumanReadibleFile(measureId, me, simpleXmlStr);
+		ExportResult emeasureExportResult = createOrGetHQMF(measureId);
 		String emeasureXMLStr = emeasureExportResult.export;
 		String emeasureName = me.getMeasure().getaBBRName();
 		String currentReleaseVersion = me.getMeasure().getReleaseVersion();
-		ExportResult cqlEportResult = getCQLLibraryFile(measureId);
-		ExportResult elmExportResult = getELMFile(measureId);
-		ExportResult jsonExportResult = getJSONFile(measureId);
+
+		MeasureExport measureExport = getMeasureExport(measureId);
+		ExportResult cqlExportResult = createOrGetCQLLibraryFile(measureId, measureExport);
+		ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
+		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, (new Date()).toString(),
-				simpleXmlStr, filesMap, seqNum, currentReleaseVersion, cqlEportResult, elmExportResult,
+				simpleXmlStr, filesMap, seqNum, currentReleaseVersion, cqlExportResult, elmExportResult,
 				jsonExportResult, parentPath);
 	}
 	
@@ -1080,7 +1123,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			final Map<String, byte[]> filesMap, final String seqNum) throws Exception {
 		byte[] wkbkbarr = null;
 		StringUtility su = new StringUtility();
-		ExportResult emeasureXMLResult = getHQMFForv3Measure(measureId, me);
+		ExportResult emeasureXMLResult = createOrGetHQMFForv3Measure(measureId);
 		String emeasureName = emeasureXMLResult.measureName;
 		String emeasureXMLStr = emeasureXMLResult.export;
 		String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -1091,14 +1134,81 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
-		ExportResult cqlExportResult = getCQLLibraryFile(measureId);
-		ExportResult elmExportResult = getELMFile(measureId);
-		ExportResult jsonExportResult = getJSONFile(measureId);
+		MeasureExport measureExport = getMeasureExport(measureId);
+		
+		ExportResult cqlExportResult= createOrGetCQLLibraryFile(measureId, measureExport);
+		ExportResult elmExportResult = createOrGetELMLibraryFile(measureId, measureExport);
+		ExportResult jsonExportResult = createOrGetJSONLibraryFile(measureId, measureExport);
 
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, exportDate, wkbkbarr, emeasureXMLStr, emeasureHTMLStr, emeasureXSLUrl,
 				(new Date()).toString(), simpleXmlStr, filesMap, seqNum, me.getMeasure().getReleaseVersion(),
 				cqlExportResult, elmExportResult, jsonExportResult);
+	}
+	
+	
+	public ExportResult createOrGetCQLLibraryFile(String measureId, MeasureExport measureExport) throws Exception {
+		ExportResult cqlExportResult = null;
+		//if measure export is null then create the file
+		if(measureExport.getCql() == null) {
+			cqlExportResult = getCQLLibraryFile(measureId);
+			measureExport.setCql(cqlExportResult.export);
+			measureExportDAO.save(measureExport);
+		} else { // else create the export result from the cql in the model and return that;
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
+			cqlExportResult = createExportResultForFile(measureExport, measureExport.getCql(), cqlModel);
+		}
+		return cqlExportResult;
+	}
+	
+	public String createOrGetHumanReadibleFile(String measureId, MeasureExport measureExport, String simpleXmlStr) throws Exception {
+		//if measure export is null then create the file
+		if(measureExport.getHumanReadable() == null) {
+			measureExport.setHumanReadable(getHumanReadableForMeasure(measureId, simpleXmlStr, measureExport.getMeasure().getReleaseVersion(), measureExport));
+			measureExportDAO.save(measureExport);
+		} 
+		return measureExport.getHumanReadable();
+	}
+	
+	public ExportResult createOrGetELMLibraryFile(String measureId, MeasureExport measureExport) throws Exception {
+		ExportResult elmExportResult = null;
+		//if measure export is null then create the file
+		if(measureExport.getElm() == null) {
+			elmExportResult = getELMFile(measureId);
+			measureExport.setElm(elmExportResult.export);
+			measureExportDAO.save(measureExport);
+		} else { // else create the export result from the elm in the model and return that;
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
+			elmExportResult = createExportResultForFile(measureExport, measureExport.getElm(), cqlModel);
+		}
+		return elmExportResult;
+	}
+	
+	public ExportResult createOrGetJSONLibraryFile(String measureId, MeasureExport measureExport) throws Exception {
+		ExportResult jsonExportResult = null;
+		//if measure export is null then create the file
+		if(measureExport.getJson() == null) {
+			jsonExportResult = getJSONFile(measureId);
+			measureExport.setJson(jsonExportResult.export);
+			measureExportDAO.save(measureExport);
+		} else { // else create the export result from the json in the model and return that;
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
+			jsonExportResult = createExportResultForFile(measureExport, measureExport.getJson(), cqlModel);
+		}
+		return jsonExportResult;
+	}
+	
+	private ExportResult createExportResultForFile(MeasureExport measureExport, String fileString, CQLModel cqlModel) {
+		ExportResult result = new ExportResult();
+		result.measureName = measureExport.getMeasure().getaBBRName();
+		result.export = fileString;
+		
+		if (fileString == null) {
+			result.setCqlLibraryName(result.measureName);
+		} else {
+			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
+		}
+		return result;
 	}
 
 	@Override

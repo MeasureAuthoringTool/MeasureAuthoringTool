@@ -6,6 +6,7 @@ import java.util.List;
 
 import mat.model.MatValueSet;
 import mat.model.clause.ComponentMeasure;
+import mat.model.clause.MeasureExport;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.shared.bonnie.error.BonnieNotFoundException;
@@ -14,8 +15,6 @@ import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 public interface SimpleEMeasureService {	
 	ExportResult getSimpleXML(String measureId) throws Exception;
-	
-	ExportResult getHQMFForV3Measure(String measureId) throws Exception;
 	
 	ExportResult getEMeasureHTML(String measureId) throws Exception;
 	
@@ -44,5 +43,23 @@ public interface SimpleEMeasureService {
 	BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException;
 
 	ExportResult getCompositeExportResult(String id, List<ComponentMeasure> componentMeasures) throws Exception;
+
+	MeasureExport getMeasureExport(String id);
+
+	ExportResult createOrGetCQLLibraryFile(String id, MeasureExport measureExport) throws Exception;
+
+	ExportResult createOrGetELMLibraryFile(String id, MeasureExport measureExport) throws Exception;
+
+	ExportResult createOrGetJSONLibraryFile(String id, MeasureExport measureExport) throws Exception;
+
+	ExportResult createOrGetEMeasureHTML(String measureId) throws Exception;
+
+	ExportResult createOrGetHQMFForv3Measure(String measureId);
+
+	ExportResult getHQMFForv3Measure(String measureId) throws Exception;
+
+	ExportResult createOrGetHQMF(String measureId);
+
+	ExportResult createOrGetHumanReadable(String measureId, String measureVersionNumber) throws Exception;
 	
 }

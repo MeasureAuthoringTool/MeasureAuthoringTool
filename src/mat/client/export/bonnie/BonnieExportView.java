@@ -41,6 +41,7 @@ public class BonnieExportView implements BaseDisplay {
 	}
 	
 	private void createAlertWidget() {
+		alertPanel.getElement().setTabIndex(0);
 		contentPanel.add(alertPanel);
 	}
 	

@@ -306,9 +306,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			result.setCqlLibraryName(cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed());
 		}
 
-		// find included CQL libraries and add them to result
 		getIncludedCQLLibs(result, xmlProcessor);
-
+		
 		return result;
 	}
 
@@ -1154,7 +1153,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		} else { // else create the export result from the cql in the model and return that;
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
 			cqlExportResult = createExportResultForFile(measureExport, measureExport.getCql(), cqlModel);
+			String simpleXML = measureExport.getSimpleXML();
+			XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
+			// find included CQL libraries and add them to result
+			getIncludedCQLLibs(cqlExportResult, xmlProcessor);
 		}
+		
 		return cqlExportResult;
 	}
 	
@@ -1177,6 +1181,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		} else { // else create the export result from the elm in the model and return that;
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
 			elmExportResult = createExportResultForFile(measureExport, measureExport.getElm(), cqlModel);
+			String simpleXML = measureExport.getSimpleXML();
+			XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
+			getIncludedCQLELMs(elmExportResult, xmlProcessor);
 		}
 		return elmExportResult;
 	}
@@ -1191,6 +1198,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		} else { // else create the export result from the json in the model and return that;
 			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureExport.getSimpleXML());
 			jsonExportResult = createExportResultForFile(measureExport, measureExport.getJson(), cqlModel);
+			String simpleXML = measureExport.getSimpleXML();
+			XmlProcessor xmlProcessor = new XmlProcessor(simpleXML);
+			getIncludedCQLJSONs(jsonExportResult, xmlProcessor);
 		}
 		return jsonExportResult;
 	}

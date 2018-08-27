@@ -494,7 +494,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		});
 		
 		getLogoutPanel().add(signout);
-		setUserNameOnButton(userFirstName);
+		getWelcomeUserPanel(userFirstName);
 		getVersionPanel(resultMatVersion);
 		setIndicatorsVisible();
 		/*

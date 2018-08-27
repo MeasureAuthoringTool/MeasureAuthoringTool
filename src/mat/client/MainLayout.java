@@ -2,10 +2,6 @@ package mat.client;
 
 import java.util.List;
 
-import org.gwtbootstrap3.client.ui.Anchor;
-import org.gwtbootstrap3.client.ui.DropDown;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.gwtbootstrap3.client.ui.Navbar;
 import org.gwtbootstrap3.client.ui.Progress;
 import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
@@ -33,7 +29,6 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
 import mat.client.shared.VerticalFlowPanel;
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
@@ -56,9 +51,9 @@ public abstract class MainLayout {
 	private static IndicatorButton showBonnieState;
 	
 	protected static FocusableWidget skipListHolder;
-	
-	private DropDown profileButton = new DropDown();
 
+	static HTML welcomeUserLabel;
+	
 	static HTML versionLabel;
 	
 	static Progress progress = new Progress();
@@ -154,6 +149,8 @@ public abstract class MainLayout {
 	
 	private HorizontalFlowPanel logOutPanel;
 	
+	private HorizontalFlowPanel welcomeUserPanel;
+	
 	private FlowPanel versionPanel;
 	
 
@@ -212,65 +209,8 @@ public abstract class MainLayout {
 		return skipListHolder;
 	}
 	
-	private void buildProfileButton() {
-		DropDownMenu menu = new DropDownMenu();
-		Anchor matAccount = new Anchor();
-		buildLogoutPanel();
-		menu.add(logOutPanel);
-		menu.add(matAccount);
-		
-		profileButton.add(menu);
-	}
-	
-	private HTML buildMatName() {
-		String headerStyle = "font-family: Arial;font-size:small;font-weight: bold;line-height:1.25;margin-top: 15px;";
-		HTML headerLabel = new HTML("<h6 style="+'"'+headerStyle+'"'+">Measure Authoring Tool</h6>");
-		return headerLabel;
-	}
-	
-	private void buildLogoutPanel() {
-		logOutPanel = new HorizontalFlowPanel();
-		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
-		logOutPanel.addStyleName("logoutPanel");
-	}
-	
-	private HorizontalPanel buildMatInfoPanel() {
-		HorizontalPanel panel = new HorizontalPanel();
-		HTML matTitle = buildMatName();
-		panel.add(matTitle);
-		panel.add(new SpacerWidget());
-		panel.add(versionPanel);
-		return panel;
-	}
-	
-	private VerticalPanel buildIndicatorPanel() {
-		showBonnieState = new IndicatorButton("Bonnie Active", "Sign into Bonnie");
-		showUMLSState = new IndicatorButton("UMLS Active", "Sign into UMLS");
-		
-		VerticalPanel vp = new VerticalPanel();
-		vp.add(showUMLSState.getPanel());
-		vp.add(showBonnieState.getPanel());
-
-		vp.addStyleName("logoutAndUMLSPanel");
-		
-		return vp;
-	}
 
 	private Panel buildTopPanel() {
-		/*
-		final Navbar navbar = new Navbar();
-		
-		HorizontalPanel matInfoPanel = buildMatInfoPanel();
-		buildProfileButton();
-		VerticalPanel indicatorPanel = buildIndicatorPanel();
-		
-		navbar.add(matInfoPanel);
-		navbar.add(indicatorPanel);
-		navbar.add(profileButton);
-		
-		return navbar;
-		*/
-		
 		final VerticalPanel topPanel = new VerticalPanel();
 		topPanel.setStylePrimaryName("topBanner");
 		HorizontalPanel horizontalBanner = new HorizontalPanel();
@@ -288,12 +228,14 @@ public abstract class MainLayout {
 		versionPanel = new VerticalFlowPanel();
 		versionPanel.getElement().setId("versionPanel_VerticalalFlowPanel");
 		versionPanel.setStyleName("versionPanel");
-		
-		
+		welcomeUserPanel = new HorizontalFlowPanel();
+		welcomeUserPanel.getElement().setId("welcomeUserPanel_HorizontalFlowPanel");
+		welcomeUserPanel.setStyleName("welcomeUserPanel");
 		VerticalPanel titleVerticalPanel = new VerticalPanel();
 		titleVerticalPanel.addStyleName("versionPanel");
 		titleVerticalPanel.add(titleImage);
 		titleVerticalPanel.add(versionPanel);
+		titleVerticalPanel.add(welcomeUserPanel);
 		horizontalBanner.add(titleVerticalPanel);
 		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
@@ -380,7 +322,18 @@ public abstract class MainLayout {
 	protected void setLogout(final HorizontalFlowPanel logOutPanel){
 		this.logOutPanel = logOutPanel;
 	}
+	
 
+	public HorizontalFlowPanel getWelcomeUserPanel(String userFirstName) {
+		welcomeUserLabel = new HTML("<h9><b>Successful login - Welcome, "+ userFirstName+"!</b></h9>");
+		welcomeUserLabel.getElement().setId("welcomeUserLabel_HTML");
+		welcomeUserLabel.getElement().setAttribute("tabIndex", "0");
+		welcomeUserLabel.setStylePrimaryName("htmlDescription");
+		
+		welcomeUserPanel.add(welcomeUserLabel);
+		return welcomeUserPanel;
+	}
+	
 
 	public FlowPanel getVersionPanel(String resultMatVersion) {
 		//Since mat-bootstrap CSS always overrides Mat css settings hardcoded inline style for version. In future need to change this.
@@ -432,9 +385,6 @@ public abstract class MainLayout {
 	
 	//method to easily remove bonnie link from page
 	public void removeBonnieLink() {
-	}
-	
-	public void setUserNameOnButton(String name) {
-		profileButton.setTitle("Welcome, " + name);
+		showBonnieState.getPanel().removeFromParent();
 	}
 }

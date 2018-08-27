@@ -490,7 +490,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	}
 	
 	private void replaceComponentMeasure(String measureId, EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox) {
-
 		if (null != editIncludedComponentMeasureDialogBox.getSelectedList() && !editIncludedComponentMeasureDialogBox.getSelectedList().isEmpty()) {
 			String replaceMessage = "";
 			for(ManageMeasureSearchModel.Result currentComponentMeasure: appliedComponentMeasuresList) {
@@ -500,11 +499,14 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 					replaceMessage += currentComponentMeasure.getName() + " " + currentComponentMeasure.getVersion() + " has been saved as the alias" + aliasName  + ".";
 				}
 			}
-			appliedComponentMeasuresList.addAll(editIncludedComponentMeasureDialogBox.getSelectedList());
+			Result selectedMeasure = editIncludedComponentMeasureDialogBox.getSelectedList().get(0);
+			appliedComponentMeasuresList.add(selectedMeasure);
 			if(aliasMapping.containsKey(measureId)) {
+				String aliasName = aliasMapping.get(measureId);
 				aliasMapping.remove(measureId);
-				
+				aliasMapping.put(selectedMeasure.getId(), aliasName);
 			}
+			
 			buildAppliedComponentMeasuresTable();
 			buildAvailableMeasuresTable();
 			editIncludedComponentMeasureDialogBox.getDialogModal().hide();	

@@ -32,6 +32,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
 import org.cqframework.cql.tools.formatter.CQLFormatter;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -40,6 +43,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import mat.client.measure.ManageCompositeMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.dao.ListObjectDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.clause.CQLLibraryDAO;
@@ -66,6 +71,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.simplexml.HumanReadableGenerator;
 import mat.server.util.CQLUtil;
+import mat.server.util.CompositeMeasureDetailUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
@@ -148,6 +154,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	@Autowired
 	private BonnieServiceImpl bonnieServiceImpl;
+	
+	@Autowired
+	private CompositeMeasureDetailUtil compositeMeasureDetailUtil;
 
 	/** MeasureExportDAO. **/
 	private HSSFWorkbook wkbk = null;
@@ -842,14 +851,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return baos.toByteArray();
 	}
 
-	private boolean checkIfComponentMeasureIsUsed(String parentSimpleXML, String componentMeasureId) throws XPathExpressionException {
+	private boolean checkIfComponentMeasureIsUsed(String parentSimpleXML, String componentMeasureId) throws MarshalException, ValidationException, IOException, MappingException, XPathExpressionException {
 		
-		XmlProcessor xmlProcessor = new XmlProcessor(parentSimpleXML);
-		String xPathForComponentMeasures = "//measure/measureDetails/componentMeasures/measure";
-		NodeList usedComponentMeasures = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForComponentMeasures);
-		for (int i = 0; i < usedComponentMeasures.getLength(); i++) {
-			Node measureNode = usedComponentMeasures.item(i);
-			String measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();
+		ManageCompositeMeasureDetailModel usedCompositeModel = compositeMeasureDetailUtil.convertXMLIntoCompositeMeasureDetailModel(parentSimpleXML);
+		List<Result> usedCompositeMeasures = usedCompositeModel.getAppliedComponentMeasures();
+		for (Result usedCompositeMeasure: usedCompositeMeasures) {
+			String measureId = String.valueOf(usedCompositeMeasure.getId());
 			measureId = StringUtils.replace(measureId, "-", "");
 			if(measureId.equals(componentMeasureId)) {
 				return true;

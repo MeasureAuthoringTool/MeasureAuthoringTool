@@ -2,6 +2,8 @@ package mat.server.bonnie;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.bonnie.api.BonnieAPI;
 import mat.server.bonnie.api.BonnieAPIv1;
+import mat.server.service.EncryptDecryptToken;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
@@ -23,8 +26,13 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 @Service
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService {
 
+	private static final Log logger = LogFactory.getLog(EncryptDecryptToken.class);
+	
 	@Autowired
 	private BonnieAPIv1 bonnieApi;
+	
+	@Autowired
+	private EncryptDecryptToken encryptDecryptToken;
 
 	/** The user DAO. */
 	@Autowired
@@ -68,6 +76,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		BonnieOAuthResult result = null;
 		User user = userDAO.find(userId);
 		try {
+			user.getUserBonnieAccessInfo().setRefreshToken(encryptDecryptToken.decryptKey(user.getUserBonnieAccessInfo().getRefreshToken()));
 			result = bonnieApi.getBonnieRefreshResult(user.getUserBonnieAccessInfo());
 		} catch (BonnieUnauthorizedException e) {
 			handleBonnieUnauthorizedException(user.getUserBonnieAccessInfo());
@@ -84,15 +93,12 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo();
 		if (userBonnieAccessInfo == null) {
 			userBonnieAccessInfo = new UserBonnieAccessInfo();
-			userBonnieAccessInfo.setAccessToken(result.getAccessToken());
-			userBonnieAccessInfo.setRefreshToken(result.getRefreshToken());
 			userBonnieAccessInfo.setUser(user);
-		} else {
-			userBonnieAccessInfo.setAccessToken(result.getAccessToken());
-			userBonnieAccessInfo.setRefreshToken(result.getRefreshToken());
-		}
-
+		} 
+		userBonnieAccessInfo.setAccessToken(encryptDecryptToken.encryptKey(result.getAccessToken()));
+		userBonnieAccessInfo.setRefreshToken( encryptDecryptToken.encryptKey(result.getRefreshToken()));
 		userBonnieAccessInfoDAO.save(userBonnieAccessInfo);
+		logger.info("Done saving "+userBonnieAccessInfo.getId());
 	}
 
 	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId)
@@ -110,8 +116,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			// with bonnie
 			throw new BonnieUnauthorizedException();
 		}
-		
 		refreshBonnieTokens(userId);
+		bonnieAccessInfo.setRefreshToken(encryptDecryptToken.decryptKey(bonnieAccessInfo.getRefreshToken()));
+		bonnieAccessInfo.setAccessToken(encryptDecryptToken.decryptKey(bonnieAccessInfo.getAccessToken()));
 		return bonnieAccessInfo;
 	}
 

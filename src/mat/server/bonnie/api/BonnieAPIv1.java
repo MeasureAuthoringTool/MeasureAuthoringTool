@@ -162,6 +162,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		String baseURL = getBonnieBaseURL();
 		String requestUrl = baseURL + uri;
 		String bearerToken = "Bearer " + token;
+		logger.info("sending toekn "+token);
 		// remove when this is in JVM variables
 		setProxyVMVariables();
 		URL url = new URL(requestUrl);

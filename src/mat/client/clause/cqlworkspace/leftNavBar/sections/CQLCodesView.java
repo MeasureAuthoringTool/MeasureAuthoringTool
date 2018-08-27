@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.leftNavBar.sections;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

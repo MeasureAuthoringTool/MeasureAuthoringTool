@@ -822,7 +822,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	    ZipOutputStream zip = new ZipOutputStream(baos);
-	    
+	    String parentSimpleXML = me.getSimpleXML();
 	    
 		FileNameUtility fnu = new FileNameUtility();
 		//get composite file
@@ -831,15 +831,33 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
 			String componentMeasureId = measure.getComponentMeasureId();
-			MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
-			String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
-			getZipBarr(componentMeasureId, componentMeasureExport, componentParentPath, zip);
+			if(checkIfComponentMeasureIsUsed(parentSimpleXML, componentMeasureId)) {
+				MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
+				String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
+				getZipBarr(componentMeasureId, componentMeasureExport, componentParentPath, zip);
+			}
 		}
 		
 		zip.close();
 		return baos.toByteArray();
 	}
 
+	private boolean checkIfComponentMeasureIsUsed(String parentSimpleXML, String componentMeasureId) throws XPathExpressionException {
+		
+		XmlProcessor xmlProcessor = new XmlProcessor(parentSimpleXML);
+		String xPathForComponentMeasures = "//measure/measureDetails/componentMeasures/measure";
+		NodeList usedComponentMeasures = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForComponentMeasures);
+		for (int i = 0; i < usedComponentMeasures.getLength(); i++) {
+			Node measureNode = usedComponentMeasures.item(i);
+			String measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();
+			measureId = StringUtils.replace(measureId, "-", "");
+			if(measureId.equals(componentMeasureId)) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
 	private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber, MeasureExport measureExport) {
 		return HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
 	}
@@ -1083,15 +1101,18 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			String format, String currentReleaseVersion, String sequance) throws Exception {
 		List<ComponentMeasure> componentMeasures = me.getMeasure().getComponentMeasures();
 		FileNameUtility fnu = new FileNameUtility();
+		String parentSimpleXML = me.getSimpleXML();
 		String parentPath = fnu.getParentPath(sequance +"_"+ me.getMeasure().getaBBRName() + "_" + currentReleaseVersion);
 		//get composite file
 		createFilesInBulkZip(measureId, me, filesMap, format, parentPath);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
-			String getComponentMeasureId = measure.getComponentMeasureId();
-			MeasureExport componentMeasureExport = getMeasureExport(getComponentMeasureId);
-			String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
-			createFilesInBulkZip(getComponentMeasureId, componentMeasureExport, filesMap, format, componentParentPath);
+			String componentMeasureId = measure.getComponentMeasureId();
+			if(checkIfComponentMeasureIsUsed(parentSimpleXML, componentMeasureId)) {
+				MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
+				String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
+				createFilesInBulkZip(componentMeasureId, componentMeasureExport, filesMap, format, componentParentPath);
+			}
 		}
 	}
 

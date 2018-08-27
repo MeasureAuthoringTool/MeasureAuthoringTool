@@ -175,8 +175,6 @@ public class ZipPackager {
 	 */
 	public void getZipBarr(String emeasureName, ZipOutputStream zip,
 						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr, ExportResult cqlExportResult, ExportResult elmExportResult, ExportResult jsonExportResult, String currentRealeaseVersion, String parentPath) {
-		byte[] ret = null;
-		
 		try{
 			String emeasureHumanReadablePath = "";
 			String emeasureXMLPath = "";

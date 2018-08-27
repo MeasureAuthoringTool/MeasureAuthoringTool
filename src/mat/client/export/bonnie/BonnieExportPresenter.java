@@ -56,16 +56,19 @@ public class BonnieExportPresenter implements MatPresenter {
 				if(caught instanceof BonnieUnauthorizedException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
 					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				}
 				
 				else if(caught instanceof BonnieServerException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
+					view.setHelpBlockMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				} 
 								
 				else {
+					view.setHelpBlockMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				}
 			}
@@ -75,6 +78,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	
 	private void initializeContent() {
 		this.view.getMeasureNameLink().setText(result.getName());
+		this.view.getMeasureNameLink().setTitle(result.getName() + " link");
 	}
 	
 	private void addClickHandlers() {
@@ -95,6 +99,7 @@ public class BonnieExportPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(VsacTicketInformation result) {
 				if(result == null) {
+					view.setHelpBlockMessage(SIGN_INTO_UMLS);
 					createErrorMessage(SIGN_INTO_UMLS);
 					Mat.hideLoadingMessage();
 				}
@@ -122,11 +127,13 @@ public class BonnieExportPresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				
 				if(caught instanceof UMLSNotActiveException) {
+					view.setHelpBlockMessage(SIGN_INTO_UMLS);
 					createErrorMessage(SIGN_INTO_UMLS);
 				}
 				if(caught instanceof BonnieUnauthorizedException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
 					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				} else {
 					createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());

@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Application{
 	
-	private static final String algorithm = "PBEWithMD5AndDES";
+	private static final String algorithm = System.getProperty("ALGORITHM");
 	
-	private static final String passwordKey = "mytestQA";
+	private static final String passwordKey = System.getProperty("PASSWORDKEY");
 	
 	@Bean
 	public StandardPBEStringEncryptor getStandardEncryptor() {

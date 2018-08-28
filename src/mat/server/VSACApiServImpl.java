@@ -299,13 +299,11 @@ public class VSACApiServImpl implements VSACApiService{
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 					VSACResponseResult vsacResponseResult = null;
 					try {
-						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(
-								UMLSSessionTicket.getTicket(sessionId).getTicket());
+						String fiveMinuteServiceTicket = vGroovyClient.getServiceTicket(UMLSSessionTicket.getTicket(sessionId).getTicket());
 							if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getRelease())) {
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndRelease(
 									cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getRelease(), fiveMinuteServiceTicket);
-							} else if (!(cqlQualityDataSetDTO.getVersion().equals("1.0") 
-									|| cqlQualityDataSetDTO.getVersion().equals("1"))) {
+							} else if (StringUtils.isNotBlank(cqlQualityDataSetDTO.getVersion())) {
 								vsacResponseResult = vGroovyClient.getMultipleValueSetsResponseByOIDAndVersion(
 										cqlQualityDataSetDTO.getOid(), cqlQualityDataSetDTO.getVersion(), fiveMinuteServiceTicket);
 							} else {

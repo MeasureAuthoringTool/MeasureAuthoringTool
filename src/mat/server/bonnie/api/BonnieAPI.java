@@ -58,8 +58,10 @@ public interface BonnieAPI {
 	 * @throws BonnieNotFoundException will throw a Bonnie Not Found Exception if the measure with the given setId does not exist 
 	 * @throws BonnieServerException will throw  Bonnie Server Exception is the Bonnie server was not able to handle the request, likely this is not an issue with the connection with MAT
 	 * @throws IOException 
+	 * @throws BonnieDoesNotExistException 
+	 * @throws BonnieBadParameterException 
 	 */
-	BonnieCalculatedResult getCalculatedResultsForMeasure(String bearerToken, String hqmfSetId) throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, IOException;
+	BonnieCalculatedResult getCalculatedResultsForMeasure(String bearerToken, String hqmfSetId) throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, IOException, BonnieBadParameterException, BonnieDoesNotExistException;
 	
 	/**
 	 * Uploads a new measure to bonnie. 
@@ -80,8 +82,9 @@ public interface BonnieAPI {
 	 * @throws BonnieAlreadyExistsException will throw a Bonnie Already Exists Exception if the measure trying to be uploaded already exists in the Bonnie System. 
 	 * @throws BonnieServerException will throw  Bonnie Server Exception is the Bonnie server was not able to handle the request, likely this is not an issue with the connection with MAT
 	 * @throws IOException 
+	 * @throws BonnieDoesNotExistException 
 	 */
-	void uploadMeasureToBonnie(String bearerToken, byte[] zipFileContents, String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException, BonnieServerException, IOException;
+	void uploadMeasureToBonnie(String bearerToken, byte[] zipFileContents, String fileName, String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException, BonnieServerException, IOException, BonnieDoesNotExistException;
 
 	/**
 	 * Updates a measure to bonnie. 

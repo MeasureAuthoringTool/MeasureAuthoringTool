@@ -1118,8 +1118,6 @@ public class CQLServiceImpl implements CQLService {
 			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		CQLModel cqlModel = new CQLModel();
-		result.setCqlModel(cqlModel);
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
 		CQLModelValidator validator = new CQLModelValidator();
 		boolean isDuplicate = false;
@@ -1157,7 +1155,7 @@ public class CQLServiceImpl implements CQLService {
 						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 					}
 				} catch (XPathExpressionException | SAXException | IOException | MarshalException | ValidationException | MappingException e) {
-					e.printStackTrace();
+					logger.debug("Exception while replacing Included Library:" + e);
 				} 
 				
 			} else { // this is part of save functionality
@@ -1207,7 +1205,7 @@ public class CQLServiceImpl implements CQLService {
 						}
 
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.debug("Exception while saving Included Library:" + e);
 					}
 				} else {
 					result.setSuccess(false);
@@ -1216,8 +1214,9 @@ public class CQLServiceImpl implements CQLService {
 			}
 		}
 
-		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
-			result.getCqlModel().setCqlIncludeLibrarys(sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
+		if (result.isSuccess()) {
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(result.getXml());
+			result.setCqlModel(cqlModel);
 			CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
 		}
 
@@ -3098,8 +3097,6 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult deleteInclude(String xml, CQLIncludeLibrary toBeModifiedIncludeObj, List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		CQLModel cqlModel = new CQLModel();
-		result.setCqlModel(cqlModel);
 		XmlProcessor processor = new XmlProcessor(xml);
 
 		if (xml != null) {
@@ -3136,8 +3133,9 @@ public class CQLServiceImpl implements CQLService {
 			}
 		}
 
-		if (result.isSuccess() && (wrapper.getCqlIncludeLibrary().size() > 0)) {
-			result.getCqlModel().setCqlIncludeLibrarys(sortIncludeLibList(wrapper.getCqlIncludeLibrary()));
+		if (result.isSuccess()) {
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(result.getXml());
+			result.setCqlModel(cqlModel);
 			CQLUtil.getIncludedCQLExpressions(cqlModel, cqlLibraryDAO);
 			logger.info(result.getXml());
 			logger.info(result.isSuccess());

@@ -245,8 +245,6 @@ public class InsertIntoAceEditorDialogBox {
 									helpBlock.setText(MatContext.get().getMessageDelegate().getERROR_SELECT_ITEM_NAME());
 									messageFormgroup.setValidationState(ValidationState.ERROR);
 								} else {
-									int columnIndex = editor.getCursorPosition().getColumn();
-									System.out.println(columnIndex);
 									if (itemTypeName.equalsIgnoreCase("Applied Value Sets/Codes")) {
 										int selectedDatatypeIndex = allQDMDatatypes.getSelectedIndex();
 										String dataType =null;

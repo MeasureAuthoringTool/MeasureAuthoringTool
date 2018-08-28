@@ -2062,6 +2062,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (m.getOwner().getId().equalsIgnoreCase(details.getId())) {
 			logger.info("Measure Deletion Started for measure Id :: " + measureID);
 			try {
+				if(m.getIsCompositeMeasure()) {
+					measurePackageService.updateComponentMeasures(m.getId(), new ArrayList<>());
+				}
 				measureDAO.delete(m);
 				logger.info("Measure Deleted Successfully :: " + measureID);
 			} catch (Exception e) {

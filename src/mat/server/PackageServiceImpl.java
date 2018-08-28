@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.measurepackage.service.PackageService;
 import mat.server.service.PackagerService;
+import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
+import mat.shared.packager.error.SaveSupplementalDataElementException;
 
 /**
  * The Class PackageServiceImpl.
@@ -78,7 +82,7 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	 * @see mat.client.measurepackage.service.PackageService#saveQDMData(mat.client.measurepackage.MeasurePackageDetail)
 	 */
 	@Override
-	public void saveQDMData(MeasurePackageDetail detail) {
+	public void saveQDMData(MeasurePackageDetail detail) throws SaveSupplementalDataElementException {
 		packagerService.saveQDMData(detail);
 	}
 
@@ -86,7 +90,7 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	 * @see mat.client.measurepackage.service.PackageService#saveRiskVariables(mat.client.measurepackage.MeasurePackageDetail)
 	 */
 	@Override
-	public void saveRiskVariables(MeasurePackageDetail currentDetail) {
+	public void saveRiskVariables(MeasurePackageDetail currentDetail) throws SaveRiskAdjustmentVariableException {
 		packagerService.saveRiskAdjVariables(currentDetail);
 		
 	}

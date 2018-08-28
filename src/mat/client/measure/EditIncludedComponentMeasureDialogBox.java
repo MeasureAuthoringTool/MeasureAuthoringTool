@@ -48,7 +48,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.buttons.CancelButton;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
@@ -300,7 +299,6 @@ public class EditIncludedComponentMeasureDialogBox {
 				if (selectedObject != null) {
 					for (ManageMeasureSearchModel.Result obj : listDataProvider.getList()) {
 						if (!obj.getId().equals(selectedObject.getId())) {
-							//obj.setSelected(false); //TODO?
 							selectionModel.setSelected(obj, false);
 						}
 					}
@@ -381,7 +379,6 @@ public class EditIncludedComponentMeasureDialogBox {
 						if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
 							isSelected = true;
 							selectionModel.setSelected(object, isSelected);
-							//selectedList.get(i).setSelected(true); //TODO
 							break;
 						}
 					}

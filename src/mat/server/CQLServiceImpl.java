@@ -76,6 +76,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.impl.MatContextServiceUtil;
+import mat.server.util.CQLLibraryWrapperMappingUtil;
 import mat.server.util.CQLUtil;
 import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.CQLValidationUtil;
@@ -1140,10 +1141,10 @@ public class CQLServiceImpl implements CQLService {
 
 					if (nodeIncludes != null) {
 						currentObj.setId(toBeModifiedObj.getId());
-						String cqlString = createIncludeLibraryXML(currentObj);
+						String cqlLibraryXML = createIncludeLibraryXML(currentObj);
 						String XPATH_EXPRESSION_INCLUDELIBRARYS = "//cqlLookUp/includeLibrarys";
 						processor.removeFromParent(nodeIncludes);
-						processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDELIBRARYS);
+						processor.appendNode(cqlLibraryXML, "includeLibrary", XPATH_EXPRESSION_INCLUDELIBRARYS);
 						processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 
 						String finalUpdatedXml = processor.transform(processor.getOriginalDoc());
@@ -1155,7 +1156,7 @@ public class CQLServiceImpl implements CQLService {
 						result.setSuccess(false);
 						result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 					}
-				} catch (XPathExpressionException | SAXException | IOException e) {
+				} catch (XPathExpressionException | SAXException | IOException | MarshalException | ValidationException | MappingException e) {
 					e.printStackTrace();
 				} 
 				
@@ -1183,9 +1184,10 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				if (!isDuplicate) {
-					String cqlString = createIncludeLibraryXML(currentObj);
-					String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
 					try {
+						String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
+						String cqlString = createIncludeLibraryXML(currentObj);
+
 						Node nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
 
 						if (nodeIncludes != null) {
@@ -1204,14 +1206,9 @@ public class CQLServiceImpl implements CQLService {
 							result.setFailureReason(SaveUpdateCQLResult.NODE_NOT_FOUND);
 						}
 
-					} catch (XPathExpressionException e) {
-						e.printStackTrace();
-					} catch (SAXException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
 				} else {
 					result.setSuccess(false);
 					result.setFailureReason(SaveUpdateCQLResult.NAME_NOT_UNIQUE);
@@ -1284,37 +1281,21 @@ public class CQLServiceImpl implements CQLService {
 	 * @param includeLibrary
 	 *            the include library
 	 * @return the string
+	 * @throws MappingException 
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 * @throws MarshalException 
 	 */
-	public String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) {
+	public String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException {
 		logger.info("In CQLServiceImpl.createIncludeLibraryXML");
-		Mapping mapping = new Mapping();
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
 		List<CQLIncludeLibrary> includeLibraryList = new ArrayList<CQLIncludeLibrary>();
 		includeLibraryList.add(includeLibrary);
 		wrapper.setCqlIncludeLibrary(includeLibraryList);
-
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("CQLIncludeLibrayMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-			marshaller.marshal(wrapper);
-			logger.info("Marshalling of CQLIncludeLibrary is successful..");
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load CQLIncludeLibrayMapping.xml" + e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed" + e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed" + e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception" + e);
-			} else {
-				e.printStackTrace();
-			}
-		}
+		String includeLibraryXML = CQLLibraryWrapperMappingUtil.convertCQLIncludeLibraryWrapperToXML(wrapper);
+		logger.info("Marshalling of CQLIncludeLibrary is successful..");
 		logger.info("Exiting CQLServiceImpl.createIncludeLibraryXML()");
-		return stream.toString();
+		return includeLibraryXML;
 	}
 
 	/*
@@ -3122,8 +3103,7 @@ public class CQLServiceImpl implements CQLService {
 		XmlProcessor processor = new XmlProcessor(xml);
 
 		if (xml != null) {
-			String XPATH_EXPRESSION_CQLLOOKUP_INCLUDE = "//cqlLookUp//includeLibrary[@id='"
-					+ toBeModifiedIncludeObj.getId() + "']";
+			String XPATH_EXPRESSION_CQLLOOKUP_INCLUDE = "//cqlLookUp//includeLibrary[@id='" + toBeModifiedIncludeObj.getId() + "']";
 			logger.info("XPATH: " + XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);
 			try {
 				Node includeNode = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_CQLLOOKUP_INCLUDE);

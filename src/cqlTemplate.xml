@@ -3,10 +3,12 @@
 	<!-- CQL Data type list -->
 	<datatypes>
 		<datatype>Boolean</datatype>
+		<datatype>Date</datatype>
 		<datatype>DateTime</datatype>
 		<datatype>Decimal</datatype>
 		<datatype>Integer</datatype>
 		<datatype>QDM Datatype</datatype>
+		<datatype>Ratio</datatype>
 		<datatype>String</datatype>
 		<datatype>Time</datatype>
 		<datatype>Others</datatype>
@@ -125,6 +127,7 @@
 		<function>Exp()</function>
 		<function>First()</function>
 		<function>Floor()</function>
+		<function>GeometricMean()</function>
 		<function>IndexOf()</function>
 		<function>Last()</function>
 		<function>Length()</function>
@@ -137,6 +140,7 @@
 		<function>Now()</function>
 		<function>PopulationStdDev()</function>
 		<function>PopulationVariance()</function>
+		<function>Product()</function>
 		<function>Round()</function>
 		<function>StdDev()</function>
 		<function>Sum()</function>
@@ -186,6 +190,7 @@
 		<keyword>ends</keyword>
 		<keyword>except</keyword>
 		<keyword>exists</keyword>
+		<keyword>expand</keyword>
 		<keyword>false</keyword>
 		<keyword>flatten</keyword>
 		<keyword>from</keyword>
@@ -225,6 +230,7 @@
 		<keyword>or more</keyword>
 		<keyword>overlaps</keyword>
 		<keyword>parameter</keyword>
+		<keyword>per</keyword>
 		<keyword>predecessor</keyword>
 		<keyword>private</keyword>
 		<keyword>properly</keyword>

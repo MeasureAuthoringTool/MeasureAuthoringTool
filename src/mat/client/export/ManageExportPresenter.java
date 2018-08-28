@@ -1,6 +1,5 @@
 package mat.client.export;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -31,6 +30,7 @@ public class ManageExportPresenter implements MatPresenter {
 		initializeBonnieExportView();
 		
 		addClickHandlers();
+		setMeasureExportHeader();
 	}
 
 	private void initializeBonnieExportView() {
@@ -73,8 +73,9 @@ public class ManageExportPresenter implements MatPresenter {
 		view.getExportPane().clear();
 		exportView = new ManageMeasureExportView(true);
 		ManageMeasureExportPresenter exportPresenter = new ManageMeasureExportPresenter(exportView, result, manageMeasurePresenter);
-		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion());
+		exportView.setExportOptionsBasedOnVersion(result.getHqmfReleaseVersion(), result.getIsComposite());
 		this.view.getExportPane().add(exportView.asWidget());
+		exportView.showCompositeMeasure(result.getIsComposite());
 	}
 	
 	private void addClickHandlers() {
@@ -88,7 +89,7 @@ public class ManageExportPresenter implements MatPresenter {
 		this.view.getBonnieExportItem().setActive(false);
 		this.view.getBonnieExportPane().setActive(false);
 		
-		this.manageMeasurePresenter.getPanel().setHeading("My Measures > Export", "MeasureLibrary");
+		setMeasureExportHeader();
 	}
 	
 	private void bonnieExportItemClickHandler() {
@@ -131,5 +132,13 @@ public class ManageExportPresenter implements MatPresenter {
 
 	public void setManageMeasurePresenter(ManageMeasurePresenter manageMeasurePresenter) {
 		this.manageMeasurePresenter = manageMeasurePresenter;
-	}	
+	}
+	
+	private void setMeasureExportHeader() {
+		if(result.getIsComposite()) {
+			this.manageMeasurePresenter.getPanel().setHeading("My Measures > Export Composite Measure", "MeasureLibrary");
+		} else {
+			this.manageMeasurePresenter.getPanel().setHeading("My Measures > Export", "MeasureLibrary");
+		}
+	}
 }

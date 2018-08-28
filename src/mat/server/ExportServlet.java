@@ -26,7 +26,10 @@ import mat.client.shared.MatException;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
 import mat.model.User;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
+import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
@@ -37,6 +40,9 @@ import mat.shared.CQLErrors;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.bonnie.error.BonnieNotFoundException;
+import mat.shared.bonnie.error.BonnieServerException;
+import mat.shared.bonnie.error.BonnieUnauthorizedException;
 
 /**
  * The Class ExportServlet.
@@ -44,6 +50,8 @@ import mat.shared.SaveUpdateCQLResult;
 public class ExportServlet extends HttpServlet {
 
 	private static final String LIBRARY_ID = "libraryid";
+	
+	private static final String USER_ID = "userId";
 
 	private static final String EXPORT_MEASURE_OWNER = "exportMeasureOwner";
 
@@ -74,6 +82,8 @@ public class ExportServlet extends HttpServlet {
 	private static final String TEXT_CSV = "text/csv";
 
 	private static final String APPLICATION_ZIP = "application/zip";
+	
+	private static final String APPLICATION_XSL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 	private static final String CONTENT_TYPE = "Content-Type";
 
@@ -82,6 +92,8 @@ public class ExportServlet extends HttpServlet {
 	private static final String HUMAN_READABLE = "humanreadable";
 
 	private static final String SIMPLEXML = "simplexml";
+	
+	private static final String CALCULATE_BONNIE_MEASURE_RESULT = "calculateBonnieMeasureResult";
 
 	private static final String TYPE_PARAM = "type";
 
@@ -115,6 +127,7 @@ public class ExportServlet extends HttpServlet {
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
 		String libraryId = req.getParameter(LIBRARY_ID);
+		String userId = req.getParameter(USER_ID);
 		Measure measure = null;
 		Date exportDate = null;
 
@@ -149,7 +162,7 @@ public class ExportServlet extends HttpServlet {
 				exportJSONFile(resp, id, type);
 				break;
 			case ZIP:
-				exportEmeasureZip(resp, id, measure, exportDate);
+				zipMeasure(resp, id, measure, exportDate);
 				break;
 			case SUBTREE_HTML:
 				exportSubTreeHumanReadable(req, resp, id);
@@ -175,6 +188,9 @@ public class ExportServlet extends HttpServlet {
 			case EXPORT_CQL_ERROR_FILE_FOR_STAND_ALONE:
 				exportErrorFileForStandAloneLib(resp, libraryId);
 				break;
+			case CALCULATE_BONNIE_MEASURE_RESULT:
+				exportBonnieMeasureCalculateion(resp, measure, userId);
+				break;
 			}
 
 		} catch (Exception e) {
@@ -183,6 +199,26 @@ public class ExportServlet extends HttpServlet {
 			if (resp != null && resp.getOutputStream() != null)
 				resp.getOutputStream().close();
 		}
+	}
+
+	private void zipMeasure(HttpServletResponse resp, String id, Measure measure, Date exportDate) throws Exception {
+		if(measure.getIsCompositeMeasure()) {
+			exportCompositeMeasureZip(resp, id, measure);
+		}
+		else {
+			exportEmeasureZip(resp, id, measure, exportDate);
+		}
+		
+	}
+
+	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
+		BonnieCalculatedResult export = getService().getBonnieExportCalculation(measure.getMeasureSet().getId(), userId);
+
+		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
+		resp.setHeader(CONTENT_DISPOSITION,
+				ATTACHMENT_FILENAME + FileNameUtility.getBonnieMeasureXLSXName(measure.getDescription() + "_" + currentReleaseVersion));
+		resp.setContentType(APPLICATION_XSL);
+		resp.getOutputStream().write(export.getResult());
 	}
 
 	private void exportErrorFileForMeasure(HttpServletResponse resp, MeasureLibraryService measureLibraryService,
@@ -224,8 +260,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportELMFile(HttpServletResponse resp, String id, String type) throws Exception {
-
-		ExportResult export = getService().getELMFile(id);
+		MeasureExport measureExport = getService().getMeasureExport(id);
+		ExportResult export = getService().createOrGetELMLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
@@ -247,8 +283,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportJSONFile(HttpServletResponse resp, String id, String type) throws Exception {
-
-		ExportResult export = getService().getJSONFile(id);
+		MeasureExport measureExport = getService().getMeasureExport(id);
+		ExportResult export = getService().createOrGetJSONLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
@@ -270,8 +306,8 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportCQLLibraryFile(HttpServletResponse resp, String id, String type) throws Exception {
-
-		ExportResult export = getService().getCQLLibraryFile(id);
+		MeasureExport measureExport = getService().getMeasureExport(id);
+		ExportResult export = getService().createOrGetCQLLibraryFile(id, measureExport);
 
 		if (!export.getIncludedCQLExports().isEmpty()) {
 			ZipPackager zp = new ZipPackager();
@@ -363,6 +399,18 @@ public class ExportServlet extends HttpServlet {
 		resp.getOutputStream().println(export.export);
 	}
 
+	private void exportCompositeMeasureZip(HttpServletResponse resp, String id, Measure measure) throws Exception {
+		List<ComponentMeasure> componentMeasures = measure.getComponentMeasures();
+		ExportResult export = getService().getCompositeExportResult(id, componentMeasures);
+
+		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
+		resp.setHeader(CONTENT_DISPOSITION,
+				ATTACHMENT_FILENAME + FileNameUtility.getZipName(export.measureName + "_" + currentReleaseVersion));
+		resp.setContentType(APPLICATION_ZIP);
+		resp.getOutputStream().write(export.zipbarr);
+		export.zipbarr = null;
+	}
+	
 	private void exportEmeasureZip(HttpServletResponse resp, String id, Measure measure, Date exportDate)
 			throws Exception {
 		ExportResult export = getService().getEMeasureZIP(id, exportDate);
@@ -386,12 +434,13 @@ public class ExportServlet extends HttpServlet {
 		export.wkbkbarr = null;
 	}
 
-	private ExportResult getHQMFExportForMeasure(String id, String currentReleaseVersion) throws Exception {
-		ExportResult export; 
+	private ExportResult getHQMFExportForMeasure(String measureId, String currentReleaseVersion) throws Exception {
+		ExportResult export;
+		
 		if(currentReleaseVersion.equals("v3")) {
-			export = getService().getHQMFForV3Measure(id);
+			export = getService().createOrGetHQMFForv3Measure(measureId);
 		} else {
-			export = getService().getHQMF(id);
+			export = getService().createOrGetHQMF(measureId);
 		}
 		return export;
 	}
@@ -416,8 +465,8 @@ public class ExportServlet extends HttpServlet {
 	private void exportHumanReadableForNewMeasures(HttpServletResponse resp, String id, String type, Measure measure)
 			throws Exception {
 		String currentReleaseVersion = measure.getReleaseVersion();
-		ExportResult export = currentReleaseVersion.equals("v3") ? getService().getEMeasureHTML(id)
-				: getService().getHumanReadable(id, currentReleaseVersion);
+		ExportResult export = currentReleaseVersion.equals("v3") ? getService().createOrGetEMeasureHTML(id)
+				: getService().createOrGetHumanReadable(id, currentReleaseVersion);
 		if (SAVE.equals(type)) {
 			currentReleaseVersion = StringUtils.replace(currentReleaseVersion, ".", "_");
 			resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME

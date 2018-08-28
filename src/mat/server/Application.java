@@ -3,9 +3,6 @@ package mat.server;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-
-import mat.hibernate.HibernateConf;
 
 @Configuration
 public class Application{

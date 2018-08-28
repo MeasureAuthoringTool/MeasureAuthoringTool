@@ -3,6 +3,8 @@ package mat.client.measurepackage.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -10,6 +12,8 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.shared.MatException;
+import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
+import mat.shared.packager.error.SaveSupplementalDataElementException;
 
 
 /**
@@ -60,13 +64,17 @@ public interface PackageService extends RemoteService {
 	 *            the detail
 	 * @throws MatException
 	 *             the mat exception
+	 * @throws SaveSupplementalDataElementException 
+	 * @throws XPathExpressionException 
 	 */
-	public void saveQDMData(MeasurePackageDetail detail) throws MatException;
+	public void saveQDMData(MeasurePackageDetail detail) throws MatException, SaveSupplementalDataElementException;
 
 	/**
 	 * Save risk variables.
 	 *
 	 * @param currentDetail the current detail
+	 * @throws SaveRiskAdjustmentVariableException 
+	 * @throws XPathExpressionException 
 	 */
-	void saveRiskVariables(MeasurePackageDetail currentDetail);
+	void saveRiskVariables(MeasurePackageDetail currentDetail) throws SaveRiskAdjustmentVariableException;
 }

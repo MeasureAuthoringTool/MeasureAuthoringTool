@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
@@ -55,7 +54,6 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
-import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.shared.WarningConfirmationMessageAlert;
@@ -64,7 +62,6 @@ import mat.model.Author;
 import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
-import mat.shared.MeasureSearchModel;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.StringUtility;
@@ -839,10 +836,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		Widget asWidget();
 	}
 	
-	
-	/** The page size. */
-	private int PAGE_SIZE = 25;
-	
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
 	
@@ -919,9 +912,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-	
-	/** The manage measure search model. */
-	private ManageMeasureSearchModel manageMeasureSearchModel;
 	
 	/**
 	 * Instantiates a new meta data presenter.
@@ -1371,7 +1361,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			nqfHandlerRegistration = metaDataDisplay.getEndorsedByListBox().addChangeHandler(new ChangeHandler() {
 				@Override
 				public void onChange(ChangeEvent event) {
-					setNQFTitle();
+					setNQFTitle((metaDataDisplay.getEndorsedByListBox().getSelectedIndex() != 0));
 				}
 			});
 		}
@@ -1393,13 +1383,12 @@ public class MetaDataPresenter  implements MatPresenter {
 		panel.add(metaDataDisplay.asWidget());
 	}
 	
-	private void setNQFTitle() {
-		if(metaDataDisplay.getEndorsedByListBox().getSelectedIndex() == 0) {
+	private void setNQFTitle(boolean endorsedByNQF) {
+		if(!endorsedByNQF) {
 			metaDataDisplay.getHelpBlock().setText("You have chosen no; the NQF number field has been cleared. It now reads as Not Applicable and is disabled.");
 			metaDataDisplay.getNQFIDInput().setPlaceholder(MatConstants.NOT_APPLICABLE);
 			metaDataDisplay.getNQFIDInput().setTitle(MatConstants.NOT_APPLICABLE);
 			metaDataDisplay.getNQFIDInput().setText("");
-			metaDataDisplay.getNQFIDInput().setEnabled(false);
 			metaDataDisplay.getNQFIDInput().setReadOnly(true);
 		} else {
 			metaDataDisplay.getHelpBlock().setText("You have chosen yes, the NQF number field is now enabled and required.");
@@ -1412,7 +1401,6 @@ public class MetaDataPresenter  implements MatPresenter {
 				metaDataDisplay.getNQFIDInput().setTitle(MatConstants.ENTER_NQF_NUMBER);
 			}
 			metaDataDisplay.getNQFIDInput().setReadOnly(false);
-			metaDataDisplay.getNQFIDInput().setEnabled(true);
 		}
 	}
 	
@@ -1476,7 +1464,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			metaDataDisplay.getEndorsedByListBox().setSelectedIndex(0);
 		}
 		
-		setNQFTitle();
+		setNQFTitle(isEndorsedByNQF);
 		
 		metaDataDisplay.getCopyright().setValue(currentMeasureDetail.getCopyright());
 		

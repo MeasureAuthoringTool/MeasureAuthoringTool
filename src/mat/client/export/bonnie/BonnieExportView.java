@@ -3,6 +3,7 @@ package mat.client.export.bonnie;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
@@ -24,6 +25,7 @@ public class BonnieExportView implements BaseDisplay {
 		
 	private Button measureNameLink = new Button();
 	private Label bonnieIdText = new Label();
+	private HelpBlock helpBlock = new HelpBlock();
 
 	private VerticalPanel alertPanel = new VerticalPanel(); 
 	
@@ -32,6 +34,7 @@ public class BonnieExportView implements BaseDisplay {
 
 	public BonnieExportView() {
 		mainPanel.add(new SpacerWidget());
+		createHelpBlock();
 		createMeasureInformation();
 		createBonnieInformation();
 		createSignoutOfBonnieButton();
@@ -41,13 +44,13 @@ public class BonnieExportView implements BaseDisplay {
 	}
 	
 	private void createAlertWidget() {
+		alertPanel.getElement().setTabIndex(0);
 		contentPanel.add(alertPanel);
 	}
 	
 	private void createMeasureInformation() {
 		measureNameLink.getElement().setId("measureNameLabel");
 		measureNameLink.setType(ButtonType.LINK);
-		measureNameLink.setTitle("Link to Measure Details for Measure");
 		
 		FormGroup group = new FormGroup();
 		FormLabel measureNameLabel = new FormLabel();
@@ -95,6 +98,22 @@ public class BonnieExportView implements BaseDisplay {
 	private void createBonnieButtonToolBar() {
 		bonnieUploadCancelButtonBar = new BonnieUploadCancelButtonBar("bonnie_upload");
 		mainPanel.add(bonnieUploadCancelButtonBar);
+	}
+	
+	/*Hidden panel with info about the bonnie sign in status for 508 compliance*/
+	private void createHelpBlock() {
+		HorizontalPanel hp = new HorizontalPanel();
+		helpBlock.setText("initial text");
+		helpBlock.setColor("transparent");
+		helpBlock.setVisible(false);
+		helpBlock.setHeight("0px");
+		hp.getElement().setAttribute("role", "alert");
+		hp.add(helpBlock);
+		contentPanel.add(hp);
+	}
+	
+	public void setHelpBlockMessage(String message) {
+		helpBlock.setText(message);
 	}
 	
 	public Button getUploadButton() {

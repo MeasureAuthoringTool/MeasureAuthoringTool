@@ -12,6 +12,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -51,24 +52,40 @@ public class CompositeMeasureValidator {
 	private static final String ERR_COMPONENT_MEASURE_HAS_MORE_THAN_ONE_PACKAGE_GROUPING = " has more than one measure grouping and can not be used as a component measure. ";
 	private static final String ERR_ALIAS_NOT_VALID = " cannot be saved. An alias for a component measure must start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), must not contain spaces, and it must be unique. Please correct and try again.";
 	private static final String ERR_LIBRARIES_MUST_HAVE_SAME_VERSION_AND_CONTENT = "CQL libraries within a composite measure can not have the same name with different library content or version.";
-
+	private static final String ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED_ON_PACKAGING = "Expressions must be used from two or more component measures.";
+	
 	@Autowired
 	private MeasureLibraryService measureLibraryService;
 	@Autowired
 	private MeasurePackageService measurePackageService;
 	@Autowired
 	private CQLLibraryService cqlLibraryService;
+	
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
 	
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
+	private boolean isPackage = false; 
+	
+	public CompositeMeasureValidationResult validateCompositeMeasureOnPackage(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		isPackage = true; 
+		CompositeMeasureValidationResult result =  validateCompositeMeasure(manageCompositeMeasureDetailModel);
+		isPackage = false; // reset the package flag since this is a component and needs to be reset after this call.
+		return result; 
+	}
 	public CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		manageCompositeMeasureDetailModel = measureLibraryService.buildCompositeMeasure(manageCompositeMeasureDetailModel);
 		CompositeMeasureValidationResult validationResult = new CompositeMeasureValidationResult();
 		List<String> messages = new ArrayList<>();
 		if(!compositeMeasureContainsMoreThanOneComponentMeasure(manageCompositeMeasureDetailModel)) {
-			messages.add(ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED);
+			if(isPackage) {
+				messages.add(ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED_ON_PACKAGING);
+			} 
+			
+			else {
+				messages.add(ERR_MORE_THAN_ONE_COMPONENT_MEASURE_REQUIRED);
+			}
 		}
 
 		List<String> packageErrors = validateMeasuresContainAPackage(manageCompositeMeasureDetailModel);
@@ -107,12 +124,8 @@ public class CompositeMeasureValidator {
 		return validationResult;
 	}
 
-	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {
-		boolean containsMoreThanOne = false;
-		if(model.getAppliedComponentMeasures().size() > 1) {
-			containsMoreThanOne = true;
-		}
-		return containsMoreThanOne;
+	private boolean compositeMeasureContainsMoreThanOneComponentMeasure(ManageCompositeMeasureDetailModel model) {		
+		return model.getAppliedComponentMeasures().size() > 1;
 	}
 	
 	private List<String> validateMeasuresContainAPackage(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
@@ -174,10 +187,8 @@ public class CompositeMeasureValidator {
 	
 	private boolean hasLibraryThatAlreadyExists(List<CQLIncludeLibrary> libraries, Map<String, String> nameToVersionMap, Map<String, String> nameVersionToIdMap) {
 		for(CQLIncludeLibrary includedLibrary : libraries) {
-			boolean isNotCompositeLibrary = ((includedLibrary.getIsComposite() == null) || (includedLibrary.getIsComposite() != null && !includedLibrary.getIsComposite().equals("true")));
-			
 			// only run this test if it is not a composite measure. Composite measures are tested by checking the applied composite measures previous to this call. 
-			if(isNotCompositeLibrary) {
+			if(!BooleanUtils.toBoolean(includedLibrary.getIsComponent())) {
 				CQLLibrary libraryModel = cqlLibraryDAO.find(includedLibrary.getCqlLibraryId());
 				String libraryName = libraryModel.getName();
 				String libraryVersion = includedLibrary.getVersion();
@@ -224,6 +235,7 @@ public class CompositeMeasureValidator {
 		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
 			patientBasedSet.add(appliedComponentMeasure.isPatientBased());
 		}
+		
 		if(patientBasedSet.size() > 1) {
 			return false;
 		}

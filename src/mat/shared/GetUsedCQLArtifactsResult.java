@@ -51,6 +51,7 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
        private Map<String, Map<String, Set<String>>> expressionNameToCodeDataTypeMap; 
        private Map<String, Map<String, Set<String>>> expressionNameToValuesetDataTypeMap;
+       private Map<String, Map<String, String>> nameToReturnTypeMap; 
 
 
        public List<String> getUsedCQLDefinitions() {
@@ -209,6 +210,14 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setExpressionNameToValuesetDataTypeMap(Map<String, Map<String, Set<String>>> expressionNameToValuesetDataTypeMap) {
 		this.expressionNameToValuesetDataTypeMap = expressionNameToValuesetDataTypeMap;
+	}
+
+	public Map<String, Map<String, String>> getNameToReturnTypeMap() {
+		return nameToReturnTypeMap;
+	}
+
+	public void setNameToReturnTypeMap(Map<String, Map<String, String>> nameToReturnTypeMap) {
+		this.nameToReturnTypeMap = nameToReturnTypeMap;
 	}
 
 }

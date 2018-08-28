@@ -350,7 +350,7 @@ public interface MeasureService extends RemoteService {
 	 *             the mat exception
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
-			List<MatValueSet> matValueSetList) throws MatException;
+			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
 	
 	/**
 	 * Save sub tree in measure xml.

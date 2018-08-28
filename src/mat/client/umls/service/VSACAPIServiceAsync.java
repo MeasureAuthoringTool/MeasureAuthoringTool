@@ -23,4 +23,6 @@ public interface VSACAPIServiceAsync {
 	void getDirectReferenceCode(String url, AsyncCallback<VsacApiResult> callback);
 	
 	void getVSACProgramsReleasesAndProfiles(AsyncCallback<VsacApiResult> callback);	
+	
+	void getTicketGrantingToken(AsyncCallback<VsacTicketInformation> callback);
 }

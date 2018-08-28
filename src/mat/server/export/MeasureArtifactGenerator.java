@@ -20,7 +20,7 @@ public class MeasureArtifactGenerator {
 	public static String getHQMFArtifact(final String id, String releaseVersion) {
 		ExportResult exportResult = null;
 		try {
-			exportResult = releaseVersion.equals("v3") ? eMeasureService.getHQMFForV3Measure(id) : eMeasureService.getHQMF(id);
+			exportResult = releaseVersion.equals("v3") ? eMeasureService.getHQMFForv3Measure(id) : eMeasureService.getHQMF(id);
 		} catch (Exception e) {
 			logger.error("getHQMFArtifact: " + e.getMessage());
 		}

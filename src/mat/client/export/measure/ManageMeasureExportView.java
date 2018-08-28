@@ -43,6 +43,8 @@ public class ManageMeasureExportView implements ExportDisplay {
 	
 	private RadioButton cqlLibraryRadio = new RadioButton("format", "CQL Library");
 	
+	private RadioButton compositeMeasurePackageRadio = new RadioButton("format", "eCQM Package");
+	
 	private Button saveButton = new SaveButton("manageMeasureexportview");
 	
 	private Button cancelButton = new CancelButton("manageMeasureexportview");
@@ -84,7 +86,6 @@ public class ManageMeasureExportView implements ExportDisplay {
 	public void createMeasureInformationContent() {
 		measureNameLink.getElement().setId("measureNameLabel");
 		measureNameLink.setType(ButtonType.LINK);
-		measureNameLink.setTitle("Link to Measure Details for Measure");
 		
 		FormGroup group = new FormGroup();
 		FormLabel measureNameLabel = new FormLabel();
@@ -106,7 +107,7 @@ public class ManageMeasureExportView implements ExportDisplay {
 	}
 	
 	@Override
-	public void setExportOptionsBasedOnVersion(String releaseVersion) {
+	public void setExportOptionsBasedOnVersion(String releaseVersion, boolean isCompositeMeasure) {
 		
 		vp.clear();
 		
@@ -121,18 +122,32 @@ public class ManageMeasureExportView implements ExportDisplay {
 			vp.add(elmRadio);
 			vp.add(jsonRadio);
 		}				
-		vp.add(eCQMPackageRadio);	
-		resetRadioButtonValues();
+		vp.add(eCQMPackageRadio);
+		vp.add(compositeMeasurePackageRadio);
+		resetRadioButtonValues(isCompositeMeasure);
+	}
+	
+	@Override
+	public void showCompositeMeasure(boolean isComposite) {
+		simpleXMLRadio.setVisible(!isComposite);
+		hqmfRadio.setVisible(!isComposite);
+		humanReadableRadio.setVisible(!isComposite);
+		cqlLibraryRadio.setVisible(!isComposite);
+		elmRadio.setVisible(!isComposite);
+		jsonRadio.setVisible(!isComposite);
+		eCQMPackageRadio.setVisible(!isComposite);
+		compositeMeasurePackageRadio.setVisible(isComposite);
 	}
 
-	private void resetRadioButtonValues() {
+	private void resetRadioButtonValues(boolean isComposite) {
 		simpleXMLRadio.setValue(false);
 		hqmfRadio.setValue(false);
 		humanReadableRadio.setValue(false);
 		cqlLibraryRadio.setValue(false);
 		elmRadio.setValue(false);
 		jsonRadio.setValue(false);
-		eCQMPackageRadio.setValue(true);
+		eCQMPackageRadio.setValue(!isComposite);
+		compositeMeasurePackageRadio.setValue(isComposite);
 	}
 
 	@Override
@@ -184,6 +199,11 @@ public class ManageMeasureExportView implements ExportDisplay {
 	@Override
 	public boolean isCQLLibrary() {
 		return cqlLibraryRadio.getValue();
+	}
+	
+	@Override
+	public boolean isCompositeMeasurePackageRadio() {
+		return compositeMeasurePackageRadio.getValue();
 	}
 	
 	public Button getMeasureNameLink() {

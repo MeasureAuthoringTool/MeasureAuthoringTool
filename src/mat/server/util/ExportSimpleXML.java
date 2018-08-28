@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,9 @@ import javax.xml.xpath.XPathFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -103,25 +107,22 @@ public class ExportSimpleXML {
 	 * @param cqlLibraryDAO
 	 * @return the string
 	 */
-	public static String export(MeasureXML measureXMLObject, MeasureDAO measureDAO,
-			OrganizationDAO organizationDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) {
-		String exportedXML = "";
-		Document measureXMLDocument;
+	public static String export(MeasureXML measureXMLObject, MeasureDAO measureDAO, OrganizationDAO organizationDAO, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) {
+		String simpleXML = "";
 		try {
-			measureXMLDocument = getXMLDocument(measureXMLObject);
+			Document measureXMLDocument = getXMLDocument(measureXMLObject);
 			String measureId = measureXMLObject.getMeasureId();
-			exportedXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measureId,
-					cqlLibraryDAO, cqlModel);
-			int insertAt = exportedXML.indexOf("<title>");
-			exportedXML = exportedXML.substring(0, insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>"
-					+ exportedXML.substring(insertAt, exportedXML.length());
-		} catch (ParserConfigurationException | SAXException | IOException e) {
+			simpleXML = generateExportedXML(measureXMLDocument, organizationDAO, measureDAO, measureId, cqlLibraryDAO, cqlModel);
+			int insertAt = simpleXML.indexOf("<title>");
+			simpleXML = simpleXML.substring(0, insertAt) + "<cqlUUID>" + UUIDUtilClient.uuid() + "</cqlUUID>" + simpleXML.substring(insertAt, simpleXML.length());
+			simpleXML = setQDMIdAsUUID(simpleXML);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		return exportedXML;
+		return simpleXML;
 	}
-
+	
 	/**
 	 * Sets the qdm id as uuid.
 	 * 
@@ -137,17 +138,12 @@ public class ExportSimpleXML {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static String setQDMIdAsUUID(String xmlString)
-			throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
-		// Code to replace all @id attributes of <qdm> with @uuid attribute
-		// value
-
+	private static String setQDMIdAsUUID(String xmlString) throws Exception {
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 
-		NodeList allQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(),
-				XPathConstants.NODESET);
+		NodeList allQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < allQDMs.getLength(); i++) {
 			Node qdmNode = allQDMs.item(i);
 			String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
@@ -256,7 +252,7 @@ public class ExportSimpleXML {
 		addUUIDToFunctions(originalDoc);
 		// modify the <startDate> and <stopDate> tags to have date in YYYYMMDD
 		// format
-		modifyHeaderStart_Stop_Dates(originalDoc);
+		modifyHeaderStartStopDates(originalDoc);
 		modifyElementLookUpForOccurances(originalDoc);
 		modifySubTreeLookUpForOccurances(originalDoc);
 		// re-order measure Grouping sequence.
@@ -276,30 +272,77 @@ public class ExportSimpleXML {
 	 *            the original doc
 	 * @param organizationDAO
 	 *            the organization dao
-	 * @param MeasureDAO
-	 * @param measure_Id
+	 * @param measureDAO
+	 * @param measureId
 	 * @param cqlLibraryDAO
 	 * @return the string
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
+	 * @throws MappingException 
+	 * @throws IOException 
+	 * @throws ValidationException 
+	 * @throws MarshalException 
+	 * @throws ParserConfigurationException 
+	 * @throws SAXException 
 	 */
-	private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO MeasureDAO,
-			String measure_Id, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) throws XPathExpressionException {
-		updateVersionforMeasureDetails(originalDoc, MeasureDAO, measure_Id);
+	private static String generateMeasureExportXML(Document originalDoc, OrganizationDAO organizationDAO, MeasureDAO measureDAO, String measureId, CQLLibraryDAO cqlLibraryDAO, CQLModel cqlModel) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
+		updateVersionforMeasureDetails(originalDoc, measureDAO, measureId);
 		updateStewardAndDevelopersIdWithOID(originalDoc, organizationDAO);
-		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
+		setAttributesForComponentMeasures(originalDoc, measureDAO);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeNode("/measure/subTreeLookUp", originalDoc);
 		expandAndHandleGrouping(originalDoc);
 		removeUnusedCQLArtifacts(originalDoc, cqlLibraryDAO, cqlModel);
-		modifyHeaderStart_Stop_Dates(originalDoc);
+		modifyHeaderStartStopDates(originalDoc);
 		modifyMeasureGroupingSequence(originalDoc);
 		removeEmptyCommentsFromPopulationLogic(originalDoc);
-
+		removeUnusedComponentMeasures(originalDoc);
 		
 		return transform(originalDoc);
 	}
+	
+	/**
+	 * Removes unused component measures from a measure. A component measure is considered not used 
+	 * @param originalDoc
+	 * @throws XPathExpressionException
+	 * @throws MarshalException
+	 * @throws ValidationException
+	 * @throws IOException
+	 * @throws MappingException
+	 * @throws SAXException
+	 * @throws ParserConfigurationException
+	 */
+	private static void removeUnusedComponentMeasures(Document originalDoc) throws XPathExpressionException, MarshalException, ValidationException, IOException, MappingException, SAXException, ParserConfigurationException {
+		logger.info("Remove Unused Component Measures");
+
+		String componentMeasuresXPath = "/measure/measureDetails/componentMeasures/measure";
+		NodeList componentMeasureNodeList = (NodeList) xPath.evaluate(componentMeasuresXPath, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		String includedLibraryXPath = "/measure/cqlLookUp/includeLibrarys/includeLibrary";
+		NodeList includedLibraryNodeList = (NodeList) xPath.evaluate(includedLibraryXPath, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+
+		Set<String> usedIncludedLibraryIds = new HashSet<>(); 
+		if(includedLibraryNodeList != null) {
+			for(int i = 0; i < includedLibraryNodeList.getLength(); i++) {
+				Node current = includedLibraryNodeList.item(i);
+				if(current.getAttributes().getNamedItem("measureId") != null) {
+					usedIncludedLibraryIds.add(UuidUtility.idToUuid(current.getAttributes().getNamedItem("measureId").getNodeValue()));
+				}
+			}
+		}
+
+		for(int i = 0; i < componentMeasureNodeList.getLength(); i++) {
+			Node current = componentMeasureNodeList.item(i);
+			String id = current.getAttributes().getNamedItem("id").getNodeValue();
+			if(!usedIncludedLibraryIds.contains(id)) {
+				current.getParentNode().removeChild(current);
+			}
+		}
+		
+		logger.info("Finished Removing Unused Component Measures");
+	}
+
 
 	/**
 	 * Removes all unused cql artifacts
@@ -328,14 +371,12 @@ public class ExportSimpleXML {
 				
 		CQLUtil.removeUnusedParameters(originalDoc, result.getUsedCQLArtifacts().getUsedCQLParameters());
 		
-		resolveAllValueSets_Codes(originalDoc, result, cqlModel);
+		resolveAllValuesetsAndCodes(originalDoc, result, cqlModel);
 
 		updateCqlLibraryToHaveSetId(cqlLibraryDAO, result);
 		CQLUtil.removeUnusedIncludes(originalDoc, result.getUsedCQLArtifacts().getUsedCQLLibraries(), cqlModel);
-		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap());
+		CQLUtil.addUsedCQLLibstoSimpleXML(originalDoc, result.getUsedCQLArtifacts().getIncludeLibMap(), cqlLibraryDAO);
 		CQLUtil.addUnUsedGrandChildrentoSimpleXML(originalDoc, result, cqlModel, cqlLibraryDAO);
-
-		System.out.println("All included libs:" + cqlModel.getIncludedCQLLibXMLMap().keySet());
 	}
 	
 	private static void updateCqlLibraryToHaveSetId(CQLLibraryDAO cqlLibraryDAO, SaveUpdateCQLResult result) {
@@ -351,7 +392,7 @@ public class ExportSimpleXML {
 	 * @param cqlModel
 	 * @throws XPathExpressionException
 	 */
-	private static void resolveAllValueSets_Codes(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel)
+	private static void resolveAllValuesetsAndCodes(Document originalDoc, SaveUpdateCQLResult result, CQLModel cqlModel)
 			throws XPathExpressionException {
 
 		String xPathForElementLookupNode = "//elementLookUp";
@@ -969,6 +1010,7 @@ public class ExportSimpleXML {
 				Node attrcomponentVersionNo = originalDoc.createAttribute("versionNo");
 				Measure measure = measureDAO.find(measureId);
 				componentMeasureName = measure.getDescription();
+				System.out.println("CREATING COMPONENT MEASURE: " + componentMeasureName);
 				componentMeasureSetId = measure.getMeasureSet().getId();
 				attrcomponentMeasureName.setNodeValue(componentMeasureName);
 				attrcomponentMeasureSetId.setNodeValue(componentMeasureSetId);
@@ -1461,20 +1503,6 @@ public class ExportSimpleXML {
 		for (int i = logicalNode.getLength() - 1; i > -1; i--) {
 			Node innerNode = logicalNode.item(i);
 			newClauseNode.removeChild(innerNode);
-			/*
-			 * if(newClauseNode.getAttributes().getNamedItem("displayName").
-			 * getNodeValue().contains("stratum") ||
-			 * newClauseNode.getAttributes().getNamedItem("displayName").
-			 * getNodeValue().contains("measureObservation")){
-			 * newClauseNode.removeChild(innerNode); } else
-			 * if(innerNode.getNodeName().equalsIgnoreCase("itemCount")){//for
-			 * removing the empty <itemCount> tags
-			 * newClauseNode.removeChild(innerNode); }else { NodeList
-			 * innerNodeChildren = innerNode.getChildNodes(); int length =
-			 * innerNodeChildren.getLength(); for(int j = length - 1; j>-1;
-			 * j--){ Node child = innerNodeChildren.item(j);
-			 * innerNode.removeChild(child); } }
-			 */
 		}
 		groupNode.appendChild(newClauseNode);
 	}
@@ -1887,7 +1915,7 @@ public class ExportSimpleXML {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private static void modifyHeaderStart_Stop_Dates(Document originalDoc) throws XPathExpressionException {
+	private static void modifyHeaderStartStopDates(Document originalDoc) throws XPathExpressionException {
 		Node periodNode = (Node) xPath.evaluate("/measure/measureDetails/period", originalDoc, XPathConstants.NODE);
 
 		Node measurementPeriodNode = (Node) xPath.evaluate(

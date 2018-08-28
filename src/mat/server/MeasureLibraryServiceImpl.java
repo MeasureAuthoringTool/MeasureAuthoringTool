@@ -710,7 +710,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measureXmlModel.setMeasureId(measureDetailModel.getId());
 		measureXmlModel.setXml(createXml(measureDetailModel).toString());
 		measureXmlModel.setToReplaceNode(MEASURE_DETAILS);		
-		saveMeasureXml(measureXmlModel);
+		saveMeasureXml(measureXmlModel); 
 		logger.info("Clone of Measure_xml is Successful");
 	}
 
@@ -747,33 +747,25 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		logger.info("Exiting easureLibraryServiceImpl.convertAddlXmlElementsToModel() method..");
 	}
+	
+	private ManageMeasureDetailModel convertXMLToModel(String xml, Measure measure) {
 
-	/**
-	 * Method un marshalls MeasureXML into ManageMeasureDetailModel object.
-	 * 
-	 * @param xmlModel
-	 *            -MeasureXmlModel
-	 * @param measure
-	 *            - Measure
-	 * @return ManageMeasureDetailModel
-	 */
-	private ManageMeasureDetailModel convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure) {
-		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
+		logger.info("In MeasureLibraryServiceImpl.convertXMLToModel()");
 
 		ManageMeasureDetailModel details = null;
-		String xml = null;
 	
 		try {
-			if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
-				xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+			if (StringUtils.isNotBlank(xml)) {
+				xml = new XmlProcessor(xml).getXmlByTagName(MEASURE_DETAILS);
 			}
 
 			details = (xml == null) ? createModelForNoXML(measure) : createModelFromXML(xml, measure);
 			
 		} catch (Exception e) {
-			logger.error("Exception in convertXmltoModel: " + e);
+			logger.error("Exception in convertXMLToModel: " + e);
 		}
 		return details;
+	
 	}
 
 	private ManageMeasureDetailModel createModelForNoXML(final Measure measure) {
@@ -1122,12 +1114,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setIsComposite(measure.getIsCompositeMeasure());
 		
 		String measureReleaseVersion = StringUtils.trimToEmpty(measure.getReleaseVersion());
-		if (measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
-				|| measureReleaseVersion.startsWith("v3")) {
-			detail.setClonable(false);
-		} else {
-			detail.setClonable(isOwner || isSuperUser);
-		}
+		
+		detail.setClonable((isOwner || isSuperUser) && !measure.getIsCompositeMeasure() && !(measureReleaseVersion.length() == 0 || measureReleaseVersion.startsWith("v4")
+				|| measureReleaseVersion.startsWith("v3")));
 
 		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, dto.getMeasureId()));
 		
@@ -1502,28 +1491,44 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
 		logger.info("Loading Measure for MeasueId: " + key);
 		Measure measure = measurePackageService.getById(key);
-		MeasureXmlModel xml = getMeasureXmlForMeasure(key);
-		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+		if(!measure.getIsCompositeMeasure()) {
+			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(key);
+			MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+			String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+			ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
+			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		
-		ManageMeasureDetailModel manageMeasureDetailModel = convertXmltoModel(xml, measure);
-		manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
-	
-		return manageMeasureDetailModel;
+			return manageMeasureDetailModel;
+		}
+		else {
+			return getCompositeMeasure(key);
+		}
+		
 
 	}
 
 	@Override
 	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
 		Measure measure = measurePackageService.getById(measureId);
-		MeasureXmlModel xml = getMeasureXmlForMeasure(measureId);
-		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
-		
-		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXmltoModel(xml, measure);
+		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());
+		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
 		
 		return manageCompositeMeasureDetailModel;
 	}
 
+	@Override
+	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML) {
+		Measure measure = measurePackageService.getById(measureId);
+		MeasureDetailResult measureDetailResult = getUsedStewardAndDevelopersList(measure.getId());	
+		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(simpleXML, measure);
+		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		
+		return manageCompositeMeasureDetailModel;
+	}
+	
 	@Override
 	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
 		logger.info("In MeasureLibraryServiceImpl. updateMeasureXmlForDeletedComponentMeasureAndOrg() method..");
@@ -1792,20 +1797,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            - {@link String}.
 	 * @param mDetail
 	 *            - {@link ManageMeasureDetailModel}.
-	 * @param meas
+	 * @param measure
 	 *            - {@link Measure}.O
 	 * @return {@link SaveMeasureResult}. *
 	 */
 	private SaveMeasureResult incrementVersionNumberAndSave(final String maximumVersionNumber, final String incrementBy,
-			final ManageMeasureDetailModel mDetail, final Measure meas) {
+			final Measure measure) {
+		ManageMeasureDetailModel mDetail = getMeasure(measure.getId());
 		BigDecimal mVersion = new BigDecimal(maximumVersionNumber);
 		mVersion = mVersion.add(new BigDecimal(incrementBy));
 		mDetail.setVersionNumber(mVersion.toString());
 		Date currentDate = new Date();
 		mDetail.setFinalizedDate(DateUtility.convertDateToString(currentDate));
 		mDetail.setDraft(false);
-		setValueFromModel(mDetail, meas);
-		measurePackageService.save(meas);
+		setValueFromModel(mDetail, measure);
+		measurePackageService.save(measure);
 		String versionStr = mVersion.toString();
 		// Divide the number by 1 and check for a remainder.
 		// Any whole number should always have a remainder of 0 when divided by
@@ -1824,16 +1830,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		// This code is added to update version value for both measureDetails
 		// version tag and cqlLookUp version tag.
-		setVersionInMeasureDetailsAndCQLLookUp(meas, versionStr);
+		setVersionInMeasureDetailsAndCQLLookUp(measure, versionStr);
 
-		if (MatContext.get().isCQLMeasure(meas.getReleaseVersion())) {
-			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(meas.getId());
-			exportCQLibraryFromMeasure(meas, mDetail, xmlModel);
+		if (MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
+			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measure.getId());
+			exportCQLibraryFromMeasure(measure, mDetail, xmlModel);
 		}
 
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
-		result.setId(meas.getId());
+		result.setId(measure.getId());
 		versionStr = MeasureUtility.formatVersionText(versionStr);
 		result.setVersionStr(versionStr);
 		logger.info("Result passed for Version Number " + versionStr);
@@ -2103,30 +2109,76 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// return error if there are unused libraries in the measure
 		MeasureXmlModel measureXmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 		String measureXml = measureXmlModel.getXml();
-		if(!ignoreUnusedLibraries) {
-			if(CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
-				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
-				saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
-				logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
-				return saveMeasureResult;
-			}
+		if(!ignoreUnusedLibraries && CQLUtil.checkForUnusedIncludes(measureXml, cqlResult.getUsedCQLArtifacts().getUsedCQLLibraries())) {
+			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
+			saveMeasureResult.setFailureReason(SaveMeasureResult.UNUSED_LIBRARY_FAIL);
+			logger.info("Measure Package and Version Failed for measure with id " + measureId + " because there are libraries that are unused.");
+			return saveMeasureResult;
 		}
 		
 		removeUnusedLibraries(measureXmlModel, cqlResult);
 		
 		if(shouldPackage) {
-			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId));
+			SaveMeasureResult validatePackageResult = validateAndPackage(getMeasure(measureId), false);
 			if(!validatePackageResult.isSuccess()) {
 				SaveMeasureResult saveMeasureResult = new SaveMeasureResult(); 
 				return returnFailureReason(saveMeasureResult, SaveMeasureResult.PACKAGE_FAIL);
 			}
 		}
+	
+		return updateVersionAndExports(isMajor, version, m);
 		
+	}
 
+	private SaveMeasureResult updateVersionAndExports(final boolean isMajor, final String version, Measure measure) {
+		String versionNumber = createVersionNumber(isMajor, version, measure.getMeasureSet().getId());
 
+		// Need to check for logic when to mark a measure as completed.
+		SaveMeasureResult rs = new SaveMeasureResult();
+
+		if (!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)) {
+			String[] versionArr = versionNumber.split("\\.");
+			if (isMajor) {
+				rs = createMajorVersion(versionNumber, versionArr, measure, rs);
+			} else {
+				rs = createMinorVersion(versionArr, measure, rs);
+			}
+
+		} else {
+			returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+		}
+
+		if(rs.isSuccess()) {
+			updateVersionInSimpleXMLAndGenerateArtifacts(measure);
+		}
+
+		return rs;
+	}
+	
+	private SaveMeasureResult createMajorVersion(String versionNumber, String[] versionArr, Measure measure, SaveMeasureResult rs) {
+		if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
+			String majorVersionNumber = StringUtils.substringBefore(versionNumber, ".");
+			rs = incrementVersionNumberAndSave(majorVersionNumber, "1", measure);
+		} else {
+			returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
+		}
+		return rs;
+	}
+	
+	private SaveMeasureResult createMinorVersion(String[] versionArr, Measure measure, SaveMeasureResult rs) {
+		if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
+			String minorVersionNumber = versionArr[0] + "." + versionArr[1];
+			rs = incrementVersionNumberAndSave(minorVersionNumber, "0.001", measure);
+		} else {
+			returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
+		}
+		return rs;
+	}
+	
+	private String createVersionNumber(boolean isMajor, final String version, final String measureSetId) {
 		String versionNumber = null;
 		if (isMajor) {
-			versionNumber = findOutMaximumVersionNumber(m.getMeasureSet().getId());
+			versionNumber = findOutMaximumVersionNumber(measureSetId);
 			// For new measure's only draft entry will be
 			// available.findOutMaximumVersionNumber will return null.
 			if (versionNumber == null) {
@@ -2134,68 +2186,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			logger.info("Max Version Number loaded from DB: " + versionNumber);
 		} else {
-			int versionIndex = version.indexOf('v');
-			logger.info("Min Version number passed from Page Model: " + versionIndex);
-			String selectedVersion = version.substring(versionIndex + 1);
+			String selectedVersion = StringUtils.substringAfter(version, "v");
 			logger.info("Min Version number after trim: " + selectedVersion);
-			versionNumber = findOutVersionNumber(m.getMeasureSet().getId(), selectedVersion);
-
+			versionNumber = findOutVersionNumber(measureSetId, selectedVersion);
 		}
-		ManageMeasureDetailModel mDetail = getMeasure(measureId);
-		// Need to check for logic when to mark a measure as completed.
-		SaveMeasureResult rs = new SaveMeasureResult();
-		int endIndex = versionNumber.indexOf('.');
-		String majorVersionNumber = versionNumber.substring(0, endIndex);
-		if (!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)) {
-			String[] versionArr = versionNumber.split("\\.");
-			if (isMajor) {
-				if (!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)) {
-					rs = incrementVersionNumberAndSave(majorVersionNumber, "1", mDetail, m);
-					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-						if(measureExport != null) {
-							String simpleXML = measureExport.getSimpleXML();
-							saveSimpleXML(m, measureExport, simpleXML);
-						}
-
-					}
-				} else {
-					rs =  returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
-				}
-
-			} else {
-				if (!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)) {
-					versionNumber = versionArr[0] + "." + versionArr[1];
-					rs = incrementVersionNumberAndSave(versionNumber, "0.001", mDetail, m);
-					if(rs.isSuccess()) {
-						MeasureExport measureExport = measureExportDAO.findByMeasureId(measureId);
-						if(measureExport != null) {
-							String simpleXML = measureExport.getSimpleXML();
-							saveSimpleXML(m, measureExport, simpleXML);
-						}
-					}
-				} else {
-					rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
-				}
-			}
-
-		} else {
-			rs = returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
-		}
-		return rs;
+		return versionNumber;
 	}
 
+	private void updateVersionInSimpleXMLAndGenerateArtifacts(Measure measure) {
+		MeasureExport measureExport = measureExportDAO.findByMeasureId(measure.getId());
+		if(measureExport != null) {
+			String simpleXML = measureExport.getSimpleXML();
+			String finalVersion = measure.getMajorVersionInt() + "." + measure.getMinorVersionInt() + "."  + measure.getRevisionNumber();
 
-	private void saveSimpleXML(Measure measure, MeasureExport measureExport, String simpleXML) {
-		String finalVersion = measure.getMajorVersionInt() + "." + measure.getMinorVersionInt() + "."  + measure.getRevisionNumber();
-		String updatedSimpleXML = "";
-		try {
-			updatedSimpleXML = replaceVersionInXMLString(simpleXML, finalVersion, measure.getId());
-		} catch (XPathExpressionException e) {
-			logger.debug("saveSimpleXML:" + e);
+			String updatedSimpleXML = "";
+			try {
+				updatedSimpleXML = replaceVersionInXMLString(simpleXML, finalVersion, measure.getId());
+
+			} catch (XPathExpressionException e) {
+				logger.debug("updateVersionInSimpleXMLAndGenerateArtifacts:" + e);
+			}
+
+			measureExport.setSimpleXML(updatedSimpleXML);
+			measureExportDAO.save(measureExport);		
+			measurePackageService.createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), measureExport);
 		}
-		measureExport.setSimpleXML(updatedSimpleXML);
-		measureExportDAO.save(measureExport);		
 	}
 
 	/**
@@ -3255,9 +3270,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList) throws MatException {
+	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException {
 		try {
-			return measurePackageService.validateMeasureForExport(key, matValueSetList);
+			return measurePackageService.validateAndCreateExports(key, matValueSetList, shouldCreateArtifacts);
 		} catch (Exception exc) {
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
@@ -5793,7 +5808,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model) {
+	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
 		SaveMeasureResult result = new SaveMeasureResult();
 		String measureId = model.getId();
 		try {
@@ -5820,7 +5835,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
-			validateMeasureForExport(measureId, null);
+			ValidateMeasureResult measureExportValidation = validateMeasureForExport(measureId, null, shouldCreateArtifacts);
+			if(!measureExportValidation.isValid()) {
+				result.setSuccess(false);
+				result.setValidateResult(measureExportValidation);
+				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+			}
+			
 			auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
 			return result;
 		} catch (Exception e) {
@@ -5915,12 +5936,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				pkg.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 				pkg.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 				pkg.setIsCompositeMeasure(Boolean.TRUE);
-				pkg.setCompositeScoring(model.getCompositeScoringMethod());
 				model.setRevisionNumber("000");
 				measureSet = new MeasureSet();
 				measureSet.setId(UUID.randomUUID().toString());
 				measurePackageService.save(measureSet);
 			}
+			pkg.setCompositeScoring(model.getCompositeScoringMethod());
 			pkg.setMeasureSet(measureSet);
 			setValueFromModel(model, pkg);
 			SaveMeasureResult result = new SaveMeasureResult();
@@ -5946,7 +5967,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setId(pkg.getId());
 			model.setMeasureTypeSelectedList(getMeasureTypeForComposite());
 			saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
-			createIncludedMeasureAsLibraryInMeasureXML(pkg.getId(), model);
+			createComponentMeasureAsLibraryInMeasureXML(pkg.getId(), model);
 			return result;
 		} else {
 			logger.info("Validation Failed for measure :: Invalid Data Issues.");
@@ -5972,7 +5993,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
 	}
 	
-	private void createIncludedMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {
+	private void createComponentMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {
 		List<CQLIncludeLibrary> cqlIncludeLibraryList = new ArrayList<>();
 		for(ManageMeasureSearchModel.Result measure : model.getAppliedComponentMeasures()) {			
 			CQLLibrary cqlLibrary = cqlLibraryDAO.getLibraryByMeasureId(measure.getId());		
@@ -5985,7 +6006,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			cqlIncludedLibraryCreatedFromComponentMeasure.setCqlLibraryName(cqlLibrary.getName());
 			cqlIncludedLibraryCreatedFromComponentMeasure.setQdmVersion(measure.getQdmVersion());
 			cqlIncludedLibraryCreatedFromComponentMeasure.setSetId(measure.getMeasureSetId());
-			cqlIncludedLibraryCreatedFromComponentMeasure.setIsComposite("true");
+			cqlIncludedLibraryCreatedFromComponentMeasure.setIsComponent("true");
+			cqlIncludedLibraryCreatedFromComponentMeasure.setMeasureId(measure.getId());
 			cqlIncludeLibraryList.add(cqlIncludedLibraryCreatedFromComponentMeasure);
 		}
 		
@@ -5997,35 +6019,39 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
 			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());		
 			String XPATH_EXPRESSION_INCLUDES = "//cqlLookUp/includeLibrarys";
-			Node nodeIncludes;
 
-			nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
-			if (nodeIncludes != null) {
-				for(CQLIncludeLibrary library : cqlIncludeLibraryList) {
-					removeIncludedComponentMeasuresInMeasureXML(measureId, library, processor);
-					String cqlString = getCqlService().createIncludeLibraryXML(library);
-					processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDES);
-					processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
-				}
+			removeAllIncludedComponentMeasuresInMeasureXML(processor);
+			for(CQLIncludeLibrary library : cqlIncludeLibraryList) {
+				String cqlString = getCqlService().createIncludeLibraryXML(library);
+				processor.appendNode(cqlString, "includeLibrary", XPATH_EXPRESSION_INCLUDES);
+				processor.setOriginalXml(processor.transform(processor.getOriginalDoc()));
 			}
 			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
 			measurePackageService.saveMeasureXml(xmlModel);
-		} catch (XPathExpressionException | SAXException | IOException e) {
+		} catch (SAXException | IOException | MarshalException | MappingException | ValidationException e) {
 			logger.error("Exception in createIncludedMeasureAsLibrary: " + e);
 		}
 	}
 	
-	private void removeIncludedComponentMeasuresInMeasureXML(String measureId, CQLIncludeLibrary library, XmlProcessor processor) {
-		String XPATH_EXPRESSION_EXISTING_INCLUDES = "//includeLibrary[@cqlLibRefId='" + library.getCqlLibraryId()+ "']";
-		Node nodeExisting;
+	private void removeAllIncludedComponentMeasuresInMeasureXML(XmlProcessor processor) {
+		String XPATH_EXPRESSION_EXISTING_COMPONENTS = "//cqlLookUp/includeLibrarys/*";
 		try {
-			nodeExisting = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_EXISTING_INCLUDES);
-			if (nodeExisting != null) {
-				processor.removeFromParent(nodeExisting);
+			NodeList componentNodesList = processor.findNodeList(processor.getOriginalDoc(), XPATH_EXPRESSION_EXISTING_COMPONENTS);
+			if(componentNodesList != null && componentNodesList.getLength() > 0) {
+				int length = componentNodesList.getLength();
+				for(int i=0; i<length; i++) {
+					Node componentNode = componentNodesList.item(i);
+					if(isComponentNode(componentNode))
+						processor.removeFromParent(componentNode);
+				}
 			}
 		} catch (XPathExpressionException e) {
 			logger.error("Exception in removeIncludedComponentMeasuresInMeasureXML: " + e);
 		}
-
+	}
+	
+	private boolean isComponentNode(Node componentNode) {
+		return (componentNode.getAttributes().getNamedItem("isComponent") != null && 
+				("true").equals(componentNode.getAttributes().getNamedItem("isComponent").getNodeValue()));
 	}
 }

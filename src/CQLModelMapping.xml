@@ -289,10 +289,13 @@
 						<bind-xml name="qdmVersion" node="attribute" />
 					</field>
 					
-					<field name="isComposite" type="java.lang.String">
-						<bind-xml name="isComposite" node="attribute" />
+					<field name="isComponent" type="java.lang.String">
+						<bind-xml name="isComponent" node="attribute" />
 					</field>
 					
+					<field name="measureId" type="java.lang.String">
+						<bind-xml name="measureId" node="attribute" />
+					</field>			
 				</class>
 			</bind-xml>
 		</field>

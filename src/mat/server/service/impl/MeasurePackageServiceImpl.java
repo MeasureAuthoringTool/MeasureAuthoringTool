@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,8 @@ import mat.server.export.MeasureArtifactGenerator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.util.ExportSimpleXML;
+import mat.server.validator.measure.CompositeMeasurePackageValidator;
+import mat.shared.CompositeMeasurePackageValidationResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.ValidationUtility;
 
@@ -116,6 +119,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Autowired
 	private ComponentMeasuresDAO componentMeasuresDAO;
 	
+	@Autowired
+	private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
+	
 	private String currentReleaseVersion;
 	
 	private ValidationUtility validator = new ValidationUtility();
@@ -169,45 +175,38 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
 	}
 	
-	private void generateExport(final String measureId,
-			final List<MatValueSet> matValueSetList) throws Exception {
+	private String generateSimpleXML(final Measure measure, MeasureXML measureXML, final List<MatValueSet> matValueSetList) throws Exception {
+		String exportedXML = "";
+
+		if (measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
+			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
+			exportedXML = ExportSimpleXML.export(measureXML, measureDAO, organizationDAO, cqlLibraryDAO, cqlModel);
+		} else {
+			exportedXML = ExportSimpleXML.export(measureXML, measureDAO, organizationDAO);
+		}
+
+		return exportedXML; 
+	}
+	
+	private MeasureExport generateExport(final String measureId, final List<MatValueSet> matValueSetList) throws Exception {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		Measure measure = measureDAO.find(measureId);
-		String exportedXML = "";
-				
-		if(measure.getReleaseVersion() != null && MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
-			CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML.getMeasureXMLAsString());
+		String simpleXML = generateSimpleXML(measure, measureXML, matValueSetList);
+		ExportResult exportResult = eMeasureService.exportMeasureIntoSimpleXML(measure.getId(), simpleXML, matValueSetList);		
 
-			exportedXML = ExportSimpleXML.export(measureXML, measureDAO,organizationDAO, cqlLibraryDAO, cqlModel);
-		} else {
-			exportedXML = ExportSimpleXML.export(measureXML, measureDAO,organizationDAO);
-		}
-		if (exportedXML.length() == 0) {
-			return;
-		}
-		
-		ExportResult exportResult =
-				eMeasureService.exportMeasureIntoSimpleXML(measureId, exportedXML, matValueSetList);
-		
-		//replace all @id attributes of <elementLookUp>/<qdm> with @uuid attribute value
-		exportedXML = ExportSimpleXML.setQDMIdAsUUID(exportedXML);
-		
 		MeasureExport export = measureExportDAO.findByMeasureId(measureId);
 		if (export == null) {
 			export = new MeasureExport();
 			export.setMeasure(measure);
 		}
-		export.setSimpleXML(exportedXML);
+		
+		export.setSimpleXML(simpleXML);
 		export.setCodeListBarr(exportResult.wkbkbarr);
-		measure.setReleaseVersion(getCurrentReleaseVersion());
-		measure.setExportedDate(new Date());
-		measureDAO.save(measure);
-		measureExportDAO.save(export);
-		//MAT-9283
-		createPackageArtifacts(measureId, measure.getReleaseVersion(), export);
+		return export; 
 	}
 	
-	private void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export) {
+	@Override
+	public void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export) {
 		export.setHqmf(MeasureArtifactGenerator.getHQMFArtifact(measureId, releaseVersion));
 		export.setHumanReadable(MeasureArtifactGenerator.getHumanReadableArtifact(measureId, releaseVersion));
 		export.setCql(MeasureArtifactGenerator.getCQLArtifact(measureId));
@@ -493,15 +492,36 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(final String key,
-			final List<MatValueSet> matValueSetsList) throws Exception {
-		List<String> message = new ArrayList<>();
-		generateExport(key, matValueSetsList);
+	public ValidateMeasureResult validateAndCreateExports(final String key, final List<MatValueSet> matValueSetsList, boolean shouldCreateArtifacts) throws Exception {
+		MeasureExport export = generateExport(key, matValueSetsList);
 		ValidateMeasureResult result = new ValidateMeasureResult();
-		result.setValid(message.isEmpty());
-		result.setValidationMessages(message);
+		result.setValid(true);
+		
+		if(BooleanUtils.isTrue(export.getMeasure().getIsCompositeMeasure())) {
+			CompositeMeasurePackageValidationResult validationResult = compositeMeasurePackageValidator.validate(export.getSimpleXML());
+			result.setValid(validationResult.getMessages().isEmpty());
+			result.setMessages(validationResult.getMessages());
+			result.setValidationMessages(validationResult.getMessages());
+		}
+		
+		if(result.isValid()) {
+			createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);
+		}
+		
 		return result;
 	}
+	
+	private void createAndSaveExportsAndArtifacts(MeasureExport export, boolean shouldCreateArtifacts) {
+		Measure measure = export.getMeasure();
+		measure.setReleaseVersion(getCurrentReleaseVersion());
+		measure.setExportedDate(new Date());
+		measureDAO.save(measure);
+		measureExportDAO.save(export);
+		if (shouldCreateArtifacts) {
+			createPackageArtifacts(measure.getId(), measure.getReleaseVersion(), export);
+		}
+	}
+	
 
 	@Override
 	public String getHumanReadableForNode(final String measureId, final String populationSubXML){

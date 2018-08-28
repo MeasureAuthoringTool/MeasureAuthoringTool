@@ -1,21 +1,28 @@
 package mat.client.export.bonnie;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
+import mat.client.shared.SuccessMessageAlert;
+import mat.client.umls.service.VsacTicketInformation;
+import mat.shared.StringUtility;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
+import mat.shared.bonnie.error.UMLSNotActiveException;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
 
 public class BonnieExportPresenter implements MatPresenter {
 
 	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
+	private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
 	public static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to connect to Bonnie at this time. Please try again. If the problem persists, contact the MAT Support Desk.";
 	
 	private BonnieExportView view;
@@ -29,11 +36,11 @@ public class BonnieExportPresenter implements MatPresenter {
 		addClickHandlers();
 		initializeContent();
 		getBonnieUserInformation();
+		clearMessagePanel();
 	}
 	
 	private void getBonnieUserInformation() {
 		String matUserId = MatContext.get().getLoggedinUserId();
-		
 		
 		MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
 			
@@ -49,24 +56,29 @@ public class BonnieExportPresenter implements MatPresenter {
 				if(caught instanceof BonnieUnauthorizedException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
 					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				}
 				
 				else if(caught instanceof BonnieServerException) {
 					view.getBonnieSignOutButton().setVisible(false);
 					view.getUploadButton().setEnabled(false);
+					view.setHelpBlockMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				} 
 								
 				else {
-					Window.alert(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
+					view.setHelpBlockMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
+					createErrorMessage(UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE);
 				}
 			}
 		});
 	}
+
 	
 	private void initializeContent() {
 		this.view.getMeasureNameLink().setText(result.getName());
+		this.view.getMeasureNameLink().setTitle(result.getName() + " link");
 	}
 	
 	private void addClickHandlers() {
@@ -80,13 +92,73 @@ public class BonnieExportPresenter implements MatPresenter {
 	}
 	
 	private void uploadButtonClickHandler() {
-		// TODO: Implement Upload Button Handler
+		Mat.showLoadingMessage();
+		clearMessagePanel();
+		MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
+			
+			@Override
+			public void onSuccess(VsacTicketInformation result) {
+				if(result == null) {
+					view.setHelpBlockMessage(SIGN_INTO_UMLS);
+					createErrorMessage(SIGN_INTO_UMLS);
+					Mat.hideLoadingMessage();
+				}
+				else {
+					getMeasureExportForMeasure(result);
+				}
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+		});
+		
+		
+		
 	}
 	
+	private void getMeasureExportForMeasure(VsacTicketInformation vsacTicket) {
+		String matUserId = MatContext.get().getLoggedinUserId();
+		String measureId = this.result.getId();
+		MatContext.get().getBonnieService().getUpdateOrUploadMeasureToBonnie(measureId, matUserId, vsacTicket, new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+				if(caught instanceof UMLSNotActiveException) {
+					view.setHelpBlockMessage(SIGN_INTO_UMLS);
+					createErrorMessage(SIGN_INTO_UMLS);
+				}
+				if(caught instanceof BonnieUnauthorizedException) {
+					view.getBonnieSignOutButton().setVisible(false);
+					view.getUploadButton().setEnabled(false);
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
+					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
+				} else {
+					createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
+				Mat.hideLoadingMessage();
+			}
+
+			@Override
+			public void onSuccess(String result) {
+				clearMessagePanel();
+				getExportFromBonnieForMeasure(measureId, matUserId, result);
+			}
+
+		});
+	}
 	private void cancelButtonClickHandler() {
 		this.manageMeasurePresenter.displaySearch();
 	}
 
+	private void getExportFromBonnieForMeasure(String measureId, String matUserId, String successMessage) {
+		String url = GWT.getModuleBaseURL() + "export?id=" + result.getId() + "&userId=" + matUserId + "&format=calculateBonnieMeasureResult";
+		Window.open(url + "&type=open", "_blank", "");
+		createSuccessMessage(successMessage);
+		Mat.hideLoadingMessage();
+	}
 	
 	@Override
 	public void beforeClosingDisplay() {
@@ -106,6 +178,17 @@ public class BonnieExportPresenter implements MatPresenter {
 		ErrorMessageAlert error = new ErrorMessageAlert();
 		error.createAlert(message);
 		view.getAlertPanel().add(error);
+	}
+	
+	public void createSuccessMessage(String message) {
+		view.getAlertPanel().clear();
+		SuccessMessageAlert success = new SuccessMessageAlert();
+		success.createAlert(message);
+		view.getAlertPanel().add(success);
+	}
+	
+	public void clearMessagePanel() {
+		view.getAlertPanel().clear();
 	}
 	
 	public void setBonnieUserId(String userId) {

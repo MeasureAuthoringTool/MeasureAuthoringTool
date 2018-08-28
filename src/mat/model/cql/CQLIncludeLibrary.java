@@ -25,7 +25,9 @@ public class CQLIncludeLibrary implements IsSerializable {
 	
 	private String setId; 
 	
-	private String isComposite; 
+	private String isComponent; 
+	
+	private String measureId;
 	
 	public String getSetId() {
 		return setId;
@@ -154,27 +156,15 @@ public class CQLIncludeLibrary implements IsSerializable {
 		CQLIncludeLibrary cqlIncludeLibrary = (CQLIncludeLibrary)arg0;
 		
 		if(cqlIncludeLibrary == null){
-			System.out.println("equals falseee");
 			return false;
 		}
 		
 		if(cqlIncludeLibrary.cqlLibraryId.equals(cqlLibraryId) && 
 			cqlIncludeLibrary.aliasName.equals(aliasName) && 
 			cqlIncludeLibrary.cqlLibraryName.equals(cqlLibraryName) && 
-			cqlIncludeLibrary.version.equals(version)
-			){
-			
-			System.out.println(cqlIncludeLibrary.cqlLibraryId + " == " + cqlLibraryId);
-			System.out.println(cqlIncludeLibrary.aliasName + " == " + aliasName);
-			System.out.println(cqlIncludeLibrary.cqlLibraryName + " == " + cqlLibraryName);
-			System.out.println(cqlIncludeLibrary.version + " == " + version);
-			System.out.println(cqlIncludeLibrary.qdmVersion + " == " + qdmVersion);
-			
-			System.out.println("equals true");
-			
+			cqlIncludeLibrary.version.equals(version)){
 			return true;
 		}
-		System.out.println("equals false");
 		return false;
 	}
 	
@@ -200,13 +190,20 @@ public class CQLIncludeLibrary implements IsSerializable {
 		return this.id + "|" + this.cqlLibraryId + "|" + this.cqlLibraryName + "|" + this.aliasName + "|" + this.version; 
 	}
 
-	public String getIsComposite() {
-		return isComposite;
+	public String getIsComponent() {
+		return isComponent;
 	}
 
-	public void setIsComposite(String isComposite) {
-		this.isComposite = isComposite;
+	public void setIsComponent(String isComponent) {
+		this.isComponent = isComponent;
 	}
 
+	public String getMeasureId() {
+		return measureId;
+	}
+
+	public void setMeasureId(String measureId) {
+		this.measureId = measureId;
+	}
 
 }

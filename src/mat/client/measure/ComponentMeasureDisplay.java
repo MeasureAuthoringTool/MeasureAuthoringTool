@@ -51,15 +51,23 @@ import mat.client.shared.MatTextCell;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import mat.shared.MeasureSearchModel;
+import mat.shared.StringUtility;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
+	
+	protected HTML instructions = new HTML("Perform a search for a list of available component measures. "
+			+ "Select component measures with the checkbox in-line with the measure name and assign each component measure an alias.");
+	
 	private SimplePanel mainPanel = new SimplePanel();
 	FlowPanel flowPanel = new FlowPanel();
 	Form componentMeasureForm = new Form();
 	private MessageAlert errorMessages = new ErrorMessageAlert();
+	private MessageAlert successMessage = new SuccessMessageAlert();
+
 	protected HelpBlock helpBlock = new HelpBlock();
 	FormGroup messageFormGroup = new FormGroup();
 	private Panel availableMeasuresPanel = new Panel();
@@ -95,6 +103,14 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		return errorMessages;
 	}
 	
+	public MessageAlert getSuccessMessage() {
+		return successMessage;
+	}
+
+	public void setSuccessMessage(MessageAlert successMessage) {
+		this.successMessage = successMessage;
+	}
+	
 	public void clearFields(boolean isEdit) {
 		if(!isEdit) {
 			aliasMapping.clear();
@@ -105,6 +121,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		buildAvailableMeasuresTable();
 		searchWidgetBootStrap.getSearchBox().setText("");
 		errorMessages.clearAlert();
+		successMessage.clearAlert();
 		helpBlock.setText("");
 		helpBlock.setTitle("");
 	}
@@ -140,7 +157,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		contentPanel.add(buttonBar);
 		
 		helpBlock.setColor("transparent");
-		helpBlock.setVisible(false);
 		helpBlock.setHeight("0px");
 		helpBlock.getElement().setId("helpBlock");
 		messageFormGroup.add(helpBlock);
@@ -148,8 +164,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		componentMeasureForm.add(messageFormGroup);
 		
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
+		successMessage.getElement().setId("successMessages_SuccessMessageDisplay");
 		flowPanel.add(errorMessages);
-		
+		flowPanel.add(successMessage);
+		flowPanel.add(instructions);
 		flowPanel.add(componentMeasureForm);
 		flowPanel.add(contentPanel);
 		mainPanel.add(flowPanel);
@@ -257,6 +275,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 			@Override
 			public void update(int index, Result object, String value) {
 				aliasMapping.put(object.getId(), value);
+				successMessage.clearAlert();
 				errorMessages.clearAlert();
 			}
 		});
@@ -371,7 +390,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				new MatSafeHTMLCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-				String patientBasedString = (object.isPatientBased() != null) ? Boolean.toString(object.isPatientBased()) : "";
+				String patientBasedString = (object.isPatientBased() != null && object.isPatientBased()) ? "Yes" : "No";
 				return CellTableUtility.getColumnToolTip(patientBasedString);
 			}
 		};
@@ -411,6 +430,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 					@Override
 					public void update(int index, Result object, Boolean value) {
+						successMessage.clearAlert();
 						errorMessages.clearAlert();
 						selectionModel.setSelected(object, value);
 						if (value) {
@@ -448,7 +468,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				String title = "Click to Replace " + object.getName();
 				String cssClass = "btn btn-link";
 				String iconCss = "fa fa-retweet fa-lg";
-					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Delete</span></button>");
+					sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" " + cssClass + "\" style=\"margin-left: 0px;margin-right: 10px;\"><i class=\" "+iconCss + "\"></i> <span style=\"font-size:0;\">Replace</span></button>");
 			
 				return sb.toSafeHtml();
 			}
@@ -457,6 +477,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		replaceColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, Result object, SafeHtml value) {
+				successMessage.clearAlert();
 				errorMessages.clearAlert();
 				String measureId = object.getId();
 				EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox = new EditIncludedComponentMeasureDialogBox("Replace Component Measure");
@@ -469,20 +490,29 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	}
 	
 	private void replaceComponentMeasure(String measureId, EditIncludedComponentMeasureDialogBox editIncludedComponentMeasureDialogBox) {
-
 		if (null != editIncludedComponentMeasureDialogBox.getSelectedList() && !editIncludedComponentMeasureDialogBox.getSelectedList().isEmpty()) {
+			String replaceMessage = "";
 			for(ManageMeasureSearchModel.Result currentComponentMeasure: appliedComponentMeasuresList) {
 				if(currentComponentMeasure.getId().equals(measureId)) {
 					appliedComponentMeasuresList.remove(currentComponentMeasure);
+					String aliasName = aliasMapping.containsKey(measureId) ? " " + aliasMapping.get(measureId) : "";
+					replaceMessage += currentComponentMeasure.getName() + " " + currentComponentMeasure.getVersion() + " has been saved as the alias" + aliasName  + ".";
 				}
 			}
-			appliedComponentMeasuresList.addAll(editIncludedComponentMeasureDialogBox.getSelectedList());
+			Result selectedMeasure = editIncludedComponentMeasureDialogBox.getSelectedList().get(0);
+			appliedComponentMeasuresList.add(selectedMeasure);
 			if(aliasMapping.containsKey(measureId)) {
+				String aliasName = aliasMapping.get(measureId);
 				aliasMapping.remove(measureId);
+				aliasMapping.put(selectedMeasure.getId(), aliasName);
 			}
+			
 			buildAppliedComponentMeasuresTable();
 			buildAvailableMeasuresTable();
 			editIncludedComponentMeasureDialogBox.getDialogModal().hide();	
+			if(!StringUtility.isEmptyOrNull(replaceMessage)) {
+				getSuccessMessage().createAlert(replaceMessage);
+			}
 		} else {
 			editIncludedComponentMeasureDialogBox.getErrorMessageAlert().createAlert("Please select a Component Measure to replace.");
 		}
@@ -508,6 +538,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		deleteColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				successMessage.clearAlert();
 				errorMessages.clearAlert();
 				List<Result> matchingList = appliedComponentMeasuresList.stream().filter(o -> o.getId().equals(object.getId())).collect(Collectors.toList());
 				helpBlock.setText(object.getName() + " has been deselected and removed from the applied component measures list");

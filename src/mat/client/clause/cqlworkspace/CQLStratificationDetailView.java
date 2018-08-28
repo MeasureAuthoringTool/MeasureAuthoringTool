@@ -18,6 +18,7 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -30,12 +31,16 @@ import mat.client.clause.cqlworkspace.model.PopulationsObject;
 import mat.client.clause.cqlworkspace.model.StrataDataModel;
 import mat.client.clause.cqlworkspace.model.StratificationsObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
+import mat.client.shared.SpacerWidget;
 
 /**
  * Class CQLStratificationDetailView.
  *
  */
 public class CQLStratificationDetailView implements CQLPopulationDetail {
+	private final String cautionMessage = "Caution: Removing or invalidating a stratum within a stratification will "
+			+ "cause any package groupings containing that stratification to be cleared on the Measure Packager.";
+	
 	private VerticalPanel stratificationPanel;
 	private CQLPopulationObserver observer;
 	private StrataDataModel strataDataModel;
@@ -58,12 +63,24 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 	 */
 	public VerticalPanel buildView(PopulationDataModel populationDataModel) {
 		mainPanel.clear();
+		
+		
 		CQLPopulationTopLevelButtonGroup cqlPopulationTopLevelButtonGroup = new CQLPopulationTopLevelButtonGroup(
 				"Stratifications", "Stratifications", "Save", "Add New Stratification");
 		scrollPanel.clear();
 		scrollPanel.setSize("700px", "450px");
 		this.populationDataModel = populationDataModel;
 		this.strataDataModel = populationDataModel.getStrataDataModel();
+		
+		mainPanel.add(new SpacerWidget());
+		HTML cautionText = new HTML(cautionMessage);
+		cautionText.setStyleName("marginLeft");
+		cautionText.getElement().setTabIndex(0);
+		mainPanel.add(cautionText);
+		
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
+		
 		HorizontalPanel btnPanel = new HorizontalPanel();
 		btnPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		btnPanel.getElement().setAttribute("style", "margin-left:400px;");
@@ -71,7 +88,7 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 
 		cqlPopulationTopLevelButtonGroup.getAddNewButton().addClickHandler(event -> onAddNewStratificationClickHander(strataDataModel));
 		cqlPopulationTopLevelButtonGroup.getSaveButton().addClickHandler(event -> onSaveStratificationClickHander(strataDataModel));
-
+		
 		mainPanel.add(btnPanel);
 		mainPanel.add(scrollPanel);
 		buildStratificationView();

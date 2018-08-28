@@ -1,5 +1,21 @@
 package mat.server.bonnie.api.result;
 
-public class BonnieCalculatedResult {
+import com.google.gwt.user.client.rpc.IsSerializable;
 
+public class BonnieCalculatedResult implements IsSerializable{
+
+	private byte[] result;
+	
+	public BonnieCalculatedResult() {
+		
+	}
+
+	public byte[] getResult() {
+		return result;
+	}
+
+	public void setResult(byte[] result) {
+		this.result = result;
+	}
+	
 }

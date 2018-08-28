@@ -2,13 +2,15 @@ package mat.server.util;
 
 import java.util.HashMap;
 
+import mat.client.umls.service.VsacTicketInformation;
+
 /**
  * The Class UMLSSessionTicket.
  */
 public class UMLSSessionTicket {
 
 	/** The Constant umlsSessionMap. */
-	private static final HashMap<String, String> umlsSessionMap = new HashMap<String, String>();
+	private static final HashMap<String, VsacTicketInformation> umlsSessionMap = new HashMap<String, VsacTicketInformation	>();
 
 	/**
 	 * Put.
@@ -18,7 +20,7 @@ public class UMLSSessionTicket {
 	 * @param value
 	 *            the value
 	 */
-	public static void put(String key, String value) {
+	public static void put(String key, VsacTicketInformation value) {
 		umlsSessionMap.put(key, value);
 	}
 
@@ -39,7 +41,7 @@ public class UMLSSessionTicket {
 	 *            the key
 	 * @return the ticket
 	 */
-	public static String getTicket(String key) {
+	public static VsacTicketInformation getTicket(String key) {
 		return umlsSessionMap.get(key);
 	}
 }

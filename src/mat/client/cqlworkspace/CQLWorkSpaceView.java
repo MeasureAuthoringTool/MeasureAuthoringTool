@@ -8,10 +8,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
-import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryPresenter;
-import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
 import mat.client.cqlworkspace.codes.CQLCodesView;
+import mat.client.cqlworkspace.components.CQLComponentLibraryPresenter;
+import mat.client.cqlworkspace.components.CQLComponentLibraryView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
 import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;

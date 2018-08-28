@@ -2,10 +2,10 @@ package mat.client.populationworkspace;
 
 import com.google.gwt.user.client.ui.Grid;
 
-import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
-import mat.client.clause.cqlworkspace.model.PopulationsObject;
-import mat.client.clause.cqlworkspace.model.StrataDataModel;
-import mat.client.clause.cqlworkspace.model.StratificationsObject;
+import mat.client.populationworkspace.model.PopulationClauseObject;
+import mat.client.populationworkspace.model.PopulationsObject;
+import mat.client.populationworkspace.model.StrataDataModel;
+import mat.client.populationworkspace.model.StratificationsObject;
 
 public interface CQLPopulationObserver {
 

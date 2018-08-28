@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace.leftNavBar.sections;
+package mat.client.cqlworkspace.components;
 
 public class CQLComponentLibraryPresenter {
 	

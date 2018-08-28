@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace.leftNavBar.sections;
+package mat.client.cqlworkspace.components;
 
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
@@ -16,12 +16,13 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabView;
+import mat.client.cqlworkspace.GenericLeftNavSectionView;
 import mat.client.measure.ManageMeasurePresenter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-public class CQLComponentLibraryView extends GenericView  {
+public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 
 	private static final String LABEL_WIDTH = "150px";
 	private static final String LABEL_STYLE = "font-size:90%;margin-left:15px;";

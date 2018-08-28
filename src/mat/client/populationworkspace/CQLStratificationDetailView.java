@@ -24,12 +24,12 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-import mat.client.clause.cqlworkspace.model.PopulationClauseObject;
-import mat.client.clause.cqlworkspace.model.PopulationDataModel;
-import mat.client.clause.cqlworkspace.model.PopulationDataModel.ExpressionObject;
-import mat.client.clause.cqlworkspace.model.PopulationsObject;
-import mat.client.clause.cqlworkspace.model.StrataDataModel;
-import mat.client.clause.cqlworkspace.model.StratificationsObject;
+import mat.client.populationworkspace.model.PopulationClauseObject;
+import mat.client.populationworkspace.model.PopulationDataModel;
+import mat.client.populationworkspace.model.PopulationsObject;
+import mat.client.populationworkspace.model.StrataDataModel;
+import mat.client.populationworkspace.model.StratificationsObject;
+import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 

@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace.leftNavBar;
+package mat.client.cqlworkspace;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +47,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.cqlworkspace.DeleteConfirmationDialogBox;
+import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabPresenter;
+import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabView;
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;

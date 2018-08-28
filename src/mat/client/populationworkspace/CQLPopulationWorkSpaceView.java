@@ -9,8 +9,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
 
 import mat.client.Mat;
-import mat.client.clause.cqlworkspace.model.PopulationDataModel;
 import mat.client.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.populationworkspace.model.PopulationDataModel;
 import mat.client.shared.SkipListBuilder;
 
 /**

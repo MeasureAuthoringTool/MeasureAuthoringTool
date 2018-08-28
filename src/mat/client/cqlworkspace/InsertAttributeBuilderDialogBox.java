@@ -40,7 +40,6 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.CancelButton;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
 import mat.client.shared.CustomDateTimeTextBox;
 import mat.client.shared.CustomQuantityTextBox;
 import mat.client.shared.JSONAttributeModeUtility;

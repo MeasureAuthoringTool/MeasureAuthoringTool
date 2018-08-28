@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace.leftNavBar.sections;
+package mat.client.cqlworkspace;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -9,7 +9,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
 
-public abstract class GenericView {
+public abstract class GenericLeftNavSectionView {
 	protected SimplePanel containerPanel = new SimplePanel();
 	private VerticalPanel messagePanel = new VerticalPanel();
 	protected MessageAlert successMessageAlert = new SuccessMessageAlert();
@@ -17,7 +17,7 @@ public abstract class GenericView {
 	protected HTML heading = new HTML();
 	
 
-	public GenericView() {
+	public GenericLeftNavSectionView() {
 		buildMessagePanel();
 	}
 	

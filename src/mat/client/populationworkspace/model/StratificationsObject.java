@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace.model;
+package mat.client.populationworkspace.model;
 
 /**
  * class StratificationsObject.

@@ -19,7 +19,6 @@ import com.google.gwt.user.client.ui.Widget;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
-import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
 import mat.client.cqlworkspace.codes.CQLCodesView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;

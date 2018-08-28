@@ -65,9 +65,9 @@ public class VSACApiServImpl implements VSACApiService{
 	
 	public VSACApiServImpl(){
 		
-		PROXY_HOST = System.getProperty("vsac_proxy_host");
+		PROXY_HOST = System.getProperty("https.proxyHost");
 		if(PROXY_HOST !=null) {
-			PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+			PROXY_PORT = Integer.parseInt(System.getProperty("https.proxyPort"));
 		}
 		server = System.getProperty("SERVER_TICKET_URL");
 		service = System.getProperty("SERVICE_URL");

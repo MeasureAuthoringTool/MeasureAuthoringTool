@@ -45,6 +45,10 @@
   <mode mode="Computative" />
   <mode mode="Nullable" />
  </attribute>
+ <attribute attribName="daysSupplied">
+  <mode mode="Comparison" />
+  <mode mode="Nullable" />
+ </attribute>
  <attribute attribName="dischargeDisposition">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
@@ -65,7 +69,7 @@
  </attribute>
  <attribute attribName="frequency">
   <mode mode="Nullable" />
- <mode mode="ValueSets" />
+  <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
  <attribute attribName="incisionDatetime">
@@ -193,10 +197,6 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <!-- <attribute attribName="id">
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
- </attribute> -->
  <attribute attribName="recorder">
   <mode mode="ValueSets" />
   <mode mode="Codes" />

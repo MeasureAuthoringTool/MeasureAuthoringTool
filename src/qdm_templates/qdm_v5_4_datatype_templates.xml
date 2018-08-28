@@ -391,7 +391,7 @@
 			</participation>
 		</substance-order>
 		<provider-char changeAttribute="code">
-			<participation typeCode="DRIV">
+			<participation typeCode="PRF">
 				<role classCode="ASSIGNED">
 					<playingEntity classCode="PSN" determinerCode="KIND">
 						<code valueSet="$QDMElementValueSetOID" />

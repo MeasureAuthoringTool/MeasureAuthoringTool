@@ -190,8 +190,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			httpClient = HttpClients.createDefault();
 			HttpPost postRequest = new HttpPost(getBonnieBaseURL() + UPDATE_MEASURE_URI);
-
-			getRequestConfigProxy(postRequest);
 			
 			String bearerTokenString = "Bearer " + bearerToken;
 			postRequest.addHeader("Authorization", bearerTokenString);
@@ -264,8 +262,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			httpClient = HttpClients.createDefault();
 			HttpPut putRequest = new HttpPut(getBonnieBaseURL() + UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase());
-			
-			getRequestConfigProxy(putRequest);
 						
 			logger.info("Connecting " + putRequest.getURI());
 			String bearerTokenString = "Bearer " + bearerToken;
@@ -386,14 +382,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw e;
 		}
 	}
-
-	private String getProxyUrl() {
-		return System.getProperty("vsac_proxy_host");
-	}
-
-	private String getProxyPort() {
-		return System.getProperty("vsac_proxy_port");
-	}
 	
 	private HttpURLConnection getInformationConnection(String token, String uri) throws IOException {
 		HttpURLConnection connection = getBaseHttpConnection(token, uri);
@@ -414,9 +402,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 		String baseURL = getBonnieBaseURL();
 		String requestUrl = baseURL + uri;
 		String bearerToken = "Bearer " + token;
-		// remove when this is in JVM variables
-		setProxyVMVariables();
-		
 		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestProperty("Authorization", bearerToken);
@@ -426,8 +411,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public BonnieOAuthResult getBonnieRefreshResult(UserBonnieAccessInfo userBonnieAccessInfo) throws BonnieUnauthorizedException {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
-			// remove when this is in JVM variables
-			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
 			logger.info("Connecting to refresh bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
@@ -458,8 +441,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public BonnieOAuthResult getBonnieOAuthResult(String code) {
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
-			// remove when this is in JVM variables
-			setProxyVMVariables();
 			OAuthClient client = new OAuthClient(urlConnection);
 			logger.info("Connecting to bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest
@@ -480,23 +461,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 				urlConnection.shutdown();
 				logger.info("Disconnected from bonnie oauth");
 			}
-		}
-	}
-	
-	private void getRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
-		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
-			HttpHost proxy = new HttpHost(getProxyUrl(), Integer.valueOf(getProxyPort()));
-			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
-			request.setConfig(config);
-		}
-	}
-	/**
-	 * We should remove when this is in JVM variables
-	 */
-	private void setProxyVMVariables() {
-		if(!StringUtils.isEmpty(getProxyUrl()) && !StringUtils.isEmpty(getProxyPort())) {
-			System.setProperty("https.proxyHost", getProxyUrl());
-			System.setProperty("https.proxyPort", getProxyPort());
 		}
 	}
 }

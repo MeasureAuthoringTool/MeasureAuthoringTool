@@ -13,7 +13,7 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.springframework.util.CollectionUtils;
 import org.xml.sax.InputSource;
 
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.cqlworkspace.CQLWorkSpaceConstants;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;

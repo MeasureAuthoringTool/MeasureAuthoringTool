@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.ImageResources;
 import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.buttons.CustomButton;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;

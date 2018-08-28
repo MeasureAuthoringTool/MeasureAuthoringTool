@@ -12,8 +12,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.CustomButton;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.cql.CQLLibrarySearchView;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;

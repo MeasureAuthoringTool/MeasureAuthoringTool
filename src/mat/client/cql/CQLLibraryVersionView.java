@@ -27,7 +27,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
 import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.clause.cqlworkspace.ConfirmationDialogBox;
+import mat.client.cqlworkspace.ConfirmationDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;

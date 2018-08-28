@@ -129,7 +129,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 	@Override
 	public BonnieCalculatedResult getCalculatedResultsForMeasure(String bearerToken, String hqmfSetId)
-			throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, IOException {
+			throws BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, IOException, BonnieBadParameterException, BonnieDoesNotExistException {
 		BonnieCalculatedResult calculatedResult = new BonnieCalculatedResult();
 		String uri = UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase() + CALCULATE_MEASURE_RESULTS_URI;
 		
@@ -138,27 +138,11 @@ public class BonnieAPIv1 implements BonnieAPI {
 			connection = getCalculationInformationConnection(bearerToken, uri);
 			logger.info("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
-			if (code.startsWith("2")) {
-				ByteArrayOutputStream calculatedResultByteArray = readFully(connection.getInputStream());
-				calculatedResult.setResult(calculatedResultByteArray.toByteArray());
-			} else if (code.contains("401")) {
-				// if the server throws a 401, we should return unauthorized exception
-				// since the tokens were not valid
-				String response = getResponse(connection.getErrorStream());
-				logger.error(response);
-				throw new BonnieUnauthorizedException();
-			} else if (code.contains("404")) {
-				// if the server throws a 404, we should return bonnieNotFound exception
-				// since the measure id was not valid
-				String response = getResponse(connection.getErrorStream());
-				logger.error(response);
-				throw new BonnieNotFoundException();
-			} else if (code.contains("500") || code.contains("406")) {
-				// if the server throws a 500 we should return generic bonnie server exception
-				String response = getResponse(connection.getErrorStream());
-				logger.error(response);
-				throw new BonnieServerException();
-			}
+			handleResponseCode(code, "Get Calculations For Measure " + hqmfSetId, hqmfSetId);
+			
+			ByteArrayOutputStream calculatedResultByteArray = readFully(connection.getInputStream());
+			calculatedResult.setResult(calculatedResultByteArray.toByteArray());
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw e;
@@ -185,7 +169,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 	public void uploadMeasureToBonnie(String bearerToken, byte[] zipFileContents, String fileName,
 			String measureType, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration)
 			throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieAlreadyExistsException,
-			BonnieServerException, IOException {
+			BonnieServerException, IOException, BonnieDoesNotExistException {
 		
 		CloseableHttpClient httpClient = null;
 		CloseableHttpResponse postResponse = null;
@@ -197,25 +181,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 			
 			String code = String.valueOf(postResponse.getStatusLine().getStatusCode());
-			if(code.startsWith("2")) {
-				logger.info("Measure Upload success");
-			} else if (code.contains("401")) {
-				//401 Unauthorized
-				logger.error("401: user unauthorized - Measure Upload");
-				throw new BonnieUnauthorizedException();
-			} else if (code.contains("400")) {
-				//400 we sent bad parameters
-				logger.error("400: MAT sent bad parameters - Measure Upload");
-				throw new BonnieBadParameterException();
-			} else if (code.contains("409")) {
-				//409 Measure already exists
-				logger.error("409: Measure set ID already exsists in Bonnie - Measure Upload");
-				throw new BonnieAlreadyExistsException();
-			} else if (code.startsWith("5")) {
-				//500 server error occurred
-				logger.error("500: Error interfacing with Bonnie - Measure Upload");
-				throw new BonnieServerException();
-			} 
+			handleResponseCode(code, "Mesure Upload", null);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IOException();
@@ -245,28 +211,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			putResponse = httpClient.execute(putRequest);
 			
 			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
-			if(code.startsWith("2")) {
-				logger.info("Measure Update successful");
-			} else if (code.contains("401")) {
-				//401 Unauthorized
-				logger.error("401: user unauthorized - Measure Update");
-				throw new BonnieUnauthorizedException();
-			} else if (code.contains("400")) {
-				//400 we sent bad parameters
-				logger.error("400: MAT sent bad parameters - Measure Update");
-				throw new BonnieBadParameterException();
-			} else if (code.contains("404")) {
-				//404 Measure does not exist to update
-				logger.error("404: Measure Set ID " + hqmfSetId + " does not exsist in Bonnie database - Measure Update");
-				throw new BonnieDoesNotExistException();
-			} else if (code.startsWith("5")) {
-				//500 server error occurred
-				logger.error("500: Error interfacing with Bonnie - Measure Update");
-				throw new BonnieServerException();
-			} else {
-				logger.error("Generic Error - Measure Update");
-				throw new BonnieServerException();
-			}
+			handleResponseCode(code, "Mesure Update", hqmfSetId);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IOException();
@@ -332,7 +277,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 	@Override
 	public BonnieUserInformationResult getUserInformationByToken(String token)
-			throws BonnieUnauthorizedException, BonnieServerException, IOException {
+			throws BonnieUnauthorizedException, BonnieServerException, IOException, BonnieBadParameterException, BonnieDoesNotExistException {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
 		HttpURLConnection connection = null;
 		try {
@@ -341,22 +286,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 			logger.info("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());
-			if (code.startsWith("2")) {
-				String response = getResponse(connection.getInputStream());
-				JSONObject jsonObject = new JSONObject(response);
-				String email = jsonObject.getString("user_email");
-				userInformationResult.setBonnieUsername(email);
-			} else if (code.startsWith("4")) {
-				// if the server throws a 401 or 404, we should return unauthorized exception
-				// since the tokens were not valid
-				String response = getResponse(connection.getErrorStream());
-				logger.error(response);
-				throw new BonnieUnauthorizedException();
-			} else if (code.startsWith("5")) {
-				String response = getResponse(connection.getErrorStream());
-				logger.error(response);
-				throw new BonnieServerException();
-			}
+			handleResponseCode(code, "Get User Information", null);
+			
+			String response = getResponse(connection.getInputStream());
+			JSONObject jsonObject = new JSONObject(response);
+			String email = jsonObject.getString("user_email");
+			userInformationResult.setBonnieUsername(email);
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new IOException();
@@ -462,6 +397,31 @@ public class BonnieAPIv1 implements BonnieAPI {
 				urlConnection.shutdown();
 				logger.info("Disconnected from bonnie oauth");
 			}
+		}
+	}
+	
+	private void handleResponseCode(String code, String method, String hqmfSetId) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException{
+		if(code.startsWith("2")) {
+			logger.info(method + " successful");
+		} else if (code.contains("401")) {
+			//401 Unauthorized
+			logger.error("401: user unauthorized - " + method);
+			throw new BonnieUnauthorizedException();
+		} else if (code.contains("400")) {
+			//400 we sent bad parameters
+			logger.error("400: MAT sent bad parameters - " + method);
+			throw new BonnieBadParameterException();
+		} else if (code.contains("404")) {
+			//404 Measure does not exist to update
+			logger.error("404: Measure Set ID " + hqmfSetId + " does not exsist in Bonnie database - " + method);
+			throw new BonnieDoesNotExistException();
+		} else if (code.startsWith("5")) {
+			//500 server error occurred
+			logger.error("500: Error interfacing with Bonnie - " + method);
+			throw new BonnieServerException();
+		} else {
+			logger.error("Generic Error - " + method);
+			throw new BonnieServerException();
 		}
 	}
 }

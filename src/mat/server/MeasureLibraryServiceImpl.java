@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -2112,17 +2114,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 
+			List<ComponentMeasure> componentsToDelete = new ArrayList<>(); 
 			for (int i = 0; i < componentMeasureNodeList.getLength(); i++) {
 				Node current = componentMeasureNodeList.item(i);
 				String id = current.getAttributes().getNamedItem("id").getNodeValue();
 				if (!usedIncludedLibraryIds.contains(id)) {
 					current.getParentNode().removeChild(current);
-					logger.info("removed library with id: " + id);
-					measure.getComponentMeasures().removeIf(m -> m.getComponentMeasureId().equals(id));
+					Optional<ComponentMeasure> component = measure.getComponentMeasures().stream().filter(m -> m.getComponentMeasureId().equals(id)).findFirst(); 
+					componentsToDelete.add(component.get());
 				}
 			}
 			
-			measurePackageService.updateComponentMeasures(measure.getId(), measure.getComponentMeasures());
+			measurePackageService.deleteComponentMeasure(componentsToDelete);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

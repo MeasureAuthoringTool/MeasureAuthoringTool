@@ -9,20 +9,22 @@ import java.net.HttpURLConnection;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
+import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
+import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
@@ -56,6 +58,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 	private static final String CALCULATE_MEASURE_RESULTS_URI = "/calculated_results";
 	
 	private static final String GET_USER_INFORMATION_URI = "/oauth/token/info";
+	
+	private static final String REVOKE_BONNIE_TOKEN_URI = "/oauth/revoke";
 	
 	private static final String BOUNDRY = "APIPIE_RECORDER_EXAMPLE_BOUNDARY";
 
@@ -304,6 +308,45 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 		return userInformationResult;
 	}
+	
+	@Override
+	public void revokeBonnieToken(String bearerToken, String refreshToken)
+			throws BonnieServerException, BonnieUnauthorizedException, Exception {
+		/*CloseableHttpClient httpClient = null;
+		CloseableHttpResponse postResponse = null;
+		try {
+			httpClient = HttpClients.createDefault();
+			HttpPost postRequest = getRevokeInromationConnection(bearerToken, REVOKE_BONNIE_TOKEN_URI, refreshToken);
+			postResponse = httpClient.execute(postRequest);
+
+			
+			String code = String.valueOf(postResponse.getStatusLine().getStatusCode());
+			handleResponseCode(code, "Revoke Token", null);*/
+		URLConnectionClient urlConnection = new URLConnectionClient();
+		try {
+			OAuthClient client = new OAuthClient(urlConnection);
+			logger.info("Connecting to refresh bonnie oauth");
+			String authString = getClientId() + ":" + getClientSecret();
+			String authStringEnc = DatatypeConverter.printBase64Binary(authString.getBytes());
+			
+			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + REVOKE_BONNIE_TOKEN_URI)
+					.setClientId(getClientId()).setClientSecret(getClientSecret())
+					.setRedirectURI(getRedirectURI())
+					.setParameter("token", bearerToken)
+					.setParameter("token_type_hint", "access_token")
+					.buildBodyMessage();
+			request.setHeader("Authorization", "Basic " + authStringEnc);
+			OAuthResourceResponse resp = client.resource(request, "POST", OAuthResourceResponse.class);
+	    	handleResponseCode(String.valueOf(resp.getResponseCode()), "Revoke Bonnie Token", null);
+	    				
+		} finally {
+			if(urlConnection != null) {
+				urlConnection.shutdown();
+				logger.info("Disconnected from refresh bonnie oauth");
+			}
+		}
+		
+	}
 
 	private String getResponse(InputStream stream) throws IOException {
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(stream));) {
@@ -327,6 +370,30 @@ public class BonnieAPIv1 implements BonnieAPI {
 		getBearerToken(requestProperty, token);
 		
 		return APIConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
+	}
+	
+	private HttpPost getRevokeInromationConnection(String token, String uri, String refreshToken) throws IOException {
+		String requestUri = getBonnieBaseURL() + uri;
+		String bearerTokenString = "Bearer " + token;
+		
+		//Map<String, String> headerMap = createHeader(token);
+		Map<String, String> headerMap = new HashMap<>();
+		headerMap.put("Authorization", bearerTokenString);
+		headerMap.put("boundary", BOUNDRY);
+		headerMap.put("Host", "bonnie.healthit.gov");
+		headerMap.put("'Content-Type'", "application/x-www-form-urlencoded");
+		//headerMap.put("Cache-Control", "no-cache");
+		//headerMap.put("'Content-Transfer'", "binary");
+		
+		Map<String, String> textInputMap = new HashMap<>();
+		textInputMap.put("client_id", getClientId());
+		textInputMap.put("client_secret", getClientSecret());
+		textInputMap.put("token", refreshToken);
+		//textInputMap.put("token_type_hint", "refresh_token");
+		
+		Map<String, FileInfomationObject> binaryInputMap = new HashMap<>();
+		
+		return APIConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
 	
 	private HttpURLConnection getCalculationInformationConnection(String token, String uri) throws IOException {
@@ -424,4 +491,5 @@ public class BonnieAPIv1 implements BonnieAPI {
 			throw new BonnieServerException();
 		}
 	}
+
 }

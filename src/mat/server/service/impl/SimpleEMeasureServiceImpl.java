@@ -78,6 +78,8 @@ import mat.shared.DateUtility;
 import mat.shared.FileNameUtility;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
+import mat.shared.bonnie.error.BonnieBadParameterException;
+import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
@@ -1243,7 +1245,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	@Override
-	public BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
+	public BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException {
 		BonnieCalculatedResult results = bonnieServiceImpl.getBonnieExportForMeasure(userId, measureId);
 		return results;
 	}

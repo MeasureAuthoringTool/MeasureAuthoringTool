@@ -118,4 +118,16 @@ public interface BonnieAPI {
 	 * @throws Exception 
 	 */
 	BonnieUserInformationResult getUserInformationByToken(String bearerToken) throws BonnieServerException, BonnieUnauthorizedException, Exception;
+
+	
+	/**
+	 * Immediately deactivates User access tokens biased on bearerToken
+	 * @param bearerToken the bearer authentication token for the user
+	 * @param refreshToken the token to revoke
+	 * @return the user information which was fetched by the token
+	 * @throws BonnieServerException 
+	 * @throws BonnieUnauthorizedException 
+	 * @throws Exception 
+	 */
+	void revokeBonnieToken(String bearerToken, String refreshToken) throws BonnieServerException, BonnieUnauthorizedException, Exception;
 }

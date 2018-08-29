@@ -1370,33 +1370,66 @@ public class ManageMeasurePresenter implements MatPresenter {
 								if (!isLoading && selectedMeasure.isDraftable()) {
 									if (((selectedMeasure != null) && (selectedMeasure.getId() != null))) {
 										setSearchingBusy(true);
-										MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
-												new AsyncCallback<ManageMeasureDetailModel>() {
-													@Override
-													public void onFailure(Throwable caught) {
-														setSearchingBusy(false);
-														searchDisplay.getErrorMessageDisplay()
-																.createAlert(MatContext.get().getMessageDelegate()
-																		.getGenericErrorMessage());
-														MatContext.get().recordTransactionEvent(null, null, null,
-																"Unhandled Exception: "
-																		+ caught.getLocalizedMessage(),
-																0);
-													}
-
-													@Override
-													public void onSuccess(ManageMeasureDetailModel result) {
-														searchDisplay.getErrorMessageDisplay().clearAlert();
-														currentDetails = result;
-														createDraftOfSelectedVersion(currentDetails);
-													}
-												});
+										if(selectedMeasure.getIsComposite()){
+											draftCompositeMeasure(selectedMeasure);
+										}else {
+											draftMeasure(selectedMeasure);
+										}
 									}
 								} else if (!isLoading && selectedMeasure.isVersionable()) {
 									versionDisplay.setSelectedMeasure(selectedMeasure);
 									createVersion();
 								}
 
+							}
+
+							private void draftCompositeMeasure(Result selectedMeasure) {
+								MatContext.get().getMeasureService().getCompositeMeasure(selectedMeasure.getId(),
+										new AsyncCallback<ManageCompositeMeasureDetailModel>() {
+											@Override
+											public void onFailure(Throwable caught) {
+												setSearchingBusy(false);
+												searchDisplay.getErrorMessageDisplay()
+														.createAlert(MatContext.get().getMessageDelegate()
+																.getGenericErrorMessage());
+												MatContext.get().recordTransactionEvent(null, null, null,
+														"Unhandled Exception: "
+																+ caught.getLocalizedMessage(),
+														0);
+											}
+
+											@Override
+											public void onSuccess(ManageCompositeMeasureDetailModel result) {
+												searchDisplay.getErrorMessageDisplay().clearAlert();
+												currentDetails = result;
+												createDraftOfSelectedVersion(currentDetails);
+											}
+										});
+								
+							}
+
+							private void draftMeasure(ManageMeasureSearchModel.Result selectedMeasure) {
+								MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
+										new AsyncCallback<ManageMeasureDetailModel>() {
+											@Override
+											public void onFailure(Throwable caught) {
+												setSearchingBusy(false);
+												searchDisplay.getErrorMessageDisplay()
+														.createAlert(MatContext.get().getMessageDelegate()
+																.getGenericErrorMessage());
+												MatContext.get().recordTransactionEvent(null, null, null,
+														"Unhandled Exception: "
+																+ caught.getLocalizedMessage(),
+														0);
+											}
+
+											@Override
+											public void onSuccess(ManageMeasureDetailModel result) {
+												searchDisplay.getErrorMessageDisplay().clearAlert();
+												currentDetails = result;
+												createDraftOfSelectedVersion(currentDetails);
+											}
+										});
 							}
 
 						});

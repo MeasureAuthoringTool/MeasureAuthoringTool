@@ -789,13 +789,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Map<String, String> aliasMapping = new HashMap<>();
 		
 		for(ComponentMeasure component : measure.getComponentMeasures()) {
-			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasureId()));			
+			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasure().getId()));			
 		}
 		model.setAppliedComponentMeasures(componentMeasuresSelectedList);
 		model.setComponentMeasuresSelectedList(componentMeasuresSelectedList);
 		
 		for(ComponentMeasure component : measure.getComponentMeasures() ) {
-			aliasMapping.put(component.getComponentMeasureId(), component.getAlias());
+			aliasMapping.put(component.getComponentMeasure().getId(), component.getAlias());
 		}
 		
 		model.setAliasMapping(aliasMapping);
@@ -3325,7 +3325,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<ComponentMeasure> componentMeasures = compositeMeasure.getComponentMeasures();
 		
 		for(ComponentMeasure componentMeasure : componentMeasures) {
-			Measure measure = measureDAO.find(componentMeasure.getComponentMeasureId());
+			Measure measure = measureDAO.find(componentMeasure.getComponentMeasure().getId());
 			String measureName = measure.getDescription();
 			String ownerName = measure.getOwner().getFullName();
 			String alias = componentMeasure.getAlias();
@@ -5990,7 +5990,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	private List<ComponentMeasure> buildComponentMeasuresList(String measureId, ManageCompositeMeasureDetailModel model) {
 		return model.getAppliedComponentMeasures().stream().map(result -> 
-				new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
+				new ComponentMeasure(measureDAO.find(measureId), measureDAO.find(result.getId()), model.getAliasMapping().get(result.getId()))).collect(Collectors.toList());
 	}
 	
 	private void createComponentMeasureAsLibraryInMeasureXML(String measureId, ManageCompositeMeasureDetailModel model) {

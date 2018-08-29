@@ -1,4 +1,4 @@
-package mat.shared;
+package mat.server;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -13,13 +13,16 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.springframework.stereotype.Component;
 
+import mat.shared.FileInfomationObject;
 
+@Component
 public class APIConnectionUtillity {
 	
 	private static final Log logger = LogFactory.getLog(APIConnectionUtillity.class);
 	
-	public static HttpURLConnection createGETHTTPConnection(String uri, Map<String, String> requestPropertyMap) throws IOException {
+	public HttpURLConnection createGETHTTPConnection(String uri, Map<String, String> requestPropertyMap) throws IOException {
 		URL url = new URL(uri);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		Set<String> keyValues = requestPropertyMap.keySet();
@@ -32,27 +35,27 @@ public class APIConnectionUtillity {
 		return connection;
 	}
 	
-	public static HttpPut createPutConnection(String uri, String boundary, Map<String, String> requestHeaderMap, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
+	public HttpPut createPutConnection(String uri, String boundary, Map<String, String> requestHeaderMap, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
 		HttpPut putRequest = new HttpPut(uri);
 		
 		createGenericRequest(putRequest, boundary, requestHeaderMap, textBuilderMap, filebuilderMap);
 		return putRequest;
 	}
 	
-	public static HttpPost createPostConnection(String uri, String boundary, Map<String, String> requestHeaderMap, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
+	public HttpPost createPostConnection(String uri, String boundary, Map<String, String> requestHeaderMap, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
 		HttpPost postRequest = new HttpPost(uri);
 		
 		createGenericRequest(postRequest, boundary, requestHeaderMap, textBuilderMap, filebuilderMap);
 		return postRequest;
 	}
-	private static void createGenericRequest(HttpEntityEnclosingRequestBase request, String boundary, Map<String, String> requestHeaderMap, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
+	private void createGenericRequest(HttpEntityEnclosingRequestBase request, String boundary, Map<String, String> requestHeaderMap, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
 		logger.info("Connecting " + request.getURI());
 		createHeaderOfConnection(request, requestHeaderMap);
 		
 		createMultiPartBuilderOfConnection(request, boundary, textBuilderMap, filebuilderMap);
 	}
 	
-	private static void createHeaderOfConnection(HttpEntityEnclosingRequestBase request, Map<String, String> requestHeaderMap) {
+	private void createHeaderOfConnection(HttpEntityEnclosingRequestBase request, Map<String, String> requestHeaderMap) {
 		Set<String> keyValues = requestHeaderMap.keySet();
 		
 		for(String keyValue : keyValues) {
@@ -62,7 +65,7 @@ public class APIConnectionUtillity {
 		
 	}
 	
-	private static void createMultiPartBuilderOfConnection(HttpEntityEnclosingRequestBase request, String boundary, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
+	private void createMultiPartBuilderOfConnection(HttpEntityEnclosingRequestBase request, String boundary, Map<String, String> textBuilderMap, Map<String, FileInfomationObject> filebuilderMap) {
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		builder.setBoundary(boundary);
 		

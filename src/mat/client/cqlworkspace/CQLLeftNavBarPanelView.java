@@ -32,7 +32,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -43,12 +42,11 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
-import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabPresenter;
-import mat.client.clause.cqlworkspace.leftNavBar.ComponentTabView;
 import mat.client.shared.CQLSuggestOracle;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
@@ -57,6 +55,7 @@ import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.util.MatTextBox;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
@@ -210,10 +209,102 @@ public class CQLLeftNavBarPanelView {
 	
 	private List<QDSAttributes> availableQDSAttributeList;
 	
-	private ComponentTabPresenter components = new ComponentTabPresenter();
+	
+	//Component tab info
+	private Badge badge = new Badge();
+	private ListBox listBox = new ListBox();
+	private Label label = new Label("Components");
+	private PanelCollapse collapse = new PanelCollapse();
+	private SuggestBox suggestBox;
+	private AnchorListItem anchor;
+	
+	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
+	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
+	
+	private PanelCollapse buildComponentCollapse() {
+		collapse.setId("collapseComponent");
+		PanelBody componentCollapseBody = new PanelBody();
+		HorizontalPanel componentHP = new HorizontalPanel();
+		VerticalPanel rightVerticalPanel = new VerticalPanel();
+		rightVerticalPanel.setSpacing(10);
+		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelComponent");
+		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		Label componentsLabel = new Label("Components");
+		
+		Map<String, String> aliases = new HashMap<String,String>();
+		aliases.clear();
+		for(ComponentMeasureTabObject obj : componentObjectsList) {
+			aliases.put(obj.getComponentId(), obj.getAlias());
+		}
+		
+		suggestBox = new SuggestBox(getSuggestOracle(aliases.values()));
+		suggestBox.setWidth("180px");
+		suggestBox.setText("Search");
+		suggestBox.setTitle("Search Component Alias");
+		suggestBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
+		
+		suggestBox.getValueBox().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if ("Search".equals(suggestBox.getText())) {
+					suggestBox.setText("");
+				}
+			}
+		});
+		
+		listBox.clear();
+		listBox.setWidth("180px");
+		listBox.setVisibleItemCount(10);
+		listBox.getElement().setAttribute("id", "componentsListBox");
+		
+		rightVerticalPanel.add(suggestBox);
+		rightVerticalPanel.add(listBox);
+		
+		rightVerticalPanel.setCellHorizontalAlignment(componentsLabel, HasHorizontalAlignment.ALIGN_LEFT);
+		componentHP.add(rightVerticalPanel);
+		componentCollapseBody.add(componentHP);
+
+		collapse.add(componentCollapseBody);
+		return collapse;
+	}
+	
+	private void setBadgeNumber(int size, Badge badge) {
+		if (size < 10) {
+			badge.setText("0" + size);
+		} else {
+			badge.setText("" + size);
+		}
+	}
+	
+	private void buildComponentsTab() {
+		this.anchor.setIcon(IconType.PENCIL);
+		this.anchor.setTitle("Component");
+		this.anchor.setId("component_Anchor");
+		label.setStyleName("transparentLabel");
+		label.setId("componentsLabel_Label");
+		setBadgeNumber(0, badge);
+		badge.setPull(Pull.RIGHT);
+		badge.setMarginLeft(45);
+		badge.setId("componentsBadge_Badge");
+		Anchor anchor = (Anchor) (this.anchor.getWidget(0));
+		anchor.addDoubleClickHandler(new DoubleClickHandler() {
+			@Override
+			public void onDoubleClick(DoubleClickEvent event) {
+				event.stopPropagation();
+			}
+		});
+		anchor.add(label);
+		anchor.add(badge);
+		anchor.setDataParent("#navGroup");
+		this.anchor.setDataToggle(Toggle.COLLAPSE);
+		this.anchor.setHref("#collapseComponent");
+		this.anchor.add(collapse);
+	}
+	
 
 	public VerticalPanel buildMeasureLibCQLView(){
 		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+		collapse = buildComponentCollapse();
 		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();
@@ -230,6 +321,7 @@ public class CQLLeftNavBarPanelView {
 		navPills.setWidth("200px");
 
 		generalInformation = new AnchorListItem();
+		anchor = new AnchorListItem();
 		includesLibrary = new AnchorListItem();
 		appliedQDM = new AnchorListItem();
 		codesLibrary = new AnchorListItem();
@@ -240,6 +332,7 @@ public class CQLLeftNavBarPanelView {
 
 		
 		buildGeneralInfoTab();
+		buildComponentsTab();
 		buildIncludesTab();
 		buildValueSetsTab();
 		buildCodesTab();
@@ -250,7 +343,7 @@ public class CQLLeftNavBarPanelView {
 		buildMessagePanel();
 		
 		navPills.add(generalInformation);
-		navPills.add(components.getView());
+		navPills.add(anchor);
 		navPills.add(includesLibrary);
 		navPills.add(appliedQDM);
 		navPills.add(codesLibrary);
@@ -1163,8 +1256,8 @@ public class CQLLeftNavBarPanelView {
 		this.functionMap = functionMap;
 	}
 	
-	public ComponentTabView getComponentsTab() {
-		return components.getView();
+	public AnchorListItem getComponentsTab() {
+		return anchor;
 	}
 
 
@@ -2322,8 +2415,60 @@ public class CQLLeftNavBarPanelView {
 		}
 		return isValid;
 	}
-
-	public ComponentTabPresenter getComponents() {
-		return components;
+	
+	public ListBox getComponentsListBox() {
+		return listBox;
 	}
+
+	public Map<String, ComponentMeasureTabObject> getComponentMap() {
+		return componentObjectsMap;
+	}
+
+	public UIObject getComponentsCollapse() {
+		return collapse;
+	}
+
+	public void clearAndAddToComponentListBox(List<ComponentMeasureTabObject> componentMeasures) {
+		componentObjectsList.clear();
+		componentObjectsMap.clear();
+		componentObjectsList.addAll(componentMeasures);
+		if (listBox != null) {
+			listBox.clear();
+			sortComponentsList(componentObjectsList);
+			for (ComponentMeasureTabObject object : componentObjectsList) {
+				componentObjectsMap.put(object.getComponentId(), object);
+				listBox.addItem(object.getAlias(), object.getComponentId());
+			}
+			// Set tooltips for each element in listbox
+			SelectElement selectElement = SelectElement.as(listBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+			for (int i = 0; i < options.getLength(); i++) {
+				String title = options.getItem(i).getText();
+				OptionElement optionElement = options.getItem(i);
+				optionElement.setTitle(title);
+			}
+		}
+		
+		setBadgeNumber(componentMeasures.size(), badge);
+	}
+	
+	private void sortComponentsList(List<ComponentMeasureTabObject> objectList) {
+		Collections.sort(objectList, new Comparator<ComponentMeasureTabObject>() {
+			@Override
+			public int compare(final ComponentMeasureTabObject object1, final ComponentMeasureTabObject object2) {
+				return (object1.getAlias()).compareToIgnoreCase(object2.getAlias());
+			}
+		});
+	}
+
+	public void updateComponentSuggestBox(List<ComponentMeasureTabObject> results) {
+		Map<String, String> aliases = new HashMap<String,String>();
+		aliases.clear();
+		for(ComponentMeasureTabObject obj : componentObjectsList) {
+			aliases.put(obj.getComponentId(), obj.getAlias());
+		}
+		
+		suggestBox = new SuggestBox(getSuggestOracle(aliases.values()));
+	}
+
 }

@@ -21,6 +21,7 @@ import mat.client.measure.ManageMeasurePresenter;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
+import mat.model.ComponentMeasureTabObject;
 
 public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 
@@ -177,11 +178,11 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 		setLibraryName("");
 	}
 
-	public void setPageInformation(ComponentTabView view) {
-		setMeasureName(view.getSelectedAlias());
-		setOwnerName(view.getSelectedOwner());
-		setLibraryName(view.getSelectedLibraryName());
-		cqlAceEditor.setText(view.getSelectedContent());
+	public void setPageInformation(ComponentMeasureTabObject componentMeasureTabObject) {
+		setMeasureName(componentMeasureTabObject.getMeasureName());
+		setOwnerName(componentMeasureTabObject.getOwnerName());
+		setLibraryName(componentMeasureTabObject.getLibraryName());
+		cqlAceEditor.setText(componentMeasureTabObject.getLibraryContent());
 		
 	}
 
@@ -189,5 +190,5 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 		cqlAceEditor.setText("");
 		cqlAceEditor.redisplay();
 	}
-	
+
 }

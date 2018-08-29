@@ -285,7 +285,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		emptyWidget.add(new Label("No CQL Library Selected"));
 		addEventHandlers();
 	}
-
+	
 	private void addViewCQLEventHandlers() {
 		searchDisplay.getViewCQLView().getExportErrorFile().addClickHandler(new ClickHandler() {
 			
@@ -3372,7 +3372,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				isCQLWorkSpaceLoaded = false;
 			}
 		}
-	
 		CqlComposerPresenter.setSubSkipEmbeddedLink("CQLStandaloneWorkSpaceView.containerPanel");
 		Mat.focusSkipLists("CqlComposer");
 
@@ -3799,8 +3798,6 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getValueSetView().getOIDInput().addValueChangeHandler(event -> clearOID());
 		
 		searchDisplay.getValueSetView().getOIDInput().sinkBitlessEvent("input");
-		
-		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(false);
 		
 		searchDisplay.getValueSetView().setObserver(new CQLAppliedValueSetView.Observer() {
 			@Override

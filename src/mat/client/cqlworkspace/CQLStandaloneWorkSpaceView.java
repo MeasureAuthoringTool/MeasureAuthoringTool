@@ -93,7 +93,6 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 		inclView = new CQLIncludeLibraryView();
 		cqlViewCQLView = new CQLView();
 		cqlLeftNavBarPanelView = new CQLLeftNavBarPanelView();
-		
 		resetAll();
 	}
 	
@@ -120,6 +119,7 @@ public class CQLStandaloneWorkSpaceView implements CQLStandaloneWorkSpacePresent
 
 		mainHPPanel.addStyleName("cqlRightMessage");
 		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
+		cqlLeftNavBarPanelView.getComponentsTab().setVisible(false);
 		mainHPPanel.add(mainPanel);
 		//mainVPanel.add(lockedButtonVPanel);
 		mainVPanel.add(mainHPPanel);

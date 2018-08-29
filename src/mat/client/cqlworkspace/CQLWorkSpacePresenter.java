@@ -960,11 +960,28 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 */
 	private void addListBoxEventHandler() {
 		
-		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().addDoubleClickHandler(new DoubleClickHandler() {
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				searchDisplay.getCqlLeftNavBarPanelView().getComponents().populateComponentInformation();
-				searchDisplay.getComponentView().setPageInformation(searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView());
+				if (searchDisplay.getCqlLeftNavBarPanelView().getIsLoading()) {
+					event.stopPropagation();
+				} else {
+					searchDisplay.getCqlLeftNavBarPanelView().setIsDoubleClick(true);
+					searchDisplay.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
+
+					if (searchDisplay.getCqlLeftNavBarPanelView().getIsPageDirty()) {
+						searchDisplay.getCqlLeftNavBarPanelView().showUnsavedChangesWarning();
+					} else {
+						int selectedIndex = searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().getSelectedIndex();
+						if (selectedIndex != -1) {
+							final String selectedComponentObjectId = searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().getValue(selectedIndex);
+							if (searchDisplay.getCqlLeftNavBarPanelView().getComponentMap().get(selectedComponentObjectId) != null) {
+								searchDisplay.getComponentView().setPageInformation(searchDisplay.getCqlLeftNavBarPanelView().getComponentMap().get(selectedComponentObjectId));
+							}
+						}
+						searchDisplay.resetMessageDisplay();
+					}
+				}
 			}
 		});
 
@@ -2244,7 +2261,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				case (CQLWorkSpaceConstants.CQL_COMPONENTS_MENU):
 					currentSection = nextSection;
 					componentsEvent();
-					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().getCollapse().getElement()
+					searchDisplay.getCqlLeftNavBarPanelView().getComponentsCollapse().getElement()
 							.setClassName("panel-collapse collapse in");
 					break;
 				case (CQLWorkSpaceConstants.CQL_INCLUDES_MENU):
@@ -3116,7 +3133,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.getIncludeView().getSearchTextBox().setText("");
 		searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 		searchDisplay.resetMessageDisplay();
-		searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsCollapse().getElement().setClassName("panel-collapse collapse");
 		searchDisplay.getComponentView().clearAceEditor();
 		searchDisplay.getCqlLeftNavBarPanelView().getIncludesCollapse().getElement()
 				.setClassName("panel-collapse collapse");
@@ -3263,7 +3280,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				else {
 					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(true);
-					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().clearAndAddToListBox(results);
+					searchDisplay.getCqlLeftNavBarPanelView().clearAndAddToComponentListBox(results);
 				}
 			}
 		});
@@ -3402,7 +3419,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getAnchor().addClickHandler(new ClickHandler() {
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().addClickHandler(new ClickHandler() {
 
 			@Override
 			public void onClick(ClickEvent event) {
@@ -3871,9 +3888,9 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_GENERAL_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(false);
 			} else if(menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_COMPONENTS_MENU)) {
-				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().setActive(false);
-				searchDisplay.getCqlLeftNavBarPanelView().getComponents().getView().getListBox().setSelectedIndex(-1);
-				searchDisplay.getCqlLeftNavBarPanelView().getComponents().closeSearch();
+				searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setActive(false);
+				searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().setSelectedIndex(-1);
+				searchDisplay.getCqlLeftNavBarPanelView().getComponentsCollapse().getElement().setClassName("panel-collapse collapse");
 				searchDisplay.getComponentView().clearAceEditor();
 			} else if (menuClickedBefore.equalsIgnoreCase(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getParameterLibrary().setActive(false);

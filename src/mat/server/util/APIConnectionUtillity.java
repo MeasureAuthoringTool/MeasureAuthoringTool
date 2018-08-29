@@ -1,4 +1,4 @@
-package mat.server;
+package mat.server.util;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

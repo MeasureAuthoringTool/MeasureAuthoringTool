@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 
 import mat.dao.clause.ComponentMeasuresDAO;
@@ -46,5 +48,13 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 			}
 		}
 		
+	}
+
+	@Override
+	public List<ComponentMeasure> findByMeasureId(String measureId) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ComponentMeasure.class);
+		criteria.add(Restrictions.eq("componentMeasureId", measureId));
+		return criteria.list();
 	}
 }

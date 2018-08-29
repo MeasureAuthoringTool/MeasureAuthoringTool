@@ -77,6 +77,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.shared.GenericResult;
 import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
@@ -87,6 +88,7 @@ import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -265,6 +267,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private ComponentMeasuresDAO componentMeasuresDAO;
 
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
@@ -6056,5 +6061,30 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean isComponentNode(Node componentNode) {
 		return (componentNode.getAttributes().getNamedItem("isComponent") != null && 
 				("true").equals(componentNode.getAttributes().getNamedItem("isComponent").getNodeValue()));
+	}
+
+	@Override
+	public GenericResult checkIfMeasureIsUsedAsCompositeMeasure(String currentMeasureId) {
+		GenericResult result = new GenericResult();
+		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByMeasureId(currentMeasureId);
+		if(null != componentMeasures && !componentMeasures.isEmpty()) {
+			result.setSuccess(false);
+			Measure measure = measureDAO.find(currentMeasureId);
+			String errorMessage = measure.getDescription() + " can not be deleted as it has been used as a component measure in ";
+			for(int i = 0; i<componentMeasures.size(); i++) {
+				ComponentMeasure componentMeasure = componentMeasures.get(i);
+				if(i > 0) {
+					errorMessage += ",";
+				}
+				Measure compositeMeasure = measureDAO.find(componentMeasure.getCompositeMeasureId());
+				errorMessage += " " + compositeMeasure.getDescription();
+			}
+			List<String> errorMessages = new ArrayList<>();
+			errorMessages.add(errorMessage);
+			result.setMessages(errorMessages);
+		} else {
+			result.setSuccess(true);
+		}
+		return result;
 	}
 }

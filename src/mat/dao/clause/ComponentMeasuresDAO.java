@@ -12,4 +12,6 @@ public interface ComponentMeasuresDAO extends IDAO<ComponentMeasure, String> {
 	
 	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList);
 
+	public List<ComponentMeasure> findByMeasureId(String measureId);
+	
 }

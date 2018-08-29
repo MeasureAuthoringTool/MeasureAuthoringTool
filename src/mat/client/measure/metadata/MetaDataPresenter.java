@@ -1977,7 +1977,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	}
 	
 	private void checkIfMeasureIsUsedAsAComponentMeasure() {
-		MatContext.get().getMeasureService().checkIfMeasureIsUsedAsCompositeMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GenericResult>(){
+		MatContext.get().getMeasureService().checkIfMeasureIsUsedAsComponentMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GenericResult>(){
 			@Override
 			public void onFailure(Throwable caught) {
 				fireBackToMeasureLibraryEvent();

@@ -700,5 +700,5 @@ public interface MeasureService extends RemoteService {
 
 	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId);
 	
-	public GenericResult checkIfMeasureIsUsedAsCompositeMeasure(String currentMeasureId);
+	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
 }

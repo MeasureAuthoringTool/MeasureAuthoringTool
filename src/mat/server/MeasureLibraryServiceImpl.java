@@ -6152,7 +6152,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	@Override
-	public GenericResult checkIfMeasureIsUsedAsCompositeMeasure(String currentMeasureId) {
+	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId) {
 		GenericResult result = new GenericResult();
 		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByMeasureId(currentMeasureId);
 		if(null != componentMeasures && !componentMeasures.isEmpty()) {

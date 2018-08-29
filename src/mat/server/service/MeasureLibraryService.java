@@ -751,5 +751,5 @@ public interface MeasureLibraryService {
 
 	ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML);
 	
-	GenericResult checkIfMeasureIsUsedAsCompositeMeasure(String currentMeasureId);
+	GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
 }

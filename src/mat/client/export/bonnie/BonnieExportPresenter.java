@@ -22,7 +22,9 @@ public class BonnieExportPresenter implements MatPresenter {
 
 	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
 	private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
+	private static final String SUCCESSFUL_LOG_OUT_OF_BONNIE_MESSAGE ="You have been logged out of your Bonnie Session. If you need to continue uploading measures to the Bonnie system you will need to log in again.";
 	public static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to connect to Bonnie at this time. Please try again. If the problem persists, contact the MAT Support Desk.";
+	
 	
 	private BonnieExportView view;
 	private ManageMeasurePresenter manageMeasurePresenter;
@@ -54,6 +56,8 @@ public class BonnieExportPresenter implements MatPresenter {
 			public void onFailure(Throwable caught) {
 				if(caught instanceof BonnieUnauthorizedException) {
 					setVeiwAsLoggedOutOfBonnie();
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
+					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				}
 				
 				else if(caught instanceof BonnieServerException) {
@@ -98,9 +102,7 @@ public class BonnieExportPresenter implements MatPresenter {
 			public void onSuccess(Boolean result) {
 				
 				setVeiwAsLoggedOutOfBonnie();
-				SuccessMessageAlert success = new SuccessMessageAlert();
-				success.createAlert("You have been logged out of your Bonnie Session.");
-				view.getAlertPanel().add(success);
+				createSuccessMessage(SUCCESSFUL_LOG_OUT_OF_BONNIE_MESSAGE);
 			}
 
 		});
@@ -148,9 +150,13 @@ public class BonnieExportPresenter implements MatPresenter {
 				if(caught instanceof UMLSNotActiveException) {
 					view.setHelpBlockMessage(SIGN_INTO_UMLS);
 					createErrorMessage(SIGN_INTO_UMLS);
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
+					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				}
 				if(caught instanceof BonnieUnauthorizedException) {
 					setVeiwAsLoggedOutOfBonnie();
+					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
+					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				} else {
 					createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
@@ -172,8 +178,6 @@ public class BonnieExportPresenter implements MatPresenter {
 	private void setVeiwAsLoggedOutOfBonnie() {
 		view.getBonnieSignOutButton().setVisible(false);
 		view.getUploadButton().setEnabled(false);
-		view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
-		createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 		Mat.hideBonnieActive();
 	}
 	

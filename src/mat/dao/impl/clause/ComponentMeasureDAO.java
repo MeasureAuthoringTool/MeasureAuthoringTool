@@ -57,7 +57,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 	}
 
 	@Override
-	public List<ComponentMeasure> findByMeasureId(String measureId) {
+	public List<ComponentMeasure> findByComponentMeasureId(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(ComponentMeasure.class);
 		criteria.add(Restrictions.eq("componentMeasureId", measureId));

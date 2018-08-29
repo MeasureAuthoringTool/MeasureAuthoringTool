@@ -6154,7 +6154,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId) {
 		GenericResult result = new GenericResult();
-		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByMeasureId(currentMeasureId);
+		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByComponentMeasureId(currentMeasureId);
 		if(null != componentMeasures && !componentMeasures.isEmpty()) {
 			result.setSuccess(false);
 			Measure measure = measureDAO.find(currentMeasureId);

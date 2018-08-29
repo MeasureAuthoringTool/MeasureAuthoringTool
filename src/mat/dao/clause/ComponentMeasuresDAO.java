@@ -14,4 +14,6 @@ public interface ComponentMeasuresDAO extends IDAO<ComponentMeasure, String> {
 
 	void deleteComponentMeasures(List<ComponentMeasure> componentMeasuresToDelete);
 
+	public List<ComponentMeasure> findByMeasureId(String measureId);
+
 }

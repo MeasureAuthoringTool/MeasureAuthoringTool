@@ -47,6 +47,7 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.DateBoxWithCalendar;
+import mat.client.shared.GenericResult;
 import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -935,10 +936,10 @@ public class MetaDataPresenter  implements MatPresenter {
 	private void addHandlersToMetaDataDisplay() {
 		HandlerManager eventBus = MatContext.get().getEventBus();
 		
-		metaDataDisplay.getDeleteMeasure().addClickHandler(new ClickHandler() {
+		ClickHandler deleteClickHandler = new ClickHandler() {
+			
 			@Override
-			public void onClick(final ClickEvent event) {
-				
+			public void onClick(ClickEvent event) {
 				if(isMeasureDeletable()){
 					final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
 					dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
@@ -951,24 +952,10 @@ public class MetaDataPresenter  implements MatPresenter {
 					});
 				}
 			}
-		});
+		};
 		
-		metaDataDisplay.getDeleteMeasure2().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if(isMeasureDeletable()){
-					final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
-					dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
-					dialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
-						
-						@Override
-						public void onClick(final ClickEvent event) {
-							checkPasswordForMeasureDeletion(dialogBox.getPasswordEntered());
-						}
-					});
-				}
-			}
-		});
+		metaDataDisplay.getDeleteMeasure().addClickHandler(deleteClickHandler);
+		metaDataDisplay.getDeleteMeasure2().addClickHandler(deleteClickHandler);
 		
 		metaDataDisplay.getMeasurementFromPeriodInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
@@ -1970,9 +1957,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *            the password
 	 */
 	private void checkPasswordForMeasureDeletion(String password) {
-		MatContext.get().getLoginService().isValidPassword(MatContext.get()
-				.getLoggedinLoginId(), password, new AsyncCallback<Boolean>() {
-			
+		MatContext.get().getLoginService().isValidPassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				fireBackToMeasureLibraryEvent();
@@ -1982,10 +1967,31 @@ public class MetaDataPresenter  implements MatPresenter {
 			@Override
 			public void onSuccess(Boolean result) {
 				if (result) {
-					deleteMeasure();
+					checkIfMeasureIsUsedAsAComponentMeasure();
 				} else {
 					fireBackToMeasureLibraryEvent();
 					fireSuccessfullDeletionEvent(false, MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
+				}
+			}
+		});
+	}
+	
+	private void checkIfMeasureIsUsedAsAComponentMeasure() {
+		MatContext.get().getMeasureService().checkIfMeasureIsUsedAsCompositeMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GenericResult>(){
+			@Override
+			public void onFailure(Throwable caught) {
+				fireBackToMeasureLibraryEvent();
+				fireSuccessfullDeletionEvent(false, null);
+			}
+			
+			@Override
+			public void onSuccess(GenericResult result) {
+				if (result.isSuccess()) {
+					deleteMeasure();
+				} else {
+					fireBackToMeasureLibraryEvent();
+					String errorMessage = result.getMessages().get(0);
+					fireSuccessfullDeletionEvent(false, errorMessage);
 				}
 			}
 		});
@@ -2000,7 +2006,6 @@ public class MetaDataPresenter  implements MatPresenter {
 				.equalsIgnoreCase(MatContext.get().getLoggedinUserId())) {
 			
 			MatContext.get().getMeasureService().saveAndDeleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), new AsyncCallback<Void>(){
-				
 				@Override
 				public void onFailure(Throwable caught) {
 					fireBackToMeasureLibraryEvent();

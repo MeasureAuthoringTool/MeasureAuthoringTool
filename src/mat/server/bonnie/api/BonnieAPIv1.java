@@ -312,16 +312,6 @@ public class BonnieAPIv1 implements BonnieAPI {
 	@Override
 	public void revokeBonnieToken(String bearerToken, String refreshToken)
 			throws BonnieServerException, BonnieUnauthorizedException, Exception {
-		/*CloseableHttpClient httpClient = null;
-		CloseableHttpResponse postResponse = null;
-		try {
-			httpClient = HttpClients.createDefault();
-			HttpPost postRequest = getRevokeInromationConnection(bearerToken, REVOKE_BONNIE_TOKEN_URI, refreshToken);
-			postResponse = httpClient.execute(postRequest);
-
-			
-			String code = String.valueOf(postResponse.getStatusLine().getStatusCode());
-			handleResponseCode(code, "Revoke Token", null);*/
 		URLConnectionClient urlConnection = new URLConnectionClient();
 		try {
 			OAuthClient client = new OAuthClient(urlConnection);

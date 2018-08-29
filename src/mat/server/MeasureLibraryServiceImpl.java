@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -79,6 +78,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.shared.GenericResult;
 import mat.client.shared.ManageCompositeMeasureModelValidator;
 import mat.client.shared.ManageMeasureModelValidator;
 import mat.client.shared.MatContext;
@@ -89,6 +89,7 @@ import mat.dao.MeasureTypeDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -267,6 +268,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	private ComponentMeasuresDAO componentMeasuresDAO;
 
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
@@ -6146,4 +6150,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return (componentNode.getAttributes().getNamedItem("isComponent") != null
 				&& ("true").equals(componentNode.getAttributes().getNamedItem("isComponent").getNodeValue()));
 	}
+
+	@Override
+	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId) {
+		GenericResult result = new GenericResult();
+		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByComponentMeasureId(currentMeasureId);
+		if(CollectionUtils.isNotEmpty(componentMeasures)) {
+			result.setSuccess(false);
+			Measure measure = measureDAO.find(currentMeasureId);
+			StringBuilder errorMessageBuilder = new StringBuilder();
+			errorMessageBuilder.append(measure.getDescription() + " can not be deleted as it has been used as a component measure in ");
+			for(int i = 0; i<componentMeasures.size(); i++) {
+				ComponentMeasure componentMeasure = componentMeasures.get(i);
+				if(i > 0) {
+					errorMessageBuilder.append(",");
+				}
+				Measure compositeMeasure = measureDAO.find(componentMeasure.getCompositeMeasureId());
+				errorMessageBuilder.append(" " + compositeMeasure.getDescription());
+			}
+			List<String> errorMessages = new ArrayList<>();
+			errorMessages.add(errorMessageBuilder.toString());
+			result.setMessages(errorMessages);
+		} else {
+			result.setSuccess(true);
+		}
+		return result;
+	}
+
 }

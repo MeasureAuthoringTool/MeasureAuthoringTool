@@ -6155,20 +6155,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId) {
 		GenericResult result = new GenericResult();
 		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByComponentMeasureId(currentMeasureId);
-		if(null != componentMeasures && !componentMeasures.isEmpty()) {
+		if(CollectionUtils.isNotEmpty(componentMeasures)) {
 			result.setSuccess(false);
 			Measure measure = measureDAO.find(currentMeasureId);
-			String errorMessage = measure.getDescription() + " can not be deleted as it has been used as a component measure in ";
+			StringBuilder errorMessageBuilder = new StringBuilder();
+			errorMessageBuilder.append(measure.getDescription() + " can not be deleted as it has been used as a component measure in ");
 			for(int i = 0; i<componentMeasures.size(); i++) {
 				ComponentMeasure componentMeasure = componentMeasures.get(i);
 				if(i > 0) {
-					errorMessage += ",";
+					errorMessageBuilder.append(",");
 				}
 				Measure compositeMeasure = measureDAO.find(componentMeasure.getCompositeMeasureId());
-				errorMessage += " " + compositeMeasure.getDescription();
+				errorMessageBuilder.append(" " + compositeMeasure.getDescription());
 			}
 			List<String> errorMessages = new ArrayList<>();
-			errorMessages.add(errorMessage);
+			errorMessages.add(errorMessageBuilder.toString());
 			result.setMessages(errorMessages);
 		} else {
 			result.setSuccess(true);

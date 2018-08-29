@@ -348,4 +348,6 @@ public interface MeasurePackageService {
 	void updateComponentMeasures(String compositeMeasureId, List<ComponentMeasure> componentMeasuresList);
 
 	void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export);
+
+	void deleteComponentMeasure(List<ComponentMeasure> componentMeasuresList);
 }

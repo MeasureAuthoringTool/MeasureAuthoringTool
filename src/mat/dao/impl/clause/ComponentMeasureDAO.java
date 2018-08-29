@@ -22,7 +22,13 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 		for(ComponentMeasure component : componentMeasuresList) {
 			super.save(component);	
 		}
-
+	}
+	
+	@Override
+	public void deleteComponentMeasures(List<ComponentMeasure> componentMeasuresToDelete) {
+		for(ComponentMeasure component : componentMeasuresToDelete) {
+			super.delete(component);
+		}
 	}
 
 	@Override

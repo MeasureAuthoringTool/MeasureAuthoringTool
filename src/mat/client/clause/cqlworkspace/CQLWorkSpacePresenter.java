@@ -1,10 +1,13 @@
 package mat.client.clause.cqlworkspace;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.shared.event.HideEvent;
 import org.gwtbootstrap3.client.shared.event.HideHandler;
@@ -1717,10 +1720,8 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent arg0) {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().clearAlert();
 				searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().clearAlert();
-				final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox(
-						"Replace Library");
-				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId,
-						true);
+				final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
+				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId, true);
 
 				editIncludedLibraryDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
 
@@ -1756,31 +1757,20 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 												if (result != null) {
 													currentIncludeLibraryId = dto.getId();
 													if (result.isSuccess()) {
-														searchDisplay.getCqlLeftNavBarPanelView()
-																.setViewIncludeLibrarys(
-																		result.getCqlModel().getCqlIncludeLibrarys());
-														searchDisplay.getCqlLeftNavBarPanelView()
-																.udpateIncludeLibraryMap();
-														MatContext.get().setIncludes(getIncludesList(
-																result.getCqlModel().getCqlIncludeLibrarys()));
+														searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
+																		filterComponentMeasuresFromIncludedLibraries(result.getCqlModel().getCqlIncludeLibrarys()));
+														searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
+														MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
 														MatContext.get().setIncludedValues(result);
 														MatContext.get().setCQLModel(result.getCqlModel());
 
 														editIncludedLibraryDialogBox.getDialogModal().hide();
 														DomEvent.fireNativeEvent(Document.get().createDblClickEvent(
-																searchDisplay.getCqlLeftNavBarPanelView()
-																		.getIncludesNameListbox().getSelectedIndex(),
-																0, 0, 0, 0, false, false, false, false),
-																searchDisplay.getCqlLeftNavBarPanelView()
-																		.getIncludesNameListbox());
-														String libraryNameWithVersion = result.getIncludeLibrary()
-																.getCqlLibraryName() + " v"
-																+ result.getIncludeLibrary().getVersion();
-														searchDisplay.getCqlLeftNavBarPanelView()
-																.getSuccessMessageAlert()
-																.createAlert(libraryNameWithVersion
-																		+ " has been successfully saved as the alias "
-																		+ result.getIncludeLibrary().getAliasName());
+																searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false, false),
+																searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox());
+														String libraryNameWithVersion = result.getIncludeLibrary().getCqlLibraryName() + " v" + result.getIncludeLibrary().getVersion();
+														searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
+																.createAlert(libraryNameWithVersion + " has been successfully saved as the alias " + result.getIncludeLibrary().getAliasName());
 													}
 												}
 
@@ -1791,8 +1781,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 						} else {
 							editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
-							editIncludedLibraryDialogBox.getErrorMessageAlert()
-									.createAlert(MatContext.get().getMessageDelegate().getNO_LIBRARY_TO_REPLACE());
+							editIncludedLibraryDialogBox.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getNO_LIBRARY_TO_REPLACE());
 						}
 
 					}
@@ -1991,7 +1980,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 											searchDisplay.resetMessageDisplay();
 											searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
 											searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
-													result.getCqlModel().getCqlIncludeLibrarys());
+													filterComponentMeasuresFromIncludedLibraries(result.getCqlModel().getCqlIncludeLibrarys()));
 											MatContext.get().setIncludes(
 													getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
 											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
@@ -3338,9 +3327,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			}
 			if ((result.getCqlModel().getCqlIncludeLibrarys() != null)
 					&& (result.getCqlModel().getCqlIncludeLibrarys().size() > 0)) {
-				List<CQLIncludeLibrary> libraries = result.getCqlModel().getCqlIncludeLibrarys();
-				libraries.removeIf(lib -> "true".equals(lib.getIsComponent()));
-				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(libraries);
+				searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(filterComponentMeasuresFromIncludedLibraries(result.getCqlModel().getCqlIncludeLibrarys()));
 				searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
 				searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
 				MatContext.get().setIncludedValues(result);
@@ -3361,6 +3348,11 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		} else {
 			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
+	}
+	
+	private List<CQLIncludeLibrary> filterComponentMeasuresFromIncludedLibraries(List<CQLIncludeLibrary> cqlIncludeLibraryList) {
+		return Optional.ofNullable(cqlIncludeLibraryList).orElseGet(Collections::emptyList).stream().
+				filter(lib -> lib.getIsComponent() == null || !"true".equals(lib.getIsComponent())).collect(Collectors.toList());
 	}
 
 	/**
@@ -4438,7 +4430,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						public void onSuccess(SaveUpdateCQLResult result) {
 							if (result != null) {
 								if (result.isSuccess()) {
-									searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(result.getCqlModel().getCqlIncludeLibrarys());
+									searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(filterComponentMeasuresFromIncludedLibraries(result.getCqlModel().getCqlIncludeLibrarys()));
 									MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
 									MatContext.get().setIncludedValues(result);
 

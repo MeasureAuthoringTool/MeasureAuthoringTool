@@ -35,9 +35,9 @@ import org.springframework.stereotype.Service;
 import com.google.gwt.dev.util.collect.HashMap;
 
 import mat.model.UserBonnieAccessInfo;
-import mat.server.APIConnectionUtillity;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
+import mat.server.util.APIConnectionUtillity;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.FileInfomationObject;
 import mat.shared.bonnie.error.BonnieAlreadyExistsException;

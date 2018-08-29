@@ -150,8 +150,6 @@ public class BonnieExportPresenter implements MatPresenter {
 				if(caught instanceof UMLSNotActiveException) {
 					view.setHelpBlockMessage(SIGN_INTO_UMLS);
 					createErrorMessage(SIGN_INTO_UMLS);
-					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
-					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
 				}
 				if(caught instanceof BonnieUnauthorizedException) {
 					setVeiwAsLoggedOutOfBonnie();

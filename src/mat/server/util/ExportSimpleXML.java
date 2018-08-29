@@ -328,6 +328,7 @@ public class ExportSimpleXML {
 				Node current = includedLibraryNodeList.item(i);
 				if(current.getAttributes().getNamedItem("measureId") != null) {
 					usedIncludedLibraryIds.add(UuidUtility.idToUuid(current.getAttributes().getNamedItem("measureId").getNodeValue()));
+					logger.info("Remove Unused Componenent measure with id: " + UuidUtility.idToUuid(current.getAttributes().getNamedItem("measureId").getNodeValue()));
 				}
 			}
 		}

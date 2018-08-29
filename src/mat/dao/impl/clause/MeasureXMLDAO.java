@@ -53,8 +53,7 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements mat
 
 	@Override
 	public final MeasureXML findForMeasure(final String measureId) {
-		Criteria criteria = getSessionFactory().getCurrentSession()
-				.createCriteria(MeasureXML.class);
+		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(MeasureXML.class);
 
 		criteria.add(Restrictions.eq("measureId", measureId));
 		List<MeasureXML> results = criteria.list();

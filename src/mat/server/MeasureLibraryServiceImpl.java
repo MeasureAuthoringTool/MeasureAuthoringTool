@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -6177,28 +6176,4 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 
-	@Override
-	public GenericResult checkIfMeasureIsUsedAsCompositeMeasure(String currentMeasureId) {
-		GenericResult result = new GenericResult();
-		List<ComponentMeasure> componentMeasures = componentMeasuresDAO.findByMeasureId(currentMeasureId);
-		if(null != componentMeasures && !componentMeasures.isEmpty()) {
-			result.setSuccess(false);
-			Measure measure = measureDAO.find(currentMeasureId);
-			String errorMessage = measure.getDescription() + " can not be deleted as it has been used as a component measure in ";
-			for(int i = 0; i<componentMeasures.size(); i++) {
-				ComponentMeasure componentMeasure = componentMeasures.get(i);
-				if(i > 0) {
-					errorMessage += ",";
-				}
-				Measure compositeMeasure = measureDAO.find(componentMeasure.getCompositeMeasureId());
-				errorMessage += " " + compositeMeasure.getDescription();
-			}
-			List<String> errorMessages = new ArrayList<>();
-			errorMessages.add(errorMessage);
-			result.setMessages(errorMessages);
-		} else {
-			result.setSuccess(true);
-		}
-		return result;
-	}
 }

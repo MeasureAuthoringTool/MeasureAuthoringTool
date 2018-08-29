@@ -1389,13 +1389,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 											@Override
 											public void onFailure(Throwable caught) {
 												setSearchingBusy(false);
-												searchDisplay.getErrorMessageDisplay()
-														.createAlert(MatContext.get().getMessageDelegate()
-																.getGenericErrorMessage());
-												MatContext.get().recordTransactionEvent(null, null, null,
-														"Unhandled Exception: "
-																+ caught.getLocalizedMessage(),
-														0);
+												searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+												MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 											}
 
 											@Override
@@ -1414,13 +1409,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 											@Override
 											public void onFailure(Throwable caught) {
 												setSearchingBusy(false);
-												searchDisplay.getErrorMessageDisplay()
-														.createAlert(MatContext.get().getMessageDelegate()
-																.getGenericErrorMessage());
-												MatContext.get().recordTransactionEvent(null, null, null,
-														"Unhandled Exception: "
-																+ caught.getLocalizedMessage(),
-														0);
+												searchDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+												MatContext.get().recordTransactionEvent(null, null, null,"Unhandled Exception: "+ caught.getLocalizedMessage(),0);
 											}
 
 											@Override

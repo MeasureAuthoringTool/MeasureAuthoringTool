@@ -28,15 +28,16 @@ import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
 import com.google.gwt.dev.util.collect.HashMap;
 
 import mat.model.UserBonnieAccessInfo;
+import mat.server.APIConnectionUtillity;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
-import mat.shared.APIConnectionUtillity;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.FileInfomationObject;
 import mat.shared.bonnie.error.BonnieAlreadyExistsException;
@@ -62,6 +63,9 @@ public class BonnieAPIv1 implements BonnieAPI {
 	private static final String REVOKE_BONNIE_TOKEN_URI = "/oauth/revoke";
 	
 	private static final String BOUNDRY = "APIPIE_RECORDER_EXAMPLE_BOUNDARY";
+	
+	@Autowired
+	private APIConnectionUtillity apiConnectionUtillity;
 
 	public String getResponseType() {
 		return System.getProperty("BONNIE_RESPONSE_TYPE");
@@ -240,7 +244,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		Map<String, FileInfomationObject> binaryInputMap = createFileMap(fileInfomation);
 
 		
-		return APIConnectionUtillity.createPutConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
+		return apiConnectionUtillity.createPutConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
 	
 	private HttpPost createHttpPostRequest(String uri, String token, String calculationType, String vsacTicketGrantingTicket, String vsacTicketExpiration, FileInfomationObject fileInfomation) {
@@ -252,7 +256,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		Map<String, FileInfomationObject> binaryInputMap = createFileMap(fileInfomation);
 
 		
-		return APIConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
+		return apiConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
 	
 	private Map<String, String> createHeader(String token){
@@ -359,31 +363,27 @@ public class BonnieAPIv1 implements BonnieAPI {
 		Map<String, String> requestProperty = new HashMap<String, String>();
 		getBearerToken(requestProperty, token);
 		
-		return APIConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
+		return apiConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
 	}
 	
 	private HttpPost getRevokeInromationConnection(String token, String uri, String refreshToken) throws IOException {
 		String requestUri = getBonnieBaseURL() + uri;
 		String bearerTokenString = "Bearer " + token;
 		
-		//Map<String, String> headerMap = createHeader(token);
 		Map<String, String> headerMap = new HashMap<>();
 		headerMap.put("Authorization", bearerTokenString);
 		headerMap.put("boundary", BOUNDRY);
 		headerMap.put("Host", "bonnie.healthit.gov");
 		headerMap.put("'Content-Type'", "application/x-www-form-urlencoded");
-		//headerMap.put("Cache-Control", "no-cache");
-		//headerMap.put("'Content-Transfer'", "binary");
-		
+
 		Map<String, String> textInputMap = new HashMap<>();
 		textInputMap.put("client_id", getClientId());
 		textInputMap.put("client_secret", getClientSecret());
 		textInputMap.put("token", refreshToken);
-		//textInputMap.put("token_type_hint", "refresh_token");
 		
 		Map<String, FileInfomationObject> binaryInputMap = new HashMap<>();
 		
-		return APIConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
+		return apiConnectionUtillity.createPostConnection(requestUri, BOUNDRY, headerMap, textInputMap, binaryInputMap);
 	}
 	
 	private HttpURLConnection getCalculationInformationConnection(String token, String uri) throws IOException {
@@ -393,7 +393,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		getBearerToken(requestProperty, token);
 		requestProperty.put("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		
-		return APIConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
+		return apiConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
 	}
 	
 	private void getBearerToken(Map<String, String> connectionMap, String token) {

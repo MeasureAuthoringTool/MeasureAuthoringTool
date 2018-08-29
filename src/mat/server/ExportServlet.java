@@ -40,6 +40,8 @@ import mat.shared.CQLErrors;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.bonnie.error.BonnieBadParameterException;
+import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
@@ -211,7 +213,7 @@ public class ExportServlet extends HttpServlet {
 		
 	}
 
-	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException {
+	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException {
 		BonnieCalculatedResult export = getService().getBonnieExportCalculation(measure.getMeasureSet().getId(), userId);
 
 		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");

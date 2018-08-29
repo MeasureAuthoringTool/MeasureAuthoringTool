@@ -159,7 +159,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		
 	}
 	
-	public BonnieCalculatedResult getBonnieExportForMeasure(String userId, String measureId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException{
+	public BonnieCalculatedResult getBonnieExportForMeasure(String userId, String measureId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException{
 		UserBonnieAccessInfo userInformation = getUserBonnieAccessInfo(userId);
 		String userAccessToken = userInformation.getAccessToken();
 		BonnieCalculatedResult caluclatedResult = null;
@@ -171,6 +171,10 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		} catch (BonnieNotFoundException e) {
 			throw e;
 		} catch (BonnieServerException e) {
+			throw e;
+		} catch (BonnieBadParameterException e) {
+			throw e;
+		} catch (BonnieDoesNotExistException e) {
 			throw e;
 		}
 		return caluclatedResult;
@@ -206,11 +210,18 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 
 	public BonnieUserInformationResult getBonnieUserInformationForUser(String userId)
-			throws BonnieUnauthorizedException, BonnieServerException, IOException {
+			throws BonnieUnauthorizedException, BonnieServerException, IOException, BonnieBadParameterException, BonnieDoesNotExistException {
 		
 		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
 		BonnieUserInformationResult bonnieInformationResult = bonnieApi.getUserInformationByToken(bonnieAccessInfo.getAccessToken());
 		return bonnieInformationResult;
+	}
+	
+	public Boolean revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception {
+		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
+		bonnieApi.revokeBonnieToken(bonnieAccessInfo.getAccessToken(), bonnieAccessInfo.getRefreshToken());
+		handleBonnieUnauthorizedException(bonnieAccessInfo);
+		return true;
 	}
 
 	private UserBonnieAccessInfo validateOrRefreshBonnieTokensForUser(String userId) throws BonnieUnauthorizedException {

@@ -13,7 +13,6 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.umls.service.VsacTicketInformation;
-import mat.shared.StringUtility;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
 import mat.shared.bonnie.error.UMLSNotActiveException;
@@ -54,10 +53,7 @@ public class BonnieExportPresenter implements MatPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				if(caught instanceof BonnieUnauthorizedException) {
-					view.getBonnieSignOutButton().setVisible(false);
-					view.getUploadButton().setEnabled(false);
-					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
-					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
+					setVeiwAsLoggedOutOfBonnie();
 				}
 				
 				else if(caught instanceof BonnieServerException) {
@@ -85,8 +81,31 @@ public class BonnieExportPresenter implements MatPresenter {
 		this.view.getUploadButton().addClickHandler(event -> uploadButtonClickHandler());
 		this.view.getCancelButton().addClickHandler(event -> cancelButtonClickHandler());
 		this.view.getMeasureNameLink().addClickHandler(event -> measureLinkButtonClickHandler());
+		this.view.getBonnieSignOutButton().addClickHandler(event -> bonnieSignOutClickHandler());
 	}
 	
+	private void bonnieSignOutClickHandler() {
+		String matUserId = MatContext.get().getLoggedinUserId();
+		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(matUserId, new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				Mat.hideLoadingMessage();
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				
+				setVeiwAsLoggedOutOfBonnie();
+				SuccessMessageAlert success = new SuccessMessageAlert();
+				success.createAlert("You have been logged out of your Bonnie Session.");
+				view.getAlertPanel().add(success);
+			}
+
+		});
+	}
+
 	private void measureLinkButtonClickHandler() {
 		this.manageMeasurePresenter.fireMeasureSelected(result);
 	}
@@ -131,10 +150,7 @@ public class BonnieExportPresenter implements MatPresenter {
 					createErrorMessage(SIGN_INTO_UMLS);
 				}
 				if(caught instanceof BonnieUnauthorizedException) {
-					view.getBonnieSignOutButton().setVisible(false);
-					view.getUploadButton().setEnabled(false);
-					view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
-					createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
+					setVeiwAsLoggedOutOfBonnie();
 				} else {
 					createErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
@@ -153,6 +169,14 @@ public class BonnieExportPresenter implements MatPresenter {
 		this.manageMeasurePresenter.displaySearch();
 	}
 
+	private void setVeiwAsLoggedOutOfBonnie() {
+		view.getBonnieSignOutButton().setVisible(false);
+		view.getUploadButton().setEnabled(false);
+		view.setHelpBlockMessage(SIGN_INTO_BONNIE_MESSAGE);
+		createErrorMessage(SIGN_INTO_BONNIE_MESSAGE);
+		Mat.hideBonnieActive();
+	}
+	
 	private void getExportFromBonnieForMeasure(String measureId, String matUserId, String successMessage) {
 		String url = GWT.getModuleBaseURL() + "export?id=" + result.getId() + "&userId=" + matUserId + "&format=calculateBonnieMeasureResult";
 		Window.open(url + "&type=open", "_blank", "");

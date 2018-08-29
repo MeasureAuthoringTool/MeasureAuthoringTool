@@ -9,6 +9,8 @@ import mat.model.clause.ComponentMeasure;
 import mat.model.clause.MeasureExport;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.export.ExportResult;
+import mat.shared.bonnie.error.BonnieBadParameterException;
+import mat.shared.bonnie.error.BonnieDoesNotExistException;
 import mat.shared.bonnie.error.BonnieNotFoundException;
 import mat.shared.bonnie.error.BonnieServerException;
 import mat.shared.bonnie.error.BonnieUnauthorizedException;
@@ -40,7 +42,7 @@ public interface SimpleEMeasureService {
 
 	ExportResult getJSONFile(String measureId) throws Exception;
 	
-	BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException;
+	BonnieCalculatedResult getBonnieExportCalculation(String measureId, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException;
 
 	ExportResult getCompositeExportResult(String id, List<ComponentMeasure> componentMeasures) throws Exception;
 

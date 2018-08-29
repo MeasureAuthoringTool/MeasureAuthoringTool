@@ -10,7 +10,7 @@
         <act a_id="SPLY">supplyCriteria</act>
     </acts>
     <!--  Participation -->
-    <template oid="2.16.840.1.113883.10.20.28.4.130" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true" codeSystem="2.16.840.1.113883.5.4" code="ASSERTION" valueType="CD" specificExtensionValue = "2017-08-01">participation</template> 
+    <template oid="2.16.840.1.113883.10.20.28.4.130" class="OBS" mood="EVN" status="COMPLETED" addValueTag="true" addCodeTag="true" codeSystem="2.16.840.1.113883.5.4" code="ASSERTION" valueType="CD" specificExtensionValue="2018-05-01">participation</template> 
     
     <!-- care goal -->
     <!-- Done --><template oid="2.16.840.1.113883.10.20.28.4.7" class="OBS" mood="GOL" status="ACTIVE" valueType="CD" code="ASSERTION" codeSystem="2.16.840.1.113883.5.4" addValueTag="true" addCodeTag="true" specificExtensionValue = "2017-08-01">care goal</template>

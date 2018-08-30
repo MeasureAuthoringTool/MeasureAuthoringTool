@@ -391,7 +391,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		String RequestUrl = getBonnieBaseURL() + uri;
 		
 		Map<String, String> requestProperty = new HashMap<String, String>();
-		getBearerToken(requestProperty, token);
+		getBearerToken(requestProperty, encryptDecryptToken.decryptKey(token));
 		requestProperty.put("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		
 		return apiConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);

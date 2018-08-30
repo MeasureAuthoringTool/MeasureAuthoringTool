@@ -222,11 +222,16 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	public void updateUsersShare(ManageMeasureShareModel model) {
 		this.getMeasureLibraryService().updateUsersShare(model);
 	}
+	
+	@Override
+	public ValidateMeasureResult validateExports(final String measureId) throws Exception {
+		return this.getMeasureLibraryService().validateExports(measureId);
+	}; 
 
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(String key , List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts)
+	public ValidateMeasureResult createExports(String key , List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts)
 			throws MatException {
-		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList, shouldCreateArtifacts);
+		return this.getMeasureLibraryService().createExports(key, matValueSetList, shouldCreateArtifacts);
 	}
 	
 	@Override

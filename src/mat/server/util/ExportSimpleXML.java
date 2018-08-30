@@ -994,34 +994,22 @@ public class ExportSimpleXML {
 	 */
 	private static void setAttributesForComponentMeasures(Document originalDoc, MeasureDAO measureDAO)
 			throws XPathExpressionException {
-		String measureId = "";
-		String componentMeasureName = "";
-		String componentMeasureSetId = "";
 		String xPathForComponentMeasureIds = "/measure/measureDetails/componentMeasures/measure";
 		NodeList componentMeasureIdList = (NodeList) xPath.evaluate(xPathForComponentMeasureIds, originalDoc,
 				XPathConstants.NODESET);
 		if (componentMeasureIdList != null) {
 			for (int i = 0; i < componentMeasureIdList.getLength(); i++) {
 				Node measureNode = componentMeasureIdList.item(i);
-				measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();
+				String measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();
 				// to change ID format to UUID
 				measureNode.getAttributes().getNamedItem("id").setNodeValue(UuidUtility.idToUuid(measureId));
 				Node attrcomponentMeasureName = originalDoc.createAttribute("name");
 				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
 				Node attrcomponentVersionNo = originalDoc.createAttribute("versionNo");
 				Measure measure = measureDAO.find(measureId);
-				componentMeasureName = measure.getDescription();
-				System.out.println("CREATING COMPONENT MEASURE: " + componentMeasureName);
-				componentMeasureSetId = measure.getMeasureSet().getId();
-				attrcomponentMeasureName.setNodeValue(componentMeasureName);
-				attrcomponentMeasureSetId.setNodeValue(componentMeasureSetId);
-				if (measure.isDraft()) {
-					attrcomponentVersionNo.setNodeValue(measure.getMajorVersionStr() + "."
-							+ measure.getMinorVersionStr() + "." + measure.getRevisionNumber());
-				} else {
-					attrcomponentVersionNo
-							.setNodeValue(measure.getMajorVersionStr() + "." + measure.getMinorVersionStr());
-				}
+				attrcomponentMeasureName.setNodeValue(measure.getDescription());
+				attrcomponentMeasureSetId.setNodeValue(measure.getMeasureSet().getId());
+				attrcomponentVersionNo.setNodeValue(measure.getMajorVersionStr() + "." + measure.getMinorVersionStr() + "." + measure.getRevisionNumber());
 				measureNode.getAttributes().setNamedItem(attrcomponentMeasureName);
 				measureNode.getAttributes().setNamedItem(attrcomponentMeasureSetId);
 				measureNode.getAttributes().setNamedItem(attrcomponentVersionNo);

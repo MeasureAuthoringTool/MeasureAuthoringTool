@@ -3322,13 +3322,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final void updateUsersShare(final ManageMeasureShareModel model) {
 		measurePackageService.updateUsersShare(model);
-	}
-
+	}	
+	
 	@Override
-	public final ValidateMeasureResult validateMeasureForExport(final String key,
-			final List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException {
+	public final ValidateMeasureResult createExports(final String key, final List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException {
 		try {
-			return measurePackageService.validateAndCreateExports(key, matValueSetList, shouldCreateArtifacts);
+			return measurePackageService.createExports(key, matValueSetList, shouldCreateArtifacts);
 		} catch (Exception exc) {
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
@@ -5915,18 +5914,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				return result;
 			}
 
+			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);			
+			ValidateMeasureResult validateExports = validateExports(measureId);
+			if(!validateExports.isValid()) {
+				result.setSuccess(false);
+				result.setValidateResult(validateExports);
+				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				return result; 
+			}
+			
 			result = saveMeasureAtPackage(model);
 			if (!result.isSuccess()) {
 				return result;
 			}
-
-			updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
-			ValidateMeasureResult measureExportValidation = validateMeasureForExport(measureId, null,
-					shouldCreateArtifacts);
+			
+			ValidateMeasureResult measureExportValidation = createExports(measureId, null, shouldCreateArtifacts);
 			if (!measureExportValidation.isValid()) {
 				result.setSuccess(false);
 				result.setValidateResult(measureExportValidation);
 				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				return result; 
 			}
 
 			auditService.recordMeasureEvent(measureId, "Measure Package Created", "", false);
@@ -5936,6 +5943,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result.setSuccess(false);
 			return result;
 		}
+	}
+	
+	@Override
+	public ValidateMeasureResult validateExports(final String measureId) throws Exception {
+		return measurePackageService.validateExportsForCompositeMeasures(measureId);
 	}
 
 	@Override

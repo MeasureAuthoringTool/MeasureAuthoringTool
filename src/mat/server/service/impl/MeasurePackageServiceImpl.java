@@ -492,10 +492,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	@Override
-	public ValidateMeasureResult validateAndCreateExports(final String key, final List<MatValueSet> matValueSetsList, boolean shouldCreateArtifacts) throws Exception {
-		MeasureExport export = generateExport(key, matValueSetsList);
+	public ValidateMeasureResult validateExportsForCompositeMeasures(final String measureId) throws Exception {
+		MeasureExport export = generateExport(measureId, null);
 		ValidateMeasureResult result = new ValidateMeasureResult();
-		result.setValid(true);
+		result.setSuccess(true);
 		
 		if(BooleanUtils.isTrue(export.getMeasure().getIsCompositeMeasure())) {
 			CompositeMeasurePackageValidationResult validationResult = compositeMeasurePackageValidator.validate(export.getSimpleXML());
@@ -504,10 +504,15 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			result.setValidationMessages(validationResult.getMessages());
 		}
 		
-		if(result.isValid()) {
-			createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);
-		}
-		
+		return result;
+	}
+	
+	@Override
+	public ValidateMeasureResult createExports(final String key, final List<MatValueSet> matValueSetsList, boolean shouldCreateArtifacts) throws Exception {
+		MeasureExport export = generateExport(key, matValueSetsList);
+		ValidateMeasureResult result = new ValidateMeasureResult();
+		result.setValid(true);
+		createAndSaveExportsAndArtifacts(export, shouldCreateArtifacts);
 		return result;
 	}
 	

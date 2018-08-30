@@ -231,6 +231,10 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Disclaimer");
 		createDiv(getInfo(processor, "disclaimer"), column);
 		
+		//Composite Scoring
+		createRowAndColumns(table, "Composite Scoring Method");
+		column.appendText(getInfo(processor, "compositeScoring"));
+		
 		// Measure Scoring
 		createRowAndColumns(table, "Measure Scoring");
 		String measureScoring = getInfo(processor, "scoring");

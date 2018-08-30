@@ -75,6 +75,8 @@ public interface AdminServiceAsync {
 	 */
 	public void searchUsers(String key, AsyncCallback<ManageUsersSearchModel> callback);
 	
+	public void searchUsersWithActiveBonnie(String key, AsyncCallback<ManageUsersSearchModel> callback);
+	
 	/** Gets the all organizations.
 	 * 
 	 * @param callback the callback

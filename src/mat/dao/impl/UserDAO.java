@@ -162,19 +162,6 @@ mat.dao.UserDAO {
 		return criteria.list();
 	}
 	
-	@Override
-	public List<User> searchForUserWithActiveBonnieConnection(String name){
-		//EntityManagerFactory em = Persistence.createEntityManagerFactory("com.concretepage");
-		Session session = getSessionFactory().getCurrentSession();
-		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-		CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-		Root<User> root = criteriaQuery.from(User.class);
-		root.fetch("user", JoinType.INNER);
-		criteriaQuery.select(root);
-		List<User> resultList = session.createQuery(criteriaQuery).getResultList();
-		return resultList;
-	}
-	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#searchAllUsedOrganizations()
 	 */

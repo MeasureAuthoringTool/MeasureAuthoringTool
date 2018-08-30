@@ -67,8 +67,8 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	private void search(String key) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
-		//TODO use search users with active bonnie
-		MatContext.get().getAdminService().searchUsers(key, new AsyncCallback<ManageUsersSearchModel>() {
+
+		MatContext.get().getAdminService().searchUsersWithActiveBonnie(key, new AsyncCallback<ManageUsersSearchModel>() {
 			@Override
 			public void onSuccess(ManageUsersSearchModel result) {
 				SearchResultUpdate sru = new SearchResultUpdate();

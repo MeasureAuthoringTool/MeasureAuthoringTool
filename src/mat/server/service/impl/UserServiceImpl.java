@@ -46,6 +46,7 @@ import mat.dao.OrganizationDAO;
 import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
 import mat.dao.TransactionAuditLogDAO;
+import mat.dao.UserBonnieAccessInfoDAO;
 import mat.dao.UserDAO;
 import mat.dao.UserPasswordHistoryDAO;
 import mat.model.Organization;
@@ -53,6 +54,7 @@ import mat.model.SecurityRole;
 import mat.model.Status;
 import mat.model.TransactionAuditLog;
 import mat.model.User;
+import mat.model.UserBonnieAccessInfo;
 import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
@@ -83,6 +85,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired private JavaMailSender mailSender;
 	@Autowired private SimpleMailMessage templateMessage;
 	@Autowired private UserDAO userDAO;
+	@Autowired private UserBonnieAccessInfoDAO userBonnieAccessInfoDAO;
 	@Autowired private StatusDAO statusDAO;
 	@Autowired private SecurityRoleDAO securityRoleDAO;
 	@Autowired private TransactionAuditLogDAO transactionAuditLogDAO;
@@ -410,10 +413,18 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public List<User> searchForUsersWithActiveBonnie(String searchTerm){
+		List<User> resultList = new ArrayList<>();
 		if(searchTerm == null) {
 			searchTerm = "";
 		}
-		return userDAO.searchForUserWithActiveBonnieConnection(searchTerm);
+		List<User> userList = userDAO.searchForUsersByName(searchTerm);
+		for(User user: userList) {
+			UserBonnieAccessInfo userBonnieAccessInfo = userBonnieAccessInfoDAO.findByUserId(user.getId());
+			if(userBonnieAccessInfo != null) {
+				resultList.add(user);
+			}
+		}
+		return resultList;
 	}
 	
 	/* (non-Javadoc)

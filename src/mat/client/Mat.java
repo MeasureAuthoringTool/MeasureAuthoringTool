@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.admin.ManageAdminPresenter;
+import mat.client.admin.ManageBonnieTokenPresenter;
 import mat.client.admin.ManageCQLLibraryAdminPresenter;
 import mat.client.admin.ManageCQLLibraryAdminView;
 import mat.client.admin.reports.ManageAdminReportingPresenter;

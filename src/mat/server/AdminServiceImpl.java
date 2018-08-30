@@ -356,6 +356,14 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return model;
 	}
 	
+	public ManageUsersSearchModel searchUsersWithActiveBonnie(String key) throws InCorrectUserRoleException {
+		checkAdminUser();
+		UserService userService = getUserService();
+		List<User> activeBonnieUsers = userService.searchForUsersWithActiveBonnie(key);
+		ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, activeBonnieUsers);
+		return model;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.service.AdminService#searchUsers(java.lang.String)
 	 */
@@ -367,6 +375,12 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		List<User> searchResults = userService.searchForUsersByName(key);
 		logger.info("User search returned " + searchResults.size());
 		
+		ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, searchResults);
+		logger.info("Searching users on " + key);
+		
+		return model;
+	}
+	private ManageUsersSearchModel generateManageUsersSearchModelFromUser(String key, List<User> searchResults) {
 		ManageUsersSearchModel model = new  ManageUsersSearchModel();
 		List<ManageUsersSearchModel.Result> detailList = new ArrayList<ManageUsersSearchModel.Result>();
 		for (User user : searchResults) {
@@ -384,8 +398,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		}
 		model.setData(detailList);
 		model.setResultsTotal(getUserService().countSearchResults(key));
-		logger.info("Searching users on " + key);
-		
 		return model;
 	}
 	

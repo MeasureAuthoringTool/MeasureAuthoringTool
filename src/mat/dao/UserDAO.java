@@ -24,6 +24,13 @@ public interface UserDAO extends IDAO<User, String> {
 	public List<User> searchForUsersByName(String name);
 	
 	/**
+	 * searches for users with an active bonnie conection
+	 * @param name the search value
+	 * @return the list of users
+	 */
+	public List<User> searchForUserWithActiveBonnieConnection(String name);
+	
+	/**
 	 * Search for non terminated user.
 	 *
 	 * @return the list

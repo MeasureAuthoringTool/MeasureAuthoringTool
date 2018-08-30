@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
+
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 import mat.model.SecurityQuestions;
@@ -152,6 +160,19 @@ mat.dao.UserDAO {
 			criteria.setMaxResults(numResults);
 		}*/
 		return criteria.list();
+	}
+	
+	@Override
+	public List<User> searchForUserWithActiveBonnieConnection(String name){
+		//EntityManagerFactory em = Persistence.createEntityManagerFactory("com.concretepage");
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+		Root<User> root = criteriaQuery.from(User.class);
+		root.fetch("user", JoinType.INNER);
+		criteriaQuery.select(root);
+		List<User> resultList = session.createQuery(criteriaQuery).getResultList();
+		return resultList;
 	}
 	
 	/* (non-Javadoc)

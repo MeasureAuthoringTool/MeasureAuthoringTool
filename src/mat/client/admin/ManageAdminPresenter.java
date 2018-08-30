@@ -25,6 +25,8 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 	private ManageOrganizationPresenter manageOrganizationPresenter;
 	/** The Manage Users Presenter. */
 	private ManageUsersPresenter manageUsersPresenter;
+	
+	private ManageBonnieTokenPresenter manageBonnieTokenPresenter;
 	/** The tab layout. */
 	private MatTabLayoutPanel tabLayout;
 	/** Instantiates a new Admin presenter. */
@@ -38,14 +40,19 @@ public class ManageAdminPresenter implements MatPresenter, TabObserver {
 		ManageOrganizationView manageOrganizationView = new ManageOrganizationView();
 		ManageOrganizationDetailView manageOrganizationDetailView = new ManageOrganizationDetailView();
 		manageOrganizationPresenter = new ManageOrganizationPresenter(manageOrganizationView, manageOrganizationDetailView);
+		
+		manageBonnieTokenPresenter = new ManageBonnieTokenPresenter();
 		tabLayout = new MatTabLayoutPanel(this);
 		tabLayout.getElement().setAttribute("id", "qdmElementTabLayout");
 		tabLayout.add(manageUsersPresenter.getWidget(), "Manage User", true);
 		presenterList.add(manageUsersPresenter);
 		tabLayout.add(manageOrganizationPresenter.getWidget(), "Manage Organization", true);
 		presenterList.add(manageOrganizationPresenter);
+		tabLayout.add(manageBonnieTokenPresenter.getWidget(), "Manage Bonnie Connection", true);
+		presenterList.add(manageBonnieTokenPresenter);
 		tabLayout.setHeight("98%");
 		tabLayout.getElement().setAttribute("id", "myAccountTabLayout");
+		
 		MatContext.get().tabRegistry.put(ADMIN_ACCOUNT_TAB, tabLayout);
 		tabLayout.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override

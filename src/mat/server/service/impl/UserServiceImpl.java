@@ -408,6 +408,14 @@ public class UserServiceImpl implements UserService {
 		return userDAO.searchForUsersByName(orgId);
 	}
 	
+	@Override
+	public List<User> searchForUsersWithActiveBonnie(String searchTerm){
+		if(searchTerm == null) {
+			searchTerm = "";
+		}
+		return userDAO.searchForUserWithActiveBonnieConnection(searchTerm);
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#searchForUsedOrganizations()
 	 */

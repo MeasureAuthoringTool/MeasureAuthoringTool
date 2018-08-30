@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -19,13 +20,11 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -37,7 +36,6 @@ import mat.client.admin.ManageUsersSearchView.Observer;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -45,13 +43,8 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
-import mat.shared.ClickableSafeHtmlCell;
 
 public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay, HasSelectionHandlers<ManageUsersSearchModel.Result> {
-
-
-	/** MARGIN Value used in constructor for button panel , search label and search text box. */
-	private static final int MARGIN_VALUE = 4;
 	/** Cell Table Page Size. */
 	private static final int PAGE_SIZE = 25;
 	/** The cell table panel. */
@@ -113,19 +106,19 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		};
 		cellTable.addColumn(matIdColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"MAT ID\">" + "MAT ID" + "</span>"));
 		
+		ButtonCell revokeBonnieButton = new ButtonCell();
 		//MAT-9000. Changes to Account Management -> Manage Users table to use bootstrap history column icon.
-		Cell<String> revokeBonnieButton = new MatButtonCell("Stop Bonnie Session", "btn btn-link", "" , "Stop Bonnie Session");
 		Column<Result, String> revokeColumn = new Column<Result, String>(revokeBonnieButton) {
 			@Override
 			public String getValue(Result object) {
-				return "";
+				return "Stop Bonnie Session";
 			}
 		};
 		
 		revokeColumn.setFieldUpdater(new FieldUpdater<Result, String>() {
 			@Override
 			public void update(int index, Result object, String value) {
-				observer.onHistoryClicked(object);
+				observer.onStopBonnieSessionClicked(object);
 			}
 		});
 		cellTable.addColumn(revokeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Stop Bonnie Session'>" + "Stop Bonnie Session" + "</span>"));

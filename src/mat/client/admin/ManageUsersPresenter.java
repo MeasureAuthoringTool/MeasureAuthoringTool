@@ -9,6 +9,7 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.TextBox;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -476,6 +477,13 @@ public class ManageUsersPresenter implements MatPresenter {
 			public void onHistoryClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
 				historyDisplay.setReturnToLinkText("<< Return to Manage Users");
 				displayHistory(result.getKey(), result.getFirstName());
+			}
+
+			@Override
+			public void onStopBonnieSessionClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
+				GWT.log("clicked revoke session");
+				// TODO Auto-generated method stub
+				//TODO implement this
 			}
 		});
 

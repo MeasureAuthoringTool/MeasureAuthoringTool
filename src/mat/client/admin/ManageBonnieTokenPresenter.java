@@ -12,10 +12,10 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	private ManageUsersPresenter manageUsersPresenter;
 	
 	public ManageBonnieTokenPresenter() {
-		ManageBonnieTokenView musd = new ManageBonnieTokenView();
-		ManageUsersDetailView mudd = new ManageUsersDetailView();
-		ManageUserHistoryView muhd = new ManageUserHistoryView();
-		manageUsersPresenter = new ManageUsersPresenter(musd, mudd, muhd);
+		ManageBonnieTokenView manageBonnieTokenView = new ManageBonnieTokenView();
+		ManageUsersDetailView manageUsersDetailView = new ManageUsersDetailView();
+		ManageUserHistoryView manageUserHistoryView = new ManageUserHistoryView();
+		manageUsersPresenter = new ManageUsersPresenter(manageBonnieTokenView, manageUsersDetailView, manageUserHistoryView);
 	}
 
 	@Override

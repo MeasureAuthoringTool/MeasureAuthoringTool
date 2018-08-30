@@ -9,6 +9,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResultUpdate;
@@ -28,12 +30,26 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 		searchDisplay.setObserver(new ManageBonnieTokenView.Observer() {
 			@Override
 			public void onStopBonnieSessionClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
-				GWT.log("clicked revoke session");
-				// TODO Auto-generated method stub
-				//TODO implement this
+				ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("This action will revoke active Bonnie tokens for this user. Once done, this action can not be undone. Are you sure you wish to proceed?", "Yes", "No", new ConfirmationObserver() {
+					@Override
+					public void onYesButtonClicked() {
+						// TODO Auto-generated method stub
+						GWT.log("clicked revoke session");
+						//TODO implement this
+					}
+					
+					@Override
+					public void onNoButtonClicked() {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void onClose() {}
+				});
+				confirmationDialogBox.show();
 			}
 		});
-		
 	}
 
 	@Override

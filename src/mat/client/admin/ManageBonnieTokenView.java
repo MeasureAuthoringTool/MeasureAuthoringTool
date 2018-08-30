@@ -242,8 +242,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	}
 
 	public void setObserver(Observer observer) {
-		// TODO Auto-generated method stub
-		
+		this.observer = observer;
 	}
 
 	@Override

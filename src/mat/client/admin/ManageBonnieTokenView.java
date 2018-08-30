@@ -6,7 +6,6 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -32,10 +31,8 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.CustomPager;
 import mat.client.admin.ManageUsersSearchModel.Result;
-import mat.client.admin.ManageUsersSearchView.Observer;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
@@ -61,6 +58,14 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	private Observer observer;
 	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
 	
+	
+	/**
+	 * The Interface Observer.
+	 */
+	public static interface Observer {
+
+		void onStopBonnieSessionClicked(Result object);
+	}
 	
 	/**Constructor.**/
 	public ManageBonnieTokenView() {
@@ -107,7 +112,6 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		cellTable.addColumn(matIdColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"MAT ID\">" + "MAT ID" + "</span>"));
 		
 		ButtonCell revokeBonnieButton = new ButtonCell();
-		//MAT-9000. Changes to Account Management -> Manage Users table to use bootstrap history column icon.
 		Column<Result, String> revokeColumn = new Column<Result, String>(revokeBonnieButton) {
 			@Override
 			public String getValue(Result object) {
@@ -237,9 +241,14 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		return successMessageDisplay;
 	}
 
-	@Override
 	public void setObserver(Observer observer) {
-		this.observer = observer;
+		// TODO Auto-generated method stub
+		
 	}
 
+	@Override
+	public void setObserver(mat.client.admin.ManageUsersSearchView.Observer observer) {
+		// TODO Auto-generated method stub
+		
+	}
 }

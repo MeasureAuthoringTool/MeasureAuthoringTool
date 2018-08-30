@@ -478,13 +478,6 @@ public class ManageUsersPresenter implements MatPresenter {
 				historyDisplay.setReturnToLinkText("<< Return to Manage Users");
 				displayHistory(result.getKey(), result.getFirstName());
 			}
-
-			@Override
-			public void onStopBonnieSessionClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
-				GWT.log("clicked revoke session");
-				// TODO Auto-generated method stub
-				//TODO implement this
-			}
 		});
 
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(

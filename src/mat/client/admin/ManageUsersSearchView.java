@@ -80,8 +80,6 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		 * @param result the result
 		 */
 		void onHistoryClicked(Result result);
-
-		void onStopBonnieSessionClicked(Result object);
 	}
 	
 	/**Constructor.**/

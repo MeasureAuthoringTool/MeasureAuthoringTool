@@ -372,12 +372,11 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		checkAdminUser();
 		
 		UserService userService = getUserService();
+		logger.info("Searching users on " + key);
 		List<User> searchResults = userService.searchForUsersByName(key);
 		logger.info("User search returned " + searchResults.size());
-		
 		ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, searchResults);
-		logger.info("Searching users on " + key);
-		
+
 		return model;
 	}
 	private ManageUsersSearchModel generateManageUsersSearchModelFromUser(String key, List<User> searchResults) {

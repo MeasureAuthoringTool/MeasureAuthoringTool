@@ -9,8 +9,8 @@
 			<column name="ID" />
 			<generator class="increment" />
 		</id>
-		<property name="compositeMeasureId" column="COMPOSITE_MEASURE_ID" type="string" />
-		<property name="componentMeasureId" column="COMPONENT_MEASURE_ID" type="string" />
+        <many-to-one name="compositeMeasure" column="COMPOSITE_MEASURE_ID" class="mat.model.clause.Measure" cascade="all"/>
+        <many-to-one name="componentMeasure" column="COMPONENT_MEASURE_ID" class="mat.model.clause.Measure" cascade="all"/>
 		<property name="alias" column="ALIAS" type="string" />
 	</class>
 </hibernate-mapping>

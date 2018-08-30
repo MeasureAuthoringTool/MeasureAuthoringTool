@@ -841,7 +841,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		getZipBarr(measureId, me, parentPath, zip);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
-			String componentMeasureId = measure.getComponentMeasureId();
+			String componentMeasureId = measure.getComponentMeasure().getId();
 			if(checkIfComponentMeasureIsUsed(parentSimpleXML, componentMeasureId)) {
 				MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
 				String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 
@@ -1116,7 +1116,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		createFilesInBulkZip(measureId, me, filesMap, format, parentPath);
 		//get component files
 		for(ComponentMeasure measure : componentMeasures) {
-			String componentMeasureId = measure.getComponentMeasureId();
+			String componentMeasureId = measure.getComponentMeasure().getId();
 			if(checkIfComponentMeasureIsUsed(parentSimpleXML, componentMeasureId)) {
 				MeasureExport componentMeasureExport = getMeasureExport(componentMeasureId);
 				String componentParentPath = parentPath + File.separator + fnu.getParentPath(componentMeasureExport.getMeasure().getaBBRName() +"_" + currentReleaseVersion); 

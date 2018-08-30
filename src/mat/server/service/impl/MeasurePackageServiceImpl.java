@@ -351,7 +351,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		
 		for(ComponentMeasure cm : components) {
-			componentMeasures.add(measureDAO.find(cm.getComponentMeasureId()));
+			componentMeasures.add(measureDAO.find(cm.getComponentMeasure().getId()));
 		}
 		return componentMeasures;
 	}

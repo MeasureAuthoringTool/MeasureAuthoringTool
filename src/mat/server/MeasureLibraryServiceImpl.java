@@ -795,13 +795,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Map<String, String> aliasMapping = new HashMap<>();
 		
 		for(ComponentMeasure component : measure.getComponentMeasures()) {
-			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasureId()));			
+			componentMeasuresSelectedList.add(buildSearchModelResultObjectFromMeasureId(component.getComponentMeasure().getId()));			
 		}
 		model.setAppliedComponentMeasures(componentMeasuresSelectedList);
 		model.setComponentMeasuresSelectedList(componentMeasuresSelectedList);
 		
 		for(ComponentMeasure component : measure.getComponentMeasures() ) {
-			aliasMapping.put(component.getComponentMeasureId(), component.getAlias());
+			aliasMapping.put(component.getComponentMeasure().getId(), component.getAlias());
 		}
 		
 		model.setAliasMapping(aliasMapping);
@@ -2124,7 +2124,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				String id = current.getAttributes().getNamedItem("id").getNodeValue();
 				if (!usedIncludedLibraryIds.contains(id)) {
 					current.getParentNode().removeChild(current);
-					Optional<ComponentMeasure> component = measure.getComponentMeasures().stream().filter(m -> m.getComponentMeasureId().equals(id)).findFirst(); 
+					Optional<ComponentMeasure> component = measure.getComponentMeasures().stream().filter(m -> m.getComponentMeasure().getId().equals(id)).findFirst(); 
 					componentsToDelete.add(component.get());
 				}
 			}
@@ -3381,7 +3381,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		List<ComponentMeasure> componentMeasures = compositeMeasure.getComponentMeasures();
 
 		for (ComponentMeasure componentMeasure : componentMeasures) {
-			Measure measure = measureDAO.find(componentMeasure.getComponentMeasureId());
+			Measure measure = measureDAO.find(componentMeasure.getComponentMeasure().getId());
 			String measureName = measure.getDescription();
 			String ownerName = measure.getOwner().getFullName();
 			String alias = componentMeasure.getAlias();
@@ -6082,7 +6082,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private List<ComponentMeasure> buildComponentMeasuresList(String measureId,
 			ManageCompositeMeasureDetailModel model) {
 		return model.getAppliedComponentMeasures().stream().map(
-				result -> new ComponentMeasure(measureId, result.getId(), model.getAliasMapping().get(result.getId())))
+				result -> new ComponentMeasure(measureDAO.find(measureId), measureDAO.find(result.getId()), model.getAliasMapping().get(result.getId())))
 				.collect(Collectors.toList());
 	}
 
@@ -6165,7 +6165,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if(i > 0) {
 					errorMessageBuilder.append(",");
 				}
-				Measure compositeMeasure = measureDAO.find(componentMeasure.getCompositeMeasureId());
+				Measure compositeMeasure = measureDAO.find(componentMeasure.getCompositeMeasure().getId());
 				errorMessageBuilder.append(" " + compositeMeasure.getDescription());
 			}
 			List<String> errorMessages = new ArrayList<>();

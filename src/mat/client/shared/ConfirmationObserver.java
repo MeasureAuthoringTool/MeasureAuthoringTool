@@ -1,4 +1,4 @@
-package mat.client.cql;
+package mat.client.shared;
 
 public interface ConfirmationObserver {
 	void onYesButtonClicked();

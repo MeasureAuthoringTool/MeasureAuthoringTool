@@ -314,7 +314,7 @@ public interface MeasurePackageService {
 	 * @throws Exception
 	 *             - {@link Exception}.
 	 */
-	ValidateMeasureResult validateAndCreateExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws Exception;
+	ValidateMeasureResult createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws Exception;
 
 	/**
 	 * Gets the human readable for node.
@@ -350,4 +350,6 @@ public interface MeasurePackageService {
 	void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export);
 
 	void deleteComponentMeasure(List<ComponentMeasure> componentMeasuresList);
+
+	ValidateMeasureResult validateExportsForCompositeMeasures(String key) throws Exception;
 }

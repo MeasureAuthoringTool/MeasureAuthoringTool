@@ -350,7 +350,7 @@ public interface MeasureService extends RemoteService {
 	 * @throws MatException
 	 *             the mat exception
 	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
+	ValidateMeasureResult createExports(String key,
 			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
 	
 	/**
@@ -701,4 +701,6 @@ public interface MeasureService extends RemoteService {
 	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId);
 	
 	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
+
+	ValidateMeasureResult validateExports(String measureId) throws Exception;
 }

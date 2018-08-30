@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.http.client.fluent.Async;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
@@ -1166,7 +1167,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ValidateMeasureResult result) {
 				if (result.isValid()) {
-					saveMeasureAtPackage();
+					updateMeasureXmlForDeletedComponentMeasureAndOrg();
 				} else {
 					Mat.hideLoadingMessage();
 					if (result.getValidationMessages() != null) {
@@ -1206,7 +1207,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				if (result.isSuccess()) {
-					updateMeasureXmlForDeletedComponentMeasureAndOrg();
+					createExports(MatContext.get().getCurrentMeasureId(), null);
 					
 				} else {
 					Mat.hideLoadingMessage();
@@ -1246,7 +1247,32 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(Void result) {
 				String measureId = MatContext.get().getCurrentMeasureId();
-				validateMeasureAndExport(measureId, null);
+				validateExports(measureId);
+			}
+		});
+	}
+	
+	private void validateExports(final String measureId) {
+		MatContext.get().getMeasureService().validateExports(measureId, new AsyncCallback<ValidateMeasureResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Mat.hideLoadingMessage();
+				((Button) view.getPackageMeasureAndExportButton()).setEnabled(true);
+				view.getInProgressMessageDisplay().clearAlert();
+				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				view.getPackageErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUnableToProcessMessage());				
+			}
+
+			@Override
+			public void onSuccess(ValidateMeasureResult result) {
+				Mat.hideLoadingMessage();
+				if(!result.isValid()) {
+					handleUnsuccessfulPackage(result);
+				} else {
+					saveMeasureAtPackage();
+				}
+				
 			}
 		});
 	}
@@ -1256,13 +1282,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param measureId - String.
 	 * @param updateVsacResult - VsacApiResult.
 	 */
-	private void validateMeasureAndExport(final String measureId, final VsacApiResult updateVsacResult) {
+	private void createExports(final String measureId, final VsacApiResult updateVsacResult) {
 		List<MatValueSet> vsacResponse = null;
 		if (updateVsacResult != null) {
 			vsacResponse = updateVsacResult.getVsacResponse();
 		}
 		
-		MatContext.get().getMeasureService().validateMeasureForExport(measureId, vsacResponse, true, new AsyncCallback<ValidateMeasureResult>() {
+		MatContext.get().getMeasureService().createExports(measureId, vsacResponse, true, new AsyncCallback<ValidateMeasureResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				Mat.hideLoadingMessage();

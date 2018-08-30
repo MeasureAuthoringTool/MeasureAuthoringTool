@@ -1007,10 +1007,8 @@ public class ExportSimpleXML {
 				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
 				Node attrcomponentVersionNo = originalDoc.createAttribute("versionNo");
 				Measure measure = measureDAO.find(measureId);
-				String componentMeasureName = measure.getDescription();
-				String componentMeasureSetId = measure.getMeasureSet().getId();
-				attrcomponentMeasureName.setNodeValue(componentMeasureName);
-				attrcomponentMeasureSetId.setNodeValue(componentMeasureSetId);
+				attrcomponentMeasureName.setNodeValue(measure.getDescription());
+				attrcomponentMeasureSetId.setNodeValue(measure.getMeasureSet().getId());
 				attrcomponentVersionNo.setNodeValue(measure.getMajorVersionStr() + "." + measure.getMinorVersionStr() + "." + measure.getRevisionNumber());
 				measureNode.getAttributes().setNamedItem(attrcomponentMeasureName);
 				measureNode.getAttributes().setNamedItem(attrcomponentMeasureSetId);

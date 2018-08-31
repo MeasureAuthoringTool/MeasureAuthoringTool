@@ -5,18 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
-
-import mat.dao.search.GenericDAO;
-import mat.model.Organization;
-import mat.model.SecurityQuestions;
-import mat.model.User;
-import mat.server.model.MatUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -29,7 +17,13 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.core.userdetails.UserDetails;
 
-// TODO: Auto-generated Javadoc
+import mat.dao.search.GenericDAO;
+import mat.model.Organization;
+import mat.model.SecurityQuestions;
+import mat.model.User;
+import mat.server.model.MatUserDetails;
+
+
 /**
  * The Class UserDAO.
  */

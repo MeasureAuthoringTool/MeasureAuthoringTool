@@ -178,8 +178,8 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		cellTable.setColumnWidth(2, 20.0, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
 				"manageUsersSummary",
-				"In the Following Manage users table, Name is given in the first column, Organization in the "
-						+ "second column, Status in the third column, and User Role in the fourth column.");
+				"In the Following Manage Bonnie Token table, Name is given in the first column, MAT ID in the "
+						+ "second column, Stop Bonnie Session in the third column.");
 		cellTable.getElement().setAttribute("id", "manageUsersCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "manageUsersSummary");
 		cellTablePanel.add(invisibleLabel);

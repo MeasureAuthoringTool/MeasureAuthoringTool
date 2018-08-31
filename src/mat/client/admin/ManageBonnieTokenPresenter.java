@@ -33,24 +33,9 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 					@Override
 					public void onYesButtonClicked() {
 						String userId = userResult.getKey();
-						MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Boolean>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								searchDisplay.getErrorMessageAlert()
-								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null,
-								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-							}
-
-							@Override
-							public void onSuccess(Boolean result) {
-								displaySearch("");
-								searchDisplay.getSuccessMessageDisplay().createAlert("Active Bonnie tokens have been revoked for user " + userResult.getLoginId());
-							}
-						});
-
+						revokeBonnieAccessTokenForUser(userResult, userId);
 					}
-					
+
 					@Override
 					public void onNoButtonClicked() {}
 					
@@ -62,11 +47,27 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 		});
 	}
 
-	@Override
-	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
-		
+	private void revokeBonnieAccessTokenForUser(
+			mat.client.admin.ManageUsersSearchModel.Result userResult, String userId) {
+		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getErrorMessageAlert()
+				.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		MatContext.get().recordTransactionEvent(null, null, null,
+				"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				displaySearch("");
+				searchDisplay.getSuccessMessageDisplay().createAlert("Active Bonnie tokens have been revoked for user " + userResult.getLoginId());
+			}
+		});
 	}
+	
+	@Override
+	public void beforeClosingDisplay() {}
 
 	@Override
 	public void beforeDisplay() {
@@ -94,7 +95,10 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	private void search(String key) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
+		searchUsersWithActiveBonnie(key);
+	}
 
+	private void searchUsersWithActiveBonnie(String key) {
 		MatContext.get().getAdminService().searchUsersWithActiveBonnie(key, new AsyncCallback<ManageUsersSearchModel>() {
 			@Override
 			public void onSuccess(ManageUsersSearchModel result) {

@@ -133,25 +133,18 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		return cellTable;
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
-	 */
+
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<ManageUsersSearchModel.Result> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchDisplay#asWidget()
-	 */
+
 	@Override
 	public Widget asWidget() {
 		return containerPanel;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
-	 */
+
 	@Override
 	public void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results) {
 		cellTablePanel.clear();
@@ -188,57 +181,43 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		cellTablePanel.add(spager);
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
-	 */
+
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getCreateNewButton()
-	 */
+
 	@Override
 	public HasClickHandlers getCreateNewButton() {
 		return createNewButton;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchDisplay#getSearchButton()
-	 */
+
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchWidgetBootStrap.getGo();
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchDisplay#getSearchString()
-	 */
+
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getSelectIdForEditTool()
-	 */
+
 	@Override
 	public HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool() {
 		return this;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#setTitle(java.lang.String)
-	 */
+
 	@Override
 	public void setTitle(String title) {
 		containerPanel.setHeading(title, "Manage Users");
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getSuccessMessageDisplay()
-	 */
+
 	@Override
 	public MessageAlert getSuccessMessageDisplay() {
 		return successMessageDisplay;

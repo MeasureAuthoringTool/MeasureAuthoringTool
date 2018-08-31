@@ -2,7 +2,6 @@ package mat.client.admin;
 
 import org.gwtbootstrap3.client.ui.Button;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,25 +28,19 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 		
 		searchDisplay.setObserver(new ManageBonnieTokenView.Observer() {
 			@Override
-			public void onStopBonnieSessionClicked(mat.client.admin.ManageUsersSearchModel.Result result) {
+			public void onStopBonnieSessionClicked(mat.client.admin.ManageUsersSearchModel.Result userResult) {
 				ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("This action will revoke active Bonnie tokens for this user. Once done, this action can not be undone. Are you sure you wish to proceed?", "Yes", "No", new ConfirmationObserver() {
 					@Override
 					public void onYesButtonClicked() {
-						// TODO Auto-generated method stub
-						GWT.log("clicked revoke session");
-						String userId = result.getKey();
+						String userId = userResult.getKey();
 						MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Boolean>() {
 							@Override
-							public void onFailure(Throwable caught) {
-								// TODO Auto-generated method stub
-								//TODO implement this
-							}
+							public void onFailure(Throwable caught) {}
 
 							@Override
 							public void onSuccess(Boolean result) {
-								// TODO Auto-generated method stub
-								//TODO delete the bonnie token from the database and redraw the table(displaySearch)
-								//TODO display success message
+								displaySearch("");
+								searchDisplay.getSuccessMessageDisplay().createAlert("Active Bonnie tokens have been revoked for user " + userResult.getLoginId());
 							}
 						});
 

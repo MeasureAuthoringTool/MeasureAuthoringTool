@@ -8,6 +8,7 @@ import mat.server.simplexml.cql.MATCssCQLUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
@@ -216,7 +217,7 @@ public class HeaderHumanReadableGenerator {
 		
 		String expansionId = getExpansionIdentifier(processor);
 		// add expansionId if set
-		if (expansionId != null && !expansionId.isEmpty() && !expansionId.equals("")){
+		if (StringUtils.isNotBlank(expansionId)){
 			// Expansion Profile
 			createRowAndColumns(table, "VSAC Value Set Expansion Identifier");
 			column.appendText(expansionId);
@@ -232,8 +233,11 @@ public class HeaderHumanReadableGenerator {
 		createDiv(getInfo(processor, "disclaimer"), column);
 		
 		//Composite Scoring
-		createRowAndColumns(table, "Composite Scoring Method");
-		column.appendText(getInfo(processor, "compositeScoring"));
+		String compositeScoring = getInfo(processor, "compositeScoring");
+		if(StringUtils.isNotBlank(compositeScoring)) {
+			createRowAndColumns(table, "Composite Scoring Method");
+			column.appendText(compositeScoring);
+		}
 		
 		// Measure Scoring
 		createRowAndColumns(table, "Measure Scoring");

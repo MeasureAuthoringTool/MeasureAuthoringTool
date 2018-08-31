@@ -1,7 +1,7 @@
 /**
  * 
  */
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.leftNavBar.sections;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +56,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
+import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.shared.CQLAddNewButton;
 import mat.client.shared.CQLCollapsibleCQLPanelWidget;
 import mat.client.shared.MatSimplePager;

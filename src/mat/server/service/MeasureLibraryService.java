@@ -345,9 +345,9 @@ public interface MeasureLibraryService {
 	 * @throws MatException
 	 *             the mat exception
 	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
+	ValidateMeasureResult createExports(String key,
 			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
-	
+		
 	/**
 	 * Save measure at package.
 	 *
@@ -752,4 +752,6 @@ public interface MeasureLibraryService {
 	ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML);
 	
 	GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
+
+	ValidateMeasureResult validateExports(String measureId) throws Exception;
 }

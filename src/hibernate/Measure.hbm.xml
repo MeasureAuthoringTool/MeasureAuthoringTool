@@ -45,9 +45,9 @@
 	<property name="qdmVersion" column="QDM_VERSION"></property>
 	<property name = "isCompositeMeasure" column = "IS_COMPOSITE_MEASURE"/>
 	
-	<bag name="componentMeasures" cascade="none" lazy="false">
+	<bag name="componentMeasures" cascade="all" fetch="select" lazy="true">
         <key column="COMPOSITE_MEASURE_ID" />
-        <one-to-many class="mat.model.clause.ComponentMeasure"/>
+        <one-to-many class="mat.model.clause.ComponentMeasure" />
     </bag>
 	
   </class>

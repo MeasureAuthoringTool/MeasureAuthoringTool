@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.dom.ElementImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -43,6 +45,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.User;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureXML;
@@ -220,7 +223,10 @@ implements MeasureCloningService {
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
 			clonedMeasure.setDraft(Boolean.TRUE);
 			clonedMeasure.setPatientBased(currentDetails.isPatientBased());
-
+			if(!CollectionUtils.isEmpty(measure.getComponentMeasures())){
+				clonedMeasure.setComponentMeasures(cloneAndSetComponentMeasures(measure.getComponentMeasures(),clonedMeasure));
+			}
+			
 			if (currentDetails.getMeasScoring() != null) {
 				clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring());
 			} else {
@@ -293,6 +299,10 @@ implements MeasureCloningService {
 		}
 	}
 	
+	private List<ComponentMeasure> cloneAndSetComponentMeasures(List<ComponentMeasure> componentMeasures, Measure clonedMeasure) {
+		return componentMeasures.stream().map(f -> new ComponentMeasure(clonedMeasure,f.getComponentMeasure(),f.getAlias())).collect(Collectors.toList());
+	}
+
 	private boolean createDraftAndDetermineIfNonCQL(String version, Measure measure) {
 		boolean isNonCQLtoCQLDraft = false;
 		clonedMeasure.setOwner(measure.getOwner());

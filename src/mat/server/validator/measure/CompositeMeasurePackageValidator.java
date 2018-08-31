@@ -105,11 +105,7 @@ public class CompositeMeasurePackageValidator {
 		}
 		
 		if(model.getAppliedComponentMeasures() != null) {
-			for(int i = 0; i < model.getAppliedComponentMeasures().size(); i++) {
-				if(!usedComponentIds.contains(model.getAppliedComponentMeasures().get(i).getId())) {
-					model.getAppliedComponentMeasures().remove(i);
-				}
-			}		
+			model.getAppliedComponentMeasures().removeIf(m -> !usedComponentIds.contains(m.getId()));
 		}
 	}
 			

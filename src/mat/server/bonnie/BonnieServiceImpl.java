@@ -161,10 +161,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	
 	public BonnieCalculatedResult getBonnieExportForMeasure(String userId, String measureId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException{
 		UserBonnieAccessInfo userInformation = getUserBonnieAccessInfo(userId);
-		String userAccessToken = userInformation.getAccessToken();
 		BonnieCalculatedResult caluclatedResult = null;
 		try {
-			caluclatedResult = bonnieApi.getCalculatedResultsForMeasure(userAccessToken, measureId);
+			caluclatedResult = bonnieApi.getCalculatedResultsForMeasure(userInformation.getAccessToken(), measureId);
 		} catch (BonnieUnauthorizedException e) {
 			handleBonnieUnauthorizedException(userInformation);
 			throw e;
@@ -184,7 +183,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		BonnieOAuthResult result = null;
 		User user = userDAO.find(userId);
 		try {
-			user.getUserBonnieAccessInfo().setRefreshToken(encryptDecryptToken.decryptKey(user.getUserBonnieAccessInfo().getRefreshToken()));
+			user.getUserBonnieAccessInfo().setRefreshToken(user.getUserBonnieAccessInfo().getRefreshToken());
 			result = bonnieApi.getBonnieRefreshResult(user.getUserBonnieAccessInfo());
 		} catch (BonnieUnauthorizedException e) {
 			handleBonnieUnauthorizedException(user.getUserBonnieAccessInfo());
@@ -232,8 +231,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			throw new BonnieUnauthorizedException();
 		}
 		refreshBonnieTokens(userId);
-		bonnieAccessInfo.setRefreshToken(encryptDecryptToken.decryptKey(bonnieAccessInfo.getRefreshToken()));
-		bonnieAccessInfo.setAccessToken(encryptDecryptToken.decryptKey(bonnieAccessInfo.getAccessToken()));
 		return bonnieAccessInfo;
 	}
 

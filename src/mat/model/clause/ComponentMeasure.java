@@ -9,34 +9,19 @@ public class ComponentMeasure {
 
 	private int id;
 	
-	private String compositeMeasureId;
+	private Measure compositeMeasure;
 	
-	private String componentMeasureId;
+	private Measure componentMeasure;
 	
-	private String alias;
 
+	private String alias;
+	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getCompositeMeasureId() {
-		return compositeMeasureId;
-	}
-
-	public void setCompositeMeasureId(String compositeMeasureId) {
-		this.compositeMeasureId = compositeMeasureId;
-	}
-
-	public String getComponentMeasureId() {
-		return componentMeasureId;
-	}
-
-	public void setComponentMeasureId(String componentMeasureId) {
-		this.componentMeasureId = componentMeasureId;
 	}
 
 	public String getAlias() {
@@ -47,15 +32,32 @@ public class ComponentMeasure {
 		this.alias = alias;
 	}
 
+	public Measure getCompositeMeasure() {
+		return compositeMeasure;
+	}
+
+	public void setCompositeMeasure(Measure compositeMeasure) {
+		this.compositeMeasure = compositeMeasure;
+	}
+
+	public Measure getComponentMeasure() {
+		return componentMeasure;
+	}
+
+	public void setComponentMeasure(Measure componentMeasure) {
+		this.componentMeasure = componentMeasure;
+	}
+
 	public ComponentMeasure() {
 		super();
 	}
-
-	public ComponentMeasure(String compositeMeasureId, String componentMeasureId, String alias) {
+	
+	public ComponentMeasure(Measure compositeMeasure, Measure componentMeasure, String alias) {
 		super();
-		this.compositeMeasureId = compositeMeasureId;
-		this.componentMeasureId = componentMeasureId;
+		this.compositeMeasure = compositeMeasure;
+		this.componentMeasure = componentMeasure;
 		this.alias = alias;
 	}
+
 	
 }

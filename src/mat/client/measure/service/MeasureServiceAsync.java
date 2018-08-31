@@ -363,7 +363,9 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void validateMeasureForExport(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
+	void createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
+	
+	void validateExports(String keys,  AsyncCallback<ValidateMeasureResult> callback);
 	
 	/**
 	 * Save Called To update Revision Number at Create New Package button Click.

@@ -9,8 +9,15 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLAppliedValueSetView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLCodesView;
 import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryPresenter;
 import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLDefinitionsView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLFunctionsView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLGeneralInformationView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLIncludeLibraryView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLParametersView;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 

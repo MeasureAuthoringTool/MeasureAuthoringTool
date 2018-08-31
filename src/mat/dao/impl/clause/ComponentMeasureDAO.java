@@ -35,7 +35,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 
 	@Override
 	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList) {
-		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasureId = :compositeMeasureId";
+		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";
 		Transaction tx = null;
 		try (Session session = HibernateConf.createHibernateSession();){
 			
@@ -44,7 +44,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 			
 			tx = session.beginTransaction();
 			query.executeUpdate();			
-			componentMeasuresList.forEach(component -> session.save(component));			
+			saveComponentMeasures(componentMeasuresList);			
 			tx.commit();
 			
 		} catch (Exception e) {
@@ -60,7 +60,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 	public List<ComponentMeasure> findByComponentMeasureId(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(ComponentMeasure.class);
-		criteria.add(Restrictions.eq("componentMeasureId", measureId));
+		criteria.add(Restrictions.eq("componentMeasure.id", measureId));
 		return criteria.list();
 	}
 }

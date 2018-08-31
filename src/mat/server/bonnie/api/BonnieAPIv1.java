@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.client.response.OAuthJSONAccessTokenResponse;
 import org.apache.oltu.oauth2.client.response.OAuthResourceResponse;
-import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.json.JSONObject;
@@ -32,11 +32,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 
-import com.google.gwt.dev.util.collect.HashMap;
-
 import mat.model.UserBonnieAccessInfo;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
 import mat.server.bonnie.api.result.BonnieMeasureResult;
+import mat.server.service.EncryptDecryptToken;
 import mat.server.util.APIConnectionUtillity;
 import mat.shared.BonnieOAuthResult;
 import mat.shared.FileInfomationObject;
@@ -64,6 +63,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 	
 	private static final String BOUNDRY = "APIPIE_RECORDER_EXAMPLE_BOUNDARY";
 	
+	@Autowired
+	private EncryptDecryptToken encryptDecryptToken;
 	@Autowired
 	private APIConnectionUtillity apiConnectionUtillity;
 
@@ -103,7 +104,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 		HttpURLConnection connection = null;
 		try {
-			connection = getInformationConnection(bearerToken, uri);
+			connection = getInformationConnection(encryptDecryptToken.decryptKey(bearerToken), uri);
 			logger.info("GET " + connection.getURL());
 
 			String code = Integer.toString(connection.getResponseCode());
@@ -143,7 +144,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		
 		HttpURLConnection connection = null;
 		try {
-			connection = getCalculationInformationConnection(bearerToken, uri);
+			connection = getCalculationInformationConnection(encryptDecryptToken.decryptKey(bearerToken), uri);
 			logger.info("GET " + connection.getURL());
 			String code = Integer.toString(connection.getResponseCode());
 			handleResponseCode(code, "Get Calculations For Measure " + hqmfSetId, hqmfSetId);
@@ -184,7 +185,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
-			HttpPost postRequest = createHttpPostRequest(UPDATE_MEASURE_URI, bearerToken, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
+			HttpPost postRequest = createHttpPostRequest(UPDATE_MEASURE_URI, encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
 			postResponse = httpClient.execute(postRequest);
 
 			
@@ -215,7 +216,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		try {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
-			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), bearerToken, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
+			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
 			putResponse = httpClient.execute(putRequest);
 			
 			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
@@ -289,7 +290,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		BonnieUserInformationResult userInformationResult = new BonnieUserInformationResult();
 		HttpURLConnection connection = null;
 		try {
-			connection = getInformationConnection(token, GET_USER_INFORMATION_URI);
+			connection = getInformationConnection(encryptDecryptToken.decryptKey(token), GET_USER_INFORMATION_URI);
 
 			logger.info("GET " + connection.getURL());
 
@@ -326,7 +327,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + REVOKE_BONNIE_TOKEN_URI)
 					.setClientId(getClientId()).setClientSecret(getClientSecret())
 					.setRedirectURI(getRedirectURI())
-					.setParameter("token", bearerToken)
+					.setParameter("token", encryptDecryptToken.decryptKey(bearerToken))
 					.setParameter("token_type_hint", "access_token")
 					.buildBodyMessage();
 			request.setHeader("Authorization", "Basic " + authStringEnc);
@@ -390,7 +391,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		String RequestUrl = getBonnieBaseURL() + uri;
 		
 		Map<String, String> requestProperty = new HashMap<String, String>();
-		getBearerToken(requestProperty, token);
+		getBearerToken(requestProperty, encryptDecryptToken.decryptKey(token));
 		requestProperty.put("Accept", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		
 		return apiConnectionUtillity.createGETHTTPConnection(RequestUrl, requestProperty);
@@ -408,7 +409,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			logger.info("Connecting to refresh bonnie oauth");
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(getBonnieBaseURL() + "/oauth/token")
 					.setClientId(getClientId()).setGrantType(GrantType.REFRESH_TOKEN)
-					.setClientSecret(getClientSecret()).setRefreshToken(userBonnieAccessInfo.getRefreshToken())
+					.setClientSecret(getClientSecret()).setRefreshToken(encryptDecryptToken.decryptKey(userBonnieAccessInfo.getRefreshToken()))
 					.setRedirectURI(getRedirectURI()).buildQueryMessage();
 
 			OAuthJSONAccessTokenResponse token = client.accessToken(request, OAuthJSONAccessTokenResponse.class);

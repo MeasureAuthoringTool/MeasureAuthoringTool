@@ -1,7 +1,7 @@
 /**
  * 
  */
-package mat.client.clause.cqlworkspace;
+package mat.client.clause.cqlworkspace.leftNavBar.sections;
 
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;

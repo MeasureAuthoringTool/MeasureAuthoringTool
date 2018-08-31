@@ -223,7 +223,9 @@ implements MeasureCloningService {
 			clonedMeasure.setReleaseVersion(measure.getReleaseVersion());			
 			clonedMeasure.setDraft(Boolean.TRUE);
 			clonedMeasure.setPatientBased(currentDetails.isPatientBased());
-			if(!CollectionUtils.isEmpty(measure.getComponentMeasures())){
+			if(!CollectionUtils.isEmpty(measure.getComponentMeasures()) && measure.getIsCompositeMeasure()){
+				clonedMeasure.setIsCompositeMeasure(measure.getIsCompositeMeasure());
+				clonedMeasure.setCompositeScoring(measure.getCompositeScoring());
 				clonedMeasure.setComponentMeasures(cloneAndSetComponentMeasures(measure.getComponentMeasures(),clonedMeasure));
 			}
 			

@@ -3280,7 +3280,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				}
 				else {
 					searchDisplay.getCqlLeftNavBarPanelView().getComponentsTab().setVisible(true);
-					searchDisplay.getCqlLeftNavBarPanelView().clearAndAddToComponentListBox(results);
+					searchDisplay.getCqlLeftNavBarPanelView().updateComponentInformation(results);
 				}
 			}
 		});

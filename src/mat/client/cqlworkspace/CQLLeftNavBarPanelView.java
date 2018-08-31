@@ -220,8 +220,10 @@ public class CQLLeftNavBarPanelView {
 	
 	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
 	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
+	private Map<String, String> aliases = new HashMap<String,String>();
 	
-	private PanelCollapse buildComponentCollapse() {
+	private PanelCollapse buildComponentCollapsablePanel() {
+		collapse.clear();
 		collapse.setId("collapseComponent");
 		PanelBody componentCollapseBody = new PanelBody();
 		HorizontalPanel componentHP = new HorizontalPanel();
@@ -304,7 +306,7 @@ public class CQLLeftNavBarPanelView {
 
 	public VerticalPanel buildMeasureLibCQLView(){
 		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-		collapse = buildComponentCollapse();
+		collapse = buildComponentCollapsablePanel();
 		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
 		defineCollapse = createDefineCollapsablePanel();
@@ -1321,9 +1323,6 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Update new suggest inc lib oracle.
-	 */
 	public void updateNewSuggestIncLibOracle() {
 		if (searchSuggestIncludeTextBox != null) {
 			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(includeLibraryNameMap.values());
@@ -2428,9 +2427,10 @@ public class CQLLeftNavBarPanelView {
 		return collapse;
 	}
 
-	public void clearAndAddToComponentListBox(List<ComponentMeasureTabObject> componentMeasures) {
+	public void updateComponentInformation(List<ComponentMeasureTabObject> componentMeasures) {
 		componentObjectsList.clear();
 		componentObjectsMap.clear();
+		aliases.clear();
 		componentObjectsList.addAll(componentMeasures);
 		if (listBox != null) {
 			listBox.clear();
@@ -2438,6 +2438,7 @@ public class CQLLeftNavBarPanelView {
 			for (ComponentMeasureTabObject object : componentObjectsList) {
 				componentObjectsMap.put(object.getComponentId(), object);
 				listBox.addItem(object.getAlias(), object.getComponentId());
+				aliases.put(object.getComponentId(), object.getAlias());
 			}
 			// Set tooltips for each element in listbox
 			SelectElement selectElement = SelectElement.as(listBox.getElement());
@@ -2449,7 +2450,12 @@ public class CQLLeftNavBarPanelView {
 			}
 		}
 		
-		setBadgeNumber(componentMeasures.size(), badge);
+		setBadgeNumber(componentObjectsList.size(), badge);
+		updateComponentSearchBox();
+	}
+	
+	public void updateComponentSearchBox() {
+		//TODO
 	}
 	
 	private void sortComponentsList(List<ComponentMeasureTabObject> objectList) {
@@ -2461,14 +2467,5 @@ public class CQLLeftNavBarPanelView {
 		});
 	}
 
-	public void updateComponentSuggestBox(List<ComponentMeasureTabObject> results) {
-		Map<String, String> aliases = new HashMap<String,String>();
-		aliases.clear();
-		for(ComponentMeasureTabObject obj : componentObjectsList) {
-			aliases.put(obj.getComponentId(), obj.getAlias());
-		}
-		
-		suggestBox = new SuggestBox(getSuggestOracle(aliases.values()));
-	}
 
 }

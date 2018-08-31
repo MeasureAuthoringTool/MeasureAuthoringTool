@@ -32,6 +32,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import mat.client.CustomPager;
 import mat.client.admin.ManageUsersSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
@@ -57,6 +58,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	private Observer observer;
 	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
+	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 	
 	
 	/**
@@ -73,6 +75,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessageDisplay);
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
 		mainPanel.add(cellTablePanel);
@@ -239,6 +242,10 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	@Override
 	public MessageAlert getSuccessMessageDisplay() {
 		return successMessageDisplay;
+	}
+	
+	public MessageAlert getErrorMessageAlert() {
+		return errorMessageAlert;
 	}
 
 	public void setObserver(Observer observer) {

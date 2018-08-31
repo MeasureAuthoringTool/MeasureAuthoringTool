@@ -2,6 +2,7 @@ package mat.client.admin;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,7 +36,12 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 						String userId = userResult.getKey();
 						MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Boolean>() {
 							@Override
-							public void onFailure(Throwable caught) {}
+							public void onFailure(Throwable caught) {
+								searchDisplay.getErrorMessageAlert()
+								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null,
+								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+							}
 
 							@Override
 							public void onSuccess(Boolean result) {
@@ -85,6 +91,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 		panel.setHeading("", "");
 		searchDisplay.setTitle("");
 		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		searchDisplay.getErrorMessageAlert().clearAlert();
 		search(name);
 	}
 	

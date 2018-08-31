@@ -35,7 +35,22 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 					public void onYesButtonClicked() {
 						// TODO Auto-generated method stub
 						GWT.log("clicked revoke session");
-						//TODO implement this
+						String userId = result.getKey();
+						MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Boolean>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								// TODO Auto-generated method stub
+								//TODO implement this
+							}
+
+							@Override
+							public void onSuccess(Boolean result) {
+								// TODO Auto-generated method stub
+								//TODO delete the bonnie token from the database and redraw the table(displaySearch)
+								//TODO display success message
+							}
+						});
+
 					}
 					
 					@Override

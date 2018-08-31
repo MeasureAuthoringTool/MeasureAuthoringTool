@@ -2,7 +2,6 @@ package mat.client.admin;
 
 import org.gwtbootstrap3.client.ui.Button;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,10 +52,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 					}
 					
 					@Override
-					public void onNoButtonClicked() {
-						// TODO Auto-generated method stub
-						
-					}
+					public void onNoButtonClicked() {}
 					
 					@Override
 					public void onClose() {}

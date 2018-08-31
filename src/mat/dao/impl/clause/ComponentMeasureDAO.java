@@ -31,6 +31,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 		for(ComponentMeasure component : componentMeasuresToDelete) {
 			super.delete(component);
 		}
+		getSessionFactory().getCurrentSession().flush();
 	}
 
 	@Override

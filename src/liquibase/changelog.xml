@@ -236,4 +236,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-149_MAT-9272_ADDCOLUMN_SESSIONID_USER_TABLE.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-150_MAT-9320_ALTER_CQL_LIBRARY_EXPORT.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9386_QDM_v5_4_updates_v3.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9323.xml"/>
 </databaseChangeLog>

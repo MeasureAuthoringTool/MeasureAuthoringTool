@@ -46,7 +46,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 
 	@Override
 	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList) {
-		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasureId.id = :compositeMeasureId";
+		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";
 		Transaction tx = null;
 		try (Session session = HibernateConf.createHibernateSession();){
 			

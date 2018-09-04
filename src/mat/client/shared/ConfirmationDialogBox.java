@@ -1,4 +1,4 @@
-package mat.client.clause.cqlworkspace;
+package mat.client.shared;
 
 
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
@@ -19,8 +19,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 import mat.client.buttons.NoButton;
 import mat.client.buttons.YesButton;
-import mat.client.cql.ConfirmationObserver;
-import mat.client.shared.ErrorMessageAlert;
 
 
 

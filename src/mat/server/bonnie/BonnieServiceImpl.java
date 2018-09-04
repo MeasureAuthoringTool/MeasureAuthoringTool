@@ -102,7 +102,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		try {
 			userInformation = validateOrRefreshBonnieTokensForUser(userId);
 		} catch (BonnieUnauthorizedException e) {
-			handleBonnieUnauthorizedException(userInformation);
+			deleteUserBonnieAccessInfo(userInformation);
 			throw e;
 		}
 		return userInformation;
@@ -124,7 +124,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		try {
 			bonnieMeasureResults = bonnieApi.getMeasureById(userAccessToken, measureSetId);
 		} catch (BonnieUnauthorizedException e) {
-			handleBonnieUnauthorizedException(userInformation);
+			deleteUserBonnieAccessInfo(userInformation);
 			throw e;
 		}
 		
@@ -165,7 +165,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		try {
 			caluclatedResult = bonnieApi.getCalculatedResultsForMeasure(userInformation.getAccessToken(), measureId);
 		} catch (BonnieUnauthorizedException e) {
-			handleBonnieUnauthorizedException(userInformation);
+			deleteUserBonnieAccessInfo(userInformation);
 			throw e;
 		} catch (BonnieNotFoundException e) {
 			throw e;
@@ -186,7 +186,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			user.getUserBonnieAccessInfo().setRefreshToken(user.getUserBonnieAccessInfo().getRefreshToken());
 			result = bonnieApi.getBonnieRefreshResult(user.getUserBonnieAccessInfo());
 		} catch (BonnieUnauthorizedException e) {
-			handleBonnieUnauthorizedException(user.getUserBonnieAccessInfo());
+			deleteUserBonnieAccessInfo(user.getUserBonnieAccessInfo());
 			throw e;
 		}
 		
@@ -219,7 +219,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	public Boolean revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception {
 		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
 		bonnieApi.revokeBonnieToken(bonnieAccessInfo.getAccessToken(), bonnieAccessInfo.getRefreshToken());
-		handleBonnieUnauthorizedException(bonnieAccessInfo);
+		deleteUserBonnieAccessInfo(bonnieAccessInfo);
 		return true;
 	}
 
@@ -234,10 +234,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return bonnieAccessInfo;
 	}
 
-	private void handleBonnieUnauthorizedException(UserBonnieAccessInfo bonnieAccessInfo) {
-		// if an unauthorized exception is thrown and the user had credentials in the
-		// database, delete them because they
-		// are invalid, and the surface the error
+	private void deleteUserBonnieAccessInfo(UserBonnieAccessInfo bonnieAccessInfo) {
 		if(bonnieAccessInfo != null) {
 			userBonnieAccessInfoDAO.delete(Integer.toString(bonnieAccessInfo.getId()));
 		}

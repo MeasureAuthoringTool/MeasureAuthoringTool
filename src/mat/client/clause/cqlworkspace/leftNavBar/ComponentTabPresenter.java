@@ -117,6 +117,10 @@ public class ComponentTabPresenter {
 	public void clickEventOnListBox() {
 		view.fireEvent(new DoubleClickEvent(){});
 	}
+
+	public void updateSuggestionBox() {
+		view.updateSearchBox();
+	}
 	
 	
 }

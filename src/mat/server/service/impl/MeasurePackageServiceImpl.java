@@ -495,7 +495,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public ValidateMeasureResult validateExportsForCompositeMeasures(final String measureId) throws Exception {
 		MeasureExport export = generateExport(measureId, null);
 		ValidateMeasureResult result = new ValidateMeasureResult();
-		result.setSuccess(true);
+		result.setValid(true);
 		
 		if(BooleanUtils.isTrue(export.getMeasure().getIsCompositeMeasure())) {
 			CompositeMeasurePackageValidationResult validationResult = compositeMeasurePackageValidator.validate(export.getSimpleXML());

@@ -53,6 +53,7 @@ import mat.model.SecurityRole;
 import mat.model.Status;
 import mat.model.TransactionAuditLog;
 import mat.model.User;
+import mat.model.UserBonnieAccessInfo;
 import mat.model.UserPassword;
 import mat.model.UserPasswordHistory;
 import mat.model.UserSecurityQuestion;
@@ -406,6 +407,22 @@ public class UserServiceImpl implements UserService {
 			orgId = "";
 		}
 		return userDAO.searchForUsersByName(orgId);
+	}
+	
+	@Override
+	public List<User> searchForUsersWithActiveBonnie(String searchTerm){
+		List<User> resultList = new ArrayList<>();
+		if(searchTerm == null) {
+			searchTerm = "";
+		}
+		List<User> userList = userDAO.searchForUsersByName(searchTerm);
+		for(User user: userList) {
+			UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo(); 
+			if(userBonnieAccessInfo != null) {
+				resultList.add(user);
+			}
+		}
+		return resultList;
 	}
 	
 	/* (non-Javadoc)

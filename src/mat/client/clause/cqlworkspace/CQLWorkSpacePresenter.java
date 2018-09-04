@@ -54,10 +54,19 @@ import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
-import mat.client.clause.cqlworkspace.CQLCodesView.Delegator;
-import mat.client.clause.cqlworkspace.CQLFunctionsView.Observer;
 import mat.client.clause.cqlworkspace.leftNavBar.CQLLeftNavBarPanelView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.AddFunctionArgumentDialogBox;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLAppliedValueSetUtility;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLAppliedValueSetView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLCodesView;
 import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLComponentLibraryView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLDefinitionsView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLFunctionsView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLGeneralInformationView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLIncludeLibraryView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLParametersView;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLCodesView.Delegator;
+import mat.client.clause.cqlworkspace.leftNavBar.sections.CQLFunctionsView.Observer;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -3703,6 +3712,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.buildComponentsView();
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
+		searchDisplay.getCqlLeftNavBarPanelView().getComponents().updateSuggestionBox();
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	

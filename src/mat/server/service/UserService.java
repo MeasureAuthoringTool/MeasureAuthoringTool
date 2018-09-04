@@ -286,4 +286,6 @@ public interface UserService {
 	void addByUpdateUserPasswordHistory(User user, boolean isValidPwd);
 	
 	List<User> getAllUsers();
+
+	List<User> searchForUsersWithActiveBonnie(String searchTerm);
 }

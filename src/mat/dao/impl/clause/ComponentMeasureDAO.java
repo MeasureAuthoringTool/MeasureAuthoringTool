@@ -42,6 +42,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 				tx.rollback();
 			}
 		}
+		getSessionFactory().getCurrentSession().flush();
 	}
 
 	@Override

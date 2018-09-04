@@ -101,6 +101,8 @@ public interface AdminService extends RemoteService {
 	 */
 	public ManageUsersSearchModel searchUsers(String key) throws InCorrectUserRoleException;
 	
+	public ManageUsersSearchModel searchUsersWithActiveBonnie(String key) throws InCorrectUserRoleException;
+	
 	/** Gets the all organizations.
 	 * 
 	 * @return the all organizations */

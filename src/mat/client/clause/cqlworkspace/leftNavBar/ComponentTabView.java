@@ -105,7 +105,6 @@ public class ComponentTabView extends AnchorListItem {
 		for(ComponentMeasureTabObject obj : componentObjectsList) {
 			aliases.put(obj.getComponentId(), obj.getAlias());
 		}
-		
 		suggestBox = new SuggestBox(getSuggestOracle(aliases.values()));
 		suggestBox.setWidth("180px");
 		suggestBox.setText("Search");
@@ -228,6 +227,10 @@ public class ComponentTabView extends AnchorListItem {
 
 	public void setSuggestBox(CQLSuggestOracle cqlSuggestOracle) {
 		this.suggestBox = new SuggestBox(cqlSuggestOracle);
+	}
+	
+	public void updateSearchBox() {
+		buildSearchBox();
 	}
 	
 }

@@ -109,5 +109,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/mockito-core-2.18.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/byte-buddy-1.8.12.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/objenesis-2.6.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/woden-core-1.0M10.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

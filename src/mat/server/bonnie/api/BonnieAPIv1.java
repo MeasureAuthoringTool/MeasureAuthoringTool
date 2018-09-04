@@ -196,7 +196,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
 			HttpPost postRequest = createHttpPostRequest(UPDATE_MEASURE_URI, encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
-			getRequestConfigProxy(postRequest);
+			setRequestConfigProxy(postRequest);
 			postResponse = httpClient.execute(postRequest);
 
 			
@@ -228,7 +228,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
 			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
-			getRequestConfigProxy(putRequest);
+			setRequestConfigProxy(putRequest);
 			putResponse = httpClient.execute(putRequest);
 			
 			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
@@ -248,7 +248,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 		}
 	}
 	
-	private void getRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
+	private void setRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
 		if(!StringUtils.isEmpty(getProxyHost()) && !StringUtils.isEmpty(getProxyPort())) {
 			HttpHost proxy = new HttpHost(getProxyHost(), Integer.valueOf(getProxyPort()));
 			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();

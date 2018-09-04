@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.CQLService;

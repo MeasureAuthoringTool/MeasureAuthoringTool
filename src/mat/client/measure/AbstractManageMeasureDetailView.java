@@ -20,8 +20,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.codelist.HasListBox;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;

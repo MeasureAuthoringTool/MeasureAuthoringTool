@@ -62,6 +62,18 @@ public class OTPValidatorForUser implements OTPValidatorInterfaceForUser{
 
 			authenticateUserRequest.setAuthenticateUserRequest(authenticateUserRequestType);
 			
+			String PROXY_HOST = System.getProperty("https.proxyHost");
+			if(PROXY_HOST !=null) {
+				
+				int PROXY_PORT = Integer.parseInt(System.getProperty("https.proxyPort"));
+				HttpTransportProperties.ProxyProperties pp = 
+						new HttpTransportProperties.ProxyProperties();
+					 pp.setProxyName(PROXY_HOST);
+					 pp.setProxyPort(PROXY_PORT);
+					 
+				authenticationServiceStub._getServiceClient().getOptions().setProperty(HTTPConstants.PROXY,pp);
+			}
+			
 			AuthenticateUserResponse authenticateUserResponse = authenticationServiceStub.authenticateUser(authenticateUserRequest);
 			
 			BigInteger statusCode = new BigInteger(authenticateUserResponse.getAuthenticateUserResponse().getStatus().getBytes());

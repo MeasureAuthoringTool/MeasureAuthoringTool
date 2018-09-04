@@ -3727,7 +3727,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		searchDisplay.buildComponentsView();
 		SaveCQLLibraryResult result = new SaveCQLLibraryResult();
 		result.setCqlLibraryDataSetObjects(new ArrayList<CQLLibraryDataSetObject>());
-		searchDisplay.getCqlLeftNavBarPanelView().updateSuggestOracle();
+		searchDisplay.getCqlLeftNavBarPanelView().updateComponentSearchBox();
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	

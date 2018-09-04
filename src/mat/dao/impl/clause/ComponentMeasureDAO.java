@@ -28,14 +28,25 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 	
 	@Override
 	public void deleteComponentMeasures(List<ComponentMeasure> componentMeasuresToDelete) {
-		for(ComponentMeasure component : componentMeasuresToDelete) {
-			super.delete(component);
+		Transaction tx = null;
+		try (Session session = HibernateConf.createHibernateSession();){
+			tx = session.beginTransaction();
+			for(ComponentMeasure component : componentMeasuresToDelete) {
+				session.delete(component);
+			}
+			tx.commit();
+			
+		} catch (Exception e) {
+			logger.error("Error deleting component measures: " + e);
+			if (tx != null) {
+				tx.rollback();
+			}
 		}
 	}
 
 	@Override
 	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList) {
-		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";
+		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasureId = :compositeMeasureId";
 		Transaction tx = null;
 		try (Session session = HibernateConf.createHibernateSession();){
 			
@@ -44,7 +55,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 			
 			tx = session.beginTransaction();
 			query.executeUpdate();			
-			saveComponentMeasures(componentMeasuresList);			
+			componentMeasuresList.forEach(component -> session.save(component));			
 			tx.commit();
 			
 		} catch (Exception e) {
@@ -60,7 +71,7 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 	public List<ComponentMeasure> findByComponentMeasureId(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(ComponentMeasure.class);
-		criteria.add(Restrictions.eq("componentMeasure.id", measureId));
+		criteria.add(Restrictions.eq("componentMeasureId", measureId));
 		return criteria.list();
 	}
 }

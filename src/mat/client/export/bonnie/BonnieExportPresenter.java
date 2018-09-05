@@ -22,7 +22,7 @@ public class BonnieExportPresenter implements MatPresenter {
 
 	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
 	private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
-	private static final String SUCCESSFUL_LOG_OUT_OF_BONNIE_MESSAGE ="You have been logged out of your Bonnie Session. If you need to continue uploading measures to the Bonnie system you will need to log in again.";
+	private static final String SUCCESSFUL_LOG_OUT_OF_BONNIE_MESSAGE ="You have been disconnected from Bonnie. If you need to continue uploading measures to the Bonnie system you will need to click the login again.";
 	public static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to complete this action at this time. Please try again. If the problem persists, contact the MAT Support Desk using the Contact Us form link at the bottom of the tool.";
 	
 	

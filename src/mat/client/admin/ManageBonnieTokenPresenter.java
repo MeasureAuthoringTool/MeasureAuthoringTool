@@ -2,6 +2,8 @@ package mat.client.admin;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -43,6 +45,15 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 					public void onClose() {}
 				});
 				confirmationDialogBox.show();
+			}
+		});
+		
+		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				String key = searchDisplay.getSearchString().getValue();
+				search(key);
+				searchDisplay.getSuccessMessageDisplay().clearAlert();
 			}
 		});
 	}

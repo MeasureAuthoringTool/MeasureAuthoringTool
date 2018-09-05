@@ -209,13 +209,12 @@ public class CQLLeftNavBarPanelView {
 	
 	private List<QDSAttributes> availableQDSAttributeList;
 	
-	
 	//Component tab info
 	private Badge badge = new Badge();
 	private ListBox listBox = new ListBox();
 	private Label label = new Label("Components");
 	private PanelCollapse collapse = new PanelCollapse();
-	private SuggestBox suggestBox;
+	private SuggestBox searchAliasTextBox;
 	private AnchorListItem anchor;
 	
 	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
@@ -239,27 +238,14 @@ public class CQLLeftNavBarPanelView {
 			aliases.put(obj.getComponentId(), obj.getAlias());
 		}
 		
-		suggestBox = new SuggestBox(getSuggestOracle(aliases.values()));
-		suggestBox.setWidth("180px");
-		suggestBox.setText("Search");
-		suggestBox.setTitle("Search Component Alias");
-		suggestBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
-		
-		suggestBox.getValueBox().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if ("Search".equals(suggestBox.getText())) {
-					suggestBox.setText("");
-				}
-			}
-		});
+		buildSearchAliasBox();
 		
 		listBox.clear();
 		listBox.setWidth("180px");
 		listBox.setVisibleItemCount(10);
 		listBox.getElement().setAttribute("id", "componentsListBox");
 		
-		rightVerticalPanel.add(suggestBox);
+		rightVerticalPanel.add(searchAliasTextBox);
 		rightVerticalPanel.add(listBox);
 		
 		rightVerticalPanel.setCellHorizontalAlignment(componentsLabel, HasHorizontalAlignment.ALIGN_LEFT);
@@ -270,6 +256,17 @@ public class CQLLeftNavBarPanelView {
 		return collapse;
 	}
 	
+	private ClickHandler createClickHandler(SuggestBox suggestBox) {
+		return new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if ("Search".equals(suggestBox.getText())) {
+					suggestBox.setText("");
+				}
+			}
+		};
+	}
+
 	private void setBadgeNumber(int size, Badge badge) {
 		if (size < 10) {
 			badge.setText("0" + size);
@@ -547,21 +544,7 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelIncludes");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label includesLibraryLabel = new Label("Includes Library");
-		searchSuggestIncludeTextBox = new SuggestBox(getSuggestOracle(includeLibraryNameMap.values()));
-		searchSuggestIncludeTextBox.setWidth("180px");
-		searchSuggestIncludeTextBox.setText("Search");
-		searchSuggestIncludeTextBox.setTitle("Search Included Alias");
-		searchSuggestIncludeTextBox.getElement().setId("searchTextBox_TextBoxIncludesLib");
-
-		searchSuggestIncludeTextBox.getValueBox().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if ("Search".equals(searchSuggestIncludeTextBox.getText())) {
-					searchSuggestIncludeTextBox.setText("");
-				}
-			}
-		});
+		buildSearchSuggestIncludeBox();
 
 		includesNameListbox.clear();
 		includesNameListbox.setWidth("180px");
@@ -587,6 +570,24 @@ public class CQLLeftNavBarPanelView {
 
 	}
 
+	private void buildSearchSuggestIncludeBox() {
+		searchSuggestIncludeTextBox = new SuggestBox(getSuggestOracle(includeLibraryNameMap.values()));
+		searchSuggestIncludeTextBox.setWidth("180px");
+		searchSuggestIncludeTextBox.setText("Search");
+		searchSuggestIncludeTextBox.setTitle("Search Included Alias");
+		searchSuggestIncludeTextBox.getElement().setId("searchTextBox_TextBoxIncludesLib");
+		searchSuggestIncludeTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestIncludeTextBox));
+	}
+	
+	private void buildSearchSuggestParamBox() {
+		searchSuggestParamTextBox = new SuggestBox(getSuggestOracle(parameterNameMap.values()));
+		searchSuggestParamTextBox.setWidth("180px");
+		searchSuggestParamTextBox.setText("Search");
+		searchSuggestParamTextBox.setTitle("Search Parameter");
+		searchSuggestParamTextBox.getElement().setId("searchTextBox_TextBoxParameterLib");
+		searchSuggestParamTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestParamTextBox));
+	}
+
 	/**
 	 * Creates the parameter collapsable panel.
 	 *
@@ -605,22 +606,7 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelParam");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label paramLibraryLabel = new Label("Parameter Library");
-		searchSuggestParamTextBox = new SuggestBox(getSuggestOracle(parameterNameMap.values()));
-		// updateSuggestOracle();
-		searchSuggestParamTextBox.setWidth("180px");
-		searchSuggestParamTextBox.setText("Search");
-		searchSuggestParamTextBox.setTitle("Search Parameter");
-		searchSuggestParamTextBox.getElement().setId("searchTextBox_TextBoxParameterLib");
-
-		searchSuggestParamTextBox.getValueBox().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if ("Search".equals(searchSuggestParamTextBox.getText())) {
-					searchSuggestParamTextBox.setText("");
-				}
-			}
-		});
+		buildSearchSuggestParamBox();
 		
 		parameterNameListBox.clear();
 		parameterNameListBox.setWidth("180px");
@@ -664,22 +650,7 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelParam");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label defineLibraryLabel = new Label("Definition Library");
-		searchSuggestDefineTextBox = new SuggestBox(getSuggestOracle(defineNameMap.values()));
-		// updateNewSuggestDefineOracle();
-		searchSuggestDefineTextBox.setWidth("180px");
-		searchSuggestDefineTextBox.setText("Search");
-		searchSuggestDefineTextBox.setTitle("Search Definition");
-		searchSuggestDefineTextBox.getElement().setId("searchSuggestDefineTextBox");
-
-		searchSuggestDefineTextBox.getValueBox().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if ("Search".equals(searchSuggestDefineTextBox.getText())) {
-					searchSuggestDefineTextBox.setText("");
-				}
-			}
-		});
+		buildSearchSuggestDefineBox();
 
 		defineNameListBox.clear();
 		defineNameListBox.setWidth("180px");
@@ -704,6 +675,38 @@ public class CQLLeftNavBarPanelView {
 
 	}
 
+	private void buildSearchAliasBox() {
+		aliases.clear();
+		for(ComponentMeasureTabObject obj : componentObjectsList) {
+			aliases.put(obj.getComponentId(), obj.getAlias());
+		}
+		
+		searchAliasTextBox = new SuggestBox(getSuggestOracle(aliases.values()));
+		searchAliasTextBox.setWidth("180px");
+		searchAliasTextBox.setText("Search");
+		searchAliasTextBox.setTitle("Search Component Alias");
+		searchAliasTextBox.getElement().setId("searchSuggesComponentTextBox_SuggestBox");
+		searchAliasTextBox.getValueBox().addClickHandler(createClickHandler(searchAliasTextBox));
+	}
+	
+	private void buildSearchSuggestDefineBox() {
+		searchSuggestDefineTextBox = new SuggestBox(getSuggestOracle(defineNameMap.values()));
+		searchSuggestDefineTextBox.setWidth("180px");
+		searchSuggestDefineTextBox.setText("Search");
+		searchSuggestDefineTextBox.setTitle("Search Definition");
+		searchSuggestDefineTextBox.getElement().setId("searchSuggestDefineTextBox");
+		searchSuggestDefineTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestDefineTextBox));
+	}
+	
+	private void buildSearchSuggestFuncBox() {
+		searchSuggestFuncTextBox = new SuggestBox(getSuggestOracle(funcNameMap.values()));
+		searchSuggestFuncTextBox.setWidth("180px");
+		searchSuggestFuncTextBox.setText("Search");
+		searchSuggestFuncTextBox.setTitle("Search Function");
+		searchSuggestFuncTextBox.getElement().setId("searchTextBox_TextBoxFuncLib");
+		searchSuggestFuncTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestFuncTextBox));
+	}
+
 	/**
 	 * Creates the Function collapsable panel.
 	 *
@@ -723,22 +726,7 @@ public class CQLLeftNavBarPanelView {
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelFunc");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label functionLibraryLabel = new Label("Function Library");
-		searchSuggestFuncTextBox = new SuggestBox(getSuggestOracle(funcNameMap.values()));
-		// updateNewSuggestFuncOracle();
-		searchSuggestFuncTextBox.setWidth("180px");
-		searchSuggestFuncTextBox.setText("Search");
-		searchSuggestFuncTextBox.setTitle("Search Function");
-		searchSuggestFuncTextBox.getElement().setId("searchTextBox_TextBoxFuncLib");
-
-		searchSuggestFuncTextBox.getValueBox().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if ("Search".equals(searchSuggestFuncTextBox.getText())) {
-					searchSuggestFuncTextBox.setText("");
-				}
-			}
-		});
+		buildSearchSuggestFuncBox();
 
 		funcNameListBox.clear();
 		funcNameListBox.setWidth("180px");
@@ -760,11 +748,7 @@ public class CQLLeftNavBarPanelView {
 		funcCollapsePanel.add(funcCollapseBody);
 		return funcCollapsePanel;
 
-	}
-	
-	
-
-	
+	}	
 	
 	
 	/**
@@ -1028,7 +1012,8 @@ public class CQLLeftNavBarPanelView {
 			getParameterNameMap().put(parameter.getId(), parameter.getName());
 			getParameterMap().put(parameter.getId(), parameter);
 		}
-		updateNewSuggestParamOracle();
+
+		buildSearchSuggestParamBox();
 		if (getViewParameterList().size() < 10) {
 			getParamBadge().setText("0" + getViewParameterList().size());
 		} else {
@@ -1054,7 +1039,7 @@ public class CQLLeftNavBarPanelView {
 			getDefinitionMap().put(define.getId(), define);
 		}
 
-		updateNewSuggestDefineOracle();
+		buildSearchSuggestDefineBox();
 		if (getViewDefinitions().size() < 10) {
 			getDefineBadge().setText("0" + getViewDefinitions().size());
 		} else {
@@ -1079,7 +1064,7 @@ public class CQLLeftNavBarPanelView {
 			funcNameMap.put(function.getId(), function.getName());
 			functionMap.put(function.getId(), function);
 		}
-		updateNewSuggestFuncOracle();
+		buildSearchSuggestFuncBox();
 		if (viewFunctions.size() < 10) {
 			functionBadge.setText("0" + viewFunctions.size());
 		} else {
@@ -1097,7 +1082,8 @@ public class CQLLeftNavBarPanelView {
 			includeLibraryNameMap.put(incLibrary.getId(), incLibrary.getAliasName());
 			includeLibraryMap.put(incLibrary.getId(), incLibrary);
 		}
-		updateNewSuggestIncLibOracle();
+
+		buildSearchSuggestIncludeBox();
 		if (viewIncludeLibrarys.size() < 10) {
 			includesBadge.setText("0" + viewIncludeLibrarys.size());
 		} else {
@@ -1145,17 +1131,6 @@ public class CQLLeftNavBarPanelView {
 					.getSuggestOracle();
 			multiWordSuggestOracle.clear();
 			multiWordSuggestOracle.addAll(funcNameMap.values());
-		}
-	}
-	
-	
-
-	/**
-	 * Update suggest param oracle.
-	 */
-	public void updateNewSuggestParamOracle() {
-		if (searchSuggestDefineTextBox != null) {
-			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(parameterNameMap.values());
 		}
 	}
 
@@ -1308,26 +1283,6 @@ public class CQLLeftNavBarPanelView {
 
 	public void setParameterMap(HashMap<String, CQLParameter> parameterMap) {
 		this.parameterMap = parameterMap;
-	}
-
-
-	public void updateNewSuggestDefineOracle() {
-		if (searchSuggestDefineTextBox != null) {
-			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(defineNameMap.values());
-		}
-	}
-
-	public void updateNewSuggestFuncOracle() {
-		if (searchSuggestFuncTextBox != null) {
-			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(funcNameMap.values());
-		}
-	}
-
-	public void updateNewSuggestIncLibOracle() {
-		if (searchSuggestIncludeTextBox != null) {
-			CQLSuggestOracle cqlSuggestOracle = new CQLSuggestOracle(includeLibraryNameMap.values());
-			
-		}
 	}
 
 
@@ -2455,7 +2410,7 @@ public class CQLLeftNavBarPanelView {
 	}
 	
 	public void updateComponentSearchBox() {
-		//TODO
+		buildSearchAliasBox();
 	}
 	
 	private void sortComponentsList(List<ComponentMeasureTabObject> objectList) {

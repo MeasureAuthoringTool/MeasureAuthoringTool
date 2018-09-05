@@ -6,11 +6,8 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
@@ -126,7 +123,9 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		ButtonCell revokeBonnieButton = new ButtonCell() {
 			@Override
 			public void render(final Context context, final SafeHtml data, final SafeHtmlBuilder sb) {
-                sb.appendHtmlConstant("<button type=\"button\" class=\"btn btn-danger\">");
+                sb.appendHtmlConstant("<button type=\"button\" class=\"btn btn-danger\" title=\"");
+                sb.append(data);
+                sb.appendHtmlConstant("\">");
                 if (data != null) {
                   sb.append(data);
                 }
@@ -148,7 +147,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 			}
 		};
 		
-		cellTable.addColumn(revokeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Stop Bonnie Session'>" + "Stop Bonnie Session" + "</span>"));
+		cellTable.addColumn(revokeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Revoke Bonnie Token'>" + "Revoke Bonnie Token" + "</span>"));
 
 		return cellTable;
 	}
@@ -192,7 +191,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
 				"manageUsersSummary",
 				"In the Following Manage Bonnie Token table, Name is given in the first column, MAT ID in the "
-						+ "second column, Stop Bonnie Session in the third column.");
+						+ "second column, Revoke Bonnie Token in the third column.");
 		cellTable.getElement().setAttribute("id", "manageUsersCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "manageUsersSummary");
 		cellTablePanel.add(invisibleLabel);

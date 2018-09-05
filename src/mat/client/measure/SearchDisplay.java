@@ -10,8 +10,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.CustomButton;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MessageAlert;

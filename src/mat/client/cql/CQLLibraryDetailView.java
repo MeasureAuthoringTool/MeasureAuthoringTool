@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;

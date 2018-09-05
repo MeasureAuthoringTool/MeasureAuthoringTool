@@ -13,8 +13,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpaceView;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpaceView;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;

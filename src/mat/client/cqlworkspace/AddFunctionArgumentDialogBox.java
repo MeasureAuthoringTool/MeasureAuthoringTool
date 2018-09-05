@@ -28,6 +28,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import mat.client.buttons.NoButton;
 import mat.client.buttons.YesButton;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
+import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLFunctionArgument;

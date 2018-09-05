@@ -1,4 +1,4 @@
-package mat.client.cqlworkspace;
+package mat.client.shared;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

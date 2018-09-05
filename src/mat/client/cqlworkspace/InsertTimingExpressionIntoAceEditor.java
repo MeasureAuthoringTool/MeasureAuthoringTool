@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.ListBox;
 
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.buttons.CancelButton;
+import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.DropDownSubMenu;
 import mat.client.shared.JSONCQLTimingExpressionUtility;
 import mat.client.shared.ListBoxMVP;

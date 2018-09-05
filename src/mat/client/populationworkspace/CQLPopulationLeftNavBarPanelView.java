@@ -10,15 +10,15 @@ import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.Node;
 
-import mat.client.cqlworkspace.CQLWorkSpaceConstants;
 import mat.client.cqlworkspace.DeleteConfirmationDialogBox;
-import mat.client.cqlworkspace.CQLWorkSpaceConstants.POPULATIONS;
+import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
+import mat.client.shared.CQLWorkSpaceConstants.POPULATIONS;
 
 /**
  * The Class CQLPopulationLeftNavBarPanelView.

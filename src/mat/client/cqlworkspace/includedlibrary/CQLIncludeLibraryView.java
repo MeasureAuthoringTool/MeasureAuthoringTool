@@ -52,7 +52,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.CustomPager;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.buttons.DefinitionFunctionButtonToolBar;
-import mat.client.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;

@@ -963,7 +963,6 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 	 * Adds the list box event handler.
 	 */
 	private void addListBoxEventHandler() {
-		
 		searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -1688,6 +1687,21 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox());
 				}
 
+			}
+		});
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().addKeyPressHandler(new KeyPressHandler() {
+
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+					DomEvent.fireNativeEvent(
+							Document.get()
+									.createDblClickEvent(searchDisplay.getCqlLeftNavBarPanelView()
+											.getComponentsListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
+											false),
+							searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox());
+				}
 			}
 		});
 	}

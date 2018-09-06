@@ -211,8 +211,8 @@ public class CQLLeftNavBarPanelView {
 	
 	//Component tab info
 	private Badge badge = new Badge();
-	private ListBox listBox = new ListBox();
-	private Label label = new Label("Components");
+	private ListBox componentNameListBox = new ListBox();
+	private Label componentLabel = new Label("Components");
 	private PanelCollapse collapse = new PanelCollapse();
 	private SuggestBox searchAliasTextBox;
 	private AnchorListItem anchor;
@@ -240,13 +240,16 @@ public class CQLLeftNavBarPanelView {
 		
 		buildSearchAliasBox();
 		
-		listBox.clear();
-		listBox.setWidth("180px");
-		listBox.setVisibleItemCount(10);
-		listBox.getElement().setAttribute("id", "componentsListBox");
+		componentNameListBox.clear();
+		componentNameListBox.setWidth("180px");
+		componentNameListBox.setVisibleItemCount(10);
+		componentNameListBox.getElement().setAttribute("id", "componentsListBox");
 		
 		rightVerticalPanel.add(searchAliasTextBox);
-		rightVerticalPanel.add(listBox);
+		rightVerticalPanel.add(componentNameListBox);
+		
+		addSuggestHandler(searchAliasTextBox, componentNameListBox);
+		addListBoxHandler(componentNameListBox, searchAliasTextBox);
 		
 		rightVerticalPanel.setCellHorizontalAlignment(componentsLabel, HasHorizontalAlignment.ALIGN_LEFT);
 		componentHP.add(rightVerticalPanel);
@@ -279,8 +282,8 @@ public class CQLLeftNavBarPanelView {
 		this.anchor.setIcon(IconType.PENCIL);
 		this.anchor.setTitle("Component");
 		this.anchor.setId("component_Anchor");
-		label.setStyleName("transparentLabel");
-		label.setId("componentsLabel_Label");
+		componentLabel.setStyleName("transparentLabel");
+		componentLabel.setId("componentsLabel_Label");
 		setBadgeNumber(0, badge);
 		badge.setPull(Pull.RIGHT);
 		badge.setMarginLeft(45);
@@ -292,7 +295,7 @@ public class CQLLeftNavBarPanelView {
 				event.stopPropagation();
 			}
 		});
-		anchor.add(label);
+		anchor.add(componentLabel);
 		anchor.add(badge);
 		anchor.setDataParent("#navGroup");
 		this.anchor.setDataToggle(Toggle.COLLAPSE);
@@ -2371,7 +2374,7 @@ public class CQLLeftNavBarPanelView {
 	}
 	
 	public ListBox getComponentsListBox() {
-		return listBox;
+		return componentNameListBox;
 	}
 
 	public Map<String, ComponentMeasureTabObject> getComponentMap() {
@@ -2387,16 +2390,16 @@ public class CQLLeftNavBarPanelView {
 		componentObjectsMap.clear();
 		aliases.clear();
 		componentObjectsList.addAll(componentMeasures);
-		if (listBox != null) {
-			listBox.clear();
+		if (componentNameListBox != null) {
+			componentNameListBox.clear();
 			sortComponentsList(componentObjectsList);
 			for (ComponentMeasureTabObject object : componentObjectsList) {
 				componentObjectsMap.put(object.getComponentId(), object);
-				listBox.addItem(object.getAlias(), object.getComponentId());
+				componentNameListBox.addItem(object.getAlias(), object.getComponentId());
 				aliases.put(object.getComponentId(), object.getAlias());
 			}
 			// Set tooltips for each element in listbox
-			SelectElement selectElement = SelectElement.as(listBox.getElement());
+			SelectElement selectElement = SelectElement.as(componentNameListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
 				String title = options.getItem(i).getText();

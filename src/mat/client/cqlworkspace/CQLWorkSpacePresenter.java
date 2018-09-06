@@ -14,6 +14,7 @@ import org.gwtbootstrap3.client.shared.event.HideHandler;
 import org.gwtbootstrap3.client.shared.event.ShowEvent;
 import org.gwtbootstrap3.client.shared.event.ShowHandler;
 import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
@@ -1629,81 +1630,26 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					}
 				});
 
-		searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().addKeyPressHandler(new KeyPressHandler() {
+		searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox().addKeyPressHandler(event -> listBoxKeyPress(searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox(), event));
 
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-									.createDblClickEvent(searchDisplay.getCqlLeftNavBarPanelView()
-											.getParameterNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false,
-											false, false),
-							searchDisplay.getCqlLeftNavBarPanelView().getParameterNameListBox());
-				}
-
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(Document.get().createDblClickEvent(
-							searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex(), 0, 0,
-							0, 0, false, false, false, false),
-							searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox());
-				}
-
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-									.createDblClickEvent(searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox()
-											.getSelectedIndex(), 0, 0, 0, 0, false, false, false, false),
-							searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox());
-				}
-
-			}
-		});
-
-		searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-									.createDblClickEvent(searchDisplay.getCqlLeftNavBarPanelView()
-											.getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false,
-											false, false),
-							searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox());
-				}
-
-			}
-		});
+		searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox().addKeyPressHandler(event -> listBoxKeyPress(searchDisplay.getCqlLeftNavBarPanelView().getDefineNameListBox(), event));
 		
-		searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().addKeyPressHandler(new KeyPressHandler() {
+		searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox().addKeyPressHandler(event -> listBoxKeyPress(searchDisplay.getCqlLeftNavBarPanelView().getFuncNameListBox(), event));
+		
+		searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().addKeyPressHandler(event -> listBoxKeyPress(searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox(), event));
 
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-									.createDblClickEvent(searchDisplay.getCqlLeftNavBarPanelView()
-											.getComponentsListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
-											false),
-							searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox());
-				}
-			}
-		});
+		searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox().addKeyPressHandler(event -> listBoxKeyPress(searchDisplay.getCqlLeftNavBarPanelView().getComponentsListBox(), event));
+	}
+
+	private void listBoxKeyPress(ListBox listBox, KeyPressEvent event) {
+		if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			DomEvent.fireNativeEvent(
+					Document.get()
+							.createDblClickEvent(listBox
+									.getSelectedIndex(), 0, 0, 0, 0, false, false, false, false),
+							listBox);
+		}
+
 	}
 
 	/**

@@ -32,6 +32,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -2351,22 +2352,28 @@ public class CQLLeftNavBarPanelView {
 		aliasNameTxtArea.setFocus(true);
 	}
 	
-	public boolean checkForIncludedLibrariesQDMVersion(){
+	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandalone){
 		boolean isValid = true;
-		//We check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
-		//Versioned measures have been versioned with valid QDM versioned libraries included.
-		if(MatContext.get().isDraftMeasure()) {
-			List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();
-			if(includedLibraryList.size()==0){
-				isValid = true;
-			} else {
-				for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
-					if(cqlIncludeLibrary.getQdmVersion()==null){
-						continue;
-					}else if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
-						isValid = false;
-						break;
-					}
+		//if it is a measure we check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
+		//Versioned measures have been versioned with valid QDM versioned libraries included. So we return if the measure is not a draft
+		if(!isStandalone && !MatContext.get().isDraftMeasure()) {
+			return isValid;
+		}
+		//if it is a stand alone library We check if the library is a Draft first because we only care about draft library for invalid qdm versions.
+		//Versioned measures have been versioned with valid QDM versioned libraries included. So we return if the library is not a draft.
+		if(isStandalone && !MatContext.get().isDraftLibrary()) {
+			return isValid;
+		}
+		List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();
+		if(includedLibraryList.size()==0){
+			isValid = true;
+		} else {
+			for(CQLIncludeLibrary cqlIncludeLibrary : includedLibraryList){
+				if(cqlIncludeLibrary.getQdmVersion()==null){
+					continue;
+				}else if(!cqlIncludeLibrary.getQdmVersion().equalsIgnoreCase(MatContext.get().getCurrentQDMVersion())){
+					isValid = false;
+					break;
 				}
 			}
 		}

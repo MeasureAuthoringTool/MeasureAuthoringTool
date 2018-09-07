@@ -26,33 +26,29 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 		public void onLibrarySelected(CQLLibrarySelectedEvent event);
 	}
 
-	/** The Cql Library id. */
 	private String cqlLibraryId;
 	
-	/** The Cql library name. */
 	private String libraryName;
 	
-	/** The is editable. */
 	private boolean isEditable;
 	
-	/** The is locked. */
 	private boolean isLocked;
 	
-	/** The locked user id. */
 	private String lockedUserId;
 	
 	private String lockedUserEmail;
 	
 	private String lockedUserName;
 	
-	/** The cql Librart version. */
 	private String cqlLibraryVersion;
+	
+	private boolean isDraft;
 	
 
 	/**
 	 * Instantiates a new cql library selected event.
 	 */
-	public CQLLibrarySelectedEvent(String cqlLibraryId, String cqlLibraryVersion, String libraryName,  boolean isEditable,boolean isLocked,String lockedUserId,String lockedUserEmail,String lockedUserName) {
+	public CQLLibrarySelectedEvent(String cqlLibraryId, String cqlLibraryVersion, String libraryName,  boolean isEditable,boolean isLocked,String lockedUserId,String lockedUserEmail,String lockedUserName, boolean isDraft) {
 		this.cqlLibraryId = cqlLibraryId;
 		this.cqlLibraryVersion = cqlLibraryVersion;
 		this.libraryName = libraryName;
@@ -61,6 +57,7 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 		this.lockedUserId = lockedUserId;
 		this.lockedUserEmail = lockedUserEmail;
 		this.lockedUserName = lockedUserName;
+		this.isDraft = isDraft;
 	}
 	
 	/* (non-Javadoc)
@@ -177,6 +174,14 @@ public class CQLLibrarySelectedEvent extends GwtEvent<CQLLibrarySelectedEvent.Ha
 
 	public void setLockedUserName(String lockedUserName) {
 		this.lockedUserName = lockedUserName;
+	}
+
+	public boolean isDraft() {
+		return isDraft;
+	}
+
+	public void setDraft(boolean isDraft) {
+		this.isDraft = isDraft;
 	}
 
 }

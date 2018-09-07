@@ -3494,7 +3494,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 				}
 
 				boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView()
-						.checkForIncludedLibrariesQDMVersion();
+						.checkForIncludedLibrariesQDMVersion(true); //true because its a standalone library
 				if (!isValidQDMVersion) {
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate().getINVALID_QDM_VERSION_IN_INCLUDES());
@@ -5017,7 +5017,7 @@ private void addCodeSearchPanelHandlers() {
 			searchDisplay.getCqlLeftNavBarPanelView().getGeneralInformation().setActive(true);
 			currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 			searchDisplay.buildGeneralInformation();
-			boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion();
+			boolean isValidQDMVersion = searchDisplay.getCqlLeftNavBarPanelView().checkForIncludedLibrariesQDMVersion(true); //true because its a standalone library
 			if(!isValidQDMVersion){
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_QDM_VERSION_IN_INCLUDES());
 			} else {

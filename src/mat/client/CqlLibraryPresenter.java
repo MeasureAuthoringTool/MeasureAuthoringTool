@@ -831,8 +831,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		String userId = selectedItem.getLockedUserId(selectedItem.getLockedUserInfo());
 		String email = selectedItem.getLockedUserEmail(selectedItem.getLockedUserInfo());
 		String userName  = selectedItem.getLockedUserName(selectedItem.getLockedUserInfo());
+		boolean isDraft = selectedItem.isDraft();
 		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), selectedItem.isEditable(), selectedItem.isLocked(),
-				userId,email,userName);
+				userId,email,userName, isDraft);
 		fireCqlLibraryEditEvent();
 	}
 
@@ -1047,7 +1048,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onSuccess(SaveCQLLibraryResult result) {
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
-									null,"","");
+									null,"","", true); //true because the library is being saved so it is a draft
 					fireCqlLibraryEditEvent();
 				} else {
 						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
@@ -1075,8 +1076,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param lockedUserId the locked user id
 	 */
 	private void fireCQLLibrarySelectedEvent(String id, String version,
-			String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName) {
-		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId,lockedUserEmail,lockedUserName);
+			String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName, boolean isDraft) {
+		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId,lockedUserEmail,lockedUserName, isDraft);
 		cqlLibraryView.resetMessageDisplay();
 		detailDisplay.getErrorMessage().clearAlert();
 		MatContext.get().getEventBus().fireEvent(evt);
@@ -1145,7 +1146,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if(resultToFireEvent.isSuccess()){
 					cqlLibraryView.getDraftConfirmationDialogBox().hide();
 					fireCQLLibrarySelectedEvent(resultToFireEvent.getId(), resultToFireEvent.getVersionStr(), resultToFireEvent.getCqlLibraryName(), resultToFireEvent.isEditable(), false,
-							null,"","");
+							null,"","", true); //true because you are creating a draft of the library.
 					fireCqlLibraryEditEvent();
 					MatContext
 					.get()
@@ -1267,7 +1268,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	private void displayEdit(CQLLibraryDataSetObject result) {
 		fireCQLLibrarySelectedEvent(result.getId(), result.getVersion(), result.getCqlName(), result.isEditable(), false,
-				null,"","");
+				null,"","", result.isDraft());
 		fireCqlLibraryEditEvent();
 	}
 	

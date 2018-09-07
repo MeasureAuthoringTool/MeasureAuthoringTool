@@ -2352,16 +2352,16 @@ public class CQLLeftNavBarPanelView {
 		aliasNameTxtArea.setFocus(true);
 	}
 	
-	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandalone){
+	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandAloneCQLLibrary){
 		boolean isValid = true;
 		//if it is a measure we check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
 		//Versioned measures have been versioned with valid QDM versioned libraries included. So we return if the measure is not a draft
-		if(!isStandalone && !MatContext.get().isDraftMeasure()) {
+		if(!isStandAloneCQLLibrary && !MatContext.get().isDraftMeasure()) {
 			return isValid;
 		}
 		//if it is a stand alone library We check if the library is a Draft first because we only care about draft library for invalid qdm versions.
 		//Versioned measures have been versioned with valid QDM versioned libraries included. So we return if the library is not a draft.
-		if(isStandalone && !MatContext.get().isDraftLibrary()) {
+		if(isStandAloneCQLLibrary && !MatContext.get().isDraftLibrary()) {
 			return isValid;
 		}
 		List<CQLIncludeLibrary> includedLibraryList = getViewIncludeLibrarys();

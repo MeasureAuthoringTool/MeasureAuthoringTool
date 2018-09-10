@@ -1989,9 +1989,9 @@ public class MetaDataPresenter  implements MatPresenter {
 				if (result.isSuccess()) {
 					deleteMeasure();
 				} else {
-					fireBackToMeasureLibraryEvent();
 					String errorMessage = result.getMessages().get(0);
-					fireSuccessfullDeletionEvent(false, errorMessage);
+					metaDataDisplay.getErrorMessageDisplay().createAlert(errorMessage);
+					metaDataDisplay.getErrorMessageDisplay2().createAlert(errorMessage);
 				}
 			}
 		});

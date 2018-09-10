@@ -560,14 +560,14 @@ public class ManageUsersPresenter implements MatPresenter {
 					}
 				});
 		
-		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				String key = searchDisplay.getSearchString().getValue();
-				search(key);
-				searchDisplay.getSuccessMessageDisplay().clearAlert();
-			}
-		});
+		searchDisplay.getSearchButton().addClickHandler(event -> performSearch());
+		
+	}
+	
+	private void performSearch() {
+		String key = searchDisplay.getSearchString().getValue();
+		search(key);
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 
 	/**

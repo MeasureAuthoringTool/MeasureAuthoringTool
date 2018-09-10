@@ -6,12 +6,16 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
-import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -19,6 +23,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
@@ -71,6 +76,7 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	
 	/**Constructor.**/
 	public ManageBonnieTokenView() {
+		mainPanel.add(new Label("Use the table below to revoke active Bonnie tokens for specific users."));
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
 		mainPanel.add(new SpacerWidget());
@@ -114,21 +120,34 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		};
 		cellTable.addColumn(matIdColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"MAT ID\">" + "MAT ID" + "</span>"));
 		
-		ButtonCell revokeBonnieButton = new ButtonCell();
+		ButtonCell revokeBonnieButton = new ButtonCell() {
+			@Override
+			public void render(final Context context, final SafeHtml data, final SafeHtmlBuilder sb) {
+                sb.appendHtmlConstant("<button type=\"button\" class=\"btn btn-danger\" title=\"");
+                sb.append(data);
+                sb.appendHtmlConstant("\">");
+                if (data != null) {
+                  sb.append(data);
+                }
+                sb.appendHtmlConstant("</button>");
+			}
+		};
 		Column<Result, String> revokeColumn = new Column<Result, String>(revokeBonnieButton) {
 			@Override
-			public String getValue(Result object) {
+			public String getValue(Result result) {
 				return "Stop Bonnie Session";
+			}
+			
+			@Override
+			 public void onBrowserEvent(Context context, Element elem, final Result result, NativeEvent event) {
+				if(event.getType().equals(BrowserEvents.CLICK) || (event.getType().equals(BrowserEvents.KEYDOWN) && event.getKeyCode() == KeyCodes.KEY_ENTER)) {
+					event.preventDefault();
+					observer.onStopBonnieSessionClicked(result);
+				}
 			}
 		};
 		
-		revokeColumn.setFieldUpdater(new FieldUpdater<Result, String>() {
-			@Override
-			public void update(int index, Result object, String value) {
-				observer.onStopBonnieSessionClicked(object);
-			}
-		});
-		cellTable.addColumn(revokeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Stop Bonnie Session'>" + "Stop Bonnie Session" + "</span>"));
+		cellTable.addColumn(revokeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Revoke Bonnie Token'>" + "Revoke Bonnie Token" + "</span>"));
 
 		return cellTable;
 	}
@@ -170,11 +189,11 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 		cellTable.setColumnWidth(1, 45.0, Unit.PCT);
 		cellTable.setColumnWidth(2, 20.0, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
-				"manageUsersSummary",
+				"manageBonnieTokenSummary",
 				"In the Following Manage Bonnie Token table, Name is given in the first column, MAT ID in the "
-						+ "second column, Stop Bonnie Session in the third column.");
-		cellTable.getElement().setAttribute("id", "manageUsersCellTable");
-		cellTable.getElement().setAttribute("aria-describedby", "manageUsersSummary");
+						+ "second column, Revoke Bonnie Token in the third column.");
+		cellTable.getElement().setAttribute("id", "manageBonnieTokenCellTable");
+		cellTable.getElement().setAttribute("aria-describedby", "manageBonnieTokenSummary");
 		cellTablePanel.add(invisibleLabel);
 		cellTablePanel.add(cellTable);
 		cellTablePanel.add(new SpacerWidget());

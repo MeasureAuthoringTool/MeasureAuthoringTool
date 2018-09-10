@@ -2,6 +2,8 @@ package mat.client.admin;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,6 +47,23 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 				confirmationDialogBox.show();
 			}
 		});
+		
+		MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());
+		searchWidget.addKeyUpHandler(event -> searchWidgetKeyUpPressed(event));
+		searchDisplay.getSearchButton().addClickHandler(event -> performSearch());
+	}
+
+	private void searchWidgetKeyUpPressed(KeyUpEvent event) {
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			performSearch();					
+		}
+	}
+
+	private void performSearch() {
+		String key = searchDisplay.getSearchString().getValue();
+		search(key);
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 	}
 
 	private void revokeBonnieAccessTokenForUser(

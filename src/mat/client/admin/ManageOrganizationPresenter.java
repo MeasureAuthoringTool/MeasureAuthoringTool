@@ -26,7 +26,7 @@ import mat.client.MatPresenter;
 import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.ManageOrganizationView.Observer;
 import mat.client.admin.service.SaveUpdateOrganizationResult;
-import mat.client.clause.cqlworkspace.DeleteConfirmationDialogBox;
+import mat.client.cqlworkspace.DeleteConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.search.SearchResultUpdate;

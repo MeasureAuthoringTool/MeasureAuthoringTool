@@ -9,7 +9,7 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import mat.client.clause.cqlworkspace.TimingExpressionObj;
+import mat.client.cqlworkspace.TimingExpressionObj;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.MeasureServiceAsync;
 

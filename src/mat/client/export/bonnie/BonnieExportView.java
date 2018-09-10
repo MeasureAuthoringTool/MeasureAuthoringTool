@@ -31,6 +31,8 @@ public class BonnieExportView implements BaseDisplay {
 	
 	private BonnieUploadCancelButtonBar bonnieUploadCancelButtonBar;
 	private Button bonnieSignOutButton;
+	
+	private static final String DISCONNECT_FROM_BONNIE ="Disconnect from Bonnie";
 
 	public BonnieExportView() {
 		mainPanel.add(new SpacerWidget());
@@ -83,8 +85,8 @@ public class BonnieExportView implements BaseDisplay {
 	}
 	
 	private void createSignoutOfBonnieButton() {
-		bonnieSignOutButton = new Button("Sign out of Bonnie");
-		bonnieSignOutButton.setTitle("Sign out of Bonnie");
+		bonnieSignOutButton = new Button(DISCONNECT_FROM_BONNIE);
+		bonnieSignOutButton.setTitle(DISCONNECT_FROM_BONNIE);
 		bonnieSignOutButton.setType(ButtonType.LINK);
 		bonnieSignOutButton.setIcon(IconType.SIGN_OUT);
 		bonnieSignOutButton.setPaddingLeft(0.0);

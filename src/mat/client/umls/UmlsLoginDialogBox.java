@@ -27,8 +27,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.SaveContinueCancelButtonBar;
-import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLWorkSpacePresenter;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;

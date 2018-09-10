@@ -565,6 +565,10 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	public boolean isDraftLibrary() {
+		return (currentLibraryInfo != null) ? currentLibraryInfo.isDraft() : false;
+	}
+	
 	public boolean isDraftMeasure() {
 		return (currentMeasureInfo != null) ? currentMeasureInfo.isDraft() : false;
 	}

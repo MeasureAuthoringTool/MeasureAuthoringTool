@@ -12,9 +12,13 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
@@ -86,6 +90,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 
 	public String getBonnieBaseURL() {
 		return System.getProperty("BONNIE_URI");
+	}
+	public String getProxyPort() {
+		return System.getProperty("https.proxyPort");
+	}
+	public String getProxyHost() {
+		return System.getProperty("https.proxyHost");
 	}
 
 	public BonnieAPIv1() {
@@ -186,6 +196,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
 			HttpPost postRequest = createHttpPostRequest(UPDATE_MEASURE_URI, encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
+			setRequestConfigProxy(postRequest);
 			postResponse = httpClient.execute(postRequest);
 
 			
@@ -217,6 +228,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			httpClient = HttpClients.createDefault();
 			FileInfomationObject fileObject = new FileInfomationObject(zipFileContents, ContentType.create("application/zip"), fileName);
 			HttpPut putRequest = createHttpPutRequest(UPDATE_MEASURE_URI + "/" + hqmfSetId.toUpperCase(), encryptDecryptToken.decryptKey(bearerToken), calculationType, vsacTicketGrantingTicket, vsacTicketExpiration, fileObject);
+			setRequestConfigProxy(putRequest);
 			putResponse = httpClient.execute(putRequest);
 			
 			String code = Integer.toString(putResponse.getStatusLine().getStatusCode());
@@ -233,6 +245,14 @@ public class BonnieAPIv1 implements BonnieAPI {
 				putResponse.close();
 				logger.error("Disconecting putResponse /api_v1/measures/" + hqmfSetId);
 			}
+		}
+	}
+	
+	private void setRequestConfigProxy(HttpEntityEnclosingRequestBase request) {
+		if(!StringUtils.isEmpty(getProxyHost()) && !StringUtils.isEmpty(getProxyPort())) {
+			HttpHost proxy = new HttpHost(getProxyHost(), Integer.valueOf(getProxyPort()));
+			RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+			request.setConfig(config);
 		}
 	}
 	

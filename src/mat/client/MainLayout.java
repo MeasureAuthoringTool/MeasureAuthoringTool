@@ -369,11 +369,11 @@ public abstract class MainLayout {
 		showBonnieState.showActive();
 	}
 	
-	public static HTML getUMLSButton() {
+	public HTML getUMLSButton() {
 		return showUMLSState.getLink();
 	}
 	
-	public static HTML getBonnieButton() {
+	public HTML getBonnieButton() {
 		return showBonnieState.getLink();
 	}
 

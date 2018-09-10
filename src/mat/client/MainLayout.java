@@ -30,6 +30,8 @@ import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.VerticalFlowPanel;
+import mat.client.umls.ManageUmlsPresenter;
+import mat.client.umls.UmlsLoginDialogBox;
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
 
@@ -346,6 +348,9 @@ public abstract class MainLayout {
 		return versionPanel;
 	}
 	
+	public static void createUMLSLinks() {
+		showUMLSState.createAllLinks();
+	}
 	public static void hideUMLSActive() {
 		showUMLSState.hideActive();
 	}
@@ -353,24 +358,18 @@ public abstract class MainLayout {
 	public static void showUMLSActive() {
 		showUMLSState.showActive();
 	}
-	
+	public static void createBonnieLinks() {
+		showBonnieState.createAllLinks();
+	}
 	public static void hideBonnieActive() {
 		showBonnieState.hideActive();
-		getBonnieButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				BonnieModal bonnieModal = new BonnieModal();
-				bonnieModal.show();
-			}
-		});
 	}
 	
 	public static void showBonnieActive() {
 		showBonnieState.showActive();
 	}
 	
-	public HTML getUMLSButton() {
+	public static HTML getUMLSButton() {
 		return showUMLSState.getLink();
 	}
 	

@@ -10,36 +10,49 @@ public class IndicatorButton{
 
 	private String inactiveText;
 	private String activeText;
-	private HTML link;
+	private HTML hideLink;
+	private HTML showLink;
 	private HorizontalFlowPanel panel = new HorizontalFlowPanel();
 	
 	public IndicatorButton(String activeLabel, String inactiveLabel) {
 		this.inactiveText = inactiveLabel;
 		this.activeText = activeLabel;
-		link = new HTML();
+		hideLink = new HTML();
+		showLink = new HTML();
 	}
 	
-	
-	public void hideActive(){
-		panel.clear();
-		link = new HTML("<button type=\"button\" title='"
+	public void createAllLinks() {
+		createHideLink();
+		createShowLink();
+	}
+	private void createHideLink() {
+		hideLink = new HTML("<button type=\"button\" title='"
 				+ inactiveText + "' tabindex=\"0\" class=\"btn btn-link\" > "
 			+ "<i class=\"fa fa-circle\" style=\"color: DarkRed;\"></i><span>"+ 
 				"  "  + inactiveText + "</span></button>");
-		link.getElement().setTabIndex(0);
-		panel.add(link);
+		hideLink.getElement().setTabIndex(0);
+		panel.add(hideLink);
+	}
+	
+	private void createShowLink() {
+		showLink = new HTML("<button type=\"button\" title='"
+				+ activeText + "' tabindex=\"0\" class=\"btn btn-link\" > "
+				+ "<i class=\"fa fa-circle\" style=\"color: DarkGreen;\"></i><span>"+
+				"  "+ activeText + "</span></button>");
+		showLink.getElement().setTabIndex(0);
+		panel.add(showLink);
+		panel.getElement().focus();
+	}
+	
+	public void hideActive(){
+		showLink.setVisible(false);
+		hideLink.setVisible(true);
 	}
 
 	
 	public void showActive(){
-		panel.clear();
-		link = new HTML("<button type=\"button\" title='"
-				+ activeText + "' tabindex=\"0\" class=\"btn btn-link\" > "
-				+ "<i class=\"fa fa-circle\" style=\"color: DarkGreen;\"></i><span>"+
-				"  "+ activeText + "</span></button>");
-		link.getElement().setTabIndex(0);
-		panel.add(link);
-		panel.getElement().focus();
+		showLink.setVisible(true);
+		hideLink.setVisible(false);
 	}
 	
 	public void setVisible() {
@@ -51,6 +64,6 @@ public class IndicatorButton{
 	}
 	
 	public HTML getLink() {
-		return link;
+		return hideLink;
 	}
 }

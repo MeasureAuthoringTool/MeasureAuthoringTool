@@ -34,6 +34,7 @@ import mat.client.admin.ManageCQLLibraryAdminPresenter;
 import mat.client.admin.ManageCQLLibraryAdminView;
 import mat.client.admin.reports.ManageAdminReportingPresenter;
 import mat.client.admin.reports.ManageAdminReportingView;
+import mat.client.bonnie.BonnieModal;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;
@@ -437,6 +438,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			//TODO set tabIndex of last object tabIndex = presenterList.indexOf(compositeMeasureEdit);
 			tabIndex = presenterList.indexOf(myAccountPresenter);
+			createUMLSLinks();
+			createBonnieLinks();
 			hideUMLSActive();
 			if(resultMatVersion.equals("v5.6")) {
 				setBonnieActiveLink();
@@ -541,6 +544,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
+		getBonnieButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				BonnieModal bonnieModal = new BonnieModal();
+				bonnieModal.show();
+			}
+		});
 		
 		
 		

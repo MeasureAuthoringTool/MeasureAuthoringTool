@@ -115,13 +115,13 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainVPanel.add(mainHPPanel);		
 	}
 
-	private void setCausionText(String displayName) {
+	private void setCautionText(String displayName) {
 		cautionPanel.clear();
-		caution.setHTML(getCausionText(displayName));
+		caution.setHTML(getCautionText(displayName));
 		cautionPanel.add(caution);
 	}
 
-	private String getCausionText(String displayName) {
+	private String getCautionText(String displayName) {
 		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.MEASURE_OBSERVATION_CAUTION_MSG : getStratificationCautionText(displayName)  ;
 	}
 
@@ -140,7 +140,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		cqlMeasureObservationDetailView.setObserver(cqlPopulationObserver);
 		cqlMeasureObservationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		setCausionText(cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName());
+		setCautionText(cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName());
 	}
 	
 	@Override
@@ -151,7 +151,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
 		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
 		setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
-		setCausionText("Stratification");
+		setCautionText("Stratification");
 	}
 	
 	@Override
@@ -161,7 +161,7 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		setCausionText(cqlPopulationDetailView.getPopulationsObject().getDisplayName());
+		setCautionText(cqlPopulationDetailView.getPopulationsObject().getDisplayName());
 	}
 
 	/**

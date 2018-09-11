@@ -22,8 +22,8 @@ public class CQLIncludeLibraryValidator extends Validator {
 	}
 	
 	private void doesAliasNameHaveSpecialCharacter(String libraryName) {
-		boolean hasSpeicialCharacters = validator.hasSpecialCharacter(libraryName);
-		if(hasSpeicialCharacters) {
+		boolean hasSpecialCharacters = validator.hasSpecialCharacter(libraryName);
+		if(hasSpecialCharacters) {
 			this.getMessages().add(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
 			this.setValid(false);
 		}

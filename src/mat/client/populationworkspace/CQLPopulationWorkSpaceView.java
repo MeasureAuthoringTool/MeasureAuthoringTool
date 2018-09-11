@@ -122,10 +122,10 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 
 	private String getCautionText(String displayName) {
-		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.MEASURE_OBSERVATION_CAUTION_MSG : getStratificationCautionText(displayName)  ;
+		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.MEASURE_OBSERVATION_CAUTION_MSG : getPopulationOrStratificationCautionText(displayName)  ;
 	}
 
-	private String getStratificationCautionText(String displayName) {
+	private String getPopulationOrStratificationCautionText(String displayName) {
 		return CQLWorkSpaceConstants.POPULATIONS.STRATIFICATION.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.STRATIFICATION_CAUTION_MSG : CQLWorkSpaceConstants.GENERIC_CAUTION_MSG;
 	}
 

@@ -1012,7 +1012,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if (detailDisplay.getNameField().getText().isEmpty()) {
 					detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 				} else {
-					if (validator.validateForAliasNameSpecialChar(detailDisplay.getNameField().getText().trim())) {
+					if (validator.doesAliasNameFollowCQLAliasNamingConvention(detailDisplay.getNameField().getText().trim())) {
 						showSearchingBusy(true);
 						detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewLibrarySuccessfulMessage(detailDisplay.getName().getValue()));
 						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");

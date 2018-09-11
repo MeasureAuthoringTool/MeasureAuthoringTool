@@ -155,6 +155,7 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
+import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 /**
@@ -5773,7 +5774,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
@@ -5782,8 +5783,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (xmlModel != null) {
 				int numberOfAssociations = cqlService.countNumberOfAssociation(measureId);
 				if (numberOfAssociations < 10) {
-					result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj,
-							currentObj, incLibraryList);
+					result = getCqlService().saveAndModifyIncludeLibrayInCQLLookUp(xmlModel.getXml(), toBeModifiedObj, currentObj, incLibraryList);
 
 					if (result.isSuccess()) {
 						xmlModel.setXml(result.getXml());

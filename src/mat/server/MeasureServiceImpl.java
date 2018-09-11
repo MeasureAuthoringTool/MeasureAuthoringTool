@@ -42,6 +42,7 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 /**
  * The Class MeasureServiceImpl.
@@ -466,9 +467,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
-	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
-			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> incLibraryList){
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException{
 		return this.getMeasureLibraryService().saveIncludeLibrayInCQLLookUp(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 	

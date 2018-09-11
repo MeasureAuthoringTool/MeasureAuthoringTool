@@ -86,6 +86,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.LibHolderObject;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 /**
  * The Class CQLLibraryService.
@@ -654,7 +655,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			message.add(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 		} else {
 			CQLModelValidator cqlLibraryModel = new CQLModelValidator();
-			boolean isValid = cqlLibraryModel.validateForAliasNameSpecialChar(model.getCqlName());
+			boolean isValid = cqlLibraryModel.doesAliasNameFollowCQLAliasNamingConvention(model.getCqlName());
 			if(!isValid){
 				message.add(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
 			}
@@ -1064,9 +1065,9 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	 * @param currentObj the current obj
 	 * @param incLibraryList the inc library list
 	 * @return the save update CQL result
+	 * @throws InvalidLibraryException 
 	 */
-	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 
 		SaveUpdateCQLResult result = null;
 		if (MatContextServiceUtil.get().isCurrentCQLLibraryEditable(cqlLibraryDAO, libraryId)) {
@@ -1076,8 +1077,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 				if (associationCount < CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
 					String cqlXml = getCQLLibraryXml(cqlLibrary);
 					if (cqlXml != null) {
-						result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj,
-								incLibraryList);
+						result = cqlService.saveAndModifyIncludeLibrayInCQLLookUp(cqlXml, toBeModifiedObj, currentObj, incLibraryList);
 						if (result != null && result.isSuccess()) {
 							cqlLibrary.setCQLByteArray(result.getXml().getBytes());
 							cqlLibraryDAO.save(cqlLibrary);

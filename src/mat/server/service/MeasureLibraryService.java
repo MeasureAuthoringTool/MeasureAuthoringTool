@@ -46,6 +46,7 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 /**
  * The Interface MeasureLibraryService.
@@ -707,9 +708,7 @@ public interface MeasureLibraryService {
 
 	void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
-			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
 

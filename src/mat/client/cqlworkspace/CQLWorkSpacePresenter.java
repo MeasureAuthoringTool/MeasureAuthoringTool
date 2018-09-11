@@ -101,6 +101,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
+import mat.shared.cql.error.InvalidLibraryException;
 
 public class CQLWorkSpacePresenter implements MatPresenter {
 	
@@ -1928,101 +1929,71 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 		if (!aliasName.isEmpty() && searchDisplay.getIncludeView().getSelectedObjectList().size() > 0) {
 			// functionality to add Include Library
-			CQLLibraryDataSetObject cqlLibraryDataSetObject = searchDisplay.getIncludeView().getSelectedObjectList()
-					.get(0);
+			CQLLibraryDataSetObject cqlLibraryDataSetObject = searchDisplay.getIncludeView().getSelectedObjectList().get(0);
+			CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
+			incLibrary.setAliasName(aliasName);
+			incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
+			String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", "") + "." + cqlLibraryDataSetObject.getRevisionNumber();
+			incLibrary.setVersion(versionValue);
+			incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
+			incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
+			incLibrary.setSetId(cqlLibraryDataSetObject.getCqlSetId());
+			if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
+				showSearchingBusy(true);
+				// this is just to add include library and not modify
+				MatContext.get().getMeasureService().saveIncludeLibrayInCQLLookUp(
+						MatContext.get().getCurrentMeasureId(), null, incLibrary,
+						searchDisplay.getCqlLeftNavBarPanelView().getViewIncludeLibrarys(),
+						new AsyncCallback<SaveUpdateCQLResult>() {
 
-			if (validator.validateForAliasNameSpecialChar(aliasName.trim())) {
+							@Override
+							public void onFailure(Throwable caught) {
+								showSearchingBusy(false);
 
-				CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
-				incLibrary.setAliasName(aliasName);
-				incLibrary.setCqlLibraryId(cqlLibraryDataSetObject.getId());
-				String versionValue = cqlLibraryDataSetObject.getVersion().replace("v", "") + "."
-						+ cqlLibraryDataSetObject.getRevisionNumber();
-				incLibrary.setVersion(versionValue);
-				incLibrary.setCqlLibraryName(cqlLibraryDataSetObject.getCqlName());
-				incLibrary.setQdmVersion(cqlLibraryDataSetObject.getQdmVersion());
-				incLibrary.setSetId(cqlLibraryDataSetObject.getCqlSetId());
-				if (searchDisplay.getCqlLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId() == null) {
-					showSearchingBusy(true);
-					// this is just to add include library and not modify
-					MatContext.get().getMeasureService().saveIncludeLibrayInCQLLookUp(
-							MatContext.get().getCurrentMeasureId(), null, incLibrary,
-							searchDisplay.getCqlLeftNavBarPanelView().getViewIncludeLibrarys(),
-							new AsyncCallback<SaveUpdateCQLResult>() {
-
-								@Override
-								public void onFailure(Throwable caught) {
+								if (caught instanceof InvalidLibraryException) {
+									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
+											.createAlert(caught.getMessage());
+								} else {
 									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
 											MatContext.get().getMessageDelegate().getGenericErrorMessage());
-									showSearchingBusy(false);
-
 								}
+							}
 
-								@Override
-								public void onSuccess(SaveUpdateCQLResult result) {
-									if (result != null) {
-										if (result.isSuccess()) {
-											searchDisplay.resetMessageDisplay();
-											searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
-											searchDisplay.getCqlLeftNavBarPanelView().setViewIncludeLibrarys(
-													filterComponentMeasuresFromIncludedLibraries(result.getCqlModel().getCqlIncludeLibrarys()));
-											MatContext.get().setIncludes(
-													getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-											searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
-											searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
-											searchDisplay.getIncludeView()
-													.setIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
-															.getIncludedList(searchDisplay.getCqlLeftNavBarPanelView()
-																	.getIncludeLibraryMap()));
-											searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert()
-													.createAlert(MatContext.get().getMessageDelegate()
-															.getIncludeLibrarySuccessMessage(
-																	result.getIncludeLibrary().getAliasName()));
-											clearAlias();
-											MatContext.get().setIncludedValues(result);
-											MatContext.get().setCQLModel(result.getCqlModel());
+							@Override
+							public void onSuccess(SaveUpdateCQLResult result) {
+								if (result != null) {
+									if (result.isSuccess()) {
+										searchDisplay.resetMessageDisplay();
+										searchDisplay.getCqlLeftNavBarPanelView().setIsPageDirty(false);
+										searchDisplay.getCqlLeftNavBarPanelView()
+												.setViewIncludeLibrarys(filterComponentMeasuresFromIncludedLibraries(
+														result.getCqlModel().getCqlIncludeLibrarys()));
+										MatContext.get().setIncludes(
+												getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+										searchDisplay.getCqlLeftNavBarPanelView().clearAndAddAliasNamesToListBox();
+										searchDisplay.getCqlLeftNavBarPanelView().udpateIncludeLibraryMap();
+										searchDisplay.getIncludeView().setIncludedList(
+												searchDisplay.getCqlLeftNavBarPanelView().getIncludedList(searchDisplay
+														.getCqlLeftNavBarPanelView().getIncludeLibraryMap()));
+										searchDisplay.getCqlLeftNavBarPanelView().getSuccessMessageAlert().createAlert(
+												MatContext.get().getMessageDelegate().getIncludeLibrarySuccessMessage(
+														result.getIncludeLibrary().getAliasName()));
+										clearAlias();
+										MatContext.get().setIncludedValues(result);
+										MatContext.get().setCQLModel(result.getCqlModel());
 
-
-											if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox()
-													.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
-												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
-														.createAlert(MatContext.get().getMessageDelegate()
-																.getCqlLimitWarningMessage());
-											} else {
-												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
-														.clearAlert();
-											}
-										} else if (result.getFailureReason() == 1) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert(MatContext.get().getMessageDelegate()
-															.getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
-											searchDisplay.getIncludeView().getAliasNameTxtArea()
-													.setText(aliasName.trim());
-										} else if (result.getFailureReason() == 2) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert("Missing includes library tag.");
-											searchDisplay.getIncludeView().getAliasNameTxtArea()
-													.setText(aliasName.trim());
-										} else if (result.getFailureReason() == 3) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert(MatContext.get().getMessageDelegate()
-															.getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
-											searchDisplay.getIncludeView().getAliasNameTxtArea()
-													.setText(aliasName.trim());
+										if (searchDisplay.getCqlLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
+											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+										} else {
+											searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
+													.clearAlert();
 										}
 									}
-									showSearchingBusy(false);
 								}
-							});
-				}
-
-			} else {
-				searchDisplay.getIncludeView().getAliasNameGroup().setValidationState(ValidationState.ERROR);
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-						MatContext.get().getMessageDelegate().getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
-				searchDisplay.getIncludeView().getAliasNameTxtArea().setText(aliasName.trim());
+								showSearchingBusy(false);
+							}
+						});
 			}
-
 		} else {
 			searchDisplay.getIncludeView().getAliasNameGroup().setValidationState(ValidationState.ERROR);
 			searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()

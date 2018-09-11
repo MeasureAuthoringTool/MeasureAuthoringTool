@@ -21,6 +21,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 public interface CQLLibraryServiceInterface {
 	
@@ -64,8 +65,7 @@ public interface CQLLibraryServiceInterface {
 
 	void updateUsersShare(SaveCQLLibraryResult result);
 
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			List<CQLIncludeLibrary> viewIncludeLibrarys);

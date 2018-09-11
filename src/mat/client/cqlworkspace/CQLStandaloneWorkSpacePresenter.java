@@ -98,6 +98,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.StringUtility;
+import mat.shared.cql.error.InvalidLibraryException;
 
 public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 	
@@ -1619,7 +1620,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 					.createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 		} else {
 
-			if (validator.validateForAliasNameSpecialChar(libraryName)) {
+			if (validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName)) {
 				saveCQLGeneralInformation();
 			} else {
 				searchDisplay.getCqlGeneralInformationView().getLibNameGroup().setValidationState(ValidationState.ERROR);
@@ -2628,7 +2629,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 			CQLLibraryDataSetObject cqlLibraryDataSetObject = searchDisplay.getIncludeView().getSelectedObjectList()
 					.get(0);
 
-			if (validator.validateForAliasNameSpecialChar(aliasName.trim())) {
+			if (validator.doesAliasNameFollowCQLAliasNamingConvention(aliasName.trim())) {
 
 				CQLIncludeLibrary incLibrary = new CQLIncludeLibrary();
 				incLibrary.setAliasName(aliasName);
@@ -2648,8 +2649,13 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 
 								@Override
 								public void onFailure(Throwable caught) {
-									searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(
-											MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									showSearchingBusy(false);
+									
+									if(caught instanceof InvalidLibraryException) {
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(caught.getMessage());
+									} else {
+										searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									}
 
 								}
 
@@ -2683,24 +2689,8 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 														.createAlert(MatContext.get().getMessageDelegate()
 																.getCqlLimitWarningMessage());
 											} else {
-												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert()
-														.clearAlert();
+												searchDisplay.getCqlLeftNavBarPanelView().getWarningMessageAlert().clearAlert();
 											}
-
-										} else if (result.getFailureReason() == 1) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert(MatContext.get().getMessageDelegate()
-															.getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
-											searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
-										} else if (result.getFailureReason() == 2) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert("Missing includes library tag.");
-											searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
-										} else if (result.getFailureReason() == 3) {
-											searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-													.createAlert(MatContext.get().getMessageDelegate()
-															.getERROR_INCLUDE_ALIAS_NAME_NO_SPECIAL_CHAR());
-											searchDisplay.getAliasNameTxtArea().setText(aliasName.trim());
 										}
 									}
 								}

@@ -20,6 +20,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
@@ -57,7 +58,7 @@ public interface CQLLibraryService extends RemoteService {
 	void updateUsersShare(SaveCQLLibraryResult result);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			List<CQLIncludeLibrary> viewIncludeLibrarys);

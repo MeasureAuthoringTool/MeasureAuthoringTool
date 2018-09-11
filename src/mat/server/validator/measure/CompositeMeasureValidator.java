@@ -254,7 +254,8 @@ public class CompositeMeasureValidator {
 	
 	private List<String> validateAliasIsValidAndNotDuplicate(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
 		List<String> messages = new ArrayList<>();
-		String templateXml = getTemplateXmlString();	
+		String templateXml = getTemplateXmlString();
+		CQLModel model = CQLUtilityClass.getCQLModelFromXML(templateXml);
 		Map<String, String> aliasMapping = manageCompositeMeasureDetailModel.getAliasMapping();
 		
 		for(ManageMeasureSearchModel.Result appliedComponentMeasure: manageCompositeMeasureDetailModel.getAppliedComponentMeasures()) {
@@ -264,7 +265,7 @@ public class CompositeMeasureValidator {
 					messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
 				} else {
 					CQLModelValidator modelValidator = new CQLModelValidator();
-					if(!modelValidator.validateForAliasNameSpecialChar(aliasName) || CQLValidationUtil.isDuplicateIdentifierName(aliasName, templateXml) || CQLValidationUtil.isCQLReservedWord(aliasName)) {
+					if(!modelValidator.doesAliasNameFollowCQLAliasNamingConvention(aliasName) || CQLValidationUtil.isDuplicateIdentifierName(aliasName, model) || CQLValidationUtil.isCQLReservedWord(aliasName)) {
 						messages.add("Alias " + aliasName + ERR_ALIAS_NOT_VALID);
 					}
 				}

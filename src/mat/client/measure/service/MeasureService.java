@@ -41,6 +41,7 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 /**
  * The Interface MeasureService.
@@ -667,8 +668,7 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
 

@@ -23,6 +23,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 /**
  * The Interface CQLService.
@@ -178,8 +179,7 @@ public interface CQLService {
 
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String currentMeasureId,
 			CQLIncludeLibrary toBeModifiedIncludeObj,

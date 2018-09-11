@@ -77,6 +77,8 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	public static final int BIRTHDATE_OR_DEAD_ERROR = 9;
 	
+	public static final int DUPLICATE_CQL_KEYWORD = 10;
+	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
 	

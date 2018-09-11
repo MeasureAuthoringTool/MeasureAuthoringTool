@@ -20,6 +20,7 @@ import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService {
 	private static final long serialVersionUID = -2412573290030426288L;
@@ -132,7 +133,7 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	} 
 	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 		return this.getCQLLibraryService().saveIncludeLibrayInCQLLookUp(libraryId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 	@Override

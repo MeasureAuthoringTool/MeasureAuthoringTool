@@ -357,7 +357,7 @@ public class AddFunctionArgumentDialogBox {
 						}
 					}
 					CQLModelValidator validator = new CQLModelValidator();
-					boolean isValidName = validator.validateForAliasNameSpecialChar(argumentName);
+					boolean isValidName = validator.doesAliasNameFollowCQLAliasNamingConvention(argumentName);
 					if (isValidName && !checkIfDuplicate) {
 						//&& !searchDisplay.getFuncNameTxtArea().getText().equalsIgnoreCase(argumentName)){
 						isValid = true;

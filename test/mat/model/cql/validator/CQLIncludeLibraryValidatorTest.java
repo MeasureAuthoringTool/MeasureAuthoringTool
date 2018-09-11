@@ -15,7 +15,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 public class CQLIncludeLibraryValidatorTest {
 		
 	private String LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION = "Invalid Library Alias. Must be unique, start with an alpha-character or underscore followed by an alpha-numeric character(s) or underscore(s), and must not contain spaces.";
-	private String DUPLCIATE_CQL_KEYWORD = "A library alias can not be an exact match to a defined CQL keyword.";
+	private String DUPLICATE_CQL_KEYWORD = "A library alias can not be an exact match to a defined CQL keyword.";
 
 	@Test
 	public void testDoesAliasNameHaveSpecialCharacter() {
@@ -178,7 +178,6 @@ public class CQLIncludeLibraryValidatorTest {
 		includedLibrary.setAliasName(name);
 		validator.validate(includedLibrary, model);
 		assertEquals(false, validator.isValid());
-		assertEquals(true, validator.getMessages().contains(DUPLCIATE_CQL_KEYWORD));
+		assertEquals(true, validator.getMessages().contains(DUPLICATE_CQL_KEYWORD));
 	}
-
 }

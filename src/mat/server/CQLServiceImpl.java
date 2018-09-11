@@ -219,7 +219,6 @@ public class CQLServiceImpl implements CQLService {
 	public SaveUpdateCQLResult saveAndModifyFunctions(String xml, CQLFunctions toBeModifiedObj, CQLFunctions currentObj,
 			List<CQLFunctions> functionsList, boolean isFormatable) {
 		
-		CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
@@ -230,7 +229,7 @@ public class CQLServiceImpl implements CQLService {
 
 		String XPATH_EXPRESSION_FUNCTIONS = "//cqlLookUp/functions";
 		if (xml != null && !xml.isEmpty()) {
-
+			CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
 			XmlProcessor processor = new XmlProcessor(xml);
 			if (toBeModifiedObj != null) {
 				currentObj.setId(toBeModifiedObj.getId());
@@ -540,9 +539,6 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String xml, CQLParameter toBeModifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable) {
-		
-		CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
-
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
@@ -552,7 +548,7 @@ public class CQLServiceImpl implements CQLService {
 		boolean isCommentInvalid = false;
 		String XPATH_EXPRESSION_PARAMETERS = "//cqlLookUp/parameters";
 		if (xml != null && !xml.isEmpty()) {
-
+			CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
 			XmlProcessor processor = new XmlProcessor(xml);
 			if (toBeModifiedObj != null) {
 
@@ -804,8 +800,6 @@ public class CQLServiceImpl implements CQLService {
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String xml, CQLDefinition toBeModifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable) {
-		CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
-
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLModel cqlModel = new CQLModel();
 		result.setCqlModel(cqlModel);
@@ -816,7 +810,7 @@ public class CQLServiceImpl implements CQLService {
 
 		String XPATH_EXPRESSION_DEFINTIONS = "//cqlLookUp/definitions";
 		if (xml != null && !xml.isEmpty()) {
-
+			CQLModel modelBeforeSave = CQLUtilityClass.getCQLModelFromXML(xml);
 			XmlProcessor processor = new XmlProcessor(xml);
 			if (toBeModifiedObj != null) {
 

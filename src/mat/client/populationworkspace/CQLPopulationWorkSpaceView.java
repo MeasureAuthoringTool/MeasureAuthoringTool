@@ -2,6 +2,7 @@ package mat.client.populationworkspace;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -20,6 +21,16 @@ import mat.client.shared.SkipListBuilder;
  */
 
 public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresenter.ViewDisplay {
+	
+	private final String MEASURE_OBSERVATION_CAUTION_MSG = "Caution: Both an aggregate function and a user-defined function are required for a Measure Observation. "
+			+ "Removing a function or an aggregate function from your Measure Observation will cause any package groupings containing that "
+			+ "Measure Observation to be cleared on the Measure Packager.";
+	
+	private final String STRATIFICATION_CAUTION_MSG = "Caution: Removing or invalidating a stratum within a stratification will "
+			+ "cause any package groupings containing that stratification to be cleared on the Measure Packager.";
+	
+	private final String GENERIC_CAUTION_MSG = "Caution: Removing or invalidating a population will "
+			+ "cause any package groupings containing that population to be cleared on the Measure Packager.";
 
 	/** The main horizontal panel. */
 	HorizontalPanel mainHPPanel = new HorizontalPanel();
@@ -43,8 +54,10 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	VerticalPanel vp = new VerticalPanel();
 
 	HTML heading = new HTML();
+	HTML caution = new HTML();
 	HorizontalPanel headingPanel = new HorizontalPanel();
 
+	HorizontalPanel cautionPanel = new HorizontalPanel();
 	/** The cql left nav bar panel view. */
 	private CQLPopulationLeftNavBarPanelView cqlLeftNavBarPanelView;
 
@@ -90,10 +103,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		headingPanel.setStyleName("marginLeft");
 		headingPanel.getElement().setId("headingPanel");
 		
+		caution.addStyleName("leftAligned");
+		caution.setStyleName("marginLeft");
+		cautionPanel.getElement().setId("cautionPanel");
+		
 		mainFlowPanel.setWidth("700px");
 		
 		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
 		mainPanel.add(headingPanel);
+		mainPanel.add(cautionPanel);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
 		mainPanel.setStyleName("cqlRightContainer");
@@ -108,6 +126,20 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainVPanel.add(mainHPPanel);		
 	}
 
+	private void setCausionText(String displayName) {
+		cautionPanel.clear();
+		caution.setHTML(getCausionText(displayName));
+		cautionPanel.add(caution);
+	}
+
+	private String getCausionText(String displayName) {
+		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? MEASURE_OBSERVATION_CAUTION_MSG : getStratificationCautionText(displayName)  ;
+	}
+
+	private String getStratificationCautionText(String displayName) {
+		return CQLWorkSpaceConstants.POPULATIONS.STRATIFICATION.popName().equalsIgnoreCase(displayName) ? STRATIFICATION_CAUTION_MSG : GENERIC_CAUTION_MSG;
+	}
+
 	@Override
 	public void displayMeasureObservations() {
 
@@ -117,31 +149,30 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
 		
 		cqlMeasureObservationDetailView.setObserver(cqlPopulationObserver);
-		
 		cqlMeasureObservationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
+		setCausionText(cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName());
 	}
+	
 	@Override
 	public void displayStratification() {
-
 		mainFlowPanel.clear();
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
 		populationDataModel.loadPopulations(document);
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
 		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
 		setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
+		setCausionText("Stratification");
 	}
 	
 	@Override
 	public void displayPopulationDetailView(String populationType) {
-		
 		populationDataModel.loadPopulations(document);
 		cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
-		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		
+		setCausionText(cqlPopulationDetailView.getPopulationsObject().getDisplayName());
 	}
 
 	/**

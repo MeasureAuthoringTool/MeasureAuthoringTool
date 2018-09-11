@@ -18,7 +18,6 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -26,10 +25,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 import mat.client.populationworkspace.model.PopulationClauseObject;
 import mat.client.populationworkspace.model.PopulationDataModel;
+import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.populationworkspace.model.PopulationsObject;
 import mat.client.populationworkspace.model.StrataDataModel;
 import mat.client.populationworkspace.model.StratificationsObject;
-import mat.client.populationworkspace.model.PopulationDataModel.ExpressionObject;
 import mat.client.shared.CQLPopulationTopLevelButtonGroup;
 import mat.client.shared.SpacerWidget;
 
@@ -38,8 +37,6 @@ import mat.client.shared.SpacerWidget;
  *
  */
 public class CQLStratificationDetailView implements CQLPopulationDetail {
-	private final String cautionMessage = "Caution: Removing or invalidating a stratum within a stratification will "
-			+ "cause any package groupings containing that stratification to be cleared on the Measure Packager.";
 	
 	private VerticalPanel stratificationPanel;
 	private CQLPopulationObserver observer;
@@ -73,10 +70,6 @@ public class CQLStratificationDetailView implements CQLPopulationDetail {
 		this.strataDataModel = populationDataModel.getStrataDataModel();
 		
 		mainPanel.add(new SpacerWidget());
-		HTML cautionText = new HTML(cautionMessage);
-		cautionText.setStyleName("marginLeft");
-		cautionText.getElement().setTabIndex(0);
-		mainPanel.add(cautionText);
 		
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());

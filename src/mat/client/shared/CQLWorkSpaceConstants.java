@@ -8,6 +8,17 @@ import java.util.Map;
 import com.google.gwt.xml.client.Node;
 
 public class CQLWorkSpaceConstants {
+	
+	public static final String MEASURE_OBSERVATION_CAUTION_MSG = "Caution: Both an aggregate function and a user-defined function are required for a Measure Observation. "
+			+ "Removing a function or an aggregate function from your Measure Observation will cause any package groupings containing that "
+			+ "Measure Observation to be cleared on the Measure Packager.";
+	
+	public static final String STRATIFICATION_CAUTION_MSG = "Caution: Removing or invalidating a stratum within a stratification will "
+			+ "cause any package groupings containing that stratification to be cleared on the Measure Packager.";
+	
+	public static final String GENERIC_CAUTION_MSG = "Caution: Removing or invalidating a population will "
+			+ "cause any package groupings containing that population to be cleared on the Measure Packager.";
+	
 	public static String CQL_MODEL_DATA_TYPE ="QDM Datatype";
 	public static String CQL_OTHER_DATA_TYPE ="Others";
 	public static String CQL_TIMING_EXPRESSION ="Build CQL Timing Expression";

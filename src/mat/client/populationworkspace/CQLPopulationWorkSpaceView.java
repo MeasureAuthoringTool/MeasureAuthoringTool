@@ -21,16 +21,6 @@ import mat.client.shared.SkipListBuilder;
 
 public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresenter.ViewDisplay {
 	
-	private final String MEASURE_OBSERVATION_CAUTION_MSG = "Caution: Both an aggregate function and a user-defined function are required for a Measure Observation. "
-			+ "Removing a function or an aggregate function from your Measure Observation will cause any package groupings containing that "
-			+ "Measure Observation to be cleared on the Measure Packager.";
-	
-	private final String STRATIFICATION_CAUTION_MSG = "Caution: Removing or invalidating a stratum within a stratification will "
-			+ "cause any package groupings containing that stratification to be cleared on the Measure Packager.";
-	
-	private final String GENERIC_CAUTION_MSG = "Caution: Removing or invalidating a population will "
-			+ "cause any package groupings containing that population to be cleared on the Measure Packager.";
-
 	/** The main horizontal panel. */
 	HorizontalPanel mainHPPanel = new HorizontalPanel();
 
@@ -132,11 +122,11 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	}
 
 	private String getCausionText(String displayName) {
-		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? MEASURE_OBSERVATION_CAUTION_MSG : getStratificationCautionText(displayName)  ;
+		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.MEASURE_OBSERVATION_CAUTION_MSG : getStratificationCautionText(displayName)  ;
 	}
 
 	private String getStratificationCautionText(String displayName) {
-		return CQLWorkSpaceConstants.POPULATIONS.STRATIFICATION.popName().equalsIgnoreCase(displayName) ? STRATIFICATION_CAUTION_MSG : GENERIC_CAUTION_MSG;
+		return CQLWorkSpaceConstants.POPULATIONS.STRATIFICATION.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.STRATIFICATION_CAUTION_MSG : CQLWorkSpaceConstants.GENERIC_CAUTION_MSG;
 	}
 
 	@Override

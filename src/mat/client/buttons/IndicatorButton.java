@@ -49,10 +49,6 @@ public class IndicatorButton{
 		showLink.setVisible(!hide);
 	}
 	
-/*	public void setVisible() {
-		hideActive(true);
-	}
-	*/
 	public HorizontalFlowPanel getPanel() {
 		return panel;
 	}

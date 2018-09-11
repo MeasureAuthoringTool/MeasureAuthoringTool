@@ -259,7 +259,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 						display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
-						Mat.hideUMLSActive(false);
+						Mat.hideUMLSActive(true);
 						MatContext.get().setUMLSLoggedIn(false);
 						invalidateVsacSession();
 					}

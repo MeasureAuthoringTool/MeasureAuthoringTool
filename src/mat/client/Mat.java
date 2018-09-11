@@ -533,9 +533,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
-		getUMLSButton().addClickHandler(event -> showUMLSModal(event, userFirstName, isAlreadySignedIn));
+		getUMLSButton().addClickHandler(event -> showUMLSModal(userFirstName, isAlreadySignedIn));
 		
-		getBonnieButton().addClickHandler(event -> showBonnieModal(event)); 
+		getBonnieButton().addClickHandler(event -> showBonnieModal()); 
 			
 			
 		
@@ -586,14 +586,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().restartTimeoutWarning();
 	}
 	
-	private void showUMLSModal(ClickEvent event, String userFirstName, boolean isAlreadySignedIn) {
+	private void showUMLSModal(String userFirstName, boolean isAlreadySignedIn) {
 		final UmlsLoginDialogBox login = new UmlsLoginDialogBox();
 		login.showUMLSLogInDialog();
 		new ManageUmlsPresenter(login, userFirstName, isAlreadySignedIn);
 		login.showModal();
 	}
 
-	private void showBonnieModal(ClickEvent event) {
+	private void showBonnieModal() {
 		BonnieModal bonnieModal = new BonnieModal();
 		bonnieModal.show();
 	}

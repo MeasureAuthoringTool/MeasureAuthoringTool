@@ -2,7 +2,6 @@ package mat.client.populationworkspace;
 
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;

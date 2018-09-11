@@ -20,7 +20,7 @@ import mat.client.shared.SkipListBuilder;
  */
 
 public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresenter.ViewDisplay {
-
+	
 	/** The main horizontal panel. */
 	HorizontalPanel mainHPPanel = new HorizontalPanel();
 
@@ -43,8 +43,10 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 	VerticalPanel vp = new VerticalPanel();
 
 	HTML heading = new HTML();
+	HTML caution = new HTML();
 	HorizontalPanel headingPanel = new HorizontalPanel();
 
+	HorizontalPanel cautionPanel = new HorizontalPanel();
 	/** The cql left nav bar panel view. */
 	private CQLPopulationLeftNavBarPanelView cqlLeftNavBarPanelView;
 
@@ -90,10 +92,15 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		headingPanel.setStyleName("marginLeft");
 		headingPanel.getElement().setId("headingPanel");
 		
+		caution.addStyleName("leftAligned");
+		caution.setStyleName("marginLeft");
+		cautionPanel.getElement().setId("cautionPanel");
+		
 		mainFlowPanel.setWidth("700px");
 		
 		mainPanel.getElement().setId("CQLPopulationWorkspaceView.containerPanel");		
 		mainPanel.add(headingPanel);
+		mainPanel.add(cautionPanel);
 		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
 		mainPanel.add(mainFlowPanel);
 		mainPanel.setStyleName("cqlRightContainer");
@@ -108,6 +115,20 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 		mainVPanel.add(mainHPPanel);		
 	}
 
+	private void setCautionText(String displayName) {
+		cautionPanel.clear();
+		caution.setHTML(getCautionText(displayName));
+		cautionPanel.add(caution);
+	}
+
+	private String getCautionText(String displayName) {
+		return CQLWorkSpaceConstants.POPULATIONS.MEASURE_OBSERVATIONS.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.MEASURE_OBSERVATION_CAUTION_MSG : getPopulationOrStratificationCautionText(displayName)  ;
+	}
+
+	private String getPopulationOrStratificationCautionText(String displayName) {
+		return CQLWorkSpaceConstants.POPULATIONS.STRATIFICATION.popName().equalsIgnoreCase(displayName) ? CQLWorkSpaceConstants.STRATIFICATION_CAUTION_MSG : CQLWorkSpaceConstants.GENERIC_CAUTION_MSG;
+	}
+
 	@Override
 	public void displayMeasureObservations() {
 
@@ -117,31 +138,30 @@ public class CQLPopulationWorkSpaceView implements CQLPopulationWorkSpacePresent
 				CQLWorkSpaceConstants.CQL_MEASUREOBSERVATIONS);
 		
 		cqlMeasureObservationDetailView.setObserver(cqlPopulationObserver);
-		
 		cqlMeasureObservationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
+		setCautionText(cqlMeasureObservationDetailView.getPopulationsObject().getDisplayName());
 	}
+	
 	@Override
 	public void displayStratification() {
-
 		mainFlowPanel.clear();
 		cqlStratificationDetailView  = new CQLStratificationDetailView();
 		populationDataModel.loadPopulations(document);
 		mainFlowPanel.add(cqlStratificationDetailView.buildView(populationDataModel));
 		cqlStratificationDetailView.setObserver(cqlPopulationObserver);
 		setHeadingBasedOnCurrentSection("Population Workspace > Stratification", "headingPanel");
+		setCautionText("Stratification");
 	}
 	
 	@Override
 	public void displayPopulationDetailView(String populationType) {
-		
 		populationDataModel.loadPopulations(document);
 		cqlPopulationDetailView = CQLPopulationDetailFactory.getCQLPopulationDetailView(populationDataModel, populationType);
 		cqlPopulationDetailView.setObserver(cqlPopulationObserver);
-		
 		cqlPopulationDetailView.displayPopulationDetail(mainFlowPanel);
 		setHeadingBasedOnCurrentSection("Population Workspace > " + cqlPopulationDetailView.getPopulationsObject().getDisplayName(), "headingPanel");
-		
+		setCautionText(cqlPopulationDetailView.getPopulationsObject().getDisplayName());
 	}
 
 	/**

@@ -24,40 +24,40 @@ public class CQLIncludeLibraryValidator extends Validator {
 	private void doesAliasNameHaveSpecialCharacter(String libraryName) {
 		boolean hasSpecialCharacters = validator.hasSpecialCharacter(libraryName);
 		if(hasSpecialCharacters) {
-			this.getMessages().add(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
-			this.setValid(false);
+			handleValidationFail(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
 		}
+	}
+
+	private void handleValidationFail(String message) {
+		this.getMessages().add(message);
+		this.setValid(false);
 	}
 	
 	private void doesAliasNameFollowCQLAliasNamingConvention(String libraryName) {
 		boolean isValidLibraryName = validator.doesAliasNameFollowCQLAliasNamingConvention(libraryName);
 		if(!isValidLibraryName) {
-			this.getMessages().add(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
-			this.setValid(false);
+			handleValidationFail(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
 		}
 	}
 	
 	private void isDuplicateIdentifierName(String aliasName, CQLModel model) {
 		boolean isInvalidLibraryName = CQLValidationUtil.isDuplicateIdentifierName(aliasName, model);
 		if(isInvalidLibraryName) {
-			this.getMessages().add(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
-			this.setValid(false);
+			handleValidationFail(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
 		}
 	}
 	
 	private void isDuplicateCQLLibraryName(String aliasName, CQLModel model) {
 		boolean isSameNameAsMeasureName = CQLValidationUtil.isCQLIncludedLibrarySameNameAsParentLibrary(aliasName, model);
 		if(isSameNameAsMeasureName) {
-			this.getMessages().add(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
-			this.setValid(false);
+			handleValidationFail(LIBRARY_ALIAS_UNIQUE_AND_HAVE_PROPER_NAMING_CONVENTION);
 		}
 	}
 	
 	private void isCQLReservedKeyword(String aliasName) {
 		boolean isDuplicateCQLKeyword = CQLValidationUtil.isCQLReservedWord(aliasName);
 		if(isDuplicateCQLKeyword) {
-			this.getMessages().add(DUPLICATE_CQL_KEYWORD);
-			this.setValid(false);
+			handleValidationFail(DUPLICATE_CQL_KEYWORD);
 		}
 	}
 }

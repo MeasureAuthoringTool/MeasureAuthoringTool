@@ -351,22 +351,17 @@ public abstract class MainLayout {
 	public static void createUMLSLinks() {
 		showUMLSState.createAllLinks();
 	}
-	public static void hideUMLSActive() {
-		showUMLSState.hideActive();
+
+	public static void showOrHideUMLSActive(boolean hide) {
+		showUMLSState.showOrHideActive(hide);
 	}
 	
-	public static void showUMLSActive() {
-		showUMLSState.showActive();
-	}
 	public static void createBonnieLinks() {
 		showBonnieState.createAllLinks();
 	}
-	public static void hideBonnieActive() {
-		showBonnieState.hideActive();
-	}
 	
-	public static void showBonnieActive() {
-		showBonnieState.showActive();
+	public static void showOrHideBonnieActive(boolean hide) {
+		showBonnieState.showOrHideActive(hide);
 	}
 	
 	public HTML getUMLSButton() {

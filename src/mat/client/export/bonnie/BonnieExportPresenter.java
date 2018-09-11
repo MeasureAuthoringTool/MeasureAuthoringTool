@@ -150,7 +150,7 @@ public class BonnieExportPresenter implements MatPresenter {
 				if(caught instanceof UMLSNotActiveException) {
 					view.setHelpBlockMessage(SIGN_INTO_UMLS);
 					createErrorMessage(SIGN_INTO_UMLS);
-					Mat.hideUMLSActive();
+					Mat.showOrHideUMLSActive(true);
 				}
 				if(caught instanceof BonnieUnauthorizedException) {
 					setVeiwAsLoggedOutOfBonnie();
@@ -177,7 +177,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	private void setVeiwAsLoggedOutOfBonnie() {
 		view.getBonnieSignOutButton().setVisible(false);
 		view.getUploadButton().setEnabled(false);
-		Mat.hideBonnieActive();
+		Mat.showOrHideBonnieActive(true);
 	}
 	
 	private void getExportFromBonnieForMeasure(String measureId, String matUserId, String successMessage) {

@@ -440,7 +440,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			createUMLSLinks();
 			createBonnieLinks();
-			hideUMLSActive();
+			showOrHideUMLSActive(true);
 			if(resultMatVersion.equals("v5.6")) {
 				setBonnieActiveLink();
 			}
@@ -533,25 +533,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			}
 		});
 		
-		getUMLSButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				final UmlsLoginDialogBox login = new UmlsLoginDialogBox();
-				login.showUMLSLogInDialog();
-				new ManageUmlsPresenter(login, userFirstName, isAlreadySignedIn);
-				login.showModal();
-			}
-		});
+		getUMLSButton().addClickHandler(event -> showUMLSModal(event, userFirstName, isAlreadySignedIn));
 		
-		getBonnieButton().addClickHandler(new ClickHandler() {
+		getBonnieButton().addClickHandler(event -> showBonnieModal(event)); 
 			
-			@Override
-			public void onClick(ClickEvent event) {
-				BonnieModal bonnieModal = new BonnieModal();
-				bonnieModal.show();
-			}
-		});
+			
 		
 		
 		
@@ -600,18 +586,30 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		MatContext.get().restartTimeoutWarning();
 	}
 	
+	private void showUMLSModal(ClickEvent event, String userFirstName, boolean isAlreadySignedIn) {
+		final UmlsLoginDialogBox login = new UmlsLoginDialogBox();
+		login.showUMLSLogInDialog();
+		new ManageUmlsPresenter(login, userFirstName, isAlreadySignedIn);
+		login.showModal();
+	}
+
+	private void showBonnieModal(ClickEvent event) {
+		BonnieModal bonnieModal = new BonnieModal();
+		bonnieModal.show();
+	}
+
 	private void setBonnieActiveLink() {
 		String matUserId = MatContext.get().getLoggedinUserId();
 		MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
 			
 			@Override
 			public void onSuccess(BonnieUserInformationResult result) {
-				showBonnieActive();
+				showOrHideBonnieActive(false);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				hideBonnieActive();
+				showOrHideBonnieActive(true);
 			}
 		});
 	}

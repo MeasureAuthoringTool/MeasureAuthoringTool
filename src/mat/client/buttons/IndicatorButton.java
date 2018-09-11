@@ -44,19 +44,13 @@ public class IndicatorButton{
 		panel.getElement().focus();
 	}
 	
-	public void hideActive(){
-		showLink.setVisible(false);
-		hideLink.setVisible(true);
-	}
-
-	
-	public void showActive(){
-		showLink.setVisible(true);
-		hideLink.setVisible(false);
+	public void showOrHideActive(boolean hide) {
+		hideLink.setVisible(hide);
+		showLink.setVisible(!hide);
 	}
 	
 	public void setVisible() {
-		hideActive();
+		showOrHideActive(true);
 	}
 	
 	public HorizontalFlowPanel getPanel() {

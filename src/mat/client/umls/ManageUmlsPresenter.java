@@ -234,7 +234,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 					display.getErrorMessageDisplay().setMessage(
 							MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
-					Mat.hideUMLSActive();
+					Mat.showOrHideUMLSActive(true);
 				}
 				@Override
 				public void onSuccess(final Boolean result) {
@@ -243,7 +243,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 					if (result) {
 						display.getMessageFormGrp().setValidationState(ValidationState.NONE);
 						display.getHelpBlock().setText("");
-						Mat.showUMLSActive();
+						Mat.showOrHideUMLSActive(false);
 						display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getPasswordInput().setText("");
 						display.getUserIdText().setText("");
@@ -259,7 +259,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 						display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
-						Mat.hideUMLSActive();
+						Mat.showOrHideUMLSActive(false);
 						MatContext.get().setUMLSLoggedIn(false);
 						invalidateVsacSession();
 					}

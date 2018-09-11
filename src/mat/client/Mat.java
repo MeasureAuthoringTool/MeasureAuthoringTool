@@ -440,7 +440,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			createUMLSLinks();
 			createBonnieLinks();
-			showOrHideUMLSActive(true);
+			hideUMLSActive(true);
 			if(resultMatVersion.equals("v5.6")) {
 				setBonnieActiveLink();
 			}
@@ -499,7 +499,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		getLogoutPanel().add(signout);
 		getWelcomeUserPanel(userFirstName);
 		getVersionPanel(resultMatVersion);
-		setIndicatorsVisible();
+		setIndicatorsHidden();
 		/*
 		 * no delay desired when hiding loading message here
 		 * tab selection below will fail if loading
@@ -604,12 +604,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			@Override
 			public void onSuccess(BonnieUserInformationResult result) {
-				showOrHideBonnieActive(false);
+				hideBonnieActive(false);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				showOrHideBonnieActive(true);
+				hideBonnieActive(true);
 			}
 		});
 	}

@@ -352,16 +352,16 @@ public abstract class MainLayout {
 		showUMLSState.createAllLinks();
 	}
 
-	public static void showOrHideUMLSActive(boolean hide) {
-		showUMLSState.showOrHideActive(hide);
+	public static void hideUMLSActive(boolean hide) {
+		showUMLSState.hideActive(hide);
 	}
 	
 	public static void createBonnieLinks() {
 		showBonnieState.createAllLinks();
 	}
 	
-	public static void showOrHideBonnieActive(boolean hide) {
-		showBonnieState.showOrHideActive(hide);
+	public static void hideBonnieActive(boolean hide) {
+		showBonnieState.hideActive(hide);
 	}
 	
 	public HTML getUMLSButton() {
@@ -372,9 +372,9 @@ public abstract class MainLayout {
 		return showBonnieState.getLink();
 	}
 
-	public void setIndicatorsVisible() {
-		showBonnieState.setVisible();
-		showUMLSState.setVisible();
+	public void setIndicatorsHidden() {
+		showBonnieState.hideActive(true);
+		showUMLSState.hideActive(true);
 	}
 	
 	//method to easily remove bonnie link from page

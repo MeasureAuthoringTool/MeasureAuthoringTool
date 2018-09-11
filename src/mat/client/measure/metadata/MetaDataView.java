@@ -903,6 +903,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		viewMetadataAnchor.setText("Click to view General Measure Information");
 		viewMetadataAnchor.setTitle("Click to view General Measure Information");
 		viewMetadataAnchor.setColor("White");
+		viewMetadataAnchor.setPaddingRight(35);
 
 		PanelGroup panelGroup = new PanelGroup();
 		panelGroup.setId("panelGroup");

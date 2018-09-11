@@ -1184,7 +1184,6 @@ public class CQLServiceImpl implements CQLService {
 		String XPATH_EXPRESSION_INCLUDES = "//includeLibrary[@cqlLibRefId='" + toBeModifiedObj.getCqlLibraryId() + "']";
 		try {
 			Node nodeIncludes = processor.findNode(processor.getOriginalDoc(), XPATH_EXPRESSION_INCLUDES);
-			currentObj.setId(toBeModifiedObj.getId());
 			String cqlLibraryXML = createIncludeLibraryXML(currentObj);
 			String XPATH_EXPRESSION_INCLUDELIBRARYS = "//cqlLookUp/includeLibrarys";
 			processor.removeFromParent(nodeIncludes);

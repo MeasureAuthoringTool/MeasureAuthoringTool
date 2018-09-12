@@ -2,6 +2,7 @@ package mat.server.bonnie;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -218,8 +219,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	
 	public Boolean revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception {
 		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
-		bonnieApi.revokeBonnieToken(bonnieAccessInfo.getAccessToken(), bonnieAccessInfo.getRefreshToken());
-		deleteUserBonnieAccessInfo(bonnieAccessInfo);
+		revokeBonnieAccessTokenForUser(bonnieAccessInfo);
 		return true;
 	}
 
@@ -246,5 +246,20 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 
 	public void setBonnieApi(BonnieAPIv1 bonnieApi) {
 		this.bonnieApi = bonnieApi;
+	}
+
+	@Override
+	public Boolean revokeAllBonnieAccessTokens() throws BonnieServerException, Exception {
+		List<UserBonnieAccessInfo> userBonnieAccessInfoList = userBonnieAccessInfoDAO.find();
+		for(UserBonnieAccessInfo userBonnieAccessInfo: userBonnieAccessInfoList) {
+			revokeBonnieAccessTokenForUser(userBonnieAccessInfo);
+		}
+		return null;
+	}
+
+	private void revokeBonnieAccessTokenForUser(UserBonnieAccessInfo userBonnieAccessInfo)
+			throws BonnieServerException, BonnieUnauthorizedException, Exception {
+		bonnieApi.revokeBonnieToken(userBonnieAccessInfo.getAccessToken(), userBonnieAccessInfo.getRefreshToken());
+		deleteUserBonnieAccessInfo(userBonnieAccessInfo);
 	}
 }

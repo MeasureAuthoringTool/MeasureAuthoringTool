@@ -46,6 +46,26 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 				});
 				confirmationDialogBox.show();
 			}
+
+			@Override
+			public void onRevokeAllBonnieSessionsClicked() {
+				MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						searchDisplay.getErrorMessageAlert()
+						.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null,
+						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+						displaySearch("");
+						searchDisplay.getSuccessMessageDisplay().createAlert("All active Bonnie tokens have been revoked.");
+					}
+				});
+			}
 		});
 		
 		MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 
 import com.google.gwt.cell.client.Cell.Context;
@@ -14,6 +15,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -41,6 +44,7 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
@@ -64,18 +68,32 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	private Observer observer;
 	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-	
-	
+	private PrimaryButton revokeAllButton;
+
 	/**
 	 * The Interface Observer.
 	 */
 	public static interface Observer {
 
 		void onStopBonnieSessionClicked(Result object);
+		void onRevokeAllBonnieSessionsClicked();
 	}
 	
 	/**Constructor.**/
 	public ManageBonnieTokenView() {
+		VerticalPanel revokeAllPanel = new VerticalPanel();
+		revokeAllPanel.add(new Label("Use this button to revoke all active Bonnie tokens within the MAT. This will require every user to have to sign back into Bonnie before they can continue to use the Bonnie API."));
+		revokeAllButton = new PrimaryButton("Revoke All", "btn btn-danger");
+		revokeAllButton.setPull(Pull.RIGHT);
+		revokeAllButton.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				observer.onRevokeAllBonnieSessionsClicked();
+			}
+		});
+		revokeAllPanel.add(revokeAllButton);
+		revokeAllPanel.add(new SpacerWidget());
+		mainPanel.add(revokeAllPanel);
 		mainPanel.add(new Label("Use the table below to revoke active Bonnie tokens for specific users."));
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(searchWidgetBootStrap.getSearchWidget());
@@ -251,8 +269,13 @@ public class ManageBonnieTokenView implements ManageUsersPresenter.SearchDisplay
 	}
 
 	@Override
-	public void setObserver(mat.client.admin.ManageUsersSearchView.Observer observer) {
-		// TODO Auto-generated method stub
-		
+	public void setObserver(mat.client.admin.ManageUsersSearchView.Observer observer) {}
+	
+	public PrimaryButton getRevokeAllButton() {
+		return revokeAllButton;
+	}
+
+	public void setRevokeAllButton(PrimaryButton revokeAllButton) {
+		this.revokeAllButton = revokeAllButton;
 	}
 }

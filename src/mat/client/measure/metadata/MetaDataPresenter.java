@@ -1219,10 +1219,9 @@ public class MetaDataPresenter  implements MatPresenter {
 				
 				@Override
 				public void onSuccess(SaveMeasureResult result) {
+					Mat.hideLoadingMessage();
+					MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 					if (result.isSuccess()) {
-						Mat.hideLoadingMessage();
-						
-						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 						MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<ManageMeasureDetailModel>() {
 							
 							@Override
@@ -1238,8 +1237,6 @@ public class MetaDataPresenter  implements MatPresenter {
 							}
 						});
 					} else {
-						Mat.hideLoadingMessage();
-						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 						String alertMessage = MessageDelegate.getMeasureSaveServerErrorMessage(result.getFailureReason());
 						if(result.getMessages().contains(MessageDelegate.NQF_NUMBER_REQUIRED_ERROR)) {
 							alertMessage = MessageDelegate.NQF_NUMBER_REQUIRED_ERROR;

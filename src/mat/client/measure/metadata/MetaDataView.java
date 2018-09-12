@@ -91,8 +91,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected FlowPanel mainPanel = new FlowPanel();
 	protected FocusPanel focusPanel = new FocusPanel();
 	protected FlowPanel cellTablePanel=new  FlowPanel();
-	private MessageAlert successMessages = new SuccessMessageAlert();
-	private MessageAlert successMessages2 = new SuccessMessageAlert();
+	private MessageAlert bottomSuccessMessage = new SuccessMessageAlert();
+	private MessageAlert topSuccessMessage = new SuccessMessageAlert();
 	protected TextBox abbrInput = new TextBox();
 	protected TextBox patientBasedInput = new TextBox(); 
 	protected TextBox measScoringInput = new TextBox();
@@ -127,8 +127,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
 	protected ListBoxMVP measureTypeInput = new ListBoxMVP();
 	protected SimplePanel emptyMeasureTypePanel = new SimplePanel();
-	protected MessageAlert errorMessages = new ErrorMessageAlert();
-	protected MessageAlert errorMessages2 = new ErrorMessageAlert();
+	protected MessageAlert bottomErrorMessage = new ErrorMessageAlert();
+	protected MessageAlert topErrorMessage = new ErrorMessageAlert();
 	protected DateBoxWithCalendar measurePeriodFromInput = new DateBoxWithCalendar();
 	protected DateBoxWithCalendar measurePeriodToInput = new DateBoxWithCalendar();
 	protected TextAreaWithMaxLength  supplementalDataInput  = new TextAreaWithMaxLength ();
@@ -190,10 +190,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		AddRowButton.setType(ButtonType.LINK);
 		AddRowButton.setIcon(IconType.PLUS);
 		AddRowButton.setTitle("Add More Reference");
-		successMessages.setWidth("750px");
-		errorMessages.setWidth("750px");
-		successMessages2.setWidth("900px");
-		errorMessages2.setWidth("900px");
+		bottomSuccessMessage.setWidth("750px");
+		bottomErrorMessage.setWidth("750px");
+		topSuccessMessage.setWidth("900px");
+		topErrorMessage.setWidth("900px");
 		saveErrorDisplay.setWidth("900px");
 		
 		addClickHandlers();
@@ -215,8 +215,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		mainPanel.clear();
 		mainPanel.add(messageFormGrp);
 		mainPanel.add(saveErrorDisplay);
-		mainPanel.add(successMessages2);
-		mainPanel.add(errorMessages2);
+		mainPanel.add(topSuccessMessage);
+		mainPanel.add(topErrorMessage);
 		saveErrorDisplay.clearAlert();
 		stewardSPanel.clear();
 		authorListBox.setVisibleItemCount(5);
@@ -230,7 +230,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.setStyleName("leftSideForm");
 		fPanel.getElement().setId("fPanel_FlowPanelLeft");
 		fPanel.add(new SpacerWidget());
-		fPanel.add(errorMessages);
+		fPanel.add(bottomErrorMessage);
 		
 		PanelGroup metadataPanelGroup = buildMeasureMetadeta();
 		
@@ -369,10 +369,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		setMaxWidthAndSize();
 		
-		moreMeasureDetailsVP.add(errorMessages);
-		moreMeasureDetailsVP.add(successMessages);
+		moreMeasureDetailsVP.add(bottomErrorMessage);
+		moreMeasureDetailsVP.add(bottomSuccessMessage);
 		
-		successMessages.clearAlert();
+		bottomSuccessMessage.clearAlert();
 		moreMeasureDetailsVP.add(new SpacerWidget());
 		buttonBarBottom.getButtonToolBar().getElement().getStyle().setPaddingBottom(10, Unit.PX);
 		fPanel.add(panelGroup);
@@ -1441,13 +1441,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 
 	@Override
-	public MessageAlert getErrorMessageDisplay() {
-		return errorMessages;
+	public MessageAlert getBottomErrorMessage() {
+		return bottomErrorMessage;
 	}
 	
 	@Override
-	public MessageAlert getErrorMessageDisplay2() {
-		return errorMessages2;
+	public MessageAlert getTopErrorMessage() {
+		return topErrorMessage;
 	}
 
 	@Override
@@ -1456,7 +1456,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 	@Override
-	public HasClickHandlers getSaveButton() {
+	public HasClickHandlers getSaveButtonHasClickHandlers() {
 		return buttonBarBottom.getSaveButton();
 	}
 
@@ -1622,13 +1622,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	@Override
-	public MessageAlert getSuccessMessageDisplay() {
-		return successMessages;
+	public MessageAlert getBottomSuccessMessage() {
+		return bottomSuccessMessage;
 	}
 	
 	@Override
-	public MessageAlert getSuccessMessageDisplay2() {
-		return successMessages2;
+	public MessageAlert getTopSuccessMessage() {
+		return topSuccessMessage;
 	}
 
 	private TextAreaWithMaxLength createReferenceInput() {
@@ -1800,7 +1800,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 	@Override
-	public Button getDeleteMeasure() {
+	public Button getBottomDeleteMeasureButton() {
 		return buttonBarBottom.getDeleteButton();
 	}
 
@@ -1840,7 +1840,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	@Override
-	public Button getSaveBtn() {
+	public Button getBottomSaveButton() {
 		return buttonBarBottom.getSaveButton();
 	}
 	
@@ -1937,8 +1937,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
 			measurePeriodFromInput.setValue("");
 			measurePeriodToInput.setValue("");
-			errorMessages.clearAlert();
-			errorMessages2.clearAlert();
+			bottomErrorMessage.clearAlert();
+			topErrorMessage.clearAlert();
 			if (calenderYear.getValue().equals(Boolean.FALSE)) {
 				measurePeriodFromInput.setEnabled(true);
 				measurePeriodToInput.setEnabled(true);
@@ -2199,12 +2199,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 	@Override
-	public Button getSaveButton2() {
+	public Button getTopSaveButton() {
 		return buttonBarTop.getSaveButton();
 	}
 
 	@Override
-	public Button getDeleteMeasure2() {
+	public Button getTopDeleteMeasureButton() {
 		return buttonBarTop.getDeleteButton();
 	}
 

@@ -470,11 +470,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		Button saveButton = null;
 		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
 			saveErrorMessageAlert = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
-			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay2().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay2().clearAlert();
-			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
+			metaDataPresenter.getMetaDataDisplay().getBottomErrorMessage().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getTopErrorMessage().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getBottomSuccessMessage().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getTopSuccessMessage().clearAlert();
+			saveButton = metaDataPresenter.getMetaDataDisplay().getBottomSaveButton();
 		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
 			CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
 			saveErrorMessageAlert = CQLWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();

@@ -49,7 +49,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 
 			@Override
 			public void onRevokeAllBonnieSessionsClicked() {
-				MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(new AsyncCallback<Boolean>() {
+				MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(new AsyncCallback<Void>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -58,7 +58,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 					}
 
 					@Override
-					public void onSuccess(Boolean result) {
+					public void onSuccess(Void result) {
 						displaySearch("");
 						searchDisplay.getSuccessMessageDisplay().createAlert("All active Bonnie tokens have been revoked.");
 					}
@@ -86,7 +86,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 
 	private void revokeBonnieAccessTokenForUser(
 			mat.client.admin.ManageUsersSearchModel.Result userResult, String userId) {
-		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Boolean>() {
+		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(userId, new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageAlert()
@@ -96,7 +96,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSuccess(Boolean result) {
+			public void onSuccess(Void result) {
 				displaySearch("");
 				searchDisplay.getSuccessMessageDisplay().createAlert("Active Bonnie tokens have been revoked for user " + userResult.getLoginId());
 			}

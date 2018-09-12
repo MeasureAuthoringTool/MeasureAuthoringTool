@@ -217,10 +217,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		return bonnieInformationResult;
 	}
 	
-	public Boolean revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception {
+	public void revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception {
 		UserBonnieAccessInfo bonnieAccessInfo = validateOrRefreshBonnieTokensForUser(userId);
 		revokeBonnieAccessTokenForUser(bonnieAccessInfo);
-		return true;
 	}
 
 	private UserBonnieAccessInfo validateOrRefreshBonnieTokensForUser(String userId) throws BonnieUnauthorizedException {
@@ -249,12 +248,11 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 
 	@Override
-	public Boolean revokeAllBonnieAccessTokens() throws BonnieServerException, Exception {
+	public void revokeAllBonnieAccessTokens() throws BonnieServerException, Exception {
 		List<UserBonnieAccessInfo> userBonnieAccessInfoList = userBonnieAccessInfoDAO.find();
 		for(UserBonnieAccessInfo userBonnieAccessInfo: userBonnieAccessInfoList) {
 			revokeBonnieAccessTokenForUser(userBonnieAccessInfo);
 		}
-		return true;
 	}
 
 	private void revokeBonnieAccessTokenForUser(UserBonnieAccessInfo userBonnieAccessInfo)

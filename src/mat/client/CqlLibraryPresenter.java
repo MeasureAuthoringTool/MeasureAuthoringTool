@@ -45,6 +45,7 @@ import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.CQLVersionEvent;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
@@ -263,6 +264,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 		EditConfirmationDialogBox getDraftConfirmationDialogBox();
 
 		void resetMessageDisplay();
+
+		CustomCheckBox getCustomFilterCheckBox();
 
 	}
 
@@ -1617,6 +1620,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	private void showSearchingBusy(boolean busy) {
 		isLoading= busy;
+		((Button) cqlLibraryView.getSearchButton()).setEnabled(!busy);
+		((TextBox) (cqlLibraryView.getSearchString())).setEnabled(!busy);
+		((Button) cqlLibraryView.getCreateNewLibraryButton()).setEnabled(!busy);
+		((CustomCheckBox) cqlLibraryView.getCustomFilterCheckBox()).setEnabled(!busy);
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {

@@ -1893,7 +1893,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
-
+		((Button) searchDisplay.getCreateMeasureButton()).setEnabled(!busy);
+		((Button) searchDisplay.getCreateCompositeMeasureButton()).setEnabled(!busy);
+		((CustomCheckBox)searchDisplay.getCustomFilterCheckBox()).setEnabled(!busy);
 	}
 
 	private void toggleLoadingMessage(boolean busy) {

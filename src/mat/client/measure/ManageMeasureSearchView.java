@@ -450,4 +450,9 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		//TODO in MAT-9216 add this code back in!
 		return null;//measureLibraryAdvancedSearchBuilder;
 	}
+
+	@Override
+	public CustomCheckBox getCustomFilterCheckBox() {
+		return measureSearchFilterWidget.getMeasureCustomCheckBox();
+	}
 }

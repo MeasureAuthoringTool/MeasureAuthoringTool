@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
@@ -191,6 +192,11 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchFilterWidget.getSearchButton();
+	}
+	
+	@Override
+	public CustomCheckBox getCustomFilterCheckBox() {
+		return searchFilterWidget.getLibraryCustomCheckBox();
 	}
 	
 	@Override

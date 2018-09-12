@@ -13,6 +13,7 @@ import mat.client.buttons.CustomButton;
 import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.advancedSearch.MeasureLibraryAdvancedSearchBuilder;
 import mat.client.measure.MeasureSearchView.AdminObserver;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentMeasureWidget;
@@ -89,6 +90,8 @@ public interface SearchDisplay extends BaseDisplay {
 	EditConfirmationDialogBox getDraftConfirmationDialogBox();
 
 	public void resetMessageDisplay();
+	
+	public CustomCheckBox getCustomFilterCheckBox();
 	
 	public MeasureLibraryAdvancedSearchBuilder getMeasureLibraryAdvancedSearchBuilder();
 }

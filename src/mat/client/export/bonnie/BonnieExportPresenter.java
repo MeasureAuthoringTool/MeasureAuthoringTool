@@ -90,7 +90,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	
 	private void bonnieSignOutClickHandler() {
 		String matUserId = MatContext.get().getLoggedinUserId();
-		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(matUserId, new AsyncCallback<Boolean>() {
+		MatContext.get().getBonnieService().revokeBonnieAccessTokenForUser(matUserId, new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -99,7 +99,7 @@ public class BonnieExportPresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSuccess(Boolean result) {
+			public void onSuccess(Void result) {
 				
 				setVeiwAsLoggedOutOfBonnie();
 				createSuccessMessage(DISCONNECTED_FROM_BONNIE_MESSAGE);

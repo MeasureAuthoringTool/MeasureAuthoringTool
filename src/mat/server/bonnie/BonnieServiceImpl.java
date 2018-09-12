@@ -254,7 +254,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		for(UserBonnieAccessInfo userBonnieAccessInfo: userBonnieAccessInfoList) {
 			revokeBonnieAccessTokenForUser(userBonnieAccessInfo);
 		}
-		return null;
+		return true;
 	}
 
 	private void revokeBonnieAccessTokenForUser(UserBonnieAccessInfo userBonnieAccessInfo)

@@ -53,10 +53,8 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						searchDisplay.getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null,
-						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 					}
 
 					@Override

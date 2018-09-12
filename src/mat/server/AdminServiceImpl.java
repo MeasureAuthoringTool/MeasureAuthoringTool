@@ -26,6 +26,7 @@ import mat.dao.UserDAO;
 import mat.model.Organization;
 import mat.model.Status;
 import mat.model.User;
+import mat.server.bonnie.BonnieServiceImpl;
 import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.shared.AdminManageOrganizationModelValidator;
@@ -43,6 +44,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	private static final Log logger = LogFactory.getLog(AdminServiceImpl.class);
 	
 	@Autowired UserService userService;
+	
+	@Autowired BonnieServiceImpl bonnieService; 
 	
 	/**
 	 * Check admin user.
@@ -322,8 +325,16 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			result.setMessages(messages);
 			result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
 		} else {
+			if(model.isBeingRevoked()) {
+				try {
+					bonnieService.revokeBonnieAccessTokenForUser(model.getKey());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			result = userService.saveUpdateUser(model);
 		}
+		
 		return result;
 	}
 	/* (non-Javadoc)

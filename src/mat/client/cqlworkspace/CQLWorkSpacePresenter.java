@@ -63,6 +63,7 @@ import mat.client.cqlworkspace.components.CQLComponentLibraryView;
 import mat.client.cqlworkspace.definitions.CQLDefinitionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView;
 import mat.client.cqlworkspace.functions.CQLFunctionsView.Observer;
+import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationUtility;
 import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
 import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.parameters.CQLParametersView;
@@ -508,7 +509,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.NONE);
 				String comment = searchDisplay.getCQLParametersView().getParameterCommentTextArea().getText();
-				if (validator.validateForCommentTextArea(comment)) {
+				if (validator.isCommentTooLongOrContainsInvalidText(comment)) {
 					searchDisplay.getCQLParametersView().getParamCommentGroup()
 							.setValidationState(ValidationState.ERROR);
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -696,7 +697,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.NONE);
 				String comment = searchDisplay.getCqlFunctionsView().getFunctionCommentTextArea().getText();
-				if (validator.validateForCommentTextArea(comment)) {
+				if (validator.isCommentTooLongOrContainsInvalidText(comment)) {
 					searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 							.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
@@ -912,7 +913,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.resetMessageDisplay();
 				searchDisplay.getCQlDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.NONE);
 				String comment = searchDisplay.getCQlDefinitionsView().getDefineCommentTextArea().getText();
-				if (validator.validateForCommentTextArea(comment)) {
+				if (validator.isCommentTooLongOrContainsInvalidText(comment)) {
 					searchDisplay.getCQlDefinitionsView().getDefineCommentGroup()
 							.setValidationState(ValidationState.ERROR);
 					searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
@@ -1672,6 +1673,13 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		resetMessagesAndSetPageDirty(false);
 		String comments = searchDisplay.getCqlGeneralInformationView().getComments().getText().trim();
 
+		boolean isvalid = CQLGeneralInformationUtility.validateGeneralInformationSection(searchDisplay.getCqlGeneralInformationView(), searchDisplay.getCqlLeftNavBarPanelView(), null, comments);
+		if(isvalid) {
+			saveCQLGeneralInformationAsync(comments);
+		}
+	}
+
+	private void saveCQLGeneralInformationAsync(String comments) {
 		MatContext.get().getMeasureService().saveAndModifyCQLGeneralInfo(MatContext.get().getCurrentMeasureId(), null, comments, 
 				new AsyncCallback<SaveUpdateCQLResult>() {
 
@@ -2499,7 +2507,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR());
 				searchDisplay.getCqlFunctionsView().getFuncNameTxtArea().setText(functionName.trim());
-			} else if (validator.validateForCommentTextArea(funcComment)) {
+			} else if (validator.isCommentTooLongOrContainsInvalidText(funcComment)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 				searchDisplay.getCqlFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
@@ -2706,7 +2714,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						.createAlert(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
 				searchDisplay.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 
-			} else if (validator.validateForCommentTextArea(parameterComment)) {
+			} else if (validator.isCommentTooLongOrContainsInvalidText(parameterComment)) {
 				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
 						.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 				searchDisplay.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
@@ -2856,12 +2864,10 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		if (isValidDefinitionName) {
 			if (validator.hasSpecialCharacter(definitionName.trim())) {
 				searchDisplay.getCQlDefinitionsView().getDefineNameGroup().setValidationState(ValidationState.ERROR);
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
 				searchDisplay.getCQlDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
-			} else if (validator.validateForCommentTextArea(definitionComment)) {
-				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+			} else if (validator.isCommentTooLongOrContainsInvalidText(definitionComment)) {
+				searchDisplay.getCqlLeftNavBarPanelView().getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 				searchDisplay.getCQlDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
 
 			} else {

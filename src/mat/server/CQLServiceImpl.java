@@ -245,7 +245,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				//validating function comment string
-				isCommentInvalid = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				isCommentInvalid = validator.isCommentTooLongOrContainsInvalidText(toBeModifiedObj.getCommentString());
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
@@ -388,7 +388,7 @@ public class CQLServiceImpl implements CQLService {
 				isDuplicate = CQLValidationUtil.isDuplicateIdentifierName(currentObj.getName(), modelBeforeSave);
 
 				//validating function comment string
-				isCommentInvalid = validator.validateForCommentTextArea(currentObj.getCommentString());
+				isCommentInvalid = validator.isCommentTooLongOrContainsInvalidText(currentObj.getCommentString());
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
@@ -568,7 +568,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				//validating parameter comment
-				isCommentInvalid = validtor.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				isCommentInvalid = validtor.isCommentTooLongOrContainsInvalidText(toBeModifiedObj.getCommentString());
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
@@ -666,7 +666,7 @@ public class CQLServiceImpl implements CQLService {
 				isDuplicate = CQLValidationUtil.isDuplicateIdentifierName(currentObj.getName(), modelBeforeSave);
 
 				//validating parameter comment String
-				isCommentInvalid = validtor.validateForCommentTextArea(currentObj.getCommentString());
+				isCommentInvalid = validtor.isCommentTooLongOrContainsInvalidText(currentObj.getCommentString());
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
@@ -832,7 +832,7 @@ public class CQLServiceImpl implements CQLService {
 				}
 
 				//validate definition comment string
-				isCommentInvalid = validator.validateForCommentTextArea(toBeModifiedObj.getCommentString());
+				isCommentInvalid = validator.isCommentTooLongOrContainsInvalidText(toBeModifiedObj.getCommentString());
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
@@ -952,7 +952,7 @@ public class CQLServiceImpl implements CQLService {
 				isDuplicate = CQLValidationUtil.isDuplicateIdentifierName(currentObj.getName(), modelBeforeSave);
 
 				//validating definition Comment
-				isCommentInvalid = validator.validateForCommentTextArea(currentObj.getCommentString());
+				isCommentInvalid = validator.isCommentTooLongOrContainsInvalidText(currentObj.getCommentString());
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);

@@ -81,13 +81,21 @@ public class CQLModelValidator {
 		return !isValidCodeIdentifier;
 	}
 	
+	public boolean isCommentMoreThan250Characters(String comment) {
+		return comment.length() > 250;
+	}
+	
+	public boolean doesCommentContainInvalidCharacters(String comment) {
+		return commentRegExp.test(comment);
+	}
+	
 	/**
 	 * Validate for comment text area.
 	 *
 	 * @param comment the comment
 	 * @return true, if successful
 	 */
-	public boolean validateForCommentTextArea(String comment) {
+	public boolean isCommentTooLongOrContainsInvalidText(String comment) {
 		boolean isInValid = false;
 
 		if (comment.length() > 250 || commentRegExp.test(comment)) {

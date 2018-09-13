@@ -326,4 +326,7 @@ public class CQLGeneralInformationView {
 		this.comments = comments;
 	}
 
+	public FormGroup getCommentsGroup() {
+		return this.commentsGroup;
+	}
 }

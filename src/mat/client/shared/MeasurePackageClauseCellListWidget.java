@@ -8,6 +8,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.PanelType;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -18,27 +26,16 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.constants.ButtonType;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.PanelType;
-
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import org.gwtbootstrap3.client.ui.Panel;
-import org.gwtbootstrap3.client.ui.PanelBody;
-import org.gwtbootstrap3.client.ui.PanelHeader;
-
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,22 +54,12 @@ import mat.shared.MeasurePackageClauseValidator;
  * The Class MeasurePackageClauseCellListWidget.
  */
 public class MeasurePackageClauseCellListWidget {
-	/**numerator constant string.**/
 	private static final String NUMERATOR = "numerator";
-	/**denominator constant string.**/
 	private static final String DENOMINATOR = "denominator";
-	/**measureObservation constant string.**/
 	private static final String MEASURE_OBSERVATION = "measureObservation";
-	/** The Constant ASOOCIATED_LIST_SIZE. */
-	private static final int ASOOCIATED_LIST_SIZE = 10;
-	
-	/** The Constant STRATIFICATION. */
+	private static final int ASSOCIATED_LIST_SIZE = 10;
 	private static final String STRATIFICATION = "stratification";
-	
-	/** The Constant ADD_CLAUSE_RIGHT. */
 	private static final String ADD_CLAUSE_RIGHT = "addClauseRight";
-	
-	/** The Constant ADD_ALL_CLAUSE_RIGHT. */
 	private static final String ADD_ALL_CLAUSE_RIGHT = "addAllClauseRight";
 	/**
 	 * The HTML templates used to render the ClauseCell.
@@ -93,10 +80,6 @@ public class MeasurePackageClauseCellListWidget {
 	/** Create a singleton instance of the templates used to render the cell. */
 	private static Templates templates = GWT.create(Templates.class);
 
-	private CellList<MeasurePackageClauseDetail> leftCellList;
-
-	private CellList<MeasurePackageClauseDetail> rightCellList;
-
 	private CellList<MeasurePackageClauseDetail> associatedCellList;
 
 	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel("RightPackagePanel");
@@ -112,7 +95,7 @@ public class MeasurePackageClauseCellListWidget {
 	private FlowPanel mainFlowPanel = new FlowPanel();
 
 	private Button saveGroupingButton = buildSaveButton(IconType.SAVE, "Save Grouping") ;
-	
+
 	private Button addClauseRight = buildAddButton(IconType.ANGLE_RIGHT, "AddClauseToRight");
 
 	private Button addClauseLeft = buildAddButton(IconType.ANGLE_LEFT, "AddClauseToLeft");
@@ -123,27 +106,23 @@ public class MeasurePackageClauseCellListWidget {
 
 	private Label packageName = new Label();
 
-	private SingleSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel	= new SingleSelectionModel<MeasurePackageClauseDetail>();
-	
-	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
+	private SingleSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel	= new SingleSelectionModel<>();
 
-	private List<String> measureObservationList = new ArrayList<String>();
+	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel = new SingleSelectionModel<>();
 
-	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
-
-	private ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
+	private List<String> measureObservationList = new ArrayList<>();
 
 	private List<QualityDataSetDTO> appliedQdmList;
 
-	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList = new ArrayList<>();
 
-	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList = new ArrayList<MeasurePackageClauseDetail>();
-	
-	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList = new ArrayList<>();
 
-	private ArrayList<MeasurePackageClauseDetail> denoAssociatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList = new ArrayList<>();
 
-	private ArrayList<MeasurePackageClauseDetail> numAssociatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private ArrayList<MeasurePackageClauseDetail> denoAssociatedPopulationList = new ArrayList<>();
+
+	private ArrayList<MeasurePackageClauseDetail> numAssociatedPopulationList = new ArrayList<>();
 
 	private ListDataProvider<MeasurePackageClauseDetail> associationListDataProvider;
 
@@ -153,33 +132,29 @@ public class MeasurePackageClauseCellListWidget {
 
 	private MessageAlert successMessages = new SuccessMessageAlert();
 
-	private SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel;
+	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<>();
 
-	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<String, MeasurePackageClauseDetail>();
-	
 	private SimplePanel clearButtonPanel = new SimplePanel();
-	
+
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
-		rightCellList = new CellList<MeasurePackageClauseDetail>(new RightClauseCell());
+		CellList<MeasurePackageClauseDetail> rightCellList = new CellList<>(new RightClauseCell());
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
+		ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider = new ListDataProvider<>(groupingPopulationList);
 		rightCellListDataProvider.addDataDisplay(rightCellList);
 		//Clear the map and re -populate it with current clauses in Grouping List.
 		groupingClausesMap.clear();
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			rightCellList.setSelectionModel(rightCellListSelectionModel
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
-			for(MeasurePackageClauseDetail detail : groupingPopulationList){
-				groupingClausesMap.put(detail.getName(), detail);
-			}
+			groupingPopulationList.forEach(detail -> groupingClausesMap.put(detail.getName(), detail));
 		} else {
 			rightCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
-			
+
 		}
-		
+
 		return rightCellList;
 	}
 
@@ -188,20 +163,11 @@ public class MeasurePackageClauseCellListWidget {
 	 * @return CellList.
 	 */
 	public CellList<MeasurePackageClauseDetail> getLeftCellList() {
-		leftCellList = new CellList<MeasurePackageClauseDetail>(new LeftClauseCell());
+		CellList<MeasurePackageClauseDetail> leftCellList = new CellList<>(new LeftClauseCell());
 		leftCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		leftCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(clausesPopulationList);
+		ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider = new ListDataProvider<>(clausesPopulationList);
 		leftCellListDataProvider.addDataDisplay(leftCellList);
-		leftCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				if (leftCellListSelectionModel.getSelectedObject() == null) {
-					return;
-				}
-				rightCellListSelectionModel.clear();
-				addAssocationsWidget.setVisible(false);
-			}
-		});
+		leftCellListSelectionModel.addSelectionChangeHandler(event -> leftCellListSelectionModel());
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			leftCellList.setSelectionModel(leftCellListSelectionModel
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
@@ -211,6 +177,14 @@ public class MeasurePackageClauseCellListWidget {
 		}
 		return leftCellList;
 	}
+
+	private void leftCellListSelectionModel() {
+		if (leftCellListSelectionModel.getSelectedObject() != null) {
+			rightCellListSelectionModel.clear();
+			addAssocationsWidget.setVisible(false);
+		}
+	}
+
 	/**
 	 * Gets the widget.
 	 *
@@ -229,7 +203,7 @@ public class MeasurePackageClauseCellListWidget {
 		addAssocationsWidget.clear();
 		addAssocationsWidget.setWidth("220px");
 		addAssocationsWidget.setHeight("200px");
-		
+
 		addAssocationsWidget.add(new HTML("<b style='margin-left:15px;'> Add Associations </b>"));
 		addAssocationsWidget.add(getAssociatedPopulationWidget(populationList));
 		addAssocationsWidget.setVisible(false);
@@ -242,7 +216,7 @@ public class MeasurePackageClauseCellListWidget {
 
 		Panel packageGroupingPanel = new Panel(); 
 		packageGroupingPanel.setType(PanelType.PRIMARY);
-		
+
 		PanelHeader packageGroupingPanelHeader = new PanelHeader(); 
 		packageGroupingPanelHeader.setText("Package Grouping");
 		packageGroupingPanelHeader.setTitle("Package Grouping");
@@ -252,7 +226,7 @@ public class MeasurePackageClauseCellListWidget {
 		packageGroupingPanelBody.add(successMessages);
 		packageGroupingPanel.add(packageGroupingPanelHeader);
 		packageGroupingPanel.add(packageGroupingPanelBody);
-	
+
 		addAssocationsWidget.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_DisclosurePanel");
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.setDisplay(getLeftCellList());
@@ -280,24 +254,23 @@ public class MeasurePackageClauseCellListWidget {
 		hp.add(vp);
 		hp.getElement().setAttribute("id", "MeasurePackageClause_MainHoriPanel");
 		packageGroupingPanelBody.add(hp);
-		
-		
+
+
 		SpacerWidget spacer = new SpacerWidget();
 		spacer.setStylePrimaryName("clearBoth");
 		packageGroupingPanelBody.add(spacer);
-		
+
 		packageGroupingPanelBody.add(saveGroupingButton);
 		mainFlowPanel.add(packageGroupingPanel);
 	}
-	
+
 	/**
 	 * Adds the association to clauses.
 	 */
 	private void addAssociationToClauses() {
-		errorMessages.clearAlert();
-		successMessages.clearAlert();
+		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
-		MeasurePackageClauseDetail otherClauseCell = null;
+		
 		String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
 		ArrayList<MeasurePackageClauseDetail> interimArrayList = null;
 		String otherClauseType = null;
@@ -308,25 +281,10 @@ public class MeasurePackageClauseCellListWidget {
 			otherClauseType = DENOMINATOR;
 			interimArrayList = numAssociatedPopulationList;
 		}
+		
 		if (interimArrayList != null) {
-			for (MeasurePackageClauseDetail detail : interimArrayList) {
-				if (detail.isAssociatedPopulation()) {
-					groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-					setAssociatedPopulationUUID(detail.getId());
-				} else {
-					otherClauseCell = detail;
-				}
-			}
-			if (otherClauseCell != null) {
-				for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
-					if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
-						MeasurePackageClauseDetail updateDetails = entry.getValue();
-						groupingClausesMap.get(updateDetails.getName()).
-						setAssociatedPopulationUUID(otherClauseCell.getId());
-						break;
-					}
-				}
-			}
+			setAssociatedPopulationUUID(otherClauseType, interimArrayList);
+
 		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 			String scoring = MatContext.get().getCurrentMeasureScoringType();
 			if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
@@ -334,7 +292,7 @@ public class MeasurePackageClauseCellListWidget {
 				String measureObservation1 = ""; 
 				String measureObservation2 = ""; 
 				for(String entry : measureObservationList){
-					if(measureObservation1.isEmpty() || measureObservation1.equalsIgnoreCase("")){
+					if(measureObservation1.isEmpty()){
 						measureObservation1 = entry;
 					}
 					else if(measureObservation1.length() > 0){
@@ -343,49 +301,27 @@ public class MeasurePackageClauseCellListWidget {
 				}
 				if(selectedClauseCell.getName().equalsIgnoreCase(measureObservation1)){
 					otherClauseType = measureObservation2;
-					interimArrayList = associatedPopulationList;
 				}
 				else{
 					otherClauseType = measureObservation1;
-					interimArrayList = associatedPopulationList;
 				}
+				interimArrayList = associatedPopulationList;
 				if (interimArrayList != null) {
-					for (MeasurePackageClauseDetail detail : interimArrayList) {
+					setAssociatedPopulationUUID(otherClauseType, interimArrayList);
+				}
+			}else {
+				for (MeasurePackageClauseDetail detail : associatedPopulationList) {
+					if (existingUuid != null && existingUuid.equals(detail.getId())) {
 						if (detail.isAssociatedPopulation()) {
 							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
 							setAssociatedPopulationUUID(detail.getId());
 						} else {
-							otherClauseCell = detail;
-						}
-					}
-					if (otherClauseCell != null) {
-						for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
-							if (entry.getValue().getName().equalsIgnoreCase(otherClauseType)) {
-								MeasurePackageClauseDetail updateDetails = entry.getValue();
-								groupingClausesMap.get(updateDetails.getName()).
-								setAssociatedPopulationUUID(otherClauseCell.getId());
-								break;
-							}
-						}
-					}
-				}
-			}else {
-				for (MeasurePackageClauseDetail detail : associatedPopulationList) {
-					if ((existingUuid != null)
-							&& existingUuid.equals(detail.getId())) {
-						if (detail.isAssociatedPopulation()) {
-							groupingClausesMap.get(rightCellListSelectionModel.
-									getSelectedObject().getName()).
-							setAssociatedPopulationUUID(detail.getId());
-						} else {
-							groupingClausesMap.get(rightCellListSelectionModel.
-									getSelectedObject().getName()).
+							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
 							setAssociatedPopulationUUID(null);
 						}
 					} else {
 						if (detail.isAssociatedPopulation()) {
-							groupingClausesMap.get(rightCellListSelectionModel.
-									getSelectedObject().getName()).
+							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
 							setAssociatedPopulationUUID(detail.getId());
 							break;
 						}
@@ -394,34 +330,42 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		}
 	}
-	
-	
-	/**
-	 * Adds the click handlers to clear association.
-	 *
-	 * @param secondaryButton the secondary button
-	 */
-	private void addClickHandlersToClearAssociation(SecondaryButton secondaryButton) {
-		secondaryButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clearAlert();
-				successMessages.clearAlert();
-				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
-				if (selectedClauseCell.getType().equals(MEASURE_OBSERVATION)) {
-					groupingClausesMap.get(rightCellListSelectionModel.
-							getSelectedObject().getName()).
-							setAssociatedPopulationUUID(null);
-					getClearButtonPanel();
-					clearPopulationForMeasureObservation(associatedPopulationList);
-					buildAddAssociationWidget(associatedPopulationList);
-					addAssocationsWidget.setVisible(true);
+
+	private void setAssociatedPopulationUUID(String otherClauseType, ArrayList<MeasurePackageClauseDetail> interimArrayList) {
+		MeasurePackageClauseDetail otherClauseCell = null;
+
+		for (MeasurePackageClauseDetail detail : interimArrayList) {
+			if (detail.isAssociatedPopulation()) {
+				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(detail.getId());
+			} else {
+				otherClauseCell = detail;
+			}
+		}
+		
+		if (otherClauseCell != null) {
+			for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+				if (entry.getValue().getName().equalsIgnoreCase(otherClauseType)) {
+					MeasurePackageClauseDetail updateDetails = entry.getValue();
+					groupingClausesMap.get(updateDetails.getName()).setAssociatedPopulationUUID(otherClauseCell.getId());
+					break;
 				}
 			}
-		});
+		}
+
 	}
 	
+	private void clearAssociations() {
+		clearAlerts();
+		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
+		if (selectedClauseCell.getType().equals(MEASURE_OBSERVATION)) {
+			groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(null);
+			getClearButtonPanel();
+			clearPopulationForMeasureObservation(associatedPopulationList);
+			buildAddAssociationWidget(associatedPopulationList);
+			addAssocationsWidget.setVisible(true);
+		}
+	}
+
 	/**
 	 * Gets the associated pop cell list widget.
 	 *
@@ -431,8 +375,8 @@ public class MeasurePackageClauseCellListWidget {
 	private VerticalPanel getAssociatedPopulationWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
-		associatedSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
-		associatedPOPCellList = new CellList<MeasurePackageClauseDetail>(getAssociatedPopulationCompositeCell());
+		SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel = new SingleSelectionModel<>();
+		associatedPOPCellList = new CellList<>(getAssociatedPopulationCompositeCell());
 		associatedPOPCellList.redraw();
 		associatedSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
@@ -446,11 +390,10 @@ public class MeasurePackageClauseCellListWidget {
 			associatedPOPCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
 		}
-		associatedPOPCellList.setPageSize(ASOOCIATED_LIST_SIZE);
+		associatedPOPCellList.setPageSize(ASSOCIATED_LIST_SIZE);
 		associatedPOPCellList.setRowData(populationList);
 		associatedPOPCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		associationListDataProvider =
-				new ListDataProvider<MeasurePackageClauseDetail>(populationList);
+		associationListDataProvider = new ListDataProvider<>(populationList);
 		associationListDataProvider.addDataDisplay(associatedPOPCellList);
 		vPanel.setSize("200px", "170px");
 		vPanel.add(associatedPOPCellList);
@@ -460,7 +403,7 @@ public class MeasurePackageClauseCellListWidget {
 		vPanel.add(associateWidgetButtonPanel);
 		return vPanel;
 	}
-	
+
 	/**
 	 * Gets the clear button panel.
 	 *
@@ -471,16 +414,16 @@ public class MeasurePackageClauseCellListWidget {
 		SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
 		clearButtonPanel.addStyleName("floatRightButtonPanel");
 		clearButtonPanel.add(clearAssociationInClause);
-		addClickHandlersToClearAssociation(clearAssociationInClause);
+		clearAssociationInClause.addClickHandler(event -> clearAssociations());
 	}
-	
+
 	/**
 	 * Gets the associated pop composite cell.
 	 *
 	 * @return Cell.
 	 */
 	private Cell<MeasurePackageClauseDetail> getAssociatedPopulationCompositeCell() {
-		ArrayList<HasCell<MeasurePackageClauseDetail, ?>> hasCells = new ArrayList<HasCell<MeasurePackageClauseDetail, ?>>();
+		ArrayList<HasCell<MeasurePackageClauseDetail, ?>> hasCells = new ArrayList<>();
 		hasCells.add(new HasCell<MeasurePackageClauseDetail, Boolean>() {
 			private CheckboxCell chkCell = new CheckboxCell(false, true);
 			@Override
@@ -491,40 +434,19 @@ public class MeasurePackageClauseCellListWidget {
 			public FieldUpdater<MeasurePackageClauseDetail, Boolean> getFieldUpdater() {
 				return new FieldUpdater<MeasurePackageClauseDetail, Boolean>() {
 					@Override
-					public void update(int index,
-							MeasurePackageClauseDetail object, Boolean value) {
-						errorMessages.clearAlert();
-						successMessages.clearAlert();
-						MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.
-								getSelectedObject();
+					public void update(int index, MeasurePackageClauseDetail object, Boolean value) {
+						clearAlerts();
+						MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 						if (selectedClauseCell.getType().equalsIgnoreCase(DENOMINATOR)) {
-							for (MeasurePackageClauseDetail detail : denoAssociatedPopulationList) {
-								if (detail.getId().equals(object.getId())) {
-									detail.setAssociatedPopulation(value);
-								} else {
-									detail.setAssociatedPopulation(!value);
-								}
-							}
+							denoAssociatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId())));
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(denoAssociatedPopulationList);
 						} else if (selectedClauseCell.getType().equalsIgnoreCase(NUMERATOR)) {
-							for (MeasurePackageClauseDetail detail : numAssociatedPopulationList) {
-								if (detail.getId().equals(object.getId())) {
-									detail.setAssociatedPopulation(value);
-								} else {
-									detail.setAssociatedPopulation(!value);
-								}
-							}
+							numAssociatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId())));
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(numAssociatedPopulationList);
 						} else {
-							for (MeasurePackageClauseDetail detail : associatedPopulationList) {
-								if (detail.getId().equals(object.getId())) {
-									detail.setAssociatedPopulation(value);
-								} else {
-									detail.setAssociatedPopulation(!value);
-								}
-							}
+							associatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId())));
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(associatedPopulationList);
 						}
@@ -536,7 +458,7 @@ public class MeasurePackageClauseCellListWidget {
 			public Boolean getValue(MeasurePackageClauseDetail object) {
 				return object.isAssociatedPopulation();
 			} });
-		
+
 		hasCells.add(new HasCell<MeasurePackageClauseDetail, String>() {
 			private TextCell cell = new TextCell();
 			@Override
@@ -556,9 +478,10 @@ public class MeasurePackageClauseCellListWidget {
 					}
 				};
 			}
+
 		});
-		
-		Cell<MeasurePackageClauseDetail> associatePopulationCell = new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
+
+		return new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
 			@Override
 			public void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<table><tbody><tr>");
@@ -578,12 +501,11 @@ public class MeasurePackageClauseCellListWidget {
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("&nbsp;</font></td>");
 			}
-			
+
 		};
-		
-		return associatePopulationCell;
+
 	}
-	
+
 	private Button buildSaveButton(IconType icon, String text) {
 		Button button = new Button(); 
 		button.getElement().setAttribute("id", text.replaceAll(" ", "_") + "_button");
@@ -591,10 +513,10 @@ public class MeasurePackageClauseCellListWidget {
 		button.setIcon(icon);
 		button.setText(text);
 		button.setTitle("Click to " + text);
-		
+
 		return button; 
 	}
-	
+
 	/**
 	 * Builds the add button.
 	 *
@@ -646,173 +568,158 @@ public class MeasurePackageClauseCellListWidget {
 	 * Button Left/Right/LeftAll/RightAll handler's.
 	 */
 	private void clauseButtonHandlers() {
-		addClauseRight.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clearAlert();
-				successMessages.clearAlert();
-				if ((clausesPopulationList.size() > 0)
-						&& (leftCellListSelectionModel.getSelectedObject() != null)) {
-					ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<MeasurePackageClauseDetail>();
-					validateGroupingList.addAll(groupingPopulationList);
-					validateGroupingList.add(leftCellListSelectionModel.getSelectedObject());
-					if (isValid(validateGroupingList, ADD_CLAUSE_RIGHT)) {
-						groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
-						groupingClausesMap.put(leftCellListSelectionModel.getSelectedObject().getName(),
-								leftCellListSelectionModel.getSelectedObject());
-						clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
-						Collections.sort(groupingPopulationList);
-						Collections.sort(clausesPopulationList);
-						getRightPagerPanel().setDisplay(getRightCellList());
-						getLeftPagerPanel().setDisplay(getLeftCellList());
-						leftCellListSelectionModel.clear();
-					}
-				}
-			}
-		});
-		addClauseLeft.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clearAlert();
-				successMessages.clearAlert();
-				if ((groupingPopulationList.size() > 0)
-						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
-					String otherClauseType = null;
-					if (rightCellListSelectionModel.getSelectedObject().
-							getType().equalsIgnoreCase(DENOMINATOR)) {
-						otherClauseType = NUMERATOR;
-					} else if (rightCellListSelectionModel.getSelectedObject().
-							getType().equalsIgnoreCase(NUMERATOR)) {
-						otherClauseType = DENOMINATOR;
-					}
-					//If clause is removed, and if it is associated with any other clause,
-					//all it's associations are removed.
-					String denomClauseType = null;
-					String numClauseType = null;
-					boolean isAssociated = false;
-					if(rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("measure observation") || 
-							rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("stratification")) {
-						groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject()); 
-					}
-					
-					else {
-						for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-							
-							// if the detail is the deonimator, set the denom clause type.
-							if(detail.getType().equals(DENOMINATOR)){
-								denomClauseType = detail.getName();
-							} else if(detail.getType().equals(NUMERATOR)){ // if the detail is the numerator, set the numClauseType
-								numClauseType = detail.getName();
-							}
+		addClauseRight.addClickHandler(event -> addClauseRight());
+		addClauseLeft.addClickHandler(event -> addClauseLeft());
+		addAllClauseRight.addClickHandler(event -> addAllClauseRight());
+		addAllClauseLeft.addClickHandler(event -> addAllClauseLeft());
+	}
 
-							if ((detail.getAssociatedPopulationUUID() != null)
-									&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
-											rightCellListSelectionModel.getSelectedObject().getId())) { // if the detail is the selected object, set the associations to null
-								detail.setAssociatedPopulationUUID(null);
-								groupingClausesMap.put(detail.getName(), detail);
-								isAssociated = true;
-							} else if (detail.getId().equalsIgnoreCase(
-									rightCellListSelectionModel.getSelectedObject().getId())) {
-								detail.setAssociatedPopulationUUID(null);
-								groupingClausesMap.put(detail.getName(), detail);
-								isAssociated = true;
-							}
-							if((denomClauseType != null)  && isAssociated) {
-								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
-							}
-							if((numClauseType!=null) && isAssociated){
-								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							}
-							if ((otherClauseType != null)
-									&& otherClauseType.equalsIgnoreCase(detail.getType())) {
-								detail.setAssociatedPopulationUUID(null);
-								groupingClausesMap.put(detail.getName(), detail);
-							}
-						}
-					}
-					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
-					groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
-					groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
-					Collections.sort(groupingPopulationList);
-					Collections.sort(clausesPopulationList);
-					getRightPagerPanel().setDisplay(getRightCellList());
-					getLeftPagerPanel().setDisplay(getLeftCellList());
-					rightCellListSelectionModel.clear();
-					addAssocationsWidget.setVisible(false);
-				}
+	private void addClauseRight() {
+		clearAlerts();
+		if (!clausesPopulationList.isEmpty() && leftCellListSelectionModel.getSelectedObject() != null) {
+			ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
+			validateGroupingList.addAll(groupingPopulationList);
+			validateGroupingList.add(leftCellListSelectionModel.getSelectedObject());
+			if (isValid(validateGroupingList, ADD_CLAUSE_RIGHT)) {
+				groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
+				groupingClausesMap.put(leftCellListSelectionModel.getSelectedObject().getName(), leftCellListSelectionModel.getSelectedObject());
+				clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
+				sortListAndSetPanelOnAddClick();
+				leftCellListSelectionModel.clear();
 			}
-		});
-		addAllClauseRight.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clearAlert();
-				successMessages.clearAlert();
-				if (clausesPopulationList.size() != 0) {
-					ArrayList<MeasurePackageClauseDetail> validateGroupingList =
-							new ArrayList<MeasurePackageClauseDetail>();
-					validateGroupingList.addAll(clausesPopulationList);
-					if (isValid(validateGroupingList, "addAllClauseRight")) {
-						groupingPopulationList.addAll(clausesPopulationList);
-						for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-							groupingClausesMap.put(detail.getName(), detail);
-						}
-						clausesPopulationList.removeAll(clausesPopulationList);
-						Collections.sort(groupingPopulationList);
-						rightCellListSelectionModel.clear();
-						leftCellListSelectionModel.clear();
-						getRightPagerPanel().setDisplay(getRightCellList());
-						getLeftPagerPanel().setDisplay(getLeftCellList());
-					}
-				}
-			}
-		});
-		addAllClauseLeft.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clearAlert();
-				successMessages.clearAlert();
-				if (groupingPopulationList.size() != 0) {
-					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-						detail.setAssociatedPopulationUUID(null);
-					}
-					clausesPopulationList.addAll(groupingPopulationList);
-					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-						groupingClausesMap.remove(detail.getName());
-					}
-					groupingPopulationList.removeAll(groupingPopulationList);
-					Collections.sort(clausesPopulationList);
-					rightCellListSelectionModel.clear();
-					leftCellListSelectionModel.clear();
-					getRightPagerPanel().setDisplay(getRightCellList());
-					getLeftPagerPanel().setDisplay(getLeftCellList());
-					addAssocationsWidget.setVisible(false);
-				}
-			}
-		});
+		}
+
+	}
+
+	private void addClauseLeft() {
+		clearAlerts();
+		if (!groupingPopulationList.isEmpty() && rightCellListSelectionModel.getSelectedObject() != null) {
+
+			createGroupingClausesMap();
+
+			clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
+			groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
+			groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
+			sortListAndSetPanelOnAddClick();
+			rightCellListSelectionModel.clear();
+			addAssocationsWidget.setVisible(false);
+		}
+
 	}
 	
+	private void sortListAndSetPanelOnAddClick() {
+		Collections.sort(groupingPopulationList);
+		Collections.sort(clausesPopulationList);
+		getRightPagerPanel().setDisplay(getRightCellList());
+		getLeftPagerPanel().setDisplay(getLeftCellList());
+	}
+	
+	private void createGroupingClausesMap() {
+		String otherClauseType = null;
+		if (rightCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(DENOMINATOR)) {
+			otherClauseType = NUMERATOR;
+		} else if (rightCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(NUMERATOR)) {
+			otherClauseType = DENOMINATOR;
+		}
+		//If clause is removed, and if it is associated with any other clause,
+		//all it's associations are removed.
+		String denomClauseType = null;
+		String numClauseType = null;
+		boolean isAssociated = false;
+
+		if(rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("measure observation") || 
+				rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith(STRATIFICATION)) {
+			groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject()); 
+		}
+
+		else {
+			for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+
+				// if the detail is the denominator, set the denom clause type.
+				if(detail.getType().equals(DENOMINATOR)){
+					denomClauseType = detail.getName();
+				} else if(detail.getType().equals(NUMERATOR)){ // if the detail is the numerator, set the numClauseType
+					numClauseType = detail.getName();
+				}
+
+				if ((detail.getAssociatedPopulationUUID() != null
+						&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(rightCellListSelectionModel.getSelectedObject().getId()))
+						|| detail.getId().equalsIgnoreCase(rightCellListSelectionModel.getSelectedObject().getId())) { 
+					// if the detail is the selected object, set the associations to null
+					detail.setAssociatedPopulationUUID(null);
+					groupingClausesMap.put(detail.getName(), detail);
+					isAssociated = true;
+				}
+				if(denomClauseType != null  && isAssociated) {
+					groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
+				}
+				if(numClauseType!=null && isAssociated){
+					groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
+				}
+				if (otherClauseType != null && otherClauseType.equalsIgnoreCase(detail.getType())) {
+					detail.setAssociatedPopulationUUID(null);
+					groupingClausesMap.put(detail.getName(), detail);
+				}
+			}
+		}
+
+	}
+
+	private void addAllClauseRight() {
+		clearAlerts();
+		if (!clausesPopulationList.isEmpty()) {
+			ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
+			validateGroupingList.addAll(clausesPopulationList);
+			if (isValid(validateGroupingList, ADD_ALL_CLAUSE_RIGHT)) {
+				groupingPopulationList.addAll(clausesPopulationList);
+				groupingPopulationList.forEach(detail -> groupingClausesMap.put(detail.getName(), detail));
+				clausesPopulationList.clear();
+				Collections.sort(groupingPopulationList);
+				setPanelOnAddAllClick();
+			}
+		}
+	}
+
+	private void addAllClauseLeft() {
+		clearAlerts();
+		if (!groupingPopulationList.isEmpty()) {
+			for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+				detail.setAssociatedPopulationUUID(null);
+			}
+			clausesPopulationList.addAll(groupingPopulationList);
+			groupingPopulationList.forEach(detail -> groupingClausesMap.remove(detail.getName()));
+			groupingPopulationList.clear();
+			Collections.sort(clausesPopulationList);
+			setPanelOnAddAllClick();
+			addAssocationsWidget.setVisible(false);
+		}
+	}
+
+	private void setPanelOnAddAllClick() {
+		rightCellListSelectionModel.clear();
+		leftCellListSelectionModel.clear();
+		getRightPagerPanel().setDisplay(getRightCellList());
+		getLeftPagerPanel().setDisplay(getLeftCellList());
+	}
+	
+	private void clearAlerts() {
+		errorMessages.clearAlert();
+		successMessages.clearAlert();
+	}
+
 	/**
-	 * Check for number of starification.
+	 * Check for number of stratification.
 	 *
 	 * @param validateGroupingList the validate grouping list
 	 * @param messages the messages
 	 */
-	public void checkForNumberOfStratification(
-			ArrayList<MeasurePackageClauseDetail> validateGroupingList,
-			List<String> messages) {
-		int count = 0;
-		for (MeasurePackageClauseDetail clause : validateGroupingList) {
-			if (clause.getType().equalsIgnoreCase(STRATIFICATION)) {
-				count++;
-			}
-		}
-		if ((count > 1) && (messages.size() == 0)) {
-			messages.add(MatContext.get().getMessageDelegate()
-					.getSTRATIFICATION_VALIDATION_FOR_GROUPING());
-			
+	public void checkForNumberOfStratification(List<MeasurePackageClauseDetail> validateGroupingList, List<String> messages) {
+		long count = validateGroupingList.stream().filter(s -> s.getType().equalsIgnoreCase(STRATIFICATION)).count();
+		if (count > 1 && messages.isEmpty()) {
+			messages.add(MatContext.get().getMessageDelegate().getSTRATIFICATION_VALIDATION_FOR_GROUPING());
 		}
 	}
-	
+
 	/**
 	 * Check for number of measure observations.
 	 *
@@ -820,33 +727,20 @@ public class MeasurePackageClauseCellListWidget {
 	 * @param messages the messages
 	 * @param scoring 
 	 */
-	public void CheckForNumberOfMeasureObs(
-			ArrayList<MeasurePackageClauseDetail> validateGroupingList,
-			List<String> messages, String scoring) {
-		int count = 0;
-		for (MeasurePackageClauseDetail clause : validateGroupingList) {
-			if (clause.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
-				count++;
-			}
-		}
-		
+	public void checkForNumberOfMeasureObs(List<MeasurePackageClauseDetail> validateGroupingList, List<String> messages, String scoring) {
+		long count = validateGroupingList.stream().filter(mo -> mo.getType().equalsIgnoreCase(MEASURE_OBSERVATION)).count();
 		if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
-			if ((count > 2) && (messages.size() == 0)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getMEASURE_OBS_VALIDATION_FOR_GROUPING());
+			if (count > 2 && messages.isEmpty()) {
+				messages.add(MatContext.get().getMessageDelegate().getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 
 			}else{
 				measureObservationList.clear();
-				for (MeasurePackageClauseDetail entry : validateGroupingList) {
-					if (entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
-						measureObservationList.add(entry.getName());
-					}
-				}
+				validateGroupingList.stream().filter(entry -> entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)).forEach(mo -> measureObservationList.add(mo.getName()));
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Method to count number of Clause types.
 	 * 
@@ -856,28 +750,19 @@ public class MeasurePackageClauseCellListWidget {
 	 *            - String.
 	 * @return int.
 	 */
-	private int countTypeForAssociation(
-			List<MeasurePackageClauseDetail> clauseList,  String type) {
-		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private int countTypeForAssociation(List<MeasurePackageClauseDetail> clauseList, String type) {
+		associatedPopulationList = new ArrayList<>();
 		denoAssociatedPopulationList.clear();
 		numAssociatedPopulationList.clear();
 		int count = 0;
 		MeasurePackageClauseDetail selectedClauseNode = rightCellListSelectionModel.getSelectedObject();
 		for (MeasurePackageClauseDetail detail : clauseList) {
 			if (type.equals(detail.getType())) {
-				if (detail.getId().equalsIgnoreCase(selectedClauseNode.getAssociatedPopulationUUID())) {
-					detail.setAssociatedPopulation(true);
-				} else {
-					detail.setAssociatedPopulation(false);
-				}
-				if (selectedClauseNode.getType().equalsIgnoreCase(DENOMINATOR)) {
-					if (!denoAssociatedPopulationList.contains(detail)) {
-						denoAssociatedPopulationList.add(detail);
-					}
-				} else if (selectedClauseNode.getType().equalsIgnoreCase(NUMERATOR)){
-					if (!numAssociatedPopulationList.contains(detail)) {
-						numAssociatedPopulationList.add(detail);
-					}
+				detail.setAssociatedPopulation(detail.getId().equalsIgnoreCase(selectedClauseNode.getAssociatedPopulationUUID()));
+				if (selectedClauseNode.getType().equalsIgnoreCase(DENOMINATOR) && !denoAssociatedPopulationList.contains(detail)) {
+					denoAssociatedPopulationList.add(detail);
+				} else if (selectedClauseNode.getType().equalsIgnoreCase(NUMERATOR) && !numAssociatedPopulationList.contains(detail)){
+					numAssociatedPopulationList.add(detail);
 				}
 				count++;
 			}
@@ -886,20 +771,17 @@ public class MeasurePackageClauseCellListWidget {
 		Collections.sort(numAssociatedPopulationList);
 		return count;
 	}
-	
+
 	/**
 	 * Generate's Association List for Measure Observation in Ratio Measure's.
 	 * @param clauseList - List.
 	 */
-	private void addPopulationForMeasureObservation(
-			List<MeasurePackageClauseDetail> clauseList) {
-		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private void addPopulationForMeasureObservation(List<MeasurePackageClauseDetail> clauseList) {
+		associatedPopulationList = new ArrayList<>();
 		for (MeasurePackageClauseDetail detail : clauseList) {
-			if ((DENOMINATOR.equalsIgnoreCase(detail.getType())
-					|| NUMERATOR.equalsIgnoreCase(detail.getType()))
+			if ((DENOMINATOR.equalsIgnoreCase(detail.getType()) || NUMERATOR.equalsIgnoreCase(detail.getType())) 
 					&& !associatedPopulationList.contains(detail)) {
-				if (detail.getId().equalsIgnoreCase(rightCellListSelectionModel.
-						getSelectedObject().getAssociatedPopulationUUID())) {
+				if (detail.getId().equalsIgnoreCase(rightCellListSelectionModel.getSelectedObject().getAssociatedPopulationUUID())) {
 					detail.setAssociatedPopulation(true);
 				} else {
 					detail.setAssociatedPopulation(false);
@@ -910,12 +792,10 @@ public class MeasurePackageClauseCellListWidget {
 		Collections.sort(associatedPopulationList);
 	}
 
-	private void clearPopulationForMeasureObservation(
-			List<MeasurePackageClauseDetail> clauseList) {
-		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+	private void clearPopulationForMeasureObservation(List<MeasurePackageClauseDetail> clauseList) {
+		associatedPopulationList = new ArrayList<>();
 		for (MeasurePackageClauseDetail detail : clauseList) {
-			if ((DENOMINATOR.equalsIgnoreCase(detail.getType())
-					|| NUMERATOR.equalsIgnoreCase(detail.getType()))
+			if ((DENOMINATOR.equalsIgnoreCase(detail.getType()) || NUMERATOR.equalsIgnoreCase(detail.getType()))
 					&& !associatedPopulationList.contains(detail)) {
 				detail.setAssociatedPopulation(false);
 				associatedPopulationList.add(detail);
@@ -963,8 +843,7 @@ public class MeasurePackageClauseCellListWidget {
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
-			errorMessages.clearAlert();
-			successMessages.clearAlert();
+			clearAlerts();
 			if(rightCellListSelectionModel.getSelectedObject() != null){
 				groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject());
 			}
@@ -973,14 +852,12 @@ public class MeasurePackageClauseCellListWidget {
 				String scoring = MatContext.get().getCurrentMeasureScoringType();
 				//Show Association only for Ratio Measures.
 				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
-					if ((value.getType().equalsIgnoreCase(DENOMINATOR))
-							|| (value.getType().equalsIgnoreCase(NUMERATOR))) {
+					if (value.getType().equalsIgnoreCase(DENOMINATOR) || value.getType().equalsIgnoreCase(NUMERATOR)) {
 						clearButtonPanel.clear();
 						// If More than one Populations are added in Grouping, Add Association Widget is shown
 						// otherwise available population is added to Denominator and Numerator Association List.
-						if (countTypeForAssociation(groupingPopulationList
-								, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
-							if ((value.getType().equalsIgnoreCase(DENOMINATOR))) {
+						if (countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
+							if (value.getType().equalsIgnoreCase(DENOMINATOR)) {
 								buildAddAssociationWidget(denoAssociatedPopulationList);
 							} else {
 								buildAddAssociationWidget(numAssociatedPopulationList);
@@ -989,13 +866,13 @@ public class MeasurePackageClauseCellListWidget {
 						} else  {
 							addAssocationsWidget.setVisible(false);
 						}
-					} else if ((value.getType().equalsIgnoreCase(MEASURE_OBSERVATION))) {
+					} else if (value.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 						if(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1){
 							addPopulationForMeasureObservation(groupingPopulationList);
 							buildAddAssociationWidget(associatedPopulationList);
 							addAssocationsWidget.setVisible(true);
 						}
-						
+
 					} else {
 						addAssocationsWidget.setVisible(false);
 						associatedPopulationList.clear();
@@ -1070,33 +947,27 @@ public class MeasurePackageClauseCellListWidget {
 		}
 	}
 
-	private boolean isValid(ArrayList<MeasurePackageClauseDetail> validatGroupingList,
-			String buttonType) {
+	private boolean isValid(ArrayList<MeasurePackageClauseDetail> validatGroupingList, String buttonType) {
 		MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
 		List<String> messages = validator.isValidClauseMove(validatGroupingList);
-		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel
-				.getSelectedObject().getType()
-				.equalsIgnoreCase(STRATIFICATION))
+		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(STRATIFICATION))
 				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
 			checkForNumberOfStratification(validatGroupingList, messages);
 		}
 		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel
-				.getSelectedObject().getType()
-				.equalsIgnoreCase(MEASURE_OBSERVATION))
+		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MEASURE_OBSERVATION))
 				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
-			CheckForNumberOfMeasureObs(validatGroupingList, messages , scoring);
+			checkForNumberOfMeasureObs(validatGroupingList, messages , scoring);
 		}
-		if (messages.size() > 0) {
+		if (!messages.isEmpty()) {
 			errorMessages.createAlert(messages);
 		} else {
-			errorMessages.clearAlert();
-			successMessages.clearAlert();
+			clearAlerts();
 		}
-		return messages.size() == 0;
+		return messages.isEmpty();
 	}
 
-	public ArrayList<MeasurePackageClauseDetail> getGroupingPopulationList() {
+	public List<MeasurePackageClauseDetail> getGroupingPopulationList() {
 		return groupingPopulationList;
 	}
 
@@ -1104,22 +975,22 @@ public class MeasurePackageClauseCellListWidget {
 		this.groupingPopulationList = (ArrayList<MeasurePackageClauseDetail>) groupingPopulationList;
 	}
 
-	public ArrayList<MeasurePackageClauseDetail> getClausesPopulationList() {
+	public List<MeasurePackageClauseDetail> getClausesPopulationList() {
 		return clausesPopulationList;
 	}
 
 	public void setClausesPopulationList(List<MeasurePackageClauseDetail> clauses) {
 		clausesPopulationList = (ArrayList<MeasurePackageClauseDetail>) clauses;
 	}
-	
+
 	public ShowMorePagerPanel getRightPagerPanel() {
 		return rightPagerPanel;
 	}
-	
+
 	public ShowMorePagerPanel getLeftPagerPanel() {
 		return leftPagerPanel;
 	}
-	
+
 	public RangeLabelPager getRightRangeLabelPager() {
 		return rightRangeLabelPager;
 	}
@@ -1127,12 +998,12 @@ public class MeasurePackageClauseCellListWidget {
 	public RangeLabelPager getLeftRangeLabelPager() {
 		return leftRangeLabelPager;
 	}
-	
-	
+
+
 	public VerticalPanel getAddAssociationsPanel() {
 		return addAssocationsWidget;
 	}
-	
+
 	public List<QualityDataSetDTO> getAppliedQdmList() {
 		return appliedQdmList;
 	}
@@ -1140,15 +1011,15 @@ public class MeasurePackageClauseCellListWidget {
 	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;
 	}
-	
+
 	public Label getPackageName() {
 		return packageName;
 	}
-	
+
 	public void setPackageName(Label packageName) {
 		this.packageName = packageName;
 	}
-	
+
 	public Button getSaveGrouping() {
 		return saveGroupingButton;
 	}
@@ -1196,12 +1067,12 @@ public class MeasurePackageClauseCellListWidget {
 	public void setAssociatedCellList(CellList<MeasurePackageClauseDetail> associatedCellList) {
 		this.associatedCellList = associatedCellList;
 	}
-	
-	public ArrayList<MeasurePackageClauseDetail> getAssociatedPopulationList() {
+
+	public List<MeasurePackageClauseDetail> getAssociatedPopulationList() {
 		return associatedPopulationList;
 	}
 
-	public void setAssociatedPopulationList(ArrayList<MeasurePackageClauseDetail> associatedPopulationList) {
-		this.associatedPopulationList = associatedPopulationList;
+	public void setAssociatedPopulationList(List<MeasurePackageClauseDetail> associatedPopulationList) {
+		this.associatedPopulationList = (ArrayList<MeasurePackageClauseDetail>) associatedPopulationList;
 	}
 }

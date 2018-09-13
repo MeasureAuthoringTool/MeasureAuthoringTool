@@ -269,6 +269,7 @@ public class CQLGeneralInformationView {
 	
 	public void resetFormGroup(){
 		getLibNameGroup().setValidationState(ValidationState.NONE);
+		getCommentsGroup().setValidationState(ValidationState.NONE);
 	}
 
 	public FormGroup getLibNameGroup() {

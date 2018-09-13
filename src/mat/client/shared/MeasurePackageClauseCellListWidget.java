@@ -669,6 +669,7 @@ public class MeasurePackageClauseCellListWidget {
 		clearAlerts();
 		if (!clausesPopulationList.isEmpty()) {
 			ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<>();
+			validateGroupingList.addAll(groupingPopulationList);
 			validateGroupingList.addAll(clausesPopulationList);
 			if (isValid(validateGroupingList, ADD_ALL_CLAUSE_RIGHT)) {
 				groupingPopulationList.addAll(clausesPopulationList);

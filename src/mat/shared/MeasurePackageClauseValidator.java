@@ -66,7 +66,8 @@ public class MeasurePackageClauseValidator {
 		 * zero or one Denominator Exclusions, Denominator Exceptions
 		 */
 		if ((countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-				|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)) {
+				|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)
+				|| (countDetailsWithType(detailList, ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
 			messages.add(MatContext.get().getMessageDelegate().getProportionTooManyMessage());
 		}
 		/* no Numerator Exclusions, Measure Population, Measure Observations */
@@ -209,7 +210,8 @@ public class MeasurePackageClauseValidator {
 		 * zero or one Denominator Exclusions, Denominator Exceptions
 		 */
 		if ((countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-				|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)) {
+				|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)
+				|| (countDetailsWithType(detailList, ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
 			messages.add(MatContext.get().getMessageDelegate().getProportionTooManyMessage());
 		}
 		/* no Numerator Exclusions, Measure Population, Measure Observations */

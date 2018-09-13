@@ -678,7 +678,7 @@ public class MessageDelegate {
 	
 	/** The proportion too many. */
 	private final String PROPORTION_TOO_MANY = "For a Proportion measure, a grouping may not contain more than one of each of the following: "
-			+ "Denominator Exclusions and Denominator Exceptions.";
+			+ "Denominator Exclusions, Denominator Exceptions, and Numerator Exclusions.";
 	
 	/*
 	 * PROPORTION

@@ -323,7 +323,7 @@ public class CompositeMeasureValidator {
 		String templateXml = "";
 		try {
 			XmlProcessor xmlProcessor = cqlLibraryService.loadCQLXmlTemplateFile();
-			Node measureNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure");
+			Node measureNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "measure");
 			templateXml = xmlProcessor.transform(measureNode);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();

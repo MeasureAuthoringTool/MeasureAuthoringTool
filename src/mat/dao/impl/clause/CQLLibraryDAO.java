@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.clause.CQLLibraryAssociationDAO;
+import mat.dao.search.CriteriaQuery;
 import mat.dao.search.GenericDAO;
 import mat.model.LockedUserInfo;
 import mat.model.SecurityRole;
@@ -104,7 +106,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	/** The lock threshold. */
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 	
-	private List<CQLLibrary> searchForReplaceLibrariesMeasure(String setId) {
+	private List<CQLLibrary> searchForReplaceLibraries(String setId) {
 		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
 		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		cCriteria.add(Restrictions.eq("draft", false));
@@ -112,167 +114,37 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		cCriteria.add(Restrictions.eq("set_id", setId));
 		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
 		cCriteria.setFirstResult(0);
-
-		List<CQLLibrary> libraryResultList = cCriteria.list();
-
-		List<CQLLibrary> orderedCQlLibList = null;
-		if (libraryResultList != null) {
-			orderedCQlLibList = sortLibraryList(libraryResultList);
-		} else {
-			orderedCQlLibList = new ArrayList<CQLLibrary>();
-		}
-
-		Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
-
-		// Adding logic to get rid of libraries with second level of child and
-		// also those with cyclic dependency, if library does not have second level of child, check for if it's in the same family
-		List<CQLLibraryAssociation> totalAssociations = new ArrayList<CQLLibraryAssociation>();
-		while (orderedCQlLibListIte.hasNext()) {
-			CQLLibrary cqlLibrary = orderedCQlLibListIte.next();
-			String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId() : cqlLibrary.getId();
-			
-			totalAssociations = cqlLibraryAssociationDAO.getAssociations(asociationId);
-			if (hasChildLibraries(totalAssociations)) {
-				orderedCQlLibListIte.remove();
-			}
-		}
-
-		return orderedCQlLibList;
-
-	}
-
-	private List<CQLLibrary> searchForReplaceLibrariesIncludes(String setId) {
-		Criteria cCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
-		cCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		cCriteria.add(Restrictions.eq("draft", false));
-		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
-		cCriteria.add(Restrictions.eq("set_id", setId));
-		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
-		
-		cCriteria.setFirstResult(0);
-
-		List<CQLLibrary> libraryResultList = cCriteria.list();
-
-		List<CQLLibrary> orderedCQlLibList = null;
-		if (libraryResultList != null) {
-			orderedCQlLibList = sortLibraryList(libraryResultList);
-		} else {
-			orderedCQlLibList = new ArrayList<CQLLibrary>();
-		}
-
-		StringUtility su = new StringUtility();
-		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
-
-		Iterator<CQLLibrary> orderedCQlLibListIte = orderedCQlLibList.iterator();
-
-		while (orderedCQlLibListIte.hasNext()) {
-			CQLLibrary cqlLibrary = orderedCQlLibListIte.next();
-			String asociationId = (cqlLibrary.getMeasureId() != null) ? cqlLibrary.getMeasureId() : cqlLibrary.getId();
-			int associationCount = cqlLibraryAssociationDAO.findAssociationCount(asociationId);
-
-			// Logic to remove any library with a child
-			if (associationCount > 0){
-				orderedCQlLibListIte.remove();
-			}
-		}
-
-		return orderedCQlLibList;
-
+		return sortLibraryList(cCriteria.list());
 	}
 
 	@Override
 	public List<CQLLibrary> searchForIncludes(String setId, String searchText, boolean filter) {
-		String searchString = searchText.toLowerCase().trim();
-		String queryString = null;
+		searchText = searchText.toLowerCase();
+	
+		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
+		criteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
+		criteria.add(Restrictions.eq("draft", false));
+		criteria.add(Restrictions.not(Restrictions.eq("set_id", setId)));
 		
-		if(filter){
-			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), setId, 2);
-		} else {
-			queryString = CQLQueryUtil.buildQuery(MATPropertiesService.get().getQmdVersion(), setId, 0);
+		List<CQLLibrary> libraries = criteria.list();
+		if(!StringUtility.isEmptyOrNull(searchText)) {
+			libraries = filterLibraries(searchText, libraries);
 		}
 		
-		Query query = getSessionFactory().getCurrentSession().createQuery(queryString);
-				
-		List<CQLLibrary> libraryResultList = query.list();
-		
-		List<CQLLibrary> orderedCQlLibList = null;
-		if (libraryResultList != null) {
-			orderedCQlLibList = sortLibraryList(libraryResultList);
-		} else {
-			orderedCQlLibList = new ArrayList<CQLLibrary>();
-		}
-
-		StringUtility su = new StringUtility();
-		List<CQLLibrary> orderedList = new ArrayList<CQLLibrary>();
-
-		for (CQLLibrary cqlLibrary : orderedCQlLibList) {
-
-			boolean matchesSearch = searchResultsForCQLLibrary(searchString, su, cqlLibrary);
-			if (matchesSearch) {
-				orderedList.add(cqlLibrary);
-			}
-		}
-
-		return orderedList;
-
+		libraries = sortLibraryList(libraries);
+		return libraries;
+	}
+	
+	private List<CQLLibrary> filterLibraries(String searchText, List<CQLLibrary> originalLibraries) {
+		return originalLibraries.stream().filter(l -> 
+			l.getName().toLowerCase().contains(searchText) || 
+			l.getOwnerId().getFirstName().toLowerCase().contains(searchText) ||
+			l.getOwnerId().getLastName().toLowerCase().contains(searchText)).collect(Collectors.toList());
 	}
 	
 	@Override
-	public List<CQLLibrary> searchForReplaceLibraries(String setId, boolean filter) {
-		String queryString = null;
-		List<CQLLibrary> libraryResultList = new ArrayList<>(); 
-		
-		
-		if(filter){
-			libraryResultList = searchForReplaceLibrariesMeasure(setId);
-		} else {
-			libraryResultList = searchForReplaceLibrariesIncludes(setId);
-		}
-		
-		return libraryResultList;
-	}
-	
-	private void printAllID(List<CQLLibrary> orderedCQlLibList) {
-		StringBuilder idString = new StringBuilder();
-		for (CQLLibrary library : orderedCQlLibList) {
-			idString.append("\n '").append(library.getId()).append("'");
-		}
-		System.out.println(idString);
-	}
-
-	private boolean hasChildLibraries(List<CQLLibraryAssociation> totalAssociations) {
-		for (CQLLibraryAssociation result : totalAssociations) {
-			String associatedMeasureId = getAssociatedMeasureId(result.getCqlLibraryId());
-			String searchId = (associatedMeasureId != null) ? associatedMeasureId : result.getCqlLibraryId();
-			if (cqlLibraryAssociationDAO.findAssociationCount(searchId) != 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean hasCyclicDependency(String setId, String asociationId) {
-		String associateSetId = getSetIdForCQLLibrary(asociationId);
-		if (setId != null && associateSetId != null) {
-			if (!setId.equalsIgnoreCase(associateSetId)) {
-				List<CQLLibraryAssociation> primaryAssociations = cqlLibraryAssociationDAO
-						.getAssociations(asociationId);
-				for (CQLLibraryAssociation parent : primaryAssociations) {
-					String associatedMeasureId = getAssociatedMeasureId(parent.getCqlLibraryId());
-					String searchId = (associatedMeasureId != null) ? associatedMeasureId : parent.getCqlLibraryId();
-					if (cqlLibraryAssociationDAO.findAssociationCount(searchId) != 0) {
-						hasCyclicDependency(setId, searchId);
-					}
-				}
-			} else {
-				System.out.println("The CqlLibrary with Id : " + asociationId
-						+ " is removed from list due to cyclic dependency with existing libraries");
-				logger.info("The CqlLibrary with Id : " + asociationId
-						+ " is removed from list due to cyclic dependency with existing libraries");
-				return true;
-			}
-		}
-		return false;
+	public List<CQLLibrary> searchForReplaceLibraries(String setId, boolean filter) {		
+		return searchForReplaceLibraries(setId);
 	}
 
 	@Override
@@ -345,9 +217,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		}
 		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryShare.class);
 		shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
-		//shareCriteria.add(Restrictions.in("cqlLibrary.id", cqlLibIdDTOMap.keySet()));
 		List<CQLLibraryShare> shareList = shareCriteria.list();
-		// get share level for each cql set and set it on each dto
 		HashMap<String, String> cqlSetIdToShareLevel = new HashMap<String, String>();
 		if (orderedList.size() > 0) {
 			for (CQLLibraryShare share : shareList) {
@@ -410,7 +280,6 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	}
 
 	private List<CQLLibrary> sortLibraryList(List<CQLLibrary> libraryResultList) {
-		// generate sortable lists
 		List<List<CQLLibrary>> libraryList = new ArrayList<List<CQLLibrary>>();
 		for (CQLLibrary cqlLib : libraryResultList) {
 			boolean hasList = false;
@@ -422,23 +291,19 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 					break;
 				}
 			}
-			// }
 			if (!hasList) {
 				List<CQLLibrary> cqllist = new ArrayList<CQLLibrary>();
-				// Check if Measure is softDeleted then dont include that into
-				// list.
-				// if(m.getDeleted()==null){
 				cqllist.add(cqlLib);
 				libraryList.add(cqllist);
-				// }
 			}
 		}
-		// sort
+
 		for (List<CQLLibrary> list : libraryList) {
 			Collections.sort(list, new CQLLibraryComparator());
 		}
+		
 		Collections.sort(libraryList, new CQLLibraryListComparator());
-		// compile list
+
 		List<CQLLibrary> retList = new ArrayList<CQLLibrary>();
 		for (List<CQLLibrary> mlist : libraryList) {
 			for (CQLLibrary m : mlist) {
@@ -457,8 +322,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	 * @param cqlLibrary
 	 * @return boolean
 	 */
-	private boolean searchResultsForCQLLibrary(String searchTextLC, StringUtility stringUtility,
-			CQLLibrary cqlLibrary) {
+	private boolean searchResultsForCQLLibrary(String searchTextLC, StringUtility stringUtility, CQLLibrary cqlLibrary) {
 
 		boolean matchesSearch = stringUtility.isEmptyOrNull(searchTextLC) ? true :
 		// CQL name

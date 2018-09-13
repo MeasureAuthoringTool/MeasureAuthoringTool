@@ -59,6 +59,8 @@ import mat.shared.StringUtility;
 
 public class ComponentMeasureDisplay implements BaseDisplay {
 	
+	private static final String SEARCH_BY_MEASURE_NAME_OR_OWNER = "Search by measure name or owner";
+
 	protected HTML instructions = new HTML("Perform a search by measure name or owner for a list of available component measures. "
 			+ "Select component measures with the checkbox in-line with the measure name and assign each component measure an alias.");
 	
@@ -82,7 +84,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	private PanelHeader appliedComponentMeasureHeader = new PanelHeader();
 	private static final int PAGE_SIZE = 25;
 	
-	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search", "Search by measure name or owner");
+	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", SEARCH_BY_MEASURE_NAME_OR_OWNER, SEARCH_BY_MEASURE_NAME_OR_OWNER);
 	private CellTable<ManageMeasureSearchModel.Result> availableMeasuresTable;
 	private CellTable<ManageMeasureSearchModel.Result> appliedComponentTable;
 	private BackSaveCancelButtonBar buttonBar = new BackSaveCancelButtonBar("componentMeasures");

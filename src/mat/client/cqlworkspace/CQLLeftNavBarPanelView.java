@@ -32,7 +32,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -41,21 +40,12 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.MessagePanel;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.MatTextBox;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
@@ -1877,22 +1867,7 @@ public class CQLLeftNavBarPanelView {
 
 	public Boolean getIsPageDirty() {
 		return isPageDirty;
-	}
-
-	//TODO move this
-//	public void showUnsavedChangesWarning() {
-//		messagePanel.clearAlerts();
-//		messagePanel.getWarningConfirmationMessageAlert().createAlert();
-//		messagePanel.getWarningConfirmationYesButton().setFocus(true);
-//	}
-
-	//TODO move this
-//	public void showGlobalUnsavedChangesWarning() {
-//		messagePanel.clearAlerts();
-//		messagePanel.getGlobalWarningConfirmationMessageAlert().createAlert();
-//		messagePanel.getWarningConfirmationYesButton().setFocus(true);
-//	}
-	
+	}	
 	
 	/**
 	 * Gets the owner name.
@@ -2132,22 +2107,6 @@ public class CQLLeftNavBarPanelView {
 	 */
 	public void setCurrentSelectedValueSetObjId(String currentSelectedValueSetObjId) {
 		this.currentSelectedValueSetObjId = currentSelectedValueSetObjId;
-	}
-	
-	public void setFocus(MatTextBox matTextBox){
-		matTextBox.setFocus(true);
-	}
-	
-	public void setFocus(AceEditor aceEditor){
-		aceEditor.focus();
-	}
-	
-	public void setFocus(FocusPanel focusPanel){
-		focusPanel.setFocus(true);
-	}
-
-	public void setFocus(TextBox aliasNameTxtArea) {
-		aliasNameTxtArea.setFocus(true);
 	}
 	
 	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandAloneCQLLibrary){

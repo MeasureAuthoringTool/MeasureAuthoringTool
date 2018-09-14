@@ -167,7 +167,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			@Override
 			@SuppressWarnings("rawtypes")
 			public void onSelection(final SelectionEvent event) {
-				//Mat.showLoadingMessage();
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup
 				String newToken = measureComposerTab + index;
@@ -178,7 +177,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 					MatContext.get().recordTransactionEvent(mid, null, "MEASURE_TAB_EVENT", newToken + msg, ConstantMessages.DB_LOG);
 					History.newItem(newToken, false);
 				}
-				//Mat.hideLoadingMessage();
 			} });
 		
 		measureComposerContent.setContent(emptyWidget);

@@ -1843,6 +1843,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
+		activateButtons(false);
 		if ((MatContext.get().getCurrentMeasureId() == null)
 				|| MatContext.get().getCurrentMeasureId().equals("")) {
 			displayEmpty();
@@ -1864,6 +1865,21 @@ public class MetaDataPresenter  implements MatPresenter {
 		clearMessages();
 	}
 	
+	private void activateButtons(boolean activate) {
+		if(activate) {
+			Mat.hideLoadingMessage();
+		} else {
+			Mat.showLoadingMessage();
+		}
+		metaDataDisplay.getBottomDeleteMeasureButton().setEnabled(activate);
+		metaDataDisplay.getBottomSaveButton().setEnabled(activate);
+		metaDataDisplay.getTopDeleteMeasureButton().setEnabled(activate);
+		metaDataDisplay.getTopSaveButton().setEnabled(activate);
+		metaDataDisplay.getAddRowButton().setEnabled(activate);
+		metaDataDisplay.getGenerateeMeasureIDButton().setEnabled(activate);
+		metaDataDisplay.getSearchButton().setEnabled(activate);
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
@@ -1881,38 +1897,63 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * @return the measure and log recent measure */
 	private void getMeasureAndLogRecentMeasure() {
 		MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(),
-				MatContext.get().getLoggedinUserId(), getAsyncCallBack());
+				MatContext.get().getLoggedinUserId(), getAsyncCallBackForMeasureAndLogRecentMeasure());
 	}
 	
 	/** Gets the measure detail.
 	 * 
 	 * @return the measure detail */
 	private void getMeasureDetail(){
-		MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), getAsyncCallBack());
+		MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), getAsyncCallBackForMeasureDetails());
 	}
 	
 	/** Gets the async call back.
 	 * 
 	 * @return the async call back */
-	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBack() {
+	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
 		return new AsyncCallback<ManageMeasureDetailModel>() {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
-				metaDataDisplay.getBottomErrorMessage().createAlert(MatContext.get()
-						.getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null,
-						"Unhandled Exception: " +caught.getLocalizedMessage(), 0);
+				asyncOnFailure(caught);
 			}
 			@Override
 			public void onSuccess(ManageMeasureDetailModel result) {
-				if (callbackRequestTime == lastRequestTime) {
-					currentMeasureDetail = result;
-					displayDetail();
-					fireMeasureEditEvent();
-				}
+				asyncOnSuccess(result, callbackRequestTime);
 			}
 		};
+	}
+	
+	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureDetails() {
+		return new AsyncCallback<ManageMeasureDetailModel>() {
+			final long callbackRequestTime = lastRequestTime;
+			@Override
+			public void onFailure(Throwable caught) {
+				asyncOnFailure(caught);
+				activateButtons(true);
+			}
+			
+			@Override
+			public void onSuccess(ManageMeasureDetailModel result) {
+				asyncOnSuccess(result, callbackRequestTime);
+				activateButtons(true);
+			}
+
+		};
+	}
+	private void asyncOnFailure(Throwable caught) {
+		metaDataDisplay.getBottomErrorMessage().createAlert(MatContext.get()
+				.getMessageDelegate().getGenericErrorMessage());
+		MatContext.get().recordTransactionEvent(null, null, null,
+				"Unhandled Exception: " +caught.getLocalizedMessage(), 0);
+	}
+	
+	private void asyncOnSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
+		if (callbackRequestTime == lastRequestTime) {
+			currentMeasureDetail = result;
+			displayDetail();
+			fireMeasureEditEvent();
+		}
 	}
 	
 	/**

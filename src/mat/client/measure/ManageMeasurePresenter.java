@@ -935,7 +935,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void fireMeasureEditEvent() {
 		MeasureEditEvent evt = new MeasureEditEvent();
 		MatContext.get().getEventBus().fireEvent(evt);
-	}
+	} 
 
 	private void fireMeasureSelectedEvent(String id, String version, String name, String shortName, String scoringType,
 			boolean isEditable, boolean isLocked, String lockedUserId, boolean isDraft) {

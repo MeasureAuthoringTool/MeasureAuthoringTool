@@ -137,9 +137,9 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	
 	private List<CQLLibrary> filterLibraries(String searchText, List<CQLLibrary> originalLibraries) {
 		return originalLibraries.stream().filter(l -> 
-			l.getName().toLowerCase().contains(searchText) || 
-			l.getOwnerId().getFirstName().toLowerCase().contains(searchText) ||
-			l.getOwnerId().getLastName().toLowerCase().contains(searchText)).collect(Collectors.toList());
+			StringUtils.containsIgnoreCase(l.getName(), searchText) || 
+			StringUtils.containsIgnoreCase(l.getOwnerId().getFirstName(), searchText) ||
+			StringUtils.containsIgnoreCase(l.getOwnerId().getLastName(), searchText)).collect(Collectors.toList());
 	}
 	
 	@Override

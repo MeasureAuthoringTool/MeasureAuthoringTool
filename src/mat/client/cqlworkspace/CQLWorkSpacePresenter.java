@@ -310,8 +310,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 							addAndModifyParameters();
 							// 508 change to parameter section
-							cqlWorkspaceView.getCqlLeftNavBarPanelView()
-									.setFocus(cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+							cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setFocus(true);
 						}
 					}
 
@@ -328,8 +327,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
 						eraseParameter();
 						// 508 change to parameter section
-						cqlWorkspaceView.getCqlLeftNavBarPanelView()
-								.setFocus(cqlWorkspaceView.getCQLParametersView().getParameterAceEditor());
+						cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().focus();
 					}
 				});
 		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton()
@@ -384,8 +382,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					addNewParameter();
 				}
 				// 508 change to parameter section
-				cqlWorkspaceView.getCqlLeftNavBarPanelView()
-						.setFocus(cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+				cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -468,8 +465,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					addAndModifyFunction();
 					// 508 changes for Functions Section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView()
-							.setFocus(cqlWorkspaceView.getCqlFunctionsView().getFuncNameTxtArea());
+					cqlWorkspaceView.getCqlFunctionsView().getFuncNameTxtArea().setFocus(true);
 				}
 
 			}
@@ -487,8 +483,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				cqlWorkspaceView.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 				eraseFunction();
 				// 508 changes for Functions Section
-				cqlWorkspaceView.getCqlLeftNavBarPanelView()
-						.setFocus(cqlWorkspaceView.getCqlFunctionsView().getFunctionBodyAceEditor());
+				cqlWorkspaceView.getCqlFunctionsView().getFunctionBodyAceEditor().focus();
 			}
 		});
 
@@ -569,8 +564,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					addNewFunction();
 				}
 				// 508 changes for Functions Section
-				cqlWorkspaceView.getCqlLeftNavBarPanelView()
-						.setFocus(cqlWorkspaceView.getCqlFunctionsView().getFuncNameTxtArea());
+				cqlWorkspaceView.getCqlFunctionsView().getFuncNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -696,8 +690,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					addAndModifyDefintions();
 					// 508 changes for Definitions Section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView()
-							.setFocus(cqlWorkspaceView.getCQlDefinitionsView().getDefineNameTxtArea());
+					cqlWorkspaceView.getCQlDefinitionsView().getDefineNameTxtArea().setFocus(true);
 				}
 			}
 		});
@@ -723,8 +716,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				cqlWorkspaceView.getCqlLeftNavBarPanelView().setIsNavBarClick(false);
 				eraseDefinition();
 				// 508 changes for Definition Section
-				cqlWorkspaceView.getCqlLeftNavBarPanelView()
-						.setFocus(cqlWorkspaceView.getCQlDefinitionsView().getDefineAceEditor());
+				cqlWorkspaceView.getCQlDefinitionsView().getDefineAceEditor().focus();
 			}
 		});
 		// Definition Delete Icon Functionality
@@ -782,8 +774,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							addNewDefinition();
 						}
 						// 508 changes for Definitions Section
-						cqlWorkspaceView.getCqlLeftNavBarPanelView()
-								.setFocus(cqlWorkspaceView.getCQlDefinitionsView().getDefineNameTxtArea());
+						cqlWorkspaceView.getCQlDefinitionsView().getDefineNameTxtArea().setFocus(true);
 					}
 				});
 
@@ -1001,8 +992,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 						}
 						// 508 change to parameter section
-						cqlWorkspaceView.getCqlLeftNavBarPanelView()
-								.setFocus(cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel());
+						cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
 					}
 				});
 
@@ -1193,8 +1183,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 						}
 						// 508 changes for Definitions Section
-						cqlWorkspaceView.getCqlLeftNavBarPanelView()
-								.setFocus(cqlWorkspaceView.getCQlDefinitionsView().getMainDefineViewVerticalPanel());
+						cqlWorkspaceView.getCQlDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 					}
 				});
 
@@ -1370,8 +1359,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 				}
 				// 508 changes for Functions Section
-				cqlWorkspaceView.getCqlLeftNavBarPanelView()
-						.setFocus(cqlWorkspaceView.getCqlFunctionsView().getMainFunctionVerticalPanel());
+				cqlWorkspaceView.getCqlFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 			}
 		});
 
@@ -1687,8 +1675,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					addIncludeLibraryInCQLLookUp();
 					// 508 changes for Library Alias.
-					cqlWorkspaceView.getCqlLeftNavBarPanelView()
-							.setFocus(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea());
+					cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
 				}
 			}
 		});
@@ -1711,8 +1698,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					messagePanel.getWarningMessageAlert().clearAlert();
 				}
 				// 508 changes for Library Alias.
-				cqlWorkspaceView.getCqlLeftNavBarPanelView()
-						.setFocus(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea());
+				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -1764,7 +1750,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					messagePanel.getWarningMessageAlert().clearAlert();
 				}
 				// 508 changes for Library Alias.
-				cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea());
+				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
 		});
 
@@ -2162,7 +2148,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 
 					onModifyValueSet(result, isUserDefined);
 					// 508 Compliance for Value Sets section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getValueSetView().getOIDInput());
+					cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 				} else {
 					// do nothing when loading.
 				}
@@ -2946,7 +2932,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							messagePanel.getWarningMessageAlert().clearAlert();
 						}
 						// 508 changes for Library Alias.
-						cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea());
+						cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
 					}
 				});
 
@@ -3151,7 +3137,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				appliedQDMEvent();
 				// 508 : Shift focus to search panel.
-				cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getValueSetView().getOIDInput());
+				cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 			}
 		});
 
@@ -3229,7 +3215,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				} else {
 					codesEvent();
 					// 508 : Shift focus to code search panel. //TODO why are we using the left nav just to set focus on a text box?
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeSearchInput());
+					cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
 				}
 			}
 		});
@@ -3873,8 +3859,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								}
 								showSearchingBusy(false);
 								// 508 changes for Definitions Section
-								cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(
-										cqlWorkspaceView.getCQlDefinitionsView().getMainDefineViewVerticalPanel());
+								cqlWorkspaceView.getCQlDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 							}
 						});
 			}
@@ -3960,8 +3945,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							}
 							showSearchingBusy(false);
 							// 508 changes for Functions Section
-							cqlWorkspaceView.getCqlLeftNavBarPanelView()
-									.setFocus(cqlWorkspaceView.getCqlFunctionsView().getMainFunctionVerticalPanel());
+							cqlWorkspaceView.getCqlFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 						}
 					});
 		} else {
@@ -4000,8 +3984,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 		cqlWorkspaceView.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
 		cqlWorkspaceView.getCqlLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
 		// 508 changes for Functions Section
-		cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCqlFunctionsView().getFuncNameTxtArea());
-
+		cqlWorkspaceView.getCqlFunctionsView().getFuncNameTxtArea().setFocus(true);
 		messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSuccessfulFunctionArgumentRemoveMessage(funcArgName));
 	}
 
@@ -4074,8 +4057,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 								}
 								showSearchingBusy(false);
 								// 508 change to parameter section
-								cqlWorkspaceView.getCqlLeftNavBarPanelView()
-										.setFocus(cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel());
+								cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
 							}
 						});
 			}
@@ -4196,7 +4178,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 							messagePanel.getErrorMessageAlert().createAlert("Unable to delete.");
 						}
 						// 508 : Shift focus to code search panel.
-						cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeSearchInput());
+						cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
 					}
 				});
 	}
@@ -4385,7 +4367,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				isModified = false;
 				cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
 				//508 compliance for Value Sets
-				cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getValueSetView().getOIDInput());
+				cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 				
 				previousIsProgramReleaseBoxEnabled = isProgramReleaseBoxEnabled;
 				isProgramReleaseBoxEnabled = true; 
@@ -4402,7 +4384,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					cqlWorkspaceView.resetMessageDisplay();
 					updateVSACValueSets();
 					// 508 compliance for Value Sets
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getValueSetView().getOIDInput());
+					cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 				}
 			}
 		});
@@ -4435,7 +4417,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					} else {
 						searchValueSetInVsac(release, expansionProfile);
 						// 508 compliance for Value Sets
-						cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getValueSetView().getOIDInput());
+						cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 					}
 				}
 			}
@@ -4460,7 +4442,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						addNewValueSet(isUserDefined);
 					}
 					// 508 compliance for Value Sets
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getValueSetView().getOIDInput());
+					cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 				}
 			}
 		});
@@ -4589,7 +4571,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					if (!isCodeModified)
 						searchCQLCodesInVsac();
 					// 508 Compliance for Codes section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeInput());
+					cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 				}
 			}
 		});
@@ -4608,7 +4590,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						addNewCodes();	
 					}
 					// 508 Compliance for Codes section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeInput());
+					cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 				}
 			}
 		});
@@ -4622,8 +4604,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					cqlWorkspaceView.resetMessageDisplay();
 					cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
 					// 508 Compliance for Codes section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView()
-							.setFocus(cqlWorkspaceView.getCodesView().getCodeSearchInput());
+					cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
 				}
 			}
 		});
@@ -4644,7 +4625,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 										.getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
 						cqlWorkspaceView.getCqlLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
 						// 508 Compliance for Codes section
-						cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeInput());
+						cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 					}
 				} else {
 					// table is loading, do nothing
@@ -4672,7 +4653,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 					
 					onModifyCode(object);
 					//508 Compliance for Value Sets section
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeInput());
+					cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 				} else {
 					//do nothing when loading.
 				}
@@ -4856,7 +4837,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 						}
 					}
 					// 508 : Shift focus to code search panel.
-					cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeSearchInput());
+					cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
 					cqlWorkspaceView.getCodesView().getSaveButton().setEnabled(!result.isSuccess());
 
 				}
@@ -5027,7 +5008,7 @@ public class CQLWorkSpacePresenter implements MatPresenter {
 				
 				showSearchingBusy(false);
 				// 508 : Shift focus to code search panel.
-				cqlWorkspaceView.getCqlLeftNavBarPanelView().setFocus(cqlWorkspaceView.getCodesView().getCodeSearchInput());
+				cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
 			}
 		});
 	}

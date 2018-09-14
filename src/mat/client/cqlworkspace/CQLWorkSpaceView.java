@@ -186,7 +186,7 @@ public class CQLWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlParametersView.getView());
 		//508 Compliance for Parameter section
-		getCqlLeftNavBarPanelView().setFocus(getCQLParametersView().getMainParamViewVerticalPanel());
+		getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
 	}
 
 	public void buildDefinitionLibraryView() {
@@ -194,7 +194,7 @@ public class CQLWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlDefinitionsView.getView());
 		//508 Compliance for Definition section
-		getCqlLeftNavBarPanelView().setFocus(getCQlDefinitionsView().getMainDefineViewVerticalPanel());
+		getCQlDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 	}
 
 
@@ -203,7 +203,7 @@ public class CQLWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getMeasureLockService().checkForEditPermission()));
 		//508 Compliance for Function section
-		getCqlLeftNavBarPanelView().setFocus(getCqlFunctionsView().getMainFunctionVerticalPanel());
+		getCqlFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 	}
 
 	public void resetAll() {

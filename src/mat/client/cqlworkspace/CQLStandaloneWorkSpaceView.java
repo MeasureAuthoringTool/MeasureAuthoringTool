@@ -131,7 +131,7 @@ public class CQLStandaloneWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlParametersView.getView());
 		//508 Compliance for Parameter section
-		getCqlLeftNavBarPanelView().setFocus(getCQLParametersView().getMainParamViewVerticalPanel());
+		getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
 	}
 
 
@@ -140,7 +140,7 @@ public class CQLStandaloneWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlDefinitionsView.getView());
 		//508 Compliance for Definition section
-		getCqlLeftNavBarPanelView().setFocus(getCQLDefinitionsView().getMainDefineViewVerticalPanel());
+		getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 	}
 
 
@@ -149,7 +149,7 @@ public class CQLStandaloneWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getLibraryLockService().checkForEditPermission()));
 		//508 Compliance for Function section
-		getCqlLeftNavBarPanelView().setFocus(getCQLFunctionsView().getMainFunctionVerticalPanel());
+		getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 	}
 	
 	public void unsetEachSectionSelectedObject() {

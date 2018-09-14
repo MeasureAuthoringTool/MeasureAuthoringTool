@@ -78,7 +78,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param searchDisplay - ViewDisplay.
 	 * @param currentSection - String.
 	 */
-	public static  void showListOfItemAvailableForInsertDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
+	public static  void showListOfItemAvailableForInsertDialogBox(final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
 		dialogModal.setTitle("Insert Item into CQL Editor");
@@ -199,7 +199,7 @@ public class InsertIntoAceEditorDialogBox {
 		dialogModal.add(modalBody);
 		dialogModal.add(modalFooter);
 		
-		addChangeHandlerIntoLists(dialogModal, cqlNavBarView, availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
+		addChangeHandlerIntoLists(dialogModal,availableItemToInsert, listAllItemNames,availableDatatypes,allQDMDatatypes,
 				availableAttributesToInsert, messageFormgroup, helpBlock, 
 				availableItemTypeFormGroup, selectItemListFormGroup,dataTypeListFormGroup);
 		
@@ -364,11 +364,7 @@ public class InsertIntoAceEditorDialogBox {
 	 * @param availableItemTypeFormGroup - FormGroup.
 	 * @param selectItemListFormGroup - FormGroup.
 	 */
-	private static void addChangeHandlerIntoLists(final Modal dialogModal, final CQLLeftNavBarPanelView cqlNavBarView,
-			final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes,
-			final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,
-			final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
-	
+	private static void addChangeHandlerIntoLists(final Modal dialogModal, final ListBoxMVP availableItemToInsert, final ListBoxMVP listAllItemNames,final ListBoxMVP availableDatatypes,final ListBoxMVP availableQDMDatatypes, final ListBoxMVP availableAttributesToInsert, final FormGroup messageFormgroup,final HelpBlock helpBlock, final FormGroup availableItemTypeFormGroup, final FormGroup selectItemListFormGroup, final FormGroup dataTypeFormGroup) {
 		availableItemToInsert.addChangeHandler(new ChangeHandler() {
 			/* (non-Javadoc)
 			 * @see com.google.gwt.event.dom.client.ChangeHandler#onChange(com.google.gwt.event.dom.client.ChangeEvent)
@@ -514,7 +510,7 @@ public class InsertIntoAceEditorDialogBox {
 						//open new popup/dialogBox
 						dialogModal.clear();
 						dialogModal.hide();
-						InsertAttributeBuilderDialogBox.showAttributesDialogBox(cqlNavBarView,curEditor);
+						InsertAttributeBuilderDialogBox.showAttributesDialogBox(curEditor);
 						listAllItemNames.setEnabled(false);
 						availableDatatypes.setEnabled(true);
 						availableAttributesToInsert.setEnabled(true);

@@ -311,7 +311,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	public void showUnsavedChangesError() {
 		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
 		String auditMessage = null;
-		saveErrorMessageAlert = CQLStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+		saveErrorMessageAlert = CQLStandaloneWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 		if(saveErrorMessageAlert != null) {
 			showErrorMessageAlert(saveErrorMessageAlert);
 		}

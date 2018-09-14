@@ -31,6 +31,7 @@ import mat.client.cqlworkspace.functions.CQLFunctionsView;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessagePanel;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.CQLModelValidator;
 import mat.shared.UUIDUtilClient;
@@ -80,7 +81,7 @@ public class AddFunctionArgumentDialogBox {
 	 * @param searchDisplay - {@link CQLWorkSpaceView}
 	 */
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
-			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final CQLLeftNavBarPanelView cqlLeftNavBarPanelView, final boolean isEditable) {
+			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable) {
 		List<String> allCqlDataType = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlDataTypeList();
 		final List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 		
@@ -396,7 +397,7 @@ public class AddFunctionArgumentDialogBox {
 								cqlFunctionsView.getFunctionArgumentList().add(argument);
 								cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(),isEditable);
 								cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), argument);
-								cqlLeftNavBarPanelView.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_MODIFY(argumentName));
+								messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_MODIFY(argumentName));
 								break;
 							}
 						}
@@ -410,7 +411,7 @@ public class AddFunctionArgumentDialogBox {
 						cqlFunctionsView.getFunctionArgumentList().add(functionArg);
 						cqlFunctionsView.createAddArgumentViewForFunctions(cqlFunctionsView.getFunctionArgumentList(),isEditable);
 						cqlFunctionsView.getFunctionArgNameMap().put(argumentName.toLowerCase(), functionArg);
-						cqlLeftNavBarPanelView.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_ADD(argumentName));
+						messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSUCESS_FUNCTION_ARG_ADD(argumentName));
 					}
 					dialogModal.hide();
 				}

@@ -144,7 +144,7 @@ public class InsertAttributeBuilderDialogBox {
 	 * @param searchDisplay the search display
 	 * @param currentSection the current section
 	 */
-	public static void showAttributesDialogBox(final CQLLeftNavBarPanelView cqlNavBarView, final AceEditor editor) {
+	public static void showAttributesDialogBox(final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
 		dialogModal.setTitle("Insert Options for Attributes");

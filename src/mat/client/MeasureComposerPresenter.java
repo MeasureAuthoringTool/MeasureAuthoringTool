@@ -476,8 +476,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			metaDataPresenter.getMetaDataDisplay().getTopSuccessMessage().clearAlert();
 			saveButton = metaDataPresenter.getMetaDataDisplay().getBottomSaveButton();
 		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
+			CQLWorkSpacePresenter cqlWorkSpacePresenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
 			CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
-			saveErrorMessageAlert = CQLWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+			saveErrorMessageAlert = cqlWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 			auditMessage = CQLWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);

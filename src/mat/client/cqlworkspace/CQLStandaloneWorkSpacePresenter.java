@@ -1617,7 +1617,7 @@ public class CQLStandaloneWorkSpacePresenter implements MatPresenter {
 		String commentContent = searchDisplay.getCqlGeneralInformationView().getComments().getText().trim();
 		
 		boolean isValid = CQLGeneralInformationUtility.validateGeneralInformationSection(searchDisplay.getCqlGeneralInformationView(), searchDisplay.getCqlLeftNavBarPanelView(), libraryName, commentContent);
-		if(!isValid) {
+		if(isValid) {
 			saveCQLGeneralInformation(libraryName, commentContent);
 		}
 	}

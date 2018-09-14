@@ -1865,19 +1865,19 @@ public class MetaDataPresenter  implements MatPresenter {
 		clearMessages();
 	}
 	
-	private void activateButtons(boolean activate) {
-		if(activate) {
+	private void activateButtons(boolean shouldActivate) {
+		if(shouldActivate) {
 			Mat.hideLoadingMessage();
 		} else {
 			Mat.showLoadingMessage();
 		}
-		metaDataDisplay.getBottomDeleteMeasureButton().setEnabled(activate);
-		metaDataDisplay.getBottomSaveButton().setEnabled(activate);
-		metaDataDisplay.getTopDeleteMeasureButton().setEnabled(activate);
-		metaDataDisplay.getTopSaveButton().setEnabled(activate);
-		metaDataDisplay.getAddRowButton().setEnabled(activate);
-		metaDataDisplay.getGenerateeMeasureIDButton().setEnabled(activate);
-		metaDataDisplay.getSearchButton().setEnabled(activate);
+		metaDataDisplay.getBottomDeleteMeasureButton().setEnabled(shouldActivate);
+		metaDataDisplay.getBottomSaveButton().setEnabled(shouldActivate);
+		metaDataDisplay.getTopDeleteMeasureButton().setEnabled(shouldActivate);
+		metaDataDisplay.getTopSaveButton().setEnabled(shouldActivate);
+		metaDataDisplay.getAddRowButton().setEnabled(shouldActivate);
+		metaDataDisplay.getGenerateeMeasureIDButton().setEnabled(shouldActivate);
+		metaDataDisplay.getSearchButton().setEnabled(shouldActivate);
 	}
 
 	/* (non-Javadoc)
@@ -1915,11 +1915,11 @@ public class MetaDataPresenter  implements MatPresenter {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
-				asyncOnFailure(caught);
+				handleAsyncFailure(caught);
 			}
 			@Override
 			public void onSuccess(ManageMeasureDetailModel result) {
-				asyncOnSuccess(result, callbackRequestTime);
+				handleAsyncSuccess(result, callbackRequestTime);
 			}
 		};
 	}
@@ -1929,26 +1929,26 @@ public class MetaDataPresenter  implements MatPresenter {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
-				asyncOnFailure(caught);
+				handleAsyncFailure(caught);
 				activateButtons(true);
 			}
 			
 			@Override
 			public void onSuccess(ManageMeasureDetailModel result) {
-				asyncOnSuccess(result, callbackRequestTime);
+				handleAsyncSuccess(result, callbackRequestTime);
 				activateButtons(true);
 			}
 
 		};
 	}
-	private void asyncOnFailure(Throwable caught) {
+	private void handleAsyncFailure(Throwable caught) {
 		metaDataDisplay.getBottomErrorMessage().createAlert(MatContext.get()
 				.getMessageDelegate().getGenericErrorMessage());
 		MatContext.get().recordTransactionEvent(null, null, null,
 				"Unhandled Exception: " +caught.getLocalizedMessage(), 0);
 	}
 	
-	private void asyncOnSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
+	private void handleAsyncSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
 		if (callbackRequestTime == lastRequestTime) {
 			currentMeasureDetail = result;
 			displayDetail();

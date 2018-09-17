@@ -270,6 +270,7 @@ public class MeasurePackageClauseCellListWidget {
 	private void addAssociationToClauses() {
 		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
+		MeasurePackageClauseDetail otherClauseCell = null;
 		
 		String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
 		ArrayList<MeasurePackageClauseDetail> interimArrayList = null;
@@ -283,7 +284,22 @@ public class MeasurePackageClauseCellListWidget {
 		}
 		
 		if (interimArrayList != null) {
-			setAssociatedPopulationUUID(otherClauseType, interimArrayList);
+			for (MeasurePackageClauseDetail detail : interimArrayList) {
+				if (detail.isAssociatedPopulation()) {
+					groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(detail.getId());
+				} else {
+					otherClauseCell = detail;
+				}
+			}
+			if (otherClauseCell != null) {
+				for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+					if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
+						MeasurePackageClauseDetail updateDetails = entry.getValue();
+						groupingClausesMap.get(updateDetails.getName()).setAssociatedPopulationUUID(otherClauseCell.getId());
+						break;
+					}
+				}
+			}
 
 		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 			String scoring = MatContext.get().getCurrentMeasureScoringType();
@@ -307,7 +323,22 @@ public class MeasurePackageClauseCellListWidget {
 				}
 				interimArrayList = associatedPopulationList;
 				if (interimArrayList != null) {
-					setAssociatedPopulationUUID(otherClauseType, interimArrayList);
+					for (MeasurePackageClauseDetail detail : interimArrayList) {
+						if (detail.isAssociatedPopulation()) {
+							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(detail.getId());
+						} else {
+							otherClauseCell = detail;
+						}
+					}
+					if (otherClauseCell != null) {
+						for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+							if (entry.getValue().getName().equalsIgnoreCase(otherClauseType)) {
+								MeasurePackageClauseDetail updateDetails = entry.getValue();
+								groupingClausesMap.get(updateDetails.getName()).setAssociatedPopulationUUID(otherClauseCell.getId());
+								break;
+							}
+						}
+					}
 				}
 			}else {
 				for (MeasurePackageClauseDetail detail : associatedPopulationList) {
@@ -331,29 +362,6 @@ public class MeasurePackageClauseCellListWidget {
 		}
 	}
 
-	private void setAssociatedPopulationUUID(String otherClauseType, ArrayList<MeasurePackageClauseDetail> interimArrayList) {
-		MeasurePackageClauseDetail otherClauseCell = null;
-
-		for (MeasurePackageClauseDetail detail : interimArrayList) {
-			if (detail.isAssociatedPopulation()) {
-				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(detail.getId());
-			} else {
-				otherClauseCell = detail;
-			}
-		}
-		
-		if (otherClauseCell != null) {
-			for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
-				if (entry.getValue().getName().equalsIgnoreCase(otherClauseType)) {
-					MeasurePackageClauseDetail updateDetails = entry.getValue();
-					groupingClausesMap.get(updateDetails.getName()).setAssociatedPopulationUUID(otherClauseCell.getId());
-					break;
-				}
-			}
-		}
-
-	}
-	
 	private void clearAssociations() {
 		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
@@ -438,15 +446,15 @@ public class MeasurePackageClauseCellListWidget {
 						clearAlerts();
 						MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 						if (selectedClauseCell.getType().equalsIgnoreCase(DENOMINATOR)) {
-							denoAssociatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId())));
+							denoAssociatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId()) ? value : !value));
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(denoAssociatedPopulationList);
 						} else if (selectedClauseCell.getType().equalsIgnoreCase(NUMERATOR)) {
-							numAssociatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId())));
+							numAssociatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId()) ? value : !value));
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(numAssociatedPopulationList);
 						} else {
-							associatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId())));
+							associatedPopulationList.forEach(detail -> detail.setAssociatedPopulation(detail.getId().equals(object.getId()) ? value : !value));
 							associationListDataProvider.flush();
 							associatedPOPCellList.setRowData(associatedPopulationList);
 						}
@@ -481,7 +489,7 @@ public class MeasurePackageClauseCellListWidget {
 
 		});
 
-		return new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
+		Cell<MeasurePackageClauseDetail> associatePopulationCell = new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
 			@Override
 			public void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<table><tbody><tr>");
@@ -503,7 +511,7 @@ public class MeasurePackageClauseCellListWidget {
 			}
 
 		};
-
+		return associatePopulationCell;
 	}
 
 	private Button buildSaveButton(IconType icon, String text) {

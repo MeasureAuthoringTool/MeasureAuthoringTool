@@ -33,7 +33,7 @@ public class ChangePasswordWidget extends Composite {
 		
 		password.setWidth("200px");
 		password.setId("newPasswordInput");
-		password.setTitle("Enter New Password");
+		password.setTitle("Enter New Password Required");
 		password.setPlaceholder("Enter New Password here.");
 		password.getElement().setAttribute("aria-describedby", "passwordRulesLabel descLabel b1Label b2Label b3Label b4Label");
 		
@@ -49,7 +49,7 @@ public class ChangePasswordWidget extends Composite {
 		
 		confirmPassword.setWidth("200px");
 		confirmPassword.setId("confirmPasswordInput");
-		confirmPassword.setTitle("Enter New Password again to confirm");
+		confirmPassword.setTitle("Enter New Password again to confirm Required");
 		confirmPassword.setPlaceholder("Confirm Password here.");
 		confirmPasswordGroup.add(confirmPwdlabel);
 		confirmPasswordGroup.add(confirmPassword);

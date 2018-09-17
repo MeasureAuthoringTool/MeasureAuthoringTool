@@ -52,8 +52,11 @@ public class SecurityQuestionAnswerWidget extends Composite {
 	 */
 	public SecurityQuestionAnswerWidget() {
 		answer1.getElement().setId("answer1TextBox");
+		answer1.setTitle("Required");
 		answer2.getElement().setId("answer2TextBox");
+		answer2.setTitle("Required");
 		answer3.getElement().setId("answer3TextBox");
+		answer3.setTitle("Required");
 		answer1Value.getElement().setId("answer1Value");
 		answer2Value.getElement().setId("answer2Value");
 		answer3Value.getElement().setId("answer3Value");

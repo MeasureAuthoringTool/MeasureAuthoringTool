@@ -3,10 +3,12 @@ package mat.client.cqlworkspace;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.cqlworkspace.codes.CQLCodesView;
 import mat.client.cqlworkspace.components.CQLComponentLibraryPresenter;
@@ -22,7 +24,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 
-public class CQLWorkSpaceView {
+public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
 	HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private VerticalPanel mainVerticalPanel = new VerticalPanel();
@@ -43,7 +45,7 @@ public class CQLWorkSpaceView {
 	private HelpBlock helpBlock = new HelpBlock();
 	MessagePanel messagePanel;
 
-	public CQLWorkSpaceView( ) {
+	public CQLMeasureWorkSpaceView( ) {
 		generalInformationView = new CQLGeneralInformationView();
 		componentPresenter = new CQLComponentLibraryPresenter();
 		cqlParametersView = new CQLParametersView();
@@ -60,6 +62,7 @@ public class CQLWorkSpaceView {
 
 
 	public void buildView(MessagePanel messagePanel) {
+		GWT.log("calling CQLMeasureWorkspaceView buildView()");
 		this.messagePanel = messagePanel;
 		resetAll();
 		unsetEachSectionSelectedObject();
@@ -194,7 +197,7 @@ public class CQLWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlDefinitionsView.getView());
 		//508 Compliance for Definition section
-		getCQlDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
+		getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 	}
 
 
@@ -203,7 +206,7 @@ public class CQLWorkSpaceView {
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getMeasureLockService().checkForEditPermission()));
 		//508 Compliance for Function section
-		getCqlFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
+		getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 	}
 
 	public void resetAll() {
@@ -296,10 +299,6 @@ public class CQLWorkSpaceView {
 		
 	}
 
-	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView(){
-		return cqlLeftNavBarPanelView;
-	}
-
 	public CQLGeneralInformationView getCqlGeneralInformationView(){
 		return generalInformationView;
 	}
@@ -314,14 +313,6 @@ public class CQLWorkSpaceView {
 
 	public CQLParametersView getCQLParametersView(){
 		return cqlParametersView;
-	}
-
-	public CQLDefinitionsView getCQlDefinitionsView(){
-		return cqlDefinitionsView;
-	}
-
-	public CQLFunctionsView getCqlFunctionsView() {
-		return cqlFunctionsView;
 	}
 
 	public CQLView getViewCQLView(){
@@ -350,5 +341,27 @@ public class CQLWorkSpaceView {
 		return componentPresenter.getView();
 	}
 
-	
+
+	@Override
+	public AceEditor getViewCQLEditor() {
+		return getIncludeView().getViewCQLEditor();
+	}
+
+
+	@Override
+	public CQLLeftNavBarPanelView getCQLLeftNavBarPanelView() {
+		return cqlLeftNavBarPanelView;
+	}
+
+
+	@Override
+	public CQLDefinitionsView getCQLDefinitionsView() {
+		return cqlDefinitionsView;
+	}
+
+
+	@Override
+	public CQLFunctionsView getCQLFunctionsView() {
+		return cqlFunctionsView;
+	}
 }

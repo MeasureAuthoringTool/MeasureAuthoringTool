@@ -78,7 +78,7 @@ public class AddFunctionArgumentDialogBox {
 	/**
 	 * @param functionArg - CQLFunctionArgument
 	 * @param isEdit - {@link Boolean}
-	 * @param searchDisplay - {@link CQLWorkSpaceView}
+	 * @param searchDisplay - {@link CQLMeasureWorkSpaceView}
 	 */
 	public static  void showArgumentDialogBox(final CQLFunctionArgument functionArg,
 			final boolean isEdit, final CQLFunctionsView cqlFunctionsView, final MessagePanel messagePanel, final boolean isEditable) {

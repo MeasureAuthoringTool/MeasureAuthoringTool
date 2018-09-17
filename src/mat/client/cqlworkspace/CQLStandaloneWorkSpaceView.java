@@ -10,6 +10,7 @@ import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -32,7 +33,7 @@ import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 import mat.model.cql.CQLFunctionArgument;
 
-public class CQLStandaloneWorkSpaceView {
+public class CQLStandaloneWorkSpaceView implements CQLWorkspaceView {
 	HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private VerticalPanel mainVerticalPanel = new VerticalPanel();
@@ -65,6 +66,7 @@ public class CQLStandaloneWorkSpaceView {
 	}
 	
 	public void buildView(MessagePanel messagePanel) {
+		GWT.log("calling CQLStandaloneWorkspaceView buildView()");
 		resetAll();
 		unsetEachSectionSelectedObject();
 		this.messagePanel = messagePanel;
@@ -204,7 +206,6 @@ public class CQLStandaloneWorkSpaceView {
 
 	private void buildLockedButtonPanel() {
 		lockedButtonHPanel.clear();
-		
 		if(MatContext.get().getCurrentLibraryInfo().isEditable() && 
 				MatContext.get().getCurrentLibraryInfo().isLocked()){
 			Icon lockIcon = new Icon(IconType.LOCK);
@@ -269,10 +270,6 @@ public class CQLStandaloneWorkSpaceView {
 	public void setNextClickedMenu(String nextClickedMenu) {
 		this.nextClickedMenu = nextClickedMenu;
 	}
-
-	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView() {
-		return cqlLeftNavBarPanelView;
-	}
     
     public CQLParametersView getCQLParametersView(){
     	return cqlParametersView; 
@@ -289,10 +286,6 @@ public class CQLStandaloneWorkSpaceView {
     public CQLIncludeLibraryView getCqlIncludeLibraryView(){
     	return cqlIncludeLibraryView;
     }
-    
-	public AceEditor getCqlAceEditor() {
-		return cqlViewCQLView.getCqlAceEditor();
-	}
     
     public CQLGeneralInformationView getCqlGeneralInformationView(){
     	return generalInformationView;
@@ -325,20 +318,8 @@ public class CQLStandaloneWorkSpaceView {
 		return cqlParametersView.getParameterButtonBar();
 	}
 
-	public DefinitionFunctionButtonToolBar getDefineButtonBar() {
-		return cqlDefinitionsView.getDefineButtonBar();
-	}
-
 	public DefinitionFunctionButtonToolBar getFunctionButtonBar() {
 		return cqlFunctionsView.getFunctionButtonBar();
-	}
-	
-	public TextBox getDefineNameTxtArea() {
-		return cqlDefinitionsView.getDefineNameTxtArea();
-	}
-	
-	public AceEditor getDefineAceEditor() {
-		return cqlDefinitionsView.getDefineAceEditor();
 	}
 	
 	public InlineRadio getContextDefinePATRadioBtn() {
@@ -348,10 +329,6 @@ public class CQLStandaloneWorkSpaceView {
 
 	public InlineRadio getContextDefinePOPRadioBtn() {
 		return cqlDefinitionsView.getContextDefinePOPRadioBtn();
-	}
-	
-	public TextBox getFuncNameTxtArea() {
-		return cqlFunctionsView.getFuncNameTxtArea();
 	}
 
 	public AceEditor getFunctionBodyAceEditor() {
@@ -364,19 +341,6 @@ public class CQLStandaloneWorkSpaceView {
 
 	public InlineRadio getContextFuncPOPRadioBtn() {
 		return cqlFunctionsView.getContextFuncPOPRadioBtn();
-	}
-
-	public List<CQLFunctionArgument> getFunctionArgumentList() {
-		return cqlFunctionsView.getFunctionArgumentList();
-	}
-	
-	public TextBox getParameterNameTxtArea() {
-		return cqlParametersView.getParameterNameTxtArea();
-	}
-	
-
-	public AceEditor getParameterAceEditor() {
-		return cqlParametersView.getParameterAceEditor();
 	}
 
 	public Map<String, CQLFunctionArgument> getFunctionArgNameMap() {
@@ -467,5 +431,10 @@ public class CQLStandaloneWorkSpaceView {
 
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
+	}
+
+	@Override
+	public CQLLeftNavBarPanelView getCQLLeftNavBarPanelView() {
+		return cqlLeftNavBarPanelView;
 	}
 }

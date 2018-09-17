@@ -492,7 +492,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		SaveUpdateCQLResult latestCQLResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, cqlModel.getExpressionListFromCqlModel(),true);
 		CQLLibraryExport cqlLibraryExport = new CQLLibraryExport();
 		cqlLibraryExport.setCqlLibrary(cqlLibrary);
-		cqlLibraryExport.setCql(cqlXML);
+		cqlLibraryExport.setCql(CQLUtilityClass.getCqlString(cqlModel, ""));
 		cqlLibraryExport.setElm(latestCQLResult.getElmString());
 		cqlLibraryExport.setJson(latestCQLResult.getJsonString());
 		cqlLibraryExportDAO.save(cqlLibraryExport);

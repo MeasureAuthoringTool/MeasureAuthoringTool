@@ -466,7 +466,7 @@ public final class CQLUtilityClass {
 				if(!codesAlreadyUsed.contains(codesStr)){
 					sb.append("code ").append(codesStr).append(" ").append("from ");
 					sb.append('"').append(codeSysStr).append('"').append(" ");
-					sb.append("display " +"'" +codes.getName().replaceAll("'", "\\\\'").replaceAll("\"", "\\\\\"").replaceAll("\\/", "\\\\/")+"'");
+					sb.append("display " +"'" +codes.getName().replaceAll("'", "\\\\'")+"'");
 					sb.append("\n");
 					codesAlreadyUsed.add(codesStr);
 				}

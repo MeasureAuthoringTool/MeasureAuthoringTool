@@ -126,7 +126,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		userIdText.setHeight("27px");
 		userIdText.setId("inputUserId");
 		userIdText.setPlaceholder("Enter UMLS User Name");
-		userIdText.setTitle("Enter UMLS User Name");
+		userIdText.setTitle("Enter UMLS User Name Required");
 		userIdGroup.add(userIdLabel);
 		userIdGroup.add(userIdText);
 		
@@ -138,7 +138,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		passwordInput.getPassword().setHeight("27px");
 		passwordInput.getPassword().setId("inputPwd");
 		passwordInput.getPassword().setPlaceholder("Enter UMLS Password");
-		passwordInput.getPassword().setTitle("Enter UMLS Password");
+		passwordInput.getPassword().setTitle("Enter UMLS Password Required");
 		passwordInput.getPassword().setValidateOnBlur(true);
 		passwordGroup.add(passwordLabel);
 		passwordGroup.add(passwordInput.getPassword());

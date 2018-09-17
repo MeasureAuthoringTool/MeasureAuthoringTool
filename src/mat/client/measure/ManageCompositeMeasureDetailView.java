@@ -153,7 +153,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	
 	private void buildCompositeScoringInput() {
 		compositeScoringMethodInput.getElement().setId("compositeScoringInput_ListBoxMVP");
-		compositeScoringMethodInput.setTitle("Composite Scoring Method");
+		compositeScoringMethodInput.setTitle("Composite Scoring Method Required");
 		compositeScoringMethodInput.setStyleName("form-control");
 		compositeScoringMethodInput.setVisibleItemCount(1);
 		compositeScoringMethodInput.setWidth("18em");

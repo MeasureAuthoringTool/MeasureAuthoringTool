@@ -88,7 +88,7 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		BonnieOAuthResult result = null;
 		try {
 			result = bonnieApi.getBonnieOAuthResult(code);
-			saveBonnieAccessInfo(result);
+			saveBonnieAccessInfo(LoggedInUserUtil.getLoggedInUser(),result);
 
 		} catch (Exception exn) {
 			exn.printStackTrace();
@@ -191,13 +191,13 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 			throw e;
 		}
 		
-		saveBonnieAccessInfo(result);
+		saveBonnieAccessInfo(userId,result);
 
 		return result;
 	}
 
-	private void saveBonnieAccessInfo(BonnieOAuthResult result) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+	private void saveBonnieAccessInfo(String userId, BonnieOAuthResult result) {
+		User user = userDAO.find(userId);
 		UserBonnieAccessInfo userBonnieAccessInfo = user.getUserBonnieAccessInfo();
 		if (userBonnieAccessInfo == null) {
 			userBonnieAccessInfo = new UserBonnieAccessInfo();

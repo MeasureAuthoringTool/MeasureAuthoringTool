@@ -510,8 +510,8 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				aliasMapping.put(selectedMeasure.getId(), aliasName);
 			}
 			
-			buildAppliedComponentMeasuresTable();
-			buildAvailableMeasuresTable();
+			availableMeasuresTable.redraw();
+			appliedComponentTable.redraw();
 			editIncludedComponentMeasureDialogBox.getDialogModal().hide();	
 			if(!StringUtility.isEmptyOrNull(replaceMessage)) {
 				getSuccessMessage().createAlert(replaceMessage);

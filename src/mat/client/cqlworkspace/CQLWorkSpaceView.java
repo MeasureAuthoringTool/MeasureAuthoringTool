@@ -215,7 +215,6 @@ public class CQLWorkSpaceView {
 		cqlDefinitionsView.resetAll();
 		cqlFunctionsView.resetAll();
 		cqlViewCQLView.resetAll();
-		cqlLeftNavBarPanelView.setIsPageDirty(false);
 		resetMessageDisplay();
 	}
 	

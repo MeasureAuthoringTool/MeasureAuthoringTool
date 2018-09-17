@@ -36,7 +36,6 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class CQlDefinitionsView.
  *

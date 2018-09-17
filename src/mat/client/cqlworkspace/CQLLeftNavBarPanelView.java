@@ -109,7 +109,6 @@ public class CQLLeftNavBarPanelView {
 	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
 	private ListBox parameterNameListBox = new ListBox();
 	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
-	private Boolean isPageDirty = false;
 	private Boolean isDoubleClick = false;
 	private Boolean isNavBarClick = false;
 	private Boolean isLoading = false;
@@ -1844,10 +1843,6 @@ public class CQLLeftNavBarPanelView {
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
 	}
-
-	public void setIsPageDirty(Boolean isPageDirty) {
-		this.isPageDirty = isPageDirty;
-	}
 	
 	public void setIsDoubleClick(Boolean isDoubleClick) {
 		this.isDoubleClick = isDoubleClick;
@@ -1864,10 +1859,6 @@ public class CQLLeftNavBarPanelView {
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-
-	public Boolean getIsPageDirty() {
-		return isPageDirty;
-	}	
 	
 	/**
 	 * Gets the owner name.

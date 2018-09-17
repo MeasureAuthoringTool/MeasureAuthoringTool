@@ -91,7 +91,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		bluePanel.add(new SpacerWidget());
 		
 		/*loginId = new TextBox();*/
-		loginId.setTitle("Enter User ID");
+		loginId.setTitle("Enter User ID Required");
 		loginId.setPlaceholder("Enter User ID");
 		loginId.setEnabled(true);
 		loginId.setWidth("170px");

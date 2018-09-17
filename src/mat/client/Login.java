@@ -12,12 +12,12 @@ import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TemporaryPasswordLoginEvent;
 import mat.client.login.FirstLoginPresenter;
 import mat.client.login.FirstLoginView;
-import mat.client.login.ForgottenLoginIdNewPresenter;
-import mat.client.login.ForgottenLoginIdNewView;
+import mat.client.login.ForgottenLoginIdPresenter;
+import mat.client.login.ForgottenLoginIdView;
 import mat.client.login.ForgottenPasswordPresenter;
 import mat.client.login.ForgottenPasswordView;
-import mat.client.login.LoginNewPresenter;
-import mat.client.login.LoginNewView;
+import mat.client.login.LoginPresenter;
+import mat.client.login.LoginView;
 import mat.client.login.TempPwdLoginPresenter;
 import mat.client.login.TempPwdView;
 import mat.client.shared.MatContext;
@@ -38,14 +38,14 @@ public class Login extends MainLayout implements EntryPoint {
 	
 	/** The forgotten login id presenter. */
 	//private ForgottenLoginIdPresenter forgottenLoginIdPresenter;
-	private ForgottenLoginIdNewPresenter forgottenLoginIdNewPresenter;
+	private ForgottenLoginIdPresenter forgottenLoginIdNewPresenter;
 	/** The forgotten pwd presenter. */
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
 	
 	/** The login presenter. */
 	//private LoginPresenter loginPresenter;
 	
-	private LoginNewPresenter loginNewPresenter;
+	private LoginPresenter loginNewPresenter;
 	
 	/** The security questions presenter. */
 	private FirstLoginPresenter securityQuestionsPresenter;
@@ -190,8 +190,8 @@ public class Login extends MainLayout implements EntryPoint {
 	private void initPresenters() {
 		/*final LoginView unamePasswordView = new LoginView();
 		loginPresenter = new LoginPresenter(unamePasswordView);*/
-		LoginNewView loginView = new LoginNewView();
-		loginNewPresenter = new LoginNewPresenter(loginView);
+		LoginView loginView = new LoginView();
+		loginNewPresenter = new LoginPresenter(loginView);
 		
 		
 		final FirstLoginView securityQuesView = new FirstLoginView();
@@ -203,8 +203,8 @@ public class Login extends MainLayout implements EntryPoint {
 		/*final ForgottenLoginIdView forgottenLoginIdView = new ForgottenLoginIdView();
 		forgottenLoginIdPresenter = new ForgottenLoginIdPresenter(forgottenLoginIdView);
 		 */
-		ForgottenLoginIdNewView forgottenLoginIdNewView = new ForgottenLoginIdNewView();
-		forgottenLoginIdNewPresenter = new ForgottenLoginIdNewPresenter(forgottenLoginIdNewView);
+		ForgottenLoginIdView forgottenLoginIdNewView = new ForgottenLoginIdView();
+		forgottenLoginIdNewPresenter = new ForgottenLoginIdPresenter(forgottenLoginIdNewView);
 		final TempPwdView temPwdview = new TempPwdView();
 		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
 		

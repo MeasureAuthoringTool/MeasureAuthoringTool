@@ -210,7 +210,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	
 	protected void buildNameTextArea() {
 		name.setId("NameTextArea");
-		name.setTitle("Enter Measure Name.");
+		name.setTitle("Enter Measure Name Required.");
 		name.setWidth("400px");
 		name.setHeight("50px");
 		name.setMaxLength(500);
@@ -228,7 +228,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	
 	protected void buildShortNameTextBox() {
 		shortName.setId("ShortNameTextBox");
-		shortName.setTitle("Enter eCQM Abbreviated Title");
+		shortName.setTitle("Enter eCQM Abbreviated Title Required");
 		shortName.setWidth("18em");
 		shortName.setMaxLength(32);	
 	}
@@ -245,7 +245,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	
 	protected void buildMeasureScoringInput() {
 		measureScoringInput.getElement().setId("measScoringInput_ListBoxMVP");
-		measureScoringInput.setTitle("Measure Scoring.");
+		measureScoringInput.setTitle("Measure Scoring Required.");
 		measureScoringInput.setStyleName("form-control");
 		measureScoringInput.setVisibleItemCount(1);
 		measureScoringInput.setWidth("18em");
@@ -271,7 +271,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	
 	protected void buildPatientBasedInput() {
 		patientBasedInput.getElement().setId("patientBasedMeasure_listbox");
-		patientBasedInput.setTitle("Patient Based Indicator.");
+		patientBasedInput.setTitle("Patient Based Indicator Required.");
 		patientBasedInput.setStyleName("form-control");
 		patientBasedInput.setVisibleItemCount(1);
 		patientBasedInput.setWidth("18em");

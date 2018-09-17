@@ -3,10 +3,12 @@ package mat.client.cqlworkspace;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.Mat;
 import mat.client.cqlworkspace.codes.CQLCodesView;
 import mat.client.cqlworkspace.components.CQLComponentLibraryPresenter;
@@ -17,50 +19,33 @@ import mat.client.cqlworkspace.generalinformation.CQLGeneralInformationView;
 import mat.client.cqlworkspace.includedlibrary.CQLIncludeLibraryView;
 import mat.client.cqlworkspace.parameters.CQLParametersView;
 import mat.client.cqlworkspace.valuesets.CQLAppliedValueSetView;
+import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessagePanel;
 import mat.client.shared.SpacerWidget;
 
-public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
-
-	HorizontalPanel mainHPPanel = new HorizontalPanel();
-
+public class CQLMeasureWorkSpaceView implements CQLWorkspaceView {
+	HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 	private VerticalPanel mainPanel = new VerticalPanel();
-
-	private VerticalPanel mainVPanel = new VerticalPanel();
-
+	private VerticalPanel mainVerticalPanel = new VerticalPanel();
 	private FlowPanel mainFlowPanel = new FlowPanel();
-
-	public String clickedMenu = "general";
-
-	public String nextClickedMenu = "general";
-
+	public String clickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+	public String nextClickedMenu = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 	VerticalPanel vp = new VerticalPanel();
-
 	private CQLAppliedValueSetView valueSetView;
-
 	private CQLIncludeLibraryView inclView;
-
 	private CQLCodesView codesView;
-
 	private CQLGeneralInformationView generalInformationView;
-	
 	private CQLParametersView cqlParametersView;
-	
 	private CQLDefinitionsView cqlDefinitionsView;
-	
 	private CQLFunctionsView cqlFunctionsView;
-	
 	private CQLView cqlViewCQLView;
-	
 	private CQLLeftNavBarPanelView cqlLeftNavBarPanelView;
-	
 	private CQLComponentLibraryPresenter componentPresenter;
-	
 	private HelpBlock helpBlock = new HelpBlock();
-	
+	MessagePanel messagePanel;
 
-
-	public CQLWorkSpaceView( ) {
+	public CQLMeasureWorkSpaceView( ) {
 		generalInformationView = new CQLGeneralInformationView();
 		componentPresenter = new CQLComponentLibraryPresenter();
 		cqlParametersView = new CQLParametersView();
@@ -76,8 +61,9 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 
 
-	@Override
-	public void buildView() {
+	public void buildView(MessagePanel messagePanel) {
+		GWT.log("calling CQLMeasureWorkspaceView buildView()");
+		this.messagePanel = messagePanel;
 		resetAll();
 		unsetEachSectionSelectedObject();
 	
@@ -86,22 +72,21 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainPanel.getElement().setId("CQLWorkspaceView.containerPanel");
 		mainPanel.add(new SpacerWidget());
 		
-		mainPanel.add(cqlLeftNavBarPanelView.getMessagePanel());
+		mainPanel.add(messagePanel);
 		mainPanel.add(mainFlowPanel);
 
 		resetMessageDisplay();
 
-		mainHPPanel.addStyleName("cqlRightMessage");
-		mainHPPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
-		mainHPPanel.add(mainPanel);
+		mainHorizontalPanel.addStyleName("cqlRightMessage");
+		mainHorizontalPanel.add(cqlLeftNavBarPanelView.buildMeasureLibCQLView());
+		mainHorizontalPanel.add(mainPanel);
 		
-		mainVPanel.add(mainHPPanel);
-        mainVPanel.add(valueSetView.getCellTableMainPanel());
-        mainVPanel.add(codesView.getCellTableMainPanel());
+		mainVerticalPanel.add(mainHorizontalPanel);
+        mainVerticalPanel.add(valueSetView.getCellTableMainPanel());
+        mainVerticalPanel.add(codesView.getCellTableMainPanel());
         
 	}
 
-	@Override
 	public void buildCQLFileView(boolean isEditable) {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
@@ -109,8 +94,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 
-
-	@Override
 	public void buildGeneralInformation() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
@@ -119,8 +102,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 
-
-	@Override
 	public void buildAppliedQDM() {
 		mainFlowPanel.clear();
 		valueSetView.resetVSACValueSetWidget();
@@ -143,7 +124,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 
 	}
 
-	@Override
 	public void buildCodes() {
 		mainFlowPanel.clear();
 		codesView.resetVSACCodeWidget();
@@ -184,7 +164,6 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 	
 
-	@Override
 	public void buildIncludesView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
@@ -205,115 +184,82 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		mainFlowPanel.add(vp);
 	}
 
-	@Override
 	public void buildParameterLibraryView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlParametersView.getView());
 		//508 Compliance for Parameter section
-		getCqlLeftNavBarPanelView().setFocus(getCQLParametersView().getMainParamViewVerticalPanel());
+		getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
 	}
 
-	@Override
 	public void buildDefinitionLibraryView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlDefinitionsView.getView());
 		//508 Compliance for Definition section
-		getCqlLeftNavBarPanelView().setFocus(getCQlDefinitionsView().getMainDefineViewVerticalPanel());
+		getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
 	}
 
 
-	@Override
 	public void buildFunctionLibraryView() {
 		unsetEachSectionSelectedObject();
 		mainFlowPanel.clear();
 		mainFlowPanel.add(cqlFunctionsView.getView(MatContext.get().getMeasureLockService().checkForEditPermission()));
 		//508 Compliance for Function section
-		getCqlLeftNavBarPanelView().setFocus(getCqlFunctionsView().getMainFunctionVerticalPanel());
+		getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 	}
 
-	@Override
 	public void resetAll() {
 		mainFlowPanel.clear();
-		cqlLeftNavBarPanelView.getRightHandNavPanel().clear();
 		inclView.setAliasNameTxtArea("");
-		cqlLeftNavBarPanelView.getViewIncludeLibrarys().clear();
-		cqlLeftNavBarPanelView.getViewParameterList().clear();
-		cqlLeftNavBarPanelView.getViewDefinitions().clear();
-		cqlLeftNavBarPanelView.getViewFunctions().clear();
-		cqlLeftNavBarPanelView.getViewIncludeLibrarys().clear();
-
-		if (cqlLeftNavBarPanelView.getIncludesCollapse() != null) {
-			cqlLeftNavBarPanelView.getIncludesCollapse().clear();
-		}
-		if (cqlLeftNavBarPanelView.getParamCollapse() != null) {
-			cqlLeftNavBarPanelView.getParamCollapse().clear();
-		}
-		if (cqlLeftNavBarPanelView.getDefineCollapse() != null) {
-			cqlLeftNavBarPanelView.getDefineCollapse().clear();
-		}
-		if (cqlLeftNavBarPanelView.getFunctionCollapse() != null) {
-			cqlLeftNavBarPanelView.getFunctionCollapse().clear();
-		}
+		cqlLeftNavBarPanelView.reset();
 		generalInformationView.resetAll();
 		cqlParametersView.resetAll();
 		cqlDefinitionsView.resetAll();
 		cqlFunctionsView.resetAll();
 		cqlViewCQLView.resetAll();
-		cqlLeftNavBarPanelView.setIsPageDirty(false);
 		resetMessageDisplay();
 	}
 	
 
-	@Override
 	public VerticalPanel getMainPanel() {
 		return mainPanel;
 	}
 
-	@Override
 	public HorizontalPanel getMainHPanel() {
-		return mainHPPanel;
+		return mainHorizontalPanel;
 	}
 
-	@Override
 	public Widget asWidget() {
-		return mainVPanel;
+		return mainVerticalPanel;
 	}
 
-	@Override
 	public String getClickedMenu() {
 		return clickedMenu;
 	}
 
-	@Override
 	public void setClickedMenu(String clickedMenu) {
 		this.clickedMenu = clickedMenu;
 	}
 
-	@Override
 	public String getNextClickedMenu() {
 		return nextClickedMenu;
 	}
 
-	@Override
 	public void setNextClickedMenu(String nextClickedMenu) {
 		this.nextClickedMenu = nextClickedMenu;
 	}
 	
-	@Override
 	public FlowPanel getMainFlowPanel() {
 		return mainFlowPanel;
 	}
 
-	@Override
 	public void hideAceEditorAutoCompletePopUp() {
 		cqlDefinitionsView.hideAceEditorAutoCompletePopUp();
 		cqlParametersView.hideAceEditorAutoCompletePopUp();
 		cqlFunctionsView.hideAceEditorAutoCompletePopUp();
 	}
 	
-	@Override
 	public void hideInformationDropDown() {
 		cqlDefinitionsView.getDefineButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
 		cqlParametersView.getParameterButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
@@ -322,12 +268,7 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	
 
 	public void unsetEachSectionSelectedObject() {
-		cqlLeftNavBarPanelView.setCurrentSelectedDefinitionObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedParamerterObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedFunctionObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentObjId(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedFunctionArgumentName(null);
-		cqlLeftNavBarPanelView.setCurrentSelectedIncLibraryObjId(null);
+		cqlLeftNavBarPanelView.resetSelectedObjects();
 		cqlFunctionsView.getFunctionArgNameMap().clear();
 		if (!cqlFunctionsView.getFunctionArgumentList().isEmpty()) {
 			cqlFunctionsView.getFunctionArgumentList().clear();
@@ -336,14 +277,10 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		codesView.clearCellTableMainPanel();
 	}
 	
-	@Override
 	public void resetMessageDisplay() {
-		cqlLeftNavBarPanelView.getWarningMessageAlert().clearAlert();
-		cqlLeftNavBarPanelView.getSuccessMessageAlert().clearAlert();
-		cqlLeftNavBarPanelView.getErrorMessageAlert().clearAlert();
-		cqlLeftNavBarPanelView.getWarningConfirmationMessageAlert().clearAlert();
-		if(cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert() != null)
-			cqlLeftNavBarPanelView.getGlobalWarningConfirmationMessageAlert().clearAlert();
+		if(messagePanel != null) {
+			messagePanel.clearAlerts();
+		}
 		hideAceEditorAutoCompletePopUp();
 		hideInformationDropDown();
 		resetFormGroups();
@@ -356,61 +293,41 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 		cqlFunctionsView.resetFuncFormGroup();
 		generalInformationView.resetFormGroup();
 		inclView.resetFromGroup();
+	}
+	
+	public void resetAllSections() {
 		
 	}
 
-	@Override
-	public CQLLeftNavBarPanelView getCqlLeftNavBarPanelView(){
-		return cqlLeftNavBarPanelView;
-	}
-
-	@Override
 	public CQLGeneralInformationView getCqlGeneralInformationView(){
 		return generalInformationView;
 	}
 
-	@Override
 	public CQLIncludeLibraryView getIncludeView() {
 		return inclView;
 	}
 
-	@Override
 	public CQLAppliedValueSetView getValueSetView() {
 		return valueSetView;
 	}
 
-	@Override
 	public CQLParametersView getCQLParametersView(){
 		return cqlParametersView;
 	}
 
-	@Override
-	public CQLDefinitionsView getCQlDefinitionsView(){
-		return cqlDefinitionsView;
-	}
-
-	@Override
-	public CQLFunctionsView getCqlFunctionsView() {
-		return cqlFunctionsView;
-	}
-
-	@Override
 	public CQLView getViewCQLView(){
 		return cqlViewCQLView;
 	}
 
-	@Override
 	public CQLCodesView getCodesView() {
 		return codesView;
 	}
 	
-	@Override
 	public void setGeneralInfoHeading(){
 		getCqlGeneralInformationView().setHeading("CQL Workspace > General Information", "generalInfoMainHPanel_HPanel");
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
-	@Override
 	public HelpBlock getHelpBlock() {
 		return helpBlock;
 	}
@@ -420,10 +337,31 @@ public class CQLWorkSpaceView implements CQLWorkSpacePresenter.ViewDisplay {
 	}
 
 
-	@Override
 	public CQLComponentLibraryView getComponentView() {
 		return componentPresenter.getView();
 	}
 
-	
+
+	@Override
+	public AceEditor getViewCQLEditor() {
+		return getIncludeView().getViewCQLEditor();
+	}
+
+
+	@Override
+	public CQLLeftNavBarPanelView getCQLLeftNavBarPanelView() {
+		return cqlLeftNavBarPanelView;
+	}
+
+
+	@Override
+	public CQLDefinitionsView getCQLDefinitionsView() {
+		return cqlDefinitionsView;
+	}
+
+
+	@Override
+	public CQLFunctionsView getCQLFunctionsView() {
+		return cqlFunctionsView;
+	}
 }

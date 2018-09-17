@@ -32,8 +32,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -42,20 +40,12 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.MatTextBox;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
@@ -67,149 +57,70 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 
 public class CQLLeftNavBarPanelView {
-	
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
-	
 	private Map<String, String> defineNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private Map<String, String> funcNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private Map<String, String> includeLibraryNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private HashMap<String, CQLDefinition> definitionMap = new HashMap<String, CQLDefinition>();
-
 	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
-
 	private HashMap<String, CQLIncludeLibrary> includeLibraryMap = new HashMap<String, CQLIncludeLibrary>();
-
 	private Badge includesBadge = new Badge();
-	
 	private Badge valueSetBadge = new Badge();
-	
 	private Badge codesBadge = new Badge();
-
 	private Badge paramBadge = new Badge();
-
 	private Badge defineBadge = new Badge();
-
 	private Badge functionBadge = new Badge();
-
 	private Label includesLabel = new Label("Includes");
-	
 	private Label valueSetLabel = new Label("Value Sets");
-	
 	private Label codesLabel = new Label("Codes");
-
 	private Label paramLabel = new Label("Parameter");
-
 	private Label defineLabel = new Label("Definition");
-
 	private Label functionLibLabel = new Label("Function");
-
 	PanelCollapse paramCollapse = new PanelCollapse();
-
 	PanelCollapse defineCollapse = new PanelCollapse();
-	
 	PanelCollapse functionCollapse = new PanelCollapse();
-	
 	PanelCollapse includesCollapse = new PanelCollapse();
-	
 	PanelCollapse codesCollapse = new PanelCollapse();
-	
 	PanelCollapse valueSetCollapse = new PanelCollapse();
-	
 	private AnchorListItem viewCQL;
-
 	private AnchorListItem appliedQDM;
-	
 	private AnchorListItem codesLibrary;
-
 	private AnchorListItem generalInformation;
-
 	private AnchorListItem includesLibrary;
-
 	private AnchorListItem parameterLibrary;
-
 	private AnchorListItem definitionLibrary;
-
 	private AnchorListItem functionLibrary;
-	
 	private List<CQLIncludeLibrary> viewIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
-	
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
-	
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
-
 	private List<CQLCode> codesList = new ArrayList<CQLCode>();
-	
 	private List<CQLQualityDataSetDTO> appliedQdmTableList = new ArrayList<CQLQualityDataSetDTO>();
-	
 	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
-
 	private List<CQLLibraryDataSetObject> includeLibraryList = new ArrayList<CQLLibraryDataSetObject>();
-
 	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
-
 	private ListBox includesNameListbox = new ListBox();
-
 	private ListBox defineNameListBox = new ListBox();
-
 	private ListBox funcNameListBox = new ListBox();
-
 	private SuggestBox searchSuggestDefineTextBox;
-
 	private SuggestBox searchSuggestIncludeTextBox;
-
 	private SuggestBox searchSuggestFuncTextBox;
-
 	private SuggestBox searchSuggestParamTextBox;
-
 	private Map<String, String> parameterNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
-
 	private ListBox parameterNameListBox = new ListBox();
-	
-	private VerticalPanel messagePanel = new VerticalPanel();
-	
-	private MessageAlert successMessageAlert = new SuccessMessageAlert();
-
-	private MessageAlert warningMessageAlert = new WarningMessageAlert();
-
-	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-
-	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-
 	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
-
-	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
-	
-	private Boolean isPageDirty = false;
-
 	private Boolean isDoubleClick = false;
-
 	private Boolean isNavBarClick = false;
-	
 	private Boolean isLoading = false;
-	
 	private String currentSelectedDefinitionObjId = null;
-
 	private String currentSelectedParamerterObjId = null;
-
 	private String currentSelectedFunctionObjId = null;
-	
 	private String currentSelectedFunctionArgumentObjId = null;
-	
 	private String currentSelectedFunctionArgumentName = null;
-
 	private String currentSelectedIncLibraryObjId = null;
-	
 	private String currentSelectedValueSetObjId = null;
-	
 	private String currentSelectedCodesObjId = null;
-	
 	private List<QDSAttributes> availableQDSAttributeList;
-	
 	//Component tab info
 	private Badge badge = new Badge();
 	private ListBox componentNameListBox = new ListBox();
@@ -217,11 +128,9 @@ public class CQLLeftNavBarPanelView {
 	private PanelCollapse collapse = new PanelCollapse();
 	private SuggestBox searchAliasTextBox;
 	private AnchorListItem anchor;
-	
 	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
 	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
 	private Map<String, String> aliases = new HashMap<String,String>();
-	
 	private PanelCollapse buildComponentCollapsablePanel() {
 		collapse.clear();
 		collapse.setId("collapseComponent");
@@ -306,7 +215,8 @@ public class CQLLeftNavBarPanelView {
 	
 
 	public VerticalPanel buildMeasureLibCQLView(){
-		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
+		//TODO why was this only being instantiated here?
+		//globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 		collapse = buildComponentCollapsablePanel();
 		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
@@ -343,7 +253,6 @@ public class CQLLeftNavBarPanelView {
 		buildDefinitionsTab();
 		buildFunctionsTab();
 		buildViewCQLTab();
-		buildMessagePanel();
 		
 		navPills.add(generalInformation);
 		navPills.add(anchor);
@@ -356,15 +265,6 @@ public class CQLLeftNavBarPanelView {
 		navPills.add(viewCQL);
 
 		rightHandNavPanel.add(navPills);
-	}
-	
-	private void buildMessagePanel() {
-		messagePanel.add(successMessageAlert);
-		messagePanel.add(warningMessageAlert);
-		messagePanel.add(errorMessageAlert);
-		messagePanel.add(warningConfirmationMessageAlert);
-		messagePanel.add(globalWarningConfirmationMessageAlert);
-		messagePanel.setStyleName("marginLeft15px");
 	}
 	
 	private void buildGeneralInfoTab() {
@@ -1909,26 +1809,6 @@ public class CQLLeftNavBarPanelView {
 
 
 	/**
-	 * Gets the message panel.
-	 *
-	 * @return the message panel
-	 */
-	public VerticalPanel getMessagePanel() {
-		return messagePanel;
-	}
-
-
-	/**
-	 * Sets the message panel.
-	 *
-	 * @param messagePanel the new message panel
-	 */
-	public void setMessagePanel(VerticalPanel messagePanel) {
-		this.messagePanel = messagePanel;
-	}
-
-
-	/**
 	 * Gets the delete confirmation dialog box.
 	 *
 	 * @return the delete confirmation dialog box
@@ -1948,37 +1828,6 @@ public class CQLLeftNavBarPanelView {
 	}
 
 
-	/**
-	 * Gets the success message alert.
-	 *
-	 * @return the success message alert
-	 */
-	public MessageAlert getSuccessMessageAlert() {
-		return successMessageAlert;
-	}
-
-
-	/**
-	 * Gets the warning message alert.
-	 *
-	 * @return the warning message alert
-	 */
-	public MessageAlert getWarningMessageAlert() {
-		return warningMessageAlert;
-	}
-
-	public MessageAlert getErrorMessageAlert() {
-		return errorMessageAlert;
-	}
-
-	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
-		return warningConfirmationMessageAlert;
-	}
-
-	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
-		return globalWarningConfirmationMessageAlert;
-	}
-
 	public String getCurrentSelectedDefinitionObjId() {
 		return currentSelectedDefinitionObjId;
 	}
@@ -1993,10 +1842,6 @@ public class CQLLeftNavBarPanelView {
 
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
-	}
-
-	public void setIsPageDirty(Boolean isPageDirty) {
-		this.isPageDirty = isPageDirty;
 	}
 	
 	public void setIsDoubleClick(Boolean isDoubleClick) {
@@ -2014,42 +1859,6 @@ public class CQLLeftNavBarPanelView {
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-
-	public Boolean getIsPageDirty() {
-		return isPageDirty;
-	}
-
-	public void showUnsavedChangesWarning() {
-		getWarningMessageAlert().clearAlert();
-		getErrorMessageAlert().clearAlert();
-		getSuccessMessageAlert().clearAlert();
-		getGlobalWarningConfirmationMessageAlert().clearAlert();
-		getWarningConfirmationMessageAlert().createAlert();
-		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
-	}
-
-	public void showGlobalUnsavedChangesWarning() {
-		getWarningMessageAlert().clearAlert();
-		getErrorMessageAlert().clearAlert();
-		getSuccessMessageAlert().clearAlert();
-		getWarningConfirmationMessageAlert().clearAlert();
-		getGlobalWarningConfirmationMessageAlert().createAlert();
-		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
-	}
-
-	
-	/**
-	 * Show delete confirmation message alert.
-	 *
-	 * @param message the message
-	 */
-	public void showDeleteConfirmationMessageAlert(String message) {
-		getWarningMessageAlert().clearAlert();
-		getErrorMessageAlert().clearAlert();
-		getSuccessMessageAlert().clearAlert();
-		getWarningConfirmationMessageAlert().clearAlert();
-	}
-	
 	
 	/**
 	 * Gets the owner name.
@@ -2134,16 +1943,6 @@ public class CQLLeftNavBarPanelView {
 		this.currentSelectedIncLibraryObjId = currentSelectedIncLibraryObjId;
 	}
 
-
-	/**
-	 * Sets the warning message alert.
-	 *
-	 * @param warningMessageAlert the new warning message alert
-	 */
-	public void setWarningMessageAlert(MessageAlert warningMessageAlert) {
-		this.warningMessageAlert = warningMessageAlert;
-	}
-
 	
 	/**
 	 * Gets the included list.
@@ -2159,41 +1958,6 @@ public class CQLLeftNavBarPanelView {
 		return list;
 	}
 	
-	/**
-	 * Gets the warning confirmation yes button.
-	 *
-	 * @return the warning confirmation yes button
-	 */
-	public Button getWarningConfirmationYesButton() {
-		return warningConfirmationMessageAlert.getWarningConfirmationYesButton();
-	}
-	
-	/**
-	 * Gets the warning confirmation no button.
-	 *
-	 * @return the warning confirmation no button
-	 */
-	public Button getWarningConfirmationNoButton() {
-		return warningConfirmationMessageAlert.getWarningConfirmationNoButton();
-	}
-
-	/**
-	 * Gets the global warning confirmation yes button.
-	 *
-	 * @return the global warning confirmation yes button
-	 */
-	public Button getGlobalWarningConfirmationYesButton() {
-		return globalWarningConfirmationMessageAlert.getWarningConfirmationYesButton();
-	}
-
-	/**
-	 * Gets the global warning confirmation no button.
-	 *
-	 * @return the global warning confirmation no button
-	 */
-	public Button getGlobalWarningConfirmationNoButton() {
-		return globalWarningConfirmationMessageAlert.getWarningConfirmationNoButton();
-	}
 
 	/**
 	 * Gets the delete confirmation dialog box yes button.
@@ -2336,22 +2100,6 @@ public class CQLLeftNavBarPanelView {
 		this.currentSelectedValueSetObjId = currentSelectedValueSetObjId;
 	}
 	
-	public void setFocus(MatTextBox matTextBox){
-		matTextBox.setFocus(true);
-	}
-	
-	public void setFocus(AceEditor aceEditor){
-		aceEditor.focus();
-	}
-	
-	public void setFocus(FocusPanel focusPanel){
-		focusPanel.setFocus(true);
-	}
-
-	public void setFocus(TextBox aliasNameTxtArea) {
-		aliasNameTxtArea.setFocus(true);
-	}
-	
 	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandAloneCQLLibrary){
 		boolean isValid = true;
 		//if it is a measure we check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
@@ -2431,6 +2179,46 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 	}
+	
+	public void reset() {
+		getRightHandNavPanel().clear();
+		getViewIncludeLibrarys().clear();
+		getViewParameterList().clear();
+		getViewDefinitions().clear();
+		getViewFunctions().clear();
+		getViewIncludeLibrarys().clear();
 
+		if (getIncludesCollapse() != null) {
+			getIncludesCollapse().clear();
+		}
+		if (getParamCollapse() != null) {
+			getParamCollapse().clear();
+		}
+		if (getDefineCollapse() != null) {
+			getDefineCollapse().clear();
+		}
+		if (getFunctionCollapse() != null) {
+			getFunctionCollapse().clear();
+		}
+	}
+	
+	public void resetSelectedObjects() {
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedFunctionArgumentObjId(null);
+		setCurrentSelectedFunctionArgumentName(null);
+		setCurrentSelectedIncLibraryObjId(null);
+	}
 
+	public void resetActiveAnchorLists() {
+		getComponentsTab().setActive(false);
+		getIncludesLibrary().setActive(false);
+		getAppliedQDM().setActive(false);
+		getCodesLibrary().setActive(false);
+		getFunctionLibrary().setActive(false);
+		getParameterLibrary().setActive(false);
+		getDefinitionLibrary().setActive(false);
+		getViewCQL().setActive(false);
+	}
 }

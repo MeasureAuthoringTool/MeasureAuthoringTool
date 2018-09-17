@@ -296,7 +296,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	public boolean isValid() {
 		boolean isValid = true;
 		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
-		if (CQLStandaloneWorkSpacePresenter.getIsPageDirty()) {
+		if (cqlStandaloneWorkSpacePresenter.getIsPageDirty()) {
 			isValid = false;
 		}
 		return isValid;
@@ -311,7 +311,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	public void showUnsavedChangesError() {
 		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
 		String auditMessage = null;
-		saveErrorMessageAlert = CQLStandaloneWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
+		saveErrorMessageAlert = cqlStandaloneWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 		if(saveErrorMessageAlert != null) {
 			showErrorMessageAlert(saveErrorMessageAlert);
 		}

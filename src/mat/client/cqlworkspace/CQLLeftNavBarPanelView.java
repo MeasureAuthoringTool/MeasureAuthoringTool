@@ -108,7 +108,6 @@ public class CQLLeftNavBarPanelView {
 	private Map<String, String> parameterNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
 	private ListBox parameterNameListBox = new ListBox();
-	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 	private Boolean isDoubleClick = false;
 	private Boolean isNavBarClick = false;
 	private Boolean isLoading = false;
@@ -1808,26 +1807,6 @@ public class CQLLeftNavBarPanelView {
 	}
 
 
-	/**
-	 * Gets the delete confirmation dialog box.
-	 *
-	 * @return the delete confirmation dialog box
-	 */
-	public DeleteConfirmationDialogBox getDeleteConfirmationDialogBox() {
-		return deleteConfirmationDialogBox;
-	}
-
-
-	/**
-	 * Sets the delete confirmation dialog box.
-	 *
-	 * @param deleteConfirmationDialogBox the new delete confirmation dialog box
-	 */
-	public void setDeleteConfirmationDialogBox(DeleteConfirmationDialogBox deleteConfirmationDialogBox) {
-		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
-	}
-
-
 	public String getCurrentSelectedDefinitionObjId() {
 		return currentSelectedDefinitionObjId;
 	}
@@ -1956,25 +1935,6 @@ public class CQLLeftNavBarPanelView {
 			list.add(entry.getValue().getCqlLibraryId());
 		}
 		return list;
-	}
-	
-
-	/**
-	 * Gets the delete confirmation dialog box yes button.
-	 *
-	 * @return the delete confirmation dialog box yes button
-	 */
-	public Button getDeleteConfirmationDialogBoxYesButton() {
-		return deleteConfirmationDialogBox.getYesButton();
-	}
-
-	/**
-	 * Gets the delete confirmation dialog box no button.
-	 *
-	 * @return the delete confirmation dialog box no button
-	 */
-	public Button getDeleteConfirmationDialogBoxNoButton() {
-		return deleteConfirmationDialogBox.getNoButton();
 	}
 
 

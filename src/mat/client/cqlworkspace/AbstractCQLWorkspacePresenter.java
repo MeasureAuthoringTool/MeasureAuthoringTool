@@ -3,6 +3,8 @@ package mat.client.cqlworkspace;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -19,12 +21,12 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLModelValidator;
 
 public abstract class AbstractCQLWorkspacePresenter {
-	protected static MessagePanel messagePanel = new MessagePanel();
 	protected static final String CODES_SELECTED_SUCCESSFULLY = "All codes successfully selected.";
 	protected static final String VALUE_SETS_SELECTED_SUCCESSFULLY = "All value sets successfully selected.";
+	protected MessagePanel messagePanel = new MessagePanel();
 	protected SimplePanel panel = new SimplePanel();
 	protected String setId = null;
-	protected static String currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
+	protected String currentSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 	protected String nextSection = CQLWorkSpaceConstants.CQL_GENERAL_MENU;
 	protected boolean isModified = false;
 	protected AceEditor curAceEditor;
@@ -52,7 +54,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	
 	protected final VSACAPIServiceAsync vsacapiService = MatContext.get().getVsacapiServiceAsync();
 	protected QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
-
+	protected DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
 	
 	protected void showUnsavedChangesWarning() {
 		messagePanel.clearAlerts();
@@ -64,7 +66,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 		AbstractCQLWorkspacePresenter.isPageDirty = isPageDirty;
 	}
 	
-	public static Boolean getIsPageDirty() {
+	public Boolean getIsPageDirty() {
 		return isPageDirty;
 	}	
 	
@@ -77,7 +79,33 @@ public abstract class AbstractCQLWorkspacePresenter {
 				&& !MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlKeywordsList().stream().anyMatch(definedKeyWord -> definedKeyWord.equalsIgnoreCase(trimedExpression));
 	}
 	
-	public static MessagePanel getMessagePanel() {
+	public MessagePanel getMessagePanel() {
 		return messagePanel;
+	}
+
+	public DeleteConfirmationDialogBox getDeleteConfirmationDialogBox() {
+		return deleteConfirmationDialogBox;
+	}
+
+	public void setDeleteConfirmationDialogBox(DeleteConfirmationDialogBox deleteConfirmationDialogBox) {
+		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
+	}
+	
+	/**
+	 * Gets the delete confirmation dialog box yes button.
+	 *
+	 * @return the delete confirmation dialog box yes button
+	 */
+	public Button getDeleteConfirmationDialogBoxYesButton() {
+		return deleteConfirmationDialogBox.getYesButton();
+	}
+
+	/**
+	 * Gets the delete confirmation dialog box no button.
+	 *
+	 * @return the delete confirmation dialog box no button
+	 */
+	public Button getDeleteConfirmationDialogBoxNoButton() {
+		return deleteConfirmationDialogBox.getNoButton();
 	}
 }

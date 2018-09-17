@@ -157,51 +157,56 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	 */
 	private void addDeleteConfirmationHandlers() {
 
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBoxNoButton()
-				.addClickHandler(new ClickHandler() {
+		getDeleteConfirmationDialogBoxNoButton()
+		.addClickHandler(new ClickHandler() {
 
-					@Override
-					public void onClick(ClickEvent event) {
-						cqlWorkspaceView.resetMessageDisplay();
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-					}
-				});
+			@Override
+			public void onClick(ClickEvent event) {
+				cqlWorkspaceView.resetMessageDisplay();
+				deleteConfirmationDialogBox.hide();
+				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
+			}
+		});
 
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBoxYesButton()
-				.addClickHandler(new ClickHandler() {
-
-					@Override
-					public void onClick(ClickEvent event) {
-						if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
-							deleteDefinition();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null
-								&& cqlWorkspaceView.getCQLLeftNavBarPanelView()
-										.getCurrentSelectedFunctionArgumentObjId() == null) {
-							deleteFunction();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
-								.getCurrentSelectedFunctionArgumentObjId() != null) {
-							deleteFunctionArgument();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
-								.getCurrentSelectedParamerterObjId() != null) {
-							deleteParameter();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
-								.getCurrentSelectedIncLibraryObjId() != null) {
-							deleteInclude();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
-								.getCurrentSelectedValueSetObjId() != null) {
-							checkAndDeleteValueSet();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedCodesObjId() != null) {
-							deleteCode();
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().hide();
-						}
-					}
-				});
+		getDeleteConfirmationDialogBoxYesButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
+					GWT.log("deleteDefinition");
+					deleteDefinition();
+					deleteConfirmationDialogBox.hide();
+				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null
+						&& cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() == null) {
+					GWT.log("deleteFunction");
+					deleteFunction();
+					deleteConfirmationDialogBox.hide();
+				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() != null) {
+					GWT.log("deleteFunctionArgument");
+					deleteFunctionArgument();
+					deleteConfirmationDialogBox.hide();
+				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
+						.getCurrentSelectedParamerterObjId() != null) {
+					GWT.log("deleteParameter");
+					deleteParameter();
+					deleteConfirmationDialogBox.hide();
+				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
+						.getCurrentSelectedIncLibraryObjId() != null) {
+					GWT.log("deleteInclude");
+					deleteInclude();
+					deleteConfirmationDialogBox.hide();
+				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
+						.getCurrentSelectedValueSetObjId() != null) {
+					GWT.log("checkAndDeleteValueSet");
+					checkAndDeleteValueSet();
+					deleteConfirmationDialogBox.hide();
+				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedCodesObjId() != null) {
+					GWT.log("deleteCode");
+					deleteCode();
+					deleteConfirmationDialogBox.hide();
+				}
+			}
+		});
 	}
 
 
@@ -302,11 +307,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					@Override
 					public void onClick(ClickEvent event) {
 						resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
-								.createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER(
-										cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().getValue()));
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
-
+						deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER(cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().getValue()));
+						deleteConfirmationDialogBox.show();
 					}
 
 				});
@@ -469,11 +471,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					@Override
 					public void onClick(ClickEvent event) {
 						resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
+						deleteConfirmationDialogBox.getMessageAlert()
 								.createMultiLineAlert(
 										MatContext.get().getMessageDelegate().getDeleteConfirmationFunctionCQLWorkspace(
 												cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().getValue()));
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+						deleteConfirmationDialogBox.show();
 					}
 				});
 
@@ -608,14 +610,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 			// Delete functionality for Function Arguments
 			@Override
 			public void onDeleteClicked(CQLFunctionArgument result, int index) {
-				setIsPageDirty(true);
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(result.getId());
 				cqlWorkspaceView.getCQLLeftNavBarPanelView()
 						.setCurrentSelectedFunctionArgumentName(result.getArgumentName());
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate()
-								.getDELETE_CONFIRMATION_FUNCTION_ARGUMENT(result.getArgumentName()));
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION_ARGUMENT(result.getArgumentName()));
+				deleteConfirmationDialogBox.show();
 			}
 		});
 
@@ -691,11 +690,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					@Override
 					public void onClick(ClickEvent event) {
 						resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
+						deleteConfirmationDialogBox.getMessageAlert()
 								.createMultiLineAlert(MatContext.get().getMessageDelegate()
 										.getDeleteConfirmationDefinitionCQLWorkspace(cqlWorkspaceView
 												.getCQLDefinitionsView().getDefineNameTxtArea().getValue()));
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+						deleteConfirmationDialogBox.show();
 
 					}
 				});
@@ -1665,14 +1664,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 			@Override
 			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
-						.createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE(
-								cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getValue()));
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getValue()));
+				deleteConfirmationDialogBox.show();
 				// 508 changes for Library Alias.
 				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
 			}
-
 		});
 
 		// Close Functionality for Includes Section
@@ -2124,10 +2120,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					String measureId = MatContext.get().getCurrentMeasureId();
 					if ((measureId != null) && !measureId.equals("")) {
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
-								.createAlert(MatContext.get().getMessageDelegate()
-										.getDELETE_CONFIRMATION_VALUESET(result.getName()));
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+						deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_VALUESET(result.getName()));
+						deleteConfirmationDialogBox.show();
 						// 508 Compliance for Value Sets section
 						cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 					}
@@ -3447,11 +3441,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionLibrary().setActive(true);
 		currentSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
 		cqlWorkspaceView.buildDefinitionLibraryView();
-		cqlWorkspaceView.getCQLDefinitionsView()
-				.setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-	
-		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton()
-				.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+		cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setTitle("Delete");
 		curAceEditor = cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor();
@@ -3906,9 +3897,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	}
 
 	protected void deleteFunctionArgument() {
-
 		String funcArgName = null;
-
 		cqlWorkspaceView.resetMessageDisplay();
 		setIsPageDirty(true);
 		Iterator<CQLFunctionArgument> iterator = cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList()
@@ -4568,17 +4557,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 						isCodeModified = false;
 						modifyCQLCode = null;
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().getMessageAlert()
-								.createAlert(MatContext.get().getMessageDelegate()
-										.getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
-						cqlWorkspaceView.getCQLLeftNavBarPanelView().getDeleteConfirmationDialogBox().show();
+						deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
+						deleteConfirmationDialogBox.show();
 						// 508 Compliance for Codes section
 						cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 					}
-				} else {
-					// table is loading, do nothing
 				}
-
 			}
 
 			@Override
@@ -4602,8 +4586,6 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					onModifyCode(object);
 					//508 Compliance for Value Sets section
 					cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
-				} else {
-					//do nothing when loading.
 				}
 			}
 		});

@@ -466,7 +466,7 @@ public final class CQLUtilityClass {
 				if(!codesAlreadyUsed.contains(codesStr)){
 					sb.append("code ").append(codesStr).append(" ").append("from ");
 					sb.append('"').append(codeSysStr).append('"').append(" ");
-					sb.append("display " +"'" +codes.getName().replaceAll("'", "\\\\'")+"'");
+					sb.append("display " +"'" +escapeSingleQuote(codes)+"'");
 					sb.append("\n");
 					codesAlreadyUsed.add(codesStr);
 				}
@@ -476,6 +476,15 @@ public final class CQLUtilityClass {
 		}
 
 		return sb.toString();
+	}
+
+	/**
+	 * Method will add multiple escape(backslash) character's.Eevaluate 4 \ to 2 \ and So final will have 2 \.
+	 * @param codes
+	 * @return
+	 */
+	private static String escapeSingleQuote(CQLCode codes) {
+		return codes.getName().replaceAll("'", "\\\\'");
 	}
 
 	private static StringBuilder createParameterSection(List<CQLParameter> paramList, StringBuilder cqlStr, String toBeInserted) {

@@ -6,33 +6,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.gwtbootstrap3.client.shared.event.HideEvent;
-import org.gwtbootstrap3.client.shared.event.HideHandler;
-import org.gwtbootstrap3.client.shared.event.ShowEvent;
-import org.gwtbootstrap3.client.shared.event.ShowHandler;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
-import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -100,22 +85,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addViewCQLEventHandlers() {
-		cqlWorkspaceView.getViewCQLView().getExportErrorFile().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					String url = GWT.getModuleBaseURL() + "export?libraryid=" + MatContext.get().getCurrentCQLLibraryId() + "&format=errorFileStandAlone";
-					Window.open(url + "&type=save", "_self", "");
-				}
-			}
-		});
-
+		cqlWorkspaceView.getViewCQLView().getExportErrorFile().addClickHandler(event -> viewCQLExportErrorFileClicked());
 	}
 
 	private void addEventHandlers() {
 		MatContext.get().getEventBus().addHandler(CQLLibrarySelectedEvent.TYPE, new CQLLibrarySelectedEvent.Handler() {
-
 			@Override
 			public void onLibrarySelected(CQLLibrarySelectedEvent event) {
 				isCQLWorkSpaceLoaded = false;
@@ -126,48 +100,10 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					displayEmpty();
 				}
 			}
-
 		});
-		getDeleteConfirmationDialogBoxYesButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
-					deleteDefinition();
-					deleteConfirmationDialogBox.hide();
-				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null
-						&& cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() == null) {
-					deleteFunction();
-					deleteConfirmationDialogBox.hide();
-				}else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() != null) {
-					deleteFunctionArgument();
-					deleteConfirmationDialogBox.hide();
-				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
-						.getCurrentSelectedParamerterObjId() != null) {
-					deleteParameter();
-					deleteConfirmationDialogBox.hide();
-				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
-						.getCurrentSelectedIncLibraryObjId() != null) {
-					deleteInclude();
-					deleteConfirmationDialogBox.hide();
-				}  else if(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedValueSetObjId() != null){
-					checkAndDeleteValueSet();
-					deleteConfirmationDialogBox.hide();
-				} else if(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedCodesObjId() != null){
-					deleteCode();
-					deleteConfirmationDialogBox.hide();
-				}
-			}
-		});
-
-		getDeleteConfirmationDialogBoxNoButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				deleteConfirmationDialogBox.hide();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
-			}
-		});
+		
+		getDeleteConfirmationDialogBoxYesButton().addClickHandler(event -> deleteConfirmationDialogBoxYesClicked());
+		getDeleteConfirmationDialogBoxNoButton().addClickHandler(event -> deleteConfirmationDialogBoxNoClicked());
 
 		ClickHandler cHandler = new ClickHandler() {
 			@Override
@@ -220,7 +156,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		isProgramListBoxEnabled = true;
 	}
 
-
 	private void onModifyCode(CQLCode cqlCode) {
 		CQLCodesView codesView = cqlWorkspaceView.getCodesView();
 		codesView.getCodeSearchInput().setEnabled(false);
@@ -239,8 +174,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 	private void deleteValueSet(String toBeDeletedValueSetId) {
 		showSearchingBusy(true);
-		MatContext.get().getCQLLibraryService().deleteValueSet(toBeDeletedValueSetId,
-				MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
+		MatContext.get().getCQLLibraryService().deleteValueSet(toBeDeletedValueSetId, MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 
 			@Override
 			public void onFailure(final Throwable caught) {
@@ -286,241 +220,29 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addParameterEventHandlers() {
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-							.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getParameterNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false,
-									false, false),
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox());
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
-					event.stopPropagation();
-				} else {
-					showSearchBusyOnDoubleClick(true);
-					cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
-					cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
-					cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getInfoButtonGroup()
-					.getElement().setAttribute("class", "btn-group");
-					resetAceEditor(cqlWorkspaceView.getCQLParametersView().getViewCQLAceEditor());
-					resetViewCQLCollapsiblePanel(
-							cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
-
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-					if (getIsPageDirty()) {
-						showSearchBusyOnDoubleClick(false);
-						showUnsavedChangesWarning();
-					} else {
-						int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex();
-						if (selectedIndex != -1) {
-							final String selectedParamID = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().getValue(selectedIndex);
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedParamerterObjId(selectedParamID);
-							if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID) != null) {
-								cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
-								cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-								cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(false);
-								cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-								cqlWorkspaceView.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
-								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-										MatContext.get().getCurrentCQLLibraryId(),
-										new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-											@Override
-											public void onFailure(Throwable caught) {
-												showSearchBusyOnDoubleClick(false);
-												Window.alert(MatContext.get().getMessageDelegate()
-														.getGenericErrorMessage());
-											}
-
-											@Override
-											public void onSuccess(GetUsedCQLArtifactsResult result) {
-												showSearchBusyOnDoubleClick(false);
-												cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getName());
-												cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getLogic());
-												cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getCommentString());
-
-												boolean isReadOnly = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).isReadOnly();
-												CQLParameter currentParameter = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID);
-												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-													cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
-													if (!currentParameter.isReadOnly()) {
-														if (!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getName())) {
-															cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-														} else{
-															cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-														}
-													}
-
-												}
-												Map<String, List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
-												if (expressionCQLErrorMap != null) {
-													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentParameter.getName());
-													cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
-													cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
-													for (CQLErrors error : errorList) {
-														int startLine = error.getStartErrorInLine();
-														int startColumn = error.getStartErrorAtOffset();
-														cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().addAnnotation(startLine, startColumn,error.getErrorMessage(),AceAnnotationType.ERROR);
-													}
-													cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setAnnotations();
-												}
-
-											}
-
-										});
-
-							} else {
-								showSearchBusyOnDoubleClick(false);
-							}
-						} else {
-							showSearchBusyOnDoubleClick(false);
-						}
-
-						cqlWorkspaceView.resetMessageDisplay();
-
-					}
-				}
-				cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
-			}
-		});
-
-
-		cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
-
-			@Override
-			public void onShow(ShowEvent showEvent) {
-				cqlWorkspaceView.resetMessageDisplay();
-				showCompleteCQL(cqlWorkspaceView.getCQLParametersView().getViewCQLAceEditor());
-			}
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse().addHideHandler(new HideHandler() {
-
-			@Override
-			public void onHide(HideEvent hideEvent) {
-				cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
-				resetAceEditor(cqlWorkspaceView.getCQLParametersView().getViewCQLAceEditor());
-
-			}
-		});
-
-
-		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					addAndModifyParameters();
-					//508 change to parameter section
-					cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setFocus(true);
-				}
-			}
-
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getEraseButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
-				eraseParameter(); 
-				cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().focus();
-			}
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
-				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER(cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().getValue()));
-				deleteConfirmationDialogBox.show();
-
-			}
-
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
-
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-
-
-		cqlWorkspaceView.getCQLParametersView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
-				if (getIsPageDirty()) {
-					showUnsavedChangesWarning();
-				} else {
-					addNewParameter();
-				}
-				//508 change to parameter section
-				cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setFocus(true);
-			}
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().addBlurHandler(new BlurHandler() {
-			@Override
-			public void onBlur(BlurEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.NONE);
-				String comment = cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().getText();
-				if(validator.isCommentTooLongOrContainsInvalidText(comment)){
-					cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
-					messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
-				}
-			}
-		});
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().addKeyPressHandler(event -> leftNavParameterNameListBoxKeyPressEvent(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().addDoubleClickHandler(event -> leftNavParameterNameListBoxDoubleClickEvent(event));
+		cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse().addShowHandler(event -> parameterViewShowEvent());
+		cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse().addHideHandler(event -> parameterViewHideEvent());
+		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getSaveButton().addClickHandler(event -> parameterViewSaveButtonClicked());
+		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getEraseButton().addClickHandler(event -> parameterViewEraseButtonClicked());
+		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().addClickHandler(event -> parameterViewDeleteButtonClicked());
+		cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCQLParametersView().getAddNewButtonBar().getaddNewButton().addClickHandler(event -> parameterViewAddNewClicked());
+		cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().addBlurHandler(event -> parameterViewCommentTextAreaBlurEvent());
 	}
 
 	private void showCompleteCQL(final AceEditor aceEditor) {
-		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(),
-				new AsyncCallback<SaveUpdateCQLResult>() {
+		MatContext.get().getCQLLibraryService().getLibraryCQLFileData(MatContext.get().getCurrentCQLLibraryId(), new AsyncCallback<SaveUpdateCQLResult>() {
 			@Override
 			public void onSuccess(SaveUpdateCQLResult result) {
 				if (result.isSuccess()) {
 					if ((result.getCqlString() != null) && !result.getCqlString().isEmpty()) {
-
 						aceEditor.clearAnnotations();
 						aceEditor.redisplay();
 
 						if (!result.getCqlErrors().isEmpty()) {
-
 							for (CQLErrors error : result.getCqlErrors()) {
 								String errorMessage = new String();
 								errorMessage = errorMessage.concat("Error in line : " + error.getErrorInLine()
@@ -535,7 +257,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 							aceEditor.gotoLine(1);
 							aceEditor.redisplay();
 						} else {
-
 							aceEditor.setText(result.getCqlString());
 							aceEditor.gotoLine(1);
 						}
@@ -592,283 +313,18 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addDefineEventHandlers() {
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-							.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getDefineNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
-									false),
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox());
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox()
-		.addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
-					event.stopPropagation();
-				} else {
-					showSearchBusyOnDoubleClick(true);
-					cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
-					cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
-
-					resetAceEditor(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
-					resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
-					cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
-					if (getIsPageDirty()) {
-						showSearchBusyOnDoubleClick(false);
-						showUnsavedChangesWarning();
-					} else {
-						int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox()
-								.getSelectedIndex();
-						if (selectedIndex != -1) {
-							final String selectedDefinitionID = cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getDefineNameListBox().getValue(selectedIndex);
-							cqlWorkspaceView.getCQLLeftNavBarPanelView()
-							.setCurrentSelectedDefinitionObjId(selectedDefinitionID);
-
-							if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
-									.get(selectedDefinitionID) != null) {
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton()
-								.setTitle("Delete");
-
-								cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-								cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(false);
-								cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
-								// load most recent used cql artifacts
-								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-										MatContext.get().getCurrentCQLLibraryId(),
-										new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-											@Override
-											public void onFailure(Throwable caught) {
-												showSearchBusyOnDoubleClick(false);
-												cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-												Window.alert(MatContext.get().getMessageDelegate()
-														.getGenericErrorMessage());
-											}
-
-											@Override
-											public void onSuccess(GetUsedCQLArtifactsResult result) {
-												showSearchBusyOnDoubleClick(false);
-												boolean isReadOnly = cqlWorkspaceView.getCQLLeftNavBarPanelView()
-														.getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
-
-												CQLDefinition currentDefinition = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
-
-												cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea()
-												.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
-														.get(selectedDefinitionID).getName());
-												cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor()
-												.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
-														.get(selectedDefinitionID).getLogic());
-												cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea()
-												.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getCommentString());
-
-												if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
-														.get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")) {
-													cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn()
-													.setValue(true);
-													cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn()
-													.setValue(false);
-												} else {
-													cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn()
-													.setValue(true);
-													cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn()
-													.setValue(false);
-												}
-
-												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-													cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(!isReadOnly);
-													// if there are cql errors or the definition is not in use, enable the delete button
-													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getName())) {
-														cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
-													} else {
-														cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
-													}
-
-
-												}
-
-												Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
-												if(expressionCQLErrorMap != null){
-													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentDefinition.getName());
-													cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
-													cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
-													for (CQLErrors error : errorList) {
-														int startLine = error.getStartErrorInLine();
-														int startColumn = error.getStartErrorAtOffset();
-														cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
-													}
-													cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
-												}
-
-												if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
-													cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
-															.get(currentDefinition.getName()));
-													cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getExpressionReturnTypeMap()
-													.get(currentDefinition.getName()) );
-
-												} else {
-													cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-													cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
-
-												}
-
-											}
-
-										});
-
-							} else {
-								showSearchBusyOnDoubleClick(false);
-							}
-						}else {
-							showSearchBusyOnDoubleClick(false);
-						}
-
-						cqlWorkspaceView.resetMessageDisplay();
-					}
-				}
-				//508 changes for Definitions Section
-				cqlWorkspaceView.getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
-
-			@Override
-			public void onShow(ShowEvent showEvent) {
-				cqlWorkspaceView.resetMessageDisplay();
-				showCompleteCQL(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse().addHideHandler(new HideHandler() {
-
-			@Override
-			public void onHide(HideEvent hideEvent) {
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
-				resetAceEditor(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
-
-			}
-
-		});
-
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				buildInsertPopUp();
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					addAndModifyDefintions();
-					cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
-					cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
-					cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setFocus(true);
-				}
-			}
-
-
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getEraseButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
-				cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
-				eraseDefinition(); 
-				//508 changes to Definition section
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().focus();
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
-				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDeleteConfirmationDefinitionCQLLibraryWorkspace(cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().getValue()));
-				deleteConfirmationDialogBox.show();
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-
-		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
-				cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
-
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
-				if (getIsPageDirty()) {
-					showUnsavedChangesWarning();
-				} else {
-					addNewDefinition();
-				}
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setFocus(true);
-			}
-		});
-
-
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addBlurHandler(new BlurHandler() {
-
-			@Override
-			public void onBlur(BlurEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.NONE);
-				String comment = cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().getText();
-				if(validator.isCommentTooLongOrContainsInvalidText(comment)){
-					cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
-					messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
-				}
-			}
-		});
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().addKeyPressHandler(event -> cqlLeftNavBarDefineNameListBoxKeyPressed(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().addDoubleClickHandler(event -> cqlLeftNavBarDefineNameListBoxDoubleClickEvent(event));
+		cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse().addShowHandler(event -> cqlDefinitionsShowEvent());
+		cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse().addHideHandler(event -> cqlDefinitionsHideEvent());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInsertButton().addClickHandler(event -> buildInsertPopUp());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getSaveButton().addClickHandler(event -> definitionSaveButtonClicked());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getEraseButton().addClickHandler(event -> definitionEraseButtonClicked());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().addClickHandler(event -> definitionDeleteButtonClicked());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(event -> definitionsAddNewClicked());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addBlurHandler(event -> defineCommentTextBlurEvent());
 	}
 
 	private void addNewDefinition() {
@@ -910,224 +366,15 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addFunctionEventHandlers() {
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-							.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getFuncNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
-									false),
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox());
-				}
-
-			}
-		});
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
-					event.stopPropagation();
-				} else {
-					showSearchBusyOnDoubleClick(true);
-					cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
-					cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-
-					resetAceEditor(cqlWorkspaceView.getCQLFunctionsView().getViewCQLAceEditor());
-					resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-
-					cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-
-
-					if (getIsPageDirty()) {
-						showSearchBusyOnDoubleClick(false);
-						showUnsavedChangesWarning();
-					} else {
-						int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox()
-								.getSelectedIndex();
-						if (selectedIndex != -1) {
-							final String selectedFunctionId = cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getFuncNameListBox().getValue(selectedIndex);
-							cqlWorkspaceView.getCQLLeftNavBarPanelView()
-							.setCurrentSelectedFunctionObjId(selectedFunctionId);
-
-							if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap()
-									.get(selectedFunctionId) != null) {
-								cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-								cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(false);
-								cqlWorkspaceView.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
-								// load most recent used cql artifacts
-								MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-										MatContext.get().getCurrentCQLLibraryId(),
-										new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-											@Override
-											public void onFailure(Throwable caught) {
-												showSearchingBusy(false);
-												cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-												Window.alert(
-														MatContext.get().getMessageDelegate().getGenericErrorMessage());
-											}
-
-											@Override
-											public void onSuccess(GetUsedCQLArtifactsResult result) {
-												showSearchBusyOnDoubleClick(false);
-												cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getName());
-												cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getLogic());
-												cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getCommentString());
-
-												if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getContext().equalsIgnoreCase("patient")) {
-													cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
-													cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
-												} else {
-													cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(true);
-													cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
-												}
-												CQLFunctions currentFunction = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
-												if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-													cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(true);
-
-													if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getName())) {
-														cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
-													} else {
-														cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
-													}
-												}
-												Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
-												if(expressionCQLErrorMap != null){
-													List<CQLErrors> errorList = expressionCQLErrorMap.get(currentFunction.getName());
-													cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
-													cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
-													for (CQLErrors error : errorList) {
-														int startLine = error.getStartErrorInLine();
-														int startColumn = error.getStartErrorAtOffset();
-														cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
-													}
-													cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().setAnnotations();
-												}
-												if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
-													cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
-															.get(currentFunction.getName()));
-													cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getExpressionReturnTypeMap()
-													.get(currentFunction.getName()));
-
-												} else {
-													cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
-													cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
-												}
-											}
-
-										});
-
-							} else {
-								showSearchBusyOnDoubleClick(false);
-							}
-						} else {
-							showSearchBusyOnDoubleClick(false);
-						}
-						if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {
-							CQLFunctions selectedFunction = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap()
-									.get(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId());
-							if (selectedFunction.getArgumentList() != null) {
-								cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().clear();
-								cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList()
-								.addAll(selectedFunction.getArgumentList());
-							} else {
-								cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().clear();
-							}
-						}
-						cqlWorkspaceView.resetMessageDisplay();
-					}
-					cqlWorkspaceView.getCQLFunctionsView().createAddArgumentViewForFunctions(
-							cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList(),
-							MatContext.get().getLibraryLockService().checkForEditPermission());
-
-				}
-				//508 changes for Functions Section
-				cqlWorkspaceView.getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse().addShowHandler(new ShowHandler() {
-
-			@Override
-			public void onShow(ShowEvent showEvent) {
-				cqlWorkspaceView.resetMessageDisplay();
-				showCompleteCQL(cqlWorkspaceView.getCQLFunctionsView().getViewCQLAceEditor());
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse().addHideHandler(new HideHandler() {
-
-			@Override
-			public void onHide(HideEvent hideEvent) {
-				cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
-				resetAceEditor(cqlWorkspaceView.getCQLFunctionsView().getViewCQLAceEditor());
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInsertButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				buildInsertPopUp();
-				//508 changes for Functions Section
-				cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().focus();
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					addAndModifyFunction();
-					//508 changes for Functions Section
-					cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().setFocus(true);
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getEraseButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-				eraseFunction();
-				cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().focus();
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getAddNewArgument().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
-				cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-				CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
-				AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, cqlWorkspaceView.getCQLFunctionsView(), messagePanel,MatContext.get().getLibraryLockService().checkForEditPermission());
-				setIsPageDirty(true);
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDeleteConfirmationFunctionCQLLibraryWorkspace(cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().getValue()));
-				deleteConfirmationDialogBox.show();
-			}
-		});
-
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().addKeyPressHandler(event -> leftNavBarFuncNameListBoxKeyPressedEvent(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().addDoubleClickHandler(event -> leftNavBarFuncNameListBoxDoubleClickedEvent(event));
+		cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse().addShowHandler(event -> cqlFunctionsViewShowEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse().addHideHandler(event -> cqlFunctionsViewHideEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInsertButton().addClickHandler(event -> functionsViewInsertButtonClicked());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getSaveButton().addClickHandler(event -> functionsViewSaveButtonClicked());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getEraseButton().addClickHandler(event -> functionsViewEraseButtonClicked());
+		cqlWorkspaceView.getCQLFunctionsView().getAddNewArgument().addClickHandler(event -> functionsViewAddNewArgumentClicked());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().addClickHandler(event -> functionsViewDeleteButtonClicked());
 		cqlWorkspaceView.getCQLFunctionsView().setObserver(new Observer() {
 			@Override
 			public void onModifyClicked(CQLFunctionArgument result) {
@@ -1148,62 +395,14 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(result.getArgumentName());
 				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_FUNCTION_ARGUMENT(result.getArgumentName()));
 				deleteConfirmationDialogBox.show();
-				//508 changes for Functions Section
 				cqlWorkspaceView.getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
 			}
 		});
 
-		cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().addKeyUpHandler(new KeyUpHandler() {
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
-				if (getIsPageDirty()) {
-					showUnsavedChangesWarning();
-				} else {
-					addNewFunction();
-				}
-				cqlWorkspaceView.getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
-			}
-		});
-
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().addBlurHandler(new BlurHandler() {
-
-			@Override
-			public void onBlur(BlurEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.NONE);
-				String comment = cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().getText();
-				if(validator.isCommentTooLongOrContainsInvalidText(comment)){
-					cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
-					messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
-				}
-			}
-		});
+		cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().addKeyUpHandler(event -> keyUpEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(event -> functionsViewAddNewClicked());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().addBlurHandler(event -> cqlFunctionsViewCommentTextAreaBlurEvent());
 	}
 
 	private void addNewFunction() {
@@ -1238,41 +437,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addWarningAlertHandlers() {
-
-		messagePanel.getWarningConfirmationYesButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				setIsPageDirty(false);
-				messagePanel.getWarningConfirmationMessageAlert().clearAlert();
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().isDoubleClick()) {
-					clickEventOnListboxes();
-				} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().isNavBarClick()) {
-					changeSectionSelection();
-				} else {
-					clearViewIfDirtyNotSet();
-				}
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-			}
-		});
-
-		messagePanel.getWarningConfirmationNoButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				messagePanel.getWarningConfirmationMessageAlert().clearAlert();
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().isNavBarClick()) {
-					unsetActiveMenuItem(nextSection);
-				}
-				if (currentSection.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().setSelectedIndex(-1);
-				} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().setSelectedIndex(-1);
-				} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().setSelectedIndex(-1);
-				}
-			}
-		});
-
+		messagePanel.getWarningConfirmationYesButton().addClickHandler(event -> warningConfirmationYesButtonClicked());
+		messagePanel.getWarningConfirmationNoButton().addClickHandler(event -> warningConfirmationNoButtonClicked());
 	}
 
 	private void addGeneralInfoEventHandlers() {
@@ -1293,396 +459,28 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addEventHandlerOnAceEditors() {
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().addKeyDownHandler(new KeyDownHandler() {
-
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (!cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().isReadOnly()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().addKeyDownHandler(new KeyDownHandler() {
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (!cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().isReadOnly()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().addKeyDownHandler(new KeyDownHandler() {
-
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (!cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().isReadOnly()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					setIsPageDirty(true);
-				}
-			}
-		});
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().addKeyDownHandler(event -> definitionsAceEditorKeyDownEvent());
+		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().addKeyDownHandler(event -> parameterAceEditorKeyDownEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().addKeyDownHandler(event -> functionAceEditorKeyDownEvent());
 	}
-
+	
 	private void addEventHandlersOnContextRadioButtons() {
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn()
-		.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				setIsPageDirty(true);
-				if (cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().getValue()) {
-					cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(false);
-				} else {
-					cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(true);
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn()
-		.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				setIsPageDirty(true);
-				if (cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().getValue()) {
-					cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(false);
-				} else {
-					cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(true);
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn()
-		.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				setIsPageDirty(true);
-				if (cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().getValue()) {
-					cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
-				} else {
-					cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn()
-		.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				setIsPageDirty(true);
-				if (cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().getValue()) {
-					cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
-				} else {
-					cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
-				}
-			}
-		});
+		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().addValueChangeHandler(event -> cqlDefinitionsViewContextDefinePATRadioBtnValueChangedEvent());
+		cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().addValueChangeHandler(event -> cqlDefinitionsViewContextDefinePOPRadioBtnValueChangedEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().addValueChangeHandler(event -> cqlFunctionViewContextFuncPATRadioBtnValueChangedEvent());
+		cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().addValueChangeHandler(event -> cqlFunctionViewContextFuncPOPRadioBtnValueChangedEvent());
 	}
 
 	private void addIncludeCQLLibraryHandlers() {
-
-		cqlWorkspaceView.getIncludeView().getSaveModifyButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent arg0) {
-				messagePanel.getErrorMessageAlert().clearAlert();
-				messagePanel.getSuccessMessageAlert().clearAlert();
-				final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
-				editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId, false);
-
-				editIncludedLibraryDialogBox.getApplyButton().addClickHandler(new ClickHandler() {
-
-					@Override
-					public void onClick(ClickEvent arg0) {
-						messagePanel.getErrorMessageAlert().clearAlert();
-						messagePanel.getSuccessMessageAlert().clearAlert();
-						if(editIncludedLibraryDialogBox.getSelectedList().size() > 0){
-							final CQLIncludeLibrary toBeModified = cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getIncludeLibraryMap()
-									.get(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId());
-
-							final CQLLibraryDataSetObject dto = editIncludedLibraryDialogBox.getSelectedList().get(0);
-							if (dto != null) {
-								final CQLIncludeLibrary currentObject = new CQLIncludeLibrary(dto);
-
-								MatContext.get().getCQLLibraryService().saveIncludeLibrayInCQLLookUp(
-										MatContext.get().getCurrentCQLLibraryId(), toBeModified, currentObject,
-										cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewIncludeLibrarys(),
-										new AsyncCallback<SaveUpdateCQLResult>() {
-
-											@Override
-											public void onFailure(Throwable arg0) {
-
-												editIncludedLibraryDialogBox.getDialogModal().hide();
-												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
-												Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-											}
-
-											@Override
-											public void onSuccess(SaveUpdateCQLResult result) {
-												editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
-												CQLAppliedValueSetUtility.loadReleases(cqlWorkspaceView.getValueSetView().getReleaseListBox(), cqlWorkspaceView.getValueSetView().getProgramListBox());
-												if (result != null) {
-													if (result.isSuccess()) {
-														cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewIncludeLibrarys(
-																result.getCqlModel().getCqlIncludeLibrarys());
-														cqlWorkspaceView.getCQLLeftNavBarPanelView().udpateIncludeLibraryMap();
-														MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
-														MatContext.get().setIncludedValues(result);
-														MatContext.get().setCQLModel(result.getCqlModel());
-														editIncludedLibraryDialogBox.getDialogModal().hide();
-														DomEvent.fireNativeEvent(
-																Document.get()
-																.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-																		.getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
-																		false),
-																cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox());
-														String libraryNameWithVersion = result.getIncludeLibrary().getCqlLibraryName() + " v" +result.getIncludeLibrary().getVersion();
-														messagePanel.getSuccessMessageAlert().createAlert(libraryNameWithVersion + " has been successfully saved as the alias " + result.getIncludeLibrary().getAliasName());
-													}
-												}
-
-											}
-
-										});
-
-							}
-						} else {
-							editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
-							editIncludedLibraryDialogBox.getErrorMessageAlert()
-							.createAlert(MatContext.get().getMessageDelegate().getNO_LIBRARY_TO_REPLACE());
-						}
-
-
-					}
-				});
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().addKeyPressHandler(new KeyPressHandler() {
-
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-					DomEvent.fireNativeEvent(
-							Document.get()
-							.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
-									false),
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox());
-				}
-
-			}
-		});
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().addDoubleClickHandler(new DoubleClickHandler() {
-			@Override
-			public void onDoubleClick(DoubleClickEvent event) {
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
-					event.stopPropagation();
-				} else {
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-
-					if (getIsPageDirty()) {
-						showUnsavedChangesWarning();
-					} else {
-						int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex();
-						if (selectedIndex != -1) {
-							final String selectedIncludeLibraryID = cqlWorkspaceView.getCQLLeftNavBarPanelView()
-									.getIncludesNameListbox().getValue(selectedIndex);
-							cqlWorkspaceView.getCQLLeftNavBarPanelView()
-							.setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
-							if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID) != null) {
-								MatContext.get().getCQLLibraryService().findCQLLibraryByID(
-										cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap()
-										.get(selectedIncludeLibraryID).getCqlLibraryId(),
-										new AsyncCallback<CQLLibraryDataSetObject>() {
-
-											@Override
-											public void onSuccess(CQLLibraryDataSetObject result) {
-												if (result != null) {
-													currentIncludeLibrarySetId = result.getCqlSetId();
-													currentIncludeLibraryId = result.getId();
-													cqlWorkspaceView.getIncludeView().buildIncludesReadOnlyView();
-
-													cqlWorkspaceView.getIncludeView().getAliasNameTxtArea()
-													.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-															.getIncludeLibraryMap()
-															.get(selectedIncludeLibraryID)
-															.getAliasName());
-													cqlWorkspaceView.getIncludeView().getViewCQLEditor()
-													.setText(result.getCqlText());
-													cqlWorkspaceView.getIncludeView().getOwnerNameTextBox()
-													.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-															.getOwnerName(result));
-													cqlWorkspaceView.getIncludeView().getCqlLibraryNameTextBox()
-													.setText(result.getCqlName());
-
-													cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(false);														
-													cqlWorkspaceView.getIncludeView().getDeleteButton().setEnabled(false);
-
-													cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(false);
-													if (MatContext.get().getLibraryLockService()
-															.checkForEditPermission()) {
-														cqlWorkspaceView.getIncludeView().setWidgetReadOnly(false);
-														cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(true);
-
-														MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
-																MatContext.get().getCurrentCQLLibraryId(),
-																new AsyncCallback<GetUsedCQLArtifactsResult>() {
-
-																	@Override
-																	public void onFailure(Throwable caught) {
-																		Window.alert(MatContext.get()
-																				.getMessageDelegate()
-																				.getGenericErrorMessage());
-																	}
-
-																	@Override
-																	public void onSuccess(
-																			GetUsedCQLArtifactsResult result) {
-
-																		CQLIncludeLibrary cqlIncludeLibrary = cqlWorkspaceView
-																				.getCQLLeftNavBarPanelView()
-																				.getIncludeLibraryMap()
-																				.get(selectedIncludeLibraryID);
-
-																		// if there are errors or the library is not in use, enable the delete button
-																		if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
-																				cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary.getVersion()+ "|"
-																						+ cqlIncludeLibrary.getAliasName())) {
-																			cqlWorkspaceView.getIncludeView().getDeleteButton().setEnabled(true);
-																		}
-																	}
-
-																});
-													}
-												}
-											}
-
-											@Override
-											public void onFailure(Throwable caught) {
-												messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-											}
-										});
-
-								cqlWorkspaceView.getIncludeView().setSelectedObject(
-										cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap()
-										.get(selectedIncludeLibraryID).getCqlLibraryId());
-								cqlWorkspaceView.getIncludeView()
-								.setIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-										.getIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-												.getIncludeLibraryMap()));
-								cqlWorkspaceView.getIncludeView().getSelectedObjectList().clear();
-							}
-						}
-						cqlWorkspaceView.resetMessageDisplay();
-
-					}
-
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getIncludeView().getSearchButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				getAllIncludeLibraryList(cqlWorkspaceView.getIncludeView().getSearchTextBox().getText().trim());
-				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
-			}
-		});
-
-		cqlWorkspaceView.getIncludeView().getFocusPanel().addKeyDownHandler(new KeyDownHandler() {
-
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					cqlWorkspaceView.getIncludeView().getSearchButton().click();
-				}
-			}
-		});
-
-		cqlWorkspaceView.getIncludeView().getIncludesButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					addIncludeLibraryInCQLLookUp();
-					cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getIncludeView().getDeleteButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getValue()));
-				deleteConfirmationDialogBox.show();
-				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
-			}
-
-		});
-		
-		cqlWorkspaceView.getIncludeView().getCloseButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				currentIncludeLibrarySetId =  null;
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().getSearchSuggestIncludeTextBox().setText(EMPTY_STRING);
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex() >= 0) {
-					cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().setItemSelected(
-							cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex(),
-							false);
-				}
-				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setText(EMPTY_STRING);
-				cqlWorkspaceView.buildIncludesView();
-				SaveCQLLibraryResult cqlLibrarySearchModel = new SaveCQLLibraryResult();
-				cqlLibrarySearchModel
-				.setCqlLibraryDataSetObjects(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryList());
-				cqlWorkspaceView.getIncludeView().setIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView()
-						.getIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap()));
-				cqlWorkspaceView.getIncludeView().buildIncludeLibraryCellTable(cqlLibrarySearchModel,
-						MatContext.get().getLibraryLockService().checkForEditPermission(), false);
-				cqlWorkspaceView.getIncludeView()
-				.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox()
-						.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
-					messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
-				} else {
-					messagePanel.getWarningMessageAlert().clearAlert();
-				}
-				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
-			}
-		});
-
-		cqlWorkspaceView.getIncludeView().getEraseButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-
-				cqlWorkspaceView.resetMessageDisplay();
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
-				clearAlias();
-				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
-					messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
-				} else {
-					messagePanel.getWarningMessageAlert().clearAlert();
-				}
-				cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
-			}
-		});
-
+		cqlWorkspaceView.getIncludeView().getSaveModifyButton().addClickHandler(event -> includeViewSaveModifyClicked());
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().addKeyPressHandler(event -> cqlLeftNavParIncludesNameListBoxKeyPressedEvent(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().addDoubleClickHandler(event -> cqlLeftNavBarIncludesNameListBoxDoubleClickEvent(event));
+		cqlWorkspaceView.getIncludeView().getSearchButton().addClickHandler(event -> includeViewSearchButtonClicked());
+		cqlWorkspaceView.getIncludeView().getFocusPanel().addKeyDownHandler(event -> includesViewFocusPanelKeyDownEvent(event));
+		cqlWorkspaceView.getIncludeView().getIncludesButtonBar().getSaveButton().addClickHandler(event -> includesViewSaveButtonClicked());
+		cqlWorkspaceView.getIncludeView().getDeleteButton().addClickHandler(event -> includesViewDeleteButtonClicked());
+		cqlWorkspaceView.getIncludeView().getCloseButton().addClickHandler(event -> includesViewCloseButtonClicked());
+		cqlWorkspaceView.getIncludeView().getEraseButton().addClickHandler(event -> includesViewEraseButtonClicked());
 		cqlWorkspaceView.getIncludeView().setObserver(new CQLIncludeLibraryView.Observer() {
 
 			@Override
@@ -2788,117 +1586,14 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addLeftNavEventHandler() {
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getGeneralInformation().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				// searchDisplay.hideAceEditorAutoCompletePopUp();
-				generalInfoEvent();
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesLibrary().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				// searchDisplay.hideAceEditorAutoCompletePopUp();
-				if (getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
-					showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					includesEvent();
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getCodesLibrary().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				// searchDisplay.hideAceEditorAutoCompletePopUp();
-				if (getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_CODES;
-					showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					codesEvent();
-					//508 : Shift focus to code search panel.
-					cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
-				}
-
-			}
-
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQDM().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				appliedQDMEvent();
-				//508 : Shift focus to search panel.
-				cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
-			}
-		});
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterLibrary().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
-				if (getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
-					showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					parameterEvent();
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionLibrary().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
-				if (getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
-					showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					definitionEvent();
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionLibrary().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
-				cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
-				cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
-				if (getIsPageDirty()) {
-					nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
-					showUnsavedChangesWarning();
-					event.stopPropagation();
-				} else {
-					functionEvent();
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewCQL().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
-				viewCqlEvent();
-			}
-		});
-
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getGeneralInformation().addClickHandler(event -> generalInfoEvent());
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesLibrary().addClickHandler(event -> leftNavBarIncludesLibraryClicked(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getCodesLibrary().addClickHandler(event -> leftNavBarCodesClicked(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQDM().addClickHandler(event -> leftNavbarAppliedQDMClicked());
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterLibrary().addClickHandler(event -> leftNavBarParametersClicked(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionLibrary().addClickHandler(event -> leftNavBarDefinitionsClicked(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionLibrary().addClickHandler(event -> leftNavBarFunctionClicked(event));
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewCQL().addClickHandler(event -> leftNavBarViewCQLClicked());
 	}
 
 	private void getUsedArtifacts() {
@@ -2917,15 +1612,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					@Override
 					public void onSuccess(GetUsedCQLArtifactsResult result) {
 						showSearchingBusy(false);
-						// if there are errors, set the valuesets to not used.
 						if(!result.getCqlErrors().isEmpty()) {
 							for(CQLQualityDataSetDTO cqlDTo : cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQdmTableList()){
 								cqlDTo.setUsed(false);
 							}
-						}
-
-						// otherwise, check if the valueset is in the used valusets list
-						else {
+						} else {
 							for(CQLQualityDataSetDTO cqlDTo : cqlWorkspaceView.getCQLLeftNavBarPanelView().getAppliedQdmTableList()){
 								if (result.getUsedCQLValueSets().contains(cqlDTo.getName())) {
 									cqlDTo.setUsed(true);
@@ -2947,96 +1638,17 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addValueSetEventHandlers() {
-		cqlWorkspaceView.getValueSetView().getCancelQDMButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				isModified = false;
-				cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
-				//508 compliance for Value Sets
-				cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
-
-				previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
-				isProgramListBoxEnabled = true; 
-
-				loadProgramsAndReleases(); 
-				alert508StateChanges();
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getUpdateFromVSACButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					updateVSACValueSets();
-					//508 compliance for Value Sets
-					cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();					
-					String release;
-					String expansionProfile = null;
-
-					release = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue();
-					release = MatContext.PLEASE_SELECT.equals(release) ? null : release;
-
-					String program = cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue();
-					program = MatContext.PLEASE_SELECT.equals(program) ? null : program;
-
-
-					if(null == release && null != program) {
-						HashMap<String, String> pgmProfileMap = (HashMap<String, String>) MatContext.get().getProgramToLatestProfile();
-						expansionProfile = pgmProfileMap.get(program);
-					}
-
-					if(release != null && program == null) {
-						messagePanel.getErrorMessageAlert().createAlert(SharedCQLWorkspaceUtility.MUST_HAVE_PROGRAM_WITH_RELEASE);
-					} else {
-						searchValueSetInVsac(release, expansionProfile);
-
-						//508 compliance for Value Sets
-						cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true); 
-					}
-				}
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getSaveButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					MatContext.get().clearDVIMessages();
-					cqlWorkspaceView.resetMessageDisplay();
-
-					if (isModified && (modifyValueSetDTO != null)) {
-						modifyValueSetOrUserDefined(isUserDefined);
-					} else {
-						addNewValueSet(isUserDefined);
-					}
-					cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true); 
-				}
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getUserDefinedInput().addValueChangeHandler(new ValueChangeHandler<String>() {
-
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-				cqlWorkspaceView.resetMessageDisplay();
-				isUserDefined = cqlWorkspaceView.getValueSetView().validateUserDefinedInput();
-			}
-		});
-
+		cqlWorkspaceView.getValueSetView().getCancelQDMButton().addClickHandler(event -> valueSetViewCancelQDMButtonClicked());
+		cqlWorkspaceView.getValueSetView().getUpdateFromVSACButton().addClickHandler(event -> valueSetViewUpdateFromVSACButtonClicked());
+		cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().addClickHandler(event -> valueSetViewRetrieveFromVSACClicked());
+		cqlWorkspaceView.getValueSetView().getSaveButton().addClickHandler(event -> valueSetViewSaveButtonClicked());
+		cqlWorkspaceView.getValueSetView().getUserDefinedInput().addValueChangeHandler(event -> valueSetViewUserDefinedInputChangedEvent());
+		cqlWorkspaceView.getValueSetView().getClearButton().addClickHandler(event -> valueSetViewClearButtonClicked());
+		cqlWorkspaceView.getValueSetView().getCopyButton().addClickHandler(event -> copyValueSets());
+		cqlWorkspaceView.getValueSetView().getSelectAllButton().addClickHandler(event -> selectAllValueSets());
+		cqlWorkspaceView.getValueSetView().getPasteButton().addClickHandler(event -> valueSetViewPasteButtonClicked(event));
+		cqlWorkspaceView.getValueSetView().getReleaseListBox().addChangeHandler(event -> valueSetViewReleaseListBoxChangedEvent());
+		cqlWorkspaceView.getValueSetView().getProgramListBox().addChangeHandler(event -> valueSetViewProgramListBoxChangedEvent());
 		cqlWorkspaceView.getValueSetView().getOIDInput().addValueChangeHandler(event -> clearOID());
 		cqlWorkspaceView.getValueSetView().getOIDInput().sinkBitlessEvent("input");
 		cqlWorkspaceView.getValueSetView().setObserver(new CQLAppliedValueSetView.Observer() {
@@ -3086,67 +1698,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				}
 			}
 
-		});
-
-		cqlWorkspaceView.getValueSetView().getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent arg0) {
-				if(!cqlWorkspaceView.getValueSetView().getIsLoading()){
-					cqlWorkspaceView.resetMessageDisplay();
-					cqlWorkspaceView.getValueSetView().clearSelectedCheckBoxes();
-				}
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getCopyButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				copyValueSets();
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getSelectAllButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				selectAllValueSets();
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getPasteButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					pasteValueSets();
-				} else {
-					event.preventDefault();
-				}
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getReleaseListBox().addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				isRetrieveButtonEnabled = true;
-				cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);				
-				previousIsApplyButtonEnabled = isApplyButtonEnabled;
-				isApplyButtonEnabled = false;
-				cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
-				alert508StateChanges();
-			}
-		});
-
-		cqlWorkspaceView.getValueSetView().getProgramListBox().addChangeHandler(new ChangeHandler() {
-			@Override
-			public void onChange(ChangeEvent event) {
-				isRetrieveButtonEnabled = true;
-				cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
-
-				previousIsApplyButtonEnabled = isApplyButtonEnabled;
-				isApplyButtonEnabled = false; 
-				cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
-				CQLAppliedValueSetUtility.loadReleases(cqlWorkspaceView.getValueSetView().getReleaseListBox(), cqlWorkspaceView.getValueSetView().getProgramListBox());
-				alert508StateChanges();
-			}
 		});
 	}
 
@@ -3303,86 +1854,13 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 	}
 
 	private void addCodeSearchPanelHandlers() {
-		cqlWorkspaceView.getCodesView().getCopyButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				copyCodes();
-			}
-		});
-
-		cqlWorkspaceView.getCodesView().getSelectAllButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				selectAllCodes();
-			}
-		});
-
-		cqlWorkspaceView.getCodesView().getPasteButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					pasteCodes();
-				} else {
-					event.preventDefault();
-				}
-			}
-		});
-		cqlWorkspaceView.getCodesView().getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent arg0) {
-				if (!cqlWorkspaceView.getCodesView().getIsLoading()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					cqlWorkspaceView.getCodesView().clearSelectedCheckBoxes();
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCodesView().getRetrieveFromVSACButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					cqlWorkspaceView.resetMessageDisplay();
-					if (!isCodeModified)
-						searchCQLCodesInVsac();
-					//508 Compliance for Codes section
-					cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
-				}
-			}
-		});
-
-		cqlWorkspaceView.getCodesView().getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					MatContext.get().clearDVIMessages();
-					cqlWorkspaceView.resetMessageDisplay();
-					if(isCodeModified && modifyCQLCode != null) {
-						modifyCodes();
-					} else if (null != cqlWorkspaceView.getCodesView().getCodeSearchInput().getValue() 
-							&& !cqlWorkspaceView.getCodesView().getCodeSearchInput().getValue().isEmpty()) {
-						addNewCodes();	
-					}
-					//508 Compliance for Codes section
-					cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
-				}
-
-			}
-		});
-
-		cqlWorkspaceView.getCodesView().getCancelCodeButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
-					isCodeModified = false;
-					cqlWorkspaceView.resetMessageDisplay();
-					cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
-					//508 Compliance for Codes section
-					cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
-				}
-			}
-		});
+		cqlWorkspaceView.getCodesView().getCopyButton().addClickHandler(event -> copyCodes());
+		cqlWorkspaceView.getCodesView().getSelectAllButton().addClickHandler(event -> selectAllCodes());
+		cqlWorkspaceView.getCodesView().getPasteButton().addClickHandler(event -> codesViewPastButtonClicked(event));
+		cqlWorkspaceView.getCodesView().getClearButton().addClickHandler(event -> codesViewClearButtonClicked());
+		cqlWorkspaceView.getCodesView().getRetrieveFromVSACButton().addClickHandler(event -> codesViewRetrieveFromVSACButtonClicked());
+		cqlWorkspaceView.getCodesView().getSaveButton().addClickHandler(event -> codesViewSaveButtonClicked());
+		cqlWorkspaceView.getCodesView().getCancelCodeButton().addClickHandler(event -> codesViewCancelButtonClicked());
 		cqlWorkspaceView.getCodesView().setDelegator(new Delegator() {
 			@Override
 			public void onDeleteClicked(CQLCode result, int index) {
@@ -3393,13 +1871,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedCodesObjId(result.getId());
 						deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_CODES(result.getCodeOID()));
 						deleteConfirmationDialogBox.show();
-						//508 Compliance for Codes section
 						cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
 					}
-				} else {
-					// table is loading, do nothing
-				}		
-
+				} 
 			}
 
 			@Override
@@ -3434,9 +1908,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		CQLCode refCode = buildCQLCodeFromCodesView(codeName);
 
 		MatCodeTransferObject transferObject = cqlWorkspaceView.getCodesView().getCodeTransferObject(cqlLibraryId, refCode);
-
 		if (null != transferObject) {
-
 			appliedCodeTableList.removeIf(code -> code.getDisplayName().equals(modifyCQLCode.getDisplayName()));
 
 			if(!cqlWorkspaceView.getCodesView().checkCodeInAppliedCodeTableList(refCode.getDisplayName(), appliedCodeTableList)) {
@@ -4746,5 +3218,1163 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 	private void loadProgramsAndReleases() {
 		CQLAppliedValueSetUtility.loadProgramsAndReleases(cqlWorkspaceView.getValueSetView().getProgramListBox(), cqlWorkspaceView.getValueSetView().getReleaseListBox());
+	}
+
+	private void deleteConfirmationDialogBoxYesClicked() {
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedDefinitionObjId() != null) {
+			deleteDefinition();
+			deleteConfirmationDialogBox.hide();
+		} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null
+				&& cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() == null) {
+			deleteFunction();
+			deleteConfirmationDialogBox.hide();
+		}else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionArgumentObjId() != null) {
+			deleteFunctionArgument();
+			deleteConfirmationDialogBox.hide();
+		} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
+				.getCurrentSelectedParamerterObjId() != null) {
+			deleteParameter();
+			deleteConfirmationDialogBox.hide();
+		} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView()
+				.getCurrentSelectedIncLibraryObjId() != null) {
+			deleteInclude();
+			deleteConfirmationDialogBox.hide();
+		}  else if(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedValueSetObjId() != null){
+			checkAndDeleteValueSet();
+			deleteConfirmationDialogBox.hide();
+		} else if(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedCodesObjId() != null){
+			deleteCode();
+			deleteConfirmationDialogBox.hide();
+		}
+	}
+
+	private void deleteConfirmationDialogBoxNoClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		deleteConfirmationDialogBox.hide();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentObjId(null);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedFunctionArgumentName(null);
+	}
+
+	private void leftNavParameterNameListBoxKeyPressEvent(KeyPressEvent event) {
+		if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			DomEvent.fireNativeEvent(
+					Document.get().createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false,false, false), cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox());
+		}
+	}
+
+	private void leftNavParameterNameListBoxDoubleClickEvent(DoubleClickEvent event) {
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
+			event.stopPropagation();
+		} else {
+			showSearchBusyOnDoubleClick(true);
+			cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
+			cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
+			parameterViewHideEvent();
+			resetViewCQLCollapsiblePanel(
+					cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
+
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+			if (getIsPageDirty()) {
+				showSearchBusyOnDoubleClick(false);
+				showUnsavedChangesWarning();
+			} else {
+				int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().getSelectedIndex();
+				if (selectedIndex != -1) {
+					final String selectedParamID = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().getValue(selectedIndex);
+					cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedParamerterObjId(selectedParamID);
+					if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID) != null) {
+						cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setTitle("Delete");
+						cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+						cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(false);
+						cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+						cqlWorkspaceView.getCQLParametersView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
+						MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
+								MatContext.get().getCurrentCQLLibraryId(),
+								new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										showSearchBusyOnDoubleClick(false);
+										Window.alert(MatContext.get().getMessageDelegate()
+												.getGenericErrorMessage());
+									}
+
+									@Override
+									public void onSuccess(GetUsedCQLArtifactsResult result) {
+										showSearchBusyOnDoubleClick(false);
+										cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getName());
+										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getLogic());
+										cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).getCommentString());
+
+										boolean isReadOnly = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID).isReadOnly();
+										CQLParameter currentParameter = cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterMap().get(selectedParamID);
+										if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+											cqlWorkspaceView.getCQLParametersView().setWidgetReadOnly(!isReadOnly);
+											if (!currentParameter.isReadOnly()) {
+												if (!result.getCqlErrors().isEmpty() || !result.getUsedCQLParameters().contains(currentParameter.getName())) {
+													cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
+												} else{
+													cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
+												}
+											}
+
+										}
+										Map<String, List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+										if (expressionCQLErrorMap != null) {
+											List<CQLErrors> errorList = expressionCQLErrorMap.get(currentParameter.getName());
+											cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().clearAnnotations();
+											cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().removeAllMarkers();
+											for (CQLErrors error : errorList) {
+												int startLine = error.getStartErrorInLine();
+												int startColumn = error.getStartErrorAtOffset();
+												cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().addAnnotation(startLine, startColumn,error.getErrorMessage(),AceAnnotationType.ERROR);
+											}
+											cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setAnnotations();
+										}
+
+									}
+
+								});
+
+					} else {
+						showSearchBusyOnDoubleClick(false);
+					}
+				} else {
+					showSearchBusyOnDoubleClick(false);
+				}
+
+				cqlWorkspaceView.resetMessageDisplay();
+
+			}
+		}
+		cqlWorkspaceView.getCQLParametersView().getMainParamViewVerticalPanel().setFocus(true);
+	}
+
+	private void parameterViewShowEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		showCompleteCQL(cqlWorkspaceView.getCQLParametersView().getViewCQLAceEditor());
+	}
+
+	private void parameterViewHideEvent() {
+		cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+		resetAceEditor(cqlWorkspaceView.getCQLParametersView().getViewCQLAceEditor());
+	}
+
+	private void parameterViewSaveButtonClicked() {
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			addAndModifyParameters();
+			cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setFocus(true);
+		}
+	}
+
+	private void parameterViewEraseButtonClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
+		eraseParameter(); 
+		cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().focus();
+	}
+
+	private void parameterViewDeleteButtonClicked() {
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
+		deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_PARAMETER(cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().getValue()));
+		deleteConfirmationDialogBox.show();
+	}
+
+	private void keyUpEvent() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			setIsPageDirty(true);
+		}
+	}
+
+	private void parameterViewAddNewClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLParametersView().getPanelViewCQLCollapse());
+		if (getIsPageDirty()) {
+			showUnsavedChangesWarning();
+		} else {
+			addNewParameter();
+		}
+		cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setFocus(true);
+	}
+
+	private void parameterViewCommentTextAreaBlurEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.NONE);
+		String comment = cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().getText();
+		if(validator.isCommentTooLongOrContainsInvalidText(comment)){
+			cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+		}
+	}
+
+	private void cqlDefinitionsViewContextDefinePATRadioBtnValueChangedEvent() {
+		setIsPageDirty(true);
+		if (cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().getValue()) {
+			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(false);
+		} else {
+			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().setValue(true);
+		}
+	}
+
+	private void cqlDefinitionsViewContextDefinePOPRadioBtnValueChangedEvent() {
+		setIsPageDirty(true);
+		if (cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn().getValue()) {
+			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(false);
+		} else {
+			cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn().setValue(true);
+		}
+	}
+
+	private void cqlFunctionViewContextFuncPATRadioBtnValueChangedEvent() {
+		setIsPageDirty(true);
+		if (cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().getValue()) {
+			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
+		} else {
+			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(true);
+		}
+	}
+
+	private void cqlFunctionViewContextFuncPOPRadioBtnValueChangedEvent() {
+		setIsPageDirty(true);
+		if (cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().getValue()) {
+			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
+		} else {
+			cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
+		}
+	}
+
+	private void editIncludedLibraryDialogApplyButtonClicked(
+			final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox) {
+		messagePanel.getErrorMessageAlert().clearAlert();
+		messagePanel.getSuccessMessageAlert().clearAlert();
+		if(editIncludedLibraryDialogBox.getSelectedList().size() > 0){
+			final CQLIncludeLibrary toBeModified = cqlWorkspaceView.getCQLLeftNavBarPanelView()
+					.getIncludeLibraryMap()
+					.get(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedIncLibraryObjId());
+
+			final CQLLibraryDataSetObject dto = editIncludedLibraryDialogBox.getSelectedList().get(0);
+			if (dto != null) {
+				final CQLIncludeLibrary currentObject = new CQLIncludeLibrary(dto);
+
+				MatContext.get().getCQLLibraryService().saveIncludeLibrayInCQLLookUp(
+						MatContext.get().getCurrentCQLLibraryId(), toBeModified, currentObject,
+						cqlWorkspaceView.getCQLLeftNavBarPanelView().getViewIncludeLibrarys(),
+						new AsyncCallback<SaveUpdateCQLResult>() {
+
+							@Override
+							public void onFailure(Throwable arg0) {
+
+								editIncludedLibraryDialogBox.getDialogModal().hide();
+								editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							}
+
+							@Override
+							public void onSuccess(SaveUpdateCQLResult result) {
+								editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
+								CQLAppliedValueSetUtility.loadReleases(cqlWorkspaceView.getValueSetView().getReleaseListBox(), cqlWorkspaceView.getValueSetView().getProgramListBox());
+								if (result != null) {
+									if (result.isSuccess()) {
+										cqlWorkspaceView.getCQLLeftNavBarPanelView().setViewIncludeLibrarys(
+												result.getCqlModel().getCqlIncludeLibrarys());
+										cqlWorkspaceView.getCQLLeftNavBarPanelView().udpateIncludeLibraryMap();
+										MatContext.get().setIncludes(getIncludesList(result.getCqlModel().getCqlIncludeLibrarys()));
+										MatContext.get().setIncludedValues(result);
+										MatContext.get().setCQLModel(result.getCqlModel());
+										editIncludedLibraryDialogBox.getDialogModal().hide();
+										DomEvent.fireNativeEvent(
+												Document.get()
+												.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+														.getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
+														false),
+												cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox());
+										String libraryNameWithVersion = result.getIncludeLibrary().getCqlLibraryName() + " v" +result.getIncludeLibrary().getVersion();
+										messagePanel.getSuccessMessageAlert().createAlert(libraryNameWithVersion + " has been successfully saved as the alias " + result.getIncludeLibrary().getAliasName());
+									}
+								}
+
+							}
+
+						});
+
+			}
+		} else {
+			editIncludedLibraryDialogBox.getErrorMessageAlert().clearAlert();
+			editIncludedLibraryDialogBox.getErrorMessageAlert()
+			.createAlert(MatContext.get().getMessageDelegate().getNO_LIBRARY_TO_REPLACE());
+		}
+	}
+
+	private void includeViewSaveModifyClicked() {
+		messagePanel.getErrorMessageAlert().clearAlert();
+		messagePanel.getSuccessMessageAlert().clearAlert();
+		final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
+		editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId, false);
+		editIncludedLibraryDialogBox.getApplyButton().addClickHandler(event -> editIncludedLibraryDialogApplyButtonClicked(editIncludedLibraryDialogBox));
+	}
+
+	private void cqlLeftNavParIncludesNameListBoxKeyPressedEvent(KeyPressEvent event) {
+		if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			DomEvent.fireNativeEvent(Document.get().createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,false),cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox());
+		}
+	}
+
+	private void cqlLeftNavBarIncludesNameListBoxDoubleClickEvent(DoubleClickEvent event) {
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
+			event.stopPropagation();
+		} else {
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+
+			if (getIsPageDirty()) {
+				showUnsavedChangesWarning();
+			} else {
+				int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex();
+				if (selectedIndex != -1) {
+					final String selectedIncludeLibraryID = cqlWorkspaceView.getCQLLeftNavBarPanelView()
+							.getIncludesNameListbox().getValue(selectedIndex);
+					cqlWorkspaceView.getCQLLeftNavBarPanelView()
+					.setCurrentSelectedIncLibraryObjId(selectedIncludeLibraryID);
+					if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap().get(selectedIncludeLibraryID) != null) {
+						MatContext.get().getCQLLibraryService().findCQLLibraryByID(
+								cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap()
+								.get(selectedIncludeLibraryID).getCqlLibraryId(),
+								new AsyncCallback<CQLLibraryDataSetObject>() {
+
+									@Override
+									public void onSuccess(CQLLibraryDataSetObject result) {
+										if (result != null) {
+											currentIncludeLibrarySetId = result.getCqlSetId();
+											currentIncludeLibraryId = result.getId();
+											cqlWorkspaceView.getIncludeView().buildIncludesReadOnlyView();
+
+											cqlWorkspaceView.getIncludeView().getAliasNameTxtArea()
+											.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+													.getIncludeLibraryMap()
+													.get(selectedIncludeLibraryID)
+													.getAliasName());
+											cqlWorkspaceView.getIncludeView().getViewCQLEditor()
+											.setText(result.getCqlText());
+											cqlWorkspaceView.getIncludeView().getOwnerNameTextBox()
+											.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+													.getOwnerName(result));
+											cqlWorkspaceView.getIncludeView().getCqlLibraryNameTextBox()
+											.setText(result.getCqlName());
+
+											cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(false);														
+											cqlWorkspaceView.getIncludeView().getDeleteButton().setEnabled(false);
+
+											cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(false);
+											if (MatContext.get().getLibraryLockService()
+													.checkForEditPermission()) {
+												cqlWorkspaceView.getIncludeView().setWidgetReadOnly(false);
+												cqlWorkspaceView.getIncludeView().getSaveModifyButton().setEnabled(true);
+
+												MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
+														MatContext.get().getCurrentCQLLibraryId(),
+														new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+															@Override
+															public void onFailure(Throwable caught) {
+																Window.alert(MatContext.get()
+																		.getMessageDelegate()
+																		.getGenericErrorMessage());
+															}
+
+															@Override
+															public void onSuccess(
+																	GetUsedCQLArtifactsResult result) {
+
+																CQLIncludeLibrary cqlIncludeLibrary = cqlWorkspaceView
+																		.getCQLLeftNavBarPanelView()
+																		.getIncludeLibraryMap()
+																		.get(selectedIncludeLibraryID);
+
+																if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
+																		cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary.getVersion()+ "|"
+																				+ cqlIncludeLibrary.getAliasName())) {
+																	cqlWorkspaceView.getIncludeView().getDeleteButton().setEnabled(true);
+																}
+															}
+
+														});
+											}
+										}
+									}
+
+									@Override
+									public void onFailure(Throwable caught) {
+										messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									}
+								});
+
+						cqlWorkspaceView.getIncludeView().setSelectedObject(
+								cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap()
+								.get(selectedIncludeLibraryID).getCqlLibraryId());
+						cqlWorkspaceView.getIncludeView()
+						.setIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+								.getIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+										.getIncludeLibraryMap()));
+						cqlWorkspaceView.getIncludeView().getSelectedObjectList().clear();
+					}
+				}
+				cqlWorkspaceView.resetMessageDisplay();
+
+			}
+
+		}
+	}
+
+	private void cqlDefinitionsShowEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		showCompleteCQL(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
+	}
+
+	private void cqlDefinitionsHideEvent() {
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+		resetAceEditor(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
+	}
+
+	private void definitionSaveButtonClicked() {
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			addAndModifyDefintions();
+			cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
+			cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setFocus(true);
+		}
+	}
+
+	private void definitionEraseButtonClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
+		cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
+		eraseDefinition(); 
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().focus();
+	}
+
+	private void definitionDeleteButtonClicked() {
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
+		deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDeleteConfirmationDefinitionCQLLibraryWorkspace(cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().getValue()));
+		deleteConfirmationDialogBox.show();
+	}
+
+	private void definitionsAddNewClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().clearAnnotations();
+		cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor().removeAllMarkers();
+
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
+		if (getIsPageDirty()) {
+			showUnsavedChangesWarning();
+		} else {
+			addNewDefinition();
+		}
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setFocus(true);
+	}
+
+	private void defineCommentTextBlurEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.NONE);
+		String comment = cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().getText();
+		if(validator.isCommentTooLongOrContainsInvalidText(comment)){
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+		}
+	}
+
+	private void cqlLeftNavBarDefineNameListBoxKeyPressed(KeyPressEvent event) {
+		if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			DomEvent.fireNativeEvent(Document.get().createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false, false),cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox());
+		}
+	}
+
+	private void cqlLeftNavBarDefineNameListBoxDoubleClickEvent(DoubleClickEvent event) {
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
+			event.stopPropagation();
+		} else {
+			showSearchBusyOnDoubleClick(true);
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
+
+			resetAceEditor(cqlWorkspaceView.getCQLDefinitionsView().getViewCQLAceEditor());
+			resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLDefinitionsView().getPanelViewCQLCollapse());
+			cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
+
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
+			if (getIsPageDirty()) {
+				showSearchBusyOnDoubleClick(false);
+				showUnsavedChangesWarning();
+			} else {
+				int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox()
+						.getSelectedIndex();
+				if (selectedIndex != -1) {
+					final String selectedDefinitionID = cqlWorkspaceView.getCQLLeftNavBarPanelView()
+							.getDefineNameListBox().getValue(selectedIndex);
+					cqlWorkspaceView.getCQLLeftNavBarPanelView()
+					.setCurrentSelectedDefinitionObjId(selectedDefinitionID);
+
+					if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
+							.get(selectedDefinitionID) != null) {
+						cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton()
+						.setTitle("Delete");
+
+						cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+						cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(false);
+						cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
+						MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
+								MatContext.get().getCurrentCQLLibraryId(),
+								new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										showSearchBusyOnDoubleClick(false);
+										cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+										Window.alert(MatContext.get().getMessageDelegate()
+												.getGenericErrorMessage());
+									}
+
+									@Override
+									public void onSuccess(GetUsedCQLArtifactsResult result) {
+										showSearchBusyOnDoubleClick(false);
+										boolean isReadOnly = cqlWorkspaceView.getCQLLeftNavBarPanelView()
+												.getDefinitionMap().get(selectedDefinitionID).isSupplDataElement();
+
+										CQLDefinition currentDefinition = cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID);
+
+										cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea()
+										.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
+												.get(selectedDefinitionID).getName());
+										cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor()
+										.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
+												.get(selectedDefinitionID).getLogic());
+										cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea()
+										.setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap().get(selectedDefinitionID).getCommentString());
+
+										if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefinitionMap()
+												.get(selectedDefinitionID).getContext().equalsIgnoreCase("patient")) {
+											cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn()
+											.setValue(true);
+											cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn()
+											.setValue(false);
+										} else {
+											cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePOPRadioBtn()
+											.setValue(true);
+											cqlWorkspaceView.getCQLDefinitionsView().getContextDefinePATRadioBtn()
+											.setValue(false);
+										}
+
+										if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+											cqlWorkspaceView.getCQLDefinitionsView().setWidgetReadOnly(!isReadOnly);
+											if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLDefinitions().contains(currentDefinition.getName())) {
+												cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(true);
+											} else {
+												cqlWorkspaceView.getCQLDefinitionsView().getDefineButtonBar().getDeleteButton().setEnabled(false);
+											}
+
+
+										}
+
+										Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+										if(expressionCQLErrorMap != null){
+											List<CQLErrors> errorList = expressionCQLErrorMap.get(currentDefinition.getName());
+											cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().clearAnnotations();
+											cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().removeAllMarkers();
+											for (CQLErrors error : errorList) {
+												int startLine = error.getStartErrorInLine();
+												int startColumn = error.getStartErrorAtOffset();
+												cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+											}
+											cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().setAnnotations();
+										}
+
+										if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
+											cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
+													.get(currentDefinition.getName()));
+											cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getExpressionReturnTypeMap()
+											.get(currentDefinition.getName()) );
+
+										} else {
+											cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
+											cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+										}
+									}
+								});
+
+					} else {
+						showSearchBusyOnDoubleClick(false);
+					}
+				}else {
+					showSearchBusyOnDoubleClick(false);
+				}
+
+				cqlWorkspaceView.resetMessageDisplay();
+			}
+		}
+
+		cqlWorkspaceView.getCQLDefinitionsView().getMainDefineViewVerticalPanel().setFocus(true);
+	}
+
+	private void codesViewPastButtonClicked(ClickEvent event) {
+		if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			pasteCodes();
+		} else {
+			event.preventDefault();
+		}
+	}
+
+	private void codesViewClearButtonClicked() {
+		if (!cqlWorkspaceView.getCodesView().getIsLoading()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			cqlWorkspaceView.getCodesView().clearSelectedCheckBoxes();
+		}
+	}
+
+	private void codesViewRetrieveFromVSACButtonClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			if (!isCodeModified) {
+				searchCQLCodesInVsac();
+			}
+			cqlWorkspaceView.getCodesView().getCodeInput().setFocus(true);
+		}
+	}
+
+	private void codesViewSaveButtonClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			MatContext.get().clearDVIMessages();
+			cqlWorkspaceView.resetMessageDisplay();
+			if(isCodeModified && modifyCQLCode != null) {
+				modifyCodes();
+			} else if (null != cqlWorkspaceView.getCodesView().getCodeSearchInput().getValue() 
+					&& !cqlWorkspaceView.getCodesView().getCodeSearchInput().getValue().isEmpty()) {
+				addNewCodes();	
+			}
+
+			cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
+		}
+	}
+
+	private void codesViewCancelButtonClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			isCodeModified = false;
+			cqlWorkspaceView.resetMessageDisplay();
+			cqlWorkspaceView.getCodesView().resetCQLCodesSearchPanel();
+			cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
+		}
+	}
+
+	private void includeViewSearchButtonClicked() {
+		getAllIncludeLibraryList(cqlWorkspaceView.getIncludeView().getSearchTextBox().getText().trim());
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+	}
+
+	private void includesViewFocusPanelKeyDownEvent(KeyDownEvent event) {
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			cqlWorkspaceView.getIncludeView().getSearchButton().click();
+		}
+	}
+
+	private void includesViewSaveButtonClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			addIncludeLibraryInCQLLookUp();
+			cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+		}
+	}
+
+	private void includesViewDeleteButtonClicked() {
+		deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDELETE_CONFIRMATION_INCLUDE(cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().getValue()));
+		deleteConfirmationDialogBox.show();
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+	}
+
+	private void includesViewCloseButtonClicked() {
+		currentIncludeLibrarySetId =  null;
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().getSearchSuggestIncludeTextBox().setText(EMPTY_STRING);
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex() >= 0) {
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().setItemSelected(
+					cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getSelectedIndex(),
+					false);
+		}
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setText(EMPTY_STRING);
+		cqlWorkspaceView.buildIncludesView();
+		SaveCQLLibraryResult cqlLibrarySearchModel = new SaveCQLLibraryResult();
+		cqlLibrarySearchModel
+		.setCqlLibraryDataSetObjects(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryList());
+		cqlWorkspaceView.getIncludeView().setIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+				.getIncludedList(cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludeLibraryMap()));
+		cqlWorkspaceView.getIncludeView().buildIncludeLibraryCellTable(cqlLibrarySearchModel,
+				MatContext.get().getLibraryLockService().checkForEditPermission(), false);
+		cqlWorkspaceView.getIncludeView()
+		.setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox()
+				.getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
+			messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+		} else {
+			messagePanel.getWarningMessageAlert().clearAlert();
+		}
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+	}
+
+	private void includesViewEraseButtonClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		clearAlias();
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIncludesNameListbox().getItemCount() >= CQLWorkSpaceConstants.VALID_INCLUDE_COUNT) {
+			messagePanel.getWarningMessageAlert().createAlert(MatContext.get().getMessageDelegate().getCqlLimitWarningMessage());
+		} else {
+			messagePanel.getWarningMessageAlert().clearAlert();
+		}
+		cqlWorkspaceView.getIncludeView().getAliasNameTxtArea().setFocus(true);
+	}
+
+	private void definitionsAceEditorKeyDownEvent() {
+		if (!cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().isReadOnly()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			setIsPageDirty(true);
+		}
+	}
+
+	private void parameterAceEditorKeyDownEvent() {
+		if (!cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().isReadOnly()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			setIsPageDirty(true);
+		}
+	}
+
+	private void functionAceEditorKeyDownEvent() {
+		if (!cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().isReadOnly()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			setIsPageDirty(true);
+		}
+	}
+
+	private void cqlFunctionsViewCommentTextAreaBlurEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.NONE);
+		String comment = cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().getText();
+		if(validator.isCommentTooLongOrContainsInvalidText(comment)){
+			cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+		}
+	}
+
+	private void leftNavBarFuncNameListBoxKeyPressedEvent(KeyPressEvent event) {
+		if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+			DomEvent.fireNativeEvent(
+					Document.get()
+					.createDblClickEvent(cqlWorkspaceView.getCQLLeftNavBarPanelView()
+							.getFuncNameListBox().getSelectedIndex(), 0, 0, 0, 0, false, false, false,
+							false),
+					cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox());
+		}
+	}
+
+	private void leftNavBarFuncNameListBoxDoubleClickedEvent(DoubleClickEvent event) {
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getIsLoading()) {
+			event.stopPropagation();
+		} else {
+			showSearchBusyOnDoubleClick(true);
+			cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
+			cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(true);
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+
+			resetAceEditor(cqlWorkspaceView.getCQLFunctionsView().getViewCQLAceEditor());
+			resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
+
+			cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
+
+
+			if (getIsPageDirty()) {
+				showSearchBusyOnDoubleClick(false);
+				showUnsavedChangesWarning();
+			} else {
+				int selectedIndex = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox()
+						.getSelectedIndex();
+				if (selectedIndex != -1) {
+					final String selectedFunctionId = cqlWorkspaceView.getCQLLeftNavBarPanelView()
+							.getFuncNameListBox().getValue(selectedIndex);
+					cqlWorkspaceView.getCQLLeftNavBarPanelView()
+					.setCurrentSelectedFunctionObjId(selectedFunctionId);
+
+					if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap()
+							.get(selectedFunctionId) != null) {
+						cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+						cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(false);
+						cqlWorkspaceView.getCQLFunctionsView().getAddNewButtonBar().getaddNewButton().setEnabled(MatContext.get().getLibraryLockService().checkForEditPermission());
+						// load most recent used cql artifacts
+						MatContext.get().getCQLLibraryService().getUsedCqlArtifacts(
+								MatContext.get().getCurrentCQLLibraryId(),
+								new AsyncCallback<GetUsedCQLArtifactsResult>() {
+
+									@Override
+									public void onFailure(Throwable caught) {
+										showSearchingBusy(false);
+										cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(MatContext.get().getLibraryLockService().checkForEditPermission());
+										Window.alert(
+												MatContext.get().getMessageDelegate().getGenericErrorMessage());
+									}
+
+									@Override
+									public void onSuccess(GetUsedCQLArtifactsResult result) {
+										showSearchBusyOnDoubleClick(false);
+										cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getName());
+										cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getLogic());
+										cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().setText(cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getCommentString());
+
+										if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId).getContext().equalsIgnoreCase("patient")) {
+											cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(true);
+											cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(false);
+										} else {
+											cqlWorkspaceView.getCQLFunctionsView().getContextFuncPOPRadioBtn().setValue(true);
+											cqlWorkspaceView.getCQLFunctionsView().getContextFuncPATRadioBtn().setValue(false);
+										}
+										CQLFunctions currentFunction = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap().get(selectedFunctionId);
+										if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+											cqlWorkspaceView.getCQLFunctionsView().setWidgetReadOnly(true);
+
+											if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLFunctions().contains(currentFunction.getName())) {
+												cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(true);
+											} else {
+												cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getDeleteButton().setEnabled(false);
+											}
+										}
+										Map<String,List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+										if(expressionCQLErrorMap != null){
+											List<CQLErrors> errorList = expressionCQLErrorMap.get(currentFunction.getName());
+											cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().clearAnnotations();
+											cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().removeAllMarkers();
+											for (CQLErrors error : errorList) {
+												int startLine = error.getStartErrorInLine();
+												int startColumn = error.getStartErrorAtOffset();
+												cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
+											}
+											cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().setAnnotations();
+										}
+										if(result.getCqlErrors().isEmpty() && result.getExpressionReturnTypeMap() != null){
+											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(result.getExpressionReturnTypeMap()
+													.get(currentFunction.getName()));
+											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression is "+result.getExpressionReturnTypeMap()
+											.get(currentFunction.getName()));
+
+										} else {
+											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
+											cqlWorkspaceView.getCQLFunctionsView().getReturnTypeTextBox().setTitle("Return Type of CQL Expression");
+										}
+									}
+
+								});
+
+					} else {
+						showSearchBusyOnDoubleClick(false);
+					}
+				} else {
+					showSearchBusyOnDoubleClick(false);
+				}
+				if (cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId() != null) {
+					CQLFunctions selectedFunction = cqlWorkspaceView.getCQLLeftNavBarPanelView().getFunctionMap()
+							.get(cqlWorkspaceView.getCQLLeftNavBarPanelView().getCurrentSelectedFunctionObjId());
+					if (selectedFunction.getArgumentList() != null) {
+						cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().clear();
+						cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList()
+						.addAll(selectedFunction.getArgumentList());
+					} else {
+						cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList().clear();
+					}
+				}
+				cqlWorkspaceView.resetMessageDisplay();
+			}
+			cqlWorkspaceView.getCQLFunctionsView().createAddArgumentViewForFunctions(
+					cqlWorkspaceView.getCQLFunctionsView().getFunctionArgumentList(),
+					MatContext.get().getLibraryLockService().checkForEditPermission());
+
+		}
+
+		cqlWorkspaceView.getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
+	}
+
+	private void cqlFunctionsViewShowEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		showCompleteCQL(cqlWorkspaceView.getCQLFunctionsView().getViewCQLAceEditor());
+	}
+
+	private void cqlFunctionsViewHideEvent() {
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+		resetAceEditor(cqlWorkspaceView.getCQLFunctionsView().getViewCQLAceEditor());
+	}
+
+	private void functionsViewInsertButtonClicked() {
+		buildInsertPopUp();
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().focus();
+	}
+
+	private void functionsViewSaveButtonClicked() {
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			addAndModifyFunction();
+			cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().setFocus(true);
+		}
+	}
+
+	private void functionsViewEraseButtonClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
+		eraseFunction();
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().focus();
+	}
+
+	private void functionsViewAddNewArgumentClicked() {
+		cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
+		cqlWorkspaceView.getCQLFunctionsView().getFunctionButtonBar().getInfoButtonGroup().getElement().setAttribute("class", "btn-group");
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
+		CQLFunctionArgument addNewFunctionArgument = new CQLFunctionArgument();
+		AddFunctionArgumentDialogBox.showArgumentDialogBox(addNewFunctionArgument, false, cqlWorkspaceView.getCQLFunctionsView(), messagePanel,MatContext.get().getLibraryLockService().checkForEditPermission());
+		setIsPageDirty(true);
+	}
+
+	private void functionsViewDeleteButtonClicked() {
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
+		deleteConfirmationDialogBox.getMessageAlert().createAlert(MatContext.get().getMessageDelegate().getDeleteConfirmationFunctionCQLLibraryWorkspace(cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().getValue()));
+		deleteConfirmationDialogBox.show();
+	}
+
+	private void functionsViewAddNewClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		resetViewCQLCollapsiblePanel(cqlWorkspaceView.getCQLFunctionsView().getPanelViewCQLCollapse());
+		if (getIsPageDirty()) {
+			showUnsavedChangesWarning();
+		} else {
+			addNewFunction();
+		}
+		cqlWorkspaceView.getCQLFunctionsView().getMainFunctionVerticalPanel().setFocus(true);
+	}
+
+	private void leftNavBarIncludesLibraryClicked(ClickEvent event) {
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		if (getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_INCLUDES_MENU;
+			showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			includesEvent();
+		}
+	}
+
+	private void leftNavBarCodesClicked(ClickEvent event) {
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		if (getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_CODES;
+			showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			codesEvent();
+			cqlWorkspaceView.getCodesView().getCodeSearchInput().setFocus(true);
+		}
+	}
+
+	private void leftNavbarAppliedQDMClicked() {
+		appliedQDMEvent();
+		cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
+	}
+
+	private void leftNavBarParametersClicked(ClickEvent event) {
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
+		if (getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_PARAMETER_MENU;
+			showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			parameterEvent();
+		}
+	}
+
+	private void leftNavBarDefinitionsClicked(ClickEvent event) {
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
+		if (getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_DEFINE_MENU;
+			showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			definitionEvent();
+		}
+	}
+
+	private void leftNavBarFunctionClicked(ClickEvent event) {
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(true);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+		cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
+		if (getIsPageDirty()) {
+			nextSection = CQLWorkSpaceConstants.CQL_FUNCTION_MENU;
+			showUnsavedChangesWarning();
+			event.stopPropagation();
+		} else {
+			functionEvent();
+		}
+	}
+
+	private void leftNavBarViewCQLClicked() {
+		cqlWorkspaceView.hideAceEditorAutoCompletePopUp();
+		viewCqlEvent();
+	}
+
+	private void valueSetViewCancelQDMButtonClicked() {
+		cqlWorkspaceView.resetMessageDisplay();
+		isModified = false;
+		cqlWorkspaceView.getValueSetView().resetCQLValuesetearchPanel();
+		cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
+
+		previousIsProgramListBoxEnabled = isProgramListBoxEnabled;
+		isProgramListBoxEnabled = true; 
+
+		loadProgramsAndReleases(); 
+		alert508StateChanges();
+	}
+
+	private void valueSetViewUpdateFromVSACButtonClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			cqlWorkspaceView.resetMessageDisplay();
+			updateVSACValueSets();
+			cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
+		}
+	}
+
+	private void valueSetViewRetrieveFromVSACClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			cqlWorkspaceView.resetMessageDisplay();					
+			String release;
+			String expansionProfile = null;
+
+			release = cqlWorkspaceView.getValueSetView().getReleaseListBox().getSelectedValue();
+			release = MatContext.PLEASE_SELECT.equals(release) ? null : release;
+
+			String program = cqlWorkspaceView.getValueSetView().getProgramListBox().getSelectedValue();
+			program = MatContext.PLEASE_SELECT.equals(program) ? null : program;
+
+
+			if(null == release && null != program) {
+				HashMap<String, String> pgmProfileMap = (HashMap<String, String>) MatContext.get().getProgramToLatestProfile();
+				expansionProfile = pgmProfileMap.get(program);
+			}
+
+			if(release != null && program == null) {
+				messagePanel.getErrorMessageAlert().createAlert(SharedCQLWorkspaceUtility.MUST_HAVE_PROGRAM_WITH_RELEASE);
+			} else {
+				searchValueSetInVsac(release, expansionProfile);
+				cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true); 
+			}
+		}
+	}
+
+	private void valueSetViewSaveButtonClicked() {
+		if (MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			MatContext.get().clearDVIMessages();
+			cqlWorkspaceView.resetMessageDisplay();
+
+			if (isModified && (modifyValueSetDTO != null)) {
+				modifyValueSetOrUserDefined(isUserDefined);
+			} else {
+				addNewValueSet(isUserDefined);
+			}
+			cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true); 
+		}
+	}
+
+	private void valueSetViewUserDefinedInputChangedEvent() {
+		cqlWorkspaceView.resetMessageDisplay();
+		isUserDefined = cqlWorkspaceView.getValueSetView().validateUserDefinedInput();
+	}
+
+	private void valueSetViewClearButtonClicked() {
+		if(!cqlWorkspaceView.getValueSetView().getIsLoading()){
+			cqlWorkspaceView.resetMessageDisplay();
+			cqlWorkspaceView.getValueSetView().clearSelectedCheckBoxes();
+		}
+	}
+
+	private void valueSetViewPasteButtonClicked(ClickEvent event) {
+		if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			pasteValueSets();
+		} else {
+			event.preventDefault();
+		}
+	}
+
+	private void valueSetViewReleaseListBoxChangedEvent() {
+		isRetrieveButtonEnabled = true;
+		cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);				
+		previousIsApplyButtonEnabled = isApplyButtonEnabled;
+		isApplyButtonEnabled = false;
+		cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
+		alert508StateChanges();
+	}
+
+	private void valueSetViewProgramListBoxChangedEvent() {
+		isRetrieveButtonEnabled = true;
+		cqlWorkspaceView.getValueSetView().getRetrieveFromVSACButton().setEnabled(isRetrieveButtonEnabled);
+
+		previousIsApplyButtonEnabled = isApplyButtonEnabled;
+		isApplyButtonEnabled = false; 
+		cqlWorkspaceView.getValueSetView().getSaveButton().setEnabled(isApplyButtonEnabled);
+		CQLAppliedValueSetUtility.loadReleases(cqlWorkspaceView.getValueSetView().getReleaseListBox(), cqlWorkspaceView.getValueSetView().getProgramListBox());
+		alert508StateChanges();
+	}
+
+	private void viewCQLExportErrorFileClicked() {
+		if(MatContext.get().getLibraryLockService().checkForEditPermission()) {
+			String url = GWT.getModuleBaseURL() + "export?libraryid=" + MatContext.get().getCurrentCQLLibraryId() + "&format=errorFileStandAlone";
+			Window.open(url + "&type=save", "_self", "");
+		}
+	}
+
+	private void warningConfirmationYesButtonClicked() {
+		setIsPageDirty(false);
+		messagePanel.getWarningConfirmationMessageAlert().clearAlert();
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().isDoubleClick()) {
+			clickEventOnListboxes();
+		} else if (cqlWorkspaceView.getCQLLeftNavBarPanelView().isNavBarClick()) {
+			changeSectionSelection();
+		} else {
+			clearViewIfDirtyNotSet();
+		}
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsNavBarClick(false);
+		cqlWorkspaceView.getCQLLeftNavBarPanelView().setIsDoubleClick(false);
+	}
+
+	private void warningConfirmationNoButtonClicked() {
+		messagePanel.getWarningConfirmationMessageAlert().clearAlert();
+		if (cqlWorkspaceView.getCQLLeftNavBarPanelView().isNavBarClick()) {
+			unsetActiveMenuItem(nextSection);
+		}
+		if (currentSection.equals(CQLWorkSpaceConstants.CQL_FUNCTION_MENU)) {
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().getFuncNameListBox().setSelectedIndex(-1);
+		} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_PARAMETER_MENU)) {
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().getParameterNameListBox().setSelectedIndex(-1);
+		} else if (currentSection.equals(CQLWorkSpaceConstants.CQL_DEFINE_MENU)) {
+			cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().setSelectedIndex(-1);
+		}
 	}
 }

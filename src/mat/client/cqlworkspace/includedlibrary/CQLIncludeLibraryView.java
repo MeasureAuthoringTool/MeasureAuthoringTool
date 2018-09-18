@@ -316,7 +316,7 @@ public class CQLIncludeLibraryView {
 	 *
 	 * @return the alias name txt area
 	 */
-	public TextBox getAliasNameTxtArea() {
+	public MatTextBox getAliasNameTxtArea() {
 		return aliasNameTxtBox;
 	}
 

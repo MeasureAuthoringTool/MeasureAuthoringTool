@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -13,7 +14,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -22,8 +22,8 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
-import mat.client.cqlworkspace.CQLWorkSpacePresenter;
-import mat.client.cqlworkspace.CQLWorkSpaceView;
+import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.metadata.MetaDataPresenter;
@@ -258,7 +258,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 					buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 					buttonBar.setPageNamesOnState();
 				} else {
-					DeferredCommand.addCommand(this);
+					Scheduler.get().scheduleDeferred(this);
 				}
 			}
 		};
@@ -371,9 +371,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	 * @return the mat presenter
 	 */
 	private MatPresenter buildCQLWorkSpaceTab(){
-		CQLWorkSpaceView cqlView = new CQLWorkSpaceView();
-		CQLWorkSpacePresenter cqlPresenter =
-				new CQLWorkSpacePresenter(cqlView);
+		CQLMeasureWorkSpaceView cqlView = new CQLMeasureWorkSpaceView();
+		CQLMeasureWorkSpacePresenter cqlPresenter =
+				new CQLMeasureWorkSpacePresenter(cqlView);
 		cqlPresenter.getWidget();
 		return cqlPresenter;
 	}
@@ -439,8 +439,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
 			MetaDataPresenter presenter = (MetaDataPresenter) presenterList.get(selectedIndex);
 			return presenter.isMeasureDetailsValid();
-		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
-			CQLWorkSpacePresenter presenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
+		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
+			CQLMeasureWorkSpacePresenter presenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
 			return presenter.isCQLWorkspaceValid();
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
@@ -475,10 +475,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			metaDataPresenter.getMetaDataDisplay().getBottomSuccessMessage().clearAlert();
 			metaDataPresenter.getMetaDataDisplay().getTopSuccessMessage().clearAlert();
 			saveButton = metaDataPresenter.getMetaDataDisplay().getBottomSaveButton();
-		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
-			CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
-			saveErrorMessageAlert = CQLWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
-			auditMessage = CQLWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
+			CQLMeasureWorkSpacePresenter cqlWorkSpacePresenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
+			CQLMeasureWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+			saveErrorMessageAlert = cqlWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
+			auditMessage = CQLMeasureWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
 			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();

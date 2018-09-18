@@ -28,7 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.CancelButton;
 import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
-import mat.client.cqlworkspace.CQLWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.ErrorMessageDisplay;
@@ -77,7 +77,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 
 	public void showUMLSLogInDialog() {
 		
-		CQLWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
+		CQLMeasureWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();//removes error "not signed in" message above search box
 		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
 		
 		focusPanel.clear();

@@ -12,7 +12,6 @@ import java.util.TreeMap;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.Badge;
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.gwtbootstrap3.client.ui.NavPills;
@@ -32,8 +31,6 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -42,20 +39,12 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.CQLSuggestOracle;
-import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageAlert;
-import mat.client.shared.SuccessMessageAlert;
-import mat.client.shared.WarningConfirmationMessageAlert;
-import mat.client.shared.WarningMessageAlert;
-import mat.client.util.MatTextBox;
 import mat.model.ComponentMeasureTabObject;
 import mat.model.clause.QDSAttributes;
 import mat.model.cql.CQLCode;
@@ -67,161 +56,79 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 
 public class CQLLeftNavBarPanelView {
-	
 	private VerticalPanel rightHandNavPanel = new VerticalPanel();
-	
 	private Map<String, String> defineNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private Map<String, String> funcNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private Map<String, String> includeLibraryNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private HashMap<String, CQLDefinition> definitionMap = new HashMap<String, CQLDefinition>();
-
 	private HashMap<String, CQLFunctions> functionMap = new HashMap<String, CQLFunctions>();
-
 	private HashMap<String, CQLIncludeLibrary> includeLibraryMap = new HashMap<String, CQLIncludeLibrary>();
-
 	private Badge includesBadge = new Badge();
-	
 	private Badge valueSetBadge = new Badge();
-	
 	private Badge codesBadge = new Badge();
-
 	private Badge paramBadge = new Badge();
-
 	private Badge defineBadge = new Badge();
-
 	private Badge functionBadge = new Badge();
-
 	private Label includesLabel = new Label("Includes");
-	
 	private Label valueSetLabel = new Label("Value Sets");
-	
 	private Label codesLabel = new Label("Codes");
-
 	private Label paramLabel = new Label("Parameter");
-
 	private Label defineLabel = new Label("Definition");
-
 	private Label functionLibLabel = new Label("Function");
-
 	PanelCollapse paramCollapse = new PanelCollapse();
-
 	PanelCollapse defineCollapse = new PanelCollapse();
-	
 	PanelCollapse functionCollapse = new PanelCollapse();
-	
 	PanelCollapse includesCollapse = new PanelCollapse();
-	
 	PanelCollapse codesCollapse = new PanelCollapse();
-	
 	PanelCollapse valueSetCollapse = new PanelCollapse();
-	
 	private AnchorListItem viewCQL;
-
 	private AnchorListItem appliedQDM;
-	
 	private AnchorListItem codesLibrary;
-
 	private AnchorListItem generalInformation;
-
 	private AnchorListItem includesLibrary;
-
 	private AnchorListItem parameterLibrary;
-
 	private AnchorListItem definitionLibrary;
-
 	private AnchorListItem functionLibrary;
-	
 	private List<CQLIncludeLibrary> viewIncludeLibrarys = new ArrayList<CQLIncludeLibrary>();
-	
 	private List<CQLParameter> viewParameterList = new ArrayList<CQLParameter>();
-	
 	private List<CQLDefinition> viewDefinitions = new ArrayList<CQLDefinition>();
-
 	private List<CQLCode> codesList = new ArrayList<CQLCode>();
-	
 	private List<CQLQualityDataSetDTO> appliedQdmTableList = new ArrayList<CQLQualityDataSetDTO>();
-	
 	private List<CQLCode> appliedCodeTableList = new ArrayList<CQLCode>();
-
 	private List<CQLLibraryDataSetObject> includeLibraryList = new ArrayList<CQLLibraryDataSetObject>();
-
 	private List<CQLFunctions> viewFunctions = new ArrayList<CQLFunctions>();
-
 	private ListBox includesNameListbox = new ListBox();
-
 	private ListBox defineNameListBox = new ListBox();
-
 	private ListBox funcNameListBox = new ListBox();
-
 	private SuggestBox searchSuggestDefineTextBox;
-
 	private SuggestBox searchSuggestIncludeTextBox;
-
 	private SuggestBox searchSuggestFuncTextBox;
-
 	private SuggestBox searchSuggestParamTextBox;
-
 	private Map<String, String> parameterNameMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-
 	private HashMap<String, CQLParameter> parameterMap = new HashMap<String, CQLParameter>();
-
 	private ListBox parameterNameListBox = new ListBox();
-	
-	private VerticalPanel messagePanel = new VerticalPanel();
-	
-	private MessageAlert successMessageAlert = new SuccessMessageAlert();
-
-	private MessageAlert warningMessageAlert = new WarningMessageAlert();
-
-	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-
-	private WarningConfirmationMessageAlert warningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
-
-	DeleteConfirmationDialogBox deleteConfirmationDialogBox = new DeleteConfirmationDialogBox();
-
-	private WarningConfirmationMessageAlert globalWarningConfirmationMessageAlert;// = new WarningConfirmationMessageAlert();
-	
-	private Boolean isPageDirty = false;
-
 	private Boolean isDoubleClick = false;
-
 	private Boolean isNavBarClick = false;
-	
 	private Boolean isLoading = false;
-	
 	private String currentSelectedDefinitionObjId = null;
-
 	private String currentSelectedParamerterObjId = null;
-
 	private String currentSelectedFunctionObjId = null;
-	
 	private String currentSelectedFunctionArgumentObjId = null;
-	
 	private String currentSelectedFunctionArgumentName = null;
-
 	private String currentSelectedIncLibraryObjId = null;
-	
 	private String currentSelectedValueSetObjId = null;
-	
 	private String currentSelectedCodesObjId = null;
-	
 	private List<QDSAttributes> availableQDSAttributeList;
-	
-	//Component tab info
+
 	private Badge badge = new Badge();
 	private ListBox componentNameListBox = new ListBox();
 	private Label componentLabel = new Label("Components");
 	private PanelCollapse collapse = new PanelCollapse();
 	private SuggestBox searchAliasTextBox;
 	private AnchorListItem anchor;
-	
 	private List<ComponentMeasureTabObject> componentObjectsList = new ArrayList<>();
 	private Map<String, ComponentMeasureTabObject> componentObjectsMap = new HashMap<String, ComponentMeasureTabObject>();
 	private Map<String, String> aliases = new HashMap<String,String>();
-	
 	private PanelCollapse buildComponentCollapsablePanel() {
 		collapse.clear();
 		collapse.setId("collapseComponent");
@@ -306,7 +213,6 @@ public class CQLLeftNavBarPanelView {
 	
 
 	public VerticalPanel buildMeasureLibCQLView(){
-		globalWarningConfirmationMessageAlert = new WarningConfirmationMessageAlert();
 		collapse = buildComponentCollapsablePanel();
 		includesCollapse = createIncludesCollapsablePanel();
 		paramCollapse = createParameterCollapsablePanel();
@@ -317,7 +223,6 @@ public class CQLLeftNavBarPanelView {
 	}
 
 	private void buildLeftHandNavBar() {
-		
 		rightHandNavPanel.clear();
 		NavPills navPills = new NavPills();
 		navPills.setStacked(true);
@@ -343,7 +248,6 @@ public class CQLLeftNavBarPanelView {
 		buildDefinitionsTab();
 		buildFunctionsTab();
 		buildViewCQLTab();
-		buildMessagePanel();
 		
 		navPills.add(generalInformation);
 		navPills.add(anchor);
@@ -356,15 +260,6 @@ public class CQLLeftNavBarPanelView {
 		navPills.add(viewCQL);
 
 		rightHandNavPanel.add(navPills);
-	}
-	
-	private void buildMessagePanel() {
-		messagePanel.add(successMessageAlert);
-		messagePanel.add(warningMessageAlert);
-		messagePanel.add(errorMessageAlert);
-		messagePanel.add(warningConfirmationMessageAlert);
-		messagePanel.add(globalWarningConfirmationMessageAlert);
-		messagePanel.setStyleName("marginLeft15px");
 	}
 	
 	private void buildGeneralInfoTab() {
@@ -381,7 +276,6 @@ public class CQLLeftNavBarPanelView {
 		includesLibrary.setTitle("Includes");
 		includesBadge.setText("0" + viewIncludeLibrarys.size());
 		Anchor includesAnchor = (Anchor) (includesLibrary.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
 		includesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -407,7 +301,6 @@ public class CQLLeftNavBarPanelView {
 		appliedQDM.setTitle("Value Sets");
 		valueSetBadge.setText("0" + appliedQdmTableList.size());
 		Anchor valueSetAnchor = (Anchor) (appliedQDM.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
 		valueSetAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -429,7 +322,6 @@ public class CQLLeftNavBarPanelView {
 		codesLibrary.setTitle("Codes");
 		codesBadge.setText("0" + codesList.size());
 		Anchor codesAnchor = (Anchor) (codesLibrary.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
 		codesAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -451,7 +343,6 @@ public class CQLLeftNavBarPanelView {
 		parameterLibrary.setTitle("Parameter");
 		paramBadge.setText("" + viewParameterList.size());
 		Anchor paramAnchor = (Anchor) (parameterLibrary.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
 		paramAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -463,7 +354,6 @@ public class CQLLeftNavBarPanelView {
 		paramAnchor.add(paramLabel);
 		paramBadge.setPull(Pull.RIGHT);
 		paramBadge.setId("paramBadge_Badge");
-		// paramBadge.setMarginLeft(45);
 		paramAnchor.add(paramBadge);
 		paramAnchor.setDataParent("#navGroup");
 		paramAnchor.setDataToggle(Toggle.COLLAPSE);
@@ -478,7 +368,6 @@ public class CQLLeftNavBarPanelView {
 		definitionLibrary.setId("definitionLibrary_Anchor");
 		defineBadge.setText("" + viewDefinitions.size());
 		Anchor defineAnchor = (Anchor) (definitionLibrary.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
 		defineAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -505,7 +394,6 @@ public class CQLLeftNavBarPanelView {
 
 		functionBadge.setText("" + viewFunctions.size());
 		Anchor funcAnchor = (Anchor) (functionLibrary.getWidget(0));
-		// Double Click causing issues.So Event is not propogated
 		funcAnchor.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
@@ -535,7 +423,6 @@ public class CQLLeftNavBarPanelView {
 	
 
 	private PanelCollapse createIncludesCollapsablePanel() {
-
 		includesCollapse.setId("collapseIncludes");
 
 		PanelBody includesCollapseBody = new PanelBody();
@@ -592,11 +479,6 @@ public class CQLLeftNavBarPanelView {
 		searchSuggestParamTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestParamTextBox));
 	}
 
-	/**
-	 * Creates the parameter collapsable panel.
-	 *
-	 * @return the panel collapse
-	 */
 	private PanelCollapse createParameterCollapsablePanel() {
 		paramCollapse.setId("collapseParameter");
 
@@ -635,11 +517,6 @@ public class CQLLeftNavBarPanelView {
 
 	}
 
-	/**
-	 * Creates the define collapsable panel.
-	 *
-	 * @return the panel collapse
-	 */
 	private PanelCollapse createDefineCollapsablePanel() {
 		PanelCollapse defineCollapsePanel = new PanelCollapse();
 		defineCollapsePanel.setId("collapseDefine");
@@ -711,11 +588,6 @@ public class CQLLeftNavBarPanelView {
 		searchSuggestFuncTextBox.getValueBox().addClickHandler(createClickHandler(searchSuggestFuncTextBox));
 	}
 
-	/**
-	 * Creates the Function collapsable panel.
-	 *
-	 * @return the panel collapse
-	 */
 	private PanelCollapse createFunctionCollapsablePanel() {
 		PanelCollapse funcCollapsePanel = new PanelCollapse();
 		funcCollapsePanel.setId("collapseFunction");
@@ -755,19 +627,11 @@ public class CQLLeftNavBarPanelView {
 	}	
 	
 	
-	/**
-	 * Gets the suggest oracle.
-	 *
-	 * @param values the values
-	 * @return the suggest oracle
-	 */
 	private SuggestOracle getSuggestOracle(Collection<String> values) {
 		return new CQLSuggestOracle(values);
 	}
 	
-	/**
-	 * Clear and add alias names to list box.
-	 */
+
 	public void clearAndAddAliasNamesToListBox() {
 		if (includesNameListbox != null) {
 			includesNameListbox.clear();
@@ -775,7 +639,7 @@ public class CQLLeftNavBarPanelView {
 			for (CQLIncludeLibrary incl : viewIncludeLibrarys) {
 				includesNameListbox.addItem(incl.getAliasName(), incl.getId());
 			}
-			// Set tooltips for each element in listbox
+
 			SelectElement selectElement = SelectElement.as(includesNameListbox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
@@ -786,12 +650,7 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Sort alias list.
-	 *
-	 * @param viewAliasList the view alias list
-	 * @return the list
-	 */
+
 	private List<CQLIncludeLibrary> sortAliasList(List<CQLIncludeLibrary> viewAliasList) {
 		Collections.sort(viewAliasList, new Comparator<CQLIncludeLibrary>() {
 			@Override
@@ -802,15 +661,6 @@ public class CQLLeftNavBarPanelView {
 		return viewAliasList;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * clearAndAddDefinitionNamesToListBox()
-	 */
-	/**
-	 * Clear and add definition names to list box.
-	 */
 	public void clearAndAddDefinitionNamesToListBox() {
 		if (defineNameListBox != null) {
 			defineNameListBox.clear();
@@ -818,7 +668,7 @@ public class CQLLeftNavBarPanelView {
 			for (CQLDefinition define : viewDefinitions) {
 				defineNameListBox.addItem(define.getName(), define.getId());
 			}
-			// Set tooltips for each element in listbox
+
 			SelectElement selectElement = SelectElement.as(defineNameListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
@@ -829,12 +679,7 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Sort definition names.
-	 *
-	 * @param viewDef the view def
-	 * @return the list
-	 */
+
 	private List<CQLDefinition> sortDefinitionNames(List<CQLDefinition> viewDef) {
 		Collections.sort(viewDef, new Comparator<CQLDefinition>() {
 			@Override
@@ -845,9 +690,7 @@ public class CQLLeftNavBarPanelView {
 		return viewDef;
 	}
 
-	/**
-	 * Clear and add functions names to list box.
-	 */
+
 	public void clearAndAddFunctionsNamesToListBox() {
 		if (funcNameListBox != null) {
 			funcNameListBox.clear();
@@ -856,7 +699,7 @@ public class CQLLeftNavBarPanelView {
 			for (CQLFunctions func : viewFunctions) {
 				funcNameListBox.addItem(func.getName(), func.getId());
 			}
-			// Set tooltips for each element in listbox
+
 			SelectElement selectElement = SelectElement.as(funcNameListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
@@ -867,12 +710,7 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Sort function names.
-	 *
-	 * @param viewFunc the view func
-	 * @return the list
-	 */
+
 	private List<CQLFunctions> sortFunctionNames(List<CQLFunctions> viewFunc) {
 		Collections.sort(viewFunc, new Comparator<CQLFunctions>() {
 			@Override
@@ -884,15 +722,6 @@ public class CQLLeftNavBarPanelView {
 	}
 
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * clearAndAddParameterNamesToListBox()
-	 */
-	/**
-	 * Clear and add parameter names to list box.
-	 */
 	public void clearAndAddParameterNamesToListBox() {
 		if (parameterNameListBox != null) {
 			parameterNameListBox.clear();
@@ -900,7 +729,7 @@ public class CQLLeftNavBarPanelView {
 			for (CQLParameter param : viewParameterList) {
 				parameterNameListBox.addItem(param.getName(), param.getId());
 			}
-			// Set tooltips for each element in listbox
+
 			SelectElement selectElement = SelectElement.as(parameterNameListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
@@ -911,12 +740,7 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Sort param list.
-	 *
-	 * @param viewParamList the view param list
-	 * @return the list
-	 */
+
 	private List<CQLParameter> sortParamList(List<CQLParameter> viewParamList) {
 		Collections.sort(viewParamList, new Comparator<CQLParameter>() {
 			@Override
@@ -927,14 +751,7 @@ public class CQLLeftNavBarPanelView {
 		return viewParamList;
 	}
 	
-	/**
-	 * Add Suggest Handler.
-	 * 
-	 * @param suggestBox
-	 *            - {@link SuggestBox}
-	 * @param listBox
-	 *            - {@link ListBox}
-	 */
+
 	private void addSuggestHandler(final SuggestBox suggestBox, final ListBox listBox) {
 		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
 
@@ -952,14 +769,7 @@ public class CQLLeftNavBarPanelView {
 		});
 	}
 	
-	/**
-	 * Add Handler to ListBox.
-	 * 
-	 * @param listBox
-	 *            -ListBox
-	 * @param suggestBox
-	 *            - {@link SuggestBox}
-	 */
+
 	private void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox) {
 		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
@@ -973,10 +783,7 @@ public class CQLLeftNavBarPanelView {
 
 	}
 	
-	/**
-	 * Update valueset values.
-	 * @param appliedValueSetTableList 
-	 */
+
 	public void updateValueSetMap(List<CQLQualityDataSetDTO> appliedValueSetTableList) {
 		if (getAppliedQdmTableList().size() < 10) {
 			getValueSetBadge().setText("0" + appliedValueSetTableList.size());
@@ -987,10 +794,7 @@ public class CQLLeftNavBarPanelView {
 	}
 	
 	
-	/**
-	 * Update valueset values.
-	 * @param appliedValueSetTableList 
-	 */
+
 	public void setCodeBadgeValue(List<CQLCode> appliedCodeTableList) {
 		if (appliedCodeTableList.size() < 10) {
 			getCodesBadge().setText("0" + appliedCodeTableList.size());
@@ -1001,14 +805,7 @@ public class CQLLeftNavBarPanelView {
 	}
 	
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateParamMap()
-	 */
-	/**
-	 * Update param map.
-	 */
+
 	public void updateParamMap() {
 		getParameterMap().clear();
 		getParameterNameMap().clear();
@@ -1026,15 +823,7 @@ public class CQLLeftNavBarPanelView {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#updateDefineMap()
-	 */
-	/**
-	 * Update define map.
-	 */
+
 	public void updateDefineMap() {
 		getDefinitionMap().clear();
 		getDefineNameMap().clear();
@@ -1052,15 +841,6 @@ public class CQLLeftNavBarPanelView {
 
 	}
 
-	/**
-	 * Update function map.
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.cqlworkspace.CQLWorkSpacePresenter.ViewDisplay#
-	 * updateFunctionMap()
-	 */
 	public void updateFunctionMap() {
 		functionMap.clear();
 		funcNameMap.clear();
@@ -1076,9 +856,6 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Udpate include library map.
-	 */
 	public void udpateIncludeLibraryMap() {
 		includeLibraryMap.clear();
 		includeLibraryNameMap.clear();
@@ -1096,9 +873,6 @@ public class CQLLeftNavBarPanelView {
 
 	}
 	
-	/**
-	 * Update suggest oracle.
-	 */
 	public void updateSuggestOracle() {
 		if (searchSuggestParamTextBox != null) {
 			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestParamTextBox
@@ -1108,15 +882,7 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.clause.CQLWorkSpacePresenter.ViewDisplay#
-	 * updateSuggestDefineOracle()
-	 */
-	/**
-	 * Update suggest define oracle.
-	 */
+
 	public void updateSuggestDefineOracle() {
 		if (searchSuggestDefineTextBox != null) {
 			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestDefineTextBox
@@ -1126,9 +892,7 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Update suggest func oracle.
-	 */
+
 	public void updateSuggestFuncOracle() {
 		if (searchSuggestFuncTextBox != null) {
 			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestFuncTextBox
@@ -1138,101 +902,42 @@ public class CQLLeftNavBarPanelView {
 		}
 	}
 
-	/**
-	 * Gets the define name map.
-	 *
-	 * @return the define name map
-	 */
 	public Map<String, String> getDefineNameMap() {
 		return defineNameMap;
 	}
 
-
-	/**
-	 * Sets the define name map.
-	 *
-	 * @param defineNameMap the define name map
-	 */
 	public void setDefineNameMap(Map<String, String> defineNameMap) {
 		this.defineNameMap = defineNameMap;
 	}
 
-
-	/**
-	 * Gets the func name map.
-	 *
-	 * @return the func name map
-	 */
 	public Map<String, String> getFuncNameMap() {
 		return funcNameMap;
 	}
 
-
-	/**
-	 * Sets the func name map.
-	 *
-	 * @param funcNameMap the func name map
-	 */
 	public void setFuncNameMap(Map<String, String> funcNameMap) {
 		this.funcNameMap = funcNameMap;
 	}
 
-
-	/**
-	 * Gets the include library name map.
-	 *
-	 * @return the include library name map
-	 */
 	public Map<String, String> getIncludeLibraryNameMap() {
 		return includeLibraryNameMap;
 	}
 
-
-	/**
-	 * Sets the include library name map.
-	 *
-	 * @param includeLibraryNameMap the include library name map
-	 */
 	public void setIncludeLibraryNameMap(Map<String, String> includeLibraryNameMap) {
 		this.includeLibraryNameMap = includeLibraryNameMap;
 	}
 
-
-	/**
-	 * Gets the definition map.
-	 *
-	 * @return the definition map
-	 */
 	public HashMap<String, CQLDefinition> getDefinitionMap() {
 		return definitionMap;
 	}
 
-
-	/**
-	 * Sets the definition map.
-	 *
-	 * @param definitionMap the definition map
-	 */
 	public void setDefinitionMap(HashMap<String, CQLDefinition> definitionMap) {
 		this.definitionMap = definitionMap;
 	}
 
-
-	/**
-	 * Gets the function map.
-	 *
-	 * @return the function map
-	 */
 	public HashMap<String, CQLFunctions> getFunctionMap() {
 		return functionMap;
 	}
 
-
-	/**
-	 * Sets the function map.
-	 *
-	 * @param functionMap the function map
-	 */
 	public void setFunctionMap(HashMap<String, CQLFunctions> functionMap) {
 		this.functionMap = functionMap;
 	}
@@ -1241,42 +946,19 @@ public class CQLLeftNavBarPanelView {
 		return anchor;
 	}
 
-
-	/**
-	 * Gets the include library map.
-	 *
-	 * @return the include library map
-	 */
 	public HashMap<String, CQLIncludeLibrary> getIncludeLibraryMap() {
 		return includeLibraryMap;
 	}
 
-
-	/**
-	 * Sets the include library map.
-	 *
-	 * @param includeLibraryMap the include library map
-	 */
 	public void setIncludeLibraryMap(HashMap<String, CQLIncludeLibrary> includeLibraryMap) {
 		this.includeLibraryMap = includeLibraryMap;
 	}
 
 
-	/**
-	 * Gets the parameter name map.
-	 *
-	 * @return the parameter name map
-	 */
 	public Map<String, String> getParameterNameMap() {
 		return parameterNameMap;
 	}
 
-
-	/**
-	 * Sets the parameter name map.
-	 *
-	 * @param parameterNameMap the parameter name map
-	 */
 	public void setParameterNameMap(Map<String, String> parameterNameMap) {
 		this.parameterNameMap = parameterNameMap;
 	}
@@ -1289,695 +971,251 @@ public class CQLLeftNavBarPanelView {
 		this.parameterMap = parameterMap;
 	}
 
-
-	/**
-	 * Gets the view include librarys.
-	 *
-	 * @return the view include librarys
-	 */
 	public List<CQLIncludeLibrary> getViewIncludeLibrarys() {
 		return viewIncludeLibrarys;
 	}
 
-
-	/**
-	 * Sets the view include librarys.
-	 *
-	 * @param viewIncludeLibrarys the new view include librarys
-	 */
 	public void setViewIncludeLibrarys(List<CQLIncludeLibrary> viewIncludeLibrarys) {
 		this.viewIncludeLibrarys = viewIncludeLibrarys;
 	}
 
-
-	/**
-	 * Gets the view parameter list.
-	 *
-	 * @return the view parameter list
-	 */
 	public List<CQLParameter> getViewParameterList() {
 		return viewParameterList;
 	}
 
-
-	/**
-	 * Sets the view parameter list.
-	 *
-	 * @param viewParameterList the new view parameter list
-	 */
 	public void setViewParameterList(List<CQLParameter> viewParameterList) {
 		this.viewParameterList = viewParameterList;
 	}
 
-
-	/**
-	 * Gets the view definitions.
-	 *
-	 * @return the view definitions
-	 */
 	public List<CQLDefinition> getViewDefinitions() {
 		return viewDefinitions;
 	}
 
-
-	/**
-	 * Sets the view definitions.
-	 *
-	 * @param viewDefinitions the new view definitions
-	 */
 	public void setViewDefinitions(List<CQLDefinition> viewDefinitions) {
 		this.viewDefinitions = viewDefinitions;
 	}
 
-
-	/**
-	 * Gets the view functions.
-	 *
-	 * @return the view functions
-	 */
 	public List<CQLFunctions> getViewFunctions() {
 		return viewFunctions;
 	}
 
-
-	/**
-	 * Sets the view functions.
-	 *
-	 * @param viewFunctions the new view functions
-	 */
 	public void setViewFunctions(List<CQLFunctions> viewFunctions) {
 		this.viewFunctions = viewFunctions;
 	}
 
-
-	/**
-	 * @return the valueSetBadge
-	 */
 	public Badge getValueSetBadge() {
 		return valueSetBadge;
 	}
 
-
-	/**
-	 * @param valueSetBadge the valueSetBadge to set
-	 */
 	public void setValueSetBadge(Badge valueSetBadge) {
 		this.valueSetBadge = valueSetBadge;
 	}
 
-
-	/**
-	 * @return the codesBadge
-	 */
 	public Badge getCodesBadge() {
 		return codesBadge;
 	}
 
-
-	/**
-	 * @param codesBadge the codesBadge to set
-	 */
 	public void setCodesBadge(Badge codesBadge) {
 		this.codesBadge = codesBadge;
 	}
 
-
-	/**
-	 * Gets the includes badge.
-	 *
-	 * @return the includes badge
-	 */
 	public Badge getIncludesBadge() {
 		return includesBadge;
 	}
 
-
-	/**
-	 * Sets the includes badge.
-	 *
-	 * @param includesBadge the new includes badge
-	 */
 	public void setIncludesBadge(Badge includesBadge) {
 		this.includesBadge = includesBadge;
 	}
 
-
-	/**
-	 * Gets the param badge.
-	 *
-	 * @return the param badge
-	 */
 	public Badge getParamBadge() {
 		return paramBadge;
 	}
 
-
-	/**
-	 * Sets the param badge.
-	 *
-	 * @param paramBadge the new param badge
-	 */
 	public void setParamBadge(Badge paramBadge) {
 		this.paramBadge = paramBadge;
 	}
 
-
-	/**
-	 * Gets the define badge.
-	 *
-	 * @return the define badge
-	 */
 	public Badge getDefineBadge() {
 		return defineBadge;
 	}
 
-
-	/**
-	 * Sets the define badge.
-	 *
-	 * @param defineBadge the new define badge
-	 */
 	public void setDefineBadge(Badge defineBadge) {
 		this.defineBadge = defineBadge;
 	}
 
-
-	/**
-	 * Gets the function badge.
-	 *
-	 * @return the function badge
-	 */
 	public Badge getFunctionBadge() {
 		return functionBadge;
 	}
 
-
-	/**
-	 * Sets the function badge.
-	 *
-	 * @param functionBadge the new function badge
-	 */
 	public void setFunctionBadge(Badge functionBadge) {
 		this.functionBadge = functionBadge;
 	}
 
 
-	/**
-	 * Gets the right hand nav panel.
-	 *
-	 * @return the right hand nav panel
-	 */
 	public VerticalPanel getRightHandNavPanel() {
 		return rightHandNavPanel;
 	}
 
-
-	/**
-	 * Gets the includes name listbox.
-	 *
-	 * @return the includes name listbox
-	 */
 	public ListBox getIncludesNameListbox() {
 		return includesNameListbox;
 	}
 
-
-	/**
-	 * Sets the includes name listbox.
-	 *
-	 * @param includesNameListbox the new includes name listbox
-	 */
 	public void setIncludesNameListbox(ListBox includesNameListbox) {
 		this.includesNameListbox = includesNameListbox;
 	}
 
-
-	/**
-	 * Gets the define name list box.
-	 *
-	 * @return the define name list box
-	 */
 	public ListBox getDefineNameListBox() {
 		return defineNameListBox;
 	}
 
-
-	/**
-	 * Sets the define name list box.
-	 *
-	 * @param defineNameListBox the new define name list box
-	 */
 	public void setDefineNameListBox(ListBox defineNameListBox) {
 		this.defineNameListBox = defineNameListBox;
 	}
 
-
-	/**
-	 * Gets the func name list box.
-	 *
-	 * @return the func name list box
-	 */
 	public ListBox getFuncNameListBox() {
 		return funcNameListBox;
 	}
 
-
-	/**
-	 * Sets the func name list box.
-	 *
-	 * @param funcNameListBox the new func name list box
-	 */
 	public void setFuncNameListBox(ListBox funcNameListBox) {
 		this.funcNameListBox = funcNameListBox;
 	}
 
-
-	/**
-	 * Gets the parameter name list box.
-	 *
-	 * @return the parameter name list box
-	 */
 	public ListBox getParameterNameListBox() {
 		return parameterNameListBox;
 	}
 
-
-	/**
-	 * Sets the parameter name list box.
-	 *
-	 * @param parameterNameListBox the new parameter name list box
-	 */
 	public void setParameterNameListBox(ListBox parameterNameListBox) {
 		this.parameterNameListBox = parameterNameListBox;
 	}
 
-
-	/**
-	 * Gets the general information.
-	 *
-	 * @return the general information
-	 */
 	public AnchorListItem getGeneralInformation() {
 		return generalInformation;
 	}
 
-
-	/**
-	 * Sets the general information.
-	 *
-	 * @param generalInformation the new general information
-	 */
 	public void setGeneralInformation(AnchorListItem generalInformation) {
 		this.generalInformation = generalInformation;
 	}
 
-
-	/**
-	 * Gets the includes library.
-	 *
-	 * @return the includes library
-	 */
 	public AnchorListItem getIncludesLibrary() {
 		return includesLibrary;
 	}
 
-
-	/**
-	 * Sets the includes library.
-	 *
-	 * @param includesLibrary the new includes library
-	 */
 	public void setIncludesLibrary(AnchorListItem includesLibrary) {
 		this.includesLibrary = includesLibrary;
 	}
 
-
-	/**
-	 * Gets the parameter library.
-	 *
-	 * @return the parameter library
-	 */
 	public AnchorListItem getParameterLibrary() {
 		return parameterLibrary;
 	}
 
-
-	/**
-	 * Sets the parameter library.
-	 *
-	 * @param parameterLibrary the new parameter library
-	 */
 	public void setParameterLibrary(AnchorListItem parameterLibrary) {
 		this.parameterLibrary = parameterLibrary;
 	}
 
-
-	/**
-	 * Gets the definition library.
-	 *
-	 * @return the definition library
-	 */
 	public AnchorListItem getDefinitionLibrary() {
 		return definitionLibrary;
 	}
 
-
-	/**
-	 * Sets the definition library.
-	 *
-	 * @param definitionLibrary the new definition library
-	 */
 	public void setDefinitionLibrary(AnchorListItem definitionLibrary) {
 		this.definitionLibrary = definitionLibrary;
 	}
 
-
-	/**
-	 * Gets the function library.
-	 *
-	 * @return the function library
-	 */
 	public AnchorListItem getFunctionLibrary() {
 		return functionLibrary;
 	}
 
-
-	/**
-	 * Sets the function library.
-	 *
-	 * @param functionLibrary the new function library
-	 */
 	public void setFunctionLibrary(AnchorListItem functionLibrary) {
 		this.functionLibrary = functionLibrary;
 	}
 
-
-	/**
-	 * Gets the view CQL.
-	 *
-	 * @return the view CQL
-	 */
 	public AnchorListItem getViewCQL() {
 		return viewCQL;
 	}
 
-
-	/**
-	 * Sets the view CQL.
-	 *
-	 * @param viewCQL the new view CQL
-	 */
 	public void setViewCQL(AnchorListItem viewCQL) {
 		this.viewCQL = viewCQL;
 	}
 
-
-	/**
-	 * Gets the applied qdm list.
-	 *
-	 * @return the applied qdm list
-	 *//*
-	public List<CQLQualityDataSetDTO> getAppliedQdmList() {
-		return appliedQdmList;
-	}
-
-
-	*//**
-	 * Sets the applied qdm list.
-	 *
-	 * @param appliedQdmList the new applied qdm list
-	 *//*
-	public void setAppliedQdmList(List<CQLQualityDataSetDTO> appliedQdmList) {
-		this.appliedQdmList = appliedQdmList;
-	}*/
-
-
-	/**
-	 * Gets the applied qdm table list.
-	 *
-	 * @return the applied qdm table list
-	 */
 	public List<CQLQualityDataSetDTO> getAppliedQdmTableList() {
 		return appliedQdmTableList;
 	}
 
-
-	/**
-	 * Sets the applied qdm table list.
-	 *
-	 * @param appliedQdmTableList the new applied qdm table list
-	 */
 	public void setAppliedQdmTableList(List<CQLQualityDataSetDTO> appliedQdmTableList) {
 		this.appliedQdmTableList = appliedQdmTableList;
 	}
 
-
-	/**
-	 * Gets the include library list.
-	 *
-	 * @return the include library list
-	 */
 	public List<CQLLibraryDataSetObject> getIncludeLibraryList() {
 		return includeLibraryList;
 	}
 
-
-	/**
-	 * Sets the include library list.
-	 *
-	 * @param includeLibraryList the new include library list
-	 */
 	public void setIncludeLibraryList(List<CQLLibraryDataSetObject> includeLibraryList) {
 		this.includeLibraryList = includeLibraryList;
 	}
 
-
-	/**
-	 * Gets the applied QDM.
-	 *
-	 * @return the applied QDM
-	 */
 	public AnchorListItem getAppliedQDM() {
 		return appliedQDM;
 	}
 
-
-	/**
-	 * Sets the applied QDM.
-	 *
-	 * @param appliedQDM the new applied QDM
-	 */
 	public void setAppliedQDM(AnchorListItem appliedQDM) {
 		this.appliedQDM = appliedQDM;
 	}
 
-
-	/**
-	 * @return the codesLibrary
-	 */
 	public AnchorListItem getCodesLibrary() {
 		return codesLibrary;
 	}
 
-
-	/**
-	 * @param codesLibrary the codesLibrary to set
-	 */
 	public void setCodesLibrary(AnchorListItem codesLibrary) {
 		this.codesLibrary = codesLibrary;
 	}
 
-
-	/**
-	 * Gets the param collapse.
-	 *
-	 * @return the param collapse
-	 */
 	public PanelCollapse getParamCollapse() {
 		return paramCollapse;
 	}
 
-
-	/**
-	 * Gets the define collapse.
-	 *
-	 * @return the define collapse
-	 */
 	public PanelCollapse getDefineCollapse() {
 		return defineCollapse;
 	}
 
-
-	/**
-	 * Gets the function collapse.
-	 *
-	 * @return the function collapse
-	 */
 	public PanelCollapse getFunctionCollapse() {
 		return functionCollapse;
 	}
 
-
-	/**
-	 * Gets the includes collapse.
-	 *
-	 * @return the includes collapse
-	 */
 	public PanelCollapse getIncludesCollapse() {
 		return includesCollapse;
 	}
 
-	
-	/**
-	 * Gets the search suggest define text box.
-	 *
-	 * @return the search suggest define text box
-	 */
 	public SuggestBox getSearchSuggestDefineTextBox() {
 		return searchSuggestDefineTextBox;
 	}
 
-
-	/**
-	 * Sets the search suggest define text box.
-	 *
-	 * @param searchSuggestDefineTextBox the new search suggest define text box
-	 */
 	public void setSearchSuggestDefineTextBox(SuggestBox searchSuggestDefineTextBox) {
 		this.searchSuggestDefineTextBox = searchSuggestDefineTextBox;
 	}
 
-
-	/**
-	 * Gets the search suggest include text box.
-	 *
-	 * @return the search suggest include text box
-	 */
 	public SuggestBox getSearchSuggestIncludeTextBox() {
 		return searchSuggestIncludeTextBox;
 	}
 
-
-	/**
-	 * Sets the search suggest include text box.
-	 *
-	 * @param searchSuggestIncludeTextBox the new search suggest include text box
-	 */
 	public void setSearchSuggestIncludeTextBox(SuggestBox searchSuggestIncludeTextBox) {
 		this.searchSuggestIncludeTextBox = searchSuggestIncludeTextBox;
 	}
 
-
-	/**
-	 * Gets the search suggest func text box.
-	 *
-	 * @return the search suggest func text box
-	 */
 	public SuggestBox getSearchSuggestFuncTextBox() {
 		return searchSuggestFuncTextBox;
 	}
 
-
-	/**
-	 * Sets the search suggest func text box.
-	 *
-	 * @param searchSuggestFuncTextBox the new search suggest func text box
-	 */
 	public void setSearchSuggestFuncTextBox(SuggestBox searchSuggestFuncTextBox) {
 		this.searchSuggestFuncTextBox = searchSuggestFuncTextBox;
 	}
 
-
-	/**
-	 * Gets the search suggest param text box.
-	 *
-	 * @return the search suggest param text box
-	 */
 	public SuggestBox getSearchSuggestParamTextBox() {
 		return searchSuggestParamTextBox;
 	}
 
-
-	/**
-	 * Sets the search suggest param text box.
-	 *
-	 * @param searchSuggestParamTextBox the new search suggest param text box
-	 */
 	public void setSearchSuggestParamTextBox(SuggestBox searchSuggestParamTextBox) {
 		this.searchSuggestParamTextBox = searchSuggestParamTextBox;
 	}
 
-
-	/**
-	 * Gets the message panel.
-	 *
-	 * @return the message panel
-	 */
-	public VerticalPanel getMessagePanel() {
-		return messagePanel;
-	}
-
-
-	/**
-	 * Sets the message panel.
-	 *
-	 * @param messagePanel the new message panel
-	 */
-	public void setMessagePanel(VerticalPanel messagePanel) {
-		this.messagePanel = messagePanel;
-	}
-
-
-	/**
-	 * Gets the delete confirmation dialog box.
-	 *
-	 * @return the delete confirmation dialog box
-	 */
-	public DeleteConfirmationDialogBox getDeleteConfirmationDialogBox() {
-		return deleteConfirmationDialogBox;
-	}
-
-
-	/**
-	 * Sets the delete confirmation dialog box.
-	 *
-	 * @param deleteConfirmationDialogBox the new delete confirmation dialog box
-	 */
-	public void setDeleteConfirmationDialogBox(DeleteConfirmationDialogBox deleteConfirmationDialogBox) {
-		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
-	}
-
-
-	/**
-	 * Gets the success message alert.
-	 *
-	 * @return the success message alert
-	 */
-	public MessageAlert getSuccessMessageAlert() {
-		return successMessageAlert;
-	}
-
-
-	/**
-	 * Gets the warning message alert.
-	 *
-	 * @return the warning message alert
-	 */
-	public MessageAlert getWarningMessageAlert() {
-		return warningMessageAlert;
-	}
-
-	public MessageAlert getErrorMessageAlert() {
-		return errorMessageAlert;
-	}
-
-	public WarningConfirmationMessageAlert getWarningConfirmationMessageAlert() {
-		return warningConfirmationMessageAlert;
-	}
-
-	public WarningConfirmationMessageAlert getGlobalWarningConfirmationMessageAlert() {
-		return globalWarningConfirmationMessageAlert;
-	}
 
 	public String getCurrentSelectedDefinitionObjId() {
 		return currentSelectedDefinitionObjId;
@@ -1993,10 +1231,6 @@ public class CQLLeftNavBarPanelView {
 
 	public void setCurrentSelectedParamerterObjId(String currentSelectedParamerterObjId) {
 		this.currentSelectedParamerterObjId = currentSelectedParamerterObjId;
-	}
-
-	public void setIsPageDirty(Boolean isPageDirty) {
-		this.isPageDirty = isPageDirty;
 	}
 	
 	public void setIsDoubleClick(Boolean isDoubleClick) {
@@ -2014,143 +1248,45 @@ public class CQLLeftNavBarPanelView {
 	public Boolean isNavBarClick() {
 		return isNavBarClick;
 	}
-
-	public Boolean getIsPageDirty() {
-		return isPageDirty;
-	}
-
-	public void showUnsavedChangesWarning() {
-		getWarningMessageAlert().clearAlert();
-		getErrorMessageAlert().clearAlert();
-		getSuccessMessageAlert().clearAlert();
-		getGlobalWarningConfirmationMessageAlert().clearAlert();
-		getWarningConfirmationMessageAlert().createAlert();
-		getWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
-	}
-
-	public void showGlobalUnsavedChangesWarning() {
-		getWarningMessageAlert().clearAlert();
-		getErrorMessageAlert().clearAlert();
-		getSuccessMessageAlert().clearAlert();
-		getWarningConfirmationMessageAlert().clearAlert();
-		getGlobalWarningConfirmationMessageAlert().createAlert();
-		getGlobalWarningConfirmationMessageAlert().getWarningConfirmationYesButton().setFocus(true);
-	}
-
 	
-	/**
-	 * Show delete confirmation message alert.
-	 *
-	 * @param message the message
-	 */
-	public void showDeleteConfirmationMessageAlert(String message) {
-		getWarningMessageAlert().clearAlert();
-		getErrorMessageAlert().clearAlert();
-		getSuccessMessageAlert().clearAlert();
-		getWarningConfirmationMessageAlert().clearAlert();
-	}
-	
-	
-	/**
-	 * Gets the owner name.
-	 *
-	 * @param cqlLibrary the cql library
-	 * @return the owner name
-	 */
 	public String getOwnerName(CQLLibraryDataSetObject cqlLibrary) {
 		StringBuilder owner = new StringBuilder();
 		owner = owner.append(cqlLibrary.getOwnerFirstName()).append(" ").append(cqlLibrary.getOwnerLastName());
 		return owner.toString();
 	}
 
-	/**
-	 * Gets the current selected function obj id.
-	 *
-	 * @return the current selected function obj id
-	 */
 	public String getCurrentSelectedFunctionObjId() {
 		return currentSelectedFunctionObjId;
 	}
 
-
-	/**
-	 * Sets the current selected function obj id.
-	 *
-	 * @param currentSelectedFunctionObjId the new current selected function obj id
-	 */
 	public void setCurrentSelectedFunctionObjId(String currentSelectedFunctionObjId) {
 		this.currentSelectedFunctionObjId = currentSelectedFunctionObjId;
 	}
 
-
-	/**
-	 * @return the currentSelectedFunctionArgumentObjId
-	 */
 	public String getCurrentSelectedFunctionArgumentObjId() {
 		return currentSelectedFunctionArgumentObjId;
 	}
 
-
-	/**
-	 * @param currentSelectedFunctionArgumentObjId the currentSelectedFunctionArgumentObjId to set
-	 */
 	public void setCurrentSelectedFunctionArgumentObjId(String currentSelectedFunctionArgumentObjId) {
 		this.currentSelectedFunctionArgumentObjId = currentSelectedFunctionArgumentObjId;
 	}
 
-
-	/**
-	 * @return the currentSelectedFunctionArgumentName
-	 */
 	public String getCurrentSelectedFunctionArgumentName() {
 		return currentSelectedFunctionArgumentName;
 	}
 
-
-	/**
-	 * @param currentSelectedFunctionArgumentName the currentSelectedFunctionArgumentName to set
-	 */
 	public void setCurrentSelectedFunctionArgumentName(String currentSelectedFunctionArgumentName) {
 		this.currentSelectedFunctionArgumentName = currentSelectedFunctionArgumentName;
 	}
-
-
-	/**
-	 * Gets the current selected inc library obj id.
-	 *
-	 * @return the current selected inc library obj id
-	 */
+	
 	public String getCurrentSelectedIncLibraryObjId() {
 		return currentSelectedIncLibraryObjId;
 	}
 
-
-	/**
-	 * Sets the current selected inc library obj id.
-	 *
-	 * @param currentSelectedIncLibraryObjId the new current selected inc library obj id
-	 */
 	public void setCurrentSelectedIncLibraryObjId(String currentSelectedIncLibraryObjId) {
 		this.currentSelectedIncLibraryObjId = currentSelectedIncLibraryObjId;
 	}
 
-
-	/**
-	 * Sets the warning message alert.
-	 *
-	 * @param warningMessageAlert the new warning message alert
-	 */
-	public void setWarningMessageAlert(MessageAlert warningMessageAlert) {
-		this.warningMessageAlert = warningMessageAlert;
-	}
-
-	
-	/**
-	 * Gets the included list.
-	 *
-	 * @param includeMap the include map
-	 * @return the included list
-	 */
 	public List<String> getIncludedList(Map<String, CQLIncludeLibrary> includeMap) {
 		List<String> list = new ArrayList<String>();
 		for (Map.Entry<String, CQLIncludeLibrary> entry : includeMap.entrySet()) {
@@ -2158,76 +1294,11 @@ public class CQLLeftNavBarPanelView {
 		}
 		return list;
 	}
-	
-	/**
-	 * Gets the warning confirmation yes button.
-	 *
-	 * @return the warning confirmation yes button
-	 */
-	public Button getWarningConfirmationYesButton() {
-		return warningConfirmationMessageAlert.getWarningConfirmationYesButton();
-	}
-	
-	/**
-	 * Gets the warning confirmation no button.
-	 *
-	 * @return the warning confirmation no button
-	 */
-	public Button getWarningConfirmationNoButton() {
-		return warningConfirmationMessageAlert.getWarningConfirmationNoButton();
-	}
 
-	/**
-	 * Gets the global warning confirmation yes button.
-	 *
-	 * @return the global warning confirmation yes button
-	 */
-	public Button getGlobalWarningConfirmationYesButton() {
-		return globalWarningConfirmationMessageAlert.getWarningConfirmationYesButton();
-	}
-
-	/**
-	 * Gets the global warning confirmation no button.
-	 *
-	 * @return the global warning confirmation no button
-	 */
-	public Button getGlobalWarningConfirmationNoButton() {
-		return globalWarningConfirmationMessageAlert.getWarningConfirmationNoButton();
-	}
-
-	/**
-	 * Gets the delete confirmation dialog box yes button.
-	 *
-	 * @return the delete confirmation dialog box yes button
-	 */
-	public Button getDeleteConfirmationDialogBoxYesButton() {
-		return deleteConfirmationDialogBox.getYesButton();
-	}
-
-	/**
-	 * Gets the delete confirmation dialog box no button.
-	 *
-	 * @return the delete confirmation dialog box no button
-	 */
-	public Button getDeleteConfirmationDialogBoxNoButton() {
-		return deleteConfirmationDialogBox.getNoButton();
-	}
-
-
-	/**
-	 * Sets the available QDS attribute list.
-	 *
-	 * @param result the new available QDS attribute list
-	 */
 	public void setAvailableQDSAttributeList(List<QDSAttributes> result) {
 		availableQDSAttributeList = result;
 	}
-	
-	/**
-	 * Gets the available QDS attribute list.
-	 *
-	 * @return the available QDS attribute list
-	 */
+
 	public List<QDSAttributes> getAvailableQDSAttributeList(){
 		return availableQDSAttributeList;
 	}
@@ -2304,63 +1375,28 @@ public class CQLLeftNavBarPanelView {
 		this.appliedCodeTableList = appliedCodeTableList;
 	}
 
-
-	/**
-	 * @return the currentSelectedCodesObjId
-	 */
 	public String getCurrentSelectedCodesObjId() {
 		return currentSelectedCodesObjId;
 	}
 
-
-	/**
-	 * @param currentSelectedCodesObjId the currentSelectedCodesObjId to set
-	 */
 	public void setCurrentSelectedCodesObjId(String currentSelectedCodesObjId) {
 		this.currentSelectedCodesObjId = currentSelectedCodesObjId;
 	}
 
-
-	/**
-	 * @return the currentSelectedValueSetObjId
-	 */
 	public String getCurrentSelectedValueSetObjId() {
 		return currentSelectedValueSetObjId;
 	}
 
-
-	/**
-	 * @param currentSelectedValueSetObjId the currentSelectedValueSetObjId to set
-	 */
 	public void setCurrentSelectedValueSetObjId(String currentSelectedValueSetObjId) {
 		this.currentSelectedValueSetObjId = currentSelectedValueSetObjId;
 	}
 	
-	public void setFocus(MatTextBox matTextBox){
-		matTextBox.setFocus(true);
-	}
-	
-	public void setFocus(AceEditor aceEditor){
-		aceEditor.focus();
-	}
-	
-	public void setFocus(FocusPanel focusPanel){
-		focusPanel.setFocus(true);
-	}
-
-	public void setFocus(TextBox aliasNameTxtArea) {
-		aliasNameTxtArea.setFocus(true);
-	}
-	
 	public boolean checkForIncludedLibrariesQDMVersion(boolean isStandAloneCQLLibrary){
 		boolean isValid = true;
-		//if it is a measure we check if the measure is a Draft first because we only care about draft measures for invalid qdm versions.
-		//Versioned measures have been versioned with valid QDM versioned libraries included. So we return if the measure is not a draft
 		if(!isStandAloneCQLLibrary && !MatContext.get().isDraftMeasure()) {
 			return isValid;
 		}
-		//if it is a stand alone library We check if the library is a Draft first because we only care about draft library for invalid qdm versions.
-		//Versioned measures have been versioned with valid QDM versioned libraries included. So we return if the library is not a draft.
+
 		if(isStandAloneCQLLibrary && !MatContext.get().isDraftLibrary()) {
 			return isValid;
 		}
@@ -2405,7 +1441,7 @@ public class CQLLeftNavBarPanelView {
 				componentNameListBox.addItem(object.getAlias(), object.getComponentId());
 				aliases.put(object.getComponentId(), object.getAlias());
 			}
-			// Set tooltips for each element in listbox
+
 			SelectElement selectElement = SelectElement.as(componentNameListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
@@ -2431,6 +1467,37 @@ public class CQLLeftNavBarPanelView {
 			}
 		});
 	}
+	
+	public void reset() {
+		getRightHandNavPanel().clear();
+		getViewIncludeLibrarys().clear();
+		getViewParameterList().clear();
+		getViewDefinitions().clear();
+		getViewFunctions().clear();
+		getViewIncludeLibrarys().clear();
+		getIncludesCollapse().clear();
+		getParamCollapse().clear();
+		getDefineCollapse().clear();
+		getFunctionCollapse().clear();
+	}
+	
+	public void resetSelectedObjects() {
+		setCurrentSelectedDefinitionObjId(null);
+		setCurrentSelectedParamerterObjId(null);
+		setCurrentSelectedFunctionObjId(null);
+		setCurrentSelectedFunctionArgumentObjId(null);
+		setCurrentSelectedFunctionArgumentName(null);
+		setCurrentSelectedIncLibraryObjId(null);
+	}
 
-
+	public void resetActiveAnchorLists() {
+		getComponentsTab().setActive(false);
+		getIncludesLibrary().setActive(false);
+		getAppliedQDM().setActive(false);
+		getCodesLibrary().setActive(false);
+		getFunctionLibrary().setActive(false);
+		getParameterLibrary().setActive(false);
+		getDefinitionLibrary().setActive(false);
+		getViewCQL().setActive(false);
+	}
 }

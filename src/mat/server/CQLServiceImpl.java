@@ -249,7 +249,7 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					result.setFailureReason(SaveUpdateCQLResult.COMMENT_INVALID);
 					return result;
 				}
 
@@ -392,7 +392,7 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					result.setFailureReason(SaveUpdateCQLResult.COMMENT_INVALID);
 					return result;
 				}
 
@@ -572,7 +572,7 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					result.setFailureReason(SaveUpdateCQLResult.COMMENT_INVALID);
 					return result;
 				}
 
@@ -670,7 +670,7 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					result.setFailureReason(SaveUpdateCQLResult.COMMENT_INVALID);
 					return result;
 				}
 
@@ -836,7 +836,7 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					result.setFailureReason(SaveUpdateCQLResult.COMMENT_INVALID);
 					return result;
 				}
 
@@ -956,7 +956,7 @@ public class CQLServiceImpl implements CQLService {
 
 				if (isCommentInvalid) {
 					result.setSuccess(false);
-					result.setFailureReason(SaveUpdateCQLResult.COMMEENT_INVALID);
+					result.setFailureReason(SaveUpdateCQLResult.COMMENT_INVALID);
 					return result;
 				}
 				if (!isDuplicate) {

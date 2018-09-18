@@ -100,57 +100,17 @@ public abstract class AbstractCQLWorkspacePresenter {
 		this.deleteConfirmationDialogBox = deleteConfirmationDialogBox;
 	}
 	
-	/**
-	 * Gets the delete confirmation dialog box yes button.
-	 *
-	 * @return the delete confirmation dialog box yes button
-	 */
 	public Button getDeleteConfirmationDialogBoxYesButton() {
 		return deleteConfirmationDialogBox.getYesButton();
 	}
 
-	/**
-	 * Gets the delete confirmation dialog box no button.
-	 *
-	 * @return the delete confirmation dialog box no button
-	 */
 	public Button getDeleteConfirmationDialogBoxNoButton() {
 		return deleteConfirmationDialogBox.getNoButton();
 	}
 	
-	protected void displayDuplicateRecordMessage(final String message, MatTextBox textBox) {
+	protected void displayErrorMessage(final String errorMessage, final String message, MatTextBox textBox) {
 		messagePanel.getSuccessMessageAlert().clearAlert();
-		messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME());
-		textBox.setText(message.trim());
-	}
-	
-	protected void displayUnableToFindNodeMessage(final String message, MatTextBox textBox) {
-		messagePanel.getSuccessMessageAlert().clearAlert();
-		messagePanel.getErrorMessageAlert().createAlert(UNABLE_TO_FIND_NODE_TO_MODIFY);
-		textBox.setText(message.trim());
-	}
-	
-	protected void displayFunctionNoSpecialCharMessage(final String message, MatTextBox textBox) {
-		messagePanel.getSuccessMessageAlert().clearAlert();
-		messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR());
-		textBox.setText(message.trim());
-	}
-	
-	protected void displayParameterNoSpecialCharMessage(final String message, MatTextBox textBox) {
-		messagePanel.getSuccessMessageAlert().clearAlert();
-		messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
-		textBox.setText(message.trim());
-	}
-	
-	protected void displayDefinitionNoSpecialCharMessage(final String message, MatTextBox textBox) {
-		messagePanel.getSuccessMessageAlert().clearAlert();
-		messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
-		textBox.setText(message.trim());
-	}
-	
-	protected void displayUnauthorizedDeleteMessage(final String message, MatTextBox textBox) {
-		messagePanel.getSuccessMessageAlert().clearAlert();
-		messagePanel.getErrorMessageAlert().createAlert(UNAUTHORIZED_DELETE_OPERATION);
+		messagePanel.getErrorMessageAlert().createAlert(errorMessage);
 		textBox.setText(message.trim());
 	}
 	

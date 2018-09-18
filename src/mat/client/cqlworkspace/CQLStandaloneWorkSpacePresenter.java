@@ -1807,11 +1807,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().setAnnotations();
 										cqlWorkspaceView.getCQLFunctionsView().getFunctionBodyAceEditor().redisplay();
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NAME_NOT_UNIQUE) {
-										displayDuplicateRecordMessage(functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
+										displayErrorMessage(MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME(), functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-										displayUnableToFindNodeMessage(functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
+										displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NO_SPECIAL_CHAR) {
-										displayFunctionNoSpecialCharMessage(functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
+										displayErrorMessage(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR(), functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
 										if (result.getFunction() != null) {
 											((CQLStandaloneWorkSpaceView)cqlWorkspaceView).createAddArgumentViewForFunctions(
 													result.getFunction().getArgumentList());
@@ -1912,28 +1912,22 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().setAnnotations();
 										cqlWorkspaceView.getCQLParametersView().getParameterAceEditor().redisplay();
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NAME_NOT_UNIQUE) {
-										displayDuplicateRecordMessage(parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+										displayErrorMessage(MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME(), parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-										displayUnableToFindNodeMessage(parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+										displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.NO_SPECIAL_CHAR) {
-										displayParameterNoSpecialCharMessage(parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+										displayErrorMessage(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR(), parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
 									} else if (result.getFailureReason() == SaveUpdateCQLResult.COMMENT_INVALID) {
 										messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 									}
 								}
 								showSearchingBusy(false);
-
 								if (!result.getCqlErrors().isEmpty()) {
 									cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
-								}
-
-								else {
-									// if the saved parameter is in use, then disable the delete button
+								} else {
 									if (result.getUsedCQLArtifacts().getUsedCQLParameters().contains(parameterName)) {
 										cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
-									}
-
-									else {
+									} else {
 										cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(true);
 									}
 								}
@@ -2046,11 +2040,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										cqlWorkspaceView.getCQLDefinitionsView().getDefineAceEditor().redisplay();
 									} else {
 										if (result.getFailureReason() == SaveUpdateCQLResult.NAME_NOT_UNIQUE) {
-											displayDuplicateRecordMessage(definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
+											displayErrorMessage(MatContext.get().getMessageDelegate().getERROR_DUPLICATE_IDENTIFIER_NAME(), definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 										} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-											displayUnableToFindNodeMessage(definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
+											displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 										} else if (result.getFailureReason() == SaveUpdateCQLResult.NO_SPECIAL_CHAR) {
-											displayDefinitionNoSpecialCharMessage(definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
+											displayErrorMessage(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR(), definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 										} else if (result.getFailureReason() == SaveUpdateCQLResult.COMMENT_INVALID) {
 											messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 										}
@@ -2232,9 +2226,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 							messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSuccessfulDefinitionRemoveMessage(toBeModifiedObj.getName()));
 							cqlWorkspaceView.getCQLDefinitionsView().getReturnTypeTextBox().setText(EMPTY_STRING);
 						} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-							displayUnableToFindNodeMessage(definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
+							displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 						} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-							displayUnauthorizedDeleteMessage(definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
+							displayErrorMessage(UNAUTHORIZED_DELETE_OPERATION, definitionName, cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea());
 						}
 					}
 					showSearchingBusy(false);
@@ -2297,9 +2291,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 										new ArrayList<CQLFunctionArgument>());
 							}
 						} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-							displayUnableToFindNodeMessage(functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
+							displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
 						} else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-							displayUnauthorizedDeleteMessage(functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
+							displayErrorMessage(UNAUTHORIZED_DELETE_OPERATION, functionName, cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea());
 						}
 					}
 					showSearchingBusy(false);
@@ -2386,9 +2380,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 								cqlWorkspaceView.getCQLParametersView().getParameterButtonBar().getDeleteButton().setEnabled(false);
 								messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSuccessfulParameterRemoveMessage(toBeModifiedParamObj.getName()));  
 							} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-								displayUnableToFindNodeMessage(parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+								displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
 							}else if (result.getFailureReason() == SaveUpdateCQLResult.SERVER_SIDE_VALIDATION) {
-								displayUnauthorizedDeleteMessage(parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
+								displayErrorMessage(UNAUTHORIZED_DELETE_OPERATION, parameterName, cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea());
 							}
 						}
 						showSearchingBusy(false);
@@ -2457,7 +2451,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 						});
 						messagePanel.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getSuccessfulIncludeRemoveMessage(toBeModifiedIncludeObj.getAliasName()));
 					} else if (result.getFailureReason() == SaveUpdateCQLResult.NODE_NOT_FOUND) {
-						displayUnableToFindNodeMessage(aliasName, cqlWorkspaceView.getIncludeView().getAliasNameTxtArea());
+						displayErrorMessage(UNABLE_TO_FIND_NODE_TO_MODIFY, aliasName, cqlWorkspaceView.getIncludeView().getAliasNameTxtArea());
 					}
 					showSearchingBusy(false);
 				}

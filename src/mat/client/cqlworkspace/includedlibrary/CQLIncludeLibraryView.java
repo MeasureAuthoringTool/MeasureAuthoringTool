@@ -311,11 +311,6 @@ public class CQLIncludeLibraryView {
 		return searchWidgetFocusPanel;
 	}
 	
-	/**
-	 * Gets the alias name txt area.
-	 *
-	 * @return the alias name txt area
-	 */
 	public MatTextBox getAliasNameTxtArea() {
 		return aliasNameTxtBox;
 	}

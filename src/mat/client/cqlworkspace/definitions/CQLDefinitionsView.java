@@ -1,6 +1,3 @@
-/**
- * 
- */
 package mat.client.cqlworkspace.definitions;
 
 import org.gwtbootstrap3.client.ui.ButtonGroup;
@@ -36,61 +33,25 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.MatTextBox;
 
-/**
- * The Class CQlDefinitionsView.
- *
- * @author jnarang
- */
 public class CQLDefinitionsView {
-	
-	/** The define name txt area. */
 	private MatTextBox defineNameTxtArea = new MatTextBox();
-	/** The define ace editor. */
 	private AceEditor defineAceEditor = new AceEditor();
-
-	/** The context group. */
 	private ButtonGroup contextGroup = new ButtonGroup();
-
-	/** The context pat toggle switch. */
 	private InlineRadio contextDefinePATRadioBtn = new InlineRadio("Patient");
-
-	/** The context pop toggle switch. */
 	private InlineRadio contextDefinePOPRadioBtn = new InlineRadio("Population");
-
-	/** The define button bar. */
 	private DefinitionFunctionButtonToolBar defineButtonBar = new DefinitionFunctionButtonToolBar("definition");
-
-	/** The define add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("definition");
-
-	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
-	
-	/** The define comment text area. */
 	private TextArea defineCommentTextArea = new TextArea();
-	
 	private TextBox returnTypeTextBox = new TextBox();
-	
-	/** The define name group. */
 	private FormGroup defineNameGroup = new FormGroup();
-	
-	/** The define comment group. */
 	private FormGroup defineCommentGroup = new FormGroup();
-	
-	/** The define context group. */
 	private FormGroup defineContextGroup = new FormGroup();
-	
 	private FormGroup returnTypeAndButtonPanelGroup = new FormGroup();
-	
 	private FocusPanel mainDefineViewVerticalPanel = new FocusPanel();
-	
 	HTML heading = new HTML();
 	
-	/**
-	 * Instantiates a new c ql definitions view.
-	 */
 	public CQLDefinitionsView() {
-
 		defineAceEditor.startEditor();
 		mainDefineViewVerticalPanel.getElement().setId("mainDefViewVerticalPanel");
 		
@@ -103,11 +64,7 @@ public class CQLDefinitionsView {
 		heading.addStyleName("leftAligned");
 	}
 
-	/**
-	 * Builds the view.
-	 */
 	private void buildView() {
-		
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().clear();
 		defineNameGroup.clear();
 		defineCommentGroup.clear();
@@ -121,8 +78,6 @@ public class CQLDefinitionsView {
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(new SpacerWidget());
 		
-
-		// Build Definition Name Form Group
 		FormLabel defineNameLabel = new FormLabel();
 		defineNameLabel.setText("Definition Name");
 		defineNameLabel.setTitle("Definition Name");
@@ -142,8 +97,6 @@ public class CQLDefinitionsView {
 		defineNameHPanel.setWidth("700px");
 			
 		defineNameGroup.add(defineNameHPanel);
-		
-		// Build Definition Context Form Group
 		FormLabel defineContextLabel = new FormLabel();
 		defineContextLabel.setText("Context");
 		defineContextLabel.setTitle("Context");
@@ -151,7 +104,6 @@ public class CQLDefinitionsView {
 		defineContextLabel.setFor("contextGroup");
 		
 		FlowPanel defineContextPanel = new FlowPanel();
-		
 		contextDefinePATRadioBtn.setValue(true);
 		contextDefinePATRadioBtn.setText("Patient");
 		contextDefinePATRadioBtn.setId("context_PatientRadioButton");
@@ -170,8 +122,7 @@ public class CQLDefinitionsView {
 		defineContextHPanel.setWidth("500px");
 		
 		defineContextGroup.add(defineContextHPanel);
-	
-		// Build Definition Comment Form Group
+
 		FormLabel defineCommentLabel = new FormLabel();
 		defineCommentLabel.setText("Comment");
 		defineCommentLabel.setTitle("Comment");
@@ -191,8 +142,6 @@ public class CQLDefinitionsView {
 		defineCommenttHPanel.setWidth("700px");
 		
 		defineCommentGroup.add(defineCommenttHPanel);
-		
-		//Build Return Type form Group
 		FormLabel returnTypeLabel = new FormLabel();
 		returnTypeLabel.setText("Return Type");
 		returnTypeLabel.setTitle("Return Type");
@@ -209,18 +158,14 @@ public class CQLDefinitionsView {
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
-		//returnTypeHP.add(defineButtonBar);
 		
 		returnTypeAndButtonPanelGroup.add(returnTypeHP);
 		
 		
 		defineButtonBar.getTimingExpButton().setVisible(false);
 		defineButtonBar.getCloseButton().setVisible(false);
-		
-		// Build Ace Editor for CQL Expression building.
+
 		Panel aceEditorPanel = editableAceEditorPanel();
-		
-		//definitionVP.setWidth("100%");
 		definitionVP.add(addNewButtonBar);
 		definitionVP.add(defineNameGroup);
 		definitionVP.add(new SpacerWidget());
@@ -233,7 +178,6 @@ public class CQLDefinitionsView {
 		buttonPanel.add(defineButtonBar.getInfoButtonGroup());
 		buttonPanel.add(defineButtonBar);
 		definitionVP.add(buttonPanel);
-	//	definitionVP.add(new SpacerWidget());
 		definitionVP.add(aceEditorPanel);
 		definitionVP.add(new SpacerWidget());
 		definitionVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
@@ -252,23 +196,14 @@ public class CQLDefinitionsView {
 		mainDefineViewVerticalPanel.add(definitionFP);
 	}
 
-	/**
-	 * 
-	 */
 	public void setMarginInButtonBar() {
 		defineButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:280px;");
-		/*defineButtonBar.getSaveButton().setMarginRight(-15.00);*/
 		defineButtonBar.getEraseButton().setMarginRight(5.00);
 		defineButtonBar.getInsertButton().setMarginRight(10.00);
-		/*defineButtonBar.getInfoButton().setMarginLeft(-10.00);*/
 		defineButtonBar.getDeleteButton().setMarginLeft(-10.00);
 		
 	}
 
-	/**
-	 * @return
-	 */
-	@SuppressWarnings("static-access")
 	public Panel editableAceEditorPanel() {
 		Panel aceEditorPanel = new Panel(PanelType.PRIMARY);
 		PanelHeader header = new PanelHeader();
@@ -287,13 +222,10 @@ public class CQLDefinitionsView {
 		defineAceEditor.setUseWrapMode(true);
 		defineAceEditor.removeAllMarkers();
 		defineAceEditor.clearAnnotations();
-		//Commenting below code as its taking away focus and that makes our application not 508 compliant with other fields.
-		//defineAceEditor.redisplay();
 		defineAceEditor.getElement().setAttribute("id", "Define_AceEditorID");
 		defineAceEditor.setTitle("Build CQL Expression");
 		defineAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
 		
-		// MAT-8735 Disable tab and shift-tab
 		defineAceEditor.removeCommand(AceCommand.INDENT);
 		defineAceEditor.removeCommand(AceCommand.OUTDENT);
 		
@@ -306,11 +238,6 @@ public class CQLDefinitionsView {
 	}
 
 
-	/**
-	 * Gets the view.
-	 *
-	 * @return the view
-	 */
 	public FocusPanel getView() {
 		mainDefineViewVerticalPanel.clear();
 		resetAll();
@@ -318,135 +245,74 @@ public class CQLDefinitionsView {
 		return mainDefineViewVerticalPanel;
 	}
 
-	/**
-	 * Gets the define name txt area.
-	 *
-	 * @return the define name txt area
-	 */
 	public MatTextBox getDefineNameTxtArea() {
 		return defineNameTxtArea;
 	}
 
-	/**
-	 * Sets the define name txt area.
-	 *
-	 * @param defineNameTxtArea the new define name txt area
-	 */
+
 	public void setDefineNameTxtArea(MatTextBox defineNameTxtArea) {
 		this.defineNameTxtArea = defineNameTxtArea;
 	}
 
-	/**
-	 * Gets the define ace editor.
-	 *
-	 * @return the define ace editor
-	 */
+
 	public AceEditor getDefineAceEditor() {
 		return defineAceEditor;
 	}
 
-	/**
-	 * Sets the define ace editor.
-	 *
-	 * @param defineAceEditor the new define ace editor
-	 */
 	public void setDefineAceEditor(AceEditor defineAceEditor) {
 		this.defineAceEditor = defineAceEditor;
 	}
 
-	/**
-	 * Gets the context group.
-	 *
-	 * @return the context group
-	 */
+
 	public ButtonGroup getContextGroup() {
 		return contextGroup;
 	}
 
-	/**
-	 * Sets the context group.
-	 *
-	 * @param contextGroup the new context group
-	 */
 	public void setContextGroup(ButtonGroup contextGroup) {
 		this.contextGroup = contextGroup;
 	}
 
-	/**
-	 * Gets the context define PAT radio btn.
-	 *
-	 * @return the context define PAT radio btn
-	 */
+
 	public InlineRadio getContextDefinePATRadioBtn() {
 		return contextDefinePATRadioBtn;
 	}
 
-	/**
-	 * Sets the context define PAT radio btn.
-	 *
-	 * @param contextDefinePATRadioBtn the new context define PAT radio btn
-	 */
+
 	public void setContextDefinePATRadioBtn(InlineRadio contextDefinePATRadioBtn) {
 		this.contextDefinePATRadioBtn = contextDefinePATRadioBtn;
 	}
 
-	/**
-	 * Gets the context define POP radio btn.
-	 *
-	 * @return the context define POP radio btn
-	 */
+
 	public InlineRadio getContextDefinePOPRadioBtn() {
 		return contextDefinePOPRadioBtn;
 	}
 
-	/**
-	 * Sets the context define POP radio btn.
-	 *
-	 * @param contextDefinePOPRadioBtn the new context define POP radio btn
-	 */
+
 	public void setContextDefinePOPRadioBtn(InlineRadio contextDefinePOPRadioBtn) {
 		this.contextDefinePOPRadioBtn = contextDefinePOPRadioBtn;
 	}
 
-	/**
-	 * Gets the define button bar.
-	 *
-	 * @return the define button bar
-	 */
+
 	public DefinitionFunctionButtonToolBar getDefineButtonBar() {
 		return defineButtonBar;
 	}
 
-	/**
-	 * Sets the define button bar.
-	 *
-	 * @param defineButtonBar the new define button bar
-	 */
+
 	public void setDefineButtonBar(DefinitionFunctionButtonToolBar defineButtonBar) {
 		this.defineButtonBar = defineButtonBar;
 	}
 
-	/**
-	 * Gets the adds the new button bar.
-	 *
-	 * @return the adds the new button bar
-	 */
+
 	public CQLAddNewButton getAddNewButtonBar() {
 		return addNewButtonBar;
 	}
 
-	/**
-	 * Sets the adds the new button bar.
-	 *
-	 * @param addNewButtonBar the new adds the new button bar
-	 */
+
 	public void setAddNewButtonBar(CQLAddNewButton addNewButtonBar) {
 		this.addNewButtonBar = addNewButtonBar;
 	}
 
-	/**
-	 * Reset all.
-	 */
+
 	public void resetAll() {
 		getDefineNameTxtArea().setText("");
 		getDefineAceEditor().setText("");
@@ -455,36 +321,22 @@ public class CQLDefinitionsView {
 		collapsibleCQLPanelWidget.getPanelViewCQLCollapse().getElement().setClassName("panel-collapse collapse");
 	}
 
-	/**
-	 * Gets the panel view CQL collapse.
-	 *
-	 * @return the panel view CQL collapse
-	 */
+
 	public PanelCollapse getPanelViewCQLCollapse() {
 		return collapsibleCQLPanelWidget.getPanelViewCQLCollapse();
 	}
 
-	/**
-	 * Gets the view CQL ace editor.
-	 *
-	 * @return the view CQL ace editor
-	 */
+
 	public AceEditor getViewCQLAceEditor() {
 		return collapsibleCQLPanelWidget.getViewCQLAceEditor();
 	}
 
-	/**
-	 * Hide ace editor auto complete pop up.
-	 */
+
 	public void hideAceEditorAutoCompletePopUp() {
 		getDefineAceEditor().detach();
 	}
 
-	/**
-	 * Sets the widget read only.
-	 *
-	 * @param isEditable the new widget read only
-	 */
+
 	public void setWidgetReadOnly(boolean isEditable) {
 
 		getDefineNameTxtArea().setEnabled(isEditable);
@@ -492,9 +344,6 @@ public class CQLDefinitionsView {
 		getDefineAceEditor().setReadOnly(!isEditable);
 		getContextDefinePATRadioBtn().setEnabled(isEditable);
 		getContextDefinePOPRadioBtn().setEnabled(isEditable);
-		/*getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
-		System.out.println(
-				"in setDefinitionWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);*/
 		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
 		getDefineButtonBar().getDeleteButton().setEnabled(isEditable);
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
@@ -502,82 +351,45 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getEraseButton().setEnabled(isEditable);
 	}
 
-	/**
-	 * Reset define form group.
-	 */
+
 	public void resetDefineFormGroup(){
 		getDefineCommentGroup().setValidationState(ValidationState.NONE);
 		getDefineNameGroup().setValidationState(ValidationState.NONE);
 	}
 	
-	/**
-	 * Gets the define comment text area.
-	 *
-	 * @return the define comment text area
-	 */
 	public TextArea getDefineCommentTextArea() {
 		return defineCommentTextArea;
 	}
 
-	/**
-	 * Sets the define comment text area.
-	 *
-	 * @param commentTextArea the new define comment text area
-	 */
+
 	public void setDefineCommentTextArea(TextArea commentTextArea) {
 		this.defineCommentTextArea = commentTextArea;
 	}
 
-	/**
-	 * Gets the define name group.
-	 *
-	 * @return the define name group
-	 */
 	public FormGroup getDefineNameGroup() {
 		return defineNameGroup;
 	}
 
-	/**
-	 * Sets the define name group.
-	 *
-	 * @param defineNameGroup the new define name group
-	 */
+
 	public void setDefineNameGroup(FormGroup defineNameGroup) {
 		this.defineNameGroup = defineNameGroup;
 	}
 
-	/**
-	 * Gets the define comment group.
-	 *
-	 * @return the define comment group
-	 */
+
 	public FormGroup getDefineCommentGroup() {
 		return defineCommentGroup;
 	}
 
-	/**
-	 * Sets the define comment group.
-	 *
-	 * @param defineCommentGroup the new define comment group
-	 */
 	public void setDefineCommentGroup(FormGroup defineCommentGroup) {
 		this.defineCommentGroup = defineCommentGroup;
 	}
 
-	/**
-	 * Gets the define context group.
-	 *
-	 * @return the define context group
-	 */
+
 	public FormGroup getDefineContextGroup() {
 		return defineContextGroup;
 	}
 
-	/**
-	 * Sets the define context group.
-	 *
-	 * @param defineContextGroup the new define context group
-	 */
+
 	public void setDefineContextGroup(FormGroup defineContextGroup) {
 		this.defineContextGroup = defineContextGroup;
 	}
@@ -586,16 +398,12 @@ public class CQLDefinitionsView {
 		return returnTypeTextBox;
 	}
 
-	/**
-	 * @return the mainDefineViewVerticalPanel
-	 */
+
 	public FocusPanel getMainDefineViewVerticalPanel() {
 		return mainDefineViewVerticalPanel;
 	}
 
-	/**
-	 * @param mainDefineViewVerticalPanel the mainDefineViewVerticalPanel to set
-	 */
+	
 	public void setMainDefineViewVerticalPanel(FocusPanel mainDefineViewVerticalPanel) {
 		this.mainDefineViewVerticalPanel = mainDefineViewVerticalPanel;
 	}
@@ -605,10 +413,6 @@ public class CQLDefinitionsView {
 		heading.setHTML(linkStr +"<h4><b>" + text + "</b></h4>");
 	}
 
-	/**
-	 * Added this method as part of MAT-8882.
-	 * @param isEditable
-	 */
 	public void setReadOnly(boolean isEditable) {		
 		getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		getDefineButtonBar().getSaveButton().setEnabled(isEditable);
@@ -617,5 +421,4 @@ public class CQLDefinitionsView {
 		getDefineButtonBar().getInsertButton().setEnabled(isEditable);
 		getDefineButtonBar().getInfoButton().setEnabled(isEditable);
 	}	
-	
 }

@@ -76,7 +76,10 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		
 		VerticalPanel radioPanel = new VerticalPanel();
 		radioPanel.getElement().getStyle().setMarginLeft(5, Unit.PX);
-		radioPanel.add(new Label("Select Version Type"));
+		Label radioLabel = new Label("Select Version Type");
+		radioLabel.setTitle("Select Version Type Required");
+		radioLabel.getElement().setTabIndex(0);
+		radioPanel.add(radioLabel);
 		radioPanel.add(new SpacerWidget());
 		radioPanel.add(majorRadio);
 		majorRadio.getElement().setId("cqlmajorRadio_RadioButton");

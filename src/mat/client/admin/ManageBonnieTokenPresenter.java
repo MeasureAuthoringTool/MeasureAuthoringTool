@@ -96,7 +96,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	}
 
 	private void revokeAllBonnieTokens(String reason) {
-		MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(MatContext.get().getLoggedinUserId(), reason, new AsyncCallback<Void>() {
+		MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(MatContext.get().getLoggedinLoginId(), reason, new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

@@ -88,8 +88,8 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private final String TEXT_NAME = "Name";
 	private final String TEXT_PROGRAM = "Program";
 	private final String TEXT_RELEASE = "Release";
-	private final String ENTER_OID = "Enter OID";
-	private final String ENTER_NAME = "Enter Name";
+	private final String ENTER_OID = "Enter OID Required";
+	private final String ENTER_NAME = "Enter Name Required";
 	private final String RETRIEVE_OID = "Retrieve OID";
 	
 	public static interface Observer {

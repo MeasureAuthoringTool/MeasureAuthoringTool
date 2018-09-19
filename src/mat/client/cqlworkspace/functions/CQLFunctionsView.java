@@ -219,11 +219,10 @@ public class CQLFunctionsView {
 		functionNameLabel.setFor("FunctionNameField");
 		
 		funcNameTxtArea.setText("");
-		// funcNameTxtArea.setPlaceholder("Enter Function Name here.");
 		funcNameTxtArea.setSize("550px", "32px");
 		funcNameTxtArea.getElement().setId("FunctionNameField");
 		funcNameTxtArea.setName("FunctionName");
-		funcNameTxtArea.setTitle("Enter Function Name");
+		funcNameTxtArea.setTitle("Enter Function Name Required");
 		
 		HorizontalPanel funcNameHPanel = new HorizontalPanel();
 		funcNameHPanel.add(functionNameLabel);

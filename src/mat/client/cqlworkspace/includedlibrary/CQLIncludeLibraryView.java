@@ -137,7 +137,7 @@ public class CQLIncludeLibraryView {
 		aliasNameTxtBox.setSize("260px", "25px");
 		aliasNameTxtBox.getElement().setId("aliasNameField_IncludeSection");
 		aliasNameTxtBox.setName("aliasName");
-		aliasNameTxtBox.setTitle("Enter Library Alias");
+		aliasNameTxtBox.setTitle("Enter Library Alias Required");
 		
 		aliasNameGroup.add(aliasLabel);
 		aliasNameGroup.add(new SpacerWidget());

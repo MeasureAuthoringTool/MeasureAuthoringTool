@@ -1,14 +1,12 @@
-package mat.client.cqlworkspace;
-
+package mat.client.admin;
 
 import org.gwtbootstrap3.client.shared.event.ModalHideEvent;
 import org.gwtbootstrap3.client.shared.event.ModalHideHandler;
-import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.ModalSize;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonDismiss;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
@@ -16,49 +14,27 @@ import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-import mat.client.buttons.NoButton;
-import mat.client.buttons.YesButton;
+import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ConfirmationObserver;
-import mat.client.shared.ErrorMessageAlert;
+import mat.client.shared.SpacerWidget;
 
-
-
-public class ConfirmationDialogBox {
-	private  final Button yesButton = new YesButton("ConfirmDialogBox"); 
-	private final Button noButton = new NoButton("ConfirmDialogBox");
-	private ConfirmationObserver observer; 
-	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
-	Modal panel = new Modal();
-	private boolean isContinueClose = false; 
-	
-	public ErrorMessageAlert getMessageAlert() {
-		return messageAlert;
-	}
-
-	public void setMessageAlert(ErrorMessageAlert messageAlert) {
-		this.messageAlert = messageAlert;
+public class RevokeReasonDialogBox extends ConfirmationDialogBox {
+	TextArea reasonTextArea = new TextArea();
+	public RevokeReasonDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver confirmationObserver) {
+		super(messageText, yesButtonText, noButtonText, confirmationObserver);
+		messageAlert.clearAlert();
 	}
 	
-	public ConfirmationDialogBox() {
-		
-	}
-	
-	public ConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
-		this.observer = observer; 
-		getMessageAlert().createAlert(messageText);
-		getNoButton().setText(noButtonText);
-		getYesButton().setText(yesButtonText);
-		getYesButton().setFocus(true);
-	}
-
 	public void show() {
 		ModalBody modalBody = new ModalBody(); 
 
 		modalBody.clear();
 		modalBody.remove(messageAlert);
 		panel.remove(modalBody);
-		panel.setTitle("Warning");
+		panel.setTitle("Revoke All");
 		
 		panel.setClosable(true);
 		panel.setFade(true);
@@ -70,9 +46,7 @@ public class ConfirmationDialogBox {
 		panel.addHideHandler(new ModalHideHandler() {
 			@Override
 			public void onHide(ModalHideEvent evt) {
-				// if the dialog box is closing because of clicking the continue button, 
-				// then don't execute the close handler. Just close the thing. 
-				if(!isContinueClose) {
+				if(!isClosingOnContinue) {
 					observer.onClose();
 				}
 			}
@@ -81,14 +55,14 @@ public class ConfirmationDialogBox {
 		getYesButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isContinueClose = true; 
+				isClosingOnContinue = true; 
 				observer.onYesButtonClicked();
 			}
 		});
 		getNoButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isContinueClose = false; 
+				isClosingOnContinue = false; 
 				observer.onNoButtonClicked();
 			}
 		});
@@ -96,14 +70,25 @@ public class ConfirmationDialogBox {
 		messageAlert.getElement().getStyle().setMarginTop(0.0, Style.Unit.PX);
 		messageAlert.getElement().getStyle().setMarginBottom(0.0, Style.Unit.PX);
 		messageAlert.getElement().setAttribute("role", "alert");
-		modalBody.add(messageAlert);
 		
+		VerticalPanel verticalPanel = new VerticalPanel();
+		verticalPanel.getElement().getStyle().setProperty("width", "100%");
+		verticalPanel.add(messageAlert);
+		verticalPanel.add(new SpacerWidget());
+		Label reasonLabel = new Label("Reason");
+		reasonLabel.addStyleName("bold");
+		verticalPanel.add(reasonLabel);
+		verticalPanel.add(new SpacerWidget());
+
+		reasonTextArea.setTitle("reason required");
+		reasonTextArea.getElement().getStyle().setProperty("width", "95%");
+		verticalPanel.add(reasonTextArea);
+		modalBody.add(verticalPanel);
 		
 		ModalFooter modalFooter = new ModalFooter(); 
 		ButtonToolBar buttonToolBar = new ButtonToolBar(); 
 		yesButton.setSize(ButtonSize.SMALL);
 		noButton.setSize(ButtonSize.SMALL);
-		yesButton.setDataDismiss(ButtonDismiss.MODAL);
 		noButton.setDataDismiss(ButtonDismiss.MODAL);
 		buttonToolBar.add(yesButton);
 		buttonToolBar.add(noButton);
@@ -117,22 +102,11 @@ public class ConfirmationDialogBox {
 		panel.show();
 	}
 	
-	
-	public void hide() {
-		panel.hide();
-	}
-	
-	
-	public Button getYesButton() {
-		return yesButton; 
-	}
-	
-	public Button getNoButton() {
-		return noButton; 
-	}
-	
-	public void setObserver(ConfirmationObserver observer) {
-		this.observer = observer; 
+	public String getReasonText() {
+		return reasonTextArea.getText();
 	}
 
+	public void setReasonText(String reasonText) {
+		reasonTextArea.setText(reasonText);
+	}
 }

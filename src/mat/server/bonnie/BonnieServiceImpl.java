@@ -21,7 +21,6 @@ import mat.model.UserBonnieAccessInfo;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
-import mat.server.VSACAPIServiceImpl;
 import mat.server.bonnie.api.BonnieAPI;
 import mat.server.bonnie.api.BonnieAPIv1;
 import mat.server.bonnie.api.result.BonnieCalculatedResult;
@@ -42,7 +41,6 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 @SuppressWarnings("serial")
 @Service
 public class BonnieServiceImpl extends SpringRemoteServiceServlet implements BonnieService {
-
 	private static final Log logger = LogFactory.getLog(EncryptDecryptToken.class);
 	
 	@Autowired
@@ -51,7 +49,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	@Autowired
 	private EncryptDecryptToken encryptDecryptToken;
 
-	/** The user DAO. */
 	@Autowired
 	private UserDAO userDAO;
 
@@ -60,9 +57,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	
 	@Autowired
 	private MeasureDAO measureDAO;
-	
-	@Autowired
-	private VSACAPIServiceImpl vasacAPI;
 	
 	@Autowired
 	@Qualifier("simpleEMeasureServiceImpl")
@@ -110,15 +104,11 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 	
 	@Override
-	public String getUpdateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException, BonnieAlreadyExistsException, UMLSNotActiveException {
-		
+	public String getUpdateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException, BonnieAlreadyExistsException, UMLSNotActiveException {		
 		String successMessage = "";
-		
-		//see if user valid
 		UserBonnieAccessInfo userInformation = getUserBonnieAccessInfo(userId);
 		String userAccessToken = userInformation.getAccessToken();
 		
-		//Get measure and check if it is in bonnie
 		Measure measure = measureDAO.find(measureId);
 		String measureSetId = measure.getMeasureSet().getId();
 		BonnieMeasureResult bonnieMeasureResults = null;
@@ -147,11 +137,9 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		
 		
 		if(bonnieMeasureResults != null && bonnieMeasureResults.getMeasureExsists()) {
-			//Measure exists in Bonnie Update
 			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
 			successMessage = measure.getDescription() +  " has been successfully updated in Bonnie. Please select open or save to view the results.";
 		} else {
-			//Measure doesn't exist in Bonnie upload measure
 			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
 			successMessage = measure.getDescription() + " has been successfully uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
 		}
@@ -225,8 +213,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	private UserBonnieAccessInfo validateOrRefreshBonnieTokensForUser(String userId) throws BonnieUnauthorizedException {
 		UserBonnieAccessInfo bonnieAccessInfo = userBonnieAccessInfoDAO.findByUserId(userId);
 		if (bonnieAccessInfo == null) {
-			// if they have no credentials in the database, then they are not authorized
-			// with bonnie
 			throw new BonnieUnauthorizedException();
 		}
 		refreshBonnieTokens(userId);
@@ -248,7 +234,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 
 	@Override
-	public void revokeAllBonnieAccessTokens() throws BonnieServerException, Exception {
+	public void revokeAllBonnieAccessTokens(String userId, String reason) throws BonnieServerException, Exception {
+		logger.info("Revoke All Bonnie Access Tokens issued by user " + userId + " for reason " + reason + ".");
 		List<UserBonnieAccessInfo> userBonnieAccessInfoList = userBonnieAccessInfoDAO.find();
 		for(UserBonnieAccessInfo userBonnieAccessInfo: userBonnieAccessInfoList) {
 			revokeBonnieAccessTokenForUser(userBonnieAccessInfo);

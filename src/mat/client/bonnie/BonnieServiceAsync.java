@@ -18,5 +18,5 @@ public interface BonnieServiceAsync {
 
 	public void revokeBonnieAccessTokenForUser(String matUserId, AsyncCallback<Void> asyncCallback);
 
-	public void revokeAllBonnieAccessTokens(AsyncCallback<Void> asyncCallback);
+	public void revokeAllBonnieAccessTokens(String userId, String reason, AsyncCallback<Void> asyncCallback);
 }

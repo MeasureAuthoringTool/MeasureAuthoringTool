@@ -27,5 +27,5 @@ public interface BonnieService extends RemoteService {
 	
 	public void revokeBonnieAccessTokenForUser(String userId) throws BonnieServerException, Exception;
 	
-	public void revokeAllBonnieAccessTokens() throws BonnieServerException, Exception;
+	public void revokeAllBonnieAccessTokens(String userId, String reason) throws BonnieServerException, Exception;
 }

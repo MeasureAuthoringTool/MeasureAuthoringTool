@@ -18,12 +18,14 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.InCorrectUserRoleException;
+import mat.shared.StringUtility;
 
 public class ManageBonnieTokenPresenter implements MatPresenter {
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 	private ManageBonnieTokenView searchDisplay;
 	ManageUsersDetailView manageUsersDetailView;
 	private String lastSearchKey;
+	private RevokeReasonDialogBox reasonDialogBox;
 	public ManageBonnieTokenPresenter() {
 		manageUsersDetailView = new ManageUsersDetailView();
 		searchDisplay = new ManageBonnieTokenView();
@@ -49,26 +51,65 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 
 			@Override
 			public void onRevokeAllBonnieSessionsClicked() {
-				MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(new AsyncCallback<Void>() {
-
+				ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox("This action will revoke all active Bonnie tokens in the MAT. Once done, this action can not be undone. Are you sure you wish to proceed?", "Yes", "No", new ConfirmationObserver() {
 					@Override
-					public void onFailure(Throwable caught) {
-						searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+					public void onYesButtonClicked() {
+						displayReasonDialogBox();
 					}
 
 					@Override
-					public void onSuccess(Void result) {
-						displaySearch("");
-						searchDisplay.getSuccessMessageDisplay().createAlert("All active Bonnie tokens have been revoked.");
-					}
+					public void onNoButtonClicked() {}
+					
+					@Override
+					public void onClose() {}
 				});
+				confirmationDialogBox.show();
+
 			}
 		});
 		
 		MatTextBox searchWidget = (MatTextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(event -> searchWidgetKeyUpPressed(event));
 		searchDisplay.getSearchButton().addClickHandler(event -> performSearch());
+	}
+	
+	private void displayReasonDialogBox() {
+		reasonDialogBox = new RevokeReasonDialogBox("Revoke Bonnie Tokens", "Submit", "Cancel", new ConfirmationObserver() {
+
+			@Override
+			public void onYesButtonClicked() {
+				if(StringUtility.isEmptyOrNull(reasonDialogBox.getReasonText())){
+					reasonDialogBox.getMessageAlert().createAlert("Reason is a requied field");
+				} else {
+					reasonDialogBox.hide();
+					revokeAllBonnieTokens(reasonDialogBox.getReasonText());
+				}
+			}
+
+			@Override
+			public void onNoButtonClicked() {}
+
+			@Override
+			public void onClose() {}
+		});
+		reasonDialogBox.show();
+	}
+
+	private void revokeAllBonnieTokens(String reason) {
+		MatContext.get().getBonnieService().revokeAllBonnieAccessTokens(MatContext.get().getLoggedinUserId(), reason, new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				displaySearch("");
+				searchDisplay.getSuccessMessageDisplay().createAlert("All active Bonnie tokens have been revoked.");
+			}
+		});
 	}
 
 	private void searchWidgetKeyUpPressed(KeyUpEvent event) {
@@ -116,10 +157,7 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	public Widget getWidget() {
 		return panel;
 	}
-	
-	/**
-	 * Display search.
-	 */
+
 	private void displaySearch(String name) {
 		panel.setContent(searchDisplay.asWidget());
 		panel.setHeading("", "");
@@ -168,9 +206,6 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 		((MatTextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 	}
 	
-	/**
-	 * Call sign out.
-	 */
 	private void callSignOut() {
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 			@Override
@@ -186,10 +221,6 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	}
 	
 	private void redirectToLogin() {
-		/*
-		 * Added a timer to have a delay before redirect since this was causing
-		 * the firefox javascript exception.
-		 */
 		final Timer timer = new Timer() {
 			@Override
 			public void run() {

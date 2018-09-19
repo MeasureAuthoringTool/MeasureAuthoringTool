@@ -23,12 +23,12 @@ import mat.client.buttons.YesButton;
 
 
 public class ConfirmationDialogBox {
-	private  final Button yesButton = new YesButton("ConfirmDialogBox"); 
-	private final Button noButton = new NoButton("ConfirmDialogBox");
-	private ConfirmationObserver observer; 
-	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
-	Modal panel = new Modal();
-	private boolean isContinueClose = false; 
+	protected  final Button yesButton = new YesButton("ConfirmDialogBox"); 
+	protected final Button noButton = new NoButton("ConfirmDialogBox");
+	protected ConfirmationObserver observer; 
+	protected ErrorMessageAlert messageAlert = new ErrorMessageAlert();
+	protected Modal panel = new Modal();
+	protected boolean isClosingOnContinue = false; 
 	
 	public ErrorMessageAlert getMessageAlert() {
 		return messageAlert;
@@ -68,9 +68,7 @@ public class ConfirmationDialogBox {
 		panel.addHideHandler(new ModalHideHandler() {
 			@Override
 			public void onHide(ModalHideEvent evt) {
-				// if the dialog box is closing because of clicking the continue button, 
-				// then don't execute the close handler. Just close the thing. 
-				if(!isContinueClose) {
+				if(!isClosingOnContinue) {
 					observer.onClose();
 				}
 			}
@@ -79,14 +77,14 @@ public class ConfirmationDialogBox {
 		getYesButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isContinueClose = true; 
+				isClosingOnContinue = true; 
 				observer.onYesButtonClicked();
 			}
 		});
 		getNoButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isContinueClose = false; 
+				isClosingOnContinue = false; 
 				observer.onNoButtonClicked();
 			}
 		});

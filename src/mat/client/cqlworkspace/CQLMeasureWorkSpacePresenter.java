@@ -257,7 +257,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().addKeyUpHandler(event -> keyUpEvent());
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addKeyUpHandler(event -> keyUpEvent());
 		cqlWorkspaceView.getCQLDefinitionsView().getAddNewButtonBar().getaddNewButton().addClickHandler(event -> definitionAddNewClicked());
-		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addBlurHandler(event -> defineCommentBlurEvent());
+		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().addBlurHandler(event -> definitionCommentBlurEvent());
 	}
 
 	private void addNewDefinition() {
@@ -799,8 +799,11 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				cqlWorkspaceView.getCQLFunctionsView().getFuncNameGroup().setValidationState(ValidationState.ERROR);
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_FUNCTION_NAME_NO_SPECIAL_CHAR());
 				cqlWorkspaceView.getCQLFunctionsView().getFuncNameTxtArea().setText(functionName.trim());
-			} else if (validator.isCommentTooLongOrContainsInvalidText(funcComment)) {
+			} else if (validator.isCommentMoreThan250Characters(funcComment)) {
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+				cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
+			} else if(validator.doesCommentContainInvalidCharacters(funcComment)) {
+				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
 				cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
 			} else {
 				CQLFunctions function = new CQLFunctions();
@@ -932,11 +935,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_PARAMETER_NAME_NO_SPECIAL_CHAR());
 				cqlWorkspaceView.getCQLParametersView().getParameterNameTxtArea().setText(parameterName.trim());
 
-			} else if (validator.isCommentTooLongOrContainsInvalidText(parameterComment)) {
-				messagePanel.getErrorMessageAlert()
-				.createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+			} else if (validator.isCommentMoreThan250Characters(parameterComment)) {
+				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 				cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
-
+			} else if(validator.doesCommentContainInvalidCharacters(parameterComment)) {
+				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+				cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
 			} else {
 				CQLParameter parameter = new CQLParameter();
 				parameter.setLogic(parameterLogic);
@@ -1040,10 +1044,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				cqlWorkspaceView.getCQLDefinitionsView().getDefineNameGroup().setValidationState(ValidationState.ERROR);
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_DEFINITION_NAME_NO_SPECIAL_CHAR());
 				cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setText(definitionName.trim());
-			} else if (validator.isCommentTooLongOrContainsInvalidText(definitionComment)) {
+			} else if (validator.isCommentMoreThan250Characters(definitionComment)) {
 				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 				cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
-
+			} else if(validator.doesCommentContainInvalidCharacters(definitionComment)) {
+				messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+				cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
 			} else {
 				final CQLDefinition define = new CQLDefinition();
 				define.setName(definitionName);
@@ -3454,10 +3460,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.resetMessageDisplay();
 		cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.NONE);
 		String comment = cqlWorkspaceView.getCQLParametersView().getParameterCommentTextArea().getText();
-		if (validator.isCommentTooLongOrContainsInvalidText(comment)) {
-			cqlWorkspaceView.getCQLParametersView().getParamCommentGroup()
-					.setValidationState(ValidationState.ERROR);
+		if (validator.isCommentMoreThan250Characters(comment)) {
+			cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+		} else if(validator.doesCommentContainInvalidCharacters(comment)) {
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+			cqlWorkspaceView.getCQLParametersView().getParamCommentGroup().setValidationState(ValidationState.ERROR);
 		}
 	}
 
@@ -3528,9 +3536,12 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.resetMessageDisplay();
 		cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.NONE);
 		String comment = cqlWorkspaceView.getCQLFunctionsView().getFunctionCommentTextArea().getText();
-		if (validator.isCommentTooLongOrContainsInvalidText(comment)) {
+		if (validator.isCommentMoreThan250Characters(comment)) {
 			cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+		} else if(validator.doesCommentContainInvalidCharacters(comment)){
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+			cqlWorkspaceView.getCQLFunctionsView().getFuncCommentGroup().setValidationState(ValidationState.ERROR);
 		}
 	}
 
@@ -3585,14 +3596,16 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineNameTxtArea().setFocus(true);
 	}
 
-	private void defineCommentBlurEvent() {
+	private void definitionCommentBlurEvent() {
 		cqlWorkspaceView.resetMessageDisplay();
 		cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.NONE);
 		String comment = cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentTextArea().getText();
-		if (validator.isCommentTooLongOrContainsInvalidText(comment)) {
-			cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup()
-					.setValidationState(ValidationState.ERROR);
+		if (validator.isCommentMoreThan250Characters(comment)) {
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
 			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
+		} else if(validator.doesCommentContainInvalidCharacters(comment)){
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+			cqlWorkspaceView.getCQLDefinitionsView().getDefineCommentGroup().setValidationState(ValidationState.ERROR);
 		}
 	}
 

@@ -336,6 +336,8 @@ public class MessageDelegate {
 	
 	private final String ERROR_VALIDATION_COMMENT_AREA = "Comment cannot exceed 250 characters. ";
 	
+	private final String INVALID_COMMENT_CHARACTERS = "Comments can not contain /* or */.";
+	
 	private static final String PACKAGER_CQL_ERROR = "Your CQL file contains validation errors. Errors must be corrected before proceeding to measure packaging. Please return to the CQL Workspace to make corrections.";
 	
 	private static final String SUCCESSFULLY_SHARED = " sharing status has been successfully updated.";
@@ -3585,6 +3587,10 @@ public class MessageDelegate {
 
 	public String getVSAC_RETRIEVE_TIMEOUT() {
 		return VSAC_RETRIEVE_TIMEOUT;
+	}
+
+	public String getINVALID_COMMENT_CHARACTERS() {
+		return INVALID_COMMENT_CHARACTERS;
 	}
 
 }

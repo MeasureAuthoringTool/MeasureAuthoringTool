@@ -25,13 +25,13 @@ public class CQLGeneralInformationUtility {
 		
 		if(validator.isCommentMoreThan250Characters(commentBoxContent)) {
 			view.getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert("Comment cannot exceed 250 characters.");
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
 			return false; 
 		}
 		
 		if(validator.doesCommentContainInvalidCharacters(commentBoxContent)) {
 			view.getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert("Comments can not contain /* or */.");
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
 			return false;
 		}
 		

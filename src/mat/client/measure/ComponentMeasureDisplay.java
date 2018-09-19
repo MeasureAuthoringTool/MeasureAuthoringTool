@@ -77,6 +77,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 	
 	private List<ManageMeasureSearchModel.Result> availableMeasuresList = new ArrayList<>();
 	private List<ManageMeasureSearchModel.Result> appliedComponentMeasuresList = new ArrayList<>();
+	MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 
 	private Map<String, String> aliasMapping = new HashMap<>();
 	
@@ -410,7 +411,6 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 		};
 		availableMeasuresTable.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner\">" + "Owner" + "</span>"));
 		
-		MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		availableMeasuresTable.setSelectionModel(selectionModel);
 
 		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
@@ -509,8 +509,10 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 				aliasMapping.remove(measureId);
 				aliasMapping.put(selectedMeasure.getId(), aliasName);
 			}
-			
+			selectionModel.setSelected(selectedMeasure, true);
+			availableMeasuresTable.setVisibleRangeAndClearData(availableMeasuresTable.getVisibleRange(), true);
 			availableMeasuresTable.redraw();
+			appliedComponentTable.setRowData(appliedComponentMeasuresList);
 			appliedComponentTable.redraw();
 			editIncludedComponentMeasureDialogBox.getDialogModal().hide();	
 			if(!StringUtility.isEmptyOrNull(replaceMessage)) {
@@ -548,12 +550,15 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 
 				for(Result matchingResult: matchingList) {
 					appliedComponentMeasuresList.remove(matchingResult);
+					availableMeasuresTable.getSelectionModel().setSelected(matchingResult, false);
 				}
 				if(aliasMapping.containsKey(object.getId())) {
 					aliasMapping.remove(object.getId());
 				}
-				buildAppliedComponentMeasuresTable();
-				buildAvailableMeasuresTable();
+				availableMeasuresTable.setVisibleRangeAndClearData(availableMeasuresTable.getVisibleRange(), true);
+				availableMeasuresTable.redraw();
+				appliedComponentTable.setRowData(appliedComponentMeasuresList);
+				appliedComponentTable.redraw();
 			}
 		});
 		

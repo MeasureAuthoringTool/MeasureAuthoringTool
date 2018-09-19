@@ -83,7 +83,7 @@ public class DeleteConfirmDialogBox {
 		
 		changePasswordWidget.getPassword().setId("password_PasswordTextBox");
 		changePasswordWidget.getPassword().setPlaceholder("Enter Password");
-		changePasswordWidget.getPassword().setTitle( message + "To confirm deletion enter your password. Required");
+		changePasswordWidget.getPassword().setTitle( message + " To confirm deletion enter your password. Required");
 		changePasswordWidget.getPassword().setFocus(true);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");

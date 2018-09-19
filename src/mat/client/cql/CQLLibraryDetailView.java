@@ -57,6 +57,7 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 		nameLabel.setMarginTop(5);
 		nameLabel.setId("cqlLibraryName_Label");
 		nameField.setId("CQLLibraryName_Input");
+		nameField.setTitle("Enter Name Required");
 		nameField.setMaxLength(500);
 		nameField.setWidth("400px");
 		nameField.setHeight("50px");

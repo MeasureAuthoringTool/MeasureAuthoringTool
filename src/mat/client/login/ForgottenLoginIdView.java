@@ -28,9 +28,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.CancelButton;
 import mat.client.shared.RequiredIndicator;
 
-/**
- * The Class ForgottenLoginIdView.
- */
+
 public class ForgottenLoginIdView  implements ForgottenLoginIdPresenter.Display{
 	private VerticalPanel mainPanel = new VerticalPanel();
 	
@@ -38,28 +36,23 @@ public class ForgottenLoginIdView  implements ForgottenLoginIdPresenter.Display{
 	private FormGroup emailAddressGroup = new FormGroup();
 	
 	
-	/** The error messages. */
 	private FormGroup messageFormGrp = new FormGroup();
 	private HelpBlock helpBlock = new HelpBlock();
 	private Button submitButton = new Button("Submit");
 	private Button resetButton = new CancelButton("ForgottenLoginId");
-	/**
-	 * Instantiates a new forgotten login id view.
-	 */
+
 	public ForgottenLoginIdView() {
 		Container loginFormContianer = new Container();
 		Row mainRow = new Row();
 		Column mainCol = new Column(ColumnSize.LG_12);
 		mainCol.setOffset(ColumnOffset.LG_3);
-		//Login Panel.
+
 		Panel loginPanel = new Panel();
 		loginPanel.setWidth("450px");
-		//Login Panel Header.
 		PanelHeader header = new PanelHeader();
 		header.setStyleName("loginNewBlueTitleHolder");
 		HTML loginText = new HTML("<strong>Request your User ID</strong>");
 		header.add(loginText);
-		//Login Panel Body.
 		PanelBody loginPanelBody = new PanelBody();
 		
 		Form loginForm = new Form();
@@ -87,7 +80,6 @@ public class ForgottenLoginIdView  implements ForgottenLoginIdPresenter.Display{
 		emailAddressGroup.add(hPanel);
 		emailAddressGroup.add(emailAddressText);
 		
-		//add to form
 		messageFormGrp.add(helpBlock);
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		loginForm.add(messageFormGrp);

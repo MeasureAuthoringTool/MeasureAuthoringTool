@@ -16,20 +16,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * The Class ForgottenLoginIdPresenter.
- */
+
 public class ForgottenLoginIdPresenter {
 	
-	/**
-	 * The Interface Display.
-	 */
 	public static interface Display {
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
+
 		public Widget asWidget();
 		
 		Input getEmailAddressText();
@@ -47,7 +38,7 @@ public class ForgottenLoginIdPresenter {
 		Button getResetButton();
 	}
 	
-	/** The display. */
+
 	private final Display display;
 	Boolean emailBoxValidationState = true;
 	
@@ -80,9 +71,7 @@ public class ForgottenLoginIdPresenter {
 		});
 	}
 	
-	/**
-	 * Reset.
-	 */
+
 	private void reset() {
 		display.getEmailAddressText().setText("");
 		display.getHelpBlock().setText("");
@@ -92,9 +81,6 @@ public class ForgottenLoginIdPresenter {
 		}
 	}
 	
-	/**
-	 * Request forgotten login id.
-	 */
 	private void requestForgottenLoginID() {
 		MatContext.get().getLoginService().forgotLoginID(display.getEmailAddressText().getText(), new AsyncCallback<ForgottenLoginIDResult>(){
 			@Override
@@ -124,13 +110,7 @@ public class ForgottenLoginIdPresenter {
 			}});
 	}
 	
-	/**
-	 * Convert message.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the string
-	 */
+
 	private String convertMessage(int id) {
 		String message;
 		switch(id) {

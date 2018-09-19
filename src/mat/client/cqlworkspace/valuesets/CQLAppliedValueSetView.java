@@ -447,28 +447,21 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			table.setSelectionModel(selectionModel);
 
 		
-			// Name Column
 			table.addColumn(createNameColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 
-			// OID Column
 			table.addColumn(createOIDColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			
-			// Program Column
 			table.addColumn(createProgramColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Program\">" + "Program" + "</span>"));
 			
-			// Release Column
 			table.addColumn(createReleaseColumn(), SafeHtmlUtils.fromSafeConstant("<span title=\"Release\">" + "Release" + "</span>"));
 			
 			String colName = "";
-			// Edit Column
 			colName = "Edit";
 			table.addColumn(createEditColumn(), SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 
-			// Delete Column
 			colName = "Delete";
 			table.addColumn(createDeleteColumn(), SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 			
-			// Copy Column
 			colName = "Copy";
 			table.addColumn(createCopyColumn(), SafeHtmlUtils.fromSafeConstant("<span title='" + colName + "'>  " + colName + "</span>"));
 

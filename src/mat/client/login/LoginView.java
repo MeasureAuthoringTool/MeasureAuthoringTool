@@ -34,16 +34,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.shared.ChangePasswordWidget;
 
-/**
- * The Class LoginView.
- */
 public class LoginView implements LoginPresenter.LoginViewDisplay  {
-	/** The main panel. */
 	private VerticalPanel mainPanel = new VerticalPanel();
-	/** The forgot login id. */
 	private Anchor forgotLoginId;
 	
-	/** The forgot password. */
 	private Anchor forgotPassword;
 	
 	private Input userIdText = new Input(InputType.TEXT);
@@ -60,9 +54,6 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 	private PanelBody successMessageBody = new PanelBody();
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	
-	/**
-	 * Instantiates a new login view.
-	 */
 	public LoginView() {
 		Container loginFormContianer = new Container();
 		
@@ -93,15 +84,12 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 		Row mainRow = new Row();
 		Column mainCol = new Column(ColumnSize.SM_10);
 		mainCol.setOffset(ColumnOffset.SM_3);
-		//Login Panel.
 		Panel loginPanel = new Panel();
 		loginPanel.setWidth("300px");
-		//Login Panel Header.
 		PanelHeader header = new PanelHeader();
 		header.setStyleName("loginNewBlueTitleHolder");
 		HTML loginText = new HTML("<strong>Please Sign In</strong>");
 		header.add(loginText);
-		//Login Panel Body.
 		PanelBody loginPanelBody = new PanelBody();
 		
 		Form loginForm = new Form();
@@ -166,7 +154,6 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 		loginForm.add(formFieldSet);
 		loginPanelBody.add(loginForm);
 		
-		//Login Panel Footer.
 		PanelFooter loginPanelFooter = new PanelFooter();
 		HorizontalPanel hPanel = new HorizontalPanel();
 		HTML desc = new HTML("Forgot your&nbsp;");
@@ -198,9 +185,6 @@ public class LoginView implements LoginPresenter.LoginViewDisplay  {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.login.LoginPresenter.Display#asWidget()
-	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;

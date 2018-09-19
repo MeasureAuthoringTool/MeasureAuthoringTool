@@ -21,14 +21,12 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 	
-/*	private Button saveButton = new Button("Save and Continue");
-	private Button cancelButton = new Button("Cancel");*/
+
 	private TextArea nameField = new TextArea();
 	private ErrorMessageAlert errorMessage = new ErrorMessageAlert();
 	private SuccessMessageAlert successMessage = new SuccessMessageAlert();
 	protected HTML instructions = new HTML("Enter a CQL Library name. Then continue to the CQL Composer.");
 	private SimplePanel mainDetailViewVP = new SimplePanel();
-	/**  The edit confirmation box. */
 	private EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
 	
 	SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
@@ -139,9 +137,6 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 		this.successMessage = successMessage;
 	}
 
-	/**
-	 * @return the createNewConfirmationDialogBox
-	 */
 	public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
 		return createNewConfirmationDialogBox;
 	}

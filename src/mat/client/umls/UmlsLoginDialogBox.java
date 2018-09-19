@@ -130,7 +130,7 @@ public class UmlsLoginDialogBox  implements ManageUmlsPresenter.UMLSDisplay{
 		userIdGroup.add(userIdLabel);
 		userIdGroup.add(userIdText);
 		
-		FormLabel passwordLabel = new FormLabel();//passwordInput.getLabel();
+		FormLabel passwordLabel = new FormLabel();
 		passwordLabel.setText("Password");
 		passwordLabel.setTitle("Password");
 		passwordLabel.setFor("inputPwd");

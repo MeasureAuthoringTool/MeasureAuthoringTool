@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
 public class LoginPresenter {
 	
 	private LoginView view;
-	/** The login model. */
 	private LoginModel loginModel;
 	
 	interface LoginViewDisplay {
@@ -86,7 +85,6 @@ public class LoginPresenter {
 		
 	}
 	
-	/** The submit on enter handler. */
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
@@ -97,7 +95,6 @@ public class LoginPresenter {
 	};
 	
 	public LoginPresenter(LoginView loginView) {
-		// TODO Auto-generated constructor stub
 		view = loginView;
 		
 		loginModel = new LoginModel();
@@ -150,9 +147,7 @@ public class LoginPresenter {
 		view.getPasswordGroup().setValidationState(ValidationState.NONE);
 		view.getAuthTokenGroup().setValidationState(ValidationState.NONE);
 	}
-	/**
-	 * Method called when Sign In Button on Login View is clicked.
-	 */
+
 	private void submit() {
 		view.getSuccessMessagePanel().setVisible(false);
 		view.getHelpBlock().setText("");

@@ -107,7 +107,7 @@ public class CQLParametersView {
 		parameterNameTxtArea.setSize("550px", "32px");
 		parameterNameTxtArea.getElement().setId("parameterNameField");
 		parameterNameTxtArea.setName("parameterName");
-		parameterNameTxtArea.setTitle("Enter Parameter Name");
+		parameterNameTxtArea.setTitle("Enter Parameter Name Required");
 		
 		HorizontalPanel paramNameHPanel = new HorizontalPanel();
 		paramNameHPanel.add(parameterLabel);

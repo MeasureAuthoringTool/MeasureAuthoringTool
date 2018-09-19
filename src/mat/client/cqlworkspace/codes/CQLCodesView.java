@@ -365,7 +365,7 @@ public class CQLCodesView {
 
 	public void resetVSACCodeWidget() {
 		if(checkForEnable()){
-			sWidget.getSearchBox().setTitle("Enter Code Identifier");
+			sWidget.getSearchBox().setTitle("Enter Code Identifier Required");
 		}
 		HTML searchHeaderText = new HTML("<strong>Search</strong>");
 		searchHeader.clear();

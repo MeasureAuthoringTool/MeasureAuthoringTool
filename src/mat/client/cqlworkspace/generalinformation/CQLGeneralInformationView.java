@@ -65,6 +65,7 @@ public class CQLGeneralInformationView {
 
 		libraryNameValue.getElement().setAttribute(STYLE, MARGIN_STYLE);
 		libraryNameValue.getElement().setId("libraryNameValue_TextBox");
+		libraryNameValue.setTitle("Required");
 		
 		libNameGroup.add(libraryNameLabel);
 		libNameGroup.add(libraryNameValue);

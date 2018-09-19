@@ -221,6 +221,10 @@ public class ManageBonnieTokenPresenter implements MatPresenter {
 	}
 	
 	private void redirectToLogin() {
+		/*
+		 * Added a timer to have a delay before redirect since this was causing
+		 * the firefox javascript exception.
+		 */
 		final Timer timer = new Timer() {
 			@Override
 			public void run() {

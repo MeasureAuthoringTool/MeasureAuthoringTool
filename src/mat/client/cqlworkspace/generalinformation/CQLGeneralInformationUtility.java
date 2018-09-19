@@ -25,7 +25,7 @@ public class CQLGeneralInformationUtility {
 		
 		if(validator.isCommentMoreThan250Characters(commentBoxContent)) {
 			view.getCommentsGroup().setValidationState(ValidationState.ERROR);
-			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getINVALID_COMMENT_CHARACTERS());
+			messagePanel.getErrorMessageAlert().createAlert(MatContext.get().getMessageDelegate().getERROR_VALIDATION_COMMENT_AREA());
 			return false; 
 		}
 		

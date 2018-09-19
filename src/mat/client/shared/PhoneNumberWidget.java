@@ -67,7 +67,7 @@ public class PhoneNumberWidget extends Composite {
 	 */
 	public PhoneNumberWidget() {
 		phoneNumber.getElement().setId("phoneNumber_TextBox");
-		phoneNumber.setTitle("PhoneNumber");
+		phoneNumber.setTitle("Phone Number Required");
 		phoneNumber.setMaxLength(12);
 		Grid phoneLayout = new Grid(2,2);
 		phoneLayout.addStyleName("leftAligned");

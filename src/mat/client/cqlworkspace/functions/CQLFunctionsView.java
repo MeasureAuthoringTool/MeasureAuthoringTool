@@ -67,16 +67,9 @@ import mat.client.util.MatTextBox;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.ClickableSafeHtmlCell;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLFunctionsView.
- *
- * @author jnarang
- */
+
 public class CQLFunctionsView {
-	/**
-	 * The Interface Observer.
-	 */
+	
 	public static interface Observer {
 		
 		/**
@@ -98,73 +91,50 @@ public class CQLFunctionsView {
 		void onDeleteClicked(CQLFunctionArgument result, int index);
 	}
 	
-	/** The observer. */
 	private Observer observer;
 	
-	/** The main function focus panel. */
 	private FocusPanel mainFunctionVerticalPanel = new FocusPanel();
 	
-	/** The func name txt area. */
 	private MatTextBox funcNameTxtArea = new MatTextBox();
-	/** The Function Body ace editor. */
 	private AceEditor functionBodyAceEditor = new AceEditor();
 	
-	/** The add new argument. */
 	private Button addNewArgument = new Button();
 
-	/** The function button bar. */
 	private DefinitionFunctionButtonToolBar functionButtonBar = new DefinitionFunctionButtonToolBar("function");
 	
-	/** The context group. */
 	private ButtonGroup contextGroup = new ButtonGroup();
 	
-	/** The context pat toggle switch. */
 	private InlineRadio contextFuncPATRadioBtn = new InlineRadio("Patient");
 	
-	/** The context pop toggle switch. */
 	private InlineRadio contextFuncPOPRadioBtn = new InlineRadio("Population");
 	
-	/** The function add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("function");
 	
-	/** The function argument list. */
 	private List<CQLFunctionArgument> functionArgumentList = new ArrayList<CQLFunctionArgument>();
 	
 	
-	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
-	/** Cell Table Row Count. */
 	private static final int TABLE_ROW_COUNT = 2;
 	
-	/** The argument list table. */
 	private CellTable<CQLFunctionArgument> argumentListTable;
 	
-	/** The sort provider. */
 	private ListDataProvider<CQLFunctionArgument> listDataProvider;
 	
-	/** The spager. */
 	private MatSimplePager spager;
 	
-	/** The function arg name map. */
 	private Map<String, CQLFunctionArgument> functionArgNameMap = new  HashMap<String, CQLFunctionArgument>();
 	
-	/** The is editable. */
 	boolean isEditable = false;
 	
-	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	
-	/** The func comment text area. */
 	private TextArea funcCommentTextArea = new TextArea();
 	
-	/** The func name group. */
 	private FormGroup funcNameGroup = new FormGroup();
 	
-	/** The func comment group. */
 	private FormGroup funcCommentGroup = new FormGroup();
 	
-	/** The func context group. */
 	private FormGroup funcContextGroup = new FormGroup();
 	
 	private TextBox returnTypeTextBox = new TextBox();
@@ -172,11 +142,7 @@ public class CQLFunctionsView {
 
 	HTML heading = new HTML();
 	
-	/**
-	 * Instantiates a new CQL functions view.
-	 */
 	public CQLFunctionsView() {
-		// TODO Auto-generated constructor stub
 		mainFunctionVerticalPanel.clear();
 		functionBodyAceEditor.startEditor();
 		heading.addStyleName("leftAligned");
@@ -188,11 +154,6 @@ public class CQLFunctionsView {
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
-	/**
-	 * Builds the view.
-	 *
-	 * @param isEditable the is editable
-	 */
 	@SuppressWarnings("static-access")
 	private void buildView(boolean isEditable) {
 		
@@ -248,8 +209,6 @@ public class CQLFunctionsView {
 		functionBodyAceEditor.setUseWrapMode(true);
 		functionBodyAceEditor.clearAnnotations();
 		functionBodyAceEditor.removeAllMarkers();
-		//Commenting below code as its taking away focus and that makes our application not 508 compliant with other fields.
-		//functionBodyAceEditor.redisplay();
 		functionBodyAceEditor.getElement().setAttribute("id", "Func_AceEditorID");
 		functionBodyAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
 		
@@ -271,13 +230,10 @@ public class CQLFunctionsView {
 		addNewArgument.setId("Add_Argument_ID");
 		addNewArgument.setIcon(IconType.PLUS);
 		addNewArgument.setSize(ButtonSize.SMALL);
-
-		/*addNewArgument.setPull(Pull.RIGHT);*/
 		
 		FormLabel funcContextLabel = new FormLabel();
 		funcContextLabel.setText("Context");
 		funcContextLabel.setTitle("Context");
-		/*funcContextLabel.setMarginRight(5);*/
 		funcContextLabel.setId("FunctionContext_Label");
 
 		contextFuncPATRadioBtn.setValue(true);
@@ -319,7 +275,6 @@ public class CQLFunctionsView {
 		
 		funcCommentGroup.add(funcCommentHPanel);
 		
-		// Build Return Type form Group
 		FormLabel returnTypeLabel = new FormLabel();
 		returnTypeLabel.setText("Return Type");
 		returnTypeLabel.setTitle("Return Type");
@@ -338,7 +293,6 @@ public class CQLFunctionsView {
 		HorizontalPanel returnTypeHP = new HorizontalPanel();
 		returnTypeHP.add(returnTypeLabel);
 		returnTypeHP.add(returnTypeTextBox);
-		//returnTypeHP.add(addNewArgument);
 
 		returnTypeAndButtonPanelGroup.add(returnTypeHP);
 		setMarginInButtonBar();
@@ -348,7 +302,6 @@ public class CQLFunctionsView {
 		funcVP.add(funcContextGroup);
 		funcVP.add(funcCommentGroup);
 		funcVP.add(returnTypeAndButtonPanelGroup);
-		//funcVP.add(new SpacerWidget());
 		funcVP.add(addNewArgument);
 		createAddArgumentViewForFunctions(functionArgumentList,isEditable);
 		funcVP.add(cellTablePanel);
@@ -358,8 +311,6 @@ public class CQLFunctionsView {
 		buttonPanel.add(functionButtonBar);
 		funcVP.add(buttonPanel);
 		
-	//	funcVP.add(functionButtonBar);
-	//	funcVP.add(new SpacerWidget());
 		funcVP.add(aceEditorPanel);
 		funcVP.add(new SpacerWidget());
 		funcVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
@@ -378,15 +329,12 @@ public class CQLFunctionsView {
 		mainFunctionVerticalPanel.add(funcFP);
 	}
 
-	/**
-	 * 
-	 */
+
 	public void setMarginInButtonBar() {
 		
 		functionButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:280px;");
 		functionButtonBar.getEraseButton().setMarginRight(5.00);
 		functionButtonBar.getInsertButton().setMarginRight(10.00);
-		//functionButtonBar.getInfoButton().setMarginLeft(-10.00);
 		functionButtonBar.getDeleteButton().setMarginLeft(-10.00);
 	}
 	
@@ -468,7 +416,6 @@ public class CQLFunctionsView {
 			spager.setDisplay(argumentListTable);
 			spager.setPageStart(0);
 			cellTablePanel.add(argumentListTable);
-			// cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
 		} else {
 			com.google.gwt.user.client.ui.Label tableHeader = new com.google.gwt.user.client.ui.Label(
@@ -481,24 +428,10 @@ public class CQLFunctionsView {
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 		}
-		/*
-		 * } else { com.google.gwt.user.client.ui.Label tableHeader = new
-		 * com.google.gwt.user.client.ui.Label("Added Arguments List");
-		 * tableHeader.getElement().setId("tableHeader_Label");
-		 * tableHeader.setStyleName("measureGroupingTableHeader");
-		 * tableHeader.getElement().setAttribute("tabIndex", "0"); HTML desc =
-		 * new HTML("<p> No Arguments Added.</p>");
-		 * cellTablePanel.add(tableHeader); cellTablePanel.add(new
-		 * SpacerWidget()); cellTablePanel.add(desc); }
-		 */
 		
 	}
 	
-	/**
-	 * Update function argument name map.
-	 *
-	 * @param argumentList the argument list
-	 */
+
 	private void updateFunctionArgumentNameMap(List<CQLFunctionArgument> argumentList) {
 		functionArgNameMap.clear();
 		if (argumentList != null) {
@@ -509,13 +442,7 @@ public class CQLFunctionsView {
 		
 	}
 	
-	/**
-	 * Adds the column to table.
-	 *
-	 * @param table the table
-	 * @param sortHandler the sort handler
-	 * @return the cell table
-	 */
+
 	private CellTable<CQLFunctionArgument> addColumnToTable(CellTable<CQLFunctionArgument> table,
 			ListHandler<CQLFunctionArgument> sortHandler) {
 		if (table.getColumnCount() != TABLE_ROW_COUNT) {
@@ -539,11 +466,7 @@ public class CQLFunctionsView {
 					StringBuilder value = new StringBuilder(object.getArgumentName());
 					
 					title = title.append("Name : ").append(value);
-					/*
-					 * return
-					 * CellTableUtility.getColumnToolTip(value.toString(),
-					 * title.toString());
-					 */
+
 					return getDataTypeColumnToolTip(value.toString(), title, object.isValid());
 				}
 				
@@ -573,7 +496,6 @@ public class CQLFunctionsView {
 			
 			String colName = "Modify";
 			
-			// Modify by Delete Column
 			table.addColumn(
 					new Column<CQLFunctionArgument, CQLFunctionArgument>(getCompositeCellForFuncArguModifyAndDelete()) {
 						
@@ -590,11 +512,7 @@ public class CQLFunctionsView {
 		return table;
 	}
 	
-	/**
-	 * Gets the composite cell for func argu modify and delete.
-	 *
-	 * @return the composite cell for func argu modify and delete
-	 */
+
 	private CompositeCell<CQLFunctionArgument> getCompositeCellForFuncArguModifyAndDelete() {
 		final List<HasCell<CQLFunctionArgument, ?>> cells = new LinkedList<HasCell<CQLFunctionArgument, ?>>();
 		if (isEditable) {
@@ -633,17 +551,6 @@ public class CQLFunctionsView {
 		return cell;
 	}
 	
-	/**
-	 * Gets the data type column tool tip.
-	 *
-	 * @param columnText
-	 *            the column text
-	 * @param title
-	 *            the title
-	 * @param hasImage
-	 *            the has image
-	 * @return the data type column tool tip
-	 */
 	private SafeHtml getDataTypeColumnToolTip(String columnText, StringBuilder title, boolean hasImage) {
 		if (hasImage) {
 			String htmlConstant = "<html>"
@@ -658,11 +565,6 @@ public class CQLFunctionsView {
 		}
 	}
 	
-	/**
-	 * Gets the modify qdm button cell.
-	 *
-	 * @return the modify qdm button cell
-	 */
 	private HasCell<CQLFunctionArgument, SafeHtml> getModifyQDMButtonCell() {
 		
 		HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
@@ -708,11 +610,6 @@ public class CQLFunctionsView {
 		return hasCell;
 	}
 	
-	/**
-	 * Gets the delete qdm button cell.
-	 * 
-	 * @return the delete qdm button cell
-	 */
 	private HasCell<CQLFunctionArgument, SafeHtml> getDeleteQDMButtonCell() {
 		
 		HasCell<CQLFunctionArgument, SafeHtml> hasCell = new HasCell<CQLFunctionArgument, SafeHtml>() {
@@ -1009,7 +906,6 @@ public class CQLFunctionsView {
 		getFunctionCommentTextArea().setEnabled(isEditable);
 		getFunctionBodyAceEditor().setReadOnly(!isEditable);
 		getFunctionButtonBar().setEnabled(isEditable);
-		/*getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);*/
 		getAddNewArgument().setEnabled(isEditable);
 		getContextFuncPATRadioBtn().setEnabled(isEditable);
 		getContextFuncPOPRadioBtn().setEnabled(isEditable);

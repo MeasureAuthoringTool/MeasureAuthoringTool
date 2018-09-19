@@ -39,19 +39,14 @@ import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay{
-	/** CellTable Page Size. */
 	private static final int PAGE_SIZE = 25;
 	
-	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
-	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	/** The major radio. */
 	private RadioButton majorRadio = new RadioButton("group", "Major");
 	
-	/** The minor radio. */
 	private RadioButton minorRadio = new RadioButton("group", "Minor");
 	
 	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
@@ -107,9 +102,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		}
 		
 	}
-	/** Adds the column to table.
-	 * @param cellTable the cell table
-	 * @return the cell table */
+
 	private CellTable<CQLLibraryDataSetObject> addColumnToTable(final CellTable<CQLLibraryDataSetObject> cellTable) {
 		Column<CQLLibraryDataSetObject, Boolean> radioButtonColumn = new Column<CQLLibraryDataSetObject, Boolean>(new RadioButtonCell(true, true)) {
 			@Override
@@ -175,7 +168,6 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 			spager.setPageStart(0);
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);
-			/* spager.setToolTipAndTabIndex(spager); */
 			cellTable.setWidth("100%");
 			cellTable.setColumnWidth(0, 15.0, Unit.PCT);
 			cellTable.setColumnWidth(1, 63.0, Unit.PCT);
@@ -234,22 +226,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	public void setMinorRadio(RadioButton minorRadio) {
 		this.minorRadio = minorRadio;
 	}
-	/*@Override
-	public SearchWidget getSearchWidget() {
-		return searchWidget;
-	}
-
-	public void setSearchWidget(SearchWidget searchWidget) {
-		this.searchWidget = searchWidget;
-	}
-	@Override
-	public CustomButton getZoomButton() {
-		return zoomButton;
-	}
-
-	public void setZoomButton(CustomButton zoomButton) {
-		this.zoomButton = zoomButton;
-	}*/
+	
 	@Override
 	public ErrorMessageAlert getErrorMessages() {
 		return errorMessages;

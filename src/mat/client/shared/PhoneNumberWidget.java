@@ -10,15 +10,10 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 
 
-/**
- * The Class PhoneNumberWidget.
- */
 public class PhoneNumberWidget extends Composite {
 	
-	/** The phone number. */
 	private TextBox phoneNumber = new TextBox();
 	
-	/** The key up handler. */
 	private static KeyUpHandler keyUpHandler = new KeyUpHandler() {
 		
 		@Override
@@ -71,7 +66,6 @@ public class PhoneNumberWidget extends Composite {
 		phoneNumber.setMaxLength(12);
 		Grid phoneLayout = new Grid(2,2);
 		phoneLayout.addStyleName("leftAligned");
-		//phoneLayout.setWidget(0,0, LabelBuilder.buildRequiredLabel(phoneNumber, "Phone Number"));
 		phoneLayout.setWidget(0,0, phoneNumber);
 		Label phoneFormat = new Label("(555-555-1234)");
 		phoneLayout.setWidget(0, 1, phoneFormat);

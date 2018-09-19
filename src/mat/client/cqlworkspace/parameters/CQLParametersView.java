@@ -34,40 +34,27 @@ import mat.client.util.MatTextBox;
 
 public class CQLParametersView {
 
-	/**
-	 * TextArea parameterNameTxtArea.
-	 */
+	
 	private MatTextBox parameterNameTxtArea = new MatTextBox();
 
-	/** The parameter ace editor. */
 	private AceEditor parameterAceEditor = new AceEditor();
 
-	/** The parameter button bar. */
 	private DefinitionFunctionButtonToolBar parameterButtonBar = new DefinitionFunctionButtonToolBar("parameter");
 
-	/** The parameter add new button. */
 	private CQLAddNewButton addNewButtonBar = new CQLAddNewButton("parameter");
 
-	/** The main param view focus panel. */
 	FocusPanel mainParamViewVerticalPanel = new FocusPanel();
 
-	/** The collapsible CQL panel widget. */
 	private CQLCollapsibleCQLPanelWidget collapsibleCQLPanelWidget = new CQLCollapsibleCQLPanelWidget();
 	
-	/** The parameter comment text area. */
 	private TextArea parameterCommentTextArea = new TextArea();
 	
-	/** The param name group. */
 	private FormGroup paramNameGroup = new FormGroup();
 	
-	/** The param comment group. */
 	private FormGroup paramCommentGroup = new FormGroup();
 	
 	HTML heading = new HTML();
 	
-	/**
-	 * Instantiates a new CQL parameters view.
-	 */
 	public CQLParametersView() {
 		mainParamViewVerticalPanel.getElement().setId("mainParamViewVerticalPanel");
 		parameterAceEditor.startEditor();
@@ -80,9 +67,6 @@ public class CQLParametersView {
 		collapsibleCQLPanelWidget.getViewCQLAnchor().setColor("White");
 	}
 
-	/**
-	 * Builds the view.
-	 */
 	@SuppressWarnings("static-access")
 	private void buildView() {
 		
@@ -136,7 +120,6 @@ public class CQLParametersView {
 		parameterAceEditor.getElement().setAttribute("id", "Parameter_AceEditorID");
 		parameterAceEditor.getElement().getElementsByTagName("textarea").getItem(0).setTitle("Build CQL Expression");
 		
-		// MAT-8735 Disable tab and shift-tab
 		parameterAceEditor.removeCommand(AceCommand.INDENT);
 		parameterAceEditor.removeCommand(AceCommand.OUTDENT);
 
@@ -182,7 +165,6 @@ public class CQLParametersView {
 		buttonPanel.add(parameterButtonBar);
 		parameterVP.add(buttonPanel);
 		
-		//parameterVP.add(parameterButtonBar);
 		parameterVP.add(aceEditorPanel);
 		parameterVP.add(new SpacerWidget());
 		parameterVP.add(collapsibleCQLPanelWidget.buildViewCQLCollapsiblePanel());
@@ -207,7 +189,6 @@ public class CQLParametersView {
 	 */
 	public void setMarginInButtonBar() {
 		parameterButtonBar.getElement().setAttribute("style", "margin-top:-10px;margin-left:350px;");
-		//parameterButtonBar.getSaveButton().setMarginRight(-15.00);
 		parameterButtonBar.getDeleteButton().setMarginLeft(-5.00);
 	}
 
@@ -314,13 +295,10 @@ public class CQLParametersView {
 	 * @param isEditable the new widget read only
 	 */
 	public void setWidgetReadOnly(boolean isEditable) {
-	//	getAddNewButtonBar().getaddNewButton().setEnabled(isEditable);
 		getParameterNameTxtArea().setEnabled(isEditable);
 		getParameterCommentTextArea().setEnabled(isEditable);
 		getParameterAceEditor().setReadOnly(!isEditable);
 		
-	/*	System.out.println(
-				"in setParameterWidgetReadOnly: setting Ace Editor read only flag. read only = " + !isEditable);*/
 		getParameterButtonBar().getSaveButton().setEnabled(isEditable);
 		getParameterButtonBar().getDeleteButton().setEnabled(isEditable);
 		getParameterButtonBar().getInsertButton().setEnabled(isEditable);

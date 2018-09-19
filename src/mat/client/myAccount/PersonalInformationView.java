@@ -27,9 +27,6 @@ import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
-/**
- * The Class PersonalInformationView.
- */
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
 	
 	private FlowPanel vPanel;
@@ -60,9 +57,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	
 	private MessageAlert successMessages = new SuccessMessageAlert();
 
-	/**
-	 * Instantiates a new personal information view.
-	 */
 	public PersonalInformationView() {
 		
 		vPanel = new FlowPanel();

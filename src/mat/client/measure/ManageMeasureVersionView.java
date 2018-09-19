@@ -1,6 +1,3 @@
-/**
- * 
- */
 package mat.client.measure;
 
 import com.google.gwt.dom.client.Style.Unit;

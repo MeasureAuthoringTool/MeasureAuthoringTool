@@ -611,7 +611,6 @@ public class CQLCodesView {
 			selectionModel = new MultiSelectionModel<CQLCode>();
 			table.setSelectionModel(selectionModel);
 			
-			// Descriptor Column
 			Column<CQLCode, SafeHtml> nameColumn = new Column<CQLCode, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
@@ -626,7 +625,6 @@ public class CQLCodesView {
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Descriptor\">" + "Descriptor"+ "</span>"));
-			// Code Profile Column
 			Column<CQLCode, SafeHtml> codeColumn = new Column<CQLCode, SafeHtml>(
 					new SafeHtmlCell()) {
 				@Override
@@ -640,7 +638,6 @@ public class CQLCodesView {
 			};
 			table.addColumn(codeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Code\">"+ "Code" + "</span>"));
 			
-			// CodeSystem Profile Column
 			Column<CQLCode, SafeHtml> codeSystemColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
@@ -655,7 +652,6 @@ public class CQLCodesView {
 			table.addColumn(codeSystemColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"CodeSystem\">" + "CodeSystem" + "</span>"));
 			
 			
-			// Version Profile Column
 			Column<CQLCode, SafeHtml> versionColumn = new Column<CQLCode, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(CQLCode object) {
@@ -692,7 +688,6 @@ public class CQLCodesView {
 			table.addColumn(isVersionIncludedColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version Included\">" + "Version Included" + "</span>"));
 			
 			String colName = "";
-			// Edit Cell
 			colName = "Edit";
 			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(isEditable, getModifyButtonCell())) {
 				
@@ -702,7 +697,6 @@ public class CQLCodesView {
 				}
 			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));
 			
-			// Delete Cell
 			colName = "Delete";
 			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(isEditable, getDeleteButtonCell())) {
 				
@@ -712,7 +706,6 @@ public class CQLCodesView {
 				}
 			}, SafeHtmlUtils.fromSafeConstant("<span title='"+colName+"'>  "+ colName + "</span>"));	
 			
-			// Copy Cell
 			colName = "Copy";
 			table.addColumn(new Column<CQLCode, CQLCode>(getCompositeCell(true, getCheckBoxCell())) {
 				

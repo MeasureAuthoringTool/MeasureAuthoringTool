@@ -28,35 +28,21 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 
-/**
- * The Class Login.
- */
+
 public class Login extends MainLayout implements EntryPoint {
 	
-	/** The content. */
 	private Panel content;
 	
-	/** The forgotten login id presenter. */
-	//private ForgottenLoginIdPresenter forgottenLoginIdPresenter;
 	private ForgottenLoginIdPresenter forgottenLoginIdNewPresenter;
-	/** The forgotten pwd presenter. */
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
 	
-	/** The login presenter. */
-	//private LoginPresenter loginPresenter;
 	
 	private LoginPresenter loginNewPresenter;
 	
-	/** The security questions presenter. */
 	private FirstLoginPresenter securityQuestionsPresenter;
 	
-	/** The temp pwd loging presenter. */
 	private TempPwdLoginPresenter tempPwdLogingPresenter;
 	
-	//US 439.  Signing out and redirects to Login.html
-	/**
-	 * Call sign out.
-	 */
 	private void callSignOut(){
 		MatContext.get().setUMLSLoggedIn(false);
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
@@ -83,15 +69,11 @@ public class Login extends MainLayout implements EntryPoint {
 		content = getContentPanel();
 		initPresenters();
 		loginNewPresenter.go(content);
-		//loginPresenter.go(content);
 		MatContext.get().getEventBus().addHandler(PasswordEmailSentEvent.TYPE, new PasswordEmailSentEvent.Handler() {
 			
 			@Override
 			public void onPasswordEmailSent(final PasswordEmailSentEvent event) {
 				content.clear();
-				/*loginPresenter.go(content);
-				loginPresenter.displayForgottenPasswordMessage();
-				 */
 				loginNewPresenter.go(content);
 				loginNewPresenter.displayForgottenPasswordMessage();
 			}
@@ -102,9 +84,7 @@ public class Login extends MainLayout implements EntryPoint {
 			@Override
 			public void onForgotLoginIdEmailSent(final ForgotLoginIDEmailSentEvent event) {
 				content.clear();
-				/*loginPresenter.go(content);
-				loginPresenter.displayForgottenLoginIDMessage();
-				 */loginNewPresenter.go(content);
+				 loginNewPresenter.go(content);
 				 loginNewPresenter.displayForgottenLoginIDMessage();
 			}
 		});
@@ -117,7 +97,6 @@ public class Login extends MainLayout implements EntryPoint {
 			}
 		});
 		
-		// Forgot LoginId
 		MatContext.get().getEventBus().addHandler(ForgotLoginIDEvent.TYPE, new ForgotLoginIDEvent.Handler() {
 			
 			@Override
@@ -172,7 +151,6 @@ public class Login extends MainLayout implements EntryPoint {
 			
 		});
 		
-		//US 439. Call signout when logoff event fired.
 		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
 			
 			@Override
@@ -188,8 +166,6 @@ public class Login extends MainLayout implements EntryPoint {
 	 * Inits the presenters.
 	 */
 	private void initPresenters() {
-		/*final LoginView unamePasswordView = new LoginView();
-		loginPresenter = new LoginPresenter(unamePasswordView);*/
 		LoginView loginView = new LoginView();
 		loginNewPresenter = new LoginPresenter(loginView);
 		
@@ -200,9 +176,6 @@ public class Login extends MainLayout implements EntryPoint {
 		final ForgottenPasswordView forgottenPwdView = new ForgottenPasswordView();
 		forgottenPwdPresenter = new ForgottenPasswordPresenter(forgottenPwdView);
 		
-		/*final ForgottenLoginIdView forgottenLoginIdView = new ForgottenLoginIdView();
-		forgottenLoginIdPresenter = new ForgottenLoginIdPresenter(forgottenLoginIdView);
-		 */
 		ForgottenLoginIdView forgottenLoginIdNewView = new ForgottenLoginIdView();
 		forgottenLoginIdNewPresenter = new ForgottenLoginIdPresenter(forgottenLoginIdNewView);
 		final TempPwdView temPwdview = new TempPwdView();

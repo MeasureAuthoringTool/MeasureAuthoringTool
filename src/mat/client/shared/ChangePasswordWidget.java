@@ -7,9 +7,7 @@ import org.gwtbootstrap3.client.ui.constants.InputType;
 
 import com.google.gwt.user.client.ui.Composite;
 
-/**
- * The Class ChangePasswordWidget.
- */
+
 public class ChangePasswordWidget extends Composite {
 	
 	private Input password = new Input(InputType.PASSWORD);
@@ -20,9 +18,6 @@ public class ChangePasswordWidget extends Composite {
 	
 	private FormGroup confirmPasswordGroup = new FormGroup();
 	
-	/**
-	 * Instantiates a new change password widget.
-	 */
 	public ChangePasswordWidget() {
 		FormLabel label = new FormLabel();
 		label.setText("New Password");

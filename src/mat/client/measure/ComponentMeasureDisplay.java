@@ -264,7 +264,7 @@ public class ComponentMeasureDisplay implements BaseDisplay {
 						+ "</span>"));
 		
 		Column<ManageMeasureSearchModel.Result, String> aliasColumn = new Column<ManageMeasureSearchModel.Result, String>(
-				new MatTextCell("Assign Alias")) {
+				new MatTextCell("Assign Alias Required")) {
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
 				if(aliasMapping.containsKey(object.getId())) {

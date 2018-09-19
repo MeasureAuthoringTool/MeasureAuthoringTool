@@ -24,7 +24,7 @@ public class PasswordEditInfoWidget extends Composite {
 		label.setShowRequiredIndicator(true);
 		
 		password.setWidth("200px");
-		password.setTitle("Enter existing password to confirm changes");
+		password.setTitle("Enter existing password to confirm changes Required");
 		password.setId("exisitingPasswordInput");
 		passwordExistingGroup.add(label);
 		passwordExistingGroup.add(password);

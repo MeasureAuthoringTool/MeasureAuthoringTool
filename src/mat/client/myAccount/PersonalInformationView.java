@@ -21,6 +21,7 @@ import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
@@ -31,43 +32,32 @@ import mat.client.shared.SuccessMessageAlert;
  */
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
 	
-	/** The v panel. */
 	private FlowPanel vPanel;
 	
-	/** The heading panel. */
 	private ContentWithHeadingWidget headingPanel;
 	
 	private TextBox firstNameTextBox = new TextBox();
 	private TextBox middleNameTextBox = new TextBox();
 	private TextBox lastNameTextBox = new TextBox();
 	
-	/** The title. */
 	private TextBox title = new TextBox();
 	
-	/** The email address. */
 	private TextBox emailAddress = new TextBox();
 	
-	/** The login id. */
 	private Label loginId = new Label();
 		
-	/** The oid. */
 	private TextBox oid = new TextBox();
 	
-	/** The organization. */
 	private TextBox organization = new TextBox();
 					
-	/** The phone widget. */
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
 	
-	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
+	private PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
-	/** The buttons. */
 	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("personalInfo");
 	
-	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/** The success messages. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
 
 	/**
@@ -118,7 +108,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		FormGroup passwordGroup = new FormGroup();
 		
 		firstNameTextBox.setPlaceholder("Enter First Name");
-		firstNameTextBox.setTitle("FirstName");
+		firstNameTextBox.setTitle("First Name Required");
 		firstNameTextBox.setId("FirstNameTextBox");
 		firstNameTextBox.setMaxLength(100);
 		
@@ -145,7 +135,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		middleNameGroup.add(middleNameTextBox);
 		
 		lastNameTextBox.setPlaceholder("Enter Last Name");
-		lastNameTextBox.setTitle("LastName");
+		lastNameTextBox.setTitle("Last Name Required");
 		lastNameTextBox.setId("LastNameTextBox");
 		lastNameTextBox.setMaxLength(100);
 		
@@ -184,7 +174,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		organization.setId("OrganizationTextBox");
 		organization.setEnabled(false);
 		organization.setWidth("200px");
-		organization.setTitle("Organization");
+		organization.setTitle("Organization Required");
 		organizationGroup.add(organizationLabel);
 		organizationGroup.add(organization);
 		
@@ -207,7 +197,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		emailAddressLabel.setShowRequiredIndicator(true);	
 		emailAddressLabel.setText("E-mail Address");
 		emailAddress.setPlaceholder("Enter E-mail Address");
-		emailAddress.setTitle("Email Address");
+		emailAddress.setTitle("Email Address Required");
 		emailAddress.setId("emailTextBox");
 		emailAddress.setWidth("250px");
 		emailAddress.setMaxLength(254);
@@ -224,17 +214,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		phoneNumberGroup.add(phoneNumberLabel);
 		phoneNumberGroup.add(phoneWidget);
 		
-		FormLabel passwordLabel = new FormLabel();
-		passwordLabel.setId("passwordLabel");
-		passwordLabel.setFor("password_TextBox");
-		passwordLabel.setShowRequiredIndicator(true);	
-		passwordLabel.setText("Enter existing password to confirm changes");
-		passwordGroup.add(passwordLabel);
-		changePasswordWidget.getPassword().setId("password_TextBox");
-		changePasswordWidget.getPassword().setWidth("200px");
-		changePasswordWidget.getPassword().setTitle("Enter existing password to confirm changes");
-		changePasswordWidget.getPassword().setPlaceholder("Enter existing password here.");
-		passwordGroup.add(changePasswordWidget.getPassword());
+		passwordGroup.add(passwordEditInfoWidget.getPasswordExistingGroup());
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(nameGrid);
@@ -359,7 +339,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	 */
 	@Override
 	public HasValue<String> getPassword() {
-		return changePasswordWidget.getPassword();
+		return passwordEditInfoWidget.getPassword();
 	}
 	
 	/* (non-Javadoc)
@@ -372,6 +352,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	
 	@Override
 	public Input getPasswordInput() {
-		return changePasswordWidget.getPassword();
+		return passwordEditInfoWidget.getPassword();
 	}
 }

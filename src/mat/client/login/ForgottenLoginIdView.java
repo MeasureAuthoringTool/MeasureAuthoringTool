@@ -64,7 +64,7 @@ public class ForgottenLoginIdView  implements ForgottenLoginIdPresenter.Display{
 		emailAddressText.setHeight("27px");
 		emailAddressText.setId("inputUserId");
 		emailAddressText.setPlaceholder("Enter Email Address");
-		emailAddressText.setTitle("Enter Email Address required");
+		emailAddressText.setTitle("Enter Email Address Required");
 		Label instructions = new Label("Enter the E-mail Address associated with your MAT account:");
 		instructions.setStylePrimaryName("loginForgotInstructions");
 		FormGroup instructionGroup = new FormGroup();

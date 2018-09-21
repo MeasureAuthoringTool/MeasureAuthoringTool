@@ -1,6 +1,8 @@
 package mat.client.cqlworkspace;
 
 
+
+import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -19,7 +21,6 @@ import mat.client.shared.ErrorMessageAlert;
 
 
 public class DeleteConfirmationDialogBox {
-
 	private  final Button yesButton = new YesButton("DeleteConfirmationBox"); 
 	private final Button noButton = new NoButton("DeleteConfirmationBox");
 	private ErrorMessageAlert messageAlert = new ErrorMessageAlert();
@@ -72,12 +73,16 @@ public class DeleteConfirmationDialogBox {
 		panel.add(modalFooter);
 		panel.getElement().focus();
 		panel.show();
+		
+		panel.addHiddenHandler(event -> modalHidden());
 	}
 	
 	
-	public void hide() {
+	private void modalHidden() {
+		noButton.click();
+	}
 
-	}
+	public void hide() {}
 	
 	
 	public Button getYesButton() {

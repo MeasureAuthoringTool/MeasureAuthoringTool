@@ -2,7 +2,6 @@ package mat.client.cqlworkspace;
 
 
 
-import org.gwtbootstrap3.client.shared.event.ModalHiddenHandler;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -74,11 +73,11 @@ public class DeleteConfirmationDialogBox {
 		panel.getElement().focus();
 		panel.show();
 		
-		panel.addHiddenHandler(event -> modalHidden());
+		panel.addHiddenHandler(event -> onModalHidden());
 	}
 	
 	
-	private void modalHidden() {
+	private void onModalHidden() {
 		noButton.click();
 	}
 

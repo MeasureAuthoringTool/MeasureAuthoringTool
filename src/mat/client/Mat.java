@@ -134,7 +134,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private CqlLibraryPresenter cqlLibrary;
 	private ManageAdminReportingPresenter reportingPresenter;
 	private int tabIndex;
-	//TODO add instance var: private *composite screen type* compositeMeasureEdit;
 	
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
 		
@@ -356,15 +355,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			@Override
 			public void onFire(EditCompositeMeasureEvent event) {
-				//TODO switch to edit screen:
-				//mainTabLayout.selectTab(presenterList.indexOf(*insert edit screen object*));
 			}
 		});
 
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			@Override
 			public void onUncaughtException(Throwable arg0) {
-				//stack traces from errors cannot be propagated to the user
 				arg0.printStackTrace();
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+arg0.getLocalizedMessage(), 0);
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -388,7 +384,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			@Override
 			public void onSelection(final SelectionEvent<Integer> event) {
 				final int index = event.getSelectedItem();
-				// suppressing token dup
 				final String newToken = mainTabLayoutID + index;
 				if(!History.getToken().equals(newToken)){
 					MatContext.get().recordTransactionEvent(null, null, "MAIN_TAB_EVENT", newToken, 1);
@@ -431,13 +426,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			mainTabLayout.add(myAccountPresenter.getWidget(), title, true);
 			presenterList.add(myAccountPresenter);
 			
-			//TODO add edit screen page in hidden tab;
+
 			title = ClientConstants.COMPOSITE_MEASURE_EDIT;
-			//TODO - instantiate object: compositeMeasureEdit = new CompositeMeasureEdit();
-			//TODO: add object to tab: mainTabLayout.add(compositeMeasureEdit.getWidget(), title, false);
-			//TODO add object to list: presenterList.add(compositeMeasureEdit);
-			
-			//TODO set tabIndex of last object tabIndex = presenterList.indexOf(compositeMeasureEdit);
+
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			createUMLSLinks();
 			createBonnieLinks();
@@ -499,11 +490,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		getWelcomeUserPanel(userFirstName);
 		getVersionPanel(resultMatVersion);
 		setIndicatorsHidden();
-		/*
-		 * no delay desired when hiding loading message here
-		 * tab selection below will fail if loading
-		 */
-		hideLoadingMessage(0);
+
+		hideLoadingMessage();
 		
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			mainTabLayout.selectTab(presenterList.indexOf(measureLibrary));
@@ -634,9 +622,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 		});
 	}
 
-	/**
-	 * Redirect to login.
-	 */
 	private void redirectToLogin() {
 		hideLoadingMessage();
 		/*

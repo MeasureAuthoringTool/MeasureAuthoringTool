@@ -27,14 +27,18 @@ public interface CQLLibraryService extends RemoteService {
 	SaveCQLLibraryResult search(String searchText, int filter, int startIndex, int pageSize);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
+
 	SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlModel);
-	public SaveUpdateCQLResult getCQLData(String id);
-	
-	public SaveUpdateCQLResult getCQLDataForLoad(String id);
+
+	SaveUpdateCQLResult getCQLData(String id);
+
+	SaveUpdateCQLResult getCQLDataForLoad(String id);
 	
 	boolean isLibraryLocked(String id);
-	SaveCQLLibraryResult resetLockedDate(String currentLibraryId,String userId);
-	SaveCQLLibraryResult updateLockedDate(String currentLibraryId,String userId);
+
+	SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
+
+	SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
 
 	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
@@ -43,7 +47,7 @@ public interface CQLLibraryService extends RemoteService {
 	
 	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 	
-	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
+	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 	
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
@@ -51,9 +55,9 @@ public interface CQLLibraryService extends RemoteService {
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter);
+	SaveCQLLibraryResult searchForIncludes(String setId, String searchText);
 	
-	SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter);
+	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
 		
 	void updateUsersShare(SaveCQLLibraryResult result);
 

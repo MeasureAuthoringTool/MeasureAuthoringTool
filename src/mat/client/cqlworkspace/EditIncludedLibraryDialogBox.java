@@ -144,12 +144,12 @@ public class EditIncludedLibraryDialogBox {
 		dialogModal.show();
 	}
 
-	public void findAvailableLibraries(String setId, final String currentId, boolean filterForInclude) {
+	public void findAvailableLibraries(String setId, final String currentId) {
 		showDialogBox();
 		cellTablePanel.removeStyleName("cellTablePanel");
 		cellTablePanel.add(progress);
 	//	Mat.showLoadingMessage();
-		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId, filterForInclude,
+		MatContext.get().getCQLLibraryService().searchForReplaceLibraries(setId,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 					@Override
 					public void onFailure(Throwable caught) {

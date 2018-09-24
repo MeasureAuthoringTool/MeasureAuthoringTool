@@ -2856,7 +2856,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		messagePanel.getWarningMessageAlert().clearAlert();
 		showSearchingBusy(true);
 
-		MatContext.get().getCQLLibraryService().searchForIncludes(setId, searchText, false,
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId, searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override
@@ -3528,7 +3528,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		messagePanel.getErrorMessageAlert().clearAlert();
 		messagePanel.getSuccessMessageAlert().clearAlert();
 		final EditIncludedLibraryDialogBox editIncludedLibraryDialogBox = new EditIncludedLibraryDialogBox("Replace Library");
-		editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId, false);
+		editIncludedLibraryDialogBox.findAvailableLibraries(currentIncludeLibrarySetId, currentIncludeLibraryId);
 		editIncludedLibraryDialogBox.getApplyButton().addClickHandler(event -> editIncludedLibraryDialogApplyButtonClicked(editIncludedLibraryDialogBox));
 	}
 

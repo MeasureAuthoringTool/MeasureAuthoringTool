@@ -74,6 +74,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.umls.ManageUmlsPresenter;
 import mat.client.umls.UmlsLoginDialogBox;
+import mat.client.umls.service.VsacTicketInformation;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 import mat.shared.bonnie.result.BonnieUserInformationResult;
@@ -440,10 +441,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			tabIndex = presenterList.indexOf(myAccountPresenter);
 			createUMLSLinks();
 			createBonnieLinks();
-			hideUMLSActive(true);
-			if(resultMatVersion.equals("v5.6")) {
-				setBonnieActiveLink();
-			}
+			setUMLSActiveLink();
+			setBonnieActiveLink();
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
@@ -596,6 +595,27 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 	private void showBonnieModal() {
 		BonnieModal bonnieModal = new BonnieModal();
 		bonnieModal.show();
+	}
+	
+	private void setUMLSActiveLink() {		
+		MatContext.get().getVsacapiServiceAsync().getTicketGrantingToken(new AsyncCallback<VsacTicketInformation>() {
+			
+			@Override
+			public void onSuccess(VsacTicketInformation result) {
+				boolean loggedInToBonnie = false;
+				if(result != null) {
+					loggedInToBonnie = true;
+				}
+				hideUMLSActive(!loggedInToBonnie);
+				MatContext.get().setUMLSLoggedIn(loggedInToBonnie);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				hideUMLSActive(true);
+				MatContext.get().setUMLSLoggedIn(false);
+			}
+		});
 	}
 
 	private void setBonnieActiveLink() {

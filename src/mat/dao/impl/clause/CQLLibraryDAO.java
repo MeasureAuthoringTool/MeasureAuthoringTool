@@ -112,9 +112,9 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		cCriteria.add(Restrictions.eq("draft", false));
 		cCriteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
 		cCriteria.add(Restrictions.eq("set_id", setId));
-		cCriteria.addOrder(Order.desc("set_id")).addOrder(Order.desc("version"));
+		cCriteria.addOrder(Order.asc("name")).addOrder(Order.desc("version"));
 		cCriteria.setFirstResult(0);
-		return sortLibraryList(cCriteria.list());
+		return cCriteria.list();
 	}
 
 	@Override
@@ -125,13 +125,13 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 		criteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
 		criteria.add(Restrictions.eq("draft", false));
 		criteria.add(Restrictions.not(Restrictions.eq("set_id", setId)));
+		criteria.addOrder(Order.asc("name")).addOrder(Order.desc("version")); 
 		
 		List<CQLLibrary> libraries = criteria.list();
 		if(!StringUtility.isEmptyOrNull(searchText)) {
 			libraries = filterLibraries(searchText, libraries);
 		}
 		
-		libraries = sortLibraryList(libraries);
 		return libraries;
 	}
 	

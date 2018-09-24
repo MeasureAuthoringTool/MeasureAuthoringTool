@@ -590,12 +590,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable, TabObserv
 			
 			@Override
 			public void onSuccess(VsacTicketInformation result) {
-				boolean loggedInToBonnie = false;
-				if(result != null) {
-					loggedInToBonnie = true;
-				}
-				hideUMLSActive(!loggedInToBonnie);
-				MatContext.get().setUMLSLoggedIn(loggedInToBonnie);
+				boolean loggedInToUMLS = (result != null);
+
+				hideUMLSActive(!loggedInToUMLS);
+				MatContext.get().setUMLSLoggedIn(loggedInToUMLS);
 			}
 			
 			@Override

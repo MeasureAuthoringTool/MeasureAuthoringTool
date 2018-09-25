@@ -66,7 +66,7 @@ public final class CQLUtilityClass {
 		cqlStr.append(CQLUtilityClass.createCodesSection(cqlModel.getCodeList()));
 
 		// parameters
-		CQLUtilityClass.createParameterSection(cqlModel.getCqlParameters(), cqlStr, toBeInserted);
+		cqlStr.append(CQLUtilityClass.createParameterSection(cqlModel.getCqlParameters(), toBeInserted));
 
 		// Definitions and Functions by Context
 		if(!cqlModel.getDefinitionList().isEmpty() || !cqlModel.getCqlFunctions().isEmpty()){
@@ -487,8 +487,8 @@ public final class CQLUtilityClass {
 		return codes.getName().replaceAll("'", "\\\\'");
 	}
 
-	private static StringBuilder createParameterSection(List<CQLParameter> paramList, StringBuilder cqlStr, String toBeInserted) {
-		
+	private static StringBuilder createParameterSection(List<CQLParameter> paramList, String toBeInserted) {
+		StringBuilder cqlStr = new StringBuilder();
 		if (!CollectionUtils.isEmpty(paramList)) {
 
 			for (CQLParameter parameter : paramList) {
@@ -496,7 +496,7 @@ public final class CQLUtilityClass {
 				String param = "parameter " + "\"" + parameter.getName() + "\"";
 
 				if(StringUtils.isNotBlank(parameter.getCommentString())) {
-					createCommentString(parameter.getCommentString());
+					cqlStr.append(createCommentString(parameter.getCommentString()));
 					cqlStr.append(System.lineSeparator());
 				}
 				

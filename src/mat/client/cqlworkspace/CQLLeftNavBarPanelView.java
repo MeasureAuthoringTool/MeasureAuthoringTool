@@ -34,7 +34,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
@@ -814,7 +813,6 @@ public class CQLLeftNavBarPanelView {
 			getParameterMap().put(parameter.getId(), parameter);
 		}
 
-		buildSearchSuggestParamBox();
 		if (getViewParameterList().size() < 10) {
 			getParamBadge().setText("0" + getViewParameterList().size());
 		} else {
@@ -832,13 +830,12 @@ public class CQLLeftNavBarPanelView {
 			getDefinitionMap().put(define.getId(), define);
 		}
 
-		buildSearchSuggestDefineBox();
 		if (getViewDefinitions().size() < 10) {
 			getDefineBadge().setText("0" + getViewDefinitions().size());
 		} else {
 			getDefineBadge().setText("" + getViewDefinitions().size());
 		}
-
+		updateSuggestDefineOracle();
 	}
 
 	public void updateFunctionMap() {
@@ -848,12 +845,13 @@ public class CQLLeftNavBarPanelView {
 			funcNameMap.put(function.getId(), function.getName());
 			functionMap.put(function.getId(), function);
 		}
-		buildSearchSuggestFuncBox();
+
 		if (viewFunctions.size() < 10) {
 			functionBadge.setText("0" + viewFunctions.size());
 		} else {
 			functionBadge.setText("" + viewFunctions.size());
 		}
+		updateSuggestFuncOracle();
 	}
 
 	public void udpateIncludeLibraryMap() {
@@ -864,42 +862,42 @@ public class CQLLeftNavBarPanelView {
 			includeLibraryMap.put(incLibrary.getId(), incLibrary);
 		}
 
-		buildSearchSuggestIncludeBox();
 		if (viewIncludeLibrarys.size() < 10) {
 			includesBadge.setText("0" + viewIncludeLibrarys.size());
 		} else {
 			includesBadge.setText("" + viewIncludeLibrarys.size());
 		}
-
+		updateSuggestIncludeOracle();
 	}
 	
-	public void updateSuggestOracle() {
+	
+	
+	public void updateSuggestParamOracle() {
 		if (searchSuggestParamTextBox != null) {
-			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestParamTextBox
-					.getSuggestOracle();
-			multiWordSuggestOracle.clear();
-			multiWordSuggestOracle.addAll(parameterNameMap.values());
+			CQLSuggestOracle suggestOracle = (CQLSuggestOracle) searchSuggestParamTextBox.getSuggestOracle();
+			suggestOracle.setData(parameterNameMap.values());
 		}
 	}
 	
 
 	public void updateSuggestDefineOracle() {
 		if (searchSuggestDefineTextBox != null) {
-			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestDefineTextBox
-					.getSuggestOracle();
-			multiWordSuggestOracle.clear();
-			multiWordSuggestOracle.addAll(defineNameMap.values());
+			CQLSuggestOracle suggestOracle = (CQLSuggestOracle) searchSuggestDefineTextBox.getSuggestOracle();
+			suggestOracle.setData(defineNameMap.values());
 		}
 	}
 
 
 	public void updateSuggestFuncOracle() {
 		if (searchSuggestFuncTextBox != null) {
-			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle) searchSuggestFuncTextBox
-					.getSuggestOracle();
-			multiWordSuggestOracle.clear();
-			multiWordSuggestOracle.addAll(funcNameMap.values());
+			CQLSuggestOracle suggestOracle = (CQLSuggestOracle) searchSuggestFuncTextBox.getSuggestOracle();
+			suggestOracle.setData(funcNameMap.values());
 		}
+	}
+	
+	public void updateSuggestIncludeOracle() {
+		CQLSuggestOracle suggestOracle = (CQLSuggestOracle) searchSuggestIncludeTextBox.getSuggestOracle();
+		suggestOracle.setData(includeLibraryNameMap.values());
 	}
 
 	public Map<String, String> getDefineNameMap() {

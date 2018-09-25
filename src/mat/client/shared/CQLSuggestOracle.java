@@ -35,4 +35,8 @@ public class CQLSuggestOracle extends SuggestOracle {
             Response response = new Response(suggestions);
             callback.onSuggestionsReady(request, response);
         }
+        
+        public void setData(Collection<String> data) {
+        	this.data = data;
+        }
     }

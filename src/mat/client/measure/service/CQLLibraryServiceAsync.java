@@ -60,7 +60,7 @@ public interface CQLLibraryServiceAsync {
 	void getUserShareInfo(String cqlId, String searchText,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
-	void searchForIncludes(String referringID, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
+	void searchForIncludes(String referringID, String libraryName, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
 	
 	void searchForReplaceLibraries(String setId, AsyncCallback<SaveCQLLibraryResult> callback);
 

@@ -77,6 +77,7 @@ import mat.shared.cql.error.InvalidLibraryException;
 
 public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter implements MatPresenter {
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	private String cqlLibraryName;
 	private static CQLWorkspaceView cqlWorkspaceView;
 	
 	public CQLMeasureWorkSpacePresenter(final CQLWorkspaceView workspaceView) {
@@ -1226,7 +1227,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		messagePanel.clearAlerts();
 		showSearchingBusy(true);
 		
-		MatContext.get().getCQLLibraryService().searchForIncludes(setId, searchText,
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId, cqlLibraryName, searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
@@ -1314,8 +1315,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				setId = result.getSetId();
 			}
 			if (result.getCqlModel().getLibraryName() != null) {
-				String cqlLibraryName = cqlWorkspaceView.getCqlGeneralInformationView()
-						.createCQLLibraryName(MatContext.get().getCurrentMeasureName());
+				cqlLibraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(MatContext.get().getCurrentMeasureName());
 				cqlWorkspaceView.getCqlGeneralInformationView().getLibraryNameValue().setText(cqlLibraryName);
 				
 				cqlLibraryComment = result.getCqlModel().getLibraryComment();

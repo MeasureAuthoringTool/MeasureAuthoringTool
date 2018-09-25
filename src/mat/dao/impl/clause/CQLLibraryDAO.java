@@ -107,12 +107,13 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
 	@Override
-	public List<CQLLibrary> searchForIncludes(String setId, String searchText) {
+	public List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText) {
 		searchText = searchText.toLowerCase();
 	
 		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibrary.class);
 		criteria.add(Restrictions.eq("qdmVersion", MATPropertiesService.get().getQmdVersion()));
 		criteria.add(Restrictions.eq("draft", false));
+		criteria.add(Restrictions.not(Restrictions.eq("name", libraryName)));
 		criteria.add(Restrictions.not(Restrictions.eq("set_id", setId)));
 		criteria.addOrder(Order.asc("name")).addOrder(Order.desc("version")); 
 		

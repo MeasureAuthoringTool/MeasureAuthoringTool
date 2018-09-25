@@ -55,7 +55,7 @@ public interface CQLLibraryService extends RemoteService {
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String searchText);
+	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
 	
 	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
 		

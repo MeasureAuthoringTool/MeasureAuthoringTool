@@ -61,7 +61,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String searchText);
+	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
 
 	void updateUsersShare(SaveCQLLibraryResult result);
 

@@ -2856,7 +2856,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 		messagePanel.getWarningMessageAlert().clearAlert();
 		showSearchingBusy(true);
 
-		MatContext.get().getCQLLibraryService().searchForIncludes(setId, searchText,
+		MatContext.get().getCQLLibraryService().searchForIncludes(setId, cqlLibraryName, searchText,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 			@Override

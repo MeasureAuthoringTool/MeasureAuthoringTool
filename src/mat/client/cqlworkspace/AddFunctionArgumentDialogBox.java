@@ -31,6 +31,7 @@ import mat.client.cqlworkspace.functions.CQLFunctionsView;
 import mat.client.shared.CQLWorkSpaceConstants;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
 import mat.client.shared.MessagePanel;
 import mat.model.cql.CQLFunctionArgument;
 import mat.shared.CQLModelValidator;
@@ -316,7 +317,7 @@ public class AddFunctionArgumentDialogBox {
 						if(checkIfDuplicate){
 							helpBlock.setText(ARGUMENT_NAME_IS_NOT_UNIQUE);
 						} else if(!isValidName){
-							helpBlock.setText(MatContext.get().getMessageDelegate().getCqlFunctionArgumentNameError());
+							helpBlock.setText(MessageDelegate.CQL_FUNCTION_ARGUMENT_NAME_ERROR);
 						}
 						messageFormgroup.setValidationState(ValidationState.ERROR);
 					}

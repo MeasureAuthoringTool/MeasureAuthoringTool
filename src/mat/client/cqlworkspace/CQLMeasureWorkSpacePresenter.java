@@ -4591,7 +4591,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 		return list;
 	}
 	
-	public List<String> getDeleteConfirmationDefinitionCQLWorkspace(String definitionName) {
+	private List<String> getDeleteConfirmationDefinitionCQLWorkspace(String definitionName) {
 		List<String> list = new ArrayList<String>();
 		list.add("You have selected to delete definition " + (definitionName.length()>60 ? definitionName.substring(0, 59) : definitionName) + ".");
 		list.add(" ");

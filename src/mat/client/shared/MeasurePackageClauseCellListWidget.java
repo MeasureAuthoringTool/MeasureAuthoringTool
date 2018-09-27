@@ -304,6 +304,7 @@ public class MeasurePackageClauseCellListWidget {
 		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 			String scoring = MatContext.get().getCurrentMeasureScoringType();
 			if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
+				buildMeasureObservationList();
 				//As there are no more than two entries in meaObsList for Ratio do not need to bother about rest.
 				String measureObservation1 = ""; 
 				String measureObservation2 = ""; 
@@ -743,12 +744,15 @@ public class MeasurePackageClauseCellListWidget {
 				messages.add(MatContext.get().getMessageDelegate().getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 
 			}else{
-				measureObservationList.clear();
-				validateGroupingList.stream().filter(entry -> entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)).forEach(mo -> measureObservationList.add(mo.getName()));
+				buildMeasureObservationList();
 			}
 		}
 	}
 
+	private void buildMeasureObservationList() {
+		measureObservationList.clear();
+		groupingPopulationList.stream().filter(entry -> entry.getType().equalsIgnoreCase(MEASURE_OBSERVATION)).forEach(mo -> measureObservationList.add(mo.getName()));
+	}
 
 	/**
 	 * Method to count number of Clause types.

@@ -2,24 +2,9 @@ package mat.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * 
- * @author jmeyer
- *
- * Data Container for storing an identifier.
- */
 public class CQLIdentifierObject implements IsSerializable {
-	
-	/**
-	 * The alias name of the identifier
-	 */
 	private String aliasName; 
-	
 	private String id;
-	
-	/**
-	 * The identifier
-	 */
 	private String identifier;
 
 	public CQLIdentifierObject(String aliasName, String identifier, String id) {
@@ -32,7 +17,6 @@ public class CQLIdentifierObject implements IsSerializable {
 		this.aliasName = aliasName;
 		this.identifier = identifier;
 	}
-
 	
 	public CQLIdentifierObject() {
 		
@@ -41,7 +25,6 @@ public class CQLIdentifierObject implements IsSerializable {
 	public String getAliasName() {
 		return aliasName;
 	}
-
 
 	public void setAliasName(String aliasName) {
 		this.aliasName = aliasName;
@@ -52,7 +35,6 @@ public class CQLIdentifierObject implements IsSerializable {
 		return identifier;
 	}
 
-
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	} 
@@ -60,21 +42,16 @@ public class CQLIdentifierObject implements IsSerializable {
 	public String getDisplay() {
 		if(aliasName != null && !aliasName.isEmpty()) {
 			return aliasName + "." + identifier;
-		}
-		
-		else {
+		} else {
 			return identifier;
 		}
 	}
-	
 	
 	@Override
 	public String toString() {
 		if(aliasName != null && !aliasName.isEmpty()) {
 			return aliasName + "." + "\"" + identifier + "\"";
-		}
-		
-		else {
+		} else {
 			return "\"" + identifier + "\"";
 		}
 	}

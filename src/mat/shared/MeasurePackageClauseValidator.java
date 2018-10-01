@@ -265,13 +265,11 @@ public class MeasurePackageClauseValidator {
 		return messages;
 	}
 
-	/**
-	 * countDetailsWithType.
-	 * @param detailList - List of MeasurePackageClauseDetail.
-	 * @param type - String.
-	 *
-	 * @return Integer.
-	 */
+	public boolean canMovingPopulationFromRightToLeftAffectAssociations(List<MeasurePackageClauseDetail> detailList){
+		return countDetailsWithType(detailList, ConstantMessages.POPULATION_CONTEXT_ID) > 1 ||
+				countDetailsWithType(detailList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) > 0;
+	}
+	
 	private int countDetailsWithType(final List<MeasurePackageClauseDetail> detailList, final String type) {
 		return Math.toIntExact(detailList.stream().filter(pop -> pop.getType().equals(type)).count());
 	}

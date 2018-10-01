@@ -59,6 +59,9 @@ public class MeasurePackageClauseCellListWidget {
 	private static final String ADD_CLAUSE_RIGHT = "addClauseRight";
 	private static final String ADD_ALL_CLAUSE_RIGHT = "addAllClauseRight";
 
+	private static final String RATIO_ASSOCIATION_WARNING_MSG = "Changing populations in a measure grouping when there are associations assigned "
+			+ "will clear all associations in that measure grouping. Do you wish to continue?";
+	
 	interface Templates extends SafeHtmlTemplates {
 		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;\">{1}</div>")
 		SafeHtml cell(String title, SafeHtml value);
@@ -535,17 +538,12 @@ public class MeasurePackageClauseCellListWidget {
 	private void addClauseLeft() {
 		clearAlerts();
 		if (!groupingPopulationList.isEmpty() && rightCellListSelectionModel.getSelectedObject() != null) {
-
-			createGroupingClausesMap();
-
-			clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
-			groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
-			groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
-			sortListAndSetPanelOnAddClick();
-			rightCellListSelectionModel.clear();
-			addAssocationsWidget.setVisible(false);
+			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
+				displayWarningMessage(false);
+			} else {
+				moveSelectedPopulationFromRightToLeft();
+			}
 		}
-
 	}
 	
 	private void sortListAndSetPanelOnAddClick() {
@@ -622,6 +620,51 @@ public class MeasurePackageClauseCellListWidget {
 
 	private void addAllClauseLeft() {
 		clearAlerts();
+		if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
+			displayWarningMessage(true);			
+		} else {
+			moveAllPopulationsFromRightToLeft();
+		}
+	}
+
+	private void displayWarningMessage(boolean isAllPopulations) {
+
+		ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(RATIO_ASSOCIATION_WARNING_MSG, "Yes", "No", null);
+
+		confirmationDialogBox.setObserver(new ConfirmationObserver() {
+
+			@Override
+			public void onYesButtonClicked() {
+				if (isAllPopulations) {
+					moveAllPopulationsFromRightToLeft();	
+				} else {
+					moveSelectedPopulationFromRightToLeft();
+				}
+			}
+
+			@Override
+			public void onNoButtonClicked() {
+			}
+
+			@Override
+			public void onClose() {
+			}
+		});
+		confirmationDialogBox.show();
+	}
+	
+	private void moveSelectedPopulationFromRightToLeft() {
+		createGroupingClausesMap();
+
+		clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
+		groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
+		groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
+		sortListAndSetPanelOnAddClick();
+		rightCellListSelectionModel.clear();
+		addAssocationsWidget.setVisible(false);
+	}
+	
+	private void moveAllPopulationsFromRightToLeft() {
 		if (!groupingPopulationList.isEmpty()) {
 			for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 				detail.setAssociatedPopulationUUID(null);
@@ -880,6 +923,11 @@ public class MeasurePackageClauseCellListWidget {
 		return messages.isEmpty();
 	}
 
+	private boolean shouldRequireAssociations(ArrayList<MeasurePackageClauseDetail> validatGroupingList) {
+		MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
+		return validator.canMovingPopulationFromRightToLeftAffectAssociations(validatGroupingList);
+	}
+	
 	public List<MeasurePackageClauseDetail> getGroupingPopulationList() {
 		return groupingPopulationList;
 	}

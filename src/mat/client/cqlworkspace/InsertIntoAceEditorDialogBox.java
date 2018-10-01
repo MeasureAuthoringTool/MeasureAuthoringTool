@@ -612,19 +612,11 @@ public class InsertIntoAceEditorDialogBox {
 	}
 
 	private static boolean isBirthdate(CQLCode code) {		
-		if(code != null && code.getCodeSystemOID() != null && code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID)) {
-			return true;
-		}
-
-		return false;
+		return (code != null && code.getCodeSystemOID() != null && code.getCodeOID().equals(ConstantMessages.BIRTHDATE_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.BIRTHDATE_CODE_SYSTEM_OID));
 	}
 
 	private static boolean isDead(CQLCode code) {
-		if(code != null && code.getCodeSystemOID() != null && code.getCodeOID().equals(ConstantMessages.DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.DEAD_CODE_SYSTEM_OID)) {
-			return true;
-		}
-
-		return false;
+		return (code != null && code.getCodeSystemOID() != null && code.getCodeOID().equals(ConstantMessages.DEAD_OID) && code.getCodeSystemOID().equalsIgnoreCase(ConstantMessages.DEAD_CODE_SYSTEM_OID));
 	}
 
 	private static boolean isValidPair(String dataType, CQLCode code) {
@@ -649,14 +641,7 @@ public class InsertIntoAceEditorDialogBox {
 	}
 	
 	private static List<CQLIdentifierObject> sortIdentifierList(List<CQLIdentifierObject> identifierList) {
-		Collections.sort(identifierList, new Comparator<CQLIdentifierObject>() {
-
-			@Override
-			public int compare(CQLIdentifierObject identifier1, CQLIdentifierObject identifier2) {
-				return identifier1.toString().compareTo(identifier2.toString());
-			}
-			
-		});
+		Collections.sort(identifierList, Comparator.comparing(CQLIdentifierObject::toString));
 		return identifierList;
 	}
 }

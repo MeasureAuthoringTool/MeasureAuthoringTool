@@ -420,10 +420,12 @@ public class InsertIntoAceEditorDialogBox {
 						listAllItemNames.addItem(MatContext.PLEASE_SELECT);
 
 						List<CQLIdentifierObject> terminologies = new LinkedList<>();
-						terminologies.addAll(MatContext.get().getValuesets());
-						terminologies.addAll(MatContext.get().getIncludedValueSetNames());
-						terminologies.addAll(MatContext.get().getIncludedCodeNames());
-
+						terminologies.addAll(sortIdentifierList(MatContext.get().getValuesets()));
+						List<CQLIdentifierObject> combinedCodesValueSetList = new ArrayList<>();
+						combinedCodesValueSetList.addAll(MatContext.get().getIncludedValueSetNames());
+						combinedCodesValueSetList.addAll(MatContext.get().getIncludedCodeNames());
+						terminologies.addAll(sortIdentifierList(combinedCodesValueSetList));
+						
 						cqlCodesList = new ArrayList<CQLCode>();
 						//Add null as first value in cqlCodes list so that 'selectedIndex' variable for ListBoxMVP
 						//lines up with array list index

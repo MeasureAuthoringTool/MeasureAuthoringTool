@@ -1,7 +1,9 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -21,45 +23,19 @@ import mat.model.ModeDetailModel;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
 
-/**
- * The Class JSONAttributeModeUtility.
- */
 public class JSONAttributeModeUtility {
-	
-	/** The qds attributes service. */
 	private static QDSAttributesServiceAsync qdsAttributesService;
-	
 	private static HashMap<String, JSONArray> jsonObjectMap = new HashMap<>();
 	private static HashMap<String, JSONArray> jsonModeDetailsMap = new HashMap<>();
-	
-	/** The Constant COMPARISON. */
 	private static final String COMPARISON = "Comparison";
-	
-	/** The Constant COMPUTATIVE. */
 	private static final String COMPUTATIVE = "Computative";
-	
-	/** The Constant NULLABLE. */
 	private static final String NULLABLE = "Nullable";
-	
-	/** The Constant VALUE_SET. */
 	private static final String VALUE_SET = "Value Sets";
-	
-	/** The Constant VALUE_SET. */
 	private static final String CODES = "Codes";
-	
-	/** The Constant DATATYPE. */
 	private static final String DATATYPE = "datatype";
-	
-	/** The Constant ATTRIBUTE. */
 	private static final String ATTRIBUTE = "attribute";
-	
 	private static final String MODE = "mode";
-	
-	/**
-	 * Gets the all attr mode list.
-	 *
-	 * @return the all attr mode list
-	 */
+
 	public static void getAllAttrModeList() {
 		getQdsAttributesService().getJSONObjectFromXML(
 				new AsyncCallback<String>() {
@@ -76,11 +52,6 @@ public class JSONAttributeModeUtility {
 				});
 	}
 	
-	/**
-	 * Gets the all mode details list.
-	 *
-	 * @return the all mode details list
-	 */
 	public static void getAllModeDetailsList() {
 		getQdsAttributesService().getModeDetailsJSONObjectFromXML(
 				new AsyncCallback<String>() {
@@ -97,11 +68,6 @@ public class JSONAttributeModeUtility {
 				});
 	}
 	
-	/**
-	 * Extract json object.
-	 *
-	 * @param jsonString the json string
-	 */
 	private static void extractJSONObject(String jsonString) {
 		JSONArray attributeJsonArray  = createJSONArrayFromStr(jsonString, "matattributes", ATTRIBUTE);
 		if (attributeJsonArray != null) {
@@ -109,11 +75,6 @@ public class JSONAttributeModeUtility {
 		}
 	}
 	
-	/**
-	 * Extract json object.
-	 *
-	 * @param jsonString the json string
-	 */
 	private static void extractModeDetailsJSONObject(String jsonString) {
 		JSONArray modeJsonArray  = createJSONArrayFromStr(jsonString, "modedetails", MODE);
 		if (modeJsonArray != null) {
@@ -121,14 +82,9 @@ public class JSONAttributeModeUtility {
 		}
 	}
 	
-	/**
-	 * Gets the mode list.
-	 *
-	 * @param modeName the mode name
-	 * @return the mode details list
-	 */
 	public static List<ModeDetailModel> getModeDetailsList(String modeName) {
-		List<ModeDetailModel> modeDetailsList = new ArrayList<>();
+		List<ModeDetailModel> measureModeDetailsList = new ArrayList<>();
+		List<ModeDetailModel> includeModeDetailsList = new ArrayList<>();
 		if ((modeName != null) && (modeName != "")) {
 			if (jsonModeDetailsMap.get(MODE).isArray() != null) {
 				JSONArray arrayObject = jsonModeDetailsMap.get(MODE).isArray();
@@ -144,22 +100,21 @@ public class JSONAttributeModeUtility {
 									mode.setModeValue(formatModeValue(valSets.getName()));
 									if(valSets.getType()== null) {
 										mode.setModeName("valueset:\""+valSets.getName() + "\"");
-										modeDetailsList.add(mode);
+										measureModeDetailsList.add(mode);
 									}
 								}
 							}
-							getIncludesList(MatContext.get().getIncludedValueSetNames(), modeDetailsList, "valueset:");
-							
+							getIncludesList(MatContext.get().getIncludedValueSetNames(), includeModeDetailsList, "valueset:");
 						} else if(modeName.equalsIgnoreCase(CODES)){
 							for(CQLQualityDataSetDTO valSets : MatContext.get().getValueSetCodeQualityDataSetList()){
 								ModeDetailModel mode = new ModeDetailModel();
 								if(valSets.getType()!= null) {
 									mode.setModeValue(formatModeValue(valSets.getDisplayName()));
 									mode.setModeName(valSets.getType()+":\"" +valSets.getDisplayName() + "\"");
-									modeDetailsList.add(mode);
+									measureModeDetailsList.add(mode);
 								}
 							}
-							getIncludesList(MatContext.get().getIncludedCodeNames(), modeDetailsList, "code:");
+							getIncludesList(MatContext.get().getIncludedCodeNames(), includeModeDetailsList, "code:");
 						} else{
 							if (attrJSONObject.get("details").isArray() != null) {
 								JSONArray attrModeObject = attrJSONObject.get("details").isArray();
@@ -169,7 +124,7 @@ public class JSONAttributeModeUtility {
 									ModeDetailModel mode = new ModeDetailModel();
 									mode.setModeName(modeDetail);
 									mode.setModeValue(modeDetail);
-									modeDetailsList.add(mode);
+									measureModeDetailsList.add(mode);
 								}
 							}
 						}
@@ -177,16 +132,17 @@ public class JSONAttributeModeUtility {
 				}
 			}
 		}
+		List<ModeDetailModel> modeDetailsList = new LinkedList<>();
+		modeDetailsList.addAll(sortIdentifierList(measureModeDetailsList));
+		modeDetailsList.addAll(sortIdentifierList(includeModeDetailsList));
 		return modeDetailsList;
 	}
 	
-	/**
-	 * Gets the attr mode list.
-	 *
-	 * @param attrName the attr name
-	 * @param dataType String qdmDataType.
-	 * @return the attr mode list
-	 */
+	private static Collection<? extends ModeDetailModel> sortIdentifierList(List<ModeDetailModel> modeDetailsList) {
+		modeDetailsList.sort((ModeDetailModel modeDetailModel1, ModeDetailModel modeDetailModel2) -> modeDetailModel1.getModeValue().compareToIgnoreCase(modeDetailModel2.getModeValue()));
+		return modeDetailsList;
+	}
+
 	public static List<String> getAttrModeList(String attrName) {
 		List<String> modeList = new ArrayList<>();
 		if (attrName != null && !attrName.trim().isEmpty()) {
@@ -226,8 +182,6 @@ public class JSONAttributeModeUtility {
 					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
 					if (isSupplementData.equals("false")) { //filter supplementDataElements from elementLookUp
 						String name = namedNodeMap.getNamedItem("name").getNodeValue();
-						//Prod Issue fixed : qdm name has trailing spaces which is retrieved from VSAC.
-						//So QDM attribute dialog box is throwing error in FF.To fix that spaces are removed from start and end.
 						name = name.trim();
 						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 						if (namedNodeMap.getNamedItem("instance") != null) {
@@ -265,18 +219,12 @@ public class JSONAttributeModeUtility {
 		return attrMode;
 	}
 	
-	/**
-	 * Gets the qds attributes service.
-	 *
-	 * @return the qds attributes service
-	 */
 	public static QDSAttributesServiceAsync getQdsAttributesService() {
 		if (qdsAttributesService == null) {
 			qdsAttributesService = GWT.create(QDSAttributesService.class);
 		}
 		return qdsAttributesService;
 	}
-	
 	
 	public static List<ModeDetailModel> getIncludesList(List<CQLIdentifierObject> includesList,
 			List<ModeDetailModel> modeDetailList, String type) {

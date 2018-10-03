@@ -60,7 +60,7 @@ public class InsertIntoAceEditorDialogBox {
 	private static List<String> cqlFunctionsList = MatContext.get().getCqlConstantContainer().getCqlKeywordList().getCqlFunctionsList();
 	private static AceEditor curEditor; 
 
-	public static  void showListOfItemAvailableForInsertDialogBox(final AceEditor editor) {
+	public static void showListOfItemAvailableForInsertDialogBox(final AceEditor editor) {
 		final Modal dialogModal = new Modal();
 		dialogModal.getElement().setAttribute("role", "dialog");
 		dialogModal.setTitle("Insert Item into CQL Editor");

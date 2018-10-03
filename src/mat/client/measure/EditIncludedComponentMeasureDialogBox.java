@@ -107,7 +107,7 @@ public class EditIncludedComponentMeasureDialogBox {
 		bar.setType(ProgressBarType.INFO);
 		bar.setWidth("100%");
 		bar.setPercent(50.00);
-		bar.setText("Please wait. Loaded " +50+"% ");
+		bar.setText("Please wait. Loaded 50%");
 		progress.add(bar);
 	}
 

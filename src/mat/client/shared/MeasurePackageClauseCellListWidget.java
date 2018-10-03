@@ -538,12 +538,21 @@ public class MeasurePackageClauseCellListWidget {
 	private void addClauseLeft() {
 		clearAlerts();
 		if (!groupingPopulationList.isEmpty() && rightCellListSelectionModel.getSelectedObject() != null) {
-			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
-				displayWarningMessage(false);
+			boolean isPopulationMoveAffectingAssociation = isPopulationAffectingAssociation(rightCellListSelectionModel.getSelectedObject());
+			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) 
+					&& isPopulationMoveAffectingAssociation && shouldRequireAssociations(groupingPopulationList)) {
+				displayWarningMessage(false, isPopulationMoveAffectingAssociation);
 			} else {
-				moveSelectedPopulationFromRightToLeft();
+				moveSelectedPopulationFromRightToLeft(isPopulationMoveAffectingAssociation);
 			}
 		}
+	}
+	
+	private boolean isPopulationAffectingAssociation(MeasurePackageClauseDetail selectedPopulation) {
+		return ConstantMessages.POPULATION_CONTEXT_ID.equalsIgnoreCase(selectedPopulation.getType()) ||
+		MEASURE_OBSERVATION.equalsIgnoreCase(selectedPopulation.getType()) ||
+		DENOMINATOR.equalsIgnoreCase(selectedPopulation.getType()) ||
+		NUMERATOR.equalsIgnoreCase(selectedPopulation.getType());
 	}
 	
 	private void sortListAndSetPanelOnAddClick() {
@@ -554,54 +563,27 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	private void createGroupingClausesMap() {
-		String otherClauseType = null;
-		if (rightCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(DENOMINATOR)) {
-			otherClauseType = NUMERATOR;
-		} else if (rightCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(NUMERATOR)) {
-			otherClauseType = DENOMINATOR;
-		}
+
 		//If clause is removed, and if it is associated with any other clause,
 		//all it's associations are removed.
-		String denomClauseType = null;
-		String numClauseType = null;
-		boolean isAssociated = false;
-
 		if(rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("measure observation") || 
 				rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith(STRATIFICATION)) {
 			groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject()); 
 		}
 
 		else {
-			for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-
-				if(detail.getType().equals(DENOMINATOR)){
-					denomClauseType = detail.getName();
-				} else if(detail.getType().equals(NUMERATOR)){
-					numClauseType = detail.getName();
-				}
-
-				if ((detail.getAssociatedPopulationUUID() != null
-						&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(rightCellListSelectionModel.getSelectedObject().getId()))
-						|| detail.getId().equalsIgnoreCase(rightCellListSelectionModel.getSelectedObject().getId())) { 
-					detail.setAssociatedPopulationUUID(null);
-					groupingClausesMap.put(detail.getName(), detail);
-					isAssociated = true;
-				}
-				if(denomClauseType != null  && isAssociated) {
-					groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
-				}
-				if(numClauseType!=null && isAssociated){
-					groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-				}
-				if (otherClauseType != null && otherClauseType.equalsIgnoreCase(detail.getType())) {
-					detail.setAssociatedPopulationUUID(null);
-					groupingClausesMap.put(detail.getName(), detail);
-				}
-			}
+			groupingPopulationList.forEach(detail -> clearAssociations(detail));
 		}
 
 	}
 
+	private void clearAssociations(MeasurePackageClauseDetail detail) {
+		if(DENOMINATOR.equals(detail.getType()) || NUMERATOR.equals(detail.getType()) || MEASURE_OBSERVATION.equalsIgnoreCase(detail.getType())) {
+			detail.setAssociatedPopulationUUID(null);
+			groupingClausesMap.put(detail.getName(), detail);
+		}
+	}
+	
 	private void addAllClauseRight() {
 		clearAlerts();
 		if (!clausesPopulationList.isEmpty()) {
@@ -621,13 +603,13 @@ public class MeasurePackageClauseCellListWidget {
 	private void addAllClauseLeft() {
 		clearAlerts();
 		if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(MatContext.get().getCurrentMeasureScoringType()) && shouldRequireAssociations(groupingPopulationList)) {
-			displayWarningMessage(true);			
+			displayWarningMessage(true, true);			
 		} else {
 			moveAllPopulationsFromRightToLeft();
 		}
 	}
 
-	private void displayWarningMessage(boolean isAllPopulations) {
+	private void displayWarningMessage(boolean isAllPopulations, boolean isPopulationMoveAffectingAssociation) {
 
 		ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(RATIO_ASSOCIATION_WARNING_MSG, "Yes", "No", null);
 
@@ -638,7 +620,7 @@ public class MeasurePackageClauseCellListWidget {
 				if (isAllPopulations) {
 					moveAllPopulationsFromRightToLeft();	
 				} else {
-					moveSelectedPopulationFromRightToLeft();
+					moveSelectedPopulationFromRightToLeft(isPopulationMoveAffectingAssociation);
 				}
 			}
 
@@ -653,9 +635,10 @@ public class MeasurePackageClauseCellListWidget {
 		confirmationDialogBox.show();
 	}
 	
-	private void moveSelectedPopulationFromRightToLeft() {
-		createGroupingClausesMap();
-
+	private void moveSelectedPopulationFromRightToLeft(boolean isPopulationMoveAffectingAssociation) {
+		if(isPopulationMoveAffectingAssociation) {
+			createGroupingClausesMap();
+		}
 		clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
 		groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
 		groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());

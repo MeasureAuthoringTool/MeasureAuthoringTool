@@ -642,7 +642,7 @@ public class InsertIntoAceEditorDialogBox {
 	}
 	
 	private static List<CQLIdentifierObject> sortIdentifierList(List<CQLIdentifierObject> identifierList) {
-		identifierList.sort((CQLIdentifierObject identifier1, CQLIdentifierObject identifier2) -> identifier1.toString().compareToIgnoreCase(identifier2.toString()));
+		identifierList.sort((CQLIdentifierObject identifier1, CQLIdentifierObject identifier2) -> identifier1.getDisplay().compareToIgnoreCase(identifier2.getDisplay()));
 		return identifierList;
 	}
 }

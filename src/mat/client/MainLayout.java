@@ -118,6 +118,7 @@ public abstract class MainLayout {
 		loadingPanel.add(flowPanel);
 		loadingPanel.getElement().getStyle().setProperty("backgroundColor", "transparent");
 		loadingPanel.getElement().getStyle().setProperty("border", "none");
+		loadingPanel.getElement().getStyle().setProperty("zIndex", "9999");
 		loadingPanel.center();
 	}
 	

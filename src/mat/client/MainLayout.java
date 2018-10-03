@@ -82,7 +82,7 @@ public abstract class MainLayout {
 	 */
 	public static void hideLoadingMessage(){
 		bar.setPercent(100.00);
-		bar.setText("Loaded 100 % ");
+		bar.setText("Loaded 100% ");
 		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
 	}
 	

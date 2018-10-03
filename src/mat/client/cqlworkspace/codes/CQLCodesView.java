@@ -842,7 +842,7 @@ public class CQLCodesView {
 					public void update(int index, CQLCode object,
 							SafeHtml value) {
 						if ((object != null)) {
-							int indexOfSuffix = object.getCodeName().lastIndexOf("("+object.getSuffix()+")");
+							int indexOfSuffix = object.getCodeName().lastIndexOf(" ("+object.getSuffix()+")");
 							if(indexOfSuffix >0) {
 								object.setCodeName(object.getCodeName().substring(0,indexOfSuffix));
 							}

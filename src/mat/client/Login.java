@@ -28,21 +28,13 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 
-
 public class Login extends MainLayout implements EntryPoint {
-	
 	private Panel content;
-	
 	private ForgottenLoginIdPresenter forgottenLoginIdNewPresenter;
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
-	
-	
 	private LoginPresenter loginNewPresenter;
-	
 	private FirstLoginPresenter securityQuestionsPresenter;
-	
 	private TempPwdLoginPresenter tempPwdLogingPresenter;
-	
 	private void callSignOut(){
 		MatContext.get().setUMLSLoggedIn(false);
 		MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
@@ -59,13 +51,9 @@ public class Login extends MainLayout implements EntryPoint {
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MainLayout#initEntryPoint()
-	 */
 	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.LOGIN_MODULE);
-		showLoadingMessage();
 		content = getContentPanel();
 		initPresenters();
 		loginNewPresenter.go(content);
@@ -162,9 +150,6 @@ public class Login extends MainLayout implements EntryPoint {
 		
 	}
 	
-	/**
-	 * Inits the presenters.
-	 */
 	private void initPresenters() {
 		LoginView loginView = new LoginView();
 		loginNewPresenter = new LoginPresenter(loginView);
@@ -182,12 +167,7 @@ public class Login extends MainLayout implements EntryPoint {
 		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
 		
 	}
-	
-	
-	
-	/**
-	 * Redirects to the Login.html
-	 */
+
 	private void redirectToLogin() {
 		/*
 		 * Added a timer to have a delay before redirect since

@@ -303,6 +303,8 @@ public class MeasurePackageClauseCellListWidget {
 								break;
 							}
 						}
+					} else {
+						groupingClausesMap.get(otherClauseType).setAssociatedPopulationUUID(null);
 					}
 				}
 			}else {
@@ -561,21 +563,6 @@ public class MeasurePackageClauseCellListWidget {
 		getRightPagerPanel().setDisplay(getRightCellList());
 		getLeftPagerPanel().setDisplay(getLeftCellList());
 	}
-	
-	private void createGroupingClausesMap() {
-
-		//If clause is removed, and if it is associated with any other clause,
-		//all it's associations are removed.
-		if(rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith("measure observation") || 
-				rightCellListSelectionModel.getSelectedObject().getName().toLowerCase().startsWith(STRATIFICATION)) {
-			groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject()); 
-		}
-
-		else {
-			groupingPopulationList.forEach(detail -> clearAssociations(detail));
-		}
-
-	}
 
 	private void clearAssociations(MeasurePackageClauseDetail detail) {
 		if(DENOMINATOR.equals(detail.getType()) || NUMERATOR.equals(detail.getType()) || MEASURE_OBSERVATION.equalsIgnoreCase(detail.getType())) {
@@ -637,7 +624,7 @@ public class MeasurePackageClauseCellListWidget {
 	
 	private void moveSelectedPopulationFromRightToLeft(boolean isPopulationMoveAffectingAssociation) {
 		if(isPopulationMoveAffectingAssociation) {
-			createGroupingClausesMap();
+			groupingPopulationList.forEach(detail -> clearAssociations(detail));
 		}
 		clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
 		groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());

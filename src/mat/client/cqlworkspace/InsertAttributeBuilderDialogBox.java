@@ -73,46 +73,46 @@ public class InsertAttributeBuilderDialogBox {
 	private static List<String> allDataTypes = MatContext.get().getCqlConstantContainer().getCqlDatatypeList();
 	private static List<String> allAttributes = MatContext.get().getCqlConstantContainer().getCqlAttributeList();
 
-	final static ListBoxMVP dtAttriblistBox = new ListBoxMVP();
-	final static ListBoxMVP attriblistBox = new ListBoxMVP();
-	final static ListBoxMVP modelistBox = new ListBoxMVP();
-	final static ListBoxMVP modeDetailslistBox = new ListBoxMVP();
+	final private static ListBoxMVP dtAttriblistBox = new ListBoxMVP();
+	final private static ListBoxMVP attriblistBox = new ListBoxMVP();
+	final private static ListBoxMVP modelistBox = new ListBoxMVP();
+	final private static ListBoxMVP modeDetailslistBox = new ListBoxMVP();
 
-	final static FormGroup dtFormGroup = new FormGroup();
-	final static FormGroup attrFormGroup = new FormGroup();
-	final static FormGroup modeFormGroup = new FormGroup();
-	final static FormGroup modeDetailsFormGroup = new FormGroup();
-	final static FormGroup quantityFormGroup = new FormGroup();
-	final static FormGroup unitFormGroup = new FormGroup();
+	final private static FormGroup dtFormGroup = new FormGroup();
+	final private static FormGroup attrFormGroup = new FormGroup();
+	final private static FormGroup modeFormGroup = new FormGroup();
+	final private static FormGroup modeDetailsFormGroup = new FormGroup();
+	final private static FormGroup quantityFormGroup = new FormGroup();
+	final private static FormGroup unitFormGroup = new FormGroup();
 
-	final static HorizontalPanel dtPanel = new HorizontalPanel();
-	final static HorizontalPanel attrPanel = new HorizontalPanel();
-	final static HorizontalPanel modePanel = new HorizontalPanel();
-	final static HorizontalPanel modeDetailPanel = new HorizontalPanel();
-	final static HorizontalPanel quantityPanel = new HorizontalPanel();
-	final static HorizontalPanel unitPanel = new HorizontalPanel();
+	final private static HorizontalPanel dtPanel = new HorizontalPanel();
+	final private static HorizontalPanel attrPanel = new HorizontalPanel();
+	final private static HorizontalPanel modePanel = new HorizontalPanel();
+	final private static HorizontalPanel modeDetailPanel = new HorizontalPanel();
+	final private static HorizontalPanel quantityPanel = new HorizontalPanel();
+	final private static HorizontalPanel unitPanel = new HorizontalPanel();
 
-	final static CustomDateTimeTextBox yyyyTxtBox = new CustomDateTimeTextBox(4);
-	final static CustomDateTimeTextBox mmTxtBox = new CustomDateTimeTextBox(2);
-	final static CustomDateTimeTextBox ddTxtBox = new CustomDateTimeTextBox(2);
-	final static CustomDateTimeTextBox hhTextBox = new CustomDateTimeTextBox(2);
-	final static CustomDateTimeTextBox minTxtBox = new CustomDateTimeTextBox(2);
-	final static CustomDateTimeTextBox ssTxtBox = new CustomDateTimeTextBox(2);
-	final static CustomDateTimeTextBox msTxtBox = new CustomDateTimeTextBox(3);
+	final private static CustomDateTimeTextBox yyyyTxtBox = new CustomDateTimeTextBox(4);
+	final private static CustomDateTimeTextBox mmTxtBox = new CustomDateTimeTextBox(2);
+	final private static CustomDateTimeTextBox ddTxtBox = new CustomDateTimeTextBox(2);
+	final private static CustomDateTimeTextBox hhTextBox = new CustomDateTimeTextBox(2);
+	final private static CustomDateTimeTextBox minTxtBox = new CustomDateTimeTextBox(2);
+	final private static CustomDateTimeTextBox ssTxtBox = new CustomDateTimeTextBox(2);
+	final private static CustomDateTimeTextBox msTxtBox = new CustomDateTimeTextBox(3);
 
-	final static FormGroup yearFormGroup = new FormGroup();
-	final static FormGroup mmFormGroup = new FormGroup();
-	final static FormGroup ddFormGroup = new FormGroup();
-	final static FormGroup hourFormGroup = new FormGroup();
-	final static FormGroup minFormGroup = new FormGroup();
-	final static FormGroup secondsFormGroup = new FormGroup();
-	final static FormGroup millisecFormGroup = new FormGroup();
+	final private static FormGroup yearFormGroup = new FormGroup();
+	final private static FormGroup mmFormGroup = new FormGroup();
+	final private static FormGroup ddFormGroup = new FormGroup();
+	final private static FormGroup hourFormGroup = new FormGroup();
+	final private static FormGroup minFormGroup = new FormGroup();
+	final private static FormGroup secondsFormGroup = new FormGroup();
+	final private static FormGroup millisecFormGroup = new FormGroup();
 
-	final static CustomQuantityTextBox quantityTextBox = new CustomQuantityTextBox(30);
-	final static ListBoxMVP unitslistBox = new ListBoxMVP();
+	final private static CustomQuantityTextBox quantityTextBox = new CustomQuantityTextBox(30);
+	final private static ListBoxMVP unitslistBox = new ListBoxMVP();
 
-	static FormGroup helpMessageFormGroup = new FormGroup(); 
-	static HelpBlock messageHelpBlock = new HelpBlock(); 
+	private static FormGroup helpMessageFormGroup = new FormGroup(); 
+	private static HelpBlock messageHelpBlock = new HelpBlock(); 
 
 	public static void showAttributesDialogBox(final AceEditor editor) {
 		final Modal dialogModal = new Modal();

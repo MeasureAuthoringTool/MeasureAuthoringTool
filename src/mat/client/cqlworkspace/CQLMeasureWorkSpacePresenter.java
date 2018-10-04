@@ -659,7 +659,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					String measureId = MatContext.get().getCurrentMeasureId();
 					if ((measureId != null) && !measureId.equals(EMPTY_STRING)) {
 						cqlWorkspaceView.getCQLLeftNavBarPanelView().setCurrentSelectedValueSetObjId(result.getId());
-						deleteConfirmationDialogBox.getMessageAlert().createAlert(buildSuccessfullySavedWithErrors(VALUESET, result.getName()));
+						deleteConfirmationDialogBox.getMessageAlert().createAlert(buildSelectedToDeleteWithConfirmationMessage(VALUESET, result.getName()));
 						deleteConfirmationDialogBox.show();
 						cqlWorkspaceView.getValueSetView().getOIDInput().setFocus(true);
 					}

@@ -290,6 +290,7 @@ public class MeasurePackageClauseCellListWidget {
 				if (interimArrayList != null) {
 					for (MeasurePackageClauseDetail detail : interimArrayList) {
 						if (detail.isAssociatedPopulation()) {
+							removeIfOtherMeasureObservationHasThisAssociation(detail);
 							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(detail.getId());
 						} else {
 							otherClauseCell = detail;
@@ -303,9 +304,7 @@ public class MeasurePackageClauseCellListWidget {
 								break;
 							}
 						}
-					} else {
-						groupingClausesMap.get(otherClauseType).setAssociatedPopulationUUID(null);
-					}
+					} 
 				}
 			}else {
 				for (MeasurePackageClauseDetail detail : associatedPopulationList) {
@@ -325,6 +324,16 @@ public class MeasurePackageClauseCellListWidget {
 						}
 					}
 				}
+			}
+		}
+	}
+
+	private void removeIfOtherMeasureObservationHasThisAssociation(MeasurePackageClauseDetail detail) {
+		for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+			if(MEASURE_OBSERVATION.equalsIgnoreCase(entry.getValue().getType()) &&
+					!entry.getValue().getName().equalsIgnoreCase(rightCellListSelectionModel.getSelectedObject().getName()) && 
+					detail.getId().equalsIgnoreCase(entry.getValue().getAssociatedPopulationUUID())) {
+				entry.getValue().setAssociatedPopulationUUID(null);
 			}
 		}
 	}

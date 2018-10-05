@@ -74,7 +74,6 @@ import mat.model.cql.CQLParametersWrapper;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.model.cql.validator.CQLIncludeLibraryValidator;
-import mat.server.cqlparser.CQLTemplateXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.impl.MatContextServiceUtil;
 import mat.server.util.CQLLibraryWrapperMappingUtil;
@@ -1257,10 +1256,11 @@ public class CQLServiceImpl implements CQLService {
 	 * @throws ValidationException 
 	 * @throws MarshalException 
 	 */
+	@Override
 	public String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException {
 		logger.info("In CQLServiceImpl.createIncludeLibraryXML");
 		CQLIncludeLibraryWrapper wrapper = new CQLIncludeLibraryWrapper();
-		List<CQLIncludeLibrary> includeLibraryList = new ArrayList<CQLIncludeLibrary>();
+		List<CQLIncludeLibrary> includeLibraryList = new ArrayList<>();
 		includeLibraryList.add(includeLibrary);
 		wrapper.setCqlIncludeLibrary(includeLibraryList);
 		String includeLibraryXML = CQLLibraryWrapperMappingUtil.convertCQLIncludeLibraryWrapperToXML(wrapper);
@@ -1638,8 +1638,8 @@ public class CQLServiceImpl implements CQLService {
 
 
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
-		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
-		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
+		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<>();
+		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<>();
 		CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
 		cqlModel.setIncludedLibrarys(cqlIncludeModelMap);
@@ -1655,7 +1655,7 @@ public class CQLServiceImpl implements CQLService {
 		cqlModel = CQLUtilityClass.getCQLModelFromXML(xmlString);
 
 		HashMap<String, LibHolderObject> cqlLibNameMap =  new HashMap<>();
-		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
+		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<>();
 		String parentLibraryName = cqlModel.getLibraryName();
 		CQLUtil.getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, getCqlLibraryDAO());
 		cqlModel.setIncludedCQLLibXMLMap(cqlLibNameMap);
@@ -1819,7 +1819,7 @@ public class CQLServiceImpl implements CQLService {
 		logger.info("In CQLServiceImpl.createParametersXML");
 		Mapping mapping = new Mapping();
 		CQLParametersWrapper wrapper = new CQLParametersWrapper();
-		List<CQLParameter> paramList = new ArrayList<CQLParameter>();
+		List<CQLParameter> paramList = new ArrayList<>();
 
 		paramList.add(parameter);
 		wrapper.setCqlParameterList(paramList);
@@ -1862,7 +1862,7 @@ public class CQLServiceImpl implements CQLService {
 		logger.info("In CQLServiceImpl.createFunctionsXML");
 		Mapping mapping = new Mapping();
 		CQLFunctionsWrapper wrapper = new CQLFunctionsWrapper();
-		List<CQLFunctions> funcList = new ArrayList<CQLFunctions>();
+		List<CQLFunctions> funcList = new ArrayList<>();
 
 		funcList.add(function);
 		wrapper.setCqlFunctionsList(funcList);
@@ -1905,7 +1905,7 @@ public class CQLServiceImpl implements CQLService {
 		logger.info("In CQLServiceImpl.createDefinitionsXML");
 		Mapping mapping = new Mapping();
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
-		List<CQLDefinition> definitionList = new ArrayList<CQLDefinition>();
+		List<CQLDefinition> definitionList = new ArrayList<>();
 		definitionList.add(definition);
 		wrapper.setCqlDefinitions(definitionList);
 
@@ -2252,7 +2252,7 @@ public class CQLServiceImpl implements CQLService {
 		if (!parsedCQL.getCqlErrors().isEmpty()) {
 			result.setValidCQLWhileSavingExpression(false);
 		}
-		List<CQLErrors> errors = new ArrayList<CQLErrors>();
+		List<CQLErrors> errors = new ArrayList<>();
 		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();
 
@@ -2360,7 +2360,7 @@ public class CQLServiceImpl implements CQLService {
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 
 
-		List<String> exprList = new ArrayList<String>();
+		List<String> exprList = new ArrayList<>();
 
 		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
 			logger.info("name:" + cqlDefinition.getName());
@@ -2420,7 +2420,7 @@ public class CQLServiceImpl implements CQLService {
 	public final SaveUpdateCQLResult saveCQLValueset(CQLValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
 		wrapper.setQualityDataDTO(qdsList);
 		valueSetTransferObject.scrubForMarkUp();
 		
@@ -2441,7 +2441,7 @@ public class CQLServiceImpl implements CQLService {
 		qds.setRelease(valueSetTransferObject.getCqlQualityDataSetDTO().getRelease());
 		qds.setProgram(valueSetTransferObject.getCqlQualityDataSetDTO().getProgram());
 		qds.setVersion("");
-
+		qds.setValueSetType(matValueSet.getType());
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -2507,7 +2507,7 @@ public class CQLServiceImpl implements CQLService {
 		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
 		String errorMessage = validator.validate(matValueSetTransferObject);
 		if (errorMessage.isEmpty()) {
-			ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+			ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
 			
 			wrapper.setQualityDataDTO(qdsList);
 			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
@@ -2556,7 +2556,7 @@ public class CQLServiceImpl implements CQLService {
 					result.setFailureReason(result.getDuplicateCode());
 				} else {
 					CQLCodeWrapper wrapper = new CQLCodeWrapper();
-					ArrayList<CQLCode> codeList = new ArrayList<CQLCode>();
+					ArrayList<CQLCode> codeList = new ArrayList<>();
 					wrapper.setCqlCodeList(codeList);
 					wrapper.getCqlCodeList().add(codeTransferObject.getCqlCode());
 					String codeXMLString = generateXmlForAppliedCode(wrapper);
@@ -2588,7 +2588,7 @@ public class CQLServiceImpl implements CQLService {
 				result.setSuccess(false);
 			} else {
 				CQLCodeSystemWrapper wrapper = new CQLCodeSystemWrapper();
-				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<CQLCodeSystem>();
+				ArrayList<CQLCodeSystem> codeSystemList = new ArrayList<>();
 				wrapper.setCqlCodeSystemList(codeSystemList);
 				wrapper.getCqlCodeSystemList().add(codeSystem);
 				String codeSystemXMLString = generateXmlForAppliedCodeSystem(wrapper);
@@ -2664,7 +2664,7 @@ public class CQLServiceImpl implements CQLService {
 		populatedOldQDM(oldQdm, matValueSetTransferObject.getCqlQualityDataSetDTO());
 		// Treat as regular QDM
 		List<CQLQualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject.getAppliedQDMList();
-		List<CQLQualityDataSetDTO> tempAppliedQDMList = new ArrayList<CQLQualityDataSetDTO>();
+		List<CQLQualityDataSetDTO> tempAppliedQDMList = new ArrayList<>();
 		tempAppliedQDMList.addAll(matValueSetTransferObject.getAppliedQDMList());
 		// Removing the QDS that is being modified from the
 		// tempAppliedQDMList.
@@ -2685,6 +2685,7 @@ public class CQLServiceImpl implements CQLService {
 			qds.setOid(matValueSet.getID());
 			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 			qds.setName(matValueSet.getDisplayName());
+			qds.setValueSetType(matValueSet.getType());
 			if (matValueSet.isGrouping()) {
 				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 			} else {
@@ -2715,7 +2716,7 @@ public class CQLServiceImpl implements CQLService {
 		// be modified QDM.
 		String XPATH_EXPRESSION_VALUESETS = "//cqlLookUp/valuesets/valueset[@uuid='" + modifyDTO.getUuid() + "']";
 		try {
-			NodeList nodesValuesets = (NodeList) processor.findNodeList(processor.getOriginalDoc(),
+			NodeList nodesValuesets = processor.findNodeList(processor.getOriginalDoc(),
 					XPATH_EXPRESSION_VALUESETS);
 			for (int i = 0; i < nodesValuesets.getLength(); i++) {
 				Node newNode = nodesValuesets.item(i);
@@ -2766,6 +2767,14 @@ public class CQLServiceImpl implements CQLService {
 						}
 					}
 				}
+				
+				if (newNode.getAttributes().getNamedItem("type") == null) {
+					Attr attrNode = processor.getOriginalDoc().createAttribute("type");
+					attrNode.setNodeValue(modifyWithDTO.getValueSetType());
+					newNode.getAttributes().setNamedItem(attrNode);
+				} else {
+					newNode.getAttributes().getNamedItem("type").setNodeValue(modifyDTO.getValueSetType());	
+				}
 			}
 			result.setSuccess(true);
 			result.setXml(processor.transform(processor.getOriginalDoc()));
@@ -2789,11 +2798,11 @@ public class CQLServiceImpl implements CQLService {
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
 		SaveUpdateCQLResult result = new SaveUpdateCQLResult();
 		ValueSetNameInputValidator validator = new ValueSetNameInputValidator();
-		List<String> messageList = new ArrayList<String>();
+		List<String> messageList = new ArrayList<>();
 		validator.validate(matValueSetTransferObject);
 		if (messageList.isEmpty()) {
 			if (!isDuplicate(matValueSetTransferObject, false)) {
-				ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+				ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
 				wrapper.setQualityDataDTO(qdsList);
 				CQLQualityDataSetDTO qds = matValueSetTransferObject.getCqlQualityDataSetDTO();
 				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
@@ -3110,7 +3119,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private Map<String , List<CQLErrors>> getCQLErrorsPerExpressions(CQLModel cqlModel , SaveUpdateCQLResult parsedCQL ){
 		
-		Map<String , List<CQLErrors>> expressionMapWithError = new HashMap<String,List<CQLErrors>>();
+		Map<String , List<CQLErrors>> expressionMapWithError = new HashMap<>();
 		List<CQLExpressionObject> cqlExpressionObjects = getCQLExpressionObjectListFromCQLModel(cqlModel);
 		 
 		for(CQLExpressionObject expressionObject : cqlExpressionObjects){
@@ -3153,7 +3162,7 @@ public class CQLServiceImpl implements CQLService {
 			logger.debug("fileStartLine of expression ===== "+ fileStartLine);
 			logger.debug("fileEndLine of expression ===== "+ fileEndLine);
 		
-			List<CQLErrors> errors = new ArrayList<CQLErrors>();
+			List<CQLErrors> errors = new ArrayList<>();
 			for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
 				int errorStartLine = cqlError.getStartErrorInLine();
 				String errorMsg = (cqlError.getErrorMessage() == null) ? "" : cqlError.getErrorMessage();
@@ -3211,7 +3220,7 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	private List<CQLExpressionObject> getCQLExpressionObjectListFromCQLModel(CQLModel cqlModel) {
 
-		List<CQLExpressionObject> cqlExpressionObjects = new ArrayList<CQLExpressionObject>();
+		List<CQLExpressionObject> cqlExpressionObjects = new ArrayList<>();
 		
 		
 		for (CQLParameter cqlParameter : cqlModel.getCqlParameters()) {

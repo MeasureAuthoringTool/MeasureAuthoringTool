@@ -20,41 +20,26 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 public class CQLAppliedValueSetUtility {
-	static final String GROUPING_QDM = " (G)";
-	static final String EXTENSIONAL_QDM = " (E)";
 	
 	public String getExpansionProfileValue(ListBox inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
+		return (inputListBox.getSelectedIndex() >= 0) ? inputListBox.getValue(inputListBox.getSelectedIndex()) : "";
 	}
 	
 	public String getDataTypeText(ListBoxMVP inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getItemText(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
+		return (inputListBox.getSelectedIndex() >= 0) ? inputListBox.getItemText(inputListBox.getSelectedIndex()) : "";
 	}
 
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
-		if (inputListBox.getSelectedIndex() >= 0) {
-			return inputListBox.getValue(inputListBox.getSelectedIndex());
-		} else {
-			return "";
-		}
+		return (inputListBox.getSelectedIndex() >= 0) ? inputListBox.getValue(inputListBox.getSelectedIndex()) : ""; 
 	}
 	
 	public static boolean checkForEnable() {
-		return MatContext.get().getMeasureLockService()
-				.checkForEditPermission();
+		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 	
 	public static String getProgramTitle(CQLQualityDataSetDTO object, String program) {
 		String title = null;
-		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+		if (!object.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
 			title = "Program : " + program;
 		}
 		return title;
@@ -62,7 +47,7 @@ public class CQLAppliedValueSetUtility {
 	
 	public static String getProgramColumnProgram(CQLQualityDataSetDTO object) {
 		String program = null;
-		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+		if (!object.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
 			program = (object.getProgram() == null ? "" : object.getProgram());
 		} else {
 			program = "";
@@ -72,31 +57,28 @@ public class CQLAppliedValueSetUtility {
 
 	public static String buildNameValue(CQLQualityDataSetDTO object) {
 		StringBuilder value = new StringBuilder();
-		String qdmType = new String();
-		if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-			if (object.getTaxonomy().equalsIgnoreCase("Grouping")) {
-				qdmType = GROUPING_QDM;
-			} else {
-				qdmType = EXTENSIONAL_QDM;
-			}
+		StringBuilder qdmType = new StringBuilder();
+		if (!object.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			qdmType.append(" (").append(object.getValueSetType().substring(0, 1)).append(")");
 		}
-		value.append(object.getName()).append(qdmType);
+		value.append(object.getName()).append(qdmType.toString());
 		return value.toString();
 	}
 	
 	public static StringBuilder buildOIDTitle(CQLQualityDataSetDTO object) {
 		StringBuilder title = new StringBuilder();
-		if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-			title.append("OID : ").append(ConstantMessages.USER_DEFINED_QDM_NAME);
+		title.append("OID : ");
+		if (object.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			title.append(ConstantMessages.USER_DEFINED_QDM_NAME);
 		} else {
-			title.append("OID : ").append(object.getOid());
+			title.append(object.getOid());
 		}
 		return title;
 	}
 	
 	public static String buildOidColumnOid(CQLQualityDataSetDTO object) {
 		String oid = null;
-		if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+		if (object.getOid().equals(ConstantMessages.USER_DEFINED_QDM_OID)) {
 			oid = ConstantMessages.USER_DEFINED_CONTEXT_DESC;
 		} else {
 			oid = object.getOid();
@@ -104,7 +86,7 @@ public class CQLAppliedValueSetUtility {
 		return oid;
 	}
 	
-	public static String buildNameTitle(CQLQualityDataSetDTO object, String value) {
+	public static String buildNameTitle(String value) {
 		StringBuilder title = new StringBuilder();
 		title.append("Name : ").append(value);
 		title.append("");
@@ -220,7 +202,7 @@ public class CQLAppliedValueSetUtility {
 	
 	
 	public static CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable,  HasCell<CQLQualityDataSetDTO, ?> cellToAdd) {
-		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<HasCell<CQLQualityDataSetDTO, ?>>();
+		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<>();
 		
 		if(isEditable){
 			cells.add(cellToAdd);

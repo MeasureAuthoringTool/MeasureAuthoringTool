@@ -46,6 +46,7 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	private String release;
 	private String program; 
 	private boolean dataTypeHasRemoved;
+	private String valueSetType;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -245,7 +246,6 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 		this.isReadOnly = isReadOnly;
 	}
 
-
 	@Override
 	public String getId() {
 		return id;
@@ -261,27 +261,27 @@ public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 		return getCodeListName();
 	}
 
-
-
 	@Override
 	public void setName(String name) {
 		setCodeListName(name);
 	}
 
-
-
 	@Override
 	public String getLogic() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-
-
 	@Override
 	public void setLogic(String logic) {
-		// TODO Auto-generated method stub
-		
 	}
-	
+
+	public String getValueSetType() {
+		return valueSetType;
+	}
+
+	public void setValueSetType(String valueSetType) {
+		this.valueSetType = valueSetType;
+	}
+
+
 }

@@ -267,8 +267,8 @@ public class VSACApiServImpl implements VSACApiService{
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateCQLVSACValueSets method :");
 		if (isAlreadySignedIn(sessionId)) {
-			HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> updateInMeasureXml = new HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO>();
-			ArrayList<CQLQualityDataSetDTO> modifiedQDMList = new ArrayList<CQLQualityDataSetDTO>();
+			HashMap<CQLQualityDataSetDTO, CQLQualityDataSetDTO> updateInMeasureXml = new HashMap<>();
+			ArrayList<CQLQualityDataSetDTO> modifiedQDMList = new ArrayList<>();
 			if (defaultExpId == null) {
 				defaultExpId = getDefaultExpId();
 			}
@@ -345,6 +345,7 @@ public class VSACApiServImpl implements VSACApiService{
 										cqlQualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
 									}
 								}
+								cqlQualityDataSetDTO.setValueSetType(matValueSet.getType());
 								updateInMeasureXml.put(cqlQualityDataSetDTO, toBeModifiedQDM);
 								toBeModifiedQDM.setHasModifiedAtVSAC(true); // Used at Applied QDM Tab
 								//to show icons in CellTable.
@@ -391,6 +392,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final VsacApiResult getDirectReferenceCode (String url, String sessionId) {
 		Callable<VsacApiResult> getCodeTask = new Callable<VsacApiResult>() {
+			@Override
 			public VsacApiResult call() {
 				return getCodeFromVsac(url, sessionId);
 			}
@@ -453,6 +455,7 @@ public class VSACApiServImpl implements VSACApiService{
 	@Override
 	public final VsacApiResult getMostRecentValueSetByOID(final String oid, final String release, String expansionId, String sessionId) {
 		Callable<VsacApiResult> getValuesetTask = new Callable<VsacApiResult>() {
+			@Override
 			public VsacApiResult call() {
 				return getMostRecentValuesetByOID(oid, release, expansionId, sessionId);
 			}

@@ -92,7 +92,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	private final String ENTER_NAME = "Enter Name Required";
 	private final String RETRIEVE_OID = "Retrieve OID";
 	
-	public static interface Observer {
+	public interface Observer {
 
 		void onModifyClicked(CQLQualityDataSetDTO result);
 
@@ -375,17 +375,17 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		cellTablePanel.add(qdmElementsHeader);
 		if ((appliedValueSetList != null)
 				&& (appliedValueSetList.size() > 0)) {
-			table = new CellTable<CQLQualityDataSetDTO>();
+			table = new CellTable<>();
 			allValueSetsList = appliedValueSetList;
 			setEditable(isEditable);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			listDataProvider = new ListDataProvider<CQLQualityDataSetDTO>();
-			qdmSelectedList = new ArrayList<CQLQualityDataSetDTO>();
+			listDataProvider = new ListDataProvider<>();
+			qdmSelectedList = new ArrayList<>();
 			table.setPageSize(TABLE_ROW_COUNT);
 			table.redraw();
 			listDataProvider.refresh();
 			listDataProvider.getList().addAll(appliedValueSetList);
-			ListHandler<CQLQualityDataSetDTO> sortHandler = new ListHandler<CQLQualityDataSetDTO>(
+			ListHandler<CQLQualityDataSetDTO> sortHandler = new ListHandler<>(
 					listDataProvider.getList());
 			table.addColumnSortHandler(sortHandler);
 			table = addColumnToTable(table, sortHandler, isEditable);
@@ -443,7 +443,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			TableCaptionElement caption = elem.createCaption();
 			searchHeader.setVisible(false);
 			caption.appendChild(searchHeader.getElement());
-			selectionModel = new MultiSelectionModel<CQLQualityDataSetDTO>();
+			selectionModel = new MultiSelectionModel<>();
 			table.setSelectionModel(selectionModel);
 
 		
@@ -551,7 +551,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 			@Override
 			public SafeHtml getValue(CQLQualityDataSetDTO object) {
 				String value = CQLAppliedValueSetUtility.buildNameValue(object);
-				String title = CQLAppliedValueSetUtility.buildNameTitle(object, value);
+				String title = CQLAppliedValueSetUtility.buildNameTitle(value);
 				return CellTableUtility.getNameColumnToolTip(value, title);
 			}
 		};
@@ -573,7 +573,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 
 	
 	private CompositeCell<CQLQualityDataSetDTO> getCompositeCell(final boolean isEditable,  HasCell<CQLQualityDataSetDTO, ?> cellToAdd) {
-		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<HasCell<CQLQualityDataSetDTO, ?>>();
+		final List<HasCell<CQLQualityDataSetDTO, ?>> cells = new LinkedList<>();
 		
 		if(isEditable){
 			cells.add(cellToAdd);
@@ -770,9 +770,9 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	
 	public void clearSelectedCheckBoxes(){
 		if(table!=null){
-			List<CQLQualityDataSetDTO> displayedItems = new ArrayList<CQLQualityDataSetDTO>();
+			List<CQLQualityDataSetDTO> displayedItems = new ArrayList<>();
 			displayedItems.addAll(qdmSelectedList);
-			qdmSelectedList = new  ArrayList<CQLQualityDataSetDTO>();
+			qdmSelectedList = new  ArrayList<>();
 			for (CQLQualityDataSetDTO dto : displayedItems) {
 				selectionModel.setSelected(dto, false);
 			}
@@ -807,10 +807,12 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 		searchHeader.add(searchHeaderText);
 	}
 
+	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
 
+	@Override
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<Boolean> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
@@ -1076,7 +1078,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 	 * @return List of {@link CQLValueSetTransferObject}
 	 */
 	public List<CQLValueSetTransferObject> setMatValueSetListForValueSets(List<CQLQualityDataSetDTO> copiedValueSetList,  List<CQLQualityDataSetDTO> appliedValueSetTableList) {
-		List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList  = new ArrayList<CQLValueSetTransferObject>();
+		List<CQLValueSetTransferObject> cqlValueSetTransferObjectsList  = new ArrayList<>();
 		for(CQLQualityDataSetDTO cqlQualityDataSetDTO : copiedValueSetList) {
 			if(!checkNameInValueSetList(cqlQualityDataSetDTO.getName(), appliedValueSetTableList)) {
 				CQLValueSetTransferObject cqlValueSetTransferObject = new CQLValueSetTransferObject();
@@ -1086,7 +1088,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					cqlValueSetTransferObject.setUserDefinedText(cqlQualityDataSetDTO.getOriginalCodeListName());
 				} else {
 					MatValueSet matValueSet = new MatValueSet();
-					List<MatConcept> matConcepts = new ArrayList<MatConcept> ();
+					List<MatConcept> matConcepts = new ArrayList<> ();
 					MatConcept matConcept = new MatConcept();
 					matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
 					matConcept.setCodeSystemName(cqlQualityDataSetDTO.getTaxonomy());

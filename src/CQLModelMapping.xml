@@ -92,6 +92,9 @@
 					<field name="suppDataElement" type="java.lang.Boolean">
 						<bind-xml name="suppDataElement" node="attribute" />
 					</field>
+					<field name="valueSetType" type="java.lang.String">
+						<bind-xml name="type" node="attribute" />
+					</field>
 				</class>
 			</bind-xml>
 		</field>

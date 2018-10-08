@@ -4,6 +4,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class BonnieCalculatedResult implements IsSerializable{
 
+	private String name; 
 	private byte[] result;
 	
 	public BonnieCalculatedResult() {
@@ -17,5 +18,15 @@ public class BonnieCalculatedResult implements IsSerializable{
 	public void setResult(byte[] result) {
 		this.result = result;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 	
 }

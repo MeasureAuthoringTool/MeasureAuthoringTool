@@ -214,11 +214,9 @@ public class ExportServlet extends HttpServlet {
 	}
 
 	private void exportBonnieMeasureCalculateion(HttpServletResponse resp, Measure measure, String userId) throws IOException, BonnieUnauthorizedException, BonnieNotFoundException, BonnieServerException, BonnieBadParameterException, BonnieDoesNotExistException {
-		BonnieCalculatedResult export = getService().getBonnieExportCalculation(measure.getMeasureSet().getId(), userId);
-
-		String currentReleaseVersion = StringUtils.replace(measure.getReleaseVersion(), ".", "_");
+		BonnieCalculatedResult export = getService().getBonnieExportCalculation(measure.getMeasureSet().getId(), userId);		
 		resp.setHeader(CONTENT_DISPOSITION,
-				ATTACHMENT_FILENAME + FileNameUtility.getBonnieMeasureXLSXName(measure.getDescription() + "_" + currentReleaseVersion));
+				ATTACHMENT_FILENAME + export.getName());
 		resp.setContentType(APPLICATION_XSL);
 		resp.getOutputStream().write(export.getResult());
 	}

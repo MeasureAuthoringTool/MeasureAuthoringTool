@@ -161,7 +161,7 @@ public class BonnieAPIv1 implements BonnieAPI {
 			
 			ByteArrayOutputStream calculatedResultByteArray = readFully(connection.getInputStream());
 			calculatedResult.setResult(calculatedResultByteArray.toByteArray());
-
+			calculatedResult.setName(getFileNameFromContentDisposition(connection.getHeaderField("Content-Disposition")));
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw e;
@@ -174,6 +174,12 @@ public class BonnieAPIv1 implements BonnieAPI {
 		
 		return calculatedResult;
 	}
+	
+	private String getFileNameFromContentDisposition(String contentDispositionValue) {
+		return contentDispositionValue.replaceAll("\"", "").replaceAll("attachment; ", "").replaceAll("filename=", "");
+		
+	}
+	
 	private ByteArrayOutputStream readFully(InputStream inputStream) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];

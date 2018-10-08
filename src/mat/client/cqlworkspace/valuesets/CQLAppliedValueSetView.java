@@ -1090,7 +1090,7 @@ public class CQLAppliedValueSetView implements HasSelectionHandlers<Boolean>{
 					MatValueSet matValueSet = new MatValueSet();
 					List<MatConcept> matConcepts = new ArrayList<> ();
 					MatConcept matConcept = new MatConcept();
-					matValueSet.setType(cqlQualityDataSetDTO.getTaxonomy());
+					matValueSet.setType(cqlQualityDataSetDTO.getValueSetType());
 					matConcept.setCodeSystemName(cqlQualityDataSetDTO.getTaxonomy());
 					matConcepts.add(matConcept);
 					MatConceptList matConceptList = new MatConceptList();

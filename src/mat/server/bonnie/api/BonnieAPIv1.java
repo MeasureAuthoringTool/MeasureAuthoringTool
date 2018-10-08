@@ -177,8 +177,8 @@ public class BonnieAPIv1 implements BonnieAPI {
 	
 	private String getFileNameFromContentDisposition(String contentDispositionValue) {
 		
-		contentDispositionValue = StringUtils.replace(contentDispositionValue, "attachment; filename=", "");
-		contentDispositionValue = StringUtils.replace(contentDispositionValue, "\"", "");
+		contentDispositionValue = StringUtils.remove(contentDispositionValue, "attachment; filename=");
+		contentDispositionValue = StringUtils.remove(contentDispositionValue, "\"");
 		
 		return contentDispositionValue;
 		

@@ -161,7 +161,10 @@ implements MeasureCloningService {
 	
 	private static final String PROGRAM = "program";
 	private static final String RELEASE = "release";
-
+	private static final String TYPE = "type";
+	private static final String TAXONOMY = "taxonomy";
+	private static final String GROUPING = "Grouping";
+	private static final String EXTENSIONAL = "Extensional";
 	
 	/** The cloned doc. */
 	private Document clonedDoc;
@@ -426,8 +429,8 @@ implements MeasureCloningService {
 		//copy qdm to cqlLookup/valuesets
 		NodeList qdmNodes = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm");		
 		Node cqlValuesetsNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/cqlLookUp/valuesets");
-		List<Node> qdmNodeList = new ArrayList<Node>();
-		List<Node> cqlValuesetsNodeList = new ArrayList<Node>();
+		List<Node> qdmNodeList = new ArrayList<>();
+		List<Node> cqlValuesetsNodeList = new ArrayList<>();
 		
 		/**
 		 * We need to capture old "Patient Characteristic Expired"(oid=419099009) and "Patient Characteristic Birthdate"(oid=21112-8)
@@ -446,11 +449,9 @@ implements MeasureCloningService {
 				String qdmName = qdmNode.getAttributes().getNamedItem(NAME).getNodeValue();
 				String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
 				if(oid.equals(PATIENT_CHARACTERISTIC_EXPIRED_OID)){
-					//expiredtimingQDMNode = qdmNode;
 					qdmNodeList.add(qdmNode);
 					isClonable = false;
 				}else if(oid.equals(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID)){
-					//birthDataQDMNode = qdmNode;
 					isClonable = false;
 				} else if((qdmName.equalsIgnoreCase(QDM_BIRTHDATE_NON_DEFAULT) 
 						|| dataType.equalsIgnoreCase(PATIENT_CHARACTERISTIC_BIRTH_DATE)) 
@@ -491,6 +492,7 @@ implements MeasureCloningService {
 				Node valueSetNode = addOriginalNameAttributeIfNotPresent(cqlValuesetsNode.getChildNodes().item(i), xmlProcessor);
 				valueSetNode = addProgramAttributeIfNotPresent(valueSetNode, xmlProcessor);
 				valueSetNode = addReleaseAttributeIfNotPresent(valueSetNode, xmlProcessor);
+				valueSetNode = addVSACTypeAttributeIfNotPresent(valueSetNode, xmlProcessor);
 				cqlValuesetsNodeList.add(valueSetNode);
 			}
 		}
@@ -498,14 +500,13 @@ implements MeasureCloningService {
 				
 		//Remove all duplicate value sets for new Value Sets workspace.
 		if(cqlValuesetsNodeList != null && !cqlValuesetsNodeList.isEmpty()){
-			List<String> cqlVSACValueSets = new ArrayList<String>();
-			List<String> cqlUserDefValueSets = new ArrayList<String>();
+			List<String> cqlVSACValueSets = new ArrayList<>();
+			List<String> cqlUserDefValueSets = new ArrayList<>();
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
 				String valuesetName = cqlNode.getAttributes().getNamedItem(NAME).getTextContent();
-				String valuesetOID = cqlNode.getAttributes().getNamedItem(OID).getTextContent();
-				if(!valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
+				if(!isUserDefinedValueSet(cqlNode.getAttributes().getNamedItem(OID).getTextContent())){
 					if(!cqlVSACValueSets.contains(valuesetName)){
 						cqlVSACValueSets.add(valuesetName);
 					}else{
@@ -525,8 +526,7 @@ implements MeasureCloningService {
 			for(int i=0;i<cqlValuesetsNodeList.size();i++){
 				Node cqlNode = cqlValuesetsNodeList.get(i);
 				Node parentNode = cqlNode.getParentNode();
-				String valuesetOID = cqlNode.getAttributes().getNamedItem(OID).getTextContent();
-				if(valuesetOID.equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)){
+				if(isUserDefinedValueSet(cqlNode.getAttributes().getNamedItem(OID).getTextContent())){
 					for (String userDefName : cqlUserDefValueSets) {
 						if(cqlVSACValueSets.contains(userDefName)){
 							parentNode.removeChild(cqlNode);
@@ -554,28 +554,31 @@ implements MeasureCloningService {
 		return true;
 	}
 	
-
-	private Node addOriginalNameAttributeIfNotPresent(Node valueSetNode, XmlProcessor xmlProcessor) {
-		Node originalNameNode = valueSetNode.getAttributes().getNamedItem(ORIGINAL_NAME);
-		if(originalNameNode == null) {
-			createDefaultAttr(ORIGINAL_NAME, valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue(), valueSetNode, xmlProcessor);
-		}
-		return valueSetNode;
+	private boolean isUserDefinedValueSet(String valuesetOID) {
+		return valuesetOID.equals(ConstantMessages.USER_DEFINED_QDM_OID);
 	}
-
+	
+	private Node addOriginalNameAttributeIfNotPresent(Node valueSetNode, XmlProcessor xmlProcessor) {
+		return addAttributeIfNotPresent(ORIGINAL_NAME, valueSetNode.getAttributes().getNamedItem(NAME).getNodeValue(), valueSetNode, xmlProcessor);
+	}
 	
 	private Node addProgramAttributeIfNotPresent(Node nodeToUpdate, XmlProcessor xmlProcessor) {
-		Node programNode = nodeToUpdate.getAttributes().getNamedItem(PROGRAM);
-		if(programNode == null) {
-			createDefaultAttr(PROGRAM, "", nodeToUpdate, xmlProcessor);
-		}
-		return nodeToUpdate;
+		return addAttributeIfNotPresent(PROGRAM, StringUtils.EMPTY, nodeToUpdate, xmlProcessor);
 	}
 	
 	private Node addReleaseAttributeIfNotPresent(Node nodeToUpdate, XmlProcessor xmlProcessor) {
-		Node releaseNode = nodeToUpdate.getAttributes().getNamedItem(RELEASE);
-		if(releaseNode == null) {
-			createDefaultAttr(RELEASE, "", nodeToUpdate, xmlProcessor);
+		return addAttributeIfNotPresent(RELEASE, StringUtils.EMPTY, nodeToUpdate, xmlProcessor);
+	}
+
+	private Node addVSACTypeAttributeIfNotPresent(Node valueSetNode, XmlProcessor xmlProcessor) {
+		String valueSetType = getVSACTypeBasedOnTaxonomy(valueSetNode);
+		return addAttributeIfNotPresent(TYPE, valueSetType, valueSetNode, xmlProcessor);
+	}
+	
+	private Node addAttributeIfNotPresent(String attributeName, String value, Node nodeToUpdate, XmlProcessor xmlProcessor) {
+		Node attribute = nodeToUpdate.getAttributes().getNamedItem(attributeName);
+		if(attribute == null) {
+			createDefaultAttr(attributeName, value, nodeToUpdate, xmlProcessor);
 		}
 		return nodeToUpdate;
 	}
@@ -584,6 +587,13 @@ implements MeasureCloningService {
 		Attr attr = xmlProcessor.getOriginalDoc().createAttribute(name);
 		attr.setNodeValue(value);
 		nodeToUpdate.getAttributes().setNamedItem(attr);
+	}
+	
+	private String getVSACTypeBasedOnTaxonomy(Node valueset) {
+		if(isUserDefinedValueSet(valueset.getAttributes().getNamedItem(OID).getNodeValue())) {
+			return "";
+		}
+		return GROUPING.equals(valueset.getAttributes().getNamedItem(TAXONOMY).getNodeValue()) ? GROUPING : EXTENSIONAL;
 	}
 	
 	/**

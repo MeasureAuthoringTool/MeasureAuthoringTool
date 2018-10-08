@@ -2517,6 +2517,7 @@ public class CQLServiceImpl implements CQLService {
 			qds.setSuffix(matValueSetTransferObject.getCqlQualityDataSetDTO().getSuffix());
 			qds.setOriginalCodeListName(matValueSetTransferObject.getCqlQualityDataSetDTO().getOriginalCodeListName());
 			qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+			qds.setValueSetType(StringUtils.EMPTY);
 			qds.setUuid(UUID.randomUUID().toString());
 			qds.setVersion("1.0");
 			qds.setRelease("");
@@ -2809,6 +2810,7 @@ public class CQLServiceImpl implements CQLService {
 				qds.setId(UUID.randomUUID().toString());
 				qds.setName(matValueSetTransferObject.getCodeListSearchDTO().getName());
 				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+				qds.setValueSetType(StringUtils.EMPTY);
 				qds.setVersion("1.0");
 				wrapper = modifyAppliedElementList(qds,
 						(ArrayList<CQLQualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());

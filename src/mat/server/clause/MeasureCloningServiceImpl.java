@@ -261,7 +261,6 @@ implements MeasureCloningService {
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
 			xmlProcessor.removeUnusedDefaultCodes(usedCodeList);
-			xmlProcessor.clearValuesetVersionAttribute();
 			
 			if (!measure.getMeasureScoring().equals(currentDetails.getMeasScoring()) 
 					|| currentDetails.isPatientBased()) {
@@ -273,7 +272,8 @@ implements MeasureCloningService {
 			}
 			
 			boolean isUpdatedForCQL = updateForCQLMeasure(measure, xmlProcessor, clonedMeasure, isNonCQLtoCQLDraft);
-			
+			xmlProcessor.clearValuesetVersionAttribute();
+
 			if(!isUpdatedForCQL){
 				//this means this is a CQL Measure to CQL Measure draft/clone.
 				

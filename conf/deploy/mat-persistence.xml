@@ -6,13 +6,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:context="http://www.springframework.org/schema/context"
         xsi:schemaLocation="http://www.springframework.org/schema/aop 
-        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd 
+        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd 
         http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
         http://www.springframework.org/schema/tx 
-        http://www.springframework.org/schema/tx/spring-tx-2.5.xsd 
+        http://www.springframework.org/schema/tx/spring-tx-4.3.xsd 
         http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+		http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 
     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
 		<property name="dataSource" ref="dataSource" />
@@ -25,24 +25,22 @@
 	</bean>
 
 	<context:annotation-config transaction-manager="txManager"/>
+    <context:component-scan base-package="mat.hibernate"/>
+    <context:component-scan base-package="mat.server"/>
+    <context:component-scan base-package="mat.dao"/>
+	<context:component-scan base-package="mat.model.clause"/>
+	
 	<tx:annotation-driven transaction-manager="txManager"/>
 	
 	<!-- Hibernate SessionFactory -->
 	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean" depends-on="dataSource">
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="dataSource">
 		<property name="dataSource">
-			<ref local="dataSource" />
+			<ref bean="dataSource" />
 		</property>
-        <property name="eventListeners">
-          <map>
-              <entry key="pre-insert" value-ref="auditEventListener"/>
-              <entry key="pre-update" value-ref="auditEventListener"/>
-              <entry key="pre-delete" value-ref="auditEventListener"/>
-          </map>
-        </property> 		
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
 				<prop key="hibernate.cache.use_query_cache">true</prop>
 				<prop key="hibernate.cache.use_second_level_cache">true</prop>
 				<prop key="hibernate.show_sql">false</prop>
@@ -53,6 +51,11 @@
                 <!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->		
 			</props>
 		</property>
+		<property name="packagesToScan">
+	        <list>
+	           <value>mat.model</value>
+	        </list>
+   		 </property>
 		<property name="mappingLocations">
 			<list>
 				<value>
@@ -70,7 +73,7 @@
    </bean>
     
     <tx:annotation-driven transaction-manager="txManager"/>
-    <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
     
@@ -92,6 +95,10 @@
 	
 	<bean id="userDAO"
 		class="mat.dao.impl.UserDAO" parent="baseDAO">
+	</bean>
+	
+	<bean id="userBonnieAccessInfoDAO"
+		class="mat.dao.impl.UserBonnieAccessInfoDAO" parent="baseDAO">
 	</bean>
 	
 	<bean id="userPasswordDAO"
@@ -188,14 +195,6 @@
 			class="mat.dao.impl.CodeListAuditLogDAO" parent="baseDAO">
 	</bean>
 	
-	<!-- <bean id="clauseDAO"
-		class="mat.dao.impl.clause.ClauseDAO" parent="baseDAO">
-	</bean>	 -->		
-	
-	<!-- <bean id="contextDAO"
-		class="mat.dao.impl.clause.ContextDAO" parent="baseDAO">
-	</bean>	 -->		
-	
 	<bean id="measureDAO"
 		class="mat.dao.impl.clause.MeasureDAO" parent="baseDAO">
 	</bean>	
@@ -203,38 +202,10 @@
 		class="mat.dao.impl.clause.MeasureSetDAO" parent="baseDAO">
 	</bean>		
 	
-	<!-- <bean id="metadataDAO"
-		class="mat.dao.impl.clause.MetadataDAO" parent="baseDAO">
-	</bean> -->			
-	
 	<bean id="operatorDAO"
 		class="mat.dao.impl.clause.OperatorDAO" parent="baseDAO">
 	</bean>			
 	
-	<!-- <bean id="qDSElementDAO"
-		class="mat.dao.impl.clause.QDSElementDAO" parent="baseDAO">
-	</bean>	 		
-	
-	<bean id="qDSPropertyDAO"
-		class="mat.dao.impl.clause.QDSPropertyDAO" parent="baseDAO">
-	</bean>			
-	
-	<bean id="staticElementDAO"
-		class="mat.dao.impl.clause.StaticElementDAO" parent="baseDAO">
-	</bean>	-->		
-	
-	<!-- <bean id="decisionDAO"
-		class="mat.dao.impl.clause.DecisionDAO" parent="baseDAO">
-	</bean>	 -->		
-
-	<!-- <bean id="measurementTermDAO"
-		class="mat.dao.impl.clause.MeasurementTermDAO" parent="baseDAO">
-	</bean>	 -->		
-
-	<!-- <bean id="qDSTermDAO"
-		class="mat.dao.impl.clause.QDSTermDAO" parent="baseDAO">
-	</bean> -->
-
 	<bean id="shareLevelDAO"
         class="mat.dao.impl.clause.ShareLevelDAO" parent="baseDAO">
     </bean>
@@ -325,11 +296,16 @@
 		class="mat.dao.impl.EmailAuditLogDAO" parent="baseDAO">
 	</bean>
 	
+	<bean id="componentMeasuresDAO"
+		class="mat.dao.impl.clause.ComponentMeasureDAO" parent="baseDAO">
+	</bean>
+	
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
 		<property name="statusDAO" ref="statusDAO"/>
 		<property name="userDAO" ref="userDAO"/>
+		<property name="userBonnieAccessInfoDAO" ref="userBonnieAccessInfoDAO"/>
 		<property name="userPasswordDAO" ref="userPasswordDAO"/>
 		<property name="userSecurityQuestionDAO" ref="userSecurityQuestionDAO"/>
 		<property name="userPasswordHistoryDAO" ref="userPasswordHistoryDAO"/>
@@ -343,19 +319,14 @@
 		<property name="listObjectLTDAO" ref="listObjectLTDAO"/>
 		<property name="objectStatusDAO" ref="objectStatusDAO"/>
 		<property name="qualityDataSetDAO" ref="qualityDataSetDAO"/>
-		<!-- <property name="decisionDAO" ref="decisionDAO"/>
-		<property name="measurementTermDAO" ref="measurementTermDAO"/>
-		<property name="qDSTermDAO" ref="qDSTermDAO"/> -->
 		<property name="operatorDAO" ref="operatorDAO"/>
 		<property name="measureDAO" ref="measureDAO"/>
 		<property name="measureSetDAO" ref="measureSetDAO"/>
-		<!-- <property name="clauseDAO" ref="clauseDAO"/> -->
 		<property name="qDSAttributesDAO" ref="qDSAttributesDAO"/>
         <property name="attributesDAO" ref="attributesDAO"/>
         <property name="modesDAO" ref="modesDAO"/>
         <property name="modesAttributesDAO" ref="modesAttributesDAO"/>
 		<property name="qDSAttributeDetailsDAO" ref="qDSAttributeDetailsDAO"/>
-		<!-- <property name="contextDAO" ref="contextDAO"/> -->
 		<property name="measureScoreDAO" ref="measureScoreDAO"/>
 		<property name="unitDAO" ref="unitDAO"/>
 		<property name="unitTypeDAO" ref="unitTypeDAO"/>
@@ -379,6 +350,7 @@
 		<property name="cqlLibraryAuditLogDAO" ref="cqlLibraryAuditLogDAO"/>
 		<property name="cqlLibraryShareDAO" ref="cqlLibraryShareDAO"/>
 		<property name="emailAuditLogDAO" ref="emailAuditLogDAO" />
+		<property name="componentMeasureDAO" ref="componentMeasuresDAO"/>
 	</bean>
      
 </beans>

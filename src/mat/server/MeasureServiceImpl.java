@@ -7,6 +7,7 @@ import java.util.List;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -14,9 +15,11 @@ import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.GenericResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
@@ -35,30 +38,25 @@ import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
+import mat.shared.MeasureSearchModel;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 /**
  * The Class MeasureServiceImpl.
  */
-public class MeasureServiceImpl extends SpringRemoteServiceServlet implements
-MeasureService {
+public class MeasureServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
 	
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 2280421300224680146L;
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
-	 */
 	@Override
 	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName) {
 		this.getMeasureLibraryService().appendAndSaveNode(measureXmlModel, nodeName);
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#cloneMeasureXml(boolean, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId) {
@@ -66,18 +64,12 @@ MeasureService {
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#createAndSaveElementLookUp(java.util.ArrayList, java.lang.String)
-	 */
 	@Override
 	public void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, String expProfileToAllQDM) {
 		this.getMeasureLibraryService().createAndSaveElementLookUp(list, measureID, expProfileToAllQDM);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#generateAndSaveMaxEmeasureId(mat.client.measure.ManageMeasureDetailModel)
-	 */
 	@Override
 	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId) {
 		return this.getMeasureLibraryService().generateAndSaveMaxEmeasureId(measureId);
@@ -92,15 +84,6 @@ MeasureService {
 		return this.getMeasureLibraryService().getAllRecentMeasureForUser(userId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getAppliedQDMFromMeasureXml(java.lang.String, boolean)
-	 */
-	//	@Override
-	//	public List<QualityDataSetDTO> getAppliedQDMFromMeasureXml(
-	//			String measureId, boolean checkForSupplementData) {
-	//		return this.getMeasureLibraryService().getAppliedQDMFromMeasureXml(measureId, checkForSupplementData);
-	//	}
-	
 	@Override
 	public QualityDataModelWrapper getAppliedQDMFromMeasureXml(
 			String measureId, boolean checkForSupplementData) {
@@ -111,25 +94,22 @@ MeasureService {
 	public CQLQualityDataModelWrapper getCQLAppliedQDMFromMeasureXml(String measureId, boolean checkForSupplementData) {
 		return this.getMeasureLibraryService().getCQLAppliedQDMFromMeasureXml(measureId, checkForSupplementData);
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getMaxEMeasureId()
-	 */
+
 	@Override
 	public int getMaxEMeasureId() {
 		return this.getMeasureLibraryService().getMaxEMeasureId();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getMeasure(java.lang.String)
-	 */
 	@Override
 	public ManageMeasureDetailModel getMeasure(String key) {
 		return this.getMeasureLibraryService().getMeasure(key);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getMeasureAndLogRecentMeasure(java.lang.String, java.lang.String)
-	 */
+	@Override
+	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
+		return this.getMeasureLibraryService().getCompositeMeasure(measureId);
+	}
+	
 	@Override
 	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String measureId, String userId) {
 		ManageMeasureDetailModel manageMeasureDetailModel = getMeasure(measureId);
@@ -148,128 +128,85 @@ MeasureService {
 		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getMeasureXmlForMeasure(java.lang.String)
-	 */
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
 		return this.getMeasureLibraryService().getMeasureXmlForMeasure(measureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getRecentMeasureActivityLog(java.lang.String)
-	 */
 	@Override
 	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
 		return this.getMeasureLibraryService().getRecentMeasureActivityLog(userId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getUsersForShare(String, java.lang.String, int, int)
-	 */
 	@Override
 	public ManageMeasureShareModel getUsersForShare(String userName, String measureId,
 			int startIndex, int pageSize) {
 		return this.getMeasureLibraryService().getUsersForShare(userName, measureId, startIndex, pageSize);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#isMeasureLocked(java.lang.String)
-	 */
 	@Override
 	public boolean isMeasureLocked(String id) {
 		return this.getMeasureLibraryService().isMeasureLocked(id);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#resetLockedDate(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public SaveMeasureResult resetLockedDate(String measureId, String userId) {
 		return this.getMeasureLibraryService().resetLockedDate(measureId, userId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#save(mat.client.measure.ManageMeasureDetailModel)
-	 */
 	@Override
 	public SaveMeasureResult save(ManageMeasureDetailModel model) {
 		return this.getMeasureLibraryService().save(model);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveAndDeleteMeasure(java.lang.String)
-	 */
+	@Override
+	public SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model) {
+		return this.getMeasureLibraryService().saveCompositeMeasure(model);
+	}
+	
 	@Override
 	public void saveAndDeleteMeasure(String measureID,  String loginUserId) {
 		this.getMeasureLibraryService().saveAndDeleteMeasure(measureID,loginUserId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveFinalizedVersion(java.lang.String, boolean, java.lang.String)
-	 */
 	@Override
-	public SaveMeasureResult saveFinalizedVersion(String measureId,
-			boolean isMajor, String version) {
-		return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version);
+	public SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version,  boolean shouldPackage, boolean ignoreUnusedLibraries) {
+		return this.getMeasureLibraryService().saveFinalizedVersion(measureId, isMajor, version, shouldPackage, ignoreUnusedLibraries);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveMeasureDetails(mat.client.measure.ManageMeasureDetailModel)
-	 */
 	@Override
 	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {
 		return this.getMeasureLibraryService().saveMeasureDetails(model);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
-	 */
 	@Override
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel) {
 		this.getMeasureLibraryService().saveMeasureXml(measureXmlModel);
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#search(java.lang.String, int, int, int)
-	 */
 	@Override
-	public ManageMeasureSearchModel search(String searchText, int startIndex,
-			int pageSize, int filter) {
-		return this.getMeasureLibraryService().search(searchText, startIndex, pageSize, filter);
+	public ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel) {
+		return this.getMeasureLibraryService().search(advancedSearchModel);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#searchUsers(int, int)
-	 */
 	@Override
 	public TransferOwnerShipModel searchUsers(String searchText, int startIndex,
 			int pageSize) {
 		return this.getMeasureLibraryService().searchUsers(searchText, startIndex, pageSize);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#transferOwnerShipToUser(java.util.List, java.lang.String)
-	 */
 	@Override
 	public void transferOwnerShipToUser(List<String> list, String toEmail) {
 		this.getMeasureLibraryService().transferOwnerShipToUser(list, toEmail);
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateLockedDate(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public SaveMeasureResult updateLockedDate(String measureId, String userId) {
 		return this.getMeasureLibraryService().updateLockedDate(measureId, userId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateMeasureXML(mat.model.QualityDataSetDTO, mat.model.QualityDataSetDTO, java.lang.String)
-	 */
 	@Override
 	public void updateMeasureXML(QualityDataSetDTO modifyWithDTO,
 			QualityDataSetDTO modifyDTO, String measureId) {
@@ -277,83 +214,57 @@ MeasureService {
 		
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updatePrivateColumnInMeasure(java.lang.String, boolean)
-	 */
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
 		this.getMeasureLibraryService().updatePrivateColumnInMeasure(measureId, isPrivate);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateUsersShare(mat.client.measure.ManageMeasureShareModel)
-	 */
 	@Override
 	public void updateUsersShare(ManageMeasureShareModel model) {
 		this.getMeasureLibraryService().updateUsersShare(model);
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
-	 */
+	
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(String key , List<MatValueSet> matValueSetList)
+	public ValidateMeasureResult validateExports(final String measureId) throws Exception {
+		return this.getMeasureLibraryService().validateExports(measureId);
+	}; 
+
+	@Override
+	public ValidateMeasureResult createExports(String key , List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts)
 			throws MatException {
-		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
+		return this.getMeasureLibraryService().createExports(key, matValueSetList, shouldCreateArtifacts);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getHumanReadableForNode(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public String getHumanReadableForNode(String measureId, String populationSubXML){
 		return this.getMeasureLibraryService().getHumanReadableForNode(measureId, populationSubXML);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveMeasureAtPackage(mat.client.measure.ManageMeasureDetailModel)
-	 */
 	@Override
 	public SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model) {
 		return this.getMeasureLibraryService().saveMeasureAtPackage(model);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public SortedClauseMapResult saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel , String nodeName, String nodeUUID) {
 		return this.getMeasureLibraryService().saveSubTreeInMeasureXml(measureXmlModel , nodeName, nodeUUID);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#checkAndDeleteSubTree(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public HashMap<String, String> checkAndDeleteSubTree(String measureId, String subTreeUUID){
 		return this.getMeasureLibraryService().checkAndDeleteSubTree(measureId, subTreeUUID);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#isSubTreeReferredInLogic(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID){
 		return this.getMeasureLibraryService().isSubTreeReferredInLogic(measureId, subTreeUUID);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getComponentMeasures(java.util.List)
-	 */
 	@Override
-	public ManageMeasureSearchModel getComponentMeasures(List<String> measureIds){
-		return getMeasureLibraryService().getComponentMeasures(measureIds);
+	public ManageMeasureSearchModel getComponentMeasures(String measureId){
+		return getMeasureLibraryService().getComponentMeasures(measureId);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#validatePackageGrouping(mat.client.measure.ManageMeasureDetailModel)
-	 */
 	@Override
 	public ValidateMeasureResult validatePackageGrouping(
 			ManageMeasureDetailModel model) {
@@ -361,191 +272,122 @@ MeasureService {
 				model);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#validateMeasureXmlinpopulationWorkspace(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
-	 */
 	@Override
 	public ValidateMeasureResult validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel) {
 		return this.getMeasureLibraryService().validateMeasureXmlAtCreateMeasurePackager(measureXmlModel);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateComponentMeasuresFromXml(java.lang.String)
-	 */
 	@Override
 	public void updateMeasureXmlForDeletedComponentMeasureAndOrg(String measureId) {
 		
 		this.getMeasureLibraryService().updateMeasureXmlForDeletedComponentMeasureAndOrg(measureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#validateForGroup(mat.client.measure.ManageMeasureDetailModel)
-	 */
 	@Override
 	public ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model) {
 		
 		return this.getMeasureLibraryService().validateForGroup(model);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getAllMeasureTypes()
+	/**
+	 * Validates and packages the measure when the user versions or packages a measure
+	 * @param mode the measure details
 	 */
+	@Override
+	public SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel model) {
+		return this.getMeasureLibraryService().validateAndPackage(model, true);
+	}
+	
 	@Override
 	public List<MeasureType> getAllMeasureTypes(){
 		return this.getMeasureLibraryService().getAllMeasureTypes();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getAllAddEditAuthors()
-	 */
 	@Override
 	public List<Organization> getAllOrganizations() {
 		
 		return this.getMeasureLibraryService().getAllOrganizations();
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveSubTreeOccurrence(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public SortedClauseMapResult saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
 		return this.getMeasureLibraryService().saveSubTreeOccurrence(measureXmlModel, nodeName, nodeUUID);
 		
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#isQDMVariableEnabled(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean isQDMVariableEnabled(String measureId, String subTreeUUID) {
 		return this.getMeasureLibraryService().isQDMVariableEnabled(measureId, subTreeUUID);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getSortedClauseMap(java.lang.String)
-	 */
 	@Override
 	public LinkedHashMap<String, String> getSortedClauseMap(String measureId) {
 		return this.getMeasureLibraryService().getSortedClauseMap(measureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getMeasureXmlForMeasureAndSortedSubTreeMap(java.lang.String)
-	 */
 	@Override
 	public SortedClauseMapResult getMeasureXmlForMeasureAndSortedSubTreeMap(
 			String currentMeasureId) {
 		return this.getMeasureLibraryService().getMeasureXmlForMeasureAndSortedSubTreeMap(currentMeasureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getUsedStewardAndDevelopersList(java.lang.String)
-	 */
 	@Override
 	public MeasureDetailResult getUsedStewardAndDevelopersList(String measureId) {
 		return this.getMeasureLibraryService().getUsedStewardAndDevelopersList(measureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateMeasureXMLForExpansionIdentifier(java.util.List, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void updateMeasureXMLForExpansionIdentifier(List<QualityDataSetDTO> modifyWithDTOList,
 			String measureId, String expansionProfile) {
 		this.getMeasureLibraryService().updateMeasureXMLForExpansionIdentifier(modifyWithDTOList, measureId, expansionProfile);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateMeasureXMLForExpansionIdentifier(java.util.List, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void updateCQLMeasureXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTOList,
 			String measureId, String expansionProfile) {
 		this.getMeasureLibraryService().updateCQLMeasureXMLForExpansionIdentifier(modifyWithDTOList, measureId, expansionProfile);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getDefaultSDEFromMeasureXml(java.lang.String)
-	 */
 	@Override
 	public QualityDataModelWrapper getDefaultSDEFromMeasureXml(String measureId) {
 		return this.getMeasureLibraryService().getDefaultSDEFromMeasureXml(measureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getDefaultCQLSDEFromMeasureXml(java.lang.String)
-	 */
 	@Override
 	public CQLQualityDataModelWrapper getDefaultCQLSDEFromMeasureXml(String measureId) {
 		return this.getMeasureLibraryService().getDefaultCQLSDEFromMeasureXml(measureId);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#parseCQL(java.lang.String)
-	 */
 	@Override
 	public CQLModel parseCQL(String cqlBuilder) {
 		return this.getMeasureLibraryService().parseCQL(cqlBuilder);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
-	 */
-	/*@Override
-	public SaveUpdateCQLResult getCQLData(String measureId,String fromTable) {
-		return this.getMeasureLibraryService().getCQLData(measureId,fromTable);
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getCQLData(java.lang.String)
-	 */
-	/*@Override
-	public SaveUpdateCQLResult getCQLFileData(String measureId) {
-		return this.getMeasureLibraryService().getCQLFileData(measureId);
-	}*/
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveAndModifyDefinitions(java.lang.String, mat.model.cql.CQLDefinition, mat.model.cql.CQLDefinition, java.util.List)
-	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyDefinitions(String measureId, CQLDefinition toBemodifiedObj,
 			CQLDefinition currentObj, List<CQLDefinition> definitionList, boolean isFormatable){
 		return this.getMeasureLibraryService().saveAndModifyDefinitions(measureId, toBemodifiedObj, currentObj, definitionList, isFormatable);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveAndModifyParameters(java.lang.String, mat.model.cql.CQLParameter, mat.model.cql.CQLParameter, java.util.List)
-	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyParameters(String measureId, CQLParameter toBemodifiedObj,
 			CQLParameter currentObj, List<CQLParameter> parameterList, boolean isFormatable){
 		return this.getMeasureLibraryService().saveAndModifyParameters(measureId, toBemodifiedObj, currentObj, parameterList, isFormatable);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveAndModifyFunctions(java.lang.String, mat.model.cql.CQLFunctions, mat.model.cql.CQLFunctions, java.util.List)
-	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyFunctions(String measureId, CQLFunctions toBeModifiedObj,
 			CQLFunctions currentObj, List<CQLFunctions> functionsList,boolean isFormatable){
 		return this.getMeasureLibraryService().saveAndModifyFunctions(measureId, toBeModifiedObj, currentObj, functionsList, isFormatable);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#saveAndModifyCQLGeneralInfo(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
-			String currentMeasureId, String context) {
-		return this.getMeasureLibraryService().saveAndModifyCQLGeneralInfo(currentMeasureId, context);
+			String currentMeasureId, String context, String comments) {
+		return this.getMeasureLibraryService().saveAndModifyCQLGeneralInfo(currentMeasureId, context, comments);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getCQLDataTypeList()
-	 */
 	@Override
 	public CQLKeywords getCQLKeywordsList() {
 		return this.getMeasureLibraryService().getCQLKeywordsLists();
@@ -561,19 +403,7 @@ MeasureService {
 		this.getMeasureLibraryService().createAndSaveCQLLookUp(list, measureID, expProfileToAllQDM);
 		
 	}
-
-	@Override
-	public SaveUpdateCQLResult parseCQLForErrors(String measureId) {
-		
-		MeasureXmlModel measureXML = getMeasureXmlForMeasure(measureId);
-		String cqlFileString = CQLUtilityClass.getCqlString(CQLUtilityClass.getCQLStringFromXML(measureXML.getXml()),"").toString();
-		
-		return parseCQLStringForError(cqlFileString);
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#parseCQLStringForError(java.lang.String)
-	 */
 	@Override
 	public SaveUpdateCQLResult parseCQLStringForError( String cqlFileString) {
 		return this.getMeasureLibraryService().parseCQLStringForError(cqlFileString);
@@ -637,9 +467,7 @@ MeasureService {
 	}
 	
 	@Override
-	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
-			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> incLibraryList){
+	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException{
 		return this.getMeasureLibraryService().saveIncludeLibrayInCQLLookUp(measureId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 	
@@ -650,7 +478,6 @@ MeasureService {
 
 	@Override
 	public SaveUpdateCQLResult getMeasureCQLData(String measureId) {
-		// TODO Auto-generated method stub
 		return this.getMeasureLibraryService().getMeasureCQLData(measureId);
 	}
 	@Override
@@ -701,4 +528,29 @@ MeasureService {
 		return this.getMeasureLibraryService().modifyCQLCodeInMeasure(modifyCQLCode, refCode, measureId);
 	}
 
+	@Override
+	public ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel) {
+		return this.getMeasureLibraryService().searchComponentMeasures(searchModel);
+	}
+
+	@Override
+	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasure) {
+		return this.getMeasureLibraryService().buildCompositeMeasure(compositeMeasure);
+	}
+
+	@Override
+	public CompositeMeasureValidationResult validateCompositeMeasure(
+			ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel) {
+		return this.getMeasureLibraryService().validateCompositeMeasure(manageCompositeMeasureDetailModel);
+	}
+	
+	@Override
+	public List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId) {
+		return this.getMeasureLibraryService().getCQLLibraryInformationForComponentMeasure(compositeMeasureId);
+	}
+
+	@Override
+	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId) {
+		return this.getMeasureLibraryService().checkIfMeasureIsUsedAsComponentMeasure(currentMeasureId);
+	}
 }

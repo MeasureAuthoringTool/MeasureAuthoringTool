@@ -92,7 +92,7 @@ class TimeoutManager {
 			public void run() {
 				Date today = new Date();
 				if((today.getTime() - lastUMLSSignIn) >= UMLS_TIME_OUT){ 
-					Mat.hideUMLSActive();
+					Mat.hideUMLSActive(true);
 					MatContext.get().setUMLSLoggedIn(false);
 					invalidateVSacSession();
 				}

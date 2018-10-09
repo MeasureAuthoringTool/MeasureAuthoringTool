@@ -10,11 +10,6 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <attribute attribName="anatomicalApproachSite">
-  <mode mode="Nullable" />
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
- </attribute>
  <attribute attribName="anatomicalLocationSite">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
@@ -30,6 +25,11 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="category">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
  <attribute attribName="code">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
@@ -43,6 +43,10 @@
  <attribute attribName="expiredDatetime">
   <mode mode="Comparison" />
   <mode mode="Computative" />
+  <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="daysSupplied">
+  <mode mode="Comparison" />
   <mode mode="Nullable" />
  </attribute>
  <attribute attribName="dischargeDisposition">
@@ -65,7 +69,7 @@
  </attribute>
  <attribute attribName="frequency">
   <mode mode="Nullable" />
- <mode mode="ValueSets" />
+  <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
  <attribute attribName="incisionDatetime">
@@ -79,6 +83,11 @@
  </attribute>
  <attribute attribName="locationPeriod">
   <mode mode="Nullable" />
+ </attribute>
+ <attribute attribName="medium">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
  </attribute>
  <attribute attribName="method">
   <mode mode="Nullable" />
@@ -116,6 +125,11 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="recipient">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
  <attribute attribName="referenceRange">
   <mode mode="Nullable" />
  </attribute>
@@ -152,6 +166,16 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
+ <attribute attribName="sender">
+ 	<mode mode="Nullable"/>
+ 	<mode mode="ValueSets"/>
+ 	<mode mode="Codes"/>
+ </attribute>
+ <attribute attribName="setting">
+ 	<mode mode="Nullable" />
+ 	<mode mode="ValueSets" />
+ 	<mode mode="Codes" />
+ </attribute>
  <attribute attribName="severity">
   <mode mode="Nullable" />
   <mode mode="ValueSets" />
@@ -173,10 +197,6 @@
   <mode mode="ValueSets" />
   <mode mode="Codes" />
  </attribute>
- <!-- <attribute attribName="id">
-  <mode mode="ValueSets" />
-  <mode mode="Codes" />
- </attribute> -->
  <attribute attribName="recorder">
   <mode mode="ValueSets" />
   <mode mode="Codes" />

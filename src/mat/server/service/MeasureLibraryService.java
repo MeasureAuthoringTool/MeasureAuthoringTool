@@ -10,15 +10,18 @@ import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.GenericResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureOwnerReportDTO;
@@ -39,10 +42,12 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.CQLValidationResult;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureLibraryService.
  */
@@ -118,9 +123,6 @@ public interface MeasureLibraryService {
 	 *            the check for supplement data
 	 * @return the applied qdm from measure xml
 	 */
-	//	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
-	//			boolean checkForSupplementData);
-	
 	QualityDataModelWrapper getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
 	
@@ -139,6 +141,8 @@ public interface MeasureLibraryService {
 	 * @return the measure
 	 */
 	ManageMeasureDetailModel getMeasure(String key);
+	
+	ManageCompositeMeasureDetailModel getCompositeMeasure(String key);
 	
 	/**
 	 * Gets the measure xml for measure.
@@ -210,6 +214,8 @@ public interface MeasureLibraryService {
 	 */
 	SaveMeasureResult save(ManageMeasureDetailModel model);
 	
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	
 	/**
 	 * Save and delete measure.
 	 * 
@@ -232,8 +238,7 @@ public interface MeasureLibraryService {
 	 *            the version
 	 * @return the save measure result
 	 */
-	SaveMeasureResult saveFinalizedVersion(String measureId,
-			boolean isMajor, String version);
+	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor, String version, boolean shouldPackage, boolean ignoreUnusedLibraries);
 	
 	/**
 	 * Save measure details.
@@ -265,8 +270,7 @@ public interface MeasureLibraryService {
 	 *            the filter
 	 * @return the manage measure search model
 	 */
-	ManageMeasureSearchModel search(String searchText, int startIndex,
-			int pageSize, int filter);
+	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
 	
 		
 	/**
@@ -342,9 +346,9 @@ public interface MeasureLibraryService {
 	 * @throws MatException
 	 *             the mat exception
 	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
-			List<MatValueSet> matValueSetList) throws MatException;
-	
+	ValidateMeasureResult createExports(String key,
+			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
+		
 	/**
 	 * Save measure at package.
 	 *
@@ -402,10 +406,10 @@ public interface MeasureLibraryService {
 	/**
 	 * Gets the component measures.
 	 *
-	 * @param measureIds the measure ids
+	 * @param measureId the measure ids
 	 * @return the component measures
 	 */
-	ManageMeasureSearchModel getComponentMeasures(List<String> measureIds);
+	ManageMeasureSearchModel getComponentMeasures(String measureId);
 	
 	
 	
@@ -617,7 +621,7 @@ public interface MeasureLibraryService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
-			String context);
+			String context, String comments);
 	
 	/**
 	 * Save and modify functions.
@@ -704,9 +708,7 @@ public interface MeasureLibraryService {
 
 	void updateCQLLookUpTagWithModifiedValueSet(CQLQualityDataSetDTO modifyWithDTO, CQLQualityDataSetDTO modifyDTO,
 			String measureId);
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId,
-			CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj,
-			List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
 
@@ -736,4 +738,19 @@ public interface MeasureLibraryService {
 
 	SaveUpdateCQLResult modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId);
 
+	SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts);
+
+	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
+
+	ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
+
+	CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
+
+	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String measureId);
+
+	ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId, String simpleXML);
+	
+	GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
+
+	ValidateMeasureResult validateExports(String measureId) throws Exception;
 }

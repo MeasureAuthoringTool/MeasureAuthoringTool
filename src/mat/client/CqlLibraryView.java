@@ -11,10 +11,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibrarySearchView;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.MostRecentCQLLibraryWidget;
@@ -23,17 +24,12 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
 
-/**
- * The Class CqlLibraryView.
- */
 public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
-	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	private Button createNewLibraryButton = new Button("New Library");
-	
-	/** The measure search filter widget. */
+
 	private SearchWidgetWithFilter searchFilterWidget = new SearchWidgetWithFilter("searchFilter",
 			"measureLibraryFilterDisclosurePanel","forCqlLibrary");
 	
@@ -44,14 +40,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	CustomButton zoomButton = (CustomButton) getImage("Search", ImageResources.INSTANCE.search_zoom(), "Search",
 			"CQLSearchButton");
 
-	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
-	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
-	//private VerticalPanel mostRecentVPanel = new VerticalPanel();
-	
+
 	private CQLLibrarySearchView cqlLibrarySearchView = new CQLLibrarySearchView();
 	
-	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
 	
 	VerticalPanel widgetVP = new VerticalPanel();
@@ -70,27 +62,19 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 
 	@Override
 	public FlowPanel getMainPanel() {
-		// TODO Auto-generated method stub
 		return mainPanel;
 	}
 
 	public CqlLibraryView() {
-		
 		mainPanel.setWidth("100%");
-
 	}
 
-
-	
-	
 	@Override
 	public void buildMostRecentWidget() {
 		mostRecentVerticalPanel.clear();
 		mostRecentVerticalPanel.add(mostRecentLibraryWidget.buildMostRecentWidget());
 	}
 	
-	
-
 	@Override
 	public void buildDefaultView() {
 		
@@ -115,14 +99,11 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
-		
-
 	}
 	
 	@Override
 	public void buildCreateNewView(){
 		mainPanel.clear();
-		
 	}
 	
 	@Override
@@ -144,25 +125,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	}
 
 	@Override
-	/** @return the zoomButton */
 	public CustomButton getZoomButton() {
 		return zoomButton;
 	}
 
-	/**
-	 * Add Image on Button with invisible text. This text will be available when
-	 * css is turned off.
-	 *
-	 * @param action
-	 *            - {@link String}
-	 * @param url
-	 *            - {@link ImageResource}.
-	 * @param key
-	 *            - {@link String}.
-	 * @param id
-	 *            the id
-	 * @return - {@link Widget}.
-	 */
 	private Widget getImage(String action, ImageResource url, String key, String id) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
@@ -177,7 +143,9 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public Widget asWidget() {
 		widgetVP.clear();
 		widgetVP.add(searchFilterWidget);
-		//getSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
+		//as a part of MAT-9305 - Commenting out Below as we might need it next release 
+		//widgetVP.add(cqlLibraryAdvancedSearchBuilder.asWidget());
+		
 		return mainPanel;
 	}
 	
@@ -226,7 +194,10 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		return searchFilterWidget.getSearchButton();
 	}
 	
-	
+	@Override
+	public CustomCheckBox getCustomFilterCheckBox() {
+		return searchFilterWidget.getLibraryCustomCheckBox();
+	}
 	
 	@Override
 	public MostRecentCQLLibraryWidget getMostRecentLibraryWidget() {
@@ -246,9 +217,6 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 		this.successMessageAlert = successMessageAlert;
 	}
 
-	/**
-	 * @return the draftConfirmationDialogBox
-	 */
 	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
 		return draftConfirmationDialogBox;
 	}
@@ -257,5 +225,7 @@ public class CqlLibraryView implements CqlLibraryPresenter.ViewDisplay {
 	public void resetMessageDisplay() {
 		getSuccessMessageAlert().clearAlert();
 		getErrorMessageAlert().clearAlert();
-	}
+	}	
+
+
 }

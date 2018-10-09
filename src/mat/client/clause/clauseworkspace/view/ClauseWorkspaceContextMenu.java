@@ -6,8 +6,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -28,138 +26,57 @@ import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ClauseWorkspaceContextMenu.
- */
 public class ClauseWorkspaceContextMenu {
 	
-	/**
-	 * Constant Stratum 1 node - default Node Stratification tab.
-	 */
 	private static final String DEFAULT_STRATUM_NODE = "Stratum 1";
 	
-	/**
-	 * Constant Stratification node.
-	 */
 	private static final String STRATIFICATION = "Stratification";
-	/**
-	 * The Interface Template.
-	 */
-	interface Template extends SafeHtmlTemplates {
-		
-		/**
-		 * Menu table.
-		 * 
-		 * @param name
-		 *            the name
-		 * @param shortCut
-		 *            the short cut
-		 * @return the safe html
-		 */
-		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}</td></tr></table>")
-		SafeHtml menuTable(String name, String shortCut);
-		
-		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td></tr></table>")
-		SafeHtml menuTable(String name);
-		
-		/**
-		 * Menu table with icon.
-		 *
-		 * @param name - Menu Item Name.
-		 * @param shortCut - Short Cut Key text.
-		 * @param imageSource - Image source.
-		 * @return SafeHtml.
-		 */
-		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}"
-				+ "<img src=\"{2}\"/></td></tr></table>")
-		SafeHtml menuTableWithIcon(String name, String shortCut, SafeUri imageSource);
-	}
+
 	
-	/** The Constant template. */
 	protected static final Template template = GWT.create(Template.class);
 	
-	/** The xml tree display. */
 	XmlTreeDisplay xmlTreeDisplay;
 	
-	/** The add menu. */
 	MenuItem addMenu;
 	
 	MenuItem addFuncMenu;
 	
-	/** The add menu lhs. */
 	MenuItem addMenuLHS;
 	
-	/** The add menu rhs. */
 	MenuItem addMenuRHS;
 	
-	/** The copy menu. */
 	MenuItem copyMenu;
-	/** The copy menu. */
-	/*
-	 * POC Global Copy Paste.
-	 * MenuItem copyToClipBoardMenu;*/
-	/**
-	 * Move Up Menu.
-	 */
+
 	MenuItem moveUpMenu;
 	
-	/**
-	 * MOve Down Menu.
-	 */
 	MenuItem moveDownMenu;
 	
-	/** The paste menu. */
 	MenuItem pasteMenu;
-	/** The paste menu. */
-	/*
-	 * POC Global Copy Paste.
-	MenuItem pasteFromClipboardMenu;
-	 */
-	/** The delete menu. */
+
 	MenuItem deleteMenu;
 	
 	MenuItem replaceMenu;
 	
-	/** The cut menu. */
 	MenuItem cutMenu;
 	
-	/** The edit menu. */
 	MenuItem editMenu;
 	
-	/** The edit qdm menu. */
 	MenuItem editQDMMenu;
 	
-	/** The View Human Readable menu *. */
 	MenuItem viewHumanReadableMenu;
 	
-	/** The popup menu bar. */
 	MenuBar popupMenuBar = new MenuBar(true);
 	
-	/** The sub menu bar. */
 	MenuBar subMenuBar;
 	
-	/** The separator. */
 	MenuItemSeparator separator = new MenuItemSeparator();
 	
-	/** The popup panel. */
 	PopupPanel popupPanel;
 	
-	/** The paste cmd. */
 	Command pasteCmd;
 	
-	/** The expand menu. */
 	MenuItem expandMenu;
-	
-	
-	/**
-	 * Instantiates a new clause workspace context menu.
-	 * 
-	 * @param treeDisplay
-	 *            the tree display
-	 * @param popPanel
-	 *            the pop panel
-	 */
+
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		xmlTreeDisplay = treeDisplay;
 		xmlTreeDisplay.setDirty(false);
@@ -175,17 +92,7 @@ public class ClauseWorkspaceContextMenu {
 		};
 		copyMenu = new MenuItem(template.menuTable("Copy", "Ctrl+C"), copyCmd);
 		
-		/*
-		 * POC Global Copy Paste.
-		 * Command copyToClipboardCmd = new Command() {
-			@Override
-			public void execute() {
-				popupPanel.hide();
-				xmlTreeDisplay.copyToClipboard();
-			}
-		};
-		copyToClipBoardMenu = new MenuItem(template.menuTable("Copy To Clipboard", ""), copyToClipboardCmd);*/
-		
+
 		Command deleteCmd = new Command() {
 			@Override
 			public void execute() {
@@ -237,24 +144,7 @@ public class ClauseWorkspaceContextMenu {
 		};
 		pasteMenu = new MenuItem(template.menuTable("Paste", "Ctrl+V"), pasteCmd);
 		
-		/*
-		 * POC Global Copy Paste.
-		 * Command pasteFromClipboardCmd = new Command() {
-			@Override
-			public void execute() {
-				xmlTreeDisplay.setDirty(true);
-				if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE) {
-					pasteRootNodeTypeItem();
-				} else if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
-					pasteMasterRootNodeTypeItem();
-				} else {
-					xmlTreeDisplay.pasteFromClipboard();
-				}
-				popupPanel.hide();
-			}
-		};
-		pasteFromClipboardMenu = new MenuItem(template.menuTable("Paste From Clipboard", ""), pasteFromClipboardCmd);*/
-		
+
 		Command expandCmd = new Command() {
 			@Override
 			public void execute() {
@@ -274,8 +164,6 @@ public class ClauseWorkspaceContextMenu {
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
 					final String populationName = selectedNode.getName();
 					String measureId = MatContext.get().getCurrentMeasureId();
-					//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
-					//					Window.open(url + "&type=open", "_blank", "");
 					xmlTreeDisplay.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
 							.getRootTreeNode(), false);
 					if (xmlTreeDisplay.isValidHumanReadable()) {
@@ -295,67 +183,10 @@ public class ClauseWorkspaceContextMenu {
 		};
 		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
 	}
-	/**
-	 * Method displays the rightClick options based on the nodeType of the node
-	 * selected on CellTree.
-	 * @param popupPanel
-	 *            the PopupPanel
-	 */
-	public void displayMenuItems( final PopupPanel popupPanel) {
-		//Commenting below lines as we no longer require clauseworkspace functionality from version 5.0;
-		/*popupMenuBar.clearItems();
-		popupMenuBar.setFocusOnHoverEnabled(true);
-		popupMenuBar.focus();
-		popupPanel.clear();
-		copyMenu.setEnabled(false);
-		
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(false);
-		 * 
-		deleteMenu.setEnabled(false);
-		pasteMenu.setEnabled(false);
-		
-		 * POC Global Copy Paste.
-		 * pasteFromClipboardMenu.setEnabled(false);
-		 * 
-		cutMenu.setEnabled(false);
-		viewHumanReadableMenu.setEnabled(false);
-		showHideExpandMenu();
-		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
-			case CellTreeNode.TIMING_NODE:
-				timingNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.ELEMENT_REF_NODE:
-				elementRefNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.SET_OP_NODE:
-				setOpsNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.FUNCTIONS_NODE:
-				functionNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.RELATIONSHIP_NODE:
-				relationalOpNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.SUBTREE_NODE:
-				subTreeNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.SUBTREE_ROOT_NODE:
-				subTreeRootNodePopUpMenuItems(popupPanel);
-				break;
-			case CellTreeNode.SUBTREE_REF_NODE:
-				subTreeNodePopupMenuItems(popupPanel);
-				break;
-			default:
-				break;
-		}*/
-	}
 	
-	/**
-	 * Generates popup menu for right click on a node of type 'CLAUSE_NODE'.
-	 *
-	 * @param popupPanel the popup panel
-	 */
+
+	public void displayMenuItems(PopupPanel popupPanel) {}
+	
 	private void subTreeNodePopupMenuItems(final PopupPanel popupPanel) {
 		subMenuBar = new MenuBar(true);
 		subMenuBar.getElement().setAttribute("id", "subMenuBarPopUpPanel");
@@ -381,10 +212,7 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addItem(editMenu);
 		checkIsParentSatisfy();
 	}
-	/**
-	 * Sub Tree Root Node Pop up Menu Items.
-	 * @param popupPanel - PopupPanel.
-	 */
+
 	private void subTreeRootNodePopUpMenuItems(final PopupPanel popupPanel) {
 		Command addSubTreeCmd = new Command() {
 			@Override
@@ -403,15 +231,8 @@ public class ClauseWorkspaceContextMenu {
 		}
 		addCommonMenus();
 	}
-	/**
-	 * Sub Tree Node Pop up Menu Items.
-	 * @param popupPanel -PopupPanel.
-	 */
+
 	private void subTreeNodePopUpMenuItems(final PopupPanel popupPanel) {
-		/*
-		 * POC Global Copy Paste.
-		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();
-		 */
 		subMenuBar = new MenuBar(true);
 		subMenuBar.getElement().setAttribute("id", "subMenuBarSubTreeNodePopUpPanel");
 		popupMenuBar.setAutoOpen(true);
@@ -473,40 +294,15 @@ public class ClauseWorkspaceContextMenu {
 			if (xmlTreeDisplay.getSelectedNode().hasChildren()) {
 				addMenu.setEnabled(false);
 				pasteMenu.setEnabled(false);
-				/*
-				 * POC Global Copy Paste.
-				 * pasteFromClipboardMenu.setEnabled(false);
-				 */
 			}
 			copyMenu.setEnabled(false);
-			/*
-			 * POC Global Copy Paste.
-			 * copyToClipBoardMenu.setEnabled(false);
-			 */
 		}
 		//Allow paste option
 		if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_NODE)) {
-			// Only One child is allow in SubTree Root Node.
-			/*
-			 * POC Global Copy Paste.
-			 * if (!xmlTreeDisplay.getSelectedNode().hasChildren() && (copiedNode != null)) {
-				pasteMenu.setEnabled(true);
-				pasteFromClipboardMenu.setEnabled(true);
-			}
-			 */
 			if (!xmlTreeDisplay.getSelectedNode().hasChildren() && (xmlTreeDisplay.getCopiedNode() != null)) {
 				pasteMenu.setEnabled(true);
 			}
 		}
-		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
-		/* POC GLobal Copy Paste
-		 * if ((copiedNode != null)
-				&& (copiedNode.getNodeType() != CellTreeNode.SUBTREE_NODE)
-				&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
-			pasteMenu.setEnabled(true);
-			pasteFromClipboardMenu.setEnabled(true);
-		}*/
-		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
 		if ((xmlTreeDisplay.getCopiedNode() != null)
 				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
 				&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
@@ -539,15 +335,10 @@ public class ClauseWorkspaceContextMenu {
 	}
 	
 	
-	/**
-	 * Relational Ops Node Pop up Menu Items.
-	 * @param popupPanel - PopupPanel
-	 */
 	private void relationalOpNodePopUpMenuItems(PopupPanel popupPanel) {
 		MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM(false);
 		MenuBar relAssociationMenuBar = new MenuBar(true);
 		
-		//subMenuBarRelLHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relAssociationMenuBar); // Relationship sub menus 3rd level
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
@@ -555,7 +346,6 @@ public class ClauseWorkspaceContextMenu {
 		subMenuBarRelLHS.getElement().setAttribute("id", "subMenuRelOpLHS");
 		MenuBar relAssociationMenuBarRHS = new MenuBar(true);
 		subMenuBarRelLHS.getElement().setAttribute("id", "relAssociationMenuBarRHS");
-		//subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relAssociationMenuBarRHS); // Relationship sub menus 3rd level
 		addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS); //RHS Sub Menu
@@ -577,20 +367,8 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addItem(addMenuRHS);
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
-		//MAT-3887 Disabling copy and paste options to avoid adding the relationship to relationship
 		copyMenu.setEnabled(false);
-		//		if ((xmlTreeDisplay.getCopiedNode() != null)
-		//				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
-		//				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-		//						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-		//			pasteMenu.setEnabled(true);
-		//		}
 		pasteMenu.setEnabled(false);
-		/*
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(false);
-		pasteFromClipboardMenu.setEnabled(false);*/
-		//End MAT-3887
 		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 			deleteMenu.setEnabled(true);
 		}
@@ -608,20 +386,12 @@ public class ClauseWorkspaceContextMenu {
 		cutMenu.setEnabled(true);
 		checkIsParentSatisfy();
 	}
-	/**
-	 * Function Node Pop Up Menu Items.
-	 * @param popupPanel -PopupPanel.
-	 */
+	
 	private void functionNodePopUpMenuItems(final PopupPanel popupPanel) {
 		subMenuBar = new MenuBar(true);
 		subMenuBar.getElement().setAttribute("id", "SubMenuBarFuncOp");
 		popupMenuBar.setAutoOpen(true);
 		subMenuBar.setAutoOpen(true);
-		//Commented for User story MAT-3167.
-		/*createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
-				, subMenuBar);*/ // creating logical Operators Menu 2nd level
-		/*POC Global Copy Paste.
-		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
 		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") ||
 				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")){
 			MenuBar subMenuBarLHS = createMenuBarWithOnlyQDM();
@@ -672,18 +442,7 @@ public class ClauseWorkspaceContextMenu {
 					pasteMenu.setEnabled(false);
 				}
 			}
-			
-			/*
-			 * POC Global Copy Paste.
-			 * if((copiedNode != null)
-					&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) &&
-					(xmlTreeDisplay.getSelectedNode().getChilds() != null) && (xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
-				pasteMenu.setEnabled(true);
-				pasteFromClipboardMenu.setEnabled(true);
-			} else {
-				pasteMenu.setEnabled(false);
-				pasteFromClipboardMenu.setEnabled(false);
-			}*/
+
 			popupMenuBar.addItem(addMenuLHS);
 			popupMenuBar.addItem(addMenuRHS);
 			
@@ -775,17 +534,7 @@ public class ClauseWorkspaceContextMenu {
 		copyMenu.setEnabled(true);
 		
 		System.out.println("paste menu enabled3?"+pasteMenu.isEnabled());
-		/*
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(true);
-		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-		if ((copiedNode != null)
-				&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) &&
-				! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") &&
-				! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
-			pasteMenu.setEnabled(true);
-			pasteFromClipboardMenu.setEnabled(true);
-		}*/
+
 		cutMenu.setEnabled(true);
 		deleteMenu.setEnabled(true);
 		addMoveUpMenu(popupPanel);
@@ -816,14 +565,12 @@ public class ClauseWorkspaceContextMenu {
 	 * Set Op Node Pop up Menu Items.
 	 * @param popupPanel - PopupPanel.
 	 */
+	@SuppressWarnings("unchecked")
 	private void setOpsNodePopUpMenuItems(final PopupPanel popupPanel) {
 		subMenuBar = new MenuBar(true);
 		subMenuBar.getElement().setAttribute("id", "SubMenuBarSetOp");
 		popupMenuBar.setAutoOpen(true);
 		subMenuBar.setAutoOpen(true);
-		/*
-		 * POC Global Copy Paste.
-		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
 		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
 				, subMenuBar);
 		createAddQDM_MenuItem(subMenuBar);
@@ -868,15 +615,7 @@ public class ClauseWorkspaceContextMenu {
 				
 			}
 		}
-		/*
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(true);
-		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-		if ((copiedNode != null)
-				&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)) {
-			pasteMenu.setEnabled(true);
-			pasteFromClipboardMenu.setEnabled(true);
-		}*/
+
 		deleteMenu.setEnabled(true);
 		addMoveUpMenu(popupPanel);
 		popupMenuBar.addItem(moveUpMenu);
@@ -909,11 +648,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		return retValue;
 	}
-	/**
-	 * Creates the add clause menu item.
-	 *
-	 * @param menuBar - MenuBar.
-	 */
+	
 	private void createAddClauseMenuItem(MenuBar menuBar) {
 		Command addClauseCmd = new Command() {
 			@Override
@@ -925,11 +660,7 @@ public class ClauseWorkspaceContextMenu {
 		MenuItem item = new MenuItem("Clause", true, addClauseCmd);
 		menuBar.addItem(item);
 	}
-	
-	/**
-	 * Element Ref Node Pop Up Menu Items.
-	 * @param popupPanel - PopupPanel.
-	 */
+
 	private void elementRefNodePopUpMenuItems(final PopupPanel popupPanel) {
 		Command editQDMCmd = new Command() {
 			@Override
@@ -945,10 +676,6 @@ public class ClauseWorkspaceContextMenu {
 		addCommonMenus();
 		copyMenu.setEnabled(true);
 		pasteMenu.setEnabled(false);
-		/*
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(true);
-		pasteFromClipboardMenu.setEnabled(false);*/
 		cutMenu.setEnabled(true);
 		deleteMenu.setEnabled(true);
 		addMoveUpMenu(popupPanel);
@@ -961,9 +688,6 @@ public class ClauseWorkspaceContextMenu {
 	}
 	
 	
-	/**
-	 * Check is parent satisfy.
-	 */
 	private void checkIsParentSatisfy(){
 		if((xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ALL") ||
 				xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ANY"))){
@@ -974,10 +698,7 @@ public class ClauseWorkspaceContextMenu {
 		}
 		
 	}
-	/**
-	 * Timing Node Pop Up Menu Items.
-	 * @param popupPanel - PopupPanel.
-	 */
+
 	private void timingNodePopUpMenuItems(final PopupPanel popupPanel) {
 		MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
@@ -985,9 +706,6 @@ public class ClauseWorkspaceContextMenu {
 		MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 		addMenuRHS.getElement().setAttribute("id", "SubMenuBaraddMenuRHS");
-		/*
-		 * POC Global Copy Paste.
-		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
 		//Disable  RHS by default.
 		if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
 			addMenuRHS.setEnabled(false);
@@ -1007,16 +725,6 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
-		/*
-		 * POC Global Copy Paste.
-		 * copyToClipBoardMenu.setEnabled(true);
-		if ((copiedNode != null)
-				&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
-				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-			pasteMenu.setEnabled(true);
-			pasteFromClipboardMenu.setEnabled(true);
-		}*/
 		if (xmlTreeDisplay.getCopiedNode() != null){
 			
 			if( (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
@@ -1026,6 +734,7 @@ public class ClauseWorkspaceContextMenu {
 			}
 			
 			if(xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+				@SuppressWarnings("unchecked")
 				HashMap<String, String> map =  (HashMap<String, String>) xmlTreeDisplay.getCopiedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				String funcName = xmlTreeDisplay.getCopiedNode().getName();
 				if(map != null){
@@ -1062,9 +771,6 @@ public class ClauseWorkspaceContextMenu {
 		checkIsParentSatisfy();
 	}
 	
-	/**
-	 * Show hide expand menu.
-	 */
 	protected void showHideExpandMenu() {
 		if (xmlTreeDisplay.getSelectedNode().hasChildren()) {
 			expandMenu.setEnabled(true);
@@ -1073,14 +779,6 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 	
-	/**
-	 * Creates the qdm attribute menu item.
-	 * 
-	 * @param menuBar
-	 *            the menu bar
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 */
 	protected void createQDMAttributeMenuItem(MenuBar menuBar, final CellTreeNode cellTreeNode) {
 		Command addQDMAttributeCmd = new Command() {
 			@Override
@@ -1094,15 +792,6 @@ public class ClauseWorkspaceContextMenu {
 		checkForTimingElementDataType(cellTreeNode, item);
 	}
 	
-	/**
-	 * Check if the Data Type for the selected node is "Timing Element" and
-	 * disable the menuItem.
-	 * 
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 * @param item
-	 *            the item
-	 */
 	protected void checkForTimingElementDataType(CellTreeNode cellTreeNode,
 			MenuItem item) {
 		if (cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE) {
@@ -1120,30 +809,16 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 	
-	/**
-	 * Show qdm attribute popup.
-	 * 
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 */
 	protected void showQDMAttributePopup(CellTreeNode cellTreeNode) {
 		QDMAttributeDialogBox.showQDMAttributeDialogBox(xmlTreeDisplay, cellTreeNode);
 	}
 	
-	
-	/**
-	 * Creates the menu bar with timing func and qdm.
-	 *
-	 * @param addClauseMenuItem the add clause menu item
-	 * @return the menu bar
-	 */
+
 	protected MenuBar createMenuBarWithTimingFuncAndQDM(boolean addClauseMenuItem) {
 		MenuBar menuBar = new MenuBar(true);
 		menuBar.getElement().setAttribute("id", "SubMenuBarmenuBar");
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
-		//Commented for User story MAT-3167.
-		//createAddMenus(MatContext.get().logicalOps,
 		//CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
 		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
 				, menuBar);
@@ -1162,12 +837,6 @@ public class ClauseWorkspaceContextMenu {
 		return menuBar;
 	}
 	
-	/**
-	 * Creates the add qdm_ menu item.
-	 * 
-	 * @param menuBar
-	 *            the menu bar
-	 */
 	protected void createAddQDM_MenuItem(MenuBar menuBar) {
 		Command addQDMCmd = new Command() {
 			@Override
@@ -1179,31 +848,11 @@ public class ClauseWorkspaceContextMenu {
 		MenuItem item = new MenuItem("QDM Element", true, addQDMCmd);
 		menuBar.addItem(item);
 	}
-	/**
-	 * Show qdm popup.
-	 * 
-	 * @param isAdd
-	 *            the is add
-	 */
+
 	protected void showQDMPopup(boolean isAdd) {
 		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay, isAdd);
 	}
-	
-	/**
-	 * Method iterates through the menuNames and creates MenuItems, on selection
-	 * of a MenuItem , a child node is created and added to the selected node
-	 * with the name and label set to selected menuItem's name and the nodeType
-	 * set to the passed nodeType value.
-	 * 
-	 * and @param nodeType passed
-	 * 
-	 * @param menuNames
-	 *            the menu names
-	 * @param nodeType
-	 *            the node type
-	 * @param menuBar
-	 *            the menu bar
-	 */
+
 	protected void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar) {
 		for (final String name : menuNames) {
 			Command addCmd = new Command() {
@@ -1218,18 +867,7 @@ public class ClauseWorkspaceContextMenu {
 			menuBar.addItem(menu);
 		}
 	}
-	
-	
-	/**
-	 * Method iterates through the editMenuNames and creates MenuItems, on
-	 * selection of a MenuItem, the selected node's name and label is updated
-	 * with the selected menuItem's name.
-	 * 
-	 * @param editMenuNames
-	 *            the edit menu names
-	 * @param subMenuBar
-	 *            the sub menu bar
-	 */
+
 	protected void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar) {
 		for (final String editMenuName : editMenuNames) {
 			Command timingCmd = new Command() {
@@ -1245,22 +883,12 @@ public class ClauseWorkspaceContextMenu {
 			subMenuBar.addItem(timingMenus);
 		}
 	}
-	/**
-	 * Paste root node type item.
-	 */
+
 	protected void pasteRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
-		/*
-		 * POC Global Copy Paste.
-		 *String clauseNodeName = MatContext.get().getCopiedNode().getName();
-		 **/
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
-		/*
-		 * POC Global Copy Paste.
-		 *
-		 *CellTreeNode pasteNode =  MatContext.get().getCopiedNode().cloneNode();*/
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
@@ -1268,28 +896,13 @@ public class ClauseWorkspaceContextMenu {
 		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
 		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
 		xmlTreeDisplay.setCopiedNode(clonedNode); //make the new cloned node as the copied node
-		/*
-		 * POC Global Copy Paste.
-		 *MatContext.get().setCopiedNode(clonedNode);*/
 	}
-	
-	/**
-	 * Paste master root node type item.
-	 */
+
 	protected void pasteMasterRootNodeTypeItem() {
 		String rootNodeName = xmlTreeDisplay.getCopiedNode().getName();
-		/*
-		 * POC Global Copy Paste.
-		 * String rootNodeName = MatContext.get().getCopiedNode().getName();*/
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
-		// In Case of Stratification RootNode UUID is Duplicating itself. So we are
-		// Creating new UUID for Every new Copy n Paste of Root Node
 		CellTreeNode rootNode = xmlTreeDisplay.getCopiedNode();
-		/*
-		 * POC Global Copy Paste.
-		 *CellTreeNode rootNode = MatContext.get().getCopiedNode();
-		 **/
 		rootNode.setUUID(UUIDUtilClient.uuid());
 		CellTreeNode pasteNode = rootNode.cloneNode();
 		pasteNode.setName(name);
@@ -1304,37 +917,18 @@ public class ClauseWorkspaceContextMenu {
 		 *MatContext.get().setCopiedNode(clonedNode);*/
 	}
 	
-	/**
-	 * Adds the root node type item.
-	 */
 	protected void addRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 		String selectedNodeName = xmlTreeDisplay.getSelectedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		
-		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
-		String nodeName = selectedNodeName.replaceAll("\\s+", "").toLowerCase();
-		
-		/**Commenting this code for MAT-7076*/
-		
-		//For CQL, populations wont have a logical operator node under them by default
-		/*if (!xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
-			if (PopulationWorkSpaceConstants.topNodeOperatorMap.containsKey((nodeName))) {
-				String nodeTopLogicalOperator = PopulationWorkSpaceConstants.topNodeOperatorMap.get(nodeName);
-				clauseNode.createChild(nodeTopLogicalOperator.toUpperCase(),
-						nodeTopLogicalOperator.toUpperCase(), CellTreeNode.LOGICAL_OP_NODE);
-			}
-		}*/
-		
-		/**Commenting for MAT-7076 ends.*/
-		
+		xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
+		selectedNodeName.replaceAll("\\s+", "").toLowerCase();
+
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 	
-	/**
-	 * Adds the parent root node type item.
-	 */
 	protected void addMasterRootNodeTypeItem() {
 		String rootNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
@@ -1346,40 +940,17 @@ public class ClauseWorkspaceContextMenu {
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 	
-	
-	/**
-	 * Adds the common menus.
-	 */
 	protected void addCommonMenus() {
-		//popupMenuBar.addItem(copyMenu);
-		//popupMenuBar.addItem(pasteMenu);
-		/*
-		 * POC Global Copy Paste changes.
-		 * popupMenuBar.addItem(copyToClipBoardMenu);
-		popupMenuBar.addItem(pasteFromClipboardMenu);*/
-		//popupMenuBar.addItem(cutMenu);
 		popupMenuBar.addItem(deleteMenu);
-		//popupMenuBar.addItem(expandMenu);
 		popupMenuBar.setVisible(true);
 		popupPanel.add(popupMenuBar);
 	}
 	
 	
-	/**
-	 * Gets the adds the menu name.
-	 * 
-	 * @param selectedNode
-	 *            the selected node
-	 * @return the adds the menu name
-	 */
 	protected String getAddMenuName(CellTreeNode selectedNode) {
 		return "Add" + " " +  selectedNode.getName().substring(0, selectedNode.getName().lastIndexOf(" "));
 	}
-	
-	/**
-	 * Menu - Move Up.
-	 * @param popupPanel - PopupPanel.
-	 */
+
 	protected final void addMoveUpMenu(final PopupPanel popupPanel) {
 		Command moveUpCmd = new Command() {
 			@Override
@@ -1399,10 +970,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		moveUpMenu = new MenuItem(template.menuTableWithIcon("Move Up", "", uri), moveUpCmd);
 	}
-	/**
-	 * Menu - Move Down.
-	 * @param popupPanel -PopupPanel.
-	 */
+	
 	protected final void addMoveDownMenu(final PopupPanel popupPanel) {
 		Command moveDownCmd = new Command() {
 			@Override
@@ -1420,10 +988,7 @@ public class ClauseWorkspaceContextMenu {
 		};
 		moveDownMenu = new MenuItem(template.menuTableWithIcon("Move Down", "" , uri), moveDownCmd);
 	}
-	/**
-	 * Move Up Menu is set Enabled if selected node is not the first child of its parent node.
-	 * @return boolean.
-	 */
+
 	protected final boolean checkIfTopChildNode() {
 		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
 		CellTreeNode parentNode = selectedNode.getParent();
@@ -1438,13 +1003,7 @@ public class ClauseWorkspaceContextMenu {
 		return true;
 	}
 	
-	
-	
-	/**
-	 * Check if top child node for satisfy.
-	 *
-	 * @return true, if successful
-	 */
+
 	private final boolean checkIfTopChildNodeForSatisfy() {
 		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
 		CellTreeNode parentNode = selectedNode.getParent();
@@ -1459,12 +1018,6 @@ public class ClauseWorkspaceContextMenu {
 		return true;
 	}
 	
-	
-	/**
-	 * Check if last child node for satisfy.
-	 *
-	 * @return true, if successful
-	 */
 	private final boolean checkIfLastChildNodeForSatisfy() {
 		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
 		CellTreeNode parentNode = selectedNode.getParent();
@@ -1481,10 +1034,7 @@ public class ClauseWorkspaceContextMenu {
 		}
 		return true;
 	}
-	/**
-	 * Move down menu is set to enabled if the selected node is not the last child of its parent node.
-	 * @return boolean.
-	 */
+	
 	protected final boolean checkIfLastChildNode() {
 		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
 		CellTreeNode parentNode = selectedNode.getParent();
@@ -1498,13 +1048,7 @@ public class ClauseWorkspaceContextMenu {
 		}
 		return true;
 	}
-	/**
-	 * Gets the next highest sequence.
-	 * 
-	 * @param selectedNode
-	 *            the selected node
-	 * @return the next highest sequence
-	 */
+
 	private int getNextHighestSequence(CellTreeNode selectedNode) {
 		SortedSet<Integer> sortedName = new TreeSet<Integer>();
 		Integer lastInt = 0;
@@ -1529,57 +1073,21 @@ public class ClauseWorkspaceContextMenu {
 		}
 		return sortedName.last() + 1;
 	}
-	
-	/**
-	 * Show human readable dialog box.
-	 *
-	 * @param result the result
-	 * @param populationName the population name
-	 */
+
 	public native void showHumanReadableDialogBox(String result, String populationName) /*-{
-		//alert("Opening window:"+window.location.href);
-		//alert("Protocol:"+window.location.protocol);
-		//alert("hostname:"+window.location.hostname);
-		//alert("port:"+window.location.port);
 		var dummyURL = window.location.protocol + "//" +  window.location.hostname + ":" + window.location.port + "/" + "mat/humanreadable.html";
-		//alert("dummyURL:"+dummyURL);
 		var humanReadableWindow = window.open(dummyURL,"","width=1200,height=700,scrollbars=yes,resizable=yes");
 		
 		if(humanReadableWindow && humanReadableWindow.top){
-			//Populate the human readable in the new window.
 			humanReadableWindow.document.write(result);
 			humanReadableWindow.document.title = populationName;
 		}
 	}-*/;
-	
-	/*public void showHumanReadableDialogBox(String result, String populationName){
-		DialogBoxWithCloseButton hrDialog = new DialogBoxWithCloseButton(populationName);
-		ScrollPanel hrHTMLPanel = new ScrollPanel();
-		hrHTMLPanel.setAlwaysShowScrollBars(true);
-		hrHTMLPanel.setWidth("70em");
-		HTML html = new HTML(result);
-		hrHTMLPanel.add(html);
-		
-		DOM.setStyleAttribute(hrDialog.getElement(), "width", "900px");
-		DOM.setStyleAttribute(hrDialog.getElement(), "height", "500px");
-		hrDialog.setWidget(hrHTMLPanel);
-		hrDialog.center();
-	}*/
-	
-	/**
-	 * Gets the view human readable menu.
-	 *
-	 * @return MenuItem.
-	 */
+
 	public MenuItem getViewHumanReadableMenu() {
 		return viewHumanReadableMenu;
 	}
-	
-	/**
-	 * Creates the menu bar with only qdm.
-	 *
-	 * @return the menu bar
-	 */
+
 	protected MenuBar createMenuBarWithOnlyQDM() {
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
@@ -1587,5 +1095,7 @@ public class ClauseWorkspaceContextMenu {
 		createAddQDM_MenuItem(menuBar);
 		return menuBar;
 	}
+
+
 	
 }

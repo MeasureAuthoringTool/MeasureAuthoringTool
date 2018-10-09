@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.CancelButton;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.shared.ErrorMessageAlert;
@@ -27,7 +28,7 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	private Button transferButton = new Button();
 	
 	/** The save button. */
-	private Button clearAllButton = new Button();
+	private Button clearAllButton = new CancelButton("managecqllibadminview");
 	
 	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
@@ -71,16 +72,12 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public ManageCQLLibraryAdminView() {
 		mainPanel.setWidth("100%");
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
-		buttonLayout.getElement().setAttribute("style", "margin-left:750px");
 		transferButton.setType(ButtonType.PRIMARY);
 		transferButton.getElement().setId("transferButton");
 		transferButton.setTitle("Transfer");
 		transferButton.setText("Transfer");
 		transferButton.getElement().setAttribute("aria-label", "Transfer");
 		
-		
-		clearAllButton.setType(ButtonType.PRIMARY);
-		clearAllButton.getElement().setId("clearAllButton");
 		clearAllButton.setMarginLeft(10.00);
 		clearAllButton.setTitle("Clear All");
 		clearAllButton.setText("Clear All");
@@ -94,7 +91,6 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public Widget asWidget() {
 		widgetVP.clear();
 		widgetVP.add(searchWidgetBootStrap.getSearchWidget());
-		
 		return mainPanel;
 	}
 
@@ -110,21 +106,18 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		mainPanel.getElement().setId("CQLLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
 		
-		widgetVP.getElement().setAttribute("style", "width:100px;padding-left:620px;margin-top:20px;");
+		widgetVP.getElement().setAttribute("style", "width:100px;margin-top:20px;");
 		widgetVP.getElement().setId("panel_VP_CQL");
 		mainHorizontalPanel.add(widgetVP);
 		mainHorizontalPanel.add(new SpacerWidget());
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(errorMessageAlert);
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(buttonLayout);;
-		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(errorMessageAlert);
 		mainPanel.add(new SpacerWidget());
-
+		mainPanel.add(buttonLayout);
 	}
 
 	@Override
@@ -190,15 +183,4 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		return transferButton;
 	}
 
-	/*@Override
-	public void clearTransferCheckBoxes() {
-		for ( CQLLibraryDataSetObject result : cqlLibrarySearchView.getAvailableLibrariesList()) {
-			result.setTransferable(false);
-		}
-		selectedId.clear();
-		selectedLibraries.clear();
-		
-		cqlLibrarySearchView.getTable().redraw();// TODO Auto-generated method stub
-		
-	}*/
 }

@@ -12,7 +12,6 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataSetDTO;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SaveUpdateCQLResult.
  */
@@ -24,8 +23,6 @@ public class SaveUpdateCQLResult extends GenericResult{
 	private CQLObject cqlObject;
 	
 	private String libraryName;
-	
-	//private String expIdentifier;
 	
 	private String setId;
 	
@@ -76,9 +73,11 @@ public class SaveUpdateCQLResult extends GenericResult{
 	
 	private static final int DUPLICATE_CODE=7;
 	
-	public static final int COMMEENT_INVALID = 8;
+	public static final int COMMENT_INVALID = 8;
 	
 	public static final int BIRTHDATE_OR_DEAD_ERROR = 9;
+	
+	public static final int DUPLICATE_CQL_KEYWORD = 10;
 	
 	/** The cql applied QDM list. */
 	List<CQLQualityDataSetDTO> cqlAppliedQDMList ;
@@ -337,14 +336,6 @@ public class SaveUpdateCQLResult extends GenericResult{
 	public void setElmString(String elmString) {
 		this.elmString = elmString;
 	}
-
-	/*public String getExpIdentifier() {
-		return expIdentifier;
-	}
-
-	public void setExpIdentifier(String expIdentifier) {
-		this.expIdentifier = expIdentifier;
-	}*/
 
 	/**
 	 * @return the setId

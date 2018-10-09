@@ -10,7 +10,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.Window.Navigator;
@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * {@example com.google.gwt.examples.CheckBoxExample}
  * </p>
  */
+
 public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Boolean> {
   
   /** The input elem. */
@@ -117,7 +118,7 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	 * @param isLabelRequired2
 	 *            the is label required2
 	 */
-  protected CustomCheckBox(Element elem,String title, boolean isLabelRequired2) {
+protected CustomCheckBox(Element elem,String title, boolean isLabelRequired2) {
     //super(DOM.createSpan());
 	  super(DOM.createDiv());
 	  
@@ -171,7 +172,7 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	 * @param labelOrder
 	 *            the label order
 	 */
-  protected CustomCheckBox(Element elem,String title,int labelOrder) {
+protected CustomCheckBox(Element elem,String title,int labelOrder) {
 	    //super(DOM.createSpan());
 		  super(DOM.createDiv());
  

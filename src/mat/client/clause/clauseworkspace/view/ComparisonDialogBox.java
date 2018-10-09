@@ -33,13 +33,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class ComparisonDialogBox.
- */
 public class ComparisonDialogBox {
 	
-	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false, true);
 	
 	private static List<String> filterFunctionList = new ArrayList<String>();
@@ -69,7 +64,6 @@ public class ComparisonDialogBox {
 		aggregateFunctionsList.add(MatConstants.AVG.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.COUNT.toUpperCase());
 		aggregateFunctionsList.add(MatConstants.SUM.toUpperCase());
-		/*aggregateFunctionsList.add(MatConstants.AGE_AT.toUpperCase());*/
 		
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH);
 		temporalNoOperatorList.add(MatConstants.STARTS_CONCURRENT_WITH_END_OF);
@@ -81,15 +75,7 @@ public class ComparisonDialogBox {
 		temporalNoOperatorList.add(MatConstants.DURING);
 		temporalNoOperatorList.add(MatConstants.OVERLAPS);
 	}
-	
-	/**
-	 * Show comparison dialog box.
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 */
+
 	public static void showComparisonDialogBox(
 			final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		dialogBox.setGlassEnabled(true);
@@ -104,13 +90,6 @@ public class ComparisonDialogBox {
 		dialogContents.setWidth("21em");
 		dialogContents.setSpacing(5);
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-		// - POC to change width and height for dialogBox. - Success
-		// dialogContents.setWidth("50em");
-		/*
-		 * DOM.setStyleAttribute(dialogBox.getElement(), "width", "950px");
-		 * DOM.setStyleAttribute(dialogBox.getElement(), "height", "950px");
-		 * DOM.setStyleAttribute(dialogBox.getElement(), "top", "155px");
-		 */
 		dialogBox.setWidget(dialogContents);
 		@SuppressWarnings("unchecked")
 		HashMap<String, String> extraAttributesMap = (HashMap<String, String>) cellTreeNode
@@ -165,7 +144,6 @@ public class ComparisonDialogBox {
 			// like COUNTDISTINCT
 			listAllTimeOrFunction.addItem(timingOrFuncMethod);
 		}
-		// modified for MAT-4692
 		for (int i = 0; i < keys.size(); i++) {
 			if (!(labelForListBox.equalsIgnoreCase("Functions") && ((keys
 					.get(i).equalsIgnoreCase(MatConstants.SATISFIES_ALL) || keys
@@ -595,6 +573,7 @@ public class ComparisonDialogBox {
 			listAllOperator.setEnabled(false);
 		} else {
 			String operatorMethod = "--Select--";
+			@SuppressWarnings("unchecked")
 			HashMap<String, String> extraAttributesMap = (HashMap<String, String>) cellTreeNode
 					.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 			if (extraAttributesMap != null) {

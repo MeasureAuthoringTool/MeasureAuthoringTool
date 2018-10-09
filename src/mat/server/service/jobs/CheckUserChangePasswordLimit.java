@@ -1,5 +1,6 @@
 package mat.server.service.jobs;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,6 +10,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import mat.dao.EmailAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.EmailAuditLog;
@@ -17,15 +28,6 @@ import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.shared.ConstantMessages;
 
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.app.VelocityEngine;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.ui.velocity.VelocityEngineUtils;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class CheckUserPasswordLimit.
  */
@@ -63,9 +65,6 @@ public class CheckUserChangePasswordLimit {
 	/** The expiry mail subject. */
 	private String expiryMailSubject;
 	
-	/** The velocity engine. */
-	private VelocityEngine velocityEngine;
-	
 	/** The Constant WARNING_EMAIL_FLAG. */
 	private final static String WARNING_EMAIL_FLAG = "WARNING";
 	
@@ -75,6 +74,7 @@ public class CheckUserChangePasswordLimit {
 	/** The user service. */
 	private UserService userService;
 	
+	@Autowired private Configuration freemarkerConfiguration;
 	
 	/**
 	 * Gets the expiry mail template.
@@ -249,24 +249,6 @@ public class CheckUserChangePasswordLimit {
 	}
 
 	/**
-	 * Gets the velocity engine.
-	 *
-	 * @return the velocity engine
-	 */
-	public VelocityEngine getVelocityEngine() {
-		return velocityEngine;
-	}
-
-	/**
-	 * Sets the velocity engine.
-	 *
-	 * @param velocityEngine the new velocity engine
-	 */
-	public void setVelocityEngine(VelocityEngine velocityEngine) {
-		this.velocityEngine = velocityEngine;
-	}
-
-	/**
 	 * Gets the user service.
 	 *
 	 * @return the user service
@@ -332,16 +314,15 @@ public class CheckUserChangePasswordLimit {
 		
 		logger.info(" :: checkUserLoginDays Method START :: for Sending " + emailType + " Type Email");
 		//Get all the Users
-				final List<User> users = userDAO.find();
+				final List<User> users = userDAO.find(); 
 				final List<User> emailUsers=checkUsersLastPassword(noOfDaysPasswordLimit,users);
-				
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
 				final String envirUrl = ServerConstants.getEnvURL();
 				
 				for(User user:emailUsers){
 					
-					//Send 45days password limit email for all the users in the list.
+					//Send 45 days password limit email for all the users in the list.
 					logger.info("Sending email to "+user.getFirstName());
 					simpleMailMessage.setTo(user.getEmailAddress());
 					
@@ -361,40 +342,35 @@ public class CheckUserChangePasswordLimit {
 					content.put(ConstantMessages.URL, envirUrl);
 					
 					//5 days Expiry Date
-				     if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
-						
+				    if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
 						final String expiryDate=getFormattedExpiryDate(new Date(),5-1);
 						content.put("passwordExpiryDate",expiryDate );
 					}
 					
 					model.put("content", content);
 					String text = null;
-					if(WARNING_EMAIL_FLAG.equals(emailType)){
-						text = VelocityEngineUtils.mergeTemplateIntoString(
-					               velocityEngine, warningMailTemplate,model);
-						simpleMailMessage.setText(text);
-						simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+					try {
+						if(WARNING_EMAIL_FLAG.equals(emailType)){
+							text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(warningMailTemplate), model);
+							simpleMailMessage.setText(text);
+							simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+						}else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
+							text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(expiryMailTemplate), model);
+							simpleMailMessage.setText(text);
+							simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
+						}
+						mailSender.send(simpleMailMessage);
+						EmailAuditLog emailAudit = new EmailAuditLog();
+						emailAudit.setActivityType("Password " + emailType + " email sent.");
+						emailAudit.setTime(new Date());
+						emailAudit.setLoginId(user.getLoginId());
+						emailAuditLogDAO.save(emailAudit);
+						content.clear();
+						model.clear();
+						logger.info("Email Sent to "+user.getFirstName());
+					} catch (IOException | TemplateException e) {
+						e.printStackTrace();
 					}
-					else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
-						text = VelocityEngineUtils.mergeTemplateIntoString(
-					               velocityEngine, expiryMailTemplate, model);
-						simpleMailMessage.setText(text);
-						simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
-						
-						//Update Termination Date for User.
-						//updateUserTerminationDate(user);
-					}	
-				
-					mailSender.send(simpleMailMessage);
-					EmailAuditLog emailAudit = new EmailAuditLog();
-					emailAudit.setActivityType("Password " + emailType + " email sent.");
-					emailAudit.setTime(new Date());
-					emailAudit.setLoginId(user.getLoginId());
-					emailAuditLogDAO.save(emailAudit);
-					
-					content.clear();
-					model.clear();
-					logger.info("Email Sent to "+user.getFirstName());
 				}
 			
 				logger.info(" :: CheckUserLoginPasswordDays Method END :: ");

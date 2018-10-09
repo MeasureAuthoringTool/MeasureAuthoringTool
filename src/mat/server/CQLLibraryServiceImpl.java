@@ -20,8 +20,9 @@ import mat.server.service.CQLLibraryServiceInterface;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
-public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService{
+public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService {
 	private static final long serialVersionUID = -2412573290030426288L;
 
 	@Override
@@ -29,13 +30,13 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 		return this.getCQLLibraryService().search(searchText,filter, startIndex,pageSize);
 	}
 	@Override
-	public SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter){
-		return this.getCQLLibraryService().searchForIncludes(setId,searchText, filter);
+	public SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText){
+		return this.getCQLLibraryService().searchForIncludes(setId, libraryName, searchText);
 	}
 	
 	@Override
-	public SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter) {
-		return this.getCQLLibraryService().searchForReplaceLibraries(setId, filter);
+	public SaveCQLLibraryResult searchForReplaceLibraries(String setId) {
+		return this.getCQLLibraryService().searchForReplaceLibraries(setId);
 
 	}
 	
@@ -45,8 +46,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
-	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version){
-		return this.getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version);
+	public SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries){
+		return this.getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries);
 	}
 	/**
 	 * Gets the measure library service.
@@ -94,7 +95,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 
 	@Override
 	public SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId) {
-		// TODO Auto-generated method stub
 		return this.getCQLLibraryService().getAllRecentCQLLibrariesForUser(userId);
 	}
 	
@@ -114,13 +114,12 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
-	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue){
-		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue);
+	public SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment){
+		return this.getCQLLibraryService().saveAndModifyCQLGeneralInfo(libraryId, libraryValue, libraryComment);
 	}
 
 	@Override
 	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId) {
-		// TODO Auto-generated method stub
 		return this.getCQLLibraryService().saveDraftFromVersion(libraryId);
 	}
 	
@@ -134,7 +133,7 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	} 
 	@Override
 	public SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) {
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException {
 		return this.getCQLLibraryService().saveIncludeLibrayInCQLLookUp(libraryId, toBeModifiedObj, currentObj, incLibraryList);
 	}
 	@Override
@@ -194,11 +193,6 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 			List<CQLParameter> parameterList) {
 		return this.getCQLLibraryService().deleteParameter(libraryId, toBeDeletedObj, parameterList);
 	}
-	//@Override
-	/*public void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
-			String expansionProfile) {
-		this.getCQLLibraryService().updateCQLLibraryXMLForExpansionProfile(modifyWithDTO, measureId, expansionProfile);
-	}*/
 	@Override
 	public SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject) {
 		return this.getCQLLibraryService().saveCQLUserDefinedValueset(matValueSetTransferObject);
@@ -248,11 +242,4 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId) {
 		return this.getCQLLibraryService().saveValueSetList(transferObjectList, appliedValueSetList, cqlLibraryId);
 	}
-
-	
-	/*@Override
-	public SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText) {
-		return this.getCQLLibraryService().searchForStandaloneIncludes(setId, searchText);
-	}*/
-	
 }

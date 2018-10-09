@@ -44,7 +44,7 @@ public interface CQLLibraryServiceAsync {
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId, AsyncCallback<Void> callback);
 
 
-	void saveFinalizedVersion(String libraryId, boolean isMajor, String version,
+	void saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
 
@@ -54,15 +54,15 @@ public interface CQLLibraryServiceAsync {
 	
 	void getCQLLibraryFileData(String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue,
+	void saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment,
 			AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getUserShareInfo(String cqlId, String searchText,
 			AsyncCallback<SaveCQLLibraryResult> callback);
 
-	void searchForIncludes(String referringID, String searchText, boolean filter, AsyncCallback<SaveCQLLibraryResult> callback);
+	void searchForIncludes(String referringID, String libraryName, String searchText, AsyncCallback<SaveCQLLibraryResult> callback);
 	
-	void searchForReplaceLibraries(String setId, boolean filter, AsyncCallback<SaveCQLLibraryResult> callback);
+	void searchForReplaceLibraries(String setId, AsyncCallback<SaveCQLLibraryResult> callback);
 
 
 	void updateUsersShare(SaveCQLLibraryResult result, AsyncCallback<Void> callback);
@@ -127,7 +127,4 @@ public interface CQLLibraryServiceAsync {
 
 	void modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
-
-	//void searchForStandaloneIncludes(String setId, String searchText,
-		//	AsyncCallback<SaveCQLLibraryResult> asyncCallback);
 }

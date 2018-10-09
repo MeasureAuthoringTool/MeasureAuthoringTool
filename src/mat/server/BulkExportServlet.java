@@ -15,9 +15,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import mat.model.clause.Measure;
+import mat.server.export.ExportResult;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.shared.FileNameUtility;
 
 /**
@@ -49,42 +49,36 @@ public class BulkExportServlet extends HttpServlet {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		String[] measureIds = req.getParameterValues("id");
 		MeasurePackageService service = getMeasurePackageService();
-		Date[] exportDates = new Date[measureIds.length]; 
+		Date[] exportDates = new Date[measureIds.length];
 		Measure measure;
 
-		for(int i=0;i<measureIds.length;i++){
+		for (int i = 0; i < measureIds.length; i++) {
 			measure = service.getById(measureIds[i]);
 			exportDates[i] = measure.getExportedDate();
 		}
-		
+
 		ExportResult export = null;
-		
-		FileNameUtility fnu = new FileNameUtility();
+
 		try {
-				export = getService().getBulkExportZIP(measureIds,exportDates);
-				resp.setHeader("Content-Disposition", "attachment; filename="+ fnu.getBulkZipName("Export"));
-				resp.setContentType("application/zip");
-				resp.getOutputStream().write(export.zipbarr);
-				resp.getOutputStream().close();
-				export.zipbarr = null;
-				
-			} catch (Exception e) {
-				if(e instanceof ZipException && null != e.getMessage() && e.getMessage().contains("Exceeded Limit")){
-					resp.setContentType("text/html");
-					PrintWriter out = resp.getWriter();
-					out.println("Exceeded Limit: " + humanReadableByteCount(new Long(e.getMessage().split(":")[1])));
-				}else{
-					throw new ServletException(e);
-				}
-					
+			export = getService().getBulkExportZIP(measureIds, exportDates);
+			resp.setHeader("Content-Disposition", "attachment; filename=" + FileNameUtility.getBulkZipName("Export"));
+			resp.setContentType("application/zip");
+			resp.getOutputStream().write(export.zipbarr);
+			resp.getOutputStream().close();
+			export.zipbarr = null;
+
+		} catch (Exception e) {
+			if (e instanceof ZipException && null != e.getMessage() && e.getMessage().contains("Exceeded Limit")) {
+				resp.setContentType("text/html");
+				PrintWriter out = resp.getWriter();
+				out.println("Exceeded Limit: " + humanReadableByteCount(new Long(e.getMessage().split(":")[1])));
+			} else {
+				throw new ServletException(e);
 			}
+
+		}
 	}
 	
-	/**
-	 * Gets the service.
-	 * 
-	 * @return the service
-	 */
 	private SimpleEMeasureService getService(){
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
@@ -93,14 +87,7 @@ public class BulkExportServlet extends HttpServlet {
 	private MeasurePackageService getMeasurePackageService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
 	}
-	
-	/**
-	 * Human readable byte count.
-	 * 
-	 * @param bytes
-	 *            the bytes
-	 * @return the string
-	 */
+
 	private String humanReadableByteCount(long bytes) {
 	    int unit = 1024;
 	    if (bytes < unit) return bytes + " B";

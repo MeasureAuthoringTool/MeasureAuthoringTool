@@ -8,6 +8,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.poi.hpsf.SummaryInformation;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Name;
+
 import mat.dao.ListObjectDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.Code;
@@ -19,15 +32,6 @@ import mat.model.MatValueSet;
 import mat.model.clause.MeasureExport;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
-import org.apache.poi.hpsf.SummaryInformation;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Name;
 
 /** The Class XLSGenerator. */
 public abstract class XLSGenerator {
@@ -122,6 +126,7 @@ public abstract class XLSGenerator {
 	/** Adds the disclaimer.
 	 * 
 	 * @param wkbk - HSSFWorkbook. * */
+	@SuppressWarnings("deprecation")
 	protected final void addDisclaimer(final HSSFWorkbook wkbk) {
 		String disclaimerText = "The codes that you are exporting directly reflect the codes you entered into the "
 				+ "Measure Authoring Tool.  These codes may be owned by a third party and "
@@ -242,12 +247,12 @@ public abstract class XLSGenerator {
 		HSSFFont font = wkbk.createFont();
 		font.setFontName(HSSFFont.FONT_ARIAL);
 		font.setFontHeightInPoints((short) heightPoint);
-		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-		font.setColor(HSSFColor.BLACK.index);
+		font.setBold(true);
+		font.setColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
 		style.setFont(font);
-		style.setFillForegroundColor(HSSFColor.GREY_25_PERCENT.index);
-		style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-		style.setBorderBottom((short) 1);
+		style.setFillForegroundColor(HSSFColor.HSSFColorPredefined.GREY_25_PERCENT.getIndex());
+		style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		style.setBorderBottom(BorderStyle.THIN);
 		
 		return wkst;
 	}
@@ -270,6 +275,7 @@ public abstract class XLSGenerator {
 	 * @param rownum - Integer.
 	 * @param style - HSSFCellStyle.
 	 * @return HSSFRow. * */
+	@SuppressWarnings("deprecation")
 	protected final HSSFRow createXLSRow(final HSSFSheet wkst, final String[] values, final int rownum,
 			final HSSFCellStyle style) {
 		HSSFRow row = wkst.createRow(rownum);
@@ -285,10 +291,6 @@ public abstract class XLSGenerator {
 				values[revisionDate]);
 		row.createCell(standardconcept, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[standardconcept]);
-		/*
-		 * row.createCell(standardcategory, HSSFCell.CELL_TYPE_STRING)
-		 * .setCellValue(values[standardcategory]);
-		 */
 		row.createCell(standardtaxonomy, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[standardtaxonomy]);
 		row.createCell(standardtaxonomyversion, HSSFCell.CELL_TYPE_STRING)
@@ -375,7 +377,7 @@ public abstract class XLSGenerator {
 	 * @return HSSFWorkbook. * */
 	public final HSSFWorkbook getXLS(final String measureId,
 			final MeasureExportDAO measureExportDAO) {
-		MeasureExport me = measureExportDAO.findForMeasure(measureId);
+		MeasureExport me = measureExportDAO.findByMeasureId(measureId);
 		me.getCodeListBarr();
 		try {
 			byte[] barr = me.getCodeListBarr();

@@ -991,6 +991,21 @@ left:50px;
     margin-right:auto;
 }
 
+.widgitDisclaimer {
+    border: 1px solid #0964A2;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    width:250px;
+    padding: 10px;
+    font-size:.8em;
+    margin-left:auto; 
+    margin-right:auto;
+    margin-top:10px;
+}
+
 .loginHeader {
     font-size:1.2em;
     border-bottom:10px;
@@ -1290,35 +1305,36 @@ padding: 2px;
 .logoutPanel{
 	float: right;
 	position: relative;
-	padding-top: 5px;
+	padding-top: 10px;
+	padding-right: 15px;
 	cursor: pointer;
 	font-size:small;
 }
 
-.umlsStatePanel{
+.statePanel{
 	float: right;
 	position: relative;
-	padding-top: 12px;
+	padding-top: 20px;
 	font-size:small;
 }
 .versionPanel{
 	float: left;
 	position: relative;
-	padding: 2px 0 0 4px;
+	padding: 7px 0 0 4px;
 	font-size:small;
 	text-align:left;
 	margin-top: -8px;
 }
 .welcomeUserPanel{
-	float: right;
+	float: left;
+	padding: 7px 0 0 4px;
 	position: relative;
-	padding-top: 12px;
+	text-align:left;
 	font-size:small;	
 }
 .logoutAndUMLSPanel{
 	float: right;
 	position: relative;
-	/*padding-top: 12px;*/
 	font-size:small;
 }
 
@@ -1481,7 +1497,8 @@ padding: 2px;
 
 .contentWithHeadingHeader {
      position: relative;
-     width: 840px;
+     width: 590px;
+     padding-bottom: 10px;
     
 }
 .contentWithHeadingHeader h1 {
@@ -1875,7 +1892,7 @@ padding: 2px;
 }
 
 .headingButton{
-	padding-top: 7px;
+	padding-top: 15px;
     vertical-align: top;
 }
 
@@ -2015,8 +2032,7 @@ padding: 2px;
 	background-color: transparent;
 	border-color: #2e6da4
 	display: inline-block;
-	padding: 6px 0px;
-	margin-bottom: 0;
+	padding-right: 20px;
 	font-size: 14px;
 	line-height: 1.42857143;
 	text-align: center;
@@ -2036,7 +2052,26 @@ padding: 2px;
 	color: #337ab7;
 	border-radius: 0;
 	position: relative;
-	right: 70px;
+}
+
+.createNewCompositeButton {
+	color: #fff;
+	background-color: transparent;
+	border-color: #2e6da4
+	display: inline-block;
+	font-size: 14px;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
+	cursor: pointer;
+	border: 1px solid transparent;
+	font-weight: 600;
+	color: #337ab7;
+	border-radius: 0;
+	position: relative;
 }
 
 .searchFilter{
@@ -2762,4 +2797,20 @@ padding: 2px;
 
 .marginLeftButtons {
 	margin-left: 500px;
-}	
+}
+
+.advanceSearch {
+	float: right;
+	padding-right: 35px;
+	padding-top: 10px;
+}
+
+.helpText {
+	font-weight: 200;
+	margin-left: 5px;
+}
+
+.advancedSearchLabels{
+	padding-top: 7px;
+	padding-right: 10px;
+}

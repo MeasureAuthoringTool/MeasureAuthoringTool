@@ -10,7 +10,6 @@ import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCaptionElement;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -27,74 +26,55 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CqlLibraryPresenter;
 import mat.client.CustomPager;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.service.SaveCQLLibraryResult;
-import mat.client.shared.CustomButton;
+import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay{
-
-	/** CellTable Page Size. */
 	private static final int PAGE_SIZE = 25;
 	
-	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
-	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
-	/** The major radio. */
 	private RadioButton majorRadio = new RadioButton("group", "Major");
 	
-	/** The minor radio. */
 	private RadioButton minorRadio = new RadioButton("group", "Minor");
-	
-	/** The measure search filter widget. */
-	/*private SearchWidget searchWidget = new SearchWidget("Search", 
-            "Search", "searchWidget");*/
-	
-	/** Zoom Button for Showing Search Widget. */
-	/*private CustomButton zoomButton = (CustomButton) getImage("Search",
-			ImageResources.INSTANCE.search_zoom(), "Search");*/
 	
 	private ErrorMessageAlert errorMessages = new ErrorMessageAlert();
 	
-	//private Button saveButton = new Button("Save and Continue");
-	//private Button cancelButton = new Button("Cancel");
-	
 	private SingleSelectionModel<CQLLibraryDataSetObject> selectionModel;
 	
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("cqlVersion");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("cqlVersion");
 	
 	CQLLibraryDataSetObject selectedLibraryObject;
 	
+	ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox();
+	
 	public CQLLibraryVersionView(){
-		//zoomButton.getElement().getStyle().setMarginLeft(30, Unit.PX);
-		//zoomButton.getElement().setId("CqlzoomButton_CustomButton");
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		majorRadio.getElement().setId("CQL_MajorRadioButton");
-		minorRadio.getElement().setId("CQL_MinorRadioButton");
-		//mainPanel.add(searchWidget);		
+		minorRadio.getElement().setId("CQL_MinorRadioButton");		
 		mainPanel.add(new SpacerWidget());
-		
-		//cellTablePanel.getElement().setId("cqlcellTablePanel_VerticalPanel");
-		//cellTablePanel.setWidth("99%");
-		//mainPanel.add(cellTablePanel);
-		//mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(errorMessages);
 		errorMessages.getElement().setId("errorMessages_ErrorMessageDisplay");
 		
 		VerticalPanel radioPanel = new VerticalPanel();
 		radioPanel.getElement().getStyle().setMarginLeft(5, Unit.PX);
-		radioPanel.add(new Label("Select Version Type"));
+		Label radioLabel = new Label("Select Version Type");
+		radioLabel.setTitle("Select Version Type Required");
+		radioLabel.getElement().setTabIndex(0);
+		radioPanel.add(radioLabel);
 		radioPanel.add(new SpacerWidget());
 		radioPanel.add(majorRadio);
 		majorRadio.getElement().setId("cqlmajorRadio_RadioButton");
@@ -122,9 +102,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 		}
 		
 	}
-	/** Adds the column to table.
-	 * @param cellTable the cell table
-	 * @return the cell table */
+
 	private CellTable<CQLLibraryDataSetObject> addColumnToTable(final CellTable<CQLLibraryDataSetObject> cellTable) {
 		Column<CQLLibraryDataSetObject, Boolean> radioButtonColumn = new Column<CQLLibraryDataSetObject, Boolean>(new RadioButtonCell(true, true)) {
 			@Override
@@ -163,15 +141,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 				+ "Version" + "</span>"));
 		return cellTable;
 	}
-	private Widget getImage(String action, ImageResource url, String key) {
-		CustomButton image = new CustomButton();
-		image.removeStyleName("gwt-button");
-		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
-		image.setTitle(action);
-		image.setResource(url, action);
-		image.getElement().setAttribute("id", "CQLLibVersionViewSearchButton");
-		return image;
-	}
+
 	@Override
 	public void buildDataTable(SaveCQLLibraryResult result) {
 		cellTablePanel.clear();
@@ -198,7 +168,6 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 			spager.setPageStart(0);
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);
-			/* spager.setToolTipAndTabIndex(spager); */
 			cellTable.setWidth("100%");
 			cellTable.setColumnWidth(0, 15.0, Unit.PCT);
 			cellTable.setColumnWidth(1, 63.0, Unit.PCT);
@@ -257,22 +226,7 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	public void setMinorRadio(RadioButton minorRadio) {
 		this.minorRadio = minorRadio;
 	}
-	/*@Override
-	public SearchWidget getSearchWidget() {
-		return searchWidget;
-	}
-
-	public void setSearchWidget(SearchWidget searchWidget) {
-		this.searchWidget = searchWidget;
-	}
-	@Override
-	public CustomButton getZoomButton() {
-		return zoomButton;
-	}
-
-	public void setZoomButton(CustomButton zoomButton) {
-		this.zoomButton = zoomButton;
-	}*/
+	
 	@Override
 	public ErrorMessageAlert getErrorMessages() {
 		return errorMessages;
@@ -305,5 +259,13 @@ public class CQLLibraryVersionView implements CqlLibraryPresenter.VersionDisplay
 	public void clearRadioButtonSelection() {
 		getMajorRadioButton().setValue(false);
 		getMinorRadio().setValue(false);
+	}
+
+
+
+	@Override
+	public ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer) {
+		confirmationDialogBox = new ConfirmationDialogBox(messageText, yesButtonText, noButtonText, observer);
+		return confirmationDialogBox;
 	}
 }

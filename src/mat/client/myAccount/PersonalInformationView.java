@@ -6,7 +6,6 @@ import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.InputType;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -17,66 +16,48 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
+import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
+import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
-/**
- * The Class PersonalInformationView.
- */
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
 	
-	/** The v panel. */
 	private FlowPanel vPanel;
 	
-	/** The heading panel. */
 	private ContentWithHeadingWidget headingPanel;
 	
 	private TextBox firstNameTextBox = new TextBox();
 	private TextBox middleNameTextBox = new TextBox();
 	private TextBox lastNameTextBox = new TextBox();
 	
-	/** The title. */
 	private TextBox title = new TextBox();
 	
-	/** The email address. */
 	private TextBox emailAddress = new TextBox();
 	
-	/** The login id. */
 	private Label loginId = new Label();
 		
-	/** The oid. */
 	private TextBox oid = new TextBox();
 	
-	/** The organization. */
 	private TextBox organization = new TextBox();
 					
-
-	
-	/** The phone widget. */
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
 	
-	private Input passwordInput = new Input(InputType.PASSWORD);
+	private PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
-	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("personalInfo");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("personalInfo");
 	
-	/** The error messages. */
 	private MessageAlert errorMessages = new ErrorMessageAlert();
 	
-	/** The success messages. */
 	private MessageAlert successMessages = new SuccessMessageAlert();
 
-	/**
-	 * Instantiates a new personal information view.
-	 */
 	public PersonalInformationView() {
-		
 		
 		vPanel = new FlowPanel();
 
@@ -101,10 +82,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		buttons.getSaveButton().setTitle("Save");
 		vPanel.add(buttons);
 		
-		
 		vPanel.setStyleName("contentPanel");
 		headingPanel = new ContentWithHeadingWidget(vPanel, "Update Personal Information","PersonalInfo");
-		
 	}
 	
 	private Form buildView(){
@@ -122,9 +101,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 		FormGroup passwordGroup = new FormGroup();
 		
-		
 		firstNameTextBox.setPlaceholder("Enter First Name");
-		firstNameTextBox.setTitle("FirstName");
+		firstNameTextBox.setTitle("First Name Required");
 		firstNameTextBox.setId("FirstNameTextBox");
 		firstNameTextBox.setMaxLength(100);
 		
@@ -137,7 +115,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		firstNameGroup.add(firstNameLabel);
 		firstNameGroup.add(firstNameTextBox);
 	
-		//middleNameTextBox.setPlaceholder("M.I.");
 		middleNameTextBox.setTitle("MiddleName");
 		middleNameTextBox.setId("MiddleNameTextBox");
 		middleNameTextBox.setWidth("32px");
@@ -148,12 +125,11 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		middleNameLabel.setFor("MiddleNameTextBox");
 		middleNameLabel.setText("M.I.");
 		
-		
 		middleNameGroup.add(middleNameLabel);
 		middleNameGroup.add(middleNameTextBox);
 		
 		lastNameTextBox.setPlaceholder("Enter Last Name");
-		lastNameTextBox.setTitle("LastName");
+		lastNameTextBox.setTitle("Last Name Required");
 		lastNameTextBox.setId("LastNameTextBox");
 		lastNameTextBox.setMaxLength(100);
 		
@@ -183,7 +159,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		titleGroup.add(titleLabel);
 		titleGroup.add(title);
 		
-		
 		FormLabel organizationLabel = new FormLabel();
 		organizationLabel.setText("Organization");
 		organizationLabel.setId("OrganizationLabel");
@@ -193,10 +168,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		organization.setId("OrganizationTextBox");
 		organization.setEnabled(false);
 		organization.setWidth("200px");
-		organization.setTitle("Organization");
+		organization.setTitle("Organization Required");
 		organizationGroup.add(organizationLabel);
 		organizationGroup.add(organization);
-		
 		
 		FormLabel organizationOidLabel = new FormLabel();
 		organizationOidLabel.setText("Organization OID");
@@ -211,20 +185,18 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		organizationOidGroup.add(organizationOidLabel);
 		organizationOidGroup.add(oid);
 		
-		
 		FormLabel emailAddressLabel = new FormLabel();
 		emailAddressLabel.setId("emailAddressLabel");
 		emailAddressLabel.setFor("emailTextBox");
 		emailAddressLabel.setShowRequiredIndicator(true);	
 		emailAddressLabel.setText("E-mail Address");
 		emailAddress.setPlaceholder("Enter E-mail Address");
-		emailAddress.setTitle("Email Address");
+		emailAddress.setTitle("Email Address Required");
 		emailAddress.setId("emailTextBox");
 		emailAddress.setWidth("250px");
 		emailAddress.setMaxLength(254);
 		emailAddressGroup.add(emailAddressLabel);
 		emailAddressGroup.add(emailAddress);
-		
 		
 		FormLabel phoneNumberLabel = new FormLabel();
 		phoneNumberLabel.setId("phoneNumberLabel");
@@ -233,22 +205,10 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		phoneNumberLabel.setText("Phone Number");
 		phoneWidget.setTitle("Phone Number");
 		
-		
 		phoneNumberGroup.add(phoneNumberLabel);
 		phoneNumberGroup.add(phoneWidget);
 		
-		
-		FormLabel passwordLabel = new FormLabel();
-		passwordLabel.setId("passwordLabel");
-		passwordLabel.setFor("password_TextBox");
-		passwordLabel.setShowRequiredIndicator(true);	
-		passwordLabel.setText("Enter existing password to confirm changes");
-		passwordInput.setTitle("Enter existing password to confirm changes");
-		passwordInput.setId("password_TextBox");
-		passwordInput.setWidth("200px");
-		passwordGroup.add(passwordLabel);
-		passwordGroup.add(passwordInput);
-		
+		passwordGroup.add(passwordEditInfoWidget.getPasswordExistingGroup());
 		
 		FieldSet formFieldSet = new FieldSet();
 		formFieldSet.add(nameGrid);
@@ -258,7 +218,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		formFieldSet.add(emailAddressGroup);
 		formFieldSet.add(phoneNumberGroup);
 		formFieldSet.add(passwordGroup);
-		
 		
 		userNameForm.add(formFieldSet);
 		return userNameForm;
@@ -304,7 +263,6 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	public HasValue<String> getMiddleInitial() {
 		return middleNameTextBox;
 	}
-
 
 	/* (non-Javadoc)
 	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getTitle()
@@ -375,7 +333,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	 */
 	@Override
 	public HasValue<String> getPassword() {
-		return passwordInput;
+		return passwordEditInfoWidget.getPassword();
 	}
 	
 	/* (non-Javadoc)
@@ -385,9 +343,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	public Label getLoginId() {
 		return loginId;
 	}
+	
 	@Override
 	public Input getPasswordInput() {
-		return passwordInput;
+		return passwordEditInfoWidget.getPassword();
 	}
-
 }

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import mat.client.admin.ManageOrganizationDetailModel;
@@ -25,6 +26,7 @@ import mat.dao.UserDAO;
 import mat.model.Organization;
 import mat.model.Status;
 import mat.model.User;
+import mat.server.bonnie.BonnieServiceImpl;
 import mat.server.model.MatUserDetails;
 import mat.server.service.UserService;
 import mat.shared.AdminManageOrganizationModelValidator;
@@ -40,6 +42,10 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(AdminServiceImpl.class);
+	
+	@Autowired UserService userService;
+	
+	@Autowired BonnieServiceImpl bonnieService; 
 	
 	/**
 	 * Check admin user.
@@ -60,7 +66,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	@Override
 	public void deleteUser(String userId) throws InCorrectUserRoleException  {
 		checkAdminUser();
-		getUserService().deleteUser(userId);
+		userService.deleteUser(userId);
 	}
 	
 	/* (non-Javadoc)
@@ -272,18 +278,10 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException {
 		checkAdminUser();
 		logger.info("Retrieving user " + key);
-		User user = getUserService().getById(key);
+		User user = userService.getById(key);
 		return extractUserModel(user);
 	}
 	
-	/**
-	 * Gets the user service.
-	 * 
-	 * @return the user service
-	 */
-	private UserService getUserService() {
-		return (UserService)context.getBean("userService");
-	}
 	
 	/**
 	 * Checks if is current user admin for user.
@@ -293,8 +291,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * @return true, if is current user admin for user
 	 */
 	private boolean isCurrentUserAdminForUser(User user) {
-		User adminUser = getUserService().getById(LoggedInUserUtil.getLoggedInUser());
-		return getUserService().isAdminForUser(adminUser, user);
+		User adminUser = userService.getById(LoggedInUserUtil.getLoggedInUser());
+		return userService.isAdminForUser(adminUser, user);
 	}
 	
 	/*
@@ -304,7 +302,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 */
 	@Override
 	public void resetUserPassword(String userid) {
-		getUserService().requestResetLockedPassword(userid);
+		userService.requestResetLockedPassword(userid);
 	}
 	
 	
@@ -327,8 +325,16 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			result.setMessages(messages);
 			result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
 		} else {
-			result = getUserService().saveUpdateUser(model);
+			if(model.isBeingRevoked()) {
+				try {
+					bonnieService.revokeBonnieAccessTokenForUser(model.getKey());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			result = userService.saveUpdateUser(model);
 		}
+		
 		return result;
 	}
 	/* (non-Javadoc)
@@ -337,7 +343,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	@Override
 	public ManageOrganizationSearchModel searchOrganization(String key)	{
 		List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
-		UserService userService = getUserService();
 		HashMap<String, Organization> usedOrganizationsMap = userService.searchForUsedOrganizations();
 		logger.info("Organization search returned " + searchResults.size());
 		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
@@ -351,9 +356,15 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			detailList.add(r);
 		}
 		model.setData(detailList);
-		//model.setStartIndex(startIndex);
-		//model.setResultsTotal(getOrganizationDAO().countSearchResults(key));
+		model.setResultsTotal(getOrganizationDAO().countSearchResults(key));
 		logger.info("Searching Organization on " + key);
+		return model;
+	}
+	
+	public ManageUsersSearchModel searchUsersWithActiveBonnie(String key) throws InCorrectUserRoleException {
+		checkAdminUser();
+		List<User> activeBonnieUsers = userService.searchForUsersWithActiveBonnie(key);
+		ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, activeBonnieUsers);
 		return model;
 	}
 	
@@ -363,11 +374,14 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	@Override
 	public ManageUsersSearchModel searchUsers(String key) throws InCorrectUserRoleException {
 		checkAdminUser();
-		
-		UserService userService = getUserService();
+		logger.info("Searching users on " + key);
 		List<User> searchResults = userService.searchForUsersByName(key);
 		logger.info("User search returned " + searchResults.size());
-		
+		ManageUsersSearchModel model = generateManageUsersSearchModelFromUser(key, searchResults);
+
+		return model;
+	}
+	private ManageUsersSearchModel generateManageUsersSearchModelFromUser(String key, List<User> searchResults) {
 		ManageUsersSearchModel model = new  ManageUsersSearchModel();
 		List<ManageUsersSearchModel.Result> detailList = new ArrayList<ManageUsersSearchModel.Result>();
 		for (User user : searchResults) {
@@ -384,12 +398,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			detailList.add(r);
 		}
 		model.setData(detailList);
-		
-		//model.setStartIndex(startIndex);
-		//model.setResultsTotal(getUserService().countSearchResults(key));
-		//logger.info("Searching users on " + key + " with page size " + pageSize);
-		logger.info("Searching users on " + key);
-		
+		model.setResultsTotal(userService.countSearchResults(key));
 		return model;
 	}
 	
@@ -397,7 +406,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	public ManageUsersDetailModel getUserByEmail(String emailId) throws InCorrectUserRoleException {
 		checkAdminUser();
 		logger.info("Retrieving user " + emailId);
-		User user = getUserService().findByEmailID(emailId);
+		User user = userService.findByEmailID(emailId);
 		return extractUserModel(user);
 	}
 	

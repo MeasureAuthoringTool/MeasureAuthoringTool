@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-          version="3.0">
+          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee webapp_4_0.xsd"
+          version="4.0">
   
   <!-- Default page to serve -->
  
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-             /WEB-INF/applicationContext-service.xml
-              /WEB-INF/applicationContext-security.xml
+           /WEB-INF/applicationContext-service.xml
+           /WEB-INF/applicationContext-security.xml
            /WEB-INF/mat-persistence.xml
            /WEB-INF/applicationContext-mail.xml
            /WEB-INF/applicationContext-task.xml
@@ -26,7 +26,7 @@
     </filter>
     <filter>
         <filter-name>hibernateFilter</filter-name>
-        <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+        <filter-class>org.springframework.orm.hibernate5.support.OpenSessionInViewFilter</filter-class>
     </filter>
  <filter>
     <filter-name>PreventCachingFilter</filter-name>
@@ -95,14 +95,6 @@
     <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
   </servlet>
 
-  <!-- <servlet>
-    <servlet-name>clauseServiceImpl</servlet-name>
-    <servlet-class>mat.server.clause.ClauseServiceImpl</servlet-class>
-  </servlet>
-  <servlet>
-    <servlet-name>clauseCloningServiceImpl</servlet-name>
-    <servlet-class>mat.server.clause.ClauseCloningServiceImpl</servlet-class>
-  </servlet> -->
   <servlet>
     <servlet-name>packageServiceImpl</servlet-name>
     <servlet-class>mat.server.PackageServiceImpl</servlet-class>
@@ -123,10 +115,6 @@
     <servlet-name>bulkExportServlet</servlet-name>
     <servlet-class>mat.server.BulkExportServlet</servlet-class>
   </servlet>
-   <!-- <servlet>
-    <servlet-name>FileUploadServlet</servlet-name>
-    <servlet-class>mat.server.servlet.FileUploadServlet</servlet-class>
-  </servlet> -->
   <servlet>
    <servlet-name>auditServiceImpl</servlet-name>
    <servlet-class>mat.server.AuditServiceImpl</servlet-class>
@@ -135,19 +123,18 @@
     <servlet-name>vsacAPIServiceImpl</servlet-name>
     <servlet-class>mat.server.VSACAPIServiceImpl</servlet-class>
   </servlet>
-    <servlet>
+  <servlet>
       <servlet-name>cqlConstantService</servlet-name>
       <servlet-class>mat.server.CQLConstantServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+      <servlet-name>bonnieService</servlet-name>
+      <servlet-class>mat.server.bonnie.BonnieServiceImpl</servlet-class>
   </servlet>
   <servlet>
       <servlet-name>populationService</servlet-name>
       <servlet-class>mat.server.PopulationServiceImpl</servlet-class>
   </servlet>
- <!--  <servlet-mapping>
-    <servlet-name>FileUploadServlet</servlet-name>
-    <url-pattern>/mat/uploadFormHandler</url-pattern>
-  </servlet-mapping> -->
-  
   <servlet-mapping>
     <servlet-name>exportServlet</servlet-name>
     <url-pattern>/mat/export</url-pattern>
@@ -181,6 +168,10 @@
    <url-pattern>/mat/loginService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+   <servlet-name>logoutServiceImpl</servlet-name>
+   <url-pattern>/bonnie/loginService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>codelistServiceImpl</servlet-name>
     <url-pattern>/mat/codelist</url-pattern>
   </servlet-mapping>
@@ -188,14 +179,10 @@
       <servlet-name>cqlConstantService</servlet-name>
       <url-pattern>/mat/cqlconstant</url-pattern>
   </servlet-mapping>
- <!--  <servlet-mapping>
-    <servlet-name>clauseServiceImpl</servlet-name>
-    <url-pattern>/mat/clause</url-pattern>
-  </servlet-mapping> -->
- <!--  <servlet-mapping>
-    <servlet-name>clauseCloningServiceImpl</servlet-name>
-    <url-pattern>/mat/clauseCloning</url-pattern>
-  </servlet-mapping> -->
+  <servlet-mapping>
+      <servlet-name>bonnieService</servlet-name>
+      <url-pattern>/mat/bonnie</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>packageServiceImpl</servlet-name>
     <url-pattern>/mat/package</url-pattern>
@@ -225,11 +212,19 @@
       <url-pattern>/mat/cqlConstantService</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+      <servlet-name>bonnieService</servlet-name>
+      <url-pattern>/mat/bonnieService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>bonnieService</servlet-name>
+      <url-pattern>/bonnie/bonnieService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
       <servlet-name>populationService</servlet-name>
       <url-pattern>/mat/populationService</url-pattern>
   </servlet-mapping>
   <session-config>
-        <session-timeout>70</session-timeout>
+        <session-timeout>30</session-timeout>
         <!-- To be Commented for Eclipse gwt dev mode on local developer's machine. Never commit the commented cookie-config tag. -->
         <!-- <cookie-config>
            <http-only>true</http-only>

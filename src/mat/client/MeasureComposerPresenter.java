@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -13,7 +14,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -22,10 +22,8 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.clause.QDMAppliedSelectionPresenter;
 import mat.client.clause.QDMAppliedSelectionView;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLPopulationWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLPopulationWorkSpaceView;
-import mat.client.clause.cqlworkspace.CQLWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLWorkSpaceView;
+import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.metadata.MetaDataPresenter;
@@ -33,6 +31,8 @@ import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
 import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.measurepackage.MeasurePackagerView;
+import mat.client.populationworkspace.CQLPopulationWorkSpacePresenter;
+import mat.client.populationworkspace.CQLPopulationWorkSpaceView;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
@@ -45,7 +45,6 @@ import mat.shared.ConstantMessages;
 /**
  * The Class MeasureComposerPresenter.
  */
-@SuppressWarnings("deprecation")
 public class MeasureComposerPresenter implements MatPresenter, Enableable, TabObserver {
 	/**
 	 * The Class EnterKeyDownHandler.
@@ -123,6 +122,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	private MatTabLayoutPanel measureComposerTabLayout;
 		
 	/** The measure package presenter. */
+	@SuppressWarnings("unused")
 	private MeasurePackagePresenter measurePackagePresenter;
 	
 	/** The meta data presenter. */
@@ -143,21 +143,21 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
-		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details");
+		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details", true);
 		presenterList.add(metaDataPresenter);
 		MatPresenter cqlWorkspacePresenter = buildCQLWorkSpaceTab();
-		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace");
+		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace", true);
 		presenterList.add(cqlWorkspacePresenter);
 		MatPresenter cqlPopulationWorkspacePresenter = buildCQLPopulationWorkspaceTab();
-		measureComposerTabLayout.add(cqlPopulationWorkspacePresenter.getWidget(), "Population Workspace");
+		measureComposerTabLayout.add(cqlPopulationWorkspacePresenter.getWidget(), "Population Workspace", true);
 		presenterList.add(cqlPopulationWorkspacePresenter);
 		MatPresenter measurePackagePresenter = buildMeasurePackageWidget();
-		measureComposerTabLayout.add(measurePackagePresenter.getWidget(), "Measure Packager");
+		measureComposerTabLayout.add(measurePackagePresenter.getWidget(), "Measure Packager", true);
 		presenterList.add(measurePackagePresenter);
-		measureComposerTabLayout.add(clauseWorkSpacePresenter.getWidget(), "Clause Workspace");
+		measureComposerTabLayout.add(clauseWorkSpacePresenter.getWidget(), "Clause Workspace", true);
 		presenterList.add(clauseWorkSpacePresenter);
 		MatPresenter appliedQDMPresenter = buildAppliedQDMPresenter();
-		measureComposerTabLayout.add(appliedQDMPresenter.getWidget(), "QDM Elements");
+		measureComposerTabLayout.add(appliedQDMPresenter.getWidget(), "QDM Elements", true);
 		presenterList.add(appliedQDMPresenter);
 		measureComposerTabLayout.setHeight("98%");
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
@@ -224,8 +224,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {
 				//int index = ((SelectionEvent<Integer>)event).getSelectedItem();
-				buttonBar.setPreviousButtonVisible(measureComposerTabLayout.hasPreviousTab());
-				buttonBar.setContinueButtonVisible(measureComposerTabLayout.hasNextTab());
 				buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 				buttonBar.setPageNamesOnState();
 			}
@@ -260,7 +258,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 					buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 					buttonBar.setPageNamesOnState();
 				} else {
-					DeferredCommand.addCommand(this);
+					Scheduler.get().scheduleDeferred(this);
 				}
 			}
 		};
@@ -373,9 +371,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	 * @return the mat presenter
 	 */
 	private MatPresenter buildCQLWorkSpaceTab(){
-		CQLWorkSpaceView cqlView = new CQLWorkSpaceView();
-		CQLWorkSpacePresenter cqlPresenter =
-				new CQLWorkSpacePresenter(cqlView);
+		CQLMeasureWorkSpaceView cqlView = new CQLMeasureWorkSpaceView();
+		CQLMeasureWorkSpacePresenter cqlPresenter =
+				new CQLMeasureWorkSpacePresenter(cqlView);
 		cqlPresenter.getWidget();
 		return cqlPresenter;
 	}
@@ -441,8 +439,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
 			MetaDataPresenter presenter = (MetaDataPresenter) presenterList.get(selectedIndex);
 			return presenter.isMeasureDetailsValid();
-		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
-			CQLWorkSpacePresenter presenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
+		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
+			CQLMeasureWorkSpacePresenter presenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
 			return presenter.isCQLWorkspaceValid();
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
@@ -472,16 +470,16 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		Button saveButton = null;
 		if(presenterList.get(selectedIndex) instanceof MetaDataPresenter) {
 			saveErrorMessageAlert = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
-			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getErrorMessageDisplay2().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay().clearAlert();
-			metaDataPresenter.getMetaDataDisplay().getSuccessMessageDisplay2().clearAlert();
-			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
-		} else if(presenterList.get(selectedIndex) instanceof CQLWorkSpacePresenter){
-			CQLWorkSpacePresenter presenter = (CQLWorkSpacePresenter) presenterList.get(selectedIndex);
-			presenter.getSearchDisplay().resetMessageDisplay();
-			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
-			auditMessage = presenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
+			metaDataPresenter.getMetaDataDisplay().getBottomErrorMessage().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getTopErrorMessage().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getBottomSuccessMessage().clearAlert();
+			metaDataPresenter.getMetaDataDisplay().getTopSuccessMessage().clearAlert();
+			saveButton = metaDataPresenter.getMetaDataDisplay().getBottomSaveButton();
+		} else if(presenterList.get(selectedIndex) instanceof CQLMeasureWorkSpacePresenter){
+			CQLMeasureWorkSpacePresenter cqlWorkSpacePresenter = (CQLMeasureWorkSpacePresenter) presenterList.get(selectedIndex);
+			CQLMeasureWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+			saveErrorMessageAlert = cqlWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
+			auditMessage = CQLMeasureWorkSpacePresenter.getSearchDisplay().getClickedMenu().toUpperCase() + "_TAB_YES_CLICKED";
 		} else if(presenterList.get(selectedIndex) instanceof CQLPopulationWorkSpacePresenter) {
 			CQLPopulationWorkSpacePresenter presenter = (CQLPopulationWorkSpacePresenter) presenterList.get(selectedIndex);
 			saveErrorMessageAlert = presenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();

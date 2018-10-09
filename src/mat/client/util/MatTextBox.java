@@ -1,7 +1,6 @@
 package mat.client.util;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -34,58 +33,19 @@ public class MatTextBox extends TextBox {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				int keycode = event.getNativeKeyCode();
-				System.out.println("Keycode Pressed:" +keycode);
+
 				if (event.isControlKeyDown()) {
 					if(keycode == 86 || keycode == 88){
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-						@Override
-						public void execute() {
-							ValueChangeEvent.fire(MatTextBox.this,
-									MatTextBox.this.getText());
-						}
-					});
-				}
+						Scheduler.get().scheduleDeferred(() -> execute());
+					}
 				} else if((keycode>=65 && keycode<=90) || (keycode>=48 && keycode<=57)
 						|| (keycode==32) || (keycode==8)|| (keycode==59)
 						|| (keycode==9) || (keycode==13) || (keycode==16) || (keycode==18)
 						|| (keycode>=37 && keycode<=40) ){
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-						@Override
-						public void execute() {
-							ValueChangeEvent.fire(MatTextBox.this,
-									MatTextBox.this.getText());
-						}
-					});
+					Scheduler.get().scheduleDeferred(() -> execute());
 				}
 			}
 		});
-//		MatTextBox.this
-//		.addValueChangeHandler(new ValueChangeHandler<String>() {
-//			
-//			@Override
-//			public void onValueChange(ValueChangeEvent<String> event) {
-//				if (!MatTextBox.this.isReadOnly()) {
-////					String commentAreaUpdatedText;
-////					int pos = getCursorPos();
-////					MatTextBox.this.setText(event.getValue());
-////					try {
-////						commentAreaUpdatedText = MatTextBox.this.getText();
-////					} catch (Exception e) {
-////						commentAreaUpdatedText = "";
-////					}
-////					if (commentAreaUpdatedText.length() >= minLength) {
-////						String subStringText = commentAreaUpdatedText.substring(0,
-////								minLength);
-////						MatTextBox.this.setValue(subStringText);
-////						setCursorPos(minLength);
-////					} else {
-////						MatTextBox.this.setValue(commentAreaUpdatedText);
-////						setCursorPos(pos);
-////					}
-//					
-//				}
-//			}
-//		});
 	}
 	/**
 	 * Description: Takes the browser event.
@@ -95,42 +55,24 @@ public class MatTextBox extends TextBox {
 	 */
 	@Override
 	public void onBrowserEvent(Event event) {
-		String commentAreaContent;
-		try {
-			commentAreaContent = MatTextBox.this.getText();
-		} catch (Exception e) {
-			commentAreaContent = "";
-		}
 		// Checking for paste event
 		if (event.getTypeInt() == Event.ONPASTE) {
-			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-				@Override
-				public void execute() {
-					ValueChangeEvent.fire(MatTextBox.this,
-							MatTextBox.this.getText());
-				}
-			});
+			Scheduler.get().scheduleDeferred(() -> execute());
 			return;
 		}
-		
+
 		if (event.getTypeInt() == Event.ONKEYDOWN) {
-			NativeEvent nativeEvent = Document.get().createKeyUpEvent(false, false, false, false, event.getTypeInt());
+			NativeEvent nativeEvent = Document.get().createKeyUpEvent(false, false, false, false, event.getKeyCode());
 			DomEvent.fireNativeEvent(nativeEvent, this);
 		}
 		// Checking for key Down event.
-	    if ((event.getTypeInt() == Event.ONKEYDOWN)) {
+		if ((event.getTypeInt() == Event.ONKEYDOWN)) {
 			if ((event.getKeyCode() != KeyCodes.KEY_LEFT)
 					&& (event.getKeyCode() != KeyCodes.KEY_TAB)
 					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
 					&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
 				if (!event.getCtrlKey()) {
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-						@Override
-						public void execute() {
-							ValueChangeEvent.fire(MatTextBox.this,
-									MatTextBox.this.getText());
-						}
-					});
+					Scheduler.get().scheduleDeferred(() -> execute());
 				} 
 			}
 		}
@@ -142,7 +84,7 @@ public class MatTextBox extends TextBox {
 	public int getMinLength() {
 		return minLength;
 	}
-	
+
 	/**
 	 * Setter for maximum length.
 	 *
@@ -150,5 +92,9 @@ public class MatTextBox extends TextBox {
 	 */
 	public void setMinLength(int minLength) {
 		this.minLength = minLength;
+	}
+	
+	private void execute() {
+		ValueChangeEvent.fire(MatTextBox.this, MatTextBox.this.getText());
 	}
 }

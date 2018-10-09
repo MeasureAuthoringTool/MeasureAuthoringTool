@@ -21,6 +21,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 public interface CQLLibraryServiceInterface {
 	
@@ -50,24 +51,21 @@ public interface CQLLibraryServiceInterface {
 	String getCQLLookUpXml(String libraryName, String versionText, XmlProcessor xmlProcessor, String mainXPath);
 
 
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 
 	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context);
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String context, String libraryComment);
 
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter);
-	
-//	SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText);
+	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
 
 	void updateUsersShare(SaveCQLLibraryResult result);
 
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			List<CQLIncludeLibrary> viewIncludeLibrarys);
@@ -99,9 +97,6 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult deleteValueSet(String toBeDelValueSetId, String libraryId);
 
-	/*void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId,
-			String expansionProfile);*/
-
 	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
 
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
@@ -125,7 +120,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 
-	SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter);
+	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String id);
 
@@ -133,4 +128,6 @@ public interface CQLLibraryServiceInterface {
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId);
 
 	SaveUpdateCQLResult modifyCQLCodeInCQLLibrary(CQLCode codeToReplace, CQLCode replacementCode, String cqlLibraryId);
+	
+	public void saveCQLLibraryExport(CQLLibrary cqlLibrary, String cqlXML);
 }

@@ -47,6 +47,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.Mat;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.resource.CellTableResource;
@@ -59,6 +60,7 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
+import mat.shared.MeasureSearchModel;
 import mat.shared.ClickableSafeHtmlCell;
 
 /**
@@ -212,11 +214,11 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
-		
+
 		selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		table.setSelectionModel(selectionModel);
-		
-		//Measure Name Column
+
+		// Measure Name Column
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			@Override
@@ -230,9 +232,9 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				SelectionEvent.fire(MeasureSearchView.this, object);
 			}
 		});
-		table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>"
-				+ "Measure Name" + "</span>"));
-		
+		table.addColumn(measureName,
+				SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
+
 		// Version Column
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new MatSafeHTMLCell()) {
@@ -241,147 +243,147 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				return CellTableUtility.getColumnToolTip(object.getVersion());
 			}
 		};
-		table.addColumn(version, SafeHtmlUtils
-				.fromSafeConstant("<span title='Version'>" + "Version"
-						+ "</span>"));
-		
+		table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version" + "</span>"));
+
 		ButtonCell buttonCell = new ButtonCell(ButtonType.LINK);
-		Column<ManageMeasureSearchModel.Result,String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(buttonCell) {
+		Column<ManageMeasureSearchModel.Result, String> draftOrVersionCol = new Column<ManageMeasureSearchModel.Result, String>(
+				buttonCell) {
 
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
 				return object.getShortName();
 			}
-			
+
 			@Override
 			public void render(Context context, ManageMeasureSearchModel.Result object, SafeHtmlBuilder sb) {
 				if (object.isDraftable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
+					sb.appendHtmlConstant(
+							"<button class=\"btn btn-link\" type=\"button\" title =\"Click to create draft\" tabindex=\"0\">");
 					sb.appendHtmlConstant("<i class=\"fa fa-pencil-square-o fa-lg\" style=\"margin-left: 15px;\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Draft</span>");
 					sb.appendHtmlConstant("</button>");
 				} else if (object.isVersionable()) {
-					sb.appendHtmlConstant("<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
+					sb.appendHtmlConstant(
+							"<button class=\"btn btn-link\" type=\"button\" tabindex=\"0\" title =\"Click to create version\" style=\"color: goldenrod;\" >");
 					sb.appendHtmlConstant("<i class=\"fa fa-star fa-lg\" style=\"margin-left: 15px;\"></i>");
 					sb.appendHtmlConstant("<span class=\"invisibleButtonText\">Create Version</span>");
 					sb.appendHtmlConstant("</button>");
 				}
-				
+
 			}
+
 			@Override
 			public void onBrowserEvent(Context context, Element elem, ManageMeasureSearchModel.Result object,
 					NativeEvent event) {
 
 				String type = event.getType();
-				if(type.equalsIgnoreCase(BrowserEvents.CLICK)){
-					if(!object.isDraftable() && !object.isVersionable()){
+				if (type.equalsIgnoreCase(BrowserEvents.CLICK)) {
+					if (!object.isDraftable() && !object.isVersionable()) {
 						event.preventDefault();
 					} else {
 						observer.onCreateClicked(object);
 					}
 				} else {
-					if(!object.isDraftable() && !object.isVersionable()){
+					if (!object.isDraftable() && !object.isVersionable()) {
 						event.preventDefault();
 					}
 				}
-				
+
 			}
-			
+
 		};
-		
-		table.addColumn(draftOrVersionCol,
-				SafeHtmlUtils.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
-		
-		//History
-		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg" , "History");
-		Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, 
-				String>(historyButton) {
+
+		table.addColumn(draftOrVersionCol, SafeHtmlUtils
+				.fromSafeConstant("<span title='Create Version/Draft'>" + "Create Version/Draft" + "</span>"));
+
+		// History
+		Cell<String> historyButton = new MatButtonCell("Click to view history", "btn btn-link", "fa fa-clock-o fa-lg",
+				"History");
+		Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
 			@Override
 			public String getValue(ManageMeasureSearchModel.Result object) {
 				return "";
 			}
-				};
-				historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
-					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, String value) {
-						observer.onHistoryClicked(object);
-					}
-				});
-				table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
-						+ "History" + "</span>"));
-				
-				//Edit
-				Column<ManageMeasureSearchModel.Result, SafeHtml> editColumn =
-						new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-								new ClickableSafeHtmlCell()) {
-					@Override
-					public SafeHtml getValue(Result object) {
-						return getEditColumnToolTip(object);
-					}
-				};
-				editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-					@Override
-					public void update(int index, Result object,
-							SafeHtml value) {
-						if (object.isEditable() && !object.isMeasureLocked()) {
-							observer.onEditClicked(object);
-						}
-					}
-				});
-				table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
-				
-				//Share
-				Column<ManageMeasureSearchModel.Result, SafeHtml> shareColumn = new Column<ManageMeasureSearchModel.Result, 
-						SafeHtml>(new ClickableSafeHtmlCell()) {
-					@Override
-					public SafeHtml getValue(Result object) {						
-						return getShareColumnToolTip(object);
-					}
-				};
-				shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-						if(object.isSharable())
-							observer.onShareClicked(object);
-					}
-				});
-				table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
-				
-				//Clone
-				Column<ManageMeasureSearchModel.Result, SafeHtml> cloneColumn = new Column<ManageMeasureSearchModel.Result, 
-						SafeHtml>(new ClickableSafeHtmlCell()) {
-							@Override
-							public SafeHtml getValue(Result object) {
-								return getCloneColumnToolTip(object);
-							}
-				};
-				cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-						if(object.isClonable())
-							observer.onCloneClicked(object);
-					}
-				});
-				table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));
-				
-				//Export Column header
-				
-				Header<SafeHtml> bulkExportColumnHeader = getBulkExportColumnHeader();
-				bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
-					@Override
-					public void update(SafeHtml value) {
-						clearBulkExportCheckBoxes();
-					}
-				});
-				
-				
-				table.addColumn(new Column<Result, Result>(getCompositeCellForBulkExport()) {
-					@Override
-					public Result getValue(Result object) {
-						return object;
-					}
-				}, bulkExportColumnHeader);
-				return table;
+		};
+		historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+			@Override
+			public void update(int index, ManageMeasureSearchModel.Result object, String value) {
+				observer.onHistoryClicked(object);
+			}
+		});
+		table.addColumn(historyColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
+
+		// Edit
+		Column<ManageMeasureSearchModel.Result, SafeHtml> editColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+				new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				return getEditColumnToolTip(object);
+			}
+		};
+		editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+			@Override
+			public void update(int index, Result object, SafeHtml value) {
+				if (object.isEditable() && !object.isMeasureLocked()) {
+					observer.onEditClicked(object);
+				}
+			}
+		});
+		table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
+
+		// Share
+		Column<ManageMeasureSearchModel.Result, SafeHtml> shareColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+				new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				return getShareColumnToolTip(object);
+			}
+		};
+		shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+			@Override
+			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				if (object.isSharable())
+					observer.onShareClicked(object);
+			}
+		});
+		table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
+
+		// Clone
+		Column<ManageMeasureSearchModel.Result, SafeHtml> cloneColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+				new ClickableSafeHtmlCell()) {
+			@Override
+			public SafeHtml getValue(Result object) {
+				return getCloneColumnHTML(object);
+			}
+		};
+		cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+			@Override
+			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				if (object.isClonable())
+					Mat.showLoadingMessage();
+					observer.onCloneClicked(object);
+			}
+		});
+		table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));
+
+		// Export Column header
+
+		Header<SafeHtml> bulkExportColumnHeader = getBulkExportColumnHeader();
+		bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
+			@Override
+			public void update(SafeHtml value) {
+				clearBulkExportCheckBoxes();
+			}
+		});
+
+		table.addColumn(new Column<Result, Result>(getCompositeCellForBulkExport()) {
+			@Override
+			public Result getValue(Result object) {
+				return object;
+			}
+		}, bulkExportColumnHeader);
+		return table;
 	}
 	
 	/**
@@ -473,18 +475,23 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 * @param object the object
 	 * @return the history column tool tip
 	 */
-	private SafeHtml getCloneColumnToolTip(Result object){
+	private SafeHtml getCloneColumnHTML(Result object){
 		SafeHtmlBuilder sb = new SafeHtmlBuilder();
 		String title = "Cloneable";
-		String cssClass = "btn btn-link";
-		String iconCss = "fa fa-clone fa-lg";
-		if (object.isClonable()) {
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-				+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span> </button>");
-		} else {
-			sb.appendHtmlConstant("<button type=\"button\" title='"
-					+ title + "' tabindex=\"0\" class=\" " + cssClass + "\" disabled style=\"color: gray;\"><i class=\" " + iconCss + "\"></i><span style=\"font-size:0;\">Cloneable</span></button>");
+		String disabled = "";
+		
+		if(!object.isClonable()) {
+			title = object.getIsComposite() ? "Composite measure not cloneable" :  "Measure not cloneable";
+			disabled = " disabled style=\"color: gray;\"";
 		}
+		
+		sb.appendHtmlConstant("<button type=\"button\" title='");
+		sb.appendHtmlConstant(title);
+		sb.appendHtmlConstant("' tabindex=\"0\" class=\"btn btn-link\"");
+		sb.appendHtmlConstant(disabled);
+		sb.appendHtmlConstant("><i class=\"fa fa-clone fa-lg\"></i><span style=\"font-size:0;\">");
+		sb.appendHtmlConstant(title);
+		sb.appendHtmlConstant("</span></button>");
 		
 		return sb.toSafeHtml();
 	}
@@ -677,9 +684,10 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 *
 	 * @param results the results
 	 * @param filter the filter
-	 * @param searchText the search text
+	 * @param MeasureSearchModel 
+	 * 		which represents the model of the selections the user selected to do an advance search
 	 */
-	public void buildCellTable(ManageMeasureSearchModel results,final int filter, final String searchText) {
+	public void buildCellTable(ManageMeasureSearchModel results,final int filter, MeasureSearchModel model) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if((results.getData()!=null) && (results.getData().size() > 0)){
@@ -716,10 +724,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		          }
 		        };
 		        
-		        MatContext
-				.get()
-				.getMeasureService()
-				.search(searchText,start + 1, start + PAGE_SIZE, filter,callback);
+		        model.setStartIndex(start + 1);
+		        model.setPageSize(start + PAGE_SIZE);
+
+		        model.setIsMyMeasureSearch(filter);
+		        
+		        MatContext.get().getMeasureService().search(model, callback);
 		      }
 		    };
 		   
@@ -785,7 +795,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 			measureSearchHeader.setStyleName("recentSearchHeader");
 			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-			HTML desc = new HTML("<p> No "+ getMeasureListLabel()+".</p>");
+			HTML desc = new HTML("<p> No measures returned. Please search again.</p>");
 			cellTablePanel.add(measureSearchHeader);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
@@ -836,10 +846,10 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<
 					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
-				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-					return CellTableUtility.getColumnToolTip(object.getOwnerfirstName()
-							+ "  " + object.getOwnerLastName(),object.getOwnerfirstName()
-							+ "  " + object.getOwnerLastName());
+				public SafeHtml getValue(ManageMeasureSearchModel.Result manageMeasureSearchModelResult) {
+					return CellTableUtility.getColumnToolTip(manageMeasureSearchModelResult.getOwnerFirstName()
+							+ "  " + manageMeasureSearchModelResult.getOwnerLastName(),manageMeasureSearchModelResult.getOwnerFirstName()
+							+ "  " + manageMeasureSearchModelResult.getOwnerLastName());
 				}
 			};
 			ownerName.setSortable(true);
@@ -851,7 +861,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					}
 					// Compare the name columns.
 					if (o1 != null) {
-						return (o2 != null) ? o1.getOwnerfirstName().compareTo(o2.getOwnerfirstName()) : 1;
+						return (o2 != null) ? o1.getOwnerFirstName().compareTo(o2.getOwnerFirstName()) : 1;
 					}
 					return -1;
 				}

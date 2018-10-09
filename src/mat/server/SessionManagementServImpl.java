@@ -23,8 +23,6 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 	public SessionManagementService.Result getCurrentUserRole() {
 		SessionManagementService.Result result = new SessionManagementService.Result();
 		result.userId = LoggedInUserUtil.getLoggedInUser();
-		//result.userRole = LoggedInUserUtil.getLoggedInUserRole();
-		
 		User user= getUserService().getById(result.userId);
 		result.userRole = user.getSecurityRole().getDescription();
 		result.loginId = user.getLoginId();
@@ -32,6 +30,8 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 		result.signInDate = user.getSignInDate();
 		result.signOutDate = user.getSignOutDate();
 		result.userFirstName = user.getFirstName();
+		result.currentSessionId = getThreadLocalRequest().getSession().getId();
+		result.activeSessionId = user.getSessionId();
 		return result;
 	}
 	

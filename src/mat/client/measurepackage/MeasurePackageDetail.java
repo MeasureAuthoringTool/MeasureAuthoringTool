@@ -9,10 +9,6 @@ import mat.model.cql.CQLDefinition;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class MeasurePackageDetail.
- */
 public class MeasurePackageDetail implements IsSerializable, Comparable<MeasurePackageDetail>{
 	
 	/** The sequence. */
@@ -247,7 +243,6 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	public int compareTo(MeasurePackageDetail detail) {
 		Integer seq1 = Integer.parseInt(this.sequence);
 		Integer seq2 = Integer.parseInt(detail.getSequence());
-		// TODO Auto-generated method stub
 		return seq1.compareTo(seq2);
 	}
 	
@@ -335,6 +330,7 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	 * @param listB the list b
 	 * @return true, if is equal
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean isEqual(List listA, List listB) {
 		
 		if( (listA == null) || (listB == null) ){

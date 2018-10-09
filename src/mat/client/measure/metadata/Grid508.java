@@ -146,11 +146,11 @@ public class Grid508 extends Grid{
  * for GridWithTableHeaders.java
  *****************************************************/
   
-	  protected Element createHeaderCell(){
+	protected Element createHeaderCell(){
 		Element th = DOM.createTH();
 		// Add a non-breaking space to the TD. This ensures that the cell is
 	    // displayed.
-	    DOM.setInnerHTML(th, "&nbsp;");
+		th.setInnerHTML("&nbsp;");
 	    th.setAttribute(SCOPE, COL);
 	    return th;
 	  }

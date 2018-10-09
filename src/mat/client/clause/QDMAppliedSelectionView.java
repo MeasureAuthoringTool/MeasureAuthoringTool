@@ -44,8 +44,8 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
 import mat.client.ImageResources;
+import mat.client.buttons.CustomButton;
 import mat.client.codelist.HasListBox;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
@@ -64,9 +64,9 @@ import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 
-
-/**
- * The Class QDMAppliedSelectionView.
+@Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
  */
 public class QDMAppliedSelectionView implements QDMAppliedSelectionPresenter.SearchDisplay,
 HasSelectionHandlers<Boolean> {

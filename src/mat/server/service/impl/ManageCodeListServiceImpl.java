@@ -11,7 +11,7 @@ import java.util.ListIterator;
 import java.util.UUID;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
@@ -580,7 +580,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 */
 	public void filterCodeListsForCurrentCategory(ListObject listObject) {
 		if (listObject.getCodesLists() != null) {
-			List<GroupedCodeList> toBeRemoved = new ArrayList<GroupedCodeList>();
+			List<GroupedCodeList> toBeRemoved = new ArrayList<>();
 			for (GroupedCodeList cl : listObject.getCodesLists()) {
 				if (!cl.getCodeList().getCategory().getId()
 						.equals(listObject.getCategory().getId())) {
@@ -599,7 +599,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 */
 	@Override
 	public List<? extends HasListBox> getAllDataTypes() {
-		List<DataTypeDTO> retList = new ArrayList<DataTypeDTO>();
+		List<DataTypeDTO> retList = new ArrayList<>();
 		List<DataType> dt = dataTypeDAO.findAllDataType();
 		for (DataType dataType : dt) {
 			if (!dataType.getCategoryId().equalsIgnoreCase("22")) { // Filter
@@ -647,7 +647,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 */
 	@Override
 	public List<? extends HasListBox> getCodeListsForCategory(String categoryId) {
-		List<HasListBoxDTO> retList = new ArrayList<HasListBoxDTO>();
+		List<HasListBoxDTO> retList = new ArrayList<>();
 		return retList;
 	}
 
@@ -672,7 +672,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public List<? extends HasListBox> getCodeSystemsForCategory(
 			String categoryId) {
-		List<CodeSystemDTO> retList = new ArrayList<CodeSystemDTO>();
+		List<CodeSystemDTO> retList = new ArrayList<>();
 		if ((categoryId != null) && !"".equals(categoryId)) {
 			Category category = categoryDAO.find(categoryId);
 			for (CodeSystem codeSys : category.getCodeSystems()) {
@@ -772,7 +772,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public List<? extends HasListBox> getQDSDataTypeForCategory(
 			String categoryId) {
-		List<DataTypeDTO> retList = new ArrayList<DataTypeDTO>();
+		List<DataTypeDTO> retList = new ArrayList<>();
 		if ((categoryId != null) && !"".equals(categoryId)) {
 			Category category = categoryDAO.find(categoryId);
 			for (DataType dataType : category.getDataTypes()) {
@@ -1119,7 +1119,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			MatValueSetTransferObject valueSetTransferObject) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<>();
 		wrapper.setQualityDataDTO(qdsList);
 		valueSetTransferObject.scrubForMarkUp();
 		QualityDataSetDTO qds = new QualityDataSetDTO();
@@ -1132,6 +1132,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		qds.setOid(matValueSet.getID());
 		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 		qds.setCodeListName(matValueSet.getDisplayName());
+		qds.setValueSetType(matValueSet.getType());
 		if (matValueSet.isGrouping()) {
 			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
@@ -1210,9 +1211,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		matValueSetTransferObject.scrubForMarkUp();
-		List<String> errorMessages = new ArrayList<String>();
+		List<String> errorMessages = new ArrayList<>();
 		if (errorMessages.size() == 0) {
-			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<>();
 			List<QualityDataSetDTO> existingQDSList = matValueSetTransferObject
 					.getAppliedQDMList();
 			String dataType = matValueSetTransferObject.getDatatype();
@@ -1601,10 +1602,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			MatValueSetTransferObject matValueSetTransferObject) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		List<String> messageList = new ArrayList<String>();
+		List<String> messageList = new ArrayList<>();
 		if (messageList.size() == 0) {
 			if (!isDuplicate(matValueSetTransferObject, false, false)) {
-				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<>();
 				wrapper.setQualityDataDTO(qdsList);
 				QualityDataSetDTO qds = matValueSetTransferObject
 						.getQualityDataSetDTO();
@@ -1665,6 +1666,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setOid(matValueSet.getID());
 			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 			qds.setCodeListName(matValueSet.getDisplayName());
+			qds.setValueSetType(matValueSet.getType());
 			if (matValueSet.isGrouping()) {
 				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 			} else {
@@ -1712,7 +1714,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		} else { // Treat as regular QDM
 			List<QualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject
 					.getAppliedQDMList();
-			List<QualityDataSetDTO> tempAppliedQDMList = new ArrayList<QualityDataSetDTO>();
+			List<QualityDataSetDTO> tempAppliedQDMList = new ArrayList<>();
 			tempAppliedQDMList.addAll(matValueSetTransferObject
 					.getAppliedQDMList());
 			// Removing the QDS that is being modified from the
@@ -1744,6 +1746,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qds.setOid(matValueSet.getID());
 				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 				qds.setCodeListName(matValueSet.getDisplayName());
+				qds.setValueSetType(matValueSet.getType());
 				if (matValueSet.isGrouping()) {
 					qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 				} else {

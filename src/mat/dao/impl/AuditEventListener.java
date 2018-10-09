@@ -3,13 +3,13 @@ package mat.dao.impl;
 import java.util.Date;
 
 import org.hibernate.Session;
-import org.hibernate.event.EventSource;
-import org.hibernate.event.PreDeleteEvent;
-import org.hibernate.event.PreDeleteEventListener;
-import org.hibernate.event.PreInsertEvent;
-import org.hibernate.event.PreInsertEventListener;
-import org.hibernate.event.PreUpdateEvent;
-import org.hibernate.event.PreUpdateEventListener;
+import org.hibernate.event.spi.EventSource;
+import org.hibernate.event.spi.PreDeleteEvent;
+import org.hibernate.event.spi.PreDeleteEventListener;
+import org.hibernate.event.spi.PreInsertEvent;
+import org.hibernate.event.spi.PreInsertEventListener;
+import org.hibernate.event.spi.PreUpdateEvent;
+import org.hibernate.event.spi.PreUpdateEventListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import mat.model.AuditLog;
@@ -52,7 +52,6 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	@Override
 	public boolean onPreUpdate(PreUpdateEvent arg0) {
 		if(shouldAudit(arg0.getEntity(), ConstantMessages.UPDATE)) {
-			EventSource session = arg0.getSession();
 			Object logObj = createLogObject(arg0.getEntity(), ConstantMessages.UPDATE);
 			saveOrUpdate(arg0.getSession(), logObj);
 		}
@@ -83,10 +82,9 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	private boolean shouldAudit(Object obj, String event) {
 		if(event.equals(ConstantMessages.INSERT)){
 			return obj instanceof Measure ||  
-				obj instanceof QualityDataSet || obj instanceof CQLLibrary; //|| obj instanceof MeasureExport;
+				obj instanceof QualityDataSet || obj instanceof CQLLibrary;
 		}else{
 			//Production Error fix subsequent measurePackaging update information is not logged.
-			//return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
 			return obj instanceof QualityDataSet;
 		}
 	}
@@ -123,11 +121,6 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 				measureAuditLog.setActivityType("Measure Created");
 				measureAuditLog.setMeasure((Measure)obj);
 			}
-//			else if (obj instanceof MeasureExport){
-//				measureAuditLog.setActivityType("Measure Package Created");
-//				measureAuditLog.setMeasure(((MeasureExport)obj).getMeasure());
-//				
-//			}
 			returnObject = measureAuditLog;
 		} else if(obj instanceof CQLLibrary) {
 			CQLAuditLog cqlAuditLog = new CQLAuditLog();
@@ -167,16 +160,6 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	 */
 	private void saveOrUpdate(EventSource eventSource, Object obj){
 		Session session = eventSource.getSessionFactory().openSession();
-		if(obj instanceof MeasureAuditLog) {
-			MeasureAuditLog log = (MeasureAuditLog)obj;
-			
-		}else if(obj instanceof CQLAuditLog) {
-			CQLAuditLog log = (CQLAuditLog)obj;
-			
-		}else if(obj instanceof AuditLog) {
-			AuditLog log = (AuditLog)obj;
-			
-		}
 		try{			
 			session.getTransaction().begin();
 			session.saveOrUpdate(obj);

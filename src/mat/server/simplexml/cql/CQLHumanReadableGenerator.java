@@ -17,11 +17,8 @@ public class CQLHumanReadableGenerator {
 		String cqlNodeString = subXMLProcessor.transform(subXMLProcessor.getOriginalDoc().getDocumentElement().getFirstChild());
 		System.out.println("cqlNodeString:"+cqlNodeString);
 		
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(measureXML);
-//		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-				
-//		MATCQLParser matcqlParser = new MATCQLParser();
-//		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(measureXML);
+
 			
 		String humanReadableHTML = "";
 		humanReadableHTML = CQLHumanReadableHTMLCreator.generateCQLHumanReadableForSinglePopulation(cqlNode.getParentNode(), measureXML, cqlModel, cqlLibraryDAO);
@@ -34,11 +31,8 @@ public class CQLHumanReadableGenerator {
 		
 		String humanReadableHTML = "";
 		
-		CQLModel cqlModel = CQLUtilityClass.getCQLStringFromXML(simpleXmlStr);
-//		String cqlFileString = CQLUtilityClass.getCqlString(cqlModel,"").toString();
-		
-//		MATCQLParser matcqlParser = new MATCQLParser();
-//		CQLFileObject cqlFileObject = matcqlParser.parseCQL(cqlFileString);			
+		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXmlStr);
+
 		
 		humanReadableHTML = CQLHumanReadableHTMLCreator.generateCQLHumanReadableForMeasure(simpleXmlStr, cqlModel, cqlLibraryDAO);
 		

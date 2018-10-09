@@ -9,7 +9,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CQLDefinition implements IsSerializable, Cell<CQLDefinition>{
+public class CQLDefinition implements CQLExpression, IsSerializable, Cell<CQLDefinition>{
 	private String id;
 	private String definitionName;
 	private String definitionLogic;
@@ -30,31 +30,58 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 		@Override
 		public int compare(CQLDefinition o1,
 				CQLDefinition o2) {
-			return o1.getDefinitionName().compareTo(o2.getDefinitionName());
+			return o1.getName().compareTo(o2.getName());
 		}
 		
 	}
 	
-
+	@Override
 	public String getId() {
 		return id;
 	}
+	
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	@Override
+	public String getName() {
+		return getDefinitionName();
+	}
+	
+	@Override
+	public void setName(String name) {
+		setDefinitionName(name);
+	}
+	
+	@Override
+	public String getLogic() {
+		return getDefinitionLogic();
+	}
+	
+	@Override
+	public void setLogic(String logic) {
+		setDefinitionLogic(logic);
+	}
+
+	
 	public String getDefinitionName() {
 		return definitionName.trim();
 	}
-	public void setDefinitionName(String definitionName) {
-		this.definitionName = definitionName.trim();
+	
+	public void setDefinitionName(String name) {
+		this.definitionName = name.trim();
 	}
+	
 	public String getDefinitionLogic() {
 		return definitionLogic.trim();
 	}
-	public void setDefinitionLogic(String definitionLogic) {
-		//this.definitionLogic = "<![CDATA[" + definitionLogic + "]]>";
-		this.definitionLogic = definitionLogic.trim();
+	
+	public void setDefinitionLogic(String logic) {
+		this.definitionLogic = logic.trim();
 	}
+	
 	public String getContext() {
 		return context;
 	}
@@ -124,5 +151,6 @@ public static class Comparator implements java.util.Comparator<CQLDefinition>, I
 	public void setReturnType(String returnType) {
 		this.returnType = returnType;
 	}
+
 	
 }

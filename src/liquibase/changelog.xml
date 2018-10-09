@@ -222,5 +222,19 @@
         <include file="classpath:/liquibase/deploy_Sprint-130_MAT-8901_EmailAuditLog.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-139_MAT-9033.xml"/>
         <include file="classpath:/liquibase/deploy_Sprint-140_MAT-9117_bpm_cql_unit_update.xml"/>
-        
-   	</databaseChangeLog>
+        <include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates.xml"/>
+       	<include file="classpath:/liquibase/deploy_Sprint-147_QDM_v5_4_updates2.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9282_New_Export_Columns.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9288_Measure_Update_Information.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-147_MAT-9287_Measure_Patient_Based.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9293_Add_Measure_QDM_Version.xml"/>      
+        <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Create_new_table_for_composite_measure.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9322_Add_Column_Composite_Measure_Flag.xml"/>
+        <include file="classpath:/liquibase/deploy_Sprint-148_MAT-9272_Add_Bonnie_Table.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-149_MAT-9319_Create_new_table_for_CQL_LIBRARY_EXPORT.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-149_MAT-9330_Measure_Composite_Scoring.xml"/>   	
+		<include file="classpath:/liquibase/deploy_Sprint-149_MAT-9272_ADDCOLUMN_SESSIONID_USER_TABLE.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-150_MAT-9320_ALTER_CQL_LIBRARY_EXPORT.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9386_QDM_v5_4_updates_v3.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-151_MAT-9323.xml"/>
+</databaseChangeLog>

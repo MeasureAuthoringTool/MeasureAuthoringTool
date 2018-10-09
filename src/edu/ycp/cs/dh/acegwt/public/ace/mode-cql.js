@@ -8,10 +8,10 @@ var SqlHighlightRules = function() {
 
 	var keywords = (
 	        "after|all|and|as|asc|ascending|before|begins|begun|between|Boolean|by|called|case|cast|Choice|Code|codesystem|codesystems|" +
-	        "collapse|Concept|contains|context|convert|date|DateTime|day|days|Decimal|default|define|desc|descending|difference|display|distinct|div|duration|during|" +
-	        "else|end|ends|except|exists|false|flatten|from|function|hour|hours|if|implies|in|include|included|included in|includes|Integer|intersect|Interval|is|less|let|library|List|" +
-	        "maximum|meets|millisecond|milliseconds|minimum|minute|minutes|mod|month|months|more|not|null|occurs|of|on|or|or after|or before|or less|or more|overlaps|parameter|" +
-	        "predecessor|predecessor of|private|properly|properly included in|properly includes|public|QDM|Quantity|return|same|second|seconds|singleton|singleton from|sort|" +
+	        "collapse|Concept|contains|context|convert|date|Date|DateTime|day|days|Decimal|default|define|desc|descending|difference|display|distinct|div|duration|during|" +
+	        "else|end|ends|except|exists|expand|false|flatten|from|function|hour|hours|if|implies|in|include|included|included in|includes|Integer|intersect|Interval|is|less|let|library|List|" +
+	        "maximum|meets|millisecond|milliseconds|minimum|minute|minutes|mod|month|months|more|not|null|occurs|of|on|or|or after|or before|or less|or more|overlaps|parameter|per|" +
+	        "predecessor|predecessor of|private|properly|properly included in|properly includes|public|QDM|Quantity|Ratio|return|same|second|seconds|singleton|singleton from|sort|" +
 	        "sort by|start|starts|String|successor|such|such that|Sum|that|than|then|Time|time|timezone|to|true|Tuple|union|using|valueset|version|week|weeks|when|where|width|with|" +
 	        "within|without|xor|year|years"
 	    );
@@ -33,8 +33,8 @@ var SqlHighlightRules = function() {
 	    		"Abs|AgeInDays|AgeInDaysAt|AgeInHours|AgeInHoursAt|AgeInMinutes|AgeInMinutesAt|AgeInMonths|AgeInMonthsAt|AgeInSeconds|" +
 	    		"AgeInSecondsAt|AgeInWeeks|AgeInWeeksAt|AgeInYears|AgeInYearsAt|AllTrue|AnyTrue|Avg|CalculateAgeInDays|CalculateAgeInDaysAt|CalculateAgeInHours|" +
 	    		"CalculateAgeInHoursAt|CalculateAgeInMinutes|CalculateAgeInMinutesAt|CalculateAgeInMonths|CalculateAgeInMonthsAt|CalculateAgeInSeconds|" +
-	    		"CalculateAgeInSecondsAt|CalculateAgeInWeeks|CalculateAgeInWeeksAt|CalculateAgeInYears|CalculateAgeInYearsAt|Ceiling|Coalesce|Count|DateTime|Exp|First|Floor|IndexOf|Last|" +
-	    		"Length|Ln|Log|Max|Median|Min|Mode|Now|PopulationStdDev|PopulationVariance|Round|StdDev|Sum|Time|TimeOfDay|Today|" +
+	    		"CalculateAgeInSecondsAt|CalculateAgeInWeeks|CalculateAgeInWeeksAt|CalculateAgeInYears|CalculateAgeInYearsAt|Ceiling|Coalesce|Count|DateTime|Exp|First|Floor|GeometricMean|IndexOf|Last|" +
+	    		"Length|Ln|Log|Max|Median|Min|Mode|Now|PopulationStdDev|PopulationVariance|Product|Round|StdDev|Sum|Time|TimeOfDay|Today|" +
 	    		"Truncate|Variance"
 	    );
 
@@ -44,18 +44,12 @@ var SqlHighlightRules = function() {
 	    	'Patient|Population|' + 
 	    		        
 	        //data type attribute constants
-	        'activeDatetime|admissionSource|anatomicalApproachSite|anatomicalLocationSite|authorDatetime|birthDatetime|cause|code|components|denominator|diagnoses|dischargeDisposition|dosage|expiredDatetime|' +
-	        'facilityLocation|facilityLocations|frequency|high|id|incisionDatetime|lengthOfStay|locationPeriod|low|method|negationRationale|numerator|ordinality|participationPeriod|prevalencePeriod|principalDiagnosis|' +
-	        'reason|recorder|referenceRange|refills|relatedTo|relationship|relevantPeriod|reporter|result|resultDatetime|route|severity|status|supply|targetOutcome|type'
-	        
+	        'activeDatetime|admissionSource|anatomicalLocationSite|authorDatetime|birthDatetime|category|cause|code|components|daysSupplied|denominator|diagnoses|dischargeDisposition|dispenserId|dosage|expiredDatetime|' +
+	        'facilityLocation|facilityLocations|frequency|high|id|incisionDatetime|lengthOfStay|locationPeriod|low|medium|method|negationRationale|numerator|ordinality|participationPeriod|prescriberId|prevalencePeriod|principalDiagnosis|' +
+	        'reason|recipient|recorder|referenceRange|refills|relatedTo|relationship|relevantPeriod|reporter|result|resultDatetime|route|sender|setting|severity|status|supply|targetOutcome|type'
 	    );
-
-	    /*var builtinFunctions = (
-	        'date|time|timezone|starts|ends|occurs|overlaps|Interval|Tuple|List|DateTime'
-	    );*/
-
+	    
     var keywordMapper = this.createKeywordMapper({
-        //"support.function": builtinFunctions,
         "keyword": keywords,
         "matTimingKeyword" : matTimingKeywords,
         "matFunctionKeyword" : matFunctionKeywords,

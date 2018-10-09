@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * The Class QualityDataSetDTO.
  */
-public class CQLQualityDataSetDTO implements IsSerializable {
+public class CQLQualityDataSetDTO implements CQLExpression, IsSerializable {
 	
 	
 	/**
@@ -46,6 +46,7 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	private String release;
 	private String program; 
 	private boolean dataTypeHasRemoved;
+	private String valueSetType;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -85,10 +86,6 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	
 	public String getDataType() {
 		return dataType;
-	}
-	
-	public String getId() {
-		return id;
 	}
 	
 	public String getOid() {
@@ -137,10 +134,6 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 	
 	public void setDataType(String dataType) {
 		this.dataType = dataType;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
 	}
 	
 	public void setOid(String oid) {
@@ -253,7 +246,42 @@ public class CQLQualityDataSetDTO implements IsSerializable {
 		this.isReadOnly = isReadOnly;
 	}
 
+	@Override
+	public String getId() {
+		return id;
+	}
 
-	
-	
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String getName() {
+		return getCodeListName();
+	}
+
+	@Override
+	public void setName(String name) {
+		setCodeListName(name);
+	}
+
+	@Override
+	public String getLogic() {
+		return null;
+	}
+
+	@Override
+	public void setLogic(String logic) {
+	}
+
+	public String getValueSetType() {
+		return valueSetType;
+	}
+
+	public void setValueSetType(String valueSetType) {
+		this.valueSetType = valueSetType;
+	}
+
+
 }

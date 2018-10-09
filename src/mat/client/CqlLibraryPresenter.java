@@ -34,19 +34,22 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.buttons.CustomButton;
 import mat.client.cql.CQLLibraryDetailView;
 import mat.client.cql.CQLLibraryHistoryView;
 import mat.client.cql.CQLLibrarySearchView;
 import mat.client.cql.CQLLibraryShareView;
 import mat.client.cql.CQLLibraryVersionView;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.event.CQLLibraryDeleteEvent;
 import mat.client.event.CQLLibraryEditEvent;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.CQLVersionEvent;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
+import mat.client.shared.ConfirmationDialogBox;
+import mat.client.shared.ConfirmationObserver;
 import mat.client.shared.ContentWithHeadingWidget;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
@@ -67,10 +70,8 @@ import mat.shared.ConstantMessages;
 
 /**
  * The Class CqlLibraryPresenter.
- *
- * @author jnarang
+
  */
-@SuppressWarnings("deprecation")
 public class CqlLibraryPresenter implements MatPresenter {
 
 	/** The panel. */
@@ -264,76 +265,33 @@ public class CqlLibraryPresenter implements MatPresenter {
 
 		void resetMessageDisplay();
 
+		CustomCheckBox getCustomFilterCheckBox();
+
 	}
 
-	/**
-	 * The Interface VersionDisplay.
-	 */
 	public static interface VersionDisplay{
 
-		/**
-		 * Builds the data table.
-		 *
-		 * @param result the result
-		 */
 		void buildDataTable(SaveCQLLibraryResult result);
 
-		/**
-		 * As widget.
-		 *
-		 * @return the widget
-		 */
 		Widget asWidget();
 
-		/**
-		 * Gets the major radio button.
-		 *
-		 * @return the major radio button
-		 */
 		RadioButton getMajorRadioButton();
 
-		/**
-		 * Gets the minor radio.
-		 *
-		 * @return the minor radio
-		 */
 		RadioButton getMinorRadio();
 
-		/**
-		 * Gets the error messages.
-		 *
-		 * @return the error messages
-		 */
 		ErrorMessageAlert getErrorMessages();
 
-		/**
-		 * Gets the save button.
-		 *
-		 * @return the save button
-		 */
 		Button getSaveButton();
 
-		/**
-		 * Gets the cancel button.
-		 *
-		 * @return the cancel button
-		 */
 		Button getCancelButton();
 
-		/**
-		 * Gets the selected library.
-		 *
-		 * @return the selected library
-		 */
 		CQLLibraryDataSetObject getSelectedLibrary();
 
-		/**
-		 * Clear radio button selection.
-		 */
 		void clearRadioButtonSelection();
 
 		void setSelectedLibraryObject(CQLLibraryDataSetObject selectedLibraryObject);
 		
+		ConfirmationDialogBox createConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText, ConfirmationObserver observer);
 	}
 	
 	
@@ -876,8 +834,9 @@ public class CqlLibraryPresenter implements MatPresenter {
 		String userId = selectedItem.getLockedUserId(selectedItem.getLockedUserInfo());
 		String email = selectedItem.getLockedUserEmail(selectedItem.getLockedUserInfo());
 		String userName  = selectedItem.getLockedUserName(selectedItem.getLockedUserInfo());
+		boolean isDraft = selectedItem.isDraft();
 		fireCQLLibrarySelectedEvent(selectedItem.getId(), selectedItem.getVersion(), selectedItem.getCqlName(), selectedItem.isEditable(), selectedItem.isLocked(),
-				userId,email,userName);
+				userId,email,userName, isDraft);
 		fireCqlLibraryEditEvent();
 	}
 
@@ -913,7 +872,6 @@ public class CqlLibraryPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				versionDisplay.getErrorMessages().clearAlert();
-				//versionDisplay.getSearchWidget().getSearchInput().setText("");
 				displaySearch();
 				
 			}
@@ -933,7 +891,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 								.getMinorRadio().getValue())) {
 					saveFinalizedVersion(selectedLibrary.getId(), selectedLibrary.getCqlName(),
 							versionDisplay.getMajorRadioButton().getValue(),
-							selectedLibrary.getVersion());
+							selectedLibrary.getVersion(), false);
 				
 				} else {
 					versionDisplay
@@ -946,6 +904,23 @@ public class CqlLibraryPresenter implements MatPresenter {
 		
 	}
 	
+	private void recordCQLLibraryAuditEvent(String libraryId, String versionString) {
+		MatContext.get().getAuditService().recordCQLLibraryEvent(libraryId, "CQL Library Versioned",
+				"CQL Library Version " + versionString + " created", false,
+				new AsyncCallback<Boolean>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+
+					}
+
+					@Override
+					public void onSuccess(Boolean result) {
+
+					}
+				});
+	}
+	
 	/**
 	 * Method to Save Version of a Draft.
 	 *
@@ -954,20 +929,18 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param isMajor the is major
 	 * @param version the version
 	 */
-	protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version) {
-		
+	protected void saveFinalizedVersion(final String libraryId, final String cqlLibName, Boolean isMajor, String version, boolean ignoreUnusedLibraries) {
 		versionDisplay.getErrorMessages().clearAlert();
 		showSearchingBusy(true);
 		((Button)versionDisplay.getSaveButton()).setEnabled(false);
 		((Button)versionDisplay.getCancelButton()).setEnabled(false);
-		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version,
+		MatContext.get().getCQLLibraryService().saveFinalizedVersion(libraryId, isMajor, version, ignoreUnusedLibraries,
 				new AsyncCallback<SaveCQLLibraryResult>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
 						showSearchingBusy(false);
-						versionDisplay.getErrorMessages()
-								.createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						((Button) versionDisplay.getSaveButton()).setEnabled(true);
 						((Button) versionDisplay.getCancelButton()).setEnabled(true);
 					}
@@ -980,32 +953,39 @@ public class CqlLibraryPresenter implements MatPresenter {
 						if (result.isSuccess()) {
 							displaySearch();
 							String versionStr = result.getVersionStr();
-							MatContext.get().getAuditService().recordCQLLibraryEvent(libraryId, "CQL Library Versioned",
-									"CQL Library Version " + versionStr + " created", false,
-									new AsyncCallback<Boolean>() {
-
-										@Override
-										public void onFailure(Throwable caught) {
-
-										}
-
-										@Override
-										public void onSuccess(Boolean result) {
-
-										}
-									});
+							recordCQLLibraryAuditEvent(libraryId, versionStr);
 							isCqlLibraryVersioned = true;
 							fireSuccessfullVersionEvent(isCqlLibraryVersioned,cqlLibName,MatContext.get().getMessageDelegate().getVersionSuccessfulMessage(cqlLibName, versionStr));
 						} else {
 							isCqlLibraryVersioned = false;
-							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA){
+							if(result.getFailureReason() == ConstantMessages.INVALID_CQL_DATA) {
 								versionDisplay.getErrorMessages().createAlert(MatContext.get().getMessageDelegate().getNoVersionCreated());
+							} else if(result.getFailureReason() == ConstantMessages.INVALID_CQL_LIBRARIES) {
+								String libraryName = versionDisplay.getSelectedLibrary().getCqlName();
+								String errorMessage =  MatContext.get().getMessageDelegate().getUnusedIncludedLibraryWarning(libraryName);
+								ConfirmationDialogBox dialogBox = versionDisplay.createConfirmationDialogBox(errorMessage, "Continue", "Cancel", null);
+								dialogBox.setObserver(new ConfirmationObserver() {
+									
+									@Override
+									public void onYesButtonClicked() {
+										saveFinalizedVersion(libraryId, cqlLibName, isMajor, version, true);												
+									}
+									
+									@Override
+									public void onNoButtonClicked() {
+										displaySearch(); 
+									}
+									
+									@Override
+									public void onClose() {
+										displaySearch();										
+									}
+								});
+								dialogBox.show();
 							}
 						}
 					}
-
-				});
-		
+		});
 	}
 
 	private void fireSuccessfullVersionEvent(boolean isSuccess, String name, String message){
@@ -1035,7 +1015,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if (detailDisplay.getNameField().getText().isEmpty()) {
 					detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getLibraryNameRequired());
 				} else {
-					if (validator.validateForAliasNameSpecialChar(detailDisplay.getNameField().getText().trim())) {
+					if (validator.doesAliasNameFollowCQLAliasNamingConvention(detailDisplay.getNameField().getText().trim())) {
 						showSearchingBusy(true);
 						detailDisplay.getCreateNewConfirmationDialogBox().show(MatContext.get().getMessageDelegate().getCreateNewLibrarySuccessfulMessage(detailDisplay.getName().getValue()));
 						detailDisplay.getCreateNewConfirmationDialogBox().getYesButton().setTitle("Continue");
@@ -1071,7 +1051,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 			public void onSuccess(SaveCQLLibraryResult result) {
 				if(result.isSuccess()){
 					fireCQLLibrarySelectedEvent(result.getId(), result.getVersionStr(), result.getCqlLibraryName(), result.isEditable(), false,
-									null,"","");
+									null,"","", true); //true because the library is being saved so it is a draft
 					fireCqlLibraryEditEvent();
 				} else {
 						detailDisplay.getErrorMessage().createAlert(MatContext.get().getMessageDelegate().getCqlStandAloneLibraryNameError());
@@ -1099,8 +1079,8 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 * @param lockedUserId the locked user id
 	 */
 	private void fireCQLLibrarySelectedEvent(String id, String version,
-			String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName) {
-		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId,lockedUserEmail,lockedUserName);
+			String name, boolean isEditable, boolean isLocked, String lockedUserId, String lockedUserEmail, String lockedUserName, boolean isDraft) {
+		CQLLibrarySelectedEvent evt = new CQLLibrarySelectedEvent(id, version, name,isEditable, isLocked, lockedUserId,lockedUserEmail,lockedUserName, isDraft);
 		cqlLibraryView.resetMessageDisplay();
 		detailDisplay.getErrorMessage().clearAlert();
 		MatContext.get().getEventBus().fireEvent(evt);
@@ -1169,7 +1149,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				if(resultToFireEvent.isSuccess()){
 					cqlLibraryView.getDraftConfirmationDialogBox().hide();
 					fireCQLLibrarySelectedEvent(resultToFireEvent.getId(), resultToFireEvent.getVersionStr(), resultToFireEvent.getCqlLibraryName(), resultToFireEvent.isEditable(), false,
-							null,"","");
+							null,"","", true); //true because you are creating a draft of the library.
 					fireCqlLibraryEditEvent();
 					MatContext
 					.get()
@@ -1291,7 +1271,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	private void displayEdit(CQLLibraryDataSetObject result) {
 		fireCQLLibrarySelectedEvent(result.getId(), result.getVersion(), result.getCqlName(), result.isEditable(), false,
-				null,"","");
+				null,"","", result.isDraft());
 		fireCqlLibraryEditEvent();
 	}
 	
@@ -1640,6 +1620,10 @@ public class CqlLibraryPresenter implements MatPresenter {
 	 */
 	private void showSearchingBusy(boolean busy) {
 		isLoading= busy;
+		((Button) cqlLibraryView.getSearchButton()).setEnabled(!busy);
+		((TextBox) (cqlLibraryView.getSearchString())).setEnabled(!busy);
+		((Button) cqlLibraryView.getCreateNewLibraryButton()).setEnabled(!busy);
+		((CustomCheckBox) cqlLibraryView.getCustomFilterCheckBox()).setEnabled(!busy);
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {

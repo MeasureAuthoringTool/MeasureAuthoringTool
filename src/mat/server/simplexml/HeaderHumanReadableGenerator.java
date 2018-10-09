@@ -6,7 +6,9 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.simplexml.cql.MATCssCQLUtil;
 import mat.server.util.XmlProcessor;
+import mat.shared.MatConstants;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
@@ -68,7 +70,6 @@ public class HeaderHumanReadableGenerator {
 		htmlDocument = createBaseHTMLDocument(getInfo(measureXMLProcessor,
 				"title"));
 		Element bodyElement = htmlDocument.body();
-		/*bodyElement.appendElement("h1").attr("id", "header").text("Measure Human Readable");*/
 		Element table = bodyElement.appendElement("table");
 		table.attr("class", "header_table");
 		Element tBody = table.appendElement("tbody");
@@ -92,8 +93,7 @@ public class HeaderHumanReadableGenerator {
 		org.jsoup.nodes.Document htmlDocument = null;
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		
-		htmlDocument = createBaseHTMLDocumentCQL(getInfo(measureXMLProcessor,
-				"title"));
+		htmlDocument = createBaseHTMLDocumentCQL(getInfo(measureXMLProcessor, "title"));
 		Element bodyElement = htmlDocument.body();
 		Element table = bodyElement.appendElement("table");
 		table.attr("class", "header_table");
@@ -131,9 +131,9 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void createDocumentGeneral(XmlProcessor processor,
 			Element table) throws DOMException, XPathExpressionException {
+		
 		// eCQM Title
 		createRowAndColumns(table, "eCQM Title");
-		
 		column.append("<h1 style=\"font-size:10px\">" + getShortTitle(processor) +"</h1>");
 		
 		// eCQM Identifier and Version number
@@ -169,8 +169,7 @@ public class HeaderHumanReadableGenerator {
 		getMeasurePeriod(processor, table);
 		
 		// CMS ID number
-		if (processor.findNode(processor.getOriginalDoc(), DETAILS_PATH
-				+ "cmsid") != null) {
+		if (processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + "cmsid") != null) {
 			createRowAndColumns(table, "CMS ID Number");
 			column.appendText(getInfo(processor, "cmsid"));
 		}
@@ -218,7 +217,7 @@ public class HeaderHumanReadableGenerator {
 		
 		String expansionId = getExpansionIdentifier(processor);
 		// add expansionId if set
-		if (expansionId != null && !expansionId.isEmpty() && !expansionId.equals("")){
+		if (StringUtils.isNotBlank(expansionId)){
 			// Expansion Profile
 			createRowAndColumns(table, "VSAC Value Set Expansion Identifier");
 			column.appendText(expansionId);
@@ -233,9 +232,17 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Disclaimer");
 		createDiv(getInfo(processor, "disclaimer"), column);
 		
+		//Composite Scoring
+		String compositeScoring = getInfo(processor, "compositeScoring");
+		if(StringUtils.isNotBlank(compositeScoring)) {
+			createRowAndColumns(table, "Composite Scoring Method");
+			column.appendText(compositeScoring);
+		}
+		
 		// Measure Scoring
 		createRowAndColumns(table, "Measure Scoring");
 		String measureScoring = getInfo(processor, "scoring");
+		String patientbasedIndicator = getInfo(processor, "patientBasedIndicator");
 		column.appendText(measureScoring);
 		
 		// Measure Type
@@ -272,8 +279,7 @@ public class HeaderHumanReadableGenerator {
 		createDiv(getInfo(processor, "improvementNotations"), column);
 		
 		// References
-		getInfoNodes(table, processor, "references/reference", "Reference",
-				true);
+		getInfoNodes(table, processor, "references/reference", "Reference", true);
 		
 		// Definitions
 		getInfoNodes(table, processor, "definitions", "Definition", true);
@@ -286,20 +292,19 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Transmission Format");
 		createDiv(getInfo(processor, "transmissionFormat"), column);
 		
-		// INitial Population
+		// Initial Population
 		createRowAndColumns(table, "Initial Population");
 		createDiv(getInfo(processor, "initialPopDescription"), column);
+		
 		//MAT 5014 Start - Dynamically show/hide populations based on scoring type.
-		if (measureScoring.equalsIgnoreCase("Proportion")
-				|| measureScoring.equalsIgnoreCase("Ratio")) {
+		if (measureScoring.equalsIgnoreCase("Proportion") || measureScoring.equalsIgnoreCase("Ratio")) {
 			// Denominator
 			createRowAndColumns(table, "Denominator");
 			createDiv(getInfo(processor, "denominatorDescription"), column);
 			
 			// Denominator Exclusions
 			createRowAndColumns(table, "Denominator Exclusions");
-			createDiv(getInfo(processor, "denominatorExclusionsDescription"),
-					column);
+			createDiv(getInfo(processor, "denominatorExclusionsDescription"), column);
 			
 			// Numerator
 			createRowAndColumns(table, "Numerator");
@@ -309,6 +314,7 @@ public class HeaderHumanReadableGenerator {
 			createRowAndColumns(table, "Numerator Exclusions");
 			createDiv(getInfo(processor, "numeratorExclusionsDescription"), column);
 		}
+		
 		if (measureScoring.equalsIgnoreCase("Proportion")) {
 			// Denominator Exceptions
 			createRowAndColumns(table, "Denominator Exceptions");
@@ -323,25 +329,20 @@ public class HeaderHumanReadableGenerator {
 			
 			// Measure Population Exclusions
 			createRowAndColumns(table, "Measure Population Exclusions");
-			createDiv(getInfo(processor, "measurePopulationExclusionsDescription"),
-					column);
+			createDiv(getInfo(processor, "measurePopulationExclusionsDescription"), column);
 		}
+		
 		if (measureScoring.equalsIgnoreCase("Continuous Variable")
-				|| measureScoring.equalsIgnoreCase("Ratio")) {
+				|| (measureScoring.equalsIgnoreCase("Ratio") && !"true".equalsIgnoreCase(patientbasedIndicator))) {
 			// Measure Observations
 			createRowAndColumns(table, "Measure Observations");
 			createDiv(getInfo(processor, "measureObservationsDescription"), column);
 		}
+		
 		//MAT 5014 End - Dynamically show/hide populations based on scoring type.
 		// Supplemental Data Elements
 		createRowAndColumns(table, "Supplemental Data Elements");
 		createDiv(getInfo(processor, "supplementalData"), column);
-		
-		/*
-		 * //Quality Measure Set createRowAndColumns(table,
-		 * "Quality Measure Set");
-		 * createDiv(getInfo(processor,"qualityMeasureSet"), column);
-		 */
 	}
 	
 	/**
@@ -353,10 +354,9 @@ public class HeaderHumanReadableGenerator {
 	 * @throws DOMException
 	 * @throws XPathExpressionException
 	 */
-	private static String getShortTitle(XmlProcessor processor)
-			throws DOMException, XPathExpressionException {
-		String title = processor.findNode(processor.getOriginalDoc(),
-				DETAILS_PATH + "title").getTextContent();
+	private static String getShortTitle(XmlProcessor processor) throws DOMException, XPathExpressionException {
+		
+		String title = processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + "title").getTextContent();
 		if (title == null) {
 			title = "";
 		} else {
@@ -376,8 +376,8 @@ public class HeaderHumanReadableGenerator {
 	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void getMeasurePeriod(XmlProcessor processor, Element table)
-			throws XPathExpressionException {
+	private static void getMeasurePeriod(XmlProcessor processor, Element table) throws XPathExpressionException {
+		
 		boolean calenderYear = Boolean.valueOf(getInfo(processor, "period/@calenderYear"));
 		String start = getInfo(processor, "period/startDate");
 		String end = getInfo(processor, "period/stopDate");
@@ -549,9 +549,10 @@ public class HeaderHumanReadableGenerator {
 		}
 		// else the node does not exist
 		// if were looking for "endorsement return None
-		else if (lookUp.equalsIgnoreCase("endorsement")
-				|| lookUp.equalsIgnoreCase("nqfid/@extension")) {
-			returnVar = "None";
+		else if (lookUp.equalsIgnoreCase("endorsement")) {
+			returnVar = MatConstants.NONE;
+		} else if(lookUp.equalsIgnoreCase("nqfid/@extension")) {
+			returnVar = MatConstants.NOT_APPLICABLE;
 		}
 		// if we were looking for guid return Pending
 		else if (lookUp.equalsIgnoreCase("guid")) {
@@ -586,8 +587,7 @@ public class HeaderHumanReadableGenerator {
 	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void createItemCount(XmlProcessor processor, Element table)
-			throws XPathExpressionException {
+	private static void createItemCount(XmlProcessor processor, Element table) throws XPathExpressionException {
 		NodeList list = processor.findNodeList(processor.getOriginalDoc(),
 				DETAILS_PATH + "itemCount/elementRef");
 		
@@ -708,8 +708,6 @@ public class HeaderHumanReadableGenerator {
 	 *            The width we want the column to take up
 	 */
 	private static void setTDHeaderAttributes(Element col, String width) {
-		//col.attr("width", width);
-		//col.attr("bgcolor", "#656565");
 		col.attr("style", "background-color:#656565; width:"+width);
 	}
 	
@@ -723,8 +721,7 @@ public class HeaderHumanReadableGenerator {
 	 * @param span
 	 *            The number of columns to span if blank no span is added
 	 */
-	private static void setTDInfoAttributes(Element col, String width,
-			String span) {
+	private static void setTDInfoAttributes(Element col, String width, String span) {
 		col.attr("style", "width:"+width);
 		if (span.length() > 0) {
 			col.attr("colspan", span);
@@ -787,8 +784,7 @@ public class HeaderHumanReadableGenerator {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
 		
 		// Must be added first for proper formating and styling
-		DocumentType doc = new
-				DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd");
+		DocumentType doc = new DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd");
 		htmlDocument.appendChild(doc);
 		
 		Element html = htmlDocument.appendElement("html");

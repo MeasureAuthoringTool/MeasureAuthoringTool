@@ -10,7 +10,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -20,23 +20,11 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
-/**
- * The Class XmlConversionlHelper.
- */
+
 public class CQLXmlConversionlHelper {
-	
-	/** The Constant NAMESPACE_XML. */
+
 	private static final String NAMESPACE_XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\r\n";
-	
-	/**
-	 * Creates CQLCellTreeNode object which has list of children objects and a
-	 * parent object from the XML.
-	 * @param xml
-	 *            the xml
-	 * @param tagName
-	 *            the tag name
-	 * @return CQLCellTreeNode
-	 */
+
 	public static CQLCellTreeNode createCQLCellTreeNode(String xml, String tagName) {
 		
 		CQLCellTreeNode mainNode = new CQLCellTreeNodeImpl();
@@ -46,15 +34,7 @@ public class CQLXmlConversionlHelper {
 		}
 		return mainNode;
 	}
-	
-	/**
-	 * Creates CQLCellTreeNode object which has list of children objects and a
-	 * parent object from the XML.
-	 *
-	 * @param doc the doc
-	 * @param tagName the tag name
-	 * @return CQLCellTreeNode
-	 */
+
 	public static CQLCellTreeNode createCQLCellTreeNode(Document doc, String tagName) {
 		Node node = null;
 		CQLCellTreeNode mainNode = new CQLCellTreeNodeImpl();
@@ -77,14 +57,6 @@ public class CQLXmlConversionlHelper {
 		return mainNode;
 	}
 	
-	/**
-	 * Creates CQLCellTreeNode object which has list of children objects and a
-	 * parent object from the XML.
-	 *
-	 * @param node the node
-	 * @param tagName the tag name
-	 * @return CQLCellTreeNode
-	 */
 	public static CQLCellTreeNode createCQLCellTreeNode(Node node, String tagName) {
 		
 		CQLCellTreeNode mainNode = new CQLCellTreeNodeImpl();
@@ -102,11 +74,7 @@ public class CQLXmlConversionlHelper {
 		}
 		return mainNode;
 	}
-	
-	/**
-	 * Method to create Root Clause Node for Sub Tree Node in Clause WorkSpace.
-	 * @return CQLCellTreeNode
-	 */
+
 	public static CQLCellTreeNode createRootClauseNode() {
 		CQLCellTreeNode parent = new CQLCellTreeNodeImpl();
 		CQLCellTreeNode mainNode = new CQLCellTreeNodeImpl();
@@ -123,9 +91,7 @@ public class CQLXmlConversionlHelper {
 	}
 	
 	public static CQLCellTreeNode createOccurenceClauseNode(CQLCellTreeNode clauseNode) {
-		//CQLCellTreeNode parent = new CQLCellTreeNodeImpl();
 		CQLCellTreeNode occurrenceNode = new CQLCellTreeNodeImpl();
-		List<CQLCellTreeNode> childs = new ArrayList<CQLCellTreeNode>();
 		List<CQLCellTreeNode> parentchilds = new ArrayList<CQLCellTreeNode>();
 		occurrenceNode.setName(clauseNode.getName());
 		occurrenceNode.setLabel(clauseNode.getLabel());
@@ -136,18 +102,10 @@ public class CQLXmlConversionlHelper {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("qdmVariable", "true");
 		occurrenceNode.setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, map);
-		//childs.add(parent);
-		//occurrenceNode.setChilds(childs);
-		
 		return occurrenceNode;
 	}
 	
-	/**
-	 * Creates the root node.
-	 * @param tagName
-	 *            the tag name
-	 * @return the cell tree node
-	 */
+
 	private static CQLCellTreeNode createRootNode(String tagName) {
 		CQLCellTreeNode parent = new CQLCellTreeNodeImpl();
 		List<CQLCellTreeNode> childs = new ArrayList<CQLCellTreeNode>();
@@ -214,19 +172,6 @@ public class CQLXmlConversionlHelper {
 		return parent;
 	}
 	
-	/**
-	 * Creates the child.
-	 * 
-	 * @param name
-	 *            the name
-	 * @param label
-	 *            the label
-	 * @param nodeType
-	 *            the node type
-	 * @param parent
-	 *            the parent
-	 * @return the cell tree node
-	 */
 	private static CQLCellTreeNode createChild(String name, String label, short nodeType, CQLCellTreeNode parent) {
 		CQLCellTreeNode child = new CQLCellTreeNodeImpl();
 		child.setName(name);
@@ -235,17 +180,7 @@ public class CQLXmlConversionlHelper {
 		child.setNodeType(nodeType);
 		return child;
 	}
-	
-	/**
-	 * Creates the cell tree node childs.
-	 * 
-	 * @param parent
-	 *            the parent
-	 * @param root
-	 *            the root
-	 * @param childs
-	 *            the childs
-	 */
+
 	@SuppressWarnings("unchecked")
 	private static void createCQLCellTreeNodeChilds(CQLCellTreeNode parent, Node root, List<CQLCellTreeNode> childs) {
 		String nodeName = root.getNodeName();
@@ -311,13 +246,7 @@ public class CQLXmlConversionlHelper {
 				}
 	}
 	
-	/**
-	 * Creating XML from GWT tree using GWT Document object.
-	 * 
-	 * @param model
-	 *            the model
-	 * @return XML String
-	 */
+
 	public static String createXmlFromTree(CQLCellTreeNode model) {
 		Document doc = XMLParser.createDocument();
 		if (model != null) {
@@ -327,19 +256,7 @@ public class CQLXmlConversionlHelper {
 		
 		return null;
 	}
-	
-	/**
-	 * Iterating through the Tree's Children to create the Document Element,
-	 * Nodes and Attributes.
-	 * 
-	 * @param CQLCellTreeNode
-	 *            the cell tree node
-	 * @param doc
-	 *            the doc
-	 * @param node
-	 *            the node
-	 * @return the string
-	 */
+
 	private static String createXmlFromTree(CQLCellTreeNode CQLCellTreeNode, Document doc, Node node) {
 		Element element = getNodeName(CQLCellTreeNode, doc);
 		
@@ -357,18 +274,7 @@ public class CQLXmlConversionlHelper {
 		return doc.toString();
 	}
 	
-	/**
-	 * Sets the cell tree node values.
-	 * 
-	 * @param node
-	 *            the node
-	 * @param parent
-	 *            the parent
-	 * @param child
-	 *            the child
-	 * @param childs
-	 *            the childs
-	 */
+
 	private static void setCQLCellTreeNodeValues(Node node, CQLCellTreeNode parent, CQLCellTreeNode child, List<CQLCellTreeNode> childs) {
 		String nodeName = node.getNodeName();
 		String nodeValue = node.hasAttributes()
@@ -463,62 +369,7 @@ public class CQLXmlConversionlHelper {
 				child.setUUID(uuid);
 				childs.add(child); // add child to child list
 	}
-	
-	/**
-	 * Append attribute to qdm name.
-	 * 
-	 * @param node
-	 *            the node
-	 * @return the string
-	 */
-	private static String appendAttributeToQdmName(Node node) {
-		NamedNodeMap namedNodeMap = node.getChildNodes().item(0).getAttributes();
-		StringBuilder stringBuilder = new StringBuilder(namedNodeMap.getNamedItem("name").getNodeValue());
-		String modeName = namedNodeMap.getNamedItem("mode") != null ? namedNodeMap.getNamedItem("mode").getNodeValue() : "";
-		
-		if ("Check if Present".equalsIgnoreCase(modeName)) {
-			stringBuilder.append(" is present ");
-		} else if ("Value Set".equalsIgnoreCase(modeName)) {
-			Node qdm = namedNodeMap.getNamedItem("qdmUUID");
-			if (null != qdm) {
-				String qdmId = namedNodeMap.getNamedItem("qdmUUID").getNodeValue();
-				String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(qdmId);
-				stringBuilder.append(": '").append(qdmName).append("'");
-			}
-		} else {
-			if ("Less Than".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" < ");
-			} else if ("Less Than Or Equal To".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" <= ");
-			} else if ("Greater Than".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" > ");
-			} else if ("Greater Than Or Equal To".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" >= ");
-			} else if ("Equal To".equalsIgnoreCase(modeName)) {
-				stringBuilder.append(" = ");
-			}
-			
-			Node comparisonValue = namedNodeMap.getNamedItem("comparisonValue");
-			if (null != comparisonValue) {
-				stringBuilder.append(comparisonValue.getNodeValue());
-			}
-			Node unit = namedNodeMap.getNamedItem("unit");
-			if (null != unit) {
-				stringBuilder.append(" ").append(unit.getNodeValue());
-			}
-		}
-		return stringBuilder.toString();
-	}
-	
-	/**
-	 * Gets the node name. Recently added code for SubTree Node.
-	 * 
-	 * @param CQLCellTreeNode
-	 *            the cell tree node
-	 * @param document
-	 *            the document
-	 * @return the node name
-	 */
+
 	@SuppressWarnings("unchecked")
 	private static Element getNodeName(CQLCellTreeNode CQLCellTreeNode, Document document) {
 		Element element = null;
@@ -599,9 +450,6 @@ public class CQLXmlConversionlHelper {
 				if (map != null) {
 					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME,
 							map.get(PopulationWorkSpaceConstants.DISPLAY_NAME));
-					//String typeValue = ClauseConstants.getTimingOperators().containsKey(map.get(ClauseConstants.TYPE))
-					//	? ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)):
-					//  map.get(ClauseConstants.DISPLAY_NAME);
 					String typeValue = map.get(PopulationWorkSpaceConstants.TYPE);
 					element.setAttribute(PopulationWorkSpaceConstants.TYPE, typeValue);
 					if (map.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE)) {
@@ -729,13 +577,6 @@ public class CQLXmlConversionlHelper {
 		return element;
 	}
 	
-	/**
-	 * Method to convert case of string into camel case.
-	 * 
-	 * @param name
-	 *            the name
-	 * @return the string
-	 */
 	private static String toCamelCase(String name) {
 		name = name.toLowerCase();
 		String[] parts = name.split(" ");
@@ -746,23 +587,11 @@ public class CQLXmlConversionlHelper {
 		return camelCaseString;
 	}
 	
-	/**
-	 * To proper case.
-	 * @param s
-	 *            the s
-	 * @return the string
-	 */
 	private static String toProperCase(String s) {
 		return s.substring(0, 1).toUpperCase()
 				+ s.substring(1).toLowerCase();
 	}
-	/**
-	 * Method to convert String into Sentence/Title Case.
-	 * Operator If Any.
-	 * @param strToConvert - String
-	 * @param operator - String
-	 * @return Sentence Case String
-	 */
+
 	private static String capWords(String strToConvert , String operator) {
 		if ((strToConvert == null)) {
 			return strToConvert;

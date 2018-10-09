@@ -27,16 +27,15 @@ public class MeasureDetailsHandler extends GeneralizedFieldHandler{
 	 */
 	@Override
 	public Object convertUponSet(Object arg0) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#getFieldType()
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Class getFieldType() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

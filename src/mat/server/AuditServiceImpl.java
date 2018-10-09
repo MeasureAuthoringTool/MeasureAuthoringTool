@@ -2,9 +2,6 @@ package mat.server;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import mat.DTO.SearchHistoryDTO;
 import mat.DTO.UserAuditLogDTO;
 import mat.client.audit.service.AuditService;
@@ -19,10 +16,6 @@ import mat.server.service.UserAuditService;
  */
 @SuppressWarnings("serial")
 public class AuditServiceImpl extends SpringRemoteServiceServlet implements AuditService{
-	
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(AuditServiceImpl.class);
-	
 	
 	/**
 	 * Returns the spring bean MeasureAuditService.

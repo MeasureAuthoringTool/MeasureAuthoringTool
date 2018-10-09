@@ -25,11 +25,11 @@ import com.google.gwt.view.client.ListDataProvider;
 
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.buttons.CustomButton;
 import mat.client.clause.QDMAppliedSelectionView.Observer;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.MeasureServiceAsync;
-import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.InProgressMessageDisplay;
@@ -45,8 +45,9 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-/**
- * The Class VSACProfileSelectionPresenter.
+@Deprecated
+/*
+ * This class is for code that is non maintained anymore. It should not be changed. 
  */
 public class QDMAppliedSelectionPresenter implements MatPresenter {
 	
@@ -460,7 +461,7 @@ public class QDMAppliedSelectionPresenter implements MatPresenter {
 								.getDataType())
 								|| ConstantMessages.BIRTHDATE_OID
 								.equals(qdsDTO.getOid())
-								|| ConstantMessages.EXPIRED_OID
+								|| ConstantMessages.DEAD_OID
 								.equals(qdsDTO.getOid())) {
 							timingQDMs.add(qdsDTO);
 						}

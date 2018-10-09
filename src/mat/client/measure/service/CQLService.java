@@ -1,6 +1,11 @@
 package mat.client.measure.service;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
@@ -18,20 +23,12 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface CQLService.
  */
 public interface CQLService {
-
-	/**
-	 * Save cql.
-	 *
-	 * @param measureId the measure id
-	 * @return the boolean
-	 */
-	// Boolean saveCQL(CQLModel cqlDataModel);
 
 	/**
 	 * Get cql.
@@ -65,7 +62,7 @@ public interface CQLService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(
-			String currentMeasureId, String context);
+			String currentMeasureId, String context, String libraryComment);
 	
 	/**
 	 * Save and modify functions.
@@ -169,8 +166,6 @@ public interface CQLService {
 	String getCqlString(CQLModel cqlModel);
 
 	String getDefaultCodeSystems();
-	
-	String getDefaultCodes();
 
 	GetUsedCQLArtifactsResult getUsedCQlArtifacts(String measureId);
 
@@ -184,8 +179,7 @@ public interface CQLService {
 
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveAndModifyIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String currentMeasureId,
 			CQLIncludeLibrary toBeModifiedIncludeObj,
@@ -206,8 +200,6 @@ public interface CQLService {
 
 	List<CQLLibraryAssociation> getAssociations(String id);
 
-	//String getDefaultExpansionIdentifier(String xml);
-
 	SaveUpdateCQLResult saveCQLCodes(String xml , MatCodeTransferObject codeTransferObject);
 
 	CQLCodeWrapper getCQLCodes(String xmlString);
@@ -219,5 +211,6 @@ public interface CQLService {
 	SaveUpdateCQLResult getCQLLibraryData(String xmlString);
 
 	SaveUpdateCQLResult getCQLDataForLoad(String xmlString);
-
+	
+	String createIncludeLibraryXML(CQLIncludeLibrary includeLibrary) throws MarshalException, ValidationException, IOException, MappingException;
 }

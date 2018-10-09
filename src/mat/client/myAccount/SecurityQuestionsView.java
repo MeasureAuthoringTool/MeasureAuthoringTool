@@ -4,21 +4,22 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.FieldSet;
 import org.gwtbootstrap3.client.ui.Input;
+
+import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Widget;
+
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordEditInfoWidget;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionAnswerWidget;
 import mat.client.shared.SecurityQuestionsDisplay;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The Class SecurityQuestionsView.
@@ -44,7 +45,7 @@ public class SecurityQuestionsView implements SecurityQuestionsDisplay {
 	protected PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("securityQnA");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("securityQnA");
 	
 	/**
 	 * Instantiates a new security questions view.

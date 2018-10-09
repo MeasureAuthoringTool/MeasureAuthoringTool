@@ -12,17 +12,11 @@ public class CQLConstantContainer implements IsSerializable {
 	private String currentQDMVersion;
 	private String currentReleaseVersion;
 	private List<String> cqlAttributeList; 
-	
 	private List<String> cqlDatatypeList; 
-	
 	private List<String> qdmDatatypeList; 
-		
 	private List<UnitDTO> cqlUnitDTOList; 
-	
 	private List<String> cqlTimingList; 
-	
 	private Map<String, String> cqlUnitMap;
-	
 	private CQLKeywords cqlKeywordList; 
 
 	public List<String> getCqlAttributeList() {

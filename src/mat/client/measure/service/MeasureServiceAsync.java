@@ -4,15 +4,21 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.shared.CompositeMeasureValidationResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
+import mat.client.shared.GenericResult;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
@@ -30,15 +36,11 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.MeasureSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface MeasureServiceAsync.
- */
 public interface MeasureServiceAsync {
 	
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName, AsyncCallback<Void> callback);
@@ -108,10 +110,6 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 * @return the applied qdm from measure xml
 	 */
-	//	void getAppliedQDMFromMeasureXml(String measureId,
-	//			boolean checkForSupplementData,
-	//			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
-	
 	void getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData,
 			AsyncCallback<QualityDataModelWrapper> asyncCallback);
@@ -139,6 +137,8 @@ public interface MeasureServiceAsync {
 	 * @return the measure
 	 */
 	void getMeasure(String key, AsyncCallback<ManageMeasureDetailModel> callback);
+	
+	void getCompositeMeasure(String measureId, AsyncCallback<ManageCompositeMeasureDetailModel> callback);
 	
 	/**
 	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
@@ -220,6 +220,8 @@ public interface MeasureServiceAsync {
 	 */
 	void save(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
+	void saveCompositeMeasure(ManageCompositeMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
+	
 	/**
 	 * Save and delete measure.
 	 * 
@@ -244,7 +246,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void saveFinalizedVersion(String measureid,boolean isMajor,String version, AsyncCallback<SaveMeasureResult> callback);
+	void saveFinalizedVersion(String measureid, boolean isMajor,String version, boolean shouldPackage, boolean ignoreUnusedLibraries, AsyncCallback<SaveMeasureResult> callback);
 	
 	/**
 	 * Save measure details.
@@ -270,18 +272,12 @@ public interface MeasureServiceAsync {
 	/**
 	 * Search.
 	 * 
-	 * @param searchText
-	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * @param advancedSearchModel
+	 * 			the model the search is performed off of
 	 * @param callback
-	 *            the callback
+	 *          the callback
 	 */
-	void search(String searchText, int startIndex, int pageSize,int filter, AsyncCallback<ManageMeasureSearchModel> callback);
+	void search(MeasureSearchModel advancedSearchModel, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Search users.
@@ -367,7 +363,9 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void validateMeasureForExport(String key, List<MatValueSet> matValueSetList, AsyncCallback<ValidateMeasureResult> callback);
+	void createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts, AsyncCallback<ValidateMeasureResult> callback);
+	
+	void validateExports(String keys,  AsyncCallback<ValidateMeasureResult> callback);
 	
 	/**
 	 * Save Called To update Revision Number at Create New Package button Click.
@@ -425,7 +423,7 @@ public interface MeasureServiceAsync {
 	 * @param callback the callback
 	 * @return the component measures
 	 */
-	void getComponentMeasures(List<String> measureIds, AsyncCallback<ManageMeasureSearchModel> callback);
+	void getComponentMeasures(String measureId, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Validate package grouping.
@@ -453,6 +451,13 @@ public interface MeasureServiceAsync {
 	 */
 	void validateForGroup(ManageMeasureDetailModel model,
 			AsyncCallback<ValidateMeasureResult> asyncCallback);
+	
+	/**
+	 * Validates and packages the measure when the user versions or packages a measure
+	 * @param mode the measure details
+	 * @param asyncCallback
+	 */
+	void validateAndPackageMeasure(ManageMeasureDetailModel mode, AsyncCallback<SaveMeasureResult> asyncCallback);
 	
 	/**
 	 * Gets the all measure types.
@@ -579,19 +584,10 @@ public interface MeasureServiceAsync {
 	void parseCQL(String cqlBuilder , AsyncCallback<CQLModel> asyncCallback);
 	
 	/**
-	 * Gets the CQL data.
-	 *
-	 * @param measureId the measure id
-	 * @param callback the callback
-	 * @return the CQL data
-	 */
-	//void getCQLData(String measureId, String fromTable,AsyncCallback<SaveUpdateCQLResult> callback);
-	
-	/**
 	 * Save and modify definitions.
 	 *
 	 * @param measureId the measure id
-	 * @param toBemodifiedObj the to bemodified obj
+	 * @param toBemodifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param definitionList the definition list
 	 * @param isFormatable flag for if the definition should be formatted on save
@@ -605,7 +601,7 @@ public interface MeasureServiceAsync {
 	 * Save and modify parameters.
 	 *
 	 * @param measureId the measure id
-	 * @param toBemodifiedObj the to bemodified obj
+	 * @param toBemodifiedObj the to be modified obj
 	 * @param currentObj the current obj
 	 * @param parameterList the parameter list
 	 * @param isFormtable flag for if the parameter should be formatted on save
@@ -621,7 +617,7 @@ public interface MeasureServiceAsync {
 	 * @param context the context
 	 * @param asyncCallback the async callback
 	 */
-	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context,
+	void saveAndModifyCQLGeneralInfo(String currentMeasureId, String context, String comments,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 	
 	
@@ -686,8 +682,6 @@ public interface MeasureServiceAsync {
 	
 	void getJSONObjectFromXML(AsyncCallback<String> asyncCallback);
 
-	void parseCQLForErrors(String cqlString, AsyncCallback<SaveUpdateCQLResult> callback);
-
 	void parseCQLStringForError(String cqlFileString, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getCQLValusets(String measureID, AsyncCallback<CQLQualityDataModelWrapper> callback);
@@ -705,8 +699,6 @@ public interface MeasureServiceAsync {
 			List<CQLIncludeLibrary> incLibraryList, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getMeasureCQLData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
-
-	//void getCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
 	void getMeasureCQLFileData(String measureId, AsyncCallback<SaveUpdateCQLResult> callback);
 
@@ -737,4 +729,14 @@ public interface MeasureServiceAsync {
 	void modifyCQLCodeInMeasure(CQLCode modifyCQLCode, CQLCode refCode, String measureId,
 			AsyncCallback<SaveUpdateCQLResult> asyncCallback);
 
+	void searchComponentMeasures(MeasureSearchModel searchModel, AsyncCallback<ManageMeasureSearchModel> asyncCallback);
+	
+	void buildCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel, AsyncCallback<ManageCompositeMeasureDetailModel> callback);
+
+	void validateCompositeMeasure(ManageCompositeMeasureDetailModel currentCompositeMeasureDetails,
+			AsyncCallback<CompositeMeasureValidationResult> asyncCallback);
+	
+	void getCQLLibraryInformationForComponentMeasure(String compositeMeasureId, AsyncCallback<List<ComponentMeasureTabObject>> callback);
+
+	void checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId, AsyncCallback<GenericResult> asyncCallback);
 }

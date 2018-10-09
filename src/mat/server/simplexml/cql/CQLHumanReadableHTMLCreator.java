@@ -35,10 +35,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class CQLHumanReadableHTMLCreator.
- */
 public class CQLHumanReadableHTMLCreator {
 	
 	
@@ -48,38 +44,24 @@ public class CQLHumanReadableHTMLCreator {
 
 	private static final String CQLDEFINITION = "cqldefinition";
 
-	/** The definitions or functions already displayed. */
 	private static List<String> definitionsOrFunctionsAlreadyDisplayed = new ArrayList<String>();
 	
-	/** The cql objects. */
 	private static List<String> cqlObjects = new ArrayList<String>();
 	
 	private static Map<String, XmlProcessor> includedXMLMap = new HashMap<String, XmlProcessor>();
 		
-	/** The Constant HTML_LI. */
 	private static final String HTML_LI = "li";
 	
-	/** The Constant HTML_UL. */
 	private static final String HTML_UL = "ul";
 		
-	/** The initial population hash. */
 	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
 	
-	/** The Constant popNameArray. */
 	private static final String[] POPULATION_NAME_ARRAY = {"initialPopulation",
 		"denominator", "denominatorExclusions", "numerator",
 		"numeratorExclusions", "denominatorExceptions",
-		"measurePopulation", "measurePopulationExclusions",
-		"measureObservation", "stratum" };
+		"measurePopulation", "measurePopulationExclusions", "stratum" ,
+		"measureObservation"};
 	
-	/**
-	 * Generate cql human readable for measure.
-	 *
-	 * @param simpleXmlStr the simple xml str
-	 * @param cqlModel the cql file object
-	 * @param cqlLibraryDAO 
-	 * @return the string
-	 */
 	public static String generateCQLHumanReadableForMeasure(
 			String simpleXmlStr, CQLModel cqlModel, CQLLibraryDAO cqlLibraryDAO) {
 		
@@ -111,7 +93,6 @@ public class CQLHumanReadableHTMLCreator {
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 			
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -806,7 +787,6 @@ public class CQLHumanReadableHTMLCreator {
 			}
 
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return stringAssoc;
@@ -860,7 +840,6 @@ public class CQLHumanReadableHTMLCreator {
 			generatePopulationCriteria(populationOrSubtreeListElement, cqlModel, cqlNode, parentName, populationDisplayName, cqlResult, populationOrSubtreeXMLProcessor);
 			
 		} catch (DOMException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -1128,12 +1107,9 @@ public class CQLHumanReadableHTMLCreator {
 			CQLModel cqlModel, SaveUpdateCQLResult cqlResult, XmlProcessor populationOrSubtreeXMLProcessor, String expressionName, 
 			Element mainElement, boolean isTopExpression, String aggFuncLabel, String cqlNodeType) {
 
-		String statementIdentifier = expressionName;
-				
 		String[] arr = expressionName.split(Pattern.quote("|"));
 		if(arr.length == 3){
 			expressionName = arr[2];
-			statementIdentifier = arr[1] + "." + arr[2];
 		}
 		
 		Element mainULElement = mainElement;
@@ -1282,7 +1258,6 @@ public class CQLHumanReadableHTMLCreator {
 				}
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -1337,7 +1312,6 @@ public class CQLHumanReadableHTMLCreator {
 				logic = logicNode.getTextContent();
 			}
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		 
@@ -1368,6 +1342,7 @@ public class CQLHumanReadableHTMLCreator {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
 
 		// Must be added first for proper formating and styling
+		@SuppressWarnings("deprecation")
 		DocumentType doc = new DocumentType("html",
 				"-//W3C//DTD HTML 4.01 Transitional//EN",
 				"http://www.w3.org/TR/html4/loose.dtd", "");
@@ -1404,12 +1379,12 @@ public class CQLHumanReadableHTMLCreator {
 		
 		List<CQLDefinition> cqlDefinition = cqlModel.getDefinitionList();
 		for(CQLDefinition cqlDef:cqlDefinition){
-			cqlObjects.add(cqlDef.getDefinitionName());
+			cqlObjects.add(cqlDef.getName());
 		}
 		
 		List<CQLFunctions> cqlFunctions = cqlModel.getCqlFunctions();
 		for(CQLFunctions cqlFunc:cqlFunctions){
-			cqlObjects.add(cqlFunc.getFunctionName());
+			cqlObjects.add(cqlFunc.getName());
 		}
 	}
 

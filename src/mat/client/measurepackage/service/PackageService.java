@@ -1,12 +1,21 @@
 package mat.client.measurepackage.service;
 
-import mat.client.measurepackage.MeasurePackageDetail;
-import mat.client.measurepackage.MeasurePackageOverview;
-import mat.client.shared.MatException;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.xpath.XPathExpressionException;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-// TODO: Auto-generated Javadoc
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.shared.MatException;
+import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
+import mat.shared.packager.error.SaveSupplementalDataElementException;
+
+
 /**
  * The Interface PackageService.
  */
@@ -21,6 +30,15 @@ public interface PackageService extends RemoteService {
 	 * @return the clauses and packages for measure
 	 */
 	public MeasurePackageOverview getClausesAndPackagesForMeasure(String measureId);
+	
+	/**
+	 * Gets the clauses and packages for measure list.
+	 * 
+	 * @param measureList
+	 *            the List of measures
+	 * @return the clauses and packages for measures
+	 */
+	public Map<String, MeasurePackageOverview> getClausesAndPackagesForMeasures(List<ManageMeasureSearchModel.Result> measureList);
 	
 	/**
 	 * Save.
@@ -46,13 +64,17 @@ public interface PackageService extends RemoteService {
 	 *            the detail
 	 * @throws MatException
 	 *             the mat exception
+	 * @throws SaveSupplementalDataElementException 
+	 * @throws XPathExpressionException 
 	 */
-	public void saveQDMData(MeasurePackageDetail detail) throws MatException;
+	public void saveQDMData(MeasurePackageDetail detail) throws MatException, SaveSupplementalDataElementException;
 
 	/**
 	 * Save risk variables.
 	 *
 	 * @param currentDetail the current detail
+	 * @throws SaveRiskAdjustmentVariableException 
+	 * @throws XPathExpressionException 
 	 */
-	void saveRiskVariables(MeasurePackageDetail currentDetail);
+	void saveRiskVariables(MeasurePackageDetail currentDetail) throws SaveRiskAdjustmentVariableException;
 }

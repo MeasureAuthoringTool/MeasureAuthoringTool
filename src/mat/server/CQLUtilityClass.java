@@ -5,14 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.xml.Unmarshaller;
+import org.springframework.util.CollectionUtils;
 import org.xml.sax.InputSource;
 
-import mat.client.clause.cqlworkspace.CQLWorkSpaceConstants;
+import mat.client.shared.CQLWorkSpaceConstants;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctionArgument;
@@ -27,13 +28,10 @@ import mat.server.util.XmlProcessor;
 
 public final class CQLUtilityClass {
 
-	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CQLUtilityClass.class);
 
-	/** The Constant PATIENT. */
 	private static final String PATIENT = "Patient";
 
-	/** The Constant POPULATION. */
 	private static final String POPULATION = "Population";
 
 	private static StringBuilder toBeInsertedAtEnd;
@@ -86,12 +84,17 @@ public final class CQLUtilityClass {
 	private static String createLibraryNameSection(CQLModel cqlModel) {
 		StringBuilder sb = new StringBuilder();
 
-		if (cqlModel.getLibraryName() != null) {
+		if (StringUtils.isNotBlank(cqlModel.getLibraryName())) {
 
 			sb.append("library ").append(cqlModel.getLibraryName());
 			sb.append(" version ").append("'" + cqlModel.getVersionUsed()).append("'");
-			sb.append("\n\n");
-
+			sb.append(System.lineSeparator()).append(System.lineSeparator());
+			
+			if(StringUtils.isNotBlank(cqlModel.getLibraryComment())) {
+				sb.append(createCommentString(cqlModel.getLibraryComment()));
+				sb.append(System.lineSeparator()).append(System.lineSeparator());
+			}
+			
 			sb.append("using QDM version ");			
 			sb.append("'").append(cqlModel.getQdmVersion()).append("'");
 			sb.append("\n\n");			
@@ -177,17 +180,16 @@ public final class CQLUtilityClass {
 
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
 		for (CQLDefinition definition : definitionList) {
-
-			String definitionComment = definition.getCommentString();
-			if(definitionComment != null && definitionComment.trim().length() > 0){
-				definitionComment = "/*" + definitionComment + "*/" + "\n";
-				cqlStr = cqlStr.append(definitionComment);
+			
+			if(StringUtils.isNotBlank(definition.getCommentString())){
+				cqlStr.append(createCommentString(definition.getCommentString()));
+				cqlStr.append(System.lineSeparator());
 			}
 
-			String def = "define " + "\""+ definition.getDefinitionName() + "\"";
+			String def = "define " + "\""+ definition.getName() + "\"";
 
 			cqlStr = cqlStr.append(def + ":\n");
-			cqlStr = cqlStr.append("\t" + definition.getDefinitionLogic().replaceAll("\\n", "\n\t"));
+			cqlStr = cqlStr.append("\t" + definition.getLogic().replaceAll("\\n", "\n\t"));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the def we just appended is the current one, then
@@ -201,14 +203,12 @@ public final class CQLUtilityClass {
 
 		for (CQLFunctions function : functionsList) {
 
-			String functionComment = function.getCommentString();
-			if(functionComment != null && functionComment.trim().length() > 0){
-				functionComment = "/*" + functionComment + "*/" + "\n";
-				cqlStr = cqlStr.append(functionComment);
+			if(StringUtils.isNotBlank(function.getCommentString())){
+				cqlStr.append(createCommentString(function.getCommentString()));
+				cqlStr.append(System.lineSeparator());
 			}
 
-			String func = "define function "
-					+ "\""+ function.getFunctionName() + "\"";
+			String func = "define function " + "\""+ function.getName() + "\"";
 
 
 			cqlStr = cqlStr.append(func + "(");
@@ -232,7 +232,7 @@ public final class CQLUtilityClass {
 				cqlStr.deleteCharAt(cqlStr.length() - 2);
 			}
 
-			cqlStr = cqlStr.append("):\n" + "\t" + function.getFunctionLogic().replaceAll("\\n", "\n\t"));
+			cqlStr = cqlStr.append("):\n" + "\t" + function.getLogic().replaceAll("\\n", "\n\t"));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the func we just appended is the current one, then
@@ -247,7 +247,7 @@ public final class CQLUtilityClass {
 	}
 
 
-	public static CQLModel getCQLStringFromXML(String xmlString) {
+	public static CQLModel getCQLModelFromXML(String xmlString) {
 		CQLModel cqlModel = new CQLModel();
 		XmlProcessor measureXMLProcessor = new XmlProcessor(xmlString);
 		String cqlLookUpXMLString = measureXMLProcessor.getXmlByTagName("cqlLookUp");
@@ -265,27 +265,25 @@ public final class CQLUtilityClass {
 				logger.info("Error while getting codesystems :" + e.getMessage());
 			}
 		}
-		if(!cqlModel.getValueSetList().isEmpty()){
-			List<CQLQualityDataSetDTO> filterVS  = filterValuesets(cqlModel.getValueSetList());
-			cqlModel.setValueSetList(filterVS);
+		
+		if(!cqlModel.getValueSetList().isEmpty()){			
+			cqlModel.setValueSetList(filterValuesets(cqlModel.getValueSetList()));
 			ArrayList<CQLQualityDataSetDTO> valueSetsList = new ArrayList<CQLQualityDataSetDTO>();
 			valueSetsList.addAll(cqlModel.getValueSetList());
-			// sorting out CQL all Value sets and codes
-			sortCQLQualityDataSetDto(valueSetsList);
-			cqlModel.setAllValueSetList(valueSetsList);
+			cqlModel.setAllValueSetAndCodeList(valueSetsList);
 		}
-		sortCQLCodeDTO(cqlModel.getCodeList());
+		
 		if(!cqlModel.getCodeList().isEmpty()){
+			sortCQLCodeDTO(cqlModel.getCodeList());
 			//Combine Codes and Value sets in allValueSetList for UI
 			List<CQLQualityDataSetDTO> dtoList = convertCodesToQualityDataSetDTO(cqlModel.getCodeList());
 			if(!dtoList.isEmpty()){
-				cqlModel.getAllValueSetList().addAll(dtoList);
+				cqlModel.getAllValueSetAndCodeList().addAll(dtoList);
 			}
 		}
 		return cqlModel;
 	}
-
-
+	
 	public static void getValueSet(CQLModel cqlModel, String cqlLookUpXMLString){
 		CQLQualityDataModelWrapper valuesetWrapper;
 		try {
@@ -311,7 +309,7 @@ public final class CQLUtilityClass {
 		List<CQLQualityDataSetDTO> convertedCQLDataSetList = new ArrayList<CQLQualityDataSetDTO>();
 		for (CQLCode tempDataSet : codeList) {
 			CQLQualityDataSetDTO convertedCQLDataSet = new CQLQualityDataSetDTO();
-			convertedCQLDataSet.setCodeListName(tempDataSet.getCodeName());
+			convertedCQLDataSet.setName(tempDataSet.getName());
 			convertedCQLDataSet.setCodeSystemName(tempDataSet.getCodeSystemName());
 			convertedCQLDataSet.setCodeSystemOID(tempDataSet.getCodeSystemOID());
 
@@ -347,60 +345,39 @@ public final class CQLUtilityClass {
 		return endLine;
 	}
 
-	public static int countLines(String str) {
-		if(StringUtils.isBlank(str))
-		{
-			return 0;
-		}
-		int lines = 1;
-		int pos = 0;
-		while ((pos = str.indexOf("\n\n", pos) + 1) != 0) {
-			lines = lines + 2;
-		}
-		return lines;
-	}
-
 	public static List<CQLQualityDataSetDTO> sortCQLQualityDataSetDto(List<CQLQualityDataSetDTO> cqlQualityDataSetDTOs){
 
-		cqlQualityDataSetDTOs.sort((c1, c2) -> c1.getCodeListName().compareToIgnoreCase(c2.getCodeListName()));
+		cqlQualityDataSetDTOs.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
 		return cqlQualityDataSetDTOs;
 	}
 
 	public static List<CQLCode> sortCQLCodeDTO(List<CQLCode> cqlCodes){
 
-		cqlCodes.sort((c1, c2) -> c1.getCodeName().compareToIgnoreCase(c2.getCodeName()));
+		cqlCodes.sort((c1, c2) -> c1.getName().compareToIgnoreCase(c2.getName()));
 		return cqlCodes;
 	}
 
 	private static List<CQLQualityDataSetDTO> filterValuesets(List<CQLQualityDataSetDTO> cqlValuesets){
 
-		List<CQLQualityDataSetDTO> filteredValuesets = new ArrayList<CQLQualityDataSetDTO>();
-
-		for(int i=0; i<cqlValuesets.size(); i++){
-			CQLQualityDataSetDTO cqlQualityDataSetDTO = cqlValuesets.get(i);
-			if(cqlQualityDataSetDTO.getDataType()!= null){
-				if(!cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Birthdate")
-						&& !cqlQualityDataSetDTO.getDataType().equalsIgnoreCase("Patient characteristic Expired")){
-					filteredValuesets.add(cqlQualityDataSetDTO);
-				}
-			} else {
-				filteredValuesets.add(cqlQualityDataSetDTO);
-			}
-		}
-
-		return filteredValuesets;
-
+		cqlValuesets.removeIf(c -> c.getDataType() != null && 
+				(c.getDataType().equalsIgnoreCase("Patient characteristic Birthdate") 
+						|| c.getDataType().equalsIgnoreCase("Patient characteristic Expired")));
+		
+		sortCQLQualityDataSetDto(cqlValuesets);
+		
+		return cqlValuesets;
 	}
 
 	private static String createIncludesSection(List<CQLIncludeLibrary> includeLibList) {
 		StringBuilder sb = new StringBuilder();
-		if(includeLibList != null){
+		if(!CollectionUtils.isEmpty(includeLibList)){
 			for(CQLIncludeLibrary includeLib : includeLibList){
 				sb.append("include ").append(includeLib.getCqlLibraryName());
 				sb.append(" version ").append("'").append(includeLib.getVersion()).append("' ");
 				sb.append("called ").append(includeLib.getAliasName());
-				sb.append("\n\n");
+				sb.append("\n");
 			}
+			sb.append("\n");
 		}
 		return sb.toString();
 	}
@@ -411,7 +388,7 @@ public final class CQLUtilityClass {
 
 		List<String> codeSystemAlreadyUsed = new ArrayList<>();
 
-		if(codeSystemList != null){
+		if(!CollectionUtils.isEmpty(codeSystemList)){
 
 			for(CQLCode codes : codeSystemList){
 
@@ -446,21 +423,21 @@ public final class CQLUtilityClass {
 
 		List<String> valueSetAlreadyUsed = new ArrayList<>();
 
-		if (valueSetList != null) {
+		if (!CollectionUtils.isEmpty(valueSetList)) {
 
 			for (CQLQualityDataSetDTO valueset : valueSetList) {
 
-				if(!valueSetAlreadyUsed.contains(valueset.getCodeListName())){
+				if(!valueSetAlreadyUsed.contains(valueset.getName())){
 
 					String version = valueset.getVersion().replaceAll(" ", "%20");
-					sb.append("valueset ").append('"').append(valueset.getCodeListName()).append('"');
+					sb.append("valueset ").append('"').append(valueset.getName()).append('"');
 					sb.append(": 'urn:oid:").append(valueset.getOid()).append("' ");
 					//Check if QDM has expansion identifier or not.
 					if(StringUtils.isNotBlank(version) && !version.equals("1.0") ){
 						sb.append("version 'urn:hl7:version:").append(version).append("' ");
 					}
 					sb.append("\n");
-					valueSetAlreadyUsed.add(valueset.getCodeListName());
+					valueSetAlreadyUsed.add(valueset.getName());
 				}
 			}
 
@@ -476,7 +453,7 @@ public final class CQLUtilityClass {
 
 		List<String> codesAlreadyUsed = new ArrayList<String>();
 
-		if(codeList != null){
+		if(!CollectionUtils.isEmpty(codeList)){
 
 			for(CQLCode codes : codeList){
 
@@ -489,7 +466,7 @@ public final class CQLUtilityClass {
 				if(!codesAlreadyUsed.contains(codesStr)){
 					sb.append("code ").append(codesStr).append(" ").append("from ");
 					sb.append('"').append(codeSysStr).append('"').append(" ");
-					sb.append("display " +"'" +codes.getCodeName().replaceAll("'", "\\\\'")+"'");
+					sb.append("display " +"'" +escapeSingleQuote(codes)+"'");
 					sb.append("\n");
 					codesAlreadyUsed.add(codesStr);
 				}
@@ -501,20 +478,28 @@ public final class CQLUtilityClass {
 		return sb.toString();
 	}
 
+	/**
+	 * Method will add multiple escape(backslash) character's.Eevaluate 4 \ to 2 \ and So final will have 2 \.
+	 * @param codes
+	 * @return
+	 */
+	private static String escapeSingleQuote(CQLCode codes) {
+		return codes.getName().replaceAll("'", "\\\\'");
+	}
+
 	private static StringBuilder createParameterSection(List<CQLParameter> paramList, StringBuilder cqlStr, String toBeInserted) {
-		
-		if (paramList != null) {
+		if (!CollectionUtils.isEmpty(paramList)) {
 
 			for (CQLParameter parameter : paramList) {
 
-				String param = "parameter " + "\"" + parameter.getParameterName() + "\"";
+				String param = "parameter " + "\"" + parameter.getName() + "\"";
 
 				if(StringUtils.isNotBlank(parameter.getCommentString())) {
-					cqlStr.append("/*").append(parameter.getCommentString()).append("*/");
-					cqlStr.append("\n");
+					cqlStr.append(createCommentString(parameter.getCommentString()));
+					cqlStr.append(System.lineSeparator());
 				}
 				
-				cqlStr.append(param + " " + parameter.getParameterLogic());
+				cqlStr.append(param + " " + parameter.getLogic());
 				cqlStr.append("\n");
 
 				// if the the param we just appended is the current one, then
@@ -533,6 +518,12 @@ public final class CQLUtilityClass {
 
 	}
 
+	public static String createCommentString(String comment) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/*").append(comment).append("*/");
+		return sb.toString();
+	}
+	
 	private CQLUtilityClass() {
 		throw new IllegalStateException("CQL Utility class");
 	}

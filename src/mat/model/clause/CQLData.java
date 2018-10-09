@@ -8,7 +8,8 @@ import java.sql.SQLException;
 
 import org.hibernate.Hibernate;
 
-// TODO: Auto-generated Javadoc
+import mat.hibernate.HibernateConf;
+
 /**
  * The Class CQLData.
  */
@@ -71,7 +72,7 @@ public class CQLData {
 	public void setMeasureXMLAsByteArray(String xml){
 		if(null != xml){
 			byte[] xmlByteArr = xml.getBytes();
-			cqlString = Hibernate.createBlob(xmlByteArr);
+			cqlString = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(xmlByteArr);
 		}else{
 			cqlString = null;
 		}

@@ -81,6 +81,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	private String vsacExpIdentifier;
 	
+	private String valueSetType;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -485,6 +486,18 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	public void setVsacExpIdentifier(String vsacExpIdentifier) {
 		this.vsacExpIdentifier = vsacExpIdentifier;
+	}
+
+
+
+	public String getValueSetType() {
+		return valueSetType;
+	}
+
+
+
+	public void setValueSetType(String valueSetType) {
+		this.valueSetType = valueSetType;
 	}
 
 	

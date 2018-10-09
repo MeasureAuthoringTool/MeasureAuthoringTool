@@ -1,5 +1,7 @@
 package mat.dao.impl.clause;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,22 +9,24 @@ import java.util.Map;
 import java.util.UUID;
 
 import mat.dao.ListObjectDAO;
+import mat.dao.UserDAO;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.ListObject;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.server.LoggedInUserUtil;
 import mat.shared.ConstantMessages;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**MeasureXMLDAO.java.**/
-public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
-mat.dao.clause.MeasureXMLDAO {
+public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements mat.dao.clause.MeasureXMLDAO {
 
 	/**ListObjectDAO.**/
 	@Autowired
@@ -31,8 +35,13 @@ mat.dao.clause.MeasureXMLDAO {
 	/**DataTypeDAO.**/
 	@Autowired
 	private mat.dao.DataTypeDAO dataTypeDAO;
+	
+	@Autowired
+	private MeasureDAO measureDAO; 
+	
+	@Autowired
+	private UserDAO userDAO; 
 
-	/**supplemental data OID and Data type name map.**/
 	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
 
 	static {
@@ -42,19 +51,11 @@ mat.dao.clause.MeasureXMLDAO {
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.3591", ConstantMessages.PATIENT_CHARACTERISTIC_PAYER);
 	}
 
-	/**
-	 * Find for measure.
-	 * 
-	 * @param measureId
-	 *            - {@link String}.
-	 * @return {@link MeasureXML}. *
-	 */
 	@Override
 	public final MeasureXML findForMeasure(final String measureId) {
-		Criteria criteria = getSessionFactory().getCurrentSession()
-				.createCriteria(MeasureXML.class);
+		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(MeasureXML.class);
 
-		criteria.add(Restrictions.eq("measure_id", measureId));
+		criteria.add(Restrictions.eq("measureId", measureId));
 		List<MeasureXML> results = criteria.list();
 		if (!results.isEmpty()) {
 			return results.get(0);
@@ -63,12 +64,6 @@ mat.dao.clause.MeasureXMLDAO {
 		}
 	}
 
-	/**
-	 * This method will create QDM elements for Timing Elements based on the OID
-	 * list argument passed to it.
-	 * @param qdmOidList - {@link List}.
-	 * @return {@link QualityDataModelWrapper}.
-	 */
 	@Override
 	public final QualityDataModelWrapper createTimingElementQDMs(
 			final List<String> qdmOidList) {
@@ -108,17 +103,6 @@ mat.dao.clause.MeasureXMLDAO {
 		return wrapper;
 	}
 
-	/**
-	 * Creates the supplimental qdm.
-	 * 
-	 * @param measureId
-	 *            - {@link String}.
-	 * @param isClone
-	 *            - {@link Boolean}.
-	 * @param uuidMap
-	 *            - {@link HashMap}.
-	 * @return {@link QualityDataModelWrapper}.
-	 */
 	@Override
 	public final CQLQualityDataModelWrapper createSupplimentalQDM(final String measureId,
 			final boolean isClone, final HashMap<String, String> uuidMap) {
@@ -131,7 +115,7 @@ mat.dao.clause.MeasureXMLDAO {
 		for (ListObject lo : listOfSuppElements) {
 			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();
 			qds.setOid(lo.getOid());
-			qds.setCodeListName(lo.getName());
+			qds.setName(lo.getName());
 			qds.setTaxonomy(lo.getCodeSystem().getDescription());
 			qds.setVersion("1.0");
 			qds.setId(lo.getId());
@@ -147,16 +131,20 @@ mat.dao.clause.MeasureXMLDAO {
 		return wrapper;
 	}
 
-
-	/** Method to find data type description based on OID and category Id.
-	 *@param oid - String.
-	 *@param categoryId - String.
-	 *@return String - String.
-	 * **/
 	private String findDataTypeForOID(final String oid, final String categoryId) {
 		String dataType = null;
 		String dataTypeName = suppDataOidAndDataTypeNameMap.get(oid);
 		dataType = (dataTypeDAO.findDataTypeForSupplimentalCodeList(dataTypeName, categoryId)).getDescription();
 		return dataType;
+	}
+	
+	@Override
+	public void save(MeasureXML measureXML) {
+		String measureId = measureXML.getMeasureId();
+		Measure measure = measureDAO.find(measureId);
+		measure.setLastModifiedOn(Timestamp.valueOf(LocalDateTime.now()));
+		measure.setLastModifiedBy(userDAO.findByLoginId(LoggedInUserUtil.getLoggedInLoginId()));
+		measureDAO.save(measure);
+		super.save(measureXML);
 	}
 }

@@ -4,10 +4,12 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import mat.client.shared.GenericResult;
+
 /**
  * The Class ValidateMeasureResult.
  */
-public class ValidateMeasureResult implements IsSerializable {
+public class ValidateMeasureResult extends GenericResult implements IsSerializable {
 	
 	/** The valid. */
 	private boolean valid;
@@ -15,6 +17,10 @@ public class ValidateMeasureResult implements IsSerializable {
 	/** The validation messages. */
 	private List<String> validationMessages;
 	
+	public static int VALIDATE_GROUP_FAIL = -1; 
+	
+	public static int VALIDATE_PACKAGE_GROUPING_FAIL = -2; 
+		
 	/**
 	 * Checks if is valid.
 	 * 

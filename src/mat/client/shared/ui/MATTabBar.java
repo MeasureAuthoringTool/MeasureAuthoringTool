@@ -86,7 +86,6 @@ import com.google.gwt.user.client.ui.Widget;
  * revision by aschmidt
  *
  */
-@SuppressWarnings("deprecation")
 public class MATTabBar extends Composite implements SourcesTabEvents,
     HasBeforeSelectionHandlers<Integer>, HasSelectionHandlers<Integer>,
     ClickListener, KeyboardListener {
@@ -322,8 +321,8 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * 
    * @param text the new tab's text
    */
-  public void addTab(String text) {
-    insertTab(text, getTabCount());
+  public void addTab(String text, boolean isVisible) {
+    insertTab(text, getTabCount(), isVisible);
   }
 
   /**
@@ -332,8 +331,8 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param text the new tab's text
    * @param asHTML <code>true</code> to treat the specified text as html
    */
-  public void addTab(String text, boolean asHTML) {
-    insertTab(text, asHTML, getTabCount());
+  public void addTab(String text, boolean asHTML, boolean isVisible) {
+    insertTab(text, asHTML, getTabCount(), isVisible);
   }
 
   /**
@@ -341,8 +340,8 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * 
    * @param widget the new tab's widget
    */
-  public void addTab(Widget widget) {
-    insertTab(widget, getTabCount());
+  public void addTab(Widget widget, boolean isVisible) {
+    insertTab(widget, getTabCount(), isVisible);
   }
 
   /**
@@ -427,7 +426,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param asHTML <code>true</code> to treat the specified text as HTML
    * @param beforeIndex the index before which this tab will be inserted
    */
-  public void insertTab(String text, boolean asHTML, int beforeIndex) {
+  public void insertTab(String text, boolean asHTML, int beforeIndex, boolean isVisible) {
     checkInsertBeforeTabIndex(beforeIndex);
 
     Label item;
@@ -438,7 +437,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     }
 
     item.setWordWrap(false);
-    insertTabWidget(item, beforeIndex, text);
+    insertTabWidget(item, beforeIndex, text, isVisible);
   }
 
   /**
@@ -447,8 +446,8 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param text the new tab's text
    * @param beforeIndex the index before which this tab will be inserted
    */
-  public void insertTab(String text, int beforeIndex) {
-    insertTab(text, false, beforeIndex);
+  public void insertTab(String text, int beforeIndex, boolean isVisible) {
+    insertTab(text, false, beforeIndex, isVisible);
   }
 
   /**
@@ -457,8 +456,8 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param widget widget to be used in the new tab
    * @param beforeIndex the index before which this tab will be inserted
    */
-  public void insertTab(Widget widget, int beforeIndex) {
-    insertTabWidget(widget, beforeIndex, null);
+  public void insertTab(Widget widget, int beforeIndex, boolean isVisible) {
+    insertTabWidget(widget, beforeIndex, null, isVisible);
   }
 
   /**
@@ -674,7 +673,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * @param widget widget to be used in the new tab
    * @param beforeIndex the index before which this tab will be inserted
    */
-  protected void insertTabWidget(Widget widget, int beforeIndex, String text) {
+  protected void insertTabWidget(Widget widget, int beforeIndex, String text, boolean isVisible) {
     checkInsertBeforeTabIndex(beforeIndex);
 
     ClickDelegatePanel delWidget = new ClickDelegatePanel(widget);
@@ -688,7 +687,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     Accessibility.setRole(focusablePanel.getElement(), Accessibility.ROLE_TAB);
 
     panel.insert(delWidget, beforeIndex + 1);
-
+    delWidget.setVisible(isVisible);
     setStyleName(DOM.getParent(delWidget.getElement()), STYLENAME_DEFAULT
         + "-wrapper", true);
   }

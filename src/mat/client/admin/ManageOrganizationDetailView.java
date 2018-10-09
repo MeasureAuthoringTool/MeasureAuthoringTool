@@ -13,11 +13,11 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 
@@ -27,7 +27,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	
 	
 	/** The button bar. */
-	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar("Organization");
+	private SaveContinueCancelButtonBar buttonBar = new SaveContinueCancelButtonBar("Organization");
 	
 	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();

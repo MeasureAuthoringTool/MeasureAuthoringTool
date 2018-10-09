@@ -4,6 +4,8 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Modal;
+import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
@@ -20,79 +22,37 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 
-/**
- * The Class ManageUmlsPresenter.
- */
 public class ManageUmlsPresenter implements MatPresenter{
 	
-	
-	/** The show welcome message. */
 	private boolean showWelcomeMessage = false;
 	
-	/**
-	 * The Interface UMLSDisplay.
-	 */
 	public interface UMLSDisplay {
 		
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
 		Widget asWidget();
 		
-		/**
-		 * Gets the button bar.
-		 * 
-		 * @return the button bar
-		 */
-		SaveCancelButtonBar getButtonBar() ;
+		SaveContinueCancelButtonBar getButtonBar() ;
 		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
-		/**
-		 * Gets the external link disclaimer.
-		 * 
-		 * @return the external link disclaimer
-		 */
 		VerticalPanel getExternalLinkDisclaimer();
 		
-		/**
-		 * Gets the submit.
-		 * 
-		 * @return the submit
-		 */
 		Button getSubmit();
 		
-		/**
-		 * Gets the umls external link.
-		 * 
-		 * @return the umls external link
-		 */
+		Button getCancel();
+		
+		Button getContinue();
+		
 		Anchor getUmlsExternalLink();
 		
-		/**
-		 * Gets the umls trouble logging.
-		 * 
-		 * @return the umls trouble logging
-		 */
 		Anchor getUmlsTroubleLogging();
 		
-		/**
-		 * Sets the initial focus.
-		 */
 		void setInitialFocus();
 
 		Input getUserIdText();
@@ -108,15 +68,16 @@ public class ManageUmlsPresenter implements MatPresenter{
 		FormGroup getUserIdGroup();
 
 		MessageAlert getSuccessMessageAlert();
+
+		Modal getModel();
+		
+		ModalFooter getFooter();
 	}
 	
-	/** The display. */
 	private  UMLSDisplay display;
 	
-	/** The welcome message. */
 	private String userFirstName;
 
-	/**Key down handler to trap enter key.**/
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(final KeyDownEvent event) {
@@ -126,7 +87,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 		}
 	};
 	
-	/** The vsacapi service. */
 	private VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	
 	/**
@@ -189,16 +149,13 @@ public class ManageUmlsPresenter implements MatPresenter{
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
+	
 	@Override
 	public void beforeClosingDisplay() {
 		resetWidget();
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
+	
+	
 	@Override
 	public void beforeDisplay() {
 	
@@ -215,9 +172,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
 	@Override
 	public Widget getWidget() {		
 		return display.asWidget();
@@ -280,7 +234,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 					display.getErrorMessageDisplay().setMessage(
 							MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
-					Mat.hideUMLSActive();
+					Mat.hideUMLSActive(true);
 				}
 				@Override
 				public void onSuccess(final Boolean result) {
@@ -289,18 +243,23 @@ public class ManageUmlsPresenter implements MatPresenter{
 					if (result) {
 						display.getMessageFormGrp().setValidationState(ValidationState.NONE);
 						display.getHelpBlock().setText("");
-						Mat.showUMLSActive();
+						Mat.hideUMLSActive(false);
 						display.getSuccessMessageAlert().createAlert(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getPasswordInput().setText("");
 						display.getUserIdText().setText("");
-						Mat.showUMLSActive();
+						display.getUserIdGroup().setVisible(false);
+						display.getPasswordGroup().setVisible(false);
+						display.getSubmit().setVisible(false);
+						display.getCancel().setVisible(false);
+						display.getFooter().setVisible(false);
+						display.getContinue().setVisible(true);
 						MatContext.get().restartUMLSSignout();
 						MatContext.get().setUMLSLoggedIn(true);
 					} else { //incorrect UMLS credential - no ticket is assigned.
 						display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
 						display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
 						display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
-						Mat.hideUMLSActive();
+						Mat.hideUMLSActive(true);
 						MatContext.get().setUMLSLoggedIn(false);
 						invalidateVsacSession();
 					}

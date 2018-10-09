@@ -181,8 +181,24 @@ public class SearchWidgetWithFilter extends Composite implements ClickHandler{
 		return searchButton;
 	}
 
-	
+	/**
+	 * Gets the custom CheckBox - {@link CustomCheckBox}.
+	 * 
+	 * @return the CustomCheckBox - {@link CustomCheckBox}.
+	 */
+	public final CustomCheckBox getMeasureCustomCheckBox() {
+		return myMeasuresCheckBox;
+	}
 
+	/**
+	 * Gets the custom CheckBox - {@link CustomCheckBox}.
+	 * 
+	 * @return the CustomCheckBox - {@link CustomCheckBox}.
+	 */
+	public final CustomCheckBox getLibraryCustomCheckBox() {
+		return myLibrariesCheckBox;
+	}
+	
 	/**
 	 * Gets the search input.
 	 * 

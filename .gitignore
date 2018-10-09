@@ -15,6 +15,7 @@ war/WEB-INF/deploy/
 war/WEB-INF/classes/
 war/login
 war/mat
+war/bonnie
 
 #compilation logs
 .gwt/

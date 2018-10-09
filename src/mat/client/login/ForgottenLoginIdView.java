@@ -1,128 +1,152 @@
 package mat.client.login;
 
-import mat.client.shared.EmailAddressTextBox;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.RequiredIndicator;
-import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SpacerWidget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.FieldSet;
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.Panel;
+import org.gwtbootstrap3.client.ui.PanelBody;
+import org.gwtbootstrap3.client.ui.PanelHeader;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
+import org.gwtbootstrap3.client.ui.constants.ColumnOffset;
+import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtbootstrap3.client.ui.constants.InputType;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * The Class ForgottenLoginIdView.
- */
-public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
+import mat.client.buttons.CancelButton;
+import mat.client.shared.RequiredIndicator;
+
+
+public class ForgottenLoginIdView  implements ForgottenLoginIdPresenter.Display{
+	private VerticalPanel mainPanel = new VerticalPanel();
 	
-	/** The main panel. */
-	private Panel mainPanel;
+	private Input emailAddressText = new Input(InputType.TEXT);
+	private FormGroup emailAddressGroup = new FormGroup();
 	
-	/** The email. */
-	private TextBox email;
 	
-	/** The button bar. */
-	private SaveCancelButtonBar buttonBar;
-	
-	/** The error messages. */
-	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	
-	/**
-	 * Instantiates a new forgotten login id view.
-	 */
+	private FormGroup messageFormGrp = new FormGroup();
+	private HelpBlock helpBlock = new HelpBlock();
+	private Button submitButton = new Button("Submit");
+	private Button resetButton = new CancelButton("ForgottenLoginId");
+
 	public ForgottenLoginIdView() {
-		mainPanel = new VerticalPanel();
-		mainPanel.addStyleName("centered");
+		Container loginFormContianer = new Container();
+		Row mainRow = new Row();
+		Column mainCol = new Column(ColumnSize.LG_12);
+		mainCol.setOffset(ColumnOffset.LG_3);
+
+		Panel loginPanel = new Panel();
+		loginPanel.setWidth("450px");
+		PanelHeader header = new PanelHeader();
+		header.setStyleName("loginNewBlueTitleHolder");
+		HTML loginText = new HTML("<strong>Request your User ID</strong>");
+		header.add(loginText);
+		PanelBody loginPanelBody = new PanelBody();
 		
-		
-		SimplePanel titleHolder = new SimplePanel();
-		Label titlePanel = new Label("Request your User ID");
-		titleHolder.add(titlePanel);
-		titleHolder.setStylePrimaryName("loginBlueTitleHolder");
-		titleHolder.setWidth("100%");
-		titlePanel.setStylePrimaryName("loginBlueTitle");
-		mainPanel.add(titleHolder);
-		
-		VerticalPanel bluePanel = new VerticalPanel();
-		bluePanel.setStylePrimaryName("loginContentPanel");
-		
+		Form loginForm = new Form();
+		FormLabel emailAddressLabel = new FormLabel();
+		emailAddressLabel.setText("Email Address");
+		emailAddressLabel.setTitle("Enter Email Address");
+		emailAddressLabel.setFor("inputEmailAddress");
+		emailAddressText.setWidth("250px");
+		emailAddressText.setHeight("27px");
+		emailAddressText.setId("inputUserId");
+		emailAddressText.setPlaceholder("Enter Email Address");
+		emailAddressText.setTitle("Enter Email Address Required");
 		Label instructions = new Label("Enter the E-mail Address associated with your MAT account:");
 		instructions.setStylePrimaryName("loginForgotInstructions");
-		bluePanel.add(instructions);
-		bluePanel.add(new SpacerWidget());
+		FormGroup instructionGroup = new FormGroup();
+		instructionGroup.add(instructions);
 		
-		bluePanel.add(errorMessages);
 		
-		email = new EmailAddressTextBox();
-		email.setTitle("Enter Email Address");
-		Label emailAddressLabel = (Label)LabelBuilder.buildLabel(email, "Email Address");
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get());
 		hPanel.add(emailAddressLabel);
 		hPanel.add(required);
-		bluePanel.add(hPanel);
-		bluePanel.add(new SpacerWidget());
-		bluePanel.add(email);
-		bluePanel.add(new SpacerWidget());
-		bluePanel.add(new SpacerWidget());
 		
-		buttonBar = new SaveCancelButtonBar("forgotUser");
-		buttonBar.getSaveButton().setText("Submit");
-		bluePanel.add(buttonBar);
+		emailAddressGroup.add(hPanel);
+		emailAddressGroup.add(emailAddressText);
 		
-		mainPanel.add(bluePanel);
+		messageFormGrp.add(helpBlock);
+		messageFormGrp.getElement().setAttribute("role", "alert");
+		loginForm.add(messageFormGrp);
 		
-	}	
+		FormGroup buttonFormGroup = new FormGroup();
+		ButtonToolBar buttonToolBar = new ButtonToolBar();
+		submitButton.setType(ButtonType.PRIMARY);
+		submitButton.setTitle("Submit");
 
-	/* (non-Javadoc)
-	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getEmail()
-	 */
-	@Override
-	public HasValue<String> getEmail() {
-		return email;
+		buttonToolBar.add(submitButton);
+		buttonToolBar.add(resetButton);
+		
+		buttonFormGroup.add(buttonToolBar);
+		
+		FieldSet formFieldSet = new FieldSet();
+		formFieldSet.add(instructionGroup);
+		formFieldSet.add(emailAddressGroup);
+		formFieldSet.add(buttonFormGroup);
+		loginForm.add(formFieldSet);
+		loginPanelBody.add(loginForm);
+		
+		
+		loginPanel.add(header);
+		loginPanel.add(loginPanelBody);
+		
+		mainCol.add(loginPanel);
+		mainRow.add(mainCol);
+		loginFormContianer.add(mainRow);
+		mainPanel.add(loginFormContianer);
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getSubmit()
-	 */
-	@Override
-	public HasClickHandlers getSubmit() {
-		return buttonBar.getSaveButton();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getReset()
-	 */
-	@Override
-	public HasClickHandlers getReset() {
-		return buttonBar.getCancelButton();
-	}
-
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#asWidget()
-	 */
+	
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getErrorMessageDisplay()
-	 */
 	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
-		return errorMessages;
+	public Input getEmailAddressText() {
+		return emailAddressText;
 	}
+	@Override
+	public void setEmailAddressText(Input emailAddressText) {
+		this.emailAddressText = emailAddressText;
+	}
+	@Override
+	public FormGroup getEmailAddressGroup() {
+		return emailAddressGroup;
+	}
+	@Override
+	public FormGroup getMessageFormGrp() {
+		return messageFormGrp;
+	}
+	@Override
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+	@Override
+	public Button getSubmitButton() {
+		return submitButton;
+	}
+	@Override
+	public
+	Button getResetButton() {
+		return resetButton;
+	}
+	
+	
+	
+	
 	
 }

@@ -1,6 +1,7 @@
 package mat.server.service.jobs;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -8,6 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import mat.dao.EmailAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.EmailAuditLog;
@@ -15,14 +26,6 @@ import mat.model.Status;
 import mat.model.User;
 import mat.server.util.ServerConstants;
 import mat.shared.ConstantMessages;
-
-import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.velocity.app.VelocityEngine;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
 
 
@@ -61,9 +64,6 @@ public class CheckUserLastLoginTask {
 	/** The expiry mail subject. */
 	private String expiryMailSubject;
 	
-	/** The velocity engine. */
-	private VelocityEngine velocityEngine;
-
 	private EmailAuditLogDAO emailAuditLogDAO;
 
 	/** The Constant WARNING_EMAIL_FLAG. */
@@ -71,6 +71,8 @@ public class CheckUserLastLoginTask {
 	
 	/** The Constant EXPIRY_EMAIL_FLAG. */
 	private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
+	
+	@Autowired private Configuration freemarkerConfiguration;
 	
 	/**
 	 * Method to Send 
@@ -135,21 +137,22 @@ public class CheckUserLastLoginTask {
 			model.put("content", content);
 			String text = null;
 			
-			if(WARNING_EMAIL_FLAG.equals(emailType)){
-				text = VelocityEngineUtils.mergeTemplateIntoString(
-			               velocityEngine, warningMailTemplate, model);
-				simpleMailMessage.setText(text);
-				simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+			try {
+				if(WARNING_EMAIL_FLAG.equals(emailType)){
+					text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(warningMailTemplate), model);
+					simpleMailMessage.setText(text);
+					simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
+				}else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
+					text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(expiryMailTemplate), model);
+					simpleMailMessage.setText(text);
+					simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
+					
+					//Update Termination Date for User.
+					updateUserTerminationDate(user);
+				}
+			} catch (IOException | TemplateException e) {
+				e.printStackTrace();
 			}
-			else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
-				text = VelocityEngineUtils.mergeTemplateIntoString(
-			               velocityEngine, expiryMailTemplate, model);
-				simpleMailMessage.setText(text);
-				simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
-				
-				//Update Termination Date for User.
-				updateUserTerminationDate(user);
-			}	
 			
 			mailSender.send(simpleMailMessage);
 			EmailAuditLog emailAudit = new EmailAuditLog();
@@ -253,8 +256,6 @@ public class CheckUserLastLoginTask {
 		
 		Boolean isValidUser = true;
 		
-		//final Date terminationDate = user.getTerminationDate();
-		final Date signInDate = user.getSignInDate();
 		if(user.getStatus().getId().equals("2")){
 			isValidUser = false;
 		}
@@ -453,25 +454,6 @@ public class CheckUserLastLoginTask {
 		return expiryMailTemplate;
 	}
 
-	/**
-	 * Gets the velocity engine.
-	 * 
-	 * @return the velocity engine
-	 */
-	public VelocityEngine getVelocityEngine() {
-		return velocityEngine;
-	}
-
-	/**
-	 * Sets the velocity engine.
-	 * 
-	 * @param velocityEngine
-	 *            the new velocity engine
-	 */
-	public void setVelocityEngine(final VelocityEngine velocityEngine) {
-		this.velocityEngine = velocityEngine;
-	}
-	
 	public EmailAuditLogDAO getEmailAuditLogDAO() {
 		return emailAuditLogDAO;
 	}

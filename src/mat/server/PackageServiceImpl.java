@@ -1,16 +1,30 @@
 package mat.server;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.measurepackage.service.PackageService;
 import mat.server.service.PackagerService;
+import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
+import mat.shared.packager.error.SaveSupplementalDataElementException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class PackageServiceImpl.
  */
+@Service
 public class PackageServiceImpl extends SpringRemoteServiceServlet implements PackageService{
+	@Autowired
+	PackagerService packagerService;
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1789210947786753971L;
@@ -25,6 +39,17 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 		return overview;
 	}
 	
+	public Map<String, MeasurePackageOverview> getClausesAndPackagesForMeasures(List<ManageMeasureSearchModel.Result> measureList) {
+		Map<String, MeasurePackageOverview> packageMap = new HashMap<>();
+		for(ManageMeasureSearchModel.Result result: measureList) {
+			String measureId = result.getId();
+			MeasurePackageOverview overview = buildOverview(measureId);
+			packageMap.put(measureId, overview);
+		}
+		
+		return packageMap;
+	}
+	
 	/**
 	 * Builds the overview.
 	 * 
@@ -33,7 +58,7 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	 * @return the measure package overview
 	 */
 	private MeasurePackageOverview buildOverview(String measureId) {
-		return getPackagerService().buildOverviewForMeasure(measureId);
+		return packagerService.buildOverviewForMeasure(measureId);
 	}
 	
 	/* (non-Javadoc)
@@ -41,40 +66,32 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	 */
 	@Override
 	public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
-		return getPackagerService().save(detail);
+		return packagerService.save(detail);
 	}
 	
-	/**
-	 * Gets the packager service.
-	 * 
-	 * @return the packager service
-	 */
-	private PackagerService getPackagerService() {
-		return (PackagerService)context.getBean("packagerService");
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.service.PackageService#delete(mat.client.measurepackage.MeasurePackageDetail)
 	 */
 	@Override
 	public void delete(MeasurePackageDetail detail) {
-		getPackagerService().delete(detail);
+		packagerService.delete(detail);
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.service.PackageService#saveQDMData(mat.client.measurepackage.MeasurePackageDetail)
 	 */
 	@Override
-	public void saveQDMData(MeasurePackageDetail detail) {
-		getPackagerService().saveQDMData(detail);
+	public void saveQDMData(MeasurePackageDetail detail) throws SaveSupplementalDataElementException {
+		packagerService.saveQDMData(detail);
 	}
 
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.service.PackageService#saveRiskVariables(mat.client.measurepackage.MeasurePackageDetail)
 	 */
 	@Override
-	public void saveRiskVariables(MeasurePackageDetail currentDetail) {
-		getPackagerService().saveRiskAdjVariables(currentDetail);
+	public void saveRiskVariables(MeasurePackageDetail currentDetail) throws SaveRiskAdjustmentVariableException {
+		packagerService.saveRiskAdjVariables(currentDetail);
 		
 	}
 	

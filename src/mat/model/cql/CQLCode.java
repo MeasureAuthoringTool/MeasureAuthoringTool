@@ -1,11 +1,13 @@
 package mat.model.cql;
 
+import java.util.Objects;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * The Class CQLCode.
  */
-public class CQLCode implements IsSerializable {
+public class CQLCode implements CQLExpression, IsSerializable {
 
 	/** The id. */
 	private String id;
@@ -46,43 +48,6 @@ public class CQLCode implements IsSerializable {
 
 	public void setIsCodeSystemVersionIncluded(boolean isCodeSystemVersionIncluded) {
 		this.isCodeSystemVersionIncluded = isCodeSystemVersionIncluded;
-	}
-
-	
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Sets the id.
-	 *
-	 * @param id the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * Gets the code name.
-	 *
-	 * @return the code name
-	 */
-	public String getCodeName() {
-		return codeName;
-	}
-
-	/**
-	 * Sets the code name.
-	 *
-	 * @param codeName the new code system
-	 */
-	public void setCodeName(String codeName) {
-		this.codeName = codeName;
 	}
 
 	/**
@@ -182,5 +147,64 @@ public class CQLCode implements IsSerializable {
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
 	}
+
+	@Override
+	public boolean equals(final Object other) {
+		if ( !(other instanceof CQLCode) ){
+			return false;
+		}
+		CQLCode castOther = (CQLCode) other;
+		return Objects.equals(codeName, castOther.codeName) && Objects.equals(codeSystemName, castOther.codeSystemName) 
+				&& Objects.equals(codeSystemVersion, castOther.codeSystemVersion) && Objects.equals(codeSystemOID, castOther.codeSystemOID) 
+				&& Objects.equals(codeOID, castOther.codeOID) && Objects.equals(codeIdentifier, castOther.codeIdentifier);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codeName, codeSystemName, codeSystemVersion, codeSystemOID, codeOID, codeIdentifier);
+	}
 	
+	public String getCodeName() {
+		return this.codeName;
+	}
+	
+	public void setCodeName(String name) {
+		this.codeName = name;
+	}
+
+	
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	@Override
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public String getName() {
+		return getCodeName();
+	}
+
+	@Override
+	public void setName(String name) {
+		setCodeName(name);
+	}
+
+
+	@Override
+	public String getLogic() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	@Override
+	public void setLogic(String logic) {
+		// TODO Auto-generated method stub
+		
+	}
 }

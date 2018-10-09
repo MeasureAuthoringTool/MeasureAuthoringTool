@@ -8,6 +8,9 @@ import org.gwtbootstrap3.client.ui.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -31,6 +34,7 @@ import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.search.SearchResultUpdate;
+import mat.client.util.MatTextBox;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class ManageCQLLibraryAdminPresenter implements MatPresenter {
@@ -44,6 +48,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 	/** The cql library view. */
 	ViewDisplay cqlLibraryAdminView;
+	
 	/** The history display. */
 	CQLLibraryHistoryView historyDisplay;
 
@@ -86,8 +91,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 		VerticalPanel getWidgetVP();
 
-		//CustomButton getZoomButton();
-
 		SearchWidgetBootStrap getSearchWidgetBootStrap();
 
 		List<String> getSelectedId();
@@ -101,8 +104,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		Button getClearAllButton();
 
 		Button getTransferButton();
-
-		//void clearTransferCheckBoxes();
 
 	}
 
@@ -140,7 +141,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		search(cqlLibraryAdminView.getSearchString().getValue(), filter, 1, Integer.MAX_VALUE);
 
 		panel.getButtonPanel().clear();
-	//	panel.setButtonPanel(null, null, cqlLibraryAdminView.getZoomButton(), "searchButton_cqlLib");
 		isSearchBarVisible = true;
 		fp.add(cqlLibraryAdminView.asWidget());
 
@@ -152,6 +152,17 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 	 * CQL Library TransferOwnership event Handlers
 	 */
 	private void addCQLLibraryAdminViewEvents() {
+		
+		MatTextBox searchWidget = (MatTextBox) cqlLibraryAdminView.getSearchString();
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) cqlLibraryAdminView.getSearchButton()).click();
+				}
+			}
+		});
 		
 		cqlLibraryAdminView.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -178,26 +189,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				displaySearch();
-				//cqlLibraryAdminView.clearTransferCheckBoxes();
 			}
 		});
-		/*cqlLibraryAdminView.getZoomButton().addClickHandler(new ClickHandler() {
-
-		@Override
-		public void onClick(ClickEvent event) {
-			cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
-
-			isSearchBarVisible = !isSearchBarVisible;
-
-			if (isSearchBarVisible) {
-				cqlLibraryAdminView.getWidgetVP()
-						.add(cqlLibraryAdminView.getSearchWidgetBootStrap().getSearchWidget());
-			} else {
-				cqlLibraryAdminView.getWidgetVP().clear();
-			}
-
-		}
-	});*/
 	}
 
 	/**
@@ -222,7 +215,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 			@Override
 			public void onTransferSelectedClicked(CQLLibraryDataSetObject result) {
 				updateTransferIDs(result);
-
 			}
 
 			@Override
@@ -294,6 +286,18 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 			}
 		});
 
+		MatTextBox searchWidget = (MatTextBox) transferOwnershipView.getSearchString(); 
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) transferOwnershipView.getSearchButton()).click();
+				}
+				
+			}
+		});
+		
 		transferOwnershipView.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -354,7 +358,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 						@Override
 						public void onSuccess(TransferOwnerShipModel result) {
-
+							SearchResultUpdate sru = new SearchResultUpdate();
+							sru.update(result, (MatTextBox) transferOwnershipView.getSearchString(), searchString);
 							transferOwnershipView.buildHTMLForLibraries(cqlLibraryAdminView.getSelectedLibraries());
 							transferOwnershipView.buildCellTable(result);
 							panel.setHeading("CQL Library Ownership >  CQL Ownership Transfer", "CQLLibraryOwnership");
@@ -498,6 +503,8 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 	@Override
 	public void beforeClosingDisplay() {
+		cqlLibraryAdminView.getSearchString().setValue("");
+		transferOwnershipView.getSearchString().setValue("");
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
 		isSearchBarVisible = true;
 	}
@@ -511,8 +518,6 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
 	@Override
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
 		return panel;
 	}
-
 }

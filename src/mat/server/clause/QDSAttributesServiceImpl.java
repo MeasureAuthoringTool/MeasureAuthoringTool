@@ -13,6 +13,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.json.JSONObject;
+import org.json.XML;
+
 import mat.client.clause.QDSAttributesService;
 import mat.dao.DataTypeDAO;
 import mat.dao.clause.AttributesDAO;
@@ -23,31 +27,13 @@ import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.util.ResourceLoader;
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class QDSAttributesServiceImpl.
  */
 @SuppressWarnings("serial")
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet
 implements QDSAttributesService {
-	
-	/** The q ds attributes dao. */
-	@Autowired
-	private QDSAttributesDAO qDSAttributesDAO;
-	
-	@Autowired
-	private AttributesDAO attributesDAO;
-	
-	@Autowired
-	private ModesAttributesDAO modesAttributesDAO;
-	
-	@Autowired
-	private ModesDAO modesDAO;
 	
 	/*
 	 * (non-Javadoc)
@@ -63,7 +49,7 @@ implements QDSAttributesService {
 		Collections.sort(attrs, attributeComparator);
 		Collections.sort(attrs1, attributeComparator);
 		attrs.addAll(attrs1);
-		// Collections.sort(attrs, attributeComparator);
+
 		return attrs;
 	}
 	
@@ -205,17 +191,13 @@ implements QDSAttributesService {
 	public String getJSONObjectFromXML() {
 		String result = null;
 		try {
-			result = convertXmlToString();
-			XMLSerializer xmlSerializer = new XMLSerializer();
-			xmlSerializer.setForceTopLevelObject(true);
-			xmlSerializer.setTypeHintsEnabled(false);
-			JSON json = xmlSerializer.read(result);
-			JSONObject jsonObject = JSONObject.fromObject(json.toString());
+			JSONObject jsonObject = XML.toJSONObject(convertXmlToString());
 			result = jsonObject.toString(4);
-		} catch (Exception e) {
-			e.printStackTrace();
 			
+		} catch (Exception e) {
+			e.printStackTrace();			
 		}
+		
 		return result;
 	}
 	
@@ -226,17 +208,13 @@ implements QDSAttributesService {
 	public String getModeDetailsJSONObjectFromXML() {
 		String result = null;
 		try {
-			result = convertModeDetailsXmlToString();
-			XMLSerializer xmlSerializer = new XMLSerializer();
-			xmlSerializer.setForceTopLevelObject(true);
-			xmlSerializer.setTypeHintsEnabled(false);
-			JSON json = xmlSerializer.read(result);
-			JSONObject jsonObject = JSONObject.fromObject(json.toString());
+			JSONObject jsonObject = XML.toJSONObject(convertModeDetailsXmlToString());
 			result = jsonObject.toString(4);
+
 		} catch (Exception e) {
-			e.printStackTrace();
-			
+			e.printStackTrace();			
 		}
+		
 		return result;
 	}
 	
@@ -245,7 +223,6 @@ implements QDSAttributesService {
 	 *
 	 * @return the string
 	 */
-	@SuppressWarnings("resource")
 	private String convertXmlToString() {
 		String fileName = "SimplifiedAttributePatterns.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);
@@ -280,7 +257,6 @@ implements QDSAttributesService {
 	 *
 	 * @return the string
 	 */
-	@SuppressWarnings("resource")
 	private String convertModeDetailsXmlToString() {
 		String fileName = "ModeDetails.xml";
 		URL templateFileUrl = new ResourceLoader().getResourceAsURL(fileName);

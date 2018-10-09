@@ -14,7 +14,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
@@ -23,6 +24,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -43,15 +45,16 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLDefinitionsWrapper;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.server.validator.measure.CompositeMeasurePackageValidator;
 import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
-
-/**
- * The Class PackagerServiceImpl.
- */
+import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
+import mat.shared.packager.error.SaveSupplementalDataElementException;
+@Service
 public class PackagerServiceImpl implements PackagerService {
 
 	/** The Constant logger. */
@@ -132,6 +135,12 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The cql library DAO. */
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
+	
+	@Autowired
+	private MeasureLibraryService measureLibraryService; 
+	
+	@Autowired
+	private CompositeMeasurePackageValidator compositeMeasurePackageValidator;
 
 	/**
 	 * 1) Loads the MeasureXml from DB and converts into Xml Document Object 2)
@@ -164,6 +173,7 @@ public class PackagerServiceImpl implements PackagerService {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		Measure measure = measureDAO.find(measureId);
+		overview.setComposite(measure.getIsCompositeMeasure());
 		boolean isGroupRemoved = false;
 		List<QualityDataSetDTO> qdmSelectedList;
 		try {
@@ -373,20 +383,7 @@ public class PackagerServiceImpl implements PackagerService {
 		return hasAllStratusHasChild;
 	}
 
-	/*
-	 * private Node checkIfSubTreeLookUpExist(XmlProcessor processor){ Node node
-	 * = null; try { node = processor.findNode(processor.getOriginalDoc(),
-	 * XPATH_MEASURE_SUBTREE_LOOKUP); } catch (XPathExpressionException e) { //
-	 * TODO Auto-generated catch block e.printStackTrace(); } return node; }
-	 */
-	/**
-	 * Method to create XML from QualityDataModelWrapper object for
-	 * supplementalDataElement .
-	 * 
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @return the byte array output stream
-	 */
+	
 	private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
 		Mapping mapping = new Mapping();
@@ -857,7 +854,7 @@ public class PackagerServiceImpl implements PackagerService {
 					// Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 							&& !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-							&& !oid.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+							&& !oid.equalsIgnoreCase(ConstantMessages.DEAD_OID)
 							&& !oid.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(nodeID)
@@ -882,7 +879,7 @@ public class PackagerServiceImpl implements PackagerService {
 					// Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 							&& !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-							&& !oid.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+							&& !oid.equalsIgnoreCase(ConstantMessages.DEAD_OID)
 							&& !oid.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(nodeID)
@@ -930,8 +927,8 @@ public class PackagerServiceImpl implements PackagerService {
 				CQLDefinition cqlDef = new CQLDefinition();
 
 				cqlDef.setId(newNode.getAttributes().getNamedItem("id").getNodeValue());
-				cqlDef.setDefinitionName(newNode.getAttributes().getNamedItem("name").getNodeValue());
-				cqlDef.setDefinitionLogic(newNode.getFirstChild().getTextContent());
+				cqlDef.setName(newNode.getAttributes().getNamedItem("name").getNodeValue());
+				cqlDef.setLogic(newNode.getFirstChild().getTextContent());
 
 				cqlDef.setContext(newNode.getAttributes().getNamedItem("context").getNodeValue());
 				// if(newNode.getAttributes().getNamedItem("supplDataElement")
@@ -1133,20 +1130,33 @@ public class PackagerServiceImpl implements PackagerService {
 		return result;
 	}
 
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.PackagerService#saveQDMData(mat.client.measurepackage.
-	 * MeasurePackageDetail)
-	 */
 	@Override
-	public void saveQDMData(MeasurePackageDetail detail) {
+	public void saveQDMData(MeasurePackageDetail detail) throws SaveSupplementalDataElementException {
 		Measure measure = measureDAO.find(detail.getMeasureId());
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measure.getId());
+	
 		if (measure.getReleaseVersion() != null &&  MatContext.get().isCQLMeasure(measure.getReleaseVersion())) {
-			saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
+			String updatedMeasureXML = saveDefinitionsData(measureXML, detail.getCqlSuppDataElements());
+			
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				compositeMeasurePackageValidator.getResult().getMessages().clear();
+				try {
+					compositeMeasurePackageValidator.validateAllSupplementalDataElementsWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedMeasureXML), updatedMeasureXML);
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();
+				}
+				
+				if(compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+					measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
+					measureXMLDAO.save(measureXML);
+				} else {
+					throw new SaveSupplementalDataElementException(CompositeMeasurePackageValidator.SUPPLEMENTAL_DATA_ELEMENT_TYPE_ERROR); 
+				}
+			} else {
+				measureXML.setMeasureXMLAsByteArray(updatedMeasureXML);
+			}
+		
+			measureXMLDAO.save(measureXML);
 		} else {
 			saveQDMData(measureXML, detail.getSuppDataElements());
 		}
@@ -1200,8 +1210,9 @@ public class PackagerServiceImpl implements PackagerService {
 	 *            the measure xml
 	 * @param supplDefinitionList
 	 *            the suppl definition list
+	 * @return 
 	 */
-	private void saveDefinitionsData(MeasureXML measureXML, List<CQLDefinition> supplDefinitionList) {
+	private String saveDefinitionsData(MeasureXML measureXML, List<CQLDefinition> supplDefinitionList) {
 		ArrayList<CQLDefinition> supplementDataElementsAll = (ArrayList<CQLDefinition>) supplDefinitionList;
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		wrapper.setCqlDefinitions(supplementDataElementsAll);
@@ -1226,15 +1237,14 @@ public class PackagerServiceImpl implements PackagerService {
 					Node parentNode = newNode.getParentNode();
 					parentNode.removeChild(newNode);
 				}
-				// setSupplementalDataForQDMs(processor.getOriginalDoc(),
-				// detail.getSuppDataElements(), detail.getQdmElements());
 			} catch (XPathExpressionException e) {
 
 				e.printStackTrace();
 			}
 		}
-		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
-		measureXMLDAO.save(measureXML);
+		
+		
+		return processor.transform(processor.getOriginalDoc());
 	}
 
 	/*
@@ -1244,18 +1254,40 @@ public class PackagerServiceImpl implements PackagerService {
 	 * measurepackage.MeasurePackageDetail)
 	 */
 	@Override
-	public void saveRiskAdjVariables(MeasurePackageDetail detail) {
+	public void saveRiskAdjVariables(MeasurePackageDetail detail) throws SaveRiskAdjustmentVariableException {
 		ArrayList<RiskAdjustmentDTO> allRiskAdjVars = (ArrayList<RiskAdjustmentDTO>) detail.getRiskAdjVars();
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-		Measure measure = measureDAO.find(measureXML.getMeasure_id());
+		Measure measure = measureDAO.find(measureXML.getMeasureId());
 		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		if (measure.getReleaseVersion() != null && (MatContext.get().isCQLMeasure(measure.getReleaseVersion()))) {
-			saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
+			String updatedXML = saveRiskAdjVariableWithDefinitions(allRiskAdjVars, processor);
+			
+			if(BooleanUtils.isTrue(measure.getIsCompositeMeasure())) {
+				try {
+					compositeMeasurePackageValidator.getResult().getMessages().clear();
+					compositeMeasurePackageValidator.validateAllRiskAdjustmentVariablesWithSameNameHaveSameType(measureLibraryService.getCompositeMeasure(measure.getId(), updatedXML), updatedXML);
+				} catch (XPathExpressionException e) {
+					e.printStackTrace();
+				}
+				
+				if(compositeMeasurePackageValidator.getResult().getMessages().isEmpty()) {
+					measureXML.setMeasureXMLAsByteArray(updatedXML);
+					measureXMLDAO.save(measureXML);
+				} else {
+					throw new SaveRiskAdjustmentVariableException(CompositeMeasurePackageValidator.RISK_ADJUSTMENT_VARIABLE_TYPE_ERROR);
+				}
+			} 	else {
+				measureXML.setMeasureXMLAsByteArray(updatedXML);
+				measureXMLDAO.save(measureXML);
+			}
+			
+
 		} else {
 			saveRiskAdjVariableWithClauses(allRiskAdjVars, processor);
+			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
+			measureXMLDAO.save(measureXML);
 		}
-		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
-		measureXMLDAO.save(measureXML);
+
 	}
 
 	/**
@@ -1299,7 +1331,7 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @param allRiskAdjVars the all risk adj vars
 	 * @param processor the processor
 	 */
-	private void saveRiskAdjVariableWithDefinitions(List<RiskAdjustmentDTO> allRiskAdjVars, XmlProcessor processor) {
+	private String saveRiskAdjVariableWithDefinitions(List<RiskAdjustmentDTO> allRiskAdjVars, XmlProcessor processor) {
 
 		CQLDefinitionsWrapper wrapper = new CQLDefinitionsWrapper();
 		wrapper.setRiskAdjVarDTOList(allRiskAdjVars);
@@ -1322,10 +1354,10 @@ public class PackagerServiceImpl implements PackagerService {
 				}
 
 			} catch (XPathExpressionException e) {
-
 				e.printStackTrace();
 			}
 		}
+		return processor.transform(processor.getOriginalDoc());
 	}
 
 	/**

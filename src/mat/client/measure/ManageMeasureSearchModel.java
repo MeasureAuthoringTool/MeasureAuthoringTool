@@ -10,7 +10,6 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.shared.search.SearchResults;
 import mat.model.LockedUserInfo;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureSearchModel.
  */
@@ -96,6 +95,12 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		
 		private boolean isVersionable;
 		
+		private Boolean isPatientBased;
+		
+		private String qdmVersion;
+		
+		private Boolean isComposite;
+
 		/**
 		 * Checks if is measure family.
 		 *
@@ -491,7 +496,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		 * 
 		 * @return the ownerfirst name
 		 */
-		public String getOwnerfirstName() {
+		public String getOwnerFirstName() {
 			return ownerfirstName;
 		}
 		
@@ -590,8 +595,30 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setVersionable(boolean isVersionable) {
 			this.isVersionable = isVersionable;
 		}
+
+		public Boolean isPatientBased() {
+			return isPatientBased;
+		}
+
+		public void setPatientBased(Boolean isPatientBased) {
+			this.isPatientBased = isPatientBased;
+		}
+
+		public String getQdmVersion() {
+			return qdmVersion;
+		}
+
+		public void setQdmVersion(String qdmVersion) {
+			this.qdmVersion = qdmVersion;
+		}
 		
-		
+		public Boolean getIsComposite() {
+			return isComposite;
+		}
+
+		public void setIsComposite(Boolean isComposite) {
+			this.isComposite = isComposite;
+		}
 	}
 	
 	/** The data. */

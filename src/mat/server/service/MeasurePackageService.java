@@ -9,11 +9,13 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.model.DataType;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSet;
+import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
-// TODO: Auto-generated Javadoc
-/**MeasurePackageService.java.**/
+import mat.shared.MeasureSearchModel;
+
 public interface MeasurePackageService {
 	
 	/**
@@ -261,8 +263,7 @@ public interface MeasurePackageService {
 	 *            - {@link Integer}.
 	 * @return {@link List} of {@link MeasureShareDTO}. *
 	 */
-	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
-			int numResults, int filter);
+	List<MeasureShareDTO> searchWithFilter(MeasureSearchModel advancedSearchModel);
 	
 	/**
 	 * Transfer measure owner ship to user.
@@ -313,8 +314,7 @@ public interface MeasurePackageService {
 	 * @throws Exception
 	 *             - {@link Exception}.
 	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
-			List<MatValueSet> matValueSetList) throws Exception;
+	ValidateMeasureResult createExports(String key, List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws Exception;
 
 	/**
 	 * Gets the human readable for node.
@@ -328,10 +328,10 @@ public interface MeasurePackageService {
 	/**
 	 * Gets the component measures info.
 	 *
-	 * @param measureIds the measure ids
+	 * @param measureId the measure ids
 	 * @return the component measures info
 	 */
-	List<Measure> getComponentMeasuresInfo(List<String> measureIds);
+	List<Measure> getComponentMeasuresInfo(String measureId);
 	
 	/**
 	 * Gets the measure.
@@ -340,4 +340,16 @@ public interface MeasurePackageService {
 	 * @return the measure
 	 */
 	boolean getMeasure(String measureId);
+
+	List<MeasureShareDTO> searchComponentMeasuresWithFilter(MeasureSearchModel measureSearchModel);
+	
+	void saveComponentMeasures(List<ComponentMeasure> componentMeasuresList);
+	
+	void updateComponentMeasures(String compositeMeasureId, List<ComponentMeasure> componentMeasuresList);
+
+	void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export);
+
+	void deleteComponentMeasure(List<ComponentMeasure> componentMeasuresList);
+
+	ValidateMeasureResult validateExportsForCompositeMeasures(String key) throws Exception;
 }

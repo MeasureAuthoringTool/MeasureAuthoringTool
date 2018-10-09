@@ -14,24 +14,22 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.CqlLibraryPresenter;
-import mat.client.clause.cqlworkspace.EditConfirmationDialogBox;
+import mat.client.buttons.SaveContinueCancelButtonBar;
+import mat.client.cqlworkspace.EditConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 	
-/*	private Button saveButton = new Button("Save and Continue");
-	private Button cancelButton = new Button("Cancel");*/
+
 	private TextArea nameField = new TextArea();
 	private ErrorMessageAlert errorMessage = new ErrorMessageAlert();
 	private SuccessMessageAlert successMessage = new SuccessMessageAlert();
 	protected HTML instructions = new HTML("Enter a CQL Library name. Then continue to the CQL Composer.");
 	private SimplePanel mainDetailViewVP = new SimplePanel();
-	/**  The edit confirmation box. */
 	private EditConfirmationDialogBox createNewConfirmationDialogBox = new EditConfirmationDialogBox();
 	
-	SaveCancelButtonBar buttonToolBar = new SaveCancelButtonBar("cqlDetail");
+	SaveContinueCancelButtonBar buttonToolBar = new SaveContinueCancelButtonBar("cqlDetail");
 	
 	public CQLLibraryDetailView(){
 		resetAll();
@@ -57,6 +55,7 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 		nameLabel.setMarginTop(5);
 		nameLabel.setId("cqlLibraryName_Label");
 		nameField.setId("CQLLibraryName_Input");
+		nameField.setTitle("Enter Name Required");
 		nameField.setMaxLength(500);
 		nameField.setWidth("400px");
 		nameField.setHeight("50px");
@@ -138,9 +137,6 @@ public class CQLLibraryDetailView implements CqlLibraryPresenter.DetailDisplay{
 		this.successMessage = successMessage;
 	}
 
-	/**
-	 * @return the createNewConfirmationDialogBox
-	 */
 	public EditConfirmationDialogBox getCreateNewConfirmationDialogBox() {
 		return createNewConfirmationDialogBox;
 	}

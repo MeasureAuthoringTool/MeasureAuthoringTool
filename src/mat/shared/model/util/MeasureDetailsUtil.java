@@ -2,40 +2,23 @@ package mat.shared.model.util;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 
 /**
  * The Class MeasureDetailsUtil.
  */
 public class MeasureDetailsUtil {
-	
-//	/**
-//	 * Gets the measure type abbr.
-//	 * 
-//	 * @param measureType
-//	 *            the measure type
-//	 * @return the measure type abbr
-//	 */
-//	public static String getMeasureTypeAbbr(String measureType){
-//		String abbr = "";
-//		if(measureType.equalsIgnoreCase("Composite")){
-//			abbr = "COMPOSITE";
-//		}else if(measureType.equalsIgnoreCase("Cost/Resource Use")){
-//			abbr = "COSTRESOURCEUSE";
-//		}else if(measureType.equalsIgnoreCase("Efficiency")){
-//			abbr = "EFFICIENCY";
-//		}else if(measureType.equalsIgnoreCase("Outcome")){
-//			abbr = "OUTCOME";
-//		}else if(measureType.equalsIgnoreCase("Structure")){
-//			abbr = "STRUCTURE";
-//		}else if(measureType.equalsIgnoreCase("Patient Engagement/Experience")){
-//			abbr = "PATENGEXP";
-//		}else if(measureType.equalsIgnoreCase("Process")){
-//			abbr = "PROCESS";
-//		}
-//		return abbr;
-//	}
-	
+		
+	private static final String PATIENT_LINEAR_ABBREVIATION = "LINEARSCR";
+	private static final String OPPORTUNITY_ABBREVIATION = "OPPORSCR";
+	private static final String ALL_OR_NOTHING_ABBREVIATION = "ALLORNONESCR";
+	private static final String COHORT_ABBREVIATION = "COHORT";
+	private static final String RATIO_ABBREVIATION = "RATIO";
+	private static final String CONTINUOUS_VARIABLE_ABBREVIATION = "CONTVAR";
+	private static final String PROPORTION_ABBREVIATION = "PROPOR";
+
 	/**
 	 * Gets the scoring abbr.
 	 * 
@@ -46,16 +29,29 @@ public class MeasureDetailsUtil {
 	public static String getScoringAbbr(String scoring) {
 		String abbr = "";
 		if (scoring.equalsIgnoreCase(ConstantMessages.CONTINUOUS_VARIABLE_SCORING)) {
-			abbr = "CONTVAR";
+			abbr = CONTINUOUS_VARIABLE_ABBREVIATION;
 		} else if (scoring.equalsIgnoreCase(ConstantMessages.PROPORTION_SCORING)) {
-			abbr = "PROPOR";
+			abbr = PROPORTION_ABBREVIATION;
 		} else if (scoring.equalsIgnoreCase(ConstantMessages.RATIO_SCORING)) {
-			abbr = "RATIO";
+			abbr = RATIO_ABBREVIATION;
 		} else if (scoring.equalsIgnoreCase(ConstantMessages.COHORT_SCORING)) {
-			abbr = "COHORT";
+			abbr = COHORT_ABBREVIATION;
 		}
 		return abbr;
 	}
+	public static String getCompositeScoringAbbreviation(String scoring) {
+		String abbreviation = "";
+		if(scoring.equalsIgnoreCase(CompositeMethodScoringConstant.ALL_OR_NOTHING)) {
+			abbreviation = ALL_OR_NOTHING_ABBREVIATION;
+		} else if(scoring.equalsIgnoreCase(CompositeMethodScoringConstant.OPPORTUNITY)) {
+			abbreviation = OPPORTUNITY_ABBREVIATION;
+		} else if(scoring.equalsIgnoreCase(CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR)) {
+			abbreviation = PATIENT_LINEAR_ABBREVIATION;
+		}
+		
+		return abbreviation;
+	}
+	
 	/**
 	 * Gets the trimmed list.
 	 * 

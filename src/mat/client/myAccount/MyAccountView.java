@@ -38,6 +38,7 @@ public class MyAccountView implements MyAccountPresenter.Display, TabObserver {
 	 * @param cpp
 	 *            the cpp
 	 */
+	@SuppressWarnings("unchecked")
 	public MyAccountView(PersonalInformationPresenter pip,
 			SecurityQuestionsPresenter sqp, 
 			ChangePasswordPresenter cpp) {
@@ -48,15 +49,15 @@ public class MyAccountView implements MyAccountPresenter.Display, TabObserver {
 		String title;
 		
 		title = "Personal Information";
-		tabLayout.add(pip.getWidget(),	title);
+		tabLayout.add(pip.getWidget(),	title, true);
 		presenterList.add(pip);
 		
 		title = "Security Questions";
-		tabLayout.add(sqp.getWidget(), title);
+		tabLayout.add(sqp.getWidget(), title, true);
 		presenterList.add(sqp);
 		
 		title = "Password";
-		tabLayout.add(cpp.getWidget(), title);
+		tabLayout.add(cpp.getWidget(), title, true);
 		presenterList.add(cpp);
 		
 		tabLayout.getElement().setAttribute("id", "myAccountTabLayout");

@@ -11,7 +11,10 @@
 		<field name="versionUsed" type="java.lang.String">
 			<bind-xml name="version" node="element" />
 		</field>
-		<field name="name" type="java.lang.String">
+		<field name="libraryComment" type="java.lang.String">
+			<bind-xml name="libraryComment" node="element" />
+		</field>		
+		<field name="usingName" type="java.lang.String">
 			<bind-xml name="usingModel" node="element" />
 		</field>
 		<field name="qdmVersion" type="java.lang.String">
@@ -88,6 +91,9 @@
 					</field>
 					<field name="suppDataElement" type="java.lang.Boolean">
 						<bind-xml name="suppDataElement" node="attribute" />
+					</field>
+					<field name="valueSetType" type="java.lang.String">
+						<bind-xml name="type" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>
@@ -285,7 +291,14 @@
 					<field name="qdmVersion" type="java.lang.String">
 						<bind-xml name="qdmVersion" node="attribute" />
 					</field>
-
+					
+					<field name="isComponent" type="java.lang.String">
+						<bind-xml name="isComponent" node="attribute" />
+					</field>
+					
+					<field name="measureId" type="java.lang.String">
+						<bind-xml name="measureId" node="attribute" />
+					</field>			
 				</class>
 			</bind-xml>
 		</field>

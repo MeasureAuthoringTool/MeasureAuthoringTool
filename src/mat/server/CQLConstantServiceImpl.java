@@ -30,7 +30,7 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		
 		// get the unit map in the form of <UnitName, CQLUnit>
 		Map<String, String> unitMap = new LinkedHashMap<String, String>(); 
-		unitMap.put(MatContext.get().PLEASE_SELECT, MatContext.get().PLEASE_SELECT);
+		unitMap.put(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
 		for(UnitDTO unit : unitDTOList) {
 			unitMap.put(unit.getUnit(), unit.getCqlunit());
 		}

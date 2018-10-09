@@ -3,6 +3,8 @@ package mat.server.service.impl;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import mat.DTO.SearchHistoryDTO;
 import mat.dao.CodeListAuditLogDAO;
 import mat.dao.MeasureAuditLogDAO;
@@ -13,17 +15,10 @@ import mat.model.QualityDataSet;
 import mat.model.clause.Measure;
 import mat.server.service.MeasureAuditService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 /**
  * Service implementation for Measure Audit Service.
  */
 public class MeasureAuditServiceImpl implements MeasureAuditService{
-	
-	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(MeasureAuditServiceImpl.class);
 	
 	/** The measure dao. */
 	@Autowired

@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.cql.CQLCode;
+import mat.shared.StringUtility;
 
 public class MatCodeTransferObject implements IsSerializable , BaseModel{
 
@@ -50,11 +51,11 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 				}
 			}
 			
-			if ((this.cqlCode.getCodeName() != null) && !this.cqlCode.getCodeName().isEmpty()) {
-				String noMarkupText = this.cqlCode.getCodeName().trim().replaceAll(markupRegExp, "");
+			if ((this.cqlCode.getName() != null) && !this.cqlCode.getName().isEmpty()) {
+				String noMarkupText = this.cqlCode.getName().trim().replaceAll(markupRegExp, "");
 				System.out.println("getCodeName:" + noMarkupText);
-				if (this.cqlCode.getCodeName().trim().length() > noMarkupText.length()) {
-					this.cqlCode.setCodeName(noMarkupText);
+				if (this.cqlCode.getName().trim().length() > noMarkupText.length()) {
+					this.cqlCode.setName(noMarkupText);
 				}
 			}
 			
@@ -112,25 +113,17 @@ public class MatCodeTransferObject implements IsSerializable , BaseModel{
 	
 	public boolean isValidModel(){
 		boolean isValid = true;
-		if(this.cqlCode != null){
-			if ((this.cqlCode.getCodeIdentifier() != null) && this.cqlCode.getCodeIdentifier().isEmpty()) {
-				isValid = false;
-			} else if ((this.cqlCode.getCodeName() != null) && this.cqlCode.getCodeName().isEmpty()) {
-				isValid = false;
-			} else if ((this.cqlCode.getCodeOID() != null) && this.cqlCode.getCodeOID().isEmpty()) {
-				isValid = false;
-			} else if ((this.cqlCode.getCodeSystemName() != null) && this.cqlCode.getCodeSystemName().isEmpty()) {
-				isValid = false;
-			} else if ((this.cqlCode.getCodeSystemOID() != null) && this.cqlCode.getCodeSystemOID().isEmpty()) {
-				isValid = false;
-			} else if ((this.cqlCode.getCodeSystemVersion() != null) && this.cqlCode.getCodeSystemVersion().isEmpty()) {
-				isValid = false;
-			} else if ((this.cqlCode.getDisplayName() != null) && this.cqlCode.getDisplayName().isEmpty()) {
-				isValid = false;
-			}
-		} else {
+		if (this.cqlCode == null || StringUtility.isEmptyOrNull(this.cqlCode.getCodeIdentifier()) || StringUtility.isEmptyOrNull(this.cqlCode.getName())
+				|| StringUtility.isEmptyOrNull(this.cqlCode.getCodeOID()) || StringUtility.isEmptyOrNull(this.cqlCode.getCodeSystemName())
+				|| StringUtility.isEmptyOrNull(this.cqlCode.getCodeSystemOID()) || StringUtility.isEmptyOrNull(this.cqlCode.getCodeSystemVersion())
+				|| StringUtility.isEmptyOrNull(this.cqlCode.getDisplayName())) {
 			isValid = false;
 		}
 		return isValid;
+	}
+	
+	public boolean isValidCodeData(CQLCode applyCode) {
+
+		return applyCode.equals(this.cqlCode);
 	}
 }

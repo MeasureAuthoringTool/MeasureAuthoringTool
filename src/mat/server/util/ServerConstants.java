@@ -1,6 +1,6 @@
 package mat.server.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Class ServerConstants.

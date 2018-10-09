@@ -8,111 +8,23 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
- * The Class PreviousContinueButtonBar.
+ * This is the class for the two buttons at the bottom of the Measure Composer tab
+ * that send you to the previous or next tab
  */
 public class PreviousContinueButtonBar extends Composite implements HasVisible, Enableable {
+	private final String UNDEFINED = "undefined";
 	
-	/** The previous button. */
 	private MATAnchor previousButton = new MATAnchor("");
-	
-	/** The continue button. */
 	private MATAnchor continueButton = new MATAnchor("");
-	
-	/** The state. */
-	public int state =0;
-	
-	/** The sub state. */
-	public int subState = 0; //can be extended further
-	
-	/**
-	 * Sets the page names on state.
-	 */
-	public void setPageNamesOnState(){
-		if (state <= 0) {
-			state = 0;
-			if (subState == 0) {
-				setPageNames("UNDEFINED", "CQL Workspace");
-				buttonPanel.remove(previousButton);
-				buttonPanel.remove(continueButton);
-				buttonPanel.add(continueButton);
-			}
-		} else if (state == 1) {
-			setPageNames("Measure Details", "Population Workspace");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);
-		} /*else if (state == 2) {
-			setPageNames("Old QDM Elements", "Clause Workspace");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);
-		} */else if (state == 2) {
-			setPageNames("CQL Workspace", "Measure Packager");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);
-		} /*else if (state == 3) {
-			state = 3;
-			setPageNames("Clause Workspace", "Old Measure Packager");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);//commented to hide the Old Measure Packager from PreviousContinueButtonBar
-		} else if (state == 3) {
-			state = 3;
-			setPageNames("Clause Workspace", "Population Workspace");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);
-		} */else if (state == 3) {
-			state = 3;
-			setPageNames("Population Workspace", "UNDEFINED");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-		} else if(state == 4) {
-			state = 5; 
-			setPageNames("UNDEFINED", "UNDEFINED");
-			buttonPanel.remove(continueButton);
-			buttonPanel.remove(previousButton);
-		} else if(state == 5) {
-			state = 5; 
-			setPageNames("UNDEFINED", "UNDEFINED");
-			buttonPanel.remove(continueButton);
-			buttonPanel.remove(previousButton);
-		}
-	}
-	
-	/**
-	 * Sets the page names.
-	 * 
-	 * @param previousPage
-	 *            the previous page
-	 * @param nextPage
-	 *            the next page
-	 */
-	public void  setPageNames(String previousPage, String nextPage){
-		previousButton.setText("<< Go to "+previousPage);
-		previousButton.getElement().setId(previousPage+"_MATAnchor");
-		continueButton.setText("Go to "+ nextPage +" >>");
-		continueButton.getElement().setId(nextPage+"_MATAnchor");
-	}
-	
-	/** The button panel. */
 	private FlowPanel buttonPanel = new FlowPanel();
 	
-	/**
-	 * Instantiates a new previous continue button bar.
-	 */
+	public int state = 0;
+	public int subState = 0; //can be extended further
+	
 	public PreviousContinueButtonBar() {
 		continueButton.addStyleName("continueButton");
 		continueButton.getElement().setId("continueButton_MATAnchor");
 		previousButton.getElement().setId("previousButton_MATAnchor");
-		
 		SimplePanel sPanel = new SimplePanel();
 		sPanel.getElement().setId("sPanel_SimplePanel");
 		sPanel.addStyleName("clearBoth");
@@ -122,51 +34,74 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 		setPageNamesOnState();
 	}
 	
-	/**
-	 * Sets the continue button visible.
-	 * 
-	 * @param visible
-	 *            the new continue button visible
-	 */
-	public void setContinueButtonVisible(boolean visible) {
-		MatContext.get().setVisible(continueButton, visible);
+	public void setPageNamesOnState(){
+		if(state <= 0) {
+			state = 0;
+		}
+
+		switch(state) {
+			case 0: 
+				if (subState == 0) {
+					updateButtons(UNDEFINED, "CQL Workspace");
+				}
+				break;
+				
+			case 1: 
+				updateButtons("Measure Details", "Population Workspace");
+				break;
+				
+			case 2:
+				updateButtons("CQL Workspace", "Measure Packager");
+				break;
+				
+			case 3:
+				updateButtons("Population Workspace", UNDEFINED);
+				break;
+			
+			default:
+				updateButtons(UNDEFINED, UNDEFINED);
+				break;
+		}
 	}
 	
-	/**
-	 * Sets the previous button visible.
-	 * 
-	 * @param visible
-	 *            the new previous button visible
-	 */
-	public void setPreviousButtonVisible(boolean visible) {
-		MatContext.get().setVisible(previousButton, visible);
+
+	public void  updateButtons(String previousPage, String nextPage){
+		previousButton.setText("<< Go to "+previousPage);
+		previousButton.getElement().setId(previousPage+"_MATAnchor");
+		continueButton.setText("Go to "+ nextPage +" >>");
+		continueButton.getElement().setId(nextPage+"_MATAnchor");
+		setVisibility(previousPage, nextPage);
+		addButtons(previousPage, nextPage);
 	}
 	
-	/**
-	 * Gets the continue button.
-	 * 
-	 * @return the continue button
-	 */
+	private void addButtons(String previous, String next) {
+		buttonPanel.remove(previousButton);
+		buttonPanel.remove(continueButton);
+		
+		if(!previous.equals(UNDEFINED)) {
+			buttonPanel.add(previousButton);
+		}
+		if(!next.equals(UNDEFINED)) {
+			buttonPanel.add(continueButton);
+		}
+	}
+	
+	private void setVisibility(String previous, String next) {
+		MatContext.get().setVisible(previousButton, !previous.equals(UNDEFINED));
+		MatContext.get().setVisible(continueButton, !next.equals(UNDEFINED));
+	}
+
 	public HasClickHandlers getContinueButton() {
 		return continueButton;
 	}
-	
-	/**
-	 * Gets the previous button.
-	 * 
-	 * @return the previous button
-	 */
+
 	public HasClickHandlers getPreviousButton() {
 		return previousButton;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.Enableable#setEnabled(boolean)
-	 */
+
 	@Override
 	public void setEnabled(boolean enabled){
 		previousButton.setEnabled(enabled);
 		continueButton.setEnabled(enabled);
 	}
-	
 }

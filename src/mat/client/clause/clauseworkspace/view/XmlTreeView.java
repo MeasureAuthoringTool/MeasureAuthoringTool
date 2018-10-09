@@ -23,7 +23,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.UUIDUtilClient;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 
@@ -85,56 +85,20 @@ import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 
-/**
- * The Class XmlTreeView.
- */
 public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler {
-	/**
-	 * Clause valid nested depth.
-	 */
+
 	public static final int CLAUSE_NESTED_DEPTH = 10;
-	/**
-	 * Comment Area Max Length - Population Work Space.
-	 */
+
 	private static final int COMMENT_MAX_LENGTH = 250;
-	/**
-	 * The Interface Template.
-	 */
+
 	interface Template extends SafeHtmlTemplates {
-		
-		/**
-		 * Outer div.
-		 *
-		 * @param classes the classes
-		 * @param id the id
-		 * @param title the title
-		 * @param content the content
-		 * @return the safe html
-		 */
+
 		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"tree\">{3}</div>")
 		SafeHtml outerDiv(String classes, String id , String title, String content);
-		
-		/**
-		 * Outer div for Tree Item.
-		 *
-		 * @param classes the classes
-		 * @param id the id
-		 * @param title the title
-		 * @param content the content
-		 * @return the safe html
-		 */
+	
 		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"treeitem\">{3}</div>")
 		SafeHtml outerDivItem(String classes,String id, String title, String content);
-		
-		/**
-		 * Div for Nodes with Comment.
-		 *
-		 * @param classes the classes
-		 * @param id the id
-		 * @param title the title
-		 * @param content the content
-		 * @return the safe html
-		 */
+	
 		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"treeitem\">{3}"
 				+ "<span class =\"populationWorkSpaceCommentNode\">&nbsp;(C)</span></div>")
 		SafeHtml outerDivItemWithSpan(String classes, String id, String title, String content);
@@ -142,175 +106,102 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 	}
 	
-	/** The Constant template. */
 	private static final Template template = GWT.create(Template.class);
 	
-	/** The main panel. */
 	private FlowPanel  mainPanel = new FlowPanel();
 	
-	/**
-	 * Stratum Node name.
-	 */
 	private static final String STRATUM = "Stratum";
 	
-	/** The Constant MEASURE_OBSERVATION. */
 	private static final String MEASURE_OBSERVATION = "Measure Observation";
 	
-	/** The Constant STRATIFICATION. */
 	private static final String STRATIFICATION = "Stratification";
-	/**
-	
-	/**
-	 * Comment Area Remaining Character Label - Population Work Space.
-	 */
+
 	private Label remainingCharsLabel = new Label("250");
 	
-	/** The focus panel. */
 	private FocusPanel focusPanel = new FocusPanel(mainPanel);
 	
-	/** The cell tree. */
 	private CellTree cellTree;
 	
-	/** The save btn. */
 	private Button saveBtn = new PrimaryButton("Save", "primaryButton");
-	
-	/** The validate btn populationWorkspace. */
-	//Commented Validate Button from Population Work Space as part of Mat-3162
-	// back to commented as part of mat-7847
-//	private Button validateBtnPopulationWorkspace = new SecondaryButton("Validate");//Uncomented
-	
-	/** The save btn. */
+
 	private Button saveBtnClauseWorkSpace = new PrimaryButton("Save", "primaryButton");
 	
-	/** The validate btn. */
 	private Button validateBtnClauseWorkSpace = new SecondaryButton("Validate");
 	
-	/** The Clear btn. */
 	private Button clearClauseWorkSpace = new SecondaryButton("Clear");
-	/**
-	 * Constant COMMENT.
-	 */
+
 	private static final String COMMENT = "COMMENT";
-	/**
-	 * Comment Ok Button.
-	 */
+	
 	private Button commentButtons = new Button("OK");
-	/**
-	 * Comment Input Text area.
-	 */
+	
 	private CommentAreaTextBox commentArea = new CommentAreaTextBox(COMMENT_MAX_LENGTH);
 	
-	/** The button expand. */
 	private Button buttonExpand = new Button();
 	
-	/** The button collapse. */
 	private Button buttonCollapse = new Button();
 	
-	/** The button expand. */
 	private Button buttonExpandClauseWorkSpace = new Button();
 	
-	/** The button collapse. */
 	private Button buttonCollapseClauseWorkSpace = new Button();
 	
-	/** The error message display. */
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 	
-	/** The success message display. */
 	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	
-	/** The success message display. */
 	private SuccessMessageDisplay successMessageAddCommentDisplay = new SuccessMessageDisplay();
 	
-	/** The is clause work space. */
 	private boolean isClauseWorkSpace = false;
 	
-	/** The add comment panel. */
 	VerticalPanel addCommentPanel;
-	/**
-	 * clear Error Display.
-	 */
+
 	private ErrorMessageDisplay clearErrorDisplay = new ErrorMessageDisplay();
 	
-	/** The warning message display. */
 	private WarningMessageDisplay warningMessageDisplay = new WarningMessageDisplay();
 	
-	/** The node data provider. */
 	private ListDataProvider<CellTreeNode> nodeDataProvider;
 	
-	/** The selected node. */
 	private CellTreeNode selectedNode;
 	
-	/** The selection model. */
 	private final SingleSelectionModel<CellTreeNode> selectionModel = new SingleSelectionModel<CellTreeNode>();
 	
-	/** The copied node. */
 	private CellTreeNode copiedNode;
 	
-	/** The popup panel. */
 	private PopupPanel popupPanel;
 	
-	/** ListBox for subtree names. */
 	private ListBox subTreeNameListBox;
 	
-	/** Suggest box for subtree items on RHS. */
 	private SuggestBox searchSuggestTextBox;
 	
-	/** button to open a clause tree. */
 	private Button openClauseButton = new Button("Show Clause");
 	
-	/** button to delete a clause tree. */
 	private Button deleteClauseButton = new Button("Delete Clause");
 	
-	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu;
 	
-	/** The population workspace context menu. */
-	private PopulationWorkSpaceContextMenu populationWorkspaceContextMenu;
-	
-	/** The is dirty. */
 	private boolean isDirty = false;
-	/** The is clause open. */
 	private boolean isClauseOpen;
-	
-	/** The is editable. */
 	private boolean isEditable;
 	
-	/** The is qdm variable. */
 	private String isQdmVariable = "false";
 	
-	/** The is qdm variable dirty. */
 	private boolean isQdmVariableDirty = false;
 	
-	/** The include qdm varibale. */
-	/*private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
-			"local variable.", "QDM Variable", true);*/
 	private CheckBox includeQdmVaribale = new CheckBox("QDM Variable");
-	/** The is valid. */
+
 	private boolean isValid = false;
 	
-	/** The is valid human readable. */
 	private boolean isValidHumanReadable = false;
 	
-	/** The is date time diff not in mo. */
 	boolean isDateTimeDiffNotInMO = false;
 	
-	/** The is sub tree logic valid in population work space. */
 	boolean isSubTreeLogicValidInPopulationWorkSpace = true;
-	/** The Constant MEASURE_OBSERVATIONS. */
+	
 	private static final String MEASURE_OBSERVATIONS = "Measure Observations";
 	
-	/** The is measure observations. */
 	private boolean isMeasureObservations = false;
 	
-	/** The is func with op in mo. */
 	boolean isFuncWithOpInMO = false;
-	
-	/**
-	 * Instantiates a new xml tree view.
-	 * 
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 */
+
 	public XmlTreeView(CellTreeNode cellTreeNode ) {
 		clearMessages();
 		if (cellTreeNode != null) {
@@ -1089,8 +980,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			if (cellTreeNode == null) {
 				return;
 			}
-			//TODO :  We can add classes based on the NodeType with the specified image.
-			//The classes will be picked up from Mat.css
 			if ((cellTreeNode.getNodeType()
 					== CellTreeNode.MASTER_ROOT_NODE)
 					|| (cellTreeNode.getNodeType()
@@ -1581,7 +1470,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void setpopulationWorkspaceContextMenu(
 			PopulationWorkSpaceContextMenu populationWorkspaceContextMenu) {
-		this.populationWorkspaceContextMenu = populationWorkspaceContextMenu;
 		popupPanel = clauseWorkspaceContextMenu.popupPanel;
 	}
 	
@@ -1789,12 +1677,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		openAllNodes(getXmlTree().getRootTreeNode());
 		return inValidNodeAtPopulationWorkspace;
 	}
-	/**
-	 * Validate cell tree nodes population workspace.
-	 *
-	 * @param cellTreeNode the cell tree node
-	 * @param inValidNodeAtPopulationWorkspace TODO
-	 */
+
 	public void validateCellTreeNodesPopulationWorkspace(
 			CellTreeNode cellTreeNode,
 			List<String> inValidNodeAtPopulationWorkspace) {
@@ -2245,6 +2128,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param inValidNodeList the in valid node list
 	 * @param node the node
 	 */
+	@SuppressWarnings("unchecked")
 	private void validateClauseWorkspaceFunctionNode(
 			List<String> inValidNodeList, CellTreeNode node) {
 		String satisfiesAll = "SATISFIES ALL";
@@ -2563,7 +2447,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				qdmName + "~" + node.getUUID());
 		Node oid = qdmNode.getAttributes().getNamedItem("oid");
 		String  oidValue = oid.getNodeValue().trim();
-		if (oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+		if (oidValue.equalsIgnoreCase(ConstantMessages.DEAD_OID)
 				|| oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)) {
 			if (!node.getValidNode()) {
 				editNode(true, node);
@@ -2966,6 +2850,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		String attributeValue = "";
 		
 		String nodeName = node.getName();
+		@SuppressWarnings("unchecked")
 		List<CellTreeNode> attributeList = (List<CellTreeNode>)
 				node.getExtraInformation("attributes");
 		if ((attributeList != null) && (attributeList.size() > 0)) {

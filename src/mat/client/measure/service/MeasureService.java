@@ -10,13 +10,16 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferOwnerShipModel;
+import mat.client.shared.GenericResult;
 import mat.client.shared.MatException;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CQLValueSetTransferObject;
+import mat.model.ComponentMeasureTabObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
@@ -34,10 +37,12 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
+import mat.shared.MeasureSearchModel;
+import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureService.
  */
@@ -130,6 +135,8 @@ public interface MeasureService extends RemoteService {
 	 */
 	ManageMeasureDetailModel getMeasure(String key);
 	
+	ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId);
+	
 	/**
 	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
 	 *
@@ -200,6 +207,8 @@ public interface MeasureService extends RemoteService {
 	 */
 	SaveMeasureResult save(ManageMeasureDetailModel model);
 	
+	SaveMeasureResult saveCompositeMeasure(ManageCompositeMeasureDetailModel model);
+	
 	/**
 	 * Save Called To update Revision Number at Create New Package button Click.
 	 * @param model -ManageMeasureDetailModel.
@@ -229,7 +238,7 @@ public interface MeasureService extends RemoteService {
 	 *            the version
 	 * @return the save measure result
 	 */
-	SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) ;
+	SaveMeasureResult saveFinalizedVersion(String measureId, boolean isMajor,String version, boolean shouldPackage, boolean ignoreUnusedLibraries) ;
 	
 	/**
 	 * Save measure details.
@@ -253,16 +262,22 @@ public interface MeasureService extends RemoteService {
 	 * 
 	 * @param searchText
 	 *            the search text
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param filter
-	 *            the filter
+	 * @param advancedSearchModel
+	 * 			the model that the search method uses to search
 	 * @return the manage measure search model
 	 */
-	ManageMeasureSearchModel search(String searchText, int startIndex,
-			int pageSize, int filter);
+	ManageMeasureSearchModel search(MeasureSearchModel advancedSearchModel);
+	
+	/**
+	 * Search component measures.
+	 * 
+	 * @param searchText
+	 *            the search text
+	 * @param advancedSearchModel
+	 * 			the model that the search method uses to search
+	 * @return the manage measure search model
+	 */
+	ManageMeasureSearchModel searchComponentMeasures(MeasureSearchModel searchModel);
 	
 	/**
 	 * Search users.
@@ -336,8 +351,8 @@ public interface MeasureService extends RemoteService {
 	 * @throws MatException
 	 *             the mat exception
 	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
-			List<MatValueSet> matValueSetList) throws MatException;
+	ValidateMeasureResult createExports(String key,
+			List<MatValueSet> matValueSetList, boolean shouldCreateArtifacts) throws MatException;
 	
 	/**
 	 * Save sub tree in measure xml.
@@ -383,7 +398,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureIds the measure ids
 	 * @return the component measures
 	 */
-	ManageMeasureSearchModel getComponentMeasures(List<String> measureIds);
+	ManageMeasureSearchModel getComponentMeasures(String measureId);
 	
 	/**
 	 * Validate package grouping.
@@ -410,6 +425,11 @@ public interface MeasureService extends RemoteService {
 	 */
 	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
 	
+	/**
+	 * Validates and packages the measure when the user versions or packages a measure
+	 * @param mode the measure details
+	 */
+	SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel mode);
 	
 	/**
 	 * Gets the all measure types.
@@ -574,7 +594,7 @@ public interface MeasureService extends RemoteService {
 	 * @return the save update cql result
 	 */
 	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String currentMeasureId,
-			String context);
+			String context, String comments);
 	
 	/**
 	 * Save and modify functions.
@@ -635,8 +655,6 @@ public interface MeasureService extends RemoteService {
 
 	String getJSONObjectFromXML();
 	
-	SaveUpdateCQLResult parseCQLForErrors(String cqlString);
-	
 	GetUsedCQLArtifactsResult getUsedCQLArtifacts(String measureId);
 
 	SaveUpdateCQLResult parseCQLStringForError(String cqlFileString);
@@ -650,8 +668,7 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult updateCQLValuesetsToMeasure(CQLValueSetTransferObject matValueSetTransferObject);
 
-	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String measureId, CQLIncludeLibrary toBeModifiedObj, CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult getMeasureCQLFileData(String measureId);
 
@@ -675,6 +692,15 @@ public interface MeasureService extends RemoteService {
 
 	SaveUpdateCQLResult getMeasureCQLDataForLoad(String measureId);
 
-	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
-			List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
+	CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList, List<CQLQualityDataSetDTO> appliedValueSetList, String measureId);
+	
+	public ManageCompositeMeasureDetailModel buildCompositeMeasure(ManageCompositeMeasureDetailModel compositeMeasure);
+	
+	public CompositeMeasureValidationResult validateCompositeMeasure(ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel);
+
+	List<ComponentMeasureTabObject> getCQLLibraryInformationForComponentMeasure(String compositeMeasureId);
+	
+	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
+
+	ValidateMeasureResult validateExports(String measureId) throws Exception;
 }

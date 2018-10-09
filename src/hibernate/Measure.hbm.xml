@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	"http://hibernate.org/dtd/hibernate-mapping.dtd">
 	
 <hibernate-mapping auto-import="false">
   <class name="mat.model.clause.Measure" table="MEASURE" lazy="false">
@@ -14,7 +14,8 @@
 	<property name="version" column="VERSION" />
 	<property name="revisionNumber" column="REVISION_NUMBER" />
 	<!-- <property name="measureStatus" column="MEASURE_STATUS" /> -->
-	<property name="measureScoring" column="SCORING" />	
+	<property name="measureScoring" column="SCORING" />
+	<property name="compositeScoring" column="COMPOSITE_SCORING" />	
 	<property name="eMeasureId" column="EMEASURE_ID" />
 	<!-- <property name="deleted" column="DELETED" /> -->
     <many-to-one name="owner" column="MEASURE_OWNER_ID" 
@@ -34,5 +35,20 @@
         class="mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
     <property name="isPrivate" column="PRIVATE"/>
     <property name="releaseVersion" column="RELEASE_VERSION" />
+       
+    <property name="lastModifiedOn" column="LAST_MODIFIED_ON" />
+    
+    <many-to-one name="lastModifiedBy" column="LAST_MODIFIED_BY" 
+       class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+       
+	<property name="patientBased" column="PATIENT_BASED"/>
+	<property name="qdmVersion" column="QDM_VERSION"></property>
+	<property name = "isCompositeMeasure" column = "IS_COMPOSITE_MEASURE"/>
+	
+	<bag name="componentMeasures" cascade="all" fetch="select" lazy="false" >
+        <key column="COMPOSITE_MEASURE_ID" />
+        <one-to-many class="mat.model.clause.ComponentMeasure" />
+    </bag>
+	
   </class>
 </hibernate-mapping>

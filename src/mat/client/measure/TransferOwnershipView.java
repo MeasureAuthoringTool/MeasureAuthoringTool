@@ -25,43 +25,35 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 import mat.client.CustomPager;
+import mat.client.buttons.SaveContinueCancelButtonBar;
 import mat.client.measure.TransferOwnerShipModel.Result;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.RadioButtonCell;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageAlert;
 import mat.client.util.CellTableUtility;
 import mat.model.cql.CQLLibraryDataSetObject;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class TransferOwnershipView.
  */
 public class TransferOwnershipView {
 	
-	
-	
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The buttons. */
-	private SaveCancelButtonBar buttons = new SaveCancelButtonBar("transferMOwnership");
+	private SaveContinueCancelButtonBar buttons = new SaveContinueCancelButtonBar("transferMOwnership");
 	
 	/** The success messages. */
 	protected MessageAlert successMessages = new SuccessMessageAlert();
 	
 	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-	
-	/** The view. */
-	/*private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new 
-			SearchView<TransferMeasureOwnerShipModel.Result>("Users");*/
 	
 	/** The value set name panel. */
 	HorizontalPanel TransferObjectNamePanel = new HorizontalPanel();
@@ -74,11 +66,6 @@ public class TransferOwnershipView {
 	
 	/** The cell table panel. */
 	VerticalPanel cellTablePanel = new VerticalPanel();
-	
-	/** The search button. *//*
-	private Button searchButton = new PrimaryButton("Search", "primaryGreyLeftButton");
-	*//** The search input. *//*
-	private TextBox searchInput = new TextBox();*/
 	
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 	
@@ -95,9 +82,9 @@ public class TransferOwnershipView {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buildSearchWidget());
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
 		mainPanel.add(TransferObjectNamePanel);
 		mainPanel.add(new SpacerWidget());
-		//mainPanel.add(view.asWidget());
 		mainPanel.add(cellTablePanel);
 		mainPanel.setStyleName("contentPanel");
 		HorizontalPanel hp = new HorizontalPanel();
@@ -114,14 +101,11 @@ public class TransferOwnershipView {
 		mainPanel.add(hp);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
-	
-		
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#asWidget()
 	 */
-	//@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
@@ -129,7 +113,6 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildHTMLForMeasures(java.util.List)
 	 */
-//	@Override
 	public void buildHTMLForMeasures(List<ManageMeasureSearchModel.Result> measureList){
 		TransferObjectNamePanel.clear();
 		StringBuilder paragraph = new StringBuilder("<p><b>Measure Names :</b>");
@@ -161,7 +144,6 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSaveButton()
 	 */
-//	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttons.getSaveButton();
 	}
@@ -169,7 +151,6 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getCancelButton()
 	 */
-//	@Override
 	public HasClickHandlers getCancelButton() {
 		
 		return buttons.getCancelButton();
@@ -178,7 +159,6 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSelectedValue()
 	 */
-	//@Override
 	public String getSelectedValue() {
 		return null;
 	}
@@ -186,7 +166,6 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getErrorMessageDisplay()
 	 */
-//	@Override
 	public MessageAlert getErrorMessageDisplay() {
 		return errorMessageAlert;
 	}
@@ -194,11 +173,9 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSuccessMessageDisplay()
 	 */
-	//@Override
 	public MessageAlert getSuccessMessageDisplay() {
 		return successMessages;
 	}
-	
 	
      /**
       * Adds the column to table.
@@ -296,7 +273,6 @@ public class TransferOwnershipView {
 		table.getElement().setAttribute("aria-describedby", "activeMATUsersListSummary");
 		cellTablePanel.setWidth("100%");
 		cellTablePanel.add(invisibleLabel);
-		//cellTablePanel.add(buildSearchWidget());
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(table);
 		cellTablePanel.add(new SpacerWidget());
@@ -307,7 +283,6 @@ public class TransferOwnershipView {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#clearRadioButtons()
 	 */
-//	@Override
 	public void clearRadioButtons(){
 		List<Result> displayedItems = new ArrayList<Result>();
 		displayedItems.addAll(selectedUserList);
@@ -316,7 +291,6 @@ public class TransferOwnershipView {
 		}
 	}
 	
-	
 	/**
 	 * Builds the search widget.
 	 *
@@ -324,32 +298,23 @@ public class TransferOwnershipView {
 	 */
 	private Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
-		/*FlowPanel fp1 = new FlowPanel();
-		fp1.add(searchInput);
-		searchButton.setTitle("Search");
-		fp1.add(searchButton);
-		fp1.add(new SpacerWidget());
-		hp.add(fp1);*/
 		searchWidgetBootStrap.getSearchBox().setWidth("232px");
 		hp.add(searchWidgetBootStrap.getSearchWidget());
-		hp.getElement().setAttribute("style", "width:100px;padding-left:620px;margin-top:20px;");
+		hp.getElement().setAttribute("style", "width:100px;margin-top:20px;");
 		return hp;
 	}
 
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSearchButton()
 	 */
-//	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchWidgetBootStrap.getGo();
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getSearchString()
 	 */
-	//@Override
 	public HasValue<String> getSearchString() {
 		return searchWidgetBootStrap.getSearchBox();
 	}
-	
-	
 }

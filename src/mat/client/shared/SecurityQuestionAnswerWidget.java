@@ -18,18 +18,12 @@ import mat.shared.StringUtility;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.constants.InputType;
 
-/**
- * The Class SecurityQuestionWithMaskedAnswerWidget.
- */
 public class SecurityQuestionAnswerWidget extends Composite {
 
-	/** The security question1. */
 	private ListBoxMVP securityQuestion1 = new ListBoxMVP();
 	
-	/** The security question2. */
 	private ListBoxMVP securityQuestion2 = new ListBoxMVP();
 	
-	/** The security question3. */
 	private ListBoxMVP securityQuestion3 = new ListBoxMVP();
 	private Input answer1 = new Input(InputType.PASSWORD);
 	private Input answer2 = new Input(InputType.PASSWORD);
@@ -47,13 +41,14 @@ public class SecurityQuestionAnswerWidget extends Composite {
 	FormGroup question3FormGroup = new FormGroup();
 	FormGroup answer3FormGroup = new FormGroup();
 	private FlowPanel rulesPanel = new FlowPanel();
-	/**
-	 * Instantiates a new security question with masked answer widget.
-	 */
+
 	public SecurityQuestionAnswerWidget() {
 		answer1.getElement().setId("answer1TextBox");
+		answer1.setTitle("Security Question Answer One Required");
 		answer2.getElement().setId("answer2TextBox");
+		answer2.setTitle("Security Question Answer Two Required");
 		answer3.getElement().setId("answer3TextBox");
+		answer3.setTitle("Security Question Answer Three Required");
 		answer1Value.getElement().setId("answer1Value");
 		answer2Value.getElement().setId("answer2Value");
 		answer3Value.getElement().setId("answer3Value");
@@ -182,9 +177,6 @@ public class SecurityQuestionAnswerWidget extends Composite {
 		});
 	}
 
-	/**
-	 * @return
-	 */
 	public FlowPanel addSecurityQuestionAnsertRules() {
 		rulesPanel.clear();
 		rulesPanel.getElement().setId("fp_FlowPanel");

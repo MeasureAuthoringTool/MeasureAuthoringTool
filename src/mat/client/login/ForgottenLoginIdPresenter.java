@@ -2,66 +2,45 @@ package mat.client.login;
 
 import mat.client.event.ForgotLoginIDEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.shared.ForgottenLoginIDResult;
-
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.FormGroup;
+import org.gwtbootstrap3.client.ui.HelpBlock;
+import org.gwtbootstrap3.client.ui.Input;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * The Class ForgottenLoginIdPresenter.
- */
+
 public class ForgottenLoginIdPresenter {
 	
-	/**
-	 * The Interface Display.
-	 */
 	public static interface Display {
-		
-		/**
-		 * Gets the email.
-		 * 
-		 * @return the email
-		 */
-		public HasValue<String> getEmail();
-		
-		/**
-		 * Gets the submit.
-		 * 
-		 * @return the submit
-		 */
-		public HasClickHandlers getSubmit();
-		
-		/**
-		 * Gets the reset.
-		 * 
-		 * @return the reset
-		 */
-		public HasClickHandlers getReset();
-		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		
-		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		public Widget asWidget();
-	}
 
-	/** The display. */
+		public Widget asWidget();
+		
+		Input getEmailAddressText();
+		
+		void setEmailAddressText(Input emailAddressText);
+		
+		FormGroup getEmailAddressGroup();
+		
+		FormGroup getMessageFormGrp();
+		
+		HelpBlock getHelpBlock();
+		
+		Button getSubmitButton();
+		
+		Button getResetButton();
+	}
+	
+
 	private final Display display;
+	Boolean emailBoxValidationState = true;
 	
 	
 	/**
@@ -71,64 +50,67 @@ public class ForgottenLoginIdPresenter {
 	 *            the display arg
 	 */
 	public ForgottenLoginIdPresenter(Display displayArg) {
-		this.display = displayArg;
+		display = displayArg;
 		
-		display.getReset().addClickHandler(new ClickHandler() {
+		display.getResetButton().addClickHandler(new ClickHandler() {
 			
+			@Override
 			public void onClick(ClickEvent event) {
 				reset();
-				MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());	
+				MatContext.get().getEventBus().fireEvent(new ReturnToLoginEvent());
 			}
 		});
 		
-		display.getSubmit().addClickHandler(new ClickHandler() {
+		display.getSubmitButton().addClickHandler(new ClickHandler() {
+			@Override
 			public void onClick(ClickEvent event) {
-				display.getErrorMessageDisplay().clear();
+				display.getHelpBlock().setText("");
+				display.getEmailAddressGroup().setValidationState(ValidationState.NONE);
 				requestForgottenLoginID();
 			}
 		});
 	}
 	
-	/**
-	 * Reset.
-	 */
+
 	private void reset() {
-		display.getEmail().setValue("");
-		display.getErrorMessageDisplay().clear();
+		display.getEmailAddressText().setText("");
+		display.getHelpBlock().setText("");
+		emailBoxValidationState = true;
+		if (emailBoxValidationState) {
+			display.getEmailAddressGroup().setValidationState(ValidationState.NONE);
+		}
 	}
 	
-	/**
-	 * Request forgotten login id.
-	 */
 	private void requestForgottenLoginID() {
-		MatContext.get().getLoginService().forgotLoginID(display.getEmail().getValue(), new AsyncCallback<ForgottenLoginIDResult>(){
-					@Override
-					public void onFailure(Throwable caught) {
-						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-						
+		MatContext.get().getLoginService().forgotLoginID(display.getEmailAddressText().getText(), new AsyncCallback<ForgottenLoginIDResult>(){
+			@Override
+			public void onFailure(Throwable caught) {
+				display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+				display.getHelpBlock().setText(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+				
+			}
+			
+			@Override
+			public void onSuccess(ForgottenLoginIDResult result) {
+				if(result.isEmailSent()) {
+					MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEmailSentEvent());
+				}
+				else {
+					String message = convertMessage(result.getFailureReason());
+					display.getHelpBlock().setIconType(IconType.EXCLAMATION_CIRCLE);
+					display.getHelpBlock().setText(message);
+					display.getMessageFormGrp().setValidationState(ValidationState.ERROR);
+					if (!emailBoxValidationState) {
+						display.getEmailAddressGroup().setValidationState(ValidationState.ERROR);
 					}
-
-					@Override
-					public void onSuccess(ForgottenLoginIDResult result) {
-						if(result.isEmailSent()) {
-							MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEmailSentEvent());	
-						}
-						else {
-							String message = convertMessage(result.getFailureReason());
-							display.getErrorMessageDisplay().setMessage(message);
-						}
-						
-					}});
-		}
+				}
+				
+			}});
+	}
 	
-	/**
-	 * Convert message.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return the string
-	 */
+
 	private String convertMessage(int id) {
 		String message;
 		switch(id) {
@@ -142,6 +124,7 @@ public class ForgottenLoginIdPresenter {
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				break;
 			case ForgottenLoginIDResult.EMAIL_INVALID:
+				emailBoxValidationState = false;
 				message = "Invalid Email Address.";
 				break;
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();

@@ -1,5 +1,6 @@
 package mat.client;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -7,14 +8,13 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpacePresenter;
-import mat.client.clause.cqlworkspace.CQLStandaloneWorkSpaceView;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpacePresenter;
+import mat.client.cqlworkspace.CQLStandaloneWorkSpaceView;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
@@ -106,7 +106,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 		cqlStandaloneWorkSpacePresenter = (CQLStandaloneWorkSpacePresenter) buildCQLWorkSpaceTab();
 		cqlComposerTabLayout = new MatTabLayoutPanel(this);
 		cqlComposerTabLayout.getElement().setAttribute("id", "cqlComposerTabLayout");
-		cqlComposerTabLayout.add(cqlStandaloneWorkSpacePresenter.getWidget(), "CQL Library Workspace");
+		cqlComposerTabLayout.add(cqlStandaloneWorkSpacePresenter.getWidget(), "CQL Library Workspace", true);
 		
 		cqlComposerTabLayout.setHeight("98%");
 		cqlComposerTab = ConstantMessages.CQL_COMPOSER_TAB;
@@ -153,12 +153,10 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 			public void execute() {
 				if (!MatContext.get().getLibraryLockService().isResettingLock()) {
 					notifyCurrentTabOfClosing();
-					cqlComposerTabLayout.updateHeaderSelection(0);
+					cqlComposerTabLayout.updateHeaderSelection(0);	
 					cqlComposerTabLayout.setSelectedIndex(0);
-					/*buttonBar.state = cqlComposerTabLayout.getSelectedIndex();
-					buttonBar.setPageNamesOnState();*/
 				} else {
-					DeferredCommand.addCommand(this);
+					Scheduler.get().scheduleDeferred(this);
 				}
 			}
 		};
@@ -171,8 +169,6 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 			notifyCurrentTabOfClosing();
 			cqlComposerTabLayout.updateHeaderSelection(0);
 			cqlComposerTabLayout.setSelectedIndex(0);
-			/*buttonBar.state = measureComposerTabLayout.getSelectedIndex();
-			buttonBar.setPageNamesOnState();*/
 			if (MatContext.get().getCurrentLibraryInfo() != null) {
 				MatContext.get().getCurrentLibraryInfo().setCqlLibraryId("");
 			}
@@ -299,8 +295,8 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	@Override
 	public boolean isValid() {
 		boolean isValid = true;
-		cqlStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
-		if (cqlStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getIsPageDirty()) {
+		CQLStandaloneWorkSpacePresenter.getSearchDisplay().resetMessageDisplay();
+		if (cqlStandaloneWorkSpacePresenter.getIsPageDirty()) {
 			isValid = false;
 		}
 		return isValid;
@@ -315,7 +311,7 @@ public class CqlComposerPresenter implements MatPresenter, Enableable, TabObserv
 	public void showUnsavedChangesError() {
 		WarningConfirmationMessageAlert saveErrorMessageAlert = null;
 		String auditMessage = null;
-		saveErrorMessageAlert = cqlStandaloneWorkSpacePresenter.getSearchDisplay().getCqlLeftNavBarPanelView().getGlobalWarningConfirmationMessageAlert();
+		saveErrorMessageAlert = cqlStandaloneWorkSpacePresenter.getMessagePanel().getGlobalWarningConfirmationMessageAlert();
 		if(saveErrorMessageAlert != null) {
 			showErrorMessageAlert(saveErrorMessageAlert);
 		}

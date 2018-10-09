@@ -2,6 +2,7 @@ package mat.client.measure.service;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -19,47 +20,49 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
+import mat.shared.cql.error.InvalidLibraryException;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
 	SaveCQLLibraryResult search(String searchText, int filter, int startIndex, int pageSize);
 
 	CQLLibraryDataSetObject findCQLLibraryByID(String cqlLibraryID);
+
 	SaveCQLLibraryResult save(CQLLibraryDataSetObject cqlModel);
-	public SaveUpdateCQLResult getCQLData(String id);
-	
-	public SaveUpdateCQLResult getCQLDataForLoad(String id);
+
+	SaveUpdateCQLResult getCQLData(String id);
+
+	SaveUpdateCQLResult getCQLDataForLoad(String id);
 	
 	boolean isLibraryLocked(String id);
-	SaveCQLLibraryResult resetLockedDate(String currentLibraryId,String userId);
-	SaveCQLLibraryResult updateLockedDate(String currentLibraryId,String userId);
+
+	SaveCQLLibraryResult resetLockedDate(String currentLibraryId, String userId);
+
+	SaveCQLLibraryResult updateLockedDate(String currentLibraryId, String userId);
 
 	SaveCQLLibraryResult getAllRecentCQLLibrariesForUser(String userId);
 
 	void isLibraryAvailableAndLogRecentActivity(String libraryid, String userId);
 
 	
-	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version);
-
+	SaveCQLLibraryResult saveFinalizedVersion(String libraryId, boolean isMajor, String version, boolean ignoreUnusedLibraries);
 	
-	public SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
+	SaveCQLLibraryResult saveDraftFromVersion(String libraryId);
 	
 	SaveUpdateCQLResult getLibraryCQLFileData(String libraryId);
 
-	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue);
+	SaveUpdateCQLResult saveAndModifyCQLGeneralInfo(String libraryId, String libraryValue, String libraryComment);
 
 	SaveCQLLibraryResult getUserShareInfo(String cqlId, String searchText);
 
-	SaveCQLLibraryResult searchForIncludes(String setId, String searchText, boolean filter);
+	SaveCQLLibraryResult searchForIncludes(String setId, String libraryName, String searchText);
 	
-	SaveCQLLibraryResult searchForReplaceLibraries(String setId, boolean filter);
-	
-	//SaveCQLLibraryResult searchForStandaloneIncludes(String setId, String searchText);
-	
+	SaveCQLLibraryResult searchForReplaceLibraries(String setId);
+		
 	void updateUsersShare(SaveCQLLibraryResult result);
 
 	SaveUpdateCQLResult saveIncludeLibrayInCQLLookUp(String libraryId, CQLIncludeLibrary toBeModifiedObj,
-			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList);
+			CQLIncludeLibrary currentObj, List<CQLIncludeLibrary> incLibraryList) throws InvalidLibraryException;
 
 	SaveUpdateCQLResult deleteInclude(String libraryId, CQLIncludeLibrary toBeModifiedIncludeObj,
 			List<CQLIncludeLibrary> viewIncludeLibrarys);
@@ -89,9 +92,7 @@ public interface CQLLibraryService extends RemoteService {
 	
 	SaveUpdateCQLResult deleteParameter(String libraryId, CQLParameter toBeDeletedObj, 
 			List<CQLParameter> parameterList);
-	
-	//void updateCQLLibraryXMLForExpansionProfile(List<CQLQualityDataSetDTO> modifyWithDTO, String measureId, String expansionProfile);
-	
+		
 	SaveUpdateCQLResult saveCQLUserDefinedValueset(CQLValueSetTransferObject matValueSetTransferObject);
 	
 	SaveUpdateCQLResult modifyCQLValueSets(CQLValueSetTransferObject matValueSetTransferObject);

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.AuditLog" table="AUDIT_LOG" >
+	<id name="id" column="AUDIT_LOG_ID" >
+		<generator class="uuid"/>
+	</id>
+	
+	<property name="createDate" column="CREATE_DATE" type="timestamp" />
+	<property name="createdBy" column="CREATE_USER"/>
+	<property name="updateDate" column="UPDATE_DATE" type="timestamp"/>
+	<property name="updatedBy" column="UPDATE_USER"/>
+	<property name="activityType" column="ACTIVITY_TYPE"/>
+	<many-to-one name="measure" column="MEASURE_ID" 
+        class="mat.model.clause.Measure" unique="false" cascade="none" />
+    <!-- <many-to-one name="clause" column="CLAUSE_ID" 
+        class="mat.model.clause.Clause" unique="false" cascade="none" /> -->
+    <many-to-one name="qds" column="QDM_ID" 
+        class="mat.model.QualityDataSet" unique="false" cascade="none" />  
+    <many-to-one name="listObject" column="LIST_OBJECT_ID" 
+        class="mat.model.ListObject" unique="false" cascade="none" />                          
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.MeasureShare" table="MEASURE_SHARE" lazy="false">
+    <id name="id" column="MEASURE_SHARE_ID" >
+        <generator class="uuid"/>
+    </id>
+    <many-to-one name="measure" column="MEASURE_ID" 
+        class="mat.model.clause.Measure"  cascade="none"/>
+    <many-to-one name="owner" column="MEASURE_OWNER_USER_ID" 
+        class="mat.model.User"  cascade="none"/>        
+    <many-to-one name="shareUser" column="SHARE_USER_ID" 
+        class="mat.model.User"  cascade="none"/>
+    <many-to-one name="shareLevel" column="SHARE_LEVEL_ID" 
+        class="mat.model.clause.ShareLevel"  cascade="none"/>
+	
+  </class>
+</hibernate-mapping>

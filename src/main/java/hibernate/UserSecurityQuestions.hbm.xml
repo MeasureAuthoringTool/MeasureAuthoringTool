@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.UserSecurityQuestion" table="USER_SECURITY_QUESTIONS" lazy="false">
+  	<id name="id" column="USER_SECURITY_QUESTIONS_ID" >
+        <generator class="increment"/>
+    </id>
+    <property name="rowId" column="ROW_ID"/>
+    <property name="securityAnswer" column="ANSWER" />
+	<property name="securityQuestionId" column="QUESTION_ID" />
+	<property name="salt" column="SALT"/>
+	<many-to-one name="userId" class="mat.model.User" column="USER_ID" 
+		unique="false" cascade="persist" insert="false" update="false"/>
+    <many-to-one name="securityQuestions" class="mat.model.SecurityQuestions" 
+   	    column="QUESTION_ID" unique="false" cascade="persist" insert="false" update="false" />
+ </class>
+</hibernate-mapping>

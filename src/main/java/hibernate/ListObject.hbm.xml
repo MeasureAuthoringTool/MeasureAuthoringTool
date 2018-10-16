@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.ListObject" table="LIST_OBJECT" lazy="false" polymorphism="implicit">
+	<id name="id" column="LIST_OBJECT_ID" >
+		<generator class="uuid"/>
+	</id>
+	
+	<property name="draft" column="DRAFT"/>
+	<property name="lastModified" column="LAST_MODIFIED"/>
+	<property name="name" column="NAME"/>
+	<many-to-one name="steward" column="STEWARD" 
+        class="mat.model.MeasureSteward" lazy="false" cascade="none" />  
+        <property name="stewardOther" column="STEWARD_OTHER"/>
+	<property name="oid" column="OID"/>
+	<property name="rationale" column="RATIONALE"/>
+	<property name="comment" column="COMMENT"/>
+    <property name="measureId" column="MEASURE_ID"/>
+    <property name="codeListDeveloper" column="CODE_LIST_DEVELOPER"/>
+    <property name="codeListContext" column="CODE_LIST_CONTEXT"/>
+	<property name="codeSystemVersion" column="CODE_SYS_VERSION"/> 
+    <many-to-one name="codeSystem" column="CODE_SYSTEM_ID" 
+        class="mat.model.CodeSystem"  cascade="none" />    
+    <set name="codes" table="CODE" lazy="true"  cascade="all-delete-orphan">
+        <key column="CODE_LIST_ID" not-null="true" update="false"/>
+        <one-to-many class="mat.model.Code"/>
+    </set>    
+	<many-to-one name="objectOwner" column="OBJECT_OWNER" 
+		class="mat.model.User"  cascade="none"/>		
+	<many-to-one name="category" column="CATEGORY_ID" 
+			class="mat.model.Category" lazy="false" cascade="none"/>		
+
+	<set name="codesLists" table="GROUPED_CODE_LISTS" fetch="subselect" cascade="all-delete-orphan">
+		<key column="GROUP_LIST_ID" not-null="true" update="false"/>
+		<one-to-many class="mat.model.GroupedCodeList" />
+	</set>
+    <set name="qualityDataSets" cascade="all" lazy="true" inverse="true">
+           <key column="LIST_OBJECT_ID"/>
+           <one-to-many class="mat.model.QualityDataSet"/>
+    </set>
+	<joined-subclass name="mat.model.CodeList" table="CODE_LIST" lazy="false">
+		<key column="code_list_id"/>
+			    			    
+	</joined-subclass>
+
+
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.AttributeDetails" table="ATTRIBUTE_DETAILS" lazy="false">
+	<id name="id" column="ATTRIBUTE_DETAILS_ID" >
+		<generator class="uuid"/>
+	</id>
+	<property name="attrName" column="ATTR_NAME" />
+	<property name="code" column="CODE" />
+	<property name="codeSystem" column="CODE_SYSTEM" />
+	<property name="codeSystemName" column="CODE_SYSTEM_NAME" />
+	<property name="mode" column="MODE" />
+	<property name="typeCode" column="TYPE_CODE" />
+  </class>
+</hibernate-mapping>

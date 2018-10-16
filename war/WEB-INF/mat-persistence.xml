@@ -31,12 +31,12 @@
 		<property name="contexts" value="prod" />
 	</bean>
     
-  	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://localhost:3306/MAT_APP"/>
-        <property name="username" value="username"/>
-        <property name="password" value="password"/>
-    </bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	   <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_STAGE_08312017"/>
+	   <property name="username" value="npabbisetty"/>
+	   <property name="password" value="***REMOVED***"/>
+   </bean>
+    
     
     <context:annotation-config />
     <context:component-scan base-package="mat.hibernate"/>

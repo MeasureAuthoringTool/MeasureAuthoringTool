@@ -28,3 +28,4 @@ war/bonnie
 # Misc
 velocity.log
 war/WEB-INF/mat-persistence.xml
+/target/

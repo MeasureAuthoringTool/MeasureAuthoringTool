@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.QDSAttributes" table="QDM_ATTRIBUTES" mutable="false" lazy="false">
+	<!--  <cache usage="read-only"/> -->
+	<id name="id" column="ID"/>	
+	<property name="name" column="NAME"/>	
+	<property name="dataTypeId" column="DATA_TYPE_ID"/>	
+	<property name="qDSAttributeType" column="QDM_ATTRIBUTE_TYPE"/>	
+  </class>
+</hibernate-mapping>

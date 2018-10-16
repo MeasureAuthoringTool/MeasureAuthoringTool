@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.server.model.MatUserDetails" table="USER" lazy="false">
+	<id name="id" column="USER_ID"/>
+	<property name="username" column="FIRST_NAME" />
+	
+	<one-to-one name="userPassword" class="mat.model.UserPassword"  property-ref="user"  cascade="all"/>
+	<many-to-one name="roles" column="SECURITY_ROLE_ID" 
+		class="mat.model.SecurityRole" unique="false" lazy="false" cascade="none" />
+	<many-to-one name="status" column="STATUS_ID" 
+		class="mat.model.Status" unique="false" lazy="false" cascade="none" />
+	<property name="signInDate" column="SIGN_IN_DATE" type="timestamp"/>
+	<property name="signOutDate" column="SIGN_OUT_DATE" type="timestamp"/>
+	<property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp"/>
+	<property name="terminationDate" column="TERMINATION_DATE" type="timestamp"/>
+	<property name="activationDate" column="ACTIVATION_DATE" type="timestamp"/>
+    <property name="emailAddress" column="EMAIL_ADDRESS" type="string"/>
+    <property name="loginId" column="LOGIN_ID" type="string"/>
+    <property name="userLastName" column="LAST_NAME" />
+    <property name="sessionId" column="SESSION_ID" />
+   </class>
+</hibernate-mapping>

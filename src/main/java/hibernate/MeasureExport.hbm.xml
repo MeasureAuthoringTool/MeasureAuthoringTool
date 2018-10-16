@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.MeasureExport" table="MEASURE_EXPORT" lazy="true">
+    <id name="id" column="MEASURE_EXPORT_ID" >
+        <generator class="uuid"/>
+    </id>
+    <many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID" unique="true"/>
+	<property name="codeList" type="blob" column="CODE_LIST" />
+	
+	<property name="simpleXML" type="string">
+		<column name="SIMPLE_XML" sql-type="longtext" />
+	</property>
+	<property name="humanReadable" type="string">
+		<column name="HUMAN_READABLE" sql-type="longtext" />
+	</property>
+	<property name="hqmf" type="string">
+		<column name="HQMF" sql-type="longtext" />
+	</property>	
+	<property name="cql" type="string">
+		<column name="CQL" sql-type="longtext" />
+	</property>
+	<property name="elm" type="string">
+		<column name="ELM" sql-type="longtext" />
+	</property>
+	<property name="json" type="string">
+		<column name="JSON" sql-type="longtext" />
+	</property>
+  </class>
+</hibernate-mapping>

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.GroupedCodeList" table="GROUPED_CODE_LISTS" lazy="false">
+	<id name="id" column="GROUPED_CODE_LISTS_ID" >
+		<generator class="uuid"/>
+	</id>
+	
+	<property name="description" column="DESCRIPTION"/>
+	<many-to-one name="codeList" column="CODE_LIST_ID" 
+        class="mat.model.CodeList"  unique="false" lazy="false" cascade="none" />
+  </class>
+</hibernate-mapping>

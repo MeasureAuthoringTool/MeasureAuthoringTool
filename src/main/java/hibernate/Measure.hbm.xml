@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.clause.Measure" table="MEASURE" lazy="false">
+    <id name="id" column="ID" >
+        <generator class="uuid"/>
+    </id>
+    <property name="valueSetDate" column="VALUE_SET_DATE" />
+	<property name="aBBRName" column="ABBR_NAME" />
+	<property name="description" column="DESCRIPTION" />
+	<property name="version" column="VERSION" />
+	<property name="revisionNumber" column="REVISION_NUMBER" />
+	<!-- <property name="measureStatus" column="MEASURE_STATUS" /> -->
+	<property name="measureScoring" column="SCORING" />
+	<property name="compositeScoring" column="COMPOSITE_SCORING" />	
+	<property name="eMeasureId" column="EMEASURE_ID" />
+	<!-- <property name="deleted" column="DELETED" /> -->
+    <many-to-one name="owner" column="MEASURE_OWNER_ID" 
+        class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+	<set name="shares" cascade="all" lazy="true" inverse="true">
+	      <key column="MEASURE_ID"/>
+           <one-to-many class="mat.model.clause.MeasureShare"/>
+    </set>
+    <property name="exportedDate" column="EXPORT_TS" type="timestamp" />
+    <property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp" />
+    <many-to-one name="lockedUser" column="LOCKED_USER_ID" 
+        class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+        
+	<property name="draft" column="DRAFT" />
+	<property name="finalizedDate" column="FINALIZED_DATE" type="timestamp"/>
+	<many-to-one name="measureSet" column="MEASURE_SET_ID" 
+        class="mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
+    <property name="isPrivate" column="PRIVATE"/>
+    <property name="releaseVersion" column="RELEASE_VERSION" />
+       
+    <property name="lastModifiedOn" column="LAST_MODIFIED_ON" />
+    
+    <many-to-one name="lastModifiedBy" column="LAST_MODIFIED_BY" 
+       class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+       
+	<property name="patientBased" column="PATIENT_BASED"/>
+	<property name="qdmVersion" column="QDM_VERSION"></property>
+	<property name = "isCompositeMeasure" column = "IS_COMPOSITE_MEASURE"/>
+	
+	<bag name="componentMeasures" cascade="all" fetch="select" lazy="false" >
+        <key column="COMPOSITE_MEASURE_ID" />
+        <one-to-many class="mat.model.clause.ComponentMeasure" />
+    </bag>
+	
+  </class>
+</hibernate-mapping>

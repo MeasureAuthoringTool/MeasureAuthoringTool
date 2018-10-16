@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.UnitMatrix" table="UNIT_TYPE_MATRIX" mutable="false" lazy="false">
+	<cache usage="read-only"/>
+	<id name="id" column="ID"/>	
+	<property name="unitTypeId" column="FK_UNIT_TYPE_ID"/>
+	<property name="unitId" column="FK_UNIT_ID"/>
+  </class>
+</hibernate-mapping>

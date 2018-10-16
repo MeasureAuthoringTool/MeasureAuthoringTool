@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping auto-import="false">
+  <class name="mat.model.DataType" table="DATA_TYPE" mutable="false" lazy="false">
+	<cache usage="read-only"/>
+	<id name="id" column="DATA_TYPE_ID"/>	
+	<property name="description" column="DESCRIPTION"/>	
+	<property name="categoryId"  column="CATEGORY_ID" insert="false" update="false"/>
+  </class>
+</hibernate-mapping>

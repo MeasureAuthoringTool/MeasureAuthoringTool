@@ -1,8 +1,10 @@
 package mat.server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -31,7 +33,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -904,9 +905,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			wrapper.setVsacExpIdentifier(expProfileToAllQDM);
 		}
 		ByteArrayOutputStream stream = createQDMXML(wrapper);
-		int startIndex = stream.toString(StandardCharsets.UTF_8).indexOf("<elementLookUp", 0);
-		int lastIndex = stream.toString(StandardCharsets.UTF_8).indexOf("</measure>", startIndex);
-		String xmlString = stream.toString(StandardCharsets.UTF_8).substring(startIndex, lastIndex);
+		int startIndex = 0;
+		int lastIndex = 0;
+		String xmlString = null;
+		try {
+			startIndex = stream.toString(StandardCharsets.UTF_8.name()).indexOf("<elementLookUp", 0);
+			lastIndex = stream.toString(StandardCharsets.UTF_8.name()).indexOf("</measure>", startIndex);
+			xmlString = stream.toString(StandardCharsets.UTF_8.name()).substring(startIndex, lastIndex);
+		} catch (UnsupportedEncodingException e) {
+		}
+		
 		String nodeName = "elementLookUp";
 
 		MeasureXmlModel exportModal = new MeasureXmlModel();
@@ -934,9 +942,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			wrapper.setVsacExpIdentifier(expProfileToAllQDM);
 		}
 		ByteArrayOutputStream stream = createQDMXML(wrapper);
-		int startIndex = stream.toString(StandardCharsets.UTF_8).indexOf("<cqlLookUp", 0);
-		int lastIndex = stream.toString(StandardCharsets.UTF_8).indexOf("</measure>", startIndex);
-		String xmlString = stream.toString(StandardCharsets.UTF_8).substring(startIndex, lastIndex);
+		int startIndex = 0;
+		int lastIndex = 0;
+		String xmlString = null;
+		try {
+			startIndex = stream.toString(StandardCharsets.UTF_8.name()).indexOf("<elementLookUp", 0);
+			lastIndex = stream.toString(StandardCharsets.UTF_8.name()).indexOf("</measure>", startIndex);
+			xmlString = stream.toString(StandardCharsets.UTF_8.name()).substring(startIndex, lastIndex);
+		} catch (UnsupportedEncodingException e) {
+		}
 
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(measureID);
@@ -995,7 +1009,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
 		logger.info("creating XML from Measure Details Model");
 		ByteArrayOutputStream stream = createXml(measureDetailModel);
-		return stream.toString(StandardCharsets.UTF_8);
+		try {
+			return stream.toString(StandardCharsets.UTF_8.name());
+		} catch (UnsupportedEncodingException e) {
+		}
+		return null;
 	}
 
 	/**
@@ -1077,7 +1095,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			marshaller.setMapping(mapping);
 			marshaller.marshal(measureDetailModel);
 			logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
-			logger.debug("Marshalling of ManageMeasureDetailsModel is successful.." + stream.toString(StandardCharsets.UTF_8));
 		} catch (IOException e) {
 			logger.info("Failed to load MeasureDetailsModelMapping.xml" + e);
 		} catch (MappingException e) {

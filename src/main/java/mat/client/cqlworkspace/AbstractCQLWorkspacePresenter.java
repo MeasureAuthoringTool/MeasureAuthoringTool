@@ -160,7 +160,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected String getCodeSuccessMessage(String codeName) {
-		return "Code " + codeName + " has been applied successfully.";
+		return "Code " + codeName + " has been successfully applied.";
 	}
 	
 	protected String getIncludeLibrarySuccessMessage(String aliasName) {
@@ -176,7 +176,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	}
 	
 	protected String getValuesetSuccessMessage(String codeListName) {
-		return "Value set " + StringUtility.trimTextToSixtyChars(codeListName) + " has been applied successfully.";
+		return "Value set " + StringUtility.trimTextToSixtyChars(codeListName) + " has been successfully applied.";
 	}
 	
 	protected String getValuesetSuccessfulReterivalMessage(String codeListName) {

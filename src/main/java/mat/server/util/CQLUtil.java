@@ -18,9 +18,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cqframework.cql.cql2elm.CQLtoELM;
+import com.telligen.CQLtoELM;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.cqframework.cql.cql2elm.MATCQLFilter;
+import com.telligen.MATCQLFilter;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
 import org.w3c.dom.Document;
@@ -631,7 +631,7 @@ public class CQLUtil {
 		if (cqlToElm != null && cqlToElm.getErrors().isEmpty()) {
 			String parentLibraryString = cqlToElm.getParentCQLLibraryString();
 						
-			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, cqlToElm.getCqlLibraryMapping() , exprList, cqlToElm.getTranslator(), cqlToElm.getTranslators());
+			MATCQLFilter cqlFilter = new MATCQLFilter(parentLibraryString, cqlToElm.getCqlLibraryMapping() , exprList, cqlToElm.getTranslator(), cqlToElm.getTranslatedLibraries());
 						
 			try {
 				cqlFilter.filter();

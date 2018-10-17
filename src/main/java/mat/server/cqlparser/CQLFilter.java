@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.cqframework.cql.cql2elm.QdmModelInfoProvider;
-import org.cqframework.cql.cql2elm.cqlModels.LibraryHolder;
+import com.telligen.models.LibraryHolder;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
@@ -140,7 +140,7 @@ public class CQLFilter {
 
 	private CQLObject cqlObject = new CQLObject();
 
-	private Map<String, org.cqframework.cql.cql2elm.cqlModels.LibraryHolder> libraryHolderMapping;
+	private Map<String, LibraryHolder> libraryHolderMapping;
 
 	/**
 	 * The cql filter
@@ -151,7 +151,7 @@ public class CQLFilter {
 	 *            the lists of populations that are included in MAT
 	 */
 	public CQLFilter(Library library, List<String> populationList,
-			Map<String, org.cqframework.cql.cql2elm.cqlModels.LibraryHolder> map, CQLModel cqlModel) {
+			Map<String, LibraryHolder> map, CQLModel cqlModel) {
 
 		this.libraryHolderMapping = map;
 		this.library = library;

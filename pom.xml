@@ -291,6 +291,16 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>3.6.1</version>
+            <exclusions>
+            	<exclusion>
+            		<groupId>ch.qos.logback</groupId>
+            		<artifactId>logback-core</artifactId>
+            	</exclusion>
+            	<exclusion>
+            		<groupId>ch.qos.logback</groupId>
+            		<artifactId>logback-classic</artifactId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -304,8 +314,8 @@
         </dependency>
         <dependency>
             <groupId>com.telligen</groupId>
-            <artifactId>cqlall</artifactId>
-            <version>1.0</version>
+            <artifactId>CQLtoELM</artifactId>
+            <version>1.3.10.5</version>
         </dependency>
         <dependency>
             <groupId>com.telligen</groupId>
@@ -326,6 +336,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <version>1.7.25</version>
+        </dependency>
+        <dependency>
+    	 	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-log4j12</artifactId>
+        	<version>1.7.25</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>

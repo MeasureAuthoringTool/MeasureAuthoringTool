@@ -41,7 +41,6 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.CustomPager;
-import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.measure.service.SaveCQLLibraryResult;
 import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
@@ -51,6 +50,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.client.util.CellTableUtility;
 import mat.client.util.ClientConstants;
 import mat.model.cql.CQLLibraryDataSetObject;
@@ -61,49 +61,44 @@ import mat.shared.ClickableSafeHtmlCell;
  */
 public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryDataSetObject> {
 
-	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
-	/** The main panel. */
+
 	private FlowPanel mainPanel = new FlowPanel();
-	/** The Constant PAGE_SIZE. */
+
 	private static final int PAGE_SIZE = 25;
-	/** The selected libraries list. */
+
 	private List<CQLLibraryDataSetObject> availableLibrariesList;
-	/** The handler manager. */
+
 	private HandlerManager handlerManager = new HandlerManager(this);
-	/** The observer. */
+
 	private Observer observer;
-	/** The admin observer. */
+
 	private AdminObserver adminObserver;
-	/** The table. */
+
 	private CellTable<CQLLibraryDataSetObject> table;
-	/** The even. */
+
 	private Boolean even;
-	/** The cell table css style. */
+
 	private List<String> cellTableCssStyle;
-	/** The cell table even row. */
+
 	private String cellTableEvenRow = "cellTableEvenRow";
-	/** The cell table odd row. */
+
 	private String cellTableOddRow = "cellTableOddRow";
-	/** The index. */
+
 	private int index;
 
-	/** The library list label. */
 	private String cqlLibraryListLabel;
-	/**
-	 * MultiSelectionModel on Cell Table.
-	 */
+
 	private MultiSelectionModel<CQLLibraryDataSetObject> selectionModel;
-	/** The selected list. */
+
 	List<CQLLibraryDataSetObject> selectedList;
 	
-	/** The delete CQL library confirm dialog box. */
 	private DeleteConfirmDialogBox deleteCQLLibraryConfirmDialogBox = new DeleteConfirmDialogBox();
-
+	
 	/**
 	 * The Interface Observer.
 	 */
-	public static interface Observer {
+	public interface Observer {
 
 		/**
 		 * On share clicked.
@@ -148,7 +143,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	/**
 	 * The Interface Observer.
 	 */
-	public static interface AdminObserver {
+	public interface AdminObserver {
 
 		/**
 		 * On history clicked.
@@ -196,10 +191,10 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		if ((result != null) && (result.getCqlLibraryDataSetObjects().size() > 0)) {
-			table = new CellTable<CQLLibraryDataSetObject>(PAGE_SIZE, (Resources) GWT.create(CellTableResource.class));
+			table = new CellTable<>(PAGE_SIZE, (Resources) GWT.create(CellTableResource.class));
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			selectedList = new ArrayList<CQLLibraryDataSetObject>();
-			availableLibrariesList = new ArrayList<CQLLibraryDataSetObject>();
+			selectedList = new ArrayList<>();
+			availableLibrariesList = new ArrayList<>();
 			availableLibrariesList.addAll(result.getCqlLibraryDataSetObjects());
 			table.setRowData(availableLibrariesList);
 			table.setRowCount(result.getResultsTotal(), true);
@@ -219,7 +214,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 
 						@Override
 						public void onSuccess(SaveCQLLibraryResult result) {
-							List<CQLLibraryDataSetObject> manageCQLLibrarySearchList = new ArrayList<CQLLibraryDataSetObject>();
+							List<CQLLibraryDataSetObject> manageCQLLibrarySearchList = new ArrayList<>();
 							manageCQLLibrarySearchList.addAll(result.getCqlLibraryDataSetObjects());
 							availableLibrariesList = manageCQLLibrarySearchList;
 							buildCellTableCssStyle();
@@ -423,7 +418,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cqlLibrarySearchHeader.getElement());
 		
-		selectionModel = new MultiSelectionModel<CQLLibraryDataSetObject>();
+		selectionModel = new MultiSelectionModel<>();
 		table.setSelectionModel(selectionModel);
 
 		// CQL Library Name Column
@@ -662,7 +657,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 * Builds the cell table css style.
 	 */
 	private void buildCellTableCssStyle() {
-		cellTableCssStyle = new ArrayList<String>();
+		cellTableCssStyle = new ArrayList<>();
 		for (int i = 0; i < availableLibrariesList.size(); i++) {
 			cellTableCssStyle.add(i, null);
 		}

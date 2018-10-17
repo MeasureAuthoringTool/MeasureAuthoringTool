@@ -79,6 +79,8 @@ import mat.shared.StringUtility;
 
 public class ManageMeasurePresenter implements MatPresenter {
 
+	private static final String MEASURE_LIBRARY = "MeasureLibrary";
+	
 	private List<String> bulkExportMeasureIds;
 
 	private ClickHandler cancelClickHandler = new ClickHandler() {
@@ -134,7 +136,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	boolean isLoading = false;
 
-	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
+	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<>();
 
 	private ManageMeasureSearchModel manageMeasureSearchModel;
 
@@ -282,7 +284,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			displaySearch();
 		}
 
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 
@@ -393,16 +395,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void clearErrorMessageAlerts() {
 		detailDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 	private void createVersion() {
 		versionDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.resetMessageDisplay();
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Create Measure Version of Draft", "MeasureLibrary");
+		panel.setHeading("My Measures > Create Measure Version of Draft", MEASURE_LIBRARY);
 		panel.setContent(versionDisplay.asWidget());
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 		clearRadioButtonSelection();
 	}
 	
@@ -625,7 +627,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void displayDetailForAdd() {
 		displayCommonDetailForAdd(detailDisplay);
-		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
+		panel.setHeading("My Measures > Create New Measure", MEASURE_LIBRARY);
 		setDetailsToView();
 	}
 	
@@ -666,16 +668,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Clone Measure", "MeasureLibrary");
+		panel.setHeading("My Measures > Clone Measure", MEASURE_LIBRARY);
 		panel.setContent(detailDisplay.asWidget());
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
 		resetPatientBasedInput(detailDisplay); 
 				
-		panel.setHeading("My Measures > Edit Measure", "MeasureLibrary");
+		panel.setHeading("My Measures > Edit Measure", MEASURE_LIBRARY);
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
@@ -697,7 +699,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void displayDetailForEditComposite(String compositeScoringMethod) {
 		panel.getButtonPanel().clear();
 		resetPatientBasedInput(compositeDetailDisplay); 
-		panel.setHeading("My Measures > Edit Composite Measure", "MeasureLibrary");
+		panel.setHeading("My Measures > Edit Composite Measure", MEASURE_LIBRARY);
 		compositeDetailDisplay.showMeasureName(false);
 		compositeDetailDisplay.showCautionMsg(true);
 			
@@ -733,19 +735,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 			heading = "Measures > History";
 		}
 		panel.getButtonPanel().clear();
-		panel.setHeading(heading, "MeasureLibrary");
+		panel.setHeading(heading, MEASURE_LIBRARY);
 		searchHistory(measureId, startIndex, pageSize);
 		historyDisplay.setMeasureId(measureId);
 		historyDisplay.setMeasureName(measureName);
 		panel.setContent(historyDisplay.asWidget());
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 	public void displaySearch() {
 		searchDisplay.getCellTablePanel().clear();
 		String heading = "Measure Library";
 		int filter;
-		panel.setHeading(heading, "MeasureLibrary");
+		panel.setHeading(heading, MEASURE_LIBRARY);
 		setSubSkipEmbeddedLink("measureserachView_mainPanel");
 		FlowPanel fp = new FlowPanel();
 		fp.getElement().setId("fp_FlowPanel");
@@ -766,7 +768,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 
 		panel.setContent(fp);
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 	private void buildCreateMeasure() {
@@ -801,19 +803,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void displayShare(String userName, String id) {
 		getShareDetails(userName, id, 1);
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Measure Sharing", "MeasureLibrary");
+		panel.setHeading("My Measures > Measure Sharing", MEASURE_LIBRARY);
 		panel.setContent(shareDisplay.asWidget());
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 	private void displayTransferView(String searchString, int startIndex, int pageSize) {
 		final ArrayList<ManageMeasureSearchModel.Result> transferMeasureResults = (ArrayList<Result>) manageMeasureSearchModel
 				.getSelectedTransferResults();
 		pageSize = Integer.MAX_VALUE;
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessageDisplay().clearAlert();
 		searchDisplay.getErrorMessagesForTransferOS().clearAlert();
 		transferDisplay.getErrorMessageDisplay().clearAlert();
-		if (transferMeasureResults.size() != 0) {
+		if (!transferMeasureResults.isEmpty()) {
 			setSearchingBusy(true);
 			MatContext.get().getMeasureService().searchUsers(searchString, startIndex, pageSize,
 					new AsyncCallback<TransferOwnerShipModel>() {
@@ -831,8 +834,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 							transferDisplay.buildHTMLForMeasures(transferMeasureResults);
 							transferDisplay.buildCellTable(result);
-							panel.setHeading("Measure Library Ownership >  Measure Ownership Transfer",
-									"MeasureLibrary");
+							panel.setHeading("Measure Library Ownership >  Measure Ownership Transfer", MEASURE_LIBRARY);
 							panel.setContent(transferDisplay.asWidget());
 							setSearchingBusy(false);
 							model = result;
@@ -929,7 +931,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMessageDisplayForBulkExport().clearAlert();
 		panel.getButtonPanel().clear();
 		panel.setContent(exportPresenter.getWidget());
-		Mat.focusSkipLists("MeasureLibrary");
+		Mat.focusSkipLists(MEASURE_LIBRARY);
 	}
 
 	private void fireMeasureEditEvent() {
@@ -1165,8 +1167,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void fireSuccessfullVersionAndPackageEvent(boolean isSuccess, String name, String message) {
-		MeasureVersionEvent versionEvent = new MeasureVersionEvent(isSuccess, name, message);
-		MatContext.get().getEventBus().fireEvent(versionEvent);		
+		fireSuccessfullVersionEvent(isSuccess, name, message);
 	}
 
 	private void search(final String searchText, int startIndex, int pageSize, final int filter) {
@@ -1178,7 +1179,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			pageSize = 25;
 			setSearchingBusy(true);
 			MeasureSearchModel model = new MeasureSearchModel(filter, startIndex, pageSize, searchText, searchText);
-
+			if(null != searchDisplay) {
+				searchDisplay.getSuccessMessageDisplay().clearAlert();	
+			}
+			
 			MatContext.get().getMeasureService().search(model,
 					new AsyncCallback<ManageMeasureSearchModel>() {
 						@Override
@@ -1356,19 +1360,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 							@Override
 							public void onClearAllBulkExportClicked() {
-
-								manageMeasureSearchModel.getSelectedExportResults()
-										.removeAll(manageMeasureSearchModel.getSelectedExportResults());
-								manageMeasureSearchModel.getSelectedExportIds()
-										.removeAll(manageMeasureSearchModel.getSelectedExportIds());
-
+								manageMeasureSearchModel.getSelectedExportResults().clear();
+								manageMeasureSearchModel.getSelectedExportIds().clear();
 							}
 
 							@Override
 							public void onCreateClicked(Result object) {
 								ManageMeasureSearchModel.Result selectedMeasure = object;
 								if (!isLoading && selectedMeasure.isDraftable()) {
-									if (((selectedMeasure != null) && (selectedMeasure.getId() != null))) {
+									if (selectedMeasure.getId() != null) {
 										setSearchingBusy(true);
 										if(selectedMeasure.getIsComposite()){
 											draftCompositeMeasure(selectedMeasure);
@@ -1651,7 +1651,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onSubmitComplete(SubmitCompleteEvent event) {
 				String errorMsg = event.getResults();
 				if ((null != errorMsg) && errorMsg.contains("Exceeded Limit")) {
-					List<String> err = new ArrayList<String>();
+					List<String> err = new ArrayList<>();
 					err.add("Export file size is " + errorMsg);
 					err.add("File size limit is 100 MB");
 					searchDisplay.getErrorMessageDisplayForBulkExport().createAlert(err);
@@ -1705,31 +1705,26 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});*/
 		
-		searchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.clearTransferCheckBoxes();
-				transferDisplay.getSearchString().setValue("");
-				displayTransferView("", startIndex, Integer.MAX_VALUE);
-			}
-		});
+		searchDisplay.getTransferButton().addClickHandler(event -> displayActiveMATUsersToTransferMeasureOwnership());
 
-		searchDisplay.getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				manageMeasureSearchModel.getSelectedTransferResults()
-						.removeAll(manageMeasureSearchModel.getSelectedTransferResults());
-				manageMeasureSearchModel.getSelectedTransferIds()
-						.removeAll(manageMeasureSearchModel.getSelectedTransferIds());
-				int filter = 1;
-				search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
-			}
-		});
+		searchDisplay.getClearButton().addClickHandler(event -> clearAllMeasureOwnershipTransfers());
 
 	}
 
+	private void displayActiveMATUsersToTransferMeasureOwnership() {
+		searchDisplay.clearTransferCheckBoxes();
+		transferDisplay.getSearchString().setValue("");
+		displayTransferView("", startIndex, Integer.MAX_VALUE);
+	}
+	
+	private void clearAllMeasureOwnershipTransfers() {
+		manageMeasureSearchModel.getSelectedTransferResults().clear();
+		manageMeasureSearchModel.getSelectedTransferIds().clear();
+		search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, 1);
+	}
+	
 	private void searchHistory(String measureId, int startIndex, int pageSize) {
-		List<String> filterList = new ArrayList<String>();
+		List<String> filterList = new ArrayList<>();
 		MatContext.get().getAuditService().executeMeasureLogSearch(measureId, startIndex, pageSize, filterList,
 				new AsyncCallback<SearchHistoryDTO>() {
 					@Override
@@ -1865,7 +1860,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) shareDisplay.getSearchWidgetBootStrap().getGo()).click();
+					shareDisplay.getSearchWidgetBootStrap().getGo().click();
 				}
 			}
 		}); 
@@ -1893,9 +1888,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
-		((Button) searchDisplay.getCreateMeasureButton()).setEnabled(!busy);
-		((Button) searchDisplay.getCreateCompositeMeasureButton()).setEnabled(!busy);
-		((CustomCheckBox)searchDisplay.getCustomFilterCheckBox()).setEnabled(!busy);
+		searchDisplay.getCreateMeasureButton().setEnabled(!busy);
+		searchDisplay.getCreateCompositeMeasureButton().setEnabled(!busy);
+		searchDisplay.getCustomFilterCheckBox().setEnabled(!busy);
 	}
 
 	private void toggleLoadingMessage(boolean busy) {
@@ -1909,82 +1904,76 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void transferDisplayHandlers(final TransferOwnershipView transferDisplay) {
 
-		transferDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				transferDisplay.getErrorMessageDisplay().clearAlert();
-				transferDisplay.getSuccessMessageDisplay().clearAlert();
-				boolean userSelected = false;
-				for (int i = 0; i < model.getData().size(); i = i + 1) {
-					if (model.getData().get(i).isSelected()) {
-						userSelected = true;
-						final String emailTo = model.getData().get(i).getEmailId();
-						final int rowIndex = i;
-
-						MatContext.get().getMeasureService().transferOwnerShipToUser(
-								manageMeasureSearchModel.getSelectedTransferIds(), emailTo, new AsyncCallback<Void>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-										model.getData().get(rowIndex).setSelected(false);
-										transferDisplay.clearRadioButtons();
-									}
-
-									@Override
-									public void onSuccess(Void result) {
-										transferDisplay.getSuccessMessageDisplay().createAlert(
-												MatContext.get().getMessageDelegate().getTransferOwnershipSuccess()
-														+ emailTo);
-										model.getData().get(rowIndex).setSelected(false);
-										transferDisplay.clearRadioButtons();
-									}
-								});
-					}
-				}
-				if (userSelected == false) {
-					transferDisplay.getSuccessMessageDisplay().clearAlert();
-					transferDisplay.getErrorMessageDisplay()
-							.createAlert(MatContext.get().getMessageDelegate().getUserRequiredErrorMessage());
-				}
-
-			}
-
-		});
-		transferDisplay.getCancelButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				manageMeasureSearchModel.getSelectedTransferResults()
-						.removeAll(manageMeasureSearchModel.getSelectedTransferResults());
-				manageMeasureSearchModel.getSelectedTransferIds()
-						.removeAll(manageMeasureSearchModel.getSelectedTransferIds());
-				transferDisplay.getSuccessMessageDisplay().clearAlert();
-				transferDisplay.getErrorMessageDisplay().clearAlert();
-				int filter = 1;
-				search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
-			}
-		});
+		transferDisplay.getSaveButton().addClickHandler(event -> saveTransferMeasureOwnership());
+		
+		transferDisplay.getCancelButton().addClickHandler(event -> cancelTransferMeasureOwnership());
 
 		MatTextBox searchWidget = (MatTextBox) transferDisplay.getSearchString();
-		searchWidget.addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) transferDisplay.getSearchButton()).click();	
-				}				
-			}
-		});
+		searchWidget.addKeyUpHandler(keyUpEvent -> simulateButtonClick(keyUpEvent));
 				
-		transferDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				transferDisplay.getSuccessMessageDisplay().clearAlert();
-				displayTransferView(transferDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE);
-
-			}
-		});
+		transferDisplay.getSearchButton().addClickHandler(event -> searchMeasureLibraryOwners());
 	}
 
+	private void saveTransferMeasureOwnership() {
+		transferDisplay.getErrorMessageDisplay().clearAlert();
+		transferDisplay.getSuccessMessageDisplay().clearAlert();
+		boolean userSelected = false;
+		for (int i = 0; i < model.getData().size(); i = i + 1) {
+			if (model.getData().get(i).isSelected()) {
+				userSelected = true;
+				final String emailTo = model.getData().get(i).getEmailId();
+				final int rowIndex = i;
+
+				MatContext.get().getMeasureService().transferOwnerShipToUser(
+						manageMeasureSearchModel.getSelectedTransferIds(), emailTo, new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								model.getData().get(rowIndex).setSelected(false);
+								transferDisplay.clearRadioButtons();
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								model.getData().get(rowIndex).setSelected(false);
+								transferDisplay.clearRadioButtons();
+								transferDisplay.getSuccessMessageDisplay().clearAlert();
+								transferDisplay.getErrorMessageDisplay().clearAlert();
+								int filter = 1;
+								search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+								searchDisplay.getSuccessMessageDisplay().createAlert(
+										MatContext.get().getMessageDelegate().getTransferOwnershipSuccess() + emailTo);
+							}
+						});
+			}
+		}
+		if (!userSelected) {
+			transferDisplay.getSuccessMessageDisplay().clearAlert();
+			transferDisplay.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUserRequiredErrorMessage());
+		}
+	}
+	
+	private void simulateButtonClick(KeyUpEvent event) { 
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			((Button) transferDisplay.getSearchButton()).click();	
+		}				
+	}
+	
+	private void cancelTransferMeasureOwnership() {
+		manageMeasureSearchModel.getSelectedTransferResults().clear();
+		manageMeasureSearchModel.getSelectedTransferIds().clear();
+		transferDisplay.getSuccessMessageDisplay().clearAlert();
+		transferDisplay.getErrorMessageDisplay().clearAlert();
+		searchDisplay.getSuccessMessageDisplay().clearAlert();
+		int filter = 1;
+		search(searchDisplay.getAdminSearchString().getValue(), 1, Integer.MAX_VALUE, filter);
+	}
+	
+	private void searchMeasureLibraryOwners() {
+		transferDisplay.getSuccessMessageDisplay().clearAlert();
+		displayTransferView(transferDisplay.getSearchString().getValue(), startIndex, Integer.MAX_VALUE);
+	}
+	
 	private void update() {
 		if (!MatContext.get().getLoadingQueue().isEmpty()) {
 			return;
@@ -2135,7 +2124,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 	private void updateExportedIDs(Result result, ManageMeasureSearchModel model, boolean isCBChecked) {
 		List<String> selectedIdList = model.getSelectedExportIds();
-		;
+		
 		if (isCBChecked) {
 			if (!selectedIdList.contains(result.getId())) {
 				model.getSelectedExportResults().add(result);

@@ -96,6 +96,8 @@ public class ManageMeasureSearchView implements SearchDisplay {
 			mainPanel.add(new SpacerWidget());
 			mainPanel.add(buildSearchWidget());
 			mainPanel.add(new SpacerWidget());
+			mainPanel.add(successMessages);
+			mainPanel.add(new SpacerWidget());
 			mainPanel.add(measureSearchView.asWidget());
 			mainPanel.setStyleName("contentPanel");
 			mainPanel.add(new SpacerWidget());			
@@ -351,6 +353,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 	}
 
 
+	@Override
 	public Button getCreateCompositeMeasureButton() {
 		return createCompositeMeasureButton;
 	}
@@ -427,6 +430,7 @@ public class ManageMeasureSearchView implements SearchDisplay {
 		return null;
 	}
 
+	@Override
 	public EditConfirmationDialogBox getDraftConfirmationDialogBox() {
 		return draftConfirmationDialogBox;
 	}

@@ -20,24 +20,23 @@ import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SearchWidgetBootStrap;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageAlert;
 import mat.model.cql.CQLLibraryDataSetObject;
 
 public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter.ViewDisplay {
 	
-	/** The Insert button. */
+	private static final String TRANSFER = "Transfer";
+	
 	private Button transferButton = new Button();
 	
-	/** The save button. */
 	private Button clearAllButton = new CancelButton("managecqllibadminview");
 	
-	/** The button layout. */
 	private HorizontalPanel buttonLayout = new HorizontalPanel();
 	
-	List<String> selectedId = new ArrayList<String>();
+	List<String> selectedId = new ArrayList<>();
 	
-	List<CQLLibraryDataSetObject> selectedLibraries = new ArrayList<CQLLibraryDataSetObject>();
+	List<CQLLibraryDataSetObject> selectedLibraries = new ArrayList<>();
 	
-	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 
 	VerticalPanel widgetVP = new VerticalPanel();
@@ -50,17 +49,15 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 
 	SearchWidgetBootStrap searchWidgetBootStrap = new SearchWidgetBootStrap("Search", "Search");
 
-	/** The CQL error message. */
 	private MessageAlert errorMessageAlert = new ErrorMessageAlert();
-
-	public CQLLibrarySearchView getCqlLibrarySearchView() {
-		return cqlLibrarySearchView;
-	}
+	
+	private MessageAlert successMessageDisplay = new SuccessMessageAlert();
 
 	public void setCqlLibrarySearchView(CQLLibrarySearchView cqlLibrarySearchView) {
 		this.cqlLibrarySearchView = cqlLibrarySearchView;
 	}
 
+	@Override
 	public MessageAlert getErrorMessageAlert() {
 		return errorMessageAlert;
 	}
@@ -74,9 +71,9 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		buttonLayout.getElement().setId("cql_buttonLayout_HorizontalPanel");
 		transferButton.setType(ButtonType.PRIMARY);
 		transferButton.getElement().setId("transferButton");
-		transferButton.setTitle("Transfer");
-		transferButton.setText("Transfer");
-		transferButton.getElement().setAttribute("aria-label", "Transfer");
+		transferButton.setTitle(TRANSFER);
+		transferButton.setText(TRANSFER);
+		transferButton.getElement().setAttribute("aria-label", TRANSFER);
 		
 		clearAllButton.setMarginLeft(10.00);
 		clearAllButton.setTitle("Clear All");
@@ -112,7 +109,8 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 		mainHorizontalPanel.add(new SpacerWidget());
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
-		
+		mainPanel.add(successMessageDisplay);
+		mainPanel.add(new SpacerWidget());
 		mainPanel.add(cqlLibrarySearchView.buildCQLLibraryCellTable());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessageAlert);
@@ -124,10 +122,9 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	public VerticalPanel getWidgetVP() {
 		return widgetVP;
 	}
-
+	
 	@Override
 	public CQLLibrarySearchView getCQLLibrarySearchView() {
-
 		return cqlLibrarySearchView;
 	}
 
@@ -181,6 +178,15 @@ public class ManageCQLLibraryAdminView implements ManageCQLLibraryAdminPresenter
 	@Override
 	public Button getTransferButton() {
 		return transferButton;
+	}
+
+	@Override
+	public MessageAlert getSuccessMessageDisplay() {
+		return successMessageDisplay;
+	}
+	
+	public void setSuccessMessageDisplay(MessageAlert successMessageDisplay) {
+		this.successMessageDisplay = successMessageDisplay;
 	}
 
 }

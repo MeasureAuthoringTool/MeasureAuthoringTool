@@ -5,12 +5,9 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -39,45 +36,31 @@ import mat.model.cql.CQLLibraryDataSetObject;
 
 public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 
-	/** The panel. */
+	private static final String CQL_LIBRARY_OWNERSHIP = "CQLLibraryOwnership";
+
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 
-	/** The sub skip content holder. */
 	private static FocusableWidget subSkipContentHolder;
+
 	boolean isSearchBarVisible = true;
 
-	/** The cql library view. */
 	ViewDisplay cqlLibraryAdminView;
 	
-	/** The history display. */
 	CQLLibraryHistoryView historyDisplay;
 
 	TransferOwnershipView transferOwnershipView;
 
-	/** The model. */
 	private TransferOwnerShipModel model = null;
 
-	public static interface ViewDisplay {
-		/**
-		 * As widget.
-		 *
-		 * @return the widget
-		 */
+	public interface ViewDisplay {
+		
 		Widget asWidget();
 
-		/**
-		 * Gets the CQL library search view.
-		 *
-		 * @return the CQL library search view
-		 */
 		CQLLibrarySearchView getCQLLibrarySearchView();
 
-		/**
-		 * Gets the error message alert.
-		 *
-		 * @return the error message alert
-		 */
 		MessageAlert getErrorMessageAlert();
+		
+		MessageAlert getSuccessMessageDisplay();
 
 		int getSelectedFilter();
 
@@ -132,7 +115,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 	private void displaySearch() {
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
 		String heading = "CQL Library";
-		panel.setHeading(heading, "CQLLibraryOwnership");
+		panel.setHeading(heading, CQL_LIBRARY_OWNERSHIP);
 		setSubSkipEmbeddedLink("CQLSearchView_mainPanel");
 		FlowPanel fp = new FlowPanel();
 		fp.getElement().setId("fp_FlowPanel_CQL");
@@ -145,7 +128,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		fp.add(cqlLibraryAdminView.asWidget());
 
 		panel.setContent(fp);
-		Mat.focusSkipLists("CQLLibraryOwnership");
+		Mat.focusSkipLists(CQL_LIBRARY_OWNERSHIP);
 	}
 
 	/**
@@ -154,56 +137,44 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 	private void addCQLLibraryAdminViewEvents() {
 		
 		MatTextBox searchWidget = (MatTextBox) cqlLibraryAdminView.getSearchString();
-		searchWidget.addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) cqlLibraryAdminView.getSearchButton()).click();
-				}
-			}
-		});
+		searchWidget.addKeyUpHandler(keyUpEvent -> simulateButtonClickLibraryTransferOwnership(keyUpEvent));
 		
-		cqlLibraryAdminView.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				int startIndex = 1;
-				cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
+		cqlLibraryAdminView.getSearchButton().addClickHandler(event -> getAllActiveMATUsersForTransfer());
 
-				search(cqlLibraryAdminView.getSearchString().getValue(), cqlLibraryAdminView.getSelectedFilter(),
-						startIndex, Integer.MAX_VALUE);
-			}
-		});
-
-		cqlLibraryAdminView.getTransferButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				transferOwnershipView.getSearchString().setValue("");
-				displayTransferView("", 1, Integer.MAX_VALUE);
-			}
-		});
+		cqlLibraryAdminView.getTransferButton().addClickHandler(event -> displayActiveMATUsersToTransferMeasureOwnership());
 		
-		cqlLibraryAdminView.getClearAllButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				displaySearch();
-			}
-		});
+		cqlLibraryAdminView.getClearAllButton().addClickHandler(event -> clearAllLibraryOwnershipTransfers());
 	}
 
+	private void simulateButtonClickLibraryTransferOwnership(KeyUpEvent event) {
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			((Button) cqlLibraryAdminView.getSearchButton()).click();
+			cqlLibraryAdminView.getSuccessMessageDisplay().clearAlert();
+		}
+	}
+	
+	private void getAllActiveMATUsersForTransfer() {
+		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
+		cqlLibraryAdminView.getSuccessMessageDisplay().clearAlert();
+		search(cqlLibraryAdminView.getSearchString().getValue(), cqlLibraryAdminView.getSelectedFilter(), 1, Integer.MAX_VALUE);
+	}
+
+	private void displayActiveMATUsersToTransferMeasureOwnership() {
+		cqlLibraryAdminView.getSuccessMessageDisplay().clearAlert();
+		transferOwnershipView.getSearchString().setValue("");
+		displayTransferView("", 1, Integer.MAX_VALUE);
+	}
+	
+	private void clearAllLibraryOwnershipTransfers() {
+		cqlLibraryAdminView.getSuccessMessageDisplay().clearAlert();
+		displaySearch();
+	}
+	
 	/**
 	 * History display Event Handlers.
 	 */
 	private void addHistoryDisplayHandlers() {
-		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				displaySearch();
-
-			}
-		});
+		historyDisplay.getReturnToLink().addClickHandler(event -> displaySearch());
 	}
 
 	/**
@@ -234,80 +205,71 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 	 */
 	private void addTransferOwnershipViewHandlers() {
 
-		transferOwnershipView.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				transferOwnershipView.getErrorMessageDisplay().clearAlert();
-				transferOwnershipView.getSuccessMessageDisplay().clearAlert();
-				boolean userSelected = false;
-				for (int i = 0; i < model.getData().size(); i = i + 1) {
-					if (model.getData().get(i).isSelected()) {
-						userSelected = true;
-						final String emailTo = model.getData().get(i).getEmailId();
-						final int rowIndex = i;
-
-						MatContext.get().getCQLLibraryService().transferLibraryOwnerShipToUser(
-								cqlLibraryAdminView.getSelectedId(), emailTo, new AsyncCallback<Void>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-										model.getData().get(rowIndex).setSelected(false);
-										transferOwnershipView.clearRadioButtons();
-									}
-
-									@Override
-									public void onSuccess(Void result) {
-										transferOwnershipView.getSuccessMessageDisplay().createAlert(
-												MatContext.get().getMessageDelegate().getTransferOwnershipSuccess()
-														+ emailTo);
-										model.getData().get(rowIndex).setSelected(false);
-										transferOwnershipView.clearRadioButtons();
-									}
-								});
-					}
-				}
-				if (userSelected == false) {
-					transferOwnershipView.getSuccessMessageDisplay().clear();
-					transferOwnershipView.getErrorMessageDisplay()
-							.createAlert(MatContext.get().getMessageDelegate().getUserRequiredErrorMessage());
-				}
-
-			}
-
-		});
-		transferOwnershipView.getCancelButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				cqlLibraryAdminView.getSelectedLibraries().clear();
-				cqlLibraryAdminView.getSelectedId().clear();
-				transferOwnershipView.getSuccessMessageDisplay().clearAlert();
-				transferOwnershipView.getErrorMessageDisplay().clearAlert();
-				displaySearch();
-			}
-		});
+		transferOwnershipView.getSaveButton().addClickHandler(event -> saveTransferMeasureOwnership());
+		
+		transferOwnershipView.getCancelButton().addClickHandler(event -> cancelTransferMeasureOwnership());
 
 		MatTextBox searchWidget = (MatTextBox) transferOwnershipView.getSearchString(); 
-		searchWidget.addKeyUpHandler(new KeyUpHandler() {
-			
-			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					((Button) transferOwnershipView.getSearchButton()).click();
-				}
-				
-			}
-		});
+		searchWidget.addKeyUpHandler(keyUpEvent -> simulateButtonClick(keyUpEvent));
 		
-		transferOwnershipView.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				transferOwnershipView.getSuccessMessageDisplay().clearAlert();
-				displayTransferView(transferOwnershipView.getSearchString().getValue(), 1, Integer.MAX_VALUE);
+		transferOwnershipView.getSearchButton().addClickHandler(event -> searchLibraryOwners());
+	}
+	
+	private void saveTransferMeasureOwnership() {
+		transferOwnershipView.getErrorMessageDisplay().clearAlert();
+		transferOwnershipView.getSuccessMessageDisplay().clearAlert();
+		boolean userSelected = false;
+		for (int i = 0; i < model.getData().size(); i = i + 1) {
+			if (model.getData().get(i).isSelected()) {
+				userSelected = true;
+				final String emailTo = model.getData().get(i).getEmailId();
+				final int rowIndex = i;
 
+				MatContext.get().getCQLLibraryService().transferLibraryOwnerShipToUser(
+						cqlLibraryAdminView.getSelectedId(), emailTo, new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								model.getData().get(rowIndex).setSelected(false);
+								transferOwnershipView.clearRadioButtons();
+							}
+
+							@Override
+							public void onSuccess(Void result) {
+								cqlLibraryAdminView.getSuccessMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getTransferOwnershipSuccess() + emailTo);
+								model.getData().get(rowIndex).setSelected(false);
+								transferOwnershipView.clearRadioButtons();
+								displaySearch();
+							}
+						});
 			}
-		});
+		}
+
+		if (!userSelected) {
+			transferOwnershipView.getSuccessMessageDisplay().clear();
+			transferOwnershipView.getErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getUserRequiredErrorMessage());
+		}
+	}
+	
+	private void cancelTransferMeasureOwnership() {
+		cqlLibraryAdminView.getSelectedLibraries().clear();
+		cqlLibraryAdminView.getSelectedId().clear();
+		transferOwnershipView.getSuccessMessageDisplay().clearAlert();
+		transferOwnershipView.getErrorMessageDisplay().clearAlert();
+		displaySearch();
+	}
+	
+	private void searchLibraryOwners() {
+		transferOwnershipView.getSuccessMessageDisplay().clearAlert();
+		displayTransferView(transferOwnershipView.getSearchString().getValue(), 1, Integer.MAX_VALUE);
 	}
 
+	private void simulateButtonClick(KeyUpEvent event) { 
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			((Button) transferOwnershipView.getSearchButton()).click();
+		}
+	}
+	
 	/**
 	 * Display history.
 	 *
@@ -321,12 +283,12 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "CQL Library > History";
 		panel.getButtonPanel().clear();
-		panel.setHeading(heading, "CQLLibraryOwnership");
+		panel.setHeading(heading, CQL_LIBRARY_OWNERSHIP);
 		searchHistory(cqlLibraryId, startIndex, pageSize);
 		historyDisplay.setCQLLibraryId(cqlLibraryId);
 		historyDisplay.setCQLLibraryName(cqlLibraryName);
 		panel.setContent(historyDisplay.asWidget());
-		Mat.focusSkipLists("CQLLibraryOwnership");
+		Mat.focusSkipLists(CQL_LIBRARY_OWNERSHIP);
 	}
 
 	/**
@@ -345,7 +307,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
 		transferOwnershipView.getErrorMessageDisplay().clear();
 
-		if (cqlLibraryAdminView.getSelectedLibraries().size() != 0) {
+		if (!cqlLibraryAdminView.getSelectedLibraries().isEmpty()) {
 			showSearchingBusy(true);
 			MatContext.get().getMeasureService().searchUsers(searchString, startIndex, pageSize,
 					new AsyncCallback<TransferOwnerShipModel>() {
@@ -362,7 +324,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 							sru.update(result, (MatTextBox) transferOwnershipView.getSearchString(), searchString);
 							transferOwnershipView.buildHTMLForLibraries(cqlLibraryAdminView.getSelectedLibraries());
 							transferOwnershipView.buildCellTable(result);
-							panel.setHeading("CQL Library Ownership >  CQL Ownership Transfer", "CQLLibraryOwnership");
+							panel.setHeading("CQL Library Ownership >  CQL Ownership Transfer", CQL_LIBRARY_OWNERSHIP);
 							panel.setContent(transferOwnershipView.asWidget());
 							showSearchingBusy(false);
 							model = result;
@@ -387,7 +349,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 	 *            the page size
 	 */
 	private void searchHistory(String cqlLibraryId, int startIndex, int pageSize) {
-		List<String> filterList = new ArrayList<String>();
+		List<String> filterList = new ArrayList<>();
 
 		MatContext.get().getAuditService().executeSearch(cqlLibraryId, startIndex, pageSize, filterList,
 				new AsyncCallback<SearchHistoryDTO>() {
@@ -506,6 +468,7 @@ public class ManageCQLLibraryAdminPresenter implements MatPresenter {
 		cqlLibraryAdminView.getSearchString().setValue("");
 		transferOwnershipView.getSearchString().setValue("");
 		cqlLibraryAdminView.getErrorMessageAlert().clearAlert();
+		cqlLibraryAdminView.getSuccessMessageDisplay().clearAlert();
 		isSearchBarVisible = true;
 	}
 

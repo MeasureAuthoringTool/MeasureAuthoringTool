@@ -44,7 +44,7 @@ public class Application{
     public LocalSessionFactoryBean sessionFactory() throws IOException {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setPackagesToScan("{mat.model}");
+        sessionFactory.setPackagesToScan(new String[] {"mat.model"});
         sessionFactory.setHibernateProperties(hibernateProperties());
         ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
         sessionFactory.setMappingDirectoryLocations(resolver.getResources("classpath:/hibernate/"));

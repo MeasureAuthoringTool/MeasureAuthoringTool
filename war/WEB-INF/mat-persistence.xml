@@ -32,7 +32,7 @@
 	</bean>
     
 	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="jdbc/mat_app" />
+		<property name="jndiName" value="java:/comp/env/jdbc/mat_app_tomcat" />
 	</bean>    
     
     <context:annotation-config />

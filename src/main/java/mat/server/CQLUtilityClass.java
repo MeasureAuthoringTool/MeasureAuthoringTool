@@ -37,6 +37,7 @@ public final class CQLUtilityClass {
 	private static StringBuilder toBeInsertedAtEnd;
 
 	private static int size;
+	private static String whiteSpaceString = ""; 
 
 	public static int getSize() {
 		return size;
@@ -46,8 +47,29 @@ public final class CQLUtilityClass {
 		return toBeInsertedAtEnd;
 	}
 
+	public static String getWhiteSpaceString(boolean isSpaces, int indentSize) {
+		String whiteSpaceString = "";
+		for(int i = 0; i < indentSize; i++) {
+			if(isSpaces) {
+				whiteSpaceString += " ";
+			} else {
+				whiteSpaceString += "\t";
+			}
+		}
+		
+		return whiteSpaceString; 
+	}
+	
+	private static void setWhiteSpaceString(boolean isSpaces, int indentSize) {
+		whiteSpaceString = getWhiteSpaceString(isSpaces, indentSize);
+	}
+	
 	public static String getCqlString(CQLModel cqlModel, String toBeInserted) {
-
+		return getCqlString(cqlModel, toBeInserted, true, 2);
+	}
+	
+	public static String getCqlString(CQLModel cqlModel, String toBeInserted, boolean isSpaces, int indentSize) {
+		setWhiteSpaceString(isSpaces, indentSize);
 		StringBuilder cqlStr = new StringBuilder();
 		toBeInsertedAtEnd = new StringBuilder();
 		// library Name and Using
@@ -189,7 +211,7 @@ public final class CQLUtilityClass {
 			String def = "define " + "\""+ definition.getName() + "\"";
 
 			cqlStr = cqlStr.append(def + ":\n");
-			cqlStr = cqlStr.append("\t" + definition.getLogic().replaceAll("\\n", "\n\t"));
+			cqlStr = cqlStr.append(whiteSpaceString + definition.getLogic().replaceAll("\\n", "\n" + whiteSpaceString));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the def we just appended is the current one, then
@@ -232,7 +254,7 @@ public final class CQLUtilityClass {
 				cqlStr.deleteCharAt(cqlStr.length() - 2);
 			}
 
-			cqlStr = cqlStr.append("):\n" + "\t" + function.getLogic().replaceAll("\\n", "\n\t"));
+			cqlStr = cqlStr.append("):\n" + whiteSpaceString + function.getLogic().replaceAll("\\n", "\n" + whiteSpaceString));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the func we just appended is the current one, then

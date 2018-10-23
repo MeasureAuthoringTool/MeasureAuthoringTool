@@ -524,7 +524,7 @@ public class CQLServiceImpl implements CQLService {
 		if(function.getLogic() != null && !function.getLogic().isEmpty()) {
 			CQLFormatter formatter = new CQLFormatter();
 			String formattedFunction = formatter.format(tempFunctionString);
-			functionLogic = parseOutBody(formattedFunction, definitionStatement);
+			functionLogic = parseOutBody(formattedFunction, definitionStatement, true, 2);
 		}
 
 		return functionLogic;
@@ -1064,13 +1064,13 @@ public class CQLServiceImpl implements CQLService {
 		if(definition.getLogic() != null && !definition.getLogic().isEmpty()) {
 			CQLFormatter formatter = new CQLFormatter(); 
 			String formattedDefinition = formatter.format(tempDefinitionString);
-			definitionLogic = parseOutBody(formattedDefinition, definitionStatement);
+			definitionLogic = parseOutBody(formattedDefinition, definitionStatement, true, 2);
 		}
 
 
 		return definitionLogic;
 	}
-
+	
 	/**
 	 * Parses the body from the cql definition or function. Remove the define statement for the expression and formats it nicely for ace editor by
 	 * removing the first tab on each line.
@@ -1079,7 +1079,7 @@ public class CQLServiceImpl implements CQLService {
 	 * define function "FunctionName"(arg1 Boolean, arg2 Boolean...): logic
 	 * @return the body of the cql expression
 	 */
-	private String parseOutBody(String cqlExpressionString, String expressionDefinitionString) {
+	private String parseOutBody(String cqlExpressionString, String expressionDefinitionString, boolean isSpaces, int indentSize) {
 
 		// remove the definition statement from the expressions string to make the epxerssion body and then trim whitespace
 		String expressionBodyString = cqlExpressionString.replace(expressionDefinitionString, "").trim();
@@ -1089,17 +1089,18 @@ public class CQLServiceImpl implements CQLService {
 		StringBuilder builder = new StringBuilder();
 
 		// go through and rebuild the the format
-		// this will remove the first tab in a line so
+		// this will remove the first whitespace in a line so
 		// it properly displays in the ace editor.
 		// without doing this, the the ace editor display
 		// would be indented one too many
 		while(scanner.hasNextLine()) {
 			String line = scanner.nextLine();
 
-			if(!line.isEmpty() && line.charAt(0) == '\t') {
-				line = line.replaceFirst("\t", "");
+			if(!line.isEmpty()) {
+				line = line.replaceFirst(CQLUtilityClass.getWhiteSpaceString(isSpaces, indentSize), "");
 			}
-
+			
+		
 			builder.append(line + "\n");
 		}
 		

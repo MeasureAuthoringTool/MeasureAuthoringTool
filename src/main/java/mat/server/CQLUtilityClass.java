@@ -37,7 +37,6 @@ public final class CQLUtilityClass {
 	private static StringBuilder toBeInsertedAtEnd;
 
 	private static int size;
-	private static String whiteSpaceString = ""; 
 
 	public static int getSize() {
 		return size;
@@ -60,16 +59,12 @@ public final class CQLUtilityClass {
 		return whiteSpaceString; 
 	}
 	
-	private static void setWhiteSpaceString(boolean isSpaces, int indentSize) {
-		whiteSpaceString = getWhiteSpaceString(isSpaces, indentSize);
-	}
-	
+
 	public static String getCqlString(CQLModel cqlModel, String toBeInserted) {
 		return getCqlString(cqlModel, toBeInserted, true, 2);
 	}
 	
 	public static String getCqlString(CQLModel cqlModel, String toBeInserted, boolean isSpaces, int indentSize) {
-		setWhiteSpaceString(isSpaces, indentSize);
 		StringBuilder cqlStr = new StringBuilder();
 		toBeInsertedAtEnd = new StringBuilder();
 		// library Name and Using
@@ -92,8 +87,7 @@ public final class CQLUtilityClass {
 
 		// Definitions and Functions by Context
 		if(!cqlModel.getDefinitionList().isEmpty() || !cqlModel.getCqlFunctions().isEmpty()){
-			getDefineAndFunctionsByContext(cqlModel.getDefinitionList(),
-					cqlModel.getCqlFunctions(), cqlStr, toBeInserted);
+			getDefineAndFunctionsByContext(cqlModel.getDefinitionList(), cqlModel.getCqlFunctions(), cqlStr, toBeInserted, isSpaces, indentSize);
 		} else {
 			cqlStr.append("context").append(" " + PATIENT).append("\n\n");
 		}
@@ -135,11 +129,13 @@ public final class CQLUtilityClass {
 	 *            the functions list
 	 * @param cqlStr
 	 *            the cql str
+	 * @param indentSize 
+	 * @param isSpaces 
 	 * @return the define and funcs by context
 	 */
 	private static StringBuilder getDefineAndFunctionsByContext(
 			List<CQLDefinition> defineList, List<CQLFunctions> functionsList,
-			StringBuilder cqlStr, String toBeInserted) {
+			StringBuilder cqlStr, String toBeInserted, boolean isSpaces, int indentSize) {
 
 		List<CQLDefinition> contextPatDefineList = new ArrayList<CQLDefinition>();
 		List<CQLDefinition> contextPopDefineList = new ArrayList<CQLDefinition>();
@@ -167,14 +163,12 @@ public final class CQLUtilityClass {
 
 		if ((!contextPatDefineList.isEmpty()) || (!contextPatFuncList.isEmpty())) {
 
-			getDefineAndFunctionsByContext(contextPatDefineList,
-					contextPatFuncList, PATIENT, cqlStr, toBeInserted);
+			getDefineAndFunctionsByContext(contextPatDefineList, contextPatFuncList, PATIENT, cqlStr, toBeInserted, isSpaces, indentSize);
 		}
 
 		if ((!contextPopDefineList.isEmpty()) || (!contextPopFuncList.isEmpty())) {
 
-			getDefineAndFunctionsByContext(contextPopDefineList,
-					contextPopFuncList, POPULATION, cqlStr, toBeInserted);
+			getDefineAndFunctionsByContext(contextPopDefineList, contextPopFuncList, POPULATION, cqlStr, toBeInserted, isSpaces, indentSize);
 		}
 
 		return cqlStr;
@@ -192,12 +186,14 @@ public final class CQLUtilityClass {
 	 *            the context
 	 * @param cqlStr
 	 *            the cql str
+	 * @param indentSize 
+	 * @param isSpaces 
 	 * @return the define and functions by context
 	 */
 	private static StringBuilder getDefineAndFunctionsByContext(
 			List<CQLDefinition> definitionList,
 			List<CQLFunctions> functionsList, String context,
-			StringBuilder cqlStr, String toBeInserted) {
+			StringBuilder cqlStr, String toBeInserted, boolean isSpaces, int indentSize) {
 
 
 		cqlStr = cqlStr.append("context").append(" " + context).append("\n\n");
@@ -211,7 +207,7 @@ public final class CQLUtilityClass {
 			String def = "define " + "\""+ definition.getName() + "\"";
 
 			cqlStr = cqlStr.append(def + ":\n");
-			cqlStr = cqlStr.append(whiteSpaceString + definition.getLogic().replaceAll("\\n", "\n" + whiteSpaceString));
+			cqlStr = cqlStr.append(getWhiteSpaceString(isSpaces, indentSize) + definition.getLogic().replaceAll("\\n", "\n" + getWhiteSpaceString(isSpaces, indentSize)));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the def we just appended is the current one, then
@@ -254,7 +250,7 @@ public final class CQLUtilityClass {
 				cqlStr.deleteCharAt(cqlStr.length() - 2);
 			}
 
-			cqlStr = cqlStr.append("):\n" + whiteSpaceString + function.getLogic().replaceAll("\\n", "\n" + whiteSpaceString));
+			cqlStr = cqlStr.append("):\n" + getWhiteSpaceString(isSpaces, indentSize) + function.getLogic().replaceAll("\\n", "\n" + getWhiteSpaceString(isSpaces, indentSize)));
 			cqlStr = cqlStr.append("\n\n");
 
 			// if the the func we just appended is the current one, then

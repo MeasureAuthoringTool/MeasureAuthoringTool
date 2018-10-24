@@ -1242,7 +1242,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureTypeSPanel.clear();
 		measureTypeSPanel.setStyleName("cellTablePanelMeasureDetails");
 		
-		Collections.sort(measureTypeDTOList, new MeasureType.Comparator());
+		Collections.sort(measureTypeDTOList, new MeasureType.MeasureTypeComparator());
 		
 		measureTypeDTOList.removeIf(m -> m.getAbbrName().equals(COMPOSITE));
 		

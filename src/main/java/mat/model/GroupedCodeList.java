@@ -1,73 +1,65 @@
 package mat.model;
 
-/**
- * The Class GroupedCodeList.
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "GROUPED_CODE_LISTS")
 public class GroupedCodeList implements Cloneable {
 	
-	/** The id. */
 	private String id;
 	
-	/** The description. */
 	private String description;
 	
-	/** The code list. */
 	private CodeList codeList;
 	
+	private ListObject listObject;
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "GROUPED_CODE_LISTS_ID", unique = true, nullable = false, length = 32)
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid", strategy = "uuid")
 	public String getId() {
 		return id;
 	}
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
+
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
+	@Column(name = "DESCRIPTION", nullable = false, length = 1000)
 	public String getDescription() {
 		return description;
 	}
 	
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 	
-	/**
-	 * Gets the code list.
-	 * 
-	 * @return the code list
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CODE_LIST_ID", nullable = false, insertable = false, updatable = false)
+	public ListObject getListObject() {
+		return this.listObject;
+	}
+
+	public void setListObject(ListObject listObject) {
+		this.listObject = listObject;
+	} 
+	
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "CODE_LIST_ID", nullable = false,unique= false)
 	public CodeList getCodeList() {
 		return codeList;
 	}
 	
-	/**
-	 * Sets the code list.
-	 * 
-	 * @param codeList
-	 *            the new code list
-	 */
 	public void setCodeList(CodeList codeList) {
 		this.codeList = codeList;
 	}

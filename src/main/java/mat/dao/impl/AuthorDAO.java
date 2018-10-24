@@ -3,15 +3,15 @@ package mat.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.DTO.AuthorDTO;
-import mat.dao.search.GenericDAO;
-import mat.model.Author;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import mat.DTO.AuthorDTO;
+import mat.dao.search.GenericDAO;
+import mat.model.Author;
 
 public class AuthorDAO extends GenericDAO<Author, String> implements mat.dao.AuthorDAO {
 	

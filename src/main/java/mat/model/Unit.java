@@ -1,93 +1,63 @@
 package mat.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-/**
- * The Class Unit.
- */
-public class Unit implements IsSerializable{
-	
-	/** The id. */
+@Entity
+@Table(name = "UNIT")
+public class Unit implements java.io.Serializable {
+
+	private static final long serialVersionUID = -4747568228077545164L;
 	private String id;
-	
-	/** The unit. */
-	private String unit;
-	
-	/** the cql unit **/
-	private String cqlunit;
-	
-	/** The sort order. */
+	private String name;
 	private int sortOrder;
-	
-	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
+	private String cqlUnit;
+
+	public Unit() {
 	}
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
+
+	public Unit(String id, int sortOrder) {
+		this.id = id;
+		this.sortOrder = sortOrder;
+	}
+
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
+	public String getId() {
+		return this.id;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	/**
-	 * Gets the unit.
-	 * 
-	 * @return the unit
-	 */
-	public String getUnit() {
-		return unit;
-	}
-	
-	/**
-	 * Sets the unit.
-	 * 
-	 * @param unit
-	 *            the new unit
-	 */
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
-	
-	/**
-	 * @return the cqlunit
-	 */
-	public String getCqlunit() {
-		return cqlunit;
+
+	@Column(name = "NAME", length = 45)
+	public String getName() {
+		return this.name;
 	}
 
-	/**
-	 * @param cqlunit the cqlunit to set
-	 */
-	public void setCqlunit(String cqlunit) {
-		this.cqlunit = cqlunit;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	/**
-	 * Sets the sort order.
-	 * 
-	 * @param sortOrder
-	 *            the new sort order
-	 */
+	@Column(name = "SORT_ORDER", nullable = false)
+	public int getSortOrder() {
+		return this.sortOrder;
+	}
+
 	public void setSortOrder(int sortOrder) {
 		this.sortOrder = sortOrder;
 	}
-	
-	/**
-	 * Gets the sort order.
-	 * 
-	 * @return the sort order
-	 */
-	public int getSortOrder() {
-		return sortOrder;
+
+	@Column(name = "CQL_UNIT", length = 60)
+	public String getCqlUnit() {
+		return this.cqlUnit;
 	}
+
+	public void setCqlUnit(String cqlUnit) {
+		this.cqlUnit = cqlUnit;
+	}
+
 }

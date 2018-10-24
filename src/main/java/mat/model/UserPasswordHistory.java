@@ -3,121 +3,80 @@ package mat.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-// TODO: Auto-generated Javadoc
-/**
- * The Class UserPasswordHistory.
- */
+@Entity
+@Table(name = "USER_PASSWORD_HISTORY")
 public class UserPasswordHistory implements IsSerializable, Serializable{
 
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -2972696565028280765L;
 
-	/** The id. */
 	private String id;
 	
-	/** The user. */
 	private User user;
 	
-	/** The password. */
 	private String password;
 	
-	/** The salt. */
 	private String salt;
 	
-	/** The created date. */
 	private Date createdDate;
 	
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "USER_PASSWORD_HISTORY_ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 
-	
-	/**
-	 * Sets the id.
-	 *
-	 * @param id the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the password.
-	 *
-	 * @return the password
-	 */
+	@Column(name = "PASSWORD", nullable = false, length = 100)
 	public String getPassword() {
 		return password;
 	}
 
-	/**
-	 * Sets the password.
-	 *
-	 * @param password the new password
-	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
-	/**
-	 * Gets the salt.
-	 *
-	 * @return the salt
-	 */
+	
+	@Column(name = "SALT", nullable = false, length = 100)
 	public String getSalt() {
 		return salt;
 	}
 
-	/**
-	 * Sets the salt.
-	 *
-	 * @param salt the new salt
-	 */
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
 
-	/**
-	 * Gets the created date.
-	 *
-	 * @return the created date
-	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "CREATE_DATE", nullable = false, length = 10)
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	/**
-	 * Sets the created date.
-	 *
-	 * @param createdDate the new created date
-	 */
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
 
-	/**
-	 * Gets the user.
-	 *
-	 * @return the user
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	public User getUser() {
 		return user;
 	}
 	
-	/**
-	 * Sets the user.
-	 *
-	 * @param user the user to set
-	 */
 	public void setUser(User user) {
 		this.user = user;
 	}

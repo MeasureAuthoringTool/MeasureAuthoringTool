@@ -15,7 +15,6 @@ import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureValidationLogDAO;
-import mat.dao.ObjectStatusDAO;
 import mat.dao.OrganizationDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.RecentCQLActivityLogDAO;
@@ -33,12 +32,8 @@ import mat.dao.UserDAO;
 import mat.dao.UserPasswordDAO;
 import mat.dao.UserPasswordHistoryDAO;
 import mat.dao.UserSecurityQuestionDAO;
-import mat.dao.clause.AttributeDetailsDAO;
-import mat.dao.clause.AttributesDAO;
-import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
-import mat.dao.clause.CQLLibrarySetDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.clause.MeasureDAO;
@@ -48,14 +43,9 @@ import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.ModesAttributesDAO;
 import mat.dao.clause.ModesDAO;
 import mat.dao.clause.OperatorDAO;
-import mat.dao.clause.QDSAttributeDetailsDAO;
 import mat.dao.clause.QDSAttributesDAO;
 
 public class DAOService {
-	
-	private AttributeDetailsDAO attributeDetailsDAO;
-	
-	private AttributesDAO attributesDAO;
 	
 	private AuditLogDAO auditLogDAO;
 	
@@ -90,8 +80,6 @@ public class DAOService {
 	
 	private MeasureSetDAO measureSetDAO;
 	
-	private CQLLibrarySetDAO cqlLibrarySetDAO;
-	
 	private MeasureValidationLogDAO measureValidationLogDAO;
 	
 	private MeasureXMLDAO measureXMLDAO;
@@ -100,13 +88,9 @@ public class DAOService {
 	
 	private ModesDAO modesDAO;
 	
-	private ObjectStatusDAO objectStatusDAO;
-	
 	private OperatorDAO operatorDAO;
 	
 	private OrganizationDAO organizationDAO;
-	
-	private QDSAttributeDetailsDAO qDSAttributeDetailsDAO;
 	
 	private QDSAttributesDAO qDSAttributesDAO;
 	
@@ -141,8 +125,6 @@ public class DAOService {
 	
 	private UserAuditLogDAO userAuditLogDAO;
 	
-	private CQLDAO cqlDAO;
-	
 	private CQLLibraryDAO cqlLibraryDAO;
 	
 	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
@@ -152,18 +134,6 @@ public class DAOService {
 	private EmailAuditLogDAO emailAuditLogDAO; 
 	
 	private ComponentMeasuresDAO componentMeasureDAO;
-	
-	public AttributeDetailsDAO getAttributeDetailsDAO() {
-		return attributeDetailsDAO;
-	}
-
-	public AttributesDAO getAttributesDAO() {
-		return attributesDAO;
-	}
-
-	public void setAttributesDAO(AttributesDAO attributesDAO) {
-		this.attributesDAO = attributesDAO;
-	}
 
 	public AuditLogDAO getAuditLogDAO() {
 		return auditLogDAO;
@@ -248,17 +218,9 @@ public class DAOService {
 	public void setModesDAO(ModesDAO modesDAO) {
 		this.modesDAO = modesDAO;
 	}
-
-	public ObjectStatusDAO getObjectStatusDAO() {
-		return objectStatusDAO;
-	}
 	
 	public OperatorDAO getOperatorDAO() {
 		return operatorDAO;
-	}
-	
-	public QDSAttributeDetailsDAO getqDSAttributeDetailsDAO() {
-		return qDSAttributeDetailsDAO;
 	}
 	
 	public QDSAttributesDAO getqDSAttributesDAO() {
@@ -315,10 +277,6 @@ public class DAOService {
 	
 	public UserSecurityQuestionDAO getUserSecurityQuestionDAO() {
 		return userSecurityQuestionDAO;
-	}
-	
-	public void setAttributeDetailsDAO(AttributeDetailsDAO attributeDetailsDAO) {
-		this.attributeDetailsDAO = attributeDetailsDAO;
 	}
 	
 	public void setAuditLogDAO(AuditLogDAO auditLogDAO) {
@@ -389,17 +347,8 @@ public class DAOService {
 		this.measureXMLDAO = measureXMLDAO;
 	}
 
-	public void setObjectStatusDAO(ObjectStatusDAO objectStatusDAO) {
-		this.objectStatusDAO = objectStatusDAO;
-	}
-
 	public void setOperatorDAO(OperatorDAO operatorDAO) {
 		this.operatorDAO = operatorDAO;
-	}
-
-	public void setqDSAttributeDetailsDAO(
-			QDSAttributeDetailsDAO qDSAttributeDetailsDAO) {
-		this.qDSAttributeDetailsDAO = qDSAttributeDetailsDAO;
 	}
 
 	public void setqDSAttributesDAO(QDSAttributesDAO qDSAttributesDAO) {
@@ -484,14 +433,6 @@ public class DAOService {
 		this.userAuditLogDAO = userAuditLogDAO;
 	}
 
-	public CQLDAO getCqlDAO() {
-		return cqlDAO;
-	}
-
-	public void setCqlDAO(CQLDAO cqlDAO) {
-		this.cqlDAO = cqlDAO;
-	}
-
 	public CQLLibraryDAO getCqlLibraryDAO() {
 		return cqlLibraryDAO;
 	}
@@ -507,15 +448,6 @@ public class DAOService {
 	public void setCqlLibraryAssociationDAO(CQLLibraryAssociationDAO cqlLibraryAssociationDAO) {
 		this.cqlLibraryAssociationDAO = cqlLibraryAssociationDAO;
 	}
-
-	public CQLLibrarySetDAO getCqlLibrarySetDAO() {
-		return cqlLibrarySetDAO;
-	}
-
-	public void setCqlLibrarySetDAO(CQLLibrarySetDAO cqlLibrarySetDAO) {
-		this.cqlLibrarySetDAO = cqlLibrarySetDAO;
-	}
-	
 
 	public RecentCQLActivityLogDAO getRecentCQLActivityLogDAO() {
 		return recentCQLActivityLogDAO;

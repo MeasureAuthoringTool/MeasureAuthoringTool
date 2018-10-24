@@ -676,7 +676,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		boolean reactivatingUser = false;
-		if(model.isActive() && (user.getStatus()!= null) && !user.getStatus().getId().equals("1")) {
+		if(model.isActive() && (user.getStatus()!= null) && !user.getStatus().getStatusId().equals("1")) {
 			reactivatingUser = true;
 		}
 		User exsitingUser = userDAO.findByEmail(model.getEmailAddress());

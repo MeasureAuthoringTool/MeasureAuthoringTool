@@ -3,12 +3,12 @@ package mat.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.dao.search.GenericDAO;
-import mat.model.DataType;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import mat.dao.search.GenericDAO;
+import mat.model.DataType;
 
 /**
  * The Class DataTypeDAO.

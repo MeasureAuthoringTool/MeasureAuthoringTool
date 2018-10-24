@@ -2,8 +2,7 @@ package mat.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import mat.dao.search.GenericDAO;
-import mat.model.Organization;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -11,6 +10,9 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+import mat.dao.search.GenericDAO;
+import mat.model.Organization;
 
 /** The Class OrganizationDAO. */
 public class OrganizationDAO extends GenericDAO<Organization, Long> implements

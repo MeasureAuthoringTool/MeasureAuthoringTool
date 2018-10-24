@@ -1,6 +1,14 @@
 package mat.model.clause;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +24,9 @@ public class ComponentMeasure {
 
 	private String alias;
 	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -24,6 +35,7 @@ public class ComponentMeasure {
 		this.id = id;
 	}
 
+	@Column(name = "ALIAS", length = 45)
 	public String getAlias() {
 		return alias;
 	}
@@ -32,6 +44,8 @@ public class ComponentMeasure {
 		this.alias = alias;
 	}
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "COMPONENT_MEASURE_ID", nullable = false)
 	public Measure getCompositeMeasure() {
 		return compositeMeasure;
 	}
@@ -40,6 +54,8 @@ public class ComponentMeasure {
 		this.compositeMeasure = compositeMeasure;
 	}
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "COMPOSITE_MEASURE_ID", nullable = false)
 	public Measure getComponentMeasure() {
 		return componentMeasure;
 	}

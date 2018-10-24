@@ -3,9 +3,6 @@ package mat.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.model.clause.Measure;
-import mat.shared.ConstantMessages;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -14,6 +11,9 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+import mat.model.clause.Measure;
+import mat.shared.ConstantMessages;
 
 /**
  * The Class ListObjectSearchCriteriaBuilder.

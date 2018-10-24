@@ -1,51 +1,39 @@
 package mat.model;
 
-/**
- * The Class MatFlag.
- */
-public class MatFlag {
-	
-	/** The id. */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "MAT_FLAG")
+public class MatFlag implements java.io.Serializable {
+	private static final long serialVersionUID = -3203401079752345678L;
 	private String id;
-	
-	/** The flag. */
+	@Column(name = "FLAG")
 	private String flag;
 
-	/**
-	 * Gets the flag.
-	 * 
-	 * @return the flag
-	 */
+	public MatFlag() {
+	}
+
+	public MatFlag(String id) {
+		this.id = id;
+	}
+
+	@Id
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 	public String getFlag() {
 		return flag;
 	}
 
-	/**
-	 * Sets the flag.
-	 * 
-	 * @param flag
-	 *            the new flag
-	 */
 	public void setFlag(String flag) {
 		this.flag = flag;
-	}
-
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
 	}
 }

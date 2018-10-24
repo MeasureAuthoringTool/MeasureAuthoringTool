@@ -5,9 +5,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import mat.model.SecurityRole;
-import mat.model.Status;
-import mat.model.UserPassword;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,64 +25,49 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * The Class MatUserDetails.
- */
+import mat.model.SecurityRole;
+import mat.model.Status;
+import mat.model.UserPassword;
+
+@Entity
+@Table(name = "USER", uniqueConstraints = @UniqueConstraint(columnNames = "LOGIN_ID"))
 public class MatUserDetails  implements IsSerializable, UserDetails {
     
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 1L;
-    
-    /** The id. */
+	private static final long serialVersionUID = -6183578219682706613L;
+
     private String id;
     
-    /** The email address. */
     private String emailAddress;
     
-    /** The user password. */
     private UserPassword userPassword;
     
-    /** The username. */
     private String username;
     
-    /** The roles. */
     private SecurityRole roles;
     
-    /** The status. */
     private Status status;
     
-    /** The sign in date. */
     private Timestamp signInDate;
 	
-	/** The sign out date. */
 	private Timestamp signOutDate;
 	
-	/** The locked out date. */
 	private Timestamp lockedOutDate;
     
-    /** The termination date. */
     private Timestamp terminationDate;
 	
-	/** The activation date. */
 	private Timestamp activationDate;
     
-    /** The login id. */
     private String loginId;
     
-    /** The user last name. */
     private String userLastName;
     
-    /** Session ID Tracker */
     private String sessionId;
     
-    /**
-	 * Instantiates a new mat user details.
-	 */
     public MatUserDetails() {
     	
     }
 
-    
+	@Column(name = "SESSION_ID", length = 64)
 	public String getSessionId() {
 		return sessionId;
 	}
@@ -83,107 +78,54 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	}
 
 
-	/**
-	 * Gets the email address.
-	 * 
-	 * @return the email address
-	 */
+	@Column(name = "EMAIL_ADDRESS", nullable = false, length = 254)
 	public String getEmailAddress() {
 		return emailAddress;
 	}
 
-	/**
-	 * Sets the email address.
-	 * 
-	 * @param emailAddress
-	 *            the new email address
-	 */
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
 	
-	/**
-	 * Gets the roles.
-	 * 
-	 * @return the roles
-	 */
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SECURITY_ROLE_ID", nullable = false)
 	public SecurityRole getRoles() {
 		return roles;
 	}
 
-	/**
-	 * Sets the roles.
-	 * 
-	 * @param roles
-	 *            the new roles
-	 */
 	public void setRoles(SecurityRole roles) {
 		this.roles = roles;
 	}
 
-	 /**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "USER_ID", unique = true, nullable = false, length = 40)
  	public String getId() {
 			return id;
 	}
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 			this.id = id;
 	}
 	
-	/**
-	 * Gets the user password.
-	 * 
-	 * @return the user password
-	 */
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
 	public UserPassword getUserPassword() {
 		return userPassword;
 	}
 
-	/**
-	 * Sets the user password.
-	 * 
-	 * @param userPassword
-	 *            the new user password
-	 */
 	public void setUserPassword(UserPassword userPassword) {
 		this.userPassword = userPassword;
 	}
 
-    /**
-	 * Gets the status.
-	 * 
-	 * @return the status
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STATUS_ID", nullable = false)
     public Status getStatus() {
 		return status;
 	}
 
-	/**
-	 * Sets the status.
-	 * 
-	 * @param status
-	 *            the new status
-	 */
 	public void setStatus(Status status) {
 		this.status = status;
 	}
 
-	/**
-	 * Sets the username.
-	 * 
-	 * @param username
-	 *            the new username
-	 */
 	public void setUsername(String username) {
 		this.username = username;
 	}
@@ -191,6 +133,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	/* (non-Javadoc)
 	 * @see org.springframework.security.core.userdetails.UserDetails#getAuthorities()
 	 */
+	@Transient
 	public Collection<GrantedAuthority> getAuthorities() {
 	       List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
 	       list.add(new SimpleGrantedAuthority(roles.getDescription()));
@@ -201,6 +144,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#getUsername()
 	 */
 	@Override
+	@Transient
 	public String getUsername() {
 		return username;
 	}
@@ -209,6 +153,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#isAccountNonExpired()
 	 */
 	@Override
+	@Transient
 	public boolean isAccountNonExpired() {
 		return false;
 	}
@@ -217,6 +162,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#isAccountNonLocked()
 	 */
 	@Override
+	@Transient
 	public boolean isAccountNonLocked() {
 		return false;
 	}
@@ -225,6 +171,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#isCredentialsNonExpired()
 	 */
 	@Override
+	@Transient
 	public boolean isCredentialsNonExpired() {
 		return false;
 	}
@@ -233,6 +180,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#isEnabled()
 	 */
 	@Override
+	@Transient
 	public boolean isEnabled() {
 		return false;
 	}
@@ -241,138 +189,70 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#getPassword()
 	 */
 	@Override
+	@Transient
 	public String getPassword() {
 		return null;
 	}
 
-	/**
-	 * Sets the sign in date.
-	 * 
-	 * @param signInDate
-	 *            the new sign in date
-	 */
 	public void setSignInDate(Timestamp signInDate) {
 		this.signInDate = signInDate;
 	}
 
-	/**
-	 * Gets the sign in date.
-	 * 
-	 * @return the sign in date
-	 */
+	@Column(name = "SIGN_IN_DATE", length = 19)
 	public Timestamp getSignInDate() {
 		return signInDate;
 	}
 
-	/**
-	 * Sets the sign out date.
-	 * 
-	 * @param signOutDate
-	 *            the new sign out date
-	 */
 	public void setSignOutDate(Timestamp signOutDate) {
 		this.signOutDate = signOutDate;
 	}
 
-	/**
-	 * Gets the sign out date.
-	 * 
-	 * @return the sign out date
-	 */
+	@Column(name = "SIGN_OUT_DATE", length = 19)
 	public Timestamp getSignOutDate() {
 		return signOutDate;
 	}
 
-	/**
-	 * Sets the locked out date.
-	 * 
-	 * @param lockedOutDate
-	 *            the new locked out date
-	 */
 	public void setLockedOutDate(Timestamp lockedOutDate) {
 		this.lockedOutDate = lockedOutDate;
 	}
 
-	/**
-	 * Gets the locked out date.
-	 * 
-	 * @return the locked out date
-	 */
+	@Column(name = "LOCKED_OUT_DATE", length = 19)
 	public Timestamp getLockedOutDate() {
 		return lockedOutDate;
 	}
 
-	/**
-	 * Sets the termination date.
-	 * 
-	 * @param terminationDate
-	 *            the terminationDate to set
-	 */
 	public void setTerminationDate(Timestamp terminationDate) {
 		this.terminationDate = terminationDate;
 	}
 
-	/**
-	 * Gets the termination date.
-	 * 
-	 * @return the terminationDate
-	 */
+	@Column(name = "TERMINATION_DATE", length = 10)
 	public Timestamp getTerminationDate() {
 		return terminationDate;
 	}
 
-	/**
-	 * Sets the activation date.
-	 * 
-	 * @param activationDate
-	 *            the activationDate to set
-	 */
 	public void setActivationDate(Timestamp activationDate) {
 		this.activationDate = activationDate;
 	}
 
-	/**
-	 * Gets the activation date.
-	 * 
-	 * @return the activationDate
-	 */
+	@Column(name = "ACTIVATION_DATE", nullable = false, length = 10)
 	public Timestamp getActivationDate() {
 		return activationDate;
 	}
 
-	/**
-	 * Sets the login id.
-	 * 
-	 * @param loginId
-	 *            the loginId to set
-	 */
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
 	}
 
-	/**
-	 * Gets the login id.
-	 * 
-	 * @return the loginId
-	 */
+	@Column(name = "LOGIN_ID", unique = true, length = 45)
 	public String getLoginId() {
 		return loginId;
 	}
 	
-	/**
-	 * Gets the user last name.
-	 *
-	 * @return the user last name
-	 */
+	@Column(name = "LAST_NAME", nullable = false, length = 100)
 	public String getUserLastName() {
 		return userLastName;
 	}
 
-	/**
-	 * Sets the user last name.
-	 *
-	 * @param userLastName the new user last name
-	 */
 	public void setUserLastName(String userLastName) {
 		this.userLastName = userLastName;
 	}

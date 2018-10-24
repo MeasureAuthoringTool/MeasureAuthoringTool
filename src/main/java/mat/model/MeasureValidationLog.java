@@ -8,195 +8,98 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.hibernate.Hibernate;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import mat.hibernate.HibernateConf;
 import mat.model.clause.Measure;
 
-/**
- * Data Structure to store for information about a validation event: type, user,
- * measure, interimXML.
- * 
- * @author aschmidt
- */
+@Entity
+@Table(name = "MEASURE_VALIDATION_LOG")
 public class MeasureValidationLog {
 	
-	/** The id. */
 	private String id;
 	
-	/** The activity type. */
 	private String activityType;	
 	
-	/** The time. */
 	private Timestamp time;
 	
-	/** The user id. */
 	private String userId;
 	
-	/** The measure. */
 	private Measure measure;
 	
-	/** The interim blob. */
-	private Blob interimBlob;
+	private byte[] interimBlob;
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
+
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the activity type.
-	 * 
-	 * @return the activity type
-	 */
+	@Column(name = "ACTIVITY_TYPE", nullable = false, length = 40)
 	public String getActivityType() {
 		return activityType;
 	}
 	
-	/**
-	 * Sets the activity type.
-	 * 
-	 * @param activityType
-	 *            the new activity type
-	 */
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
 	}
 	
-	/**
-	 * Gets the time.
-	 * 
-	 * @return the time
-	 */
+	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Timestamp getTime() {
 		return time;
 	}
 	
-	/**
-	 * Sets the time.
-	 * 
-	 * @param created
-	 *            the new time
-	 */
 	public void setTime(Date created) {
 		this.time = new Timestamp(created.getTime());
 	}
 	
-	/**
-	 * Gets the user id.
-	 * 
-	 * @return the user id
-	 */
+	@Column(name = "USER_ID", nullable = false, length = 40)
 	public String getUserId() {
 		return userId;
 	}
 	
-	/**
-	 * Sets the user id.
-	 * 
-	 * @param userId
-	 *            the new user id
-	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	
-	/**
-	 * Gets the measure.
-	 * 
-	 * @return the measure
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEASURE_ID", nullable = false)
 	public Measure getMeasure() {
 		return measure;
 	}
 	
-	/**
-	 * Sets the measure.
-	 * 
-	 * @param measure
-	 *            the new measure
-	 */
 	public void setMeasure(Measure measure) {
 		this.measure = measure;
 	}
 	
-	/**
-	 * Gets the interim barr.
-	 * 
-	 * @return the interim barr
-	 */
 	public byte[] getInterimBarr() {
-		return toByteArray(interimBlob);
+		return interimBlob;
 	}
 	
-	/**
-	 * Sets the interim barr.
-	 * 
-	 * @param interimBarr
-	 *            the new interim barr
-	 */
 	public void setInterimBarr(byte[] interimBarr) {
-		this.interimBlob = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(interimBarr);
+		this.interimBlob = interimBarr;
 	}
 	
-	  /**
-	 * Sets the interim blob.
-	 * 
-	 * @param codeList
-	 *            the new interim blob
-	 */
-  	public void setInterimBlob(Blob codeList) {  
+  	public void setInterimBlob(byte[] codeList) {  
 		  this.interimBlob = codeList; 
 	  } 
 	  
-	  /**
-	 * Gets the interim blob.
-	 * 
-	 * @return the interim blob
-	 */
-  	public Blob getInterimBlob() {  
+	@Column(name = "INTERIM_BLOB")
+  	public byte[] getInterimBlob() {  
 		  return this.interimBlob; 
 	  } 
 	  
-	  /**
-	 * To byte array.
-	 * 
-	 * @param fromBlob
-	 *            the from blob
-	 * @return the byte[]
-	 */
-  	private byte[] toByteArray(Blob fromBlob) {  
-		  ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-		  try {
-			  return toByteArrayImpl(fromBlob, baos);  
-		  } catch (SQLException e) {   
-			  throw new RuntimeException(e); 
-		  } catch (IOException e) {   
-			  throw new RuntimeException(e);  
-		  } finally {   
-			  if (baos != null) {  
-				  try {   
-					  baos.close(); 
-				  } catch (IOException ex) {
-					  ex.printStackTrace();
-				  }
-			  }  
-		  } 
-	  } 
 	  
 	  /**
 	 * To byte array impl.

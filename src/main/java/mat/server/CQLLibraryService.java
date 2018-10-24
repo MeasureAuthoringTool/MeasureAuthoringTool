@@ -43,7 +43,6 @@ import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.CQLLibraryExportDAO;
-import mat.dao.clause.CQLLibrarySetDAO;
 import mat.dao.clause.CQLLibraryShareDAO;
 import mat.dao.clause.ShareLevelDAO;
 import mat.model.CQLLibraryOwnerReportDTO;
@@ -55,7 +54,6 @@ import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.CQLLibraryExport;
-import mat.model.clause.CQLLibrarySet;
 import mat.model.clause.ShareLevel;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
@@ -100,10 +98,6 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 	/** The cql library DAO. */
 	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
-	
-	/** The cql library set DAO. */
-	@Autowired
-	private CQLLibrarySetDAO cqlLibrarySetDAO;
 	
 	/** The user DAO. */
 	@Autowired
@@ -599,12 +593,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 			CQLLibrary library = new CQLLibrary();
 			library.setDraft(true);
 			library.setName(cqlLibraryDataSetObject.getCqlName());
-
-			CQLLibrarySet cqlLibrarySet = new CQLLibrarySet();
-			cqlLibrarySet.setId(UUID.randomUUID().toString());
-			cqlLibrarySetDAO.save(cqlLibrarySet);
-
-			library.setSet_id(cqlLibrarySet.getId());;
+			library.setSet_id(UUID.randomUUID().toString());
 			library.setReleaseVersion(MATPropertiesService.get().getCurrentReleaseVersion());
 			library.setQdmVersion(MATPropertiesService.get().getQmdVersion());
 			library.setRevisionNumber("000");

@@ -2,16 +2,16 @@ package mat.dao.impl;
 
 import java.util.List;
 
-import mat.dao.search.GenericDAO;
-import mat.model.User;
-import mat.model.UserPasswordHistory;
-
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+import mat.dao.search.GenericDAO;
+import mat.model.User;
+import mat.model.UserPasswordHistory;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -19,7 +19,6 @@ import org.json.XML;
 
 import mat.client.clause.QDSAttributesService;
 import mat.dao.DataTypeDAO;
-import mat.dao.clause.AttributesDAO;
 import mat.dao.clause.ModesAttributesDAO;
 import mat.dao.clause.ModesDAO;
 import mat.dao.clause.QDSAttributesDAO;
@@ -98,14 +97,6 @@ implements QDSAttributesService {
 		return (QDSAttributesDAO) context.getBean("qDSAttributesDAO");
 	}
 	
-	/**
-	 * Gets the attributes dao.
-	 * 
-	 * @return the dao
-	 */
-	public AttributesDAO getAttributesDAO() {
-		return (AttributesDAO) context.getBean("attributesDAO");
-	}
 	
 	/**
 	 * Gets the modes dao.

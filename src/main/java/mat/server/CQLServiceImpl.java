@@ -48,13 +48,11 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.service.CQLService;
 import mat.client.shared.MatException;
 import mat.client.shared.ValueSetNameInputValidator;
-import mat.dao.clause.CQLDAO;
 import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
 import mat.model.MatValueSet;
-import mat.model.clause.CQLData;
 import mat.model.cql.CQLCode;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeSystemWrapper;
@@ -102,7 +100,6 @@ public class CQLServiceImpl implements CQLService {
 	
 	private static final int COMMENTS_MAX_LENGTH = 2500;
 	
-	@Autowired private CQLDAO cqlDAO;
 	@Autowired private CQLLibraryDAO cqlLibraryDAO;
 	@Autowired private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
 	@Autowired private MeasurePackageService measurePackageService;
@@ -142,12 +139,6 @@ public class CQLServiceImpl implements CQLService {
 					+ "codeSystemVersion=\"2016-03\" id=\"777\" " + "/>"
 
 					+ "</codeSystems>";
-
-
-	@Override
-	public CQLData getCQL(String measureId) {
-		return cqlDAO.findByID(measureId);
-	}
 
 
 	@Override

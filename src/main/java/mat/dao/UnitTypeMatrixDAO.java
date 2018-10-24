@@ -3,12 +3,12 @@ package mat.dao;
 import java.util.List;
 
 import mat.DTO.UnitMatrixDTO;
-import mat.model.UnitMatrix;
+import mat.model.UnitTypeMatrix;
 
 /**
  * DAO interface for Unit, UnitType and Matrix tables operation.
  */
-public interface UnitTypeMatrixDAO extends IDAO<UnitMatrix, String> {
+public interface UnitTypeMatrixDAO extends IDAO<UnitTypeMatrix, String> {
 	
 	/**
 	 * Gets the all unit matrix.

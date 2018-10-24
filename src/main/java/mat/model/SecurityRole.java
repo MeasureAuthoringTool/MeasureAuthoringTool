@@ -1,71 +1,56 @@
 package mat.model;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-/**
- * The Class SecurityRole.
- */
-public class SecurityRole implements IsSerializable {
+@Entity
+@Table(name = "SECURITY_ROLE")
+public class SecurityRole implements IsSerializable,Serializable {
 	
-	/** The Constant ADMIN_ROLE. */
+	private static final long serialVersionUID = 7440804941395081940L;
+
 	public static final String ADMIN_ROLE = "Administrator";
 	
-	/** The Constant USER_ROLE. */
 	public static final String USER_ROLE = "User";
 	
-	/** The Constant SUPER_USER_ROLE. */
 	public static final String SUPER_USER_ROLE = "Top Level User";
 	
-	/** The Constant ADMIN_ROLE_ID. */
 	public static final String ADMIN_ROLE_ID = "1";
 	
-	/** The Constant USER_ROLE_ID. */
 	public static final String USER_ROLE_ID = "2";
 	
-	/** The Constant SUPER_USER_ROLE_ID. */
 	public static final String SUPER_USER_ROLE_ID = "3";
 	
-	/** The id. */
 	private String id;
 	
-	/** The description. */
 	private String description;
+	
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	public SecurityRole() {
+		super();
+	}
+
+	@Id
+	@Column(name = "SECURITY_ROLE_ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
+	@Column(name = "DESCRIPTION", nullable = false, length = 50)
 	public String getDescription() {
 		return description;
 	}
 
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}

@@ -157,7 +157,7 @@ public class CheckUserLastLoginTask {
 			mailSender.send(simpleMailMessage);
 			EmailAuditLog emailAudit = new EmailAuditLog();
 			emailAudit.setActivityType("User Account Termination " + emailType + " email sent.");
-			emailAudit.setTime(new Date());
+			emailAudit.setTimestamp(new Date());
 			emailAudit.setLoginId(user.getLoginId());
 			emailAuditLogDAO.save(emailAudit);
 			
@@ -236,7 +236,7 @@ public class CheckUserLastLoginTask {
 		
 		user.setTerminationDate(new Date());
 		Status status = new Status();
-		status.setId("2");
+		status.setStatusId("2");
 		status.setDescription("User Terminated Using Scheduler");
 		user.setStatus(status);
 		userDAO.save(user);
@@ -256,7 +256,7 @@ public class CheckUserLastLoginTask {
 		
 		Boolean isValidUser = true;
 		
-		if(user.getStatus().getId().equals("2")){
+		if(user.getStatus().getStatusId().equals("2")){
 			isValidUser = false;
 		}
 		

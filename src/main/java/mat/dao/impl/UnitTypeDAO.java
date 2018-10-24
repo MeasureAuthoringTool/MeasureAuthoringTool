@@ -37,7 +37,7 @@ public class UnitTypeDAO extends GenericDAO<UnitType, String> implements mat.dao
 		for(UnitType unitType: unitTypeList){
 			UnitTypeDTO unitTypeDTO =  new UnitTypeDTO();
 			unitTypeDTO.setId(unitType.getId());
-			unitTypeDTO.setUnitType(unitType.getUnitType());
+			unitTypeDTO.setUnitType(unitType.getName());
 			unitTypeDTOList.add(unitTypeDTO);
 		}
 		return unitTypeDTOList;

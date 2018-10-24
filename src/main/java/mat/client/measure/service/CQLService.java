@@ -9,7 +9,6 @@ import org.exolab.castor.xml.ValidationException;
 
 import mat.model.CQLValueSetTransferObject;
 import mat.model.MatCodeTransferObject;
-import mat.model.clause.CQLData;
 import mat.model.cql.CQLCodeSystem;
 import mat.model.cql.CQLCodeWrapper;
 import mat.model.cql.CQLDefinition;
@@ -29,14 +28,6 @@ import mat.shared.cql.error.InvalidLibraryException;
  * The Interface CQLService.
  */
 public interface CQLService {
-
-	/**
-	 * Get cql.
-	 * 
-	 * @param boolean
-	 * @return cqlDataModel the cql data model
-	 */
-	CQLData getCQL(String measureId);
 
     /**
      * Parses the cql.

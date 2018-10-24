@@ -6,72 +6,54 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import mat.hibernate.HibernateConf;
 
-/**
- * The Class MeasureXML.
- */
+@Entity
+@Table(name = "MEASURE_XML")
 public class MeasureXML {
 	private String id;
 	private Blob measureXML;
 	private String measureId;
 	
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 64)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the measure xml.
-	 * 
-	 * @param measureXML
-	 *            the new measure xml
-	 */
+
 	public void setMeasureXML(Blob measureXML) {
 		this.measureXML = measureXML;
 	}
 	
-	/**
-	 * Gets the measure xml.
-	 * 
-	 * @return the measure xml
-	 */
+	@Lob
+	@Column(name = "MEASURE_XML")
 	public Blob getMeasureXML() {
 		return measureXML;
 	}
 	
-	/**
-	 * Sets the measureId.
-	 * 
-	 * @param measureId
-	 *            the new measureId
-	 */
 	public void setMeasureId(String measureId) {
 		this.measureId = measureId;
 	}
 	
-	/**
-	 * Gets the measureId.
-	 * 
-	 * @return the measureId
-	 */
+	@Column(name = "MEASURE_ID", nullable = false)
 	public String getMeasureId() {
 		return measureId;
 	}
@@ -81,6 +63,7 @@ public class MeasureXML {
 	 * 
 	 * @return the measure xml as string
 	 */
+	@Transient
 	public String getMeasureXMLAsString(){
 		String xml = "";
 		if(measureXML != null){

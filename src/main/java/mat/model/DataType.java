@@ -1,76 +1,57 @@
 package mat.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-
-/**
- * The Class DataType.
- */
+@Entity
+@Table(name = "DATA_TYPE")
 public class DataType {
-	
-	/** The id. */
 	private String id;
-	
-	/** The description. */
 	private String description;
+	private Category category;
 	
-	/** The category id. */
-	private String categoryId;
-	
-	/**
-	 * Gets the category id.
-	 * 
-	 * @return the category id
-	 */
-	public String getCategoryId() {
-		return categoryId;
-	}
-	
-	/**
-	 * Sets the category id.
-	 * 
-	 * @param categoryId
-	 *            the new category id
-	 */
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
-	}
-	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "DATA_TYPE_ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CATEGORY_ID", nullable = false)
+	public Category getCategory() {
+		return category;
+	}
+	
+	public void setCategory(Category category) {
+		this.category = category;
+	}
+	
+	@Column(name = "DESCRIPTION", nullable = false, length = 50)
 	public String getDescription() {
 		return description;
 	}
 	
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	//TODO
+/*	@OneToMany(fetch = FetchType.LAZY, mappedBy = "dataType")
+	public Set<QualityDataModel> getQualityDataModels() {
+		return this.qualityDataModels;
+	}
+
+	public void setQualityDataModels(Set<QualityDataModel> qualityDataModels) {
+		this.qualityDataModels = qualityDataModels;
+	}*/
 	
 }

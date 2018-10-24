@@ -1,98 +1,79 @@
 package mat.model;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
-/**
- * The Class MeasureAuditLog.
- */
-public class EmailAuditLog {
-	
-	/** The id. */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "EMAIL_AUDIT_LOG")
+public class EmailAuditLog implements java.io.Serializable {
+
+	private static final long serialVersionUID = -6523654611888748683L;
 	private String id;
-	
-	/** The activity type. */
-	private String activityType;	
-	
-	/** The time. */
-	private Timestamp time;
-	
-	/** The user id. */
+	private Date timestamp;
 	private String loginId;
-	
-	/**
-	 * Gets the time.
-	 * 
-	 * @return the time
-	 */
-	public Date getTime() {
-		return (Date)time;
+	private String activityType;
+
+	public EmailAuditLog() {
 	}
 
-	/**
-	 * Sets the time.
-	 * 
-	 * @param created
-	 *            the new time
-	 */
-	public void setTime(Date created) {
-		this.time = new Timestamp(created.getTime());
+	public EmailAuditLog(String id, String loginId) {
+		this.id = id;
+		this.loginId = loginId;
 	}
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	public EmailAuditLog(String id, String loginId, String activityType) {
+		this.id = id;
+		this.loginId = loginId;
+		this.activityType = activityType;
+	}
+
+	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the activity type.
-	 * 
-	 * @return the activity type
-	 */
-	public String getActivityType() {
-		return activityType;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TIMESTAMP", nullable = false, length = 19)
+	public Date getTimestamp() {
+		return this.timestamp;
 	}
 
-	/**
-	 * Sets the activity type.
-	 * 
-	 * @param activityType
-	 *            the new activity type
-	 */
-	public void setActivityType(String activityType) {
-		this.activityType = activityType;
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 
-	/**
-	 * Gets the user id.
-	 * 
-	 * @return the user id
-	 */
+	@Column(name = "LOGIN_ID", nullable = false, length = 40)
 	public String getLoginId() {
-		return loginId;
+		return this.loginId;
 	}
 
-	/**
-	 * Sets the user id.
-	 * 
-	 * @param userId
-	 *            the new user id
-	 */
 	public void setLoginId(String loginId) {
 		this.loginId = loginId;
+	}
+
+	@Column(name = "ACTIVITY_TYPE", length = 64)
+	public String getActivityType() {
+		return this.activityType;
+	}
+
+	public void setActivityType(String activityType) {
+		this.activityType = activityType;
 	}
 }

@@ -1,99 +1,75 @@
 package mat.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-/**
- * The Class Operator.
- */
-public class Operator implements IsSerializable{
-	
-	/** The id. */
+@Entity
+@Table(name = "OPERATOR")
+public class Operator implements java.io.Serializable {
+
+	private static final long serialVersionUID = 7487116012389615656L;
 	private String id;
-	
-	/** The long name. */
-	private String longName;
-	
-	/** The short name. */
-	private String shortName;
-	
-	/** The operator type. */
 	private OperatorType operatorType;
-	
-	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
+	private String longName;
+	private String shortName;
+
+	public Operator() {
 	}
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
+
+	public Operator(String id, OperatorType operatorType) {
+		this.id = id;
+		this.operatorType = operatorType;
+	}
+
+	public Operator(String id, OperatorType operatorType, String longName, String shortName) {
+		this.id = id;
+		this.operatorType = operatorType;
+		this.longName = longName;
+		this.shortName = shortName;
+	}
+
+	@Id
+
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
+	public String getId() {
+		return this.id;
+	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	/**
-	 * Gets the long name.
-	 * 
-	 * @return the long name
-	 */
-	public String getLongName() {
-		return longName;
-	}
-	
-	/**
-	 * Sets the long name.
-	 * 
-	 * @param longName
-	 *            the new long name
-	 */
-	public void setLongName(String longName) {
-		this.longName = longName;
-	}
-	
-	/**
-	 * Gets the short name.
-	 * 
-	 * @return the short name
-	 */
-	public String getShortName() {
-		return shortName;
-	}
-	
-	/**
-	 * Sets the short name.
-	 * 
-	 * @param shortName
-	 *            the new short name
-	 */
-	public void setShortName(String shortName) {
-		this.shortName = shortName;
-	}
-	
-	/**
-	 * Gets the operator type.
-	 * 
-	 * @return the operator type
-	 */
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FK_OPERATOR_TYPE", nullable = false)
 	public OperatorType getOperatorType() {
-		return operatorType;
+		return this.operatorType;
 	}
-	
-	/**
-	 * Sets the operator type.
-	 * 
-	 * @param operatorType
-	 *            the new operator type
-	 */
+
 	public void setOperatorType(OperatorType operatorType) {
 		this.operatorType = operatorType;
 	}
-	
+
+	@Column(name = "LONG_NAME", length = 45)
+	public String getLongName() {
+		return this.longName;
+	}
+
+	public void setLongName(String longName) {
+		this.longName = longName;
+	}
+
+	@Column(name = "SHORT_NAME", length = 45)
+	public String getShortName() {
+		return this.shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
 }

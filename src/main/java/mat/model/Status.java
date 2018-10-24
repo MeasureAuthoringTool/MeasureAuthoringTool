@@ -1,53 +1,67 @@
 package mat.model;
 
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * The Class Status.
- */
-public class Status {
-	
-	/** The id. */
-	private String id;
-	
-	/** The description. */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import mat.model.User;
+
+@Entity
+@Table(name = "STATUS")
+public class Status implements java.io.Serializable {
+
+	private static final long serialVersionUID = 8333823202893417670L;
+	private String statusId;
 	private String description;
+	private Set<User> users = new HashSet<>(0);
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
+	public Status() {
 	}
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
+	public Status(String statusId, String description) {
+		this.statusId = statusId;
+		this.description = description;
 	}
 
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
+	public Status(String statusId, String description, Set<User> users) {
+		this.statusId = statusId;
+		this.description = description;
+		this.users = users;
+	}
+
+	@Id
+
+	@Column(name = "STATUS_ID", unique = true, nullable = false, length = 32)
+	public String getStatusId() {
+		return this.statusId;
+	}
+
+	public void setStatusId(String statusId) {
+		this.statusId = statusId;
+	}
+
+	@Column(name = "DESCRIPTION", nullable = false, length = 50)
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "status")
+	public Set<User> getUsers() {
+		return this.users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
 }

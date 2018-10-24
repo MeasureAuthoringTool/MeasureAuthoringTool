@@ -1,75 +1,47 @@
 package mat.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * The Class MeasureSteward.
- */
+@Entity
+@Table(name = "STEWARD_ORG")
 public class MeasureSteward implements IsSerializable{
 	
-	/** The id. */
 	private String id;
 	
-	/** The org name. */
 	private String orgName;
 	
-	/** The org oid. */
 	private String orgOid;
 	
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the org name.
-	 * 
-	 * @return the org name
-	 */
+	@Column(name = "ORG_NAME", nullable = false, length = 200)
 	public String getOrgName() {
 		return orgName;
 	}
 	
-	/**
-	 * Sets the org name.
-	 * 
-	 * @param orgName
-	 *            the new org name
-	 */
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
 	}
 	
-	/**
-	 * Gets the org oid.
-	 * 
-	 * @return the org oid
-	 */
+	@Column(name = "ORG_OID", length = 100)
 	public String getOrgOid() {
 		return orgOid;
 	}
 	
-	/**
-	 * Sets the org oid.
-	 * 
-	 * @param orgOid
-	 *            the new org oid
-	 */
 	public void setOrgOid(String orgOid) {
 		this.orgOid = orgOid;
 	}

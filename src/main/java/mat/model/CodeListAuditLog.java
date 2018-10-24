@@ -3,141 +3,81 @@ package mat.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 
-/**
- * The Class CodeListAuditLog.
- */
+@Entity
+@Table(name = "CODE_LIST_AUDIT_LOG")
 public class CodeListAuditLog {
-	
-	/** The id. */
 	private String id;
-	
-	/** The activity type. */
 	private String activityType;	
-	
-	/** The time. */
 	private Timestamp time;
-	
-	/** The user id. */
 	private String userId;
-	
-	/** The code list. */
 	private ListObject codeList;
-	
-	/** The additional info. */
 	private String additionalInfo;
 
-	/**
-	 * Gets the time.
-	 * 
-	 * @return the time
-	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Date getTime() {
 		return (Date)time;
 	}
 
-	/**
-	 * Sets the time.
-	 * 
-	 * @param created
-	 *            the new time
-	 */
 	public void setTime(Date created) {
 		this.time = new Timestamp(created.getTime());
 	}
 
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the code list.
-	 * 
-	 * @return the code list
-	 */
+	@ManyToOne
+	@JoinColumn(name="CODE_LIST_ID")
 	public ListObject getCodeList() {
 		return codeList;
 	}
 
-	/**
-	 * Sets the code list.
-	 * 
-	 * @param codeList
-	 *            the new code list
-	 */
 	public void setCodeList(ListObject codeList) {
 		this.codeList = codeList;
 	}
 
-	/**
-	 * Gets the activity type.
-	 * 
-	 * @return the activity type
-	 */
+	@Column(name = "ACTIVITY_TYPE", nullable = false, length = 40)
 	public String getActivityType() {
 		return activityType;
 	}
 
-	/**
-	 * Sets the activity type.
-	 * 
-	 * @param activityType
-	 *            the new activity type
-	 */
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
 	}
 
-	/**
-	 * Gets the user id.
-	 * 
-	 * @return the user id
-	 */
+	@Column(name = "USER_ID", nullable = false, length = 40)
 	public String getUserId() {
 		return userId;
 	}
 
-	/**
-	 * Sets the user id.
-	 * 
-	 * @param userId
-	 *            the new user id
-	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
-	/**
-	 * Gets the additional info.
-	 * 
-	 * @return the additional info
-	 */
+
+	@Column(name = "ADDL_INFO", length = 2000)
 	public String getAdditionalInfo() {
 		return additionalInfo;
 	}
 
-	/**
-	 * Sets the additional info.
-	 * 
-	 * @param additionalInfo
-	 *            the new additional info
-	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}

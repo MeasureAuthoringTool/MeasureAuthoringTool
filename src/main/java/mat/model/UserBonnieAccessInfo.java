@@ -1,5 +1,18 @@
 package mat.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "USER_BONNIE_ACCESS_INFO")
 public class UserBonnieAccessInfo {
 	private int id;
 	
@@ -9,6 +22,9 @@ public class UserBonnieAccessInfo {
 	
 	private String accessToken;
 	
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID", unique = true, nullable = false)
 	public int getId() {
 		return id;
 	}
@@ -17,6 +33,8 @@ public class UserBonnieAccessInfo {
 		this.id = id;
 	}
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	public User getUser() {
 		return user;
 	}
@@ -25,6 +43,7 @@ public class UserBonnieAccessInfo {
 		this.user = user;
 	}
 	
+	@Column(name = "REFRESH_TOKEN", nullable = false, length = 250)
 	public String getRefreshToken() {
 		return refreshToken;
 	}
@@ -33,6 +52,7 @@ public class UserBonnieAccessInfo {
 		this.refreshToken = refreshToken;
 	}
 	
+	@Column(name = "ACCESS_TOKEN", nullable = false, length = 250)
 	public String getAccessToken() {
 		return accessToken;
 	}

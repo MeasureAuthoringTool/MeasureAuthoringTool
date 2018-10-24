@@ -1,53 +1,36 @@
 package mat.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-/**
- * The Class SecurityQuestions.
- */
+@Entity
+@Table(name = "SECURITY_QUESTIONS")
 public class SecurityQuestions  implements IsSerializable {
 
-	/** The question id. */
 	private String questionId;
 	
-	/** The question. */
 	private String question ;
 
-	/**
-	 * Gets the question id.
-	 * 
-	 * @return the question id
-	 */
+
+	@Id
+	@Column(name = "QUESTION_ID", unique = true, nullable = false)
 	public String getQuestionId() {
 		return questionId;
 	}
 	
-	/**
-	 * Sets the question id.
-	 * 
-	 * @param questionId
-	 *            the new question id
-	 */
 	public void setQuestionId(String questionId) {
 		this.questionId = questionId;
 	}
 	
-	/**
-	 * Gets the question.
-	 * 
-	 * @return the question
-	 */
+	@Column(name = "QUESTION", nullable = false, length = 100)
 	public String getQuestion() {
 		return question;
 	}
 	
-	/**
-	 * Sets the question.
-	 * 
-	 * @param question
-	 *            the new question
-	 */
 	public void setQuestion(String question) {
 		this.question = question;
 	}

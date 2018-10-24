@@ -32,21 +32,15 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
 import mat.dao.CodeDAO;
-import mat.dao.CodeListAuditLogDAO;
-import mat.dao.CodeListDAO;
 import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
-import mat.dao.ListObjectDAO;
-import mat.dao.ListObjectLTDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureTypeDAO;
-import mat.dao.ObjectStatusDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.StewardDAO;
 import mat.dao.UnitDAO;
 import mat.dao.UnitTypeDAO;
 import mat.dao.UnitTypeMatrixDAO;
-import mat.dao.UserDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.model.Category;
 import mat.model.Code;
@@ -65,106 +59,38 @@ import mat.server.util.ResourceLoader;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 
-/**
- * The Class ManageCodeListServiceImpl.
- */
 public class ManageCodeListServiceImpl implements CodeListService {
-	
-	/** The context. */
 	@Autowired
 	private ApplicationContext context;
-	/** The Constant ASCII_END. */
-	private static final int ASCII_END = 90;
-
-	/** The Constant ASCII_START. */
 	private static final int ASCII_START = 65;
-
-	/** The Constant DEFAULT_PAGE_SIZE. */
-//	private static final int DEFAULT_PAGE_SIZE = 50;
-
-	/** The Constant logger. */
-	private static final Log logger = LogFactory
-			.getLog(ManageCodeListServiceImpl.class);
-
-	/** The author dao. */
+	private static final int ASCII_END = 90;
+	private static final Log logger = LogFactory.getLog(ManageCodeListServiceImpl.class);
 	@Autowired
 	private AuthorDAO authorDAO;
-
-	/** The category dao. */
 	@Autowired
 	private CategoryDAO categoryDAO;
-
-	/** The code dao. */
 	@Autowired
 	private CodeDAO codeDAO;
-
-	/** The code list audit log dao. */
-	@Autowired
-	private CodeListAuditLogDAO codeListAuditLogDAO;
-
-	/** The code list dao. */
-	@Autowired
-	private CodeListDAO codeListDAO;
-
-	/** The code system dao. */
 	@Autowired
 	private CodeSystemDAO codeSystemDAO;
-
-	/** The data type dao. */
 	@Autowired
 	private DataTypeDAO dataTypeDAO;
-
-	/** The list object dao. */
-	@Autowired
-	private ListObjectDAO listObjectDAO;
-
-	/** The list object ltdao. */
-	@Autowired
-	private ListObjectLTDAO listObjectLTDAO;
-
-	/** The measure dao. */
-	@Autowired
-	private mat.dao.clause.MeasureDAO measureDAO;
-
-	/** The measure score dao. */
 	@Autowired
 	private MeasureScoreDAO measureScoreDAO;
-
-	/** The measure type dao. */
 	@Autowired
 	private MeasureTypeDAO measureTypeDAO;
-
-	/** The object status dao. */
-	@Autowired
-	private ObjectStatusDAO objectStatusDAO;
-
-	/** The operator dao. */
 	@Autowired
 	private OperatorDAO operatorDAO;
-
-	/** The quality data set dao. */
 	@Autowired
 	private QualityDataSetDAO qualityDataSetDAO;
-
-	/** The steward dao. */
 	@Autowired
 	private StewardDAO stewardDAO;
-
-	/** The unit dao. */
 	@Autowired
 	private UnitDAO unitDAO;
-
-	/** The unit type dao. */
 	@Autowired
 	private UnitTypeDAO unitTypeDAO;
-
-	/** The unit type matrix dao. */
 	@Autowired
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
-
-	/** The user dao. */
-	@Autowired
-	private UserDAO userDAO;
 
 	/**
 	 * Method to extract qdm element node created after marshalling of
@@ -406,80 +332,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return isQDSExist;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#countSearchResultsWithFilter(java.
-	 * lang.String, boolean, int)
-	 */
-	/*@Override
-	public int countSearchResultsWithFilter(final String searchText,
-			final boolean defaultCodeList, final int filter) {
-		String loggedInUserid = LoggedInUserUtil.getLoggedInUser();
-		return listObjectLTDAO.countSearchResultsWithFilter(searchText,
-				loggedInUserid, defaultCodeList, filter);
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#createClone(java.lang.String)
-	 */
-	/*@Override
-	public ManageValueSetSearchModel createClone(String id) {
-		ManageValueSetSearchModel model = new ManageValueSetSearchModel();
-		ListObject lo = listObjectDAO.find(id);
-		ListObject clone = lo.clone();
-		User user = getLoggedInUser();
-		clone.setOid(listObjectDAO.generateUniqueOid(user));
-		String name = listObjectDAO.generateUniqueName(clone.getName(), user);
-		if (name == null) {
-			return null;
-		}
-		clone.setName(name);
-		// non-clone specific alterations, we want these fields to have these
-		// values
-		clone.setDraft(true);
-		clone.setLastModified(null);
-		clone.setObjectOwner(user);
-		listObjectDAO.save(clone);
-		ManageValueSetSearchModel.Result result = new ManageValueSetSearchModel.Result();
-		result.setId(clone.getId());
-		result.setGrouped(clone.getCodeSystem().getDescription()
-				.equalsIgnoreCase("Grouping"));
-		model.getData().add(result);
-		model.setResultsTotal(1);
-		return model;
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#createDraft(java.lang.String,
-	 * java.lang.String)
-	 */
-	/*@Override
-	public ManageValueSetSearchModel createDraft(String id, String oid) {
-		ManageValueSetSearchModel model = new ManageValueSetSearchModel();
-		if (!listObjectDAO.hasDraft(oid)) {
-			ListObject lo = listObjectDAO.find(id);
-			ListObject clone = lo.clone();
-			// non-clone specific alterations, we want these fields to have
-			// these values
-			clone.setDraft(true);
-			clone.setLastModified(null);
-			// if(clone.getCodeSystemVersion().equalsIgnoreCase("Grouping")){
-			listObjectDAO.save(clone);
-			// }else{
-			// codeListDAO.save(clone);
-			// }
-			qualityDataSetDAO.updateListObjectId(id, clone.getId());
-			model.setResultsTotal(1);
-		}
-		return model;
-	}*/
-
 	/**
 	 * Method to create XML from QualityDataModelWrapper object.
 	 * 
@@ -556,22 +408,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return stream;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#deleteCodes(java.lang.String,
-	 * java.util.List)
-	 */
-	/*@Override
-	public ManageCodeListDetailModel deleteCodes(final String key,
-			final List<Code> codes) {
-		if (codes != null) {
-			codeDAO.deleteCodes(codes);
-		}
-		ManageCodeListDetailModel detailModel = getCodeList(key);
-		return detailModel;
-	}*/
-
 	/**
 	 * Filter code lists for current category.
 	 * 
@@ -591,18 +427,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getAllDataTypes()
-	 */
 	@Override
 	public List<? extends HasListBox> getAllDataTypes() {
 		List<DataTypeDTO> retList = new ArrayList<>();
 		List<DataType> dt = dataTypeDAO.findAllDataType();
 		for (DataType dataType : dt) {
-			if (!dataType.getCategoryId().equalsIgnoreCase("22")) { // Filter
+			if (!dataType.getCategory().getId().equalsIgnoreCase("22")) { // Filter
 				// Timing
 				// Element
 				// Category
@@ -616,59 +446,28 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getAllOperators()
-	 */
 	@Override
 	public List<OperatorDTO> getAllOperators() {
 		return operatorDAO.getAllOperators();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getAllUnits()
-	 */
 	@Override
 	public List<UnitDTO> getAllUnits() {
 		List<UnitDTO> data = unitDAO.getAllUnits();
 		return data;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#getCodeListsForCategory(java.lang.
-	 * String)
-	 */
 	@Override
 	public List<? extends HasListBox> getCodeListsForCategory(String categoryId) {
 		List<HasListBoxDTO> retList = new ArrayList<>();
 		return retList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getCodes(java.lang.String, int,
-	 * int)
-	 */
 	@Override
 	public List<Code> getCodes(String codeListId, int startIndex, int pageSize) {
 		return codeDAO.searchCodes(codeListId, startIndex, pageSize);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#getCodeSystemsForCategory(java.lang
-	 * .String)
-	 */
 	@Override
 	public List<? extends HasListBox> getCodeSystemsForCategory(
 			String categoryId) {
@@ -699,76 +498,25 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return retList;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#getGroupedCodeList(java.lang.String)
-	 */
-	/*@Override
-	public ManageCodeListDetailModel getGroupedCodeList(String key) {
-		ManageCodeListDetailModel codeListModel = new ManageCodeListDetailModel();
-		ListObject codeList = listObjectDAO.find(key);
-		setListObjectOnModel(codeList, codeListModel);
-		return codeListModel;
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#getGroupedCodeListCodeSystemsForCategory
-	 * (java.lang.String)
-	 */
-	/*@Override
-	public String getGroupedCodeListCodeSystemsForCategory(String categoryId) {
-		if ((categoryId != null) && !"".equals(categoryId)) {
-			Category category = categoryDAO.find(categoryId);
-			for (CodeSystem codeSys : category.getCodeSystems()) {
-				if ("Grouping".equals(codeSys.getDescription())) {
-					return codeSys.getId();
-				}
-			}
-		}
-		return null;
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getListBoxData()
-	 */
+	
 	@Override
 	public mat.client.codelist.service.CodeListService.ListBoxData getListBoxData() {
 		mat.client.codelist.service.CodeListService.ListBoxData data = new mat.client.codelist.service.CodeListService.ListBoxData();
 		data.setCategoryList(categoryDAO.getAllCategories());
 		data.setCodeSystemList(codeSystemDAO.getAllCodeSystem());
-		data.setStatusList(objectStatusDAO.getAllObjectStatus());
 		data.setMeasureStewardList(stewardDAO.getAllStewardOrg());
 		data.setAuthorsList(authorDAO.getAllAuthors());
 		data.setMeasureTypeList(measureTypeDAO.getAllMeasureTypes());
-		// US 421
 		data.setScoringList(measureScoreDAO.getAllMeasureScores());
-		// US 62
 		data.setUnitList(unitDAO.getAllUnits());
 		data.setUnitTypeList(unitTypeDAO.getAllUnitTypes());
 		data.setUnitTypeMatrixList(unitTypeMatrixDAO.getAllUnitMatrix());
-		// US 171
 		data.setLogicalOperatorList(operatorDAO.getLogicalOperators());
 		data.setRelTimingOperatorList(operatorDAO.getRelTimingperators());
 		data.setRelAssocOperatorList(operatorDAO.getRelAssociationsOperators());
 		return data;
 	}
 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#getQDSDataTypeForCategory(java.lang
-	 * .String)
-	 */
 	@Override
 	public List<? extends HasListBox> getQDSDataTypeForCategory(
 			String categoryId) {
@@ -785,12 +533,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#getQDSElements(java.lang.String,
-	 * java.lang.String)
-	 */
 	@Override
 	public java.util.List<QualityDataSetDTO> getQDSElements(
 			final String measureId, final String version) {
@@ -824,296 +566,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return wrapper;
 	}
 
-	/**
-	 * Oid already exists.
-	 * 
-	 * @param oid
-	 *            the oid
-	 * @param id
-	 *            the id
-	 * @return the boolean
-	 */
-	/*public Boolean oidAlreadyExists(String oid, String id) {
-		if ((oid == null) || (oid.length() == 0)) {
-			return false;
-		}
-		return listObjectDAO.countListObjectsByOidAndNotId(oid, id) > 0;
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#saveDefaultCodeList(mat.model.User)
-	 */
-	/*@Override
-	public SaveUpdateCodeListResult saveDefaultCodeList(final User createdUser)
-			throws CodeListNotUniqueException {
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		insertdefaultCodeList(createdUser, ConstantMessages.MEASUREMENT_PERIOD);
-		insertdefaultCodeList(createdUser,
-				ConstantMessages.MEASUREMENT_START_DATE);
-		insertdefaultCodeList(createdUser,
-				ConstantMessages.MEASUREMENT_END_DATE);
-		insertReadyToUseCodeList(createdUser,
-				ConstantMessages.ADMINISTRATIVE_GENDER_MALE);
-		insertReadyToUseCodeList(createdUser,
-				ConstantMessages.ADMINISTRATIVE_GENDER_FEMALE);
-		insertReadyToUseCodeList(createdUser,
-				ConstantMessages.ADMINISTRATIVE_GENDER_UNDIFFERENTIATED);
-		insertReadyToUseCodeList(createdUser, ConstantMessages.BIRTH_DATE);
-		result.setSuccess(true);
-		return result;
-	}
-
-	
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#saveorUpdateCodeList(mat.client.codelist
-	 * .ManageCodeListDetailModel)
-	 
-	@Override
-	public SaveUpdateCodeListResult saveorUpdateCodeList(
-			ManageCodeListDetailModel currentDetails)
-			throws CodeListNotUniqueException, CodeListOidNotUniqueException,
-			ExcelParsingException, InvalidLastModifiedDateException,
-			ValueSetLastModifiedDateNotUniqueException {
-		String oldOID = null;
-		String newOID = null;
-		String oldName = null;
-		String newName = null;
-		String oldDate = null;
-		String newDate = null;
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		Code newCode = null;
-		int duplicateCount = 0;
-		List<Code> newCodesList = currentDetails.getCodes();
-		if (!isCodeListUnique(currentDetails)) {
-			throw new CodeListNotUniqueException();
-		} else if (oidAlreadyExists(currentDetails.getOid(),
-				currentDetails.getID())) {
-			throw new CodeListOidNotUniqueException();
-		}
-		CodeList codeList = null;
-		if (currentDetails.isExistingCodeList()) {
-			codeList = codeListDAO.find(currentDetails.getID());
-			Set<Code> existingCodes = codeList.getCodes();
-			if (currentDetails.getCode() != null) {
-				newCode = currentDetails.getCode();
-				existingCodes.add(newCode);
-				codeList.setCodes(existingCodes);
-			} else if ((newCodesList != null) && !newCodesList.isEmpty()
-					&& currentDetails.isImportFlag()) { // do this only when we
-				// are importing
-				for (Code code : newCodesList) {
-					if (!existingCodes.add(code)) {
-						++duplicateCount;
-						result.setDuplicateExists(true);
-						result.setCodeListName(codeList.getName());
-					}
-				}
-				codeList.setCodes(existingCodes);
-			}
-		} else {
-			codeList = new CodeList();
-			String oid = currentDetails.getOid() != null ? currentDetails
-					.getOid() : generateUniqueOid(currentDetails);
-			codeList.setOid(oid);
-			codeList.setDraft(true);
-		}
-		Timestamp ts = null;
-		// first time completing the code list
-		if (codeList.isDraft() && !currentDetails.isDraft()) {
-			ts = DateUtility.getCurrentDateWithMinutePrecision();
-			result.setLastModifiedDate(DateUtility.convertDateToString(ts));
-			logCompleteEvent(codeList);
-			// code list has already been completed
-		} else if (!codeList.isDraft() && !currentDetails.isDraft()) {
-			String lastModifiedStr = currentDetails.getLastModifiedDate();
-			ts = getAndValidateLastModifiedDate(lastModifiedStr);
-			if (!isCodeListLastModifiedDateUnique(currentDetails, ts)) {
-				throw new ValueSetLastModifiedDateNotUniqueException();
-			}
-		}
-		// else do not care
-		// US 383
-		oldOID = codeList.getOid();
-		newOID = currentDetails.getOid();
-		// US 551
-		oldName = codeList.getName();
-		newName = currentDetails.getName();
-		oldDate = DateUtility.convertDateToString(codeList.getLastModified());
-		newDate = DateUtility.convertDateToString(ts);
-		codeList.setLastModified(ts);
-		codeList.setDraft(currentDetails.isDraft());
-		if (!currentDetails.isImportFlag()) {
-			setModelFieldsOnCodeList(currentDetails, codeList); // do this only
-			// when the user
-			// is not
-			// uploading sets
-			// of codes
-		}
-		codeListDAO.save(codeList);
-		result.setSuccess(true);
-		result.setId(codeList.getId());
-		result.setCodeListName(codeList.getName());
-		if (newCode != null) {
-			result.setCodeId(newCode.getId());
-		}
-		result.setDuplicateCount(duplicateCount);
-		if (newCodesList.size() == duplicateCount) {
-			result.setAllCodesDups(true);
-		}
-		if (currentDetails.isExistingCodeList()) { // Do set the model to the
-			// result only if it is
-			// existing CodeList.
-			// US 600 adding the codeListDetailModel as part of the result, to
-			// update the model on the client-side to reflect the addition of
-			// code changes.
-			result.setCodeListDetailModel(getCodeList(currentDetails.getID()));
-		}
-		// US 383. log OID change event if any
-		if (isOidChange(oldOID, newOID)) {
-			String logMessage = "OID changed from " + oldOID + " to " + newOID;
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set OID Updated", logMessage);
-			listObjectDAO.updateFamilyOid(oldOID, newOID);
-		}
-		// US 551. log Name change event if any
-		if (isNameChange(oldName, newName)) {
-			String logNameMessage = "Name changed from " + oldName + " to "
-					+ newName;
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set Name Updated", logNameMessage);
-		}
-		// US 551. log Last modified date change event if any
-		if (isLastModifiedDateChange(oldDate, newDate)) {
-			String logDateMessage = "Last Modified Date/Time changed from "
-					+ oldDate + " to " + newDate;
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set Last Modified Date Updated", logDateMessage);
-		}
-		return result;
-	}
-
-	
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#saveorUpdateGroupedCodeList(mat.client
-	 * .codelist.ManageCodeListDetailModel)
-	 
-	@Override
-	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(
-			ManageCodeListDetailModel currentDetails)
-			throws CodeListNotUniqueException, CodeListOidNotUniqueException,
-			InvalidLastModifiedDateException,
-			ValueSetLastModifiedDateNotUniqueException {
-		String oldOID = null;
-		String newOID = null;
-		String oldName = null;
-		String newName = null;
-		String oldDate = null;
-		String newDate = null;
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		if (!isGroupedCodeListUnique(currentDetails)) {
-			throw new CodeListNotUniqueException();
-		} else if (oidAlreadyExists(currentDetails.getOid(),
-				currentDetails.getID())) {
-			throw new CodeListOidNotUniqueException();
-		}
-		ListObject codeList = new ListObject();
-		if (currentDetails.getID() != null) {
-			codeList = listObjectDAO.find(currentDetails.getID());
-		} else {
-			String oid = currentDetails.getOid() != null ? currentDetails
-					.getOid() : generateUniqueOid(currentDetails);
-			currentDetails.setOid(oid);
-			codeList.setDraft(true);
-		}
-		Timestamp ts = null;
-		// first time completing the code list
-		if (codeList.isDraft() && !currentDetails.isDraft()) {
-			ts = DateUtility.getCurrentDateWithMinutePrecision();
-			result.setLastModifiedDate(DateUtility.convertDateToString(ts));
-			logGroupCompleteEvent(codeList);
-			// code list has already been completed
-		} else if (!codeList.isDraft() && !currentDetails.isDraft()) {
-			String lastModifiedStr = currentDetails.getLastModifiedDate();
-			ts = getAndValidateLastModifiedDate(lastModifiedStr);
-			if (!isGroupedCodeListLastModifiedDateUnique(currentDetails, ts)) {
-				// if(!isCodeListLastModifiedDateUnique(currentDetails, ts)){
-				throw new ValueSetLastModifiedDateNotUniqueException();
-			}
-		}
-		// else do not care
-		// US 383
-		oldOID = codeList.getOid();
-		newOID = currentDetails.getOid();
-		// US 551
-		oldName = codeList.getName();
-		newName = currentDetails.getName();
-		oldDate = DateUtility.convertDateToString(codeList.getLastModified());
-		newDate = DateUtility.convertDateToString(ts);
-		codeList.setLastModified(ts);
-		codeList.setDraft(currentDetails.isDraft());
-		setModelFieldsOnListObject(currentDetails, codeList);
-		filterCodeListsForCurrentCategory(codeList);
-		if (codeList.getCodeSystem() == null) {
-			if ((codeList.getCategory() != null)
-					&& (codeList.getCategory().getCodeSystems() != null)) {
-				for (CodeSystem cs : codeList.getCategory().getCodeSystems()) {
-					if (cs.getDescription().equals(
-							ConstantMessages.GROUPED_CODE_LIST_CS)) {
-						codeList.setCodeSystem(cs);
-					}
-				}
-			}
-			codeList.setCodeSystemVersion(ConstantMessages.GROUPED_CODE_LIST_CS);
-		}
-		listObjectDAO.save(codeList);
-		result.setSuccess(true);
-		result.setId(codeList.getId());
-		if (currentDetails.isExistingCodeList()) { // Do set the model to the
-			// result only if it is
-			// existing CodeList.
-			// US 600 adding the codeListDetailModel as part of the result, to
-			// update the model on the client-side to reflect the addition of
-			// code changes.
-			result.setCodeListDetailModel(getGroupedCodeList(currentDetails
-					.getID()));
-		}
-		// US 383. log OID change event if any
-		if (isOidChange(oldOID, newOID)) {
-			String logMessage = "OID changed from " + oldOID + " to " + newOID;
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set OID Updated", logMessage);
-			listObjectDAO.updateFamilyOid(oldOID, newOID);
-		}
-		// US 551. log Name change event if any
-		if (isNameChange(oldName, newName)) {
-			String logNameMessage = "Name changed from " + oldName + " to "
-					+ newName;
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set Name Updated", logNameMessage);
-		}
-		// US 551. log Last modified date change event if any
-		if (isLastModifiedDateChange(oldDate, newDate)) {
-			String logDateMessage = "Last Modified Date/Time changed from "
-					+ oldDate + " to " + newDate;
-			codeListAuditLogDAO.recordCodeListEvent(codeList,
-					"Value Set Last Modified Date Updated", logDateMessage);
-		}
-		return result;
-	}
-*/
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#saveQDStoMeasure(mat.model.
-	 * MatValueSetTransferObject)
-	 */
 	@Override
 	public final SaveUpdateCodeListResult saveQDStoMeasure(
 			MatValueSetTransferObject valueSetTransferObject) {
@@ -1149,10 +601,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setExpansionIdentifier(valueSetTransferObject.getMatValueSet()
 					.getExpansionProfile());
 		}
-
-		// if (valueSetTransferObject.isEffectiveDate()) {
-		// qds.setEffectiveDate(valueSetTransferObject.getMatValueSet().getRevisionDate());
-		// }
 
 		ArrayList<QualityDataSetDTO> qualityDataSetDTOs = (ArrayList<QualityDataSetDTO>) valueSetTransferObject
 				.getAppliedQDMList();
@@ -1198,13 +646,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#saveUserDefinedQDStoMeasure
-	 * (java.lang.String, java.lang.String, java.lang.String,
-	 * java.util.ArrayList)
-	 */
 	@Override
 	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(
 			MatValueSetTransferObject matValueSetTransferObject) {
@@ -1268,105 +709,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
-	/* US566 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#search(java.lang.String, int,
-	 * int, java.lang.String, boolean, boolean, int)
-	 */
-	/*@Override
-	public List<CodeListSearchDTO> search(String searchText, int startIndex,
-			int pageSize, String sortColumn, boolean isAsc,
-			boolean defaultCodeList, int filter) {
-		String loggedInUserid = LoggedInUserUtil.getLoggedInUser();
-		List<CodeListSearchDTO> codeList = listObjectDAO.searchWithFilter(
-				searchText, loggedInUserid, startIndex - 1, pageSize,
-				sortColumn, isAsc, defaultCodeList, filter);
-		return codeList;
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#search(java.lang.String, int,
-	 * int, java.lang.String, boolean, boolean, int, java.lang.String)
-	 */
-	/*@Override
-	public List<CodeListSearchDTO> search(String searchText, int startIndex,
-			int pageSize, String sortColumn, boolean isAsc,
-			boolean defaultCodeList, int filter, String categoryId) {
-
-		String loggedInUserid = LoggedInUserUtil.getLoggedInUser();
-		List<CodeListSearchDTO> codeList = listObjectDAO.searchWithFilter(
-				searchText, loggedInUserid, startIndex - 1, pageSize,
-				sortColumn, isAsc, defaultCodeList, filter);
-
-		List<CodeListSearchDTO> retList = new ArrayList<CodeListSearchDTO>();
-
-		for (CodeListSearchDTO dto : codeList) {
-			if (dto.isGroupedCodeList()) {
-				continue;
-			}
-			if (!dto.getCategoryCode().equalsIgnoreCase(categoryId)) {
-				continue;
-			}
-			retList.add(dto);
-		}
-
-		return retList;
-	}
-
-	
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#searchValueSetsForDraft(int, int)
-	 
-	@Override
-	public ManageValueSetSearchModel searchValueSetsForDraft(int startIndex,
-			int pageSize) {
-		List<ListObjectLT> los = listObjectLTDAO.getListObjectsToDraft();
-		ManageValueSetSearchModel model = new ManageValueSetSearchModel();
-		List<ManageValueSetSearchModel.Result> data = new ArrayList<ManageValueSetSearchModel.Result>();
-
-		for (ListObjectLT lo : los) {
-			ManageValueSetSearchModel.Result result = new ManageValueSetSearchModel.Result();
-			result.setDraft(true);
-			result.setLastModified(lo.getLastModified());
-			result.setOid(lo.getOid());
-			result.setName(lo.getName());
-			result.setId(lo.getId());
-			data.add(result);
-		}
-		model.setResultsTotal(data.size());
-		model.setData(data);
-		return model;
-	}
-
-	*//**
-	 * Sets the code liston model.
-	 * 
-	 * @param codeList
-	 *            the code list
-	 * @param codeListModel
-	 *            the code list model
-	 *//*
-	private void setCodeListonModel(CodeList codeList,
-			ManageCodeListDetailModel codeListModel) {
-		// Always by default the model will have only 50 codes.
-		setListObjectOnModel(codeList, codeListModel);
-		if (codeList.getCodes() != null) {
-			ArrayList<Code> codes = new ArrayList<Code>(codeList.getCodes());
-			Collections.sort(codes, new Code.Comparator());
-			int numberofPagesForCodes = findPageCountForCodes(codes);
-			codeListModel.setTotalCodes(codes.size());
-			codeListModel.setCodesPageCount(numberofPagesForCodes);
-			ArrayList<Code> filteredCodes = getOnlyFilteredCodes(
-					DEFAULT_PAGE_SIZE, codes);
-			codeListModel.setCodes(filteredCodes);
-		}
-	}*/
-
 	/**
 	 * Sets the dto values from model.
 	 * 
@@ -1395,130 +737,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	/**
-	 * Sets the list object on model.
-	 * 
-	 * @param codeList
-	 *            the code list
-	 * @param codeListModel
-	 *            the code list model
-	 */
-	/*private void setListObjectOnModel(ListObject codeList,
-			ManageCodeListDetailModel codeListModel) {
-		codeListModel.setCategory(codeList.getCategory().getId());
-		codeListModel.setComments(codeList.getComment());
-		codeListModel.setID(codeList.getId());
-		codeListModel.setName(codeList.getName());
-		codeListModel.setRationale(codeList.getRationale());
-		codeListModel.setSteward(codeList.getSteward().getId());
-
-		// US 413
-		codeListModel.setStewardOther(codeList.getStewardOther());
-
-		codeListModel.setExistingCodeList(true);
-		List<GroupedCodeListDTO> codeLists = new ArrayList<GroupedCodeListDTO>();
-		codeListModel.setCodeSystem(codeList.getCodeSystem().getId());
-		codeListModel.setCodeSystemVersion(codeList.getCodeSystemVersion());
-		codeListModel.setOid(codeList.getOid());
-		for (GroupedCodeList cl : codeList.getCodesLists()) {
-			GroupedCodeListDTO dto = new GroupedCodeListDTO();
-			dto.setId(cl.getCodeList().getId());
-			dto.setName(cl.getCodeList().getName());
-			dto.setDescription(cl.getDescription());
-			dto.setCodeSystem(cl.getCodeList().getCodeSystem().getId());
-			dto.setOid(cl.getCodeList().getOid());
-			codeLists.add(dto);
-		}
-		codeListModel.setCodeLists(codeLists);
-		codeListModel.setTotalCodeList(codeLists.size());
-		codeListModel
-				.setCodeListsPageCount(findPageCountForCodeLists(codeLists));
-		 US537 
-		codeListModel.setDraft(codeList.isDraft());
-		codeListModel.setLastModifiedDate(DateUtility
-				.convertDateToString(codeList.getLastModified()));
-		// is my value set
-		String userId = LoggedInUserUtil.getLoggedInUser();
-		if (userId != null) {
-			boolean isMyValueSet = listObjectDAO.isMyValueSet(codeList.getId(),
-					userId);
-			codeListModel.setMyValueSet(isMyValueSet);
-		}
-
-	}
-
-	*//**
-	 * Sets the model fields on code list.
-	 * 
-	 * @param model
-	 *            the model
-	 * @param codeList
-	 *            the code list
-	 *//*
-	private void setModelFieldsOnCodeList(ManageCodeListDetailModel model,
-			CodeList codeList) {
-		setModelFieldsOnListObject(model, codeList);
-		codeList.setCodeSystem(getCodeSystem(model.getCodeSystem()));
-		codeList.setCodeSystemVersion(model.getCodeSystemVersion());
-	}
-
-	*//**
-	 * Sets the model fields on list object.
-	 * 
-	 * @param model
-	 *            the model
-	 * @param listObject
-	 *            the list object
-	 *//*
-	private void setModelFieldsOnListObject(ManageCodeListDetailModel model,
-			ListObject listObject) {
-		if (StringUtils.isNotBlank(model.getMeasureId())) {
-			listObject.setMeasureId(model.getMeasureId());
-		}
-		listObject.setName(model.getName());
-		listObject.setCategory(getCategory(model.getCategory()));
-		listObject.setComment(model.getComments());
-		listObject.setRationale(model.getRationale());
-		listObject.setSteward(getSteward(model.getSteward()));
-
-		// US 413
-		listObject.setStewardOther(model.getStewardOther());
-
-		if (listObject.getObjectOwner() == null) {
-			listObject.setObjectOwner(getLoggedInUser());
-		}
-		listObject.setOid(model.getOid());
-
-		if (model.getAddValueSetsMap().size() > 0) {
-			for (GroupedCodeListDTO dto : model.getAddValueSetsMap().values()) {
-				CodeList codeList = codeListDAO.find(dto.getId());
-				boolean dupExist = checkForDuplicateCodeList(codeList,
-						listObject);
-				if (!dupExist) {// This is to prevent from server-side
-					GroupedCodeList gcl = new GroupedCodeList();
-					gcl.setCodeList(codeList);
-					gcl.setDescription(dto.getDescription());
-					logger.info("adding " + gcl.getCodeList().getName());
-					listObject.getCodesLists().add(gcl);
-				}
-			}
-		} else if (model.getRemoveValueSetsMap().size() > 0) {
-			HashSet<GroupedCodeList> toRemove = new HashSet<GroupedCodeList>();
-			for (GroupedCodeList gcl : listObject.getCodesLists()) {
-				GroupedCodeListDTO dto = model.getRemoveValueSetsMap().get(
-						gcl.getCodeList().getId());
-				if (dto != null) {
-					toRemove.add(gcl);
-				}
-			}
-			for (GroupedCodeList gcl : toRemove) {
-				logger.info("deleting " + gcl.getCodeList().getName());
-				listObject.getCodesLists().remove(gcl);
-			}
-		}
-
-	}
-*/
-	/**
 	 * Sort quality data set list.
 	 * 
 	 * @param finalList
@@ -1541,43 +759,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.server.service.CodeListService#transferOwnerShipToUser(java.util.
-	 * List, java.lang.String)
-	 */
-	/*@Override
-	public void transferOwnerShipToUser(List<String> list, String toEmail) {
-
-		User userTo = userDAO.findByEmail(toEmail);
-
-		for (int i = 0; i < list.size(); i++) {
-			ListObject codeList = listObjectDAO.find(list.get(i));
-			List<ListObject> allCodes = listObjectDAO.getListObject(codeList
-					.getOid());
-			for (int j = 0; j < allCodes.size(); j++) {
-				String additionalInfo = "Value Set Owner transferred from "
-						+ allCodes.get(j).getObjectOwner().getEmailAddress()
-						+ " to " + toEmail;
-				allCodes.get(j).setObjectOwner(userTo);
-				listObjectDAO.save(allCodes.get(j));
-				codeListAuditLogDAO.recordCodeListEvent(allCodes.get(j),
-						"Value Set Ownership Changed ", additionalInfo);
-				additionalInfo = "";
-			}
-
-		}
-
-	}*/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.server.service.CodeListService#updateQDStoMeasure(mat.model.
-	 * MatValueSetTransferObject)
-	 */
 	@Override
 	public final SaveUpdateCodeListResult updateQDStoMeasure(
 			MatValueSetTransferObject matValueSetTransferObject) {
@@ -1805,8 +986,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		oldQdm.setUuid(qualityDataSetDTO.getUuid());
 		oldQdm.setVersion(qualityDataSetDTO.getVersion());
 		oldQdm.setDataType(qualityDataSetDTO.getDataType());
-		oldQdm.setExpansionIdentifier(qualityDataSetDTO
-				.getExpansionIdentifier());
+		oldQdm.setExpansionIdentifier(qualityDataSetDTO.getExpansionIdentifier());
 	}
 
 	/**
@@ -1827,9 +1007,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 * @param measureId the measure id
 	 * @return true, if successful
 	 */
-	private boolean findAndUpdateAllOids(QualityDataSetDTO oldQdm,
-			QualityDataSetDTO qds, List<QualityDataSetDTO> list,
-			String measureId) {
+	private boolean findAndUpdateAllOids(QualityDataSetDTO oldQdm, QualityDataSetDTO qds, List<QualityDataSetDTO> list, String measureId) {
 
 		boolean findAllOid = false;
 		boolean version = false;
@@ -1862,9 +1040,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				expansionId = true;
 			}
 
-		}
-
-		else if ((!(qds.getVersion().equalsIgnoreCase("1.0") || qds
+		} else if ((!(qds.getVersion().equalsIgnoreCase("1.0") || qds
 				.getVersion().equalsIgnoreCase("1")) && (oldQdm.getVersion()
 				.equalsIgnoreCase("1.0") || oldQdm.getVersion()
 				.equalsIgnoreCase("1")))

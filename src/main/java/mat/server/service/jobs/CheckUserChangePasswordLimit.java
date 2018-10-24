@@ -362,7 +362,7 @@ public class CheckUserChangePasswordLimit {
 						mailSender.send(simpleMailMessage);
 						EmailAuditLog emailAudit = new EmailAuditLog();
 						emailAudit.setActivityType("Password " + emailType + " email sent.");
-						emailAudit.setTime(new Date());
+						emailAudit.setTimestamp(new Date());
 						emailAudit.setLoginId(user.getLoginId());
 						emailAuditLogDAO.save(emailAudit);
 						content.clear();
@@ -472,7 +472,7 @@ public class CheckUserChangePasswordLimit {
 		//final Date terminationDate = user.getTerminationDate();
 		final Date signInDate = user.getSignInDate();
 		System.out.println("signInDate :: "+ signInDate);
-		if(signInDate == null || user.getStatus().getId().equals("2")){
+		if(signInDate == null || user.getStatus().getStatusId().equals("2")){
 			isValidUser = false;
 		}
 		

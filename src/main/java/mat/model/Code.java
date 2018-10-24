@@ -1,100 +1,62 @@
 package mat.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * The Class Code.
- */
+@Entity
+@Table(name = "CODE", uniqueConstraints = @UniqueConstraint(columnNames = { "CODE", "CODE_LIST_ID" }))
 public class Code implements IsSerializable , Cloneable{
-	
-	/**
-	 * The Class Comparator.
-	 */
 	public static class Comparator implements java.util.Comparator<Code>, IsSerializable {
-
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
 		@Override
 		public int compare(Code o1, Code o2) {
 			return o1.getCode().compareTo(o2.getCode());
 		}
 	}
-	
-	/** The id. */
+
 	private String id;
-	
-	/** The code. */
 	private String code;
-	
-	/** The description. */
 	private String description;
+	private ListObject listObject;
 	
-	/** The code list id. */
-	private String codeListID;
-	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "CODE_ID", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		if(id!=null)
 			id=id.trim();
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the code.
-	 * 
-	 * @return the code
-	 */
+	@Column(name = "CODE", nullable = false, length = 32)
 	public String getCode() {
 		return code;
 	}
 	
-	/**
-	 * Sets the code.
-	 * 
-	 * @param code
-	 *            the new code
-	 */
 	public void setCode(String code) {
 		this.code = code.trim();
 	}
 	
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
+
+	@Column(name = "DESCRIPTION", nullable = false, length = 1400)
 	public String getDescription() {
 		return description;
 	}
 	
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
 	public void setDescription(String description) {
 		this.description = description.trim();
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+
 	@Override
     public boolean equals(Object aThat) {
 	   
@@ -103,18 +65,12 @@ public class Code implements IsSerializable , Cloneable{
 	    	this.code.equalsIgnoreCase(that.code);
 		}
 	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		int code = getCode().hashCode(); 
 		return code;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	public Code clone(){
 		Code clone = new Code();
 		clone.setCode(this.getCode());
@@ -122,23 +78,14 @@ public class Code implements IsSerializable , Cloneable{
 		return clone;
 	}
 	
-	/**
-	 * Gets the code list id.
-	 * 
-	 * @return the code list id
-	 */
-	public String getCodeListID() {
-		return codeListID;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CODE_LIST_ID", nullable = false, insertable = false, updatable = false)
+	public ListObject getListObject() {
+		return this.listObject;
 	}
-	
-	/**
-	 * Sets the code list id.
-	 * 
-	 * @param codeListID
-	 *            the new code list id
-	 */
-	public void setCodeListID(String codeListID) {
-		this.codeListID = codeListID;
+
+	public void setListObject(ListObject listObject) {
+		this.listObject = listObject;
 	}
 	
 	

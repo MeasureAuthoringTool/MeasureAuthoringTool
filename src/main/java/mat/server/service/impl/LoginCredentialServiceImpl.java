@@ -223,7 +223,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 */
 	private LoginModel isValidUserDetailsNotNull(String userId, String password, LoginModel validateUserLoginModel, MatUserDetails validateUserMatUserDetails) {
 		String hashPassword = userService.getPasswordHash(validateUserMatUserDetails.getUserPassword().getSalt(), password);
-		if (validateUserMatUserDetails.getStatus().getId().equals("2")) {
+		if (validateUserMatUserDetails.getStatus().getStatusId().equals("2")) {
 			// REVOKED USER NO
 			logger.info("User status is 2, revoked");
 			validateUserLoginModel.setLoginFailedEvent(true);

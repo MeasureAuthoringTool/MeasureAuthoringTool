@@ -2,13 +2,13 @@ package mat.dao.impl;
 
 import java.util.List;
 
-import mat.dao.search.GenericDAO;
-import mat.model.UserPassword;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import mat.dao.search.GenericDAO;
+import mat.model.UserPassword;
 
 /**
  * The Class UserPasswordDAO.

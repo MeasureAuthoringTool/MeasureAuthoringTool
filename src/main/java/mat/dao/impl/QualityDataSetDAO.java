@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mat.dao.search.GenericDAO;
-import mat.model.QualityDataSet;
-import mat.model.QualityDataSetDTO;
-import mat.shared.ConstantMessages;
-
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+
+import mat.dao.search.GenericDAO;
+import mat.model.QualityDataSet;
+import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 
 /**
  * The Class QualityDataSetDAO.

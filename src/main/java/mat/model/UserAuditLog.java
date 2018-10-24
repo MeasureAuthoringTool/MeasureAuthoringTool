@@ -3,142 +3,94 @@ package mat.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class UserAuditLog.
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+@Entity
+@Table(name = "USER_AUDIT_LOG")
 public class UserAuditLog {
-
-	/** The id. */
 	private String id;
-
-	/** The action type. */
 	private String actionType;
-	
-	/** The activity type. */
 	private String activityType;
-	
-	/** The time. */
 	private Timestamp time;
-
-	/** The user id. */
 	private String userEmail;
-
-	/** The measure. */
 	private User user;
-
-	/** The additional info. */
 	private String additionalInfo;
 	
-
-	/**
-	 * Gets the id.
-	 *
-	 * @return the id
-	 */
+	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * Sets the id.
-	 *
-	 * @param id the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the action type.
-	 *
-	 * @return the action type
-	 */
+	@Column(name = "ACTION_TYPE", nullable = false, length = 32)
 	public String getActionType() {
 		return actionType;
 	}
 
-	/**
-	 * Sets the action type.
-	 *
-	 * @param actionType the new action type
-	 */
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
 	}
 
-	/**
-	 * Gets the activity type.
-	 *
-	 * @return the activity type
-	 */
+	@Column(name = "ACTIVITY_TYPE", nullable = false, length = 40)
 	public String getActivityType() {
 		return activityType;
 	}
 
-	/**
-	 * Sets the activity type.
-	 *
-	 * @param activityType the new activity type
-	 */
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
 	}
 
-	/**
-	 * Gets the time.
-	 *
-	 * @return the time
-	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Date getTime() {
 		return (Date)time;
 	}
 
-	/**
-	 * Sets the time.
-	 *
-	 * @param time the new time
-	 */
 	public void setTime(Date time) {
 		this.time = new Timestamp(time.getTime());
 	}
 
-	/**
-	 * Gets the user.
-	 *
-	 * @return the user
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@NotFound(action = NotFoundAction.IGNORE)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	public User getUser() {
 		return user;
 	}
 
-	/**
-	 * Sets the user.
-	 *
-	 * @param user the new user
-	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	/**
-	 * Gets the additional info.
-	 *
-	 * @return the additional info
-	 */
+	@Column(name = "ADDL_INFO", length = 2000)
 	public String getAdditionalInfo() {
 		return additionalInfo;
 	}
 
-	/**
-	 * Sets the additional info.
-	 *
-	 * @param additionalInfo the new additional info
-	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}
 
+	@Column(name = "USER_EMAIL", nullable = false, length = 40)
 	public String getUserEmail() {
 		return userEmail;
 	}

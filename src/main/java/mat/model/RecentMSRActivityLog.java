@@ -3,84 +3,61 @@ package mat.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-/**
- * The Class RecentMeasureActivityLog.
- */
-public class RecentMSRActivityLog {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
-	/** The id. */
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "RECENT_MSR_ACTIVITY_LOG")
+public class RecentMSRActivityLog {
 	private String id;
-	
-	/** The time. */
 	private Timestamp time;
-	
-	/** The user id. */
 	private String userId;
-	
-	/** The measure id. */
 	private String measureId;
 
-	/**
-	 * Gets the id.
-	 * @return the id
-	 */
+	@Id
+	@GeneratedValue(generator="system-uuid")
+	@GenericGenerator(name="system-uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * Sets the id.
-	 * @param id the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	/**
-	 * Gets the time.
-	 * @return the time
-	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Date getTime() {
 		return (Date)time;
 	}
 
-	
-	/**
-	 * Sets the time.
-	 * @param created the new time
-	 */
 	public void setTime(Date created) {
 		this.time = new Timestamp(created.getTime());
 	}
 
-	/**
-	 * Gets the user id.
-	 * @return the user id
-	 */
+	@Column(name="USER_ID")
 	public String getUserId() {
 		return userId;
 	}
 
-	/**
-	 * Sets the user id.
-	 * @param userId the user id
-	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
-	/**
-	 * Gets the measure id.
-	 * @return the measureId
-	 */
+	@Column(name="MEASURE_ID")
 	public String getMeasureId() {
 		return measureId;
 	}
 
-	/**
-	 * Sets the measure id.
-	 * @param measureId the measureId to set
-	 */
 	public void setMeasureId(String measureId) {
 		this.measureId = measureId;
 	}	

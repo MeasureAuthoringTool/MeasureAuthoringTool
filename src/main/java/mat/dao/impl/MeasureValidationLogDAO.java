@@ -2,12 +2,12 @@ package mat.dao.impl;
 
 import java.util.Date;
 
+import org.hibernate.Session;
+
 import mat.dao.search.GenericDAO;
 import mat.model.MeasureValidationLog;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
-
-import org.hibernate.Session;
 
 /**
  * Validation Log implementation of a save op.

@@ -148,7 +148,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		String revokedDate = null;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar calendar = Calendar.getInstance();
-		if (user.getStatus().getId().equals("2")) {
+		if (user.getStatus().getStatusId().equals("2")) {
 			calendar.setTime(user.getTerminationDate());
 			revokedDate = "(" + dateFormat.format(calendar.getTime()) + ")";
 		} else {

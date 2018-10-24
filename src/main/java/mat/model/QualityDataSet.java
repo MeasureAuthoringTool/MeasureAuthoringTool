@@ -1,169 +1,103 @@
 package mat.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Version;
+
 import mat.model.clause.Measure;
 
-/**
- * The Class QualityDataSet.
- */
+@Entity
+@Table(name = "QUALITY_DATA_MODEL")
 public class QualityDataSet {
 	
-	/** The id. */
 	private String id;
 	
-	/** The data type. */
 	private DataType dataType;
 	
-	/** The list object. */
 	private ListObject listObject;
 	
-	/** The measure id. */
 	private Measure measureId;
 	
-	/** The version. */
 	private String version;
 	
-	/** The oid. */
 	private String oid;
 	
-	/** The occurrence. */
 	private String occurrence;
 	
-	/** The supp data element. */
 	private boolean suppDataElement;
 	
-	/**
-	 * Gets the version.
-	 * 
-	 * @return the version
-	 */
+	@Column(name = "VERSION", nullable = false, length = 32)
 	public String getVersion() {
 		return version;
 	}
 	
-	/**
-	 * Sets the version.
-	 * 
-	 * @param version
-	 *            the new version
-	 */
 	public void setVersion(String version) {
 		this.version = version;
 	}
 	
-	/**
-	 * Gets the measure id.
-	 * 
-	 * @return the measure id
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEASURE_ID", nullable = false)
 	public Measure getMeasureId() {
 		return measureId;
 	}
 	
-	/**
-	 * Sets the measure id.
-	 * 
-	 * @param measureId
-	 *            the new measure id
-	 */
 	public void setMeasureId(Measure measureId) {
 		this.measureId = measureId;
 	}
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@Column(name = "QUALITY_DATA_MODEL_ID", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the data type.
-	 * 
-	 * @return the data type
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DATA_TYPE_ID", nullable = false)
 	public DataType getDataType() {
 		if(dataType==null)
 			dataType = new DataType();
 		return dataType;
 	}
 	
-	/**
-	 * Sets the data type.
-	 * 
-	 * @param dataType
-	 *            the new data type
-	 */
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
 	
-	/**
-	 * Gets the list object.
-	 * 
-	 * @return the list object
-	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LIST_OBJECT_ID", nullable = false)
 	public ListObject getListObject() {
 		if(listObject==null)
 			listObject = new ListObject();
 		return listObject;
 	}
 	
-	/**
-	 * Sets the list object.
-	 * 
-	 * @param listObject
-	 *            the new list object
-	 */
 	public void setListObject(ListObject listObject) {
 		this.listObject = listObject;
 	}
 	
-	/**
-	 * Gets the oid.
-	 * 
-	 * @return the oid
-	 */
+	@Column(name = "OID")
 	public String getOid() {
 		return oid;
 	}
 	
-	/**
-	 * Sets the oid.
-	 * 
-	 * @param oid
-	 *            the new oid
-	 */
 	public void setOid(String oid) {
 		this.oid = oid;
 	}
 
-	/**
-	 * Gets the occurrence.
-	 * 
-	 * @return the occurrence
-	 */
+	@Column(name = "OCCURRENCE", length = 200)
 	public String getOccurrence() {
 		return occurrence;
 	}
 	
-	/**
-	 * Sets the occurrence.
-	 * 
-	 * @param occurrence
-	 *            the new occurrence
-	 */
 	public void setOccurrence(String occurrence) {
 		this.occurrence = occurrence;
 	}
@@ -182,21 +116,11 @@ public class QualityDataSet {
 		return false;
 	}
 	
-	/**
-	 * Checks if is supp data element.
-	 * 
-	 * @return true, if is supp data element
-	 */
+	@Column(name = "IS_SUPP_DATA_ELEMENT", nullable = false)
 	public boolean isSuppDataElement() {
 		return suppDataElement;
 	}
 	
-	/**
-	 * Sets the supp data element.
-	 * 
-	 * @param suppDataElement
-	 *            the new supp data element
-	 */
 	public void setSuppDataElement(boolean suppDataElement) {
 		this.suppDataElement = suppDataElement;
 	}

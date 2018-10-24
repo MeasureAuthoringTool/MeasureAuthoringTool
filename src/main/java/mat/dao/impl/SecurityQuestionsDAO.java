@@ -2,12 +2,12 @@ package mat.dao.impl;
 
 import java.util.List;
 
-import mat.dao.search.GenericDAO;
-import mat.model.SecurityQuestions;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import mat.dao.search.GenericDAO;
+import mat.model.SecurityQuestions;
 
 /**
  * The Class SecurityQuestionsDAO.

@@ -1,112 +1,62 @@
 package mat.model.clause;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * The Class QDSAttributes.
- */
+@Entity
+@Table(name = "QDM_ATTRIBUTES")
 public class QDSAttributes implements IsSerializable {
 	
-	
-	
-  public static class Comparator implements java.util.Comparator<QDSAttributes>, IsSerializable {
-		
-		/* (non-Javadoc)
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
-		@Override
-		public int compare(QDSAttributes o1,
-				QDSAttributes o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-		
-	}
-	
-	
-	/** The id. */
+
 	private String id;
 	
-	/** The name. */
 	private String name;
 	
-	/** The data type id. */
 	private String dataTypeId;
 	
-	/** The q ds attribute type. */
 	private String qDSAttributeType;
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@GeneratedValue(strategy = IDENTITY)
+	@Column(name = "ID", unique = true, nullable = false)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
+	@Column(name = "NAME", nullable = false, length = 32)
 	public String getName() {
 		return name;
 	}
 	
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name
-	 *            the new name
-	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	/**
-	 * Gets the data type id.
-	 * 
-	 * @return the data type id
-	 */
+	@Column(name = "DATA_TYPE_ID", nullable = false, length = 32)
 	public String getDataTypeId() {
 		return dataTypeId;
 	}
 	
-	/**
-	 * Sets the data type id.
-	 * 
-	 * @param dataTypeId
-	 *            the new data type id
-	 */
 	public void setDataTypeId(String dataTypeId) {
 		this.dataTypeId = dataTypeId;
 	}
 	
-	/**
-	 * Gets the q ds attribute type.
-	 * 
-	 * @return the q ds attribute type
-	 */
+	@Column(name = "QDM_ATTRIBUTE_TYPE", nullable = false, length = 32)
 	public String getqDSAttributeType() {
 		return qDSAttributeType;
 	}
-	
-	/**
-	 * Sets the q ds attribute type.
-	 * 
-	 * @param qDSAttributeType
-	 *            the new q ds attribute type
-	 */
+
 	public void setqDSAttributeType(String qDSAttributeType) {
 		this.qDSAttributeType = qDSAttributeType;
 	}

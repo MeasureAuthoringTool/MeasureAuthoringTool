@@ -1,12 +1,12 @@
 package mat.model;
 
-/*
- * This object is to create code list. Code list will have one to many 
- * relationship with codes. This extends ListObject class.
- */
-/**
- * The Class CodeList.
- */
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "CODE_LIST")
+@PrimaryKeyJoinColumn(name = "CODE_LIST_ID")
 public class CodeList extends ListObject {
 	
 }

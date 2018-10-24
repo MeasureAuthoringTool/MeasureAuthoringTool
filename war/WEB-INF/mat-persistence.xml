@@ -31,25 +31,26 @@
 		<property name="contexts" value="prod" />
 	</bean>
     
-	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<property name="jndiName" value="java:/comp/env/jdbc/mat_app_tomcat" />
-	</bean>    
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	   <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_STAGE_08312017"/>
+	   <property name="username" value="npabbisetty"/>
+	   <property name="password" value="***REMOVED***"/>
+   </bean>
+    
     
     <context:annotation-config />
+    <tx:annotation-driven />
     <context:component-scan base-package="mat.hibernate"/>
     <context:component-scan base-package="mat.server"/>
     <context:component-scan base-package="mat.dao"/>
 	<context:component-scan base-package="mat.model.clause"/>
+	<context:component-scan base-package="mat.model"/>
 	
     <bean id="auditEventListener" class="mat.dao.impl.AuditEventListener">
    </bean>
 	<bean id="auditInterceptor" class="mat.dao.impl.AuditInterceptor">
    </bean>
     
-    <tx:annotation-driven transaction-manager="txManager"/>
-    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
-    </bean>
 	<!-- DAO objects -->
 	<bean id="baseDAO" abstract="true">
 	   <property name="sessionFactory" ref="sessionFactory"/>
@@ -121,10 +122,6 @@
 	<bean id="listObjectLTDAO"
 		class="mat.dao.impl.ListObjectLTDAO" parent="baseDAO">
 	</bean>
-
-	<bean id="objectStatusDAO"
-		class="mat.dao.impl.ObjectStatusDAO" parent="baseDAO">
-	</bean>	
 	
 	<bean id="qualityDataSetDAO"
 		class="mat.dao.impl.QualityDataSetDAO" parent="baseDAO">
@@ -173,10 +170,6 @@
 		class="mat.dao.impl.clause.MeasureSetDAO" parent="baseDAO">
 	</bean>		
 	
-	<bean id="cqlLibrarySetDAO"
-		class="mat.dao.impl.clause.CQLLibrarySetDAO" parent="baseDAO">
-	</bean>	
-	
 	<bean id="operatorDAO"
 		class="mat.dao.impl.clause.OperatorDAO" parent="baseDAO">
 	</bean>			
@@ -193,32 +186,13 @@
         class="mat.dao.impl.clause.QDSAttributesDAO" parent="baseDAO">
     </bean>  
     
-     <bean id="attributesDAO"
-        class="mat.dao.impl.clause.AttributesDAO" parent="baseDAO">
-    </bean>  
-    
-    <bean id="modesDAO"
-        class="mat.dao.impl.clause.ModesDAO" parent="baseDAO">
-    </bean>  
-    
-    <bean id="modesAttributesDAO"
-        class="mat.dao.impl.clause.ModesAttributesDAO" parent="baseDAO">
-    </bean>  
-    
     <bean id="packagerDAO"
         class="mat.dao.impl.clause.PackagerDAO" parent="baseDAO">
     </bean>
      
     <bean id="measureExportDAO"
         class="mat.dao.impl.clause.MeasureExportDAO" parent="baseDAO">
-    </bean>
-    <bean id="qDSAttributeDetailsDAO"
-        class="mat.dao.impl.clause.QDSAttributeDetailsDAO" parent="baseDAO">
-    </bean>     
-
-    <bean id="attributeDetailsDAO"
-        class="mat.dao.impl.clause.AttributeDetailsDAO" parent="baseDAO">
-    </bean>
+    </bean>  
     
     <bean id="transactionAuditLogDAO"
 		class="mat.dao.impl.TransactionAuditLogDAO" parent="baseDAO">
@@ -250,9 +224,6 @@
     
     <bean id="userPasswordHistoryDAO"
 		class="mat.dao.impl.UserPasswordHistoryDAO" parent="baseDAO">
-	</bean>
-	<bean id="cqlDAO"
-		class="mat.dao.impl.clause.CQLDAO" parent="baseDAO">
 	</bean>
 	<bean id="cqlLibraryDAO" 
 	    class="mat.dao.impl.clause.CQLLibraryDAO" parent="baseDAO">
@@ -289,17 +260,10 @@
 		<property name="dataTypeDAO" ref="dataTypeDAO"/>
 		<property name="listObjectDAO" ref="listObjectDAO"/>
 		<property name="listObjectLTDAO" ref="listObjectLTDAO"/>
-		<property name="objectStatusDAO" ref="objectStatusDAO"/>
 		<property name="qualityDataSetDAO" ref="qualityDataSetDAO"/>
 		<property name="operatorDAO" ref="operatorDAO"/>
 		<property name="measureDAO" ref="measureDAO"/>
 		<property name="measureSetDAO" ref="measureSetDAO"/>
-		<property name="cqlLibrarySetDAO" ref="cqlLibrarySetDAO"/>
-		<property name="qDSAttributesDAO" ref="qDSAttributesDAO"/>
-        <property name="attributesDAO" ref="attributesDAO"/>
-        <property name="modesDAO" ref="modesDAO"/>
-        <property name="modesAttributesDAO" ref="modesAttributesDAO"/>
-		<property name="qDSAttributeDetailsDAO" ref="qDSAttributeDetailsDAO"/>
 		<property name="measureScoreDAO" ref="measureScoreDAO"/>
 		<property name="unitDAO" ref="unitDAO"/>
 		<property name="unitTypeDAO" ref="unitTypeDAO"/>
@@ -310,7 +274,6 @@
 		<property name="codeListAuditLogDAO" ref="codeListAuditLogDAO"/>
 		<property name="measureValidationLogDAO" ref="measureValidationLogDAO"/>
 		<property name="measureExportDAO" ref="measureExportDAO"/>
-		<property name="attributeDetailsDAO" ref="attributeDetailsDAO"/>
 		<property name="transactionAuditLogDAO" ref="transactionAuditLogDAO"/>
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
@@ -318,7 +281,6 @@
 		<property name="recentCQLActivityLogDAO" ref="recentCQLActivityLogDAO"/>
 		<property name="organizationDAO" ref="organizationDAO"/>
 		<property name="userPasswordHistoryDAO" ref="userPasswordHistoryDAO"/>
-		<property name="cqlDAO" ref="cqlDAO"/>
 		<property name="cqlLibraryDAO" ref="cqlLibraryDAO"/>
 		<property name="cqlLibraryAssociationDAO" ref="cqlLibraryAssociationDAO"/>
 		<property name="cqlLibraryShareDAO" ref="cqlLibraryShareDAO"/>

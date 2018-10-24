@@ -5,8 +5,25 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import mat.model.User;
 
+@Entity
+@Table(name = "MEASURE")
 public class Measure {
 
 	private String id;
@@ -19,7 +36,6 @@ public class Measure {
 
 	private String version;
 	
-	/** The Revision Number. */
 	private String revisionNumber;
 	
 	private String measureScoring;
@@ -60,6 +76,7 @@ public class Measure {
 	
 	private List<ComponentMeasure> componentMeasures;
 
+	@Column(name = "VALUE_SET_DATE", length = 19)
 	public Timestamp getValueSetDate() {
 		return valueSetDate;
 	}
@@ -67,7 +84,8 @@ public class Measure {
 	public void setValueSetDate(Timestamp valueSetDate) {
 		this.valueSetDate = valueSetDate;
 	}
-
+	
+	@Column(name = "DRAFT", nullable = false)
 	public boolean isDraft() {
 		return draft;
 	}
@@ -76,6 +94,8 @@ public class Measure {
 		this.draft = draft;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEASURE_SET_ID", nullable = false)
 	public MeasureSet getMeasureSet() {
 		if(measureSet == null) {
 			measureSet= new MeasureSet();
@@ -87,6 +107,7 @@ public class Measure {
 		this.measureSet = measureSet;
 	}
 
+	@Column(name = "FINALIZED_DATE", length = 19)
 	public Timestamp getFinalizedDate() {
 		return finalizedDate;
 	}
@@ -95,6 +116,10 @@ public class Measure {
 		this.finalizedDate = finalizedDate;
 	}
 
+	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 64)
 	public String getId() {
 		return id;
 	}
@@ -103,6 +128,7 @@ public class Measure {
 		this.id = id;
 	}
 
+	@Column(name = "ABBR_NAME", length = 45)
 	public String getaBBRName() {
 		return aBBRName;
 	}
@@ -111,6 +137,7 @@ public class Measure {
 		this.aBBRName = aBBRName;
 	}
 
+	@Column(name = "DESCRIPTION", length = 2000)
 	public String getDescription() {
 		return description;
 	}
@@ -119,6 +146,7 @@ public class Measure {
 		this.description = description;
 	}
 
+	@Transient
 	public int getMinorVersionInt(){
 		int minVersion = 0;
 		if ((version != null) && !version.isEmpty()) {
@@ -132,10 +160,12 @@ public class Measure {
 		return minVersion;
 	}
 
+	@Transient
 	public String getMinorVersionStr(){
 		return getMinorVersionInt() + "";
 	}
 
+	@Transient
 	public int getMajorVersionInt(){
 		int maxVersion = 0;
 		if ((version != null) && !version.isEmpty()) {
@@ -149,10 +179,12 @@ public class Measure {
 		return maxVersion;
 	}
 
+	@Transient
 	public String getMajorVersionStr(){
 		return getMajorVersionInt() + "";
 	}
 
+	@Transient
 	public double getVersionNumber(){
 		double versionNumber = 0;
 		if ((version != null) && !version.isEmpty()) {
@@ -161,6 +193,7 @@ public class Measure {
 		return versionNumber;
 	}
 
+	@Column(name = "VERSION", nullable = false)
 	public String getVersion() {
 		return version;
 	}
@@ -169,6 +202,7 @@ public class Measure {
 		this.version = version;
 	}
 
+	@Column(name = "SCORING", nullable = false, length = 200)
 	public String getMeasureScoring() {
 		return measureScoring;
 	}
@@ -177,6 +211,7 @@ public class Measure {
 		this.measureScoring = measureScoring;
 	}
 
+	@Column(name = "COMPOSITE_SCORING", length = 200)
 	public String getCompositeScoring() {
 		return compositeScoring;
 	}
@@ -185,6 +220,8 @@ public class Measure {
 		this.compositeScoring = compositeScoring;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEASURE_OWNER_ID", nullable = false)
 	public User getOwner() {
 		return owner;
 	}
@@ -193,6 +230,7 @@ public class Measure {
 		this.owner = owner;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "measure")
 	public Set<MeasureShare> getShares() {
 		return shares;
 	}
@@ -201,6 +239,8 @@ public class Measure {
 		this.shares = shares;
 	}
 
+	@Temporal(TemporalType.DATE)
+	@Column(name = "EXPORT_TS", length = 19)
 	public Date getExportedDate() {
 		return exportedDate;
 	}
@@ -209,6 +249,7 @@ public class Measure {
 		this.exportedDate = exportedDate;
 	}
 
+	@Column(name = "LOCKED_OUT_DATE", length = 19)
 	public Timestamp getLockedOutDate() {
 		return lockedOutDate;
 	}
@@ -217,6 +258,8 @@ public class Measure {
 		this.lockedOutDate = lockedOutDate;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LOCKED_USER_ID", nullable = false, insertable=false, updatable=false)
 	public User getLockedUser() {
 		return lockedUser;
 	}
@@ -225,6 +268,7 @@ public class Measure {
 		this.lockedUser = lockedUser;
 	}
 
+	@Column(name = "EMEASURE_ID")
 	public int geteMeasureId() {
 		return eMeasureId;
 	}
@@ -233,6 +277,7 @@ public class Measure {
 		this.eMeasureId = eMeasureId;
 	}
 	
+	@Column(name = "PRIVATE", nullable = false)
 	public boolean getIsPrivate() {
 		return isPrivate;
 	}
@@ -241,6 +286,7 @@ public class Measure {
 		this.isPrivate = isPrivate;
 	}
 
+	@Column(name = "REVISION_NUMBER")
 	public String getRevisionNumber() {
 		return revisionNumber;
 	}
@@ -249,6 +295,7 @@ public class Measure {
 		this.revisionNumber = revisionNumber;
 	}
 
+	@Column(name = "RELEASE_VERSION", length = 50)
 	public String getReleaseVersion() {
 		return releaseVersion;
 	}
@@ -257,6 +304,7 @@ public class Measure {
 		this.releaseVersion = releaseVersion;
 	}
 
+	@Column(name = "PATIENT_BASED")
 	public Boolean getPatientBased() {
 		return patientBased;
 	}
@@ -265,6 +313,7 @@ public class Measure {
 		this.patientBased = patientBased;
 	}
 
+	@Column(name = "LAST_MODIFIED_ON", length = 19)
 	public Timestamp getLastModifiedOn() {
 		return lastModifiedOn;
 	}
@@ -273,6 +322,8 @@ public class Measure {
 		this.lastModifiedOn = lastModifiedOn;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LAST_MODIFIED_BY")
 	public User getLastModifiedBy() {
 		return lastModifiedBy;
 	}
@@ -281,6 +332,7 @@ public class Measure {
 		this.lastModifiedBy = lastModifiedBy;
 	}
 
+	@Column(name = "QDM_VERSION", length = 45)
 	public String getQdmVersion() {
 		return qdmVersion;
 	}
@@ -288,6 +340,8 @@ public class Measure {
 	public void setQdmVersion(String qdmVersion) {
 		this.qdmVersion = qdmVersion;
 	}
+	
+	@Column(name = "IS_COMPOSITE_MEASURE", nullable = false)
 	public Boolean getIsCompositeMeasure() {
 		return isCompositeMeasure;
 	}
@@ -295,7 +349,8 @@ public class Measure {
 	public void setIsCompositeMeasure(Boolean isCompositeMeasure) {
 		this.isCompositeMeasure = isCompositeMeasure;
 	}
-
+	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "compositeMeasure")
 	public List<ComponentMeasure> getComponentMeasures() {
 		return componentMeasures;
 	}

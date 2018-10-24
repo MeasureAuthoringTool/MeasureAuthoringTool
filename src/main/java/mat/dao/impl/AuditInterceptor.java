@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
-import mat.model.AuditLog;
-import mat.server.LoggedInUserUtil;
-
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
+
+import mat.model.AuditLog;
+import mat.server.LoggedInUserUtil;
 
 
 

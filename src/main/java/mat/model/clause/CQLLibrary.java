@@ -8,81 +8,63 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import mat.hibernate.HibernateConf;
 import mat.model.User;
 import mat.model.cql.CQLLibraryShare;
 
+@Entity
+@Table(name = "CQL_LIBRARY")
 public class CQLLibrary {
 
-	/**
-	 * The cql library id
-	 */
 	private String id;
 
-	/**
-	 * The name
-	 */
 	private String name;
 
-	/**
-	 * The measure id
-	 */
 	private String measureId;
 
-	/**
-	 * The owner id
-	 */
 	private User ownerId;
 	
 	private String set_id;
 
-	/**
-	 * The version
-	 */
 	private String version;
 
-	/**
-	 * The draft
-	 */
 	private boolean draft;
 
-	/**
-	 * The finalized date
-	 */
 	private Timestamp finalizedDate;
 
-	/**
-	 * The release version
-	 */
 	private String releaseVersion;
 	
 	private String revisionNumber;
 	
-	/**
-	 * The qdm version
-	 */
 	private String qdmVersion;
 
-	/**
-	 * The locked user id
-	 */
 	private User lockedUserId;
 
-	/**
-	 * The locked out date
-	 */
 	private Timestamp lockedOutDate;
 	
-	/** The shares. */
 	private Set<CQLLibraryShare> shares;
 
-	/**
-	 * The cql xml
-	 */
 	private Blob cqlXML;
 
+	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 64)
 	public String getId() {
 		return id;
 	}
@@ -91,6 +73,7 @@ public class CQLLibrary {
 		this.id = id;
 	}
 
+	@Column(name = "CQL_NAME", length = 500)
 	public String getName() {
 		return name;
 	}
@@ -99,6 +82,7 @@ public class CQLLibrary {
 		this.name = name;
 	}
 
+	@Column(name = "MEASURE_ID", length = 64)
 	public String getMeasureId() {
 		return measureId;
 	}
@@ -107,6 +91,8 @@ public class CQLLibrary {
 		this.measureId = measureId;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "OWNER_ID", nullable = false)
 	public User getOwnerId() {
 		return ownerId;
 	}
@@ -115,6 +101,7 @@ public class CQLLibrary {
 		this.ownerId = ownerId;
 	}
 
+	@Column(name = "VERSION", precision = 6, scale = 3)
 	public String getVersion() {
 		return version;
 	}
@@ -123,6 +110,7 @@ public class CQLLibrary {
 		this.version = version;
 	}
 
+	@Column(name = "QDM_VERSION", nullable = false, length = 45)
 	public String getQdmVersion() {
 		return qdmVersion;
 	}
@@ -131,6 +119,7 @@ public class CQLLibrary {
 		this.qdmVersion = qdmVersion;
 	}
 
+	@Column(name = "DRAFT")
 	public boolean isDraft() {
 		return draft;
 	}
@@ -139,6 +128,7 @@ public class CQLLibrary {
 		this.draft = draft;
 	}
 
+	@Column(name = "FINALIZED_DATE", length = 19)
 	public Timestamp getFinalizedDate() {
 		return finalizedDate;
 	}
@@ -147,6 +137,8 @@ public class CQLLibrary {
 		this.finalizedDate = finalizedDate;
 	}
 
+	@Lob
+	@Column(name = "CQL_XML")
 	public Blob getCqlXML() {
 		return cqlXML;
 	}
@@ -155,10 +147,12 @@ public class CQLLibrary {
 		this.cqlXML = cqlXML; 
 	}
 
+	@Transient
 	public void setCQLByteArray(byte[] cqlByteArray) {
 		this.cqlXML = Hibernate.getLobCreator(HibernateConf.getHibernateSession()).createBlob(cqlByteArray);
 	}
 
+	@Transient
 	public byte[] getCQLByteArray() {
 		return toByteArray(cqlXML);
 	}
@@ -224,6 +218,7 @@ public class CQLLibrary {
 		return baos.toByteArray();
 	}
 
+	@Column(name = "RELEASE_VERSION", length = 45)
 	public String getReleaseVersion() {
 		return releaseVersion;
 	}
@@ -232,6 +227,8 @@ public class CQLLibrary {
 		this.releaseVersion = releaseVersion;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LOCKED_USER")
 	public User getLockedUserId() {
 		return lockedUserId;
 	}
@@ -240,6 +237,7 @@ public class CQLLibrary {
 		this.lockedUserId = lockedUserId;
 	}
 
+	@Column(name = "LOCKED_OUT_DATE", length = 19)
 	public Timestamp getLockedOutDate() {
 		return lockedOutDate;
 	}
@@ -248,6 +246,7 @@ public class CQLLibrary {
 		this.lockedOutDate = lockedOutDate;
 	}
 
+	@Column(name = "REVISION_NUMBER", length = 45)
 	public String getRevisionNumber() {
 		return revisionNumber;
 	}
@@ -256,6 +255,7 @@ public class CQLLibrary {
 		this.revisionNumber = revisionNumber;
 	}
 
+	@Transient
 	public double getVersionNumber(){
 		double versionNumber = 0;
 		if ((version != null) && !version.isEmpty()) {
@@ -264,6 +264,7 @@ public class CQLLibrary {
 		return versionNumber;
 	}
 
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cqlLibrary")
 	public Set<CQLLibraryShare> getShares() {
 		return shares;
 	}
@@ -272,6 +273,7 @@ public class CQLLibrary {
 		this.shares = shares;
 	}
 
+	@Column(name = "SET_ID", nullable = false, length = 45)
 	public String getSet_id() {
 		return set_id;
 	}

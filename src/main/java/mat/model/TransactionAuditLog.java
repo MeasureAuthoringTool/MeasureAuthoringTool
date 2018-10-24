@@ -3,163 +3,91 @@ package mat.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-/**
- * The Class TransactionAuditLog.
- * 
- * @author aschmidt
- */
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name="TRANSACTION_AUDIT_LOG")
 public class TransactionAuditLog {
-	
-	/** The id. */
 	private String id;
-	
-	/** The primary id. */
 	private String primaryId;
-	
-	/** The secondary id. */
 	private String secondaryId;
-	
-	/** The activity type. */
 	private String activityType;
-	
-	/** The user id. */
 	private String userId;
-	
-	/** The time. */
 	private Timestamp time;
-	
-	/** The additional info. */
 	private String additionalInfo;
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
+	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-	/**
-	 * Gets the primary id.
-	 * 
-	 * @return the primary id
-	 */
+	@Column(name = "PRIMARY_ID", length = 40)
 	public String getPrimaryId() {
 		return primaryId;
 	}
 	
-	/**
-	 * Sets the primary id.
-	 * 
-	 * @param primaryId
-	 *            the new primary id
-	 */
 	public void setPrimaryId(String primaryId) {
 		this.primaryId = primaryId;
 	}
 	
-	/**
-	 * Gets the secondary id.
-	 * 
-	 * @return the secondary id
-	 */
+	@Column(name = "SECONDARY_ID", length = 40)
 	public String getSecondaryId() {
 		return secondaryId;
 	}
 	
-	/**
-	 * Sets the secondary id.
-	 * 
-	 * @param secondaryId
-	 *            the new secondary id
-	 */
 	public void setSecondaryId(String secondaryId) {
 		this.secondaryId = secondaryId;
 	}
 	
-	/**
-	 * Gets the activity type.
-	 * 
-	 * @return the activity type
-	 */
+	@Column(name = "ACTIVITY_TYPE", nullable = false, length = 40)
 	public String getActivityType() {
 		return activityType;
 	}
 	
-	/**
-	 * Sets the activity type.
-	 * 
-	 * @param activityType
-	 *            the new activity type
-	 */
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
 	}
 	
-	/**
-	 * Gets the user id.
-	 * 
-	 * @return the user id
-	 */
+	@Column(name = "USER_ID", nullable = false, length = 40)
 	public String getUserId() {
 		return userId;
 	}
 	
-	/**
-	 * Sets the user id.
-	 * 
-	 * @param userId
-	 *            the new user id
-	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 	
-	/**
-	 * Gets the time.
-	 * 
-	 * @return the time
-	 */
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Date getTime() {
 		return (Date)time;
 	}
 	
-	/**
-	 * Sets the time.
-	 * 
-	 * @param created
-	 *            the new time
-	 */
 	public void setTime(Date created) {
 		this.time = new Timestamp(created.getTime());
 	}
 	
-	/**
-	 * Gets the additional info.
-	 * 
-	 * @return the additional info
-	 */
+	@Column(name = "ADDL_INFO", length = 2000)
 	public String getAdditionalInfo() {
 		return additionalInfo;
 	}
 	
-	/**
-	 * Sets the additional info.
-	 * 
-	 * @param additionalInfo
-	 *            the new additional info
-	 */
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}

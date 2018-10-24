@@ -52,7 +52,7 @@ public class UnitType implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unitType")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "id")
 	public Set<UnitMatrix> getUnitTypeMatrixes() {
 		return this.unitTypeMatrixes;
 	}

@@ -9,9 +9,9 @@ import org.hibernate.Session;
 
 import mat.DTO.UnitMatrixDTO;
 import mat.dao.search.GenericDAO;
-import mat.model.UnitTypeMatrix;
+import mat.model.UnitMatrix;
 
-public class UnitTypeMatrixDAO extends GenericDAO<UnitTypeMatrix, String> implements mat.dao.UnitTypeMatrixDAO{
+public class UnitTypeMatrixDAO extends GenericDAO<UnitMatrix, String> implements mat.dao.UnitTypeMatrixDAO{
 
 	private static final Log logger = LogFactory.getLog(UnitTypeMatrixDAO.class);
 	public List<UnitMatrixDTO> getAllUnitMatrix(){
@@ -21,11 +21,11 @@ public class UnitTypeMatrixDAO extends GenericDAO<UnitTypeMatrix, String> implem
 		Session session = getSessionFactory().getCurrentSession();
 
 		@SuppressWarnings("unchecked")
-		List<UnitTypeMatrix> unitTypeMatrixList = session.createCriteria(UnitTypeMatrix.class).list();
-		for(UnitTypeMatrix unitMatrix: unitTypeMatrixList){
+		List<UnitMatrix> unitTypeMatrixList = session.createCriteria(UnitMatrix.class).list();
+		for(UnitMatrix unitMatrix: unitTypeMatrixList){
 			UnitMatrixDTO matrixDTO =  new UnitMatrixDTO();
-			matrixDTO.setId(unitMatrix.getUnitType().getId());
-			matrixDTO.setItem(unitMatrix.getUnit().getId());
+			matrixDTO.setId(unitMatrix.getUnitTypeId());
+			matrixDTO.setItem(unitMatrix.getUnitId());
 			unitTypeMatrixDTOList.add(matrixDTO);
 		}
 		return unitTypeMatrixDTOList;

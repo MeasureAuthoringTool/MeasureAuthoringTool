@@ -17,7 +17,7 @@ public class UnitType implements java.io.Serializable {
 	private static final long serialVersionUID = -8202686098236431056L;
 	private String id;
 	private String name;
-	private Set<UnitTypeMatrix> unitTypeMatrixes = new HashSet<>(0);
+	private Set<UnitMatrix> unitTypeMatrixes = new HashSet<>(0);
 
 	public UnitType() {
 	}
@@ -26,7 +26,7 @@ public class UnitType implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public UnitType(String id, String name, Set<UnitTypeMatrix> unitTypeMatrixes) {
+	public UnitType(String id, String name, Set<UnitMatrix> unitTypeMatrixes) {
 		this.id = id;
 		this.name = name;
 		this.unitTypeMatrixes = unitTypeMatrixes;
@@ -53,11 +53,11 @@ public class UnitType implements java.io.Serializable {
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "unitType")
-	public Set<UnitTypeMatrix> getUnitTypeMatrixes() {
+	public Set<UnitMatrix> getUnitTypeMatrixes() {
 		return this.unitTypeMatrixes;
 	}
 
-	public void setUnitTypeMatrixes(Set<UnitTypeMatrix> unitTypeMatrixes) {
+	public void setUnitTypeMatrixes(Set<UnitMatrix> unitTypeMatrixes) {
 		this.unitTypeMatrixes = unitTypeMatrixes;
 	}
 

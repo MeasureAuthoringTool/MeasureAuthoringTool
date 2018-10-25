@@ -19,6 +19,6 @@
     </bean>
     
     <bean id="freemarkerConfiguration" class="org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean">
-	    <property name="templateLoaderPath" value="classpath:/"/>
+	    <property name="templateLoaderPath" value="classpath:/templates"/>
 	</bean>
 </beans>

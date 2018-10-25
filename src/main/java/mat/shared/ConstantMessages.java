@@ -334,16 +334,16 @@ public  class ConstantMessages {
 	
 	//TEMPLATES
 	/** The Constant TEMPLATE_WELCOME. */
-	public static final String TEMPLATE_WELCOME = "welcomeTemplate.ftl";
+	public static final String TEMPLATE_WELCOME = "mail/welcomeTemplate.ftl";
 	
 	/** The Constant TEMPLATE_TEMP_PASSWORD. */
-	public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.ftl";
+	public static final String TEMPLATE_TEMP_PASSWORD = "mail/tempPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_RESET_PASSWORD. */
-	public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.ftl";
+	public static final String TEMPLATE_RESET_PASSWORD = "mail/resetPasswordTemplate.ftl";
 	
 	/** The Constant TEMPLATE_FORGOT_LOGINID. */
-	public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.ftl";
+	public static final String TEMPLATE_FORGOT_LOGINID = "mail/forgotLoginIDTemplate.ftl";
 	
 	
 	//events

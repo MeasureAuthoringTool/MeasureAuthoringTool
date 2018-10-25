@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.gwtbootstrap3.client.ui.Button;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
@@ -26,6 +27,7 @@ import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
+import mat.client.measure.measuredetails.MeasureDetailsPresenter;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
@@ -128,6 +130,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	/** The meta data presenter. */
 	private MetaDataPresenter metaDataPresenter;
 	
+	private MeasureDetailsPresenter measureDetailsPresenter;
+	
 	
 	/**
 	 * Instantiates a new measure composer presenter.
@@ -141,10 +145,16 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		
+		measureDetailsPresenter = (MeasureDetailsPresenter) buildMeasureDetailsPresenter();
+
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
 		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details", true);
 		presenterList.add(metaDataPresenter);
+		presenterList.add(measureDetailsPresenter);
+		measureComposerTabLayout.add(measureDetailsPresenter.getWidget(), "New Measure Details", true);
+		
+
 		MatPresenter cqlWorkspacePresenter = buildCQLWorkSpaceTab();
 		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace", true);
 		presenterList.add(cqlWorkspacePresenter);
@@ -329,12 +339,15 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 	 */
 	private MatPresenter buildMeasureMetaDataPresenter() {
 		MetaDataView mdV = new MetaDataView();
-		//MAT-4898
-		//AddEditAuthorsView aeaV = new AddEditAuthorsView();
-		//AddEditMeasureTypeView aemtV = new AddEditMeasureTypeView();
-		//		AddEditComponentMeasuresView aecmV = new AddEditComponentMeasuresView();
 		MetaDataPresenter mdP = new MetaDataPresenter(mdV,buttonBar, MatContext.get().getListBoxCodeProvider());
 		return mdP;
+	}
+	
+	
+	private MatPresenter buildMeasureDetailsPresenter() {
+		//TODO implement this
+		MeasureDetailsPresenter measureDetailsPresenter = new MeasureDetailsPresenter();
+		return measureDetailsPresenter;
 	}
 	
 	/**

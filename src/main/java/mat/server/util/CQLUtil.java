@@ -18,9 +18,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.telligen.CQLtoELM;
+import mat.CQLtoELM;
 import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import com.telligen.MATCQLFilter;
+import mat.MATCQLFilter;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
 import org.w3c.dom.Document;

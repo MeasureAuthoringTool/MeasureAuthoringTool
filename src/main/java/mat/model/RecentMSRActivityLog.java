@@ -1,6 +1,5 @@
 package mat.model;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -10,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "RECENT_MSR_ACTIVITY_LOG")
 public class RecentMSRActivityLog {
 	private String id;
-	private Timestamp time;
+	private Date time;
 	private String userId;
 	private String measureId;
 
@@ -37,11 +35,11 @@ public class RecentMSRActivityLog {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TIMESTAMP", nullable = false, length = 19)
 	public Date getTime() {
-		return (Date)time;
+		return time;
 	}
 
 	public void setTime(Date created) {
-		this.time = new Timestamp(created.getTime());
+		this.time = created;
 	}
 
 	@Column(name="USER_ID")

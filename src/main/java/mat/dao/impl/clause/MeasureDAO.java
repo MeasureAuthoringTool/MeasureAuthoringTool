@@ -19,11 +19,13 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Repository;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.client.shared.MatContext;
@@ -42,10 +44,15 @@ import mat.server.LoggedInUserUtil;
 import mat.shared.MeasureSearchModel;
 import mat.shared.StringUtility;
 
+@Repository
 public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.clause.MeasureDAO {
 
 	private static final int MAX_PAGE_SIZE = Integer.MAX_VALUE;
 
+	public MeasureDAO(@Autowired SessionFactory sessionFactory) {
+		super.setSessionFactory(sessionFactory);
+	}
+	
 	class MeasureComparator implements Comparator<Measure> {
 
 		@Override
@@ -260,6 +267,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		Criteria criteria = session.createCriteria(Measure.class);
 		criteria.add(Restrictions.eq("owner.id", measureOwnerId));
 		return criteria.list();
+	}
+	
+	@Override
+	public Measure findByMeasureId(String measureOwnerId) {
+		Session session = getSessionFactory().getCurrentSession();
+		String sql = "select m from Measure m where m.id=:measureid";
+		Query<Measure> query = session.createQuery(sql);
+		query.setParameter("measureid", measureOwnerId);
+		return query.getSingleResult();
 	}
 
 	@Override

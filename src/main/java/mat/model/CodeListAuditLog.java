@@ -5,13 +5,15 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 @Entity
@@ -35,6 +37,8 @@ public class CodeListAuditLog {
 	}
 
 	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {
 		return id;

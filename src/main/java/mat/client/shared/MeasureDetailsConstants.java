@@ -1,7 +1,7 @@
 package mat.client.shared;
 
 public class MeasureDetailsConstants {
-	public enum MeasureDetailsItems implements MatMenuItem{
+	public enum MeasureDetailsItems implements MatDetailItem{
 		GENERAL_MEASURE_INFORMATION("General Measure Information", "General Measure Information"),
 		COMPONENT_MEASURES("Component Measures","Component Measures"),
 		STEWARD("Measure Steward/Developer", "Measure Steward and Developer"),

@@ -10,6 +10,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
+import mat.client.shared.MatDetailItem;
 import mat.client.shared.SpacerWidget;
 
 public class MeasureDetailsView {
@@ -17,7 +18,7 @@ public class MeasureDetailsView {
 	private HorizontalPanel contentPanel = new HorizontalPanel();
 	private HorizontalPanel headingPanel = new HorizontalPanel();
 	private VerticalPanel componentPanel = new VerticalPanel();
-	private MeasureDetailsItems currentMeasureDetail;
+	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
 	
 	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
@@ -29,6 +30,7 @@ public class MeasureDetailsView {
 	}
 
 	private void buildHeading() {
+		headingPanel.clear();
 		HTML headingHTML = new HTML();
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingPanel.add(headingHTML);
@@ -36,9 +38,11 @@ public class MeasureDetailsView {
 		componentPanel.add(new SpacerWidget());
 	}
 	
-	public void buildDetailView(MeasureDetailsItems measureDetail) {
+	public void buildDetailView(MatDetailItem currentMeasureDetail) {
+		currentMeasureDetail = currentMeasureDetail;
+		componentPanel.clear();
 		buildHeading();
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetail);
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(currentMeasureDetail);
 		componentPanel.add(componentDetailView.getWidget());
 		componentPanel.setWidth("700px"); //TODO
 		componentPanel.setStyleName("marginLeft15px");

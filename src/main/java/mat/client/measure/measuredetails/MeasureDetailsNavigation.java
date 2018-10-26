@@ -12,12 +12,12 @@ import org.gwtbootstrap3.client.ui.NavPills;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.shared.MatMenuItem;
+import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 
 public class MeasureDetailsNavigation {
 	FlowPanel mainPanel = new FlowPanel();
-	Map<MatMenuItem, AnchorListItem> menuItemMap;
+	Map<MatDetailItem, AnchorListItem> menuItemMap;
 	MeasureDetailsObserver observer;
 	
 	public MeasureDetailsNavigation() {
@@ -36,6 +36,7 @@ public class MeasureDetailsNavigation {
 		List<MeasureDetailsItems> detailsList = Arrays.asList(MeasureDetailsItems.values());
 		for(MeasureDetailsItems measureDetail: detailsList) {
 			//TODO handle composite and populations
+			//TODO add ids to dom objects
 			AnchorListItem anchorListItem = new AnchorListItem(measureDetail.displayName());
 			menuItemMap.put(measureDetail, anchorListItem);
 			navPills.add(anchorListItem);
@@ -45,12 +46,12 @@ public class MeasureDetailsNavigation {
 		return navPills;
 	}
 	
-	private void anchorListItemClicked(MatMenuItem menuItem) {
+	private void anchorListItemClicked(MatDetailItem menuItem) {
 		observer.onMenuItemClicked(menuItem);
 		setActiveMenuItem(menuItem);
 	}
 
-	public void setActiveMenuItem(MatMenuItem activeMenuItem) {
+	public void setActiveMenuItem(MatDetailItem activeMenuItem) {
 		Iterator<AnchorListItem>menuItems = menuItemMap.values().iterator();
 		while(menuItems.hasNext()) {
 			AnchorListItem anchorListItem = menuItems.next();

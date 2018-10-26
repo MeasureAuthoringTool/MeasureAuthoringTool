@@ -1,7 +1,7 @@
 package mat.client.measure.measuredetails;
 
-import mat.client.shared.MatMenuItem;
+import mat.client.shared.MatDetailItem;
 
 public interface MeasureDetailsObserver {
-	void onMenuItemClicked(MatMenuItem menuItem);
+	void onMenuItemClicked(MatDetailItem menuItem);
 }

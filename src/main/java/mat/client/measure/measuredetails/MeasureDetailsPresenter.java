@@ -4,8 +4,9 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.MatPresenter;
-import mat.client.shared.MatMenuItem;
+import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
+import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
 	private MeasureDetailsView measureDetailsView;
@@ -37,7 +38,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	@Override
-	public void onMenuItemClicked(MatMenuItem menuItem) {
+	public void onMenuItemClicked(MatDetailItem menuItem) {
+		//TODO here
+		measureDetailsView.buildDetailView((MeasureDetailsItems) menuItem);
 		GWT.log(menuItem.displayName() + " clicked!");
 	}
 }

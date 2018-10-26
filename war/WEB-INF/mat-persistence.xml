@@ -31,12 +31,9 @@
 		<property name="contexts" value="prod" />
 	</bean>
     
-	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-	   <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_STAGE_08312017"/>
-	   <property name="username" value="npabbisetty"/>
-	   <property name="password" value="***REMOVED***"/>
-   </bean>
-    
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:/comp/env/jdbc/mat_app_tomcat" />
+	</bean>
     
     <context:annotation-config />
     <tx:annotation-driven />

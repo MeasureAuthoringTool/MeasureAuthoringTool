@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -85,7 +86,7 @@ public class Measure {
 		this.valueSetDate = valueSetDate;
 	}
 	
-	@Column(name = "DRAFT", nullable = false)
+	@Column(name = "DRAFT")
 	public boolean isDraft() {
 		return draft;
 	}
@@ -94,8 +95,8 @@ public class Measure {
 		this.draft = draft;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MEASURE_SET_ID", nullable = false)
+	@ManyToOne
+	@JoinColumn(name = "MEASURE_SET_ID")
 	public MeasureSet getMeasureSet() {
 		if(measureSet == null) {
 			measureSet= new MeasureSet();
@@ -119,7 +120,7 @@ public class Measure {
 	@Id
 	@GeneratedValue(generator="uuid")
 	@GenericGenerator(name="uuid", strategy = "uuid")
-	@Column(name = "ID", unique = true, nullable = false, length = 64)
+	@Column(name = "ID", unique = true, length = 64)
 	public String getId() {
 		return id;
 	}
@@ -193,7 +194,7 @@ public class Measure {
 		return versionNumber;
 	}
 
-	@Column(name = "VERSION", nullable = false)
+	@Column(name = "VERSION")
 	public String getVersion() {
 		return version;
 	}
@@ -202,7 +203,7 @@ public class Measure {
 		this.version = version;
 	}
 
-	@Column(name = "SCORING", nullable = false, length = 200)
+	@Column(name = "SCORING", length = 200)
 	public String getMeasureScoring() {
 		return measureScoring;
 	}
@@ -220,8 +221,8 @@ public class Measure {
 		this.compositeScoring = compositeScoring;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MEASURE_OWNER_ID", nullable = false)
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name = "MEASURE_OWNER_ID")
 	public User getOwner() {
 		return owner;
 	}
@@ -230,7 +231,7 @@ public class Measure {
 		this.owner = owner;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "measure")
+	@OneToMany( mappedBy = "measure")
 	public Set<MeasureShare> getShares() {
 		return shares;
 	}
@@ -258,8 +259,8 @@ public class Measure {
 		this.lockedOutDate = lockedOutDate;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LOCKED_USER_ID", nullable = false, insertable=false, updatable=false)
+	@ManyToOne(fetch=FetchType.LAZY,cascade=CascadeType.ALL)
+	@JoinColumn(name = "LOCKED_USER_ID",referencedColumnName="USER_ID", insertable=false)
 	public User getLockedUser() {
 		return lockedUser;
 	}
@@ -277,7 +278,7 @@ public class Measure {
 		this.eMeasureId = eMeasureId;
 	}
 	
-	@Column(name = "PRIVATE", nullable = false)
+	@Column(name = "PRIVATE")
 	public boolean getIsPrivate() {
 		return isPrivate;
 	}
@@ -322,7 +323,7 @@ public class Measure {
 		this.lastModifiedOn = lastModifiedOn;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "LAST_MODIFIED_BY")
 	public User getLastModifiedBy() {
 		return lastModifiedBy;
@@ -341,7 +342,7 @@ public class Measure {
 		this.qdmVersion = qdmVersion;
 	}
 	
-	@Column(name = "IS_COMPOSITE_MEASURE", nullable = false)
+	@Column(name = "IS_COMPOSITE_MEASURE")
 	public Boolean getIsCompositeMeasure() {
 		return isCompositeMeasure;
 	}
@@ -350,7 +351,7 @@ public class Measure {
 		this.isCompositeMeasure = isCompositeMeasure;
 	}
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "compositeMeasure")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "compositeMeasure")
 	public List<ComponentMeasure> getComponentMeasures() {
 		return componentMeasures;
 	}

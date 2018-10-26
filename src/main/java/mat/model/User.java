@@ -353,7 +353,7 @@ public class User  {
 		this.organization = organization;
 	}
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user",cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user",cascade=CascadeType.ALL)
 	public Set<UserPasswordHistory> getPasswordHistory() {
 		return passwordHistory;
 	}

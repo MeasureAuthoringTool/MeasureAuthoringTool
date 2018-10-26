@@ -2,11 +2,8 @@ package mat.model.clause;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "MEASURE_SET")
@@ -18,8 +15,6 @@ public class MeasureSet {
 	private String name;
 	
 	@Id
-	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
 	@Column(name = "ID", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return id;

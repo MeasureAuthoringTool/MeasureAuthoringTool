@@ -18,11 +18,6 @@ public class Unit implements java.io.Serializable {
 	public Unit() {
 	}
 
-	public Unit(String id, int sortOrder) {
-		this.id = id;
-		this.sortOrder = sortOrder;
-	}
-
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 32)
 	public String getId() {

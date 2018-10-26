@@ -57,7 +57,7 @@ public class Application{
 	    hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
 	    hibernateProperties.setProperty("hibernate.cache.use_query_cache","true");
 	    hibernateProperties.setProperty("hibernate.cache.use_second_level_cache","true");
-	    hibernateProperties.setProperty("hibernate.show_sql","true");
+	    hibernateProperties.setProperty("hibernate.show_sql","false");
 	    hibernateProperties.setProperty("hibernate.default_batch_fetch_size","20");
 	    hibernateProperties.setProperty("hibernate.connection.release_mode","auto");
 	    hibernateProperties.setProperty("hibernate.cache.use_second_level_cache","true");

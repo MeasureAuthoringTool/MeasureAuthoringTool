@@ -10,7 +10,6 @@ import javax.persistence.Table;
 public class MatFlag implements java.io.Serializable {
 	private static final long serialVersionUID = -3203401079752345678L;
 	private String id;
-	@Column(name = "FLAG")
 	private String flag;
 
 	public MatFlag() {
@@ -28,7 +27,7 @@ public class MatFlag implements java.io.Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+	@Column(name="FLAG")
 	public String getFlag() {
 		return flag;
 	}

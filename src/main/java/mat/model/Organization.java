@@ -1,5 +1,7 @@
 package mat.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +24,7 @@ public class Organization implements IsSerializable{
 	}
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "ORG_ID", unique = true, nullable = false)
 	public Long getId() {
 		return id;

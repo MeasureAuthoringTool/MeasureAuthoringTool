@@ -2,6 +2,8 @@ package mat.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -17,6 +19,7 @@ public class SecurityQuestions  implements IsSerializable {
 
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "QUESTION_ID", unique = true, nullable = false)
 	public String getQuestionId() {
 		return questionId;

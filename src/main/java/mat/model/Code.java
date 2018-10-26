@@ -3,11 +3,14 @@ package mat.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -27,6 +30,8 @@ public class Code implements IsSerializable , Cloneable{
 	private ListObject listObject;
 	
 	@Id
+	@GeneratedValue(generator="uuid")
+	@GenericGenerator(name="uuid", strategy = "uuid")
 	@Column(name = "CODE_ID", unique = true, nullable = false, length = 36)
 	public String getId() {
 		return id;

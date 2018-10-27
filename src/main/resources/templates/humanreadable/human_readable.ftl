@@ -598,7 +598,7 @@
     }
 
     /* Name.Variable.Instance */
-    .il {
+    .il {z
       color: #666666
     }
 
@@ -626,6 +626,7 @@
 
 <body>
 	<#include "measure_information_table.ftl"/>
+	<#include "table_of_contents.ftl"/>
 </body>
 
 </html>

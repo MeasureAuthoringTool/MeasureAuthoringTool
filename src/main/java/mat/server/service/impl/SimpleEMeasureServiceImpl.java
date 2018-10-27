@@ -88,37 +88,20 @@ import net.sf.saxon.TransformerFactoryImpl;
 @Service
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
-	/** Constant for New_HQMD.xsl. **/
 	private static final String conversionFile1 = "xsl/New_HQMF.xsl";
 	
-	/** Constant for mat_narrGen.xsl. **/
 	private static final String conversionFile2 = "xsl/mat_narrGen.xsl";
 	
-	/** Constant for eMeasure.xsl. **/
 	private static final String conversionFileHtml = "xsl/eMeasure.xsl";
 	
-	/**
-	 * Filtered User Defined QDM's as these are dummy QDM's created by user and
-	 * should not be part of Value Set sheet.
-	 **/
 	private static String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
 	
-	/** X-path for Element Look Up Node. **/
 	private static final String XPATH_ELEMENTLOOKUP_QDM = "/measure/elementLookUp/qdm[not(@oid='" + userDefinedOID +"')]";
 
-	/** X-path for Supplement Data Element Node. **/
 	private static final String XPATH_SUPPLEMENTDATA_ELEMENTREF = "/measure/supplementalDataElements/elementRef/@id";
-
-	/**
-	 * This expression will find distinct elementRef records from
-	 * SimpleXML.SimpleXML will have grouping which can have repeated clauses
-	 * containing repeated elementRef. This XPath expression will yield distinct
-	 * elementRef's.
-	 **/
-	/** X-path for Grouping Element Ref. **/
+	
 	private static final String XPATH_ALL_GROUPED_ELEMENTREF_ID = "/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
 
-	/** X-path for Grouping Attributes. **/
 	private static final String XPATH_ALL_GROUPED_ATTRIBUTES_UUID = "/measure/measureGrouping/group/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
 
 	private static final String XPATH_ALL_SUBTREE_ELEMENTREF_ID = "/measure/subTreeLookUp/subTree//elementRef[not(@id = preceding:: subTree//elementRef/@id)]/@id";
@@ -162,6 +145,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	/** MeasureExportDAO. **/
 	private HSSFWorkbook wkbk = null;
+	
+	@Autowired
+	private HumanReadableGenerator humanReadableGenerator; 
 
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId, final String xmlString, final List<MatValueSet> matValueSets) throws Exception {
@@ -634,8 +620,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		MeasureXML measureExport = measureXMLDAO.findForMeasure(measureId);
 		String measureXML = measureExport.getMeasureXMLAsString();
-		String html = HumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId, populationSubXML, measureXML,
-				cqlLibraryDAO);
+		String html = humanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId, populationSubXML, measureXML, cqlLibraryDAO);
 
 		result.export = html;
 		return result;
@@ -868,7 +853,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 	}
 	private String getHumanReadableForMeasure(String measureId, String simpleXmlStr, String measureVersionNumber, MeasureExport measureExport) {
-		return HumanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
+		return humanReadableGenerator.generateHTMLForMeasure(measureId, simpleXmlStr, measureVersionNumber, cqlLibraryDAO);
 	}
 	
 

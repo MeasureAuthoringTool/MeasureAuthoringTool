@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.server.humanreadable.cql.HumanReadableDateUtil;
 import mat.server.simplexml.cql.MATCssCQLUtil;
 import mat.server.util.XmlProcessor;
 import mat.shared.MatConstants;
@@ -381,102 +382,10 @@ public class HeaderHumanReadableGenerator {
 		boolean calenderYear = Boolean.valueOf(getInfo(processor, "period/@calenderYear"));
 		String start = getInfo(processor, "period/startDate");
 		String end = getInfo(processor, "period/stopDate");
-		String newStart = " ";
-		String newEnd = " ";
-		String through = " through ";
-		// if start or end are not null format the date
-		if(!calenderYear){
-			if (!" ".equals(start)) {
-				newStart = formatDate(start);
-			}
-			if (!" ".equals(end)) {
-				newEnd = formatDate(end);
-			}
-		} else {
-			if (!" ".equals(start)) {
-				newStart = formatDate("20XX0101");
-			}
-			if (!" ".equals(end)) {
-				newEnd = formatDate("20XX1231");
-			}
-		}
-		// if the ending date is null we don't want through to display
-		if (" ".equals(newEnd)) {
-			through = "";
-		}
 		createRowAndColumns(table, "Measurement Period");
-		column.appendText(newStart + through + newEnd);
+		column.appendText(HumanReadableDateUtil.getFormattedMeasurementPeriod(calenderYear, start, end));
+	}
 		
-	}
-	
-	/**
-	 * Formats the date for measurement period
-	 * 
-	 * @param date
-	 *            An eight digit string representing a date formated like
-	 *            YYYYMMDD
-	 * @return A string
-	 */
-	private static String formatDate(String date) {
-		String returnDate = " ";
-		// The string should be 8 characters long if not return " "
-		if (date.length() == 8) {
-			// Separate the string into year, month, and dat
-			String year = date.substring(0, 4);
-			String month = date.substring(4, 6);
-			String day = date.substring(6, 8);
-			// Get the string version of the month
-			month = getMonth(month);
-			// if the year equals 0000 we display 20xx
-			if ("0000".equals(year)) {
-				year = "20XX";
-			}
-			// if the day starts with a zero only display the second digit
-			if (day.charAt(0) == '0') {
-				day = day.substring(1, 2);
-			}
-			returnDate = month + day + ", " + year;
-		}
-		return returnDate;
-	}
-	
-	/**
-	 * Returns the string representation of a month
-	 * 
-	 * @param month
-	 *            String containing the month numbers
-	 * @return String representation of the given month
-	 */
-	private static String getMonth(String month) {
-		String returnMonth = "";
-		if ("01".equals(month)) {
-			returnMonth = "January ";
-		} else if ("02".equals(month)) {
-			returnMonth = "February ";
-		} else if ("03".equals(month)) {
-			returnMonth = "March ";
-		} else if ("04".equals(month)) {
-			returnMonth = "April ";
-		} else if ("05".equals(month)) {
-			returnMonth = "May ";
-		} else if ("06".equals(month)) {
-			returnMonth = "June ";
-		} else if ("07".equals(month)) {
-			returnMonth = "July ";
-		} else if ("08".equals(month)) {
-			returnMonth = "August ";
-		} else if ("09".equals(month)) {
-			returnMonth = "September ";
-		} else if ("10".equals(month)) {
-			returnMonth = "October ";
-		} else if ("11".equals(month)) {
-			returnMonth = "November ";
-		} else if ("12".equals(month)) {
-			returnMonth = "December ";
-		}
-		return returnMonth;
-	}
-	
 	/**
 	 * Used to generate the table rows of elements that will potentially have
 	 * multiple rows.

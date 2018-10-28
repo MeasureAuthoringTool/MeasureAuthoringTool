@@ -177,6 +177,5 @@
 		<field name="measureSetId" type="java.lang.String">
 			<bind-xml name="measureSetId" node="attribute"/>
 		</field>
-	</class>
-	
+	</class>	
 </mapping>

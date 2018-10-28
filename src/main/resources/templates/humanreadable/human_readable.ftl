@@ -627,6 +627,8 @@
 <body>
 	<#include "measure_information_table.ftl"/>
 	<#include "table_of_contents.ftl"/>
+	<#include "divider.ftl" />
+	<#include "population_criteria_section.ftl" />
 </body>
 
 </html>

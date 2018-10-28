@@ -21,6 +21,7 @@ import org.xml.sax.InputSource;
 import freemarker.template.TemplateException;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.server.humanreadable.cql.HumanReadableExpressionModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationCriteriaModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationModel;
@@ -70,16 +71,56 @@ public class HumanReadableGenerator {
 				unmarshaller.setWhitespacePreserve(true);
 				HumanReadableModel model = (HumanReadableModel) unmarshaller.unmarshal(new InputSource(new StringReader(simpleXmlStr)));
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));
+				model.setSupplementalDataElements(getSupplementalDataElements(processor));
+				model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
 				html = humanReadableGenerator.generate(model);
 			} catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
 				e.printStackTrace();
 			}
-		} else{
+		} else {
 			html = HQMFHumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);
 		}
 		
 		return html;
 	}
+	
+	private List<HumanReadableExpressionModel> getSupplementalDataElements(XmlProcessor processor) throws XPathExpressionException {
+		List<HumanReadableExpressionModel> supplementalDataElements = new ArrayList<>(); 
+		if(processor.findNode(processor.getOriginalDoc(), "/measure/supplementalDataElements") != null) {
+			NodeList supplementalDataElementNodes = processor.findNodeList(processor.getOriginalDoc(), "/measure/supplementalDataElements/cqldefinition");
+			
+			for(int i = 0; i < supplementalDataElementNodes.getLength(); i++) {
+				Node sde = supplementalDataElementNodes.item(i);
+				supplementalDataElements.add(getExpressionModel(processor, sde));
+			}
+		}
+		return supplementalDataElements;
+	}
+
+	private HumanReadableExpressionModel getExpressionModel(XmlProcessor processor, Node sde)
+			throws XPathExpressionException {
+		String uuid = sde.getAttributes().getNamedItem("uuid").getNodeValue();
+		String name = sde.getAttributes().getNamedItem("displayName").getNodeValue();
+		String logic = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp//definition[@id='"+ uuid +"']/logic").getTextContent();
+		HumanReadableExpressionModel expression = new HumanReadableExpressionModel(name, logic);
+		return expression;
+	}
+	
+	private List<HumanReadableExpressionModel> getRiskAdjustmentVariables(XmlProcessor processor) throws XPathExpressionException {
+		List<HumanReadableExpressionModel> riskAdjustmentVariables = new ArrayList<>(); 
+		
+		if(processor.findNode(processor.getOriginalDoc(), "/measure/riskAdjustmentVariables") != null) {
+			NodeList riskAdjustmentVariableNodes = processor.findNodeList(processor.getOriginalDoc(), "/measure/riskAdjustmentVariables/cqldefinition");
+			for(int i = 0; i < riskAdjustmentVariableNodes.getLength(); i++) {
+				Node rav = riskAdjustmentVariableNodes.item(i);
+				riskAdjustmentVariables.add(getExpressionModel(processor, rav));
+			}
+		}
+		
+		return riskAdjustmentVariables;
+	}
+	
+	
 	
 	private List<HumanReadablePopulationCriteriaModel> getPopulationCriteriaModels(XmlProcessor processor) throws XPathExpressionException {
 		List<HumanReadablePopulationCriteriaModel> groups = new ArrayList<>();

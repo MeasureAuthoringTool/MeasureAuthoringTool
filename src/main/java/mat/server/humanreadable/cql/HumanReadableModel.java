@@ -6,11 +6,17 @@ public class HumanReadableModel {
 	
 	private HumanReadableMeasureInformationModel measureInformation; 
 	private List<HumanReadablePopulationCriteriaModel> populationCriterias; 
+	private List<HumanReadableExpressionModel> supplementalDataElements; 
+	private List<HumanReadableExpressionModel> riskAdjustmentVariables; 
+	
 	private int numberOfGroups = 1; 
 	
-	public HumanReadableModel(HumanReadableMeasureInformationModel measureInformationModel, List<HumanReadablePopulationCriteriaModel> populations) {
+	public HumanReadableModel(HumanReadableMeasureInformationModel measureInformationModel, List<HumanReadablePopulationCriteriaModel> populations, 
+			List<HumanReadableExpressionModel> supplementalDataElements, List<HumanReadableExpressionModel> riskAdjustmentVariables) {
 		this.measureInformation = measureInformationModel;
 		this.populationCriterias = populations; 
+		this.supplementalDataElements = supplementalDataElements;
+		this.riskAdjustmentVariables = riskAdjustmentVariables;		
 		this.setNumberOfGroups(populationCriterias.size());
 	}
 
@@ -40,5 +46,21 @@ public class HumanReadableModel {
 
 	public void setNumberOfGroups(int numberOfGroups) {
 		this.numberOfGroups = numberOfGroups;
+	}
+
+	public List<HumanReadableExpressionModel> getSupplementalDataElements() {
+		return supplementalDataElements;
+	}
+
+	public void setSupplementalDataElements(List<HumanReadableExpressionModel> supplementalDataElements) {
+		this.supplementalDataElements = supplementalDataElements;
+	}
+
+	public List<HumanReadableExpressionModel> getRiskAdjustmentVariables() {
+		return riskAdjustmentVariables;
+	}
+
+	public void setRiskAdjustmentVariables(List<HumanReadableExpressionModel> riskAdjustmentVariables) {
+		this.riskAdjustmentVariables = riskAdjustmentVariables;
 	}
 }

@@ -629,6 +629,8 @@
 	<#include "table_of_contents.ftl"/>
 	<#include "divider.ftl" />
 	<#include "population_criteria_section.ftl" />
+	<#include "supplemental_data_elements_section.ftl" />
+	<#include "risk_adjustment_variables_section.ftl" />
 </body>
 
 </html>

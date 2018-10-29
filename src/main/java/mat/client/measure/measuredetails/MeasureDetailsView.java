@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -20,7 +21,7 @@ public class MeasureDetailsView {
 	private VerticalPanel componentPanel = new VerticalPanel();
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
-	
+	//TODO add ids to dom objects
 	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		contentPanel.add(navigationPanel.getWidget());
@@ -39,12 +40,12 @@ public class MeasureDetailsView {
 	}
 	
 	public void buildDetailView(MatDetailItem currentMeasureDetail) {
-		currentMeasureDetail = currentMeasureDetail;
+		this.currentMeasureDetail = currentMeasureDetail;
 		componentPanel.clear();
 		buildHeading();
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(currentMeasureDetail);
 		componentPanel.add(componentDetailView.getWidget());
-		componentPanel.setWidth("700px"); //TODO
+		componentPanel.setWidth("700px"); //TODO can this be dynamic?
 		componentPanel.setStyleName("marginLeft15px");
 		contentPanel.add(componentPanel);
 	}

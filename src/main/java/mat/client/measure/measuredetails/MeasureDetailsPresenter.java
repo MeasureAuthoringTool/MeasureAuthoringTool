@@ -4,6 +4,8 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.MatPresenter;
+import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -11,10 +13,10 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
 	private MeasureDetailsView measureDetailsView;
 	private MeasureDetailsNavigation navigationPanel;
+	private String scoringType;
 	
 	public MeasureDetailsPresenter() {
-		//TODO set observer on navigationPanel
-		navigationPanel = new MeasureDetailsNavigation();
+		navigationPanel = new MeasureDetailsNavigation(scoringType);
 		navigationPanel.setObserver(this);
 		measureDetailsView = new MeasureDetailsView(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
@@ -22,13 +24,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
+		this.scoringType = null;
 		//TODO reset panel
 	}
 
 	@Override
 	public void beforeDisplay() {
-		// TODO Auto-generated method stub
+		this.scoringType = MatContext.get().getCurrentMeasureScoringType();
+		navigationPanel.buildNavigationMenu(scoringType);
 		//TODO focus skip lists
 	}
 
@@ -39,8 +42,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	@Override
 	public void onMenuItemClicked(MatDetailItem menuItem) {
-		//TODO here
-		measureDetailsView.buildDetailView((MeasureDetailsItems) menuItem);
+		measureDetailsView.buildDetailView(menuItem);
 		GWT.log(menuItem.displayName() + " clicked!");
 	}
 }

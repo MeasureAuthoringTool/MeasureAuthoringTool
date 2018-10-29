@@ -1,6 +1,15 @@
 package mat.client.shared;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class MeasureDetailsConstants {
+	private static final String PROPORTION = "Proportion";
+	private static final String RATIO = "Ratio";
+	private static final String CONTINUOUS_VARIABLE = "Continuous";
+	private static final String COHORT = "Cohort";
+	
 	public enum MeasureDetailsItems implements MatDetailItem{
 		GENERAL_MEASURE_INFORMATION("General Measure Information", "General Measure Information"),
 		COMPONENT_MEASURES("Component Measures","Component Measures"),
@@ -38,4 +47,40 @@ public class MeasureDetailsConstants {
 	    	return abbreviatedName;
 	    }
 	}
+	
+	public enum PopulationItems implements MatDetailItem {
+		INITIAL_POPULATION("Initial Population", "Initial Population", Stream.of(PROPORTION, RATIO, CONTINUOUS_VARIABLE, COHORT).collect(Collectors.toList())),
+		MEASURE_POPULATION("Measure Population", "Measure Population", Stream.of(CONTINUOUS_VARIABLE).collect(Collectors.toList())),
+		MEASURE_POPULATION_EXCLUSIONS("Measure Population Exclusions", "Measure Population Exclusions", Stream.of(CONTINUOUS_VARIABLE).collect(Collectors.toList())),
+		DENOMINATOR("Denominator", "Denominator", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
+		DENOMINATOR_EXCLUSIONS("Denominator Exclusions", "Denominator Exclusions", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
+		NUMERATOR("Numerator", "Numerator", Stream.of("proportion", RATIO).collect(Collectors.toList())),
+		NUMERATOR_EXCLUSIONS("Numerator Exclusions", "Numerator Exclusions", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
+		DENOMINATOR_EXCEPTIONS("Denominator Exceptions", "Denominator Exceptions", Stream.of(PROPORTION).collect(Collectors.toList())),
+		MEASURE_OBSERVATIONS("Measure Observations", "Measure Observations", Stream.of(CONTINUOUS_VARIABLE, RATIO).collect(Collectors.toList()));
+	    private String displayName;
+	    private String abbreviatedName;
+	    private List<String> measureTypes;
+	    
+	    PopulationItems(String abbreviatedName, String displayName, List<String> measureTypes) {
+			this.abbreviatedName = abbreviatedName;
+			this.displayName = displayName;
+			this.measureTypes = measureTypes;
+		}
+		
+		@Override
+		public String displayName() {
+			return displayName;
+		}
+
+		@Override
+		public String abbreviatedName() {
+			return abbreviatedName;
+		}
+		
+		public List<String> getApplicableMeasureTypes() {
+			return measureTypes;
+		}
+	}
+
 }

@@ -7,6 +7,8 @@ import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 public class MeasureDetailsViewFactory {
 	private static MeasureDetailsViewFactory instance;
 	
+	private MeasureDetailsViewFactory() {}
+	
 	public static MeasureDetailsViewFactory get() {
 		if(instance == null) {
 			instance = new MeasureDetailsViewFactory();

@@ -240,7 +240,7 @@ public class Measure {
 		this.shares = shares;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "EXPORT_TS", length = 19)
 	public Date getExportedDate() {
 		return exportedDate;

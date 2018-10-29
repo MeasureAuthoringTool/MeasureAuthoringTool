@@ -322,15 +322,14 @@ mat.dao.UserDAO {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = getSessionFactory().openSession();
+			session = getSessionFactory().getCurrentSession();
 			transaction = session.beginTransaction();
 			session.saveOrUpdate(userdetails);
 			transaction.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e);
 		} finally {
 			rollbackUncommitted(transaction);
-			closeSession(session);
 		}
 	}
 	

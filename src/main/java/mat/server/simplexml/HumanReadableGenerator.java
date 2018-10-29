@@ -3,6 +3,7 @@ package mat.server.simplexml;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -14,6 +15,7 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -21,10 +23,12 @@ import org.xml.sax.InputSource;
 import freemarker.template.TemplateException;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.server.humanreadable.cql.HumanReadableCodeModel;
 import mat.server.humanreadable.cql.HumanReadableExpressionModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationCriteriaModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationModel;
+import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.cql.NewHumanReadableGenerator;
 import mat.server.simplexml.cql.CQLHumanReadableGenerator;
 import mat.server.util.ResourceLoader;
@@ -73,6 +77,10 @@ public class HumanReadableGenerator {
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));
 				model.setSupplementalDataElements(getSupplementalDataElements(processor));
 				model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
+				model.setValuesetDataCriteriaList(getValuesetDataCriteria(processor));
+				model.setCodeDataCriteriaList(getCodeDataCriteria(processor));
+				model.setValuesetTerminologyList(getValuesetTerminology(processor));
+				model.setCodeTerminologyList(getCodeTerminology(processor));
 				html = humanReadableGenerator.generate(model);
 			} catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
 				e.printStackTrace();
@@ -95,6 +103,103 @@ public class HumanReadableGenerator {
 			}
 		}
 		return supplementalDataElements;
+	}
+	
+	private List<HumanReadableValuesetModel> getValuesetDataCriteria(XmlProcessor processor) throws XPathExpressionException {
+		List<HumanReadableValuesetModel> valuesets = new ArrayList<>(); 
+		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code='false'][@datatype]");
+		
+		for(int i = 0; i < elements.getLength(); i++) {
+			
+			String datatype = elements.item(i).getAttributes().getNamedItem("datatype").getNodeValue(); 
+			String name = elements.item(i).getAttributes().getNamedItem("name").getNodeValue(); 
+			String oid = elements.item(i).getAttributes().getNamedItem("oid").getNodeValue(); 
+
+			String version = "";
+			if(elements.item(i).getAttributes().getNamedItem("version") != null){
+				version = elements.item(i).getAttributes().getNamedItem("version").getNodeValue();
+			}
+
+			HumanReadableValuesetModel valueset = new HumanReadableValuesetModel(name, oid, version, datatype);
+			valuesets.add(valueset);
+		}
+		
+		valuesets.sort(Comparator.comparing(HumanReadableValuesetModel::getDataCriteriaDisplay));
+		return valuesets; 
+	}
+	
+	private List<HumanReadableCodeModel> getCodeDataCriteria(XmlProcessor processor) throws XPathExpressionException {
+		List<HumanReadableCodeModel> codes = new ArrayList<>(); 
+		NodeList elements = processor.findNodeList(processor.getOriginalDoc(),  "/measure/elementLookUp/qdm[@code='true'][@datatype]");
+		
+		for(int i = 0; i < elements.getLength(); i++) {
+			NamedNodeMap attributeMap = elements.item(i).getAttributes();
+			String datatype = attributeMap.getNamedItem("datatype").getNodeValue(); 
+			if("attribute".equals(datatype)){
+				datatype = "Attribute";
+			}
+			
+			String name = attributeMap.getNamedItem("name").getNodeValue(); 
+			String oid = attributeMap.getNamedItem("oid").getNodeValue(); 
+			String codesystemVersion = attributeMap.getNamedItem("codeSystemVersion").getNodeValue();					
+			String codesystemName = attributeMap.getNamedItem("taxonomy").getNodeValue();
+			boolean isCodeSystemVersionIncluded = true;
+			Node isCodeSystemVersionIncludedNode = attributeMap.getNamedItem("isCodeSystemVersionIncluded");
+			if(isCodeSystemVersionIncludedNode != null) {
+				isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+			} 				 
+			
+			HumanReadableCodeModel code = new HumanReadableCodeModel(name, oid, codesystemName, isCodeSystemVersionIncluded, codesystemVersion, datatype);
+			codes.add(code);
+		}
+		
+		codes.sort(Comparator.comparing(HumanReadableCodeModel::getDataCriteriaDisplay));
+		return codes; 
+	}
+	
+	private List<HumanReadableValuesetModel> getValuesetTerminology(XmlProcessor processor) throws XPathExpressionException {
+		List<HumanReadableValuesetModel> valuesets = new ArrayList<>(); 
+		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"false\"]");
+		
+		for(int i = 0; i < elements.getLength(); i++) {
+			Node current = elements.item(i);
+			String name = current.getAttributes().getNamedItem("name").getNodeValue();
+			String oid = current.getAttributes().getNamedItem("oid").getNodeValue();  
+			String version = current.getAttributes().getNamedItem("version").getNodeValue(); 
+			HumanReadableValuesetModel valueset = new HumanReadableValuesetModel(name, oid, version, "");
+			valuesets.add(valueset);
+		}
+		
+		valuesets.sort(Comparator.comparing(HumanReadableValuesetModel::getTerminologyDisplay));
+		return valuesets;
+	}
+	
+	private List<HumanReadableCodeModel> getCodeTerminology(XmlProcessor processor) throws XPathExpressionException {
+		List<HumanReadableCodeModel> codes = new ArrayList<>(); 
+		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
+		for(int i = 0; i < elements.getLength(); i++) {
+			Node current = elements.item(i);
+			String name = current.getAttributes().getNamedItem("name").getNodeValue(); 
+			String oid = current.getAttributes().getNamedItem("oid").getNodeValue();
+			String codesystemName = current.getAttributes().getNamedItem("taxonomy").getNodeValue(); 
+			String codesystemVersion = "";
+
+			Node isCodeSystemVersionIncludedNode = current.getAttributes().getNamedItem("isCodeSystemVersionIncluded");
+			boolean isCodeSystemVersionIncluded = true; // by default the code system should be included if the isCodeSystemIncluded tag does not exist
+			if(isCodeSystemVersionIncludedNode != null) {
+				isCodeSystemVersionIncluded = Boolean.parseBoolean(isCodeSystemVersionIncludedNode.getNodeValue());
+			} 
+			
+			if(isCodeSystemVersionIncluded) {
+				codesystemVersion = current.getAttributes().getNamedItem("codeSystemVersion").getNodeValue();
+			}
+			
+			HumanReadableCodeModel model = new HumanReadableCodeModel(name, oid, codesystemName, isCodeSystemVersionIncluded, codesystemVersion, "");
+			codes.add(model);
+		}  
+		
+		codes.sort(Comparator.comparing(HumanReadableCodeModel::getTerminologyDisplay));
+		return codes; 
 	}
 
 	private HumanReadableExpressionModel getExpressionModel(XmlProcessor processor, Node sde)
@@ -119,8 +224,6 @@ public class HumanReadableGenerator {
 		
 		return riskAdjustmentVariables;
 	}
-	
-	
 	
 	private List<HumanReadablePopulationCriteriaModel> getPopulationCriteriaModels(XmlProcessor processor) throws XPathExpressionException {
 		List<HumanReadablePopulationCriteriaModel> groups = new ArrayList<>();

@@ -11,6 +11,7 @@ import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -27,7 +28,7 @@ public class MeasureDetailsNavigation {
 	private PanelCollapse populationsCollapse;
 	private String scoringType;
 	private boolean isComposite;
-	//TODO add ids to dom objects
+
 	public MeasureDetailsNavigation(String scoringType, boolean isCompositeMeasure) {
 		buildNavigationMenu(scoringType, isComposite);
 		mainPanel.setWidth("250px");
@@ -45,9 +46,12 @@ public class MeasureDetailsNavigation {
 	
 	private PanelCollapse buildPopulationCollapse() {
 		populationsCollapse = new PanelCollapse();
+		populationsCollapse.getElement().setId("measureDetailsNavigation_populationsCollapse");
 		VerticalPanel nestedNavPanel = new VerticalPanel(); 
+		nestedNavPanel.getElement().setId("measureDetailsNavigation_populationsPanel");
 		nestedNavPanel.setWidth("250px");
 		NavPills nestedNavPills = new NavPills();
+		nestedNavPills.getElement().setId("measureDetailsNavigation_populationsNavigationPills");
 		nestedNavPills.setStacked(true);
 		buildPopulationNavPills(nestedNavPills);
 		nestedNavPanel.add(nestedNavPills);
@@ -61,6 +65,8 @@ public class MeasureDetailsNavigation {
 			List<String> applicableScoringTypes = populationDetail.getApplicableMeasureTypes();
 			if(applicableScoringTypes.contains(scoringType)) {
 				AnchorListItem anchorListItem = new AnchorListItem(populationDetail.abbreviatedName());
+				anchorListItem.setTitle(populationDetail.abbreviatedName());
+				anchorListItem.getElement().getStyle().setMarginLeft(15, Unit.PX);
 				menuItemMap.put(populationDetail, anchorListItem);
 				navPills.add(anchorListItem);
 				anchorListItem.addClickHandler(event -> anchorListItemClicked(populationDetail));
@@ -74,9 +80,11 @@ public class MeasureDetailsNavigation {
 
 	private NavPills buildNavPills() {
 		NavPills navPills = new NavPills();
+		navPills.getElement().setId("measureDetailsNavigation_measureDetailsNavigationPills");
 		List<MeasureDetailsItems> detailsList = Arrays.asList(MeasureDetailsItems.values());
 		for(MeasureDetailsItems measureDetail: detailsList) {
 			AnchorListItem anchorListItem = new AnchorListItem(measureDetail.abbreviatedName());
+			anchorListItem.getElement().setTitle(measureDetail.abbreviatedName());
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);

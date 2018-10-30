@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -50,11 +51,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	private AsyncCallback<Boolean> isCompositeMeasureCallBack() {
 		return new AsyncCallback<Boolean>() {
-
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO handle error here
-				
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override

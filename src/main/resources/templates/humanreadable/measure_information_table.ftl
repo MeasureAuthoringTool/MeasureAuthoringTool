@@ -24,7 +24,7 @@
 		
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Measurement Period</span></td>
-			<td style="width:80%">${model.measureInformation.measurementPeriod}</td>
+			<td style="width:80%" colspan="3">${model.measureInformation.measurementPeriod}</td>
 		</tr>
 		
 		<tr>

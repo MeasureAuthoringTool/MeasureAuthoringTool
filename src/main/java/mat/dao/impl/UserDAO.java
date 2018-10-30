@@ -15,6 +15,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +53,6 @@ mat.dao.UserDAO {
 	@Override
 	public void expireTemporaryPasswords(Date targetDate) {
 		Session session = getSessionFactory().getCurrentSession();
-		Transaction tx = session.beginTransaction();
 		try {
 			int updatedCount = 0;
 			Criteria criteria = session.createCriteria(User.class)
@@ -68,10 +68,7 @@ mat.dao.UserDAO {
 			}
 			
 			logger.info("Expired password count: " + updatedCount);
-			tx.commit();
 		} finally {
-			rollbackUncommitted(tx);
-			closeSession(session);
 		}
 	}
 	
@@ -81,7 +78,7 @@ mat.dao.UserDAO {
 	@Override
 	public void unlockUsers(Date unlockDate) {
 		Session session = getSessionFactory().getCurrentSession();
-		Transaction tx = session.beginTransaction();
+		Transaction tx = session.getTransaction();
 		try {
 			int updatedCount = 0;
 			Criteria criteria = session.createCriteria(User.class);
@@ -94,10 +91,13 @@ mat.dao.UserDAO {
 				u.getPassword().setPasswordlockCounter(0);
 				updatedCount++;
 			}
-			tx.commit();
+			if(tx.isActive())
+				tx.commit();
 			logger.info("Unlocked user count: " + updatedCount);
 		} finally {
-			rollbackUncommitted(tx);
+			if(tx != null && tx.getStatus().equals(TransactionStatus.ACTIVE)) {
+				rollbackUncommitted(tx);
+			}
 		}
 	}
 	
@@ -311,16 +311,12 @@ mat.dao.UserDAO {
 	@Override
 	public void saveUserDetails(MatUserDetails userdetails) {
 		Session session = null;
-		Transaction transaction = null;
 		try {
 			session = getSessionFactory().getCurrentSession();
-			transaction = session.beginTransaction();
 			session.saveOrUpdate(userdetails);
-			transaction.commit();
 		} catch (Exception e) {
 			logger.error(e);
 		} finally {
-			rollbackUncommitted(transaction);
 		}
 	}
 	

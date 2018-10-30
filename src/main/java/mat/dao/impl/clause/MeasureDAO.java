@@ -26,6 +26,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.client.shared.MatContext;
@@ -754,9 +755,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	// TODO:- We need to follow the same logic/concept while
 	// settingtheLockedDate.
 	@Override
+	@Transactional
 	public void resetLockDate(Measure m) {
 		Session session = getSessionFactory().getCurrentSession();
-		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
 			Query query = session.createQuery(sql);
@@ -764,9 +765,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			query.setString("lockedUserId", null);
 			query.setString("measureId", m.getId());
 			int rowCount = query.executeUpdate();
-			tx.commit();
 		} finally {
-			rollbackUncommitted(tx);
 		}
 
 	}
@@ -1005,17 +1004,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
 		Session session = getSessionFactory().getCurrentSession();
-		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
 			Query query = session.createQuery(sql);
 			query.setBoolean("isPrivate", isPrivate);
 			query.setString("measureId", measureId);
 			int rowCount = query.executeUpdate();
-			tx.commit();
 			logger.info("Updated Private column" + rowCount);
 		} finally {
-			rollbackUncommitted(tx);
 		}
 	}
 

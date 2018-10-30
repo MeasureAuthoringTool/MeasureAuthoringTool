@@ -25,7 +25,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void beforeClosingDisplay() {
 		this.scoringType = null;
-		//TODO reset panel
+		isCompositeMeasure = false;
 	}
 
 	@Override

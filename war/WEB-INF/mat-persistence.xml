@@ -36,12 +36,8 @@
 	</bean>
     
     <context:annotation-config />
-    <tx:annotation-driven />
-    <context:component-scan base-package="mat.hibernate"/>
     <context:component-scan base-package="mat.server"/>
-    <context:component-scan base-package="mat.dao"/>
-	<context:component-scan base-package="mat.model.clause"/>
-	<context:component-scan base-package="mat.model"/>
+    <tx:annotation-driven transaction-manager="txManager" mode="proxy" proxy-target-class="true" />
 	
     <bean id="auditEventListener" class="mat.dao.impl.AuditEventListener">
    </bean>

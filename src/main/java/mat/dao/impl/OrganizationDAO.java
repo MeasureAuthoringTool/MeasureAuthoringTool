@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -89,16 +88,12 @@ mat.dao.OrganizationDAO {
 	@Override
 	public void saveOrganization(Organization entity) {
 		Session session = null;
-		Transaction transaction = null;
 		try {
 			session = getSessionFactory().getCurrentSession();
-			transaction = session.beginTransaction();
 			session.save(entity);
-			transaction.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			rollbackUncommitted(transaction);
 		}
 	}
 	
@@ -129,16 +124,12 @@ mat.dao.OrganizationDAO {
 	@Override
 	public void updateOrganization(Organization organization) {
 		Session session = null;
-		Transaction transaction = null;
 		try {
 			session = getSessionFactory().getCurrentSession();
-			transaction = session.beginTransaction();
 			session.update(organization);
-			transaction.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			rollbackUncommitted(transaction);
 		}
 	}
 	

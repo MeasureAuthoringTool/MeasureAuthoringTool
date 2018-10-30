@@ -28,19 +28,13 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 	
 	@Override
 	public void deleteComponentMeasures(List<ComponentMeasure> componentMeasuresToDelete) {
-		Transaction tx = null;
 		try (Session session = HibernateConf.createHibernateSession();){
-			tx = session.beginTransaction();
 			for(ComponentMeasure component : componentMeasuresToDelete) {
 				session.delete(component);
 			}
-			tx.commit();
 			
 		} catch (Exception e) {
 			logger.error("Error deleting component measures: " + e);
-			if (tx != null) {
-				tx.rollback();
-			}
 		}
 	}
 
@@ -53,16 +47,11 @@ public class ComponentMeasureDAO extends GenericDAO<ComponentMeasure, String> im
 			Query<?> query = session.createQuery(hql);
 			query.setParameter("compositeMeasureId", measureId);
 			
-			tx = session.beginTransaction();
 			query.executeUpdate();			
 			saveComponentMeasures(componentMeasuresList);			
-			tx.commit();
 			
 		} catch (Exception e) {
 			logger.error("Error updating component measures: " + e);
-			if (tx != null) {
-				tx.rollback();
-			}
 		}
 		
 	}

@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -18,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
@@ -27,18 +25,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.clause.CQLLibraryAssociationDAO;
-import mat.dao.search.CriteriaQuery;
 import mat.dao.search.GenericDAO;
 import mat.model.LockedUserInfo;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.CQLLibrary;
 import mat.model.clause.ShareLevel;
-import mat.model.cql.CQLLibraryAssociation;
 import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 import mat.server.LoggedInUserUtil;
-import mat.server.util.CQLQueryUtil;
 import mat.server.util.MATPropertiesService;
 import mat.shared.StringUtility;
 
@@ -395,17 +390,14 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 	@Override
 	public void updateLockedOutDate(CQLLibrary existingLibrary) {
 		Session session = getSessionFactory().getCurrentSession();
-		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			CQLLibrary cqlLibrary = (CQLLibrary) session.load(CQLLibrary.class, existingLibrary.getId());
 			cqlLibrary.setId(existingLibrary.getId());
 			cqlLibrary.setLockedOutDate(null);
 			cqlLibrary.setLockedUserId(null);
 			session.update(cqlLibrary);
-			tx.commit();
 			//session.close();
 		} finally {
-			rollbackUncommitted(tx);
 		}
 	}
 

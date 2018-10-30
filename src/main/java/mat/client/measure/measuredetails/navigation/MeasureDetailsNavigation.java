@@ -11,7 +11,6 @@ import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,8 +34,6 @@ public class MeasureDetailsNavigation {
 	}
 
 	public void buildNavigationMenu(String scoringType, boolean isCompositeMeasure) {
-		GWT.log("scoring type: " + scoringType);
-		GWT.log("here isCompositeMeasure: " + isCompositeMeasure);
 		mainPanel.clear();
 		this.isComposite = isCompositeMeasure;
 		this.scoringType = scoringType;
@@ -86,9 +83,7 @@ public class MeasureDetailsNavigation {
 				anchorListItem.addClickHandler(event -> populationItemClicked(anchorListItem));
 				navPills.add(anchorListItem);
 			} else {
-				GWT.log("abbr name: " + measureDetail.abbreviatedName());
 				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES) {
-					GWT.log("checking isComposite: " + isComposite);
 					if(!isComposite) {
 						continue;
 					}

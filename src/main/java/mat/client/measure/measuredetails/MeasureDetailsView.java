@@ -46,7 +46,7 @@ public class MeasureDetailsView {
 		buildHeading();
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(currentMeasureDetail);
 		componentPanel.add(componentDetailView.getWidget());
-		componentPanel.setWidth("700px"); //TODO can this be dynamic?
+		componentPanel.setWidth("700px");
 		componentPanel.setStyleName("marginLeft15px");
 		contentPanel.add(componentPanel);
 	}

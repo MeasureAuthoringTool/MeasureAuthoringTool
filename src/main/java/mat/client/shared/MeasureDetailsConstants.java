@@ -70,7 +70,7 @@ public class MeasureDetailsConstants {
 		
 		@Override
 		public String displayName() {
-			return displayName;
+			return "Populations > " + displayName;
 		}
 
 		@Override

@@ -21,13 +21,13 @@ public class MeasureDetailsView {
 	private VerticalPanel componentPanel = new VerticalPanel();
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
-	//TODO add ids to dom objects
-	//TODO handle population headings
+	
 	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		contentPanel.add(navigationPanel.getWidget());
 		buildDetailView(currentMeasureDetail);
 		contentPanel.setStyleName("contentPanel");
+		contentPanel.getElement().setId("measureDetailsView_ContentPanel");
 		mainPanel.add(contentPanel);
 	}
 
@@ -35,7 +35,10 @@ public class MeasureDetailsView {
 		headingPanel.clear();
 		HTML headingHTML = new HTML();
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
+		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
+		headingHTML.setTitle(currentMeasureDetail.displayName());
 		headingPanel.add(headingHTML);
+		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		componentPanel.add(headingPanel);
 		componentPanel.add(new SpacerWidget());
 	}
@@ -48,6 +51,7 @@ public class MeasureDetailsView {
 		componentPanel.add(componentDetailView.getWidget());
 		componentPanel.setWidth("700px");
 		componentPanel.setStyleName("marginLeft15px");
+		componentPanel.getElement().setId("measureDetailsView_ComponentPanel");
 		contentPanel.add(componentPanel);
 	}
 	

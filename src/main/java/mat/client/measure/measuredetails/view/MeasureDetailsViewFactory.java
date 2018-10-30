@@ -7,16 +7,15 @@ import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 
 public class MeasureDetailsViewFactory {
 	private static MeasureDetailsViewFactory instance;
-	
 	private MeasureDetailsViewFactory() {}
-	
+
 	public static MeasureDetailsViewFactory get() {
 		if(instance == null) {
 			instance = new MeasureDetailsViewFactory();
 		}
 		return instance;
 	}
-	
+
 	public ComponentDetailView getMeasureDetailComponentView(MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
@@ -57,7 +56,7 @@ public class MeasureDetailsViewFactory {
 			case COPYRIGHT:
 				return new CopyrightView();
 			case GENERAL_MEASURE_INFORMATION:
-				default:
+			default:
 				return new GeneralMeasureInformationView();
 			}
 		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
@@ -86,5 +85,4 @@ public class MeasureDetailsViewFactory {
 		}
 		return new GeneralMeasureInformationView();
 	}
-
 }

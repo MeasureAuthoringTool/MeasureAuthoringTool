@@ -149,10 +149,10 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
-		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details", true);
+		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Old Measure Details", true);
 		presenterList.add(metaDataPresenter);
 		presenterList.add(measureDetailsPresenter);
-		measureComposerTabLayout.add(measureDetailsPresenter.getWidget(), "New Measure Details", true);
+		measureComposerTabLayout.add(measureDetailsPresenter.getWidget(), "Measure Details", true);
 		
 
 		MatPresenter cqlWorkspacePresenter = buildCQLWorkSpaceTab();

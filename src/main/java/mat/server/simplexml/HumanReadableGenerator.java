@@ -3,8 +3,13 @@ package mat.server.simplexml;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
@@ -23,6 +28,10 @@ import org.xml.sax.InputSource;
 import freemarker.template.TemplateException;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
+import mat.model.cql.CQLDefinition;
+import mat.model.cql.CQLFunctions;
+import mat.model.cql.CQLModel;
+import mat.server.CQLUtilityClass;
 import mat.server.humanreadable.cql.HumanReadableCodeModel;
 import mat.server.humanreadable.cql.HumanReadableExpressionModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
@@ -31,11 +40,19 @@ import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.cql.NewHumanReadableGenerator;
 import mat.server.simplexml.cql.CQLHumanReadableGenerator;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
+import mat.server.util.CQLUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.shared.LibHolderObject;
+import mat.shared.SaveUpdateCQLResult;
 
 @Component
 public class HumanReadableGenerator {
+	
+	private final String CQLFUNCTION = "cqlfunction";
+
+	private final String CQLDEFINITION = "cqldefinition";
 	
 	@Autowired NewHumanReadableGenerator humanReadableGenerator; 
 	
@@ -61,19 +78,27 @@ public class HumanReadableGenerator {
 		return html;
 	}
 	
-	public String generateHTMLForMeasure(String measureId,String simpleXmlStr, String measureReleaseVersion, CQLLibraryDAO cqlLibraryDAO){
+	public String generateHTMLForMeasure(String measureId, String simpleXml, String measureReleaseVersion, CQLLibraryDAO cqlLibraryDAO){
 		
 		String html = "";
 		System.out.println("Generating human readable for ver:"+measureReleaseVersion);
 		if(MatContext.get().isCQLMeasure(measureReleaseVersion)){
 			try {
-				XmlProcessor processor = new XmlProcessor(simpleXmlStr);
+				XmlProcessor processor = new XmlProcessor(simpleXml);
 				Mapping mapping = new Mapping(); 
 				mapping.loadMapping(new ResourceLoader().getResourceAsURL("SimpleXMLHumanReadableModelMapping.xml"));
 				Unmarshaller unmarshaller = new Unmarshaller(mapping);
 				unmarshaller.setClass(HumanReadableModel.class);
 				unmarshaller.setWhitespacePreserve(true);
-				HumanReadableModel model = (HumanReadableModel) unmarshaller.unmarshal(new InputSource(new StringReader(simpleXmlStr)));
+							
+				CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
+				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
+
+				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
+				SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
+
+				
+				HumanReadableModel model = (HumanReadableModel) unmarshaller.unmarshal(new InputSource(new StringReader(simpleXml)));
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));
 				model.setSupplementalDataElements(getSupplementalDataElements(processor));
 				model.setRiskAdjustmentVariables(getRiskAdjustmentVariables(processor));
@@ -81,16 +106,170 @@ public class HumanReadableGenerator {
 				model.setCodeDataCriteriaList(getCodeDataCriteria(processor));
 				model.setValuesetTerminologyList(getValuesetTerminology(processor));
 				model.setCodeTerminologyList(getCodeTerminology(processor));
+				model.setDefinitions(getDefinitions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+				model.setFunctions(getFunctions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 				html = humanReadableGenerator.generate(model);
 			} catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
 				e.printStackTrace();
 			}
 		} else {
-			html = HQMFHumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);
+			html = HQMFHumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXml);
 		}
 		
 		return html;
 	}
+	
+	/**
+	 * Populate cql objects list.
+	 *
+	 * @param cqlModel the cql file object
+	 */
+	private List<String> getCQLIdentifiers(CQLModel cqlModel) {
+		List<String> identifiers = new ArrayList<>(); 
+		List<CQLDefinition> cqlDefinition = cqlModel.getDefinitionList();
+		for(CQLDefinition cqlDef:cqlDefinition){
+			identifiers.add(cqlDef.getName());
+		}
+		
+		List<CQLFunctions> cqlFunctions = cqlModel.getCqlFunctions();
+		for(CQLFunctions cqlFunc:cqlFunctions){
+			identifiers.add(cqlFunc.getName());
+		}
+		
+		return identifiers;
+	}
+	
+	private Map<String, XmlProcessor> loadIncludedLibXMLProcessors(CQLModel cqlModel) {
+		Map<String, XmlProcessor> returnMap = new HashMap<String, XmlProcessor>();
+		Map<String, LibHolderObject> includeMap = cqlModel.getIncludedCQLLibXMLMap();
+		for (String libName : includeMap.keySet()) {
+			LibHolderObject lib = includeMap.get(libName);
+			String xml = lib.getMeasureXML();
+			XmlProcessor xmlProcessor = new XmlProcessor(xml);
+			returnMap.put(libName, xmlProcessor);
+		}
+
+		return returnMap;
+	}
+	
+	private String getCQLFunctionSignature(String expressionName, XmlProcessor populationOrSubtreeXMLProcessor) {
+		
+		String signature = "";
+		
+		String xPath = "//cqlLookUp//function[@name = '"+ expressionName +"']/arguments";
+		try {
+			Node argumentsNode = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), xPath);
+			if(argumentsNode != null){
+				NodeList children = argumentsNode.getChildNodes();
+				for(int i=0;i < children.getLength();i++){
+					Node child = children.item(i);
+					if(child.getNodeName().equals("argument")){
+						String type = child.getAttributes().getNamedItem("type").getNodeValue();
+						if("QDM Datatype".equals(type)){
+							type = child.getAttributes().getNamedItem("qdmDataType").getNodeValue();
+							type = "\"" + type + "\"";
+						}else if("Others".equals(type)){
+							type = child.getAttributes().getNamedItem("otherType").getNodeValue();
+						}
+						String argName = child.getAttributes().getNamedItem("argumentName").getNodeValue();
+						signature += argName + " " + type + ", ";
+					}
+				}
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		
+		if(signature.length() > 0){
+			signature = signature.trim();
+			if(signature.endsWith(",")){
+				signature = signature.substring(0, signature.length() - 1);
+			}
+			signature = "(" + signature + ")";
+		}else{
+			signature = "()";
+		}
+		
+		return signature;
+	}
+	
+	private List<HumanReadableExpressionModel> getDefinitions(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+		List<HumanReadableExpressionModel> definitions = new ArrayList<>(); 		
+		List<String> usedDefinitions = cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions();
+		List<String> definitionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlDefFromPopSet());
+		definitionsList.removeAll(usedDefinitions);
+		definitionsList.addAll(usedDefinitions);
+		definitionsList = definitionsList.stream().distinct().collect(Collectors.toList());
+		Collections.sort(definitionsList, String.CASE_INSENSITIVE_ORDER);
+		
+		for(String expressionName : definitionsList) {
+			String statementIdentifier = expressionName;
+			XmlProcessor currentProcessor = parentLibraryProcessor; 
+			String[] arr = expressionName.split(Pattern.quote("|"));
+			if(arr.length == 3){
+				expressionName = arr[2];
+				statementIdentifier = arr[1] + "." + arr[2];
+				currentProcessor = includedLibraryXmlProcessors.get(arr[0] + "|" + arr[1]);
+			}
+			
+			HumanReadableExpressionModel expression = new HumanReadableExpressionModel(statementIdentifier, getLogicStringFromXMLByName(expressionName, CQLDEFINITION, currentProcessor));
+			definitions.add(expression);
+		}
+		
+		return definitions; 
+	}
+	
+	private List<HumanReadableExpressionModel> getFunctions(CQLModel cqlModel, XmlProcessor parentLibraryProcessor, Map<String, XmlProcessor> includedLibraryXmlProcessors, SaveUpdateCQLResult cqlResult, CQLArtifactHolder usedCQLArtifactHolder) {
+		List<HumanReadableExpressionModel> functions = new ArrayList<>(); 
+		List<String> usedFunctions = cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions();
+		List<String> functionsList = new ArrayList<String>(usedCQLArtifactHolder.getCqlFuncFromPopSet());
+		functionsList.removeAll(usedFunctions);
+		functionsList.addAll(usedFunctions);
+		functionsList = functionsList.stream().distinct().collect(Collectors.toList());
+		Collections.sort(functionsList, String.CASE_INSENSITIVE_ORDER);
+		
+		for(String expressionName : functionsList) {
+			String statementIdentifier = expressionName;
+			XmlProcessor currentProcessor = parentLibraryProcessor; 
+			String[] arr = expressionName.split(Pattern.quote("|"));
+			if(arr.length == 3) {
+				expressionName = arr[2];
+				statementIdentifier = arr[1] + "." + arr[2];
+				currentProcessor = includedLibraryXmlProcessors.get(arr[0] + "|" + arr[1]);
+			}
+				
+				HumanReadableExpressionModel expression = new HumanReadableExpressionModel(
+						statementIdentifier +  getCQLFunctionSignature(expressionName, currentProcessor), 
+						getLogicStringFromXMLByName(expressionName, CQLFUNCTION, currentProcessor));
+				functions.add(expression);
+		}
+				
+		return functions; 
+	}
+	
+	private String getLogicStringFromXMLByName(String cqlName, String cqlType, XmlProcessor simpleXMLProcessor) {
+		
+		String logic = "";
+		String xPath = "//cqlLookUp//";
+		
+		if(cqlType.equals(CQLDEFINITION)){
+			xPath += "definition[@name='" + cqlName + "']/logic";
+		}else if(cqlType.equals(CQLFUNCTION)){
+			xPath += "function[@name='" + cqlName + "']/logic";
+		}
+		
+		 try {
+			Node logicNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), xPath);
+			if(logicNode != null){
+				logic = logicNode.getTextContent();
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}		
+		 
+		return logic;
+	}
+
 	
 	private List<HumanReadableExpressionModel> getSupplementalDataElements(XmlProcessor processor) throws XPathExpressionException {
 		List<HumanReadableExpressionModel> supplementalDataElements = new ArrayList<>(); 

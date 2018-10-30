@@ -13,14 +13,20 @@ public class HumanReadableModel {
 	private List<HumanReadableCodeModel> codeDataCriteriaList; 
 	private List<HumanReadableValuesetModel> valuesetDataCriteriaList; 
 	
+	private List<HumanReadableExpressionModel> definitions; 
+	private List<HumanReadableExpressionModel> functions; 
+	
 	private int numberOfGroups = 1; 
 	
 	public HumanReadableModel(HumanReadableMeasureInformationModel measureInformationModel, List<HumanReadablePopulationCriteriaModel> populations, 
+			List<HumanReadableExpressionModel> definitions, List<HumanReadableExpressionModel> functions,
 			List<HumanReadableValuesetModel> valuesetTerminologyList, List<HumanReadableCodeModel> codeTerminologyList,
 			List<HumanReadableValuesetModel> valuesetDataCriteriaList, List<HumanReadableCodeModel> codeDataCriteriaList,
 			List<HumanReadableExpressionModel> supplementalDataElements,  List<HumanReadableExpressionModel> riskAdjustmentVariables) {
 		this.measureInformation = measureInformationModel;
 		this.populationCriterias = populations; 
+		this.definitions = definitions;
+		this.functions =functions; 
 		this.codeTerminologyList = codeTerminologyList;
 		this.valuesetTerminologyList = valuesetTerminologyList;
 		this.valuesetDataCriteriaList = valuesetDataCriteriaList;
@@ -104,5 +110,21 @@ public class HumanReadableModel {
 
 	public void setValuesetDataCriteriaList(List<HumanReadableValuesetModel> valuesetDataCriteriaList) {
 		this.valuesetDataCriteriaList = valuesetDataCriteriaList;
+	}
+
+	public List<HumanReadableExpressionModel> getDefinitions() {
+		return definitions;
+	}
+
+	public void setDefinitions(List<HumanReadableExpressionModel> definitions) {
+		this.definitions = definitions;
+	}
+
+	public List<HumanReadableExpressionModel> getFunctions() {
+		return functions;
+	}
+
+	public void setFunctions(List<HumanReadableExpressionModel> functions) {
+		this.functions = functions;
 	}
 }

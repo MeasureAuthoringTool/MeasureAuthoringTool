@@ -10,6 +10,8 @@
 	<#include "table_of_contents.ftl"/>
 	<#include "divider.ftl" />
 	<#include "population_criteria_section.ftl" />
+	<#include "definition_section.ftl" />
+	<#include "function_section.ftl" />
 	<#include "terminology_section.ftl" />
 	<#include "data_criteria_section.ftl" />
 	<#include "supplemental_data_elements_section.ftl" />

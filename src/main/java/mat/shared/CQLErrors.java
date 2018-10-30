@@ -12,11 +12,16 @@ public class CQLErrors implements IsSerializable ,Comparable<CQLErrors> {
 	int endErrorInLine; 
 	int endErrorAtOffset; 
 	
-	String errorMessage;
+	private String errorMessage;
 
-	
-	
-	
+	private String severity;
+
+	public String getSeverity() {
+		return severity;
+	}
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
 	public int getErrorInLine() {
 		return errorInLine;
 	}
@@ -33,7 +38,6 @@ public class CQLErrors implements IsSerializable ,Comparable<CQLErrors> {
 	
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
 		return this.errorInLine + ";" + this.errorAtOffeset + ":" + this.errorMessage;
 	}
 	

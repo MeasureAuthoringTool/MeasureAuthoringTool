@@ -21,7 +21,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
 
@@ -268,8 +268,8 @@ public class CQLAppliedValueSetUtility {
 	}
 	
 	public static AceEditor setCQLWorkspaceExceptionAnnotations(String name, GetUsedCQLArtifactsResult result, AceEditor aceEditor) {
-		Map<String, List<CQLErrors>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
-		Map<String, List<CQLErrors>> expressionCQLWarningsMap = result.getCqlWarningsPerExpression();
+		Map<String, List<CQLError>> expressionCQLErrorMap = result.getCqlErrorsPerExpression();
+		Map<String, List<CQLError>> expressionCQLWarningsMap = result.getCqlWarningsPerExpression();
 		
 		CQLAppliedValueSetUtility.checkForExceptionAndCreateAnnotations(expressionCQLErrorMap, name, ERROR_PREFIX, AceAnnotationType.ERROR, aceEditor);
 		CQLAppliedValueSetUtility.checkForExceptionAndCreateAnnotations(expressionCQLWarningsMap, name, WARNING_PREFIX, AceAnnotationType.WARNING, aceEditor);
@@ -277,14 +277,14 @@ public class CQLAppliedValueSetUtility {
 		return aceEditor;
 	}
 	
-	private static AceEditor checkForExceptionAndCreateAnnotations(Map<String, List<CQLErrors>> expressionCQLExceptionMap, String name, String prefix, 
+	private static AceEditor checkForExceptionAndCreateAnnotations(Map<String, List<CQLError>> expressionCQLExceptionMap, String name, String prefix, 
 			AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
 		Optional.ofNullable(expressionCQLExceptionMap).ifPresent(expressionCQLExceptions -> 
 		Optional.ofNullable(expressionCQLExceptions.get(name)).ifPresent(errors -> errors.forEach(error -> createCQLWorkspaceAnnotations(error, prefix, aceAnnotationType, aceEditor))));
 		return aceEditor;
 	}
 	
-	private static AceEditor createCQLWorkspaceAnnotations(CQLErrors error, String prefix, AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
+	private static AceEditor createCQLWorkspaceAnnotations(CQLError error, String prefix, AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
 		int startLine = error.getStartErrorInLine();
 		int startColumn = error.getStartErrorAtOffset();
 		aceEditor.addAnnotation(startLine, startColumn, prefix + error.getErrorMessage(), aceAnnotationType);

@@ -19,7 +19,7 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private List<String> usedCQLcodes = new ArrayList<>();
 	private List<String> usedCQLLibraries = new ArrayList<>();
 
-	private List<CQLErrors> cqlErrors = new ArrayList<>();
+	private List<CQLError> cqlErrors = new ArrayList<>();
 
 	private Map<String, String> expressionReturnTypeMap = new HashMap<>();
 
@@ -30,8 +30,8 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private Map<String, List<String>> valueSetDataTypeMap;
 	private Map<String, List<String>> codeDataTypeMap; 
 
-	private Map<String, List<CQLErrors>> cqlErrorsPerExpression = new HashMap<>();
-	private Map<String, List<CQLErrors>> cqlWarningsPerExpression = new HashMap<>();
+	private Map<String, List<CQLError>> cqlErrorsPerExpression = new HashMap<>();
+	private Map<String, List<CQLError>> cqlWarningsPerExpression = new HashMap<>();
 
 	private Map<String, CQLIncludeLibrary> includeLibMap;
 
@@ -39,11 +39,11 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private Map<String, Map<String, Set<String>>> expressionNameToCodeDataTypeMap; 
 	private Map<String, Map<String, Set<String>>> expressionNameToValuesetDataTypeMap;
 
-	public Map<String, List<CQLErrors>> getCqlWarningsPerExpression() {
+	public Map<String, List<CQLError>> getCqlWarningsPerExpression() {
 		return cqlWarningsPerExpression;
 	}
 
-	public void setCqlWarningsPerExpression(Map<String, List<CQLErrors>> cqlWarningsPerExpression) {
+	public void setCqlWarningsPerExpression(Map<String, List<CQLError>> cqlWarningsPerExpression) {
 		this.cqlWarningsPerExpression = cqlWarningsPerExpression;
 	}
 
@@ -111,11 +111,11 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 		this.valueSetDataTypeMap = valueSetDataTypeMap;
 	}
 
-	public List<CQLErrors> getCqlErrors() {
+	public List<CQLError> getCqlErrors() {
 		return cqlErrors;
 	}
 
-	public void setCqlErrors(List<CQLErrors> cqlErrors) {
+	public void setCqlErrors(List<CQLError> cqlErrors) {
 		this.cqlErrors = cqlErrors;
 	}
 
@@ -179,11 +179,11 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 		this.expressionReturnTypeMap = expressionReturnTypeMap;
 	}
 
-	public Map<String, List<CQLErrors>> getCqlErrorsPerExpression() {
+	public Map<String, List<CQLError>> getCqlErrorsPerExpression() {
 		return cqlErrorsPerExpression;
 	}
 
-	public void setCqlErrorsPerExpression(Map<String, List<CQLErrors>> cqlErrorsPerExpression) {
+	public void setCqlErrorsPerExpression(Map<String, List<CQLError>> cqlErrorsPerExpression) {
 		this.cqlErrorsPerExpression = cqlErrorsPerExpression;
 	}
 

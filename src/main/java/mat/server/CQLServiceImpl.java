@@ -81,7 +81,7 @@ import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.CQLValidationUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLModelValidator;
 import mat.shared.CQLObject;
@@ -2245,8 +2245,8 @@ public class CQLServiceImpl implements CQLService {
 		if (!parsedCQL.getCqlErrors().isEmpty()) {
 			result.setValidCQLWhileSavingExpression(false);
 		}
-		List<CQLErrors> errors = new ArrayList<>();
-		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
+		List<CQLError> errors = new ArrayList<>();
+		for (CQLError cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();
 
 			if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
@@ -3110,9 +3110,9 @@ public class CQLServiceImpl implements CQLService {
 	 * @param parsedCQL
 	 * @return Map.
 	 */
-	private Map<String, List<CQLErrors>> getCQLErrorsPerExpressions(CQLModel cqlModel, List<CQLErrors> cqlErrors){
+	private Map<String, List<CQLError>> getCQLErrorsPerExpressions(CQLModel cqlModel, List<CQLError> cqlErrors){
 		
-		Map<String , List<CQLErrors>> expressionMapWithError = new HashMap<>();
+		Map<String , List<CQLError>> expressionMapWithError = new HashMap<>();
 		List<CQLExpressionObject> cqlExpressionObjects = getCQLExpressionObjectListFromCQLModel(cqlModel);
 		 
 		for(CQLExpressionObject expressionObject : cqlExpressionObjects){
@@ -3155,8 +3155,8 @@ public class CQLServiceImpl implements CQLService {
 			logger.debug("fileStartLine of expression ===== "+ fileStartLine);
 			logger.debug("fileEndLine of expression ===== "+ fileEndLine);
 		
-			List<CQLErrors> errors = new ArrayList<>();
-			for (CQLErrors cqlError : cqlErrors) {
+			List<CQLError> errors = new ArrayList<>();
+			for (CQLError cqlError : cqlErrors) {
 				int errorStartLine = cqlError.getStartErrorInLine();
 
 				if (errorStartLine >= fileStartLine && errorStartLine <= fileEndLine) {

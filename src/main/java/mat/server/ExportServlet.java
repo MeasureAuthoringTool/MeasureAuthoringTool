@@ -37,7 +37,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.UserService;
 import mat.server.service.impl.ZipPackager;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.SaveUpdateCQLResult;
@@ -259,7 +259,7 @@ public class ExportServlet extends HttpServlet {
 		resp.getOutputStream().write(sb.toString().getBytes());
 	}
 
-	private String buildExceptionString(List<CQLErrors> cqlErrors, String heading) {
+	private String buildExceptionString(List<CQLError> cqlErrors, String heading) {
 		StringBuilder sb = new StringBuilder();
 		
 		if(CollectionUtils.isNotEmpty(cqlErrors)) {
@@ -268,7 +268,7 @@ public class ExportServlet extends HttpServlet {
 			sb.append("/*******************************************************************************************************************");
 			sb.append(System.lineSeparator());
 			sb.append(heading);
-			for (CQLErrors error : cqlErrors) {
+			for (CQLError error : cqlErrors) {
 				sb.append(System.lineSeparator());
 				sb.append(createExceptionLine(error));
 				sb.append(System.lineSeparator());
@@ -280,7 +280,7 @@ public class ExportServlet extends HttpServlet {
 		return sb.toString();
 	}
 	
-	private StringBuilder createExceptionLine(CQLErrors error) {
+	private StringBuilder createExceptionLine(CQLError error) {
 		StringBuilder errorMessage = new StringBuilder();
 		return errorMessage.append("Line ").append(error.getErrorInLine()).append(": ").append(error.getErrorMessage());
 	}

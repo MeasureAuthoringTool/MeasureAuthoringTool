@@ -66,7 +66,7 @@ import mat.model.cql.CQLLibraryDataSetObject;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.ConstantMessages;
 import mat.shared.GetUsedCQLArtifactsResult;
@@ -1876,7 +1876,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 	private boolean validateCQLArtifact(SaveUpdateCQLResult result) {
 		boolean isInvalid = false;
 		if (!result.getCqlErrors().isEmpty()) {
-			for (CQLErrors error : result.getCqlErrors()) {
+			for (CQLError error : result.getCqlErrors()) {
 				int startLine = error.getStartErrorInLine();
 				int startColumn = error.getStartErrorAtOffset();
 				curAceEditor.addAnnotation(startLine, startColumn, error.getErrorMessage(), AceAnnotationType.ERROR);
@@ -3188,7 +3188,7 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 
 								if (!result.getCqlErrors().isEmpty()) {
 
-									for (CQLErrors error : result.getCqlErrors()) {
+									for (CQLError error : result.getCqlErrors()) {
 										String errorMessage = new String();
 										errorMessage = errorMessage.concat("Error in line : " + error.getErrorInLine()
 												+ " at Offset :" + error.getErrorAtOffeset());

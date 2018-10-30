@@ -20,7 +20,7 @@ import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 
 public class CQLView {
 	
@@ -114,8 +114,8 @@ public class CQLView {
 		this.exportErrorFile = exportErrorFile;
 	}
 	
-	public void setViewCQLAnnotations(List<CQLErrors> cqlErrors, String prefix, AceAnnotationType aceAnnotationType) {
-		for (CQLErrors error : cqlErrors) {
+	public void setViewCQLAnnotations(List<CQLError> cqlErrors, String prefix, AceAnnotationType aceAnnotationType) {
+		for (CQLError error : cqlErrors) {
 			int line = error.getErrorInLine();
 			int column = error.getErrorAtOffeset();
 			this.getCqlAceEditor().addAnnotation(line - 1, column, prefix + error.getErrorMessage(), aceAnnotationType);

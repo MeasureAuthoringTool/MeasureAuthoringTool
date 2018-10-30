@@ -37,7 +37,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.CQLUtilityClass;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.CQLObject;
@@ -599,12 +599,12 @@ public class CQLUtil {
 		}
 
 		// add in the errors, if any
-		List<CQLErrors> errors = new ArrayList<>();
+		List<CQLError> errors = new ArrayList<>();
 		for (CqlTranslatorException cte : cqlToELM.getErrors()) {
 			setCQLErrors(errors, cte);
 		}
 		
-		List<CQLErrors> warnings = new ArrayList<>();
+		List<CQLError> warnings = new ArrayList<>();
 		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
 			setCQLErrors(warnings, cte);
 		}
@@ -613,8 +613,8 @@ public class CQLUtil {
 		parsedCQL.setCqlWarnings(warnings);
 	}
 
-	private static void setCQLErrors(List<CQLErrors> errors, CqlTranslatorException cte) {
-		CQLErrors cqlErrors = new CQLErrors();
+	private static void setCQLErrors(List<CQLError> errors, CqlTranslatorException cte) {
+		CQLError cqlErrors = new CQLError();
 		cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
 		cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
 		cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());

@@ -78,7 +78,6 @@ mat.dao.UserDAO {
 	@Override
 	public void unlockUsers(Date unlockDate) {
 		Session session = getSessionFactory().getCurrentSession();
-		Transaction tx = session.getTransaction();
 		try {
 			int updatedCount = 0;
 			Criteria criteria = session.createCriteria(User.class);
@@ -91,13 +90,8 @@ mat.dao.UserDAO {
 				u.getPassword().setPasswordlockCounter(0);
 				updatedCount++;
 			}
-			if(tx.isActive())
-				tx.commit();
 			logger.info("Unlocked user count: " + updatedCount);
 		} finally {
-			if(tx != null && tx.getStatus().equals(TransactionStatus.ACTIVE)) {
-				rollbackUncommitted(tx);
-			}
 		}
 	}
 	

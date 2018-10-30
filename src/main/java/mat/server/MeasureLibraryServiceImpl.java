@@ -6206,4 +6206,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return result;
 	}
 
+	@Override
+	public Boolean isCompositeMeasure(String currentMeasureId) {
+		Measure currentMeasure = measureDAO.find(currentMeasureId);
+		return currentMeasure.getIsCompositeMeasure();
+	}
+
 }

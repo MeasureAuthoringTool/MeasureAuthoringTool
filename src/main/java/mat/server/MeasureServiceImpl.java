@@ -553,4 +553,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId) {
 		return this.getMeasureLibraryService().checkIfMeasureIsUsedAsComponentMeasure(currentMeasureId);
 	}
+
+	@Override
+	public Boolean isCompositeMeasure(String currentMeasureId) {
+		return this.getMeasureLibraryService().isCompositeMeasure(currentMeasureId);
+	}
 }

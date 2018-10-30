@@ -3,6 +3,7 @@ package mat.client.measure.measuredetails.view;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
+import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 
 public class MeasureDetailsViewFactory {
 	private static MeasureDetailsViewFactory instance;
@@ -17,7 +18,6 @@ public class MeasureDetailsViewFactory {
 	}
 	
 	public ComponentDetailView getMeasureDetailComponentView(MatDetailItem currentMeasureDetail) {
-		// TODO Auto-generated method stub
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
@@ -58,6 +58,29 @@ public class MeasureDetailsViewFactory {
 				return new CopyrightView();
 			case GENERAL_MEASURE_INFORMATION:
 				default:
+				return new GeneralMeasureInformationView();
+			}
+		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
+			switch((PopulationItems) currentMeasureDetail) {
+			case INITIAL_POPULATION:
+				return new InitialPopulationView();
+			case MEASURE_POPULATION:
+				return new MeasurePopulationView();
+			case MEASURE_POPULATION_EXCLUSIONS:
+				return new MeasurePopulationEclusionsView();
+			case DENOMINATOR:
+				return new DenominatorView();
+			case DENOMINATOR_EXCLUSIONS:
+				return new DenominatorExclusionsView();
+			case NUMERATOR:
+				return new NumeratorView();
+			case NUMERATOR_EXCLUSIONS:
+				return new NumeratorExclusionsView();
+			case DENOMINATOR_EXCEPTIONS:
+				return new DenominatorExceptionsView();
+			case MEASURE_OBSERVATIONS:
+				return new MeasureObservationsView();
+			default:
 				return new GeneralMeasureInformationView();
 			}
 		}

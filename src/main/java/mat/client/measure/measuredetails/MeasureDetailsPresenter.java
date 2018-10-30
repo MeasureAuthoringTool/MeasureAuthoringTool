@@ -1,6 +1,6 @@
 package mat.client.measure.measuredetails;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.MatPresenter;
@@ -8,15 +8,15 @@ import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
-import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
 	private MeasureDetailsView measureDetailsView;
 	private MeasureDetailsNavigation navigationPanel;
 	private String scoringType;
+	private boolean isCompositeMeasure;
 	
 	public MeasureDetailsPresenter() {
-		navigationPanel = new MeasureDetailsNavigation(scoringType);
+		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
 		navigationPanel.setObserver(this);
 		measureDetailsView = new MeasureDetailsView(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
@@ -30,9 +30,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	@Override
 	public void beforeDisplay() {
-		this.scoringType = MatContext.get().getCurrentMeasureScoringType();
-		navigationPanel.buildNavigationMenu(scoringType);
-		//TODO focus skip lists
+		populateMeasureDetailsModelAndDisplayNavigationMenu();
 	}
 
 	@Override
@@ -43,6 +41,26 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void onMenuItemClicked(MatDetailItem menuItem) {
 		measureDetailsView.buildDetailView(menuItem);
-		GWT.log(menuItem.displayName() + " clicked!");
+	}
+	
+	private void populateMeasureDetailsModelAndDisplayNavigationMenu() {
+		this.scoringType = MatContext.get().getCurrentMeasureScoringType();
+		MatContext.get().getMeasureService().isCompositeMeasure(MatContext.get().getCurrentMeasureId(), isCompositeMeasureCallBack());
+	}
+
+	private AsyncCallback<Boolean> isCompositeMeasureCallBack() {
+		return new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO handle error here
+				
+			}
+
+			@Override
+			public void onSuccess(Boolean isCompositeMeasure) {
+				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+			}
+		};
 	}
 }

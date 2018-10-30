@@ -22,6 +22,7 @@ public class MeasureDetailsView {
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
 	//TODO add ids to dom objects
+	//TODO handle population headings
 	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		contentPanel.add(navigationPanel.getWidget());

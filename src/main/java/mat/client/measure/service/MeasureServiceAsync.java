@@ -739,4 +739,6 @@ public interface MeasureServiceAsync {
 	void getCQLLibraryInformationForComponentMeasure(String compositeMeasureId, AsyncCallback<List<ComponentMeasureTabObject>> callback);
 
 	void checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId, AsyncCallback<GenericResult> asyncCallback);
+
+	void isCompositeMeasure(String currentMeasureId, AsyncCallback<Boolean> compositeMeasureCallBack);
 }

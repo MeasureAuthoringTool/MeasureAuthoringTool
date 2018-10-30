@@ -11,7 +11,7 @@ import org.gwtbootstrap3.client.ui.NavPills;
 import org.gwtbootstrap3.client.ui.PanelCollapse;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -27,16 +27,19 @@ public class MeasureDetailsNavigation {
 	private MeasureDetailsObserver observer;
 	private PanelCollapse populationsCollapse;
 	private String scoringType;
+	private boolean isComposite;
 	//TODO add ids to dom objects
-	public MeasureDetailsNavigation(String scoringType) {
-		buildNavigationMenu(scoringType);
+	public MeasureDetailsNavigation(String scoringType, boolean isCompositeMeasure) {
+		buildNavigationMenu(scoringType, isComposite);
 		mainPanel.setWidth("250px");
 	}
 
-	public void buildNavigationMenu(String scoringType) {
+	public void buildNavigationMenu(String scoringType, boolean isCompositeMeasure) {
+		GWT.log("scoring type: " + scoringType);
+		GWT.log("here isCompositeMeasure: " + isCompositeMeasure);
 		mainPanel.clear();
+		this.isComposite = isCompositeMeasure;
 		this.scoringType = scoringType;
-		GWT.log("now scoring type: " + scoringType);
 		menuItemMap = new HashMap<>();
 		populationsCollapse = buildPopulationCollapse();
 		NavPills navPills = buildNavPills();
@@ -56,13 +59,9 @@ public class MeasureDetailsNavigation {
 	}
 	
 	public void buildPopulationNavPills(NavPills navPills) {
-		GWT.log("scoring type: " + scoringType);
 		List<PopulationItems> populationsList = Arrays.asList(PopulationItems.values());
 		for(PopulationItems populationDetail: populationsList) {
-			GWT.log("population: " + populationDetail.abbreviatedName());
 			List<String> applicableScoringTypes = populationDetail.getApplicableMeasureTypes();
-			GWT.log("applicableScoringTypes size: " + applicableScoringTypes.size());
-			GWT.log("applicableScoringTypes: " + applicableScoringTypes.toString());
 			if(applicableScoringTypes.contains(scoringType)) {
 				AnchorListItem anchorListItem = new AnchorListItem(populationDetail.abbreviatedName());
 				menuItemMap.put(populationDetail, anchorListItem);
@@ -80,7 +79,6 @@ public class MeasureDetailsNavigation {
 		NavPills navPills = new NavPills();
 		List<MeasureDetailsItems> detailsList = Arrays.asList(MeasureDetailsItems.values());
 		for(MeasureDetailsItems measureDetail: detailsList) {
-			//TODO handle composite measures
 			AnchorListItem anchorListItem = new AnchorListItem(measureDetail.abbreviatedName());
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
 				anchorListItem.setIcon(IconType.PLUS);
@@ -88,6 +86,13 @@ public class MeasureDetailsNavigation {
 				anchorListItem.addClickHandler(event -> populationItemClicked(anchorListItem));
 				navPills.add(anchorListItem);
 			} else {
+				GWT.log("abbr name: " + measureDetail.abbreviatedName());
+				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES) {
+					GWT.log("checking isComposite: " + isComposite);
+					if(!isComposite) {
+						continue;
+					}
+				}
 				menuItemMap.put(measureDetail, anchorListItem);
 				navPills.add(anchorListItem);
 				anchorListItem.addClickHandler(event -> anchorListItemClicked(measureDetail));

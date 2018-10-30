@@ -753,4 +753,6 @@ public interface MeasureLibraryService {
 	GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
 
 	ValidateMeasureResult validateExports(String measureId) throws Exception;
+
+	Boolean isCompositeMeasure(String currentMeasureId);
 }

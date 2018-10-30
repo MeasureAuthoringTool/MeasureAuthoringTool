@@ -16,6 +16,7 @@
 	<#include "data_criteria_section.ftl" />
 	<#include "supplemental_data_elements_section.ftl" />
 	<#include "risk_adjustment_variables_section.ftl" />
+	<#include "measure_set_table.ftl" />
 </body>
 
 </html>

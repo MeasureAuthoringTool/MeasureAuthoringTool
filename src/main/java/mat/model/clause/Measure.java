@@ -241,7 +241,7 @@ public class Measure {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "EXPORT_TS", length = 19)
+	@Column(name = "EXPORT_TS", length = 19)	
 	public Date getExportedDate() {
 		return exportedDate;
 	}
@@ -351,7 +351,7 @@ public class Measure {
 		this.isCompositeMeasure = isCompositeMeasure;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "compositeMeasure")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "compositeMeasure",cascade=CascadeType.ALL)
 	public List<ComponentMeasure> getComponentMeasures() {
 		return componentMeasures;
 	}

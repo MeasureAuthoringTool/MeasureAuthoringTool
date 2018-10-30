@@ -2,12 +2,10 @@ package mat.hibernate;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import mat.server.HibernateStatisticsFilter;
 
-@Configuration
 @EnableTransactionManagement
 public class HibernateConf{
 
@@ -37,7 +35,7 @@ public class HibernateConf{
 	public static Session createHibernateSession() {
 
 		SessionFactory sessionFactory = HibernateConf.getSessionFactory();
-		Session session = sessionFactory.openSession();
+		Session session = sessionFactory.getCurrentSession();
 
 		return session;		
 	}

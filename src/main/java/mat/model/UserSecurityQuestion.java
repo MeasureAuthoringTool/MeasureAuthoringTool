@@ -4,6 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -81,8 +82,8 @@ public class UserSecurityQuestion implements IsSerializable, Serializable {
 		this.securityAnswer = securityAnswer;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "QUESTION_ID", insertable=false, updatable=false)
+	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.PERSIST)
+	@JoinColumn(name = "QUESTION_ID", insertable=false,updatable=false)
 	public SecurityQuestions getSecurityQuestions() {
 		return securityQuestions;
 	}

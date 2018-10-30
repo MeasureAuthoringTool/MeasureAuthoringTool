@@ -10,15 +10,12 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import mat.dao.search.GenericDAO;
@@ -31,16 +28,11 @@ import mat.server.model.MatUserDetails;
 /**
  * The Class UserDAO.
  */
-@Repository
 public class UserDAO extends GenericDAO<User, String> implements
 mat.dao.UserDAO {
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UserDAO.class);
-	
-	public UserDAO(@Autowired SessionFactory sessionFactory) {
-		super.setSessionFactory(sessionFactory);
-	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.search.GenericDAO#delete(ID[])
@@ -59,7 +51,7 @@ mat.dao.UserDAO {
 	 */
 	@Override
 	public void expireTemporaryPasswords(Date targetDate) {
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try {
 			int updatedCount = 0;
@@ -88,7 +80,7 @@ mat.dao.UserDAO {
 	 */
 	@Override
 	public void unlockUsers(Date unlockDate) {
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try {
 			int updatedCount = 0;
@@ -106,7 +98,6 @@ mat.dao.UserDAO {
 			logger.info("Unlocked user count: " + updatedCount);
 		} finally {
 			rollbackUncommitted(tx);
-			closeSession(session);
 		}
 	}
 	
@@ -242,7 +233,7 @@ mat.dao.UserDAO {
 	@SuppressWarnings("rawtypes")
 	@Transactional
 	public UserDetails getUser(String userId) {
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(MatUserDetails.class);
 		// List results =
 		// criteria.add(Restrictions.ilike("emailAddress",userId)).list();

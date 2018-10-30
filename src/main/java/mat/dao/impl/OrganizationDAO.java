@@ -91,7 +91,7 @@ mat.dao.OrganizationDAO {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = getSessionFactory().openSession();
+			session = getSessionFactory().getCurrentSession();
 			transaction = session.beginTransaction();
 			session.save(entity);
 			transaction.commit();
@@ -99,7 +99,6 @@ mat.dao.OrganizationDAO {
 			e.printStackTrace();
 		} finally {
 			rollbackUncommitted(transaction);
-			closeSession(session);
 		}
 	}
 	
@@ -132,7 +131,7 @@ mat.dao.OrganizationDAO {
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = getSessionFactory().openSession();
+			session = getSessionFactory().getCurrentSession();
 			transaction = session.beginTransaction();
 			session.update(organization);
 			transaction.commit();
@@ -140,7 +139,6 @@ mat.dao.OrganizationDAO {
 			e.printStackTrace();
 		} finally {
 			rollbackUncommitted(transaction);
-			closeSession(session);
 		}
 	}
 	

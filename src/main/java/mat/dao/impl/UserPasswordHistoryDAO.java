@@ -37,7 +37,7 @@ public class UserPasswordHistoryDAO extends GenericDAO<UserPasswordHistory, Stri
 	@Override
 	public void addByUpdateUserPasswordHistory(User user) {
 		String userPasswordHistoryId = getOldPasswordHistoryIdByCreationDate(user.getId());
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			String sql = "update mat.model.UserPasswordHistory m set m.password = :password, m.salt = :salt, m.createdDate = :createDate " +

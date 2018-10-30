@@ -45,7 +45,7 @@ public class ComponentMeasure {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "COMPONENT_MEASURE_ID", nullable = false)
+	@JoinColumn(name = "COMPOSITE_MEASURE_ID", nullable = false)
 	public Measure getCompositeMeasure() {
 		return compositeMeasure;
 	}
@@ -55,7 +55,7 @@ public class ComponentMeasure {
 	}
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "COMPOSITE_MEASURE_ID", nullable = false)
+	@JoinColumn(name = "COMPONENT_MEASURE_ID", nullable = false)
 	public Measure getComponentMeasure() {
 		return componentMeasure;
 	}

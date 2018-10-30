@@ -71,7 +71,7 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = getSessionFactory().openSession();
+			session = getSessionFactory().getCurrentSession();
 			transaction = session.beginTransaction();
 			for ( int i=0; i<entities.length; i++ ) {
 			    session.save(entities[i]);

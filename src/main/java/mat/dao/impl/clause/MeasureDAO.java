@@ -755,7 +755,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	// settingtheLockedDate.
 	@Override
 	public void resetLockDate(Measure m) {
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
@@ -767,7 +767,6 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			tx.commit();
 		} finally {
 			rollbackUncommitted(tx);
-			closeSession(session);
 		}
 
 	}
@@ -1005,7 +1004,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	 */
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
@@ -1017,7 +1016,6 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			logger.info("Updated Private column" + rowCount);
 		} finally {
 			rollbackUncommitted(tx);
-			closeSession(session);
 		}
 	}
 

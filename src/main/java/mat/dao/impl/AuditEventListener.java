@@ -159,7 +159,7 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 	 *            the obj
 	 */
 	private void saveOrUpdate(EventSource eventSource, Object obj){
-		Session session = eventSource.getSessionFactory().openSession();
+		Session session = eventSource.getSessionFactory().getCurrentSession();
 		try{			
 			session.getTransaction().begin();
 			session.saveOrUpdate(obj);

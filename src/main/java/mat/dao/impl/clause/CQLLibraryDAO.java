@@ -394,8 +394,7 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 
 	@Override
 	public void updateLockedOutDate(CQLLibrary existingLibrary) {
-
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
 		try {
 			CQLLibrary cqlLibrary = (CQLLibrary) session.load(CQLLibrary.class, existingLibrary.getId());
@@ -407,7 +406,6 @@ public class CQLLibraryDAO extends GenericDAO<CQLLibrary, String> implements mat
 			//session.close();
 		} finally {
 			rollbackUncommitted(tx);
-			closeSession(session);
 		}
 	}
 

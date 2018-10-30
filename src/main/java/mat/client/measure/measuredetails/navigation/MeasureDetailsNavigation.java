@@ -69,7 +69,7 @@ public class MeasureDetailsNavigation {
 				anchorListItem.getElement().getStyle().setMarginLeft(15, Unit.PX);
 				menuItemMap.put(populationDetail, anchorListItem);
 				navPills.add(anchorListItem);
-				anchorListItem.addClickHandler(event -> anchorListItemClicked(populationDetail));
+				anchorListItem.addClickHandler(event -> handleAnchorListItemClick(populationDetail));
 			}
 		}
 	}
@@ -88,24 +88,23 @@ public class MeasureDetailsNavigation {
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);
-				anchorListItem.addClickHandler(event -> populationItemClicked(anchorListItem));
+				anchorListItem.addClickHandler(event -> handlePopulationItemClick(anchorListItem));
 				navPills.add(anchorListItem);
 			} else {
-				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES) {
-					if(!isComposite) {
-						continue;
-					}
+				//if not a composite measure skip the component menu item
+				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES && !isComposite) {
+					continue;
 				}
 				menuItemMap.put(measureDetail, anchorListItem);
 				navPills.add(anchorListItem);
-				anchorListItem.addClickHandler(event -> anchorListItemClicked(measureDetail));
+				anchorListItem.addClickHandler(event -> handleAnchorListItemClick(measureDetail));
 			}
 		}
 		navPills.setStacked(true);
 		return navPills;
 	}
 	
-	private void populationItemClicked(AnchorListItem anchorListItem) {
+	private void handlePopulationItemClick(AnchorListItem anchorListItem) {
 		deselectAllMenuItems();
 		if (populationsCollapse.getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")) {
 			populationsCollapse.getElement().setClassName("panel-collapse collapse");
@@ -116,7 +115,7 @@ public class MeasureDetailsNavigation {
 		}
 	}
 
-	private void anchorListItemClicked(MatDetailItem menuItem) {
+	private void handleAnchorListItemClick(MatDetailItem menuItem) {
 		observer.onMenuItemClicked(menuItem);
 		setActiveMenuItem(menuItem);
 	}

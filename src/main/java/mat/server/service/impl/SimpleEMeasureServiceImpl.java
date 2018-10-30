@@ -69,7 +69,7 @@ import mat.server.hqmf.Generator;
 import mat.server.hqmf.HQMFGeneratorFactory;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.simplexml.HumanReadableGenerator;
+import mat.server.humanreadable.HumanReadableGenerator;
 import mat.server.util.CQLUtil;
 import mat.server.util.CompositeMeasureDetailUtil;
 import mat.server.util.XmlProcessor;

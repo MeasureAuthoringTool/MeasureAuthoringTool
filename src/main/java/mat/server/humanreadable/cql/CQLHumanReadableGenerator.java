@@ -2,6 +2,7 @@ package mat.server.humanreadable.cql;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,19 +15,24 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
 @Component
-public class NewHumanReadableGenerator {
+public class CQLHumanReadableGenerator {
 
 	@Autowired private Configuration freemarkerConfiguration;
 	
 	public String generate(HumanReadableModel model) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
-		HashMap<String, HumanReadableModel> paramsMap = new HashMap<String, HumanReadableModel>();				
+		Map<String, HumanReadableModel> paramsMap = new HashMap<>();				
 		paramsMap.put("model", model);
 		
 		boolean isCalendarYear = model.getMeasureInformation().getIsCalendarYear();
 		String measurementPeriodStartDate = model.getMeasureInformation().getMeasurementPeriodStartDate();
 		String measurementPeriodEndDate = model.getMeasureInformation().getMeasurementPeriodEndDate();
 		model.getMeasureInformation().setMeasurementPeriod(HumanReadableDateUtil.getFormattedMeasurementPeriod(isCalendarYear, measurementPeriodStartDate, measurementPeriodEndDate));
-		String humanReadable = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/human_readable.ftl"), paramsMap);
-		return humanReadable;
+		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/human_readable.ftl"), paramsMap);
+	}
+	
+	public String generateSinglePopulation(HumanReadablePopulationModel population) throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException, TemplateException {
+		Map<String, HumanReadablePopulationModel> paramsMap = new HashMap<>(); 
+		paramsMap.put("population", population);
+		return FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("humanreadable/population_human_readable.ftl"), paramsMap);
 	}
 }

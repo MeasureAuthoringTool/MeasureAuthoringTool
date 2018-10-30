@@ -755,7 +755,6 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	// TODO:- We need to follow the same logic/concept while
 	// settingtheLockedDate.
 	@Override
-	@Transactional
 	public void resetLockDate(Measure m) {
 		Session session = getSessionFactory().getCurrentSession();
 		try {

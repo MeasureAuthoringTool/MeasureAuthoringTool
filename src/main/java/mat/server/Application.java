@@ -13,12 +13,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import mat.dao.impl.AuditInterceptor;
 import mat.hibernate.HibernateConf;
 
 @Configuration
 @ComponentScan({"mat.model","mat.dao","mat.model.clause","mat.server","mat.hibernate"})
+@EnableTransactionManagement
 @Import(HibernateConf.class)
 public class Application {
 	

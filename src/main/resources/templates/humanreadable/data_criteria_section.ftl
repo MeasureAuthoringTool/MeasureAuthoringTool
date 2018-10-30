@@ -1,4 +1,4 @@
-<h3><a name="d1e555" href="#toc">Terminology</a></h3>
+<h3><a name="d1e647" href="#toc">Data Criteria (QDM Data Elements)</a></h3>
 	<div>
 		<ul style="padding-left: 50px;">
 		<#list model.valuesetDataCriteriaList as valueset>

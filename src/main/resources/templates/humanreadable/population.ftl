@@ -17,11 +17,17 @@
 		            </div>
 		          </li>
 		          <#else>
-    			 <li>
-         			<div>			
-          				<strong class="cql-class">None</strong>
-         			</div>
-     			</li>
+				  <li class="list-unstyled">
+		            <div class="treeview hover p-l-10">
+		              <ul>
+		                <li style="padding-left: 0px;">
+		                  <div>
+		                    <pre class="cql-definition-body">None</pre>
+		                  </div>
+		                </li>
+		              </ul>&nbsp;
+		            </div>
+		          </li>
     		</#if>
         </ul>
       </li>

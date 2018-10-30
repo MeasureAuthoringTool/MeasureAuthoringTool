@@ -51,7 +51,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -60,7 +59,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 import mat.client.ImageResources;
-import mat.client.RichTextToolbar;
 import mat.client.buttons.SaveDeleteMeasureDetailsButtonBarBuilder;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -116,7 +114,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  copyrightInput = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength  disclaimerInput = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength  stratificationInput = new TextAreaWithMaxLength ();
-	protected RichTextArea richTextArea = new RichTextArea();
 	protected TextAreaWithMaxLength  riskAdjustmentInput  = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength  rateAggregationInput  = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength  initialPopInput  = new TextAreaWithMaxLength ();
@@ -664,10 +661,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		stratificationInput.setPlaceholder("Enter Stratification");
 		stratificationInput.setTitle("Enter Stratification");
 		stratificationInput.setId("stratificationInput_TextAreaWithMaxLength");
-		richTextArea.setTitle("Testing");
-		RichTextToolbar tb= new RichTextToolbar(richTextArea);
-		moreMeasureDetailsVP.add(tb);
-		moreMeasureDetailsVP.add(richTextArea);
 		moreMeasureDetailsVP.add(stratificationInputLabel);
 		moreMeasureDetailsVP.add(stratificationInput);
 	}

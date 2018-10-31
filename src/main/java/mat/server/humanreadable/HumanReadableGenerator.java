@@ -100,11 +100,11 @@ public class HumanReadableGenerator {
 				unmarshaller.setWhitespacePreserve(true);
 							
 				CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(simpleXml);
-				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
+		
 
 				CQLArtifactHolder usedCQLArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(processor.getOriginalDoc());
 				SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, getCQLIdentifiers(cqlModel));
-
+				Map<String, XmlProcessor> includedLibraryXmlProcessors = loadIncludedLibXMLProcessors(cqlModel);
 				
 				HumanReadableModel model = (HumanReadableModel) unmarshaller.unmarshal(new InputSource(new StringReader(simpleXml)));
 				model.setPopulationCriterias(getPopulationCriteriaModels(processor));

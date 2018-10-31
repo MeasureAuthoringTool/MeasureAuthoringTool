@@ -2,7 +2,7 @@
   <div class="treeview hover p-l-10">
     <ul class="list-unstyled">
       <li class="list-unstyled"><input type="checkbox" id="${population.id}">
-        <label for="${population.id}" class="list-header"><strong>${population.name}</strong></label>
+        <label for="${population.id}" class="list-header"><strong>${population.display}</strong></label>
         <ul class="code">
     		<#if population.inGroup == true>
 	    		 <li class="list-unstyled">

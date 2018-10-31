@@ -45,6 +45,7 @@ import mat.server.util.CQLUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;
+import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
 
 @Component
@@ -434,14 +435,78 @@ public class HumanReadableGenerator {
 		
 		return groups; 
 	}
+	 
+	private String getPopulationNameByUUID(String uuid, XmlProcessor processor) throws XPathExpressionException {
+		Node population = processor.findNode(processor.getOriginalDoc(),"//clause[@uuid=\"" + uuid + "\"]");
+		String name = "";
+		if (population != null) {
+			name = population.getAttributes().getNamedItem("displayName").getNodeValue();
+			String type = population.getAttributes().getNamedItem("type").getNodeValue();
+			int popCpount = countSimilarPopulationsInGroup(type, population.getParentNode());
+			if(popCpount == 1){
+				name = getPopulationName(type);
+			}
+		}
+		
+		return name; 
+	}
+	
+	private int countSimilarPopulationsInGroup(String type, Node node) {
+		int count = 0;
+		NodeList childClauses = node.getChildNodes();
+		if (childClauses != null) {
+			for (int i = 0; i < childClauses.getLength(); i++) {
+				Node clauseNode = childClauses.item(i);
+				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
+				if (popType.equals(type)) {
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+	private static String getPopulationName(String nodeValue) {
+		String populationName = "";
+		if (MatConstants.INITIAL_POPULATION.equals(nodeValue)) {
+			populationName = "Initial Population";
+		} else if (MatConstants.MEASURE_POPULATION.equals(nodeValue)) {
+			populationName = "Measure Population";
+		} else if (MatConstants.MEASURE_POPULATION_EXCLUSIONS.equals(nodeValue)) {
+			populationName = "Measure Population Exclusions";
+		} else if (MatConstants.MEASURE_OBSERVATION.equals(nodeValue)) {
+			populationName = "Measure Observation";
+		} else if (MatConstants.STRATUM.equals(nodeValue)) {
+			populationName = "Stratification";
+		} else if (MatConstants.DENOMINATOR.equals(nodeValue)) {
+			populationName = "Denominator";
+		} else if (MatConstants.DENOMINATOR_EXCLUSIONS.equals(nodeValue)) {
+			populationName = "Denominator Exclusions";
+		} else if (MatConstants.DENOMINATOR_EXCEPTIONS.equals(nodeValue)) {
+			populationName = "Denominator Exceptions";
+		} else if (MatConstants.NUMERATOR.equals(nodeValue)) {
+			populationName = "Numerator";
+		} else if (MatConstants.NUMERATOR_EXCLUSIONS.equals(nodeValue)) {
+			populationName = "Numerator Exclusions";
+		}
+		return populationName;
+	}
 
 	private HumanReadablePopulationModel getPopulationCriteria(XmlProcessor processor, Node populationNode)
 			throws XPathExpressionException {
 		String expressionName = "";
 		String expressionUUID = "";
 		String logic = "";
-		String aggregation = null; 
+		String aggregation = null;
+		String associatedPopulationName = ""; 
 		boolean isInGroup = true; 
+		
+		if(populationNode.getAttributes().getNamedItem("associatedPopulationUUID") != null) {
+			String uuid = populationNode.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+			associatedPopulationName = getPopulationNameByUUID(uuid, processor);
+		}
+		
+		
 		if(populationNode.getAttributes().getNamedItem("isInGrouping") != null) {
 			isInGroup= Boolean.parseBoolean(populationNode.getAttributes().getNamedItem("isInGrouping").getNodeValue());
 		}
@@ -483,7 +548,7 @@ public class HumanReadableGenerator {
 			}
 		}
 		
-		HumanReadablePopulationModel population = new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, isInGroup);
+		HumanReadablePopulationModel population = new HumanReadablePopulationModel(populationName, logic, expressionName, expressionUUID, aggregation, associatedPopulationName, isInGroup);
 		return population;
 	}
 	

@@ -2,6 +2,8 @@ package mat.server.humanreadable.cql;
 
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class HumanReadablePopulationModel {
 	
 	private String id; 
@@ -11,19 +13,19 @@ public class HumanReadablePopulationModel {
 	private String expressionUUID;
 	private String aggregateFunction;
 	private boolean inGroup; 
+	private String associatedPopulationName; 
+	private String display; 
 	
-	public HumanReadablePopulationModel() {
-		
-	}
-	
-	public HumanReadablePopulationModel(String name, String logic, String expressionName, String expressionUUID, String aggregateFunction, boolean isInGroup) {
+	public HumanReadablePopulationModel(String name, String logic, String expressionName, String expressionUUID, String aggregateFunction, String associatedPopulationName, boolean isInGroup) {
 		this.name = name;
 		this.logic = logic;
 		this.aggregateFunction = aggregateFunction;
 		this.inGroup = isInGroup;
 		this.expressionName = expressionName; 
 		this.expressionUUID = expressionUUID; 
+		this.associatedPopulationName = associatedPopulationName;
 		this.id = name.replaceAll(" ", "_") + " " +  new Random().nextInt();
+		createDisplay();
 	}
 	
 	public String getName() {
@@ -71,5 +73,30 @@ public class HumanReadablePopulationModel {
 
 	public String getId() {
 		return id;
+	}
+	
+	private void createDisplay() {
+		String display = this.name;
+		if(!StringUtils.isEmpty(associatedPopulationName)) {
+			display = display + "    (Association: " + associatedPopulationName + ")"; 
+		}
+		
+		this.display = display; 
+	}
+
+	public String getAssociatedPopulationName() {
+		return associatedPopulationName;
+	}
+
+	public void setAssociatedPopulationName(String associatedPopulationName) {
+		this.associatedPopulationName = associatedPopulationName;
+	}
+
+	public String getDisplay() {
+		return display;
+	}
+
+	public void setDisplay(String display) {
+		this.display = display;
 	}
 }

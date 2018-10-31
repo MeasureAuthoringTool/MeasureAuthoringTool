@@ -239,14 +239,14 @@ public class ExportServlet extends HttpServlet {
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String cqlString = result.getCqlString();
-		String[] cqlLinesArray = cqlString.split("\\r?\\n");
+		String[] cqlLinesArray = cqlString.split("\n");
 		for (int i = 0; i < cqlLinesArray.length; i++) {
-			sb.append((i + 1)).append(" ").append(cqlLinesArray[i]).append(System.lineSeparator());
+			sb.append((i + 1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
 		}
 		
 		if(CollectionUtils.isEmpty(result.getCqlErrors()) && CollectionUtils.isEmpty(result.getCqlWarnings())) {
 			sb.append("/*******************************************************************************************************************");
-			sb.append(System.lineSeparator());
+			sb.append("\r\n");
 			sb.append(CQL_NO_ERRORS_WARNINGS_MESSAGE);
 			sb.append("*******************************************************************************************************************/");
 			
@@ -264,14 +264,14 @@ public class ExportServlet extends HttpServlet {
 		
 		if(CollectionUtils.isNotEmpty(cqlErrors)) {
 			Collections.sort(cqlErrors);
-			sb.append(System.lineSeparator());
+			sb.append("\r\n");
 			sb.append("/*******************************************************************************************************************");
-			sb.append(System.lineSeparator());
+			sb.append("\r\n");
 			sb.append(heading);
 			for (CQLError error : cqlErrors) {
-				sb.append(System.lineSeparator());
+				sb.append("\r\n");
 				sb.append(createExceptionLine(error));
-				sb.append(System.lineSeparator());
+				sb.append("\r\n");
 			}
 			
 			sb.append("*******************************************************************************************************************/");

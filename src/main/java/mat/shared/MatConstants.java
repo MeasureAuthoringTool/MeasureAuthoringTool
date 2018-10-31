@@ -15,7 +15,7 @@ public interface MatConstants {
 	String STRATUM = "stratum";
 	String MEASURE_POPULATION_EXCLUSIONS = "measurePopulationExclusions";
 	String INITIAL_POPULATION = "initialPopulation";
-	String MEASURE_OBS_POPULATION = "measureObservation";
+	String MEASURE_OBSERVATION_POPULATION = "measureObservation";
 	String TAXONOMY = "taxonomy";
 	String DATATYPE = "datatype";
 	String DATETIMEDIFF = "Datetimediff";

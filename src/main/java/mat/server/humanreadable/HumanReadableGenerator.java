@@ -443,8 +443,10 @@ public class HumanReadableGenerator {
 			name = population.getAttributes().getNamedItem("displayName").getNodeValue();
 			String type = population.getAttributes().getNamedItem("type").getNodeValue();
 			int popCpount = countSimilarPopulationsInGroup(type, population.getParentNode());
+			
+			// if there is only one of the population kind, then we only want to display the population name (without a number attached to it)
 			if(popCpount == 1){
-				name = getPopulationName(type);
+				name = getPopulationNameByType(type);
 			}
 		}
 		
@@ -466,27 +468,27 @@ public class HumanReadableGenerator {
 		return count;
 	}
 	
-	private static String getPopulationName(String nodeValue) {
+	private String getPopulationNameByType(String type) {
 		String populationName = "";
-		if (MatConstants.INITIAL_POPULATION.equals(nodeValue)) {
+		if (MatConstants.INITIAL_POPULATION.equals(type)) {
 			populationName = "Initial Population";
-		} else if (MatConstants.MEASURE_POPULATION.equals(nodeValue)) {
+		} else if (MatConstants.MEASURE_POPULATION.equals(type)) {
 			populationName = "Measure Population";
-		} else if (MatConstants.MEASURE_POPULATION_EXCLUSIONS.equals(nodeValue)) {
+		} else if (MatConstants.MEASURE_POPULATION_EXCLUSIONS.equals(type)) {
 			populationName = "Measure Population Exclusions";
-		} else if (MatConstants.MEASURE_OBSERVATION.equals(nodeValue)) {
+		} else if (MatConstants.MEASURE_OBSERVATION_POPULATION.equals(type)) {
 			populationName = "Measure Observation";
-		} else if (MatConstants.STRATUM.equals(nodeValue)) {
+		} else if (MatConstants.STRATUM.equals(type)) {
 			populationName = "Stratification";
-		} else if (MatConstants.DENOMINATOR.equals(nodeValue)) {
+		} else if (MatConstants.DENOMINATOR.equals(type)) {
 			populationName = "Denominator";
-		} else if (MatConstants.DENOMINATOR_EXCLUSIONS.equals(nodeValue)) {
+		} else if (MatConstants.DENOMINATOR_EXCLUSIONS.equals(type)) {
 			populationName = "Denominator Exclusions";
-		} else if (MatConstants.DENOMINATOR_EXCEPTIONS.equals(nodeValue)) {
+		} else if (MatConstants.DENOMINATOR_EXCEPTIONS.equals(type)) {
 			populationName = "Denominator Exceptions";
-		} else if (MatConstants.NUMERATOR.equals(nodeValue)) {
+		} else if (MatConstants.NUMERATOR.equals(type)) {
 			populationName = "Numerator";
-		} else if (MatConstants.NUMERATOR_EXCLUSIONS.equals(nodeValue)) {
+		} else if (MatConstants.NUMERATOR_EXCLUSIONS.equals(type)) {
 			populationName = "Numerator Exclusions";
 		}
 		return populationName;
@@ -511,34 +513,40 @@ public class HumanReadableGenerator {
 			isInGroup= Boolean.parseBoolean(populationNode.getAttributes().getNamedItem("isInGrouping").getNodeValue());
 		}
 				
-		String populationName = populationNode.getAttributes().getNamedItem("displayName").getNodeValue();
+		String populationName = getPopulationNameByUUID(populationNode.getAttributes().getNamedItem("uuid").getNodeValue(), processor);
 		if(populationName.contains("Measure Observation")) {
 			
 			Node functionNode = null;
 			Node aggregationNode = null;
-			if("cqlaggfunction".equals(populationNode.getFirstChild().getNodeName())) {
-				aggregationNode = populationNode.getFirstChild();
-				aggregation = aggregationNode.getAttributes().getNamedItem("displayName").getNodeValue();
-				functionNode = aggregationNode.getFirstChild();
-			} else {
-				functionNode = populationNode.getFirstChild();
-			}
-			
-			expressionName = functionNode.getAttributes().getNamedItem("displayName").getNodeValue();
-			expressionUUID = functionNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			logic = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp//function[@id='"+ expressionUUID +"']/logic").getTextContent();
-			
-			if(aggregation != null) {
-				logic = aggregation + " (\n  " + logic + "\n)"; // for measures, add in the aggregation
+			if(populationNode.getFirstChild() != null) {
+				if("cqlaggfunction".equals(populationNode.getFirstChild().getNodeName())) {
+					aggregationNode = populationNode.getFirstChild();
+					aggregation = aggregationNode.getAttributes().getNamedItem("displayName").getNodeValue();
+					functionNode = aggregationNode.getFirstChild();
+				} else {
+					functionNode = populationNode.getFirstChild();
+				}
+				
+				
+				expressionName = functionNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				expressionName = getPopulationNameByType(expressionName);
+				expressionUUID = functionNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				logic = processor.findNode(processor.getOriginalDoc(), "/measure/cqlLookUp//function[@id='"+ expressionUUID +"']/logic").getTextContent();
+				
+
+				
+				if(aggregation != null) {
+					logic = aggregation + " (\n  " + logic + "\n)"; // for measures, add in the aggregation
+				}
 			}
 		} else  {
 			Node definitionNode = populationNode.getFirstChild();
-			if(populationName.contains("stratum")) {
+			if(populationName.contains("Stratum")) {
 				if(populationName.equals("stratum")) {
 					populationName = populationName + " 1"; // we need to enumerate the the stratum, and if there is only one stratum, it doesn't have a number in the name.... 
 				}
 				
-				populationName = populationName.replace("stratum", "Stratification"); // for some reason the simple xml uses "stratum" but it really should be "Stratification"
+				populationName = populationName.replace("Stratum", "Stratification"); // for some reason the simple xml uses "stratum" but it really should be "Stratification"
 			}
 
 			if(definitionNode != null) {

@@ -54,7 +54,7 @@ public class MeasureDetailsConstants {
 		MEASURE_POPULATION_EXCLUSIONS("Measure Population Exclusions", "Measure Population Exclusions", Stream.of(CONTINUOUS_VARIABLE).collect(Collectors.toList())),
 		DENOMINATOR("Denominator", "Denominator", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
 		DENOMINATOR_EXCLUSIONS("Denominator Exclusions", "Denominator Exclusions", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
-		NUMERATOR("Numerator", "Numerator", Stream.of("proportion", RATIO).collect(Collectors.toList())),
+		NUMERATOR("Numerator", "Numerator", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
 		NUMERATOR_EXCLUSIONS("Numerator Exclusions", "Numerator Exclusions", Stream.of(PROPORTION, RATIO).collect(Collectors.toList())),
 		DENOMINATOR_EXCEPTIONS("Denominator Exceptions", "Denominator Exceptions", Stream.of(PROPORTION).collect(Collectors.toList())),
 		MEASURE_OBSERVATIONS("Measure Observations", "Measure Observations", Stream.of(CONTINUOUS_VARIABLE, RATIO).collect(Collectors.toList()));

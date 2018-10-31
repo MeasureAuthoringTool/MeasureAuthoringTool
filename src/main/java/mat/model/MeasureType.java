@@ -41,7 +41,7 @@ public class MeasureType implements IsSerializable{
 	}
 
 	public void setId(String id) {
-		this.id = id.trim();
+		this.id = id;
 	}
 	
 	@Column(name = "NAME", nullable = false, length = 50)

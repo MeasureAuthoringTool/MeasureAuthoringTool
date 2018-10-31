@@ -45,9 +45,6 @@ import mat.shared.MatConstants;
 import mat.shared.MeasurePackageClauseValidator;
 
 public class MeasurePackageClauseCellListWidget {
-	/*private static final String NUMERATOR = "numerator";
-	private static final String DENOMINATOR = "denominator";
-	private static final String MEASURE_OBSERVATION = "measureObservation";*/
 	private static final String STRATIFICATION = "stratification";
 	private static final String ADD_CLAUSE_RIGHT = "addClauseRight";
 	private static final String ADD_ALL_CLAUSE_RIGHT = "addAllClauseRight";

@@ -19,11 +19,11 @@ public class MeasurePackagerAssociations {
 	
 	private VerticalPanel addAssocationsWidget = new VerticalPanel();
 	private ListBoxMVP denominatorListBox = new ListBoxMVP();
-	private ListBoxMVP numoratorListBox = new ListBoxMVP();
+	private ListBoxMVP numeratorListBox = new ListBoxMVP();
 	private ListBoxMVP measureObservation1ListBox = new ListBoxMVP();
 	private ListBoxMVP measureObservation2ListBox = new ListBoxMVP();
 	
-	private ArrayList<MeasurePackageClauseDetail> denominatorAndNumorators = null;
+	private ArrayList<MeasurePackageClauseDetail> denominatorAndNumerators = null;
 	private ArrayList<MeasurePackageClauseDetail> measureObservations = null;
 	private ArrayList<MeasurePackageClauseDetail> initialPopulations = null;
 	
@@ -49,13 +49,13 @@ public class MeasurePackagerAssociations {
 		createHelpBlock();
 		vPanel.add(new SpacerWidget());
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
-		denominatorAndNumorators = new ArrayList<>();
+		denominatorAndNumerators = new ArrayList<>();
 		measureObservations = new ArrayList<>();
 		initialPopulations = new ArrayList<>();
 		for(MeasurePackageClauseDetail detail : populationList) {
 			String detailType = detail.getType();
 			if(detailType.contains(MatConstants.DENOMINATOR) || detailType.contains(MatConstants.NUMERATOR)) {
-				denominatorAndNumorators.add(detail);
+				denominatorAndNumerators.add(detail);
 			} else if (detailType.contains(MatConstants.INITIAL_POPULATION)) {
 				initialPopulations.add(detail);
 			} else if (detailType.contains(MatConstants.MEASURE_OBS_POPULATION)) {
@@ -64,7 +64,7 @@ public class MeasurePackagerAssociations {
 		}
 		int count = 1;
 		if(initialPopulations.size() >= 2) {
-			for(MeasurePackageClauseDetail detail : denominatorAndNumorators) {
+			for(MeasurePackageClauseDetail detail : denominatorAndNumerators) {
 				HorizontalPanel denominatorAndNumeratorPanel= new HorizontalPanel();
 				Label denominatorAndNumeratorLabel = new Label(detail.getName());
 				denominatorAndNumeratorLabel.setWidth("150px");
@@ -85,7 +85,7 @@ public class MeasurePackagerAssociations {
 					denominatorListBox = denominatorAndNumeratorListBox;
 					denominatorDetail = detail;
 				} else {
-					numoratorListBox = denominatorAndNumeratorListBox;
+					numeratorListBox = denominatorAndNumeratorListBox;
 					numeratorDetail = detail;
 				}
 				denominatorAndNumeratorPanel.add(new HorizontalSpacerWidget());
@@ -106,9 +106,9 @@ public class MeasurePackagerAssociations {
 			measureObservationListBox.addItem("--Select--", "0");
 			Map<String, Integer> measureObservationHashMap = new HashMap<>();
 			count = 1;
-			for(MeasurePackageClauseDetail denominatorAndNumorator : denominatorAndNumorators) {
-				measureObservationListBox.addItem(denominatorAndNumorator.getName(), denominatorAndNumorator.getId());
-				measureObservationHashMap.put(denominatorAndNumorator.getId(), count);
+			for(MeasurePackageClauseDetail denominatorAndNumerator : denominatorAndNumerators) {
+				measureObservationListBox.addItem(denominatorAndNumerator.getName(), denominatorAndNumerator.getId());
+				measureObservationHashMap.put(denominatorAndNumerator.getId(), count);
 				count++;
 			}
 			measureObservationListBox.setSelectedIndex(detail.getAssociatedPopulationUUID() == null ? 0 : measureObservationHashMap.get(detail.getAssociatedPopulationUUID()));
@@ -136,62 +136,35 @@ public class MeasurePackagerAssociations {
 	
 	
 	private void createOnChangeHandlers() {
-		denominatorListBox.addChangeHandler(event -> handleDenominatorChange(denominatorListBox.getSelectedIndex()));
-		numoratorListBox.addChangeHandler(event -> handleNumeratorChange(numoratorListBox.getSelectedIndex()));
-		measureObservation1ListBox.addChangeHandler(event -> handleMeasureObservation1Change(measureObservation1ListBox.getSelectedIndex()));
-		measureObservation2ListBox.addChangeHandler(event -> handelMeasureObservation2Change(measureObservation2ListBox.getSelectedIndex()));
+		denominatorListBox.addChangeHandler(event -> handleDenominatorAndNumeratorListChange(denominatorListBox.getSelectedIndex(), denominatorListBox, numeratorListBox));
+		numeratorListBox.addChangeHandler(event -> handleDenominatorAndNumeratorListChange(denominatorListBox.getSelectedIndex(), numeratorListBox, denominatorListBox));
+		measureObservation1ListBox.addChangeHandler(event -> handleMeasureObservationChange(measureObservation1ListBox.getSelectedIndex(), measureObservation1ListBox, measureObservation2ListBox));
+		measureObservation2ListBox.addChangeHandler(event -> handleMeasureObservationChange(measureObservation2ListBox.getSelectedIndex(), measureObservation2ListBox, measureObservation1ListBox));
 	}
 	
-	private void handleDenominatorChange(int denominatorSelectedIndex) {
-		if(denominatorSelectedIndex == 0) {
-			numoratorListBox.setSelectedIndex(0);
-		} else if(denominatorSelectedIndex == 1) {
-			numoratorListBox.setSelectedIndex(2);
-		} else if(denominatorSelectedIndex == 2) {
-			numoratorListBox.setSelectedIndex(1);
-		}
+	private void handleDenominatorAndNumeratorListChange(int selectedIndex, ListBoxMVP listBoxThatWasUpdatedByUser, ListBoxMVP listBoxToUpdate) {
+		setListBoxIndexChanges(selectedIndex, listBoxToUpdate);
 		setDenominatorAndNumeratorAssociations();
-		setHelpBlockMessage(denominatorListBox.getTitle() + " was updated to " + denominatorListBox.getSelectedItemText() + " so " + numoratorListBox.getTitle() + " was updated to " + numoratorListBox.getSelectedItemText());
+		setHelpBlockMessage(listBoxThatWasUpdatedByUser.getTitle() + " was updated to " + listBoxThatWasUpdatedByUser.getSelectedItemText() + " so " + listBoxToUpdate.getTitle() + " was updated to " + listBoxToUpdate.getSelectedItemText());
+	
 	}
 
-	private void handleNumeratorChange(int numeratorSelectedIndex) {
-		if(numeratorSelectedIndex == 0) {
-			denominatorListBox.setSelectedIndex(0);
-		} else if(numeratorSelectedIndex == 1) {
-			denominatorListBox.setSelectedIndex(2);
-		} else if(numeratorSelectedIndex == 2) {
-			denominatorListBox.setSelectedIndex(1);
-		}
-		setDenominatorAndNumeratorAssociations();
-		setHelpBlockMessage(numoratorListBox.getTitle() + " was updated to " + numoratorListBox.getSelectedItemText() + " so " + denominatorListBox.getTitle() + " was updated to " + denominatorListBox.getSelectedItemText());
-	}
-	
-	private void handleMeasureObservation1Change(int measureObservation1SelectedIndex) {
-		if(measureObservation2ListBox != null) {
-			if(measureObservation1SelectedIndex == 0) {
-				measureObservation2ListBox.setSelectedIndex(0);
-			} else if(measureObservation1SelectedIndex == 1) {
-				measureObservation2ListBox.setSelectedIndex(2);
-			} else if(measureObservation1SelectedIndex == 2) {
-				measureObservation2ListBox.setSelectedIndex(1);
-			}
-			setHelpBlockMessage(measureObservation1ListBox.getTitle() + " was updated to " + measureObservation1ListBox.getSelectedItemText() + " so " + measureObservation2ListBox.getTitle() + " was updated to " + measureObservation2ListBox.getSelectedItemText());
+	private void handleMeasureObservationChange(int selectedIndex, ListBoxMVP listBoxThatWasUpdatedByUser, ListBoxMVP listBoxToUpdate) {
+		if(listBoxToUpdate != null) {
+			setListBoxIndexChanges(selectedIndex, listBoxToUpdate);
+			setHelpBlockMessage(listBoxThatWasUpdatedByUser.getTitle() + " was updated to " + listBoxThatWasUpdatedByUser.getSelectedItemText() + " so " + listBoxToUpdate.getTitle() + " was updated to " + listBoxToUpdate.getSelectedItemText());
 		}
 		setMeasureObservationAssociatations();
 	}
 	
-	private void handelMeasureObservation2Change(int measureObservation2SelectedIndex) {
-		if(measureObservation1ListBox != null) {
-			if(measureObservation2SelectedIndex == 0) {
-				measureObservation1ListBox.setSelectedIndex(0);
-			} else if(measureObservation2SelectedIndex == 1) {
-				measureObservation1ListBox.setSelectedIndex(2);
-			} else if(measureObservation2SelectedIndex == 2) {
-				measureObservation1ListBox.setSelectedIndex(1);
-			}
-			setHelpBlockMessage(measureObservation2ListBox.getTitle() + " was updated to " + measureObservation2ListBox.getSelectedItemText() + " so " + measureObservation1ListBox.getTitle() + " was updated to " + measureObservation1ListBox.getSelectedItemText());
+	private void setListBoxIndexChanges(int selectedIndex, ListBoxMVP listBoxToUpdate) {
+		if(selectedIndex == 0) {
+			listBoxToUpdate.setSelectedIndex(0);
+		} else if(selectedIndex == 1) {
+			listBoxToUpdate.setSelectedIndex(2);
+		} else if(selectedIndex == 2) {
+			listBoxToUpdate.setSelectedIndex(1);
 		}
-		setMeasureObservationAssociatations();
 	}
 	
 	private void setDenominatorAndNumeratorAssociations() {
@@ -201,7 +174,7 @@ public class MeasurePackagerAssociations {
 		}
 		if (numeratorDetail != null) {
 			numeratorDetail.setAssociatedPopulation(true);
-			numeratorDetail.setAssociatedPopulationUUID(numoratorListBox.getSelectedValue());
+			numeratorDetail.setAssociatedPopulationUUID(numeratorListBox.getSelectedValue());
 		}
 	}
 	
@@ -241,12 +214,12 @@ public class MeasurePackagerAssociations {
 		this.denominatorListBox = denominatorListBox;
 	}
 
-	public ListBoxMVP getNumoratorListBox() {
-		return numoratorListBox;
+	public ListBoxMVP getNumeratorListBox() {
+		return numeratorListBox;
 	}
 
-	public void setNumoratorListBox(ListBoxMVP numoratorListBox) {
-		this.numoratorListBox = numoratorListBox;
+	public void setNumeratorListBox(ListBoxMVP numeratorListBox) {
+		this.numeratorListBox = numeratorListBox;
 	}
 
 	public ListBoxMVP getMeasureObservation1ListBox() {

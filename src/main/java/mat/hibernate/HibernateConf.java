@@ -35,7 +35,7 @@ public class HibernateConf{
 	public static Session createHibernateSession() {
 
 		SessionFactory sessionFactory = HibernateConf.getSessionFactory();
-		Session session = sessionFactory.getCurrentSession();
+		Session session = sessionFactory.openSession();
 
 		return session;		
 	}

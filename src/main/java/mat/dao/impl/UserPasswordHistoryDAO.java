@@ -48,7 +48,6 @@ public class UserPasswordHistoryDAO extends GenericDAO<UserPasswordHistory, Stri
 			query.setString("passwordHistoryId", userPasswordHistoryId);
 			int rowCount = query.executeUpdate();
 		} finally {
-			closeSession(session);
 		}
 		
 	}

@@ -85,7 +85,6 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 		}
 		finally {
 	    	rollbackUncommitted(transaction);
-	    	closeSession(session);
 		}
 	}
 	

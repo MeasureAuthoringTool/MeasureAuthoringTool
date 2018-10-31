@@ -203,7 +203,6 @@ public class MeasurePackageClauseCellListWidget {
 		hp.add(rightCellListVPanel);
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setAttribute("id", "MeasurePackageClause_MainVPanel");
-		//addAssocationsWidget.clear();
 		vp.add(addAssocationsWidget);
 		hp.add(vp);
 		hp.getElement().setAttribute("id", "MeasurePackageClause_MainHoriPanel");

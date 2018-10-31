@@ -26,6 +26,7 @@ import mat.client.cqlworkspace.CQLMeasureWorkSpacePresenter;
 import mat.client.cqlworkspace.CQLMeasureWorkSpaceView;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
+import mat.client.measure.measuredetails.MeasureDetailsPresenter;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
@@ -42,30 +43,31 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.shared.ConstantMessages;
 
-/**
- * The Class MeasureComposerPresenter.
- */
-public class MeasureComposerPresenter implements MatPresenter, Enableable, TabObserver {
-	/**
-	 * The Class EnterKeyDownHandler.
-	 */
+public class MeasureComposerPresenter implements MatPresenter, Enableable, TabObserver {	
+	MatTabLayoutPanel targetTabLayout;
+	MatPresenter targetPresenter;
+	MatPresenter sourcePresenter;
+	HandlerRegistration yesHandler;
+	HandlerRegistration noHandler;
+	private static FocusableWidget subSkipContentHolder;
+	private List<MatPresenter> presenterList;
+	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
+	private ClauseWorkSpacePresenter clauseWorkSpacePresenter = new ClauseWorkSpacePresenter();
+	private SimplePanel emptyWidget = new SimplePanel();
+	private ContentWithHeadingWidget measureComposerContent = new ContentWithHeadingWidget();
+	private String measureComposerTab;
+	private MatTabLayoutPanel measureComposerTabLayout;
+	@SuppressWarnings("unused")
+	private MeasurePackagePresenter measurePackagePresenter;
+	private MetaDataPresenter metaDataPresenter;
+	private MeasureDetailsPresenter measureDetailsPresenter;
+	
 	class EnterKeyDownHandler implements KeyDownHandler {
-		
-		/** The i. */
 		private int i = 0;
-		
-		/**
-		 * Instantiates a new enter key down handler.
-		 *
-		 * @param index the index
-		 */
 		public EnterKeyDownHandler(int index) {
 			i = index;
 		}
-		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.event.dom.client.KeyDownHandler#onKeyDown(com.google.gwt.event.dom.client.KeyDownEvent)
-		 */
+
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
@@ -74,20 +76,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		}
 	}
 	
-	MatTabLayoutPanel targetTabLayout;
-	MatPresenter targetPresenter;
-	MatPresenter sourcePresenter;
-	HandlerRegistration yesHandler;
-	HandlerRegistration noHandler;
-	
-	/** The sub skip content holder. */
-	private static FocusableWidget subSkipContentHolder;
-	
-	/**
-	 * Sets the sub skip embedded link.
-	 *
-	 * @param name the new sub skip embedded link
-	 */
 	public static void setSubSkipEmbeddedLink(String name) {
 		if(subSkipContentHolder == null) {
 			subSkipContentHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Sub Content"));
@@ -98,40 +86,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		subSkipContentHolder.add(w);
 		subSkipContentHolder.setFocus(true);
 	}
-	
-	private List<MatPresenter> presenterList;
-	
-	/** The button bar. */
-	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
-	
-	/**
-	 * The Clause Workspace presenter.
-	 */
-	private ClauseWorkSpacePresenter clauseWorkSpacePresenter = new ClauseWorkSpacePresenter();
 
-	/** The empty widget. */
-	private SimplePanel emptyWidget = new SimplePanel();
-	
-	/** The measure composer content. */
-	private ContentWithHeadingWidget measureComposerContent = new ContentWithHeadingWidget();
-	
-	/** The measure composer tab. */
-	private String measureComposerTab;
-	
-	/** The measure composer tab layout. */
-	private MatTabLayoutPanel measureComposerTabLayout;
-		
-	/** The measure package presenter. */
-	@SuppressWarnings("unused")
-	private MeasurePackagePresenter measurePackagePresenter;
-	
-	/** The meta data presenter. */
-	private MetaDataPresenter metaDataPresenter;
-	
-	
-	/**
-	 * Instantiates a new measure composer presenter.
-	 */
 	@SuppressWarnings("unchecked")
 	public MeasureComposerPresenter() {
 		presenterList = new LinkedList<MatPresenter>();
@@ -140,11 +95,15 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
-		
+		measureDetailsPresenter = (MeasureDetailsPresenter) buildMeasureDetailsPresenter();
+
 		measureComposerTabLayout = new MatTabLayoutPanel(this);
 		measureComposerTabLayout.getElement().setAttribute("id", "measureComposerTabLayout");
-		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Measure Details", true);
+		measureComposerTabLayout.add(metaDataPresenter.getWidget(), "Old Measure Details", true);
 		presenterList.add(metaDataPresenter);
+		presenterList.add(measureDetailsPresenter);
+		measureComposerTabLayout.add(measureDetailsPresenter.getWidget(), "Measure Details", true);
+
 		MatPresenter cqlWorkspacePresenter = buildCQLWorkSpaceTab();
 		measureComposerTabLayout.add(cqlWorkspacePresenter.getWidget(), "CQL Workspace", true);
 		presenterList.add(cqlWorkspacePresenter);
@@ -196,7 +155,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 				if (selectedIndex != 0) {
 					measureComposerTabLayout.selectPreviousTab();
 				} else {
-					//US 385. Display the first tab which is value set search.
 					metaDataPresenter.displayDetail();
 					buttonBar.subState = selectedIndex;
 					beforeDisplay();
@@ -206,7 +164,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		});
 		
 		buttonBar.getContinueButton().addClickHandler(new MATClickHandler() {
-			
 			@Override
 			protected boolean doAlert() {
 				return true;
@@ -238,9 +195,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		});
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
 	@Override
 	public void beforeClosingDisplay() {
 		if (MatContext.get().isMeasureDeleted()) {
@@ -282,10 +236,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeDisplay()
-	 */
 	@Override
 	public void beforeDisplay() {
 		String currentMeasureId = MatContext.get().getCurrentMeasureId();
@@ -295,10 +245,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 			}
 			String heading = MatContext.get().getCurrentMeasureName() + " ";
 			String version = MatContext.get().getCurrentMeasureVersion();
-			//when a measure is initaly created we need to explictly create the heading
+			//when a measure is initially created we need to explicitly create the heading
 			if (!version.startsWith("Draft") && !version.startsWith("v")) {
 				version = "Draft based on v" + version;
-				//version = MeasureUtility.getVersionText(version, true);
 			}
 			
 			heading = heading + version;
@@ -322,26 +271,18 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		buttonBar.setPageNamesOnState();
 	}
 	
-	/**
-	 * Builds the measure meta data presenter.
-	 *
-	 * @return the mat presenter
-	 */
 	private MatPresenter buildMeasureMetaDataPresenter() {
 		MetaDataView mdV = new MetaDataView();
-		//MAT-4898
-		//AddEditAuthorsView aeaV = new AddEditAuthorsView();
-		//AddEditMeasureTypeView aemtV = new AddEditMeasureTypeView();
-		//		AddEditComponentMeasuresView aecmV = new AddEditComponentMeasuresView();
 		MetaDataPresenter mdP = new MetaDataPresenter(mdV,buttonBar, MatContext.get().getListBoxCodeProvider());
 		return mdP;
 	}
 	
-	/**
-	 * Builds the  measure package widget.
-	 *
-	 * @return the mat presenter
-	 */
+	
+	private MatPresenter buildMeasureDetailsPresenter() {
+		MeasureDetailsPresenter measureDetailsPresenter = new MeasureDetailsPresenter();
+		return measureDetailsPresenter;
+	}
+	
 	private MatPresenter buildMeasurePackageWidget() {
 		MeasurePackagerView measurePackagerView = new MeasurePackagerView();
 		MeasurePackagePresenter measurePackagePresenter = new MeasurePackagePresenter(measurePackagerView);
@@ -349,13 +290,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		return measurePackagePresenter;
 	}
 	
-
-	
-	/**
-	 * Builds the qdm presenter.
-	 *
-	 * @return the qDM presenter
-	 */
 	private MatPresenter buildAppliedQDMPresenter(){
 		QDMAppliedSelectionView vascProfileSelectionView = new QDMAppliedSelectionView();
 		QDMAppliedSelectionPresenter vsacProfileSelectionPresenter =
@@ -364,12 +298,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		return vsacProfileSelectionPresenter;
 	}
 	
-	
-	/**
-	 * Builds the cql work space tab.
-	 *
-	 * @return the mat presenter
-	 */
 	private MatPresenter buildCQLWorkSpaceTab(){
 		CQLMeasureWorkSpaceView cqlView = new CQLMeasureWorkSpaceView();
 		CQLMeasureWorkSpacePresenter cqlPresenter =
@@ -378,11 +306,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		return cqlPresenter;
 	}
 	
-	/**
-	* Builds the cql work space tab.
-	*
-	* @return the mat presenter
-	*/
 	private MatPresenter buildCQLPopulationWorkspaceTab() {		
 		CQLPopulationWorkSpaceView cqlPopulationWorkspaceView = new CQLPopulationWorkSpaceView();
 		CQLPopulationWorkSpacePresenter cqlPopulationPresenter =
@@ -391,42 +314,21 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable, TabOb
 		return cqlPopulationPresenter;
 	}
 	
-	/**
-	 * Gets the meta data presenter.
-	 *
-	 * @return the metaDataPresenter
-	 */
 	public MetaDataPresenter getMetaDataPresenter() {
 		return metaDataPresenter;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
 	@Override
 	public Widget getWidget() {
 		return measureComposerContent;
 	}
 	
-	/**
-	 * implementing Enableable interface
-	 * set enablement for navigation links and measure composer tabs
-	 * consider setting enablement for each presenter and for skip links.
-	 *
-	 * @param enabled the new enabled
-	 */
 	@Override
 	public void setEnabled(boolean enabled) {
 		buttonBar.setEnabled(enabled);
 		measureComposerTabLayout.setEnabled(enabled);
 	}
 
-	
-	/**
-	 * Sets the meta data presenter.
-	 *
-	 * @param metaDataPresenter the metaDataPresenter to set
-	 */
 	public void setMetaDataPresenter(MetaDataPresenter metaDataPresenter) {
 		this.metaDataPresenter = metaDataPresenter;
 	}

@@ -703,4 +703,6 @@ public interface MeasureService extends RemoteService {
 	public GenericResult checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId);
 
 	ValidateMeasureResult validateExports(String measureId) throws Exception;
+	
+	public Boolean isCompositeMeasure(String currentMeasureId);
 }

@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -80,7 +81,7 @@ import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.CQLValidationUtil;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLModelValidator;
 import mat.shared.CQLObject;
@@ -2244,8 +2245,8 @@ public class CQLServiceImpl implements CQLService {
 		if (!parsedCQL.getCqlErrors().isEmpty()) {
 			result.setValidCQLWhileSavingExpression(false);
 		}
-		List<CQLErrors> errors = new ArrayList<>();
-		for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
+		List<CQLError> errors = new ArrayList<>();
+		for (CQLError cqlError : parsedCQL.getCqlErrors()) {
 			int errorStartLine = cqlError.getStartErrorInLine();
 
 			if ((errorStartLine >= startLine && errorStartLine <= endLine)) {
@@ -2351,7 +2352,6 @@ public class CQLServiceImpl implements CQLService {
 		logger.info("GETTING CQL ARTIFACTS");
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 
-
 		List<String> exprList = new ArrayList<>();
 
 		for (CQLDefinition cqlDefinition : cqlModel.getDefinitionList()) {
@@ -2372,22 +2372,21 @@ public class CQLServiceImpl implements CQLService {
 
 		SaveUpdateCQLResult cqlResult = CQLUtil.parseCQLLibraryForErrors(cqlModel, getCqlLibraryDAO(), exprList);
 		
-		Map<String , List<CQLErrors>> expressionMapWithError = getCQLErrorsPerExpressions(cqlModel, cqlResult);
-		
-		cqlResult.getUsedCQLArtifacts().setCqlErrorsPerExpression(expressionMapWithError);
-
 		// if there are no errors in the cql file, get the used cql artifacts
-		if (cqlResult.getCqlErrors().isEmpty()) {
-
+		if (CollectionUtils.isEmpty(cqlResult.getCqlErrors())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);
-			CQLArtifactHolder cqlArtifactHolder = CQLUtil
-					.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
+			CQLArtifactHolder cqlArtifactHolder = CQLUtil.getCQLArtifactsReferredByPoplns(xmlProcessor.getOriginalDoc());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLDefinitions().addAll(cqlArtifactHolder.getCqlDefFromPopSet());
 			cqlResult.getUsedCQLArtifacts().getUsedCQLFunctions().addAll(cqlArtifactHolder.getCqlFuncFromPopSet());
 			setReturnTypes(cqlResult, cqlModel);
 
 		} else {
 			cqlResult.getUsedCQLArtifacts().setCqlErrors(cqlResult.getCqlErrors());
+			cqlResult.getUsedCQLArtifacts().setCqlErrorsPerExpression(getCQLErrorsPerExpressions(cqlModel, cqlResult.getCqlErrors()));
+		}
+		
+		if(CollectionUtils.isNotEmpty(cqlResult.getCqlWarnings())) {
+			cqlResult.getUsedCQLArtifacts().setCqlWarningsPerExpression(getCQLErrorsPerExpressions(cqlModel, cqlResult.getCqlWarnings()));	
 		}
 
 		return cqlResult.getUsedCQLArtifacts();
@@ -3111,9 +3110,9 @@ public class CQLServiceImpl implements CQLService {
 	 * @param parsedCQL
 	 * @return Map.
 	 */
-	private Map<String , List<CQLErrors>> getCQLErrorsPerExpressions(CQLModel cqlModel , SaveUpdateCQLResult parsedCQL ){
+	private Map<String, List<CQLError>> getCQLErrorsPerExpressions(CQLModel cqlModel, List<CQLError> cqlErrors){
 		
-		Map<String , List<CQLErrors>> expressionMapWithError = new HashMap<>();
+		Map<String , List<CQLError>> expressionMapWithError = new HashMap<>();
 		List<CQLExpressionObject> cqlExpressionObjects = getCQLExpressionObjectListFromCQLModel(cqlModel);
 		 
 		for(CQLExpressionObject expressionObject : cqlExpressionObjects){
@@ -3156,15 +3155,14 @@ public class CQLServiceImpl implements CQLService {
 			logger.debug("fileStartLine of expression ===== "+ fileStartLine);
 			logger.debug("fileEndLine of expression ===== "+ fileEndLine);
 		
-			List<CQLErrors> errors = new ArrayList<>();
-			for (CQLErrors cqlError : parsedCQL.getCqlErrors()) {
+			List<CQLError> errors = new ArrayList<>();
+			for (CQLError cqlError : cqlErrors) {
 				int errorStartLine = cqlError.getStartErrorInLine();
-				String errorMsg = (cqlError.getErrorMessage() == null) ? "" : cqlError.getErrorMessage();
 
-				if ((errorStartLine >= fileStartLine && errorStartLine <= fileEndLine)) {
+				if (errorStartLine >= fileStartLine && errorStartLine <= fileEndLine) {
 					cqlError.setStartErrorInLine(errorStartLine - fileStartLine - 1);
 					cqlError.setEndErrorInLine(cqlError.getEndErrorInLine() - fileStartLine - 1);
-					cqlError.setErrorMessage(errorMsg);
+					cqlError.setErrorMessage(StringUtils.trimToEmpty(cqlError.getErrorMessage()));
 					if(cqlError.getStartErrorInLine() ==-1){
 						cqlError.setStartErrorInLine(0);
 					}
@@ -3185,11 +3183,9 @@ public class CQLServiceImpl implements CQLService {
 	 * @param expressionToFind
 	 * @return integer value.
 	 */
-	private int findStartLineForCQLExpressionInCQLFile( String cqlFileString,
-			String expressionToFind) {
+	private int findStartLineForCQLExpressionInCQLFile(String cqlFileString, String expressionToFind) {
 		int fileStartLine =-1;
-		try {
-			LineNumberReader rdr = new LineNumberReader(new StringReader(cqlFileString));
+		try (LineNumberReader rdr = new LineNumberReader(new StringReader(cqlFileString))){
 			String line = null;
 			logger.debug("Expression to Find :: " + expressionToFind);
 			while((line = rdr.readLine()) != null) {
@@ -3198,8 +3194,6 @@ public class CQLServiceImpl implements CQLService {
 		        	break;
 		        }
 			}
-			rdr.close();
-
 		} catch (IOException e) {
 			logger.error("findStartLineForCQLExpressionInCQLFile" + e.getMessage());
 		}

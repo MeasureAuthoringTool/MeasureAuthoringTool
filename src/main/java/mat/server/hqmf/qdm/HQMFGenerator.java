@@ -10,7 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.clause.MeasureExport;
 import mat.server.hqmf.Generator;
-import mat.server.simplexml.HQMFHumanReadableGenerator;
+import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
 import mat.server.util.XmlProcessor;
 
 import org.apache.commons.logging.Log;

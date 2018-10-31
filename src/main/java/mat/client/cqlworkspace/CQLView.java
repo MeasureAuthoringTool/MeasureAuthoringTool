@@ -1,5 +1,7 @@
 package mat.client.cqlworkspace;
 
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Panel;
 import org.gwtbootstrap3.client.ui.PanelBody;
@@ -12,11 +14,13 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import edu.ycp.cs.dh.acegwt.client.ace.AceAnnotationType;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditor;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorMode;
 import edu.ycp.cs.dh.acegwt.client.ace.AceEditorTheme;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
+import mat.shared.CQLError;
 
 public class CQLView {
 	
@@ -108,5 +112,13 @@ public class CQLView {
 
 	public void setExportErrorFile(Button exportErrorFile) {
 		this.exportErrorFile = exportErrorFile;
+	}
+	
+	public void setViewCQLAnnotations(List<CQLError> cqlErrors, String prefix, AceAnnotationType aceAnnotationType) {
+		for (CQLError error : cqlErrors) {
+			int line = error.getErrorInLine();
+			int column = error.getErrorAtOffeset();
+			this.getCqlAceEditor().addAnnotation(line - 1, column, prefix + error.getErrorMessage(), aceAnnotationType);
+		}
 	}
 }

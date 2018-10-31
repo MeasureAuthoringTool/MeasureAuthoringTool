@@ -37,7 +37,7 @@ import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.server.CQLUtilityClass;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.CQLExpressionObject;
 import mat.shared.CQLExpressionOprandObject;
 import mat.shared.CQLObject;
@@ -484,9 +484,9 @@ public class CQLUtil {
 
 		SaveUpdateCQLResult parsedCQL = new SaveUpdateCQLResult();
 
-		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<String, LibHolderObject>();
+		Map<String, LibHolderObject> cqlLibNameMap = new HashMap<>();
 		
-		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<CQLIncludeLibrary, CQLModel>();
+		Map<CQLIncludeLibrary, CQLModel> cqlIncludeModelMap = new HashMap<>();
 
 		getCQLIncludeMaps(cqlModel, cqlLibNameMap, cqlIncludeModelMap, cqlLibraryDAO);
 
@@ -495,7 +495,7 @@ public class CQLUtil {
 
 		setIncludedCQLExpressions(cqlModel);
 
-		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM, cqlLibraryDAO);
+		validateCQLWithIncludes(cqlModel, cqlLibNameMap, parsedCQL, exprList, generateELM);
 
 		return parsedCQL;
 	}
@@ -568,28 +568,25 @@ public class CQLUtil {
 	 * @param generateELM the generate ELM
 	 */
 	private static void validateCQLWithIncludes(CQLModel cqlModel, Map<String, LibHolderObject> cqlLibNameMap,
-			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM, CQLLibraryDAO cqlLibraryDAO ) {
+			SaveUpdateCQLResult parsedCQL, List<String> exprList, boolean generateELM) {
 
-		List<CqlTranslatorException> cqlTranslatorExceptions = new ArrayList<CqlTranslatorException>();
 		Map<String, String> libraryMap = new HashMap<>(); 
 		
 		// get the strings for parsing
-		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "").toString();
+		String parentCQLString = CQLUtilityClass.getCqlString(cqlModel, "");
 		libraryMap.put(cqlModel.getUsingName() + "-" + cqlModel.getVersionUsed(), parentCQLString);
 		for (String cqlLibName : cqlLibNameMap.keySet()) {
 			CQLModel includedCQLModel = CQLUtilityClass.getCQLModelFromXML(cqlLibNameMap.get(cqlLibName).getMeasureXML());
 
 			LibHolderObject libHolderObject = cqlLibNameMap.get(cqlLibName);
-			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "").toString();			
+			String includedCQLString = CQLUtilityClass.getCqlString(includedCQLModel, "");			
 			libraryMap.put(libHolderObject.getCqlLibrary().getCqlLibraryName() + "-" + libHolderObject.getCqlLibrary().getVersion(), includedCQLString);
 		}
 
 		// do the parsing
 		CQLtoELM cqlToELM = new CQLtoELM(parentCQLString, libraryMap);
 		cqlToELM.doTranslation(true);
-		List<CQLErrors> errors = new ArrayList<CQLErrors>();
-		cqlTranslatorExceptions.addAll(cqlToELM.getErrors());
-		
+
 		// do the filtering
 		if(exprList != null){
 			filterCQLArtifacts(cqlModel, parsedCQL, cqlToELM, exprList);
@@ -602,18 +599,30 @@ public class CQLUtil {
 		}
 
 		// add in the errors, if any
-		for (CqlTranslatorException cte : cqlTranslatorExceptions) {
-			CQLErrors cqlErrors = new CQLErrors();
-			cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-			cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-			cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-			cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-			cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-			cqlErrors.setErrorMessage(cte.getMessage());
-			errors.add(cqlErrors);
+		List<CQLError> errors = new ArrayList<>();
+		for (CqlTranslatorException cte : cqlToELM.getErrors()) {
+			setCQLErrors(errors, cte);
+		}
+		
+		List<CQLError> warnings = new ArrayList<>();
+		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
+			setCQLErrors(warnings, cte);
 		}
 		
 		parsedCQL.setCqlErrors(errors);
+		parsedCQL.setCqlWarnings(warnings);
+	}
+
+	private static void setCQLErrors(List<CQLError> errors, CqlTranslatorException cte) {
+		CQLError cqlErrors = new CQLError();
+		cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
+		cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
+		cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
+		cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
+		cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
+		cqlErrors.setErrorMessage(cte.getMessage());
+		cqlErrors.setSeverity(cte.getSeverity().toString());
+		errors.add(cqlErrors);
 	}
 	
 	/**

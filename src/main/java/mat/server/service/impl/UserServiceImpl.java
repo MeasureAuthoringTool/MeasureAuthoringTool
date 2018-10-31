@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService {
 		
 		logger.info("Sending email to " + user.getEmailAddress());
 		try {
-			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_TEMP_PASSWORD), paramsMap);
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/tempPasswordTemplate.ftl"), paramsMap);
 			msg.setText(text);
 			mailSender.send(msg);
 		} catch(IOException | TemplateException exc) {
@@ -388,7 +388,7 @@ public class UserServiceImpl implements UserService {
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 		try {
-			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD), paramsMap);
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/resetPasswordTemplate.ftl"), paramsMap);
 			msg.setText(text);
 			logger.info("Sending email to " + email);
 			mailSender.send(msg);
@@ -526,7 +526,7 @@ public class UserServiceImpl implements UserService {
 			HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 			paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 			paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
-			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_WELCOME), paramsMap);
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/welcomeTemplate.ftl"), paramsMap);
 			body.setContent(text, "text/html");
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(body);
@@ -554,7 +554,7 @@ public class UserServiceImpl implements UserService {
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		paramsMap.put(ConstantMessages.URL, ServerConstants.getEnvURL());
 		try {
-			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID), paramsMap);
+			String text = FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerConfiguration.getTemplate("mail/forgotLoginIDTemplate.ftl"), paramsMap);
 			msg.setTo(user.getEmailAddress());
 			msg.setText(text);
 			mailSender.send(msg);

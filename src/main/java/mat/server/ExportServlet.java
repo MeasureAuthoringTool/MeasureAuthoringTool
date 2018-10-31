@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +37,7 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.UserService;
 import mat.server.service.impl.ZipPackager;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 import mat.shared.SaveUpdateCQLResult;
@@ -118,6 +119,8 @@ public class ExportServlet extends HttpServlet {
 	private static final String ADMINISTRATOR = "Administrator";
 
 	private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	
+	private static final String CQL_NO_ERRORS_WARNINGS_MESSAGE = "You are viewing CQL with no errors or warnings.";
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -236,29 +239,52 @@ public class ExportServlet extends HttpServlet {
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String cqlString = result.getCqlString();
-		String[] cqlLinesArray = cqlString.split("\n");
+		String[] cqlLinesArray = cqlString.split("\\r?\\n");
 		for (int i = 0; i < cqlLinesArray.length; i++) {
-			sb.append((i + 1)).append(" ").append(cqlLinesArray[i]).append("\r\n");
+			sb.append((i + 1)).append(" ").append(cqlLinesArray[i]).append(System.lineSeparator());
 		}
-		if (!result.getCqlErrors().isEmpty()) {
-
-			Collections.sort(result.getCqlErrors());
-			sb.append(
-					"/*******************************************************************************************************************");
-			for (CQLErrors error : result.getCqlErrors()) {
-				StringBuilder errorMessage = new StringBuilder();
-				errorMessage.append("Line ").append(error.getErrorInLine()).append(": ")
-						.append(error.getErrorMessage());
-				sb.append("\r\n").append(errorMessage).append("\r\n");
-			}
-			sb.append(
-					"*******************************************************************************************************************/");
+		
+		if(CollectionUtils.isEmpty(result.getCqlErrors()) && CollectionUtils.isEmpty(result.getCqlWarnings())) {
+			sb.append("/*******************************************************************************************************************");
+			sb.append(System.lineSeparator());
+			sb.append(CQL_NO_ERRORS_WARNINGS_MESSAGE);
+			sb.append("*******************************************************************************************************************/");
+			
+		} else {
+			sb.append(buildExceptionString(result.getCqlErrors(), "ERRORS:"));
+			sb.append(buildExceptionString(result.getCqlWarnings(), "WARNINGS:"));
 		}
 
 		resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + result.getLibraryName() + ".txt");
 		resp.getOutputStream().write(sb.toString().getBytes());
 	}
 
+	private String buildExceptionString(List<CQLError> cqlErrors, String heading) {
+		StringBuilder sb = new StringBuilder();
+		
+		if(CollectionUtils.isNotEmpty(cqlErrors)) {
+			Collections.sort(cqlErrors);
+			sb.append(System.lineSeparator());
+			sb.append("/*******************************************************************************************************************");
+			sb.append(System.lineSeparator());
+			sb.append(heading);
+			for (CQLError error : cqlErrors) {
+				sb.append(System.lineSeparator());
+				sb.append(createExceptionLine(error));
+				sb.append(System.lineSeparator());
+			}
+			
+			sb.append("*******************************************************************************************************************/");
+		}
+		
+		return sb.toString();
+	}
+	
+	private StringBuilder createExceptionLine(CQLError error) {
+		StringBuilder errorMessage = new StringBuilder();
+		return errorMessage.append("Line ").append(error.getErrorInLine()).append(": ").append(error.getErrorMessage());
+	}
+	
 	private void exportELMFile(HttpServletResponse resp, String id, String type) throws Exception {
 		MeasureExport measureExport = getService().getMeasureExport(id);
 		ExportResult export = getService().createOrGetELMLibraryFile(id, measureExport);
@@ -550,7 +576,7 @@ public class ExportServlet extends HttpServlet {
 		logger.info("Generating CSV of Active User OID's...");
 		// Get all the active users
 		List<User> allNonTerminatedUsersList = getUserService().searchForNonTerminatedUsers();
-		Map<String, String> activeOidsMap = new TreeMap<String, String>();
+		Map<String, String> activeOidsMap = new TreeMap<>();
 		for (User user : allNonTerminatedUsersList) {
 			activeOidsMap.put(user.getOrgOID(), user.getOrganizationName());
 		}

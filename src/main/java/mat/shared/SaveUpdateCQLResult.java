@@ -32,7 +32,9 @@ public class SaveUpdateCQLResult extends GenericResult{
 	private String cqlString;
 	
 	/** The cql errors. */
-	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
+	private List<CQLError> cqlErrors = new ArrayList<>();
+	
+	private List<CQLError> cqlWarnings = new ArrayList<>();
 	
 	/** The definition. */
 	private CQLDefinition definition;
@@ -128,7 +130,7 @@ public class SaveUpdateCQLResult extends GenericResult{
 	 *
 	 * @return the cql errors
 	 */
-	public List<CQLErrors> getCqlErrors() {
+	public List<CQLError> getCqlErrors() {
 		return cqlErrors;
 	}
 
@@ -137,8 +139,16 @@ public class SaveUpdateCQLResult extends GenericResult{
 	 *
 	 * @param cqlErrors the new cql errors
 	 */
-	public void setCqlErrors(List<CQLErrors> cqlErrors) {
+	public void setCqlErrors(List<CQLError> cqlErrors) {
 		this.cqlErrors = cqlErrors;
+	}
+
+	public List<CQLError> getCqlWarnings() {
+		return cqlWarnings;
+	}
+
+	public void setCqlWarnings(List<CQLError> cqlWarnings) {
+		this.cqlWarnings = cqlWarnings;
 	}
 
 	/**

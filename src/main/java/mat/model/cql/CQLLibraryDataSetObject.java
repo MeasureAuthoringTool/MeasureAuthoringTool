@@ -8,7 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 import mat.model.BaseModel;
 import mat.model.LockedUserInfo;
-import mat.shared.CQLErrors;
+import mat.shared.CQLError;
 
 public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private String id;
@@ -40,7 +40,7 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	private boolean isDeletable;
 	
 	/** The cql errors. */
-	private List<CQLErrors> cqlErrors = new ArrayList<CQLErrors>();
+	private List<CQLError> cqlErrors = new ArrayList<CQLError>();
 	
 	public boolean isLocked() {
 		return isLocked;
@@ -170,10 +170,10 @@ public class CQLLibraryDataSetObject implements IsSerializable,BaseModel{
 	public void setCqlModel(CQLModel cqlModel) {
 		this.cqlModel = cqlModel;
 	}
-	public List<CQLErrors> getCqlErrors() {
+	public List<CQLError> getCqlErrors() {
 		return cqlErrors;
 	}
-	public void setCqlErrors(List<CQLErrors> cqlErrors) {
+	public void setCqlErrors(List<CQLError> cqlErrors) {
 		this.cqlErrors = cqlErrors;
 	}
 	public boolean isSharable() {

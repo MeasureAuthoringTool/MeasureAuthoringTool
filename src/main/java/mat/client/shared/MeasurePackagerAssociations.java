@@ -23,10 +23,6 @@ public class MeasurePackagerAssociations {
 	private ListBoxMVP measureObservation1ListBox = new ListBoxMVP();
 	private ListBoxMVP measureObservation2ListBox = new ListBoxMVP();
 	
-	private ArrayList<MeasurePackageClauseDetail> denominatorAndNumerators = null;
-	private ArrayList<MeasurePackageClauseDetail> measureObservations = null;
-	private ArrayList<MeasurePackageClauseDetail> initialPopulations = null;
-	
 	private MeasurePackageClauseDetail denominatorDetail = null;
 	private MeasurePackageClauseDetail numeratorDetail = null;
 	private MeasurePackageClauseDetail measureObservation1Detail = null;
@@ -49,9 +45,11 @@ public class MeasurePackagerAssociations {
 		createHelpBlock();
 		vPanel.add(new SpacerWidget());
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
-		denominatorAndNumerators = new ArrayList<>();
-		measureObservations = new ArrayList<>();
-		initialPopulations = new ArrayList<>();
+		
+		ArrayList<MeasurePackageClauseDetail> denominatorAndNumerators = new ArrayList<>();
+		ArrayList<MeasurePackageClauseDetail> measureObservations = new ArrayList<>();
+		ArrayList<MeasurePackageClauseDetail> initialPopulations = new ArrayList<>();
+		
 		for(MeasurePackageClauseDetail detail : populationList) {
 			String detailType = detail.getType();
 			if(detailType.contains(MatConstants.DENOMINATOR) || detailType.contains(MatConstants.NUMERATOR)) {
@@ -62,7 +60,6 @@ public class MeasurePackagerAssociations {
 				measureObservations.add(detail);
 			}
 		}
-		int count = 1;
 		if(initialPopulations.size() >= 2) {
 			for(MeasurePackageClauseDetail detail : denominatorAndNumerators) {
 				HorizontalPanel denominatorAndNumeratorPanel= new HorizontalPanel();
@@ -74,12 +71,7 @@ public class MeasurePackagerAssociations {
 				denominatorAndNumeratorListBox.setWidth("175px");
 				denominatorAndNumeratorListBox.addItem("--Select--", "0");
 				Map<String, Integer> denomHashMap = new HashMap<>();
-				count = 1;
-				for(MeasurePackageClauseDetail initialPopulation : initialPopulations) {
-					denominatorAndNumeratorListBox.addItem(initialPopulation.getName(), initialPopulation.getId());
-					denomHashMap.put(initialPopulation.getId(), count);
-					count++;
-				}
+				createListBoxes(initialPopulations, denominatorAndNumeratorListBox, denomHashMap);
 				denominatorAndNumeratorListBox.setSelectedIndex(detail.getAssociatedPopulationUUID() == null ? 0 : denomHashMap.get(detail.getAssociatedPopulationUUID()));
 				if(detail.getName().toLowerCase().contains(MatConstants.DENOMINATOR)) {
 					denominatorListBox = denominatorAndNumeratorListBox;
@@ -105,12 +97,7 @@ public class MeasurePackagerAssociations {
 			measureObservationListBox.setWidth("175px");
 			measureObservationListBox.addItem("--Select--", "0");
 			Map<String, Integer> measureObservationHashMap = new HashMap<>();
-			count = 1;
-			for(MeasurePackageClauseDetail denominatorAndNumerator : denominatorAndNumerators) {
-				measureObservationListBox.addItem(denominatorAndNumerator.getName(), denominatorAndNumerator.getId());
-				measureObservationHashMap.put(denominatorAndNumerator.getId(), count);
-				count++;
-			}
+			createListBoxes(denominatorAndNumerators, measureObservationListBox, measureObservationHashMap);
 			measureObservationListBox.setSelectedIndex(detail.getAssociatedPopulationUUID() == null ? 0 : measureObservationHashMap.get(detail.getAssociatedPopulationUUID()));
 			
 			if(measureObservationCount == 0) {
@@ -132,6 +119,16 @@ public class MeasurePackagerAssociations {
 		associateWidgetButtonPanel.addStyleName("floatRightButtonPanel");
 		vPanel.add(associateWidgetButtonPanel);
 		return vPanel;
+	}
+
+	private void createListBoxes(ArrayList<MeasurePackageClauseDetail> initialPopulations,
+			ListBoxMVP denominatorAndNumeratorListBox, Map<String, Integer> denomHashMap) {
+		int count = 1;
+		for(MeasurePackageClauseDetail initialPopulation : initialPopulations) {
+			denominatorAndNumeratorListBox.addItem(initialPopulation.getName(), initialPopulation.getId());
+			denomHashMap.put(initialPopulation.getId(), count);
+			count++;
+		}
 	}
 	
 	
@@ -236,14 +233,6 @@ public class MeasurePackagerAssociations {
 
 	public void setMeasureObservation2ListBox(ListBoxMVP measureObservation2) {
 		this.measureObservation2ListBox = measureObservation2;
-	}
-
-	public ArrayList<MeasurePackageClauseDetail> getMeasureObservations() {
-		return measureObservations;
-	}
-
-	public void setMeasureObservations(ArrayList<MeasurePackageClauseDetail> measureObservations) {
-		this.measureObservations = measureObservations;
 	}
 
 	public MeasurePackageClauseDetail getNumeratorDetail() {

@@ -22,7 +22,7 @@
 		              <ul>
 		                <li style="padding-left: 0px;">
 		                  <div>
-		                    <pre class="cql-definition-body">None</pre>
+		                    <pre class="cql-definition-body cql-class">None</pre>
 		                  </div>
 		                </li>
 		              </ul>&nbsp;

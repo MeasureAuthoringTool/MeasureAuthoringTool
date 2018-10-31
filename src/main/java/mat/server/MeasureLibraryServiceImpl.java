@@ -2089,6 +2089,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if(m.getIsCompositeMeasure()) {
 					measurePackageService.updateComponentMeasures(m.getId(), new ArrayList<>());
 				}
+				m.setOwner(null);
+				m.setLastModifiedBy(null);
+				m.setLockedUser(null);
 				measureDAO.delete(m);
 				logger.info("Measure Deleted Successfully :: " + measureID);
 			} catch (Exception e) {

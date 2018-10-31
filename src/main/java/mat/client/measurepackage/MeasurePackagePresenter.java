@@ -581,7 +581,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
-				view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 				final MeasurePackageDetail tempMeasurePackageDetails = new MeasurePackageDetail(currentDetail);
 				updateDetailsFromView(tempMeasurePackageDetails);
 			
@@ -750,7 +749,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 														
 							if(result.getCqlErrors().size() == 0){
 								getMeasure(MatContext.get().getCurrentMeasureId());
-								view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 							}else{
 								panel.clear();
 								panel.getElement().setId("MeasurePackagerContentFlowPanel");
@@ -759,13 +757,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 																
 								MatContext.get().getMessageDelegate();
 								errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
-																								
-								view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
 							}		
-							
+							view.getPackageGroupingWidget().checkAssociations();
 							showMeasurePackagerBusy(false);
 						}
-				
 			});
 			
 			

@@ -860,6 +860,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			public void update(int index, MeasurePackageDetail object, SafeHtml value) {
 				packageGroupingWidget.getAddAssociationsPanel().setVisible(false);
 				observer.onEditClicked(object);
+				packageGroupingWidget.checkAssociations();
 			}
 		});
 		

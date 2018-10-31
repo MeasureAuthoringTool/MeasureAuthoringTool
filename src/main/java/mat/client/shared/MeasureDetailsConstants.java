@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 public class MeasureDetailsConstants {
 	private static final String PROPORTION = "Proportion";
 	private static final String RATIO = "Ratio";
-	private static final String CONTINUOUS_VARIABLE = "Continuous";
+	private static final String CONTINUOUS_VARIABLE = "Continuous Variable";
 	private static final String COHORT = "Cohort";
 	
 	public enum MeasureDetailsItems implements MatDetailItem{

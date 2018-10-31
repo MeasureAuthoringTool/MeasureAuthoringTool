@@ -41,12 +41,13 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import mat.shared.MatConstants;
 import mat.shared.MeasurePackageClauseValidator;
 
 public class MeasurePackageClauseCellListWidget {
-	private static final String NUMERATOR = "numerator";
+	/*private static final String NUMERATOR = "numerator";
 	private static final String DENOMINATOR = "denominator";
-	private static final String MEASURE_OBSERVATION = "measureObservation";
+	private static final String MEASURE_OBSERVATION = "measureObservation";*/
 	private static final String STRATIFICATION = "stratification";
 	private static final String ADD_CLAUSE_RIGHT = "addClauseRight";
 	private static final String ADD_ALL_CLAUSE_RIGHT = "addAllClauseRight";
@@ -220,7 +221,7 @@ public class MeasurePackageClauseCellListWidget {
 	private void clearAssociations() {
 		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
-		if (selectedClauseCell.getType().equals(MEASURE_OBSERVATION)) {
+		if (selectedClauseCell.getType().equals(MatConstants.MEASURE_OBS_POPULATION)) {
 			groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(null);
 			getClearButtonPanel();
 			clearPopulationForMeasureObservation(associatedPopulationList);
@@ -328,9 +329,9 @@ public class MeasurePackageClauseCellListWidget {
 	
 	private boolean isPopulationAffectingAssociation(MeasurePackageClauseDetail selectedPopulation) {
 		return ConstantMessages.POPULATION_CONTEXT_ID.equalsIgnoreCase(selectedPopulation.getType()) ||
-		MEASURE_OBSERVATION.equalsIgnoreCase(selectedPopulation.getType()) ||
-		DENOMINATOR.equalsIgnoreCase(selectedPopulation.getType()) ||
-		NUMERATOR.equalsIgnoreCase(selectedPopulation.getType());
+		MatConstants.MEASURE_OBS_POPULATION.equalsIgnoreCase(selectedPopulation.getType()) ||
+		MatConstants.DENOMINATOR.equalsIgnoreCase(selectedPopulation.getType()) ||
+		MatConstants.NUMERATOR.equalsIgnoreCase(selectedPopulation.getType());
 	}
 	
 	private void sortListAndSetPanelOnAddClick() {
@@ -341,7 +342,7 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	private void clearAssociations(MeasurePackageClauseDetail detail) {
-		if(DENOMINATOR.equals(detail.getType()) || NUMERATOR.equals(detail.getType()) || MEASURE_OBSERVATION.equalsIgnoreCase(detail.getType())) {
+		if(MatConstants.DENOMINATOR.equals(detail.getType()) || MatConstants.NUMERATOR.equals(detail.getType()) || MatConstants.MEASURE_OBS_POPULATION.equalsIgnoreCase(detail.getType())) {
 			detail.setAssociatedPopulationUUID(null);
 			groupingClausesMap.put(detail.getName(), detail);
 		}
@@ -446,7 +447,7 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	public void checkForNumberOfMeasureObs(List<MeasurePackageClauseDetail> validateGroupingList, List<String> messages, String scoring) {
-		long count = validateGroupingList.stream().filter(mo -> mo.getType().equalsIgnoreCase(MEASURE_OBSERVATION)).count();
+		long count = validateGroupingList.stream().filter(mo -> mo.getType().equalsIgnoreCase(MatConstants.MEASURE_OBS_POPULATION)).count();
 		if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring) && count > 2 && messages.isEmpty()){
 			messages.add(MatContext.get().getMessageDelegate().getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 		}
@@ -468,7 +469,7 @@ public class MeasurePackageClauseCellListWidget {
 	private void clearPopulationForMeasureObservation(List<MeasurePackageClauseDetail> clauseList) {
 		associatedPopulationList = new ArrayList<>();
 		for (MeasurePackageClauseDetail detail : clauseList) {
-			if ((DENOMINATOR.equalsIgnoreCase(detail.getType()) || NUMERATOR.equalsIgnoreCase(detail.getType()))
+			if ((MatConstants.DENOMINATOR.equalsIgnoreCase(detail.getType()) || MatConstants.NUMERATOR.equalsIgnoreCase(detail.getType()))
 					&& !associatedPopulationList.contains(detail)) {
 				detail.setAssociatedPopulation(false);
 				associatedPopulationList.add(detail);
@@ -617,7 +618,7 @@ public class MeasurePackageClauseCellListWidget {
 			checkForNumberOfStratification(validatGroupingList, messages);
 		}
 		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MEASURE_OBSERVATION))
+		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel.getSelectedObject().getType().equalsIgnoreCase(MatConstants.MEASURE_OBSERVATION))
 				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
 			checkForNumberOfMeasureObs(validatGroupingList, messages , scoring);
 		}

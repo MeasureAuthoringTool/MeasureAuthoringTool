@@ -13,13 +13,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.shared.MatConstants;
 
 public class MeasurePackagerAssociations {
-	
-	private static final String NUMERATOR = "numerator";
-	private static final String DENOMINATOR = "denominator";
-	private static final String INITIAL_POPULATION= "initialPopulation";
-	private static final String MEASURE_OBSERVATION = "measureObservation";
 	
 	private VerticalPanel addAssocationsWidget = new VerticalPanel();
 	private ListBoxMVP denominatorListBox = new ListBoxMVP();
@@ -58,11 +54,11 @@ public class MeasurePackagerAssociations {
 		initialPopulations = new ArrayList<>();
 		for(MeasurePackageClauseDetail detail : populationList) {
 			String detailType = detail.getType();
-			if(detailType.contains(DENOMINATOR) || detailType.contains(NUMERATOR)) {
+			if(detailType.contains(MatConstants.DENOMINATOR) || detailType.contains(MatConstants.NUMERATOR)) {
 				denominatorAndNumorators.add(detail);
-			} else if (detailType.contains(INITIAL_POPULATION)) {
+			} else if (detailType.contains(MatConstants.INITIAL_POPULATION)) {
 				initialPopulations.add(detail);
-			} else if (detailType.contains(MEASURE_OBSERVATION)) {
+			} else if (detailType.contains(MatConstants.MEASURE_OBS_POPULATION)) {
 				measureObservations.add(detail);
 			}
 		}
@@ -85,7 +81,7 @@ public class MeasurePackagerAssociations {
 					count++;
 				}
 				denominatorAndNumeratorListBox.setSelectedIndex(detail.getAssociatedPopulationUUID() == null ? 0 : denomHashMap.get(detail.getAssociatedPopulationUUID()));
-				if(detail.getName().toLowerCase().contains(DENOMINATOR)) {
+				if(detail.getName().toLowerCase().contains(MatConstants.DENOMINATOR)) {
 					denominatorListBox = denominatorAndNumeratorListBox;
 					denominatorDetail = detail;
 				} else {

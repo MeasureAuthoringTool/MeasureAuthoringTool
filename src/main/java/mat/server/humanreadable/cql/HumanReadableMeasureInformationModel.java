@@ -43,6 +43,7 @@ public class HumanReadableMeasureInformationModel {
 	private String measureObservations; 
 	private String supplementalDataElements;
 	private String measureSet;
+	private boolean patientBased; 
  
 	public HumanReadableMeasureInformationModel() {
 		
@@ -57,7 +58,7 @@ public class HumanReadableMeasureInformationModel {
 			String guidance, String transmissionFormat, String initialPopulation, String denominator,
 			String denominatorExclusions, String denominatorExceptions, String numerator, String numeratorExclusions,
 			String measurePopulation, String measurePopulationExclusions, String measureObservations,
-			String supplementalDataElements, String measureSet) {
+			String supplementalDataElements, String measureSet, boolean patientBased) {
 		this.ecqmTitle = eCQMTitle;
 		this.ecqmIdentifier = eCQMIdentifier;
 		this.ecqmVersionNumber = eCQMVersionNumber;
@@ -97,6 +98,7 @@ public class HumanReadableMeasureInformationModel {
 		this.measureObservations = measureObservations;
 		this.supplementalDataElements = supplementalDataElements;
 		this.measureSet = measureSet; 
+		this.patientBased = patientBased;
 	}
 
 	public String getEcqmTitle() {
@@ -358,6 +360,14 @@ public class HumanReadableMeasureInformationModel {
 
 	public void setMeasureSet(String measureSet) {
 		this.measureSet = measureSet;
+	}
+
+	public boolean getPatientBased() {
+		return patientBased;
+	}
+
+	public void setPatientBased(boolean patientBased) {
+		this.patientBased = patientBased;
 	} 
 	
 	

@@ -277,7 +277,7 @@
 			</tr>
 		</#if>
 		
-		<#if model.measureInformation.measureScoring?lower_case == "continuous variable" || model.measureInformation.measureScoring?lower_case == "ratio">
+		<#if model.measureInformation.measureScoring?lower_case == "continuous variable" || (model.measureInformation.measureScoring?lower_case == "ratio" && model.measureInformation.patientBased == false)>
 			<tr>
 				<td style="background-color:#656565; width:20%"><span class="td_label">Measure Observations</span></td>
 		     	<td style="width:80%" colspan="3">

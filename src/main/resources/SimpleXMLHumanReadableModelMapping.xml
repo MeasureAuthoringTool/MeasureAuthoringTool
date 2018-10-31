@@ -70,6 +70,10 @@
 			<bind-xml name="measure" location="componentMeasures"></bind-xml>
 		</field>
 		
+		<field name="patientBased" type="java.lang.Boolean">
+			<bind-xml name="patientBasedIndicator"></bind-xml>
+		</field>
+		
 		<field name="compositeScoringMethod" type="java.lang.String">
 			<bind-xml name="compositeScoring"></bind-xml>
 		</field>	

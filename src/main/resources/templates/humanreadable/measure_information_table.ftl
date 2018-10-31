@@ -81,10 +81,12 @@
  		 	</td>
 		</tr>
 
-		<tr>
-			<td style="background-color:#656565; width:20%"><span class="td_label">Composite Scoring Method</span></td>
-			<td style="width:80%" colspan="3">${model.measureInformation.compositeScoringMethod!""}</td>
-		</tr>
+		<#if model.measureInformation.componentMeasures??>
+			<tr>
+				<td style="background-color:#656565; width:20%"><span class="td_label">Composite Scoring Method</span></td>
+				<td style="width:80%" colspan="3">${model.measureInformation.compositeScoringMethod!""}</td>
+			</tr>
+		</#if>
 				
 		<tr>
 			<td style="background-color:#656565; width:20%"><span class="td_label">Measure Scoring</span></td>

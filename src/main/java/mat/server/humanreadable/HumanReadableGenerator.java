@@ -444,10 +444,6 @@ public class HumanReadableGenerator {
 			int numberOfPopulationsWithSameType = countSimilarPopulationsInGroup(type, population.getParentNode());
 			
 			// if there is only one of the population kind, then we only want to display the population name (without a number attached to it)
-			if(numberOfPopulationsWithSameType == 1){
-				name = getPopulationNameByType(type);
-			}
-			
 			name = (numberOfPopulationsWithSameType == 1)? getPopulationNameByType(type) : population.getAttributes().getNamedItem("displayName").getNodeValue();
 		}
 		

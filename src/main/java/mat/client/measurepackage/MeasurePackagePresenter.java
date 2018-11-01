@@ -670,7 +670,7 @@ private void saveMeasureAtPackage(){
 								MatContext.get().getMessageDelegate();
 								errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
 							}		
-							view.getPackageGroupingWidget().checkAssociations();
+							
 							showMeasurePackagerBusy(false);
 						}
 			});
@@ -699,14 +699,12 @@ private void saveMeasureAtPackage(){
 			public void onSuccess(BonnieUserInformationResult result) {
 				showMeasurePackagerBusy(false);
 				((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(true);
-				
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
 				showMeasurePackagerBusy(false);
 				((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(false);
-				
 			}
 		});
 		
@@ -844,7 +842,7 @@ private void saveMeasureAtPackage(){
 		}
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(), isEditable());
 		view.setViewIsEditable(isEditable(), result.getPackages());
-		checkBonnieLogIn();
+		view.getPackageGroupingWidget().checkAssociations();
 	}
 
 	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {

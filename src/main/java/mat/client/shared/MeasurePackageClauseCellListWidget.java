@@ -157,9 +157,8 @@ public class MeasurePackageClauseCellListWidget {
 		mainFlowPanel.getElement().setAttribute("id", "MeasurePackageClauseWidget_FlowPanel");
 		return mainFlowPanel;
 	}
-
+	
 	private Widget buildAddAssociationWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
-		
 		associations.buildAddAssociationWidget(populationList);
 		addAssocationsWidget.add(associations.asWidget());
 		return addAssocationsWidget;
@@ -215,7 +214,7 @@ public class MeasurePackageClauseCellListWidget {
 		mainFlowPanel.add(packageGroupingPanel);
 	}
 
-	private void clearAssociations() {
+	public void clearAssociations() {
 		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 		if (selectedClauseCell.getType().equals(MatConstants.MEASURE_OBSERVATION_POPULATION)) {
@@ -580,7 +579,6 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	public void checkAssociations() {
-		clearAlerts();
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			leftCellListSelectionModel.clear();
 			String scoring = MatContext.get().getCurrentMeasureScoringType();
@@ -588,12 +586,9 @@ public class MeasurePackageClauseCellListWidget {
 			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
 					clearButtonPanel.clear();
 					// If More than one Populations are added in Grouping, Add Association Widget is shown
-					if (countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
-						buildAddAssociationWidget(groupingPopulationList);
-						addAssocationsWidget.setVisible(true);
-					} 
-					// else if any measure observations are added in Grouping, Add association widget is shown
-					else if(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1){
+					if ((countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) ||
+							// else if any measure observations are added in Grouping, Add association widget is shown
+							(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)){
 						buildAddAssociationWidget(groupingPopulationList);
 						addAssocationsWidget.setVisible(true);
 					}

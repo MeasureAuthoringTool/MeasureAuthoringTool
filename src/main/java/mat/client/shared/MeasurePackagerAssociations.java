@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.HelpBlock;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -16,6 +17,8 @@ import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.shared.MatConstants;
 
 public class MeasurePackagerAssociations {
+	
+	private final String EXCLUSION =  "Exclusion";
 	
 	private VerticalPanel addAssocationsWidget = new VerticalPanel();
 	private ListBoxMVP denominatorListBox = new ListBoxMVP();
@@ -52,7 +55,7 @@ public class MeasurePackagerAssociations {
 		
 		for(MeasurePackageClauseDetail detail : populationList) {
 			String detailType = detail.getType();
-			if(detailType.contains(MatConstants.DENOMINATOR) || detailType.contains(MatConstants.NUMERATOR)) {
+			if((detailType.contains(MatConstants.DENOMINATOR) || detailType.contains(MatConstants.NUMERATOR)) && !detailType.contains(EXCLUSION)) {
 				denominatorAndNumerators.add(detail);
 			} else if (detailType.contains(MatConstants.INITIAL_POPULATION)) {
 				initialPopulations.add(detail);

@@ -5,6 +5,8 @@ import java.util.List;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.user.client.Window;
+
 public class ErrorMessageAlert extends MessageAlert implements MessageAlertInterface  {
 	
 	@Override

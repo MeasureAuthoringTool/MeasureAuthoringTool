@@ -5914,10 +5914,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
+		logger.info("in the package");
 		SaveMeasureResult result = new SaveMeasureResult();
 		String measureId = model.getId();
 		try {
-			System.out.println("in the  validate and package code");
 			ValidateMeasureResult validateGroupResult = validateForGroup(model);
 			if (!validateGroupResult.isValid()) {
 				result.setSuccess(false);

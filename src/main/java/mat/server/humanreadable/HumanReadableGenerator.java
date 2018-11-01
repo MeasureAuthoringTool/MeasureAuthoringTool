@@ -440,14 +440,15 @@ public class HumanReadableGenerator {
 		Node population = processor.findNode(processor.getOriginalDoc(),"//clause[@uuid=\"" + uuid + "\"]");
 		String name = "";
 		if (population != null) {
-			name = population.getAttributes().getNamedItem("displayName").getNodeValue();
 			String type = population.getAttributes().getNamedItem("type").getNodeValue();
-			int popCpount = countSimilarPopulationsInGroup(type, population.getParentNode());
+			int numberOfPopulationsWithSameType = countSimilarPopulationsInGroup(type, population.getParentNode());
 			
 			// if there is only one of the population kind, then we only want to display the population name (without a number attached to it)
-			if(popCpount == 1){
+			if(numberOfPopulationsWithSameType == 1){
 				name = getPopulationNameByType(type);
 			}
+			
+			name = (numberOfPopulationsWithSameType == 1)? getPopulationNameByType(type) : population.getAttributes().getNamedItem("displayName").getNodeValue();
 		}
 		
 		return name; 

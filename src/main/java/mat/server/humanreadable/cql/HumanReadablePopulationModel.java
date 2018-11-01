@@ -77,7 +77,7 @@ public class HumanReadablePopulationModel {
 	
 	private void createDisplay() {
 		String display = this.name;
-		if(!StringUtils.isEmpty(associatedPopulationName)) {
+		if(StringUtils.isNotEmpty(associatedPopulationName)) {
 			display = display + "    (Association: " + associatedPopulationName + ")"; 
 		}
 		

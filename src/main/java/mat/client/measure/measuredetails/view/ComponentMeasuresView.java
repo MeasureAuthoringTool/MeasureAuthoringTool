@@ -1,14 +1,12 @@
 package mat.client.measure.measuredetails.view;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ComponentMeasuresView implements ComponentDetailView{
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	public ComponentMeasuresView() {
-		mainPanel.add(new Label("Component Measures"));
 	}
 	
 	@Override

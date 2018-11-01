@@ -22,13 +22,13 @@ public class SaveMeasureResult extends GenericResult {
 	
 	public static final int INVALID_CQL_DATA = ConstantMessages.INVALID_CQL_DATA;
 	
-	public static final int INVALID_GROUPING = ConstantMessages.INVALID_GROUPING;
+	public static final int INVALID_GROUPING = 9;
 	
-	public static final int INVALID_PACKAGE_GROUPING = ConstantMessages.INVALID_PACKAGE_GROUPING;
+	public static final int INVALID_PACKAGE_GROUPING = 10;
 	
-	public static final int INVALID_EXPORTS = ConstantMessages.INVALID_EXPORTS;
+	public static final int INVALID_EXPORTS = 11;
 	
-	public static final int INVALID_CREATE_EXPORT = ConstantMessages.INVALID_CREATE_EXPORT;
+	public static final int INVALID_CREATE_EXPORT = 12;
 	
 	public static final int PACKAGE_VALIDATION_FAIL = 1;
 	

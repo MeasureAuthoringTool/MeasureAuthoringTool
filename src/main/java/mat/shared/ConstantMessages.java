@@ -23,14 +23,6 @@ public  class ConstantMessages {
 	public static final int INVALID_CQL_DATA = 7;
 	
 	public static final int INVALID_CQL_LIBRARIES = 8;
-	
-	public static final int INVALID_GROUPING = 9;
-	
-	public static final int INVALID_PACKAGE_GROUPING = 10;
-	
-	public static final int INVALID_EXPORTS = 11;
-	
-	public static final int INVALID_CREATE_EXPORT = 12;
 
 	public static final String FILE_NOT_SELECTED ="Please Select a File.";
 

@@ -204,7 +204,7 @@ public class User  {
 		return "";
 	}
 
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "user",cascade=CascadeType.ALL)
 	public UserPassword getPassword() {
 		return password;
 	}

@@ -117,7 +117,7 @@ public abstract class MainLayout {
 		helpBlock.setHeight("0px");
 		helpBlock.getElement().setId("helpBlock");
 		messageFormGroup.add(helpBlock);
-		helpForm.add(helpBlock);
+		helpForm.add(messageFormGroup);
 		flowPanel.add(helpForm);
 		loadingPanel = new PopupPanel();
 		loadingPanel.setGlassEnabled(true);

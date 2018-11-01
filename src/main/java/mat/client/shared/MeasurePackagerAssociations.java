@@ -56,7 +56,7 @@ public class MeasurePackagerAssociations {
 				denominatorAndNumerators.add(detail);
 			} else if (detailType.contains(MatConstants.INITIAL_POPULATION)) {
 				initialPopulations.add(detail);
-			} else if (detailType.contains(MatConstants.MEASURE_OBS_POPULATION)) {
+			} else if (detailType.contains(MatConstants.MEASURE_OBSERVATION_POPULATION)) {
 				measureObservations.add(detail);
 			}
 		}

@@ -218,7 +218,7 @@ public class MeasurePackageClauseCellListWidget {
 	private void clearAssociations() {
 		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
-		if (selectedClauseCell.getType().equals(MatConstants.MEASURE_OBS_POPULATION)) {
+		if (selectedClauseCell.getType().equals(MatConstants.MEASURE_OBSERVATION_POPULATION)) {
 			groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setAssociatedPopulationUUID(null);
 			getClearButtonPanel();
 			clearPopulationForMeasureObservation(associatedPopulationList);
@@ -326,7 +326,7 @@ public class MeasurePackageClauseCellListWidget {
 	
 	private boolean isPopulationAffectingAssociation(MeasurePackageClauseDetail selectedPopulation) {
 		return ConstantMessages.POPULATION_CONTEXT_ID.equalsIgnoreCase(selectedPopulation.getType()) ||
-		MatConstants.MEASURE_OBS_POPULATION.equalsIgnoreCase(selectedPopulation.getType()) ||
+		MatConstants.MEASURE_OBSERVATION_POPULATION.equalsIgnoreCase(selectedPopulation.getType()) ||
 		MatConstants.DENOMINATOR.equalsIgnoreCase(selectedPopulation.getType()) ||
 		MatConstants.NUMERATOR.equalsIgnoreCase(selectedPopulation.getType());
 	}
@@ -339,7 +339,7 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	private void clearAssociations(MeasurePackageClauseDetail detail) {
-		if(MatConstants.DENOMINATOR.equals(detail.getType()) || MatConstants.NUMERATOR.equals(detail.getType()) || MatConstants.MEASURE_OBS_POPULATION.equalsIgnoreCase(detail.getType())) {
+		if(MatConstants.DENOMINATOR.equals(detail.getType()) || MatConstants.NUMERATOR.equals(detail.getType()) || MatConstants.MEASURE_OBSERVATION_POPULATION.equalsIgnoreCase(detail.getType())) {
 			detail.setAssociatedPopulationUUID(null);
 			groupingClausesMap.put(detail.getName(), detail);
 		}
@@ -444,7 +444,7 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	public void checkForNumberOfMeasureObs(List<MeasurePackageClauseDetail> validateGroupingList, List<String> messages, String scoring) {
-		long count = validateGroupingList.stream().filter(mo -> mo.getType().equalsIgnoreCase(MatConstants.MEASURE_OBS_POPULATION)).count();
+		long count = validateGroupingList.stream().filter(mo -> mo.getType().equalsIgnoreCase(MatConstants.MEASURE_OBSERVATION_POPULATION)).count();
 		if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring) && count > 2 && messages.isEmpty()){
 			messages.add(MatContext.get().getMessageDelegate().getMEASURE_OBS_VALIDATION_FOR_GROUPING());
 		}

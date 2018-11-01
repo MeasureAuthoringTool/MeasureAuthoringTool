@@ -705,6 +705,4 @@ public interface MeasureService extends RemoteService {
 	ValidateMeasureResult validateExports(String measureId) throws Exception;
 	
 	public Boolean isCompositeMeasure(String currentMeasureId);
-	
-	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts);
 }

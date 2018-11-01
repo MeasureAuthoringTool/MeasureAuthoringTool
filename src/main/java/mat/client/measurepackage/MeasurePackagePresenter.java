@@ -35,9 +35,7 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.WarningConfirmationMessageAlert;
 import mat.client.shared.WarningMessageAlert;
 import mat.client.umls.service.VSACAPIServiceAsync;
-import mat.client.umls.service.VsacApiResult;
 import mat.client.umls.service.VsacTicketInformation;
-import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RiskAdjustmentDTO;
 import mat.model.cql.CQLDefinition;
@@ -49,39 +47,26 @@ import mat.shared.bonnie.result.BonnieUserInformationResult;
 import mat.shared.packager.error.SaveRiskAdjustmentVariableException;
 import mat.shared.packager.error.SaveSupplementalDataElementException;
 
-/**
- * The Class MeasurePackagePresenter.
- */
 public class MeasurePackagePresenter implements MatPresenter {
 	
-	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
 	
-	/** The view. */
 	private PackageView view;
 	
-	/** The model. */
 	private ManageMeasureDetailModel model;
 	
-	/** The current detail. */
 	private MeasurePackageDetail currentDetail = null;
 	
-	/** The packageOverview. */
 	private MeasurePackageOverview packageOverview;
 	
-	/** The db package clauses. */
 	private List<MeasurePackageClauseDetail> dbPackageClauses = new ArrayList<MeasurePackageClauseDetail>();
 	
-	/** The db supp data elements. */
 	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
 	
-	/** The db cql supp data elements. */
 	private List<CQLDefinition> dbCQLSuppDataElements = new ArrayList<CQLDefinition>();
 	
-	/** The db risk adj vars. */
 	private List<RiskAdjustmentDTO> dbRiskAdjVars = new ArrayList<RiskAdjustmentDTO>();
 	
-	/** The is measure package success. */
 	private boolean isMeasurePackageAndExport = false;
 	
 	private boolean isExportToBonnie = false;
@@ -92,363 +77,124 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	private VsacTicketInformation vsacInfo = null;
 	
-	/**
-	 * Gets the db cql supp data elements.
-	 * 
-	 * @return the dbCQLSuppDataElements
-	 */
 	public List<CQLDefinition> getDbCQLSuppDataElements() {
 		return dbCQLSuppDataElements;
 	}
 
-	/**
-	 * Sets the db cql supp data elements.
-	 *
-	 * @param dbCQLSuppDataElements the dbCQLSuppDataElements to set
-	 */
 	public void setDbCQLSuppDataElements(List<CQLDefinition> dbCQLSuppDataElements) {
 		this.dbCQLSuppDataElements = dbCQLSuppDataElements;
 	}
 
-	/**
-	 * Gets the db supp data elements.
-	 *
-	 * @return the db supp data elements
-	 */
 	public List<QualityDataSetDTO> getDbSuppDataElements() {
 		Collections.sort(dbSuppDataElements,new QualityDataSetDTO.Comparator());
 		return dbSuppDataElements;
 	}
-	
-	/**
-	 * Sets the db supp data elements.
-	 *
-	 * @param dbSuppDataElements the new db supp data elements
-	 */
+
 	public void setDbSuppDataElements(
 			List<QualityDataSetDTO> dbSuppDataElements) {
 		this.dbSuppDataElements = dbSuppDataElements;
 	}
-	
-	/**
-	 * Gets the db package clauses.
-	 *
-	 * @return the db package clauses
-	 */
+
 	public List<MeasurePackageClauseDetail> getDbPackageClauses() {
 		return dbPackageClauses;
 	}
 	
-	/**
-	 * Sets the db package clauses.
-	 *
-	 * @param dbPackageClauses the new db package clauses
-	 */
 	public void setDbPackageClauses(
 			List<MeasurePackageClauseDetail> dbPackageClauses) {
 		this.dbPackageClauses = dbPackageClauses;
 	}
-	
-	/**
-	 * Gets the db risk adj vars.
-	 *
-	 * @return the db risk adj vars
-	 */
+
 	public List<RiskAdjustmentDTO> getDbRiskAdjVars() {
 		Collections.sort(dbRiskAdjVars,new RiskAdjustmentDTO.Comparator());
 		return dbRiskAdjVars;
 	}
-	
-	/**
-	 * Sets the db risk adj vars.
-	 *
-	 * @param dbRiskAdjVars the new db risk adj vars
-	 */
+
 	public void setDbRiskAdjVars(List<RiskAdjustmentDTO> dbRiskAdjVars) {
 		this.dbRiskAdjVars = dbRiskAdjVars;
 	}
-	
-	/**
-	 * The Interface View.
-	 */
+
 	public static interface PackageView {
 		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
 		ErrorMessageAlert getErrorMessageDisplay();
-		/**
-		 * Gets the measure package success msg.
-		 * 
-		 * @return the measure package success msg
-		 */
+		
 		MessageAlert getMeasurePackageSuccessMsg();
 		
-		/**
-		 * Gets the measure package warning msg.
-		 * 
-		 * @return the measure package warning msg
-		 */
 		WarningMessageAlert getMeasurePackageWarningMsg();
 		
-		/**
-		 * Gets the package error message display.
-		 * 
-		 * @return the package error message display
-		 */
 		ErrorMessageAlert getPackageErrorMessageDisplay();
 		
-		/**
-		 * Gets the package measure button.
-		 * 
-		 * @return the package measure button
-		 */
 		HasClickHandlers getPackageMeasureButton();
 		
-		/**
-		 * Gets the package success message display.
-		 * 
-		 * @return the package success message display
-		 */
 		MessageAlert getPackageSuccessMessageDisplay();
 		
-		/**
-		 * As widget.
-		 *
-		 * @return the widget
-		 */
 		Widget asWidget();
 		
-		/**
-		 * Sets the qDM elements in supp elements.
-		 *
-		 * @param clauses the new qDM elements in supp elements
-		 */
 		void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
 		
-		/**
-		 * Sets the CQL qDM elements in supp elements.
-		 *
-		 * @param clauses the new CQL qDM elements in supp elements
-		 */
 		void setCQLElementsInSuppElements(List<CQLDefinition> clauses);
 		
-		/**
-		 * Gets the qDM elements in supp elements.
-		 *
-		 * @return the qDM elements in supp elements
-		 */
 		List<QualityDataSetDTO> getQDMElementsInSuppElements();
 		
-		/**
-		 * Gets the CQL qDM elements in supp elements.
-		 *
-		 * @return the CQL qDM elements in supp elements
-		 */
 		List<CQLDefinition> getCQLElementsInSuppElements();
 		
-		/**
-		 * Sets the cql qDM elements.
-		 *
-		 * @param clauses the new cql qDM elements
-		 */
 		void setCQLQDMElements(List<CQLDefinition> clauses);
 		
-		/**
-		 * Gets the cql qDM elements.
-		 *
-		 * @return the cql qDM elements
-		 */
 		List<CQLDefinition> getCQLQDMElements();
 		
-		/**
-		 * Sets the qDM elements.
-		 *
-		 * @param clauses the new qDM elements
-		 */
 		void setQDMElements(List<QualityDataSetDTO> clauses);
 		
-		/**
-		 * Gets the qDM elements.
-		 *
-		 * @return the qDM elements
-		 */
 		List<QualityDataSetDTO> getQDMElements();
 		
-		/**
-		 * Gets the adds the qdm elements to measure button.
-		 *
-		 * @return the adds the qdm elements to measure button
-		 */
 		HasClickHandlers getAddQDMElementsToMeasureButton();
 		
-		/**
-		 * Gets the adds the risk adj variables to measure.
-		 *
-		 * @return the adds the risk adj variables to measure
-		 */
 		HasClickHandlers getaddRiskAdjVariablesToMeasure();
 		
-		/**
-		 * Gets the supp data success message display.
-		 *
-		 * @return the supp data success message display
-		 */
 		MessageAlert getSupplementalDataElementSuccessMessageDisplay();
 		
 		MessageAlert getSupplementalDataElementErrorMessageDisplay(); 
 		
-		/**
-		 * Sets the view is editable.
-		 *
-		 * @param b the b
-		 * @param packages the packages
-		 */
 		void setViewIsEditable(boolean b,
 				List<MeasurePackageDetail> packages);
 		
-		/**
-		 * Sets the clauses.
-		 *
-		 * @param clauses the new clauses
-		 */
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
 		
-		/**
-		 * Sets the package name.
-		 *
-		 * @param name the new package name
-		 */
 		void setPackageName(String name);
 		
-		/**
-		 * Sets the clauses in package.
-		 *
-		 * @param list the new clauses in package
-		 */
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
 		
-		/**
-		 * Gets the package grouping widget.
-		 *
-		 * @return the package grouping widget
-		 */
 		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
 		
-		/**
-		 * Sets the observer.
-		 *
-		 * @param observer the new observer
-		 */
 		void setObserver(Observer observer);
 		
-		/**
-		 * Sets the applied qdm list.
-		 *
-		 * @param appliedListModel the new applied qdm list
-		 */
 		void setAppliedQdmList(QDSAppliedListModel appliedListModel);
 		
-		/**
-		 * Gets the creates the new button.
-		 *
-		 * @return the creates the new button
-		 */
 		Button getCreateNewButton();
 		
-		/**
-		 * Builds the cell table.
-		 *
-		 * @param packages the packages
-		 */
 		void buildCellTable(List<MeasurePackageDetail> packages);
 		
-		/**
-		 * Gets the save error message display.
-		 *
-		 * @return the save error message display
-		 */
 		WarningConfirmationMessageAlert getSaveErrorMessageDisplay();
-		/**
-		 * Gets the include vsac data.
-		 * 
-		 * @return the include vsac data
-		 */
-
-		/**
-		 * Gets the measure error message display.
-		 *
-		 * @return the measure error message display
-		 */
+		
 		MessageAlert getMeasureErrorMessageDisplay();
 		
-		/**
-		 * Gets the package measure and export button.
-		 *
-		 * @return the package measure and export button
-		 */
 		HasClickHandlers getPackageMeasureAndExportButton();
 		
-		/**
-		 * Sets the risk adj clause list.
-		 *
-		 * @param riskAdjClauseList the new risk adj clause list
-		 */
 		void setSubTreeClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
 		
-		/**
-		 * Gets the risk adj clauses.
-		 *
-		 * @return the risk adj clauses
-		 */
 		List<RiskAdjustmentDTO> getRiskAdjClauses();
 		
-		/**
-		 * Gets the risk adj var.
-		 *
-		 * @return the risk adj var
-		 */
 		List<RiskAdjustmentDTO> getRiskAdjVar();
 		
-		/**
-		 * Gets the risk adj success message display.
-		 *
-		 * @return the risk adj success message display
-		 */
 		MessageAlert getRiskAdjustmentVariableSuccessMessageDisplay();
 		
 		MessageAlert getRiskAdjustmentVariableErrorMessageDisplay();
 
-		
-		/**
-		 * Sets the sub tree in risk adj var list.
-		 *
-		 * @param riskAdjClauseList the new sub tree in risk adj var list
-		 */
 		void setSubTreeInRiskAdjVarList(
 				List<RiskAdjustmentDTO> riskAdjClauseList);
 		
-		/**
-		 * Gets the in progress message display.
-		 *
-		 * @return the in progress message display
-		 */
 		MessageAlert getInProgressMessageDisplay();
 		
-		/**
-		 * Sets the CQL measure.
-		 *
-		 * @param isCQLMeasure the new CQL measure
-		 */
 		void setCQLMeasure(boolean isCQLMeasure);
 		
-		/**
-		 * Sets the risk adjust label.
-		 *
-		 * @param isCQLMeasure the new risk adjust label
-		 */
 		void setRiskAdjustLabel(boolean isCQLMeasure);
 		
 		void setQdmElementsLabel(boolean isCQLMeasure);
@@ -459,23 +205,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 		HasClickHandlers getPackageMeasureAndExportToBonnieButton();
 	}
 	
-	/** The vsacapi service async. */
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
 			.getVsacapiServiceAsync();
 	
-	/**
-	 * Instantiates a new measure package presenter.
-	 *
-	 * @param packageView the package view
-	 */
 	public MeasurePackagePresenter(PackageView packageView) {
 		view = packageView;
 		addAllHandlers();
 	}
 	
-	/**
-	 * Adds the all handlers.
-	 */
 	private void addAllHandlers() {
 		
 		
@@ -805,12 +542,6 @@ private void saveMeasureAtPackage(){
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				view.getInProgressMessageDisplay().clear();
 			}
-			
-			/**
-			 * On success.
-			 *
-			 * @param result the result
-			 */
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				if (result.isSuccess()) {
@@ -876,10 +607,7 @@ private void saveMeasureAtPackage(){
 		view.getMeasureErrorMessageDisplay().createAlert(result.getValidationMessages());
 		resetPackageButtonsAndMessages();
 	}
-	/**
-	 * Valid grouping check.
-	 * @return boolean.
-	 */
+	
 	private boolean isValid() {
 		List<MeasurePackageClauseDetail> detailList = view.getPackageGroupingWidget().getGroupingPopulationList();
 		List<String> messages = new ArrayList<String>();
@@ -896,11 +624,6 @@ private void saveMeasureAtPackage(){
 		return messages.size() == 0;
 	}
 	
-	/**
-	 * updateDetailsFromView.
-	 *
-	 * @param currentDetail the current detail
-	 */
 	public void updateDetailsFromView(MeasurePackageDetail currentDetail) {
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
@@ -908,11 +631,6 @@ private void saveMeasureAtPackage(){
 		currentDetail.setValueSetDate(null);
 	}
 	
-	
-				
-	/**
-	 * Clear messages.
-	 */
 	private void clearMessages() {
 		view.getPackageSuccessMessageDisplay().clearAlert();
 		view.getSupplementalDataElementSuccessMessageDisplay().clearAlert();
@@ -928,9 +646,7 @@ private void saveMeasureAtPackage(){
 		view.getRiskAdjustmentVariableErrorMessageDisplay().clearAlert(); 
 		view.getInProgressMessageDisplay().clearAlert();
 	}
-	/**
-	 * Display Empty.
-	 */
+	
 	private void displayEmpty() {
 		panel.clear();
 		panel.add(view.asWidget());
@@ -1018,12 +734,6 @@ private void saveMeasureAtPackage(){
 		
 	}
 	
-	/**
-	 * get Measure Package Overview.
-	 *
-	 * @param measureId - String.
-	 * @return the measure package overview
-	 */
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext
 		.get()
@@ -1044,11 +754,7 @@ private void saveMeasureAtPackage(){
 				if ((currentDetail != null)
 						&& !currentDetail.getMeasureId()
 						.equalsIgnoreCase(measureId)) {
-					currentDetail = null; // This will make sure
-					// the package
-					// information are not
-					// cached across
-					// measures.
+					currentDetail = null; // This will make sure the package information are not cached across measures.
 				}
 				setOverview(result);
 			}
@@ -1082,14 +788,6 @@ private void saveMeasureAtPackage(){
 		});
 	}
 	
-	/**
-	 * Handle click events on unsaved error msg.
-	 *
-	 * @param detail the detail
-	 * @param btns the btns
-	 * @param saveErrorMessage the save error message
-	 * @param auditMessage the audit message
-	 */
 	private void handleClickEventsOnUnsavedErrorMsg(final MeasurePackageDetail detail,  final WarningConfirmationMessageAlert saveErrorMessage
 			, final String auditMessage) {
 		
@@ -1116,12 +814,7 @@ private void saveMeasureAtPackage(){
 			}
 		});
 	}
-	
-	/**
-	 * Update supp data details from view.
-	 *
-	 * @param currentDetail the current detail
-	 */
+
 	public void updateSuppDataDetailsFromView(MeasurePackageDetail currentDetail) {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
 		currentDetail.setCqlSuppDataElements(view.getCQLElementsInSuppElements());
@@ -1130,21 +823,13 @@ private void saveMeasureAtPackage(){
 		currentDetail.setToCompareSuppDataElements(dbSuppDataElements);
 		currentDetail.setToCompareCqlSuppDataElements(dbCQLSuppDataElements);
 	}
-	
-	/**
-	 * Update risk adj from view.
-	 *
-	 * @param currentDetail the current detail
-	 */
+
 	public void updateRiskAdjFromView(MeasurePackageDetail currentDetail){
 		currentDetail.setRiskAdjClauses(view.getRiskAdjClauses());
 		currentDetail.setRiskAdjVars(view.getRiskAdjVar());
 		currentDetail.setToCompareRiskAdjVars(dbRiskAdjVars);
 	}
-	/**
-	 * set Overview.
-	 * @param result - MeasurePackageOverview.
-	 */
+
 	private void setOverview(MeasurePackageOverview result) {
 		packageOverview = result;
 		List <MeasurePackageClauseDetail> clauseList = new ArrayList<MeasurePackageClauseDetail>(result.getClauses());
@@ -1183,10 +868,7 @@ private void saveMeasureAtPackage(){
 		view.setViewIsEditable(isEditable(), result.getPackages());
 		checkBonnieLogIn();
 	}
-	/**
-	 * Delete Measure Package.
-	 * @param pkg - MeasurePackageDetail.
-	 */
+
 	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {
 		MatContext.get().getPackageService()
 		.delete(pkg, new AsyncCallback<Void>() {
@@ -1206,22 +888,12 @@ private void saveMeasureAtPackage(){
 			}
 		});
 	}
-	/**
-	 * Checks if is editable.
-	 *
-	 * @return true, if is editable
-	 */
+
 	private boolean isEditable() {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
 	}
-	
-	/**
-	 * Gets the measure.
-	 *
-	 * @param measureId the measure id
-	 * @return the measure
-	 */
+
 	private void getMeasure(final String measureId) {
 		MatContext
 		.get()
@@ -1242,9 +914,7 @@ private void saveMeasureAtPackage(){
 			}
 		});
 	}
-	/**
-	 * set New MeasurePackage.
-	 */
+
 	private void setNewMeasurePackage() {
 		currentDetail = new MeasurePackageDetail();
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
@@ -1321,13 +991,6 @@ private void saveMeasureAtPackage(){
 		
 	}
 	
-	/**
-	 * Removes the clauses.
-	 *
-	 * @param master - master List of Clauses.
-	 * @param toRemove - List from where to Remove.
-	 * @return List.
-	 */
 	private List<MeasurePackageClauseDetail> removeClauses(final List<MeasurePackageClauseDetail> master, final List<MeasurePackageClauseDetail> toRemove) {
 		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
 		newList.addAll(master);
@@ -1341,19 +1004,12 @@ private void saveMeasureAtPackage(){
 		}
 		return newList;
 	}
-	/**
-	 * Display MeasurePackage Workspace.
-	 */
+
 	private void displayMeasurePackageWorkspace() {
 		panel.clear();
 		panel.add(view.asWidget());
 	}
-	/**
-	 * Gets the max sequence.
-	 *
-	 * @param measurePackageOverview the measure package packageOverview
-	 * @return the max sequence
-	 */
+
 	private int getMaxSequence(final MeasurePackageOverview measurePackageOverview) {
 		int max = 0;
 		for (MeasurePackageDetail detail : measurePackageOverview.getPackages()) {
@@ -1364,21 +1020,11 @@ private void saveMeasureAtPackage(){
 		}
 		return max;
 	}
-	
-	/**
-	 * Gets the current detail.
-	 *
-	 * @return the current detail
-	 */
+
 	public MeasurePackageDetail getCurrentDetail() {
 		return currentDetail;
 	}
-	
-	/**
-	 * Gets the view.
-	 *
-	 * @return the view
-	 */
+
 	public PackageView getView() {
 		return view;
 	}
@@ -1458,21 +1104,12 @@ private void saveMeasureAtPackage(){
 	}
 	
 	
-	/**
-	 * Save export.
-	 */
 	private void saveExport() {
 		String url = GWT.getModuleBaseURL() + "export?id=" + model.getId()
 				+ "&format=zip";
 		Window.Location.replace(url + "&type=save");
 	}
 
-	/**
-	 * Checks if is measure package details same.
-	 *
-	 * @param measurePackagePresenter the measure package presenter
-	 * @return true, if is measure package details same
-	 */
 	public boolean isMeasurePackageDetailsSame(){
 		if(getCurrentDetail() == null){
 			return true;

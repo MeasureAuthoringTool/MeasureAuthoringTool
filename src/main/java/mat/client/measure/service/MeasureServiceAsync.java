@@ -741,6 +741,4 @@ public interface MeasureServiceAsync {
 	void checkIfMeasureIsUsedAsComponentMeasure(String currentMeasureId, AsyncCallback<GenericResult> asyncCallback);
 
 	void isCompositeMeasure(String currentMeasureId, AsyncCallback<Boolean> compositeMeasureCallBack);
-
-	void validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts, AsyncCallback<SaveMeasureResult> asyncCallback);
 }

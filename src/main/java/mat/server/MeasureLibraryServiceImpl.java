@@ -5914,7 +5914,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	@Override
 	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
-		logger.info("in the package");
 		SaveMeasureResult result = new SaveMeasureResult();
 		String measureId = model.getId();
 		try {

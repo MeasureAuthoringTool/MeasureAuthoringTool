@@ -295,7 +295,7 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	 * @param mode the measure details
 	 */
 	@Override
-	public SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel model ) {
+	public SaveMeasureResult validateAndPackageMeasure(ManageMeasureDetailModel model) {
 		return this.getMeasureLibraryService().validateAndPackage(model, true);
 	}
 	
@@ -557,10 +557,5 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public Boolean isCompositeMeasure(String currentMeasureId) {
 		return this.getMeasureLibraryService().isCompositeMeasure(currentMeasureId);
-	}
-
-	@Override
-	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
-		return this.getMeasureLibraryService().validateAndPackage(model, shouldCreateArtifacts);
 	}
 }

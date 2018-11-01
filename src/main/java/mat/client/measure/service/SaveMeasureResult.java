@@ -6,9 +6,6 @@ import mat.model.Author;
 import mat.model.MeasureType;
 import mat.shared.ConstantMessages;
 
-/**
- * The Class SaveMeasureResult.
- */
 public class SaveMeasureResult extends GenericResult {
 	
 	public static final int ID_NOT_UNIQUE = ConstantMessages.ID_NOT_UNIQUE;
@@ -41,25 +38,16 @@ public class SaveMeasureResult extends GenericResult {
 	
 	public static final int VALIDATE_MEASURE_AT_PACKAGE_FAIL = -3;
 	
-	/** The id. */
 	private String id;
 	
-	/** The author list. */
 	private List<Author> authorList;
 	
-	/** The measure type list. */
 	private List<MeasureType> measureTypeList;
 	
-	/** The version str. */
 	private String versionStr;
 		
 	private ValidateMeasureResult validateResult; 
-	
-	/**
-	 * Gets the author list.
-	 * 
-	 * @return the author list
-	 */
+
 	public List<Author> getAuthorList() {
 		return authorList;
 	}
@@ -72,69 +60,30 @@ public class SaveMeasureResult extends GenericResult {
 		this.validateResult = validateResult;
 	}
 
-	/**
-	 * Sets the author list.
-	 * 
-	 * @param authorList
-	 *            the new author list
-	 */
 	public void setAuthorList(List<Author> authorList) {
 		this.authorList = authorList;
 	}
-	
-	/**
-	 * Gets the measure type list.
-	 * 
-	 * @return the measure type list
-	 */
+
 	public List<MeasureType> getMeasureTypeList() {
 		return measureTypeList;
 	}
-	
-	/**
-	 * Sets the measure type list.
-	 * 
-	 * @param measureTypeList
-	 *            the new measure type list
-	 */
+
 	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
 		this.measureTypeList = measureTypeList;
 	}
-	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+
 	public String getId() {
 		return id;
 	}
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	/**
-	 * Gets the version str.
-	 * 
-	 * @return the version str
-	 */
+
 	public String getVersionStr() {
 		return versionStr;
 	}
 	
-	/**
-	 * Sets the version str.
-	 * 
-	 * @param versionStr
-	 *            the new version str
-	 */
 	public void setVersionStr(String versionStr) {
 		this.versionStr = versionStr;
 	}

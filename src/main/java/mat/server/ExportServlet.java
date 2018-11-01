@@ -248,6 +248,7 @@ public class ExportServlet extends HttpServlet {
 			sb.append("/*******************************************************************************************************************");
 			sb.append("\r\n");
 			sb.append(CQL_NO_ERRORS_WARNINGS_MESSAGE);
+			sb.append("\r\n");
 			sb.append("*******************************************************************************************************************/");
 			
 		} else {
@@ -268,6 +269,8 @@ public class ExportServlet extends HttpServlet {
 			sb.append("/*******************************************************************************************************************");
 			sb.append("\r\n");
 			sb.append(heading);
+			sb.append("\r\n");
+			sb.append("********************************************************************************************************************");
 			for (CQLError error : cqlErrors) {
 				sb.append("\r\n");
 				sb.append(createExceptionLine(error));

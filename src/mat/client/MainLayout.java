@@ -2,6 +2,8 @@ package mat.client;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.client.ui.gwt.HTMLPanel;
@@ -107,14 +109,19 @@ public abstract class MainLayout {
 
 	private void buildLoadingPanel() {
 		HorizontalFlowPanel flowPanel = new HorizontalFlowPanel();
+		Form helpForm = new Form();
+		FormGroup messageFormGroup = new FormGroup();
+		messageFormGroup.add(helpBlock);
+		messageFormGroup.getElement().setAttribute("role", "alert");
 		helpBlock.setColor("transparent");
-		helpBlock.setVisible(false);
 		helpBlock.setHeight("0px");
-		helpBlock.setText("");
+		helpBlock.getElement().setId("helpBlock");
+		messageFormGroup.add(helpBlock);
+		helpForm.add(helpBlock);
+		flowPanel.add(helpForm);
 		loadingPanel = new PopupPanel();
 		loadingPanel.setGlassEnabled(true);
 		flowPanel.add(buildCircleSpinner());
-		//flowPanel.add(build3DotSpinner());
 		loadingPanel.add(flowPanel);
 		loadingPanel.getElement().getStyle().setProperty("backgroundColor", "transparent");
 		loadingPanel.getElement().getStyle().setProperty("border", "none");
@@ -126,10 +133,6 @@ public abstract class MainLayout {
 		skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
 		Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
 		return skipListHolder;
-	}
-	
-	private HTMLPanel build3DotSpinner() {
-		return new HTMLPanel("<div class=\"spinner\"><div class=\"bounce1\"></div><div class=\"bounce2\"></div><div class=\"bounce3\"></div></div>");
 	}
 	
 	private HTMLPanel buildCircleSpinner() {

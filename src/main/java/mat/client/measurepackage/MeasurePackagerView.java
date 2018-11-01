@@ -204,6 +204,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private Button packageMeasureAndExportButton = buildButton(IconType.DOWNLOAD, "Create Package and Export") ;
 	
+	private Button packageMeasureAndExportToBonnieButton = buildButton(IconType.UPLOAD, "Package and Export to Bonnie") ;
+	
 	private boolean isCQLMeasure;
 	
 	private HTML riskAdjustLabel = new HTML();
@@ -239,6 +241,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		ButtonToolBar packageGroup = new ButtonToolBar();
 		packageGroup.add(packageMeasureButton);
 		packageGroup.add(packageMeasureAndExportButton);
+		packageGroup.add(packageMeasureAndExportToBonnieButton);
 
 		content.add(packageGroup);
 		content.setStyleName("contentPanel");
@@ -969,6 +972,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		createNewGroupingButton.setEnabled(isEnabled);
 		packageMeasureButton.setEnabled(isEnabled);
 		packageMeasureAndExportButton.setEnabled(isEnabled);
+		packageMeasureAndExportToBonnieButton.setEnabled(isEnabled);
 		addSupplementalDataElementsButton.setEnabled(isEnabled);
 		packageGroupingWidget.getSaveGrouping().setEnabled(isEnabled);
 		addAllQDMLeft.setEnabled(isEnabled);
@@ -1297,6 +1301,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public HasClickHandlers getPackageMeasureAndExportButton() {
 		return packageMeasureAndExportButton;
+	}
+	
+	@Override
+	public HasClickHandlers getPackageMeasureAndExportToBonnieButton() {
+		return packageMeasureAndExportToBonnieButton;
 	}
 
 	@Override

@@ -558,4 +558,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	public Boolean isCompositeMeasure(String currentMeasureId) {
 		return this.getMeasureLibraryService().isCompositeMeasure(currentMeasureId);
 	}
+
+	@Override
+	public SaveMeasureResult validateAndPackage(ManageMeasureDetailModel model, boolean shouldCreateArtifacts) {
+		return this.getMeasureLibraryService().validateAndPackage(model, shouldCreateArtifacts);
+	}
 }

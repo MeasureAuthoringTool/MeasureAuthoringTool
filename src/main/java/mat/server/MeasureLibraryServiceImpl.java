@@ -5917,12 +5917,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		SaveMeasureResult result = new SaveMeasureResult();
 		String measureId = model.getId();
 		try {
-
+			System.out.println("in the  validate and package code");
 			ValidateMeasureResult validateGroupResult = validateForGroup(model);
 			if (!validateGroupResult.isValid()) {
 				result.setSuccess(false);
 				result.setValidateResult(validateGroupResult);
-				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				result.setFailureReason(SaveMeasureResult.INVALID_GROUPING);
 				return result;
 			}
 
@@ -5930,7 +5930,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (!validatePackageGroupingResult.isValid()) {
 				result.setSuccess(false);
 				result.setValidateResult(validateGroupResult);
-				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				result.setFailureReason(SaveMeasureResult.INVALID_PACKAGE_GROUPING);
 				return result;
 			}
 
@@ -5939,7 +5939,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if(!validateExports.isValid()) {
 				result.setSuccess(false);
 				result.setValidateResult(validateExports);
-				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				result.setFailureReason(SaveMeasureResult.INVALID_EXPORTS);
 				return result; 
 			}
 			
@@ -5952,7 +5952,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if (!measureExportValidation.isValid()) {
 				result.setSuccess(false);
 				result.setValidateResult(measureExportValidation);
-				result.setFailureReason(SaveMeasureResult.PACKAGE_VALIDATION_FAIL);
+				result.setFailureReason(SaveMeasureResult.INVALID_CREATE_EXPORT);
 				return result; 
 			}
 

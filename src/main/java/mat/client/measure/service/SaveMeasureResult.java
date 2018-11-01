@@ -11,26 +11,27 @@ import mat.shared.ConstantMessages;
  */
 public class SaveMeasureResult extends GenericResult {
 	
-	/** The Constant ID_NOT_UNIQUE. */
 	public static final int ID_NOT_UNIQUE = ConstantMessages.ID_NOT_UNIQUE;
 	
-	/** The Constant REACHED_MAXIMUM_VERSION. */
 	public static final int REACHED_MAXIMUM_VERSION = ConstantMessages.REACHED_MAXIMUM_VERSION;
 	
-	/** The Constant REACHED_MAXIMUM_MAJOR_VERSION. */
 	public static final int REACHED_MAXIMUM_MAJOR_VERSION = ConstantMessages.REACHED_MAXIMUM_MAJOR_VERSION;
 	
-	/** The Constant REACHED_MAXIMUM_MINOR_VERSION. */
 	public static final int REACHED_MAXIMUM_MINOR_VERSION = ConstantMessages.REACHED_MAXIMUM_MINOR_VERSION;
 	
-	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_VALUE_SET_DATE = ConstantMessages.INVALID_VALUE_SET_DATE;
 	
-	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_DATA = ConstantMessages.INVALID_DATA;
 	
-	/** The Constant INVALID_VALUE_SET_DATE. */
 	public static final int INVALID_CQL_DATA = ConstantMessages.INVALID_CQL_DATA;
+	
+	public static final int INVALID_GROUPING = ConstantMessages.INVALID_GROUPING;
+	
+	public static final int INVALID_PACKAGE_GROUPING = ConstantMessages.INVALID_PACKAGE_GROUPING;
+	
+	public static final int INVALID_EXPORTS = ConstantMessages.INVALID_EXPORTS;
+	
+	public static final int INVALID_CREATE_EXPORT = ConstantMessages.INVALID_CREATE_EXPORT;
 	
 	public static final int PACKAGE_VALIDATION_FAIL = 1;
 	

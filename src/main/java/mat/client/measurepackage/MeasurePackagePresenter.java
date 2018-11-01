@@ -670,7 +670,6 @@ private void saveMeasureAtPackage(){
 								MatContext.get().getMessageDelegate();
 								errorMessageAlert.createAlert(MessageDelegate.getPACKAGER_CQL_ERROR());
 							}		
-							
 							showMeasurePackagerBusy(false);
 						}
 			});
@@ -842,6 +841,7 @@ private void saveMeasureAtPackage(){
 		}
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(), isEditable());
 		view.setViewIsEditable(isEditable(), result.getPackages());
+		checkBonnieLogIn();
 		view.getPackageGroupingWidget().checkAssociations();
 	}
 

@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.gwtbootstrap3.client.ui.HelpBlock;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;

@@ -214,7 +214,7 @@ public class MeasurePackageClauseCellListWidget {
 		mainFlowPanel.add(packageGroupingPanel);
 	}
 
-	public void clearAssociations() {
+	private void clearAssociations() {
 		clearAlerts();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 		if (selectedClauseCell.getType().equals(MatConstants.MEASURE_OBSERVATION_POPULATION)) {

@@ -59,13 +59,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	private MeasurePackageOverview packageOverview;
 	
-	private List<MeasurePackageClauseDetail> dbPackageClauses = new ArrayList<MeasurePackageClauseDetail>();
+	private List<MeasurePackageClauseDetail> dbPackageClauses = new ArrayList<>();
 	
-	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
+	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<>();
 	
-	private List<CQLDefinition> dbCQLSuppDataElements = new ArrayList<CQLDefinition>();
+	private List<CQLDefinition> dbCQLSuppDataElements = new ArrayList<>();
 	
-	private List<RiskAdjustmentDTO> dbRiskAdjVars = new ArrayList<RiskAdjustmentDTO>();
+	private List<RiskAdjustmentDTO> dbRiskAdjVars = new ArrayList<>();
 	
 	private boolean isMeasurePackageAndExport = false;
 	
@@ -74,6 +74,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
 	
 	private static final String SIGN_INTO_BONNIE_MESSAGE = "Please sign into Bonnie.";
+	
+	private static final String LOADING_WAIT_MESSAGE = "Loading Please Wait...";
 	
 	private VsacTicketInformation vsacInfo = null;
 	
@@ -113,100 +115,78 @@ public class MeasurePackagePresenter implements MatPresenter {
 		this.dbRiskAdjVars = dbRiskAdjVars;
 	}
 
-	public static interface PackageView {
+	public interface PackageView {
+		Panel getCellTablePanel();
+
+		Widget asWidget();
+
+		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
+
+		Button getCreateNewButton();
+
+		HasClickHandlers getPackageMeasureButton();
+		HasClickHandlers getAddQDMElementsToMeasureButton();
+		HasClickHandlers getaddRiskAdjVariablesToMeasure();
+		HasClickHandlers getPackageMeasureAndExportButton();
+		HasClickHandlers getPackageMeasureAndExportToBonnieButton();
 		
 		ErrorMessageAlert getErrorMessageDisplay();
-		
-		MessageAlert getMeasurePackageSuccessMsg();
-		
-		WarningMessageAlert getMeasurePackageWarningMsg();
-		
 		ErrorMessageAlert getPackageErrorMessageDisplay();
 		
-		HasClickHandlers getPackageMeasureButton();
-		
+		MessageAlert getMeasurePackageSuccessMsg();
 		MessageAlert getPackageSuccessMessageDisplay();
-		
-		Widget asWidget();
-		
-		void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
-		
-		void setCQLElementsInSuppElements(List<CQLDefinition> clauses);
+		MessageAlert getSupplementalDataElementSuccessMessageDisplay();
+		MessageAlert getSupplementalDataElementErrorMessageDisplay(); 
+		MessageAlert getMeasureErrorMessageDisplay();
+		MessageAlert getRiskAdjustmentVariableSuccessMessageDisplay();
+		MessageAlert getRiskAdjustmentVariableErrorMessageDisplay();
+		MessageAlert getInProgressMessageDisplay();
+
+		WarningMessageAlert getMeasurePackageWarningMsg();
+
+		WarningConfirmationMessageAlert getSaveErrorMessageDisplay();
+		WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
 		
 		List<QualityDataSetDTO> getQDMElementsInSuppElements();
-		
+		List<QualityDataSetDTO> getQDMElements();
+
 		List<CQLDefinition> getCQLElementsInSuppElements();
-		
-		void setCQLQDMElements(List<CQLDefinition> clauses);
-		
 		List<CQLDefinition> getCQLQDMElements();
-		
+
+		List<RiskAdjustmentDTO> getRiskAdjClauses();
+		List<RiskAdjustmentDTO> getRiskAdjVar();
+
+		void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
 		void setQDMElements(List<QualityDataSetDTO> clauses);
 		
-		List<QualityDataSetDTO> getQDMElements();
+		void setCQLElementsInSuppElements(List<CQLDefinition> clauses);
+		void setCQLQDMElements(List<CQLDefinition> clauses);
 		
-		HasClickHandlers getAddQDMElementsToMeasureButton();
-		
-		HasClickHandlers getaddRiskAdjVariablesToMeasure();
-		
-		MessageAlert getSupplementalDataElementSuccessMessageDisplay();
-		
-		MessageAlert getSupplementalDataElementErrorMessageDisplay(); 
-		
-		void setViewIsEditable(boolean b,
-				List<MeasurePackageDetail> packages);
+		void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages);
 		
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
-		
-		void setPackageName(String name);
-		
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
-		
-		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
-		
-		void setObserver(Observer observer);
-		
+		void setSubTreeClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
+		void setSubTreeInRiskAdjVarList(List<RiskAdjustmentDTO> riskAdjClauseList);
 		void setAppliedQdmList(QDSAppliedListModel appliedListModel);
 		
-		Button getCreateNewButton();
-		
 		void buildCellTable(List<MeasurePackageDetail> packages);
-		
-		WarningConfirmationMessageAlert getSaveErrorMessageDisplay();
-		
-		MessageAlert getMeasureErrorMessageDisplay();
-		
-		HasClickHandlers getPackageMeasureAndExportButton();
-		
-		void setSubTreeClauseList(List<RiskAdjustmentDTO> riskAdjClauseList);
-		
-		List<RiskAdjustmentDTO> getRiskAdjClauses();
-		
-		List<RiskAdjustmentDTO> getRiskAdjVar();
-		
-		MessageAlert getRiskAdjustmentVariableSuccessMessageDisplay();
-		
-		MessageAlert getRiskAdjustmentVariableErrorMessageDisplay();
 
-		void setSubTreeInRiskAdjVarList(
-				List<RiskAdjustmentDTO> riskAdjClauseList);
+		void setPackageName(String name);
 		
-		MessageAlert getInProgressMessageDisplay();
-		
+		void setObserver(Observer observer);
+	
 		void setCQLMeasure(boolean isCQLMeasure);
-		
 		void setRiskAdjustLabel(boolean isCQLMeasure);
-		
 		void setQdmElementsLabel(boolean isCQLMeasure);
-		WarningConfirmationMessageAlert getSaveErrorMessageDisplayOnEdit();
+		
 		void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit);
-		public Panel getCellTablePanel();
-		public void setCellTablePanel(Panel cellTablePanel);
-		HasClickHandlers getPackageMeasureAndExportToBonnieButton();
+		
+		void setCellTablePanel(Panel cellTablePanel);
+
 	}
 	
-	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
-			.getVsacapiServiceAsync();
+	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
 	
 	public MeasurePackagePresenter(PackageView packageView) {
 		view = packageView;
@@ -214,8 +194,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 	
 	private void addAllHandlers() {
-		
-		
 		
 		view.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -237,7 +215,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					enablePackageButtons(false);
 					isMeasurePackageAndExport = false;
 					isExportToBonnie = false;
-					view.getInProgressMessageDisplay().createAlert("Loading Please Wait...");
+					view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
 					validateGroup();
 					clearMessages(); 
 				}
@@ -252,7 +230,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				enablePackageButtons(false);
 				isMeasurePackageAndExport = true;
 				isExportToBonnie = false;
-				view.getInProgressMessageDisplay().createAlert("Loading Please Wait...");
+				view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
 				validateGroup();
 				clearMessages(); 
 			}
@@ -266,7 +244,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				enablePackageButtons(false);
 				isMeasurePackageAndExport = false;
 				isExportToBonnie = true;
-				view.getInProgressMessageDisplay().createAlert("Loading Please Wait...");
+				view.getInProgressMessageDisplay().createAlert(LOADING_WAIT_MESSAGE);
 				validateUMLSLogIn();
 				clearMessages(); 
 			}
@@ -610,18 +588,17 @@ private void saveMeasureAtPackage(){
 	
 	private boolean isValid() {
 		List<MeasurePackageClauseDetail> detailList = view.getPackageGroupingWidget().getGroupingPopulationList();
-		List<String> messages = new ArrayList<String>();
 		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
 		MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();
-		messages = clauseValidator.isValidMeasurePackage(detailList);
-		measurePackageClauseCellListWidget.checkForNumberOfStratification((ArrayList<MeasurePackageClauseDetail>) detailList, messages);
-		if (messages.size() > 0) {
+		List<String> messages = clauseValidator.isValidMeasurePackage(detailList);
+		measurePackageClauseCellListWidget.checkForNumberOfStratification(detailList, messages);
+		if (!messages.isEmpty()) {
 			view.getPackageErrorMessageDisplay().createAlert(messages);
 		} else {
 			view.getPackageErrorMessageDisplay().clearAlert();
 		}
 
-		return messages.size() == 0;
+		return messages.isEmpty();
 	}
 	
 	public void updateDetailsFromView(MeasurePackageDetail currentDetail) {
@@ -658,6 +635,7 @@ private void saveMeasureAtPackage(){
 		currentDetail = null;
 		packageOverview = null;
 		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
+		view = new MeasurePackagerView();
 	}
 
 	@Override
@@ -832,13 +810,13 @@ private void saveMeasureAtPackage(){
 
 	private void setOverview(MeasurePackageOverview result) {
 		packageOverview = result;
-		List <MeasurePackageClauseDetail> clauseList = new ArrayList<MeasurePackageClauseDetail>(result.getClauses());
+		List<MeasurePackageClauseDetail> clauseList = new ArrayList<>(result.getClauses());
 		view.setClauses(clauseList);
 		//SubTree Clauses
 		view.setSubTreeClauseList(result.getSubTreeClauseList());
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
-		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(result.getPackages());
+		List<MeasurePackageDetail> packageList = new ArrayList<>(result.getPackages());
 		
 		if(result.isComposite()) {
 			// don't show the cell table or create new grouping button for composite measures. 
@@ -849,7 +827,7 @@ private void saveMeasureAtPackage(){
 			view.getCreateNewButton().setVisible(true);
 		}
 		
-		if (result.getPackages().size() > 0) {
+		if (!result.getPackages().isEmpty()) {
 			if (currentDetail != null) {
 				for (int i = 0; i < result.getPackages().size(); i++) {
 					MeasurePackageDetail mpDetail = result.getPackages().get(i);
@@ -919,7 +897,7 @@ private void saveMeasureAtPackage(){
 		currentDetail = new MeasurePackageDetail();
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setSequence(Integer.toString(getMaxSequence(packageOverview) + 1));
-		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(packageOverview.getPackages());
+		List<MeasurePackageDetail> packageList = new ArrayList<>(packageOverview.getPackages());
 		
 		if(packageOverview.isComposite()) {
 			// don't show the cell table or create new grouping button for composite measures. 
@@ -951,7 +929,7 @@ private void saveMeasureAtPackage(){
 	}
 
 	private void setMeasurePackageDetailsOnView() {
-		List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>(currentDetail.getPackageClauses());
+		List<MeasurePackageClauseDetail> packageClauses = new ArrayList<>(currentDetail.getPackageClauses());
 		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(packageOverview.getClauses(), packageClauses);
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
@@ -992,7 +970,7 @@ private void saveMeasureAtPackage(){
 	}
 	
 	private List<MeasurePackageClauseDetail> removeClauses(final List<MeasurePackageClauseDetail> master, final List<MeasurePackageClauseDetail> toRemove) {
-		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
+		List<MeasurePackageClauseDetail> newList = new ArrayList<>();
 		newList.addAll(master);
 		for (MeasurePackageClauseDetail remove : toRemove) {
 			for (int i = 0; i < newList.size(); i++) {

@@ -698,7 +698,6 @@ private void saveMeasureAtPackage(){
 	}
 	
 	private void checkBonnieLogIn(boolean isEditable) {
-		Window.alert("measure qdm version " + model.getQdmVersion() + " currentQDM version " + MatContext.get().getCurrentQDMVersion());
 		if(model.getQdmVersion() != MatContext.get().getCurrentQDMVersion()) {
 			((Button) view.getPackageMeasureAndExportToBonnieButton()).setVisible(false);
 		} 

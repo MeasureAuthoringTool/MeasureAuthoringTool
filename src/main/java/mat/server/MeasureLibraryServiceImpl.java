@@ -1521,6 +1521,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 			ManageMeasureDetailModel manageMeasureDetailModel = convertXMLToModel(xmlString, measure);
 			manageMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+			manageMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
 		
 			return manageMeasureDetailModel;
 		}
@@ -1539,6 +1540,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		String xmlString = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
 		ManageCompositeMeasureDetailModel manageCompositeMeasureDetailModel = (ManageCompositeMeasureDetailModel) convertXMLToModel(xmlString, measure);
 		manageCompositeMeasureDetailModel.setMeasureDetailResult(measureDetailResult);
+		manageCompositeMeasureDetailModel.setQdmVersion(measure.getQdmVersion());
 		
 		return manageCompositeMeasureDetailModel;
 	}

@@ -579,26 +579,24 @@ public class MeasurePackageClauseCellListWidget {
 	}
 
 	public void checkAssociations() {
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			leftCellListSelectionModel.clear();
-			String scoring = MatContext.get().getCurrentMeasureScoringType();
-			//Show Association only for Ratio Measures.
-			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
-					clearButtonPanel.clear();
-					// If More than one Populations are added in Grouping, Add Association Widget is shown
-					if ((countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) ||
-							// else if any measure observations are added in Grouping, Add association widget is shown
-							(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)){
-						buildAddAssociationWidget(groupingPopulationList);
-						addAssocationsWidget.setVisible(true);
-					}
-					else  {
-						addAssocationsWidget.setVisible(false);
-					}
-			} else {
-				addAssocationsWidget.setVisible(false);
-				associatedPopulationList.clear();
-			}
+		leftCellListSelectionModel.clear();
+		String scoring = MatContext.get().getCurrentMeasureScoringType();
+		//Show Association only for Ratio Measures.
+		if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
+				clearButtonPanel.clear();
+				// If More than one Populations are added in Grouping, Add Association Widget is shown
+				if ((countTypeForAssociation(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) ||
+						// else if any measure observations are added in Grouping, Add association widget is shown
+						(countTypeForAssociation(groupingPopulationList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) >= 1)){
+					buildAddAssociationWidget(groupingPopulationList);
+					addAssocationsWidget.setVisible(true);
+				}
+				else  {
+					addAssocationsWidget.setVisible(false);
+				}
+		} else {
+			addAssocationsWidget.setVisible(false);
+			associatedPopulationList.clear();
 		}
 	}
 	
@@ -734,5 +732,13 @@ public class MeasurePackageClauseCellListWidget {
 
 	public void setAssociatedPopulationList(List<MeasurePackageClauseDetail> associatedPopulationList) {
 		this.associatedPopulationList = (ArrayList<MeasurePackageClauseDetail>) associatedPopulationList;
+	}
+
+	public MeasurePackagerAssociations getAssociations() {
+		return associations;
+	}
+
+	public void setAssociations(MeasurePackagerAssociations associations) {
+		this.associations = associations;
 	}
 }

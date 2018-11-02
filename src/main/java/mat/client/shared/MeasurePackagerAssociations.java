@@ -133,10 +133,16 @@ public class MeasurePackagerAssociations {
 		}
 	}
 	
+	public void makeAssociationsIsEditable(Boolean isEditable) {
+		denominatorListBox.setEnabled(isEditable);
+		numeratorListBox.setEnabled(isEditable);
+		measureObservation1ListBox.setEnabled(isEditable);
+		measureObservation2ListBox.setEnabled(isEditable);
+	}
 	
 	private void createOnChangeHandlers() {
 		denominatorListBox.addChangeHandler(event -> handleDenominatorAndNumeratorListChange(denominatorListBox.getSelectedIndex(), denominatorListBox, numeratorListBox));
-		numeratorListBox.addChangeHandler(event -> handleDenominatorAndNumeratorListChange(denominatorListBox.getSelectedIndex(), numeratorListBox, denominatorListBox));
+		numeratorListBox.addChangeHandler(event -> handleDenominatorAndNumeratorListChange(numeratorListBox.getSelectedIndex(), numeratorListBox, denominatorListBox));
 		measureObservation1ListBox.addChangeHandler(event -> handleMeasureObservationChange(measureObservation1ListBox.getSelectedIndex(), measureObservation1ListBox, measureObservation2ListBox));
 		measureObservation2ListBox.addChangeHandler(event -> handleMeasureObservationChange(measureObservation2ListBox.getSelectedIndex(), measureObservation2ListBox, measureObservation1ListBox));
 	}

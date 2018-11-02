@@ -55,6 +55,8 @@ public class MeasureDetailsViewFactory {
 				return new MeasureStewardView();
 			case COPYRIGHT:
 				return new CopyrightView();
+			case POPULATIONS:
+				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
 			default:
 				return new GeneralMeasureInformationView();

@@ -85,17 +85,17 @@ public class MeasureDetailsNavigation {
 		for(MeasureDetailsItems measureDetail: detailsList) {
 			AnchorListItem anchorListItem = new AnchorListItem(measureDetail.abbreviatedName());
 			anchorListItem.getElement().setTitle(measureDetail.abbreviatedName());
+			menuItemMap.put(measureDetail, anchorListItem);
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
 				anchorListItem.setIcon(IconType.PLUS);
 				anchorListItem.add(populationsCollapse);
-				anchorListItem.addClickHandler(event -> handlePopulationItemClick(anchorListItem));
+				anchorListItem.addClickHandler(event -> handlePopulationItemClick(anchorListItem, measureDetail));
 				navPills.add(anchorListItem);
 			} else {
 				//if not a composite measure skip the component menu item
 				if(measureDetail == MeasureDetailsItems.COMPONENT_MEASURES && !isComposite) {
 					continue;
 				}
-				menuItemMap.put(measureDetail, anchorListItem);
 				navPills.add(anchorListItem);
 				anchorListItem.addClickHandler(event -> handleAnchorListItemClick(measureDetail));
 			}
@@ -104,7 +104,7 @@ public class MeasureDetailsNavigation {
 		return navPills;
 	}
 	
-	private void handlePopulationItemClick(AnchorListItem anchorListItem) {
+	private void handlePopulationItemClick(AnchorListItem anchorListItem, MatDetailItem menuItem) {
 		deselectAllMenuItems();
 		if (populationsCollapse.getElement().getClassName().equalsIgnoreCase("panel-collapse collapse in")) {
 			populationsCollapse.getElement().setClassName("panel-collapse collapse");
@@ -113,6 +113,7 @@ public class MeasureDetailsNavigation {
 			populationsCollapse.getElement().setClassName("panel-collapse collapse in");
 			anchorListItem.setIcon(IconType.MINUS);
 		}
+		handleAnchorListItemClick(menuItem);
 	}
 
 	private void handleAnchorListItemClick(MatDetailItem menuItem) {

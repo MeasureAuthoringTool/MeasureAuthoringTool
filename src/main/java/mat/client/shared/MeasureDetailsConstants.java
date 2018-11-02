@@ -13,7 +13,7 @@ public class MeasureDetailsConstants {
 	public enum MeasureDetailsItems implements MatDetailItem{
 		GENERAL_MEASURE_INFORMATION("General Measure Information", "General Measure Information"),
 		COMPONENT_MEASURES("Component Measures","Component Measures"),
-		STEWARD("Measure Steward/Developer", "Measure Steward and Developer"),
+		STEWARD("Measure Steward / Developer", "Measure Steward and Measure Developer"),
 		DESCRIPTION("Description", "Description"),
 		COPYRIGHT("Copyright", "Copyright"),
 		DISCLAIMER("Disclaimer", "Disclaimer"),
@@ -29,7 +29,7 @@ public class MeasureDetailsConstants {
 		GUIDANCE("Guidance", "Guidance"),
 		TRANSMISSION_FORMAT("Transmission Format", "Transmission Format"),
 		POPULATIONS("Populations", "Populations"),
-		SUPPLEMENTAL_DATA_ELEMENTS("Supplemental Data/Elements", "Supplemental Data/Elements"),
+		SUPPLEMENTAL_DATA_ELEMENTS("Supplemental Data Elements", "Supplemental Data Elements"),
 		MEASURE_SET("Measure Set", "Measure Set");
 		
 	    private String displayName;

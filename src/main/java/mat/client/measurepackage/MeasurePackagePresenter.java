@@ -703,6 +703,7 @@ private void saveMeasureAtPackage(){
 		} 
 		//only check if logged into bonnie if the page is editable
 		else if (isEditable) {
+			((Button) view.getPackageMeasureAndExportToBonnieButton()).setVisible(true);
 			String matUserId = MatContext.get().getLoggedinUserId();
 			MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
 				

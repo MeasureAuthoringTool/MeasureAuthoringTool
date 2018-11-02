@@ -635,7 +635,7 @@ private void saveMeasureAtPackage(){
 		currentDetail = null;
 		packageOverview = null;
 		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
-		view = new MeasurePackagerView();
+		//view = new MeasurePackagerView();
 	}
 
 	@Override

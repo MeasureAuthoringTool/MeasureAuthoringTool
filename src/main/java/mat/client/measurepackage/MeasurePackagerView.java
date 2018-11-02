@@ -1362,5 +1362,21 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public void setCellTablePanel(Panel cellTablePanel) {
 		this.cellTablePanel = cellTablePanel;
 	}
+	
+	@Override
+	public void clearPackageGroupingsAndSDEAndRAVs() {
+		setClauses(new ArrayList<MeasurePackageClauseDetail>());
+		setClausesInPackage(new ArrayList<MeasurePackageClauseDetail>());
+
+		setSubTreeClauseList(new ArrayList<RiskAdjustmentDTO>());
+		setSubTreeInRiskAdjVarList(new ArrayList<RiskAdjustmentDTO>());
+
+		setQDMElements(new ArrayList<QualityDataSetDTO>());
+		setQDMElementsInSuppElements(new ArrayList<QualityDataSetDTO>());
+
+		setCQLElementsInSuppElements(new ArrayList<CQLDefinition>());
+		setCQLQDMElements(new ArrayList<CQLDefinition>());
+
+	}
 
 }

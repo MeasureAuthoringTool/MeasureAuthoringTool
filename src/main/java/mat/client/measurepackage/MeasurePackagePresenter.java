@@ -183,7 +183,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setSaveErrorMessageDisplayOnEdit(WarningConfirmationMessageAlert saveErrorMessageDisplayOnEdit);
 		
 		void setCellTablePanel(Panel cellTablePanel);
-
+		
+		void clearPackageGroupingsAndSDEAndRAVs();
 	}
 	
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
@@ -641,7 +642,7 @@ private void saveMeasureAtPackage(){
 		currentDetail = null;
 		packageOverview = null;
 		view.getPackageGroupingWidget().getAddAssociationsPanel().setVisible(false);
-		//view = new MeasurePackagerView();
+        view.clearPackageGroupingsAndSDEAndRAVs();
 	}
 
 	@Override

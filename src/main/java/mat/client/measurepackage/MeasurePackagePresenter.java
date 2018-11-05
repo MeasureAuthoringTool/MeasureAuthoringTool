@@ -128,7 +128,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		HasClickHandlers getAddQDMElementsToMeasureButton();
 		HasClickHandlers getaddRiskAdjVariablesToMeasure();
 		HasClickHandlers getPackageMeasureAndExportButton();
-		HasClickHandlers getPackageMeasureAndExportToBonnieButton();
+		HasClickHandlers getPackageMeasureAndUploadToBonnieButton();
 		
 		ErrorMessageAlert getErrorMessageDisplay();
 		ErrorMessageAlert getPackageErrorMessageDisplay();
@@ -237,7 +237,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 		
-		view.getPackageMeasureAndExportToBonnieButton().addClickHandler(new ClickHandler() {
+		view.getPackageMeasureAndUploadToBonnieButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -404,14 +404,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 			((Button) view.getPackageMeasureButton()).setEnabled(enable);
 			((Button) view.getPackageMeasureAndExportButton()).setEnabled(enable);
 			if(!enable) {
-				((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(enable);
+				((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(enable);
 			} else {
 				checkBonnieLogIn(isEditable());
 			}
 		} else {
 			((Button) view.getPackageMeasureButton()).setEnabled(false);
 			((Button) view.getPackageMeasureAndExportButton()).setEnabled(false);
-			((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(false);
+			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
 		}
 	}
 	
@@ -699,29 +699,29 @@ private void saveMeasureAtPackage(){
 	
 	private void checkBonnieLogIn(boolean isEditable) {
 		if(model.getQdmVersion() != MatContext.get().getCurrentQDMVersion()) {
-			((Button) view.getPackageMeasureAndExportToBonnieButton()).setVisible(false);
+			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(false);
 		} 
 		//only check if logged into bonnie if the page is editable
 		else if (isEditable) {
-			((Button) view.getPackageMeasureAndExportToBonnieButton()).setVisible(true);
+			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(true);
 			String matUserId = MatContext.get().getLoggedinUserId();
 			MatContext.get().getBonnieService().getBonnieUserInformationForUser(matUserId, new AsyncCallback<BonnieUserInformationResult>() {
 				
 				@Override
 				public void onSuccess(BonnieUserInformationResult result) {
 					showMeasurePackagerBusy(false);
-					((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(true);
+					((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(true);
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
 					showMeasurePackagerBusy(false);
-					((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(false);
+					((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
 				}
 			});
 		} else {
-			((Button) view.getPackageMeasureAndExportToBonnieButton()).setVisible(true);
-			((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(false);
+			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(true);
+			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
 		}
 	}
 	

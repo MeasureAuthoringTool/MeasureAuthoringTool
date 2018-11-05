@@ -1230,7 +1230,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	@Override
-	public HasClickHandlers getPackageMeasureAndExportToBonnieButton() {
+	public HasClickHandlers getPackageMeasureAndUploadToBonnieButton() {
 		return packageMeasureAndUploadToBonnieButton;
 	}
 	

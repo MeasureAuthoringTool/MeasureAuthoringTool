@@ -106,7 +106,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private Button addAllRiskAdjustmentLeft = buildArrowButton(IconType.ANGLE_DOUBLE_LEFT, "addAllToLeft");
 	private Button addRiskAdjustmentVariablesToMeasureButton = buildButton(IconType.SAVE, "Save Risk Adjustment Variables") ;
 	private Button packageMeasureAndExportButton = buildButton(IconType.DOWNLOAD, "Create Package and Export") ;
-	private Button packageMeasureAndExportToBonnieButton = buildButton(IconType.UPLOAD, "Package and Export to Bonnie") ;
+	private Button packageMeasureAndUploadToBonnieButton = buildButton(IconType.UPLOAD, "Package and Upload to Bonnie") ;
 	
 	private MessageAlert measurePackageSuccessMsg = new SuccessMessageAlert();
 	private MessageAlert measureErrorMessages = new ErrorMessageAlert();
@@ -189,7 +189,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		ButtonToolBar packageGroup = new ButtonToolBar();
 		packageGroup.add(packageMeasureButton);
 		packageGroup.add(packageMeasureAndExportButton);
-		packageGroup.add(packageMeasureAndExportToBonnieButton);
+		packageGroup.add(packageMeasureAndUploadToBonnieButton);
 		
 		content.add(packageGroup);
 		content.setStyleName("contentPanel");
@@ -898,7 +898,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		createNewGroupingButton.setEnabled(isEnabled);
 		packageMeasureButton.setEnabled(isEnabled);
 		packageMeasureAndExportButton.setEnabled(isEnabled);
-		packageMeasureAndExportToBonnieButton.setEnabled(isEnabled);
+		packageMeasureAndUploadToBonnieButton.setEnabled(isEnabled);
 		addSupplementalDataElementsButton.setEnabled(isEnabled);
 		packageGroupingWidget.getSaveGrouping().setEnabled(isEnabled);
 		addAllQDMLeft.setEnabled(isEnabled);
@@ -1231,7 +1231,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	@Override
 	public HasClickHandlers getPackageMeasureAndExportToBonnieButton() {
-		return packageMeasureAndExportToBonnieButton;
+		return packageMeasureAndUploadToBonnieButton;
 	}
 	
 	@Override

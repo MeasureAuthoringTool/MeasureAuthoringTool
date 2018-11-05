@@ -720,6 +720,7 @@ private void saveMeasureAtPackage(){
 				}
 			});
 		} else {
+			((Button) view.getPackageMeasureAndExportToBonnieButton()).setVisible(true);
 			((Button) view.getPackageMeasureAndExportToBonnieButton()).setEnabled(false);
 		}
 	}

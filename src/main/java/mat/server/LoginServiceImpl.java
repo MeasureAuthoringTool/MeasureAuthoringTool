@@ -18,6 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
 
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
@@ -51,6 +52,7 @@ import mat.shared.SecurityQuestionVerifier;
  * The Class LoginServiceImpl.
  */
 @SuppressWarnings("serial")
+@Service
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService {
 	
 	private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);

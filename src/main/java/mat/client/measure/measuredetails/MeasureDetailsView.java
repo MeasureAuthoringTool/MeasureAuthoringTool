@@ -1,39 +1,43 @@
 package mat.client.measure.measuredetails;
 
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.constants.Pull;
-import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
-import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MatDetailItem;
+import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.SpacerWidget;
 
 public class MeasureDetailsView {
-	private FlowPanel mainPanel = new FlowPanel();
+	private VerticalPanel mainPanel = new VerticalPanel();
 	private HorizontalPanel mainContentPanel = new HorizontalPanel();
 	private HorizontalPanel headingPanel = new HorizontalPanel();
-	private HorizontalPanel buttonPanel = new HorizontalPanel();
+	private HorizontalPanel saveButtonPanel = new HorizontalPanel();
 	private VerticalPanel widgetComponentPanel = new VerticalPanel();
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
 	private SaveButton saveButton = new SaveButton("Measure Details");
+	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	
 	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
+		buildMeasureDetailsButtonPanel();
 		mainContentPanel.add(navigationPanel.getWidget());
 		mainContentPanel.setWidth("100%");
 		buildDetailView(currentMeasureDetail);
-		mainContentPanel.setStyleName("contentPanel");
 		mainContentPanel.getElement().setId("measureDetailsView_ContentPanel");
 		mainPanel.add(mainContentPanel);
+		mainPanel.setStyleName("contentPanel");
 	}
 
 	private void buildHeading() {
@@ -51,12 +55,22 @@ public class MeasureDetailsView {
 	private void buildSavePanel(MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS) {
 			widgetComponentPanel.add(new SpacerWidget());
-			buttonPanel.add(saveButton);
-			buttonPanel.setWidth("100%");
+			saveButtonPanel.add(saveButton);
+			saveButtonPanel.setWidth("100%");
 			saveButton.setPull(Pull.RIGHT);
 			saveButton.setMarginRight(30);
-			widgetComponentPanel.add(buttonPanel);
+			widgetComponentPanel.add(saveButtonPanel);
 		}
+	}
+	
+	private void buildMeasureDetailsButtonPanel() {
+		mainPanel.add(new SpacerWidget());
+		HorizontalPanel panel = new HorizontalPanel();
+		ButtonToolBar toolbar = new ButtonToolBar();	
+		toolbar.add(deleteMeasureButton);
+		panel.add(toolbar);
+		mainPanel.add(panel);
+		mainPanel.add(new SpacerWidget());
 	}
 	
 	public void buildDetailView(MatDetailItem currentMeasureDetail) {
@@ -74,6 +88,10 @@ public class MeasureDetailsView {
 	
 	public Widget getWidget() {
 		return mainPanel;
+	}
+	
+	public Button getDeleteMeasureButton() {
+		return this.deleteMeasureButton;
 	}
 	
 	public boolean isValid() {

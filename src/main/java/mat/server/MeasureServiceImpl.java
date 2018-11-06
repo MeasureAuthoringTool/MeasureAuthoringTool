@@ -43,6 +43,7 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.measure.error.DeleteMeasureException;
 
 /**
  * The Class MeasureServiceImpl.
@@ -165,8 +166,14 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	}
 	
 	@Override
+	@Deprecated
 	public void saveAndDeleteMeasure(String measureID,  String loginUserId) {
 		this.getMeasureLibraryService().saveAndDeleteMeasure(measureID,loginUserId);
+	}
+	
+	@Override
+	public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException {
+		this.getMeasureLibraryService().deleteMeasure(measureId, loggedInUserId, password);
 	}
 	
 	@Override

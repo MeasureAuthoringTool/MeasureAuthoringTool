@@ -232,7 +232,10 @@ public interface MeasureServiceAsync {
 	 * @param loginUserId
 	 *            the login id of user
 	 */
+	@Deprecated
 	void saveAndDeleteMeasure(String measureID, String loginUserId, AsyncCallback<Void> callback);
+	
+	void deleteMeasure(String measureId, String loggedInUserId, String password, AsyncCallback<Void> callback);
 	
 	/**
 	 * Save finalized version.

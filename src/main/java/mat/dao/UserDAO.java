@@ -8,10 +8,6 @@ import mat.model.User;
 import mat.server.model.MatUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Interface UserDAO.
- */
 public interface UserDAO extends IDAO<User, String> {
 	
 	/**

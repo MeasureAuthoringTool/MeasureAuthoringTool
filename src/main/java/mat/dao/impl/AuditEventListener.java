@@ -10,6 +10,7 @@ import org.hibernate.event.spi.PreInsertEvent;
 import org.hibernate.event.spi.PreInsertEventListener;
 import org.hibernate.event.spi.PreUpdateEvent;
 import org.hibernate.event.spi.PreUpdateEventListener;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import mat.model.AuditLog;
@@ -29,6 +30,7 @@ import mat.shared.ConstantMessages;
  * @see AuditEventEvent
  */
 @Transactional
+@Repository
 public class AuditEventListener implements  PreDeleteEventListener, PreInsertEventListener, PreUpdateEventListener {
 	
 	/** The Constant serialVersionUID. */

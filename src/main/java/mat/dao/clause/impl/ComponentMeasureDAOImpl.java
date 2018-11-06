@@ -1,0 +1,69 @@
+package mat.dao.clause.impl;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import mat.dao.clause.ComponentMeasuresDAO;
+import mat.dao.search.GenericDAO;
+import mat.model.clause.ComponentMeasure;
+
+@Repository
+public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String> implements ComponentMeasuresDAO{
+	
+	private static final Log logger = LogFactory.getLog(ComponentMeasureDAOImpl.class);
+	
+	public ComponentMeasureDAOImpl(@Autowired SessionFactory sessionFactory) {
+		setSessionFactory(sessionFactory);
+	}
+	
+	@Override
+	public void saveComponentMeasures(List<ComponentMeasure> componentMeasuresList) {
+		for(ComponentMeasure component : componentMeasuresList) {
+			super.save(component);	
+		}
+	}
+	
+	@Override
+	public void deleteComponentMeasures(List<ComponentMeasure> componentMeasuresToDelete) {
+		try{
+			Session session = getSessionFactory().getCurrentSession();
+			for(ComponentMeasure component : componentMeasuresToDelete) {
+				session.delete(component);
+			}
+		} catch (Exception e) {
+			logger.error("Error deleting component measures: " + e);
+		}
+	}
+
+	@Override
+	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList) {
+		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";
+		try {
+			Session session = getSessionFactory().getCurrentSession();
+			Query<?> query = session.createQuery(hql);
+			query.setParameter("compositeMeasureId", measureId);
+			query.executeUpdate();			
+			saveComponentMeasures(componentMeasuresList);			
+		} catch (Exception e) {
+			logger.error("Error updating component measures: " + e);
+		}
+		
+	}
+
+	@Override
+	public List<ComponentMeasure> findByComponentMeasureId(String measureId) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ComponentMeasure.class);
+		criteria.add(Restrictions.eq("componentMeasure.id", measureId));
+		return criteria.list();
+	}
+}

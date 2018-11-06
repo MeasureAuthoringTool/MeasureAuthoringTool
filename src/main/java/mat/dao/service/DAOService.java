@@ -1,5 +1,8 @@
 package mat.dao.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import mat.dao.AuditLogDAO;
 import mat.dao.CQLLibraryAuditLogDAO;
 import mat.dao.CategoryDAO;
@@ -40,99 +43,96 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
-import mat.dao.clause.ModesAttributesDAO;
-import mat.dao.clause.ModesDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
 
+@Service
 public class DAOService {
 	
+	@Autowired
 	private AuditLogDAO auditLogDAO;
 	
-	
+	@Autowired
 	private CategoryDAO categoryDAO;
-	
+	@Autowired
 	private CodeDAO codeDAO;
-	
+	@Autowired
 	private CodeListAuditLogDAO codeListAuditLogDAO;
-	
+	@Autowired
 	private CodeListDAO codeListDAO;
-	
+	@Autowired
 	private CodeSystemDAO codeSystemDAO;
-	
+	@Autowired
 	private DataTypeDAO dataTypeDAO;
-	
+	@Autowired
 	private ListObjectDAO listObjectDAO;
-	
+	@Autowired
 	private ListObjectLTDAO listObjectLTDAO;
-	
+	@Autowired
 	private MatFlagDAO matFlagDAO;
-	
+	@Autowired
 	private MeasureAuditLogDAO measureAuditLogDAO;
-	
+	@Autowired
 	private CQLLibraryAuditLogDAO cqlLibraryAuditLogDAO;
-	
+	@Autowired
 	private MeasureDAO measureDAO;
-	
+	@Autowired
 	private MeasureExportDAO measureExportDAO;
-	
+	@Autowired
 	private MeasureScoreDAO measureScoreDAO;
-	
+	@Autowired
 	private MeasureSetDAO measureSetDAO;
-	
+	@Autowired
 	private MeasureValidationLogDAO measureValidationLogDAO;
-	
+	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
-	
-	private ModesAttributesDAO modesAttributesDAO;
-	
-	private ModesDAO modesDAO;
-	
+	@Autowired
 	private OperatorDAO operatorDAO;
-	
+	@Autowired
 	private OrganizationDAO organizationDAO;
-	
+	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
-	
+	@Autowired
 	private QualityDataSetDAO qualityDataSetDAO;
-	
+	@Autowired
 	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
+	@Autowired
 	private RecentCQLActivityLogDAO recentCQLActivityLogDAO;
-	
+	@Autowired
 	private SecurityRoleDAO securityRoleDAO;
-
+	@Autowired
 	private StatusDAO statusDAO;
-	
+	@Autowired
 	private StewardDAO stewardDAO;
-	
+	@Autowired
 	private TransactionAuditLogDAO transactionAuditLogDAO;
-	
+	@Autowired
 	private UnitDAO unitDAO;
-	
+	@Autowired
 	private UnitTypeDAO unitTypeDAO;
-	
+	@Autowired
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
-	
+	@Autowired
 	private UserDAO userDAO;
-	
+	@Autowired
 	private UserBonnieAccessInfoDAO userBonnieAccessInfoDAO;
-	
+	@Autowired
 	private UserPasswordDAO userPasswordDAO;
-	
+	@Autowired
 	private UserSecurityQuestionDAO userSecurityQuestionDAO;
-	
+	@Autowired
 	private UserPasswordHistoryDAO userPasswordHistoryDAO;
-	
+	@Autowired
 	private UserAuditLogDAO userAuditLogDAO;
-	
+	@Autowired
 	private CQLLibraryDAO cqlLibraryDAO;
-	
+	@Autowired
 	private CQLLibraryAssociationDAO cqlLibraryAssociationDAO;
-	
+	@Autowired
 	private CQLLibraryShareDAO cqlLibraryShareDAO;
-	
+	@Autowired
 	private EmailAuditLogDAO emailAuditLogDAO; 
-	
+	@Autowired
 	private ComponentMeasuresDAO componentMeasureDAO;
 
 	public AuditLogDAO getAuditLogDAO() {
@@ -201,22 +201,6 @@ public class DAOService {
 	
 	public MeasureXMLDAO getMeasureXMLDAO() {
 		return measureXMLDAO;
-	}
-	
-	public ModesAttributesDAO getModesAttributesDAO() {
-		return modesAttributesDAO;
-	}
-
-	public void setModesAttributesDAO(ModesAttributesDAO modesAttributesDAO) {
-		this.modesAttributesDAO = modesAttributesDAO;
-	}
-
-	public ModesDAO getModesDAO() {
-		return modesDAO;
-	}
-	
-	public void setModesDAO(ModesDAO modesDAO) {
-		this.modesDAO = modesDAO;
 	}
 	
 	public OperatorDAO getOperatorDAO() {

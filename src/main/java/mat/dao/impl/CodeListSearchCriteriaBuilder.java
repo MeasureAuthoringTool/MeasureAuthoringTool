@@ -8,9 +8,6 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 
-/**
- * The Class CodeListSearchCriteriaBuilder.
- */
 public class CodeListSearchCriteriaBuilder extends ListObjectSearchCriteriaBuilder {
 
 	/**

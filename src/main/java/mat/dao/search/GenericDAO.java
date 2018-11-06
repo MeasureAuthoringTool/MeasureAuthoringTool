@@ -16,6 +16,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
  *            the generic type
  */
 @Transactional
+@Repository
 public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T, ID> {
 	
 	/** The clazz. */
@@ -37,8 +40,8 @@ public abstract class GenericDAO <T, ID extends Serializable> implements IDAO<T,
 	/** The clazz id. */
 	private Class<ID> clazzId; 
 	
-	/** The session factory. */
-	private SessionFactory sessionFactory = null;
+	@Autowired
+	private SessionFactory sessionFactory;
 	
 	/**
 	 * Instantiates a new generic dao.

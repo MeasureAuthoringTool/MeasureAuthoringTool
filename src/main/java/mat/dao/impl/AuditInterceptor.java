@@ -6,15 +6,13 @@ import java.util.Date;
 
 import org.hibernate.EmptyInterceptor;
 import org.hibernate.type.Type;
+import org.springframework.stereotype.Repository;
 
 import mat.model.AuditLog;
 import mat.server.LoggedInUserUtil;
 
 
-
-/**
- * The Class AuditInterceptor.
- */
+@Repository
 public class AuditInterceptor extends EmptyInterceptor {
 	
 	/** The Constant serialVersionUID. */

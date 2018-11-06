@@ -273,7 +273,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private ComponentMeasuresDAO componentMeasuresDAO;
-
+	
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
 		String result = "";
@@ -293,7 +293,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("Inside checkAndDeleteSubTree Method for measure Id " + measureId);
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureId);
 		HashMap<String, String> removeUUIDMap = new HashMap<String, String>();
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureId)) {
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId)) {
 			if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 				XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 				try {
@@ -1125,7 +1125,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			final boolean isSuperUser, final MeasureShareDTO dto) {
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
-		Measure measure = getMeasureDAO().find(dto.getMeasureId());
+		Measure measure = measureDAO.find(dto.getMeasureId());
 		detail.setName(dto.getMeasureName());
 		detail.setShortName(dto.getShortName());
 		detail.setScoringType(dto.getScoringType());
@@ -1319,7 +1319,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	private ManageMeasureSearchModel.Result buildSearchModelResultObjectFromMeasureId(String measureId){
-		Measure measure = getMeasureDAO().find(measureId);
+		Measure measure = measureDAO.find(measureId);
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(measure.getDescription());
 		detail.setShortName(measure.getaBBRName());
@@ -1338,7 +1338,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
 		detail.setMeasureSetId(measure.getMeasureSet().getId());
 		detail.setScoringType(measure.getMeasureScoring());
-		boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
+		boolean isLocked = measureDAO.isMeasureLocked(measure.getId());
 		detail.setMeasureLocked(isLocked);
 		detail.setEditable(MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measure.getId()));
 		detail.setPatientBased(measure.getPatientBased());
@@ -1648,7 +1648,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					Node newNode = nodeList.item(i);
 					String id = newNode.getAttributes().getNamedItem(ID).getNodeValue();
-					boolean isDeleted = getMeasureDAO().getMeasure(id);
+					boolean isDeleted = measureDAO.getMeasure(id);
 					if (!isDeleted) {
 						componentMeasureParentNode.removeChild(newNode);
 					}
@@ -1660,14 +1660,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 
-	/**
-	 * Gets the measure dao.
-	 * 
-	 * @return the measure dao
-	 */
-	private MeasureDAO getMeasureDAO() {
-		return ((MeasureDAO) context.getBean("measureDAO"));
-	}
 
 	/**
 	 * Gets the measure xml dao.
@@ -2081,7 +2073,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure start : measureId:: " + measureID);
-		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
 		SecurityContext sc = SecurityContextHolder.getContext();
 		MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
@@ -2167,7 +2158,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Measure m = measurePackageService.getById(measureId);
 		logger.info("Measure Loaded for: " + measureId);
 
-		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureId);
+		boolean isMeasureVersionable = MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureId);
 		if (!isMeasureVersionable) {
 			SaveMeasureResult saveMeasureResult = new SaveMeasureResult();
 			return returnFailureReason(saveMeasureResult, SaveMeasureResult.INVALID_DATA);
@@ -2398,7 +2389,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
-			if (MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), measureXmlModel.getMeasureId())) {
+			if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, measureXmlModel.getMeasureId())) {
 				XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 				try {
 					String scoringTypeBeforeNewXml = (String) xPath.evaluate("/measure/measureDetails/scoring/@id",
@@ -4664,7 +4655,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		List<String> message = new ArrayList<String>();
 		ValidateMeasureResult result = new ValidateMeasureResult();
-		if (MatContextServiceUtil.get().isCurrentMeasureEditable(getMeasureDAO(), model.getId())) {
+		if (MatContextServiceUtil.get().isCurrentMeasureEditable(measureDAO, model.getId())) {
 			MeasureXmlModel xmlModel = measurePackageService.getMeasureXmlForMeasure(model.getId());
 
 			if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
@@ -4942,7 +4933,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		Map<User, List<Measure>> map = new HashMap<User, List<Measure>>();
 		List<User> nonAdminUserList = userService.getAllNonAdminActiveUsers();
 		for (User user : nonAdminUserList) {
-			List<Measure> measureList = getMeasureDAO().getMeasureListForMeasureOwner(user);
+			List<Measure> measureList = measureDAO.getMeasureListForMeasureOwner(user);
 			if ((measureList != null) && (measureList.size() > 0)) {
 				map.put(user, measureList);
 			}

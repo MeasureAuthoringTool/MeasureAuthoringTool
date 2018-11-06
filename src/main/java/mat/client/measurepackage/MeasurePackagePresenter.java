@@ -406,7 +406,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if(!enable) {
 				((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(enable);
 			} else {
-				checkBonnieLogIn(isEditable());
+				displayUploadToBonnieButton(isEditable());
 			}
 		} else {
 			((Button) view.getPackageMeasureButton()).setEnabled(false);
@@ -697,7 +697,7 @@ private void saveMeasureAtPackage(){
 		return panel;
 	}
 	
-	private void checkBonnieLogIn(boolean isEditable) {
+	private void displayUploadToBonnieButton(boolean isEditable) {
 		if(model.getQdmVersion() != MatContext.get().getCurrentQDMVersion()) {
 			((Button) view.getPackageMeasureAndUploadToBonnieButton()).setVisible(false);
 		} 
@@ -862,7 +862,7 @@ private void saveMeasureAtPackage(){
 		
 		view.setViewIsEditable(isEditable(), result.getPackages());
 		view.getPackageGroupingWidget().getAssociations().makeAssociationsIsEditable(isEditable());
-		checkBonnieLogIn(isEditable());
+		displayUploadToBonnieButton(isEditable());
 	}
 
 	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {

@@ -29,6 +29,7 @@ public class MeasureDetailsView {
 	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		mainContentPanel.add(navigationPanel.getWidget());
+		mainContentPanel.setWidth("100%");
 		buildDetailView(currentMeasureDetail);
 		mainContentPanel.setStyleName("contentPanel");
 		mainContentPanel.getElement().setId("measureDetailsView_ContentPanel");
@@ -51,7 +52,7 @@ public class MeasureDetailsView {
 		if(currentMeasureDetail != MeasureDetailsItems.POPULATIONS) {
 			widgetComponentPanel.add(new SpacerWidget());
 			buttonPanel.add(saveButton);
-			buttonPanel.setWidth("700px");
+			buttonPanel.setWidth("100%");
 			saveButton.setPull(Pull.RIGHT);
 			saveButton.setMarginRight(30);
 			widgetComponentPanel.add(buttonPanel);
@@ -64,7 +65,7 @@ public class MeasureDetailsView {
 		buildHeading();
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(currentMeasureDetail);
 		widgetComponentPanel.add(componentDetailView.getWidget());
-		widgetComponentPanel.setWidth("700px");
+		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");
 		widgetComponentPanel.getElement().setId("measureDetailsView_ComponentPanel");
 		mainContentPanel.add(widgetComponentPanel);

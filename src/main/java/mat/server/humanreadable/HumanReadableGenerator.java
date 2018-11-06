@@ -57,11 +57,11 @@ public class HumanReadableGenerator {
 
 	private final String CQLDEFINITION = "cqldefinition";
 	
-	private static final String[] POPULATION_NAME_ARRAY = {"initialPopulation",
-			"denominator", "denominatorExclusions", "numerator",
-			"numeratorExclusions", "denominatorExceptions",
-			"measurePopulation", "measurePopulationExclusions", "stratum" ,
-			"measureObservation"};
+	private static final String[] POPULATION_NAME_ARRAY = {MatConstants.INITIAL_POPULATION,
+			MatConstants.DENOMINATOR, MatConstants.DENOMINATOR_EXCLUSIONS, MatConstants.NUMERATOR,
+			MatConstants.NUMERATOR_EXCLUSIONS, MatConstants.DENOMINATOR_EXCEPTIONS,
+			MatConstants.MEASURE_POPULATION, MatConstants.MEASURE_POPULATION_EXCLUSIONS, MatConstants.STRATUM ,
+			MatConstants.MEASURE_OBSERVATION_POPULATION};
 	
 	@Autowired CQLHumanReadableGenerator humanReadableGenerator; 
 	

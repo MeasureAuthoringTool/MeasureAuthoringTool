@@ -15,8 +15,9 @@ public class HumanReadablePopulationModel {
 	private boolean inGroup; 
 	private String associatedPopulationName; 
 	private String display; 
+	private String type; 
 	
-	public HumanReadablePopulationModel(String name, String logic, String expressionName, String expressionUUID, String aggregateFunction, String associatedPopulationName, boolean isInGroup) {
+	public HumanReadablePopulationModel(String name, String logic, String expressionName, String expressionUUID, String aggregateFunction, String associatedPopulationName, boolean isInGroup, String type) {
 		this.name = name;
 		this.logic = logic;
 		this.aggregateFunction = aggregateFunction;
@@ -25,6 +26,7 @@ public class HumanReadablePopulationModel {
 		this.expressionUUID = expressionUUID; 
 		this.associatedPopulationName = associatedPopulationName;
 		this.id = name.replaceAll(" ", "_") + " " +  new Random().nextInt();
+		this.setType(type); 
 		createDisplay();
 	}
 	
@@ -98,5 +100,13 @@ public class HumanReadablePopulationModel {
 
 	public void setDisplay(String display) {
 		this.display = display;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

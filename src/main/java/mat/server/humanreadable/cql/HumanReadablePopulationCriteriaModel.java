@@ -12,7 +12,7 @@ public class HumanReadablePopulationCriteriaModel {
 	public HumanReadablePopulationCriteriaModel(String name, List<HumanReadablePopulationModel> nameLogicModel, int sequence) {
 		this.populations = nameLogicModel;
 		this.name = name; 
-		this.setSequence(sequence); 
+		this.sequence = sequence; 
 		this.id = this.name.replaceAll(" ", "_") + " " + new Random().nextInt();
 	}
 
@@ -42,5 +42,5 @@ public class HumanReadablePopulationCriteriaModel {
 
 	public void setSequence(int sequence) {
 		this.sequence = sequence;
-	}	
+	}
 }

@@ -123,7 +123,7 @@ public class HumanReadableCodeModel {
 	@Override
 	public boolean equals(Object obj) {
 		HumanReadableCodeModel model = (HumanReadableCodeModel) obj; 
-		return name.equals(model) && oid.equals(model.oid) && codesystemName.equals(model.codesystemName) && codesystemVersion.equals(model.codesystemVersion) && isDatatypeEqual(datatype, model.datatype);
+		return name.equals(model.name) && oid.equals(model.oid) && codesystemName.equals(model.codesystemName) && codesystemVersion.equals(model.codesystemVersion) && isDatatypeEqual(datatype, model.datatype);
 	}
 	
 	private boolean isDatatypeEqual(String d1, String d2) {

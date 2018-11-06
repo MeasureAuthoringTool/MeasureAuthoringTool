@@ -599,7 +599,7 @@ public class CqlLibraryPresenter implements MatPresenter {
 				final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
 				dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate()
 						.getWARNING_DELETION_CQL_LIBRARY());
-				dialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
+				dialogBox.getConfirmButton().addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
 						

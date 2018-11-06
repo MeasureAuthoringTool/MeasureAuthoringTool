@@ -4,13 +4,15 @@ import java.util.List;
 import java.util.Random;
 
 public class HumanReadablePopulationCriteriaModel {
-	String name; 
-	String id; 
-	List<HumanReadablePopulationModel> populations;
+	private String name; 
+	private String id; 
+	private int sequence; 
+	private List<HumanReadablePopulationModel> populations;
 	
-	public HumanReadablePopulationCriteriaModel(String name, List<HumanReadablePopulationModel> nameLogicModel) {
+	public HumanReadablePopulationCriteriaModel(String name, List<HumanReadablePopulationModel> nameLogicModel, int sequence) {
 		this.populations = nameLogicModel;
 		this.name = name; 
+		this.setSequence(sequence); 
 		this.id = this.name.replaceAll(" ", "_") + " " + new Random().nextInt();
 	}
 
@@ -32,5 +34,13 @@ public class HumanReadablePopulationCriteriaModel {
 
 	public String getId() {
 		return id;
+	}
+
+	public int getSequence() {
+		return sequence;
+	}
+
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}	
 }

@@ -416,9 +416,10 @@ public class HumanReadableGenerator {
 		List<HumanReadablePopulationCriteriaModel> groups = new ArrayList<>();
 		
 		NodeList groupNodes = processor.findNodeList(processor.getOriginalDoc(), "/measure/measureGrouping/group");
-		
 		for(int i = 0; i < groupNodes.getLength(); i++) {
 			Node group = groupNodes.item(i);
+			
+			int populationCriteriaNumber = Integer.parseInt(group.getAttributes().getNamedItem("sequence").getNodeValue());
 			
 			List<HumanReadablePopulationModel> populations = new ArrayList<>();
 			
@@ -429,10 +430,14 @@ public class HumanReadableGenerator {
 				populations.add(population);
 			}
 			
-			HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel("Population Criteria " + (i + 1), populations);
+			String displayName = "Population Criteria " + populationCriteriaNumber;
+			HumanReadablePopulationCriteriaModel populationCriteria = new HumanReadablePopulationCriteriaModel(displayName, populations, populationCriteriaNumber);
 			groups.add(populationCriteria);
 		}
 		
+		
+		
+		groups.sort(Comparator.comparing(HumanReadablePopulationCriteriaModel::getSequence));
 		return groups; 
 	}
 	 

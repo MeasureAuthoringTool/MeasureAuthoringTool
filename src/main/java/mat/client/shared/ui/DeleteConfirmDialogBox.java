@@ -30,25 +30,12 @@ import mat.shared.StringUtility;
  * The Class DeleteConfirmDialogBox.
  */
 public class DeleteConfirmDialogBox {
-
-	/** The confirm button. */
 	private  Button confirmButton;
-
-	/** The password entered. */
 	private  String passwordEntered;
-	
 	private  Modal panel;
-	
-	FocusPanel focusPanel = new FocusPanel();
-	
+	private FocusPanel focusPanel = new FocusPanel();
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
 	
-	/**
-	 * showDeletionConfimationDialog.
-	 *
-	 * @param message
-	 *            the message
-	 */
 	public void showDeletionConfimationDialog(String message) {
 		focusPanel.clear();
 	    panel = new Modal();
@@ -130,40 +117,16 @@ public class DeleteConfirmDialogBox {
 		panel.show();
 	}
 
-	/**
-	 * Gets the confirm button.
-	 *
-	 * @return the confirm button
-	 */
 	public Button getConfirmButton() {
 		return confirmButton;
 	}
 
-	/**
-	 * Gets the password entered.
-	 *
-	 * @return the password entered
-	 */
 	public  String getPasswordEntered() {
 		return passwordEntered;
 	}
 
-	/**
-	 * Sets the password entered.
-	 *
-	 * @param passwordEntered the new password entered
-	 */
 	public  void setPasswordEntered(String passwordEntered) {
 		this.passwordEntered = passwordEntered;
-	}
-
-	/**
-	 * Gets the confirmbutton.
-	 *
-	 * @return the confirmbutton
-	 */
-	public  Button getConfirmbutton() {
-		return confirmButton;
 	}
 
 	public Input getPassword() {

@@ -1265,7 +1265,7 @@ public class MetaDataPresenter  implements MatPresenter {
 				if(isMeasureDeletable()){
 					final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
 					dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
-					dialogBox.getConfirmbutton().addClickHandler(new ClickHandler() {
+					dialogBox.getConfirmButton().addClickHandler(new ClickHandler() {
 						
 						@Override
 						public void onClick(final ClickEvent event) {
@@ -1973,7 +1973,7 @@ public class MetaDataPresenter  implements MatPresenter {
 			
 			@Override
 			public void onSuccess(Boolean result) {
-				if (result) {
+				if(result) {
 					checkIfMeasureIsUsedAsAComponentMeasure(errorMessageAlert);
 				} else {
 					fireBackToMeasureLibraryEvent();

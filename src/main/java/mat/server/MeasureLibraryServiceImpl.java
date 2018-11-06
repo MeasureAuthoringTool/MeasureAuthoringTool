@@ -65,6 +65,7 @@ import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.login.service.LoginService;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -157,11 +158,9 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.measure.error.DeleteMeasureException;
 import mat.shared.model.util.MeasureDetailsUtil;
 
-/**
- * The Class MeasureLibraryServiceImpl.
- */
 @Service
 public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
@@ -273,6 +272,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	@Autowired
 	private ComponentMeasuresDAO componentMeasuresDAO;
+	
+	@Autowired
+	private LoginServiceImpl loginService; 
 	
 	@Override
 	public final String appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName) {
@@ -2071,8 +2073,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 
 	@Override
+	@Deprecated
 	public final void saveAndDeleteMeasure(final String measureID, String loginUserId) {
-		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure start : measureId:: " + measureID);
 		Measure m = measureDAO.find(measureID);
 		SecurityContext sc = SecurityContextHolder.getContext();
 		MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
@@ -2091,8 +2093,41 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				logger.info("Measure not deleted.Something went wrong for measure Id :: " + measureID);
 			}
 		}
+	}
+	
+	public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException {
+		logger.info("Measure Deletion Started for measure Id :: " + measureId);
+		boolean isValidPassword = loginService.isValidPassword(loggedInUserId, password);
+		System.out.println("PASSWORD: " + password);
+		System.out.println("DELETE MEASURE: " + isValidPassword);
+		if(!isValidPassword) {
+			logger.error("Failed to delete measure: " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
+			throw new DeleteMeasureException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
+		}
+		
+		GenericResult isUsedAsComponentMeasureResult = checkIfMeasureIsUsedAsComponentMeasure(measureId);
+		if(!isUsedAsComponentMeasureResult.isSuccess()) {
+			logger.error("Failed to delete measure: "  + isUsedAsComponentMeasureResult.getMessages().get(0));
+			throw new DeleteMeasureException(isUsedAsComponentMeasureResult.getMessages().get(0));
+		}
+		
+		deleteMeasure(measureId);
+		logger.info("Measure Deleted Successfully: " + measureId);
+	}
 
-		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
+	private void deleteMeasure(String measureId) {
+		Measure m = measureDAO.find(measureId);
+		SecurityContext sc = SecurityContextHolder.getContext();
+		MatUserDetails details = (MatUserDetails) sc.getAuthentication().getDetails();
+		if (m.getOwner().getId().equalsIgnoreCase(details.getId())) {
+			if (m.getIsCompositeMeasure()) {
+				measurePackageService.updateComponentMeasures(m.getId(), new ArrayList<>());
+			}
+			m.setOwner(null);
+			m.setLastModifiedBy(null);
+			m.setLockedUser(null);
+			measureDAO.delete(m);
+		}
 	}
 
 	private void removeUnusedLibraries(MeasureXmlModel measureXmlModel, SaveUpdateCQLResult cqlResult, Measure measure) {

@@ -1,5 +1,7 @@
 package mat.server.humanreadable.cql;
 
+import java.util.Objects;
+
 public class HumanReadableCodeModel {
 	private String name;
 	private String oid;
@@ -111,6 +113,27 @@ public class HumanReadableCodeModel {
 
 	public void setDataCriteriaDisplay(String dataCriteriaDisplay) {
 		this.dataCriteriaDisplay = dataCriteriaDisplay;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, oid, codesystemName, codesystemVersion, datatype);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		HumanReadableCodeModel model = (HumanReadableCodeModel) obj; 
+		return name.equals(model) && oid.equals(model.oid) && codesystemName.equals(model.codesystemName) && codesystemVersion.equals(model.codesystemVersion) && isDatatypeEqual(datatype, model.datatype);
+	}
+	
+	private boolean isDatatypeEqual(String d1, String d2) {
+		// if datatype 1 is not null, then check the equality to datatype 2.
+		// if datatype 1 is null, then check to see if datatype 2 is null. 
+		if(d1 != null) {
+			return d1.equals(d2);
+		} else {
+			return d2 == null; 
+		}
 	}
 
 }

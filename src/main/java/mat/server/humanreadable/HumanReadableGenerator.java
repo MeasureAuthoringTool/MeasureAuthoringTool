@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -351,7 +353,7 @@ public class HumanReadableGenerator {
 	}
 	
 	private List<HumanReadableValuesetModel> getValuesetTerminology(XmlProcessor processor) throws XPathExpressionException {
-		List<HumanReadableValuesetModel> valuesets = new ArrayList<>(); 
+		Set<HumanReadableValuesetModel> valuesets = new HashSet<>(); 
 		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"false\"]");
 		
 		for(int i = 0; i < elements.getLength(); i++) {
@@ -363,12 +365,13 @@ public class HumanReadableGenerator {
 			valuesets.add(valueset);
 		}
 		
-		valuesets.sort(Comparator.comparing(HumanReadableValuesetModel::getTerminologyDisplay));
-		return valuesets;
+		List<HumanReadableValuesetModel> valuesetList =  new ArrayList<>(valuesets);
+		valuesetList.sort(Comparator.comparing(HumanReadableValuesetModel::getTerminologyDisplay));
+		return valuesetList;
 	}
 	
 	private List<HumanReadableCodeModel> getCodeTerminology(XmlProcessor processor) throws XPathExpressionException {
-		List<HumanReadableCodeModel> codes = new ArrayList<>(); 
+		Set<HumanReadableCodeModel> codes = new HashSet<>(); 
 		NodeList elements = processor.findNodeList(processor.getOriginalDoc(), "/measure/elementLookUp/qdm[@code=\"true\"]");
 		for(int i = 0; i < elements.getLength(); i++) {
 			Node current = elements.item(i);
@@ -391,8 +394,9 @@ public class HumanReadableGenerator {
 			codes.add(model);
 		}  
 		
-		codes.sort(Comparator.comparing(HumanReadableCodeModel::getTerminologyDisplay));
-		return codes; 
+		List<HumanReadableCodeModel> codesList =  new ArrayList<>(codes);
+		codesList.sort(Comparator.comparing(HumanReadableCodeModel::getTerminologyDisplay));
+		return codesList; 
 	}
 
 	private HumanReadableExpressionModel getExpressionModel(XmlProcessor processor, Node sde)

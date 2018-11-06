@@ -1,5 +1,7 @@
 package mat.server.humanreadable.cql;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class HumanReadableValuesetModel {
@@ -93,5 +95,26 @@ public class HumanReadableValuesetModel {
 
 	public void setDatatype(String datatype) {
 		this.datatype = datatype;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, oid, version, datatype);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		HumanReadableValuesetModel model = (HumanReadableValuesetModel) obj; 
+		return name.equals(model.name) && oid.equals(model.oid) && version.equals(model.version) && isDatatypeEqual(datatype, model.datatype);
+	}
+	
+	private boolean isDatatypeEqual(String d1, String d2) {
+		// if datatype 1 is not null, then check the equality to datatype 2.
+		// if datatype 1 is null, then check to see if datatype 2 is null. 
+		if(d1 != null) {
+			return d1.equals(d2);
+		} else {
+			return d2 == null; 
+		}
 	}
 }

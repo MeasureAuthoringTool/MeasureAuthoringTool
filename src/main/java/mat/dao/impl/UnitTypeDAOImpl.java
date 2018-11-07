@@ -15,7 +15,7 @@ import mat.dao.UnitTypeDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.UnitType;
 
-@Repository
+@Repository("unitTypeDAO")
 public class UnitTypeDAOImpl extends GenericDAO<UnitType, String> implements UnitTypeDAO {
 	
 	/** The Constant logger. */

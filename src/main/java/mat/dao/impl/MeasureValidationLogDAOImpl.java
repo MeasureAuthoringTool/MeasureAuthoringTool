@@ -12,7 +12,7 @@ import mat.model.MeasureValidationLog;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
 
-@Repository
+@Repository("measureValidationLogDAO")
 public class MeasureValidationLogDAOImpl extends GenericDAO<MeasureValidationLog, String> implements mat.dao.MeasureValidationLogDAO{
 
 	public MeasureValidationLogDAOImpl(@Autowired SessionFactory sessionFactory) {

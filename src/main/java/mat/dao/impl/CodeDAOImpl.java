@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.search.GenericDAO;
 import mat.model.Code;
 
-@Repository
+@Repository("codeDAO")
 public class CodeDAOImpl extends GenericDAO<Code, String> implements mat.dao.CodeDAO {
 	
 	public CodeDAOImpl(@Autowired SessionFactory sessionFactory) {

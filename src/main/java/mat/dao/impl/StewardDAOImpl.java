@@ -16,7 +16,7 @@ import mat.dao.search.GenericDAO;
 import mat.model.MeasureSteward;
 
 
-@Repository
+@Repository("stewardDAO")
 public class StewardDAOImpl extends GenericDAO<MeasureSteward, String> implements StewardDAO {
 	
 	private static final Log logger = LogFactory.getLog(StewardDAOImpl.class);

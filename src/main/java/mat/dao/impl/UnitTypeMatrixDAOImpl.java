@@ -15,7 +15,7 @@ import mat.dao.UnitTypeMatrixDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.UnitMatrix;
 
-@Repository
+@Repository("unitTypeMatrixDAO")
 public class UnitTypeMatrixDAOImpl extends GenericDAO<UnitMatrix, String> implements UnitTypeMatrixDAO{
 
 	private static final Log logger = LogFactory.getLog(UnitTypeMatrixDAOImpl.class);

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.search.GenericDAO;
 import mat.model.ListObject;
 
-@Repository
+@Repository("listObjectDAO")
 public class ListObjectDAOImpl extends GenericDAO<ListObject, String> implements mat.dao.ListObjectDAO {
 	
 	public ListObjectDAOImpl(@Autowired SessionFactory sessionFactory) {

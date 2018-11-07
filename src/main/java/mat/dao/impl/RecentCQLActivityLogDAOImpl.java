@@ -17,7 +17,7 @@ import mat.dao.RecentCQLActivityLogDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.RecentCQLActivityLog;
 
-@Repository
+@Repository("recentCQLActivityLogDAO")
 public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog, String> implements RecentCQLActivityLogDAO {
 
 	/** The Constant logger. */

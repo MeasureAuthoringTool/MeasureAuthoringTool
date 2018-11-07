@@ -9,7 +9,7 @@ import mat.dao.MatFlagDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.MatFlag;
 
-@Repository
+@Repository("matFlagDAO")
 public class MatFlagDAOImpl extends GenericDAO<MatFlag, String> implements MatFlagDAO {
 	
 	public MatFlagDAOImpl(@Autowired SessionFactory sessionFactory) {

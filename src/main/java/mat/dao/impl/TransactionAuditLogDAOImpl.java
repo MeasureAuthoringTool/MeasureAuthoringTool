@@ -8,7 +8,7 @@ import mat.dao.TransactionAuditLogDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.TransactionAuditLog;
 
-@Repository
+@Repository("transactionAuditLogDAO")
 public class TransactionAuditLogDAOImpl extends GenericDAO<TransactionAuditLog, String> implements TransactionAuditLogDAO{
 
 	public TransactionAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {

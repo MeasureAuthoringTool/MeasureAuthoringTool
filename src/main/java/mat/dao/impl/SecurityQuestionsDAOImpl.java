@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.search.GenericDAO;
 import mat.model.SecurityQuestions;
 
-@Repository
+@Repository("securityQuestionsDAO")
 public class SecurityQuestionsDAOImpl extends GenericDAO<SecurityQuestions, String> implements mat.dao.SecurityQuestionsDAO{
 	
 	public SecurityQuestionsDAOImpl(@Autowired SessionFactory sessionFactory) {

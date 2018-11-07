@@ -19,7 +19,7 @@ import mat.model.QualityDataSet;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
-@Repository
+@Repository("qualityDataSetDAO")
 public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> implements mat.dao.QualityDataSetDAO {
 	
 	public QualityDataSetDAOImpl(@Autowired SessionFactory sessionFactory) {

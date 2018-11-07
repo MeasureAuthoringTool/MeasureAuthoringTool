@@ -14,7 +14,7 @@ import mat.DTO.CategoryDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.Category;
 
-@Repository
+@Repository("categoryDAO")
 public class CategoryDAOImpl extends GenericDAO<Category, String> implements mat.dao.CategoryDAO {
 	
 	

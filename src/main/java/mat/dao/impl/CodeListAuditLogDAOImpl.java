@@ -20,7 +20,7 @@ import mat.model.CodeListAuditLog;
 import mat.model.ListObject;
 import mat.server.LoggedInUserUtil;
 
-@Repository
+@Repository("codeListAuditLogDAO")
 public class CodeListAuditLogDAOImpl extends GenericDAO<CodeListAuditLog, String> implements mat.dao.CodeListAuditLogDAO{
 	
 	public CodeListAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {

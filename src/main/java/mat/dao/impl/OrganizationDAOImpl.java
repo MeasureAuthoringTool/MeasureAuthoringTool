@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 
-@Repository
+@Repository("organizationDAO")
 public class OrganizationDAOImpl extends GenericDAO<Organization, Long> implements mat.dao.OrganizationDAO {
 	
 	public OrganizationDAOImpl(@Autowired SessionFactory sessionFactory) {

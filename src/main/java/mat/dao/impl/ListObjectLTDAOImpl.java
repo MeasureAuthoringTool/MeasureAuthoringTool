@@ -15,7 +15,7 @@ import mat.model.CodeListSearchDTO;
 import mat.model.ListObjectLT;
 import mat.shared.DateUtility;
 
-@Repository
+@Repository("listObjectLTDAO")
 public class ListObjectLTDAOImpl extends GenericDAO<ListObjectLT, String> implements mat.dao.ListObjectLTDAO{
 
 	public ListObjectLTDAOImpl(@Autowired SessionFactory sessionFactory) {

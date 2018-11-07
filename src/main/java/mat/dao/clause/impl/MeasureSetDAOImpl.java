@@ -14,7 +14,7 @@ import mat.dao.clause.MeasureSetDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.MeasureSet;
 
-@Repository
+@Repository("measureSetDAO")
 public class MeasureSetDAOImpl extends GenericDAO<MeasureSet, String> implements MeasureSetDAO {
 	
 	public MeasureSetDAOImpl (@Autowired SessionFactory sessionFactory) {

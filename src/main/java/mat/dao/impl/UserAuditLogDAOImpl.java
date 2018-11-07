@@ -19,7 +19,7 @@ import mat.model.User;
 import mat.model.UserAuditLog;
 import mat.server.LoggedInUserUtil;
 
-@Repository
+@Repository("userAuditLogDAO")
 public class UserAuditLogDAOImpl extends GenericDAO<UserAuditLog, String> implements UserAuditLogDAO {
 
 	public UserAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {

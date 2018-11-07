@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.search.GenericDAO;
 import mat.model.AuditLog;
 
-@Repository
+@Repository("auditLogDAO")
 public class AuditLogDAOImpl extends GenericDAO<AuditLog, String> implements mat.dao.AuditLogDAO {
 
 	public AuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {

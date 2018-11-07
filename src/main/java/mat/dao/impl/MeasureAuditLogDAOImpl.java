@@ -20,7 +20,7 @@ import mat.model.MeasureAuditLog;
 import mat.model.clause.Measure;
 import mat.server.LoggedInUserUtil;
 
-@Repository
+@Repository("measureAuditLogDAO")
 public class MeasureAuditLogDAOImpl extends GenericDAO<MeasureAuditLog, String> implements mat.dao.MeasureAuditLogDAO{
 	
 	public MeasureAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {

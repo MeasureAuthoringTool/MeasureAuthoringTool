@@ -19,7 +19,7 @@ import mat.model.CQLAuditLog;
 import mat.model.clause.CQLLibrary;
 import mat.server.LoggedInUserUtil;
 
-@Repository
+@Repository("cqlLibraryAuditLogDAO")
 public class CQLLibraryAuditLogDAOImpl extends GenericDAO<CQLAuditLog, String> implements mat.dao.CQLLibraryAuditLogDAO{
 	
 	public CQLLibraryAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {

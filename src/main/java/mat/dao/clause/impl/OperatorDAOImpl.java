@@ -18,7 +18,7 @@ import mat.dao.clause.OperatorDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.Operator;
 
-@Repository
+@Repository("operatorDAO")
 public class OperatorDAOImpl extends GenericDAO<Operator, String> implements OperatorDAO{
 
 	private static final Log logger = LogFactory.getLog(OperatorDAOImpl.class);

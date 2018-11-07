@@ -15,7 +15,7 @@ import mat.dao.search.GenericDAO;
 import mat.model.MeasureType;
 
 
-@Repository
+@Repository("measureTypeDAO")
 public class MeasureTypeDAOImpl extends GenericDAO<MeasureType, String> implements mat.dao.MeasureTypeDAO {
 	
 	/** The Constant logger. */

@@ -16,7 +16,7 @@ import mat.model.Code;
 import mat.model.CodeList;
 
 
-@Repository
+@Repository("codeListDAO")
 public class CodeListDAOImpl extends GenericDAO<CodeList, String> implements mat.dao.CodeListDAO {
 	
 	public CodeListDAOImpl(@Autowired SessionFactory sessionFactory) {

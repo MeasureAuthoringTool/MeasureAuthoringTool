@@ -12,7 +12,7 @@ import mat.dao.clause.CQLLibraryAssociationDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.cql.CQLLibraryAssociation;
 
-@Repository
+@Repository("cqlLibraryAssociationDAO")
 public class CQLLibraryAssociationDAOImpl extends GenericDAO<CQLLibraryAssociation, String> implements CQLLibraryAssociationDAO {
 
 	public CQLLibraryAssociationDAOImpl(@Autowired SessionFactory sessionFactory) {

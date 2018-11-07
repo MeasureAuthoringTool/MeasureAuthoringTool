@@ -15,7 +15,7 @@ import mat.dao.search.GenericDAO;
 import mat.model.MeasureScore;
 
 
-@Repository
+@Repository("measureScoreDAO")
 public class MeasureScoreDAOImpl extends GenericDAO<MeasureScore, String> implements mat.dao.MeasureScoreDAO{
 	
 	private static final Log logger = LogFactory.getLog(MeasureScoreDAOImpl.class);

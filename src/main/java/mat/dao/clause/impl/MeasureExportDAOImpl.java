@@ -12,7 +12,7 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.MeasureExport;
 
-@Repository
+@Repository("measureExportDAO")
 public class MeasureExportDAOImpl extends GenericDAO<MeasureExport, String> implements MeasureExportDAO {
 	
 	public MeasureExportDAOImpl(@Autowired SessionFactory sessionFactory) {

@@ -70,11 +70,13 @@ import mat.shared.StringUtility;
 /**
  * The Class MetaDataPresenter.
  */
+@Deprecated
 public class MetaDataPresenter  implements MatPresenter {
 	
 	/**
 	 * The Interface MetaDataDetailDisplay.
 	 */
+	@Deprecated
 	public static interface MetaDataDetailDisplay {
 		
 		

@@ -10,9 +10,11 @@ import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
+import mat.shared.measure.error.DeleteMeasureException;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.client.shared.MatContext;
@@ -25,6 +27,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private String scoringType;
 	private boolean isCompositeMeasure;
 	private long lastRequestTime;
+	private DeleteConfirmDialogBox dialogBox;
+
 	
 	public MeasureDetailsPresenter() {
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
@@ -61,14 +65,13 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void onDeleteMeasureButtonClick() {
-		DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
+		dialogBox = new DeleteConfirmDialogBox();
 		dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
-		String password = dialogBox.getPasswordEntered();
-		dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), password));
+		dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
 	}
 	
-	private void deleteMeasure(String measureId, String loggedInUserId, String password) {
-		MatContext.get().getMeasureService().deleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), password, deleteMeasureCallback());
+	private void deleteMeasure() {
+		MatContext.get().getMeasureService().deleteMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinLoginId(), dialogBox.getPasswordEntered(), deleteMeasureCallback());
 	}
 	
 	public AsyncCallback<Void> deleteMeasureCallback() {
@@ -76,8 +79,15 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 			@Override
 			public void onFailure(Throwable caught) {
+				String message = "";
+				if(caught instanceof DeleteMeasureException) {
+					message = caught.getMessage();
+				} else {
+					message = MatContext.get().getMessageDelegate().getGenericErrorMessage();
+				}
+				
 				fireBackToMeasureLibraryEvent();
-				fireSuccessfullDeletionEvent(false, caught.getMessage());
+				fireMeasureDeletionEvent(false, message);
 			}
 
 			@Override
@@ -85,12 +95,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
 				MatContext.get().setMeasureDeleted(true);
 				fireBackToMeasureLibraryEvent();
-				fireSuccessfullDeletionEvent(true, MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());	
+				fireMeasureDeletionEvent(true, MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());	
 			}
 		};
 	}
 	
-	private void fireSuccessfullDeletionEvent(boolean isSuccess, String message){
+	private void fireMeasureDeletionEvent(boolean isSuccess, String message){
 		MeasureDeleteEvent deleteEvent = new MeasureDeleteEvent(isSuccess, message);
 		MatContext.get().getEventBus().fireEvent(deleteEvent);
 	}

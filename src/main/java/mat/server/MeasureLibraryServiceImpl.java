@@ -2096,7 +2096,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException {
-		logger.info("Measure Deletion Started for measure Id :: " + measureId);
+		logger.info("Measure Deletion Started for measure Id :: " + measureId);		
 		boolean isValidPassword = loginService.isValidPassword(loggedInUserId, password);
 		if(!isValidPassword) {
 			logger.error("Failed to delete measure: " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());

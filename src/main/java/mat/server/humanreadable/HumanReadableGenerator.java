@@ -457,24 +457,23 @@ public class HumanReadableGenerator {
 		List<HumanReadablePopulationModel> sortedPopulations = new ArrayList<>();  
 		
 		for(String populationType : POPULATION_NAME_ARRAY) {
-			
-			HumanReadablePopulationModel model = getPopulationByType(populationType, populations);
-			if(model != null) {
-				sortedPopulations.add(model);
-			}
+			sortedPopulations.addAll(getPopulationsByType(populationType, populations));
 		}
 		
 		return sortedPopulations;
 	}
 	
-	private HumanReadablePopulationModel getPopulationByType(String type, List<HumanReadablePopulationModel> populations) {		
+	private List<HumanReadablePopulationModel> getPopulationsByType(String type, List<HumanReadablePopulationModel> populations) {		
+		List<HumanReadablePopulationModel> models = new ArrayList<>(); 
+		
+		
 		for(HumanReadablePopulationModel model : populations) {
 			if(type.equals(model.getType())) {
-				return model; 
+				models.add(model);
 			}
 		}
 		
-		return null;
+		return models;
 	}
 
 	private String getPopulationNameByUUID(String uuid, XmlProcessor processor) throws XPathExpressionException {

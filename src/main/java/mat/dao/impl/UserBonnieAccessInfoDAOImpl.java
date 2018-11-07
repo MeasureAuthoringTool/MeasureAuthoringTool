@@ -9,7 +9,8 @@ import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.User;
 import mat.model.UserBonnieAccessInfo;
-@Repository
+
+@Repository("userBonnieAccessInfoDAO")
 public class UserBonnieAccessInfoDAOImpl extends GenericDAO<UserBonnieAccessInfo, String> implements UserBonnieAccessInfoDAO{
 	
 	public UserBonnieAccessInfoDAOImpl(@Autowired SessionFactory sessionFactory) {

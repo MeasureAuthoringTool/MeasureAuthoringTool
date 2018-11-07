@@ -13,7 +13,7 @@ import mat.model.clause.ShareLevel;
  * The Class ShareLevelDAO.
  */
 @Transactional(readOnly=true)
-@Repository
+@Repository("shareLevelDAO")
 public class ShareLevelDAOImpl extends GenericDAO<ShareLevel, String> implements ShareLevelDAO {
 	public ShareLevelDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

@@ -8,7 +8,7 @@ import mat.dao.clause.MeasureShareDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.MeasureShare;
 
-@Repository
+@Repository("measureShareDAO")
 public class MeasureShareDAOImpl extends GenericDAO<MeasureShare, String> implements MeasureShareDAO{
 	public MeasureShareDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);

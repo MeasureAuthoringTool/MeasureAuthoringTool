@@ -14,7 +14,7 @@ import mat.dao.UserPasswordDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.UserPassword;
 
-@Repository
+@Repository("userPasswordDAO")
 public class UserPasswordDAOImpl extends GenericDAO<UserPassword, String> implements UserPasswordDAO {
 	
 	public UserPasswordDAOImpl(@Autowired SessionFactory sessionFactory) {

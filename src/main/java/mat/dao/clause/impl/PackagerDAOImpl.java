@@ -12,7 +12,7 @@ import mat.dao.clause.PackagerDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.Packager;
 
-@Repository
+@Repository("packagerDAO")
 public class PackagerDAOImpl extends GenericDAO<Packager, String> implements PackagerDAO {
 	
 	/** The Constant logger. */

@@ -16,7 +16,7 @@ import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.ComponentMeasure;
 
-@Repository
+@Repository("componentMeasuresDAO")
 public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String> implements ComponentMeasuresDAO{
 	
 	private static final Log logger = LogFactory.getLog(ComponentMeasureDAOImpl.class);

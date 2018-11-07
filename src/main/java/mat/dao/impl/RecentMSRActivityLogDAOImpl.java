@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.search.GenericDAO;
 import mat.model.RecentMSRActivityLog;
 
-@Repository
+@Repository("recentMSRActivityLogDAO")
 public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog, String> implements mat.dao.RecentMSRActivityLogDAO {
 
 	private static final Log logger = LogFactory.getLog(RecentMSRActivityLogDAOImpl.class);

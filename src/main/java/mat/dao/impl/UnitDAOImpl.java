@@ -17,7 +17,7 @@ import mat.dao.UnitDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.Unit;
 
-@Repository
+@Repository("unitDAO")
 public class UnitDAOImpl extends GenericDAO<Unit, String> implements UnitDAO {
 	
 	private static final Log logger = LogFactory.getLog(UnitDAOImpl.class);

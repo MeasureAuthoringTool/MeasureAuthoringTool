@@ -14,7 +14,7 @@ import mat.dao.DataTypeDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.DataType;
 
-@Repository
+@Repository("dataTypeDAO")
 public class DataTypeDAOImpl extends GenericDAO<DataType, String> implements DataTypeDAO {
 	
 	public DataTypeDAOImpl(@Autowired SessionFactory sessionFactory) {

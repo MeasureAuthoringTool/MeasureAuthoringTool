@@ -38,7 +38,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.util.MATPropertiesService;
 import mat.shared.StringUtility;
 
-@Repository
+@Repository("cqlLibraryDAO")
 public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements mat.dao.clause.CQLLibraryDAO {
 
 	/** The Constant logger. */

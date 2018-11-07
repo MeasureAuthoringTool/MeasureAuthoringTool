@@ -14,7 +14,7 @@ import mat.DTO.CodeSystemDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.CodeSystem;
 
-@Repository
+@Repository("codeSystemDAO")
 public class CodeSystemDAOImpl extends GenericDAO<CodeSystem, String> implements mat.dao.CodeSystemDAO {
 
 	private static final Log logger = LogFactory.getLog(CodeSystemDAOImpl.class);

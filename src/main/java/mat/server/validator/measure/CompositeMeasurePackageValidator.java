@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +24,6 @@ import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MessageDelegate;
 import mat.dao.clause.CQLLibraryDAO;
 import mat.dao.clause.MeasureExportDAO;
-import mat.model.clause.CQLLibrary;
 import mat.model.cql.CQLIncludeLibrary;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;

@@ -16,7 +16,7 @@ import mat.DTO.AuthorDTO;
 import mat.dao.search.GenericDAO;
 import mat.model.Author;
 
-@Repository
+@Repository("authorDAO")
 public class AuthorDAOImpl extends GenericDAO<Author, String> implements mat.dao.AuthorDAO {
 	
 	private static final Log logger = LogFactory.getLog(AuthorDAOImpl.class);

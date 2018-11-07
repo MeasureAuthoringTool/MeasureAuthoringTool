@@ -3,7 +3,6 @@
 
 # Package Files #
 *.war
-
 # gwt caches and compiled units #
 gwt-unitCache/
 
@@ -13,6 +12,8 @@ gwt-unitCache/
 # more caches and things from deploy #
 war/WEB-INF/deploy/
 war/WEB-INF/classes/
+war/WEB-INF/lib/
+war/META-INF/
 war/login
 war/mat
 war/bonnie

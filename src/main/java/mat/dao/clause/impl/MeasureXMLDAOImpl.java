@@ -29,7 +29,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.server.LoggedInUserUtil;
 import mat.shared.ConstantMessages;
 
-@Repository
+@Repository("measureXMLDAO")
 public class MeasureXMLDAOImpl extends GenericDAO<MeasureXML, String> implements MeasureXMLDAO {
 
 	@Autowired

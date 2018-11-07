@@ -85,6 +85,7 @@ import mat.shared.MatConstants;
 /**
  * The Class MetaDataView.
  */
+@Deprecated
 public class MetaDataView implements MetaDataDetailDisplay{
 	private ListBoxMVP stewardListBox = new ListBoxMVP();
 	private ListBoxMVP endorsedByListBox = new ListBoxMVP();

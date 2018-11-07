@@ -46,7 +46,7 @@ public class Application {
 	@Bean
 	public DataSource dataSource(){
 	  JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-	  DataSource dataSource = dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app");
+	  DataSource dataSource = dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
 	  return dataSource;
 	}
 	

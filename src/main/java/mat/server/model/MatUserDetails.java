@@ -144,7 +144,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
 	 * @see org.springframework.security.core.userdetails.UserDetails#getUsername()
 	 */
 	@Override
-	@Transient
+	@Column(name="FIRST_NAME")
 	public String getUsername() {
 		return username;
 	}

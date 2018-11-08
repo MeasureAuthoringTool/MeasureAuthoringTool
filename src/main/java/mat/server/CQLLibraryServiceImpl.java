@@ -21,6 +21,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.error.AuthenticationException;
 
 public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements CQLLibraryService {
 	private static final long serialVersionUID = -2412573290030426288L;
@@ -234,8 +235,8 @@ public class CQLLibraryServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	@Override
-	public final void deleteCQLLibrary(final String cqllibId, String loginUserId) {
-		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId);
+	public final void deleteCQLLibrary(final String cqllibId, String loginUserId, String password) throws AuthenticationException {
+		 this.getCQLLibraryService().deleteCQLLibrary(cqllibId, loginUserId, password);
 	}
 	@Override
 	public CQLQualityDataModelWrapper saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,

@@ -22,6 +22,7 @@ import mat.server.util.XmlProcessor;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.error.AuthenticationException;
 
 public interface CQLLibraryServiceInterface {
 	
@@ -116,7 +117,7 @@ public interface CQLLibraryServiceInterface {
 
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 
-	void deleteCQLLibrary(String cqllibId, String loginUserId);
+	void deleteCQLLibrary(String cqllibId, String loginUserId, String password) throws AuthenticationException;
 
 	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 

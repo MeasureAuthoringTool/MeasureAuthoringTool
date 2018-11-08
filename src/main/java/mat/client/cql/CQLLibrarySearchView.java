@@ -92,9 +92,7 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	private MultiSelectionModel<CQLLibraryDataSetObject> selectionModel;
 
 	List<CQLLibraryDataSetObject> selectedList;
-	
-	private DeleteConfirmDialogBox deleteCQLLibraryConfirmDialogBox = new DeleteConfirmDialogBox();
-	
+		
 	/**
 	 * The Interface Observer.
 	 */
@@ -859,23 +857,5 @@ public class CQLLibrarySearchView implements HasSelectionHandlers<CQLLibraryData
 	 */
 	public void setAvailableLibrariesList(List<CQLLibraryDataSetObject> availableLibrariesList) {
 		this.availableLibrariesList = availableLibrariesList;
-	}
-
-	/**
-	 * Gets the delete CQL library confirm dialog box.
-	 *
-	 * @return the delete CQL library confirm dialog box
-	 */
-	public DeleteConfirmDialogBox getDeleteCQLLibraryConfirmDialogBox() {
-		return deleteCQLLibraryConfirmDialogBox;
-	}
-
-	/**
-	 * Sets the delete CQL library confirm dialog box.
-	 *
-	 * @param deleteCQLLibraryConfirmDialogBox the new delete CQL library confirm dialog box
-	 */
-	public void setDeleteCQLLibraryConfirmDialogBox(DeleteConfirmDialogBox deleteCQLLibraryConfirmDialogBox) {
-		this.deleteCQLLibraryConfirmDialogBox = deleteCQLLibraryConfirmDialogBox;
 	}
 }

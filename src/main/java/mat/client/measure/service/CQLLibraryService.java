@@ -21,6 +21,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
+import mat.shared.error.AuthenticationException;
 
 @RemoteServiceRelativePath("cqlLibrary")
 public interface CQLLibraryService extends RemoteService {
@@ -109,7 +110,7 @@ public interface CQLLibraryService extends RemoteService {
 	
 	SaveUpdateCQLResult deleteCode(String toBeDeletedId, String libraryId);
 
-	void deleteCQLLibrary(String cqllibId, String loginUserId);
+	void deleteCQLLibrary(String cqllibId, String loginUserId, String password) throws AuthenticationException;
 
 	SaveUpdateCQLResult getCQLLibraryFileData(String libraryId);
 

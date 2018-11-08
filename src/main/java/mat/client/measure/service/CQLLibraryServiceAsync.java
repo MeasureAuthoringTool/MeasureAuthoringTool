@@ -119,7 +119,7 @@ public interface CQLLibraryServiceAsync {
 	
 	void deleteCode(String toBeDeletedId, String libraryId, AsyncCallback<SaveUpdateCQLResult> callback);
 
-	void deleteCQLLibrary(String cqllibId, String loginUserId, AsyncCallback<Void> callback);
+	void deleteCQLLibrary(String cqllibId, String loginUserId, String password, AsyncCallback<Void> callback);
 
 	void saveValueSetList(List<CQLValueSetTransferObject> transferObjectList,
 			List<CQLQualityDataSetDTO> appliedValueSetList, String cqlLibraryId,

@@ -15,8 +15,6 @@ import mat.shared.error.measure.DeleteMeasureException;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
-
-
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.client.shared.MatContext;
@@ -31,7 +29,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private long lastRequestTime;
 	private DeleteConfirmDialogBox dialogBox;
 
-	
 	public MeasureDetailsPresenter() {
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
 		navigationPanel.setObserver(this);
@@ -146,6 +143,17 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
 	}
 
+
+	private void clearAlerts() {
+		measureDetailsView.getErrorMessageAlert().clear();
+	}
+	
+	private void showErrorAlert(String message) {
+		measureDetailsView.getErrorMessageAlert().clear();
+		measureDetailsView.getErrorMessageAlert().createAlert(message);
+	}	
+	
+
 	
 	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
 		return new AsyncCallback<ManageMeasureDetailModel>() {
@@ -173,15 +181,5 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " +caught.getLocalizedMessage(), 0);
 			}
 		};
-	}
-
-	private void clearAlerts() {
-		measureDetailsView.getErrorMessageAlert().clear();
-
-	}
-	
-	private void showErrorAlert(String message) {
-		measureDetailsView.getErrorMessageAlert().clear();
-		measureDetailsView.getErrorMessageAlert().createAlert(message);
 	}
 }

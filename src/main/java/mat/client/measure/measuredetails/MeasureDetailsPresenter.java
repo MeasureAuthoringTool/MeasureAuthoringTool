@@ -87,8 +87,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 					dialogBox.getPassword().setText("");
 				} else if(caught instanceof DeleteMeasureException) {
 					showErrorAlert(caught.getMessage());
+					dialogBox.closeDialogBox();
 				} else {
 					showErrorAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					dialogBox.closeDialogBox();
 				}
 			}
 

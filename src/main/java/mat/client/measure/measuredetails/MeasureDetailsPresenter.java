@@ -40,6 +40,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	@Override
 	public void beforeDisplay() {
+		clearAlerts();
 		populateMeasureDetailsModelAndDisplayNavigationMenu();
 	}
 
@@ -127,12 +128,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void clearAlerts() {
-		measureDetailsView.getErrorMessageAlert().clear();
+		measureDetailsView.getErrorMessageAlert().clearAlert();
 
 	}
 	
 	private void showErrorAlert(String message) {
-		measureDetailsView.getErrorMessageAlert().clear();
+		clearAlerts();
 		measureDetailsView.getErrorMessageAlert().createAlert(message);
 	}
 }

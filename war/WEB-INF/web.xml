@@ -11,7 +11,6 @@
         <param-value>
            /WEB-INF/applicationContext-service.xml
            /WEB-INF/applicationContext-security.xml
-           /WEB-INF/mat-persistence.xml
            /WEB-INF/applicationContext-mail.xml
            /WEB-INF/applicationContext-task.xml
         </param-value>

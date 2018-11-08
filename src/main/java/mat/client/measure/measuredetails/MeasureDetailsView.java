@@ -40,6 +40,7 @@ public class MeasureDetailsView {
 		mainPanel.add(errorAlert);
 		buildMeasureDetailsButtonPanel();
 		this.measureDetailsComponent = measureDetailsComponent;
+
 		mainContentPanel.add(navigationPanel.getWidget());
 		mainContentPanel.setWidth("100%");
 		buildDetailView(currentMeasureDetail);

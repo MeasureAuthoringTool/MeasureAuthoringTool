@@ -10,29 +10,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import liquibase.integration.spring.SpringLiquibase;
+import mat.dao.impl.AuditEventListener;
 import mat.dao.impl.AuditInterceptor;
-import mat.hibernate.HibernateConf;
 
 @Configuration
-@ComponentScan({"mat.model","mat.dao","mat.model.clause","mat.server","mat.hibernate"})
+@ComponentScan({"mat.model","mat.dao","mat.dao.impl","mat.model.clause","mat.server","mat.hibernate"})
+@PropertySource("classpath:MAT.properties")
 @EnableTransactionManagement
-@Import(HibernateConf.class)
 public class Application {
 	
 	private static final String algorithm = System.getProperty("ALGORITHM");
 	
 	private static final String passwordKey = System.getProperty("PASSWORDKEY");
 	
-	@Autowired
-	private AuditInterceptor auditInterceptor;
-	
-	@Autowired 
-	private DataSource dataSource;
+	@Bean
+	public DataSource dataSource(){
+	  JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
+	  DataSource dataSource = dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
+	  return dataSource;
+	}
 	
 	@Bean
 	public StandardPBEStringEncryptor getStandardEncryptor() {
@@ -50,7 +54,7 @@ public class Application {
 	}
 	
 	@Bean
-    public LocalSessionFactoryBean sessionFactory() throws IOException {
+    public LocalSessionFactoryBean sessionFactory(@Autowired DataSource dataSource,@Autowired AuditInterceptor auditInterceptor) throws IOException {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan(new String[] {"mat.model","mat.server.model"});
@@ -73,5 +77,31 @@ public class Application {
 	    return hibernateProperties;
 	}
 	
+	@Bean
+	public AuditEventListener auditEventListener() {
+		return new AuditEventListener();
+	}
 	
+	@Bean
+	public AuditInterceptor auditInterceptor() {
+		return new AuditInterceptor();
+	}
+	
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer placeHolderConfigurer() {
+		PropertySourcesPlaceholderConfigurer ppc = new PropertySourcesPlaceholderConfigurer();
+		Properties propertiesSource = new Properties();
+		propertiesSource.setProperty("systemPropertiesMode", "2");
+		ppc.setProperties(propertiesSource);
+		return ppc;
+	}
+	
+	@Bean
+	public SpringLiquibase liquibase(@Autowired DataSource dataSource) {
+		SpringLiquibase springLiquibase=new SpringLiquibase();
+		springLiquibase.setDataSource(dataSource);
+		springLiquibase.setChangeLog("classpath:/liquibase/changelog.xml");
+		springLiquibase.setContexts("prod");
+		return springLiquibase;
+	}
 }

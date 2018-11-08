@@ -35,6 +35,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView = new MeasureDetailsView(new MeasureDetailsComponent(), MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
+		
+		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
 	}
 	
 	@Override
@@ -131,6 +133,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		};
 	}
 	
+
 	private void addEventHandlers() {
 		HandlerManager eventBus = MatContext.get().getEventBus();
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {

@@ -10,13 +10,25 @@ public class MeasureStewardView implements ComponentDetailView{
 	}
 	
 	@Override
-	public boolean isValid() {
+	public boolean isComplete() {
 		// TODO Auto-generated method stub
 		return true;
 	}
 	
 	public Widget getWidget() {
 		return mainPanel;
+	}
+
+	@Override
+	public boolean hasUnsavedChanges() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void buildDetailView() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

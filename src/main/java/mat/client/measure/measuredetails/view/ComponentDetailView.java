@@ -4,5 +4,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public interface ComponentDetailView {
 	public Widget getWidget();
-	public boolean isValid();
+	public void buildDetailView();
+	public boolean isComplete();
+	public boolean hasUnsavedChanges();
 }

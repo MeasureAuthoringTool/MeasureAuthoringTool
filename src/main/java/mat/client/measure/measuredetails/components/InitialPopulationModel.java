@@ -1,6 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class InitialPopulationComponent {
+public class InitialPopulationModel {
 	private String initialPopulation;
 
 	public String getInitialPopulation() {

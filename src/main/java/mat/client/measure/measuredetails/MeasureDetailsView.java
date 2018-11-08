@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
@@ -32,18 +32,19 @@ public class MeasureDetailsView {
 	private ComponentDetailView componentDetailView;
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
-	private MeasureDetailsComponent measureDetailsComponent;
+	private MeasureDetailsModel measureDetailsComponent;
 	
 	
-	public MeasureDetailsView(MeasureDetailsComponent measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
+	public MeasureDetailsView(MeasureDetailsModel measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
+		this.measureDetailsComponent = measureDetailsComponent;
 		mainPanel.add(errorAlert);
 		buildMeasureDetailsButtonPanel();
-		this.measureDetailsComponent = measureDetailsComponent;
 
 		mainContentPanel.add(navigationPanel.getWidget());
 		mainContentPanel.setWidth("100%");
-		buildDetailView(currentMeasureDetail);
+		widgetComponentPanel = buildDetailView(currentMeasureDetail);
+		mainContentPanel.add(widgetComponentPanel);
 		mainContentPanel.getElement().setId("measureDetailsView_ContentPanel");
 		mainPanel.add(mainContentPanel);
 		mainPanel.setStyleName("contentPanel");
@@ -82,7 +83,7 @@ public class MeasureDetailsView {
 		mainPanel.add(new SpacerWidget());
 	}
 	
-	public void buildDetailView(MatDetailItem currentMeasureDetail) {
+	public VerticalPanel buildDetailView(MatDetailItem currentMeasureDetail) {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();
 		buildHeading();
@@ -91,8 +92,14 @@ public class MeasureDetailsView {
 		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");
 		widgetComponentPanel.getElement().setId("measureDetailsView_ComponentPanel");
-		mainContentPanel.add(widgetComponentPanel);
 		buildSavePanel(currentMeasureDetail);
+		return widgetComponentPanel;
+	}
+	
+	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel) {
+		this.currentMeasureDetail = currentMeasureDetail;
+		this.measureDetailsComponent = measureDetailsComponent;
+		return buildDetailView(currentMeasureDetail);
 	}
 	
 	public Widget getWidget() {
@@ -104,7 +111,7 @@ public class MeasureDetailsView {
 	}
 	
 	public boolean isValid() {
-		return componentDetailView.isValid();
+		return componentDetailView.isComplete();
 	}
 	
 	public MessageAlert getErrorMessageAlert() {

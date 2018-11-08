@@ -1,9 +1,9 @@
 package mat.client.measure.measuredetails.translate;
 
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 
 public interface MeasureDetailModelMapper {
-	MeasureDetailsComponent getMeasureDetailsComponent();
+	MeasureDetailsModel getMeasureDetailsComponent();
 	ManageMeasureDetailModel convertMeasureDetailsToModel();
 }

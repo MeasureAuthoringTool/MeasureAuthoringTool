@@ -5,7 +5,7 @@ import java.util.List;
 import mat.DTO.StewardDTO;
 import mat.model.Author;
 
-public class MeasureStewardDeveloperComponent {
+public class MeasureStewardDeveloperModel implements MeasureDetailsComponentModel{
 	private StewardDTO measureSteward;
 	private List<Author> measureDeveloperList;
 	
@@ -20,5 +20,15 @@ public class MeasureStewardDeveloperComponent {
 	}
 	public void setMeasureDeveloperList(List<Author> measureDeveloperList) {
 		this.measureDeveloperList = measureDeveloperList;
+	}
+	@Override
+	public boolean equals(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -2,7 +2,7 @@ package mat.client.measure.measuredetails.components;
 import java.util.List;
 
 import mat.model.MeasureType;
-public class MeasureTypeComponent {
+public class MeasureTypeModel implements MeasureDetailsComponentModel{
 	private List<MeasureType> measureTypeList;
 
 	public List<MeasureType> getMeasureTypeList() {
@@ -11,5 +11,17 @@ public class MeasureTypeComponent {
 
 	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
 		this.measureTypeList = measureTypeList;
+	}
+
+	@Override
+	public boolean equals(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

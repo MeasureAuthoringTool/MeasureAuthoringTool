@@ -1,31 +1,31 @@
 package mat.client.measure.measuredetails.translate;
 
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.measuredetails.components.GeneralInformationComponent;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+import mat.client.measure.measuredetails.components.GeneralInformationModel;
+import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 
 public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	private ManageMeasureDetailModel manageMeasureDetailModel;
-	private MeasureDetailsComponent measureDetailsComponent;
+	private MeasureDetailsModel measureDetailsComponent;
 	
 	public ManageMeasureDetailModelMapper(ManageMeasureDetailModel manageMeasureDetailModel) {
 		this.manageMeasureDetailModel = manageMeasureDetailModel;
 	}
 	
-	public ManageMeasureDetailModelMapper(MeasureDetailsComponent measureDetailsComponent) {
+	public ManageMeasureDetailModelMapper(MeasureDetailsModel measureDetailsComponent) {
 		this.measureDetailsComponent = measureDetailsComponent;
 	}
 	
 	@Override
-	public MeasureDetailsComponent getMeasureDetailsComponent() {
-		measureDetailsComponent = new MeasureDetailsComponent();
-		GeneralInformationComponent generalInformationComponent = buildGeneralInformationComponent();
+	public MeasureDetailsModel getMeasureDetailsComponent() {
+		measureDetailsComponent = new MeasureDetailsModel();
+		GeneralInformationModel generalInformationComponent = buildGeneralInformationComponent();
 		measureDetailsComponent.setGeneralInformation(generalInformationComponent);
 		return measureDetailsComponent;
 	}
 
-	private GeneralInformationComponent buildGeneralInformationComponent() {
-		GeneralInformationComponent generalInformationComponent = new GeneralInformationComponent();
+	private GeneralInformationModel buildGeneralInformationComponent() {
+		GeneralInformationModel generalInformationComponent = new GeneralInformationModel();
 		generalInformationComponent.seteCQMAbbreviatedTitle(manageMeasureDetailModel.getShortName());
 		generalInformationComponent.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
 		generalInformationComponent.setPatientBased(manageMeasureDetailModel.isPatientBased());

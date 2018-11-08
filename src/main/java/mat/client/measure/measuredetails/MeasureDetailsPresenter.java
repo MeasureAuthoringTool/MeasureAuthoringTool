@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -8,18 +9,18 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.MatPresenter;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
-import mat.client.shared.ui.DeleteConfirmDialogBox;
-import mat.shared.ConstantMessages;
-import mat.shared.error.AuthenticationException;
-import mat.shared.error.measure.DeleteMeasureException;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
+import mat.client.shared.ui.DeleteConfirmDialogBox;
+import mat.shared.ConstantMessages;
+import mat.shared.error.AuthenticationException;
+import mat.shared.error.measure.DeleteMeasureException;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
 	private MeasureDetailsView measureDetailsView;
@@ -32,7 +33,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	public MeasureDetailsPresenter() {
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
 		navigationPanel.setObserver(this);
-		measureDetailsView = new MeasureDetailsView(new MeasureDetailsComponent(), MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+		GWT.log("now in the constructor");
+		measureDetailsView = new MeasureDetailsView(new MeasureDetailsModel(), MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
 		
@@ -173,8 +175,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			private void handleAsyncSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
 				if (callbackRequestTime == lastRequestTime) {
 					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
-					MeasureDetailsComponent measureDetailsComponent = manageMeasureDetailModelMapper.getMeasureDetailsComponent();
-					measureDetailsView = new MeasureDetailsView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+					MeasureDetailsModel measureDetailsComponent = manageMeasureDetailModelMapper.getMeasureDetailsComponent();
+					measureDetailsView.buildDetailView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 					MatContext.get().fireMeasureEditEvent();
 				}
 			}

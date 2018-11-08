@@ -1,6 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class GeneralInformationComponent {
+public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
@@ -35,5 +35,15 @@ public class GeneralInformationComponent {
 	}
 	public void seteCQMVersionNumber(String eCQMVersionNumber) {
 		this.eCQMVersionNumber = eCQMVersionNumber;
+	}
+	@Override
+	public boolean equals(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

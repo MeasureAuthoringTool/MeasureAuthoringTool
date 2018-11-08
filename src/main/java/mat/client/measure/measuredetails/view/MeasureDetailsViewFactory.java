@@ -1,6 +1,6 @@
 package mat.client.measure.measuredetails.view;
 
-import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -17,7 +17,7 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public ComponentDetailView getMeasureDetailComponentView(MeasureDetailsComponent measureDetailsComponent, MatDetailItem currentMeasureDetail) {
+	public ComponentDetailView getMeasureDetailComponentView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:

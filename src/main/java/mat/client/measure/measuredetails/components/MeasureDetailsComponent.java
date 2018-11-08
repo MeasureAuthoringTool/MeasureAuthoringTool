@@ -28,6 +28,37 @@ public class MeasureDetailsComponent {
 	private MeasureObservationsComponent measureObservations;
 	private SupplementalDataElements supplementalDataElements;
 	private MeasureSetComponent measureSet;
+	
+	public MeasureDetailsComponent() {
+		this.generalInformation = new GeneralInformationComponent();
+		this.measureStewardDeveloper = new MeasureStewardDeveloperComponent();
+		this.description = new DescriptionComponent();
+		this.copyright = new CopyrightComponent();
+		this.disclaimer = new DisclaimerComponent();
+		this.measureTypeMode = new MeasureTypeComponent();
+		this.stratification = new StratificationComponent();
+		this.riskAdjustment = new RiskAdjustmentComponent();
+		this.rationale = new RationaleComponent();
+		this.rateAggregation = new RateAggregationComponent();
+		this.clinicalRecommendation = new ClinicalRecommendationComponent();
+		this.improvementNotation = new ImprovementNotationComponent();
+		this.references = new ReferencesComponent();
+		this.definition = new DefinitionComponent();
+		this.guidance = new GuidanceComponent();
+		this.transmissionFormat = new TransmissionFormatComponent();
+		this.initialPopulation = new InitialPopulationComponent();
+		this.measurePopulation = new MeasurePopulationComponent();
+		this.measurePopulationExclusions = new MeasurePopulationExclusionsComponent();
+		this.denominator = new DenominatorComponent();
+		this.denominatorExclusions = new DenominatorExclusionsComponent();
+		this.numerator = new NumeratorComponent();
+		this.numeratorExclusions = new NumeratorExclusionsComponent();
+		this.denominatorExceptions = new DenominatorExceptionsComponent();
+		this.measureObservations = new MeasureObservationsComponent();
+		this.supplementalDataElements = new SupplementalDataElements();
+		this.measureSet = new MeasureSetComponent();
+	}
+	
 	public GeneralInformationComponent getGeneralInformation() {
 		return generalInformation;
 	}

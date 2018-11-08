@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails.view;
 
+import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -16,7 +17,7 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public ComponentDetailView getMeasureDetailComponentView(MatDetailItem currentMeasureDetail) {
+	public ComponentDetailView getMeasureDetailComponentView(MeasureDetailsComponent measureDetailsComponent, MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:
@@ -59,7 +60,7 @@ public class MeasureDetailsViewFactory {
 				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
 			default:
-				return new GeneralMeasureInformationView();
+				return new GeneralMeasureInformationView(measureDetailsComponent.getGeneralInformation());
 			}
 		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
 			switch((PopulationItems) currentMeasureDetail) {
@@ -82,9 +83,9 @@ public class MeasureDetailsViewFactory {
 			case MEASURE_OBSERVATIONS:
 				return new MeasureObservationsView();
 			default:
-				return new GeneralMeasureInformationView();
+				return new GeneralMeasureInformationView(measureDetailsComponent.getGeneralInformation());
 			}
 		}
-		return new GeneralMeasureInformationView();
+		return new GeneralMeasureInformationView(measureDetailsComponent.getGeneralInformation());
 	}
 }

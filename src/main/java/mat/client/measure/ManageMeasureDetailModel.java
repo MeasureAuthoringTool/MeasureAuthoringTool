@@ -13,1090 +13,425 @@ import mat.shared.model.util.MeasureDetailsUtil;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 
-/**
- * The Class ManageMeasureDetailModel.
- */
 public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
-	
-	/** The id. */
 	private String id;
-	
-	/** The name. */
 	private String name;
-	
-	/** The short name. */
 	private String shortName;
-	
-	/** The version number. */
 	private String versionNumber = "0.0";
-	/** The revision number. */
 	private String revisionNumber = "000";
-	
-	/** The measure id. */
 	private String measureId;
-	
-	/** The group name. */
 	private String groupName;
-	
-	/** The group id. */
 	private String groupId;
-	
-	/** The finalized date. */
 	private String finalizedDate;
-	
-	/** The meas from period. */
 	private String measFromPeriod;
-	
-	/** The meas to period. */
 	private String measToPeriod;
-	
-	/** The meas scoring. */
 	private String measScoring;
-	
 	private String stewardValue;
-	
-	/** The endorse by nqf. */
 	private Boolean endorseByNQF;
-	
-	/** The nqf id. */
 	private String nqfId;
-	
-	/** The description. */
 	private String description;
-	
-	/** The copyright. */
 	private String copyright;
-	
-	/** The clinical recomms. */
 	private String clinicalRecomms;
-	
-	/** The definitions. */
 	private String definitions;
-	
-	/** The guidance. */
 	private String guidance;
-	
-	/** The transmission format. */
 	private String transmissionFormat;
-	
-	/** The rationale. */
 	private String rationale;
-	
-	/** The improv notations. */
 	private String improvNotations;
-	
-	/** The stratification. */
 	private String stratification;
-	
-	/** The references list. */
 	private List<String> referencesList;
-	
-	/** The author list. */
 	private List<Author> authorSelectedList;
-	
-	/** The steward selected list. */
 	private List<MeasureSteward> stewardSelectedList;
-	
-	/** The measure type list. */
 	private List<MeasureType> measureTypeSelectedList;
-	
-	/** The qds selected list. */
 	private List<QualityDataSetDTO> qdsSelectedList;
-	
-	/** The component measures selected list. */
 	private List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList;
-	
-	/** The to compare author. */
 	private List<Author> toCompareAuthor;
-	
-	/** The to compare measure. */
 	private List<MeasureType> toCompareMeasure;
-		
-	/** The to compare component measures. */
 	private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
-	
-	/** The draft. */
 	private boolean draft = true;
-	
-	/** The measure set id. */
 	private String measureSetId;
-	
-	/** The value set date. */
 	private String valueSetDate;
-	
-	/** The supplemental data. */
 	private String supplementalData;
-	
-	/** The disclaimer. */
 	private String disclaimer;
-	
-	/** The risk adjustment. */
 	private String riskAdjustment;
-	
-	/** The rate aggregation. */
 	private String rateAggregation;
-	
-	/** The initial patient pop. */
 	private String initialPop;
-	
-	/** The denominator. */
 	private String denominator;
-	
-	/** The denominator exclusions. */
 	private String denominatorExclusions;
-	
-	/** The numerator. */
 	private String numerator;
-	
-	/** The numerator exclusions. */
 	private String numeratorExclusions;
-	
-	/** The denominator exceptions. */
 	private String denominatorExceptions;
-	
-	/** The measure population. */
 	private String measurePopulation;
-	
-	/** The measure observations. */
 	private String measureObservations;
-	
-	/** The e measure id. */
 	private int eMeasureId;
-	
-	/** The org version number. */
 	private String orgVersionNumber;
-	
 	//Below fields are added for Castor mapping XML generation purpose
-	/** The qlty measure set uuid. */
 	private String qltyMeasureSetUuid;
-	
-	/** The steward uuid. */
 	private String stewardId;
-	
-	/** The scoring abbr. */
 	private String scoringAbbr;
-	
-	/** The period model. */
 	private PeriodModel periodModel;
-	
-	/** The endorsement. */
 	private String endorsement;
-	
-	/** The endorsement id. */
 	private String endorsementId;
-	
-	/** The nqf model. */
 	private NqfModel nqfModel;
-	
-	/** The is deleted. */
 	private boolean isDeleted;
-	
-	/** The measure owner id. */
 	private String measureOwnerId;
-	
-	/** The measure population exclusions. */
 	private String measurePopulationExclusions;
-	
-	/** The is editable. */
 	private boolean isEditable;
-	
-	/** The calender year. */
 	private boolean isCalenderYear;
-	
-	/** The is patient based flag **/
 	private boolean isPatientBased; 
-	
 	private MeasureDetailResult measureDetailResult; 
-	
 	private String qdmVersion;
 	
-
-	/**
-	 * Checks if is calender year.
-	 *
-	 * @return true, if is calender year
-	 */
 	public boolean isCalenderYear() {
 		return isCalenderYear;
 	}
 	
-	/**
-	 * Sets the calender year.
-	 *
-	 * @param calenderYear the new calender year
-	 */
 	public void setCalenderYear(boolean isCalenderYear) {
 		this.isCalenderYear = isCalenderYear;
 	}
 	
-	/**
-	 * Checks if is deleted.
-	 * 
-	 * @return true, if is deleted
-	 */
+
 	public boolean isDeleted() {
 		return isDeleted;
 	}
 	
-	/**
-	 * Sets the deleted.
-	 * 
-	 * @param isDeleted
-	 *            the new deleted
-	 */
+
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 	
-	/**
-	 * Checks if is draft.
-	 * 
-	 * @return true, if is draft
-	 */
 	public boolean isDraft() {
 		return draft;
 	}
-	
-	/**
-	 * Sets the draft.
-	 * 
-	 * @param draft
-	 *            the new draft
-	 */
+
 	public void setDraft(boolean draft) {
 		this.draft = draft;
 	}
-	
-	/**
-	 * Gets the references list.
-	 * 
-	 * @return the references list
-	 */
+
 	public List<String> getReferencesList() {
 		return referencesList;
 	}
 	
-	/**
-	 * Sets the references list.
-	 * 
-	 * @param referencesList
-	 *            the new references list
-	 */
 	public void setReferencesList(List<String> referencesList) {
 		this.referencesList = referencesList;
 	}
 	
-	/**
-	 * Gets the author list.
-	 * 
-	 * @return the author list
-	 */
 	public List<Author> getAuthorSelectedList() {
 		return authorSelectedList;
 	}
-	
-	/**
-	 * Sets the author list.
-	 *
-	 * @param authorSelectedList the new author selected list
-	 */
+
 	public void setAuthorSelectedList(List<Author> authorSelectedList) {
 		this.authorSelectedList = authorSelectedList;
 	}
 	
-	/**
-	 * Gets the measure type list.
-	 * 
-	 * @return the measure type list
-	 */
 	public List<MeasureType> getMeasureTypeSelectedList() {
 		return measureTypeSelectedList;
 	}
 	
-	/**
-	 * Sets the measure type list.
-	 *
-	 * @param measureTypeSelectedList the new measure type selected list
-	 */
 	public void setMeasureTypeSelectedList(List<MeasureType> measureTypeSelectedList) {
 		this.measureTypeSelectedList = measureTypeSelectedList;
 	}
-	
-	/**
-	 * Gets the initial pop.
-	 *
-	 * @return the initial pop
-	 */
+
 	public String getInitialPop() {
 		return initialPop;
 	}
 	
-	/**
-	 * Sets the initial pop.
-	 *
-	 * @param initialPop the new initial pop
-	 */
 	public void setInitialPop(String initialPop) {
 		this.initialPop = initialPop;
 	}
 	
-	/**
-	 * Gets the version number.
-	 * 
-	 * @return the version number
-	 */
 	public String getVersionNumber() {
 		return versionNumber;
 	}
-	
-	/**
-	 * Sets the version number.
-	 * 
-	 * @param versionNumber
-	 *            the new version number
-	 */
+
 	public void setVersionNumber(String versionNumber) {
 		this.versionNumber = doTrim(versionNumber);
 	}
 	
-	/**
-	 * Gets the measure id.
-	 * 
-	 * @return the measure id
-	 */
 	public String getMeasureId() {
 		return measureId;
 	}
-	
-	/**
-	 * Sets the measure id.
-	 * 
-	 * @param measureId
-	 *            the new measure id
-	 */
+
 	public void setMeasureId(String measureId) {
 		this.measureId = doTrim(measureId);
 	}
 	
-	/**
-	 * Gets the group name.
-	 * 
-	 * @return the group name
-	 */
 	public String getGroupName() {
 		return groupName;
 	}
 	
-	/**
-	 * Sets the group name.
-	 * 
-	 * @param groupName
-	 *            the new group name
-	 */
 	public void setGroupName(String groupName) {
 		this.groupName = doTrim(groupName);
 	}
 	
-	/**
-	 * Gets the group id.
-	 * 
-	 * @return the group id
-	 */
 	public String getGroupId() {
 		return groupId;
 	}
 	
-	/**
-	 * Sets the group id.
-	 * 
-	 * @param groupId
-	 *            the new group id
-	 */
 	public void setGroupId(String groupId) {
 		this.groupId = doTrim(groupId);
 	}
 	
-	/**
-	 * Gets the finalized date.
-	 * 
-	 * @return the finalized date
-	 */
 	public String getFinalizedDate() {
 		return finalizedDate;
 	}
 	
-	/**
-	 * Sets the finalized date.
-	 * 
-	 * @param finalizedDate
-	 *            the new finalized date
-	 */
 	public void setFinalizedDate(String finalizedDate) {
 		this.finalizedDate = doTrim(finalizedDate);
 	}
 	
-	/**
-	 * Gets the meas from period.
-	 * 
-	 * @return the meas from period
-	 */
 	public String getMeasFromPeriod() {
 		return measFromPeriod;
 	}
 	
-	/**
-	 * Sets the meas from period.
-	 * 
-	 * @param measFromPeriod
-	 *            the new meas from period
-	 */
 	public void setMeasFromPeriod(String measFromPeriod) {
 		this.measFromPeriod = doTrim(measFromPeriod);
 	}
 	
-	/**
-	 * Gets the meas to period.
-	 * 
-	 * @return the meas to period
-	 */
 	public String getMeasToPeriod() {
 		return measToPeriod;
 	}
 	
-	/**
-	 * Sets the meas to period.
-	 * 
-	 * @param measToPeriod
-	 *            the new meas to period
-	 */
 	public void setMeasToPeriod(String measToPeriod) {
 		this.measToPeriod = doTrim(measToPeriod);
 	}
 	
-	/**
-	 * Gets the meas scoring.
-	 * 
-	 * @return the meas scoring
-	 */
 	public String getMeasScoring() {
 		return measScoring;
 	}
 	
-	/**
-	 * Sets the meas scoring.
-	 * 
-	 * @param measScoring
-	 *            the new meas scoring
-	 */
 	public void setMeasScoring(String measScoring) {
 		this.measScoring = doTrim(measScoring);
 	}
 	
-	/**
-	 * Gets the meas steward.
-	 * 
-	 * @return the meas steward
-	 */
-	/*public String getMeasSteward() {
-		return measSteward;
-	}
-	 */
-	/**
-	 * Sets the meas steward.
-	 * 
-	 * @param measSteward
-	 *            the new meas steward
-	 */
-	/*public void setMeasSteward(String measSteward) {
-		this.measSteward = doTrim(measSteward);
-	}*/
-	
-	/**
-	 * Gets the endorse by nqf.
-	 * 
-	 * @return the endorse by nqf
-	 */
 	public Boolean getEndorseByNQF() {
 		return endorseByNQF;
 	}
 	
-	/**
-	 * Sets the endorse by nqf.
-	 * 
-	 * @param endorseByNQF
-	 *            the new endorse by nqf
-	 */
 	public void setEndorseByNQF(Boolean endorseByNQF) {
 		this.endorseByNQF = endorseByNQF;
 	}
 	
-	/**
-	 * Gets the description.
-	 * 
-	 * @return the description
-	 */
 	public String getDescription() {
 		return description;
 	}
-	
-	/**
-	 * Sets the description.
-	 * 
-	 * @param description
-	 *            the new description
-	 */
+
 	public void setDescription(String description) {
 		this.description = doTrim(description);
 	}
 	
-	/**
-	 * Gets the clinical recomms.
-	 * 
-	 * @return the clinical recomms
-	 */
 	public String getClinicalRecomms() {
 		return clinicalRecomms;
 	}
 	
-	/**
-	 * Sets the clinical recomms.
-	 * 
-	 * @param clinicalRecomms
-	 *            the new clinical recomms
-	 */
 	public void setClinicalRecomms(String clinicalRecomms) {
 		this.clinicalRecomms = doTrim(clinicalRecomms);
 	}
 	
-	/**
-	 * Gets the definitions.
-	 * 
-	 * @return the definitions
-	 */
 	public String getDefinitions() {
 		return definitions;
 	}
 	
-	/**
-	 * Sets the definitions.
-	 * 
-	 * @param definitions
-	 *            the new definitions
-	 */
 	public void setDefinitions(String definitions) {
 		this.definitions = doTrim(definitions);
 	}
 	
-	/**
-	 * Gets the guidance.
-	 * 
-	 * @return the guidance
-	 */
 	public String getGuidance() {
 		return guidance;
 	}
 	
-	/**
-	 * Sets the guidance.
-	 * 
-	 * @param guidance
-	 *            the new guidance
-	 */
 	public void setGuidance(String guidance) {
 		this.guidance = doTrim(guidance);
 	}
-	
-	/**
-	 * Gets the rationale.
-	 * 
-	 * @return the rationale
-	 */
+
 	public String getRationale() {
 		return rationale;
 	}
 	
-	/**
-	 * Sets the rationale.
-	 * 
-	 * @param rationale
-	 *            the new rationale
-	 */
 	public void setRationale(String rationale) {
 		this.rationale = doTrim(rationale);
 	}
-	
-	/**
-	 * Gets the improv notations.
-	 * 
-	 * @return the improv notations
-	 */
+
 	public String getImprovNotations() {
 		return improvNotations;
 	}
-	
-	/**
-	 * Sets the improv notations.
-	 * 
-	 * @param improvNotations
-	 *            the new improv notations
-	 */
+
 	public void setImprovNotations(String improvNotations) {
 		this.improvNotations = doTrim(improvNotations);
 	}
-	
-	/**
-	 * Gets the stratification.
-	 * 
-	 * @return the stratification
-	 */
+
 	public String getStratification() {
 		return stratification;
 	}
 	
-	/**
-	 * Sets the stratification.
-	 * 
-	 * @param stratification
-	 *            the new stratification
-	 */
 	public void setStratification(String stratification) {
 		this.stratification = doTrim(stratification);
 	}
 	
-	/**
-	 * Gets the risk adjustment.
-	 * 
-	 * @return the risk adjustment
-	 */
 	public String getRiskAdjustment() {
 		return riskAdjustment;
 	}
-	
-	/**
-	 * Sets the risk adjustment.
-	 * 
-	 * @param riskAdjustment
-	 *            the new risk adjustment
-	 */
+
 	public void setRiskAdjustment(String riskAdjustment) {
 		this.riskAdjustment = doTrim(riskAdjustment);
 	}
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
 	public String getId() {
 		return id;
 	}
-	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
+
 	public void setId(String id) {
 		this.id = doTrim(id);
 	}
 	
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
 	public String getName() {
 		return name;
 	}
 	
-	/**
-	 * Sets the name.
-	 * 
-	 * @param name
-	 *            the new name
-	 */
 	public void setName(String name) {
 		this.name = doTrim(name);
 	}
 	
-	/**
-	 * Gets the short name.
-	 * 
-	 * @return the short name
-	 */
 	public String getShortName() {
 		return shortName;
 	}
 	
-	/**
-	 * Sets the short name.
-	 * 
-	 * @param shortName
-	 *            the new short name
-	 */
 	public void setShortName(String shortName) {
 		this.shortName = doTrim(shortName);
 	}
 	
-	/**
-	 * Gets the measure status.
-	 * 
-	 * @return the measure status
-	 */
-	/*public String getMeasureStatus() {
-		return measureStatus;
-	}
-	
-	 *//**
-	 * Sets the measure status.
-	 * 
-	 * @param measureStatus
-	 *            the new measure status
-	 *//*
-	public void setMeasureStatus(String measureStatus) {
-		this.measureStatus = doTrim(measureStatus);
-	}*/
-	
-	/**
-	 * Gets the nqf id.
-	 * 
-	 * @return the nqf id
-	 */
 	public String getNqfId() {
 		return nqfId;
 	}
 
-	/**
-	 * Sets the nqf id.
-	 * 
-	 * @param nqfId
-	 *            the new nqf id
-	 */
 	public void setNqfId(String nqfId) {
 		this.nqfId = doTrim(nqfId);
 	}
-	
-	//US 413
-	/**
-	 * Gets the meas steward other.
-	 *
-	 * @param str the str
-	 * @return the meas steward other
-	 */
-	/*public String getMeasStewardOther() {
-		return measStewardOther;
-	}*/
-	
-	/**
-	 * Sets the meas steward other.
-	 * 
-	 * @param measStewardOther
-	 *            the new meas steward other
-	 */
-	/*public void setMeasStewardOther(String measStewardOther) {
-		this.measStewardOther = doTrim(measStewardOther);
-	}*/
-	
-	/**
-	 * Do trim.
-	 * 
-	 * @param str
-	 *            the str
-	 * @return the string
-	 */
+
 	private String doTrim(String str) {
 		return (str != null) && (str.trim().length() > 0) ? str.trim() : null;
 	}
 	
-	/**
-	 * Gets the measure set id.
-	 * 
-	 * @return the measure set id
-	 */
 	public String getMeasureSetId() {
 		return measureSetId;
 	}
 	
-	/**
-	 * Sets the measure set id.
-	 * 
-	 * @param measureSetId
-	 *            the new measure set id
-	 */
 	public void setMeasureSetId(String measureSetId) {
 		this.measureSetId = measureSetId;
 	}
 	
-	/**
-	 * Gets the value set date.
-	 * 
-	 * @return the value set date
-	 */
+
 	public String getValueSetDate() {
 		return valueSetDate;
 	}
 	
-	/**
-	 * Sets the value set date.
-	 * 
-	 * @param valueSetDate
-	 *            the new value set date
-	 */
 	public void setValueSetDate(String valueSetDate) {
 		this.valueSetDate = valueSetDate;
 	}
 	
-	/**
-	 * Gets the copyright.
-	 * 
-	 * @return the copyright
-	 */
 	public String getCopyright() {
 		return copyright;
 	}
 	
-	/**
-	 * Sets the copyright.
-	 * 
-	 * @param copyright
-	 *            the new copyright
-	 */
 	public void setCopyright(String copyright) {
 		this.copyright = doTrim(copyright);
 	}
 	
-	/**
-	 * Gets the transmission format.
-	 * 
-	 * @return the transmission format
-	 */
 	public String getTransmissionFormat() {
 		return transmissionFormat;
 	}
 	
-	/**
-	 * Sets the transmission format.
-	 * 
-	 * @param transmissionFormat
-	 *            the new transmission format
-	 */
 	public void setTransmissionFormat(String transmissionFormat) {
 		this.transmissionFormat = doTrim(transmissionFormat);
 	}
 	
-	/**
-	 * Gets the supplemental data.
-	 * 
-	 * @return the supplemental data
-	 */
 	public String getSupplementalData() {
 		return supplementalData;
 	}
 	
-	/**
-	 * Sets the supplemental data.
-	 * 
-	 * @param supplementalData
-	 *            the new supplemental data
-	 */
 	public void setSupplementalData(String supplementalData) {
 		this.supplementalData = doTrim(supplementalData);
 	}
-	
-	/**
-	 * Sets the disclaimer.
-	 * 
-	 * @param disclaimer
-	 *            the new disclaimer
-	 */
+
 	public void setDisclaimer(String disclaimer) {
 		this.disclaimer = doTrim(disclaimer);
 	}
 	
-	/**
-	 * Gets the disclaimer.
-	 * 
-	 * @return the disclaimer
-	 */
 	public String getDisclaimer() {
 		return disclaimer;
 	}
 	
-	/**
-	 * Sets the rate aggregation.
-	 * 
-	 * @param rateAggregation
-	 *            the new rate aggregation
-	 */
 	public void setRateAggregation(String rateAggregation) {
 		this.rateAggregation = doTrim(rateAggregation);
 	}
 	
-	/**
-	 * Gets the rate aggregation.
-	 * 
-	 * @return the rate aggregation
-	 */
 	public String getRateAggregation() {
 		return rateAggregation;
 	}
 	
-	/**
-	 * Sets the denominator.
-	 * 
-	 * @param denominator
-	 *            the new denominator
-	 */
 	public void setDenominator(String denominator) {
 		this.denominator = doTrim(denominator);
 	}
-	
-	/**
-	 * Gets the denominator.
-	 * 
-	 * @return the denominator
-	 */
+
 	public String getDenominator() {
 		return denominator;
 	}
-	
-	/**
-	 * Sets the denominator exclusions.
-	 * 
-	 * @param denominatorExclusions
-	 *            the new denominator exclusions
-	 */
+
 	public void setDenominatorExclusions(String denominatorExclusions) {
 		this.denominatorExclusions = doTrim(denominatorExclusions);
 	}
-	
-	/**
-	 * Gets the denominator exclusions.
-	 * 
-	 * @return the denominator exclusions
-	 */
+
 	public String getDenominatorExclusions() {
 		return denominatorExclusions;
 	}
 	
-	/**
-	 * Sets the numerator.
-	 * 
-	 * @param numerator
-	 *            the new numerator
-	 */
 	public void setNumerator(String numerator) {
 		this.numerator = doTrim(numerator);
 	}
-	
-	/**
-	 * Gets the numerator.
-	 * 
-	 * @return the numerator
-	 */
+
 	public String getNumerator() {
 		return numerator;
 	}
 	
-	/**
-	 * Sets the numerator exclusions.
-	 * 
-	 * @param numeratorExclusions
-	 *            the new numerator exclusions
-	 */
 	public void setNumeratorExclusions(String numeratorExclusions) {
 		this.numeratorExclusions = doTrim(numeratorExclusions);
 	}
 	
-	/**
-	 * Gets the numerator exclusions.
-	 * 
-	 * @return the numerator exclusions
-	 */
 	public String getNumeratorExclusions() {
 		return numeratorExclusions;
 	}
 	
-	/**
-	 * Sets the denominator exceptions.
-	 * 
-	 * @param denominatorExceptions
-	 *            the new denominator exceptions
-	 */
 	public void setDenominatorExceptions(String denominatorExceptions) {
 		this.denominatorExceptions = doTrim(denominatorExceptions);
 	}
-	
-	/**
-	 * Gets the denominator exceptions.
-	 * 
-	 * @return the denominator exceptions
-	 */
+
 	public String getDenominatorExceptions() {
 		return denominatorExceptions;
 	}
 	
-	/**
-	 * Sets the measure population.
-	 * 
-	 * @param measurePopulation
-	 *            the new measure population
-	 */
 	public void setMeasurePopulation(String measurePopulation) {
 		this.measurePopulation = doTrim(measurePopulation);
 	}
 	
-	/**
-	 * Gets the measure population.
-	 * 
-	 * @return the measure population
-	 */
 	public String getMeasurePopulation() {
 		return measurePopulation;
 	}
 	
-	/**
-	 * Sets the measure observations.
-	 * 
-	 * @param measureObservations
-	 *            the new measure observations
-	 */
 	public void setMeasureObservations(String measureObservations) {
 		this.measureObservations = doTrim(measureObservations);
 	}
 	
-	/**
-	 * Gets the measure observations.
-	 * 
-	 * @return the measure observations
-	 */
 	public String getMeasureObservations() {
 		return measureObservations;
 	}
 	
-	/**
-	 * Gets the e measure id.
-	 * 
-	 * @return the e measure id
-	 */
 	public int geteMeasureId() {
 		return eMeasureId;
 	}
 	
-	/**
-	 * Sets the e measure id.
-	 * 
-	 * @param eMeasureId
-	 *            the new e measure id
-	 */
 	public void seteMeasureId(int eMeasureId) {
 		this.eMeasureId = eMeasureId;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -1202,9 +537,7 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 				+ ((versionNumber == null) ? 0 : versionNumber.hashCode());
 		return result;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -1479,17 +812,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		return true;
 	}
 	
-	
-	
-	/**
-	 * Checks if is equal.
-	 * 
-	 * @param listA
-	 *            the list a
-	 * @param listB
-	 *            the list b
-	 * @return true, if is equal
-	 */
 	@SuppressWarnings("rawtypes")
 	public boolean isEqual(List listA, List listB) {
 		if (listA.size() != listB.size()) {
@@ -1566,14 +888,6 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		return true;
 	}
 	
-	
-	/**
-	 * Trim to null.
-	 * 
-	 * @param value
-	 *            the value
-	 * @return the string
-	 */
 	private String trimToNull(String value) {
 		if (null != value) {
 			value = value.replaceAll("[\r\n]", "");
@@ -1583,211 +897,88 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 		return value;
 	}
 	
-	/**
-	 * Gets the to compare author.
-	 * 
-	 * @return the toCompareAuthor
-	 */
 	public List<Author> getToCompareAuthor() {
 		return toCompareAuthor;
 	}
 	
-	/**
-	 * Sets the to compare author.
-	 * 
-	 * @param toCompareAuthor
-	 *            the toCompareAuthor to set
-	 */
 	public void setToCompareAuthor(List<Author> toCompareAuthor) {
 		this.toCompareAuthor = toCompareAuthor;
 	}
-	
-	/**
-	 * Gets the to compare measure.
-	 * 
-	 * @return the toCompareMeasure
-	 */
+
 	public List<MeasureType> getToCompareMeasure() {
 		return toCompareMeasure;
 	}
 	
-	/**
-	 * Sets the to compare measure.
-	 * 
-	 * @param toCompareMeasure
-	 *            the toCompareMeasure to set
-	 */
+
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
 	}
 	
-	/**
-	 * Gets the qds selected list.
-	 *
-	 * @return the qds selected list
-	 */
 	public List<QualityDataSetDTO> getQdsSelectedList() {
 		return qdsSelectedList;
 	}
 	
-	/**
-	 * Sets the qds selected list.
-	 *
-	 * @param qdsSelectedList the new qds selected list
-	 */
 	public void setQdsSelectedList(List<QualityDataSetDTO> qdsSelectedList) {
 		this.qdsSelectedList = qdsSelectedList;
 	}
 	
-	
-	/**
-	 * Gets the to compare component measures.
-	 *
-	 * @return the to compare component measures
-	 */
 	public List<ManageMeasureSearchModel.Result> getToCompareComponentMeasures() {
 		return toCompareComponentMeasures;
 	}
-	
-	/**
-	 * Sets the to compare component measures.
-	 *
-	 * @param toCompareComponentMeasures the new to compare component measures
-	 */
+
 	public void setToCompareComponentMeasures(
 			List<ManageMeasureSearchModel.Result> toCompareComponentMeasures) {
 		this.toCompareComponentMeasures = toCompareComponentMeasures;
 	}
 	
-	
-	/**
-	 * Gets the qlty measure set uuid.
-	 * 
-	 * @return the qltyMeasureSetUuid
-	 */
 	public String getQltyMeasureSetUuid() {
 		return qltyMeasureSetUuid;
 	}
-	
-	/**
-	 * Sets the qlty measure set uuid.
-	 * 
-	 * @param qltyMeasureSetUuid
-	 *            the qltyMeasureSetUuid to set
-	 */
+
 	public void setQltyMeasureSetUuid(String qltyMeasureSetUuid) {
 		this.qltyMeasureSetUuid = qltyMeasureSetUuid;
 	}
 	
-	/**
-	 * Gets the steward.
-	 * 
-	 * @return the steward
-	 */
-	/*public String getSteward() {
-		if ((measSteward != null) && measSteward.equalsIgnoreCase("Other")) {
-			return null;
-		}
-		return measSteward;
-	}*/
-	
-	/**
-	 * Gets the steward uuid.
-	 * 
-	 * @return the stewardUuid
-	 */
 	public String getStewardId() {
 		return stewardId;
 	}
 	
-	/**
-	 * Sets the steward uuid.
-	 *
-	 * @param stewardId the new steward id
-	 */
 	public void setStewardId(String stewardId) {
 		this.stewardId = stewardId;
 	}
-	
-	/**
-	 * Gets the scoring abbr.
-	 * 
-	 * @return the scoringAbbr
-	 */
+
 	public String getScoringAbbr() {
 		return scoringAbbr;
 	}
 	
-	/**
-	 * Sets the scoring abbr.
-	 * 
-	 * @param scoringAbbr
-	 *            the scoringAbbr to set
-	 */
 	public void setScoringAbbr(String scoringAbbr) {
 		this.scoringAbbr = scoringAbbr;
 	}
 	
-	/**
-	 * Gets the period model.
-	 * 
-	 * @return the periodModel
-	 */
 	public PeriodModel getPeriodModel() {
 		return periodModel;
 	}
 	
-	/**
-	 * Sets the period model.
-	 * 
-	 * @param periodModel
-	 *            the periodModel to set
-	 */
 	public void setPeriodModel(PeriodModel periodModel) {
 		this.periodModel = periodModel;
 	}
 	
-	/**
-	 * Gets the endorsement.
-	 * 
-	 * @return the endorsement
-	 */
 	public String getEndorsement() {
 		return endorsement;
 	}
 	
-	/**
-	 * Sets the endorsement.
-	 * 
-	 * @param endorsement
-	 *            the new endorsement
-	 */
 	public void setEndorsement(String endorsement) {
 		this.endorsement = endorsement;
 	}
-	
-	/**
-	 * Gets the endorsement id.
-	 * 
-	 * @return the endorsement id
-	 */
+
 	public String getEndorsementId() {
 		return endorsementId;
 	}
 	
-	/**
-	 * Sets the endorsement id.
-	 * 
-	 * @param endorsementId
-	 *            the new endorsement id
-	 */
 	public void setEndorsementId(String endorsementId) {
 		this.endorsementId = endorsementId;
 	}
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+
 	@Override
 	public String toString() {
 		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
@@ -1837,202 +1028,93 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 				+"]";
 	}
 	
-	/**
-	 * Gets the nqf model.
-	 * 
-	 * @return the nqf model
-	 */
 	public NqfModel getNqfModel() {
 		return nqfModel;
 	}
 	
-	/**
-	 * Sets the nqf model.
-	 * 
-	 * @param nqfModel
-	 *            the new nqf model
-	 */
 	public void setNqfModel(NqfModel nqfModel) {
 		this.nqfModel = nqfModel;
 	}
 	
-	/**
-	 * Gets the org version number.
-	 * 
-	 * @return the org version number
-	 */
 	public String getOrgVersionNumber() {
 		return orgVersionNumber;
 	}
 	
-	/**
-	 * Sets the org version number.
-	 * 
-	 * @param orgVersionNumber
-	 *            the new org version number
-	 */
 	public void setOrgVersionNumber(String orgVersionNumber) {
 		this.orgVersionNumber = orgVersionNumber;
 	}
 	
-	/**
-	 * Gets the measure owner id.
-	 * 
-	 * @return the measure owner id
-	 */
 	public String getMeasureOwnerId() {
 		return measureOwnerId;
 	}
 	
-	/**
-	 * Sets the measure owner id.
-	 * 
-	 * @param measureOwnerId
-	 *            the new measure owner id
-	 */
 	public void setMeasureOwnerId(String measureOwnerId) {
 		this.measureOwnerId = measureOwnerId;
 	}
-	
-	/**
-	 * Gets the revision number.
-	 *
-	 * @return the revisionNumber
-	 */
+
 	public String getRevisionNumber() {
 		return revisionNumber;
 	}
 	
-	/**
-	 * Sets the revision number.
-	 *
-	 * @param revisionNumber the revisionNumber to set
-	 */
 	public void setRevisionNumber(String revisionNumber) {
 		this.revisionNumber = revisionNumber;
 	}
 	
-	/**
-	 * Gets the measure population exclusions.
-	 *
-	 * @return the measurePopulationExclusions
-	 */
 	public String getMeasurePopulationExclusions() {
 		return measurePopulationExclusions;
 	}
-	
-	/**
-	 * Sets the measure population exclusions.
-	 *
-	 * @param measurePopulationExclusions the measurePopulationExclusions to set
-	 */
+
 	public void setMeasurePopulationExclusions(
 			String measurePopulationExclusions) {
 		this.measurePopulationExclusions = measurePopulationExclusions;
 	}
 	
-	/**
-	 * Gets the component measures selected list.
-	 *
-	 * @return the component measures selected list
-	 */
 	public List<ManageMeasureSearchModel.Result> getComponentMeasuresSelectedList() {
 		return componentMeasuresSelectedList;
 	}
 	
-	/**
-	 * Sets the component measures selected list.
-	 *
-	 * @param componentMeasuresSelectedList the new component measures selected list
-	 */
 	public void setComponentMeasuresSelectedList(
 			List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList) {
 		this.componentMeasuresSelectedList = componentMeasuresSelectedList;
 	}
 	
-	/**
-	 * Checks if is editable.
-	 *
-	 * @return true, if is editable
-	 */
 	public boolean isEditable() {
 		return isEditable;
 	}
 	
-	/**
-	 * Sets the editable.
-	 *
-	 * @param isEditable the new editable
-	 */
 	public void setEditable(boolean isEditable) {
 		this.isEditable = isEditable;
 	}
 	
-	/**
-	 * Gets the steward selected list.
-	 *
-	 * @return the steward selected list
-	 */
+	
 	public List<MeasureSteward> getStewardSelectedList() {
 		return stewardSelectedList;
 	}
 	
-	/**
-	 * Sets the steward selected list.
-	 *
-	 * @param steSelectedList the new steward selected list
-	 */
 	public void setStewardSelectedList(List<MeasureSteward> steSelectedList) {
 		stewardSelectedList =steSelectedList;
 	}
 	
-	/**
-	 * Gets the steward value.
-	 *
-	 * @return the steward value
-	 */
 	public String getStewardValue() {
 		return stewardValue;
 	}
 	
-	/**
-	 * Sets the steward value.
-	 *
-	 * @param stewardValue the new steward value
-	 */
 	public void setStewardValue(String stewardValue) {
 		this.stewardValue = stewardValue;
 	}
 	
-	/**
-	 * is the measure patient based?
-	 * @return true if the measure is patient based, false if it is not. 
-	 */
 	public boolean isPatientBased() {
 		return isPatientBased;
 	}
 	
-	/**
-	 * set is the measure patient based
-	 */
 	public void setIsPatientBased(boolean isPatientBased) {
 		this.isPatientBased = isPatientBased;
 	}
 	
-	/**
-	 * Gets the measure detail result
-	 * 
-	 * @return the mneasure detail result
-	 */
 	public MeasureDetailResult getMeasureDetailResult() {
 		return measureDetailResult;
 	}
 
-	/**
-	 * Sets the measure detail result
-	 * 
-	 * @param measureDetailResult the measure detail result
-	 */
 	public void setMeasureDetailResult(MeasureDetailResult measureDetailResult) {
 		this.measureDetailResult = measureDetailResult;
 	}
@@ -2071,6 +1153,4 @@ public class ManageMeasureDetailModel implements IsSerializable, BaseModel{
 			}
 		}
 	}
-	
-	
 }

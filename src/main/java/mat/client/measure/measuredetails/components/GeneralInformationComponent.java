@@ -1,17 +1,15 @@
 package mat.client.measure.measuredetails.components;
 
-import java.util.Date;
-
 public class GeneralInformationComponent {
-	private Date finalizedDate;
+	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
 	private String eCQMAbbreviatedTitle;
 	private String eCQMVersionNumber;
-	public Date getFinalizedDate() {
+	public String getFinalizedDate() {
 		return finalizedDate;
 	}
-	public void setFinalizedDate(Date finalizedDate) {
+	public void setFinalizedDate(String finalizedDate) {
 		this.finalizedDate = finalizedDate;
 	}
 	public boolean isPatientBased() {

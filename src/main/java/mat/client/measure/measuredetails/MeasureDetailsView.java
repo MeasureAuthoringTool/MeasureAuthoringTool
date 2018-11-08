@@ -11,6 +11,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
+import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
@@ -28,10 +29,13 @@ public class MeasureDetailsView {
 	private ComponentDetailView componentDetailView;
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
+	private MeasureDetailsComponent measureDetailsComponent;
 	
-	public MeasureDetailsView(MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
+	
+	public MeasureDetailsView(MeasureDetailsComponent measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
 		buildMeasureDetailsButtonPanel();
+		this.measureDetailsComponent = measureDetailsComponent;
 		mainContentPanel.add(navigationPanel.getWidget());
 		mainContentPanel.setWidth("100%");
 		buildDetailView(currentMeasureDetail);
@@ -77,7 +81,7 @@ public class MeasureDetailsView {
 		this.currentMeasureDetail = currentMeasureDetail;
 		widgetComponentPanel.clear();
 		buildHeading();
-		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(currentMeasureDetail);
+		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsComponent, currentMeasureDetail);
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");

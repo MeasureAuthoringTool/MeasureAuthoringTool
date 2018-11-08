@@ -35,6 +35,7 @@ public class DeleteConfirmDialogBox {
 	private  Modal panel;
 	private FocusPanel focusPanel = new FocusPanel();
 	private ChangePasswordWidget changePasswordWidget = new ChangePasswordWidget();
+	private ErrorMessageAlert messageAlert;
 	
 	public void showDeletionConfimationDialog(String message) {
 		focusPanel.clear();
@@ -42,7 +43,7 @@ public class DeleteConfirmDialogBox {
 	    confirmButton = new Button("Confirm");
 	    passwordEntered = "";
 		ModalBody modalBody = new ModalBody();
-		ErrorMessageAlert messageAlert = new ErrorMessageAlert();
+		messageAlert = new ErrorMessageAlert();
 
 		modalBody.clear();
 		messageAlert.clear();
@@ -101,7 +102,6 @@ public class DeleteConfirmDialogBox {
 
 		confirmButton.setType(ButtonType.PRIMARY);
 		confirmButton.setSize(ButtonSize.DEFAULT);
-		confirmButton.setDataDismiss(ButtonDismiss.MODAL);
 		confirmButton.setEnabled(false);
 
 		modalFooter.add(confirmButton);
@@ -115,6 +115,10 @@ public class DeleteConfirmDialogBox {
 		panel.add(modalFooter);
 		panel.getElement().focus();
 		panel.show();
+	}
+	
+	public void closeDialogBox() {
+		panel.hide();
 	}
 
 	public Button getConfirmButton() {
@@ -132,5 +136,9 @@ public class DeleteConfirmDialogBox {
 	public Input getPassword() {
 		return changePasswordWidget.getPassword();
 	}
-
+	
+	public void setMessage(String message) {
+		messageAlert.clear();
+		messageAlert.createAlert(message);
+	}
 }

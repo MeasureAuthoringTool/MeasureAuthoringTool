@@ -15,8 +15,10 @@ import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
+import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
+import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
 
 public class MeasureDetailsView {
@@ -25,6 +27,7 @@ public class MeasureDetailsView {
 	private HorizontalPanel headingPanel = new HorizontalPanel();
 	private HorizontalPanel saveButtonPanel = new HorizontalPanel();
 	private VerticalPanel widgetComponentPanel = new VerticalPanel();
+	private ErrorMessageAlert errorAlert = new ErrorMessageAlert();
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
 	private SaveButton saveButton = new SaveButton("Measure Details");
@@ -34,6 +37,7 @@ public class MeasureDetailsView {
 	
 	public MeasureDetailsView(MeasureDetailsComponent measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
 		currentMeasureDetail = measureDetail;
+		mainPanel.add(errorAlert);
 		buildMeasureDetailsButtonPanel();
 		this.measureDetailsComponent = measureDetailsComponent;
 		mainContentPanel.add(navigationPanel.getWidget());
@@ -100,5 +104,9 @@ public class MeasureDetailsView {
 	
 	public boolean isValid() {
 		return componentDetailView.isValid();
+	}
+	
+	public MessageAlert getErrorMessageAlert() {
+		return errorAlert;
 	}
 }

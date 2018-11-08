@@ -10,10 +10,12 @@ import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
-import mat.shared.measure.error.DeleteMeasureException;
+import mat.shared.error.AuthenticationException;
+import mat.shared.error.measure.DeleteMeasureException;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsComponent;
+
 
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
@@ -65,6 +67,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private void onDeleteMeasureButtonClick() {
+		clearAlerts();
 		dialogBox = new DeleteConfirmDialogBox();
 		dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
 		dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
@@ -79,19 +82,19 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 			@Override
 			public void onFailure(Throwable caught) {
-				String message = "";
-				if(caught instanceof DeleteMeasureException) {
-					message = caught.getMessage();
+				if(caught instanceof AuthenticationException) {
+					dialogBox.setMessage(caught.getMessage());
+					dialogBox.getPassword().setText("");
+				} else if(caught instanceof DeleteMeasureException) {
+					showErrorAlert(caught.getMessage());
 				} else {
-					message = MatContext.get().getMessageDelegate().getGenericErrorMessage();
+					showErrorAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
-				
-				fireBackToMeasureLibraryEvent();
-				fireMeasureDeletionEvent(false, message);
 			}
 
 			@Override
 			public void onSuccess(Void result) {				
+				dialogBox.closeDialogBox();
 				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
 				MatContext.get().setMeasureDeleted(true);
 				fireBackToMeasureLibraryEvent();
@@ -168,5 +171,15 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " +caught.getLocalizedMessage(), 0);
 			}
 		};
+	}
+
+	private void clearAlerts() {
+		measureDetailsView.getErrorMessageAlert().clear();
+
+	}
+	
+	private void showErrorAlert(String message) {
+		measureDetailsView.getErrorMessageAlert().clear();
+		measureDetailsView.getErrorMessageAlert().createAlert(message);
 	}
 }

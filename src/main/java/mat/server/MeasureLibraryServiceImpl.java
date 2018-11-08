@@ -65,7 +65,6 @@ import mat.client.clause.clauseworkspace.model.MeasureDetailResult;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.SortedClauseMapResult;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
-import mat.client.login.service.LoginService;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -158,7 +157,8 @@ import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.UUIDUtilClient;
 import mat.shared.cql.error.InvalidLibraryException;
-import mat.shared.measure.error.DeleteMeasureException;
+import mat.shared.error.AuthenticationException;
+import mat.shared.error.measure.DeleteMeasureException;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 @Service
@@ -2095,12 +2095,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException {
+	public void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException {
 		logger.info("Measure Deletion Started for measure Id :: " + measureId);		
 		boolean isValidPassword = loginService.isValidPassword(loggedInUserId, password);
 		if(!isValidPassword) {
 			logger.error("Failed to delete measure: " + MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
-			throw new DeleteMeasureException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
+			throw new AuthenticationException(MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
 		}
 		
 		GenericResult isUsedAsComponentMeasureResult = checkIfMeasureIsUsedAsComponentMeasure(measureId);

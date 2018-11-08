@@ -47,7 +47,8 @@ import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
-import mat.shared.measure.error.DeleteMeasureException;
+import mat.shared.error.AuthenticationException;
+import mat.shared.error.measure.DeleteMeasureException;
 
 /**
  * The Interface MeasureLibraryService.
@@ -220,7 +221,7 @@ public interface MeasureLibraryService {
 	@Deprecated
 	void saveAndDeleteMeasure(String measureID,  String loginUserId);
 	
-	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException;
+	void deleteMeasure(String measureId, String loggedInUserId, String password) throws DeleteMeasureException, AuthenticationException;
 	
 	/**
 	 * Save finalized version.

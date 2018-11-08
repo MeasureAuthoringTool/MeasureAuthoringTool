@@ -5,7 +5,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp2.BasicDataSource;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,25 +31,12 @@ public class Application {
 	
 	private static final String passwordKey = System.getProperty("PASSWORDKEY");
 	
-	/* This is only for developers
-	 *
-	@Bean
-	public DataSource dataSource(){
-	  BasicDataSource dataSource = new BasicDataSource();
-	  dataSource.setUrl("jdbc:mysql://***REMOVED***:3306/MAT_STAGE_08312017");
-	  dataSource.setUsername("userId");
-	  dataSource.setPassword("password");
-	  return dataSource;
-	}*/
-	
 	@Bean
 	public DataSource dataSource(){
 	  JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
 	  DataSource dataSource = dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
 	  return dataSource;
 	}
-	
-	
 	
 	@Bean
 	public StandardPBEStringEncryptor getStandardEncryptor() {

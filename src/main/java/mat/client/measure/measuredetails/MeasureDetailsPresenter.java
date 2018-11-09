@@ -1,6 +1,5 @@
 package mat.client.measure.measuredetails;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,7 +32,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	public MeasureDetailsPresenter() {
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
 		navigationPanel.setObserver(this);
-		GWT.log("now in the constructor");
 		measureDetailsView = new MeasureDetailsView(new MeasureDetailsModel(), MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();

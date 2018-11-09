@@ -1,6 +1,7 @@
 package mat.client.measure.measuredetails.components;
 
 public class GeneralInformationModel implements MeasureDetailsComponentModel{
+	private String measureName;
 	private String finalizedDate;
 	private boolean patientBased;
 	private String guid;
@@ -45,5 +46,11 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	public String getMeasureName() {
+		return measureName;
+	}
+	public void setMeasureName(String measureName) {
+		this.measureName = measureName;
 	}
 }

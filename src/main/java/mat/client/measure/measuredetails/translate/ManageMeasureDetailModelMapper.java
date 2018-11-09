@@ -25,13 +25,14 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	}
 
 	private GeneralInformationModel buildGeneralInformationComponent() {
-		GeneralInformationModel generalInformationComponent = new GeneralInformationModel();
-		generalInformationComponent.seteCQMAbbreviatedTitle(manageMeasureDetailModel.getShortName());
-		generalInformationComponent.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
-		generalInformationComponent.setPatientBased(manageMeasureDetailModel.isPatientBased());
-		generalInformationComponent.setGuid(manageMeasureDetailModel.getMeasureSetId());
-		generalInformationComponent.seteCQMVersionNumber(manageMeasureDetailModel.getVersionNumber());
-		return generalInformationComponent;
+		GeneralInformationModel generalInformationModel = new GeneralInformationModel();
+		generalInformationModel.setMeasureName(manageMeasureDetailModel.getName());
+		generalInformationModel.seteCQMAbbreviatedTitle(manageMeasureDetailModel.getShortName());
+		generalInformationModel.setFinalizedDate(manageMeasureDetailModel.getFinalizedDate());
+		generalInformationModel.setPatientBased(manageMeasureDetailModel.isPatientBased());
+		generalInformationModel.setGuid(manageMeasureDetailModel.getMeasureSetId());
+		generalInformationModel.seteCQMVersionNumber(manageMeasureDetailModel.getVersionNumber());
+		return generalInformationModel;
 	}
 
 	@Override

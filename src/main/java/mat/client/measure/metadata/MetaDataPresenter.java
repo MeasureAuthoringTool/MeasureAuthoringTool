@@ -73,6 +73,7 @@ import mat.shared.StringUtility;
 @Deprecated
 public class MetaDataPresenter  implements MatPresenter {
 	
+	
 	/**
 	 * The Interface MetaDataDetailDisplay.
 	 */
@@ -916,6 +917,9 @@ public class MetaDataPresenter  implements MatPresenter {
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
+	private DeleteConfirmDialogBox dialogBox;
+
+	
 	/**
 	 * Instantiates a new meta data presenter.
 	 *
@@ -1262,10 +1266,11 @@ public class MetaDataPresenter  implements MatPresenter {
 	private ClickHandler buildDeleteClickHandler(MessageAlert errorMessageAlert) {
 		ClickHandler deleteClickHandler = new ClickHandler() {
 			
+
 			@Override
 			public void onClick(ClickEvent event) {
 				if(isMeasureDeletable()){
-					final DeleteConfirmDialogBox dialogBox = new DeleteConfirmDialogBox();
+					dialogBox = new DeleteConfirmDialogBox();
 					dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
 					dialogBox.getConfirmButton().addClickHandler(new ClickHandler() {
 						
@@ -1981,6 +1986,8 @@ public class MetaDataPresenter  implements MatPresenter {
 					fireBackToMeasureLibraryEvent();
 					fireSuccessfullDeletionEvent(false, MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
 				}
+				
+				dialogBox.closeDialogBox();
 			}
 		});
 	}

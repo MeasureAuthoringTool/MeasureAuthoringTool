@@ -30,3 +30,4 @@ war/bonnie
 velocity.log
 war/WEB-INF/mat-persistence.xml
 /target/
+war/WEB-INF/jetty-env.xml

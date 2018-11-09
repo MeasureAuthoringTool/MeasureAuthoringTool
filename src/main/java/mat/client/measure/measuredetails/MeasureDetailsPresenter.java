@@ -37,7 +37,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView = new MeasureDetailsView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
-		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
 	}
 	
 	@Override
@@ -65,19 +64,15 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void handleDeleteMeasureButtonClick() {
-		onDeleteMeasureButtonClick();
+		clearAlerts();
+		dialogBox = new DeleteConfirmDialogBox();
+		dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
+		dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
 	}
 	
 	@Override
 	public void handleStateChanged() {
 		navigationPanel.updateState(measureDetailsView.getState());
-	}
-	
-	private void onDeleteMeasureButtonClick() {
-		clearAlerts();
-		dialogBox = new DeleteConfirmDialogBox();
-		dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
-		dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
 	}
 	
 	private void deleteMeasure() {

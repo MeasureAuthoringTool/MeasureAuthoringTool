@@ -4,6 +4,8 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.MeasureDetailState;
+
 public class InitialPopulationView implements ComponentDetailView {
 
 	private FlowPanel mainPanel = new FlowPanel();
@@ -31,6 +33,18 @@ public class InitialPopulationView implements ComponentDetailView {
 	public void buildDetailView() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public MeasureDetailState getState() {
+		// TODO Auto-generated method stub
+		return MeasureDetailState.BLANK;
 	}
 
 

@@ -4,9 +4,11 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 
 public class GeneralMeasureInformationView implements ComponentDetailView{
@@ -14,9 +16,11 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 	private GeneralInformationModel generalInformationModel;
 	private TextBox abbrInput = new TextBox();
 	private TextBox measureNameInput = new TextBox();
+	private boolean readOnly = false;
 	public GeneralMeasureInformationView(GeneralInformationModel generalInformationModel) {
 		this.generalInformationModel = generalInformationModel;
 		buildDetailView();
+		setReadOnly(readOnly);
 	}
 
 	@Override
@@ -37,9 +41,10 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 
 	@Override
 	public void buildDetailView() {
-		//TODO float the labels and handle enabled/disabled
 		mainPanel.clear();
+		HorizontalPanel detailPanel = new HorizontalPanel();
 		VerticalPanel leftPanel = new VerticalPanel();
+		leftPanel.getElement().getStyle().setProperty("marginRight", "10px");
 		FormLabel measureNameLabel =  new FormLabel();
 		measureNameLabel.setText("Measure Name");
 		measureNameLabel.setTitle(measureNameLabel.getText());
@@ -51,6 +56,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		leftPanel.add(measureNameInput);
 		
 		VerticalPanel rightPanel = new VerticalPanel();
+		rightPanel.getElement().getStyle().setProperty("marginLeft", "10px");
 		FormLabel abbrInputLabel =  new FormLabel();
 		abbrInputLabel.setText("eCQM Abbreviated Title");
 		abbrInputLabel.setTitle(abbrInputLabel.getText());
@@ -60,8 +66,22 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		abbrInput.setId("abbrInput");
 		abbrInput.setText(generalInformationModel.geteCQMAbbreviatedTitle());
 		rightPanel.add(abbrInput);
-		mainPanel.add(leftPanel);
-		mainPanel.add(rightPanel);
+		detailPanel.add(leftPanel);
+		detailPanel.add(rightPanel);
+		mainPanel.add(detailPanel);
 	}
 
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+		abbrInput.setReadOnly(readOnly);
+		abbrInput.setEnabled(!readOnly);
+		measureNameInput.setReadOnly(readOnly);
+		measureNameInput.setEnabled(!readOnly);
+	}
+
+	@Override
+	public MeasureDetailState getState() {
+		return MeasureDetailState.INCOMPLETE;
+	}
 }

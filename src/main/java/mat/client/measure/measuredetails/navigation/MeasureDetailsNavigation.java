@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.MeasureDetailsObserver;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -23,11 +24,12 @@ import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 
 public class MeasureDetailsNavigation {
 	private FlowPanel mainPanel = new FlowPanel();
-	private Map<MatDetailItem, AnchorListItem> menuItemMap;
+	private Map<MatDetailItem, MeasureDetailsAnchorListItem> menuItemMap;
 	private MeasureDetailsObserver observer;
 	private PanelCollapse populationsCollapse;
 	private String scoringType;
 	private boolean isComposite;
+	private MatDetailItem activeMenuItem;
 
 	public MeasureDetailsNavigation(String scoringType, boolean isCompositeMeasure) {
 		buildNavigationMenu(scoringType, isComposite);
@@ -64,7 +66,7 @@ public class MeasureDetailsNavigation {
 		for(PopulationItems populationDetail: populationsList) {
 			List<String> applicableScoringTypes = populationDetail.getApplicableMeasureTypes();
 			if(applicableScoringTypes.contains(scoringType)) {
-				AnchorListItem anchorListItem = new AnchorListItem(populationDetail.abbreviatedName());
+				MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsAnchorListItem(populationDetail.abbreviatedName());
 				anchorListItem.setTitle(populationDetail.abbreviatedName());
 				anchorListItem.getElement().getStyle().setMarginLeft(15, Unit.PX);
 				menuItemMap.put(populationDetail, anchorListItem);
@@ -83,7 +85,7 @@ public class MeasureDetailsNavigation {
 		navPills.getElement().setId("measureDetailsNavigation_measureDetailsNavigationPills");
 		List<MeasureDetailsItems> detailsList = Arrays.asList(MeasureDetailsItems.values());
 		for(MeasureDetailsItems measureDetail: detailsList) {
-			AnchorListItem anchorListItem = new AnchorListItem(measureDetail.abbreviatedName());
+			MeasureDetailsAnchorListItem anchorListItem = new MeasureDetailsAnchorListItem(measureDetail.abbreviatedName());
 			anchorListItem.getElement().setTitle(measureDetail.abbreviatedName());
 			menuItemMap.put(measureDetail, anchorListItem);
 			if(measureDetail == MeasureDetailsItems.POPULATIONS) {
@@ -122,19 +124,26 @@ public class MeasureDetailsNavigation {
 	}
 
 	public void setActiveMenuItem(MatDetailItem activeMenuItem) {
+		this.activeMenuItem = activeMenuItem;
 		deselectAllMenuItems();
 		menuItemMap.get(activeMenuItem).setActive(true);
 	}
 
 	private void deselectAllMenuItems() {
-		Iterator<AnchorListItem>menuItems = menuItemMap.values().iterator();
+		Iterator<MeasureDetailsAnchorListItem>menuItems = menuItemMap.values().iterator();
 		while(menuItems.hasNext()) {
-			AnchorListItem anchorListItem = menuItems.next();
+			MeasureDetailsAnchorListItem anchorListItem = menuItems.next();
 			anchorListItem.setActive(false);
 		}
 	}
 	
 	public void setObserver(MeasureDetailsObserver observer) {
 		this.observer = observer;
+	}
+
+	public void updateState(MeasureDetailState state) {
+		if(state == MeasureDetailState.INCOMPLETE) {
+			menuItemMap.get(activeMenuItem).setState(state);
+		} 
 	}
 }

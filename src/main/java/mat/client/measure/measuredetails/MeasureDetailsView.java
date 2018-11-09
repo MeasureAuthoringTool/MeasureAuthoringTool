@@ -117,4 +117,12 @@ public class MeasureDetailsView {
 	public MessageAlert getErrorMessageAlert() {
 		return errorAlert;
 	}
+
+	public void setReadOnly(boolean isReadOnly) {
+		componentDetailView.setReadOnly(isReadOnly);
+	}
+	
+	public MeasureDetailState getState() {
+		return componentDetailView.getState();
+	}
 }

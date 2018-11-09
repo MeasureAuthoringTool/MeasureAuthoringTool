@@ -4,8 +4,9 @@ import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 
 import com.google.gwt.user.client.ui.Widget;
 
-public class NumeratorView implements ComponentDetailView {
+import mat.client.measure.measuredetails.MeasureDetailState;
 
+public class NumeratorView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();
 
 	public NumeratorView() {
@@ -34,5 +35,15 @@ public class NumeratorView implements ComponentDetailView {
 		
 	}
 
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		// TODO Auto-generated method stub
+		
+	}
 
+	@Override
+	public MeasureDetailState getState() {
+		// TODO Auto-generated method stub
+		return MeasureDetailState.BLANK;
+	}
 }

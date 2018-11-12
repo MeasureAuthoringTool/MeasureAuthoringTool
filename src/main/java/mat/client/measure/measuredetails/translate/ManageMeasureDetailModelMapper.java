@@ -19,6 +19,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	@Override
 	public MeasureDetailsModel getMeasureDetailsComponent() {
 		measureDetailsComponent = new MeasureDetailsModel();
+		this.measureDetailsComponent.setOwnerUserId(manageMeasureDetailModel.getMeasureOwnerId());
 		GeneralInformationModel generalInformationComponent = buildGeneralInformationComponent();
 		measureDetailsComponent.setGeneralInformation(generalInformationComponent);
 		return measureDetailsComponent;

@@ -64,10 +64,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void handleDeleteMeasureButtonClick() {
-		clearAlerts();
-		dialogBox = new DeleteConfirmDialogBox();
-		dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
-		dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
+		if(isDeletable()) {
+			clearAlerts();
+			dialogBox = new DeleteConfirmDialogBox();
+			dialogBox.showDeletionConfimationDialog(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
+			dialogBox.getConfirmButton().addClickHandler(event -> deleteMeasure());
+		}
 	}
 	
 	@Override
@@ -143,8 +145,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
-				MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(),
-				MatContext.get().getLoggedinUserId(), getAsyncCallBackForMeasureAndLogRecentMeasure());
+				MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(
+						MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),
+						getAsyncCallBackForMeasureAndLogRecentMeasure());
 			}
 		});
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
@@ -159,6 +162,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		clearAlerts();
 		measureDetailsView.getErrorMessageAlert().createAlert(message);
 	}	
+	
+	private boolean isDeletable() {
+		return isMeasureOwner() && !MatContext.get().isCurrentMeasureLocked();
+	}
+	
+	private boolean isMeasureOwner() {
+		return measureDetailsComponent.getOwnerUserId() == MatContext.get().getLoggedinUserId();
+	}
 	
 	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
 		return new AsyncCallback<ManageMeasureDetailModel>() {
@@ -176,13 +187,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				if (callbackRequestTime == lastRequestTime) {
 					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
 					measureDetailsComponent = manageMeasureDetailModelMapper.getMeasureDetailsComponent();
-					measureDetailsView.buildDetailView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+					measureDetailsView.buildDetailView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);					
 					measureDetailsView.setReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+					measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 					navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 					MatContext.get().fireMeasureEditEvent();
 				}
 			}
-			
+						
 			private void handleAsyncFailure(Throwable caught) {
 				showErrorAlert(caught.getMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " +caught.getLocalizedMessage(), 0);

@@ -1,6 +1,7 @@
 package mat.client.measure.measuredetails.components;
 
-public class MeasureDetailsModel implements MeasureDetailsComponentModel{
+public class MeasureDetailsModel implements MeasureDetailsComponentModel {
+	private String ownerUserId; 
 	private GeneralInformationModel generalInformation;
 	private MeasureStewardDeveloperModel measureStewardDeveloper;
 	private DescriptionModel description;
@@ -30,6 +31,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel{
 	private MeasureSetModel measureSet;
 	
 	public MeasureDetailsModel() {
+		this.ownerUserId = "";
 		this.generalInformation = new GeneralInformationModel();
 		this.measureStewardDeveloper = new MeasureStewardDeveloperModel();
 		this.description = new DescriptionModel();
@@ -232,5 +234,13 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel{
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public String getOwnerUserId() {
+		return ownerUserId;
+	}
+
+	public void setOwnerUserId(String ownerUserId) {
+		this.ownerUserId = ownerUserId;
 	}
 }

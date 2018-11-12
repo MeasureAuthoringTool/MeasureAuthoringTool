@@ -4,6 +4,8 @@ import org.gwtbootstrap3.client.ui.AnchorListItem;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
+import com.google.gwt.dom.client.Element;
+
 import mat.client.measure.measuredetails.MeasureDetailState;
 
 public class MeasureDetailsAnchorListItem extends AnchorListItem{
@@ -31,5 +33,7 @@ public class MeasureDetailsAnchorListItem extends AnchorListItem{
 			break;
 		}
 		this.setIconPosition(IconPosition.RIGHT);
+		Element anchorElement = this.getElement().getElementsByTagName("a").getItem(0);
+		anchorElement.addClassName("measuredetails");
 	}
 }

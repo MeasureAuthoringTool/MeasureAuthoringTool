@@ -25,7 +25,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
@@ -367,7 +366,7 @@ public class CQLLibraryService extends SpringRemoteServiceServlet implements CQL
 		if(library != null){
 			String versionNumber = null;
 			if (isMajor) {
-				versionNumber = cqlLibraryDAO.findMaxVersion(library.getSet_id());
+				versionNumber = cqlLibraryDAO.findMaxVersion(library.getSet_id(), null);
 				if (versionNumber == null) {
 					versionNumber = "0.000";
 				}

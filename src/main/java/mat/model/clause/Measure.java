@@ -231,7 +231,7 @@ public class Measure {
 		this.owner = owner;
 	}
 
-	@OneToMany( mappedBy = "measure")
+	@OneToMany( mappedBy = "measure",cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	public Set<MeasureShare> getShares() {
 		return shares;
 	}

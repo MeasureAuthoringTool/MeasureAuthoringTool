@@ -53,7 +53,7 @@ public class CQLLibraryShare {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CQL_LIBRARY_OWNER_USER_ID", nullable = false, insertable=false, updatable=false)
+	@JoinColumn(name = "CQL_LIBRARY_OWNER_USER_ID")
 	public User getOwner() {
 		return owner;
 	}
@@ -63,7 +63,7 @@ public class CQLLibraryShare {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SHARE_USER_ID",nullable = false,insertable=false, updatable=false)
+	@JoinColumn(name = "SHARE_USER_ID")
 	public User getShareUser() {
 		return shareUser;
 	}

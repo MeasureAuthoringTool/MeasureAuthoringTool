@@ -7064,6 +7064,14 @@ button.close {
 	display: none !important
 }
 
+.measuredetails .fa-check-circle-o {
+	color: #b06500;
+}
+
+.measuredetails .fa-check-circle {
+	color: #b06500;
+}
+
 @media print {
 	.visible-print-inline-block {
 		display: inline-block !important

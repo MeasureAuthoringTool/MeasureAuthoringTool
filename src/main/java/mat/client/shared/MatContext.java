@@ -42,6 +42,7 @@ import mat.client.cqlconstant.service.CQLConstantService;
 import mat.client.cqlconstant.service.CQLConstantServiceAsync;
 import mat.client.event.CQLLibrarySelectedEvent;
 import mat.client.event.ForgottenPasswordEvent;
+import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
@@ -840,6 +841,10 @@ public class MatContext implements IsSerializable {
 		return item.substring(0,idx).trim();
 	}
 	
+	public void fireMeasureEditEvent() {
+		MeasureEditEvent evt = new MeasureEditEvent();
+		MatContext.get().getEventBus().fireEvent(evt);
+	}
 
 	public void recordTransactionEvent(String primaryId, String secondaryId, String activityType, String additionalInfo, int logLevel){
 		String userId = getLoggedinUserId();

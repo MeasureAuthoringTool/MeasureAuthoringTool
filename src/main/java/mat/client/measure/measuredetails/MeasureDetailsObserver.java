@@ -4,5 +4,6 @@ import mat.client.shared.MatDetailItem;
 
 public interface MeasureDetailsObserver {
 	void onMenuItemClicked(MatDetailItem menuItem);
-	void handleDeleteMeasureButtonClick(); 
+	void handleDeleteMeasureButtonClick();
+	void handleStateChanged(); 
 }

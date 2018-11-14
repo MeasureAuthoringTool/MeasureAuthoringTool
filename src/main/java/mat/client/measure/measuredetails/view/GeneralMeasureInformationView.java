@@ -78,7 +78,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		//TODO compare model
 		//TODO add confirmation dialog
 		//TODO handle save...
-		//TODO check read only is working right
 		if(isCompositeMeasure) {
 			VerticalPanel compositeScoringPanel = buildCompositeScoringPanel();
 			panelGrid.setWidget(1, 0, compositeScoringPanel);

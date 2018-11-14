@@ -142,7 +142,6 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		} else {
 			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
 			isInitialBonnieUpload = true;
-			//successMessage = measure.getDescription() + " has been successfully uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
 		}
 		
 		return isInitialBonnieUpload;

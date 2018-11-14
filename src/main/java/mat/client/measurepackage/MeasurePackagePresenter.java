@@ -1072,6 +1072,7 @@ private void saveMeasureAtPackage(){
 					view.getMeasureErrorMessageDisplay().createAlert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 				Mat.hideLoadingMessage();
+				resetPackageButtonsAndMessages();
 			}
 
 			@Override

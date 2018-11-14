@@ -95,10 +95,9 @@ public class MeasureDetailsViewFactory {
 	
 	GeneralMeasureInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
 		List<CompositeMeasureScoreDTO> compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
-		GeneralMeasureInformationView generalInformationView = new GeneralMeasureInformationView(isComposite, generalInformationModel);
+		GeneralMeasureInformationView generalInformationView = new GeneralMeasureInformationView(isComposite, generalInformationModel, compositeChoices);
 		GeneralMeasureInformationObserver observer = new GeneralMeasureInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
-		generalInformationView.setCompositeScoringChoices(compositeChoices);
 		return generalInformationView;
 	}
 }

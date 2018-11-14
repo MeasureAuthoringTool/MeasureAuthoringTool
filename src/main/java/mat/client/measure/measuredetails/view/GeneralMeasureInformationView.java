@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
@@ -36,10 +37,12 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
 	private static final String TEXT_BOX_WIDTH = "300px";
 	private GeneralMeasureInformationObserver observer;
+	List<CompositeMeasureScoreDTO> compositeChoices;
     
-	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {
+	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
 		this.generalInformationModel = generalInformationModel;
 		this.isCompositeMeasure = isComposite;
+		this.compositeChoices = compositeChoices;
 		buildDetailView();
 		setReadOnly(readOnly);
 	}
@@ -83,19 +86,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 			panelGrid.setWidget(1, 0, compositeScoringPanel);
 			VerticalPanel blankPanel = buildBlankPanel();
 			panelGrid.setWidget(1, 1, blankPanel);
-			setCompositeScoringSelectedValue(generalInformationModel.getCompositeScoringMethod());
-		} else {
-			MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
-				}
-
-				@Override
-				public void onSuccess(List<? extends HasListBox> result) {
-					setScoringChoices(result);
-				}
-			});
 		}
 		
 		panelGrid.setWidget(2, 0, measureScoringPanel);
@@ -114,7 +104,27 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		
 		detailPanel.add(panelGrid);
 		mainPanel.add(detailPanel);
+		buildDropDowns();
 		addEventHandlers();
+	}
+
+	private void buildDropDowns() {
+		setCompositeScoringChoices(compositeChoices);
+		if(isCompositeMeasure) {
+			setCompositeScoringSelectedValue(generalInformationModel.getCompositeScoringMethod());
+		} else {
+			MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
+				}
+
+				@Override
+				public void onSuccess(List<? extends HasListBox> result) {
+					setScoringChoices(result);
+				}
+			});
+		}
 	}
 
 	private void addEventHandlers() {

@@ -11,9 +11,6 @@ public class GeneralMeasureInformationObserver {
 		this.generalMeasureInformationView = generalMeasureInformationView;
 	}
 	
-	//.getCompositeScoringMethodInput().addChangeHandler(event -> createSelectionMapAndSetScorings())
-	//.getMeasScoringChoice().addChangeHandler(event -> setPatientBasedIndicatorBasedOnScoringChoice((detailDisplay)));
-
 	public void handleCompositeScoringChanged() {
 		createSelectionMapAndSetScorings();
 	}

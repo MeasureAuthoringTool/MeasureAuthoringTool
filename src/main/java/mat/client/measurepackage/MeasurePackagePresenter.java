@@ -1056,7 +1056,7 @@ private void saveMeasureAtPackage(){
 	
 	private void handleSuccessfulPackageAndExportToBonnie(String measureId) {
 		String matUserId = MatContext.get().getLoggedinUserId();
-		MatContext.get().getBonnieService().getUpdateOrUploadMeasureToBonnie(measureId, matUserId, vsacInfo, new AsyncCallback<Boolean>() {
+		MatContext.get().getBonnieService().updateOrUploadMeasureToBonnie(measureId, matUserId, vsacInfo, new AsyncCallback<Boolean>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

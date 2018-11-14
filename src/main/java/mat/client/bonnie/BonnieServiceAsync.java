@@ -14,7 +14,7 @@ public interface BonnieServiceAsync {
 	
 	public void getBonnieUserInformationForUser(String userId, AsyncCallback<BonnieUserInformationResult> asyncCallback);
 	
-	public void getUpdateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket, AsyncCallback<Boolean> asyncCallback);
+	public void updateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket, AsyncCallback<Boolean> asyncCallback);
 
 	public void revokeBonnieAccessTokenForUser(String matUserId, AsyncCallback<Void> asyncCallback);
 

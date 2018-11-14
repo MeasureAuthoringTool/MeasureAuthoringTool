@@ -144,7 +144,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	private void getMeasureExportForMeasure(VsacTicketInformation vsacTicket) {
 		String matUserId = MatContext.get().getLoggedinUserId();
 		String measureId = this.result.getId();
-		MatContext.get().getBonnieService().getUpdateOrUploadMeasureToBonnie(measureId, matUserId, vsacTicket, new AsyncCallback<Boolean>() {
+		MatContext.get().getBonnieService().updateOrUploadMeasureToBonnie(measureId, matUserId, vsacTicket, new AsyncCallback<Boolean>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

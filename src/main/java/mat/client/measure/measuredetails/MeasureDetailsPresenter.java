@@ -138,6 +138,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				measureDetailsModel.setComposite(isCompositeMeasure);
 				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
 				measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+				measureDetailsView.setReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
+				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 				navigationPanel.updateState(measureDetailsView.getState());
 			}
@@ -187,9 +190,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				if (callbackRequestTime == lastRequestTime) {
 					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
 					measureDetailsModel = manageMeasureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure);					
-					measureDetailsView.setReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-					measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
-					navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 					MatContext.get().fireMeasureEditEvent();
 				}
 			}
@@ -230,9 +230,6 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				if (callbackRequestTime == lastRequestTime) {
 					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
 					measureDetailsModel = manageMeasureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure);					
-					measureDetailsView.setReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
-					measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
-					navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 					MatContext.get().fireMeasureEditEvent();
 				}
 			}

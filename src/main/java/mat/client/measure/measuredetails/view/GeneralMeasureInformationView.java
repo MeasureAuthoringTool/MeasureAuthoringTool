@@ -30,7 +30,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 	private GeneralInformationModel generalInformationModel;
 	private TextBox abbrInput = new TextBox();
 	private TextBox measureNameInput = new TextBox();
-	private boolean readOnly = false;
 	private boolean isCompositeMeasure = false;
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
@@ -44,7 +43,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		this.isCompositeMeasure = isComposite;
 		this.compositeChoices = compositeChoices;
 		buildDetailView();
-		setReadOnly(readOnly);
 	}
 
 	@Override
@@ -328,12 +326,13 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		//TODO cehck all inputs
-		this.readOnly = readOnly;
 		abbrInput.setReadOnly(readOnly);
 		abbrInput.setEnabled(!readOnly);
 		measureNameInput.setReadOnly(readOnly);
 		measureNameInput.setEnabled(!readOnly);
+		compositeScoringMethodInput.setEnabled(!readOnly);
+		measureScoringInput.setEnabled(!readOnly);
+		patientBasedInput.setEnabled(!readOnly);
 	}
 
 	@Override

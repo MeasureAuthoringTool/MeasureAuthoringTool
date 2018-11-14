@@ -24,6 +24,8 @@ public class BonnieExportPresenter implements MatPresenter {
 	private static final String SIGN_INTO_UMLS = "Please sign into UMLS";
 	private static final String DISCONNECTED_FROM_BONNIE_MESSAGE ="You have been disconnected from Bonnie. If you need to continue uploading measures to the Bonnie system you will need to click the login again.";
 	public static final String UNABLE_TO_CONNECT_TO_BONNIE_MESSAGE = "Unable to complete this action at this time. Please try again. If the problem persists, contact the MAT Support Desk using the Contact Us form link at the bottom of the tool.";
+	private static final String UPDATE_TO_BONNIE_SUCCESS_MESSAGE = " has been successfully updated in Bonnie. Please select open or save to view the results.";
+	private static final String INITIAL_BONNIE_UPLOAD_SUCCESS_MESSAGE = " has been successfully uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
 	
 	
 	private BonnieExportView view;
@@ -142,7 +144,7 @@ public class BonnieExportPresenter implements MatPresenter {
 	private void getMeasureExportForMeasure(VsacTicketInformation vsacTicket) {
 		String matUserId = MatContext.get().getLoggedinUserId();
 		String measureId = this.result.getId();
-		MatContext.get().getBonnieService().getUpdateOrUploadMeasureToBonnie(measureId, matUserId, vsacTicket, new AsyncCallback<String>() {
+		MatContext.get().getBonnieService().updateOrUploadMeasureToBonnie(measureId, matUserId, vsacTicket, new AsyncCallback<Boolean>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -163,9 +165,9 @@ public class BonnieExportPresenter implements MatPresenter {
 			}
 
 			@Override
-			public void onSuccess(String result) {
+			public void onSuccess(Boolean isInitialBonnieUpload) {
 				clearMessagePanel();
-				getExportFromBonnieForMeasure(measureId, matUserId, result);
+				getExportFromBonnieForMeasure(measureId, matUserId, isInitialBonnieUpload);
 			}
 
 		});
@@ -180,9 +182,12 @@ public class BonnieExportPresenter implements MatPresenter {
 		Mat.hideBonnieActive(true);
 	}
 	
-	private void getExportFromBonnieForMeasure(String measureId, String matUserId, String successMessage) {
+	private void getExportFromBonnieForMeasure(String measureId, String matUserId, Boolean isInitialBonnieUpload) {
 		String url = GWT.getModuleBaseURL() + "export?id=" + result.getId() + "&userId=" + matUserId + "&format=calculateBonnieMeasureResult";
 		Window.open(url + "&type=open", "_blank", "");
+		String successMessage = isInitialBonnieUpload ? 
+				result.getShortName() + INITIAL_BONNIE_UPLOAD_SUCCESS_MESSAGE :
+					result.getShortName() + UPDATE_TO_BONNIE_SUCCESS_MESSAGE;
 		createSuccessMessage(successMessage);
 		Mat.hideLoadingMessage();
 	}

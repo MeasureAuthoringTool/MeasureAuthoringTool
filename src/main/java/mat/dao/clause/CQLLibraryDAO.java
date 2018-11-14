@@ -10,38 +10,34 @@ import mat.model.cql.CQLLibraryShare;
 import mat.model.cql.CQLLibraryShareDTO;
 
 public interface CQLLibraryDAO extends IDAO<CQLLibrary, String>{
-	
-		public List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter);
 
-		public boolean isLibraryLocked(String id);
+	List<CQLLibraryShareDTO> search(String searchText, int pageSize, User user, int filter);
 
-		public void updateLockedOutDate(CQLLibrary existingLibrary);
+	boolean isLibraryLocked(String id);
 
-		public String findMaxVersion(String setId);
+	void updateLockedOutDate(CQLLibrary existingLibrary);
 
-		public String findMaxOfMinVersion(String setId, String version);
+	String findMaxVersion(String setId, String ownerId);
 
-		List<CQLLibraryShareDTO> getLibraryShareInfoForLibrary(String cqlId, String searchText);
+	String findMaxOfMinVersion(String setId, String version);
 
-		ShareLevel findShareLevelForUser(String cqlLibraryId, String userID, String cqlLibrarySetId);
+	List<CQLLibraryShareDTO> getLibraryShareInfoForLibrary(String cqlId, String searchText);
 
-		CQLLibraryShareDTO extractDTOFromCQLLibrary(CQLLibrary cqlLibrary);
+	ShareLevel findShareLevelForUser(String cqlLibraryId, String userID, String cqlLibrarySetId);
 
-		List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText);
-		
-		String getAssociatedMeasureId(String measureId);
-		
-		String getSetIdForCQLLibrary(String cqlLibraryId);
+	CQLLibraryShareDTO extractDTOFromCQLLibrary(CQLLibrary cqlLibrary);
 
-		List<CQLLibrary> getLibraryListForLibraryOwner(User user);
+	List<CQLLibrary> searchForIncludes(String setId, String libraryName, String searchText);
 
-		List<CQLLibrary> getAllLibrariesInSet(List<CQLLibrary> libraries);
+	List<CQLLibrary> getLibraryListForLibraryOwner(User user);
 
-		List<CQLLibraryShare> getLibraryShareInforForLibrary(String libId);
+	List<CQLLibrary> getAllLibrariesInSet(List<CQLLibrary> libraries);
 
-		void refresh(CQLLibrary libObject);
+	List<CQLLibraryShare> getLibraryShareInforForLibrary(String libId);
 
-		CQLLibrary getLibraryByMeasureId(String measureId);
+	void refresh(CQLLibrary libObject);
 
-		List<CQLLibrary> searchForReplaceLibraries(String setId);
+	CQLLibrary getLibraryByMeasureId(String measureId);
+
+	List<CQLLibrary> searchForReplaceLibraries(String setId);
 }

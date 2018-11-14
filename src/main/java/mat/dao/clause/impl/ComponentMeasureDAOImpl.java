@@ -2,12 +2,14 @@ package mat.dao.clause.impl;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -20,7 +22,7 @@ import mat.model.clause.ComponentMeasure;
 public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String> implements ComponentMeasuresDAO{
 	
 	private static final Log logger = LogFactory.getLog(ComponentMeasureDAOImpl.class);
-	
+
 	public ComponentMeasureDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
@@ -62,8 +64,17 @@ public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String
 	@Override
 	public List<ComponentMeasure> findByComponentMeasureId(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(ComponentMeasure.class);
-		criteria.add(Restrictions.eq("componentMeasure.id", measureId));
-		return criteria.list();
+
+		//Create CriteriaBuilder
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		
+		//Create CriteriaQuery
+		CriteriaQuery<ComponentMeasure> query = builder.createQuery(ComponentMeasure.class);
+		
+		Root<ComponentMeasure> root = query.from(ComponentMeasure.class);
+		
+		query.where(builder.equal(root.get("componentMeasure").get("id"), measureId));
+		
+		return session.createQuery(query).getResultList();
 	}
 }

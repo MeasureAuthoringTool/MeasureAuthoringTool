@@ -1,6 +1,5 @@
 package mat.server;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -27,37 +26,36 @@ import mat.dao.impl.AuditInterceptor;
 @EnableTransactionManagement
 public class Application {
 	
-	private static final String algorithm = System.getProperty("ALGORITHM");
+	private static final String ALGORITHM = System.getProperty("ALGORITHM");
 	
-	private static final String passwordKey = System.getProperty("PASSWORDKEY");
+	private static final String PASSWORD_KEY = System.getProperty("PASSWORDKEY");
 	
 	@Bean
 	public DataSource dataSource(){
 	  JndiDataSourceLookup dataSourceLookup = new JndiDataSourceLookup();
-	  DataSource dataSource = dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
-	  return dataSource;
+	  return dataSourceLookup.getDataSource("java:/comp/env/jdbc/mat_app_tomcat");
 	}
 	
 	@Bean
 	public StandardPBEStringEncryptor getStandardEncryptor() {
 		StandardPBEStringEncryptor standardPBEStringEncryptor = new StandardPBEStringEncryptor();
-		standardPBEStringEncryptor.setAlgorithm(algorithm);
-		standardPBEStringEncryptor.setPassword(passwordKey);
+		standardPBEStringEncryptor.setAlgorithm(ALGORITHM);
+		standardPBEStringEncryptor.setPassword(PASSWORD_KEY);
 		return standardPBEStringEncryptor;
 	}
 	
 	@Bean
-	public HibernateTransactionManager txManager(@Autowired LocalSessionFactoryBean sessionFactory) throws IOException {
+	public HibernateTransactionManager txManager(@Autowired LocalSessionFactoryBean sessionFactory){
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory.getObject());
 		return txManager;
 	}
 	
 	@Bean
-    public LocalSessionFactoryBean sessionFactory(@Autowired DataSource dataSource,@Autowired AuditInterceptor auditInterceptor) throws IOException {
+    public LocalSessionFactoryBean sessionFactory(@Autowired DataSource dataSource, @Autowired AuditInterceptor auditInterceptor){
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setPackagesToScan(new String[] {"mat.model","mat.server.model"});
+        sessionFactory.setPackagesToScan("mat.model", "mat.server.model");
         sessionFactory.setHibernateProperties(hibernateProperties());
         sessionFactory.setEntityInterceptor(auditInterceptor);
         return sessionFactory;

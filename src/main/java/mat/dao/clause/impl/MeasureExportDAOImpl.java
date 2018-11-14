@@ -2,9 +2,12 @@ package mat.dao.clause.impl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,15 +24,16 @@ public class MeasureExportDAOImpl extends GenericDAO<MeasureExport, String> impl
 	
 	@Override
 	public MeasureExport findByMeasureId(String measureId) {
-		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(MeasureExport.class);
-		criteria.add(Restrictions.eq("measure.id", measureId));
-		List<MeasureExport> results =  criteria.list();
-		if(!results.isEmpty()) {
-			return results.get(0);
-		}
-		else {
-			return null;
-		}
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<MeasureExport> query = cb.createQuery(MeasureExport.class);
+		Root<MeasureExport> root = query.from(MeasureExport.class);
+		
+		query.select(root).where(cb.equal(root.get("measure").get("id"), measureId));
+		
+		List<MeasureExport> results = session.createQuery(query).getResultList();
+
+		return !results.isEmpty() ? results.get(0) : null;
 	}
 
 }

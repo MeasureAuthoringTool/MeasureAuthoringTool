@@ -2,9 +2,13 @@ package mat.dao.clause.impl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +18,8 @@ import mat.model.cql.CQLLibraryAssociation;
 
 @Repository("cqlLibraryAssociationDAO")
 public class CQLLibraryAssociationDAOImpl extends GenericDAO<CQLLibraryAssociation, String> implements CQLLibraryAssociationDAO {
+	
+	private static final String ASSOCIATION_ID = "associationId";
 
 	public CQLLibraryAssociationDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
@@ -21,38 +27,44 @@ public class CQLLibraryAssociationDAOImpl extends GenericDAO<CQLLibraryAssociati
 	
 	@Override
 	public void deleteAssociation(CQLLibraryAssociation cqlLibraryAssociation) {
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaDelete<CQLLibraryAssociation> delete = builder.createCriteriaDelete(CQLLibraryAssociation.class);
+		Root<CQLLibraryAssociation> root = delete.from(CQLLibraryAssociation.class);
 
-		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryAssociation.class);
-
-		criteria.add(Restrictions.and(Restrictions.eq("associationId", cqlLibraryAssociation.getAssociationId()),
-				Restrictions.eq("cqlLibraryId", cqlLibraryAssociation.getCqlLibraryId())));
-
-		List<CQLLibraryAssociation> associationList = criteria.list();
-		for (CQLLibraryAssociation cqlAssociation : associationList) {
-			delete(cqlAssociation);
-		}
+		delete.where(builder.and(builder.equal(root.get(ASSOCIATION_ID), cqlLibraryAssociation.getAssociationId()), 
+				builder.equal(root.get("cqlLibraryId"), cqlLibraryAssociation.getCqlLibraryId())));
+		
+		session.createQuery(delete).executeUpdate();
 	}
 
 	@Override
 	public int findAssociationCount(String associatedWithId) {
-		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryAssociation.class);
-		criteria.add(Restrictions.eq("associationId", associatedWithId));
-		if (criteria.list() != null) {
-			return criteria.list().size();
-		} else {
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+		Root<CQLLibraryAssociation> root = countQuery.from(CQLLibraryAssociation.class);
+		countQuery =  countQuery.select(builder.count(root)).where(builder.equal(root.get(ASSOCIATION_ID), associatedWithId));
+		
+		Long count = session.createQuery(countQuery).getSingleResult();
+		if (count == null) {
 			return 0;
+		} else {
+			return Math.toIntExact(count);
 		}
 
 	}
 	
 	@Override
 	public List<CQLLibraryAssociation> getAssociations(String associatedWithId) {
-
-		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(CQLLibraryAssociation.class);
-
-		criteria.add(Restrictions.eq("associationId", associatedWithId));
-
-		return criteria.list();
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<CQLLibraryAssociation> query = builder.createQuery(CQLLibraryAssociation.class);
+		Root<CQLLibraryAssociation> root = query.from(CQLLibraryAssociation.class);
+		query.where(builder.equal(root.get(ASSOCIATION_ID), associatedWithId));
+		
+		return session.createQuery(query).getResultList();
+		
 	}
 
 }

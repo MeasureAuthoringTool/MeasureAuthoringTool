@@ -1,10 +1,7 @@
 package mat.client.measure;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -70,7 +67,6 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.util.ClientConstants;
 import mat.client.util.MatTextBox;
 import mat.shared.CompositeMeasureValidationResult;
-import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
 import mat.shared.MeasureSearchModel;
@@ -461,15 +457,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(List<? extends HasListBox> result) {
-				
 				compositeDetailDisplay.setScoringChoices(result);
-				
-				Map<String, List<? extends HasListBox>> selectionMap = createSelectionMap(result);
-				MatContext.get().setSelectionMap(selectionMap);
+				MatContext.get().createSelectionMap(result);
 
-				List<CompositeMeasureScoreDTO> compositeChoices = buildCompositeScoringChoiceList();
+				List<CompositeMeasureScoreDTO> compositeChoices = MatContext.get().buildCompositeScoringChoiceList();
 				((ManageCompositeMeasureDetailView) compositeDetailDisplay).setCompositeScoringChoices(compositeChoices);
-
 			}
 		});
 
@@ -487,31 +479,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		setPatientBasedIndicatorBasedOnScoringChoice(compositeDetailDisplay);
 	}
 	
-	private Map<String, List<? extends HasListBox>> createSelectionMap(List<? extends HasListBox> result) {
-
-		List<? extends HasListBox> defaultList = result;	
-		List<? extends HasListBox> proportionRatioList = defaultList.stream().filter(x -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
-		List<? extends HasListBox> continuousVariableList = defaultList.stream().filter(x -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
-		
-		return new HashMap<String, List<? extends HasListBox>>(){
-			private static final long serialVersionUID = -8329823017052579496L;
-			{
-				put(MatContext.PLEASE_SELECT, defaultList);
-				put(CompositeMethodScoringConstant.ALL_OR_NOTHING, proportionRatioList);
-				put(CompositeMethodScoringConstant.OPPORTUNITY, proportionRatioList);
-				put(CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR, continuousVariableList);
-			}
-		};
-		
-	}
-	
-	private List<CompositeMeasureScoreDTO> buildCompositeScoringChoiceList(){
-		List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<>();
-		compositeChoices.add(new CompositeMeasureScoreDTO("1", CompositeMethodScoringConstant.ALL_OR_NOTHING));
-		compositeChoices.add(new CompositeMeasureScoreDTO("2", CompositeMethodScoringConstant.OPPORTUNITY));
-		compositeChoices.add(new CompositeMeasureScoreDTO("3", CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR));
-		return compositeChoices;
-	}
 	
 	private void updateCompositeDetailsOnContinueButton() { 
 

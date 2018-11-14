@@ -9,6 +9,7 @@ import mat.client.MatPresenter;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureSelectedEvent;
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
@@ -28,13 +29,13 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private boolean isCompositeMeasure;
 	private long lastRequestTime;
 	private DeleteConfirmDialogBox dialogBox;
-	MeasureDetailsModel measureDetailsComponent;
+	MeasureDetailsModel measureDetailsModel;
 
 	public MeasureDetailsPresenter() {
-		measureDetailsComponent = new MeasureDetailsModel();
+		measureDetailsModel = new MeasureDetailsModel();
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
 		navigationPanel.setObserver(this);
-		measureDetailsView = new MeasureDetailsView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+		measureDetailsView = new MeasureDetailsView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
 	}
@@ -49,7 +50,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void beforeDisplay() {
 		clearAlerts();
-		populateMeasureDetailsModelAndDisplayNavigationMenu();
+		populateMeasureDetailsModelAndDisplayMeasureDetailsView();
 	}
 
 	@Override
@@ -119,12 +120,12 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		MatContext.get().getEventBus().fireEvent(backToMeasureLibraryPage);
 	}
 
-	private void populateMeasureDetailsModelAndDisplayNavigationMenu() {
+	private void populateMeasureDetailsModelAndDisplayMeasureDetailsView() {
 		this.scoringType = MatContext.get().getCurrentMeasureScoringType();
-		MatContext.get().getMeasureService().isCompositeMeasure(MatContext.get().getCurrentMeasureId(), isCompositeMeasureCallBack());
+		MatContext.get().getMeasureService().isCompositeMeasure(MatContext.get().getCurrentMeasureId(), displayMeasureDetailsCallBack());
 	}
 
-	private AsyncCallback<Boolean> isCompositeMeasureCallBack() {
+	private AsyncCallback<Boolean> displayMeasureDetailsCallBack() {
 		return new AsyncCallback<Boolean>() {
 			@Override
 			public void onFailure(Throwable caught) {
@@ -133,7 +134,10 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 			@Override
 			public void onSuccess(Boolean isCompositeMeasure) {
+				setCompositeMeasure(isCompositeMeasure);
+				measureDetailsModel.setComposite(isCompositeMeasure);
 				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+				measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 				navigationPanel.updateState(measureDetailsView.getState());
 			}
@@ -145,12 +149,51 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
-				MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(
-						MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),
-						getAsyncCallBackForMeasureAndLogRecentMeasure());
+				MatContext.get().getMeasureService().isCompositeMeasure(MatContext.get().getCurrentMeasureId(), getMeasureCallBack());
 			}
 		});
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
+	}
+
+	protected AsyncCallback<Boolean> getMeasureCallBack() {
+		return new AsyncCallback<Boolean>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean isCompositeMeasure) {
+				setCompositeMeasure(isCompositeMeasure);
+				if(isCompositeMeasure()) {
+					MatContext.get().getMeasureService().getCompositeMeasure(MatContext.get().getCurrentMeasureId(), getAsyncCallBackForCompositeMeasureAndLogRecentMeasure());
+				} else {
+					MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure());
+				}
+			}
+		};
+	}
+
+	protected AsyncCallback<ManageCompositeMeasureDetailModel> getAsyncCallBackForCompositeMeasureAndLogRecentMeasure() {
+		return new AsyncCallback<ManageCompositeMeasureDetailModel>() {
+			final long callbackRequestTime = lastRequestTime;
+			@Override
+			public void onFailure(Throwable caught) {
+				handleAsyncFailure(caught);
+			}
+			
+			@Override
+			public void onSuccess(ManageCompositeMeasureDetailModel result) {
+				if (callbackRequestTime == lastRequestTime) {
+					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
+					measureDetailsModel = manageMeasureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure);					
+					measureDetailsView.setReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+					measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
+					navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
+					MatContext.get().fireMeasureEditEvent();
+				}
+			}
+		};
 	}
 
 	private void clearAlerts() {
@@ -168,7 +211,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 	
 	private boolean isMeasureOwner() {
-		return measureDetailsComponent.getOwnerUserId() == MatContext.get().getLoggedinUserId();
+		return measureDetailsModel.getOwnerUserId() == MatContext.get().getLoggedinUserId();
 	}
 	
 	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
@@ -186,19 +229,26 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			private void handleAsyncSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
 				if (callbackRequestTime == lastRequestTime) {
 					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
-					measureDetailsComponent = manageMeasureDetailModelMapper.getMeasureDetailsComponent();
-					measureDetailsView.buildDetailView(measureDetailsComponent, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);					
+					measureDetailsModel = manageMeasureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure);					
 					measureDetailsView.setReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 					measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 					navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 					MatContext.get().fireMeasureEditEvent();
 				}
 			}
-						
-			private void handleAsyncFailure(Throwable caught) {
-				showErrorAlert(caught.getMessage());
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " +caught.getLocalizedMessage(), 0);
-			}
 		};
+	}
+	
+	private void handleAsyncFailure(Throwable caught) {
+		showErrorAlert(caught.getMessage());
+		MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " +caught.getLocalizedMessage(), 0);
+	}
+	
+	public boolean isCompositeMeasure() {
+		return isCompositeMeasure;
+	}
+
+	public void setCompositeMeasure(boolean isCompositeMeasure) {
+		this.isCompositeMeasure = isCompositeMeasure;
 	}
 }

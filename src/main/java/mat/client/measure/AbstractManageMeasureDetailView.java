@@ -15,7 +15,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -119,7 +118,7 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 
 	@Override
 	public void setScoringChoices(List<? extends HasListBox> texts) {
-		setListBoxItems(measureScoringInput, texts, MatContext.PLEASE_SELECT);
+		MatContext.get().setListBoxItems(measureScoringInput, texts, MatContext.PLEASE_SELECT);
 	}
 
 	@Override
@@ -161,16 +160,6 @@ public class AbstractManageMeasureDetailView implements DetailDisplay{
 	@Override
 	public EditConfirmationDialogBox getConfirmationDialogBox() {
 		return confirmationDialogBox;
-	}
-
-	protected void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
-		listBox.clear();
-		listBox.addItem(defaultOption,"");
-		if(itemList != null){
-			for(HasListBox listBoxContent : itemList){
-				listBox.addItem(listBoxContent.getItem(), listBoxContent.getItem());
-			}
-		}
 	}
 	
 	protected void buildMainPanel() {

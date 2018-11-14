@@ -1,28 +1,31 @@
 package mat.client.measure.measuredetails.translate;
 
+import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 
 public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	private ManageMeasureDetailModel manageMeasureDetailModel;
-	private MeasureDetailsModel measureDetailsComponent;
+	private MeasureDetailsModel measureDetailsModel;
 	
 	public ManageMeasureDetailModelMapper(ManageMeasureDetailModel manageMeasureDetailModel) {
 		this.manageMeasureDetailModel = manageMeasureDetailModel;
 	}
 	
 	public ManageMeasureDetailModelMapper(MeasureDetailsModel measureDetailsComponent) {
-		this.measureDetailsComponent = measureDetailsComponent;
+		this.measureDetailsModel = measureDetailsComponent;
 	}
 	
 	@Override
-	public MeasureDetailsModel getMeasureDetailsComponent() {
-		measureDetailsComponent = new MeasureDetailsModel();
-		measureDetailsComponent.setOwnerUserId(manageMeasureDetailModel.getMeasureOwnerId());
+	public MeasureDetailsModel getMeasureDetailsModel(boolean isCompositeMeasure) {
+		measureDetailsModel = new MeasureDetailsModel();
+		measureDetailsModel.setOwnerUserId(manageMeasureDetailModel.getMeasureOwnerId());
+		measureDetailsModel.setComposite(isCompositeMeasure);
+		measureDetailsModel.setScoringType(manageMeasureDetailModel.getScoringAbbr());
 		GeneralInformationModel generalInformationComponent = buildGeneralInformationComponent();
-		measureDetailsComponent.setGeneralInformation(generalInformationComponent);
-		return measureDetailsComponent;
+		measureDetailsModel.setGeneralInformation(generalInformationComponent);
+		return measureDetailsModel;
 	}
 
 	private GeneralInformationModel buildGeneralInformationComponent() {
@@ -33,6 +36,10 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setPatientBased(manageMeasureDetailModel.isPatientBased());
 		generalInformationModel.setGuid(manageMeasureDetailModel.getMeasureSetId());
 		generalInformationModel.seteCQMVersionNumber(manageMeasureDetailModel.getVersionNumber());
+		if(manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
+			generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
+		}
+
 		return generalInformationModel;
 	}
 
@@ -41,5 +48,4 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

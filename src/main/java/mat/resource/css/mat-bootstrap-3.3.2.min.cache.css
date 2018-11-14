@@ -7072,6 +7072,11 @@ button.close {
 	color: #b06500;
 }
 
+.generalInformationPanel {
+	min-height: 45px;
+	margin: 5px;
+}
+
 @media print {
 	.visible-print-inline-block {
 		display: inline-block !important

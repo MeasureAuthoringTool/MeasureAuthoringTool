@@ -160,7 +160,7 @@ public class ManageCompositeMeasureDetailView extends AbstractManageMeasureDetai
 	}
 
 	public void setCompositeScoringChoices(List<? extends HasListBox> texts) {
-		setListBoxItems(compositeScoringMethodInput, texts, MatContext.PLEASE_SELECT);
+		MatContext.get().setListBoxItems(compositeScoringMethodInput, texts, MatContext.PLEASE_SELECT);
 	}
 	
 	public ListBoxMVP getCompositeScoringMethodInput() {

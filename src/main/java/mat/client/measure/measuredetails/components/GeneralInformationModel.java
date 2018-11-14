@@ -7,6 +7,14 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	private String guid;
 	private String eCQMAbbreviatedTitle;
 	private String eCQMVersionNumber;
+	private String compositeScoringMethod;
+	
+	public String getCompositeScoringMethod() {
+		return compositeScoringMethod;
+	}
+	public void setCompositeScoringMethod(String compositeScoringMethod) {
+		this.compositeScoringMethod = compositeScoringMethod;
+	}
 	public String getFinalizedDate() {
 		return finalizedDate;
 	}

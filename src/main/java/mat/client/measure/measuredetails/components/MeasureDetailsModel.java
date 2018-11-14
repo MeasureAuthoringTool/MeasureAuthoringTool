@@ -2,6 +2,8 @@ package mat.client.measure.measuredetails.components;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 	private String ownerUserId; 
+	private boolean isComposite;
+	private String scoringType;
 	private GeneralInformationModel generalInformation;
 	private MeasureStewardDeveloperModel measureStewardDeveloper;
 	private DescriptionModel description;
@@ -242,5 +244,20 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 
 	public void setOwnerUserId(String ownerUserId) {
 		this.ownerUserId = ownerUserId;
+	}
+	
+	public boolean isComposite() {
+		return isComposite;
+	}
+
+	public void setComposite(boolean isComposite) {
+		this.isComposite = isComposite;
+	}
+	public String getScoringType() {
+		return scoringType;
+	}
+
+	public void setScoringType(String scoringType) {
+		this.scoringType = scoringType;
 	}
 }

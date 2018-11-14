@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -17,9 +18,11 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.DTO.CompositeMeasureScoreDTO;
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -70,6 +73,7 @@ import mat.model.GlobalCopyPasteObject;
 import mat.model.cql.CQLModel;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
+import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
 import mat.shared.SaveUpdateCQLResult;
 
@@ -1427,6 +1431,39 @@ public class MatContext implements IsSerializable {
 	
 	public String getBonnieLink() {
 		return bonnieLink;
+	}
+
+	public void createSelectionMap(List<? extends HasListBox> result) {
+		List<? extends HasListBox> defaultList = result;	
+		List<? extends HasListBox> proportionRatioList = defaultList.stream().filter(x -> "Proportion".equals(x.getItem()) || "Ratio".equals(x.getItem())).collect(Collectors.toList());
+		List<? extends HasListBox> continuousVariableList = defaultList.stream().filter(x -> "Continuous Variable".equals(x.getItem())).collect(Collectors.toList());
+		setSelectionMap(new HashMap<String, List<? extends HasListBox>>(){
+			private static final long serialVersionUID = -8329823017052579496L;
+			{
+				put(MatContext.PLEASE_SELECT, defaultList);
+				put(CompositeMethodScoringConstant.ALL_OR_NOTHING, proportionRatioList);
+				put(CompositeMethodScoringConstant.OPPORTUNITY, proportionRatioList);
+				put(CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR, continuousVariableList);
+			}
+		});
+	}
+	
+	public List<CompositeMeasureScoreDTO> buildCompositeScoringChoiceList(){
+		List<CompositeMeasureScoreDTO> compositeChoices = new ArrayList<>();
+		compositeChoices.add(new CompositeMeasureScoreDTO("1", CompositeMethodScoringConstant.ALL_OR_NOTHING));
+		compositeChoices.add(new CompositeMeasureScoreDTO("2", CompositeMethodScoringConstant.OPPORTUNITY));
+		compositeChoices.add(new CompositeMeasureScoreDTO("3", CompositeMethodScoringConstant.PATIENT_LEVEL_LINEAR));
+		return compositeChoices;
+	}
+	
+	public void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
+		listBox.clear();
+		listBox.addItem(defaultOption,"");
+		if(itemList != null){
+			for(HasListBox listBoxContent : itemList){
+				listBox.addItem(listBoxContent.getItem(), listBoxContent.getItem());
+			}
+		}
 	}
 	
 }

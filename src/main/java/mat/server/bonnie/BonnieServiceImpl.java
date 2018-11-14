@@ -104,8 +104,8 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 	}
 	
 	@Override
-	public String getUpdateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException, BonnieAlreadyExistsException, UMLSNotActiveException {		
-		String successMessage = "";
+	public Boolean getUpdateOrUploadMeasureToBonnie(String measureId, String userId, VsacTicketInformation vsacTicket) throws BonnieUnauthorizedException, BonnieBadParameterException, BonnieDoesNotExistException, BonnieServerException, IOException, BonnieAlreadyExistsException, UMLSNotActiveException {		
+		Boolean isInitialBonnieUpload = null;
 		UserBonnieAccessInfo userInformation = getUserBonnieAccessInfo(userId);
 		String userAccessToken = userInformation.getAccessToken();
 		
@@ -138,13 +138,14 @@ public class BonnieServiceImpl extends SpringRemoteServiceServlet implements Bon
 		
 		if(bonnieMeasureResults != null && bonnieMeasureResults.getMeasureExsists()) {
 			bonnieApi.updateMeasureInBonnie(userAccessToken, measureSetId, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
-			successMessage = measure.getDescription() +  " has been successfully updated in Bonnie. Please select open or save to view the results.";
+			isInitialBonnieUpload = false;
 		} else {
 			bonnieApi.uploadMeasureToBonnie(userAccessToken, zipFileContents, fileName, null, calculationType, vsacTicketGrantingTicket, vsacTicketExpiration);
-			successMessage = measure.getDescription() + " has been successfully uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
+			isInitialBonnieUpload = true;
+			//successMessage = measure.getDescription() + " has been successfully uploaded as a new measure in Bonnie. Please go to the Bonnie tool to create test cases for this measure.";
 		}
 		
-		return successMessage;
+		return isInitialBonnieUpload;
 		
 	}
 	

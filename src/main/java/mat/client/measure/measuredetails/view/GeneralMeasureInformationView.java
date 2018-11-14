@@ -14,6 +14,7 @@ import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.shared.SpacerWidget;
 
 public class GeneralMeasureInformationView implements ComponentDetailView{
+	private static final String TEXT_BOX_WIDTH = "300px";
 	private FlowPanel mainPanel = new FlowPanel();
 	private GeneralInformationModel generalInformationModel;
 	private TextBox eCQMAbbreviatedTitleTextBox = new TextBox();
@@ -70,9 +71,11 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		measureNameLabel.setFor("measureNameInput");
 		measureNameTextBox.setId("measureNameInput");
 		measureNameTextBox.setText(generalInformationModel.getMeasureName());
+		measureNameTextBox.setWidth(TEXT_BOX_WIDTH);
 		panel.add(measureNameLabel);
 		panel.add(measureNameTextBox);
 		panel.add(new SpacerWidget());
+
 	}
 	
 	private void buildAbbreviatedName(CellPanel panel) {
@@ -84,6 +87,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		panel.add(eCQMAbbreviatedTitleLabel);
 		eCQMAbbreviatedTitleTextBox.setId("abbrInput");
 		eCQMAbbreviatedTitleTextBox.setText(generalInformationModel.geteCQMAbbreviatedTitle());
+		eCQMAbbreviatedTitleTextBox.setWidth(TEXT_BOX_WIDTH);
 		panel.add(eCQMAbbreviatedTitleTextBox);
 		panel.add(new SpacerWidget());
 	}
@@ -99,7 +103,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		finalizedDateTextBox.setId("finalizedDate");
 		finalizedDateTextBox.setReadOnly(true);
 		finalizedDateTextBox.setEnabled(false);
-		finalizedDateTextBox.setWidth("300px");
+		finalizedDateTextBox.setWidth(TEXT_BOX_WIDTH);
 		panel.add(finalizedDateTextBox);
 		panel.add(new SpacerWidget());
 		
@@ -118,7 +122,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		guidTextBox.setId("guidLabel");
 		guidTextBox.setReadOnly(true);
 		guidTextBox.setEnabled(false);
-		guidTextBox.setWidth("300px");
+		guidTextBox.setWidth(TEXT_BOX_WIDTH);
 		panel.add(guidLabel);
 		panel.add(guidTextBox);
 		panel.add(new SpacerWidget());
@@ -135,7 +139,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 		eCQMVersionNumberLabel.setFor("versionInput");
 		eCQMVersionNumberTextBox.setReadOnly(true);
 		eCQMVersionNumberTextBox.setEnabled(false);
-		eCQMVersionNumberTextBox.setWidth("300px");
+		eCQMVersionNumberTextBox.setWidth(TEXT_BOX_WIDTH);
 		eCQMVersionNumberTextBox.setId("versionInput");
 		panel.add(eCQMVersionNumberLabel);
 		panel.add(eCQMVersionNumberTextBox);

@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
+import com.google.gwt.core.client.GWT;
+
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.view.GeneralMeasureInformationView;
 import mat.client.shared.ConfirmationDialogBox;
@@ -15,10 +17,30 @@ public class GeneralMeasureInformationObserver {
 	
 	public void handleCompositeScoringChanged() {
 		createSelectionMapAndSetScorings();
+		generalMeasureInformationView.setGeneralInformationModel(updateGeneralInformationModelFromView());
 	}
-	
+
 	public void handleMeasureScoringChanged() {
 		setPatientBasedIndicatorBasedOnScoringChoice();
+		generalMeasureInformationView.setGeneralInformationModel(updateGeneralInformationModelFromView());
+	}
+	
+	public void handleInputChanged() {
+		generalMeasureInformationView.setGeneralInformationModel(updateGeneralInformationModelFromView());
+	}
+	
+	private GeneralInformationModel updateGeneralInformationModelFromView() {
+		GeneralInformationModel generalInformationModel = generalMeasureInformationView.getGeneralInformationModel();
+		generalInformationModel.setCompositeScoringMethod(generalMeasureInformationView.getCompositeScoringValue());
+		generalInformationModel.setScoringMethod(generalMeasureInformationView.getMeasureScoringValue());
+		if(generalMeasureInformationView.getPatientBasedInput().getItemText(generalMeasureInformationView.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
+			generalInformationModel.setPatientBased(true);
+		} else {
+			generalInformationModel.setPatientBased(false);
+		}
+		generalInformationModel.seteCQMAbbreviatedTitle(generalMeasureInformationView.getECQMAbbrInput().getText());
+		generalInformationModel.setMeasureName(generalMeasureInformationView.getMeasureNameInput().getText());
+		return generalInformationModel;
 	}
 	
 	private void setPatientBasedIndicatorBasedOnScoringChoice() {
@@ -53,8 +75,13 @@ public class GeneralMeasureInformationObserver {
 	}
 
 	private ConfirmationDialogBox buildSaveConfirmationDialogbox() {
-		// TODO Auto-generated method stub
-		return null;
+		String messageText = "Changing the 'Composite Scoring Method' and/or the 'Measure Scoring' will have the following impacts:<p><ul>" +
+		"<li>Populations in the Population Workspace that do not apply to the new settings will be deleted.</li>" +
+		"<li>Existing Groupings in the Measure Packager will be deleted..</li>" +
+		"<li>The Patient-based Measure field will be reset to its default status for the scoring selected..</li>" +
+		"</ul><p>Do you want to continue?";
+		ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(messageText, "Yes", "No");
+		return confirmationDialogBox;
 	}
 
 	private boolean scoringMethodHasChanged(GeneralInformationModel originalModel, GeneralInformationModel generalInformationModel) {

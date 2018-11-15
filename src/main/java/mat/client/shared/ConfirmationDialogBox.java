@@ -50,6 +50,23 @@ public class ConfirmationDialogBox {
 		getYesButton().setFocus(true);
 	}
 
+	public ConfirmationDialogBox(String messageText, String yesButtonText, String noButtonText) {
+		this.observer = new ConfirmationObserver() {
+			@Override
+			public void onYesButtonClicked() {}
+			
+			@Override
+			public void onNoButtonClicked() {}
+			
+			@Override
+			public void onClose() {}
+		};
+		getMessageAlert().createAlert(messageText);
+		getNoButton().setText(noButtonText);
+		getYesButton().setText(yesButtonText);
+		getYesButton().setFocus(true);
+	}
+
 	public void show() {
 		ModalBody modalBody = new ModalBody(); 
 

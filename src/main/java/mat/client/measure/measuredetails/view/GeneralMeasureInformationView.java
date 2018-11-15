@@ -143,6 +143,9 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	private void addEventHandlers() {
 		getMeasureScoringInput().addChangeHandler(event -> observer.handleMeasureScoringChanged());
 		getCompositeScoringMethodInput().addChangeHandler(event -> observer.handleCompositeScoringChanged());
+		getPatientBasedInput().addChangeHandler(event -> observer.handleInputChanged());
+		getECQMAbbrInput().addChangeHandler(event -> observer.handleInputChanged());
+		getMeasureNameInput().addChangeHandler(event -> observer.handleInputChanged());
 	}
 
 	private VerticalPanel buildBlankPanel() {
@@ -355,6 +358,22 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		return MeasureDetailState.INCOMPLETE;
 	}
 	
+	public TextBox getECQMAbbrInput() {
+		return abbrInput;
+	}
+
+	public void setECQMAbbrInput(TextBox abbrInput) {
+		this.abbrInput = abbrInput;
+	}
+	
+	public TextBox getMeasureNameInput() {
+		return measureNameInput;
+	}
+
+	public void setMeasureNameInput(TextBox measureNameInput) {
+		this.measureNameInput = measureNameInput;
+	}
+	
 	public ListBoxMVP getMeasureScoringInput() {
 		return measureScoringInput;
 	}
@@ -389,6 +408,10 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	
 	public String getCompositeScoringValue() {
 		return compositeScoringMethodInput.getItemText(compositeScoringMethodInput.getSelectedIndex());
+	}
+	
+	public String getMeasureScoringValue() {
+		return measureScoringInput.getItemText(measureScoringInput.getSelectedIndex());
 	}
 
 	public void setObserver(GeneralMeasureInformationObserver observer) {

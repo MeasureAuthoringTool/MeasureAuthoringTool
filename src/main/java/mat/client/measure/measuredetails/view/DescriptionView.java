@@ -1,14 +1,17 @@
 package mat.client.measure.measuredetails.view;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.util.RichTextEditor;
 
 public class DescriptionView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();
+	private RichTextEditor richTextEditor = new RichTextEditor();
 	@Override
 	public Widget getWidget() {
 		return mainPanel;
@@ -60,5 +63,11 @@ public class DescriptionView implements ComponentDetailView {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
+	public DescriptionView() {
+		HorizontalPanel textAreaPanel = new HorizontalPanel();
+        textAreaPanel.add(richTextEditor.getRichTextEditor());
+        textAreaPanel.setWidth("95%");
+        mainPanel.add(textAreaPanel);
+	}
 }

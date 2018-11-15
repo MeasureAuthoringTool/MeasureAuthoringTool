@@ -1,7 +1,5 @@
 package mat.client.measure.measuredetails.observers;
 
-import com.google.gwt.core.client.GWT;
-
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.view.GeneralMeasureInformationView;
 import mat.client.shared.ConfirmationDialogBox;
@@ -50,15 +48,14 @@ public class GeneralMeasureInformationObserver {
 				generalMeasureInformationView.getPatientBasedInput().removeItem(1);
 			}
 			generalMeasureInformationView.getPatientBasedInput().setSelectedIndex(0);
-			//generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to no.");
+			generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to no.");
 			
 		} else {
 			generalMeasureInformationView.resetPatientBasedInput(); 
-			//generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to yes.");
+			generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to yes.");
 		}
 		
-		//TODO add a help block to the view and update it here
-		//generalMeasureInformationView.getHelpBlock().setColor("transparent");
+		generalMeasureInformationView.getHelpBlock().setColor("transparent");
 	}
 	
 	private void createSelectionMapAndSetScorings() {

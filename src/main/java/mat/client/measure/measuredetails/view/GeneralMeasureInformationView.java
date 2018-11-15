@@ -2,7 +2,10 @@ package mat.client.measure.measuredetails.view;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Form;
+import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 
 import com.google.gwt.user.client.Window;
@@ -28,6 +31,7 @@ import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
 
 public class GeneralMeasureInformationView implements ComponentDetailView {
+	private static final String TEXT_BOX_WIDTH = "300px";
 	private FlowPanel mainPanel = new FlowPanel();
 	private GeneralInformationModel generalInformationModel;
 	private GeneralInformationModel originalModel;
@@ -37,9 +41,10 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
-	private static final String TEXT_BOX_WIDTH = "300px";
 	private GeneralMeasureInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
+	private HelpBlock helpBlock = new HelpBlock();
+	private FormGroup messageFormGrp = new FormGroup();
     
 	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
 		originalModel = originalGeneralInformationModel;
@@ -64,6 +69,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	@Override
 	public boolean isComplete() {
 		// TODO Auto-generated method stub
+		//TODO update state on field edit
 		return true;
 	}
 	
@@ -80,6 +86,11 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	public void buildDetailView() {
 		mainPanel.clear();
 		HorizontalPanel detailPanel = new HorizontalPanel();
+		Form measureDetailForm = new Form();
+		messageFormGrp.add(helpBlock);
+		messageFormGrp.getElement().setAttribute("role", "alert");
+		measureDetailForm.add(messageFormGrp);
+		detailPanel.add(measureDetailForm);
 		Grid panelGrid = new Grid(5, 2);
 		
 		VerticalPanel measureNamePanel = buildMeasureNamePanel();
@@ -90,9 +101,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		
 		VerticalPanel measureScoringPanel = buildMeasureScoringPanel();
 		
-		//TODO compare model
-		//TODO add confirmation dialog
-		//TODO handle save...
 		if(isCompositeMeasure) {
 			VerticalPanel compositeScoringPanel = buildCompositeScoringPanel();
 			panelGrid.setWidget(1, 0, compositeScoringPanel);
@@ -353,6 +361,14 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		patientBasedInput.setEnabled(!readOnly);
 	}
 
+	public HelpBlock getHelpBlock() {
+		return helpBlock;
+	}
+
+	public void setHelpBlock(HelpBlock helpBlock) {
+		this.helpBlock = helpBlock;
+	}
+	
 	@Override
 	public MeasureDetailState getState() {
 		return MeasureDetailState.INCOMPLETE;
@@ -452,13 +468,13 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 
 	@Override
 	public void resetForm() {
-		// TODO Auto-generated method stub
-		
+		helpBlock.setText("");
+		buildGeneralInformationModel(originalModel);
+		buildDetailView();
 	}
 
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
-		// TODO Auto-generated method stub
-		return null;
+		return generalInformationModel;
 	}
 }

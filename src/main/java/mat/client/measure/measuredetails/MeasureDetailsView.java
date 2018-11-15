@@ -32,6 +32,7 @@ public class MeasureDetailsView {
 	private ErrorMessageAlert errorAlert = new ErrorMessageAlert();
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
+	//TODO handle save...
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private MeasureDetailsModel measureDetailsComponent;

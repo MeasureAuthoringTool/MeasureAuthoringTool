@@ -409,7 +409,20 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 
 	@Override
 	public ConfirmationDialogBox getSaveConfirmation() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public GeneralInformationModel getGeneralInformationModel() {
+		return generalInformationModel;
+	}
+
+	public void setGeneralInformationModel(GeneralInformationModel generalInformationModel) {
+		this.generalInformationModel = generalInformationModel;
+	}
+
+	@Override
+	public void resetForm() {
+		// TODO Auto-generated method stub
+		
 	}
 }

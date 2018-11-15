@@ -13,4 +13,5 @@ public interface ComponentDetailView {
 	public MeasureDetailState getState();
 	public void setReadOnly(boolean readOnly);
 	public ConfirmationDialogBox getSaveConfirmation();
+	public void resetForm();
 }

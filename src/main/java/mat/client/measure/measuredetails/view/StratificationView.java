@@ -48,4 +48,10 @@ public class StratificationView implements ComponentDetailView {
 		return null;
 	}
 
+	@Override
+	public void resetForm() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

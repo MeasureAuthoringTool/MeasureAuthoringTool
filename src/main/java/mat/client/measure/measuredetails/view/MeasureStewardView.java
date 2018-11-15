@@ -51,4 +51,10 @@ public class MeasureStewardView implements ComponentDetailView{
 		return null;
 	}
 
+	@Override
+	public void resetForm() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

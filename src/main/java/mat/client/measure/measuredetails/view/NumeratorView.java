@@ -52,4 +52,10 @@ public class NumeratorView implements ComponentDetailView {
 	public ConfirmationDialogBox getSaveConfirmation() {
 		return null;
 	}
+
+	@Override
+	public void resetForm() {
+		// TODO Auto-generated method stub
+		
+	}
 }

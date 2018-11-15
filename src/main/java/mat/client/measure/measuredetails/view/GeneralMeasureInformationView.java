@@ -57,6 +57,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		generalInformationModel.setFinalizedDate(originalGeneralInformationModel.getFinalizedDate());
 		generalInformationModel.seteCQMVersionNumber(originalGeneralInformationModel.geteCQMVersionNumber());
 		generalInformationModel.seteCQMAbbreviatedTitle(originalGeneralInformationModel.geteCQMAbbreviatedTitle());
+		generalInformationModel.setScoringMethod(originalGeneralInformationModel.getScoringMethod());
 		generalInformationModel.setCompositeScoringMethod(originalGeneralInformationModel.getCompositeScoringMethod());
 	}
 
@@ -133,6 +134,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 				@Override
 				public void onSuccess(List<? extends HasListBox> result) {
 					setScoringChoices(result);
+					measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
 				}
 			});
 		}
@@ -406,10 +408,14 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		
 		compositeScoringMethod = StringUtility.isEmptyOrNull(compositeScoringMethod) ? MatContext.PLEASE_SELECT : compositeScoringMethod;
 		setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringMethod));
+		measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
 	}
 
 	@Override
 	public ConfirmationDialogBox getSaveConfirmation() {
+		if(hasUnsavedChanges()) {
+			return observer.getSaveConfirmation(originalModel, generalInformationModel);
+		}
 		return null;
 	}
 	

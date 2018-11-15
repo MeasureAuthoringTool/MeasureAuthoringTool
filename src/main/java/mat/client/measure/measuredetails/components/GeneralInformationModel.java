@@ -8,7 +8,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	private String eCQMAbbreviatedTitle;
 	private String eCQMVersionNumber;
 	private String compositeScoringMethod;
-	
+	private String scoringMethod;
+
 	public String getCompositeScoringMethod() {
 		return compositeScoringMethod;
 	}
@@ -82,5 +83,12 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
+	}
+	
+	public String getScoringMethod() {
+		return scoringMethod;
+	}
+	public void setScoringMethod(String scoringMethod) {
+		this.scoringMethod = scoringMethod;
 	}
 }

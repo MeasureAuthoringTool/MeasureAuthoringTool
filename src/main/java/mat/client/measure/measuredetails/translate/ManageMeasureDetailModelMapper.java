@@ -36,6 +36,7 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		generalInformationModel.setPatientBased(manageMeasureDetailModel.isPatientBased());
 		generalInformationModel.setGuid(manageMeasureDetailModel.getMeasureSetId());
 		generalInformationModel.seteCQMVersionNumber(manageMeasureDetailModel.getVersionNumber());
+		generalInformationModel.setScoringMethod(manageMeasureDetailModel.getMeasScoring());
 		if(manageMeasureDetailModel instanceof ManageCompositeMeasureDetailModel) {
 			generalInformationModel.setCompositeScoringMethod(((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).getCompositeScoringMethod());
 		}

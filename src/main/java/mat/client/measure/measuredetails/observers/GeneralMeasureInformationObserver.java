@@ -1,6 +1,8 @@
 package mat.client.measure.measuredetails.observers;
 
+import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.view.GeneralMeasureInformationView;
+import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
 
@@ -33,7 +35,7 @@ public class GeneralMeasureInformationObserver {
 			//generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to yes.");
 		}
 		
-		//TODO add a help block here?
+		//TODO add a help block to the view and update it here
 		//generalMeasureInformationView.getHelpBlock().setColor("transparent");
 	}
 	
@@ -41,5 +43,50 @@ public class GeneralMeasureInformationObserver {
 		String compositeScoringValue = generalMeasureInformationView.getCompositeScoringValue();
 		generalMeasureInformationView.setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringValue));
 		setPatientBasedIndicatorBasedOnScoringChoice();
+	}
+
+	public ConfirmationDialogBox getSaveConfirmation(GeneralInformationModel originalModel, GeneralInformationModel generalInformationModel) {
+		if(scoringMethodHasChanged(originalModel, generalInformationModel)) {
+			return buildSaveConfirmationDialogbox();
+		}
+		return null;
+	}
+
+	private ConfirmationDialogBox buildSaveConfirmationDialogbox() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private boolean scoringMethodHasChanged(GeneralInformationModel originalModel, GeneralInformationModel generalInformationModel) {
+		boolean scoringMethodChanged = false;
+		if(originalModel.getCompositeScoringMethod() != null) {
+			scoringMethodChanged = compositeScoringChanged(originalModel, generalInformationModel, scoringMethodChanged);
+		} else if(generalInformationModel.getCompositeScoringMethod() != null){
+			scoringMethodChanged = compositeScoringChanged(generalInformationModel, originalModel, scoringMethodChanged);
+		}
+		
+		if(!scoringMethodChanged) {
+			if(originalModel.getScoringMethod() != null) {
+				scoringMethodChanged = scoringChanged(originalModel, generalInformationModel, scoringMethodChanged);
+			} else if(generalInformationModel.getScoringMethod() != null){
+				scoringMethodChanged = scoringChanged(generalInformationModel, originalModel, scoringMethodChanged);
+			}
+		}
+
+		return scoringMethodChanged;
+	}
+
+	private boolean compositeScoringChanged(GeneralInformationModel model1, GeneralInformationModel model2, boolean scoringMethodChanged) {
+		if(model1.getCompositeScoringMethod().equals(model2.getCompositeScoringMethod())) {
+			scoringMethodChanged = true;
+		}
+		return scoringMethodChanged;
+	}
+	
+	private boolean scoringChanged(GeneralInformationModel model1, GeneralInformationModel model2, boolean scoringMethodChanged) {
+		if(model1.getScoringMethod().equals(model2.getScoringMethod())) {
+			scoringMethodChanged = true;
+		}
+		return scoringMethodChanged;
 	}
 }

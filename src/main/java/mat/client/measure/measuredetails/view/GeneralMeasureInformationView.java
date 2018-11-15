@@ -38,11 +38,23 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 	private GeneralMeasureInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
     
-	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
-		this.generalInformationModel = generalInformationModel;
+	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
+		
+		buildGeneralInformationModel(originalGeneralInformationModel);
 		this.isCompositeMeasure = isComposite;
 		this.compositeChoices = compositeChoices;
 		buildDetailView();
+	}
+
+	private void buildGeneralInformationModel(GeneralInformationModel originalGeneralInformationModel) {
+		this.generalInformationModel = new GeneralInformationModel();
+		generalInformationModel.setPatientBased(originalGeneralInformationModel.isPatientBased());
+		generalInformationModel.setMeasureName(originalGeneralInformationModel.getMeasureName());
+		generalInformationModel.setGuid(originalGeneralInformationModel.getGuid());
+		generalInformationModel.setFinalizedDate(originalGeneralInformationModel.getFinalizedDate());
+		generalInformationModel.seteCQMVersionNumber(originalGeneralInformationModel.geteCQMVersionNumber());
+		generalInformationModel.seteCQMAbbreviatedTitle(originalGeneralInformationModel.geteCQMAbbreviatedTitle());
+		generalInformationModel.setCompositeScoringMethod(originalGeneralInformationModel.getCompositeScoringMethod());
 	}
 
 	@Override

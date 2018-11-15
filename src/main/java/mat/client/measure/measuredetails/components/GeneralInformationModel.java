@@ -47,17 +47,39 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	}
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+		GeneralInformationModel originalModel = (GeneralInformationModel) model;
+		return (
+				((originalModel.getMeasureName() == null && getMeasureName() == null) ||
+				(originalModel.getMeasureName() != null && originalModel.getMeasureName().equals(getMeasureName()))) &&
+				
+				((originalModel.getFinalizedDate() == null && getFinalizedDate() == null) ||
+				(originalModel.getFinalizedDate() != null && originalModel.getFinalizedDate().equals(getFinalizedDate()))) &&
+				
+				originalModel.isPatientBased() == isPatientBased() && 
+				
+				((originalModel.getGuid() == null && getGuid() == null) ||
+				(originalModel.getGuid() != null && originalModel.getGuid().equals(getGuid()))) &&
+				
+				((originalModel.geteCQMAbbreviatedTitle() == null && geteCQMAbbreviatedTitle() == null) ||
+				(originalModel.geteCQMAbbreviatedTitle().equals(geteCQMAbbreviatedTitle()))) &&
+				
+				(originalModel.geteCQMVersionNumber() == null && geteCQMVersionNumber() == null) ||
+				(originalModel.geteCQMVersionNumber().equals(geteCQMVersionNumber())) &&
+				
+				(originalModel.getCompositeScoringMethod() == null && getCompositeScoringMethod() == null) ||
+				(originalModel.getCompositeScoringMethod() != null && getCompositeScoringMethod().contentEquals(getCompositeScoringMethod())));
 	}
+	
 	@Override
 	public boolean isValid() {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
 	public String getMeasureName() {
 		return measureName;
 	}
+	
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
 	}

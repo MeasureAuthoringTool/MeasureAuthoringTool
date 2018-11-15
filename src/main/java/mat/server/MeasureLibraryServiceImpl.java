@@ -23,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -2165,18 +2164,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 			}
 
-			List<ComponentMeasure> componentsToDelete = new ArrayList<>(); 
 			for (int i = 0; i < componentMeasureNodeList.getLength(); i++) {
 				Node current = componentMeasureNodeList.item(i);
 				String id = current.getAttributes().getNamedItem("id").getNodeValue();
 				if (!usedIncludedLibraryIds.contains(id)) {
 					current.getParentNode().removeChild(current);
-					Optional<ComponentMeasure> component = measure.getComponentMeasures().stream().filter(m -> m.getComponentMeasure().getId().equals(id)).findFirst(); 
-					componentsToDelete.add(component.get());
+					componentMeasuresDAO.delete(String.valueOf((measure.getComponentMeasures().stream().filter(m -> m.getComponentMeasure().getId().equals(id)).findFirst().get().getId())));
 				}
 			}
-			
-			measurePackageService.deleteComponentMeasure(componentsToDelete);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -2668,7 +2663,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		result.setData(detailList);
 		result.setStartIndex(startIndex);
-		result.setResultsTotal(userService.countSearchResultsNonAdmin(searchText));
+		result.setResultsTotal(searchResults.size());
 
 		return result;
 

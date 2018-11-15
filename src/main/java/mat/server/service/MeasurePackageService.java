@@ -349,7 +349,5 @@ public interface MeasurePackageService {
 
 	void createPackageArtifacts(final String measureId, String releaseVersion, MeasureExport export);
 
-	void deleteComponentMeasure(List<ComponentMeasure> componentMeasuresList);
-
 	ValidateMeasureResult validateExportsForCompositeMeasures(String key) throws Exception;
 }

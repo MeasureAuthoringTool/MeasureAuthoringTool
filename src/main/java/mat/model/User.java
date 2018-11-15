@@ -311,7 +311,7 @@ public class User  {
 		this.userBonnieAccessInfo = userBonnieAccessInfo;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "id",cascade=CascadeType.ALL)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "shareUser", cascade=CascadeType.ALL)
 	public Set<MeasureShare> getMeasureShares() {
 		return measureShares;
 	}

@@ -721,6 +721,7 @@ private void saveMeasureAtPackage(){
 				public void onFailure(Throwable caught) {
 					showMeasurePackagerBusy(false);
 					((Button) view.getPackageMeasureAndUploadToBonnieButton()).setEnabled(false);
+					Mat.hideBonnieActive(true);
 				}
 			});
 		} else {

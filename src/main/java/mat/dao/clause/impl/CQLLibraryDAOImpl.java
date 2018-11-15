@@ -523,7 +523,7 @@ public class CQLLibraryDAOImpl extends GenericDAO<CQLLibrary, String> implements
 		CriteriaQuery<CQLLibraryShare> query = cb.createQuery(CQLLibraryShare.class);
 		Root<CQLLibraryShare> root = query.from(CQLLibraryShare.class);
 
-		query.select(root).where(cb.and(root.get("id").in(userIdDTOMap.keySet()), cb.equal(root.get(CQL_LIBRARY).get("id"), cqlId)));
+		query.select(root).where(cb.and(root.get(SHARE_USER).get("id").in(userIdDTOMap.keySet()), cb.equal(root.get(CQL_LIBRARY).get("id"), cqlId)));
 
 		return session.createQuery(query).getResultList();
 	}

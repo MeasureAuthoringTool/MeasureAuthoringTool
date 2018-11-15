@@ -18,6 +18,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
+import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
@@ -404,5 +405,11 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		
 		compositeScoringMethod = StringUtility.isEmptyOrNull(compositeScoringMethod) ? MatContext.PLEASE_SELECT : compositeScoringMethod;
 		setScoringChoices(MatContext.get().getSelectionMap().get(compositeScoringMethod));
+	}
+
+	@Override
+	public ConfirmationDialogBox getSaveConfirmation() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

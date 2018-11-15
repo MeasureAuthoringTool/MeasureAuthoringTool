@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
+import mat.client.shared.ConfirmationDialogBox;
 
 public class StratificationView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();
@@ -40,6 +41,11 @@ public class StratificationView implements ComponentDetailView {
 	public MeasureDetailState getState() {
 		// TODO Auto-generated method stub
 		return MeasureDetailState.BLANK;
+	}
+
+	@Override
+	public ConfirmationDialogBox getSaveConfirmation() {
+		return null;
 	}
 
 }

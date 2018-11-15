@@ -3,6 +3,7 @@ package mat.client.measure.measuredetails.view;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
+import mat.client.shared.ConfirmationDialogBox;
 
 public interface ComponentDetailView {
 	public Widget getWidget();
@@ -11,4 +12,5 @@ public interface ComponentDetailView {
 	public boolean hasUnsavedChanges();
 	public MeasureDetailState getState();
 	public void setReadOnly(boolean readOnly);
+	public ConfirmationDialogBox getSaveConfirmation();
 }

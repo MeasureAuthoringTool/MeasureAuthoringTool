@@ -2,13 +2,12 @@ package mat.dao.impl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +26,11 @@ public class UserPasswordHistoryDAOImpl extends GenericDAO<UserPasswordHistory, 
 	@Override
 	public List<UserPasswordHistory> getPasswordHistory(String userId){
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(UserPasswordHistory.class);
-		criteria.add(Restrictions.eq("user.id", userId));
-		return criteria.list();
+		final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        final CriteriaQuery<UserPasswordHistory> criteriaQuery = criteriaBuilder.createQuery(UserPasswordHistory.class);
+        final Root<UserPasswordHistory> userPasswordRoot = criteriaQuery.from(UserPasswordHistory.class);
+        criteriaQuery.select(userPasswordRoot).where(criteriaBuilder.equal(userPasswordRoot.get("user").get("id"), userId));
+		return session.createQuery(criteriaQuery).getResultList();
 	}
 
 	@Override
@@ -37,14 +38,11 @@ public class UserPasswordHistoryDAOImpl extends GenericDAO<UserPasswordHistory, 
 		String userPasswordHistoryId = getOldPasswordHistoryIdByCreationDate(user.getId());
 		Session session = getSessionFactory().getCurrentSession();
 		try {
-			String sql = "update mat.model.UserPasswordHistory m set m.password = :password, m.salt = :salt, m.createdDate = :createDate " +
-					"where m.id = :passwordHistoryId";
-			Query query = session.createQuery(sql);
-			query.setString("password", user.getPassword().getPassword());
-			query.setString("salt", user.getPassword().getSalt());
-			query.setDate("createDate", user.getPassword().getCreatedDate());
-			query.setString("passwordHistoryId", userPasswordHistoryId);
-			int rowCount = query.executeUpdate();
+			UserPasswordHistory userPasswordHistory = find(userPasswordHistoryId);
+			userPasswordHistory.setPassword(user.getPassword().getPassword());
+			userPasswordHistory.setSalt(user.getPassword().getSalt());
+			userPasswordHistory.setCreatedDate(user.getPassword().getCreatedDate());
+			session.update(userPasswordHistory);
 		} finally {
 		}
 		
@@ -58,12 +56,12 @@ public class UserPasswordHistoryDAOImpl extends GenericDAO<UserPasswordHistory, 
 	 */
 	private String getOldPasswordHistoryIdByCreationDate(String userId) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(UserPasswordHistory.class);
-		criteria.addOrder(Order.asc("createdDate"));
-		criteria.add(Restrictions.eq("user.id", userId));
-		criteria.setProjection(Projections.property("id"));
-	    String id = (String)criteria.list().get(0);
-		return id;
+		final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        final CriteriaQuery<UserPasswordHistory> criteriaQuery = criteriaBuilder.createQuery(UserPasswordHistory.class);
+        final Root<UserPasswordHistory> userPasswordRoot = criteriaQuery.from(UserPasswordHistory.class);
+        criteriaQuery.orderBy(criteriaBuilder.asc(userPasswordRoot.get("createdDate")));
+        criteriaQuery.select(userPasswordRoot.get("id")).where(criteriaBuilder.equal(userPasswordRoot.get("user").get("id"), userId));
+		return String.valueOf(session.createQuery(criteriaQuery).getResultList().get(0));
 	}
 
 

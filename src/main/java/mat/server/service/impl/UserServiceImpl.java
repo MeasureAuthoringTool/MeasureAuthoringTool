@@ -453,22 +453,6 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#countSearchResults(java.lang.String)
-	 */
-	@Override
-	public int countSearchResults(String text) {
-		return userDAO.countSearchResults(text);
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#countSearchResultsNonAdmin(java.lang.String)
-	 */
-	@Override
-	public int countSearchResultsNonAdmin(String text) {
-		return userDAO.countSearchResultsNonAdmin(text);
-	}
-	
-	/* (non-Javadoc)
 	 * @see mat.server.service.UserService#getById(java.lang.String)
 	 */
 	@Override

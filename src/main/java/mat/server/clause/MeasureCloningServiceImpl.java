@@ -66,8 +66,7 @@ import mat.shared.model.util.MeasureDetailsUtil;
  * The Class MeasureCloningServiceImpl.
  */
 @SuppressWarnings("serial")
-public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet
-implements MeasureCloningService {
+public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implements MeasureCloningService {
 	/** Constant for QDM Expired Name String**/
 	private static final String QDM_EXPIRED_NON_DEFAULT = "expired";
 	/** Constant for QDM Birth date Name String**/

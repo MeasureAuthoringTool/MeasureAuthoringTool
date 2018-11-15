@@ -19,6 +19,17 @@ public class Organization implements IsSerializable{
 	private String organizationOID;
 	
 	
+	public Organization(Organization organization) {
+		super();
+		this.id = organization.getId();
+		this.organizationName = organization.getOrganizationName();
+		this.organizationOID = organization.getOrganizationOID();
+	}
+
+	public Organization() {
+		super();
+	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}

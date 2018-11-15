@@ -4,27 +4,30 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
 import mat.model.SecurityQuestions;
 import mat.model.User;
+import mat.model.UserSecurityQuestion;
 import mat.server.model.MatUserDetails;
 
 
@@ -55,13 +58,11 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		Session session = getSessionFactory().getCurrentSession();
 		try {
 			int updatedCount = 0;
-			Criteria criteria = session.createCriteria(User.class)
-					.createCriteria("password");
-			criteria.add(Restrictions.lt("createdDate", targetDate)).add(
-					Restrictions.eq("temporaryPassword", Boolean.TRUE));
-			
-			@SuppressWarnings("unchecked")
-			List<User> results = criteria.list();
+			final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+	        final CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+	        final Root<User> userRoot = criteriaQuery.from(User.class);
+	        criteriaQuery.select(userRoot).where(criteriaBuilder.lessThan(userRoot.<Date>get("createdDate"), targetDate));
+			List<User> results = session.createQuery(criteriaQuery).getResultList();
 			for (User u : results) {
 				u.getPassword().setPassword("expired");
 				updatedCount++;
@@ -80,14 +81,17 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		Session session = getSessionFactory().getCurrentSession();
 		try {
 			int updatedCount = 0;
-			Criteria criteria = session.createCriteria(User.class);
-			criteria.add(Restrictions.lt("lockedOutDate", unlockDate));
-			@SuppressWarnings("unchecked")
-			List<User> results = criteria.list();
+			final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			final CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+			final Root<User> userRoot = criteriaQuery.from(User.class);
+	        criteriaQuery.select(userRoot).where(criteriaBuilder.lessThan(userRoot.<Date>get("lockedOutDate"), unlockDate));
+	     	List<User> results = session.createQuery(criteriaQuery).getResultList();
 			for (User u : results) {
 				u.setLockedOutDate(null);
-				u.getPassword().setForgotPwdlockCounter(0);
-				u.getPassword().setPasswordlockCounter(0);
+				if(u.getPassword() != null) {
+					u.getPassword().setForgotPwdlockCounter(0);
+					u.getPassword().setPasswordlockCounter(0);
+				}
 				updatedCount++;
 			}
 			logger.info("Unlocked user count: " + updatedCount);
@@ -95,23 +99,27 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		}
 	}
 	
+	
 	/**
 	 * Creates the search criteria.
+	 * @param userRoot 
 	 * 
 	 * @param text
 	 *            the text
 	 * @return the criteria
 	 */
-	private Criteria createSearchCriteria(String text) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		Criterion nameRestriction = Restrictions.or(Restrictions.ilike("firstName", "%" + text + "%"),
-				Restrictions.ilike("lastName", "%" + text + "%"));
-		Criterion idResticition = Restrictions.or(Restrictions.ilike("emailAddress", "%" + text + "%"),
-				Restrictions.ilike("loginId", "%" + text + "%"));
-		criteria.add(Restrictions.or(nameRestriction, idResticition));
-		criteria.add(Restrictions.ne("id", "Admin"));
-		return criteria;
+	private List<Predicate> createSearchCriteria(CriteriaBuilder criteriaBuilder,Root<User> userRoot, String text) {
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		Predicate predicate1 = criteriaBuilder.or(criteriaBuilder.or(
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("firstName")), "%" + text.toLowerCase() + "%"),
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("lastName")), "%" + text.toLowerCase() + "%")),
+												  criteriaBuilder.or(
+											        criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("emailAddress")), "%" + text.toLowerCase() + "%"),
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("loginId")), "%" + text.toLowerCase() + "%")));
+		Predicate predicate2 = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("id"),"Admin"));
+		predicates.add(predicate1);
+		predicates.add(predicate2);
+		return predicates;
 	}
 	
 	/**
@@ -121,48 +129,52 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 *            the text
 	 * @return the criteria
 	 */
-	private Criteria createSearchCriteriaNonAdminUser(String text) {
-		
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		Criterion nameRestriction = Restrictions.or(Restrictions.ilike("firstName", "%" + text + "%"),
-				Restrictions.ilike("lastName", "%" + text + "%"));
-		Criterion idResticition = Restrictions.or(Restrictions.ilike("emailAddress", "%" + text + "%"),
-				Restrictions.ilike("loginId", "%" + text + "%"));
-		criteria.add(Restrictions.or(nameRestriction, idResticition));
-		criteria.add(Restrictions.ne("securityRole.id", "1"));
-		criteria.add(Restrictions.ne("status.id", "2"));
-		return criteria;
+	private List<Predicate> createSearchCriteriaNonAdminUser(CriteriaBuilder criteriaBuilder,Root<User> userRoot, String text) {
+		List<Predicate> predicates = new ArrayList<Predicate>();
+		Predicate predicate1 = criteriaBuilder.or(criteriaBuilder.or(
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("firstName")), "%" + text.toLowerCase() + "%"),
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("lastName")), "%" + text.toLowerCase() + "%")),
+												  criteriaBuilder.or(
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("emailAddress")), "%" + text.toLowerCase() + "%"),
+													criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("loginId")), "%" + text.toLowerCase() + "%")));
+		Predicate predicate2 = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("securityRole").get("id"), "1"));
+		Predicate predicate3 = criteriaBuilder.and(criteriaBuilder.notEqual(userRoot.get("status").get("statusId"), "2"));
+		predicates.add(predicate1);
+		predicates.add(predicate2);
+		predicates.add(predicate3);
+		return predicates;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#searchForUsersByName(java.lang.String)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<User> searchForUsersByName(String name) {
-		Criteria criteria = createSearchCriteria(name);
-		criteria.addOrder(Order.asc("lastName"));
-		/*criteria.setFirstResult(startIndex);
-		if (numResults > 0) {
-			criteria.setMaxResults(numResults);
-		}*/
-		return criteria.list();
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        final Root<User> userRoot = criteriaQuery.from(User.class);
+		List<Predicate> predicates = createSearchCriteria(criteriaBuilder,userRoot,name);
+		criteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName"))).select(userRoot).where(predicates.toArray(new Predicate[predicates.size()]));
+		return session.createQuery(criteriaQuery).getResultList();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#searchAllUsedOrganizations()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
-	public
-	HashMap < String , Organization> searchAllUsedOrganizations(){
-		List<Organization> usedOrganization = new ArrayList<Organization>();
-		HashMap < String , Organization> usedOrganizationMap = new HashMap<String,Organization>();
+	public HashMap<String,Organization> searchAllUsedOrganizations(){
+		HashMap<String,Organization> usedOrganizationMap = new HashMap<String,Organization>();
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.setProjection(Projections.distinct(Projections.property("organization")));
-		usedOrganization = criteria.list();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Organization> criteriaQuery = criteriaBuilder.createQuery(Organization.class);
+      //  final Root<Organization> userOrganizationRoot = criteriaQuery.from(Organization.class);
+        final Root<User> userRoot = criteriaQuery.from(User.class);
+        Join<Organization,User> join = userRoot.join("organization",JoinType.INNER);
+        criteriaQuery.multiselect(join.get("organization").get("id"),
+        						  join.get("organization").get("organizationName"),
+        						  join.get("organization").get("organizationOID")).where(criteriaBuilder.equal(join.get("id"),userRoot.get("organization"))).distinct(true);
+        List<Organization> usedOrganization =  session.createQuery(criteriaQuery).getResultList();
 		for(Organization org : usedOrganization){
 			usedOrganizationMap.put(Long.toString(org.getId()), org);
 		}
@@ -173,84 +185,65 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 * @see mat.dao.UserDAO#searchNonAdminUsers(java.lang.String, int, int)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
-	public List<User> searchNonAdminUsers(String name, int startIndex,
-			int numResults) {
-		Criteria criteria = createSearchCriteriaNonAdminUser(name);
-		criteria.addOrder(Order.asc("lastName"));
-		criteria.setFirstResult(startIndex);
+	public List<User> searchNonAdminUsers(String name, int startIndex,int numResults) {
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName")));
+        List<Predicate> predicates=  createSearchCriteriaNonAdminUser(criteriaBuilder,userRoot,name);
+        TypedQuery<User> typedQuery = session.createQuery(criteriaQuery.select(userRoot).where(predicates.toArray(new Predicate[predicates.size()])));
+        typedQuery.setFirstResult(startIndex);
 		if (numResults > 0) {
-			criteria.setMaxResults(numResults);
+			typedQuery.setMaxResults(numResults);
 		}
-		return criteria.list();
+		return typedQuery.getResultList();
 		
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#getAllNonAdminActiveUsers()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getAllNonAdminActiveUsers() {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.ne("securityRole.id", "1"));
-		criteria.add(Restrictions.eq("status.id", "1"));
-		criteria.addOrder(Order.asc("lastName"));
-		return criteria.list();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.UserDAO#countSearchResults(java.lang.String)
-	 */
-	@Override
-	public int countSearchResults(String text) {
-		Criteria criteria = createSearchCriteria(text);
-		criteria.setProjection(Projections.rowCount());
-		return ((Long) criteria.uniqueResult()).intValue();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.UserDAO#countSearchResultsNonAdmin(java.lang.String)
-	 */
-	@Override
-	public int countSearchResultsNonAdmin(String text) {
-		Criteria criteria = createSearchCriteriaNonAdminUser(text);
-		criteria.setProjection(Projections.rowCount());
-		return ((Long) criteria.uniqueResult()).intValue();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        List<Predicate> predicates = new ArrayList<>();
+        Predicate predicate1 = criteriaBuilder.notEqual(userRoot.get("securityRole").get("id"), 1);
+        Predicate predicate2 = criteriaBuilder.and(criteriaBuilder.equal(userRoot.get("status").get("statusId"), "1"));
+        predicates.add(predicate1);
+        predicates.add(predicate2);
+        criteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName")));
+        criteriaQuery.select(userRoot).where(predicates.toArray(new Predicate[predicates.size()]));
+		return  session.createQuery(criteriaQuery).getResultList();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#getUser(java.lang.String)
 	 */
 	@Override
-	@SuppressWarnings("rawtypes")
-	@Transactional
-	public UserDetails getUser(String userId) {
+	public UserDetails getUser(String loginId) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(MatUserDetails.class);
-		// List results =
-		// criteria.add(Restrictions.ilike("emailAddress",userId)).list();
-		List results = criteria.add(Restrictions.ilike("loginId", userId))
-				.list();
-		if (results.size() < 1) {
-			return null;
-		} else {
-			return (UserDetails) results.get(0);
-		}
-		
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<MatUserDetails> criteriaQuery = criteriaBuilder.createQuery(MatUserDetails.class);
+        Root<MatUserDetails> userRoot = criteriaQuery.from(MatUserDetails.class);
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("loginId"), loginId));
+		return (UserDetails) session.createQuery(criteriaQuery).uniqueResult();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#userExists(java.lang.String)
 	 */
 	@Override
-	public Boolean userExists(String userid) {
+	public Boolean userExists(String emailAddress) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.ilike("emailAddress", userid));
-		criteria.setProjection(Projections.rowCount());
-		return ((Long) criteria.uniqueResult()) > 0;
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(User.class))).where(criteriaBuilder.like(userRoot.get("emailAddress"), emailAddress));
+		return session.createQuery(criteriaQuery).uniqueResult().intValue() > 0;
 	}
 	
 	/* (non-Javadoc)
@@ -259,22 +252,24 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	@Override
 	public boolean findUniqueLoginId(String loginId) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.ilike("loginId", loginId));
-		criteria.setProjection(Projections.rowCount());
-		return ((Long) criteria.uniqueResult()) > 0;
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(User.class))).where(criteriaBuilder.like(userRoot.get("loginId"), loginId));
+		return session.createQuery(criteriaQuery).uniqueResult() > 0;
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#findByEmail(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public User findByEmail(String email) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.ilike("emailAddress", email));
-		List<User> results = criteria.list();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("emailAddress"), email));
+		List<User> results =  session.createQuery(criteriaQuery).getResultList();
 		if (results.size() > 0) {
 			return results.get(0);
 		} else {
@@ -285,13 +280,14 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#findByLoginId(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public User findByLoginId(String loginId) {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.ilike("loginId", loginId));
-		List<User> results = criteria.list();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        criteriaQuery.select(userRoot).where(criteriaBuilder.equal(userRoot.get("loginId"), loginId));
+		List<User> results =  session.createQuery(criteriaQuery).getResultList();
 		if (results.size() > 0) {
 			return results.get(0);
 		} else {
@@ -344,47 +340,27 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	@Override
 	public String getRandomSecurityQuestion(String userLoginId) {
 		
-		
 		User user = findByLoginId(userLoginId);
 		String question = null;
 		if (null == user) {
 			question = getRandomSecurityQuestion();
 		}else{
-			//			String query = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
-			//					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = '"
-			//					+ user.getId() + "' ORDER BY RAND() LIMIT 1";
-			String sql = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
-					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = :userId"
-					+ " ORDER BY RAND() LIMIT 1";
-			
 			Session session = getSessionFactory().getCurrentSession();
-			SQLQuery<String> query = session.createSQLQuery(sql);
-			query.setString("userId", user.getId());
-			
-			List<String> list = query.list();
-			if ((list == null) || list.isEmpty()) {
-				question = getRandomSecurityQuestion();
-			} else {
-				question = list.get(0);
-			}
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+		    Root<UserSecurityQuestion> userSecurityQuestionsRoot = criteriaQuery.from(UserSecurityQuestion.class);
+		    Root<SecurityQuestions> securityQuestionsRoot = criteriaQuery.from(SecurityQuestions.class);
+		    Root<User> userRoot = criteriaQuery.from(User.class);
+		    criteriaQuery.select(criteriaBuilder.count(userSecurityQuestionsRoot)).where(criteriaBuilder.and(
+		    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("securityQuestionId"), securityQuestionsRoot.get("questionId")),
+		    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), userRoot.get("id")),
+		    		criteriaBuilder.equal(userRoot.get("id"), user.getId())));
+		    int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
+		    CriteriaQuery<SecurityQuestions> securityQuestionsQuery = criteriaBuilder.createQuery(SecurityQuestions.class);
+			question=session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getQuestion();
 		}
 		
 		return question;
-	}
-	
-	/**
-	 * Gets the security question by id.
-	 * 
-	 * @param questionId
-	 *            the question id
-	 * @return the security question by id
-	 */
-	public SecurityQuestions getSecurityQuestionById(String questionId) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(SecurityQuestions.class);
-		criteria.add(Restrictions.ilike("questionId", questionId));
-		List<SecurityQuestions> results = criteria.list();
-		return results.get(0);
 	}
 	
 	/**
@@ -393,11 +369,15 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 * @return the random security question
 	 */
 	public String getRandomSecurityQuestion() {
-		String query = "select QUESTION from SECURITY_QUESTIONS";
-		query += " order by rand() LIMIT 1";
 		Session session = getSessionFactory().getCurrentSession();
-		List<String> list = session.createSQLQuery(query).list();
-		return list.get(0);
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<SecurityQuestions> securityQuestionsRoot = criteriaQuery.from(SecurityQuestions.class);
+		criteriaQuery.select(criteriaBuilder.count(criteriaQuery.from(SecurityQuestions.class)));
+		int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
+		CriteriaQuery<SecurityQuestions> securityQuestionsQuery = criteriaBuilder.createQuery(SecurityQuestions.class);
+		securityQuestionsQuery.select(securityQuestionsRoot);
+		return session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getQuestion();
 	}
 	
 	/* (non-Javadoc)
@@ -406,18 +386,24 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	@Override
 	public List<User> searchForNonTerminatedUser() {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		criteria.add(Restrictions.ne("status.id", "2"));
-		criteria.addOrder(Order.asc("lastName"));
-		return criteria.list();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = criteriaBuilder.createQuery(User.class);
+        final Root<User> userRoot = userCriteriaQuery.from(User.class);
+        criteriaBuilder.notEqual(userRoot.get("status").get("id"), "2");
+		userCriteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName")));
+		userCriteriaQuery.select(userRoot);
+		return session.createQuery(userCriteriaQuery).getResultList();
 	}
 	
 	
 	@Override
 	public List<User> getAllUsers() {
 		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(User.class);
-		return criteria.list();
+		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<User> userCriteriaQuery = criteriaBuilder.createQuery(User.class);
+        final Root<User> userRoot = userCriteriaQuery.from(User.class);
+        userCriteriaQuery.select(userRoot);
+		return session.createQuery(userCriteriaQuery).getResultList();
 	}
 	
 	

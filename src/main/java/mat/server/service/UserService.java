@@ -26,15 +26,6 @@ public interface UserService {
 	public List<User> searchForUsersByName(String orgId);
 	
 	/**
-	 * Count search results.
-	 * 
-	 * @param text
-	 *            the text
-	 * @return the int
-	 */
-	public int countSearchResults(String text);
-	
-	/**
 	 * Gets the by id.
 	 * 
 	 * @param id
@@ -197,15 +188,6 @@ public interface UserService {
 	 * @return the user
 	 */
 	User findByEmailID(String emailId);
-	
-	/**
-	 * Count search results non admin.
-	 * 
-	 * @param string
-	 *            the string
-	 * @return the int
-	 */
-	public int countSearchResultsNonAdmin(String string);
 	
 	/**
 	 * Update on sign out.

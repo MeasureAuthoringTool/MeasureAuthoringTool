@@ -577,8 +577,4 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		componentMeasuresDAO.updateComponentMeasures(compositeMeasureId, componentMeasuresList);		
 	}
 	
-	@Override
-	public void deleteComponentMeasure(List<ComponentMeasure> componentMeasuresList) {
-		componentMeasuresDAO.deleteComponentMeasures(componentMeasuresList);
-	}
 }

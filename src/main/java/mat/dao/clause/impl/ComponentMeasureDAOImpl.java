@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import mat.dao.clause.ComponentMeasuresDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.clause.ComponentMeasure;
+import mat.model.clause.Measure;
 
 @Repository("componentMeasuresDAO")
 public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String> implements ComponentMeasuresDAO{
@@ -34,18 +35,6 @@ public class ComponentMeasureDAOImpl extends GenericDAO<ComponentMeasure, String
 		}
 	}
 	
-	@Override
-	public void deleteComponentMeasures(List<ComponentMeasure> componentMeasuresToDelete) {
-		try{
-			Session session = getSessionFactory().getCurrentSession();
-			for(ComponentMeasure component : componentMeasuresToDelete) {
-				session.delete(component);
-			}
-		} catch (Exception e) {
-			logger.error("Error deleting component measures: " + e);
-		}
-	}
-
 	@Override
 	public void updateComponentMeasures(String measureId, List<ComponentMeasure> componentMeasuresList) {
 		String hql = "DELETE from mat.model.clause.ComponentMeasure where compositeMeasure.id = :compositeMeasureId";

@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
+import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.shared.ConfirmationDialogBox;
 
 public class ComponentMeasuresView implements ComponentDetailView{
@@ -55,6 +56,12 @@ public class ComponentMeasuresView implements ComponentDetailView{
 	public void resetForm() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

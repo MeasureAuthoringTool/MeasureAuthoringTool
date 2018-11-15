@@ -11,10 +11,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
+import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
+import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
@@ -126,5 +128,17 @@ public class MeasureDetailsView {
 	
 	public MeasureDetailState getState() {
 		return componentDetailView.getState();
+	}
+	
+	public ConfirmationDialogBox getSaveConfirmation() {
+		return componentDetailView.getSaveConfirmation();
+	}
+	
+	public void resetForm() {
+		componentDetailView.resetForm();
+	}
+	
+	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
+		return componentDetailView.getMeasureDetailsComponentModel();
 	}
 }

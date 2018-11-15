@@ -17,6 +17,7 @@ import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
+import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
@@ -424,5 +425,11 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	public void resetForm() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

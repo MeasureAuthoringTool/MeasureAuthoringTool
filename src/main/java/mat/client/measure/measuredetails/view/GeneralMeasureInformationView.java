@@ -25,9 +25,10 @@ import mat.client.shared.SpacerWidget;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
 
-public class GeneralMeasureInformationView implements ComponentDetailView{
+public class GeneralMeasureInformationView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();
 	private GeneralInformationModel generalInformationModel;
+	private GeneralInformationModel originalModel;
 	private TextBox abbrInput = new TextBox();
 	private TextBox measureNameInput = new TextBox();
 	private boolean isCompositeMeasure = false;
@@ -39,7 +40,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 	List<CompositeMeasureScoreDTO> compositeChoices;
     
 	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
-		
+		originalModel = originalGeneralInformationModel;
 		buildGeneralInformationModel(originalGeneralInformationModel);
 		this.isCompositeMeasure = isComposite;
 		this.compositeChoices = compositeChoices;
@@ -69,8 +70,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView{
 
 	@Override
 	public boolean hasUnsavedChanges() {
-		//TODO compare model against old model for dirty check
-		return false;
+		return !originalModel.equals(generalInformationModel);
 	}
 
 	@Override

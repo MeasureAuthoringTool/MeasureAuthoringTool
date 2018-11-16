@@ -34,6 +34,7 @@ public class MeasureDetailsView {
 	private ErrorMessageAlert errorAlert = new ErrorMessageAlert();
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
+	private boolean isMeasureEditable;
 	//TODO handle save...
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
@@ -96,13 +97,14 @@ public class MeasureDetailsView {
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsComponent, currentMeasureDetail);
 		currentRichTextEditor = componentDetailView.getRichTextEditor();
 		if(currentRichTextEditor != null) {
-			currentRichTextEditor.getRichTextEditor().addSummernoteKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
+			currentRichTextEditor.addSummernoteKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
 		}
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");
 		widgetComponentPanel.getElement().setId("measureDetailsView_ComponentPanel");
 		buildSavePanel(currentMeasureDetail);
+		setReadOnly(isMeasureEditable);
 		return widgetComponentPanel;
 	}
 	private void handleRichTextTabOut(SummernoteKeyUpEvent keyUpEvent) {
@@ -143,6 +145,7 @@ public class MeasureDetailsView {
 		saveButton.setEnabled(enabled);
 		deleteMeasureButton.setEnabled(enabled);
 		componentDetailView.setReadOnly(isReadOnly);
+		isMeasureEditable = isReadOnly;
 	}
 	
 	public MeasureDetailState getState() {

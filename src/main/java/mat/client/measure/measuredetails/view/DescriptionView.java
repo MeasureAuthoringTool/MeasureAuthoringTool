@@ -37,8 +37,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		// TODO Auto-generated method stub
-		
+		richTextEditor.setEnabled(!readOnly);
 	}
 
 	@Override
@@ -66,7 +65,7 @@ public class DescriptionView implements ComponentDetailView {
 	
 	public DescriptionView() {
 		HorizontalPanel textAreaPanel = new HorizontalPanel();
-        textAreaPanel.add(richTextEditor.getRichTextEditor());
+        textAreaPanel.add(richTextEditor);
         textAreaPanel.setWidth("95%");
         mainPanel.add(textAreaPanel);
 	}

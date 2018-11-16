@@ -28,6 +28,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	private MeasureDetailsNavigation navigationPanel;
 	private String scoringType;
 	private boolean isCompositeMeasure;
+	private boolean isMeasureEditable;
 	private long lastRequestTime;
 	private DeleteConfirmDialogBox dialogBox;
 	MeasureDetailsModel measureDetailsModel;
@@ -46,6 +47,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		navigationPanel.updateState(MeasureDetailState.BLANK);
 		this.scoringType = null;
 		isCompositeMeasure = false;
+		isMeasureEditable = true;
 	}
 
 	@Override
@@ -139,7 +141,8 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				measureDetailsModel.setComposite(isCompositeMeasure);
 				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
 				measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
-				measureDetailsView.setReadOnly(!MatContext.get().getMeasureLockService().checkForEditPermission());
+				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
+				measureDetailsView.setReadOnly(isMeasureEditable);
 				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);

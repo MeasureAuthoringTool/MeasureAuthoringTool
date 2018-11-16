@@ -19,7 +19,8 @@
     <set-property name="log_DivLogger" value="DISABLED" />
     -->
    <inherits name="org.gwtbootstrap3.GwtBootstrap3" />
-	 <inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
+   <inherits name="org.gwtbootstrap3.extras.summernote.Summernote" />
+   <inherits name="org.gwtbootstrap3.extras.respond.Respond"/>
 	<public path="resource">
 		<include name="css/*.*" />
 		<include name="css/*.js" />

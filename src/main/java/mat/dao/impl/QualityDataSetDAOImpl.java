@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,12 +22,16 @@ import mat.shared.ConstantMessages;
 
 @Repository("qualityDataSetDAO")
 public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> implements mat.dao.QualityDataSetDAO {
+
+	private static final String DATA_TYPE = "dataType";
+	private static final String MEASURE_ID = "measureId";
+	private static final String LIST_OBJECT = "listObject";
 	
 	public QualityDataSetDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
 	
-	private String getQDSQueryString(boolean showSDEs, String measureId){
+	private String getQDSQueryString(boolean showSDEs){
 		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
 		"where q.measureId.id = :measureId and l.id = q.listObject.id ";
 		if(!showSDEs){
@@ -40,73 +45,74 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 		return query;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public java.util.List<QualityDataSetDTO> getQDSElements(boolean showSDEs, String measureId){
 		
-		List<QualityDataSetDTO> dtos = new ArrayList<QualityDataSetDTO>();
+		final Session session = getSessionFactory().getCurrentSession();
+		final String sql = getQDSQueryString(showSDEs);
 		
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = getQDSQueryString(showSDEs, measureId);
-		Query query = session.createQuery(sql);
-		query.setString("measureId", measureId);
+		final NativeQuery<String> query = session.createNativeQuery(sql);
+		query.setParameter(MEASURE_ID, measureId);
 		
-		List<String> qids = query.list();
+		final List<String> qids = query.list();
 		
 		if(qids.isEmpty())
-			return dtos;
+			return new ArrayList<>();
 		
-		Criteria criteria = session.createCriteria(QualityDataSet.class);
-//		criteria.add(Restrictions.not(Restrictions.in("listObject.oid", ConstantMessages.SUPPLEMENTAL_DATA_ELEMENT_OID_ARR)));
-		criteria.add(Restrictions.in("id", qids));
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QualityDataSetDTO> cq = cb.createQuery(QualityDataSetDTO.class);
+		final Root<QualityDataSet> root = cq.from(QualityDataSet.class);
 		
-		List<QualityDataSet> qds = criteria.list();
+		cq.select(cb.construct(
+					QualityDataSetDTO.class,
+					root.get("id"),
+					root.get(DATA_TYPE).get("description"),
+					root.get(LIST_OBJECT).get("name"),
+					root.get("occurrence"),
+					root.get(LIST_OBJECT).get("oid"),
+					root.get("suppDataElement")));
 		
-		for (QualityDataSet aqds: qds) {
-			QualityDataSetDTO dto = new QualityDataSetDTO();
-			dto.setId(aqds.getId());
-			dto.setDataType(aqds.getDataType().getDescription());
-			dto.setCodeListName(aqds.getListObject().getName());
-			dto.setOccurrenceText(aqds.getOccurrence());
-			dto.setSuppDataElement(aqds.isSuppDataElement());
-			dto.setOid(aqds.getListObject().getOid());
-			dtos.add(dto);
-		}
-		return dtos;
+		cq.where(root.get("id").in(qids));		
+		
+		return session.createQuery(cq).getResultList();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.QualityDataSetDAO#getQDSElementsFor(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public java.util.List<QualityDataSetDTO> getQDSElementsFor(String measureId, String listObjectId) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QualityDataSet.class);
-		criteria.add(Restrictions.eq("measureId.id", measureId));
-		criteria.add(Restrictions.eq("listObject.id", listObjectId));
-		List<QualityDataSet> qds = criteria.list();
-		List<QualityDataSetDTO> dtos =new ArrayList<QualityDataSetDTO>();
-		for (QualityDataSet aqds: qds) {
-			QualityDataSetDTO dto = new QualityDataSetDTO();
-			dto.setId(aqds.getId());
-			dto.setDataType(aqds.getDataType().getDescription());
-			dto.setCodeListName(aqds.getListObject().getName());
-			dto.setOccurrenceText(aqds.getOccurrence());
-			dtos.add(dto);
-		}
-		return dtos;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QualityDataSetDTO> cq = cb.createQuery(QualityDataSetDTO.class);
+		final Root<QualityDataSet> root = cq.from(QualityDataSet.class);
+		
+		cq.select(cb.construct(
+				QualityDataSetDTO.class,
+				root.get("id"),
+				root.get(DATA_TYPE).get("description"),
+				root.get(LIST_OBJECT).get("name"),
+				root.get("occurrence")));
+
+		cq.where(cb.and(cb.equal(root.get(MEASURE_ID).get("id"), measureId), cb.equal(root.get(LIST_OBJECT).get("id"), listObjectId)));		
+
+		return session.createQuery(cq).getResultList();
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.QualityDataSetDAO#cloneQDSElements(java.lang.String, mat.model.clause.Measure)
 	 */
+	@Override
 	public void cloneQDSElements(String measureId, mat.model.clause.Measure clonedMeasure) {
 
-		java.util.List<QualityDataSet> clonedQDSs = getForMeasure(clonedMeasure.getId());
-		java.util.List<QualityDataSet> origQDSs = getForMeasure(measureId);
-		List<QualityDataSet> persistQDSs = removeduplicate(origQDSs, clonedQDSs);
+		final java.util.List<QualityDataSet> clonedQDSs = getForMeasure(clonedMeasure.getId());
+		final java.util.List<QualityDataSet> origQDSs = getForMeasure(measureId);
+		final List<QualityDataSet> persistQDSs = removeduplicate(origQDSs, clonedQDSs);
 		//check to see if qdm elements for new measure is already cloned
 		if (!persistQDSs.isEmpty()) {
-			for (QualityDataSet aqds: persistQDSs) {
-				QualityDataSet cloneDqds = new QualityDataSet();
+			for (final QualityDataSet aqds: persistQDSs) {
+				final QualityDataSet cloneDqds = new QualityDataSet();
 				if (aqds.getDataType()!=null) cloneDqds.setDataType(aqds.getDataType());
 				if (aqds.getListObject()!=null) cloneDqds.setListObject(aqds.getListObject());
 				if (aqds.getMeasureId()!=null) cloneDqds.setMeasureId(clonedMeasure);
@@ -133,12 +139,12 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 			List<QualityDataSet> clonedQDSs) {
 
 		
-		List<QualityDataSet> temp = new ArrayList<QualityDataSet>();
+		final List<QualityDataSet> temp = new ArrayList<>();
 		
-		for (QualityDataSet origQDS: origQDSs) {
+		for (final QualityDataSet origQDS: origQDSs) {
 			boolean foundQDS = false;
 
-			for (QualityDataSet clonedQDS: clonedQDSs) {
+			for (final QualityDataSet clonedQDS: clonedQDSs) {
 
 				if(clonedQDS.getListObject().getId().equals(origQDS.getListObject().getId()) &&
 						clonedQDS.getDataType().equals(origQDS.getDataType())) {
@@ -158,14 +164,15 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	/* (non-Javadoc)
 	 * @see mat.dao.QualityDataSetDAO#generateUniqueOid()
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public String generateUniqueOid() {
-		Session session = getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery("insert into QUALITY_DATA_MODEL_OID_GEN values ();");
-		query.executeUpdate();
-		query = session.createSQLQuery("select LAST_INSERT_ID();");
-		String retStr = query.uniqueResult().toString();
-		return retStr;
+		final Session session = getSessionFactory().getCurrentSession();
+		final NativeQuery nativeQuery = session.createNativeQuery("insert into QUALITY_DATA_MODEL_OID_GEN values ();");
+		nativeQuery.executeUpdate();
+		final NativeQuery query = session.createNativeQuery("select LAST_INSERT_ID();");
+
+		return query.uniqueResult().toString();
 	}
 
 	/* (non-Javadoc)
@@ -173,11 +180,14 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	 */
 	@Override
 	public List<QualityDataSet> getForMeasure(String measureId) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QualityDataSet.class);
-		criteria.add(Restrictions.eq("measureId.id", measureId));
-		List<QualityDataSet> qds = criteria.list();
-		return qds;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QualityDataSet> query = cb.createQuery(QualityDataSet.class);
+		final Root<QualityDataSet> root = query.from(QualityDataSet.class);
+		
+		query.select(root).where(cb.equal(root.get(MEASURE_ID).get("id"), measureId));
+
+		return session.createQuery(query).getResultList();
 	}
 
 	/* (non-Javadoc)
@@ -187,31 +197,41 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	public List<QualityDataSet> getQDSElementsFor(String measureId,
 			String codeListId, String dataTypeId, String occurrence) {
 		
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QualityDataSet.class);
-		criteria.add(Restrictions.eq("measureId.id", measureId));
-		criteria.add(Restrictions.eq("listObject.id", codeListId));
-		criteria.add(Restrictions.eq("dataType.id", dataTypeId));
-		if(occurrence != null)
-			criteria.add(Restrictions.eq("occurrence", occurrence));
-		return criteria.list();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QualityDataSet> query = cb.createQuery(QualityDataSet.class);
+		final Root<QualityDataSet> root = query.from(QualityDataSet.class);
 		
+		final Predicate p1 = cb.and(cb.equal(root.get(MEASURE_ID).get("id"), measureId), 
+				cb.equal(root.get(LIST_OBJECT).get("id"), codeListId), 
+				cb.equal(root.get(DATA_TYPE).get("id"), dataTypeId));
+		
+		Predicate p2 = null;
+		if (occurrence != null) {
+			p2 = cb.equal(root.get("occurrence"), occurrence);
+		}
+		
+		final Predicate predicate = (p2 != null) ? cb.and(p1, p2) : p1;
+		
+		query.select(root).where(predicate);
+
+		return session.createQuery(query).getResultList();
 	}
 	
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.QualityDataSetDAO#updateListObjectId(java.lang.String, java.lang.String)
 	 */
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void updateListObjectId(String oldLOID, String newLOID) {
-		Session session = getSessionFactory().getCurrentSession();
+		final Session session = getSessionFactory().getCurrentSession();
 		//update quality data model references from the list object being drafted (oldLOID) to the draft (newLOID)
-		//SQLQuery query = session.createSQLQuery("update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = '"+newLOID+"' where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= '"+oldLOID+"'));");
-		String sql = "update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = :newLOID where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= :oldLOID";
-		SQLQuery query = session.createSQLQuery(sql);
-		query.setString("newLOID", newLOID);
-		query.setString("oldLOID", oldLOID);
-		query.executeUpdate();
+		final String sql = "update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = :newLOID where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= :oldLOID";
+		final NativeQuery nativeQuery = session.createNativeQuery(sql);
+		nativeQuery.setParameter("newLOID", newLOID);
+		nativeQuery.setParameter("oldLOID", oldLOID);
+		nativeQuery.executeUpdate();
 		//update any qdm's that referenced the list object being drafted
 		//and delete any duplicate qdm's
 		updateQDMTerms(newLOID);
@@ -225,12 +245,15 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	 * @return the by list object
 	 */
 	public List<QualityDataSet> getByListObject(String listObjectId) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QualityDataSet.class);
-		criteria.add(Restrictions.eq("listObject.id", listObjectId));
-		criteria.addOrder(Order.desc("measureId.id")).addOrder(Order.desc("dataType.id")).addOrder(Order.desc("occurrence"));
-		List<QualityDataSet> qds = criteria.list();
-		return qds;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QualityDataSet> query = cb.createQuery(QualityDataSet.class);
+		final Root<QualityDataSet> root = query.from(QualityDataSet.class);
+		
+		query.select(root).where(cb.equal(root.get(LIST_OBJECT).get("id"), listObjectId));
+		query.orderBy(cb.desc(root.get(MEASURE_ID).get("id")), cb.desc(root.get(DATA_TYPE).get("id")), cb.desc(root.get("occurrence")));
+		
+		return session.createQuery(query).getResultList();
 	}
 	
 	/**
@@ -240,23 +263,23 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	 *            the new loid
 	 */
 	public void updateQDMTerms(String newLOID) {
-		List<QualityDataSet> qdss = getByListObject(newLOID);
+		final List<QualityDataSet> qdss = getByListObject(newLOID);
 		
 		//QualityDataSet's to delete
-		HashMap<String, String> dqdss = new HashMap<String, String>();
+		final HashMap<String, String> dqdss = new HashMap<>();
 		
 		for(int i = 0; i < qdss.size()-1; i++){
-			QualityDataSet qds1 = qdss.get(i);
-			QualityDataSet qds2 = qdss.get(i+1);
-			String mid1 = qds1.getMeasureId().getId();
-			String mid2 = qds2.getMeasureId().getId();
+			final QualityDataSet qds1 = qdss.get(i);
+			final QualityDataSet qds2 = qdss.get(i+1);
+			final String mid1 = qds1.getMeasureId().getId();
+			final String mid2 = qds2.getMeasureId().getId();
 			if(mid1.equalsIgnoreCase(mid2)){
 				//check dataType, could be multiple dataTypes with the same category
-				String dt1 = qds1.getDataType().getId();
-				String dt2 = qds2.getDataType().getId();
+				final String dt1 = qds1.getDataType().getId();
+				final String dt2 = qds2.getDataType().getId();
 				if(dt1.equalsIgnoreCase(dt2)){
-					String occ1 = qds1.getOccurrence();
-					String occ2 = qds2.getOccurrence();
+					final String occ1 = qds1.getOccurrence();
+					final String occ2 = qds2.getOccurrence();
 					if(occ1 == null && occ2 == null){
 						//delete: same measure, same dataType, not occurrences
 						dqdss.put(qds2.getId(), qds1.getId());
@@ -270,9 +293,9 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 				}
 			}
 		}
-		for(String key : dqdss.keySet()){
-			String newID = key;
-			String oldID = dqdss.get(key);
+		for(final String key : dqdss.keySet()){
+			final String newID = key;
+			final String oldID = dqdss.get(key);
 			//update the QDMTerm to use the latest QDM
 			updateQDMTerm(newID, oldID);
 			//delete the duplicate QDM
@@ -288,13 +311,14 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	 * @param oldID
 	 *            the old id
 	 */
+	@SuppressWarnings("rawtypes")
 	public void updateQDMTerm(String newID, String oldID){
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = "update QDM_TERM t set t.QDM_ELEMENT_ID = :newID where t.QDM_ELEMENT_ID = :oldID";
-		SQLQuery query = session.createSQLQuery(sql);
-		query.setString("newID",newID);
-		query.setString("oldID", oldID);
-		query.executeUpdate();
+		final Session session = getSessionFactory().getCurrentSession();
+		final String sql = "update QDM_TERM t set t.QDM_ELEMENT_ID = :newID where t.QDM_ELEMENT_ID = :oldID";
+		final NativeQuery nativeQuery = session.createNativeQuery(sql);
+		nativeQuery.setParameter("newID",newID);
+		nativeQuery.setParameter("oldID", oldID);
+		nativeQuery.executeUpdate();
 	}
 	
 	/**
@@ -303,12 +327,13 @@ public class QualityDataSetDAOImpl extends GenericDAO<QualityDataSet, String> im
 	 * @param oldID
 	 *            the old id
 	 */
+	@SuppressWarnings("rawtypes")
 	public void deleteOldQDM(String oldID){
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = "delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = :oldID";
-		SQLQuery query = session.createSQLQuery(sql);
-		query.setString("oldID", oldID);
-		query.executeUpdate();
+		final Session session = getSessionFactory().getCurrentSession();
+		final String sql = "delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = :oldID";
+		final NativeQuery nativeQuery = session.createNativeQuery(sql);
+		nativeQuery.setParameter("oldID", oldID);
+		nativeQuery.executeUpdate();
 	}
 	
 }

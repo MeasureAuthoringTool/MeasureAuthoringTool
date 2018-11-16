@@ -3,13 +3,15 @@ package mat.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,119 +21,103 @@ import mat.model.Organization;
 @Repository("organizationDAO")
 public class OrganizationDAOImpl extends GenericDAO<Organization, Long> implements mat.dao.OrganizationDAO {
 	
+	private static final String ORGANIZATION_NAME = "organizationName";
+	
+	private static final String ORGANIZATION_OID = "organizationOID";
+	
 	public OrganizationDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	} 
-	@Override
-	public int countSearchResults(String text) {
-		Criteria criteria = createSearchCriteria(text);
-		criteria.setProjection(Projections.rowCount());
-		return ((Long) criteria.uniqueResult()).intValue();
-	}
-	/**
-	 * Creates the search criteria.
-	 * 
-	 * @param text
-	 *            the text
-	 * @return the criteria
-	 */
-	private Criteria createSearchCriteria(String text) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Organization.class);
-		criteria.add(Restrictions.ilike("organizationName", "%" + text + "%"));
-		return criteria;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.OrganizationDAO#findByOid(java.lang.String)
-	 */
+
 	@Override
 	public Organization findByOid(String oid) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Organization.class);
-		criteria.add(Restrictions.eq("organizationOID", oid));
-		if (criteria.list().size() != 0) {
-			return (Organization) criteria.list().get(0);
-		} else {
-			return null;
-		}
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Organization> query = cb.createQuery(Organization.class);
+		final Root<Organization> root = query.from(Organization.class);
+		
+		query.select(root).where(cb.equal(root.get(ORGANIZATION_OID), oid));
+		
+		final List<Organization> organizationList = session.createQuery(query).getResultList();
+		
+		return CollectionUtils.isNotEmpty(organizationList) ? organizationList.get(0) : null;
 	}
+
 	@Override
 	public Organization findById(String id) {
 		Organization org = null;
 		try {
 			org = find(Long.valueOf(id));
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return null;
 		}
 		return org;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
-	 */
 	@Override
 	public List<Organization> getAllOrganizations() {
-		List<Organization> organizations = new ArrayList<Organization>();
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Organization.class);
-		criteria.add(Restrictions.ne("organizationName",""));
-		criteria.addOrder(Order.asc("organizationName"));
-		if (!criteria.list().isEmpty()) {
-			organizations = criteria.list();
-		}
-		return organizations;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Organization> query = cb.createQuery(Organization.class);
+		final Root<Organization> root = query.from(Organization.class);
+		
+		query.select(root).where(cb.notEqual(root.get(ORGANIZATION_NAME), StringUtils.EMPTY));
+		query.orderBy(cb.asc(root.get(ORGANIZATION_NAME)));
+		
+		final List<Organization> organizationList = session.createQuery(query).getResultList();
+		
+		return CollectionUtils.isNotEmpty(organizationList) ? organizationList : new ArrayList<>();
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.dao.OrganizationDAO#saveOrganization(mat.model.Organization)
-	 */
+
 	@Override
 	public void saveOrganization(Organization entity) {
 		Session session = null;
 		try {
 			session = getSessionFactory().getCurrentSession();
 			session.save(entity);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
-		} finally {
-		}
+		} 
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.dao.OrganizationDAO#searchOrganization(java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Organization> searchOrganization(String name) {
-		Criteria criteria = createSearchCriteria(name);
-		criteria.addOrder(Order.asc("organizationName"));
-		criteria.add(Restrictions.ne("organizationName", StringUtils.EMPTY))
-		.add(Restrictions.ne("organizationOID", StringUtils.EMPTY));
-		/*criteria.setFirstResult(startIndex);
-		if (numResults > 0) {
-			criteria.setMaxResults(numResults);
-		}*/
-		return criteria.list();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Organization> query = cb.createQuery(Organization.class);
+		final Root<Organization> root = query.from(Organization.class);
+		
+		final Predicate p1 = cb.and(cb.notEqual(root.get(ORGANIZATION_NAME), StringUtils.EMPTY), 
+				cb.notEqual(root.get(ORGANIZATION_OID), StringUtils.EMPTY));
+		
+		Predicate p2 = null;
+		
+		if(StringUtils.isNotBlank(name)) {
+			p2 = cb.like(cb.lower(root.get(ORGANIZATION_NAME)), "%" + name.toLowerCase() + "%");
+		}
+		
+		final Predicate predicate = (p2 != null) ? cb.and(p1, p2) : p1;
+				
+		query.select(root).where(predicate);
+		query.orderBy(cb.asc(root.get(ORGANIZATION_NAME)));
+
+		return session.createQuery(query).getResultList();
 	}
+
 	@Override
 	public void deleteOrganization(Organization entity) {
-		Organization org = find(entity.getId());
+		final Organization org = find(entity.getId());
 		delete(org);
 		
 	}
+
 	@Override
 	public void updateOrganization(Organization organization) {
-		Session session = null;
 		try {
-			session = getSessionFactory().getCurrentSession();
+			final Session session = getSessionFactory().getCurrentSession();
 			session.update(organization);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
-		} finally {
 		}
 	}
 	

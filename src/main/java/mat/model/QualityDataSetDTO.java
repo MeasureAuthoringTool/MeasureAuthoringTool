@@ -88,7 +88,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	 */
 	@Override
 	public boolean equals (Object o) {
-		QualityDataSetDTO temp = (QualityDataSetDTO) o;
+		final QualityDataSetDTO temp = (QualityDataSetDTO) o;
 		if (temp.getId().equals(getId())) {
 			return true;
 		}
@@ -428,7 +428,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	 * @return the int
 	 */
 	public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
-		int num = o1.getUuid().compareTo(o2.getUuid());
+		final int num = o1.getUuid().compareTo(o2.getUuid());
 		return num;
 	}
 	
@@ -500,6 +500,27 @@ public class QualityDataSetDTO implements IsSerializable {
 		this.valueSetType = valueSetType;
 	}
 
-	
+	public QualityDataSetDTO() {
+		super();
+	}
+
+	public QualityDataSetDTO(String id, String dataType, String codeListName, String occurrenceText) {
+		super();
+		this.id = id;
+		this.dataType = dataType;
+		this.codeListName = codeListName;
+		this.occurrenceText = occurrenceText;
+	}
+
+	public QualityDataSetDTO(String id, String dataType, String codeListName, String occurrenceText, String oid,
+			boolean suppDataElement) {
+		super();
+		this.id = id;
+		this.dataType = dataType;
+		this.codeListName = codeListName;
+		this.occurrenceText = occurrenceText;
+		this.oid = oid;
+		this.suppDataElement = suppDataElement;
+	}
 	
 }

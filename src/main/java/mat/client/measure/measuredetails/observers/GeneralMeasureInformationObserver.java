@@ -29,8 +29,10 @@ public class GeneralMeasureInformationObserver {
 	
 	private GeneralInformationModel updateGeneralInformationModelFromView() {
 		GeneralInformationModel generalInformationModel = generalMeasureInformationView.getGeneralInformationModel();
-		generalInformationModel.setCompositeScoringMethod(generalMeasureInformationView.getCompositeScoringValue());
-		generalInformationModel.setScoringMethod(generalMeasureInformationView.getMeasureScoringValue());
+		String compositeScoringValue = generalMeasureInformationView.getCompositeScoringValue().equals(MatContext.PLEASE_SELECT) ? null : generalMeasureInformationView.getCompositeScoringValue();
+		generalInformationModel.setCompositeScoringMethod(compositeScoringValue);
+		String scoringValue = generalMeasureInformationView.getMeasureScoringValue().equals(MatContext.PLEASE_SELECT) ? null : generalMeasureInformationView.getMeasureScoringValue();
+		generalInformationModel.setScoringMethod(scoringValue);
 		if(generalMeasureInformationView.getPatientBasedInput().getItemText(generalMeasureInformationView.getPatientBasedInput().getSelectedIndex()).equalsIgnoreCase("Yes")) {
 			generalInformationModel.setPatientBased(true);
 		} else {

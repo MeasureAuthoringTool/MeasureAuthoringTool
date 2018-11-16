@@ -2,7 +2,6 @@ package mat.client.measure.measuredetails;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.base.button.AbstractButton;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.extras.summernote.client.event.SummernoteKeyUpEvent;
 

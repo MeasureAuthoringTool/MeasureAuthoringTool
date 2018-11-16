@@ -37,7 +37,7 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-dev</artifactId>
             <version>${gwtVersion}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>commons-collections</artifactId>
@@ -57,12 +57,12 @@
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3</artifactId>
-            <version>0.9.1</version>
+            <version>0.9.4</version>
         </dependency>
         <dependency>
             <groupId>org.gwtbootstrap3</groupId>
             <artifactId>gwtbootstrap3-extras</artifactId>
-            <version>0.9.1</version>
+            <version>0.9.4</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>

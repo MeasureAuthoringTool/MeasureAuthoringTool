@@ -356,6 +356,8 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		    		criteriaBuilder.equal(userRoot.get("id"), user.getId())));
 		    int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
 		    CriteriaQuery<SecurityQuestions> securityQuestionsQuery = criteriaBuilder.createQuery(SecurityQuestions.class);
+		    securityQuestionsRoot = securityQuestionsQuery.from(SecurityQuestions.class);
+		    securityQuestionsQuery.select(securityQuestionsRoot);
 			question=session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getQuestion();
 		}
 		

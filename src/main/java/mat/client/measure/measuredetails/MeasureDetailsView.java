@@ -139,9 +139,10 @@ public class MeasureDetailsView {
 	}
 
 	public void setReadOnly(boolean isReadOnly) {
-		saveButton.setEnabled(!isReadOnly);
-		deleteMeasureButton.setEnabled(!isReadOnly);
-		componentDetailView.setReadOnly(!isReadOnly);
+		boolean enabled = !isReadOnly;
+		saveButton.setEnabled(enabled);
+		deleteMeasureButton.setEnabled(enabled);
+		componentDetailView.setReadOnly(isReadOnly);
 	}
 	
 	public MeasureDetailState getState() {

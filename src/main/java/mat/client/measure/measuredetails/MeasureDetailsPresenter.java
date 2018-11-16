@@ -15,6 +15,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
+import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
@@ -256,10 +257,22 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	@Override
 	public void handleSaveButtonClick() {
-		if(measureDetailsView.getSaveConfirmation() != null) {
-			GWT.log("save confirmation present");
+		ConfirmationDialogBox confirmationDialog = measureDetailsView.getSaveConfirmation();
+		if(confirmationDialog != null) {
+			confirmationDialog.getYesButton().addClickHandler(event -> saveMeasureDetails());
+			confirmationDialog.show();
+			confirmationDialog.getYesButton().setFocus(true);
 		} else {
-			GWT.log("no save confirmation");
+			saveMeasureDetails();
 		}
+	}
+
+	private Object saveMeasureDetails() {
+		GWT.log("save measure details");
+		// TODO Auto-generated method stub
+		//TODO populate the model for all tabs
+		//TODO convert the model
+		//TODO save the measure details
+		return null;
 	}
 }

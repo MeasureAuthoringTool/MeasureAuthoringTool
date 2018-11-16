@@ -90,7 +90,6 @@ public class GeneralMeasureInformationObserver {
 		} else if(generalInformationModel.getCompositeScoringMethod() != null){
 			scoringMethodChanged = compositeScoringChanged(generalInformationModel, originalModel, scoringMethodChanged);
 		}
-		
 		if(!scoringMethodChanged) {
 			if(originalModel.getScoringMethod() != null) {
 				scoringMethodChanged = scoringChanged(originalModel, generalInformationModel, scoringMethodChanged);
@@ -98,7 +97,6 @@ public class GeneralMeasureInformationObserver {
 				scoringMethodChanged = scoringChanged(generalInformationModel, originalModel, scoringMethodChanged);
 			}
 		}
-
 		return scoringMethodChanged;
 	}
 
@@ -110,7 +108,7 @@ public class GeneralMeasureInformationObserver {
 	}
 	
 	private boolean scoringChanged(GeneralInformationModel model1, GeneralInformationModel model2, boolean scoringMethodChanged) {
-		if(model1.getCompositeScoringMethod() != null && !model1.getScoringMethod().equals(model2.getScoringMethod())) {
+		if(model1.getScoringMethod() != null && !model1.getScoringMethod().equals(model2.getScoringMethod())) {
 			scoringMethodChanged = true;
 		}
 		return scoringMethodChanged;

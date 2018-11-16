@@ -457,7 +457,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	public ConfirmationDialogBox getSaveConfirmation() {
 		GWT.log("calling getSaveConfirmation");
 		if(hasUnsavedChanges()) {
-			GWT.log("now got here getSaveConfirmation");
 			return observer.getSaveConfirmation(originalModel, generalInformationModel);
 		}
 		return null;

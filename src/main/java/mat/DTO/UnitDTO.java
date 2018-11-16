@@ -1,9 +1,9 @@
 package mat.DTO;
 
 
-import mat.client.codelist.HasListBox;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.client.codelist.HasListBox;
 
 /**
  * DTO for UNIT object.
@@ -29,6 +29,14 @@ public class UnitDTO implements IsSerializable, HasListBox {
 		
 	}
 	
+	public UnitDTO(String id, String unit, String cqlunit, int sortOrder) {
+		super();
+		this.id = id;
+		this.unit = unit;
+		this.cqlunit = cqlunit;
+		this.sortOrder = sortOrder;
+	}
+
 	/**
 	 * Gets the id.
 	 * 
@@ -52,6 +60,7 @@ public class UnitDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getValue()
 	 */
+	@Override
 	public String getValue() {
 		return id;
 	}
@@ -59,8 +68,8 @@ public class UnitDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getItem()
 	 */
+	@Override
 	public String getItem() {
-		// TODO Auto-generated method stub
 		return unit;
 	}
 	
@@ -120,6 +129,7 @@ public class UnitDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getSortOrder()
 	 */
+	@Override
 	public int getSortOrder() {
 		return sortOrder;
 	}

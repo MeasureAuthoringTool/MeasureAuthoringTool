@@ -3,11 +3,14 @@ package mat.dao.clause.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Repository;
@@ -22,46 +25,44 @@ import mat.model.clause.QDSAttributes;
 @Repository("qDSAttributesDAO")
 public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> implements QDSAttributesDAO {
 
+	private static final String DATA_TYPE_ID = "dataTypeId";
+	
 	public QDSAttributesDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
 	
+	@Override
 	public List<QDSAttributes> findByDataType(String qdmname, ApplicationContext context) {
 		
 		qdmname = MatContext.get().getTextSansOid(qdmname);
-		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
-		DataType dataType = getDataTypeFromQDMName(qdmname, dataTypeDAO);
-		
-		if(dataType == null){
-			return new ArrayList<QDSAttributes>();
-		}
-		
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QDSAttributes.class);
-		criteria.add(Restrictions.eq("dataTypeId", dataType.getId()));
-		return criteria.list();
+		final DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		final DataType dataType = getDataTypeFromQDMName(qdmname, dataTypeDAO);
+
+		return (dataType == null) ? new ArrayList<>() : getQDSAttributesListByParameter(DATA_TYPE_ID, dataType.getId());
 	}
 	
+	@Override
 	public List<QDSAttributes> findByDataTypeName(String dataTypeName, ApplicationContext context){
-		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
-		DataType dataType = getDataTypeFromName(dataTypeName, dataTypeDAO);
+		final DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		final DataType dataType = getDataTypeFromName(dataTypeName, dataTypeDAO);
 		
-		if(dataType == null){
-			System.out.println("In QDSAttributesDAO.findByDataTypeName...no data type by name:"+dataTypeName+" found. Returning blank list.");
-			return new ArrayList<QDSAttributes>();
-		}
-		
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QDSAttributes.class);
-		criteria.add(Restrictions.eq("dataTypeId", dataType.getId()));
-		return criteria.list();
+		return (dataType == null) ? new ArrayList<>() : getQDSAttributesListByParameter(DATA_TYPE_ID, dataType.getId());
 	}
 	
+	@Override
 	public List<QDSAttributes> getAllDataFlowAttributeName() {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QDSAttributes.class);
-		criteria.add(Restrictions.eq("qDSAttributeType", "Data Flow"));
-		return criteria.list();
+		return getQDSAttributesListByParameter("qDSAttributeType", "Data Flow");
+	}
+	
+	private List<QDSAttributes> getQDSAttributesListByParameter(String name, String parameter){
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QDSAttributes> query = cb.createQuery(QDSAttributes.class);
+		final Root<QDSAttributes> root = query.from(QDSAttributes.class);
+		
+		query.select(root).where(cb.equal(root.get(name), parameter));
+		
+		return session.createQuery(query).getResultList();
 	}
 	
 	/**
@@ -77,10 +78,32 @@ public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> impl
 	 */
 	@Override
 	public QDSAttributes findByNameAndDataType(String attributeName, String dataTypeName) {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QDSAttributes.class);
-		criteria.add(Restrictions.eq("name", attributeName));
-		boolean addDataTypeRestriction = dataTypeName == null ? false :
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<QDSAttributes> query = cb.createQuery(QDSAttributes.class);
+		final Root<QDSAttributes> root = query.from(QDSAttributes.class);
+		
+		final Predicate pred = getPredicateByNameAndDataType(attributeName, dataTypeName, cb, root);
+		
+		query.select(root).where(pred);		
+		query.orderBy(cb.asc(root.get("name")));
+		
+		final List<QDSAttributes> qdsAttributesList = session.createQuery(query).getResultList();
+		
+		return CollectionUtils.isNotEmpty(qdsAttributesList) ? qdsAttributesList.get(0) : null;
+	}
+	
+	private Predicate getPredicateByNameAndDataType(String attributeName, String dataTypeName, CriteriaBuilder cb, Root<QDSAttributes> root) {
+		final Predicate p1 = cb.equal(root.get("name"), attributeName);
+		Predicate p2 = null;
+		if(addDataTypeRestriction(attributeName, dataTypeName)) {
+			p2 = cb.equal(root.get(DATA_TYPE_ID), dataTypeName);
+		}
+		return (p2 != null) ? cb.and(p1, p2) : p1 ;
+	}
+	
+	private boolean addDataTypeRestriction(String attributeName, String dataTypeName) {
+		return dataTypeName == null ? false :
 			
 			attributeName.equalsIgnoreCase("Recorder") ? false :
 				attributeName.equalsIgnoreCase("Source") ? false :
@@ -94,14 +117,6 @@ public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> impl
 									attributeName.equalsIgnoreCase("Setting") ? false :
 										attributeName.equalsIgnoreCase("Health Record Field") ? false :
 											true;
-						
-		if(addDataTypeRestriction)
-			criteria.add(Restrictions.eq("dataTypeId", dataTypeName));
-		if (criteria.list().size()>0) {
-			return (QDSAttributes)criteria.list().get(0);
-		} else {
-			return null;
-		}
 	}
 	
 	/**
@@ -117,9 +132,10 @@ public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> impl
 	 *            the data type dao
 	 * @return the data type from qdm name
 	 */
+	@Override
 	public DataType getDataTypeFromQDMName(String qdmname, DataTypeDAO dataTypeDAO){
-		String[] namePieces = qdmname.split(":");
-		int len = namePieces.length;
+		final String[] namePieces = qdmname.split(":");
+		final int len = namePieces.length;
 		int idx = len - 1;
 		
 		DataType dataType = null;
@@ -147,18 +163,22 @@ public class QDSAttributesDAOImpl extends GenericDAO<QDSAttributes, String> impl
 	 * @return the data type from name
 	 */
 	private DataType getDataTypeFromName(String dataTypeName,DataTypeDAO dataTypeDAO){
-		DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
-		return dataType;
+		return dataTypeDAO.findByDataTypeName(dataTypeName);
 	}
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.QDSAttributesDAO#getAllAttributes()
 	 */
+	@Override
 	public List<String> getAllAttributes() {
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QDSAttributes.class);
-		criteria.setProjection(Projections.distinct(Projections.property("name")));
-		List<String> list = criteria.list();
-		return list;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+		final Root<QDSAttributes> root = query.from(QDSAttributes.class);
+		
+		query.select(root.get("name")).distinct(true);
+		query.orderBy(cb.asc(root.get("name")));
+		
+		return session.createQuery(query).getResultList();
 	}
 }

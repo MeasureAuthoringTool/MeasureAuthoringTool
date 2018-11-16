@@ -1,14 +1,14 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +36,7 @@ public class UserAuditLogDAOImpl extends GenericDAO<UserAuditLog, String> implem
 
 			for (int i = 0; i < event.size(); i++) {
 
-				UserAuditLog userAuditLog = new UserAuditLog();
+				final UserAuditLog userAuditLog = new UserAuditLog();
 				userAuditLog.setActionType("Administrator");
 				userAuditLog.setTime(new Date());
 				userAuditLog.setUser(user);
@@ -48,35 +48,35 @@ public class UserAuditLogDAOImpl extends GenericDAO<UserAuditLog, String> implem
 				session.saveOrUpdate(userAuditLog);
 			}
 			result = true;
-		} catch (Exception e) { // TODO: handle application exception
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		return result;
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<UserAuditLogDTO> searchHistory(String userId) {
 		
-		List<UserAuditLogDTO> logResults = new ArrayList<UserAuditLogDTO>();
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria logCriteria = session.createCriteria(UserAuditLog.class);
-		logCriteria.add(Restrictions.eq("user.id",userId));
-		logCriteria.addOrder(Order.desc("time"));
-		List<UserAuditLog> results = logCriteria.list();
-		for (UserAuditLog auditLog : results) {
-			UserAuditLogDTO dto = new UserAuditLogDTO();
-			dto.setId(auditLog.getId());
-			dto.setActivityType(auditLog.getActivityType());
-			dto.setActionType(auditLog.getActionType());
-			dto.setAdditionalInfo(auditLog.getAdditionalInfo());
-			dto.setTime(auditLog.getTime());
-			dto.setUserEmail(auditLog.getUserEmail());
-			dto.setId(auditLog.getId());
-			logResults.add(dto);
-		}
+		
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<UserAuditLogDTO> query = cb.createQuery(UserAuditLogDTO.class);
+		final Root<UserAuditLog> root = query.from(UserAuditLog.class);
+		
+		query.select(cb.construct(
+						UserAuditLogDTO.class, 
+						 root.get("id"),
+						 root.get("actionType"),
+						 root.get("activityType"),
+						 root.get("time"),
+						 root.get("userEmail"),
+						 root.get("user").get("id"),
+						 root.get("additionalInfo")));
+		
+		query.where(cb.equal(root.get("user").get("id"), userId));
+		query.orderBy(cb.desc(root.get("time")));
 
-		return logResults;
+		return session.createQuery(query).getResultList();
 	}
 
 }

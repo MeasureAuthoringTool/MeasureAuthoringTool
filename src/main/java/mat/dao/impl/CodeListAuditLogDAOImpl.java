@@ -1,15 +1,17 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -32,7 +34,7 @@ public class CodeListAuditLogDAOImpl extends GenericDAO<CodeListAuditLog, String
 		Session session = null;
 		boolean result = false;
 		try {
-			CodeListAuditLog codeListAuditLog = new CodeListAuditLog();
+			final CodeListAuditLog codeListAuditLog = new CodeListAuditLog();
 			codeListAuditLog.setActivityType(event);
 			codeListAuditLog.setTime(new Date());
 			codeListAuditLog.setCodeList(codeList);
@@ -42,9 +44,8 @@ public class CodeListAuditLogDAOImpl extends GenericDAO<CodeListAuditLog, String
 			session.saveOrUpdate(codeListAuditLog);			
 			result = true;
 		}
-		catch (Exception e) { //TODO: handle application exception
+		catch (final Exception e) {
 			e.printStackTrace();
-			
 		}
     	return result;
 	}
@@ -56,35 +57,34 @@ public class CodeListAuditLogDAOImpl extends GenericDAO<CodeListAuditLog, String
 	 * @see mat.dao.CodeListAuditLogDAO#searchHistory(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public SearchHistoryDTO searchHistory(String codeListId, int startIndex, int numberOfRows,List<String> filterList){
-		SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
-		List<AuditLogDTO> logResults = new ArrayList<AuditLogDTO>();
-		
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(CodeListAuditLog.class);
-		logCriteria.add(Restrictions.eq("codeList.id", codeListId));
+		final SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<AuditLogDTO> query = cb.createQuery(AuditLogDTO.class);
+		final Root<CodeListAuditLog> root = query.from(CodeListAuditLog.class);
 
-		for(String filter : filterList){
-			logCriteria.add(Restrictions.ne("activityType", filter));
-		}
+		final In<String> in = cb.in(root.get("activityType"));
+		filterList.forEach(in::value);
+		
+		query.select(cb.construct(
+						AuditLogDTO.class, 
+						 root.get("id"),
+						 root.get("activityType"),
+						 root.get("userId"),
+						 root.get("time"),
+						 root.get("additionalInfo")));
+		query.where(cb.and(cb.equal(root.get("codeList").get("id"), codeListId), cb.not(in)));
+		query.orderBy(cb.desc(root.get("time")));
+		
+		final TypedQuery<AuditLogDTO> q = session.createQuery(query);
 
 		if(numberOfRows > 0){
-			logCriteria.setFirstResult(startIndex);
-			logCriteria.setMaxResults(numberOfRows);
+			q.setFirstResult(startIndex);
+			q.setMaxResults(numberOfRows);
 		}
-		logCriteria.addOrder(Order.desc("time"));
 		
-		List<CodeListAuditLog> results = logCriteria.list();
-		
-		for(CodeListAuditLog auditLog: results){
-			AuditLogDTO dto = new AuditLogDTO();
-			dto.setId(auditLog.getId());
-			dto.setActivityType(auditLog.getActivityType());
-			dto.setAdditionlInfo(auditLog.getAdditionalInfo());
-			dto.setEventTs(auditLog.getTime());
-			dto.setUserId(auditLog.getUserId());
-			logResults.add(dto);
-		}
+		final List<AuditLogDTO> logResults = q.getResultList();
 		
 		searchHistoryDTO.setLogs(logResults);		
 		setPagesAndRows(codeListId, numberOfRows, filterList, searchHistoryDTO);
@@ -108,27 +108,26 @@ public class CodeListAuditLogDAOImpl extends GenericDAO<CodeListAuditLog, String
 	 * @param searchHistoryDTO
 	 *            the search history dto
 	 */
-	@SuppressWarnings("rawtypes")
 	private void setPagesAndRows(String codeListId, int numberOfRows, List<String> filterList, SearchHistoryDTO searchHistoryDTO){
 		int pageCount = 0;
 
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(CodeListAuditLog.class);
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<CodeListAuditLog> query = cb.createQuery(CodeListAuditLog.class);
+		final Root<CodeListAuditLog> root = query.from(CodeListAuditLog.class);
+		final In<String> in = cb.in(root.get("activityType"));
+		filterList.forEach(in::value);
 		
-		logCriteria.add(Restrictions.eq("codeList.id", codeListId));
-
-		for(String filter : filterList){
-			logCriteria.add(Restrictions.ne("activityType", filter));
-		}
+		query.select(root).where(cb.and(cb.equal(root.get("codeList").get("id"), codeListId), cb.not(in)));
+		query.orderBy(cb.desc(root.get("time")));
 		
-		logCriteria.setProjection(Projections.rowCount());
+		final List<CodeListAuditLog> results = session.createQuery(query).getResultList();
 
-		List results = logCriteria.list();
-
-		if(results != null && !results.isEmpty()){
-			long totalRows = Long.parseLong(String.valueOf(results.get(0)));			
+		if (CollectionUtils.isNotEmpty(results)){
+			final long totalRows = results.size();			
 			searchHistoryDTO.setTotalResults(totalRows);
 
-			int mod = (int) (totalRows % numberOfRows);
+			final int mod = (int) (totalRows % numberOfRows);
 			pageCount = (int) (totalRows / numberOfRows);
 			pageCount = (mod > 0)?(pageCount + 1) : pageCount;
 			

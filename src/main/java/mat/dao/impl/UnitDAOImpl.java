@@ -1,14 +1,15 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,23 +27,23 @@ public class UnitDAOImpl extends GenericDAO<Unit, String> implements UnitDAO {
 		setSessionFactory(sessionFactory);
 	}
 	
+	@Override
 	public List<UnitDTO> getAllUnits(){
-		
-		List<UnitDTO> unitDTOList = new ArrayList<UnitDTO>();
 		logger.info("Getting all the rows from the Unit table");
-		Session session = getSessionFactory().getCurrentSession();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<UnitDTO> query = cb.createQuery(UnitDTO.class);
+		final Root<Unit> root = query.from(Unit.class);
 
-		Criteria criteria = session.createCriteria(Unit.class);
-		criteria.addOrder(Order.asc("sortOrder"));
-		List<Unit> unitList = criteria.list();
-		for(Unit unit: unitList){
-			UnitDTO unitDTO =  new UnitDTO();
-			unitDTO.setId(unit.getId());
-			unitDTO.setUnit(unit.getName());
-			unitDTO.setCqlunit(unit.getCqlUnit());
-			unitDTO.setSortOrder(unit.getSortOrder());
-			unitDTOList.add(unitDTO);
-		}
-		return unitDTOList;
+		query.select(cb.construct(
+						UnitDTO.class, 
+						root.get("id"),
+						root.get("name"),
+						root.get("cqlUnit"),
+						root.get("sortOrder")));
+		
+		query.orderBy(cb.asc(root.get("sortOrder")));
+		
+		return session.createQuery(query).getResultList();
 	}
 }

@@ -91,7 +91,7 @@ public class UserAuditLogDTO implements IsSerializable{
 	 * @return the time
 	 */
 	public Date getTime() {
-		return (Date)time;
+		return time;
 	}
 
 	/**
@@ -135,5 +135,21 @@ public class UserAuditLogDTO implements IsSerializable{
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	public UserAuditLogDTO() {
+
+	}
+
+	public UserAuditLogDTO(String id, String actionType, String activityType, Timestamp time, String userEmail,
+			String userId, String additionalInfo) {
+		super();
+		this.id = id;
+		this.actionType = actionType;
+		this.activityType = activityType;
+		this.time = time;
+		this.userEmail = userEmail;
+		this.userId = userId;
+		this.additionalInfo = additionalInfo;
 	}
 }

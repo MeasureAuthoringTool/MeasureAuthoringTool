@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -48,7 +52,7 @@ public class MeasureXMLDAOImpl extends GenericDAO<MeasureXML, String> implements
 		setSessionFactory(sessionFactory);
 	}
 	
-	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
+	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<>();
 
 	static {
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.113762.1.4.1", ConstantMessages.PATIENT_CHARACTERISTIC_GENDER);
@@ -59,15 +63,16 @@ public class MeasureXMLDAOImpl extends GenericDAO<MeasureXML, String> implements
 
 	@Override
 	public final MeasureXML findForMeasure(final String measureId) {
-		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(MeasureXML.class);
+		Session session = getSessionFactory().getCurrentSession();
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<MeasureXML> query = cb.createQuery(MeasureXML.class);
+		Root<MeasureXML> root = query.from(MeasureXML.class);
+		
+		query.select(root).where(cb.equal(root.get("measureId"), measureId));
+		
+		List<MeasureXML> results = session.createQuery(query).getResultList();
 
-		criteria.add(Restrictions.eq("measureId", measureId));
-		List<MeasureXML> results = criteria.list();
-		if (!results.isEmpty()) {
-			return results.get(0);
-		} else {
-			return null;
-		}
+		return CollectionUtils.isNotEmpty(results) ? results.get(0) : null; 
 	}
 
 	@Override
@@ -76,7 +81,7 @@ public class MeasureXMLDAOImpl extends GenericDAO<MeasureXML, String> implements
 		List<ListObject> elementList = listObjectDAO
 				.getElementCodeListByOID(qdmOidList);
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<>();
 		for (ListObject lo : elementList) {
 			QualityDataSetDTO qds = new QualityDataSetDTO();
 			qds.setOid(lo.getOid());
@@ -112,11 +117,11 @@ public class MeasureXMLDAOImpl extends GenericDAO<MeasureXML, String> implements
 	@Override
 	public final CQLQualityDataModelWrapper createSupplimentalQDM(final String measureId,
 			final boolean isClone, final HashMap<String, String> uuidMap) {
-		// Get the Supplimental ListObject from the list_object table
+		// Get the Supplemental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = listObjectDAO
 				.getSupplimentalCodeList();
 		CQLQualityDataModelWrapper wrapper = new CQLQualityDataModelWrapper();
-		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<CQLQualityDataSetDTO>();
+		ArrayList<CQLQualityDataSetDTO> qdsList = new ArrayList<>();
 		wrapper.setQualityDataDTO(qdsList);
 		for (ListObject lo : listOfSuppElements) {
 			CQLQualityDataSetDTO qds = new CQLQualityDataSetDTO();

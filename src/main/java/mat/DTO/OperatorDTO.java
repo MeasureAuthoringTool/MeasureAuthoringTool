@@ -1,46 +1,33 @@
 package mat.DTO;
 
 
-import mat.client.codelist.HasListBox;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * DTO for operator object.
- */
+import mat.client.codelist.HasListBox;
+
 public class OperatorDTO implements IsSerializable, HasListBox {
 	
-	/** The id. */
 	private String id;
 	
-	/** The operator. */
 	private String operator;
 	
-	/** The operator type. */
 	private String operatorType;
 	
-	/**
-	 * Instantiates a new operator dto.
-	 */
 	public OperatorDTO(){
 		
 	}
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	public OperatorDTO(String id, String operator, String operatorType) {
+		super();
+		this.id = id;
+		this.operator = operator;
+		this.operatorType = operatorType;
+	}
+	
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -49,6 +36,7 @@ public class OperatorDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getValue()
 	 */
+	@Override
 	public String getValue() {
 		return id;
 	}
@@ -56,54 +44,27 @@ public class OperatorDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getItem()
 	 */
+	@Override
 	public String getItem() {
 		return operator;
 	}
 	
-	/**
-	 * Sets the item.
-	 * 
-	 * @param longName
-	 *            the new item
-	 */
 	public void setItem(String longName) {
 		this.operator = longName;
 	}
 	
-	/**
-	 * Gets the operator.
-	 * 
-	 * @return the operator
-	 */
 	public String getOperator() {
 		return operator;
 	}
 	
-	/**
-	 * Sets the operator.
-	 * 
-	 * @param operator
-	 *            the new operator
-	 */
 	public void setOperator(String operator) {
 		this.operator = operator;
 	}
 	
-	/**
-	 * Gets the operator type.
-	 * 
-	 * @return the operator type
-	 */
 	public String getOperatorType() {
 		return operatorType;
 	}
 	
-	/**
-	 * Sets the operator type.
-	 * 
-	 * @param operatorType
-	 *            the new operator type
-	 */
 	public void setOperatorType(String operatorType) {
 		this.operatorType = operatorType;
 	}
@@ -113,7 +74,6 @@ public class OperatorDTO implements IsSerializable, HasListBox {
 	 */
 	@Override
 	public int getSortOrder() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	

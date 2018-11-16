@@ -427,23 +427,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
-	@Override
-	public List<? extends HasListBox> getAllDataTypes() {
-		List<DataTypeDTO> retList = new ArrayList<>();
-		List<DataType> dt = dataTypeDAO.findAllDataType();
-		for (DataType dataType : dt) {
-			if (!dataType.getCategory().getId().equalsIgnoreCase("22")) { // Filter
-				// Timing
-				// Element
-				// Category
-				// as this will be added by default to measure at create time.
-				DataTypeDTO dto = new DataTypeDTO();
-				dto.setDescription(dataType.getDescription());
-				dto.setId(dataType.getId());
-				retList.add(dto);
-			}
-		}
-		return retList;
+	public List<DataTypeDTO> getAllDataTypes() {
+		return dataTypeDAO.findAllDataType();
 	}
 
 	@Override
@@ -453,19 +438,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	@Override
 	public List<UnitDTO> getAllUnits() {
-		List<UnitDTO> data = unitDAO.getAllUnits();
-		return data;
+		return unitDAO.getAllUnits();
 	}
 
 	@Override
 	public List<? extends HasListBox> getCodeListsForCategory(String categoryId) {
-		List<HasListBoxDTO> retList = new ArrayList<>();
-		return retList;
-	}
-
-	@Override
-	public List<Code> getCodes(String codeListId, int startIndex, int pageSize) {
-		return codeDAO.searchCodes(codeListId, startIndex, pageSize);
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -521,13 +499,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	public List<? extends HasListBox> getQDSDataTypeForCategory(
 			String categoryId) {
 		List<DataTypeDTO> retList = new ArrayList<>();
-		if ((categoryId != null) && !"".equals(categoryId)) {
+		if (StringUtils.isNotBlank(categoryId)) {
 			Category category = categoryDAO.find(categoryId);
 			for (DataType dataType : category.getDataTypes()) {
-				DataTypeDTO dto = new DataTypeDTO();
-				dto.setDescription(dataType.getDescription());
-				dto.setId(dataType.getId());
-				retList.add(dto);
+				retList.add(new DataTypeDTO(dataType.getId(), dataType.getDescription()));
 			}
 		}
 		return retList;

@@ -6,8 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import mat.DTO.DataTypeDTO;
 import mat.DTO.UnitDTO;
-import mat.client.codelist.HasListBox;
 import mat.client.cqlconstant.service.CQLConstantService;
 import mat.client.shared.CQLConstantContainer;
 import mat.client.shared.MatContext;
@@ -17,38 +20,50 @@ import mat.server.service.CodeListService;
 import mat.server.service.MeasureLibraryService;
 import mat.server.util.MATPropertiesService;
 
-@SuppressWarnings("serial")
+@Service
 public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implements CQLConstantService {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private CodeListService codeListService;
+	
+	@Autowired
+	private QDSAttributesDAO qDSAttributesDAO;
+	
+	@Autowired
+	private MeasureLibraryService measureLibraryService;
+	
 	@Override
 	public CQLConstantContainer getAllCQLConstants() {		
-		CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
+		final CQLConstantContainer cqlConstantContainer = new CQLConstantContainer(); 
 		
 		// get the unit dto list
-		List<UnitDTO> unitDTOList = getCodeListService().getAllUnits();
-		cqlConstantContainer.setCqlUnitDTOList(getCodeListService().getAllUnits());
+		final List<UnitDTO> unitDTOList = codeListService.getAllUnits();
+		cqlConstantContainer.setCqlUnitDTOList(unitDTOList);
 		
 		// get the unit map in the form of <UnitName, CQLUnit>
-		Map<String, String> unitMap = new LinkedHashMap<String, String>(); 
+		final Map<String, String> unitMap = new LinkedHashMap<>(); 
 		unitMap.put(MatContext.PLEASE_SELECT, MatContext.PLEASE_SELECT);
-		for(UnitDTO unit : unitDTOList) {
+		for(final UnitDTO unit : unitDTOList) {
 			unitMap.put(unit.getUnit(), unit.getCqlunit());
 		}
 		cqlConstantContainer.setCqlUnitMap(unitMap);
 		
-		List<String> cqlAttributesList = getAttributeDAO().getAllAttributes();
-		Collections.sort(cqlAttributesList);
+		final List<String> cqlAttributesList = qDSAttributesDAO.getAllAttributes();
 		cqlConstantContainer.setCqlAttributeList(cqlAttributesList);
 		
 		// get the datatypes
-		List<? extends HasListBox> dataTypeListBoxList = getCodeListService().getAllDataTypes();
-		List<String> datatypeList = new ArrayList<String>();
+		final List<DataTypeDTO> dataTypeListBoxList = codeListService.getAllDataTypes();
+		final List<String> datatypeList = new ArrayList<>();
 		for(int i = 0; i < dataTypeListBoxList.size(); i++) {
 			datatypeList.add(dataTypeListBoxList.get(i).getItem());
 		}
 				
-		List<String> qdmDatatypeList = new ArrayList<String>(); 
-		Collections.sort(datatypeList);
+		final List<String> qdmDatatypeList = new ArrayList<>(); 
 		qdmDatatypeList.addAll(datatypeList);
 		datatypeList.remove("attribute");
 		
@@ -56,11 +71,11 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		cqlConstantContainer.setQdmDatatypeList(qdmDatatypeList);
 		
 		// get keywords
-		CQLKeywords keywordList = getMeasureLibraryService().getCQLKeywordsLists(); 
+		final CQLKeywords keywordList = measureLibraryService.getCQLKeywordsLists(); 
 		cqlConstantContainer.setCqlKeywordList(keywordList);
 		
 		// get timings
-		List<String> timings = keywordList.getCqlTimingList();
+		final List<String> timings = keywordList.getCqlTimingList();
 		Collections.sort(timings);
 		cqlConstantContainer.setCqlTimingList(timings);
 		
@@ -69,33 +84,6 @@ public class CQLConstantServiceImpl extends SpringRemoteServiceServlet implement
 		
 		return cqlConstantContainer;
 		
-	}
-	
-	/**
-	 * Gets the code list service.
-	 * 
-	 * @return the code list service
-	 */
-	public CodeListService getCodeListService() {
-		return (CodeListService)context.getBean("codeListService");
-	}
-	
-	/**
-	 * Gets the dao.
-	 * 
-	 * @return the dao
-	 */
-	public QDSAttributesDAO getAttributeDAO() {
-		return (QDSAttributesDAO) context.getBean("qDSAttributesDAO");
-	}
-	
-	/**
-	 * Gets the measure library service.
-	 * 
-	 * @return the measure library service
-	 */
-	public MeasureLibraryService getMeasureLibraryService(){
-		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 
 }

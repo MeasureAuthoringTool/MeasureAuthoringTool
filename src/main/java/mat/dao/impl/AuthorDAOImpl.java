@@ -1,14 +1,15 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,30 +19,29 @@ import mat.model.Author;
 
 @Repository("authorDAO")
 public class AuthorDAOImpl extends GenericDAO<Author, String> implements mat.dao.AuthorDAO {
-	
+
 	private static final Log logger = LogFactory.getLog(AuthorDAOImpl.class);
-	
-	
+
 	public AuthorDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
 
-
-	@SuppressWarnings({ "deprecation", "unchecked" })
+	@Override
 	public List<AuthorDTO> getAllAuthors(){
-		
-		List<AuthorDTO> AuthorDTOList = new ArrayList<AuthorDTO>();
-		logger.info("Getting all the rows from the Steward table");
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria authorCriteria = session.createCriteria(Author.class);
-		authorCriteria.add(Restrictions.ne("authorName", "other"));
-		List<Author> AuthorList = authorCriteria.list();
-		for(Author author: AuthorList){
-			AuthorDTO authorDTO =  new AuthorDTO();			
-			authorDTO.setAuthorName(author.getAuthorName());
-			authorDTO.setId(author.getId());
-			AuthorDTOList.add(authorDTO);
-		}
-		return AuthorDTOList;
+		logger.info("Getting all the rows from the Author table");
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<AuthorDTO> query = cb.createQuery(AuthorDTO.class);
+		final Root<Author> root = query.from(Author.class);
+
+		query.select(cb.construct(
+				AuthorDTO.class, 
+				root.get("id"),
+				root.get("authorName")));
+
+		query.where(cb.notEqual(root.get("authorName"), "other"));	
+
+		return session.createQuery(query).getResultList();
+
 	}
 }

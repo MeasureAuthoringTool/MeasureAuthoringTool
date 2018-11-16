@@ -3,13 +3,14 @@ package mat.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -29,10 +30,10 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 	public void recordRecentMeasureActivity(String measureId, String userId) {
 		
 		//List of recently used measure by the given user in the descending order of timestamp(time).
-		List<RecentMSRActivityLog> recentlyUsedMeasures = getRecentMeasureActivityLog(userId);
+		final List<RecentMSRActivityLog> recentlyUsedMeasures = getRecentMeasureActivityLog(userId);
 		
 		if (recentlyUsedMeasures != null) {
-			if (recentlyUsedMeasures.size() == 0) {
+			if (recentlyUsedMeasures.isEmpty()) {
 				saveRecentMeasureActivity(measureId, userId);
 			} else if (recentlyUsedMeasures.size() == 1) {
 				if (recentlyUsedMeasures.get(0).getMeasureId().equalsIgnoreCase(measureId)) {
@@ -62,7 +63,7 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 	 * @param userId the user id
 	 */
 	private void saveRecentMeasureActivity(String measureId, String userId) {
-		RecentMSRActivityLog recentMSRActivityLog = new RecentMSRActivityLog();
+		final RecentMSRActivityLog recentMSRActivityLog = new RecentMSRActivityLog();
 		recentMSRActivityLog.setMeasureId(measureId);
 		recentMSRActivityLog.setUserId(userId);
 		recentMSRActivityLog.setTime(new Date());
@@ -87,16 +88,17 @@ public class RecentMSRActivityLogDAOImpl extends GenericDAO<RecentMSRActivityLog
 	 * @param userId the user id
 	 * @return the list of recently used measures
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
-		List<RecentMSRActivityLog> recentlyUsedMeasures;
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(RecentMSRActivityLog.class);
-		criteria.add(Restrictions.eq("userId", userId));
-		criteria.addOrder(Order.desc("time"));
-		recentlyUsedMeasures = criteria.list();
-		return recentlyUsedMeasures;
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<RecentMSRActivityLog> query = cb.createQuery(RecentMSRActivityLog.class);
+		final Root<RecentMSRActivityLog> root = query.from(RecentMSRActivityLog.class);
+		
+		query.select(root).where(cb.equal(root.get("userId"), userId));
+		query.orderBy(cb.desc(root.get("time")));
+		
+		return session.createQuery(query).getResultList();
 	}
 
 }

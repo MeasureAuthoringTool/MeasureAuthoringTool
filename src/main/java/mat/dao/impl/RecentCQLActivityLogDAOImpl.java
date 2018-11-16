@@ -3,13 +3,14 @@ package mat.dao.impl;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,10 +32,10 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 	public void recordRecentCQLLibraryActivity(String cqlId, String userId) {
 		
 		//List of recently used measure by the given user in the descending order of timestamp(time).
-		List<RecentCQLActivityLog> recentlyUsedLibraries = getRecentCQLLibraryActivityLog(userId);
+		final List<RecentCQLActivityLog> recentlyUsedLibraries = getRecentCQLLibraryActivityLog(userId);
 		
 		if (recentlyUsedLibraries != null) {
-			if (recentlyUsedLibraries.size() == 0) {
+			if (recentlyUsedLibraries.isEmpty()) {
 				saveRecentCQLActivity(cqlId, userId);
 			} else if (recentlyUsedLibraries.size() == 1) {
 				if (recentlyUsedLibraries.get(0).getCqlId().equalsIgnoreCase(cqlId)) {
@@ -64,7 +65,7 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 	 * @param userId the user id
 	 */
 	private void saveRecentCQLActivity(String cqlId, String userId) {
-		RecentCQLActivityLog recentCQLActivityLog = new RecentCQLActivityLog();
+		final RecentCQLActivityLog recentCQLActivityLog = new RecentCQLActivityLog();
 		recentCQLActivityLog.setCqlId(cqlId);
 		recentCQLActivityLog.setUserId(userId);
 		recentCQLActivityLog.setTime(new Date());
@@ -89,16 +90,18 @@ public class RecentCQLActivityLogDAOImpl extends GenericDAO<RecentCQLActivityLog
 	 * @param userId the user id
 	 * @return the list of recently used measures
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<RecentCQLActivityLog> getRecentCQLLibraryActivityLog(String userId) {
-		List<RecentCQLActivityLog> recentlyUsedLibraries;
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(RecentCQLActivityLog.class);
-		criteria.add(Restrictions.eq("userId", userId));
-		criteria.addOrder(Order.desc("time"));
-		recentlyUsedLibraries = criteria.list();
-		return recentlyUsedLibraries;
+		
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<RecentCQLActivityLog> query = cb.createQuery(RecentCQLActivityLog.class);
+		final Root<RecentCQLActivityLog> root = query.from(RecentCQLActivityLog.class);
+		
+		query.select(root).where(cb.equal(root.get("userId"), userId));
+		query.orderBy(cb.desc(root.get("time")));
+
+		return session.createQuery(query).getResultList();
 	}
 
 }

@@ -1,43 +1,30 @@
 package mat.DTO;
 
 
-import mat.client.codelist.HasListBox;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * The Class AuthorDTO.
- */
+import mat.client.codelist.HasListBox;
+
 public class AuthorDTO implements IsSerializable, HasListBox {
 
-	/** The id. */
 	private String id;
-	
-	/** The author name. */
+
 	private String authorName;
-	
-	/**
-	 * Instantiates a new author dto.
-	 */
+
 	public AuthorDTO(){
 		
 	}
 	
-	/**
-	 * Gets the id.
-	 * 
-	 * @return the id
-	 */
+	public AuthorDTO(String id, String authorName) {
+		super();
+		this.id = id;
+		this.authorName = authorName;
+	}
+
 	public String getId() {
 		return id;
 	}
 	
-	/**
-	 * Sets the id.
-	 * 
-	 * @param id
-	 *            the new id
-	 */
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -46,6 +33,7 @@ public class AuthorDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getValue()
 	 */
+	@Override
 	public String getValue() {
 		return id;
 	}
@@ -53,8 +41,8 @@ public class AuthorDTO implements IsSerializable, HasListBox {
 	/* (non-Javadoc)
 	 * @see mat.client.codelist.HasListBox#getItem()
 	 */
+	@Override
 	public String getItem() {
-		// TODO Auto-generated method stub
 		return authorName;
 	}
 	
@@ -82,7 +70,6 @@ public class AuthorDTO implements IsSerializable, HasListBox {
 	 */
 	@Override
 	public int getSortOrder() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	

@@ -1,8 +1,8 @@
 package mat.DTO;
 
-import mat.client.codelist.HasListBox;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.client.codelist.HasListBox;
 
 /**
  * The Class DataTypeDTO.
@@ -74,7 +74,13 @@ public class DataTypeDTO implements IsSerializable, HasListBox{
 	 */
 	@Override
 	public int getSortOrder() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public DataTypeDTO(String id, String description) {
+		super();
+		this.id = id;
+		this.description = description;
+	}
+
 }

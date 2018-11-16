@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails.components;
 
+import com.google.gwt.core.client.GWT;
+
 public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	private String measureName;
 	private String finalizedDate;
@@ -48,8 +50,19 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	}
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
+		GWT.log("checking equals");
+		GWT.log("original model: " + model.toString());
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
-		return (
+		//TODO fix composite scoring method assignment
+		//TODO fix this method
+		GWT.log("finalized date: " + getFinalizedDate());
+		boolean isEqual = ((originalModel.getMeasureName() == null && getMeasureName() == null) ||
+				(originalModel.getMeasureName() != null && originalModel.getMeasureName().equals(getMeasureName())) &&
+				((originalModel.getFinalizedDate() == null && getFinalizedDate() == null) ||
+						(originalModel.getFinalizedDate() != null && originalModel.getFinalizedDate().equals(getFinalizedDate()))));
+		GWT.log("isEqual: " + isEqual);
+		return isEqual;
+/*		return (
 				((originalModel.getMeasureName() == null && getMeasureName() == null) ||
 				(originalModel.getMeasureName() != null && originalModel.getMeasureName().equals(getMeasureName()))) &&
 				
@@ -68,7 +81,7 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 				(originalModel.geteCQMVersionNumber().equals(geteCQMVersionNumber())) &&
 				
 				(originalModel.getCompositeScoringMethod() == null && getCompositeScoringMethod() == null) ||
-				(originalModel.getCompositeScoringMethod() != null && getCompositeScoringMethod().contentEquals(getCompositeScoringMethod())));
+				(originalModel.getCompositeScoringMethod() != null && getCompositeScoringMethod().equals(getCompositeScoringMethod())));*/
 	}
 	
 	@Override
@@ -90,5 +103,18 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	}
 	public void setScoringMethod(String scoringMethod) {
 		this.scoringMethod = scoringMethod;
+	}
+	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("measureName: " + measureName);
+		sb.append(", finalizedDate: " + finalizedDate);
+		sb.append(", patientBased: " + patientBased);
+		sb.append(", guid: " + guid);
+		sb.append(", eCQMAbbreviatedTitle: " + eCQMAbbreviatedTitle);
+		sb.append(", eCQMVersionNumber: " + eCQMVersionNumber);
+		sb.append(", compositeScoringMethod: " + compositeScoringMethod);
+		sb.append(", scoringMethod: " + scoringMethod);
+		return sb.toString();
 	}
 }

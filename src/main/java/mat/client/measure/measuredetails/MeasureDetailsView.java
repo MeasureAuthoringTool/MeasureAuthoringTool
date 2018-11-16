@@ -160,4 +160,11 @@ public class MeasureDetailsView {
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
 		return componentDetailView.getMeasureDetailsComponentModel();
 	}
+	public SaveButton getSaveButton() {
+		return saveButton;
+	}
+
+	public void setSaveButton(SaveButton saveButton) {
+		this.saveButton = saveButton;
+	}
 }

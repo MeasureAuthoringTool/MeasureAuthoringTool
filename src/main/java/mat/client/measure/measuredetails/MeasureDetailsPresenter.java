@@ -1,5 +1,6 @@
 package mat.client.measure.measuredetails;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -59,7 +60,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	@Override
-	public void onMenuItemClicked(MatDetailItem menuItem) {
+	public void handleMenuItemClick(MatDetailItem menuItem) {
 		measureDetailsView.buildDetailView(menuItem);
 	}
 	
@@ -156,6 +157,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			}
 		});
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
+		measureDetailsView.getSaveButton().addClickHandler(event -> handleSaveButtonClick());
 	}
 
 	protected AsyncCallback<Boolean> getMeasureCallBack() {
@@ -247,5 +249,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	public void setCompositeMeasure(boolean isCompositeMeasure) {
 		this.isCompositeMeasure = isCompositeMeasure;
+	}
+
+	@Override
+	public void handleSaveButtonClick() {
+		if(measureDetailsView.getSaveConfirmation() != null) {
+			GWT.log("save confirmation present");
+		} else {
+			GWT.log("no save confirmation");
+		}
 	}
 }

@@ -3,7 +3,8 @@ package mat.client.measure.measuredetails;
 import mat.client.shared.MatDetailItem;
 
 public interface MeasureDetailsObserver {
-	void onMenuItemClicked(MatDetailItem menuItem);
+	void handleMenuItemClick(MatDetailItem menuItem);
 	void handleDeleteMeasureButtonClick();
+	void handleSaveButtonClick();
 	void handleStateChanged(); 
 }

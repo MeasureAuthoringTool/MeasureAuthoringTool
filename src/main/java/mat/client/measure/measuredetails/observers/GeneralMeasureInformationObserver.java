@@ -101,14 +101,14 @@ public class GeneralMeasureInformationObserver {
 	}
 
 	private boolean compositeScoringChanged(GeneralInformationModel model1, GeneralInformationModel model2, boolean scoringMethodChanged) {
-		if(model1.getCompositeScoringMethod().equals(model2.getCompositeScoringMethod())) {
+		if(model1.getCompositeScoringMethod() != null && !model1.getCompositeScoringMethod().equals(model2.getCompositeScoringMethod())) {
 			scoringMethodChanged = true;
 		}
 		return scoringMethodChanged;
 	}
 	
 	private boolean scoringChanged(GeneralInformationModel model1, GeneralInformationModel model2, boolean scoringMethodChanged) {
-		if(model1.getScoringMethod().equals(model2.getScoringMethod())) {
+		if(model1.getCompositeScoringMethod() != null && !model1.getScoringMethod().equals(model2.getScoringMethod())) {
 			scoringMethodChanged = true;
 		}
 		return scoringMethodChanged;

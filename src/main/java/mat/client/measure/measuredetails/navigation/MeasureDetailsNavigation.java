@@ -119,7 +119,7 @@ public class MeasureDetailsNavigation {
 	}
 
 	private void handleAnchorListItemClick(MatDetailItem menuItem) {
-		observer.onMenuItemClicked(menuItem);
+		observer.handleMenuItemClick(menuItem);
 		setActiveMenuItem(menuItem);
 	}
 

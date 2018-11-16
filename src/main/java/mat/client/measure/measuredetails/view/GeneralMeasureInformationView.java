@@ -8,6 +8,7 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -80,6 +81,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 
 	@Override
 	public boolean hasUnsavedChanges() {
+		GWT.log("checking unsaved Changes");
 		return !originalModel.equals(generalInformationModel);
 	}
 
@@ -453,7 +455,9 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 
 	@Override
 	public ConfirmationDialogBox getSaveConfirmation() {
+		GWT.log("calling getSaveConfirmation");
 		if(hasUnsavedChanges()) {
+			GWT.log("now got here getSaveConfirmation");
 			return observer.getSaveConfirmation(originalModel, generalInformationModel);
 		}
 		return null;

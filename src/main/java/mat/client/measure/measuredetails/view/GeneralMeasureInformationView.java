@@ -27,6 +27,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.SpacerWidget;
+import mat.client.util.RichTextEditor;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
 
@@ -476,5 +477,11 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	@Override
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel() {
 		return generalInformationModel;
+	}
+
+	@Override
+	public RichTextEditor getRichTextEditor() {
+		//No rich text editor on this page
+		return null;
 	}
 }

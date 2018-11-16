@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.shared.ConfirmationDialogBox;
+import mat.client.util.RichTextEditor;
 
 public interface ComponentDetailView {
 	public Widget getWidget();
@@ -16,4 +17,5 @@ public interface ComponentDetailView {
 	public ConfirmationDialogBox getSaveConfirmation();
 	public void resetForm();
 	public MeasureDetailsComponentModel getMeasureDetailsComponentModel();
+	public RichTextEditor getRichTextEditor();
 }

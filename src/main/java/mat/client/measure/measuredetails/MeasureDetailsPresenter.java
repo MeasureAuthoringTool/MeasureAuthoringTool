@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails;
 
+import org.gwtbootstrap3.extras.summernote.client.event.SummernoteKeyUpEvent;
+
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;

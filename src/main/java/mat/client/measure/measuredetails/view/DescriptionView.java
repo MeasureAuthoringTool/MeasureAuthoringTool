@@ -70,4 +70,9 @@ public class DescriptionView implements ComponentDetailView {
         textAreaPanel.setWidth("95%");
         mainPanel.add(textAreaPanel);
 	}
+
+	@Override
+	public RichTextEditor getRichTextEditor() {
+		return richTextEditor;
+	}
 }

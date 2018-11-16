@@ -2,7 +2,9 @@ package mat.client.measure.measuredetails;
 
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.base.button.AbstractButton;
 import org.gwtbootstrap3.client.ui.constants.Pull;
+import org.gwtbootstrap3.extras.summernote.client.event.SummernoteKeyUpEvent;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -22,6 +24,7 @@ import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
+import mat.client.util.RichTextEditor;
 
 public class MeasureDetailsView {
 	private VerticalPanel mainPanel = new VerticalPanel();
@@ -36,6 +39,7 @@ public class MeasureDetailsView {
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private MeasureDetailsModel measureDetailsComponent;
+	private RichTextEditor currentRichTextEditor;
 	
 	
 	public MeasureDetailsView(MeasureDetailsModel measureDetailsComponent, MeasureDetailsItems measureDetail, MeasureDetailsNavigation navigationPanel) {
@@ -91,12 +95,26 @@ public class MeasureDetailsView {
 		widgetComponentPanel.clear();
 		buildHeading();
 		componentDetailView = MeasureDetailsViewFactory.get().getMeasureDetailComponentView(measureDetailsComponent, currentMeasureDetail);
+		currentRichTextEditor = componentDetailView.getRichTextEditor();
+		if(currentRichTextEditor != null) {
+			currentRichTextEditor.getRichTextEditor().addSummernoteKeyUpHandler(keyUpEvent -> handleRichTextTabOut(keyUpEvent));
+		}
 		widgetComponentPanel.add(componentDetailView.getWidget());
 		widgetComponentPanel.setWidth("100%");
 		widgetComponentPanel.setStyleName("marginLeft15px");
 		widgetComponentPanel.getElement().setId("measureDetailsView_ComponentPanel");
 		buildSavePanel(currentMeasureDetail);
 		return widgetComponentPanel;
+	}
+	private void handleRichTextTabOut(SummernoteKeyUpEvent keyUpEvent) {
+		if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getShiftKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
+            keyUpEvent.getNativeEvent().preventDefault();
+            //TODO set focus on header
+        }
+        else if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
+            keyUpEvent.getNativeEvent().preventDefault();
+            saveButton.setFocus(true);
+        }
 	}
 	
 	public VerticalPanel buildDetailView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail, MeasureDetailsNavigation navigationPanel) {

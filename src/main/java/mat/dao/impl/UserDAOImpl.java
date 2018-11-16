@@ -168,13 +168,12 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 		Session session = getSessionFactory().getCurrentSession();
 		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
         CriteriaQuery<Organization> criteriaQuery = criteriaBuilder.createQuery(Organization.class);
-      //  final Root<Organization> userOrganizationRoot = criteriaQuery.from(Organization.class);
         final Root<User> userRoot = criteriaQuery.from(User.class);
         Join<Organization,User> join = userRoot.join("organization",JoinType.INNER);
-        criteriaQuery.multiselect(join.get("organization").get("id"),
-        						  join.get("organization").get("organizationName"),
-        						  join.get("organization").get("organizationOID")).where(criteriaBuilder.equal(join.get("id"),userRoot.get("organization"))).distinct(true);
+        criteriaQuery.multiselect(join).distinct(true);
+
         List<Organization> usedOrganization =  session.createQuery(criteriaQuery).getResultList();
+        
 		for(Organization org : usedOrganization){
 			usedOrganizationMap.put(Long.toString(org.getId()), org);
 		}

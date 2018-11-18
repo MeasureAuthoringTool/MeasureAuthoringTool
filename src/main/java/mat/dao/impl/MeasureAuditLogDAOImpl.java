@@ -1,15 +1,18 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,106 +26,105 @@ import mat.server.LoggedInUserUtil;
 @Repository("measureAuditLogDAO")
 public class MeasureAuditLogDAOImpl extends GenericDAO<MeasureAuditLog, String> implements mat.dao.MeasureAuditLogDAO{
 	
+	private static final String ACTIVITY_TYPE = "activityType";
+	private static final String USER_COMMENT = "User Comment";
+	
 	public MeasureAuditLogDAOImpl(@Autowired SessionFactory sessionFactory) {
 		setSessionFactory(sessionFactory);
 	}
 	
 	@Override
 	public boolean recordMeasureEvent(Measure measure, String event, String additionalInfo){
-		Session session = null;
 		boolean result = false;
 		try {
-			MeasureAuditLog measureAuditLog = new MeasureAuditLog();
+			final MeasureAuditLog measureAuditLog = new MeasureAuditLog();
 			measureAuditLog.setActivityType(event);
 			measureAuditLog.setTime(new Date());
 			measureAuditLog.setMeasure(measure);
 			measureAuditLog.setUserId(LoggedInUserUtil.getLoggedInUserEmailAddress());
 			measureAuditLog.setAdditionalInfo(additionalInfo);
-			session = getSessionFactory().getCurrentSession();
+			final Session session = getSessionFactory().getCurrentSession();
 			session.saveOrUpdate(measureAuditLog);			
 			result = true;
 		}
-		catch (Exception e) { 
+		catch (final Exception e) { 
 			e.printStackTrace();
 		}
     	return result;
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
-	public SearchHistoryDTO searchHistory(String measureId, int startIndex, int numberOfRows,List<String> filterList){
-		List<AuditLogDTO> logResults = new ArrayList<AuditLogDTO>();
-		SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
-		
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureAuditLog.class);
-		logCriteria.add(Restrictions.eq("measure.id", measureId));
-		logCriteria.add(Restrictions.ne("activityType", "User Comment"));
-		
-		for(String filter : filterList){
-			logCriteria.add(Restrictions.ne("activityType", filter));
-		}
+	public SearchHistoryDTO searchHistory(String measureId, int startIndex, int numberOfRows, List<String> filterList){
+		final SearchHistoryDTO searchHistoryDTO = new SearchHistoryDTO();
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<AuditLogDTO> query = cb.createQuery(AuditLogDTO.class);
+		final Root<MeasureAuditLog> root = query.from(MeasureAuditLog.class);
+
+		final Predicate predicate = getPredicateForAuditLog(measureId, filterList, cb, root);
+
+		query.select(cb.construct(
+						AuditLogDTO.class, 
+						 root.get("id"),
+						 root.get(ACTIVITY_TYPE),
+						 root.get("userId"),
+						 root.get("time"),
+						 root.get("additionalInfo")));
+		query.where(predicate);
+		query.orderBy(cb.desc(root.get("time")));
+
+		final TypedQuery<AuditLogDTO> q = session.createQuery(query);
 		
 		if(numberOfRows > 0){
-			logCriteria.setFirstResult(startIndex);
-			logCriteria.setMaxResults(numberOfRows);
+			q.setFirstResult(startIndex);
+			q.setMaxResults(numberOfRows);
 		}
-		logCriteria.addOrder(Order.desc("time"));
 		
-		List<MeasureAuditLog> results = logCriteria.list();
-
-		for(MeasureAuditLog auditLog: results){
-			AuditLogDTO dto = new AuditLogDTO();
-			dto.setId(auditLog.getId());
-			dto.setActivityType(auditLog.getActivityType());
-			dto.setAdditionlInfo(auditLog.getAdditionalInfo());
-			dto.setEventTs(auditLog.getTime());
-			dto.setUserId(auditLog.getUserId());
-			logResults.add(dto);
-		}
+		final List<AuditLogDTO> logResults = q.getResultList();
+		
 		searchHistoryDTO.setLogs(logResults);
+		
 		setPagesAndRows(measureId, numberOfRows, filterList, searchHistoryDTO);
+
 		return searchHistoryDTO; 
 	}
-	
-	/**
-	 * Sets the pages and rows.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param numberOfRows
-	 *            the number of rows
-	 * @param filterList
-	 *            the filter list
-	 * @param searchHistoryDTO
-	 *            the search history dto
-	 */
-	@SuppressWarnings("rawtypes")
+
 	private void setPagesAndRows(String measureId, int numberOfRows, List<String> filterList, SearchHistoryDTO searchHistoryDTO){
-		int pageCount = 0;
-
-		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureAuditLog.class);		
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
+		final Root<MeasureAuditLog> root = countQuery.from(MeasureAuditLog.class);
 		
-		logCriteria.add(Restrictions.eq("measure.id", measureId));
-
-		for(String filter : filterList){
-			logCriteria.add(Restrictions.ne("activityType", filter));
-		}
+		final Predicate predicate = getPredicateForAuditLog(measureId, filterList, cb, root);
 		
-		logCriteria.setProjection(Projections.rowCount());
-
-		List results = logCriteria.list();
-
+		countQuery =  countQuery.select(cb.count(root)).where(predicate);
 		
-		if(results != null && !results.isEmpty()){
-			long totalRows = Long.parseLong(String.valueOf(results.get(0)));
-			
+		final Long totalRows = session.createQuery(countQuery).getSingleResult();
+		if (totalRows != null) {
 			searchHistoryDTO.setTotalResults(totalRows);
-			
-			int mod = (int) (totalRows % numberOfRows);
-			pageCount = (int) (totalRows / numberOfRows);
+
+			final int mod = (int) (totalRows % numberOfRows);
+			int pageCount = (int) (totalRows / numberOfRows);
 			pageCount = (mod > 0)?(pageCount + 1) : pageCount;
 			
 			searchHistoryDTO.setPageCount(pageCount);
+
 		}
 	}	
+	
+	private Predicate getPredicateForAuditLog(String measureId, List<String> filterList, CriteriaBuilder cb, Root<MeasureAuditLog> root) {
+		final Predicate p1 = cb.equal(root.get("measure").get("id"), measureId);
+		Predicate p2 = null;
+		
+		if(CollectionUtils.isNotEmpty(filterList)) {
+			final In<String> in = cb.in(root.get(ACTIVITY_TYPE));
+			filterList.add(USER_COMMENT);
+			filterList.forEach(in::value);
+			p2 = cb.not(in);
+		} else {
+			p2 = cb.notEqual(root.get(ACTIVITY_TYPE), USER_COMMENT);
+		}
+		
+		return cb.and(p1, p2);
+	}
 }

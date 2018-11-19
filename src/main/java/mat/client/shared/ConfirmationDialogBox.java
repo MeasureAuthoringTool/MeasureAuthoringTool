@@ -127,6 +127,7 @@ public class ConfirmationDialogBox {
 		
 		panel.add(modalFooter);
 		panel.getElement().focus();
+		panel.getElement().getStyle().setProperty("zIndex", "9999");
 		panel.show();
 	}
 	

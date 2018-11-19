@@ -2,18 +2,18 @@ package mat.client.measure.measuredetails.components;
 
 import java.util.List;
 
-import mat.DTO.StewardDTO;
 import mat.model.Author;
+import mat.model.MeasureSteward;
 
 public class MeasureStewardDeveloperModel implements MeasureDetailsComponentModel{
-	private StewardDTO measureSteward;
+	private List<MeasureSteward> measureStewardList;
 	private List<Author> measureDeveloperList;
 	
-	public StewardDTO getMeasureSteward() {
-		return measureSteward;
+	public List<MeasureSteward> getMeasureStewardList() {
+		return measureStewardList;
 	}
-	public void setMeasureSteward(StewardDTO measureSteward) {
-		this.measureSteward = measureSteward;
+	public void setMeasureSteward(List<MeasureSteward> measureStewardList) {
+		this.measureStewardList = measureStewardList;
 	}
 	public List<Author> getMeasureDeveloperList() {
 		return measureDeveloperList;

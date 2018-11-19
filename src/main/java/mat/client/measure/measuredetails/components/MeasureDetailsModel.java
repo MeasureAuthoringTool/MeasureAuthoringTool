@@ -96,7 +96,7 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 	public MeasureTypeModel getMeasureTypeMode() {
 		return measureTypeMode;
 	}
-	public void setMeasureTypeMode(MeasureTypeModel measureTypeMode) {
+	public void setMeasureTypeModel(MeasureTypeModel measureTypeMode) {
 		this.measureTypeMode = measureTypeMode;
 	}
 	public StratificationModel getStratification() {

@@ -2,7 +2,7 @@ package mat.server.humanreadable.cql;
 
 import java.util.Objects;
 
-public class HumanReadableCodeModel {
+public class HumanReadableCodeModel implements HumanReadableTerminologyModel {
 	private String name;
 	private String oid;
 	private String codesystemName;
@@ -71,6 +71,7 @@ public class HumanReadableCodeModel {
 		this.terminologyDisplay = codeOutput;
 	}
 
+	@Override
 	public void setTerminologyDisplay(String display) {
 		this.terminologyDisplay = display;
 	}
@@ -106,11 +107,13 @@ public class HumanReadableCodeModel {
 		this.dataCriteriaDisplay = output; 
 	}
 
+	@Override
 	public String getDataCriteriaDisplay() {
 		createDataCriteriaDisplay();
 		return dataCriteriaDisplay;
 	}
 
+	@Override
 	public void setDataCriteriaDisplay(String dataCriteriaDisplay) {
 		this.dataCriteriaDisplay = dataCriteriaDisplay;
 	}
@@ -135,5 +138,4 @@ public class HumanReadableCodeModel {
 			return d2 == null; 
 		}
 	}
-
 }

@@ -1,5 +1,7 @@
 package mat.server.humanreadable.cql;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class HumanReadableModel {
@@ -12,6 +14,7 @@ public class HumanReadableModel {
 	private List<HumanReadableValuesetModel> valuesetTerminologyList; 
 	private List<HumanReadableCodeModel> codeDataCriteriaList; 
 	private List<HumanReadableValuesetModel> valuesetDataCriteriaList; 
+	private List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList; 
 	
 	private List<HumanReadableExpressionModel> definitions; 
 	private List<HumanReadableExpressionModel> functions; 
@@ -32,7 +35,11 @@ public class HumanReadableModel {
 		this.valuesetDataCriteriaList = valuesetDataCriteriaList;
 		this.codeDataCriteriaList = codeDataCriteriaList;
 		this.supplementalDataElements = supplementalDataElements;
-		this.riskAdjustmentVariables = riskAdjustmentVariables;		
+		this.riskAdjustmentVariables = riskAdjustmentVariables;	
+		this.valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
+		this.valuesetAndCodeDataCriteriaList.addAll(valuesetDataCriteriaList);
+		this.valuesetAndCodeDataCriteriaList.addAll(codeDataCriteriaList);
+		this.valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getDataCriteriaDisplay));				
 		this.setNumberOfGroups(populationCriterias.size());
 	}
 
@@ -126,5 +133,13 @@ public class HumanReadableModel {
 
 	public void setFunctions(List<HumanReadableExpressionModel> functions) {
 		this.functions = functions;
+	}
+
+	public List<HumanReadableTerminologyModel> getValuesetAndCodeDataCriteriaList() {
+		return valuesetAndCodeDataCriteriaList;
+	}
+
+	public void setValuesetAndCodeDataCriteriaList(List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList) {
+		this.valuesetAndCodeDataCriteriaList = valuesetAndCodeDataCriteriaList;
 	}
 }

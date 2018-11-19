@@ -39,6 +39,7 @@ import mat.server.humanreadable.cql.HumanReadableExpressionModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationCriteriaModel;
 import mat.server.humanreadable.cql.HumanReadablePopulationModel;
+import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
 import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
@@ -124,6 +125,14 @@ public class HumanReadableGenerator {
 				model.setCodeTerminologyList(getCodeTerminology(processor));
 				model.setDefinitions(getDefinitions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
 				model.setFunctions(getFunctions(cqlModel, processor, includedLibraryXmlProcessors, cqlResult, usedCQLArtifactHolder));
+				
+				
+				List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
+				valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
+				valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
+				valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getDataCriteriaDisplay));				
+				model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
+				
 				html = humanReadableGenerator.generate(model);
 			} catch (IOException | TemplateException | MappingException | MarshalException | ValidationException | XPathExpressionException e) {
 				e.printStackTrace();

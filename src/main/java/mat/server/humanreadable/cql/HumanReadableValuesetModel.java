@@ -4,7 +4,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class HumanReadableValuesetModel {
+public class HumanReadableValuesetModel implements HumanReadableTerminologyModel {
 	private String name;
 	private String oid;
 	private String version;

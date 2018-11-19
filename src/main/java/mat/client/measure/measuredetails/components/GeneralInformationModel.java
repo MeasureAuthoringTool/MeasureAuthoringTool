@@ -1,7 +1,5 @@
 package mat.client.measure.measuredetails.components;
 
-import com.google.gwt.core.client.GWT;
-
 public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	private String measureName;
 	private String finalizedDate;
@@ -51,7 +49,6 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
 		GeneralInformationModel originalModel = (GeneralInformationModel) model;
-		GWT.log("original model: " + originalModel.toString());
 		boolean isEqual = ((originalModel.getMeasureName() == null && getMeasureName() == null) ||
 				(originalModel.getMeasureName() != null && originalModel.getMeasureName().equals(getMeasureName())) &&
 				((originalModel.getFinalizedDate() == null && getFinalizedDate() == null) ||
@@ -68,7 +65,6 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 				((originalModel.getScoringMethod() == null && getScoringMethod() == null) ||
 				(originalModel.getScoringMethod() != null && originalModel.getScoringMethod().equals(getScoringMethod())))
 				);
-		GWT.log("is equal: " + isEqual);
 		return isEqual;
 	}
 	

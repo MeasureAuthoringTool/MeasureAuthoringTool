@@ -1,14 +1,14 @@
 package mat.client.measure.measuredetails.components;
 
 public class MeasurePopulationExclusionsModel implements MeasureDetailsComponentModel{
-	private String measurePopulation;
+	private String measurePopulationExclusions;
 
-	public String getMeasurePopulation() {
-		return measurePopulation;
+	public String getMeasurePopulationExclusions() {
+		return measurePopulationExclusions;
 	}
 
-	public void setMeasurePopulation(String measurePopulation) {
-		this.measurePopulation = measurePopulation;
+	public void setMeasurePopulationExclusions(String measurePopulationExclusions) {
+		this.measurePopulationExclusions = measurePopulationExclusions;
 	}
 
 	@Override

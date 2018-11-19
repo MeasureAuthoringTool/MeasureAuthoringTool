@@ -269,9 +269,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 
 	private Object saveMeasureDetails() {
 		GWT.log("save measure details");
+		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
+		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
 		// TODO Auto-generated method stub
-		//TODO populate the model for all tabs
-		//TODO convert the model
 		//TODO save the measure details
 		return null;
 	}

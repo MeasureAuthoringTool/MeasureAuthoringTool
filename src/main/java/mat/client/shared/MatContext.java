@@ -1191,12 +1191,16 @@ public class MatContext implements IsSerializable {
 	
 	/**
 	 * Checks if is measure is CQL Measure depending 
-	 * on Measure release version.
+	 * on Measure release version. If the releaseVersion is null, then it is not a CQL measure. 
 	 *
 	 * @param releaseVersion the release version
-	 * @return true, if is CQL measure
+	 * @return true, if is CQL measure, false if it is not a cql measure or the release version is null
 	 */
 	public boolean isCQLMeasure(String releaseVersion) {
+		
+		if(releaseVersion == null) {
+			return false; 
+		}
 		
 		String str[] = releaseVersion.replace("v", "").split("\\.");
 		int versionInt = Integer.parseInt(str[0]);

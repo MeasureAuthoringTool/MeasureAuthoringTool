@@ -29,7 +29,7 @@ public class MeasureDetailsViewFactory {
 			case COMPONENT_MEASURES:
 				return new ComponentMeasuresView();
 			case DESCRIPTION:
-				return new DescriptionView();
+				return new DescriptionView(measureDetailsComponent.getDescriptionModel());
 			case DISCLAIMER:
 				return new DisclaimerView();
 			case MEASURE_TYPE:
@@ -66,7 +66,7 @@ public class MeasureDetailsViewFactory {
 				return new PopulationsView();
 			case GENERAL_MEASURE_INFORMATION:
 			default:
-				return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformation());
+				return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformationModel());
 			}
 		} else if ( currentMeasureDetail instanceof MeasureDetailsConstants.PopulationItems) {
 			switch((PopulationItems) currentMeasureDetail) {
@@ -90,7 +90,7 @@ public class MeasureDetailsViewFactory {
 				return new MeasureObservationsView();
 			}
 		}
-		return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformation());
+		return buildGeneralMeasureInformationView(measureDetailsComponent.isComposite(), measureDetailsComponent.getGeneralInformationModel());
 	}
 	
 	GeneralMeasureInformationView buildGeneralMeasureInformationView(boolean isComposite, GeneralInformationModel generalInformationModel) {

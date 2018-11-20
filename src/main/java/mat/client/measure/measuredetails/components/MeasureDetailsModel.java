@@ -7,226 +7,226 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 	private String ownerUserId; 
 	private boolean isComposite;
 	private String scoringType;
-	private GeneralInformationModel generalInformation;
-	private MeasureStewardDeveloperModel measureStewardDeveloper;
-	private DescriptionModel description;
-	private CopyrightModel copyright;
-	private DisclaimerModel disclaimer;
-	private MeasureTypeModel measureTypeMode;
-	private StratificationModel stratification;
-	private RiskAdjustmentModel riskAdjustment;
-	private RationaleModel rationale;
-	private RateAggregationModel rateAggregation;
-	private ClinicalRecommendationModel clinicalRecommendation;
-	private ImprovementNotationModel improvementNotation;
-	private ReferencesModel references;
-	private DefinitionModel definition;
-	private GuidanceModel guidance;
-	private TransmissionFormatModel transmissionFormat;
-	private InitialPopulationModel initialPopulation;
-	private MeasurePopulationModel measurePopulation;
-	private MeasurePopulationExclusionsModel measurePopulationExclusions;
-	private DenominatorModel denominator;
-	private DenominatorExclusionsModel denominatorExclusions;
-	private NumeratorModel numerator;
-	private NumeratorExclusionsModel numeratorExclusions;
-	private DenominatorExceptionsModel denominatorExceptions;
-	private MeasureObservationsModel measureObservations;
-	private SupplementalDataElementsModel supplementalDataElements;
-	private MeasureSetModel measureSet;
+	private GeneralInformationModel generalInformationModel;
+	private MeasureStewardDeveloperModel measureStewardDeveloperModel;
+	private DescriptionModel descriptionModel;
+	private CopyrightModel copyrightModel;
+	private DisclaimerModel disclaimerModel;
+	private MeasureTypeModel measureTypeModeModel;
+	private StratificationModel stratificationModel;
+	private RiskAdjustmentModel riskAdjustmentModel;
+	private RationaleModel rationaleModel;
+	private RateAggregationModel rateAggregationModel;
+	private ClinicalRecommendationModel clinicalRecommendationModel;
+	private ImprovementNotationModel improvementNotationModel;
+	private ReferencesModel referencesModel;
+	private DefinitionModel definitionModel;
+	private GuidanceModel guidanceModel;
+	private TransmissionFormatModel transmissionFormatModel;
+	private InitialPopulationModel initialPopulationModel;
+	private MeasurePopulationModel measurePopulationModel;
+	private MeasurePopulationExclusionsModel measurePopulationExclusionsModel;
+	private DenominatorModel denominatorModel;
+	private DenominatorExclusionsModel denominatorExclusionsModel;
+	private NumeratorModel numeratorModel;
+	private NumeratorExclusionsModel numeratorExclusionsModel;
+	private DenominatorExceptionsModel denominatorExceptionsModel;
+	private MeasureObservationsModel measureObservationsModel;
+	private SupplementalDataElementsModel supplementalDataElementsModel;
+	private MeasureSetModel measureSetModel;
 	
 	public MeasureDetailsModel() {
 		this.ownerUserId = "";
-		this.generalInformation = new GeneralInformationModel();
-		this.measureStewardDeveloper = new MeasureStewardDeveloperModel();
-		this.description = new DescriptionModel();
-		this.copyright = new CopyrightModel();
-		this.disclaimer = new DisclaimerModel();
-		this.measureTypeMode = new MeasureTypeModel();
-		this.stratification = new StratificationModel();
-		this.riskAdjustment = new RiskAdjustmentModel();
-		this.rationale = new RationaleModel();
-		this.rateAggregation = new RateAggregationModel();
-		this.clinicalRecommendation = new ClinicalRecommendationModel();
-		this.improvementNotation = new ImprovementNotationModel();
-		this.references = new ReferencesModel();
-		this.definition = new DefinitionModel();
-		this.guidance = new GuidanceModel();
-		this.transmissionFormat = new TransmissionFormatModel();
-		this.initialPopulation = new InitialPopulationModel();
-		this.measurePopulation = new MeasurePopulationModel();
-		this.measurePopulationExclusions = new MeasurePopulationExclusionsModel();
-		this.denominator = new DenominatorModel();
-		this.denominatorExclusions = new DenominatorExclusionsModel();
-		this.numerator = new NumeratorModel();
-		this.numeratorExclusions = new NumeratorExclusionsModel();
-		this.denominatorExceptions = new DenominatorExceptionsModel();
-		this.measureObservations = new MeasureObservationsModel();
-		this.supplementalDataElements = new SupplementalDataElementsModel();
-		this.measureSet = new MeasureSetModel();
+		this.generalInformationModel = new GeneralInformationModel();
+		this.measureStewardDeveloperModel = new MeasureStewardDeveloperModel();
+		this.descriptionModel = new DescriptionModel();
+		this.copyrightModel = new CopyrightModel();
+		this.disclaimerModel = new DisclaimerModel();
+		this.measureTypeModeModel = new MeasureTypeModel();
+		this.stratificationModel = new StratificationModel();
+		this.riskAdjustmentModel = new RiskAdjustmentModel();
+		this.rationaleModel = new RationaleModel();
+		this.rateAggregationModel = new RateAggregationModel();
+		this.clinicalRecommendationModel = new ClinicalRecommendationModel();
+		this.improvementNotationModel = new ImprovementNotationModel();
+		this.referencesModel = new ReferencesModel();
+		this.definitionModel = new DefinitionModel();
+		this.guidanceModel = new GuidanceModel();
+		this.transmissionFormatModel = new TransmissionFormatModel();
+		this.initialPopulationModel = new InitialPopulationModel();
+		this.measurePopulationModel = new MeasurePopulationModel();
+		this.measurePopulationExclusionsModel = new MeasurePopulationExclusionsModel();
+		this.denominatorModel = new DenominatorModel();
+		this.denominatorExclusionsModel = new DenominatorExclusionsModel();
+		this.numeratorModel = new NumeratorModel();
+		this.numeratorExclusionsModel = new NumeratorExclusionsModel();
+		this.denominatorExceptionsModel = new DenominatorExceptionsModel();
+		this.measureObservationsModel = new MeasureObservationsModel();
+		this.supplementalDataElementsModel = new SupplementalDataElementsModel();
+		this.measureSetModel = new MeasureSetModel();
 	}
 	
-	public GeneralInformationModel getGeneralInformation() {
-		return generalInformation;
+	public GeneralInformationModel getGeneralInformationModel() {
+		return generalInformationModel;
 	}
-	public void setGeneralInformation(GeneralInformationModel generalInformation) {
-		this.generalInformation = generalInformation;
+	public void setGeneralInformationModel(GeneralInformationModel generalInformationModel) {
+		this.generalInformationModel = generalInformationModel;
 	}
-	public MeasureStewardDeveloperModel getMeasureStewardDeveloper() {
-		return measureStewardDeveloper;
+	public MeasureStewardDeveloperModel getMeasureStewardDeveloperModel() {
+		return measureStewardDeveloperModel;
 	}
-	public void setMeasureStewardDeveloper(MeasureStewardDeveloperModel measureStewardDeveloper) {
-		this.measureStewardDeveloper = measureStewardDeveloper;
+	public void setMeasureStewardDeveloperModel(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
+		this.measureStewardDeveloperModel = measureStewardDeveloperModel;
 	}
-	public DescriptionModel getDescription() {
-		return description;
+	public DescriptionModel getDescriptionModel() {
+		return descriptionModel;
 	}
-	public void setDescription(DescriptionModel description) {
-		this.description = description;
+	public void setDescriptionModel(DescriptionModel descriptionModel) {
+		this.descriptionModel = descriptionModel;
 	}
-	public CopyrightModel getCopyright() {
-		return copyright;
+	public CopyrightModel getCopyrightModel() {
+		return copyrightModel;
 	}
-	public void setCopyright(CopyrightModel copyright) {
-		this.copyright = copyright;
+	public void setCopyrightModel(CopyrightModel copyrightModel) {
+		this.copyrightModel = copyrightModel;
 	}
-	public DisclaimerModel getDisclaimer() {
-		return disclaimer;
+	public DisclaimerModel getDisclaimerModel() {
+		return disclaimerModel;
 	}
-	public void setDisclaimer(DisclaimerModel disclaimer) {
-		this.disclaimer = disclaimer;
+	public void setDisclaimerModel(DisclaimerModel disclaimerModel) {
+		this.disclaimerModel = disclaimerModel;
 	}
-	public MeasureTypeModel getMeasureTypeMode() {
-		return measureTypeMode;
+	public MeasureTypeModel getMeasureTypeModeModel() {
+		return measureTypeModeModel;
 	}
-	public void setMeasureTypeModel(MeasureTypeModel measureTypeMode) {
-		this.measureTypeMode = measureTypeMode;
+	public void setMeasureTypeModeModel(MeasureTypeModel measureTypeModeModel) {
+		this.measureTypeModeModel = measureTypeModeModel;
 	}
-	public StratificationModel getStratification() {
-		return stratification;
+	public StratificationModel getStratificationModel() {
+		return stratificationModel;
 	}
-	public void setStratification(StratificationModel stratification) {
-		this.stratification = stratification;
+	public void setStratificationModel(StratificationModel stratificationModel) {
+		this.stratificationModel = stratificationModel;
 	}
-	public RiskAdjustmentModel getRiskAdjustment() {
-		return riskAdjustment;
+	public RiskAdjustmentModel getRiskAdjustmentModel() {
+		return riskAdjustmentModel;
 	}
-	public void setRiskAdjustment(RiskAdjustmentModel riskAdjustment) {
-		this.riskAdjustment = riskAdjustment;
+	public void setRiskAdjustmentModel(RiskAdjustmentModel riskAdjustmentModel) {
+		this.riskAdjustmentModel = riskAdjustmentModel;
 	}
-	public RationaleModel getRationale() {
-		return rationale;
+	public RationaleModel getRationaleModel() {
+		return rationaleModel;
 	}
-	public void setRationale(RationaleModel rationale) {
-		this.rationale = rationale;
+	public void setRationaleModel(RationaleModel rationaleModel) {
+		this.rationaleModel = rationaleModel;
 	}
-	public RateAggregationModel getRateAggregation() {
-		return rateAggregation;
+	public RateAggregationModel getRateAggregationModel() {
+		return rateAggregationModel;
 	}
-	public void setRateAggregation(RateAggregationModel rateAggregation) {
-		this.rateAggregation = rateAggregation;
+	public void setRateAggregationModel(RateAggregationModel rateAggregationModel) {
+		this.rateAggregationModel = rateAggregationModel;
 	}
-	public ClinicalRecommendationModel getClinicalRecommendation() {
-		return clinicalRecommendation;
+	public ClinicalRecommendationModel getClinicalRecommendationModel() {
+		return clinicalRecommendationModel;
 	}
-	public void setClinicalRecommendation(ClinicalRecommendationModel clinicalRecommendation) {
-		this.clinicalRecommendation = clinicalRecommendation;
+	public void setClinicalRecommendationModel(ClinicalRecommendationModel clinicalRecommendationModel) {
+		this.clinicalRecommendationModel = clinicalRecommendationModel;
 	}
-	public ImprovementNotationModel getImprovementNotation() {
-		return improvementNotation;
+	public ImprovementNotationModel getImprovementNotationModel() {
+		return improvementNotationModel;
 	}
-	public void setImprovementNotation(ImprovementNotationModel improvementNotation) {
-		this.improvementNotation = improvementNotation;
+	public void setImprovementNotationModel(ImprovementNotationModel improvementNotationModel) {
+		this.improvementNotationModel = improvementNotationModel;
 	}
-	public ReferencesModel getReferences() {
-		return references;
+	public ReferencesModel getReferencesModel() {
+		return referencesModel;
 	}
-	public void setReferences(ReferencesModel references) {
-		this.references = references;
+	public void setReferencesModel(ReferencesModel referencesModel) {
+		this.referencesModel = referencesModel;
 	}
-	public DefinitionModel getDefinition() {
-		return definition;
+	public DefinitionModel getDefinitionModel() {
+		return definitionModel;
 	}
-	public void setDefinition(DefinitionModel definition) {
-		this.definition = definition;
+	public void setDefinitionModel(DefinitionModel definitionModel) {
+		this.definitionModel = definitionModel;
 	}
-	public GuidanceModel getGuidance() {
-		return guidance;
+	public GuidanceModel getGuidanceModel() {
+		return guidanceModel;
 	}
-	public void setGuidance(GuidanceModel guidance) {
-		this.guidance = guidance;
+	public void setGuidanceModel(GuidanceModel guidanceModel) {
+		this.guidanceModel = guidanceModel;
 	}
-	public TransmissionFormatModel getTransmissionFormat() {
-		return transmissionFormat;
+	public TransmissionFormatModel getTransmissionFormatModel() {
+		return transmissionFormatModel;
 	}
-	public void setTransmissionFormat(TransmissionFormatModel transmissionFormat) {
-		this.transmissionFormat = transmissionFormat;
+	public void setTransmissionFormatModel(TransmissionFormatModel transmissionFormatModel) {
+		this.transmissionFormatModel = transmissionFormatModel;
 	}
-	public InitialPopulationModel getInitialPopulation() {
-		return initialPopulation;
+	public InitialPopulationModel getInitialPopulationModel() {
+		return initialPopulationModel;
 	}
-	public void setInitialPopulation(InitialPopulationModel initialPopulation) {
-		this.initialPopulation = initialPopulation;
+	public void setInitialPopulationModel(InitialPopulationModel initialPopulationModel) {
+		this.initialPopulationModel = initialPopulationModel;
 	}
-	public MeasurePopulationModel getMeasurePopulation() {
-		return measurePopulation;
+	public MeasurePopulationModel getMeasurePopulationModel() {
+		return measurePopulationModel;
 	}
-	public void setMeasurePopulation(MeasurePopulationModel measurePopulation) {
-		this.measurePopulation = measurePopulation;
+	public void setMeasurePopulationModel(MeasurePopulationModel measurePopulationModel) {
+		this.measurePopulationModel = measurePopulationModel;
 	}
-	public MeasurePopulationExclusionsModel getMeasurePopulationExclusions() {
-		return measurePopulationExclusions;
+	public MeasurePopulationExclusionsModel getMeasurePopulationExclusionsModel() {
+		return measurePopulationExclusionsModel;
 	}
-	public void setMeasurePopulationExclusions(MeasurePopulationExclusionsModel measurePopulationExclusions) {
-		this.measurePopulationExclusions = measurePopulationExclusions;
+	public void setMeasurePopulationExclusionsModel(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
+		this.measurePopulationExclusionsModel = measurePopulationExclusionsModel;
 	}
-	public DenominatorModel getDenominator() {
-		return denominator;
+	public DenominatorModel getDenominatorModel() {
+		return denominatorModel;
 	}
-	public void setDenominator(DenominatorModel denominator) {
-		this.denominator = denominator;
+	public void setDenominatorModel(DenominatorModel denominatorModel) {
+		this.denominatorModel = denominatorModel;
 	}
-	public DenominatorExclusionsModel getDenominatorExclusions() {
-		return denominatorExclusions;
+	public DenominatorExclusionsModel getDenominatorExclusionsModel() {
+		return denominatorExclusionsModel;
 	}
-	public void setDenominatorExclusions(DenominatorExclusionsModel denominatorExclusions) {
-		this.denominatorExclusions = denominatorExclusions;
+	public void setDenominatorExclusionsModel(DenominatorExclusionsModel denominatorExclusionsModel) {
+		this.denominatorExclusionsModel = denominatorExclusionsModel;
 	}
-	public NumeratorModel getNumerator() {
-		return numerator;
+	public NumeratorModel getNumeratorModel() {
+		return numeratorModel;
 	}
-	public void setNumerator(NumeratorModel numerator) {
-		this.numerator = numerator;
+	public void setNumeratorModel(NumeratorModel numeratorModel) {
+		this.numeratorModel = numeratorModel;
 	}
-	public NumeratorExclusionsModel getNumeratorExclusions() {
-		return numeratorExclusions;
+	public NumeratorExclusionsModel getNumeratorExclusionsModel() {
+		return numeratorExclusionsModel;
 	}
-	public void setNumeratorExclusions(NumeratorExclusionsModel numeratorExclusions) {
-		this.numeratorExclusions = numeratorExclusions;
+	public void setNumeratorExclusionsModel(NumeratorExclusionsModel numeratorExclusionsModel) {
+		this.numeratorExclusionsModel = numeratorExclusionsModel;
 	}
-	public DenominatorExceptionsModel getDenominatorExceptions() {
-		return denominatorExceptions;
+	public DenominatorExceptionsModel getDenominatorExceptionsModel() {
+		return denominatorExceptionsModel;
 	}
-	public void setDenominatorExceptions(DenominatorExceptionsModel denominatorExceptions) {
-		this.denominatorExceptions = denominatorExceptions;
+	public void setDenominatorExceptionsModel(DenominatorExceptionsModel denominatorExceptionsModel) {
+		this.denominatorExceptionsModel = denominatorExceptionsModel;
 	}
-	public SupplementalDataElementsModel getSupplementalDataElements() {
-		return supplementalDataElements;
+	public SupplementalDataElementsModel getSupplementalDataElementsModel() {
+		return supplementalDataElementsModel;
 	}
-	public void setSupplementalDataElements(SupplementalDataElementsModel supplementalDataElements) {
-		this.supplementalDataElements = supplementalDataElements;
+	public void setSupplementalDataElementsModel(SupplementalDataElementsModel supplementalDataElementsModel) {
+		this.supplementalDataElementsModel = supplementalDataElementsModel;
 	}
-	public MeasureObservationsModel getMeasureObservations() {
-		return measureObservations;
+	public MeasureObservationsModel getMeasureObservationsModel() {
+		return measureObservationsModel;
 	}
-	public void setMeasureObservations(MeasureObservationsModel measureObservations) {
-		this.measureObservations = measureObservations;
+	public void setMeasureObservationsModel(MeasureObservationsModel measureObservationsModel) {
+		this.measureObservationsModel = measureObservationsModel;
 	}
-	public MeasureSetModel getMeasureSet() {
-		return measureSet;
+	public MeasureSetModel getMeasureSetModel() {
+		return measureSetModel;
 	}
-	public void setMeasureSet(MeasureSetModel measureSet) {
-		this.measureSet = measureSet;
+	public void setMeasureSetModel(MeasureSetModel measureSetModel) {
+		this.measureSetModel = measureSetModel;
 	}
 
 	@Override
@@ -285,59 +285,59 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 	}
 	public void updateModel(MeasureDetailsComponentModel measureDetailsComponentModel) {
 		if(measureDetailsComponentModel instanceof ClinicalRecommendationModel) {
-			setClinicalRecommendation((ClinicalRecommendationModel) measureDetailsComponentModel);
+			setClinicalRecommendationModel((ClinicalRecommendationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof CopyrightModel) {
-			setCopyright((CopyrightModel) measureDetailsComponentModel);
+			setCopyrightModel((CopyrightModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof DefinitionModel) {
-			setDefinition((DefinitionModel) measureDetailsComponentModel);
+			setDefinitionModel((DefinitionModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof DenominatorExceptionsModel) {
-			setDenominatorExceptions((DenominatorExceptionsModel) measureDetailsComponentModel);
+			setDenominatorExceptionsModel((DenominatorExceptionsModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof DenominatorExclusionsModel) {
-			setDenominatorExclusions((DenominatorExclusionsModel) measureDetailsComponentModel);
+			setDenominatorExclusionsModel((DenominatorExclusionsModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof DenominatorModel) {
-			setDenominator((DenominatorModel) measureDetailsComponentModel);
+			setDenominatorModel((DenominatorModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof DescriptionModel) {
-			setDescription((DescriptionModel) measureDetailsComponentModel);
+			setDescriptionModel((DescriptionModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof DisclaimerModel) {
-			setDisclaimer((DisclaimerModel) measureDetailsComponentModel);
+			setDisclaimerModel((DisclaimerModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof GeneralInformationModel) {
-			setGeneralInformation((GeneralInformationModel) measureDetailsComponentModel);
+			setGeneralInformationModel((GeneralInformationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof GuidanceModel) {
-			setGuidance((GuidanceModel) measureDetailsComponentModel);
+			setGuidanceModel((GuidanceModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof ImprovementNotationModel) {
-			setImprovementNotation((ImprovementNotationModel) measureDetailsComponentModel);
+			setImprovementNotationModel((ImprovementNotationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof InitialPopulationModel) {
-			setInitialPopulation((InitialPopulationModel) measureDetailsComponentModel);
+			setInitialPopulationModel((InitialPopulationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof MeasureObservationsModel) {
-			setMeasureObservations((MeasureObservationsModel) measureDetailsComponentModel);
+			setMeasureObservationsModel((MeasureObservationsModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof MeasurePopulationExclusionsModel) {
-			setMeasurePopulationExclusions((MeasurePopulationExclusionsModel) measureDetailsComponentModel);
+			setMeasurePopulationExclusionsModel((MeasurePopulationExclusionsModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof MeasurePopulationModel) {
-			setMeasurePopulation((MeasurePopulationModel) measureDetailsComponentModel);
+			setMeasurePopulationModel((MeasurePopulationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof MeasureSetModel) {
-			setMeasureSet((MeasureSetModel) measureDetailsComponentModel);
+			setMeasureSetModel((MeasureSetModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof MeasureStewardDeveloperModel) {
-			setMeasureStewardDeveloper((MeasureStewardDeveloperModel) measureDetailsComponentModel);
+			setMeasureStewardDeveloperModel((MeasureStewardDeveloperModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof MeasureTypeModel) {
-			setMeasureTypeModel((MeasureTypeModel) measureDetailsComponentModel);
+			setMeasureTypeModeModel((MeasureTypeModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof NumeratorExclusionsModel) {
-			setNumeratorExclusions((NumeratorExclusionsModel) measureDetailsComponentModel);
+			setNumeratorExclusionsModel((NumeratorExclusionsModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof NumeratorModel) {
-			setNumerator((NumeratorModel) measureDetailsComponentModel);
+			setNumeratorModel((NumeratorModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof RateAggregationModel) {
-			setRateAggregation((RateAggregationModel) measureDetailsComponentModel);
+			setRateAggregationModel((RateAggregationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof RationaleModel) {
-			setRationale((RationaleModel) measureDetailsComponentModel);
+			setRationaleModel((RationaleModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof ReferencesModel) {
-			setReferences((ReferencesModel) measureDetailsComponentModel);
+			setReferencesModel((ReferencesModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof RiskAdjustmentModel) {
-			setRiskAdjustment((RiskAdjustmentModel) measureDetailsComponentModel);
+			setRiskAdjustmentModel((RiskAdjustmentModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof StratificationModel) {
-			setStratification((StratificationModel) measureDetailsComponentModel);
+			setStratificationModel((StratificationModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof SupplementalDataElementsModel) {
-			setSupplementalDataElements((SupplementalDataElementsModel) measureDetailsComponentModel);
+			setSupplementalDataElementsModel((SupplementalDataElementsModel) measureDetailsComponentModel);
 		} else if(measureDetailsComponentModel instanceof TransmissionFormatModel) {
-			setTransmissionFormat((TransmissionFormatModel) measureDetailsComponentModel);
+			setTransmissionFormatModel((TransmissionFormatModel) measureDetailsComponentModel);
 		}
 	}
 }

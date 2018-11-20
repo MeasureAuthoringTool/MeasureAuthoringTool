@@ -5,6 +5,7 @@ import org.gwtbootstrap3.client.ui.ButtonToolBar;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.extras.summernote.client.event.SummernoteKeyUpEvent;
 
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -62,6 +63,7 @@ public class MeasureDetailsView {
 		headingHTML.setHTML("<h4><b>" + currentMeasureDetail.displayName() + "</b></h4>");
 		headingHTML.getElement().setId("measureDetailsView_HeadingContent");
 		headingHTML.setTitle(currentMeasureDetail.displayName());
+		headingHTML.getElement().setTabIndex(0);
 		headingPanel.add(headingHTML);
 		headingPanel.getElement().setId("measureDetailsView_HeadingPanel");
 		widgetComponentPanel.add(headingPanel);
@@ -106,10 +108,15 @@ public class MeasureDetailsView {
 		setReadOnly(isMeasureEditable);
 		return widgetComponentPanel;
 	}
+	
+	public void setFocusOnHeader() {
+		DOM.getElementById("measureDetailsView_HeadingContent").focus();
+	}
+	
 	private void handleRichTextTabOut(SummernoteKeyUpEvent keyUpEvent) {
 		if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getShiftKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
             keyUpEvent.getNativeEvent().preventDefault();
-            //TODO set focus on header
+            DOM.getElementById("measureDetailsView_HeadingContent").focus();
         }
         else if(keyUpEvent.getNativeEvent().getCtrlKey() && keyUpEvent.getNativeEvent().getKeyCode() == 9) {
             keyUpEvent.getNativeEvent().preventDefault();

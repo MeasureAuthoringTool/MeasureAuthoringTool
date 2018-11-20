@@ -65,6 +65,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void handleMenuItemClick(MatDetailItem menuItem) {
 		measureDetailsView.buildDetailView(menuItem);
+		measureDetailsView.setFocusOnHeader();
 	}
 	
 	@Override

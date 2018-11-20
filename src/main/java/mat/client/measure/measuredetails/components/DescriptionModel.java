@@ -1,14 +1,14 @@
 package mat.client.measure.measuredetails.components;
 
 public class DescriptionModel implements MeasureDetailsComponentModel{
-	private String getDescription;
+	private String description;
 
-	public String getGetDescription() {
-		return getDescription;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setGetDescription(String getDescription) {
-		this.getDescription = getDescription;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override

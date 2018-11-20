@@ -1,13 +1,16 @@
 package mat.client.measure.measuredetails.components;
 
-public class InitialPopulationModel {
-	private String initialPopulation;
+public class InitialPopulationModel extends RichTextEditorModel{
 
-	public String getInitialPopulation() {
-		return initialPopulation;
+	@Override
+	public boolean equals(MeasureDetailsComponentModel model) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public void setInitialPopulation(String initialPopulation) {
-		this.initialPopulation = initialPopulation;
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

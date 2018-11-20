@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class MeasurePopulationExclusionsModel implements MeasureDetailsComponentModel{
-	private String measurePopulationExclusions;
-
-	public String getMeasurePopulationExclusions() {
-		return measurePopulationExclusions;
-	}
-
-	public void setMeasurePopulationExclusions(String measurePopulationExclusions) {
-		this.measurePopulationExclusions = measurePopulationExclusions;
-	}
+public class MeasurePopulationExclusionsModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

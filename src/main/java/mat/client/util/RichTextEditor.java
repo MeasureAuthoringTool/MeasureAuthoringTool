@@ -5,6 +5,10 @@ import org.gwtbootstrap3.extras.summernote.client.ui.base.SummernoteFontName;
 import org.gwtbootstrap3.extras.summernote.client.ui.base.Toolbar;
 import org.gwtbootstrap3.extras.summernote.client.ui.base.ToolbarButton;
 
+import com.google.gwt.user.client.Window;
+
+import mat.client.measure.measuredetails.components.DescriptionModel;
+
 public class RichTextEditor extends Summernote {
 
 	//private Summernote richTextEditor = new Summernote();
@@ -24,12 +28,16 @@ public class RichTextEditor extends Summernote {
         
         this.setDefaultHeight(350);
 	}
-
-	/*public Summernote getRichTextEditor() {
-		return richTextEditor;
+	
+	public String getPlanText() {
+		return stripFormating(this.getCode());
+	}
+	
+	public String getFormatedText() {
+		return this.getCode();
 	}
 
-	public void setRichTextEditor(Summernote richTextEditor) {
-		this.richTextEditor = richTextEditor;
-	}*/
+	public String stripFormating(String formatedText) {
+		return formatedText.replaceAll("<[^>]*>", "");
+	}
 }

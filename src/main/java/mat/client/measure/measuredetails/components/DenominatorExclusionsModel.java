@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class DenominatorExclusionsModel implements MeasureDetailsComponentModel{
-	private String denominatorExclusion;
-
-	public String getDenominatorExclusion() {
-		return denominatorExclusion;
-	}
-
-	public void setDenominatorExclusion(String denominatorExclusion) {
-		this.denominatorExclusion = denominatorExclusion;
-	}
+public class DenominatorExclusionsModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

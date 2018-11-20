@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class NumeratorModel implements MeasureDetailsComponentModel{
-	private String numerator;
-
-	public String getNumerator() {
-		return numerator;
-	}
-
-	public void setNumerator(String numerator) {
-		this.numerator = numerator;
-	}
+public class NumeratorModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

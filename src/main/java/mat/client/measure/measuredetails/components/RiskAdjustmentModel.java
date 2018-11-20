@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class RiskAdjustmentModel implements MeasureDetailsComponentModel{
-	private String riskAdjustment;
-
-	public String getRiskAdjustment() {
-		return riskAdjustment;
-	}
-
-	public void setRiskAdjustment(String riskAdjustment) {
-		this.riskAdjustment = riskAdjustment;
-	}
+public class RiskAdjustmentModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

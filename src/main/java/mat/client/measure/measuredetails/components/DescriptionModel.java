@@ -1,20 +1,11 @@
 package mat.client.measure.measuredetails.components;
 
-public class DescriptionModel implements MeasureDetailsComponentModel{
-	private String description;
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
+public class DescriptionModel extends RichTextEditorModel {
+	
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.getFormatedText().equals(((DescriptionModel)  model).getFormatedText()) && 
+					this.getPlanText().equals(((DescriptionModel)  model).getPlanText());
 	}
 
 	@Override

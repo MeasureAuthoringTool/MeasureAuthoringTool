@@ -7,8 +7,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.components.DescriptionModel;
-import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
+import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.util.RichTextEditor;
 
@@ -17,6 +17,8 @@ public class DescriptionView implements ComponentDetailView {
 	private RichTextEditor richTextEditor = new RichTextEditor();
 	private DescriptionModel originalDescriptionModel;
 	private DescriptionModel descriptionModel;
+
+	private DescriptionObserver observer;
 	@Override
 	public Widget getWidget() {
 		return mainPanel;
@@ -47,7 +49,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public MeasureDetailState getState() {
-		if(this.descriptionModel.getDescription().isEmpty()) {
+		if(this.descriptionModel.getFormatedText().isEmpty()) {
 			return MeasureDetailState.BLANK;
 		} else {
 			return MeasureDetailState.COMPLETE;
@@ -71,25 +73,47 @@ public class DescriptionView implements ComponentDetailView {
 		return this.descriptionModel;
 	}
 	
+	
+
 	public DescriptionView(DescriptionModel descriptionModel) {
 		this.originalDescriptionModel = descriptionModel;
 		buildGeneralInformationModel(this.originalDescriptionModel);
 		richTextEditor.setTitle("Description Edit");
-		richTextEditor.setCode(descriptionModel.getDescription());
-		Window.alert(descriptionModel.getDescription());
+		richTextEditor.setCode(this.descriptionModel.getFormatedText());
 		HorizontalPanel textAreaPanel = new HorizontalPanel();
         textAreaPanel.add(richTextEditor);
         textAreaPanel.setWidth("95%");
         mainPanel.add(textAreaPanel);
+        addEventHandlers();
+	}
+	
+	private void addEventHandlers() {
+		richTextEditor.addSummernoteKeyUpHandler(event -> observer.handleDescriptionChanged());
 	}
 	
 	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
 		this.descriptionModel = new DescriptionModel();
-		descriptionModel.setDescription(originalDescriptionModel.getDescription());
+		descriptionModel.setFormatedText(originalDescriptionModel.getFormatedText());
 	}
 
 	@Override
 	public RichTextEditor getRichTextEditor() {
 		return richTextEditor;
+	}
+	
+	public DescriptionModel getDescriptionModel() {
+		return descriptionModel;
+	}
+
+	public void setDescriptionModel(DescriptionModel descriptionModel) {
+		this.descriptionModel = descriptionModel;
+	}
+
+	public DescriptionObserver getObserver() {
+		return observer;
+	}
+
+	public void setObserver(DescriptionObserver observer) {
+		this.observer = observer;
 	}
 }

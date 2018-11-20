@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class CopyrightModel implements MeasureDetailsComponentModel{
-	private String copyright;
-
-	public String getCopyright() {
-		return copyright;
-	}
-
-	public void setCopyright(String copyright) {
-		this.copyright = copyright;
-	}
+public class CopyrightModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class SupplementalDataElementsModel implements MeasureDetailsComponentModel{
-	private String supplementalDataElements;
-
-	public String getSupplementalDataElements() {
-		return supplementalDataElements;
-	}
-
-	public void setSupplementalDataElements(String supplementalDataElements) {
-		this.supplementalDataElements = supplementalDataElements;
-	}
+public class SupplementalDataElementsModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

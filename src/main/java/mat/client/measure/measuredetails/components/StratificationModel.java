@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class StratificationModel implements MeasureDetailsComponentModel{
-	private String stratification;
-
-	public String getStratification() {
-		return stratification;
-	}
-
-	public void setStratification(String stratification) {
-		this.stratification = stratification;
-	}
+public class StratificationModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

@@ -3,8 +3,10 @@ package mat.client.measure.measuredetails.view;
 import java.util.List;
 
 import mat.DTO.CompositeMeasureScoreDTO;
+import mat.client.measure.measuredetails.components.DescriptionModel;
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsModel;
+import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
@@ -29,7 +31,7 @@ public class MeasureDetailsViewFactory {
 			case COMPONENT_MEASURES:
 				return new ComponentMeasuresView();
 			case DESCRIPTION:
-				return new DescriptionView(measureDetailsComponent.getDescriptionModel());
+				return buildDenominatorView(measureDetailsComponent.getDescriptionModel());
 			case DISCLAIMER:
 				return new DisclaimerView();
 			case MEASURE_TYPE:
@@ -99,5 +101,12 @@ public class MeasureDetailsViewFactory {
 		GeneralMeasureInformationObserver observer = new GeneralMeasureInformationObserver(generalInformationView);
 		generalInformationView.setObserver(observer);
 		return generalInformationView;
+	}
+	
+	private DescriptionView buildDenominatorView(DescriptionModel descriptionModel) {
+		DescriptionView descriptionView = new DescriptionView(descriptionModel);
+		DescriptionObserver descriptionObserver = new DescriptionObserver(descriptionView);
+		descriptionView.setObserver(descriptionObserver);
+		return descriptionView;
 	}
 }

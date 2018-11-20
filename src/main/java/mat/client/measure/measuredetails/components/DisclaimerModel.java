@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class DisclaimerModel implements MeasureDetailsComponentModel{
-	private String disclaimer;
-
-	public String getDisclaimer() {
-		return disclaimer;
-	}
-
-	public void setDisclaimer(String disclaimer) {
-		this.disclaimer = disclaimer;
-	}
+public class DisclaimerModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

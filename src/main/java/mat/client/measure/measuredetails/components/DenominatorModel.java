@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class DenominatorModel implements MeasureDetailsComponentModel{
-	private String denominator;
-
-	public String getDenominator() {
-		return denominator;
-	}
-
-	public void setDenominator(String denominator) {
-		this.denominator = denominator;
-	}
+public class DenominatorModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

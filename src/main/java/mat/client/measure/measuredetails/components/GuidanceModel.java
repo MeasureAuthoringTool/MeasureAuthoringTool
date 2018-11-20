@@ -1,14 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class GuidanceModel implements MeasureDetailsComponentModel{
-	private String guidance;
-	public String getGuidance() {
-		return guidance;
-	}
-
-	public void setGuidance(String guidance) {
-		this.guidance = guidance;
-	}
+public class GuidanceModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class MeasurePopulationModel implements MeasureDetailsComponentModel{
-	private String measurePopulation;
-
-	public String getMeasurePopulation() {
-		return measurePopulation;
-	}
-
-	public void setMeasurePopulation(String measurePopulation) {
-		this.measurePopulation = measurePopulation;
-	}
+public class MeasurePopulationModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

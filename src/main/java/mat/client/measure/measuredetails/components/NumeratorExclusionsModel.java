@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class NumeratorExclusionsModel implements MeasureDetailsComponentModel{
-	private String numeratorExclusions;
-
-	public String getNumeratorExclusions() {
-		return numeratorExclusions;
-	}
-
-	public void setNumeratorExclusions(String numeratorExclusions) {
-		this.numeratorExclusions = numeratorExclusions;
-	}
+public class NumeratorExclusionsModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

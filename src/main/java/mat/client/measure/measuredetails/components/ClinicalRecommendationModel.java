@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class ClinicalRecommendationModel implements MeasureDetailsComponentModel{
-	private String clinicalRecommendation;
-
-	public String getClinicalRecommendation() {
-		return clinicalRecommendation;
-	}
-
-	public void setClinicalRecommendation(String clinicalRecommendation) {
-		this.clinicalRecommendation = clinicalRecommendation;
-	}
+public class ClinicalRecommendationModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

@@ -1,15 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class TransmissionFormatModel implements MeasureDetailsComponentModel{
-	private String transmissionFormat;
-
-	public String getTransmissionFormat() {
-		return transmissionFormat;
-	}
-
-	public void setTransmissionFormat(String transmissionFormat) {
-		this.transmissionFormat = transmissionFormat;
-	}
+public class TransmissionFormatModel extends RichTextEditorModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

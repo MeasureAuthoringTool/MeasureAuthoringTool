@@ -40,6 +40,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.MeasureSearchModel;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureDetailsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
@@ -146,7 +147,7 @@ public interface MeasureService extends RemoteService {
 	 * @param userId the user id
 	 * @return the measure and log recent measure
 	 */
-	ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String measureId, String userId);
+	MeasureDetailsResult getMeasureDetailsAndLogRecentMeasure(String measureId, String userId);
 	
 	/**
 	 * Gets the measure xml for measure.

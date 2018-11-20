@@ -41,6 +41,7 @@ import mat.server.service.MeasureLibraryService;
 import mat.shared.MeasureSearchModel;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureDetailsResult;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
@@ -110,15 +111,6 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public ManageCompositeMeasureDetailModel getCompositeMeasure(String measureId) {
 		return this.getMeasureLibraryService().getCompositeMeasure(measureId);
-	}
-	
-	@Override
-	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String measureId, String userId) {
-		ManageMeasureDetailModel manageMeasureDetailModel = getMeasure(measureId);
-		if(manageMeasureDetailModel != null){
-			getMeasureLibraryService().recordRecentMeasureActivity(measureId, userId);
-		}
-		return manageMeasureDetailModel;
 	}
 	
 	/**
@@ -565,5 +557,24 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements Me
 	@Override
 	public Boolean isCompositeMeasure(String currentMeasureId) {
 		return this.getMeasureLibraryService().isCompositeMeasure(currentMeasureId);
+	}
+
+	@Override
+	public MeasureDetailsResult getMeasureDetailsAndLogRecentMeasure(String measureId, String userId) {
+		MeasureDetailsResult measureDetailsResult = new MeasureDetailsResult();
+		if(isCompositeMeasure(measureId)) {
+			measureDetailsResult.setComposite(true);
+			ManageCompositeMeasureDetailModel manageCompositeMeasureDetail = getCompositeMeasure(measureId);
+			measureDetailsResult.setManageMeasureDetailsModel(manageCompositeMeasureDetail);
+		} else {
+			measureDetailsResult.setComposite(false);
+			ManageMeasureDetailModel manageMeasureDetailModel = getMeasure(measureId);
+			measureDetailsResult.setManageMeasureDetailsModel(manageMeasureDetailModel);
+		}
+		
+		if(measureDetailsResult.getManageMeasureDetailsModel() != null){
+			getMeasureLibraryService().recordRecentMeasureActivity(measureId, userId);
+		}
+		return measureDetailsResult;
 	}
 }

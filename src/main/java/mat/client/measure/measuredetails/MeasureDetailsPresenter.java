@@ -21,6 +21,7 @@ import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
+import mat.shared.MeasureDetailsResult;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
 
@@ -54,7 +55,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void beforeDisplay() {
 		clearAlerts();
-		populateMeasureDetailsModelAndDisplayMeasureDetailsView();
+		displayMeasureDetailsView();
 	}
 
 	@Override
@@ -125,63 +126,28 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		MatContext.get().getEventBus().fireEvent(backToMeasureLibraryPage);
 	}
 
-	private void populateMeasureDetailsModelAndDisplayMeasureDetailsView() {
+	private void displayMeasureDetailsView() {
 		this.scoringType = MatContext.get().getCurrentMeasureScoringType();
-		MatContext.get().getMeasureService().isCompositeMeasure(MatContext.get().getCurrentMeasureId(), displayMeasureDetailsCallBack());
+		navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
+		measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
+		isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
+		measureDetailsView.setReadOnly(isMeasureEditable);
+		measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
+		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
+		navigationPanel.updateState(measureDetailsView.getState());
 	}
 
-	private AsyncCallback<Boolean> displayMeasureDetailsCallBack() {
-		return new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-
-			@Override
-			public void onSuccess(Boolean isCompositeMeasure) {
-				setCompositeMeasure(isCompositeMeasure);
-				measureDetailsModel.setComposite(isCompositeMeasure);
-				navigationPanel.buildNavigationMenu(scoringType, isCompositeMeasure);
-				measureDetailsView.buildDetailView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
-				isMeasureEditable = !MatContext.get().getMeasureLockService().checkForEditPermission();
-				measureDetailsView.setReadOnly(isMeasureEditable);
-				measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
-				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
-				navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
-				navigationPanel.updateState(measureDetailsView.getState());
-			}
-		};
-	}
 
 	private void addEventHandlers() {
 		HandlerManager eventBus = MatContext.get().getEventBus();
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
-				MatContext.get().getMeasureService().isCompositeMeasure(MatContext.get().getCurrentMeasureId(), getMeasureCallBack());
+				MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure());
 			}
 		});
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
 		measureDetailsView.getSaveButton().addClickHandler(event -> handleSaveButtonClick());
-	}
-
-	protected AsyncCallback<Boolean> getMeasureCallBack() {
-		return new AsyncCallback<Boolean>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-
-			@Override
-			public void onSuccess(Boolean isCompositeMeasure) {
-				setCompositeMeasure(isCompositeMeasure);
-				if(isCompositeMeasure()) {
-					MatContext.get().getMeasureService().getCompositeMeasure(MatContext.get().getCurrentMeasureId(), getAsyncCallBackForCompositeMeasureAndLogRecentMeasure());
-				} else {
-					MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure());
-				}
-			}
-		};
 	}
 
 	protected AsyncCallback<ManageCompositeMeasureDetailModel> getAsyncCallBackForCompositeMeasureAndLogRecentMeasure() {
@@ -221,21 +187,22 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return measureDetailsModel.getOwnerUserId() == MatContext.get().getLoggedinUserId();
 	}
 	
-	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
-		return new AsyncCallback<ManageMeasureDetailModel>() {
+	private AsyncCallback<MeasureDetailsResult> getAsyncCallBackForMeasureAndLogRecentMeasure() {
+		return new AsyncCallback<MeasureDetailsResult>() {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
 				handleAsyncFailure(caught);
 			}
 			@Override
-			public void onSuccess(ManageMeasureDetailModel result) {
+			public void onSuccess(MeasureDetailsResult result) {
+				setCompositeMeasure(result.isComposite());
 				handleAsyncSuccess(result, callbackRequestTime);
 			}
 			
-			private void handleAsyncSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
+			private void handleAsyncSuccess(MeasureDetailsResult result, long callbackRequestTime) {
 				if (callbackRequestTime == lastRequestTime) {
-					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result);
+					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result.getManageMeasureDetailsModel());
 					measureDetailsModel = manageMeasureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure);					
 					MatContext.get().fireMeasureEditEvent();
 				}

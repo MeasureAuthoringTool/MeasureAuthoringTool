@@ -38,6 +38,7 @@ import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.MeasureSearchModel;
 import mat.shared.GetUsedCQLArtifactsResult;
+import mat.shared.MeasureDetailsResult;
 import mat.shared.SaveUpdateCQLResult;
 
 
@@ -148,7 +149,7 @@ public interface MeasureServiceAsync {
 	 * @param callback the callback
 	 * @return the measure and log recent measure
 	 */
-	void getMeasureAndLogRecentMeasure(String measureId, String userId, AsyncCallback<ManageMeasureDetailModel> callback);
+	void getMeasureDetailsAndLogRecentMeasure(String measureId, String userId, AsyncCallback<MeasureDetailsResult> callback);
 	
 	/**
 	 * Gets the measure xml for measure.

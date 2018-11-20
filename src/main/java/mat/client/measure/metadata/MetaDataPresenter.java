@@ -65,6 +65,7 @@ import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.MatConstants;
+import mat.shared.MeasureDetailsResult;
 import mat.shared.StringUtility;
 
 /**
@@ -1903,7 +1904,7 @@ public class MetaDataPresenter  implements MatPresenter {
 	 * 
 	 * @return the measure and log recent measure */
 	private void getMeasureAndLogRecentMeasure() {
-		MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(),
+		MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(),
 				MatContext.get().getLoggedinUserId(), getAsyncCallBackForMeasureAndLogRecentMeasure());
 	}
 	
@@ -1917,15 +1918,15 @@ public class MetaDataPresenter  implements MatPresenter {
 	/** Gets the async call back.
 	 * 
 	 * @return the async call back */
-	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
-		return new AsyncCallback<ManageMeasureDetailModel>() {
+	private AsyncCallback<MeasureDetailsResult> getAsyncCallBackForMeasureAndLogRecentMeasure() {
+		return new AsyncCallback<MeasureDetailsResult>() {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
 				handleAsyncFailure(caught);
 			}
 			@Override
-			public void onSuccess(ManageMeasureDetailModel result) {
+			public void onSuccess(MeasureDetailsResult result) {
 				handleAsyncSuccess(result, callbackRequestTime);
 			}
 		};
@@ -1958,6 +1959,14 @@ public class MetaDataPresenter  implements MatPresenter {
 	private void handleAsyncSuccess(ManageMeasureDetailModel result, long callbackRequestTime) {
 		if (callbackRequestTime == lastRequestTime) {
 			currentMeasureDetail = result;
+			displayDetail();
+			fireMeasureEditEvent();
+		}
+	}
+	
+	private void handleAsyncSuccess(MeasureDetailsResult result, long callbackRequestTime) {
+		if (callbackRequestTime == lastRequestTime) {
+			currentMeasureDetail = result.getManageMeasureDetailsModel();
 			displayDetail();
 			fireMeasureEditEvent();
 		}

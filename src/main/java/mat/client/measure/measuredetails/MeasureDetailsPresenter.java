@@ -267,25 +267,31 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		}
 	}
 
-	private Object saveMeasureDetails() {
-		//TODO call saveCompositeMeasure for composite measures
+	private void saveMeasureDetails() {
 		measureDetailsModel.updateModel(measureDetailsView.getMeasureDetailsComponentModel());
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
-		MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails,
-				new AsyncCallback<SaveMeasureResult>() {
+		
+		if(measureDetailsModel.isComposite()) {
+			MatContext.get().getMeasureService().saveCompositeMeasure((ManageCompositeMeasureDetailModel) manageMeasureDetails, getSaveCallback());
+		} else {
+			MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails, getSaveCallback());
+		}
+	}
 
+	private AsyncCallback<SaveMeasureResult> getSaveCallback() {
+		return new AsyncCallback<SaveMeasureResult>() {
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO handle error here
+				// TODO Auto-generated method stub
+				
 			}
 
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
-				//TODO handle success here
+				// TODO Auto-generated method stub
+				
 			}
-		});
-
-		return null;
+		};
 	}
 }

@@ -7,6 +7,8 @@ import org.gwtbootstrap3.client.ui.ProgressBar;
 import org.gwtbootstrap3.client.ui.constants.ProgressBarType;
 import org.gwtbootstrap3.client.ui.constants.ProgressType;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -218,6 +220,13 @@ public abstract class MainLayout {
 		titleImage.getElement().setId("titleImage_FocusableImageButton");
 		titleImage.setStylePrimaryName("topBannerImage");
 		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
+		horizontalBanner.addDomHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
+			}
+		},ClickEvent.getType());
+		titleImage.addClickHandler(event -> addRedirectHandler());
 		HTML desc = new HTML("<h4 style=\"font-size:0;\"><b>Measure Authoring Tool</b></h4>");// Doing this for 508 when CSS turned off
 		@SuppressWarnings("deprecation")
 		com.google.gwt.user.client.Element heading = desc.getElement();
@@ -255,6 +264,10 @@ public abstract class MainLayout {
 
 	}
 	
+
+	private void addRedirectHandler() {
+		MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
+	}
 
 	private HTML fetchAndcreateFooterLinks() {
 		MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {

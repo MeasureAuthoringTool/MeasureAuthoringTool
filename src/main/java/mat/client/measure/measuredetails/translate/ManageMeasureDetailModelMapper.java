@@ -49,6 +49,9 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 	@Override
 	public MeasureDetailsModel getMeasureDetailsModel(boolean isCompositeMeasure) {
 		measureDetailsModel = new MeasureDetailsModel();
+		measureDetailsModel.setId(manageMeasureDetailModel.getId());
+		measureDetailsModel.setMeasureId(manageMeasureDetailModel.getMeasureId());
+		measureDetailsModel.setRevisionNumber(manageMeasureDetailModel.getRevisionNumber());
 		measureDetailsModel.setOwnerUserId(manageMeasureDetailModel.getMeasureOwnerId());
 		measureDetailsModel.setComposite(isCompositeMeasure);
 		measureDetailsModel.setScoringType(manageMeasureDetailModel.getScoringAbbr());
@@ -250,7 +253,15 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 
 	@Override
 	public ManageMeasureDetailModel convertMeasureDetailsToManageMeasureDetailModel() {
-		manageMeasureDetailModel = new ManageMeasureDetailModel();
+		if(measureDetailsModel.isComposite()) {
+			manageMeasureDetailModel = new ManageCompositeMeasureDetailModel();
+			((ManageCompositeMeasureDetailModel) manageMeasureDetailModel).setCompositeScoringMethod(getCompositeScoringMethod());
+		} else {
+			manageMeasureDetailModel = new ManageMeasureDetailModel();	
+		}
+		manageMeasureDetailModel.setId(measureDetailsModel.getId());
+		manageMeasureDetailModel.setMeasureId(measureDetailsModel.getMeasureId());
+		manageMeasureDetailModel.setRevisionNumber(measureDetailsModel.getRevisionNumber());
 		manageMeasureDetailModel.setClinicalRecomms(getClinicalRecommendation());
 		manageMeasureDetailModel.setCopyright(getCopyright());
 		manageMeasureDetailModel.setDefinitions(getDefinitions());
@@ -259,6 +270,12 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setDenominator(getDenominator());
 		manageMeasureDetailModel.setDescription(getDescription());
 		manageMeasureDetailModel.setDisclaimer(getDisclaimer());
+		manageMeasureDetailModel.setIsPatientBased(getPatientBased());
+		manageMeasureDetailModel.setMeasScoring(getScoringMethod());
+		manageMeasureDetailModel.setName(getMeasureName());
+		manageMeasureDetailModel.setFinalizedDate(getFinalizedDate());
+		manageMeasureDetailModel.setVersionNumber(getversionNumber());
+		manageMeasureDetailModel.setShortName(getShortName());
 		manageMeasureDetailModel.setGuidance(getGuidance());
 		manageMeasureDetailModel.setImprovNotations(getImprovementNotation());
 		manageMeasureDetailModel.setInitialPop(getInitialPopulations());
@@ -278,6 +295,55 @@ public class ManageMeasureDetailModelMapper implements MeasureDetailModelMapper{
 		manageMeasureDetailModel.setSupplementalData(getSupplementalData());
 		manageMeasureDetailModel.setTransmissionFormat(getTransmissionFormat());
 		return manageMeasureDetailModel;
+	}
+
+	private String getCompositeScoringMethod() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().getCompositeScoringMethod();
+		}
+		return null;
+	}
+
+	private String getShortName() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().geteCQMAbbreviatedTitle();
+		}
+		return null;
+	}
+
+	private String getversionNumber() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().geteCQMVersionNumber();
+		}
+		return null;
+	}
+
+	private String getFinalizedDate() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().getFinalizedDate();
+		}
+		return null;
+	}
+
+	private String getMeasureName() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().getMeasureName();
+		}
+		return null;
+	}
+
+	private String getScoringMethod() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().getScoringMethod();
+		}
+		return null;
+	}
+
+	private boolean getPatientBased() {
+		if(measureDetailsModel.getGeneralInformation() != null) {
+			return measureDetailsModel.getGeneralInformation().isPatientBased();
+		}
+		return false;
 	}
 
 	private String getTransmissionFormat() {

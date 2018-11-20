@@ -35,7 +35,6 @@ public class MeasureDetailsView {
 	private MatDetailItem currentMeasureDetail;
 	private ComponentDetailView componentDetailView;
 	private boolean isMeasureEditable;
-	//TODO handle save...
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");
 	private MeasureDetailsModel measureDetailsComponent;

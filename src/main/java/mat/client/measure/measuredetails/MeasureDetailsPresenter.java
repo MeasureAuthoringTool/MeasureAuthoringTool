@@ -1,6 +1,5 @@
 package mat.client.measure.measuredetails;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -15,6 +14,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
+import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
@@ -268,11 +268,24 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private Object saveMeasureDetails() {
-		GWT.log("save measure details");
+		//TODO call saveCompositeMeasure for composite measures
+		measureDetailsModel.updateModel(measureDetailsView.getMeasureDetailsComponentModel());
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
-		// TODO Auto-generated method stub
-		//TODO save the measure details
+		MatContext.get().getMeasureService().saveMeasureDetails(manageMeasureDetails,
+				new AsyncCallback<SaveMeasureResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO handle error here
+			}
+
+			@Override
+			public void onSuccess(SaveMeasureResult result) {
+				//TODO handle success here
+			}
+		});
+
 		return null;
 	}
 }

@@ -1,6 +1,9 @@
 package mat.client.measure.measuredetails.components;
 
 public class MeasureDetailsModel implements MeasureDetailsComponentModel {
+	private String id;
+	private String measureId;
+	private String revisionNumber;
 	private String ownerUserId; 
 	private boolean isComposite;
 	private String scoringType;
@@ -259,5 +262,82 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 
 	public void setScoringType(String scoringType) {
 		this.scoringType = scoringType;
+	}
+	public String getMeasureId() {
+		return measureId;
+	}
+	public void setMeasureId(String measureId) {
+		this.measureId = measureId;
+	}
+	public String getRevisionNumber() {
+		return revisionNumber;
+	}
+
+	public void setRevisionNumber(String revisionNumber) {
+		this.revisionNumber = revisionNumber;
+	}
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	public void updateModel(MeasureDetailsComponentModel measureDetailsComponentModel) {
+		if(measureDetailsComponentModel instanceof ClinicalRecommendationModel) {
+			setClinicalRecommendation((ClinicalRecommendationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof CopyrightModel) {
+			setCopyright((CopyrightModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof DefinitionModel) {
+			setDefinition((DefinitionModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof DenominatorExceptionsModel) {
+			setDenominatorExceptions((DenominatorExceptionsModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof DenominatorExclusionsModel) {
+			setDenominatorExclusions((DenominatorExclusionsModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof DenominatorModel) {
+			setDenominator((DenominatorModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof DescriptionModel) {
+			setDescription((DescriptionModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof DisclaimerModel) {
+			setDisclaimer((DisclaimerModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof GeneralInformationModel) {
+			setGeneralInformation((GeneralInformationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof GuidanceModel) {
+			setGuidance((GuidanceModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof ImprovementNotationModel) {
+			setImprovementNotation((ImprovementNotationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof InitialPopulationModel) {
+			setInitialPopulation((InitialPopulationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof MeasureObservationsModel) {
+			setMeasureObservations((MeasureObservationsModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof MeasurePopulationExclusionsModel) {
+			setMeasurePopulationExclusions((MeasurePopulationExclusionsModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof MeasurePopulationModel) {
+			setMeasurePopulation((MeasurePopulationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof MeasureSetModel) {
+			setMeasureSet((MeasureSetModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof MeasureStewardDeveloperModel) {
+			setMeasureStewardDeveloper((MeasureStewardDeveloperModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof MeasureTypeModel) {
+			setMeasureTypeModel((MeasureTypeModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof NumeratorExclusionsModel) {
+			setNumeratorExclusions((NumeratorExclusionsModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof NumeratorModel) {
+			setNumerator((NumeratorModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof RateAggregationModel) {
+			setRateAggregation((RateAggregationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof RationaleModel) {
+			setRationale((RationaleModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof ReferencesModel) {
+			setReferences((ReferencesModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof RiskAdjustmentModel) {
+			setRiskAdjustment((RiskAdjustmentModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof StratificationModel) {
+			setStratification((StratificationModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof SupplementalDataElementsModel) {
+			setSupplementalDataElements((SupplementalDataElementsModel) measureDetailsComponentModel);
+		} else if(measureDetailsComponentModel instanceof TransmissionFormatModel) {
+			setTransmissionFormat((TransmissionFormatModel) measureDetailsComponentModel);
+		}
 	}
 }

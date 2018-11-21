@@ -39,7 +39,7 @@ import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
 import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
-import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
+import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 
 
 public interface MeasureServiceAsync {

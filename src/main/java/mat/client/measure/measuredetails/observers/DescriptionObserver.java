@@ -1,7 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
-import mat.client.measure.measuredetails.view.DescriptionView;
-import mat.shared.measure.measuredetails.components.DescriptionModel;
+import mat.client.measure.measuredetails.views.DescriptionView;
+import mat.shared.measure.measuredetails.models.DescriptionModel;
 
 public class DescriptionObserver {
 	private DescriptionView descriptionView;

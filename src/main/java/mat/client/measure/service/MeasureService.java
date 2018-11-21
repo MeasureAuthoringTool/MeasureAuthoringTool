@@ -44,7 +44,7 @@ import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
-import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
+import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 
 /**
  * The Interface MeasureService.

@@ -20,7 +20,7 @@ import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
-import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
+import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {

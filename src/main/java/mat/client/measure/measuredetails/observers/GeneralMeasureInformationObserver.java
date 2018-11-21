@@ -1,10 +1,10 @@
 package mat.client.measure.measuredetails.observers;
 
-import mat.client.measure.measuredetails.view.GeneralMeasureInformationView;
+import mat.client.measure.measuredetails.views.GeneralMeasureInformationView;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.shared.MatConstants;
-import mat.shared.measure.measuredetails.components.GeneralInformationModel;
+import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 
 /* This class handles events that pertain to the general information view and do not need to be visible to the presenter */
 public class GeneralMeasureInformationObserver {

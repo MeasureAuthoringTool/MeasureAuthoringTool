@@ -628,14 +628,16 @@ public class CQLUtil {
 		cqlError.setErrorMessage(cte.getMessage());
 		cqlError.setSeverity(cte.getSeverity().toString());
 		
-		
 		String libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
+		initializeErrorsListForLibraryIfNeeded(libraryToErrorsMap, libraryName);
+		libraryToErrorsMap.get(libraryName).add(cqlError);
+		errors.add(cqlError);
+	}
+
+	private static void initializeErrorsListForLibraryIfNeeded(Map<String, List<CQLError>> libraryToErrorsMap, String libraryName) {
 		if(!libraryToErrorsMap.containsKey(libraryName)) {
 			libraryToErrorsMap.put(libraryName, new ArrayList<>());
 		}
-		
-		libraryToErrorsMap.get(libraryName).add(cqlError);
-		errors.add(cqlError);
 	}
 	
 	/**

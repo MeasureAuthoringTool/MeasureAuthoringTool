@@ -189,5 +189,9 @@ public class CQLComponentLibraryView extends GenericLeftNavSectionView  {
 		cqlAceEditor.setText("");
 		cqlAceEditor.redisplay();
 	}
+	
+	public AceEditor getCQLAceEditor() {
+		return cqlAceEditor;
+	}
 
 }

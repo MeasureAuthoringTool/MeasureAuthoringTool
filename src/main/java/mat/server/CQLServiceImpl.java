@@ -2381,6 +2381,8 @@ public class CQLServiceImpl implements CQLService {
 			setReturnTypes(cqlResult, cqlModel);
 
 		} else {
+			cqlResult.getUsedCQLArtifacts().setLibraryNameErrorsMap(cqlResult.getLibraryNameErrorsMap());
+			cqlResult.getUsedCQLArtifacts().setLibraryNameWarningsMap(cqlResult.getLibraryNameWarningsMap());
 			cqlResult.getUsedCQLArtifacts().setCqlErrors(cqlResult.getCqlErrors());
 			cqlResult.getUsedCQLArtifacts().setCqlErrorsPerExpression(getCQLErrorsPerExpressions(cqlModel, cqlResult.getCqlErrors()));
 		}

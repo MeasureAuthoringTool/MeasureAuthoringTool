@@ -9,18 +9,20 @@ public class ComponentMeasureTabObject implements IsSerializable{
 	private String ownerName;
 	private String libraryContent;
 	private String componentId;
+	private String version;
 	
 	public ComponentMeasureTabObject() {
 		
 	}
 	
-	public ComponentMeasureTabObject(String measureName, String libraryAlias, String libraryName, String ownerName, String content, String componentId) {
+	public ComponentMeasureTabObject(String measureName, String libraryAlias, String libraryName, String version, String ownerName, String content, String componentId) {
 		this.setMeasureName(measureName);
 		this.setLibraryAlias(libraryAlias); 
 		this.libraryName = libraryName;
 		this.ownerName = ownerName;
 		this.libraryContent = content;
 		this.componentId = componentId;
+		this.version = version; 
 	}
 	
 	public String getAlias() {
@@ -57,6 +59,14 @@ public class ComponentMeasureTabObject implements IsSerializable{
 
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 	
 }

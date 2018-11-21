@@ -1,7 +1,9 @@
 package mat.shared;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mat.client.shared.GenericResult;
 import mat.model.cql.CQLCode;
@@ -98,6 +100,10 @@ public class SaveUpdateCQLResult extends GenericResult{
 	private boolean isDatatypeUsedCorrectly = true;
 	
 	private boolean isValidCQLWhileSavingExpression = true;
+	
+	
+	private Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>(); 
+	private Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
 	
 	/**
 	 * Gets the cql string.
@@ -400,6 +406,22 @@ public class SaveUpdateCQLResult extends GenericResult{
 
 	public void setJsonString(String jsonString) {
 		this.jsonString = jsonString;
+	}
+
+	public Map<String, List<CQLError>> getLibraryNameErrorsMap() {
+		return libraryNameErrorsMap;
+	}
+
+	public void setLibraryNameErrorsMap(Map<String, List<CQLError>> libraryNameErrorsMap) {
+		this.libraryNameErrorsMap = libraryNameErrorsMap;
+	}
+
+	public Map<String, List<CQLError>> getLibraryNameWarningsMap() {
+		return libraryNameWarningsMap;
+	}
+
+	public void setLibraryNameWarningsMap(Map<String, List<CQLError>> libraryNameWarningsMap) {
+		this.libraryNameWarningsMap = libraryNameWarningsMap;
 	}
 	
 }

@@ -2,7 +2,7 @@ package mat.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CQLError implements IsSerializable ,Comparable<CQLError> {
+public class CQLError implements IsSerializable, Comparable<CQLError> {
 	int errorInLine;
 	int errorAtOffeset;
 	

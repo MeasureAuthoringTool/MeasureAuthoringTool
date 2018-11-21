@@ -38,6 +38,9 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 	private Map<String, Map<String, String>> nameToReturnTypeMap;
 	private Map<String, Map<String, Set<String>>> expressionNameToCodeDataTypeMap; 
 	private Map<String, Map<String, Set<String>>> expressionNameToValuesetDataTypeMap;
+	
+	private Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>(); 
+	private Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
 
 	public Map<String, List<CQLError>> getCqlWarningsPerExpression() {
 		return cqlWarningsPerExpression;
@@ -211,6 +214,22 @@ public class GetUsedCQLArtifactsResult extends GenericResult{
 
 	public void setNameToReturnTypeMap(Map<String, Map<String, String>> nameToReturnTypeMap) {
 		this.nameToReturnTypeMap = nameToReturnTypeMap;
+	}
+
+	public Map<String, List<CQLError>> getLibraryNameErrorsMap() {
+		return libraryNameErrorsMap;
+	}
+
+	public void setLibraryNameErrorsMap(Map<String, List<CQLError>> libraryNameErrorsMap) {
+		this.libraryNameErrorsMap = libraryNameErrorsMap;
+	}
+
+	public Map<String, List<CQLError>> getLibraryNameWarningsMap() {
+		return libraryNameWarningsMap;
+	}
+
+	public void setLibraryNameWarningsMap(Map<String, List<CQLError>> libraryNameWarningsMap) {
+		this.libraryNameWarningsMap = libraryNameWarningsMap;
 	}
 
 }

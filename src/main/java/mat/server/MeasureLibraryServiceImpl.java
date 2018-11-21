@@ -3429,7 +3429,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			String componentId = measure.getId();
 
 			CQLLibrary library = cqlLibraryDAO.getLibraryByMeasureId(componentId);
-
+			String version = library.getVersionNumber() + ".000";
+			
 			String libraryName = library.getName();
 			String data = "";
 			try {
@@ -3441,8 +3442,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			CQLModel libraryCQLModel = CQLUtilityClass.getCQLModelFromXML(data);
 			String libraryContent = CQLUtilityClass.getCqlString(libraryCQLModel, "");
 
-			ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, ownerName,
-					libraryContent, componentId);
+			ComponentMeasureTabObject o = new ComponentMeasureTabObject(measureName, alias, libraryName, version, ownerName, libraryContent, componentId);
 			componentMeasureInformationList.add(o);
 		}
 

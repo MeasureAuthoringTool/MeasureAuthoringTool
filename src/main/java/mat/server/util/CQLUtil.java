@@ -600,29 +600,42 @@ public class CQLUtil {
 
 		// add in the errors, if any
 		List<CQLError> errors = new ArrayList<>();
+		Map<String, List<CQLError>> libraryNameErrorsMap = new HashMap<>(); 
+		Map<String, List<CQLError>> libraryNameWarningsMap = new HashMap<>(); 
+
 		for (CqlTranslatorException cte : cqlToELM.getErrors()) {
-			setCQLErrors(errors, cte);
+			setCQLErrors(errors, libraryNameErrorsMap, cte);
 		}
 		
 		List<CQLError> warnings = new ArrayList<>();
 		for (CqlTranslatorException cte : cqlToELM.getWarnings()) {
-			setCQLErrors(warnings, cte);
+			setCQLErrors(warnings, libraryNameWarningsMap, cte);
 		}
 		
 		parsedCQL.setCqlErrors(errors);
 		parsedCQL.setCqlWarnings(warnings);
+		parsedCQL.setLibraryNameErrorsMap(libraryNameErrorsMap);
+		parsedCQL.setLibraryNameWarningsMap(libraryNameWarningsMap);
 	}
 
-	private static void setCQLErrors(List<CQLError> errors, CqlTranslatorException cte) {
-		CQLError cqlErrors = new CQLError();
-		cqlErrors.setStartErrorInLine(cte.getLocator().getStartLine());
-		cqlErrors.setErrorInLine(cte.getLocator().getStartLine());
-		cqlErrors.setErrorAtOffeset(cte.getLocator().getStartChar());
-		cqlErrors.setEndErrorInLine(cte.getLocator().getEndLine());
-		cqlErrors.setEndErrorAtOffset(cte.getLocator().getEndChar());
-		cqlErrors.setErrorMessage(cte.getMessage());
-		cqlErrors.setSeverity(cte.getSeverity().toString());
-		errors.add(cqlErrors);
+	private static void setCQLErrors(List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {
+		CQLError cqlError = new CQLError();
+		cqlError.setStartErrorInLine(cte.getLocator().getStartLine());
+		cqlError.setErrorInLine(cte.getLocator().getStartLine());
+		cqlError.setErrorAtOffeset(cte.getLocator().getStartChar());
+		cqlError.setEndErrorInLine(cte.getLocator().getEndLine());
+		cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());
+		cqlError.setErrorMessage(cte.getMessage());
+		cqlError.setSeverity(cte.getSeverity().toString());
+		
+		
+		String libraryName = cte.getLocator().getLibrary().getId() + "-" + cte.getLocator().getLibrary().getVersion();
+		if(!libraryToErrorsMap.containsKey(libraryName)) {
+			libraryToErrorsMap.put(libraryName, new ArrayList<>());
+		}
+		
+		libraryToErrorsMap.get(libraryName).add(cqlError);
+		errors.add(cqlError);
 	}
 	
 	/**

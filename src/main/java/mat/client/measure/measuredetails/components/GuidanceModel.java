@@ -14,4 +14,7 @@ public class GuidanceModel extends RichTextEditorModel{
 		return false;
 	}
 
+	public void updateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		measureDetailsModelVisitor.visit(this);
+	}
 }

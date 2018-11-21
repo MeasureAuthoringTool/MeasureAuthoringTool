@@ -1,6 +1,6 @@
 package mat.client.measure.measuredetails.components;
 
-public class MeasureDetailsModel implements MeasureDetailsComponentModel {
+public class MeasureDetailsModel implements MeasureDetailsComponentModel, MeasureDetailsModelVisitor  {
 	private String id;
 	private String measureId;
 	private String revisionNumber;
@@ -283,61 +283,145 @@ public class MeasureDetailsModel implements MeasureDetailsComponentModel {
 	public void setId(String id) {
 		this.id = id;
 	}
-	public void updateModel(MeasureDetailsComponentModel measureDetailsComponentModel) {
-		if(measureDetailsComponentModel instanceof ClinicalRecommendationModel) {
-			setClinicalRecommendationModel((ClinicalRecommendationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof CopyrightModel) {
-			setCopyrightModel((CopyrightModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof DefinitionModel) {
-			setDefinitionModel((DefinitionModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof DenominatorExceptionsModel) {
-			setDenominatorExceptionsModel((DenominatorExceptionsModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof DenominatorExclusionsModel) {
-			setDenominatorExclusionsModel((DenominatorExclusionsModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof DenominatorModel) {
-			setDenominatorModel((DenominatorModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof DescriptionModel) {
-			setDescriptionModel((DescriptionModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof DisclaimerModel) {
-			setDisclaimerModel((DisclaimerModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof GeneralInformationModel) {
-			setGeneralInformationModel((GeneralInformationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof GuidanceModel) {
-			setGuidanceModel((GuidanceModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof ImprovementNotationModel) {
-			setImprovementNotationModel((ImprovementNotationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof InitialPopulationModel) {
-			setInitialPopulationModel((InitialPopulationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof MeasureObservationsModel) {
-			setMeasureObservationsModel((MeasureObservationsModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof MeasurePopulationExclusionsModel) {
-			setMeasurePopulationExclusionsModel((MeasurePopulationExclusionsModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof MeasurePopulationModel) {
-			setMeasurePopulationModel((MeasurePopulationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof MeasureSetModel) {
-			setMeasureSetModel((MeasureSetModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof MeasureStewardDeveloperModel) {
-			setMeasureStewardDeveloperModel((MeasureStewardDeveloperModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof MeasureTypeModel) {
-			setMeasureTypeModeModel((MeasureTypeModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof NumeratorExclusionsModel) {
-			setNumeratorExclusionsModel((NumeratorExclusionsModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof NumeratorModel) {
-			setNumeratorModel((NumeratorModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof RateAggregationModel) {
-			setRateAggregationModel((RateAggregationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof RationaleModel) {
-			setRationaleModel((RationaleModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof ReferencesModel) {
-			setReferencesModel((ReferencesModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof RiskAdjustmentModel) {
-			setRiskAdjustmentModel((RiskAdjustmentModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof StratificationModel) {
-			setStratificationModel((StratificationModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof SupplementalDataElementsModel) {
-			setSupplementalDataElementsModel((SupplementalDataElementsModel) measureDetailsComponentModel);
-		} else if(measureDetailsComponentModel instanceof TransmissionFormatModel) {
-			setTransmissionFormatModel((TransmissionFormatModel) measureDetailsComponentModel);
-		}
+
+
+	@Override
+	public void updateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+
+	}
+	
+	@Override
+	public void visit(ClinicalRecommendationModel clinicalRecommendationModel) {
+		setClinicalRecommendationModel(clinicalRecommendationModel);
+	}
+
+	@Override
+	public void visit(CopyrightModel copyrightModel) {
+		setCopyrightModel(copyrightModel);
+	}
+
+	@Override
+	public void visit(DefinitionModel definitionModel) {
+		setDefinitionModel(definitionModel);
+	}
+
+	@Override
+	public void visit(DenominatorExceptionsModel denominatorExceptionsModel) {
+		setDenominatorExceptionsModel(denominatorExceptionsModel);
+	}
+
+	@Override
+	public void visit(DenominatorExclusionsModel denominatorExclusionsModel) {
+		setDenominatorExclusionsModel(denominatorExclusionsModel);
+	}
+
+	@Override
+	public void visit(DenominatorModel denominatorModel) {
+		setDenominatorModel(denominatorModel);
+	}
+	
+	@Override
+	public void visit(DescriptionModel descriptionModel) {
+		setDescriptionModel(descriptionModel);
+	}
+
+	@Override
+	public void visit(DisclaimerModel disclaimerModel) {
+		setDisclaimerModel(disclaimerModel);
+	}
+	
+	@Override
+	public void visit(GeneralInformationModel generalInformationModel) {
+		setGeneralInformationModel(generalInformationModel);
+	}
+
+	@Override
+	public void visit(GuidanceModel guidanceModel) {
+		setGuidanceModel(guidanceModel);
+	}
+
+	@Override
+	public void visit(ImprovementNotationModel improvementNotationModel) {
+		setImprovementNotationModel(improvementNotationModel);
+	}
+
+	@Override
+	public void visit(InitialPopulationModel initialPopulationModel) {
+		setInitialPopulationModel(initialPopulationModel);
+	}
+
+	@Override
+	public void visit(MeasureObservationsModel measureObservationsModel) {
+		setMeasureObservationsModel(measureObservationsModel);
+	}
+
+	@Override
+	public void visit(MeasurePopulationExclusionsModel measurePopulationExclusionsModel) {
+		setMeasurePopulationExclusionsModel(measurePopulationExclusionsModel);
+	}
+
+	@Override
+	public void visit(MeasurePopulationModel measurePopulationModel) {
+		setMeasurePopulationModel(measurePopulationModel);
+	}
+
+	@Override
+	public void visit(MeasureSetModel measureSetModel) {
+		setMeasureSetModel(measureSetModel);
+	}
+
+	@Override
+	public void visit(MeasureStewardDeveloperModel measureStewardDeveloperModel) {
+		setMeasureStewardDeveloperModel(measureStewardDeveloperModel);
+	}
+
+	@Override
+	public void visit(MeasureTypeModel measureTypeModel) {
+		setMeasureTypeModeModel(measureTypeModel);
+	}
+
+	@Override
+	public void visit(NumeratorExclusionsModel numeratorExclusionsModel) {
+		setNumeratorExclusionsModel(numeratorExclusionsModel);
+	}
+
+	@Override
+	public void visit(NumeratorModel numeratorModel) {
+		setNumeratorModel(numeratorModel);
+	}
+
+	@Override
+	public void visit(RateAggregationModel rateAggregationModel) {
+		setRateAggregationModel(rateAggregationModel);
+	}
+
+	@Override
+	public void visit(RationaleModel rationaleModel) {
+		setRationaleModel(rationaleModel);
+	}
+
+	@Override
+	public void visit(ReferencesModel referencesModel) {
+		setReferencesModel(referencesModel);
+	}
+
+	@Override
+	public void visit(RiskAdjustmentModel riskAdjustmentModel) {
+		setRiskAdjustmentModel(riskAdjustmentModel);
+	}
+
+	@Override
+	public void visit(StratificationModel stratificationModel) {
+		setStratificationModel(stratificationModel);
+	}
+
+	@Override
+	public void visit(SupplementalDataElementsModel supplementalDataElementsModel) {
+		setSupplementalDataElementsModel(supplementalDataElementsModel);
+	}
+
+	@Override
+	public void visit(TransmissionFormatModel transmissionFormatModel) {
+		setTransmissionFormatModel(transmissionFormatModel);
 	}
 }

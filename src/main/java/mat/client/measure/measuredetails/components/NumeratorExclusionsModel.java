@@ -13,4 +13,8 @@ public class NumeratorExclusionsModel extends RichTextEditorModel{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public void updateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		measureDetailsModelVisitor.visit(this);
+	}
 }

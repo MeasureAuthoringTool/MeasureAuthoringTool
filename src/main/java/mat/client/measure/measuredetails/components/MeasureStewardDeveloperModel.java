@@ -31,4 +31,8 @@ public class MeasureStewardDeveloperModel implements MeasureDetailsComponentMode
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public void updateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		measureDetailsModelVisitor.visit(this);
+	}
 }

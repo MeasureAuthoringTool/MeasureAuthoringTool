@@ -24,4 +24,8 @@ public class MeasureTypeModel implements MeasureDetailsComponentModel{
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public void updateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		measureDetailsModelVisitor.visit(this);
+	}
 }

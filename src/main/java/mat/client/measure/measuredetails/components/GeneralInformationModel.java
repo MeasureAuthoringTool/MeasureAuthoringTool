@@ -101,4 +101,8 @@ public class GeneralInformationModel implements MeasureDetailsComponentModel{
 		sb.append(", scoringMethod: " + scoringMethod);
 		return sb.toString();
 	}
+	
+	public void updateModel(MeasureDetailsModelVisitor measureDetailsModelVisitor) {
+		measureDetailsModelVisitor.visit(this);
+	}
 }

@@ -1,7 +1,6 @@
 package mat.client.measure.measuredetails;
 
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -236,7 +235,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void saveMeasureDetails() {
-		measureDetailsModel.updateModel(measureDetailsView.getMeasureDetailsComponentModel());
+		measureDetailsView.getMeasureDetailsComponentModel().updateModel(measureDetailsModel);
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
 		

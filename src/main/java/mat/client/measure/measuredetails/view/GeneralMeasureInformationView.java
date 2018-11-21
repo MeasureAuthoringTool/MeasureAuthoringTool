@@ -20,17 +20,17 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.measuredetails.MeasureDetailState;
-import mat.client.measure.measuredetails.components.GeneralInformationModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.SpacerWidget;
-import mat.client.util.RichTextEditor;
+import mat.client.shared.editor.RichTextEditor;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.StringUtility;
+import mat.shared.measure.measuredetails.components.GeneralInformationModel;
+import mat.shared.measure.measuredetails.components.MeasureDetailsComponentModel;
 
 public class GeneralMeasureInformationView implements ComponentDetailView {
 	private static final String TEXT_BOX_WIDTH = "300px";

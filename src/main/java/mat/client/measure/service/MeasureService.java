@@ -37,14 +37,14 @@ import mat.model.cql.CQLModel;
 import mat.model.cql.CQLParameter;
 import mat.model.cql.CQLQualityDataModelWrapper;
 import mat.model.cql.CQLQualityDataSetDTO;
-import mat.shared.MeasureSearchModel;
 import mat.shared.CompositeMeasureValidationResult;
 import mat.shared.GetUsedCQLArtifactsResult;
-import mat.shared.MeasureDetailsResult;
+import mat.shared.MeasureSearchModel;
 import mat.shared.SaveUpdateCQLResult;
 import mat.shared.cql.error.InvalidLibraryException;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
 
 /**
  * The Interface MeasureService.
@@ -147,7 +147,7 @@ public interface MeasureService extends RemoteService {
 	 * @param userId the user id
 	 * @return the measure and log recent measure
 	 */
-	MeasureDetailsResult getMeasureDetailsAndLogRecentMeasure(String measureId, String userId);
+	MeasureDetailsModel getMeasureDetailsAndLogRecentMeasure(String measureId, String userId);
 	
 	/**
 	 * Gets the measure xml for measure.
@@ -702,4 +702,6 @@ public interface MeasureService extends RemoteService {
 	ValidateMeasureResult validateExports(String measureId) throws Exception;
 	
 	public Boolean isCompositeMeasure(String currentMeasureId);
+	
+	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId);
 }

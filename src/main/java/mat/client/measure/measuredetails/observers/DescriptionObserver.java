@@ -1,7 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
-import mat.client.measure.measuredetails.components.DescriptionModel;
 import mat.client.measure.measuredetails.view.DescriptionView;
+import mat.shared.measure.measuredetails.components.DescriptionModel;
 
 public class DescriptionObserver {
 	private DescriptionView descriptionView;
@@ -16,8 +16,8 @@ public class DescriptionObserver {
 	
 	private DescriptionModel updateDescriptionModelFromView() {
 		DescriptionModel descriptionModel = descriptionView.getDescriptionModel();
-		descriptionModel.setFormatedText(descriptionView.getRichTextEditor().getFormatedText());
-		descriptionModel.setPlanText(descriptionView.getRichTextEditor().getPlanText());
+		descriptionModel.setFormatedText(descriptionView.getRichTextEditor().getFormattedText());
+		descriptionModel.setPlainText(descriptionView.getRichTextEditor().getPlainText());
 		return descriptionModel;
 	}
 }

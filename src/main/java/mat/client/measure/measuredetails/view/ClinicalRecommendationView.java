@@ -4,9 +4,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.shared.ConfirmationDialogBox;
-import mat.client.util.RichTextEditor;
+import mat.client.shared.editor.RichTextEditor;
+import mat.shared.measure.measuredetails.components.MeasureDetailsComponentModel;
 
 public class ClinicalRecommendationView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();

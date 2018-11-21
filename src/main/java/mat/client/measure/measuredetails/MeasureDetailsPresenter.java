@@ -10,9 +10,7 @@ import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
-import mat.client.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
@@ -20,9 +18,10 @@ import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
-import mat.shared.MeasureDetailsResult;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
+import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 
 public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObserver {
 	private MeasureDetailsView measureDetailsView;
@@ -186,23 +185,22 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		return measureDetailsModel.getOwnerUserId() == MatContext.get().getLoggedinUserId();
 	}
 	
-	private AsyncCallback<MeasureDetailsResult> getAsyncCallBackForMeasureAndLogRecentMeasure() {
-		return new AsyncCallback<MeasureDetailsResult>() {
+	private AsyncCallback<MeasureDetailsModel> getAsyncCallBackForMeasureAndLogRecentMeasure() {
+		return new AsyncCallback<MeasureDetailsModel>() {
 			final long callbackRequestTime = lastRequestTime;
 			@Override
 			public void onFailure(Throwable caught) {
 				handleAsyncFailure(caught);
 			}
 			@Override
-			public void onSuccess(MeasureDetailsResult result) {
+			public void onSuccess(MeasureDetailsModel result) {
 				setCompositeMeasure(result.isComposite());
 				handleAsyncSuccess(result, callbackRequestTime);
 			}
 			
-			private void handleAsyncSuccess(MeasureDetailsResult result, long callbackRequestTime) {
+			private void handleAsyncSuccess(MeasureDetailsModel result, long callbackRequestTime) {
 				if (callbackRequestTime == lastRequestTime) {
-					ManageMeasureDetailModelMapper manageMeasureDetailModelMapper = new ManageMeasureDetailModelMapper(result.getManageMeasureDetailsModel());
-					measureDetailsModel = manageMeasureDetailModelMapper.getMeasureDetailsModel(isCompositeMeasure);					
+					measureDetailsModel = result;					
 					MatContext.get().fireMeasureEditEvent();
 				}
 			}
@@ -235,7 +233,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	}
 
 	private void saveMeasureDetails() {
-		measureDetailsView.getMeasureDetailsComponentModel().updateModel(measureDetailsModel);
+		measureDetailsView.getMeasureDetailsComponentModel().accept(measureDetailsModel);
 		ManageMeasureDetailModelMapper mapper = new ManageMeasureDetailModelMapper(measureDetailsModel);
 		ManageMeasureDetailModel manageMeasureDetails = mapper.convertMeasureDetailsToManageMeasureDetailModel();
 		

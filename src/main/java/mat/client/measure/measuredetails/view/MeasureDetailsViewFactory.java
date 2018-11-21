@@ -3,9 +3,6 @@ package mat.client.measure.measuredetails.view;
 import java.util.List;
 
 import mat.DTO.CompositeMeasureScoreDTO;
-import mat.client.measure.measuredetails.components.DescriptionModel;
-import mat.client.measure.measuredetails.components.GeneralInformationModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
 import mat.client.shared.MatContext;
@@ -13,6 +10,9 @@ import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
 import mat.client.shared.MeasureDetailsConstants.PopulationItems;
+import mat.shared.measure.measuredetails.components.DescriptionModel;
+import mat.shared.measure.measuredetails.components.GeneralInformationModel;
+import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
 
 public class MeasureDetailsViewFactory {
 	private static MeasureDetailsViewFactory instance;

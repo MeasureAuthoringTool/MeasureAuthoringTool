@@ -5,11 +5,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
-import mat.client.measure.measuredetails.components.DescriptionModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.shared.ConfirmationDialogBox;
-import mat.client.util.RichTextEditor;
+import mat.client.shared.editor.RichTextEditor;
+import mat.shared.measure.measuredetails.components.DescriptionModel;
+import mat.shared.measure.measuredetails.components.MeasureDetailsComponentModel;
 
 public class DescriptionView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();

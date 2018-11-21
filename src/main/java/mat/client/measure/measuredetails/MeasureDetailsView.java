@@ -13,8 +13,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
-import mat.client.measure.measuredetails.components.MeasureDetailsComponentModel;
-import mat.client.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.measuredetails.view.ComponentDetailView;
 import mat.client.measure.measuredetails.view.MeasureDetailsViewFactory;
@@ -22,9 +20,11 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
+import mat.client.shared.editor.RichTextEditor;
+import mat.shared.measure.measuredetails.components.MeasureDetailsComponentModel;
+import mat.shared.measure.measuredetails.components.MeasureDetailsModel;
 import mat.client.shared.MessageAlert;
 import mat.client.shared.SpacerWidget;
-import mat.client.util.RichTextEditor;
 
 public class MeasureDetailsView {
 	private VerticalPanel mainPanel = new VerticalPanel();

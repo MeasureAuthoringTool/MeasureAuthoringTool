@@ -635,7 +635,7 @@ public class CQLUtil {
 	}
 
 	private static void initializeErrorsListForLibraryIfNeeded(Map<String, List<CQLError>> libraryToErrorsMap, String libraryName) {
-		if(!libraryToErrorsMap.containsKey(libraryName)) {
+		if(libraryToErrorsMap.get(libraryName) == null) {
 			libraryToErrorsMap.put(libraryName, new ArrayList<>());
 		}
 	}

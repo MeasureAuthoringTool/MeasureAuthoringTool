@@ -598,6 +598,7 @@ public class MatContext implements IsSerializable {
 		Window.Location.replace(urlBuilder.buildString());
 	}
 	
+	
 	public void openURL(String html){
 		Window.open(html, "User_Guide", "");
 		

@@ -703,5 +703,6 @@ public interface MeasureService extends RemoteService {
 	
 	public Boolean isCompositeMeasure(String currentMeasureId);
 	
+	@Deprecated
 	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId);
 }

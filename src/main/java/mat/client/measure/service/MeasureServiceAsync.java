@@ -746,6 +746,7 @@ public interface MeasureServiceAsync {
 
 	void isCompositeMeasure(String currentMeasureId, AsyncCallback<Boolean> compositeMeasureCallBack);
 
+	@Deprecated
 	void getMeasureAndLogRecentMeasure(String currentMeasureId, String loggedinUserId,
 			AsyncCallback<ManageMeasureDetailModel> asyncCallBackForMeasureAndLogRecentMeasure);
 }

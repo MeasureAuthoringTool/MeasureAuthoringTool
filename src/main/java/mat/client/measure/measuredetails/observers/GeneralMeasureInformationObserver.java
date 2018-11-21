@@ -1,7 +1,5 @@
 package mat.client.measure.measuredetails.observers;
 
-import com.google.gwt.user.client.Window;
-
 import mat.client.measure.measuredetails.components.GeneralInformationModel;
 import mat.client.measure.measuredetails.view.GeneralMeasureInformationView;
 import mat.client.shared.ConfirmationDialogBox;
@@ -30,7 +28,6 @@ public class GeneralMeasureInformationObserver {
 	}
 	
 	private GeneralInformationModel updateGeneralInformationModelFromView() {
-		Window.alert(generalMeasureInformationView.getMeasureNameInput().getText());
 		GeneralInformationModel generalInformationModel = generalMeasureInformationView.getGeneralInformationModel();
 		String compositeScoringValue = generalMeasureInformationView.getCompositeScoringValue().equals(MatContext.PLEASE_SELECT) ? null : generalMeasureInformationView.getCompositeScoringValue();
 		generalInformationModel.setCompositeScoringMethod(compositeScoringValue);

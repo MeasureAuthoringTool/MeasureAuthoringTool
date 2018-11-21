@@ -284,7 +284,7 @@ public class CQLAppliedValueSetUtility {
 		return aceEditor;
 	}
 	
-	public static AceEditor createCQLWocreateCQLWorkspaceAnnotations(List<CQLError> errors, String prefix, AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
+	public static AceEditor createCQLWorkspaceAnnotations(List<CQLError> errors, String prefix, AceAnnotationType aceAnnotationType, AceEditor aceEditor) {
 		if(errors != null) {
 			for(CQLError e : errors) {
 				aceEditor.addAnnotation(e.getStartErrorInLine(), e.getStartErrorAtOffset(), prefix + e.getErrorMessage(), aceAnnotationType);

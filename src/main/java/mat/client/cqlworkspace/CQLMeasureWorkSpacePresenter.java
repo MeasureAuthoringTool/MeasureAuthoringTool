@@ -3631,8 +3631,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 								editor.removeAllMarkers();
 								List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
 								List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
-								CQLAppliedValueSetUtility.createCQLWocreateCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
-								CQLAppliedValueSetUtility.createCQLWocreateCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
+								CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
+								CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
 								editor.setAnnotations();
 								editor.redisplay();
 							}
@@ -3999,8 +3999,8 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 												cqlWorkspaceView.getIncludeView().getViewCQLEditor().removeAllMarkers();
 												List<CQLError> errorsForLibrary = usedArtifactResult.getLibraryNameErrorsMap().get(selectedLibrary.getCqlLibraryName() + "-" + selectedLibrary.getVersion());
 												List<CQLError> warningsForLibrary = usedArtifactResult.getLibraryNameWarningsMap().get(selectedLibrary.getCqlLibraryName() + "-" + selectedLibrary.getVersion());
-												CQLAppliedValueSetUtility.createCQLWocreateCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
-												CQLAppliedValueSetUtility.createCQLWocreateCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
+												CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
+												CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, cqlWorkspaceView.getIncludeView().getViewCQLEditor());
 												cqlWorkspaceView.getIncludeView().getViewCQLEditor().setAnnotations();
 											}
 										});

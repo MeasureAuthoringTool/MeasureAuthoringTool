@@ -115,4 +115,10 @@ public class DescriptionView implements ComponentDetailView {
 	public void setObserver(DescriptionObserver observer) {
 		this.observer = observer;
 	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
 }

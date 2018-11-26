@@ -71,4 +71,10 @@ public class CopyrightView implements ComponentDetailView{
 		return null;
 	}
 
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

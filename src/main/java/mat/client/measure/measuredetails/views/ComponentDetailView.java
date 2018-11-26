@@ -10,6 +10,7 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 public interface ComponentDetailView {
 	public Widget getWidget();
 	public void buildDetailView();
+	public void clear();
 	public boolean isComplete();
 	public boolean hasUnsavedChanges();
 	public MeasureDetailState getState();

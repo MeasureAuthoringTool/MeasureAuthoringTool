@@ -4,6 +4,7 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.MeasureDeleteEvent;
@@ -34,9 +35,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	MeasureDetailsModel measureDetailsModel;
 
 	public MeasureDetailsPresenter() {
-		measureDetailsModel = new MeasureDetailsModel();
 		navigationPanel = new MeasureDetailsNavigation(scoringType, isCompositeMeasure);
 		navigationPanel.setObserver(this);
+		measureDetailsModel = new MeasureDetailsModel();
 		measureDetailsView = new MeasureDetailsView(measureDetailsModel, MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION, navigationPanel);
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
 		addEventHandlers();
@@ -44,6 +45,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void beforeClosingDisplay() {
+		Mat.hideLoadingMessage();
 		navigationPanel.updateState(MeasureDetailState.BLANK);
 		this.scoringType = null;
 		isCompositeMeasure = false;
@@ -53,7 +55,9 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void beforeDisplay() {
 		clearAlerts();
-		displayMeasureDetailsView();
+		measureDetailsView.clear();
+		Mat.showLoadingMessage();
+		MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure());
 	}
 
 	@Override
@@ -141,7 +145,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
-				MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure());
+				MatContext.get().fireMeasureEditEvent();
 			}
 		});
 		measureDetailsView.getDeleteMeasureButton().addClickHandler(event -> handleDeleteMeasureButtonClick());
@@ -199,15 +203,17 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			}
 			
 			private void handleAsyncSuccess(MeasureDetailsModel result, long callbackRequestTime) {
+				Mat.hideLoadingMessage();
 				if (callbackRequestTime == lastRequestTime) {
-					measureDetailsModel = result;					
-					MatContext.get().fireMeasureEditEvent();
+					measureDetailsModel = result;
+					displayMeasureDetailsView();
 				}
 			}
 		};
 	}
 	
 	private void handleAsyncFailure(Throwable caught) {
+		Mat.hideLoadingMessage();
 		showErrorAlert(caught.getMessage());
 		MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: " +caught.getLocalizedMessage(), 0);
 	}

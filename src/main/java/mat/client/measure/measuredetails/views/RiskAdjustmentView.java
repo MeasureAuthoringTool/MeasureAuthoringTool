@@ -67,4 +67,10 @@ public class RiskAdjustmentView implements ComponentDetailView {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void clear() {
+		// TODO Auto-generated method stub
+		
+	}
 }

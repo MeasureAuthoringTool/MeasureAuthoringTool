@@ -154,6 +154,10 @@ public class MeasureDetailsView {
 		isMeasureEditable = isReadOnly;
 	}
 	
+	public void clear() {
+		componentDetailView.clear();
+	}
+	
 	public MeasureDetailState getState() {
 		return componentDetailView.getState();
 	}

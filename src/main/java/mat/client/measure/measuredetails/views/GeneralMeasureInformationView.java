@@ -33,12 +33,16 @@ import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
 public class GeneralMeasureInformationView implements ComponentDetailView {
+	private static final String EMPTY_STRING = "";
 	private static final String TEXT_BOX_WIDTH = "300px";
 	private FlowPanel mainPanel = new FlowPanel();
 	private GeneralInformationModel generalInformationModel;
 	private GeneralInformationModel originalModel;
 	private TextBox abbrInput = new TextBox();
 	private TextBox measureNameInput = new TextBox();
+	private TextBox guidTextBox = new TextBox();
+	private TextBox finalizedDateTextBox = new TextBox();
+	private TextBox eCQMVersionNumberTextBox = new TextBox(); 
 	private boolean isCompositeMeasure = false;
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
@@ -169,7 +173,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	private VerticalPanel buildFinalizedDate() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.getElement().addClassName("generalInformationPanel");
-		TextBox finalizedDateTextBox = new TextBox();
 		FormLabel finalizedDateLabel = new FormLabel();
 		finalizedDateLabel.setText("Finalized Date");
 		finalizedDateLabel.setTitle(finalizedDateLabel.getText());
@@ -190,7 +193,6 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	private VerticalPanel buildeCQMVersionPanel() {
 		VerticalPanel panel = new VerticalPanel();
 		panel.getElement().addClassName("generalInformationPanel");
-		TextBox eCQMVersionNumberTextBox = new TextBox(); 
 		FormLabel eCQMVersionNumberLabel = new FormLabel();
 		eCQMVersionNumberLabel.setText("eCQM Version Number");
 		eCQMVersionNumberLabel.setTitle(eCQMVersionNumberLabel.getText());
@@ -214,8 +216,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		guidLabel.setText("GUID");
 		guidLabel.setTitle(guidLabel.getText());
 		guidLabel.setId("guidLabel");
-		guidLabel.setFor("guidLabel");
-		TextBox guidTextBox = new TextBox(); 
+		guidLabel.setFor("guidLabel"); 
 		guidTextBox.setId("guidLabel");
 		guidTextBox.setReadOnly(true);
 		guidTextBox.setEnabled(false);
@@ -472,7 +473,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 
 	@Override
 	public void resetForm() {
-		helpBlock.setText("");
+		helpBlock.setText(EMPTY_STRING);
 		buildGeneralInformationModel(originalModel);
 		buildDetailView();
 	}
@@ -486,5 +487,18 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	public RichTextEditor getRichTextEditor() {
 		//No rich text editor on this page
 		return null;
+	}
+
+	@Override
+	public void clear() {
+		helpBlock.setText(EMPTY_STRING);
+		abbrInput.setText(EMPTY_STRING);
+		eCQMVersionNumberTextBox.setText(EMPTY_STRING);
+		finalizedDateTextBox.setText(EMPTY_STRING);
+		guidTextBox.setText(EMPTY_STRING);
+		measureNameInput.setText(EMPTY_STRING);
+		measureScoringInput.clear();
+		compositeScoringMethodInput.clear();
+		patientBasedInput.clear();
 	}
 }

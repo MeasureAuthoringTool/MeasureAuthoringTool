@@ -55,9 +55,14 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	@Override
 	public void beforeDisplay() {
 		clearAlerts();
-		measureDetailsView.clear();
-		Mat.showLoadingMessage();
+		setIsLoading();
 		MatContext.get().getMeasureService().getMeasureDetailsAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), MatContext.get().getLoggedinUserId(),getAsyncCallBackForMeasureAndLogRecentMeasure());
+	}
+
+	private void setIsLoading() {
+		measureDetailsView.clear();
+		measureDetailsView.setReadOnly(true);
+		Mat.showLoadingMessage();
 	}
 
 	@Override

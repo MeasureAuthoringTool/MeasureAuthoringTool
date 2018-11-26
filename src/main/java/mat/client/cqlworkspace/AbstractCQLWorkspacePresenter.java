@@ -44,6 +44,7 @@ public abstract class AbstractCQLWorkspacePresenter {
 	protected static final String CODES_COPIED_SUCCESSFULLY = "Codes successfully copied.";
 	protected static final String COPY_QDM_SELECT_ATLEAST_ONE  = "Please select at least one Value Set to copy.";
 	protected static final String COPY_CODE_SELECT_ATLEAST_ONE  = "Please select at least one Code to copy.";
+	protected static final String VIEW_CQL_WARNING_MESSAGE = "You are viewing CQL with validation warnings. Warnings are marked with a yellow triangle on the line number.";
 	protected static final String VIEW_CQL_ERROR_MESSAGE = "You are viewing CQL with validation errors. Errors are marked with a red square on the line number.";
 	protected static final String VIEW_CQL_NO_ERRORS_MESSAGE ="You are viewing CQL with no validation errors.";
 	protected static final String VIEW_CQL_ERROR_MESSAGE_BAD_VALUESET_DATATYPE ="CQL file with validation errors. You have an incorrect value set/code datatype combination.";

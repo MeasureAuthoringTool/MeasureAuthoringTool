@@ -2779,24 +2779,19 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			List<CQLError> errors = new ArrayList<>(); 
 			List<CQLError> warnings = new ArrayList<>(); 
 			
-			String libraryName = MatContext.get().getCurrentCQLLibraryeName();
-			String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
-			String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim(); 
-			
-			if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
-				errors.addAll(result.getLibraryNameErrorsMap().get(formattedName));
-			}
-			
-			if(result.getLibraryNameWarningsMap().get(formattedName) != null) {
-				warnings.addAll(result.getLibraryNameWarningsMap().get(formattedName));
-			}
+			addErrorsAndWarningsForParentLibrary(result, errors, warnings);
 			
 			if (!errors.isEmpty() || !warnings.isEmpty()) {
-				if(!result.getCqlErrors().isEmpty()) {
-					messagePanel.getWarningMessageAlert().createAlert(VIEW_CQL_ERROR_MESSAGE);
+				String warningOrErrorMessageAlert = ""; 
+				if(!warnings.isEmpty()) {
+					warningOrErrorMessageAlert = VIEW_CQL_WARNING_MESSAGE;
+					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
+				}
+				if(!errors.isEmpty()) {
+					warningOrErrorMessageAlert = VIEW_CQL_ERROR_MESSAGE;
 					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(errors, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR);
 				}
-				cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
+				messagePanel.getWarningMessageAlert().createAlert(warningOrErrorMessageAlert);
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setAnnotations();
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().redisplay();
 			} else if (!result.isDatatypeUsedCorrectly()) {
@@ -2808,6 +2803,21 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			}
 		}
 
+	}
+
+	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors,
+			List<CQLError> warnings) {
+		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
+		String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
+		String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim(); 
+		
+		if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
+			errors.addAll(result.getLibraryNameErrorsMap().get(formattedName));
+		}
+		
+		if(result.getLibraryNameWarningsMap().get(formattedName) != null) {
+			warnings.addAll(result.getLibraryNameWarningsMap().get(formattedName));
+		}
 	}
 	
 	private void unsetActiveMenuItem(String menuClickedBefore) {

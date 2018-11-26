@@ -94,6 +94,8 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		mainPanel.clear();
 		HorizontalPanel detailPanel = new HorizontalPanel();
 		Form measureDetailForm = new Form();
+		helpBlock.setHeight("0px");
+		helpBlock.setWidth("0px");
 		messageFormGrp.add(helpBlock);
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);

@@ -5,4 +5,6 @@ public interface HumanReadableTerminologyModel {
 	String getDataCriteriaDisplay(); 
 	void setDataCriteriaDisplay(String display);
 	void setTerminologyDisplay(String display); 
+	String getCaseInsensitiveTerminologyDisplay(); 
+	String getCaseInsensitiveDataCriteriaDisplay(); 
 }

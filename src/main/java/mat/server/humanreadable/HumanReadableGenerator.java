@@ -130,7 +130,7 @@ public class HumanReadableGenerator {
 				List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
 				valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
 				valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
-				valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getDataCriteriaDisplay));				
+				valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getCaseInsensitiveDataCriteriaDisplay));				
 				model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
 				
 				html = humanReadableGenerator.generate(model);

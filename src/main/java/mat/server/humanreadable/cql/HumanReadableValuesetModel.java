@@ -117,4 +117,14 @@ public class HumanReadableValuesetModel implements HumanReadableTerminologyModel
 			return d2 == null; 
 		}
 	}
+	
+	@Override
+	public String getCaseInsensitiveTerminologyDisplay() {
+		return this.terminologyDisplay.toLowerCase();
+	}
+
+	@Override
+	public String getCaseInsensitiveDataCriteriaDisplay() {
+		return this.dataCriteriaDisplay.toLowerCase();
+	}
 }

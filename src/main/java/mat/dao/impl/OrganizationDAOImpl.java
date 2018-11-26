@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
+import mat.model.User;
 
 @Repository("organizationDAO")
 public class OrganizationDAOImpl extends GenericDAO<Organization, Long> implements mat.dao.OrganizationDAO {
@@ -119,6 +120,23 @@ public class OrganizationDAOImpl extends GenericDAO<Organization, Long> implemen
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<Organization> getActiveOrganizationForAdminCSVReport() {
+
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<Organization> query = cb.createQuery(Organization.class);
+		
+		final Root<Organization> root = query.from(Organization.class);
+		final Root<User> user = query.from(User.class);
+		
+		query.select(root);
+		query.where(cb.and(cb.equal(root.get("id"), user.get("organization").get("id")), cb.notEqual(user.get("status").get("statusId"), "2")));
+		query.distinct(true);
+		
+		return session.createQuery(query).getResultList();
 	}
 	
 }

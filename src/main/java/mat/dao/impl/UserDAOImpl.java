@@ -386,13 +386,12 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 */
 	@Override
 	public List<User> searchForNonTerminatedUser() {
-		Session session = getSessionFactory().getCurrentSession();
-		CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-        CriteriaQuery<User> userCriteriaQuery = criteriaBuilder.createQuery(User.class);
-        final Root<User> userRoot = userCriteriaQuery.from(User.class);
-        criteriaBuilder.notEqual(userRoot.get("status").get("id"), "2");
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		final CriteriaQuery<User> userCriteriaQuery = criteriaBuilder.createQuery(User.class);
+		final Root<User> userRoot = userCriteriaQuery.from(User.class);
+		userCriteriaQuery.select(userRoot).where(criteriaBuilder.notEqual(userRoot.get("status").get("statusId"), "2"));
 		userCriteriaQuery.orderBy(criteriaBuilder.asc(userRoot.get("lastName")));
-		userCriteriaQuery.select(userRoot);
 		return session.createQuery(userCriteriaQuery).getResultList();
 	}
 	

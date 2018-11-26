@@ -24,8 +24,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import mat.client.shared.MatException;
+import mat.dao.OrganizationDAO;
 import mat.model.CQLLibraryOwnerReportDTO;
 import mat.model.MeasureOwnerReportDTO;
+import mat.model.Organization;
 import mat.model.User;
 import mat.model.clause.ComponentMeasure;
 import mat.model.clause.Measure;
@@ -578,12 +580,11 @@ public class ExportServlet extends HttpServlet {
 	private String generateCSVOfActiveUserOIDs() {
 		logger.info("Generating CSV of Active User OID's...");
 		// Get all the active users
-		List<User> allNonTerminatedUsersList = getUserService().searchForNonTerminatedUsers();
-		Map<String, String> activeOidsMap = new TreeMap<>();
-		for (User user : allNonTerminatedUsersList) {
-			activeOidsMap.put(user.getOrgOID(), user.getOrganizationName());
+		final List<Organization> activeOrganizationList =  getOrganizationDAO().getActiveOrganizationForAdminCSVReport();
+		final Map<String, String> activeOidsMap = new TreeMap<>();
+		for (final Organization org : activeOrganizationList) {
+			activeOidsMap.put(org.getOrganizationOID(), org.getOrganizationName());
 		}
-
 		// Iterate through the 'allNonTerminatedUsersList' and generate a csv
 		return createCSVOfAllActiveUsersOID(activeOidsMap);
 	}
@@ -764,5 +765,9 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private CQLLibraryService getCQLLibraryService() {
 		return (CQLLibraryService) context.getBean("cqlLibraryService");
+	}
+	
+	private OrganizationDAO getOrganizationDAO() {
+		return ((OrganizationDAO) context.getBean("organizationDAO"));
 	}
 }

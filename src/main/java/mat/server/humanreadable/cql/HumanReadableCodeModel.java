@@ -23,10 +23,12 @@ public class HumanReadableCodeModel implements HumanReadableTerminologyModel {
 		createTerminologyDisplay();
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -137,15 +139,5 @@ public class HumanReadableCodeModel implements HumanReadableTerminologyModel {
 		} else {
 			return d2 == null; 
 		}
-	}
-
-	@Override
-	public String getCaseInsensitiveTerminologyDisplay() {
-		return this.terminologyDisplay.toLowerCase();
-	}
-
-	@Override
-	public String getCaseInsensitiveDataCriteriaDisplay() {
-		return this.dataCriteriaDisplay.toLowerCase();
 	}
 }

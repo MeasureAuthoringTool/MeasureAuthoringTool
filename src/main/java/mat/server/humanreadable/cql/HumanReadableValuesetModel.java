@@ -21,10 +21,12 @@ public class HumanReadableValuesetModel implements HumanReadableTerminologyModel
 		createtDataCriteriaDisplay(); 
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -89,10 +91,12 @@ public class HumanReadableValuesetModel implements HumanReadableTerminologyModel
 		this.dataCriteriaDisplay = dataCriteriaDisplay;
 	}
 
+	@Override
 	public String getDatatype() {
 		return datatype;
 	}
 
+	@Override
 	public void setDatatype(String datatype) {
 		this.datatype = datatype;
 	}
@@ -116,15 +120,5 @@ public class HumanReadableValuesetModel implements HumanReadableTerminologyModel
 		} else {
 			return d2 == null; 
 		}
-	}
-	
-	@Override
-	public String getCaseInsensitiveTerminologyDisplay() {
-		return this.terminologyDisplay.toLowerCase();
-	}
-
-	@Override
-	public String getCaseInsensitiveDataCriteriaDisplay() {
-		return this.dataCriteriaDisplay.toLowerCase();
 	}
 }

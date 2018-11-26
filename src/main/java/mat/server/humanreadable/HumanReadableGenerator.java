@@ -130,7 +130,20 @@ public class HumanReadableGenerator {
 				List<HumanReadableTerminologyModel> valuesetAndCodeDataCriteriaList = new ArrayList<>(); 
 				valuesetAndCodeDataCriteriaList.addAll(model.getValuesetDataCriteriaList());
 				valuesetAndCodeDataCriteriaList.addAll(model.getCodeDataCriteriaList());
-				valuesetAndCodeDataCriteriaList.sort(Comparator.comparing(HumanReadableTerminologyModel::getCaseInsensitiveDataCriteriaDisplay));				
+
+				Collections.sort(valuesetAndCodeDataCriteriaList, new Comparator<HumanReadableTerminologyModel>() {
+
+					@Override
+					public int compare(HumanReadableTerminologyModel o1, HumanReadableTerminologyModel o2) {
+						
+						String o1String = o1.getDatatype() + ": " + o1.getName();
+						String o2String = o2.getDatatype() + ": " + o2.getName();
+						
+						return o1String.compareTo(o2String);
+					}
+				});
+				
+				
 				model.setValuesetAndCodeDataCriteriaList(valuesetAndCodeDataCriteriaList);
 				
 				html = humanReadableGenerator.generate(model);

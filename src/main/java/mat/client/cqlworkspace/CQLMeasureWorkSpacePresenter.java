@@ -3197,23 +3197,31 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 				new AsyncCallback<SaveUpdateCQLResult>() {
 					@Override
 					public void onSuccess(SaveUpdateCQLResult result) {
+						String libraryName = cqlWorkspaceView.getCqlGeneralInformationView().createCQLLibraryName(MatContext.get().getCurrentMeasureName());
+						String libraryVersion = getCurrentMeasureVersion();
+						String formattedName = libraryName + "-" + libraryVersion; 
 						if (result.isSuccess()) {
 							if ((result.getCqlString() != null) && !result.getCqlString().isEmpty()) {
 								aceEditor.clearAnnotations();
 								aceEditor.redisplay();
 								
-								for (CQLError error : result.getCqlErrors()) {
-									int line = error.getErrorInLine();
-									int column = error.getErrorAtOffeset();
-									aceEditor.addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.ERROR);
+								if(result.getLibraryNameErrorsMap().get(formattedName) != null) {
+									for (CQLError error : result.getLibraryNameErrorsMap().get(formattedName)) {
+										int line = error.getErrorInLine();
+										int column = error.getErrorAtOffeset();
+										aceEditor.addAnnotation(line - 1, column, error.getErrorMessage(), AceAnnotationType.ERROR);
+									}
 								}
 								
-								for (CQLError warning : result.getCqlWarnings()) {
-									int line = warning.getErrorInLine(); 
-									int column = warning.getErrorAtOffeset();
-									aceEditor.addAnnotation(line - 1, column, warning.getErrorMessage(), AceAnnotationType.WARNING);
-								}
 
+								if(result.getLibraryNameWarningsMap().get(formattedName) != null) {
+									for (CQLError warning : result.getLibraryNameWarningsMap().get(formattedName)) {
+										int line = warning.getErrorInLine(); 
+										int column = warning.getErrorAtOffeset();
+										aceEditor.addAnnotation(line - 1, column, warning.getErrorMessage(), AceAnnotationType.WARNING);
+									}	
+								}
+								
 								aceEditor.setText(result.getCqlString());
 								aceEditor.setAnnotations();
 								aceEditor.gotoLine(1);

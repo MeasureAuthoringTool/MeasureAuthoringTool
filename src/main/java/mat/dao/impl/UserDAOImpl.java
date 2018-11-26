@@ -338,30 +338,28 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	 */
 	@Override
 	public String getRandomSecurityQuestion(String userLoginId) {
-		
-		User user = findByLoginId(userLoginId);
-		String question = null;
-		if (null == user) {
-			question = getRandomSecurityQuestion();
-		}else{
-			Session session = getSessionFactory().getCurrentSession();
-			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-			CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
-		    Root<UserSecurityQuestion> userSecurityQuestionsRoot = criteriaQuery.from(UserSecurityQuestion.class);
-		    Root<SecurityQuestions> securityQuestionsRoot = criteriaQuery.from(SecurityQuestions.class);
-		    Root<User> userRoot = criteriaQuery.from(User.class);
-		    criteriaQuery.select(criteriaBuilder.count(userSecurityQuestionsRoot)).where(criteriaBuilder.and(
-		    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("securityQuestionId"), securityQuestionsRoot.get("questionId")),
-		    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), userRoot.get("id")),
-		    		criteriaBuilder.equal(userRoot.get("id"), user.getId())));
-		    int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
-		    CriteriaQuery<UserSecurityQuestion> securityQuestionsQuery = criteriaBuilder.createQuery(UserSecurityQuestion.class);
-		    userSecurityQuestionsRoot = securityQuestionsQuery.from(UserSecurityQuestion.class);
-		    securityQuestionsQuery.select(userSecurityQuestionsRoot);
-			question=session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getSecurityQuestions().getQuestion();
-		}
-		
-		return question;
+		final User user = findByLoginId(userLoginId);
+
+		return (null == user) ?  getRandomSecurityQuestion() : getRandomSecurityQuestionByUserId(user);
+	}
+	
+	private String getRandomSecurityQuestionByUserId(User user) {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+		final CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+	    Root<UserSecurityQuestion> userSecurityQuestionsRoot = criteriaQuery.from(UserSecurityQuestion.class);
+	    final Root<SecurityQuestions> securityQuestionsRoot = criteriaQuery.from(SecurityQuestions.class);
+	    final Root<User> userRoot = criteriaQuery.from(User.class);
+	    criteriaQuery.select(criteriaBuilder.count(userSecurityQuestionsRoot)).where(criteriaBuilder.and(
+	    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("securityQuestionId"), securityQuestionsRoot.get("questionId")),
+	    		criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), userRoot.get("id")),
+	    		criteriaBuilder.equal(userRoot.get("id"), user.getId())));
+	    final int count = session.createQuery(criteriaQuery).uniqueResult().intValue();
+	    final CriteriaQuery<UserSecurityQuestion> securityQuestionsQuery = criteriaBuilder.createQuery(UserSecurityQuestion.class);
+	    userSecurityQuestionsRoot = securityQuestionsQuery.from(UserSecurityQuestion.class);
+	    securityQuestionsQuery.select(userSecurityQuestionsRoot).where(criteriaBuilder.equal(userSecurityQuestionsRoot.get("userId"), user.getId()));
+	    
+		return session.createQuery(securityQuestionsQuery).setFirstResult(new Random().nextInt(count)).setMaxResults(1).uniqueResult().getSecurityQuestions().getQuestion();
 	}
 	
 	/**

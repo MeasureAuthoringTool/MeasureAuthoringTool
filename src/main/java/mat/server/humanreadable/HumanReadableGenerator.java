@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -26,6 +27,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import com.ctc.wstx.util.StringUtil;
 
 import freemarker.template.TemplateException;
 import mat.client.shared.MatContext;
@@ -138,10 +141,7 @@ public class HumanReadableGenerator {
 						
 						String o1String = o1.getDatatype() + ": " + o1.getName();
 						String o2String = o2.getDatatype() + ": " + o2.getName();
-						o1String = o1String.toLowerCase();
-						o2String = o2String.toLowerCase();
-						
-						return o1String.compareTo(o2String);
+						return o1String.compareToIgnoreCase(o2String);
 					}
 				});
 				

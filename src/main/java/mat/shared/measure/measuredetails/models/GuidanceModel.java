@@ -1,6 +1,6 @@
 package mat.shared.measure.measuredetails.models;
 
-public class GuidanceModel extends RichTextEditorModel{
+public class GuidanceModel extends MeasureDetailsRichTextAbstractModel{
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

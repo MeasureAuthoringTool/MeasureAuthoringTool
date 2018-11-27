@@ -138,6 +138,8 @@ public class HumanReadableGenerator {
 						
 						String o1String = o1.getDatatype() + ": " + o1.getName();
 						String o2String = o2.getDatatype() + ": " + o2.getName();
+						o1String = o1String.toLowerCase();
+						o2String = o2String.toLowerCase();
 						
 						return o1String.compareTo(o2String);
 					}

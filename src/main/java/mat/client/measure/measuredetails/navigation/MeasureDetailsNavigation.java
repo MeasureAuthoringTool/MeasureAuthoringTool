@@ -144,6 +144,8 @@ public class MeasureDetailsNavigation {
 	public void updateState(MeasureDetailState state) {
 		if(state == MeasureDetailState.INCOMPLETE) {
 			menuItemMap.get(activeMenuItem).setState(state);
-		} 
+		} if(state == MeasureDetailState.COMPLETE) {
+			menuItemMap.get(activeMenuItem).setState(state);
+		}
 	}
 }

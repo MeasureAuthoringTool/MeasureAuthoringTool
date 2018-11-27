@@ -1,7 +1,6 @@
 package mat.client.measure.measuredetails.views;
 
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import mat.client.measure.measuredetails.MeasureDetailState;
@@ -13,9 +12,10 @@ import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
 public class DescriptionView implements ComponentDetailView {
 	private FlowPanel mainPanel = new FlowPanel();
-	private RichTextEditor richTextEditor = new RichTextEditor();
+	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
 	private DescriptionModel originalDescriptionModel;
 	private DescriptionModel descriptionModel;
+	
 
 	private DescriptionObserver observer;
 	@Override
@@ -25,8 +25,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public boolean isComplete() {
-		// TODO Auto-generated method stub
-		return false;
+		return !this.descriptionModel.getFormatedText().isEmpty();
 	}
 
 	@Override
@@ -37,13 +36,14 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public void buildDetailView() {
-		// TODO Auto-generated method stub
-		
+		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
+		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Description Edit");
+		measureDetailsRichTextEditor.getRichTextEditor().setCode(this.descriptionModel.getFormatedText());
 	}
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		richTextEditor.setEnabled(!readOnly);
+		measureDetailsRichTextEditor.getRichTextEditor().setEnabled(!readOnly);
 	}
 
 	@Override
@@ -77,17 +77,14 @@ public class DescriptionView implements ComponentDetailView {
 	public DescriptionView(DescriptionModel descriptionModel) {
 		this.originalDescriptionModel = descriptionModel;
 		buildGeneralInformationModel(this.originalDescriptionModel);
-		richTextEditor.setTitle("Description Edit");
-		richTextEditor.setCode(this.descriptionModel.getFormatedText());
-		HorizontalPanel textAreaPanel = new HorizontalPanel();
-        textAreaPanel.add(richTextEditor);
-        textAreaPanel.setWidth("95%");
-        mainPanel.add(textAreaPanel);
+		
+		buildDetailView();
+		
         addEventHandlers();
 	}
 	
 	private void addEventHandlers() {
-		richTextEditor.addSummernoteKeyUpHandler(event -> observer.handleDescriptionChanged());
+		measureDetailsRichTextEditor.getRichTextEditor().addSummernoteKeyUpHandler(event -> observer.handleDescriptionChanged());
 	}
 	
 	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
@@ -97,7 +94,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public RichTextEditor getRichTextEditor() {
-		return richTextEditor;
+		return measureDetailsRichTextEditor.getRichTextEditor();
 	}
 	
 	public DescriptionModel getDescriptionModel() {

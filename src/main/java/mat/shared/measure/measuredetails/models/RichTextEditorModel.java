@@ -5,7 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public abstract class RichTextEditorModel implements MeasureDetailsComponentModel, IsSerializable{
 	private String plainText;
 	
-	private String formatedText;
+	private String formattedText;
 	
 	public String getPlainText() {
 		return plainText;
@@ -13,11 +13,11 @@ public abstract class RichTextEditorModel implements MeasureDetailsComponentMode
 	public void setPlainText(String plainText) {
 		this.plainText = plainText;
 	}
-	public String getFormatedText() {
-		return formatedText;
+	public String getFormattedText() {
+		return formattedText;
 	}
-	public void setFormatedText(String formatedText) {
-		this.formatedText = formatedText;
+	public void setFormattedText(String formattedText) {
+		this.formattedText = formattedText;
 	}
 	
 	@Override

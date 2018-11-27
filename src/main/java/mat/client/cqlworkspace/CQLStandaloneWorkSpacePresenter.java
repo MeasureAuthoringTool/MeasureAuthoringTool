@@ -270,13 +270,6 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				}
 			}
 
-			private String getFormattedCQLLibraryNameAndVersion() {
-				String libraryName = MatContext.get().getCurrentCQLLibraryeName();
-				String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
-				String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim();
-				return formattedName;
-			}
-
 			@Override
 			public void onFailure(Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -2778,7 +2771,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 
 			List<CQLError> errors = new ArrayList<>(); 
 			List<CQLError> warnings = new ArrayList<>(); 
-			
+
 			addErrorsAndWarningsForParentLibrary(result, errors, warnings);
 			
 			if (!errors.isEmpty() || !warnings.isEmpty()) {
@@ -2791,7 +2784,9 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 					warningOrErrorMessageAlert = VIEW_CQL_ERROR_MESSAGE;
 					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(errors, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR);
 				}
+				
 				messagePanel.getWarningMessageAlert().createAlert(warningOrErrorMessageAlert);
+				cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setAnnotations();
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().redisplay();
 			} else if (!result.isDatatypeUsedCorrectly()) {
@@ -2802,9 +2797,8 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 				messagePanel.getSuccessMessageAlert().createAlert(VIEW_CQL_NO_ERRORS_MESSAGE);
 			}
 		}
-
 	}
-
+	
 	private void addErrorsAndWarningsForParentLibrary(SaveUpdateCQLResult result, List<CQLError> errors,
 			List<CQLError> warnings) {
 		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
@@ -3618,6 +3612,20 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 																		.getCQLLeftNavBarPanelView()
 																		.getIncludeLibraryMap()
 																		.get(selectedIncludeLibraryID);
+																
+																
+																AceEditor editor = cqlWorkspaceView.getIncludeView().getViewCQLEditor(); 
+																editor.clearAnnotations();
+																editor.removeAllMarkers();
+																
+																String formattedName = cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion();
+																Window.alert(formattedName);
+												
+																List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(formattedName);
+																List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(formattedName);											
+																CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
+																CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
+																editor.setAnnotations();
 
 																if(!result.getCqlErrors().isEmpty() || !result.getUsedCQLLibraries().contains(
 																		cqlIncludeLibrary.getCqlLibraryName()+ "-"+ cqlIncludeLibrary.getVersion()+ "|"
@@ -4365,6 +4373,11 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			cqlWorkspaceView.getCQLLeftNavBarPanelView().getDefineNameListBox().setSelectedIndex(-1);
 		}
 	}
-
-
+	
+	private String getFormattedCQLLibraryNameAndVersion() {
+		String libraryName = MatContext.get().getCurrentCQLLibraryeName();
+		String libraryVersion = MatContext.get().getCurrentCQLLibraryVersion();
+		String formattedName = libraryName + "-" + libraryVersion.replace("v", "").replace("Draft", "").trim();
+		return formattedName;
+	}
 }

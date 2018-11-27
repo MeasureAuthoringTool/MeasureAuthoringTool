@@ -2242,9 +2242,10 @@ public class CQLServiceImpl implements CQLService {
 		List<String> expressionList = cqlModel.getExpressionListFromCqlModel();
 		SaveUpdateCQLResult parsedCQL = CQLUtil.parseCQLLibraryForErrors(cqlModel, cqlLibraryDAO, expressionList);
 		
-		String formattedName = cqlModel.getUsingName() + "-" + cqlModel.getVersionUsed();
-		System.out.println("FORMATTED NAME: " + formattedName);
+		String formattedName = cqlModel.getLibraryName() + "-" + cqlModel.getVersionUsed();
+		System.out.println("GETTING ERRORS FOR " + formattedName);
 		List<CQLError> libraryErrors = parsedCQL.getLibraryNameErrorsMap().get(formattedName); 
+		System.out.println(libraryErrors);
 		List<CQLError> expressionErrors = new ArrayList<>();
 		if (libraryErrors != null && !libraryErrors.isEmpty()) {
 			result.setValidCQLWhileSavingExpression(false);
@@ -2348,7 +2349,6 @@ public class CQLServiceImpl implements CQLService {
 	 */
 	@Override
 	public GetUsedCQLArtifactsResult getUsedCQlArtifacts(String xml) {
-		logger.info("GETTING CQL ARTIFACTS");
 		CQLModel cqlModel = CQLUtilityClass.getCQLModelFromXML(xml);
 
 		List<String> exprList = new ArrayList<>();
@@ -2383,14 +2383,15 @@ public class CQLServiceImpl implements CQLService {
 			cqlResult.getUsedCQLArtifacts().setLibraryNameErrorsMap(cqlResult.getLibraryNameErrorsMap());
 			cqlResult.getUsedCQLArtifacts().setLibraryNameWarningsMap(cqlResult.getLibraryNameWarningsMap());
 			cqlResult.getUsedCQLArtifacts().setCqlErrors(cqlResult.getCqlErrors());
-			
-			
+			cqlResult.getUsedCQLArtifacts().setLibraryNameErrorsMap(cqlResult.getLibraryNameErrorsMap());
 			cqlResult.getUsedCQLArtifacts().setCqlErrorsPerExpression(getCQLErrorsPerExpressions(cqlModel, cqlResult.getLibraryNameErrorsMap().get(formattedName)));
 		}
 		
 		if(CollectionUtils.isNotEmpty(cqlResult.getCqlWarnings())) {
+			cqlResult.getUsedCQLArtifacts().setLibraryNameWarningsMap(cqlResult.getLibraryNameWarningsMap());
 			cqlResult.getUsedCQLArtifacts().setCqlWarningsPerExpression(getCQLErrorsPerExpressions(cqlModel, cqlResult.getLibraryNameWarningsMap().get(formattedName)));	
 		}
+		
 
 		return cqlResult.getUsedCQLArtifacts();
 	}

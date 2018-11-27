@@ -621,7 +621,7 @@ public class CQLUtil {
 	private static void setCQLErrors(List<CQLError> errors, Map<String, List<CQLError>> libraryToErrorsMap, CqlTranslatorException cte) {
 		CQLError cqlError = new CQLError();
 		cqlError.setStartErrorInLine(cte.getLocator().getStartLine());
-		cqlError.setErrorInLine(cte.getLocator().getStartLine());
+		cqlError.setErrorInLine(cte.getLocator().getStartLine() - 1);
 		cqlError.setErrorAtOffeset(cte.getLocator().getStartChar());
 		cqlError.setEndErrorInLine(cte.getLocator().getEndLine());
 		cqlError.setEndErrorAtOffset(cte.getLocator().getEndChar());

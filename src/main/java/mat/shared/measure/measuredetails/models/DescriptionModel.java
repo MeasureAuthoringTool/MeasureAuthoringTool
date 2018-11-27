@@ -2,7 +2,7 @@ package mat.shared.measure.measuredetails.models;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DescriptionModel extends RichTextEditorModel implements IsSerializable{
+public class DescriptionModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
 	
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {

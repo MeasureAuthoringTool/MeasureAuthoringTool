@@ -43,7 +43,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public void setReadOnly(boolean readOnly) {
-		measureDetailsRichTextEditor.getRichTextEditor().setEnabled(!readOnly);
+		measureDetailsRichTextEditor.setReadOnly(readOnly);
 	}
 
 	@Override

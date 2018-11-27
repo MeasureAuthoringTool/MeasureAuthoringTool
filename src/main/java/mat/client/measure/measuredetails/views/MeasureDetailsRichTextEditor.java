@@ -38,6 +38,11 @@ public class MeasureDetailsRichTextEditor {
 		infoButtonGroup.getElement().setAttribute("style", "margin-top:-10px;");
 	}
 
+	public void setReadOnly(boolean readOnly) {
+		richTextEditor.setEnabled(!readOnly);
+		infoButton.setEnabled(!readOnly);
+	}
+	
 	public RichTextEditor getRichTextEditor() {
 		return richTextEditor;
 	}

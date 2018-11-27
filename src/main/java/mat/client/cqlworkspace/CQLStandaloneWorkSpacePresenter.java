@@ -2775,17 +2775,15 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 			addErrorsAndWarningsForParentLibrary(result, errors, warnings);
 			
 			if (!errors.isEmpty() || !warnings.isEmpty()) {
-				String warningOrErrorMessageAlert = ""; 
 				if(!warnings.isEmpty()) {
-					warningOrErrorMessageAlert = VIEW_CQL_WARNING_MESSAGE;
+					messagePanel.getWarningMessageAlert().createAlert(VIEW_CQL_WARNING_MESSAGE);
 					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
 				}
 				if(!errors.isEmpty()) {
-					warningOrErrorMessageAlert = VIEW_CQL_ERROR_MESSAGE;
+					messagePanel.getWarningMessageAlert().clearAlert();
+					messagePanel.getErrorMessageAlert().createAlert(VIEW_CQL_ERROR_MESSAGE);
 					cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(errors, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR);
 				}
-				
-				messagePanel.getWarningMessageAlert().createAlert(warningOrErrorMessageAlert);
 				cqlWorkspaceView.getViewCQLView().setViewCQLAnnotations(warnings, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING);
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().setAnnotations();
 				cqlWorkspaceView.getViewCQLView().getCqlAceEditor().redisplay();

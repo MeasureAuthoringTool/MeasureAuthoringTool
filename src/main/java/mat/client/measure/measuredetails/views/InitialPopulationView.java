@@ -9,7 +9,7 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class InitialPopulationView implements ComponentDetailView {
+public class InitialPopulationView implements MeasureDetailViewInterface {
 
 	private FlowPanel mainPanel = new FlowPanel();
 

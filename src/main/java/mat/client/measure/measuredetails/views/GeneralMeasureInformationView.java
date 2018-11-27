@@ -32,7 +32,7 @@ import mat.shared.StringUtility;
 import mat.shared.measure.measuredetails.models.GeneralInformationModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class GeneralMeasureInformationView implements ComponentDetailView {
+public class GeneralMeasureInformationView implements MeasureDetailViewInterface {
 	private static final String EMPTY_STRING = "";
 	private static final String TEXT_BOX_WIDTH = "300px";
 	private FlowPanel mainPanel = new FlowPanel();

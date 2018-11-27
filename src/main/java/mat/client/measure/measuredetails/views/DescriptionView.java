@@ -10,7 +10,7 @@ import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.DescriptionModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class DescriptionView implements ComponentDetailView {
+public class DescriptionView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
 	private DescriptionModel originalDescriptionModel;

@@ -8,7 +8,7 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class MeasureStewardView implements ComponentDetailView{
+public class MeasureStewardView implements MeasureDetailViewInterface{
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	public MeasureStewardView() {

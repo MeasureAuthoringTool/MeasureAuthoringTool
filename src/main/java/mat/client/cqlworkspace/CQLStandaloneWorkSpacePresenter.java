@@ -3618,9 +3618,7 @@ public class CQLStandaloneWorkSpacePresenter extends AbstractCQLWorkspacePresent
 																editor.clearAnnotations();
 																editor.removeAllMarkers();
 																
-																String formattedName = cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion();
-																Window.alert(formattedName);
-												
+																String formattedName = cqlIncludeLibrary.getCqlLibraryName() + "-" + cqlIncludeLibrary.getVersion();												
 																List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(formattedName);
 																List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(formattedName);											
 																CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);

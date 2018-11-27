@@ -9,7 +9,7 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class NumeratorView implements ComponentDetailView {
+public class NumeratorView implements MeasureDetailViewInterface {
 	private FlowPanel mainPanel = new FlowPanel();
 
 	public NumeratorView() {

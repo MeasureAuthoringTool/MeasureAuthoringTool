@@ -25,7 +25,7 @@ public class MeasureDetailsViewFactory {
 		return instance;
 	}
 
-	public ComponentDetailView getMeasureDetailComponentView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail) {
+	public MeasureDetailViewInterface getMeasureDetailComponentView(MeasureDetailsModel measureDetailsComponent, MatDetailItem currentMeasureDetail) {
 		if(currentMeasureDetail instanceof MeasureDetailsConstants.MeasureDetailsItems) {
 			switch((MeasureDetailsItems) currentMeasureDetail) {
 			case COMPONENT_MEASURES:

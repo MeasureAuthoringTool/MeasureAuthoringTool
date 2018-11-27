@@ -7,7 +7,7 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public interface ComponentDetailView {
+public interface MeasureDetailViewInterface {
 	public Widget getWidget();
 	public void buildDetailView();
 	public void clear();

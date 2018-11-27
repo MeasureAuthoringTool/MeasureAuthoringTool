@@ -8,7 +8,7 @@ import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
 
-public class CopyrightView implements ComponentDetailView{
+public class CopyrightView implements MeasureDetailViewInterface{
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	public CopyrightView() {

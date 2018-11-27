@@ -14,7 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import mat.client.buttons.DeleteButton;
 import mat.client.buttons.SaveButton;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
-import mat.client.measure.measuredetails.views.ComponentDetailView;
+import mat.client.measure.measuredetails.views.MeasureDetailViewInterface;
 import mat.client.measure.measuredetails.views.MeasureDetailsViewFactory;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ErrorMessageAlert;
@@ -34,7 +34,7 @@ public class MeasureDetailsView {
 	private VerticalPanel widgetComponentPanel = new VerticalPanel();
 	private ErrorMessageAlert errorAlert = new ErrorMessageAlert();
 	private MatDetailItem currentMeasureDetail;
-	private ComponentDetailView componentDetailView;
+	private MeasureDetailViewInterface componentDetailView;
 	private boolean isMeasureEditable;
 	private SaveButton saveButton = new SaveButton("Measure Details");
 	private DeleteButton deleteMeasureButton = new DeleteButton("Measure Details", "Delete Measure");

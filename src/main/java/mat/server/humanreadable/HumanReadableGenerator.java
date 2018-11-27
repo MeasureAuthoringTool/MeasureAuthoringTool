@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
@@ -28,8 +27,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.ctc.wstx.util.StringUtil;
-
 import freemarker.template.TemplateException;
 import mat.client.shared.MatContext;
 import mat.dao.clause.CQLLibraryDAO;
@@ -37,6 +34,7 @@ import mat.model.cql.CQLDefinition;
 import mat.model.cql.CQLFunctions;
 import mat.model.cql.CQLModel;
 import mat.server.CQLUtilityClass;
+import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
 import mat.server.humanreadable.cql.HumanReadableCodeModel;
 import mat.server.humanreadable.cql.HumanReadableExpressionModel;
 import mat.server.humanreadable.cql.HumanReadableModel;
@@ -45,9 +43,8 @@ import mat.server.humanreadable.cql.HumanReadablePopulationModel;
 import mat.server.humanreadable.cql.HumanReadableTerminologyModel;
 import mat.server.humanreadable.cql.HumanReadableValuesetModel;
 import mat.server.humanreadable.qdm.HQMFHumanReadableGenerator;
-import mat.server.humanreadable.cql.CQLHumanReadableGenerator;
-import mat.server.util.CQLUtil.CQLArtifactHolder;	
 import mat.server.util.CQLUtil;
+import mat.server.util.CQLUtil.CQLArtifactHolder;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.LibHolderObject;

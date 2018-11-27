@@ -25,7 +25,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public boolean isComplete() {
-		return !this.descriptionModel.getFormatedText().isEmpty();
+		return !this.descriptionModel.getFormattedText().isEmpty();
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class DescriptionView implements ComponentDetailView {
 	public void buildDetailView() {
 		measureDetailsRichTextEditor = new MeasureDetailsRichTextEditor(mainPanel);
 		measureDetailsRichTextEditor.getRichTextEditor().setTitle("Description Edit");
-		measureDetailsRichTextEditor.getRichTextEditor().setCode(this.descriptionModel.getFormatedText());
+		measureDetailsRichTextEditor.getRichTextEditor().setCode(this.descriptionModel.getFormattedText());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class DescriptionView implements ComponentDetailView {
 
 	@Override
 	public MeasureDetailState getState() {
-		if(this.descriptionModel.getFormatedText().isEmpty()) {
+		if(this.descriptionModel.getFormattedText().isEmpty()) {
 			return MeasureDetailState.BLANK;
 		} else {
 			return MeasureDetailState.COMPLETE;
@@ -89,7 +89,7 @@ public class DescriptionView implements ComponentDetailView {
 	
 	private void buildGeneralInformationModel(DescriptionModel originalDescriptionModel) {
 		this.descriptionModel = new DescriptionModel();
-		descriptionModel.setFormatedText(originalDescriptionModel.getFormatedText());
+		descriptionModel.setFormattedText(originalDescriptionModel.getFormattedText());
 	}
 
 	@Override

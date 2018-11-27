@@ -6,7 +6,7 @@ public class DescriptionModel extends RichTextEditorModel implements IsSerializa
 	
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
-		return this.getFormatedText().equals(((DescriptionModel)  model).getFormatedText()) && 
+		return this.getFormattedText().equals(((DescriptionModel)  model).getFormattedText()) && 
 					this.getPlainText().equals(((DescriptionModel)  model).getPlainText());
 	}
 

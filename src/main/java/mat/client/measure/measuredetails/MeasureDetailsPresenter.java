@@ -266,7 +266,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				// TODO Auto-generated method stub
-				
+				handleStateChanged();
 			}
 		};
 	}

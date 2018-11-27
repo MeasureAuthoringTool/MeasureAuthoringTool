@@ -30,6 +30,7 @@ public class MeasureDetailsAnchorListItem extends AnchorListItem{
 			break;
 		case COMPLETE:
 			this.setIcon(IconType.CHECK_CIRCLE);
+			this.setColor("#00FF00");
 			break;
 		}
 		this.setIconPosition(IconPosition.RIGHT);

@@ -158,10 +158,6 @@ public class MeasureDetailsView {
 		componentDetailView.clear();
 	}
 	
-	public MeasureDetailState getState() {
-		return componentDetailView.getState();
-	}
-	
 	public ConfirmationDialogBox getSaveConfirmation() {
 		return componentDetailView.getSaveConfirmation();
 	}

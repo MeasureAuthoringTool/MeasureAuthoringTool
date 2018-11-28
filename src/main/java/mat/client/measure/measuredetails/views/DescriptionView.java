@@ -3,7 +3,6 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.observers.DescriptionObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
@@ -15,9 +14,8 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	private MeasureDetailsRichTextEditor measureDetailsRichTextEditor;
 	private DescriptionModel originalDescriptionModel;
 	private DescriptionModel descriptionModel;
-	
-
 	private DescriptionObserver observer;
+	
 	@Override
 	public Widget getWidget() {
 		return mainPanel;
@@ -44,16 +42,6 @@ public class DescriptionView implements MeasureDetailViewInterface {
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		measureDetailsRichTextEditor.setReadOnly(readOnly);
-	}
-
-	@Override
-	public MeasureDetailState getState() {
-		if(this.descriptionModel.getFormattedText().isEmpty()) {
-			return MeasureDetailState.BLANK;
-		} else {
-			return MeasureDetailState.COMPLETE;
-		}
-		
 	}
 
 	@Override

@@ -11,16 +11,20 @@ import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageCompositeMeasureDetailModel;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.measuredetails.navigation.MeasureDetailsAnchorListItem;
 import mat.client.measure.measuredetails.navigation.MeasureDetailsNavigation;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatDetailItem;
 import mat.client.shared.MeasureDetailsConstants;
+import mat.client.shared.MeasureDetailsConstants.MeasureDetailsItems;
+import mat.client.shared.MeasureDetailsConstants.PopulationItems;
 import mat.client.shared.ui.DeleteConfirmDialogBox;
 import mat.shared.ConstantMessages;
 import mat.shared.error.AuthenticationException;
 import mat.shared.error.measure.DeleteMeasureException;
+import mat.shared.measure.measuredetails.models.DescriptionModel;
 import mat.shared.measure.measuredetails.models.MeasureDetailsModel;
 import mat.shared.measure.measuredetails.translate.ManageMeasureDetailModelMapper;
 
@@ -88,7 +92,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 	
 	@Override
 	public void handleStateChanged() {
-		navigationPanel.updateState(measureDetailsView.getState());
+		updateNavPillStates();
 	}
 	
 	private void deleteMeasure() {
@@ -141,7 +145,7 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 		measureDetailsView.setReadOnly(isMeasureEditable);
 		measureDetailsView.getDeleteMeasureButton().setEnabled(isDeletable());
 		navigationPanel.setActiveMenuItem(MeasureDetailsConstants.MeasureDetailsItems.GENERAL_MEASURE_INFORMATION);
-		navigationPanel.updateState(measureDetailsView.getState());
+		updateNavPillStates();
 	}
 
 
@@ -269,5 +273,45 @@ public class MeasureDetailsPresenter implements MatPresenter, MeasureDetailsObse
 				handleStateChanged();
 			}
 		};
+	}
+	
+	private void updateNavPillStates() {
+		navigationPanel.getMenuItemMap().keySet().forEach(k -> {
+			MeasureDetailState navPillState = getStateForModelByKey(k);
+			MeasureDetailsAnchorListItem test = navigationPanel.getMenuItemMap().get(k);
+			if(test != null) {
+				test.setState(navPillState);
+			}
+			
+		});
+	}
+
+	private MeasureDetailState getStateForModelByKey(MatDetailItem k) {
+		if(k instanceof MeasureDetailsItems) {
+			switch((MeasureDetailsItems) k) {
+			case DESCRIPTION:
+				return getDescriptionState();
+			case GENERAL_MEASURE_INFORMATION:
+				return MeasureDetailState.INCOMPLETE;
+			default: 
+				return MeasureDetailState.BLANK;
+			}
+		} else if (k instanceof PopulationItems) {
+			return MeasureDetailState.BLANK;
+		}
+		
+		return MeasureDetailState.BLANK;
+	}
+
+	private MeasureDetailState getDescriptionState() {
+		DescriptionModel descriptionModel = measureDetailsModel.getDescriptionModel();
+		if(descriptionModel != null) {
+			if(descriptionModel.getPlainText() == null || descriptionModel.getPlainText().isEmpty()) {
+				return MeasureDetailState.BLANK;
+			} else {
+				return MeasureDetailState.COMPLETE;
+			}
+		}
+		return MeasureDetailState.BLANK;
 	}
 }

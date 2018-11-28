@@ -3,10 +3,14 @@ package mat.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,24 +25,33 @@ public class ListObjectDAOImpl extends GenericDAO<ListObject, String> implements
 	}
 
 	@Override
-		public List<ListObject> getSupplimentalCodeList() {
-			Session session = getSessionFactory().getCurrentSession();
-			Criteria criteria = session.createCriteria(ListObject.class);
-			criteria.add(Restrictions
-					.eq("codeListContext", "Supplimental CodeList"));
-			List<ListObject> suppElementList = criteria.list();
-			return suppElementList;
-		}
+	public List<ListObject> getSupplimentalCodeList() {
+		final Session session = getSessionFactory().getCurrentSession();
+		final CriteriaBuilder cb = session.getCriteriaBuilder();
+		final CriteriaQuery<ListObject> query = cb.createQuery(ListObject.class);
+		final Root<ListObject> root = query.from(ListObject.class);
+
+		query.select(root).where(cb.equal(root.get("codeListContext"), "Supplimental CodeList"));
+
+		return session.createQuery(query).getResultList();
+	}
 	
 	@Override
 	public List<ListObject> getElementCodeListByOID(List<String> elementOIDList) {
-		List<ListObject> timingElementList = new ArrayList<ListObject>();
+		List<ListObject> timingElementList = new ArrayList<>();
 
-		if (elementOIDList != null && !elementOIDList.isEmpty()) {
-			Session session = getSessionFactory().getCurrentSession();
-			Criteria criteria = session.createCriteria(ListObject.class);
-			criteria.add(Restrictions.in("oid", elementOIDList));
-			timingElementList = criteria.list();
+		if (CollectionUtils.isNotEmpty(elementOIDList)) {
+			final Session session = getSessionFactory().getCurrentSession();
+			final CriteriaBuilder cb = session.getCriteriaBuilder();
+			final CriteriaQuery<ListObject> query = cb.createQuery(ListObject.class);
+			final Root<ListObject> root = query.from(ListObject.class);
+
+			final In<String> exp = cb.in(root.get("oid"));
+			elementOIDList.forEach(exp::value);
+			
+			query.select(root).where(cb.in(exp));
+			
+			timingElementList = session.createQuery(query).getResultList();
 		}
 		return timingElementList;
 	}

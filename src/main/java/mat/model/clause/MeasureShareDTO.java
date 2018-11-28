@@ -1,77 +1,56 @@
 package mat.model.clause;
 
 import java.sql.Timestamp;
-import mat.model.LockedUserInfo;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
+
+import mat.model.LockedUserInfo;
 
 /**
  * The Class MeasureShareDTO.
  */
 public class MeasureShareDTO implements IsSerializable {
 	
-	/** The user id. */
 	private String userId;
 	
-	/** The measure id. */
 	private String measureId;
 	
-	/** The measure name. */
 	private String measureName;
 	
-	/** The scoring type. */
 	private String scoringType;
 	
-	/** The first name. */
 	private String firstName;
 	
-	/** The last name. */
 	private String lastName;
 	
-	/** The share level. */
 	private String shareLevel;
 	
-	/** The status. */
 	private String status;
 	
-	/** The owner user id. */
 	private String ownerUserId;
 	
-	/** The packaged. */
 	private boolean packaged;
 	
-	/** The locked. */
 	private boolean locked;
 	
-	/** The short name. */
 	private String shortName;
 	
-	/** The locked user info. */
 	private LockedUserInfo lockedUserInfo;
 	
-	/** The organization name. */
 	private String organizationName;
 	
-	/** The e measure id. */
 	private int eMeasureId;
 	
-	
-	/*US501*/
-	/** The draft. */
 	private boolean draft;
 	
-	/** The finalized date. */
 	private Timestamp finalizedDate;
 	
-	/** The version. */
 	private String version;
 	
-	/** The Revision. */
 	private String revisionNumber;
 	
-	/** The measure set id. */
 	private String measureSetId;
 	
-	/** The is private measure. */
 	private boolean isPrivateMeasure;
 	
 	private boolean isDraftable;
@@ -79,6 +58,17 @@ public class MeasureShareDTO implements IsSerializable {
 	private boolean isVersionable;
 	
 	private Boolean isPatientBased;
+
+	public MeasureShareDTO(String measureId, String shareLevel, String ownerUserId) {
+		super();
+		this.measureId = measureId;
+		this.shareLevel = shareLevel;
+		this.ownerUserId = ownerUserId;
+	}
+
+	public MeasureShareDTO() {
+
+	}
 
 	/**
 	 * Gets the scoring type.

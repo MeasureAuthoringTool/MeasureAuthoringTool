@@ -2611,7 +2611,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			updateMeasureFamily(detailModelList);
 		}
-
+		
 		return searchModel;
 	}
 
@@ -6015,6 +6015,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 
 		updateMeasureFamily(detailModelList);
+		
 		return searchModel;
 	}
 

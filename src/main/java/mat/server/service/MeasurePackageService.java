@@ -17,33 +17,6 @@ import mat.model.clause.MeasureShareDTO;
 import mat.shared.MeasureSearchModel;
 
 public interface MeasurePackageService {
-	
-	/**
-	 * Count.
-	 * 
-	 * @return long *
-	 */
-	long count();
-	
-	/**
-	 * Count.
-	 * 
-	 * @param filter
-	 *            - {@link Integer}.
-	 * @return {@link Long} *
-	 */
-	long count(int filter);
-	
-	/**
-	 * Count.
-	 * 
-	 * @param searchText
-	 *            - String.
-	 * @return {@link Long#} *
-	 */
-	long count(String searchText);
-	
-	
 	/**
 	 * Count users for measure share.
 	 * 
@@ -159,15 +132,6 @@ public interface MeasurePackageService {
 	boolean isMeasureLocked(String id);
 	
 	/**
-	 * Retrieve steward oid.
-	 * 
-	 * @param stewardName
-	 *            - {@link String}.
-	 * @return {@link String}. *
-	 */
-	String retrieveStewardOID(String stewardName);
-	
-	/**
 	 * Save.
 	 * 
 	 * @param measurePackage
@@ -207,32 +171,7 @@ public interface MeasurePackageService {
 	 *            - {@link QualityDataSet}. *
 	 */
 	void saveSupplimentalQDM(QualityDataSet qds);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} of {@link MeasureShareDTO}. *
-	 */
-	List<MeasureShareDTO> search(int startIndex, int numResults);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param searchText
-	 *            - {@link String}.
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} {@link MeasureShareDTO}. *
-	 */
-	List<MeasureShareDTO> search(String searchText, int startIndex,
-			int numResults);
-	
+
 	/**
 	 * Search for admin with filter.
 	 * 

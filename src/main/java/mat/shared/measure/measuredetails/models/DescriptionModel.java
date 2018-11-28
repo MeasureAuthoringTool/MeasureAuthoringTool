@@ -6,8 +6,12 @@ public class DescriptionModel extends MeasureDetailsRichTextAbstractModel implem
 	
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
-		return this.getFormattedText().equals(((DescriptionModel)  model).getFormattedText()) && 
-					this.getPlainText().equals(((DescriptionModel)  model).getPlainText());
+		DescriptionModel descriptionModel = (DescriptionModel) model;
+		if(descriptionModel == null || model == null) {
+			return false;
+		}
+		return this.getFormattedText().equals(descriptionModel.getFormattedText()) && 
+					this.getPlainText().equals(descriptionModel.getPlainText());
 	}
 
 	@Override

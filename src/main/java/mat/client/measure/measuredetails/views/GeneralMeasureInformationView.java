@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import mat.DTO.CompositeMeasureScoreDTO;
 import mat.client.codelist.HasListBox;
-import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.measure.measuredetails.observers.GeneralMeasureInformationObserver;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.ListBoxMVP;
@@ -369,11 +368,6 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 
 	public void setHelpBlock(HelpBlock helpBlock) {
 		this.helpBlock = helpBlock;
-	}
-	
-	@Override
-	public MeasureDetailState getState() {
-		return MeasureDetailState.INCOMPLETE;
 	}
 	
 	public TextBox getECQMAbbrInput() {

@@ -3,7 +3,6 @@ package mat.client.measure.measuredetails.views;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import mat.client.measure.measuredetails.MeasureDetailState;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.editor.RichTextEditor;
 import mat.shared.measure.measuredetails.models.MeasureDetailsComponentModel;
@@ -37,12 +36,6 @@ public class GuidanceView implements MeasureDetailViewInterface {
 	public void setReadOnly(boolean readOnly) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public MeasureDetailState getState() {
-		// TODO Auto-generated method stub
-		return MeasureDetailState.BLANK;
 	}
 
 	@Override

@@ -2,11 +2,13 @@ package mat.client.measure.measuredetails.views;
 
 import java.util.List;
 
+import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Form;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtbootstrap3.client.ui.constants.ButtonType;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -47,10 +49,12 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 	private ListBoxMVP  measureScoringInput = new ListBoxMVP();
 	private ListBoxMVP compositeScoringMethodInput = new ListBoxMVP();
 	private ListBoxMVP patientBasedInput = new ListBoxMVP();
+	private TextBox eMeasureIdentifierInput = new TextBox();
 	private GeneralMeasureInformationObserver observer;
 	List<CompositeMeasureScoreDTO> compositeChoices;
 	private HelpBlock helpBlock = new HelpBlock();
 	private FormGroup messageFormGrp = new FormGroup();
+	private Button generateEMeasureIDButton = new Button("Generate Identifier");
     
 	public GeneralMeasureInformationView(boolean isComposite, GeneralInformationModel originalGeneralInformationModel, List<CompositeMeasureScoreDTO> compositeChoices) {
 		originalModel = originalGeneralInformationModel;
@@ -100,7 +104,7 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		messageFormGrp.getElement().setAttribute("role", "alert");
 		measureDetailForm.add(messageFormGrp);
 		detailPanel.add(measureDetailForm);
-		Grid panelGrid = new Grid(5, 2);
+		Grid panelGrid = new Grid(6, 2);
 		
 		VerticalPanel measureNamePanel = buildMeasureNamePanel();
 		panelGrid.setWidget(0, 0, measureNamePanel);
@@ -131,10 +135,45 @@ public class GeneralMeasureInformationView implements ComponentDetailView {
 		VerticalPanel eCQMVersionPanel = buildeCQMVersionPanel();
 		panelGrid.setWidget(4, 0, eCQMVersionPanel);
 		
+		VerticalPanel eCQMIdentifierPanel = buldeCQMIdentifierPanel();
+		panelGrid.setWidget(5, 0, eCQMIdentifierPanel);
+		
 		detailPanel.add(panelGrid);
 		mainPanel.add(detailPanel);
 		buildDropDowns();
 		addEventHandlers();
+	}
+
+	private VerticalPanel buldeCQMIdentifierPanel() {
+		VerticalPanel verticalPanel = new VerticalPanel();
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
+		FormLabel eMeasureIdentifierInputLabel = new FormLabel();
+		eMeasureIdentifierInputLabel.setStyleName("bold");
+		eMeasureIdentifierInputLabel.setText( "eCQM Identifier (Measure Authoring Tool)");
+		eMeasureIdentifierInputLabel.setId("eMeasureIdentifierInputLabel");
+		eMeasureIdentifierInputLabel.setFor("eMeasureIdentifierInput_TextBox");
+		verticalPanel.add(new SpacerWidget());
+		verticalPanel.add(eMeasureIdentifierInputLabel);
+		eMeasureIdentifierInput.setId("eMeasureIdentifierInput_TextBox");
+		eMeasureIdentifierInput.setTitle("Generated Identifier");
+		eMeasureIdentifierInput.setWidth("150px");
+		
+		horizontalPanel.add(eMeasureIdentifierInput);
+		horizontalPanel.add(generateEMeasureIDButton);
+		horizontalPanel.add(eMeasureIdentifierInput);
+		horizontalPanel.add(generateEMeasureIDButton);
+		generateEMeasureIDButton.setType(ButtonType.PRIMARY);
+		//TODO handle enabled/disabled
+		generateEMeasureIDButton.getElement().getStyle().setProperty("marginLeft", "5px");
+		generateEMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
+		eMeasureIdentifierInput.setReadOnly(true);
+		generateEMeasureIDButton.setEnabled(true);
+		String emeasureIdMSG = "Once an eCQM Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
+		generateEMeasureIDButton.setTitle(emeasureIdMSG);
+		eMeasureIdentifierInput.setTitle(emeasureIdMSG);
+		verticalPanel.add(horizontalPanel);
+		return verticalPanel;
 	}
 
 	private void buildDropDowns() {

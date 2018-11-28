@@ -1,5 +1,7 @@
 package mat.client.measure.measuredetails.observers;
 
+import java.util.List;
+
 import mat.client.measure.measuredetails.views.GeneralMeasureInformationView;
 import mat.client.shared.ConfirmationDialogBox;
 import mat.client.shared.MatContext;
@@ -43,17 +45,14 @@ public class GeneralMeasureInformationObserver {
 		return generalInformationModel;
 	}
 	
-	private void setPatientBasedIndicatorBasedOnScoringChoice() {
+	public void setPatientBasedIndicatorBasedOnScoringChoice() {
+		List<String> patientBasedIndicatorOptions = MatContext.get().getPatientBasedIndicatorOptions(generalMeasureInformationView.getMeasureScoringInput().getItemText(generalMeasureInformationView.getMeasureScoringInput().getSelectedIndex()));
+		generalMeasureInformationView.setPatientBasedInputOptions(patientBasedIndicatorOptions);
 		if (MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(generalMeasureInformationView.getMeasureScoringInput().getItemText(generalMeasureInformationView.getMeasureScoringInput().getSelectedIndex()))) {
-			if(generalMeasureInformationView.getPatientBasedInput().getItemCount() > 1) {
-				// yes is the second element in the list, so the 1 index. 
-				generalMeasureInformationView.getPatientBasedInput().removeItem(1);
-			}
 			generalMeasureInformationView.getPatientBasedInput().setSelectedIndex(0);
 			generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to no.");
-			
 		} else {
-			generalMeasureInformationView.resetPatientBasedInput(); 
+			generalMeasureInformationView.getPatientBasedInput().setSelectedIndex(1);
 			generalMeasureInformationView.getHelpBlock().setText("Patient based indicator set to yes.");
 		}
 		
@@ -77,7 +76,7 @@ public class GeneralMeasureInformationObserver {
 		String messageText = "Changing the 'Composite Scoring Method' and/or the 'Measure Scoring' will have the following impacts:<p><ul>" +
 		"<li>Populations in the Population Workspace that do not apply to the new settings will be deleted.</li>" +
 		"<li>Existing Groupings in the Measure Packager will be deleted..</li>" +
-		"<li>The Patient-based Measure field will be reset to its default status for the scoring selected..</li>" +
+		"<li>The Patient-based Measure field will be reset to its default status for the scoring selected.</li>" +
 		"</ul><p>Do you want to continue?";
 		ConfirmationDialogBox confirmationDialogBox = new ConfirmationDialogBox(messageText, "Yes", "No");
 		return confirmationDialogBox;

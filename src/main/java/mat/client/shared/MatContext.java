@@ -75,6 +75,7 @@ import mat.model.cql.CQLQualityDataSetDTO;
 import mat.shared.CQLIdentifierObject;
 import mat.shared.CompositeMethodScoringConstant;
 import mat.shared.ConstantMessages;
+import mat.shared.MatConstants;
 import mat.shared.SaveUpdateCQLResult;
 
 public class MatContext implements IsSerializable {
@@ -1466,4 +1467,12 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	public List<String> getPatientBasedIndicatorOptions(String measureScoringMethod) {
+		List<String> patientBasedList = new ArrayList<>();
+		patientBasedList.add("No");
+		if (!MatConstants.CONTINUOUS_VARIABLE.equalsIgnoreCase(measureScoringMethod)) {
+			patientBasedList.add("Yes");
+		}
+		return patientBasedList;
+	}
 }

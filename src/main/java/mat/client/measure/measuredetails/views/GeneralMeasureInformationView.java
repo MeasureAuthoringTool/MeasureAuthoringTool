@@ -8,7 +8,6 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 import org.gwtbootstrap3.client.ui.HelpBlock;
 import org.gwtbootstrap3.client.ui.TextBox;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -85,7 +84,6 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 
 	@Override
 	public boolean hasUnsavedChanges() {
-		GWT.log("checking unsaved Changes");
 		return !originalModel.equals(generalInformationModel);
 	}
 
@@ -152,6 +150,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 				public void onSuccess(List<? extends HasListBox> result) {
 					setScoringChoices(result);
 					measureScoringInput.setValueMetadata(generalInformationModel.getScoringMethod());
+					setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(generalInformationModel.getScoringMethod()));
 				}
 			});
 		}
@@ -287,10 +286,7 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 	}
 
 	public void resetPatientBasedInput() {
-		patientBasedInput.clear();
-		patientBasedInput.addItem("No", "No");
-		patientBasedInput.addItem("Yes", "Yes");
-		// default the selected index to be 1, which is yes.  				
+		setPatientBasedInputOptions(MatContext.get().getPatientBasedIndicatorOptions(null));
 		patientBasedInput.setSelectedIndex(1);
 	}
 	
@@ -458,7 +454,6 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 
 	@Override
 	public ConfirmationDialogBox getSaveConfirmation() {
-		GWT.log("calling getSaveConfirmation");
 		if(hasUnsavedChanges()) {
 			return observer.getSaveConfirmation(originalModel, generalInformationModel);
 		}
@@ -502,5 +497,12 @@ public class GeneralMeasureInformationView implements MeasureDetailViewInterface
 		measureScoringInput.clear();
 		compositeScoringMethodInput.clear();
 		patientBasedInput.clear();
+	}
+
+	public void setPatientBasedInputOptions(List<String> patientBasedIndicatorOptions) {
+		patientBasedInput.clear();
+		for(String option: patientBasedIndicatorOptions) {
+			patientBasedInput.addItem(option, option);
+		}
 	}
 }

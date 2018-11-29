@@ -425,7 +425,7 @@ public class UserDAOImpl extends GenericDAO<User, String> implements UserDAO {
 	
 	private Predicate getPredicateForUsersToShareMeasure(String userName, CriteriaBuilder cb, Root<User> root) {
 		final Predicate p1 = cb.and(cb.equal(root.get("securityRole").get("id"), SECURITY_ROLE_USER),  
-							  cb.equal(root.get("status").get("id"), STATUS_ACTIVE), 
+							  cb.equal(root.get("status").get("statusId"), STATUS_ACTIVE), 
 							  cb.notEqual(root.get("id"), LoggedInUserUtil.getLoggedInUser()));
 		Predicate p2 = null;
 		if (StringUtils.isNotBlank(userName)) {

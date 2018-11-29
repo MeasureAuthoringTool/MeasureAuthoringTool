@@ -475,8 +475,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		final Predicate predicate = buildPredicateForMeasureSearch(filter, searchText, user.getId(), cb, root);
 		
-		query.select(root).where(predicate);
-		query.orderBy(cb.desc(root.get(MEASURE_SET).get("id")), cb.desc(root.get(DRAFT)), cb.desc(root.get(VERSION)));
+		query.select(root).where(predicate).distinct(true);
 		
 		List<Measure> measureResultList = session.createQuery(query).getResultList();
 				
@@ -511,8 +510,7 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 		
 		for (final Measure measure : measureResultList) {
 				final MeasureShareDTO dto = extractDTOFromMeasure(measure);
-				final boolean isDraft = dto.isDraft();
-				if (isDraft) {
+				if (dto.isDraft()) {
 					measureSetIdDraftableMap.put(dto.getMeasureSetId(), dto);
 				}
 				orderedDTOList.add(dto);

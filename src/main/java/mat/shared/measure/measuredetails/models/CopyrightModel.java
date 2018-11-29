@@ -2,17 +2,29 @@ package mat.shared.measure.measuredetails.models;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable{
+public class CopyrightModel extends MeasureDetailsRichTextAbstractModel implements IsSerializable {
+
+	public CopyrightModel() {
+
+	}
+	
+	public CopyrightModel(CopyrightModel model) {
+		this.setFormattedText(model.getFormattedText());
+		this.setPlainText(model.getPlainText());
+	}
 
 	@Override
 	public boolean equals(MeasureDetailsComponentModel model) {
-		// TODO Auto-generated method stub
-		return false;
+		CopyrightModel copyrightModel = (CopyrightModel) model;
+		if(copyrightModel == null || copyrightModel == null) {
+			return false;
+		}
+		return this.getFormattedText().equals(copyrightModel.getFormattedText()) && 
+					this.getPlainText().equals(copyrightModel.getPlainText());
 	}
 
 	@Override
 	public boolean isValid() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

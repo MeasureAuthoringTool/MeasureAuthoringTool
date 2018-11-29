@@ -668,11 +668,11 @@ public class MeasureDAOImpl extends GenericDAO<Measure, String> implements Measu
 	private Predicate getSearchByMeasureOrOwnerNamePredicate(String searchText, CriteriaBuilder cb, Root<Measure> root) {
 		final String lowerCaseSearchText = searchText.toLowerCase();
 		
-		return cb.or(cb.like(cb.lower(root.get(MEASURE).get("aBBRName")), "%" + lowerCaseSearchText + "%"),
-				cb.like(cb.lower(root.get(MEASURE).get("description")), "%" + lowerCaseSearchText + "%"),
+		return cb.or(cb.like(cb.lower(root.get("aBBRName")), "%" + lowerCaseSearchText + "%"),
+				cb.like(cb.lower(root.get("description")), "%" + lowerCaseSearchText + "%"),
 				cb.like(cb.lower(root.get(OWNER).get(FIRST_NAME)), "%" + lowerCaseSearchText + "%"),
 				cb.like(cb.lower(root.get(OWNER).get(LAST_NAME)), "%" + lowerCaseSearchText + "%"),
-				cb.like(root.get(MEASURE).get("eMeasureId"), lowerCaseSearchText));
+				cb.like(root.get("eMeasureId").as(String.class), "%" + lowerCaseSearchText + "%"));
 	}
 
 	private List<Measure> sortMeasureList(List<Measure> measureResultList) {

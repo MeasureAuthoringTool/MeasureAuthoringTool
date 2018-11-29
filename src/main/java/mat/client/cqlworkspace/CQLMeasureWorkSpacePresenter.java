@@ -3617,26 +3617,35 @@ public class CQLMeasureWorkSpacePresenter extends AbstractCQLWorkspacePresenter 
 					
 					ComponentMeasureTabObject componentMeasureTabObject = cqlWorkspaceView.getCQLLeftNavBarPanelView().getComponentMap().get(selectedComponentObjectId);	;
 					if (componentMeasureTabObject != null) {	
-						MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
+						
+						if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
+							MatContext.get().getMeasureService().getUsedCQLArtifacts(MatContext.get().getCurrentMeasureId(), new AsyncCallback<GetUsedCQLArtifactsResult>() {
+								@Override
+								public void onFailure(Throwable caught) {
+									Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								}
 
-							@Override
-							public void onSuccess(GetUsedCQLArtifactsResult result) {		
-								((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().setPageInformation(componentMeasureTabObject);
-								AceEditor editor = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().getCQLAceEditor();
-								editor.clearAnnotations();
-								editor.removeAllMarkers();
-								List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
-								List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
-								CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
-								CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
-								editor.setAnnotations();
-								editor.redisplay();
-							}
-						});
+								@Override
+								public void onSuccess(GetUsedCQLArtifactsResult result) {		
+									AceEditor editor = ((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().getCQLAceEditor();
+									editor.clearAnnotations();
+									editor.removeAllMarkers();
+									List<CQLError> errorsForLibrary = result.getLibraryNameErrorsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
+									List<CQLError> warningsForLibrary = result.getLibraryNameWarningsMap().get(componentMeasureTabObject.getLibraryName() + "-" + componentMeasureTabObject.getVersion());
+									CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(errorsForLibrary, CQLAppliedValueSetUtility.ERROR_PREFIX, AceAnnotationType.ERROR, editor);
+									CQLAppliedValueSetUtility.createCQLWorkspaceAnnotations(warningsForLibrary, CQLAppliedValueSetUtility.WARNING_PREFIX, AceAnnotationType.WARNING, editor);
+									
+									((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().setPageInformation(componentMeasureTabObject);
+
+									editor.setAnnotations();
+									editor.redisplay();
+								}
+							});
+						} else {
+							((CQLMeasureWorkSpaceView) cqlWorkspaceView).getComponentView().setPageInformation(componentMeasureTabObject);
+						}
+						
+					
 					}
 				}
 				
